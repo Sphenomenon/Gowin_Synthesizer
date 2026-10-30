@@ -28,6 +28,7 @@ def replace_between(s,start,end,a,b):
     first=s.index(start);last=s.index(end,first) if end else len(s)
     return s[:first]+replace(s[first:last],a,b)+s[last:]
 def main():
+    from tools.workstation_profile import PROFILE_REGISTRY
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
@@ -35,7 +36,7 @@ def main():
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
     ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
-    ap.add_argument('--workstation-profile',choices=['custom138k-workstation-v1'],help='Explicit locked native workstation source/feature checkpoint; requires --prepare-custom-board')
+    ap.add_argument('--workstation-profile',choices=tuple(PROFILE_REGISTRY),help='Explicit locked native workstation source/feature checkpoint; requires --prepare-custom-board')
     ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
     ap.add_argument('--hdmi-mode',choices=['1080p60','720p30','720p60'],help='Explicit native-board HDMI mode; never changes accepted workstation profiles')
     ap.add_argument('--hdmi-isolation',action='store_true',help='Standalone current native UI through shared DDR; no CPU, USB, BLE or recognition')

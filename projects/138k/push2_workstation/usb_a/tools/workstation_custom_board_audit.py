@@ -220,8 +220,9 @@ def check_ports(stage, plan):
     receiver, hierarchy and physical audits retain their separate scope.
     """
     stage = Path(stage).resolve()
+    from tools.workstation_profile import PROFILE_REGISTRY
     providers = ('rtl/workstation/workstation_custom_138k_top.sv',
-                 'rtl/workstation/workstation_profile_runtime.sv')
+                 *(spec['provider'] for spec in PROFILE_REGISTRY.values()))
     selected = [entry.get('path') for entry in ElementTree.parse(stage / 'Prj1.gprj').find('FileList')
                 if entry.get('enable') == '1' and entry.get('type') == 'file.verilog'
                 and entry.get('path') in providers]
@@ -251,7 +252,7 @@ def check_ports(stage, plan):
     implicit_negative = {'tmds_clk_n', 'ddr_ck_n', *(f'tmds_data_n[{index}]' for index in range(3)),
                          *(f'ddr_dqs_n[{index}]' for index in range(4))}
     extra = {}
-    runtime = provider == providers[1]
+    runtime = provider in providers[1:]
     if runtime:
         probe = json.loads(checked_file(stage, 'probes/audio_clock_i2s/probe.json').read_text())
         if (probe['pins'].get('clk_16m9344') != 'J19' or probe['pins'].get('clk_12m288') != 'K18'):

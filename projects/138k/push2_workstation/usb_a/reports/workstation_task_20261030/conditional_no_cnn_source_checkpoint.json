@@ -1,0 +1,994 @@
+{
+  "schema": 1,
+  "scope": "Explicit conditional CNN/follow-off source and prepare checkpoint only",
+  "parent_commit": "b59a4a54e649c71a90942e49ea64143294645bf6",
+  "implementation_commit": "commit containing this evidence",
+  "condition": {
+    "satisfied_by": "two actual same-input resource P&R failures",
+    "reports": {
+      "WORKSTATION_RUNTIME_F8_PHYSICAL_F9_PREPARE_20261030.md": "5e9bbc6c263e9cade71b42cfb0a5befca20a587fc5e572f30286eddbc2624d0a",
+      "WORKSTATION_RUNTIME_F09_RESOURCE_FAILURE_20261030.md": "d42ffd785246278e44d02c134720f2b3794687d0aee30779a39d95eca6886a22"
+    },
+    "f8_unrouted": 8083,
+    "f9_unrouted": 32709,
+    "not_transferred_to_new_candidate": true
+  },
+  "profiles": {
+    "enabled": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-enabled-prepare-final",
+      "profile": "custom138k-workstation-v1",
+      "revision": 5,
+      "integration_identity": "custom138k-native-dual-rate-runtime-revision5",
+      "candidate_identity": "custom138k-workstation-v1-e75f17baaa084543",
+      "candidate_input_sha256": "e75f17baaa0845436f64ba2daf2bf34a6cf64829551322294111cc2ce3811fc9",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "profile_source": "boards/custom_138k/workstation_profile_v1.json",
+      "profile_sha256": "8ef954a5a5db16eca7b54eddfc800be0a269f16b8bbcb2d83a270294b7328e72",
+      "profile_artifact_sha256": "cefc1d22def3aacf1d2e092341b671cec3d35dd09c530ac24e53dae67bd96712",
+      "integration_inputs_sha256": "5229e0436773bfbbb32f8cf9dc2372b790b417d96052d32c28527ef1c37f26b1",
+      "source_lock_count": 317,
+      "source_snapshot_count": 742,
+      "source_snapshot_sha256": "5eb6393c3f19d7211ea3dd63d4b8409f96101bcd1384f87d296e73ca733014b7",
+      "staged_inputs_count": 570,
+      "staged_inputs_sha256": "afa1b9f41abf673e0632baf18f0b621888780e19a57e7417f90ea50020094096",
+      "enabled_entries": 259,
+      "recognition": {
+        "policy": "enabled_cnn_and_follow_v1",
+        "music_analysis_enabled": true,
+        "cnn_score_follow_enabled": true,
+        "model_ready_not_forged": true,
+        "local_score_cue_preserved": true,
+        "recognition_menu_available": true,
+        "ddr_nn_allocation_retained": true,
+        "constraints": {
+          "enabled": true,
+          "input_sha256": "584a50b2de4b38159a05d7961441b3d0e7fc2f1c1e4e1ce5544fb1d73276af70",
+          "output_sha256": "584a50b2de4b38159a05d7961441b3d0e7fc2f1c1e4e1ce5544fb1d73276af70",
+          "retired_subset_sha256": null,
+          "retired": [],
+          "retained_constraints_unchanged": true,
+          "physical_cdc_verified": false
+        }
+      },
+      "validation_stage": "prepare_only",
+      "deployment_allowed": false,
+      "synthesis_passed": false,
+      "hardware_tested": false,
+      "bitstream_sha256": null
+    },
+    "disabled": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final",
+      "profile": "custom138k-workstation-no-cnn-v1",
+      "revision": 1,
+      "integration_identity": "custom138k-native-dual-rate-no-cnn-revision1",
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-7c57812471a5e336",
+      "candidate_input_sha256": "7c57812471a5e336ed7c50d2e360f9bdc656fe4abed847a6974da02b5dfe172b",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "profile_source": "boards/custom_138k/workstation_profile_no_cnn_v1.json",
+      "profile_sha256": "8907b17a341351e5284f067e728c6eafa0c00ebe0f604a5b21f0fb93bce0dad4",
+      "profile_artifact_sha256": "7e7eca8d330008bdc1ec38c2892f354b15550d11cb60e34b2196af7bee7b2a95",
+      "integration_inputs_sha256": "2c1c3093eba6559df929daf3fdaf233122673a4d251fc243dcbf8d2cf226824c",
+      "source_lock_count": 325,
+      "source_snapshot_count": 742,
+      "source_snapshot_sha256": "5eb6393c3f19d7211ea3dd63d4b8409f96101bcd1384f87d296e73ca733014b7",
+      "staged_inputs_count": 571,
+      "staged_inputs_sha256": "7023e710f882e1ab7b209d1ccbd9fc9970f2fc333928ad458a75b208789d75f5",
+      "enabled_entries": 259,
+      "recognition": {
+        "policy": "disabled_cnn_and_follow_v1",
+        "music_analysis_enabled": false,
+        "cnn_score_follow_enabled": false,
+        "model_ready_not_forged": true,
+        "local_score_cue_preserved": true,
+        "recognition_menu_available": false,
+        "ddr_nn_allocation_retained": true,
+        "constraints": {
+          "enabled": false,
+          "input_sha256": "584a50b2de4b38159a05d7961441b3d0e7fc2f1c1e4e1ce5544fb1d73276af70",
+          "output_sha256": "ead347d58729b7ac917ca6b27a0c0d65c598ac4cd8f8dcd7fa1cd127c19c4036",
+          "retired_subset_sha256": "d1eb3a7588f267fdf32dc7e032bf0b5bda6891f7eaab29a1df5e76ef90e93689",
+          "retired": [
+            {
+              "line": "set_false_path -to [get_pins {u_music/u_trace_cdc/meta*/D}]\n",
+              "line_number": 242,
+              "sha256": "be4ce88cd13e551ff9281676579d4185afcb1148a05cf80e2065eb16280ece29"
+            },
+            {
+              "line": "set_max_delay 20.000 -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]\n",
+              "line_number": 247,
+              "sha256": "663617e8e52d3b92f68e9652c739ddf561edf10afe29ea8f3e158a0848ad37e1"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]\n",
+              "line_number": 248,
+              "sha256": "843cb45b573280824bce51c8dd083e98bea38aac86c782a352be5e55260ffcf6"
+            },
+            {
+              "line": "set_false_path -to [get_pins {u_song_command_cdc/req_meta*/D u_song_command_cdc/ack_meta*/D u_song_command_cdc/source_release*/CLEAR u_song_command_cdc/destination_release*/CLEAR}]\n",
+              "line_number": 249,
+              "sha256": "faa85a96db975eb0099f83be0e0910c95e0acd207f4ca448b584f72ac8417e7e"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_req_cdc/read_gray* u_music/u_ddr_req_cdc/read_binary_4*}] -to [get_regs {u_music/u_ddr_req_cdc/read_gray_meta*}]\n",
+              "line_number": 250,
+              "sha256": "5d94d61dad5bbc82b8e0f7b81ef37faf467d612c946dda0c3c963a3746e6c400"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_req_cdc/read_gray* u_music/u_ddr_req_cdc/read_binary_4*}] -to [get_regs {u_music/u_ddr_req_cdc/read_gray_meta*}]\n",
+              "line_number": 251,
+              "sha256": "e3bd39f12283f7393eb6d5bacfc3410c136694be98afbd45e6e8f43bd8a952cb"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_req_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_req_cdc/write_gray_meta*}]\n",
+              "line_number": 252,
+              "sha256": "8940703a1fd8bb7d3c278f09a04f5da6b04b356cd719426c1d231d11158e9790"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_req_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_req_cdc/write_gray_meta*}]\n",
+              "line_number": 253,
+              "sha256": "6c9156083b9b034fff84839048a3fbb99c56110d56752f11b9d1bff1d0e708af"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_rsp_cdc/read_gray* u_music/u_ddr_rsp_cdc/read_binary_2*}] -to [get_regs {u_music/u_ddr_rsp_cdc/read_gray_meta*}]\n",
+              "line_number": 254,
+              "sha256": "27efc371bb338db050a1e7d776e3402fdee017e8359b11210ac68689b10bb48c"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_rsp_cdc/read_gray* u_music/u_ddr_rsp_cdc/read_binary_2*}] -to [get_regs {u_music/u_ddr_rsp_cdc/read_gray_meta*}]\n",
+              "line_number": 255,
+              "sha256": "4309fb0849fbca6da2ddd32280125db7dd0b8c0a8340a3021fcc1ad40e4a228a"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_rsp_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_rsp_cdc/write_gray_meta*}]\n",
+              "line_number": 256,
+              "sha256": "81c878320b06296c14753fa7e3602cb966c7e89bce0f5fd0d740a7b1fdfe0485"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_rsp_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_rsp_cdc/write_gray_meta*}]\n",
+              "line_number": 257,
+              "sha256": "4df3d7069af68fcd028c6d08fe2deed43b87164c228a9beb8d4f330227a08447"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_score_push_cdc/read_gray* u_score_push_cdc/read_binary_2*}] -to [get_regs {u_score_push_cdc/read_gray_meta*}]\n",
+              "line_number": 258,
+              "sha256": "60302d6d4f0740dab4092562a81ad6fe1eda76a30ce4d5e4f02cb2e48363ea2f"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_score_push_cdc/read_gray* u_score_push_cdc/read_binary_2*}] -to [get_regs {u_score_push_cdc/read_gray_meta*}]\n",
+              "line_number": 259,
+              "sha256": "b4e79e286c95a0adacca2c8273dab5383a154f6bf480e4f72b3fe21223d7409d"
+            },
+            {
+              "line": "set_max_delay 10.000 -from [get_regs {u_score_push_cdc/write_gray*}] -to [get_regs {u_score_push_cdc/write_gray_meta*}]\n",
+              "line_number": 260,
+              "sha256": "0eff37ae73c4dd5ebb3fc638e9b1defd1954450c7f6781cde0189dd6475f9440"
+            },
+            {
+              "line": "set_false_path -hold -from [get_regs {u_score_push_cdc/write_gray*}] -to [get_regs {u_score_push_cdc/write_gray_meta*}]\n",
+              "line_number": 261,
+              "sha256": "04909fbdbeb3d6ce43a6633b76f88deaf9f7815382e11250096bd3917ae4e4f1"
+            },
+            {
+              "line": "set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]\n",
+              "line_number": 266,
+              "sha256": "4667990bd056d007efcfa1711ae211d64e5866acf805e5624a09188a94aef147"
+            },
+            {
+              "line": "set_false_path -to [get_pins {u_music/model_memory_meta*/D}]\n",
+              "line_number": 318,
+              "sha256": "487cfb109dc01a1cad2231433a962acfeefe475a9b242083f6b629feef186889"
+            },
+            {
+              "line": "set_max_delay 2.000 -from [get_regs {u_music/model_memory_meta*}] -to [get_regs {u_music/model_memory_ready*}]\n",
+              "line_number": 319,
+              "sha256": "90aee22599aa4b3c02fc5f5d2c4559832a3032a2ac0c0ac43f44b9463ceff165"
+            }
+          ],
+          "retained_constraints_unchanged": true,
+          "physical_cdc_verified": false
+        }
+      },
+      "validation_stage": "prepare_only",
+      "deployment_allowed": false,
+      "synthesis_passed": false,
+      "hardware_tested": false,
+      "bitstream_sha256": null
+    }
+  },
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_no_cnn_v1.json": "8907b17a341351e5284f067e728c6eafa0c00ebe0f604a5b21f0fb93bce0dad4",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_v1.json": "8ef954a5a5db16eca7b54eddfc800be0a269f16b8bbcb2d83a270294b7328e72",
+    "projects/138k/push2_workstation/usb_a/build.py": "7172dc42d8b03fa788cc7601502d2d3ede52f5e76d3b4d3cf3789987692d0140",
+    "projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "43b51d9289a3136290d23626e6bc96103fa853e33e2580daa1286675e563f1fe",
+    "projects/138k/push2_workstation/usb_a/rtl/services/workstation_playback_service.sv": "583dd63a552f6865e8046d4f7fb1ee717e2cad077b29facc22c089998d600961",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/RECOGNITION_POLICY.md": "6c160823768055d00a074bcde3015b341f965b28f974e25aac98525d7852665c",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "b8e82f8a07e540b0a02e9bf90009d8094c43ee71499cf6100ac3875f1c0cb75c",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_no_cnn_runtime.sv": "c1acb630f284f0a28c18fd256a6b0df518fb6dc4c46afa6bff7a11fbcfae2cfd",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "e71972ad7f8b6f0975d07363ff34ec96dee0204d203b50ff6a64c19c40e00d2a",
+    "projects/138k/push2_workstation/usb_a/sim/architecture/run_workstation_recognition_policy.py": "500cc5ba79cb3f60f76407aee446a56043776fad0a43ef896d572c1497cb9f1a",
+    "projects/138k/push2_workstation/usb_a/sim/architecture/tb_workstation_recognition_playback.sv": "5551e549bb0737b2e292db0c41d39dafdcdcb3f76d6c1f4d4698cc3a07d59a9a",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_recognition_profile.py": "74aaaeaebb3ab02b7919a816290b7d769286e72774115460c10075e098a02a62",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_sources.py": "4b3b611a8ea1fc4c9d20b08cafa2adbab7e6f74c514b5c0817bdb08a4ac7ac97",
+    "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_no_cnn_owner.sv": "1cc614cc8c2c0c20a6ca02258b311f5ac069e04d837b15bbed6acc1943a1c986",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "1de2de7accd25e41499432134a302324e64ec3de44ec743f0148d77ecdd90429",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "5bddbc7eb24b04dece9f55f719ab32f0077661b2ce18e0ef5bbc122b9d4fd104",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "5c1b33bc5586ca2663af0744b9d1fe8cdc6e34cc04f0826e17fc6ba979804b29",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_recognition_policy.py": "eea5d1512dff6c016e210adb4090a6794e245e3af91c59c2fa26a8f45287b23f"
+  },
+  "comparison": {
+    "selected_source_symmetric_difference": [
+      "rtl/workstation/workstation_profile_no_cnn_runtime.sv",
+      "rtl/workstation/workstation_profile_runtime.sv"
+    ],
+    "common_staged_bytes_changed": [
+      "Prj1.gprj",
+      "constraints/custom_138k.sdc"
+    ],
+    "disabled_only_staged_inputs": [
+      "rtl/workstation/workstation_profile_no_cnn_runtime.sv"
+    ],
+    "enabled_sdc_matches_registered_parent": true,
+    "enabled_sdc_lines": 320,
+    "disabled_sdc_lines": 301,
+    "exact_recognition_retirement": {
+      "enabled": false,
+      "input_sha256": "584a50b2de4b38159a05d7961441b3d0e7fc2f1c1e4e1ce5544fb1d73276af70",
+      "output_sha256": "ead347d58729b7ac917ca6b27a0c0d65c598ac4cd8f8dcd7fa1cd127c19c4036",
+      "retired_subset_sha256": "d1eb3a7588f267fdf32dc7e032bf0b5bda6891f7eaab29a1df5e76ef90e93689",
+      "retired": [
+        {
+          "line": "set_false_path -to [get_pins {u_music/u_trace_cdc/meta*/D}]\n",
+          "line_number": 242,
+          "sha256": "be4ce88cd13e551ff9281676579d4185afcb1148a05cf80e2065eb16280ece29"
+        },
+        {
+          "line": "set_max_delay 20.000 -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]\n",
+          "line_number": 247,
+          "sha256": "663617e8e52d3b92f68e9652c739ddf561edf10afe29ea8f3e158a0848ad37e1"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_song_command_cdc/held_data*}] -to [get_regs {u_song_command_cdc/destination_data*}]\n",
+          "line_number": 248,
+          "sha256": "843cb45b573280824bce51c8dd083e98bea38aac86c782a352be5e55260ffcf6"
+        },
+        {
+          "line": "set_false_path -to [get_pins {u_song_command_cdc/req_meta*/D u_song_command_cdc/ack_meta*/D u_song_command_cdc/source_release*/CLEAR u_song_command_cdc/destination_release*/CLEAR}]\n",
+          "line_number": 249,
+          "sha256": "faa85a96db975eb0099f83be0e0910c95e0acd207f4ca448b584f72ac8417e7e"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_req_cdc/read_gray* u_music/u_ddr_req_cdc/read_binary_4*}] -to [get_regs {u_music/u_ddr_req_cdc/read_gray_meta*}]\n",
+          "line_number": 250,
+          "sha256": "5d94d61dad5bbc82b8e0f7b81ef37faf467d612c946dda0c3c963a3746e6c400"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_req_cdc/read_gray* u_music/u_ddr_req_cdc/read_binary_4*}] -to [get_regs {u_music/u_ddr_req_cdc/read_gray_meta*}]\n",
+          "line_number": 251,
+          "sha256": "e3bd39f12283f7393eb6d5bacfc3410c136694be98afbd45e6e8f43bd8a952cb"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_req_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_req_cdc/write_gray_meta*}]\n",
+          "line_number": 252,
+          "sha256": "8940703a1fd8bb7d3c278f09a04f5da6b04b356cd719426c1d231d11158e9790"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_req_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_req_cdc/write_gray_meta*}]\n",
+          "line_number": 253,
+          "sha256": "6c9156083b9b034fff84839048a3fbb99c56110d56752f11b9d1bff1d0e708af"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_rsp_cdc/read_gray* u_music/u_ddr_rsp_cdc/read_binary_2*}] -to [get_regs {u_music/u_ddr_rsp_cdc/read_gray_meta*}]\n",
+          "line_number": 254,
+          "sha256": "27efc371bb338db050a1e7d776e3402fdee017e8359b11210ac68689b10bb48c"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_rsp_cdc/read_gray* u_music/u_ddr_rsp_cdc/read_binary_2*}] -to [get_regs {u_music/u_ddr_rsp_cdc/read_gray_meta*}]\n",
+          "line_number": 255,
+          "sha256": "4309fb0849fbca6da2ddd32280125db7dd0b8c0a8340a3021fcc1ad40e4a228a"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_music/u_ddr_rsp_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_rsp_cdc/write_gray_meta*}]\n",
+          "line_number": 256,
+          "sha256": "81c878320b06296c14753fa7e3602cb966c7e89bce0f5fd0d740a7b1fdfe0485"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_music/u_ddr_rsp_cdc/write_gray*}] -to [get_regs {u_music/u_ddr_rsp_cdc/write_gray_meta*}]\n",
+          "line_number": 257,
+          "sha256": "4df3d7069af68fcd028c6d08fe2deed43b87164c228a9beb8d4f330227a08447"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_score_push_cdc/read_gray* u_score_push_cdc/read_binary_2*}] -to [get_regs {u_score_push_cdc/read_gray_meta*}]\n",
+          "line_number": 258,
+          "sha256": "60302d6d4f0740dab4092562a81ad6fe1eda76a30ce4d5e4f02cb2e48363ea2f"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_score_push_cdc/read_gray* u_score_push_cdc/read_binary_2*}] -to [get_regs {u_score_push_cdc/read_gray_meta*}]\n",
+          "line_number": 259,
+          "sha256": "b4e79e286c95a0adacca2c8273dab5383a154f6bf480e4f72b3fe21223d7409d"
+        },
+        {
+          "line": "set_max_delay 10.000 -from [get_regs {u_score_push_cdc/write_gray*}] -to [get_regs {u_score_push_cdc/write_gray_meta*}]\n",
+          "line_number": 260,
+          "sha256": "0eff37ae73c4dd5ebb3fc638e9b1defd1954450c7f6781cde0189dd6475f9440"
+        },
+        {
+          "line": "set_false_path -hold -from [get_regs {u_score_push_cdc/write_gray*}] -to [get_regs {u_score_push_cdc/write_gray_meta*}]\n",
+          "line_number": 261,
+          "sha256": "04909fbdbeb3d6ce43a6633b76f88deaf9f7815382e11250096bd3917ae4e4f1"
+        },
+        {
+          "line": "set_false_path -to [get_pins {u_native_usb/input_owner/analysis_done_meta*/D}]\n",
+          "line_number": 266,
+          "sha256": "4667990bd056d007efcfa1711ae211d64e5866acf805e5624a09188a94aef147"
+        },
+        {
+          "line": "set_false_path -to [get_pins {u_music/model_memory_meta*/D}]\n",
+          "line_number": 318,
+          "sha256": "487cfb109dc01a1cad2231433a962acfeefe475a9b242083f6b629feef186889"
+        },
+        {
+          "line": "set_max_delay 2.000 -from [get_regs {u_music/model_memory_meta*}] -to [get_regs {u_music/model_memory_ready*}]\n",
+          "line_number": 319,
+          "sha256": "90aee22599aa4b3c02fc5f5d2c4559832a3032a2ac0c0ac43f44b9463ceff165"
+        }
+      ],
+      "retained_constraints_unchanged": true,
+      "physical_cdc_verified": false
+    },
+    "retained_runtime_pcm_sdc_rows": 50,
+    "runtime_pcm_metadata_equal": true
+  },
+  "unit_regressions": {
+    "profile": {
+      "tests": 20,
+      "skipped": 0,
+      "evidence_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-profile-final.json",
+      "evidence_sha256": "50df67c6efce7e90f2ad8669fa9931f0a38a5864590b20cc4afb7f484712f443"
+    },
+    "recognition_profile": {
+      "tests": 7,
+      "skipped": 0,
+      "prepared_policy_tamper_rejected": 7
+    },
+    "enabled_source_audit": {
+      "tests": 12,
+      "skipped": 0,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-enabled-source-audit.json",
+      "sha256": "f0b76552781ce52d5e4586e3ae74b7a2fded9b19a192413a78c7c20a617691de"
+    },
+    "disabled_source_audit": {
+      "tests": 12,
+      "skipped": 0,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-source-audit.json",
+      "sha256": "cbfe8cef79e7fe06f54ad2e6365887941addda0b54a403eda587010d781e2de2"
+    },
+    "accepted_source": {
+      "tests": 10,
+      "skipped": 0
+    },
+    "rate_control_levels": {
+      "tests": 2,
+      "simulations": 4,
+      "skipped": 0,
+      "registered_both_rates_pass": true,
+      "former_combinational_both_rates_rejected": true
+    },
+    "runtime_pcm_source_policy": {
+      "tests": 4,
+      "skipped": 1,
+      "skip_reason": "Actual new VG/process audit is owned by parent; no inherited netlist acceptance"
+    }
+  },
+  "verification": {
+    "behavior": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-behavior-sealed/verification.json",
+      "sha256": "11b65cf815305d494ee05330f15aa914af75d88c32e7645dc2669ccc49656833",
+      "passed": true,
+      "reference": "df2a822f5694c99bdba5d03b66b642a16f687673",
+      "source_sha256": {
+        "rtl/services/workstation_playback_service.sv": "583dd63a552f6865e8046d4f7fb1ee717e2cad077b29facc22c089998d600961",
+        "rtl/push2_usb_a_control.sv": "43b51d9289a3136290d23626e6bc96103fa853e33e2580daa1286675e563f1fe",
+        "rtl/workstation/gw138k_push_workstation_top.v": "b8e82f8a07e540b0a02e9bf90009d8094c43ee71499cf6100ac3875f1c0cb75c",
+        "rtl/workstation/workstation_usb2_input.sv": "e71972ad7f8b6f0975d07363ff34ec96dee0204d203b50ff6a64c19c40e00d2a",
+        "rtl/workstation/workstation_profile_no_cnn_runtime.sv": "c1acb630f284f0a28c18fd256a6b0df518fb6dc4c46afa6bff7a11fbcfae2cfd",
+        "tools/workstation_recognition_policy.py": "eea5d1512dff6c016e210adb4090a6794e245e3af91c59c2fa26a8f45287b23f",
+        "sim/architecture/tb_workstation_recognition_playback.sv": "5551e549bb0737b2e292db0c41d39dafdcdcb3f76d6c1f4d4698cc3a07d59a9a",
+        "sim/usb2/tb_workstation_no_cnn_owner.sv": "1cc614cc8c2c0c20a6ca02258b311f5ac069e04d837b15bbed6acc1943a1c986",
+        "sim/tb_pl_guide.sv": "877256eced901f4748130c4de015c761218cfd3c9bf1b3017ffc005c92255517",
+        "sim/architecture/run_workstation_recognition_policy.py": "500cc5ba79cb3f60f76407aee446a56043776fad0a43ef896d572c1497cb9f1a",
+        "rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+        "rtl/display_data/push2_surface_pixels.sv": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+        "rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+        "rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+        "rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+        "rtl/push2/push2_lights.sv": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+        "rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+        "rtl/push2/push2_song_screen.sv": "51638b9ba0e3cfb9a4e8c2a8b4ad330fad4cba3b168179abbf25de437c2c0702"
+      },
+      "source_inputs_unchanged_during_run": true,
+      "cases": {
+        "playback": {
+          "returncode": 0,
+          "log": "PASS recognition playback checks=8247 enabled_cycles=226 raw_restarts=487\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/architecture/tb_workstation_recognition_playback.sv:54: $finish called at 82531000 (1ps)\n"
+        },
+        "usb_disabled": {
+          "returncode": 0,
+          "log": "PASS no CNN owner events=13 attaches=4 detaches=3 barriers=5 cancels=8\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_no_cnn_owner.sv:85: $finish called at 942250890 (1ps)\n"
+        },
+        "usb_enabled": {
+          "returncode": 0,
+          "log": "PASS PL guide RTL: generic correct/wrong/pressure/vel0, real FIFO backpressure once, reserved CC controls, full feedback, unchanged Push guide/force, GW25K cannot alter an active Push target (85 audio events)\n/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_pl_guide.sv:159: $finish called at 20082246778 (1ps)\n"
+        },
+        "disabled_track_lost": {
+          "returncode": 1,
+          "log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/architecture/tb_workstation_recognition_playback.sv:34: disabled playback waited/restarted/accepted analysis\n       Time: 511000  Scope: tb_workstation_recognition_playback.check\n",
+          "expected_failure": "disabled playback waited/restarted/accepted analysis",
+          "rejected": true
+        },
+        "disabled_model_restart": {
+          "returncode": 1,
+          "log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/architecture/tb_workstation_recognition_playback.sv:34: disabled playback waited/restarted/accepted analysis\n       Time: 91000  Scope: tb_workstation_recognition_playback.check\n",
+          "expected_failure": "disabled playback waited/restarted/accepted analysis",
+          "rejected": true
+        },
+        "disabled_fake_score_accept": {
+          "returncode": 1,
+          "log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/architecture/tb_workstation_recognition_playback.sv:34: disabled playback waited/restarted/accepted analysis\n       Time: 41000  Scope: tb_workstation_recognition_playback.check\n",
+          "expected_failure": "disabled playback waited/restarted/accepted analysis",
+          "rejected": true
+        },
+        "disabled_button_swallowed": {
+          "returncode": 1,
+          "log": "FATAL: /Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_no_cnn_owner.sv:29: no CNN audio mapping changed rp=4 got=18080\n       Time: 315923790  Scope: tb_workstation_no_cnn_owner\n",
+          "expected_failure": "no CNN audio mapping changed",
+          "rejected": true
+        },
+        "flash_guard": {
+          "returncode": 0,
+          "log": "PASS disabled Flash guard all five pads Z\n/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-behavior-sealed/flash_tb.sv:6: $finish called at 1000 (1ps)\n"
+        }
+      }
+    },
+    "controlled": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-controlled-sealed/verification.json",
+      "sha256": "94b91b5b94d809adc51b9bc9736b339709a6a525cd44e69241789b42f377d474",
+      "passed": true,
+      "identity": "native-runtime-controlled-offline-v2-nonzero-42c69300e20fca0d",
+      "source_set_sha256": "42c69300e20fca0de78e12a74e351b6d95e9185f8de05c39b7f48e162fd111cf",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/audio_visual_extensions.sv": "0c441be0d63596acdba3d128ba8d8fe3a05fc1c6382cb6b2e98a6d13d0a55c0f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/audio_workstation.sv": "8dea52209b5d9fd9df8a7e4bb79b712ed951509477f759b5bfedc0f4aedcf5ea",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/pitch_expression.sv": "f91e15e3a8768a8bfd86877dc1fd8b6e50a0e9f8a8a8e56c5541cbdaae098591",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/audio/unified_oscillator_engine.sv": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/input/midi_stream_decoder.sv": "8eefe9eba6bfb2b8df8842dea9c8948d576d04eeccc1a32cc3a3bf5bfa049fcd",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/serial_spatial_reverb.sv": "cd07919c8fd4903c4ebf1b821346afa6c6df381e61d9bf7d3eab2ea85378cd39",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/scope_control_player.sv": "10ba70fc8420046fabdae8061f6acc79b5ba7276d4837ab059200a60e7a3cde6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/scope_vec_engine.sv": "595f5c7842ebb43a3139b2f9603ed4d78778024f704ccaef0f9b3523860f32bf",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/control/workstation_parameters.sv": "0aa792448323858a3e47ac3399840c3aeb13495225915e7fca0c40a518f37287",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/control/workstation_session.sv": "51f2f0d18a42c4ec2d8c4d5693a37c76e95bde5928419ffa291d3a76332d38a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/delay_ddr/delay_ddr_dma.sv": "9486da957457b8b632c92c42bc630e4723bc3f04eef09f723b29bc8c82af3e61",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/delay_ddr/serial_delay_effect_ddr.sv": "e5764ef18a0c8a1918369121b1b27124eb9e5c0b6cfe4922a65cfd14d2d6eff6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "79d37aef1852c206644ebecac796ef7242089c6489fb8e6f1e2f8d3097faa10c",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": "257abb183a3127aa9f83cacf6e6e807c9d6267be39d2c9a9b2d41178ae279020",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": "12f54fa7783ea740b06c94c912a8517f6584c1e77668da995642c50f72ccf6a2",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "7d4e5680200f900c07a1fb708bdfb4b409ca91aeb408a1ec6ce7ca3b97c1a933",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "f3cf2a42c49838e0d44e5a00c27b50ceab1d18724ccf0be7d7bc680a98f15931",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv": "fc4cacd3acd2c0cd6b73ee496bfa4db30e17be9d8018a9364e51eeff07c0d05d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": "d8a0d2c787bc8c222bf4dde74069db41163988a646fd70c32774387bfe23a689",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv": "04cd87d3032a0a4debc0c274cc50aee2a2d87648a3dc0429fb869bd1087edc4e",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv": "9347ce4e4a7e3ee0ee9259232fdaa5e501f17c3b0cda16ac4424ddfb1ecbcb76",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "503799267ca9f4603d13585fa2b18f619c4b3e12dedd3568580255099ba2d245",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_frame_fanout.sv": "e6f82fd255460e91a0fee6bbdbe1053558f1b50009c3ed384aba1709557c971d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": "649c7591aec53c6685dc43e6d1b3bd2ec0dc020269910de74f4ecd09ac4d0c39",
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_controlled.sv": "9b4e29e91f7c17911434c06007993805c042be8db98560c8b9902f585e4c07a0",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/src/migration/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/src/migration/gw138k_counter_cdc.sv": "1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/legacy/rtl/input/uart_rx.sv": "8a2ad46baba7bc8f01b773e1e5c56004e656f127973e7da4393d49c6a790f7e7",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_usb_lifecycle_merge.sv": "b1f6965afa8a14d1521895cf498530ca0dc3e768b6eaabf3b3a7fefe7c2d3d90",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv": "e2b66fff9088d7684eb3516928eef619f18437d7d44b400e85a29438f6348aff",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_observation_consumers.sv": "f2773a6fa310102034ee817a38fb03e3e316244f74b0a09d301f613cd65dc86e",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_usb_lifecycle_merge.sv": "56ecb93f507fafb5e4166031ffd1fd7f6344b4f124b32ab3b0c6463f941ae42b",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_controlled.py": "ceda186877478ebfaded3ace4c44c9d55a7bfc795f87205b2733784a66d3f18c",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.provenance.json": "f1e5801392316cfb39000ed6b0de1d26914150c319d9131dcd4a2b7447665aba",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/data/audio_chain/pitch_bend_q20.mem": "eb906e4c202a35f84a4c1498aa80c8573743a9e514d61ae819e834bd0f90ab7a",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation/Prj1/rtl/audio/spatial_room_preset.svh": "1eb6d0f0ab0b9ff2b6013dfed034e0eb593f23302e441932193883343c6b33d4",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/workstation_profile.json": "7e7eca8d330008bdc1ec38c2892f354b15550d11cb60e34b2196af7bee7b2a95",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final/integration_inputs.json": "2c1c3093eba6559df929daf3fdaf233122673a4d251fc243dcbf8d2cf226824c"
+      },
+      "metrics": {
+        "physical_frames": 1078,
+        "observed_frames": 1078,
+        "observed48": 361,
+        "observed44": 717,
+        "nonzero": 977,
+        "display_frames": 1077,
+        "fft_bins": 384,
+        "fft48": 128,
+        "fft44": 256,
+        "fft_nonzero": 382,
+        "apb": 1077,
+        "usb": 33,
+        "cpu": 28,
+        "policies": 3,
+        "writes": 267,
+        "reads": 4,
+        "fft_discards": 6,
+        "switches": 2,
+        "health_reset_checks": 1,
+        "display_observation_fault_checks": 1,
+        "display_effect_tuple_checks": 1077,
+        "display_effect_changes48": 4,
+        "display_effect_changes44": 3,
+        "source_50_checks": 1219374,
+        "source_compute_checks": 1851077,
+        "switch_source_changes": 5,
+        "reason_source_changes": 16,
+        "switch_launch_delay_checks": 2,
+        "pc_drop_carry_checks": 1,
+        "tf_reason_handoffs": 1,
+        "score_switch_rejects": 1,
+        "switch_async_assert_checks": 2,
+        "switch_release_checks": 1818138
+      },
+      "limits": "Source-flop timing assertions use ideal RTL clocks and do not model analog glitches or metastability. Ordered functional DDR model and coherent TF fixture; shorter clock qualification/startup; no top/profile selection, routed CDC, P&R, hardware or recording-file integration",
+      "inputs_unchanged_during_run": true,
+      "configuration": {
+        "reserve_zero_epoch": true,
+        "initial_stream_epoch": 1,
+        "inflight_score_boundary": false,
+        "compute_hz": 76800000,
+        "memory_hz": 100000000,
+        "control_hz": 50000000,
+        "default_record_depth": 256,
+        "test_record_depth": 16,
+        "consumer_test_record_depth": 4,
+        "legacy_96bit_record_rate_hz": 48000,
+        "physical_observation_bits": 98
+      }
+    },
+    "media_policy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/verification.json",
+      "sha256": "44946b24b77c7ee6e73e695a801c09612698dd4fe7b4d91fac3bd519c2fa6a67",
+      "passed": true,
+      "identity": "native-media-policy-offline-v1-b452a73133a3e4c2",
+      "source_set_sha256": "b452a73133a3e4c26e7ffc2096f70d37befe91878055594ca8c105214b78c2d9",
+      "input_sha256": {
+        "reconstructed/audio_math_pkg.sv": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "reconstructed/spectrum_fft256.sv": "304ad503ed053fc89cdde9372e9065fb13a0fb14f747d8db586ac3093932171a",
+        "rtl/services/workstation_audio_clock_service.sv": "751870167f7737864875a1a9fbc26d5694b4e70987063f793ba2533876f8c77b",
+        "rtl/services/workstation_controlled_services.sv": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124",
+        "rtl/audio/workstation_observation_consumers.sv": "e2b66fff9088d7684eb3516928eef619f18437d7d44b400e85a29438f6348aff",
+        "rtl/audio/audio_capture_fifo.sv": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171",
+        "rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
+        "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+        "rtl/workstation/workstation_runtime_controlled.sv": "a78a29f86e2af6b8a74cef5dd9662d73a6afa5506861e63cb5ab29c9c323ae5b",
+        "reconstructed/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+        "sim/services/tb_workstation_media_policy.sv": "9584e85350fe95ddcf218f39f6d287d22c2ef21c1be73577371e0be16a31e492",
+        "reconstructed/sim/data/audio_chain/fft_tw_re.mem": "e80a1bf23a99b194d0d109a8c7d5e3c3a59d30ff54abeefe493b45bebdcfc25a",
+        "reconstructed/sim/data/audio_chain/fft_tw_im.mem": "45c1dd9b30c67e201f05e83027524c29ec1ae4387c861ee819841347f234cf7e",
+        "reconstructed/sim/data/audio_chain/fft_hann.mem": "017ce9c689980891b77704d460387c0ef39b7cd7dcd7a70f72d0924632bf119d",
+        "sim/services/tb_workstation_media_policy_score.sv": "ce4ffb87d3c56e90ec1b546716cd0a7dead1bc6a713a2b1961b2ea2e970da6ea",
+        "sim/services/run_media_policy.py": "efbe4c0146abc466d56e9b506b0fcf8c2e72555f111909d752d875f17fa64d14",
+        "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+        "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+        "rtl/services/workstation_controlled_services.provenance.json": "f1e5801392316cfb39000ed6b0de1d26914150c319d9131dcd4a2b7447665aba",
+        "rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md": "c5675a2e5140ad48e98991076183bb06b47eb2e10ce29aafd52303a2fa586a18",
+        "rtl/services/MEDIA_STOP_POLICY.md": "6bb99231256b6a5f3f54d74c328b59af26207b44ed236765f8e3a71b0b1d79b5",
+        "baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+      },
+      "runs": [
+        {
+          "phase_ns": 0.1,
+          "argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/policy.vvp",
+            "+BUS_PHASE=0.1"
+          ],
+          "log_sha256": "e3bbd07595117a1b33f472cb9daecaa775e63fd3e8604299b60fb9272bbd9885",
+          "metrics": {
+            "checks": 11,
+            "core_requests": 5,
+            "tf_stop_requests": 10,
+            "media_done": 8,
+            "media_failed": 2,
+            "seal_completions": 11,
+            "captured": 10
+          }
+        },
+        {
+          "phase_ns": 3.7,
+          "argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/policy.vvp",
+            "+BUS_PHASE=3.7"
+          ],
+          "log_sha256": "2708e252ba49beb3b271cdb74a2eacda066450cc99c4dceab6752ff9580f9f07",
+          "metrics": {
+            "checks": 11,
+            "core_requests": 5,
+            "tf_stop_requests": 10,
+            "media_done": 8,
+            "media_failed": 2,
+            "seal_completions": 11,
+            "captured": 10
+          }
+        },
+        {
+          "phase_ns": 21.9,
+          "argv": [
+            "vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/policy.vvp",
+            "+BUS_PHASE=21.9"
+          ],
+          "log_sha256": "b0c044aac9482e23ef3f4e96887410749be39bde4f19bea71fc00201bc78e720",
+          "metrics": {
+            "checks": 11,
+            "core_requests": 5,
+            "tf_stop_requests": 10,
+            "media_done": 8,
+            "media_failed": 2,
+            "seal_completions": 11,
+            "captured": 10
+          }
+        }
+      ],
+      "negative_controls": [
+        {
+          "name": "early-core",
+          "rejected": true,
+          "expected": "core pulse preceded actual media stop",
+          "mutant_sha256": "2c79d975f5e475c01eea93e0b8186bf13d72a28be1fee8bb6d2971a1b9a4ab7f",
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_media_policy",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/early-core.vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/audio_math_pkg.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/spectrum_fft256.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/early-core.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/gw138k_apb_cdc.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy.sv"
+          ],
+          "returncode": 1,
+          "run_log_sha256": "e87c3404f1787f5500feb04611ea20d045870129dae06c568d1b3628e5b55d08"
+        },
+        {
+          "name": "seal-flush",
+          "rejected": true,
+          "expected": "read addr=009c got=00000013 expected=0000001b",
+          "mutant_sha256": "9bc759e11b8c0691c8e5f353c3ac1c3f7a98414eb58185891941901e1f37571f",
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_media_policy",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/seal-flush.vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/audio_math_pkg.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/spectrum_fft256.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/seal-flush.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/gw138k_apb_cdc.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy.sv"
+          ],
+          "returncode": 1,
+          "run_log_sha256": "cd4fb9fb590846872468d69192c302ab2f86572acb25636522b24af03c8a9c34"
+        },
+        {
+          "name": "missing-cancel",
+          "rejected": true,
+          "expected": "planned score stop lost explicit cancellation",
+          "mutant_sha256": "b5b14199f383b263dcec79582432984a6cb2344c777a5ae1a79d582f6193fe55",
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_media_policy_score",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/missing-cancel.vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/audio_math_pkg.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/spectrum_fft256.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/missing-cancel.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/gw138k_apb_cdc.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy_score.sv"
+          ],
+          "returncode": 1,
+          "run_log_sha256": "5ee897a13a94f8335bce9ad58dc546c49e2507bd568858e42e0c6549b8c05cda"
+        },
+        {
+          "name": "stale-media",
+          "rejected": true,
+          "expected": "bus error addr=1008 got=0 expected=1",
+          "mutant_sha256": "68f6ee16b5c06a3bbb8b216de85b1293f99ed64b42dbfec8f4268bafd0421547",
+          "compile_argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_media_policy",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/stale-media.vvp",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/audio_math_pkg.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/spectrum_fft256.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/stale-media.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/gw138k_apb_cdc.sv",
+            "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy.sv"
+          ],
+          "returncode": 1,
+          "run_log_sha256": "d51715bfcfb8ec2a3ba1d2e1e82869f43d2ad38aed0c5622d4da23268d611fb7"
+        }
+      ],
+      "score": {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_policy_score",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/score.vvp",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/spectrum_fft256.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-media-policy-sealed/gw138k_apb_cdc.sv",
+          "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy_score.sv"
+        ],
+        "log_sha256": "a9717afe98a6501e8a0e2f884bfafcde4325078b0cbe0e119b2ecb187c41c536",
+        "metrics": {
+          "checks": 5,
+          "natural_done_pulses": 1
+        }
+      },
+      "limits": "TF fixture tests protocol ordering and late/failure responses, not TF physical drain; no complete DSP/DCS integration, synthesis, P&R, board or long-recording/BLE acceptance",
+      "inputs_unchanged_during_run": true,
+      "configuration": {
+        "enable_media_policy": true,
+        "record_depth": 4,
+        "media_timeout_cycles": 1000,
+        "held_notes_policy": "preserve existing runtime state; no synthesized MIDI/PANIC"
+      }
+    },
+    "tf_stop": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/verification.json",
+      "sha256": "ade949bb6ef9b9d6c98713335bc8be596837de394009e247ad1a1203cc81b840",
+      "passed": true,
+      "identity": "native-tf-runtime-stop-v2-bf7ee71e1a374b3f",
+      "source_set_sha256": "bf7ee71e1a374b3ffd1e97f48a420b190cc228f1639e9205f8a9578db94436c5",
+      "input_sha256": {
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": "debe8ca8c0515ea0ef5b1c7c45c9835373a4720731df0cef97f11daddb467612",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_frame_bridge.sv": "a879430d988b77dd367cee604a91a68db56c5b603eff07e8cefc80355448cf65",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_byte_fifo.sv": "0fd5dcddb5d4fbda0af821fd2f46cf8f221b530d8f2be6aca58fc248fbcf3ee6",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "bc1dcfad79af5777c27d7bfa65ae3b397ce103ca0a992b938027201877119752",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_path.v": "38a197763e1b567a304ad71576947587d662393626e028f80469e50ac6b66ad0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_ddr_dma.v": "ac90bd9a06eea44162727169de24e887196b5746fbc29467e299caf9a66aa911",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_audio_decoder_ip.v": "52cc02883361b0d76a35ee1d9d0a1252ed718daf8c60ed83052afb280bc6960a",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/tf_audio_ddr_command_buffer.sv": "c4b4a3e2ad17a50e2a59091d9f93f7c368c33c89956cd4d048734a3ef1f1f552",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/scope_tf_transport.sv": "65aec658fc5b8209555a3ef4b8188112fe399fb100c07c289ff87349e906d337",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_runtime_service_tb.sv": "9b47184e096d5d7cbc255ba186bb465649c6697740bb8cf4698d1b9fd566ca49",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/scope_tf_transport_legacy_reference.sv": "9a98eb1de27fda949956f99012a546fc6719fc3c879f8dc499aab2cb94d412f9",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/file0.hex": "ead5a553b88a5f72e15c74d72a9e3d4bdc818bff474d6c3fc0ca9f08a7a30097",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/file1.hex": "816568726105ac0fce50be0a4fb7d41eaa54628aac956579a18b213af491c081",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/file2.hex": "4f1416e7133a080b58aef5d12411b857740d20ddf0b1c50acd0ffa227fc5ed8c",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/file3.hex": "5cba2c1afc7d00ddb06f8f02182694d91dcbf02ebbb1b6b5e241a26d6dba4214",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "1b7ed38191bf6c14e5de65f9f68e78d1f6f43b1ac0ea0163140be10256eb289a",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_runtime_service.py": "b2bee02fd9a68c8c9081b6ba1c7fd1778e7ca008421e8350662ccfa1aa687edf",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/runtime_tf_storage_sources.py": "30a8333efef3c6b3c0b2745cf062f43d398809c15d6cf06b161d98d4a7bace40",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_storage.provenance.json": "6c2c6b964672e7981b5164a40626b994b9a9b2b56784c0a877f5492a33c2f39b",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tf_path_default_reference_tb.sv": "1f5caa045104ba16e4a718de99daae428b3f96d6f532e46e7a5953cd5b793a33",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-tf-stop/clear/nominal/tf_audio_ddr_path_legacy_reference.v": "f655fad8c87b4f62280ba1634547a919b45022536dcd6746865efbd0905a4b60",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/index.json": "f8f9606b0700ec214563c754a0d00d38668fbb1c376bf7988f9749d07f7ec205",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/objects/ebbf714a3e1670378fcdfce7b9eae34b6841ae82be37c0e5d7bccf5dd176291f.v": "ebbf714a3e1670378fcdfce7b9eae34b6841ae82be37c0e5d7bccf5dd176291f",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/objects/d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_runtime_clear.sv": "46869f6160daaea6a09cb51811008cb13cff8df673482a3e34ec15786f6a622e",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_runtime_clear.py": "5edf983af51b4e8a4f7ff2b7b6e36b954ef91f845df4e70046b20d4f21975cb7",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_runtime_stop.sv": "ad7cd3c57ecb8438c25a68cd40cde4e433255a8ca5b30c51423f7fee2898c3b5",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_tf_runtime_stop.py": "4f6858a4b02a4fb6a2fb741574e39fc44f9940733cafea7c39d48c72e492913d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md": "6a4e3b4957d5b9e627776021f2abbb3723f262ff657b67f3543a2e6728911e20"
+      },
+      "stop_0": {
+        "returncode": 0,
+        "run_log_sha256": "c8f1b1a3edc5e3af92da85c54048f2a24e54f5ba76c08c4d9fa5025b39d0534e",
+        "metrics": {
+          "buffered": 0,
+          "cases": 11,
+          "done": 12,
+          "failed": 4,
+          "coalesced": 3,
+          "paused_high": 1,
+          "paused_low": 1,
+          "mailbox_wait": 40,
+          "drain_wait": 30,
+          "stopped_checks": 300,
+          "idempotent_checks": 6,
+          "delivered": 91
+        }
+      },
+      "stop_1": {
+        "returncode": 0,
+        "run_log_sha256": "bf63a72c7905cca89801ebc9f0d4b9f195499aa502653e40731905741510b4a2",
+        "metrics": {
+          "buffered": 1,
+          "cases": 11,
+          "done": 12,
+          "failed": 4,
+          "coalesced": 3,
+          "paused_high": 1,
+          "paused_low": 1,
+          "mailbox_wait": 40,
+          "drain_wait": 30,
+          "stopped_checks": 300,
+          "idempotent_checks": 6,
+          "delivered": 91
+        }
+      },
+      "disabled": {
+        "returncode": 0,
+        "run_log_sha256": "a0ddac6366a7846ccda5c3ab431e4574be3cecfa25d41bb346792c1dfe905449",
+        "metrics": {
+          "delivered": 64
+        }
+      },
+      "limits": "Ideal clocked protocol checks, byte-boundary SD fixture and ordered DDR model. No routed CDC, full-profile synthesis/P&R, hardware or deployment acceptance. No recorder/clock orchestration integration or no-DDR streaming migration.",
+      "inputs_unchanged_during_run": true,
+      "all_recorded_inputs_rechecked_current": true
+    },
+    "local_services": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-local-services/verification.json",
+      "sha256": "22a47d5b679f8cc012fbbf09306fa0358ee795e31c04971fb1966974b54b1afa",
+      "passed": true,
+      "source_identity": "native-controlled-services-v2-f42e7b1aa5b5a753",
+      "input_sha256": {
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.sv": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124",
+        "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-local-services/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/audio_capture_fifo.sv": "3726c4bf769af27d07c5ceb9bbe55cba1f3b29957e37250231712befd7455171",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/input/score_led_player.sv": "720c0642792de97c83135c71899338f42336a5ded674bef518c4f79e1dbbaa71",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_controlled_services.sv": "650e6a97c0a34105437e99d7fdadb512f0f4a8411e5ac10be8c28ed45518376d",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_controlled_services.py": "ae6ea6e2ca91c9963c1c594b92b908d2637b30a85e0e815234346ca706c212f7",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_controlled_services.provenance.json": "f1e5801392316cfb39000ed6b0de1d26914150c319d9131dcd4a2b7447665aba",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+        "/Users/sphenicidition/.codex/worktrees/m03-native-sd-ingress/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+      },
+      "metrics": {
+        "transactions": 1106,
+        "commits": 1106,
+        "cpu_events": 1,
+        "cue_writes": 256,
+        "sample_frames": 16503,
+        "record_drops": 14,
+        "score_frames": 16384
+      },
+      "limits": "Default-disabled ABI regression only; opt-in media policy has a separate regression; no synthesis, P&R or hardware acceptance",
+      "inputs_unchanged_during_run": true,
+      "all_recorded_inputs_rechecked_current": true
+    }
+  },
+  "remaining": [
+    "New candidate synthesis, netlist CDC/reset/PLL, physical auditor configuration, both-rate routed setup/hold and resource comparison",
+    "Whole-top functional and hardware acceptance, TF real-card, actual output/listening and PC/USB session behavior",
+    "No measured net resource/clock/PLL savings; dedicated music hierarchy is omitted at source only",
+    "Current recording DDR backend/owner8 remain unselected, D mode and business integration are unchanged gaps"
+  ],
+  "rollback": "Select and freshly prepare custom138k-workstation-v1 with a new matching identity; preserve old baseline/historical candidates. Revert this implementation together with config hashes/tests/evidence if removing the source policy.",
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false
+}

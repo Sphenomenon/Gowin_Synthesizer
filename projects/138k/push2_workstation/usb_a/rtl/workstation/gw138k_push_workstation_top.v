@@ -74,6 +74,13 @@ module gw138k_push_workstation_top #(
 );
 `endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_NO_CNN
+    localparam bit RECOGNITION_ENABLED=1'b0;
+`else
+    localparam bit RECOGNITION_ENABLED=1'b1;
+`endif
+`endif
+`ifdef WORKSTATION_RUNTIME_NATIVE
     wire ble_debug_uart,song_cmd_valid,playlist_scan_done,tf_card_lost;
     wire [3:0] song_cmd_index;
     wire [4:0] tf_track_count;
@@ -161,7 +168,11 @@ module gw138k_push_workstation_top #(
     wire music_analysis_restart,music_analysis_enable,music_analysis_hold;
     wire playback_restart,score_accept;
     wire [3:0] playback_track;
-    workstation_playback_service u_playback_service (
+    workstation_playback_service
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        #(.RECOGNITION_ENABLE(RECOGNITION_ENABLED))
+`endif
+    u_playback_service (
         .clk_i(clk_50m),.rst_ni(reset_n),.model_status_i(music_model_status),
         .tf_mode_i(tf_mode_50),.tf_restart_i(tf_scope_restart),.tf_track_i(tf_scope_track),
         .cancel_i(tf_scope_cancel),.song_valid_i(song_cmd_valid),.song_track_i(song_cmd_index),
@@ -332,6 +343,14 @@ module gw138k_push_workstation_top #(
         .name_addr(playlist_name_addr),.name_data(playlist_name_data),
         .playlist_valid(playlist_usb_valid),.playlist_ready(playlist_usb_ready),
         .playlist_word(playlist_usb_word));
+`ifdef WORKSTATION_NO_CNN
+    wire [6:0] music_score_note,score_usb_note;
+    assign song_cmd_valid=1'b0;
+    assign song_cmd_index=4'd0;
+    assign music_score_ready=1'b1;
+    assign score_usb_valid=1'b0;
+    assign score_usb_note=7'd0;
+`else
     gw138k_stream_cdc #(.WIDTH(4)) u_song_command_cdc(
         .reset_n(reset_n && usb_reset_n),.source_clk(usb_clk),.destination_clk(clk_50m),
         .source_valid(push_track_launch),.source_data(push_track_index),.drop_count(),
@@ -344,6 +363,7 @@ module gw138k_push_workstation_top #(
         .read_clk_i(usb_clk),.read_rst_ni(usb_reset_n),
         .read_valid_o(score_usb_valid),.read_ready_i(score_usb_ready),
         .read_data_o(score_usb_note));
+`endif
     gw138k_stream_cdc #(.WIDTH(34)) u_service_push_cdc(
         .reset_n(reset_n && audio_reset_n && usb_reset_n),.source_clk(audio_clk),.destination_clk(usb_clk),
         .source_valid(audio_sample_valid),.source_data({record_enabled,score_running,score_led_mask}),
@@ -360,7 +380,7 @@ module gw138k_push_workstation_top #(
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
 `ifdef WORKSTATION_RUNTIME_NATIVE
-        ,.STOP_CLOCK_QUEUE_FENCE(1)
+        ,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1)
 `endif
     ) u_native_usb (
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
@@ -402,7 +422,7 @@ module gw138k_push_workstation_top #(
     workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) u_managed(
         .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
         .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
-        .pc_uart_rx_i((music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
+        .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
         .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),
         .usb_event_data(all_usb_event),.usb_event_ready(all_usb_ready),
         .pclk(pclk),.preset_n(preset_n),.psel(service_select),.penable(penable),.pwrite(pwrite),
@@ -637,6 +657,14 @@ module gw138k_push_workstation_top #(
         .spi_cs_n_i(model_flash_cs_n),.spi_clk_i(model_flash_clk),.spi_mosi_i(model_flash_mosi),
         .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
         .flash_wp_n_o(flash_wp_n),.flash_hold_n_o(flash_hold_n),.owned_o());
+`ifdef WORKSTATION_NO_CNN
+    assign model_flash_cs_n=1'b1;
+    assign model_flash_clk=1'b0;
+    assign model_flash_mosi=1'b0;
+`endif
+`endif
+`ifndef WORKSTATION_NO_CNN
+`ifdef WORKSTATION_CUSTOM_138K
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music (
         .flash_miso(flash_miso),.flash_cs_n(model_flash_cs_n),.flash_clk(model_flash_clk),.flash_mosi(model_flash_mosi),
 `else
@@ -661,6 +689,23 @@ module gw138k_push_workstation_top #(
         .ddr_address(music_ddr_address),.ddr_data(music_ddr_data),
         .ddr_mask(music_ddr_mask),.ddr_ready(music_ddr_ready),
         .ddr_response(music_ddr_response),.ddr_read_data(client_rdata));
+`else
+    assign music_pcm_ready=1'b1;
+    assign music_model_status=4'd0;
+    assign music_result_valid=1'b0;
+    assign music_result_note=7'd0;
+    assign music_result_frame=16'd0;
+    assign music_score_valid=1'b0;
+    assign music_score_note=7'd0;
+    assign music_analysis_done=1'b0;
+    assign music_report_sending=1'b0;
+    assign music_report_serial=1'b1;
+    assign music_ddr_req=1'b0;
+    assign music_ddr_write=1'b0;
+    assign music_ddr_address=29'd0;
+    assign music_ddr_data=256'd0;
+    assign music_ddr_mask=32'hffffffff;
+`endif
 `ifndef WORKSTATION_RUNTIME_NATIVE
     wire [19:0] tf_dac_rate=(tf_format_ready && !tf_unsupported &&
         tf_sample_rate>=20'd8000 && tf_sample_rate<=20'd96000) ? tf_sample_rate : 20'd0;

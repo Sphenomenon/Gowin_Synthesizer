@@ -30,6 +30,35 @@ RUNTIME_CONFIGURATION = dict(hdmi_mode='1080p60', high_speed_allowed=True,
     media_preparation_policy='seal_record_stop_score_tf_ble_v1')
 
 
+NO_CNN_NAME = 'custom138k-workstation-no-cnn-v1'
+NO_CNN_CONFIG = 'boards/custom_138k/workstation_profile_no_cnn_v1.json'
+RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
+from tools.workstation_recognition_policy import PROVIDER as NO_CNN_PROVIDER
+PROFILE_REGISTRY = {
+    NAME: dict(config=CONFIG, revision=REVISION, configuration=RUNTIME_CONFIGURATION,
+               provider=RUNTIME_PROVIDER, recognition_enabled=True,
+               integration_identity='custom138k-native-dual-rate-runtime-revision5'),
+    NO_CNN_NAME: dict(config=NO_CNN_CONFIG, revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1'),
+        provider=NO_CNN_PROVIDER, recognition_enabled=False,
+        integration_identity='custom138k-native-dual-rate-no-cnn-revision1'),
+}
+
+
+def specification(name):
+    if name not in PROFILE_REGISTRY:
+        raise ValueError('unknown workstation profile: '+str(name))
+    return PROFILE_REGISTRY[name]
+
+
+def recognition_metadata(profile):
+    enabled = specification(profile['name'])['recognition_enabled']
+    return dict(policy='enabled_cnn_and_follow_v1' if enabled else 'disabled_cnn_and_follow_v1',
+        music_analysis_enabled=enabled, cnn_score_follow_enabled=enabled,
+        model_ready_not_forged=True, local_score_cue_preserved=True,
+        recognition_menu_available=enabled, ddr_nn_allocation_retained=True)
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -48,14 +77,13 @@ def checked_path(base, relative):
 def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
     root = Path(root).resolve()
     repository = root.parents[3]
-    if name != NAME:
-        raise ValueError('unknown workstation profile: ' + str(name))
-    config = checked_path(root, CONFIG)
+    spec = specification(name)
+    config = checked_path(root, spec['config'])
     profile = json.loads(config.read_text())
     if (profile.get('schema') != 1 or profile.get('name') != name or
-            type(profile.get('revision')) is not int or profile['revision'] != REVISION):
+            type(profile.get('revision')) is not int or profile['revision'] != spec['revision']):
         raise ValueError('workstation profile identity changed')
-    if (profile.get('configuration') != RUNTIME_CONFIGURATION or
+    if (profile.get('configuration') != spec['configuration'] or
             hdmi_mode != '1080p60' or allow_high_speed is not True):
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
@@ -141,7 +169,13 @@ def _ae350_evidence(root, output, metadata, profile):
 
 def _artifact(root, output, metadata, profile):
     repository = root.parents[3]
+    spec = specification(profile['name'])
     stage = output / 'workstation/Prj1'
+    if metadata.get('identity') != spec['integration_identity']:
+        raise ValueError('workstation profile integration identity changed')
+    providers = {row['provider'] for row in PROFILE_REGISTRY.values()}
+    if [path for path in metadata['enabled_inputs'] if path in providers] != [spec['provider']]:
+        raise ValueError('workstation profile selected compilation provider changed')
     if sha(output / 'parent_prepare_metadata.json') != metadata['parent_prepare_metadata_sha256']:
         raise ValueError('workstation profile parent metadata changed')
     parent = json.loads((output / 'parent_prepare_metadata.json').read_text())
@@ -165,13 +199,22 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile runtime PCM constraint policy changed')
     if any(staged_sdc.count(line) != 1 for line in pcm['sdc'].splitlines()):
         raise ValueError('workstation profile runtime PCM constraint installation changed')
+    from tools.workstation_recognition_policy import verify_adaptation
+    recognition = dict(metadata.get('recognition', {}))
+    constraint_evidence = recognition.pop('constraints', None)
+    if recognition != recognition_metadata(profile):
+        raise ValueError('workstation recognition capability selection changed')
+    verify_adaptation((stage / 'constraints/custom_138k.sdc').read_text(),
+                      constraint_evidence or {}, spec['recognition_enabled'])
+    if metadata.get('runtime_audio', {}).get('top_provider') != spec['provider']:
+        raise ValueError('workstation recognition compilation provider changed')
     bindings = {}
     from tools.workstation_custom_board import source_snapshot
     if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:
         raise ValueError('workstation profile complete source snapshot drift')
     if metadata.get('scan_window') != dict(policy='native_admission_v1', enabled=True,
             provider='rtl/workstation/workstation_profile_hdmi.sv',
-            compilation_provider='rtl/workstation/workstation_profile_runtime.sv',
+            compilation_provider=spec['provider'],
             provider_selection='included_with_runtime_macro',
             implementation='rtl/workstation/workstation_hdmi_display.sv',
             admission='rtl/display_data/workstation_ddr_scan_window.sv',
@@ -266,7 +309,7 @@ def _artifact(root, output, metadata, profile):
                                 selection=usage.get(source, 'reference_or_preparation_input'))
         reuse[name] = dict(user_code=reference['user_code'], scope=reference['scope'],
                            evidence=reference['evidence'], files=rows)
-    config_hash = sha(root / CONFIG)
+    config_hash = sha(root / spec['config'])
     ae350 = _ae350_evidence(root, output, metadata, profile)
     bluetooth = metadata['bluetooth']
     if bluetooth.get('rom_path_policy') != 'stage_relative':
@@ -294,8 +337,8 @@ def _artifact(root, output, metadata, profile):
                                           staged_input_sha256=metadata['staged_input_sha256'],
                                           source_snapshot_sha256=metadata['source_snapshot_sha256'],
                                           firmware=metadata['firmware'], ae350_firmware=ae350))
-    return dict(schema=1, profile=NAME, revision=profile['revision'], profile_source=CONFIG, profile_sha256=config_hash,
-                candidate_identity=NAME + '-' + candidate_hash[:16], candidate_input_sha256=candidate_hash,
+    return dict(schema=1, profile=profile['name'], revision=profile['revision'], profile_source=spec['config'], profile_sha256=config_hash,
+                candidate_identity=profile['name'] + '-' + candidate_hash[:16], candidate_input_sha256=candidate_hash,
                 configuration=profile['configuration'], parent_baseline=profile['parent_baseline'],
                 enabled_inputs=inputs, reference_reuse=reuse, features=profile['features'],
                 staged_input_sha256=metadata['staged_input_sha256'],
@@ -308,7 +351,7 @@ def _artifact(root, output, metadata, profile):
                 firmware=metadata['firmware'],
                 ae350_firmware=ae350,
                 scan_window=metadata['scan_window'],
-                runtime_audio=metadata.get('runtime_audio'),
+                runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
                 generated_data_inputs={**ble_inputs, 'firmware/boot.mem': dict(origin='maintained_ae350_firmware',
                     sha256=ae350['installed_rom']['sha256'], source_sha256=ae350['build']['input_sha256'],
                     tool_versions=ae350['build']['tool_versions'], capacity=ae350['build']['capacity'])},
@@ -330,7 +373,7 @@ def attach(root, output, metadata, name):
     artifact = _artifact(root, output, metadata, profile)
     destination = output / ARTIFACT
     destination.write_text(json.dumps(artifact, ensure_ascii=False, indent=2) + '\n')
-    metadata['workstation_profile'] = dict(name=NAME, candidate_identity=artifact['candidate_identity'],
+    metadata['workstation_profile'] = dict(name=profile['name'], candidate_identity=artifact['candidate_identity'],
                                          configuration_sha256=artifact['profile_sha256'],
                                          artifact=ARTIFACT, artifact_sha256=sha(destination))
     return metadata['workstation_profile']
@@ -370,19 +413,24 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=('check', 'verify'))
     parser.add_argument('candidate', type=Path, nargs='?')
+    parser.add_argument('--profile', choices=tuple(PROFILE_REGISTRY),
+                        help='Named source policy for check, or expected candidate policy for verify')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     if args.command == 'check':
         if args.candidate is not None:
             parser.error('check does not take a candidate')
-        profile = load(root, NAME)
-        result = dict(profile=NAME, source_files=len(profile['source_sha256']),
-                      configuration_sha256=sha(root / CONFIG), validation_stage='source_lock_only')
+        selected_name = args.profile or NAME
+        profile = load(root, selected_name)
+        result = dict(profile=profile['name'], source_files=len(profile['source_sha256']),
+                      configuration_sha256=sha(root / specification(selected_name)['config']), validation_stage='source_lock_only')
     else:
         if args.candidate is None:
             parser.error('verify requires a prepared candidate directory')
         artifact = verify(root, args.candidate)
-        result = dict(profile=NAME, candidate_identity=artifact['candidate_identity'],
+        if args.profile is not None and artifact['profile'] != args.profile:
+            parser.error('candidate does not match the expected workstation profile')
+        result = dict(profile=artifact['profile'], candidate_identity=artifact['candidate_identity'],
                       enabled_inputs=len(artifact['enabled_inputs']), validation_stage='prepare_only')
     print(json.dumps(result, indent=2))
 

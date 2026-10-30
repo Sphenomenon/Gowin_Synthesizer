@@ -97,7 +97,7 @@ def audit(output):
     for module in required:
         if 'module:' + module not in declarations:
             raise ValueError('missing runtime declaration: ' + module)
-    provider = 'rtl/workstation/workstation_profile_runtime.sv'
+    provider = profile.specification(artifact['profile'])['provider']
     if any(declarations['module:' + name] != provider for name in ('workstation_custom_138k_top', 'hdmi_display')):
         raise ValueError('runtime top/HDMI must share one macro-scoped compilation provider')
     if 'rtl/workstation/workstation_profile_hdmi.sv' not in rows[provider]['dependencies']:

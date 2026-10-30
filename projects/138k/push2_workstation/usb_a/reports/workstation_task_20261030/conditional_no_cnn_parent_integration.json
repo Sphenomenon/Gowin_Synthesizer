@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "checkpoint": "conditional-no-cnn-parent-source-integration-v1",
+  "date": "2026-10-30",
+  "base_commit": "b59a4a5",
+  "imported_commit": "5d5a10ef434edde205ba4e24dfee826a31b17b1e",
+  "explicit_selected_next_candidate": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+  "preparations": {
+    "enabled": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/enabled-main-prepare-e75f17ba",
+      "candidate_identity": "custom138k-workstation-v1-03b7a208e6bb6f2d",
+      "candidate_input_sha256": "03b7a208e6bb6f2d7c090c812f2afccb91a9ded5380ac51101fb95e066d978f3",
+      "configuration_sha256": "8ef954a5a5db16eca7b54eddfc800be0a269f16b8bbcb2d83a270294b7328e72",
+      "artifact_sha256": "d9c00e7f7176fcc0c43713e6987889e6f1fa760dae9844d4cdc8adc3e29a290c",
+      "source_snapshot_count": 742,
+      "staged_count": 570,
+      "enabled_count": 259,
+      "sdc_sha256": "584a50b2de4b38159a05d7961441b3d0e7fc2f1c1e4e1ce5544fb1d73276af70",
+      "sdc_lines": 320,
+      "agent_preparation_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-enabled-prepare-final",
+      "agent_candidate_identity": "custom138k-workstation-v1-e75f17baaa084543",
+      "source_snapshot_and_enabled_inputs_identical": true,
+      "staged_differences": {
+        "native_usb_firmware/build.log": {
+          "original": "ba0581e06bdc29026cc62a3463f9cb02014f877cfaaca5f2e4cc18793294c317",
+          "parent": "a408bb53c217386da6f687121c4d6f4bf324a32adf467aba173aa51100813259"
+        }
+      }
+    },
+    "disabled": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-main-prepare-7c578124",
+      "candidate_identity": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+      "candidate_input_sha256": "525ffff10d6220314f4c61b29536f7fcc0b2ecdd1d4710ea94ecd4b84e02d957",
+      "configuration_sha256": "8907b17a341351e5284f067e728c6eafa0c00ebe0f604a5b21f0fb93bce0dad4",
+      "artifact_sha256": "a199b6ef13d4f5223392a8cf0b162179e9b629095257ec2d8a57c5cbe872b33d",
+      "source_snapshot_count": 742,
+      "staged_count": 571,
+      "enabled_count": 259,
+      "sdc_sha256": "ead347d58729b7ac917ca6b27a0c0d65c598ac4cd8f8dcd7fa1cd127c19c4036",
+      "sdc_lines": 301,
+      "agent_preparation_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/conditional-no-cnn-off-prepare-final",
+      "agent_candidate_identity": "custom138k-workstation-no-cnn-v1-7c57812471a5e336",
+      "source_snapshot_and_enabled_inputs_identical": true,
+      "staged_differences": {
+        "native_usb_firmware/build.log": {
+          "original": "ba0581e06bdc29026cc62a3463f9cb02014f877cfaaca5f2e4cc18793294c317",
+          "parent": "a408bb53c217386da6f687121c4d6f4bf324a32adf467aba173aa51100813259"
+        }
+      }
+    }
+  },
+  "validation": {
+    "recognition": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-recognition.log",
+      "sha256": "9c4146d039f9e10f2718745145d76047fc814ca2511e943ca6c94645a55b1ade",
+      "tests": 7,
+      "passed": true,
+      "skipped": 0
+    },
+    "no_cnn_sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-runtime-sources.log",
+      "sha256": "1cadb3652a169aaebfa1c1d7baa419ceb7b426dfe8eec703832c4ec2688019ed",
+      "tests": 12,
+      "passed": true,
+      "skipped": 0
+    },
+    "enabled_profile": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-enabled-profile.log",
+      "sha256": "6802684b8b2be243a2fd690345315d1953676abeb5f11cddb79e3db1192e71f7",
+      "tests": 20,
+      "passed": true,
+      "skipped": 0
+    },
+    "enabled_sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-enabled-sources.log",
+      "sha256": "f917f404babfa99cce40771cfef23cea8de6e5aa43d887b0dd5bcb64efb384f8",
+      "tests": 12,
+      "passed": true,
+      "skipped": 0
+    },
+    "accepted_sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-accepted.log",
+      "sha256": "0e6726d50e803379d5dba8bffa695156ec8dd968c17d4b7aceb115bede57015c",
+      "tests": 10,
+      "passed": true,
+      "skipped": 0
+    },
+    "behavior": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-parent-behavior-v1/verification.json",
+      "sha256": "600ec1b59e71f4aeb1514c33cfa9c497ea0ce28e9adbe8f89c2e4ca4c56362b8",
+      "cases": 8,
+      "rejected_mutants": 4,
+      "passed": true
+    }
+  },
+  "synthesis": {
+    "started": true,
+    "candidate": "custom138k-workstation-no-cnn-v1-525ffff10d622031",
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/no-cnn-synthesis-525ffff1",
+    "result_pending": true
+  },
+  "full_cdc_verified": false,
+  "routed_timing_verified": false,
+  "physical_resources_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "bitstream_identity": null,
+  "deployment_allowed": false
+}

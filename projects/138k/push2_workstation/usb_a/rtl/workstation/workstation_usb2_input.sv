@@ -4,7 +4,8 @@ module workstation_usb2_input #(
     parameter integer ATTACH_DEBOUNCE_US = 100000,
     parameter integer BUS_TIMEOUT_CYCLES = 480000,
     parameter integer FEEDBACK_AUDIO_DOMAIN = 0,
-    parameter integer STOP_CLOCK_QUEUE_FENCE = 0
+    parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
+    parameter bit CNN_FOLLOW_ENABLE = 1'b1
 )(
     input wire clk_cpu, clk_ref, clk_ulpi, clk_audio, reset_n, audio_reset_n,
     input wire uart_rx_i,
@@ -81,7 +82,8 @@ module workstation_usb2_input #(
     );
     wire feedback_clk = FEEDBACK_AUDIO_DOMAIN != 0 ? clk_audio : clk_ref;
     wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? audio_reset_n : feedback_release_q[1];
-    push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE)) input_owner (
+    push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
+                         .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE)) input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(audio_reset_n),
         .feedback_clk(feedback_clk), .feedback_reset_n(feedback_reset_n), .performance_words(performance_words_i),
         .display_meta_data(display_meta_data_i), .display_meta_valid(display_meta_valid_i),

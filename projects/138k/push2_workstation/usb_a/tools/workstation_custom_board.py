@@ -99,6 +99,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     else:
         profile = None
     runtime = profile is not None and profile['configuration'].get('audio_policy') == 'native_dual_rate_runtime_v1'
+    if runtime:
+        from tools.workstation_profile import specification, recognition_metadata
+        selected_provider = specification(profile['name'])['provider']
+        recognition = recognition_metadata(profile)
     native_sources = (*NATIVE_SOURCES, *PROFILE_SOURCES) if workstation_profile is not None else NATIVE_SOURCES
     profile_dependencies = PROFILE_DEPENDENCIES if workstation_profile is not None else ()
     if runtime:
@@ -107,6 +111,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             'rtl/workstation/workstation_custom_138k_top.sv', 'rtl/audio/workstation_fpc_audio.sv',
             'rtl/workstation/workstation_profile_hdmi.sv')) + SOURCES
         profile_dependencies += DEPENDENCIES
+        if selected_provider != 'rtl/workstation/workstation_profile_runtime.sv':
+            native_sources = tuple(selected_provider if source == 'rtl/workstation/workstation_profile_runtime.sv' else source
+                                   for source in native_sources)
+            profile_dependencies += ('rtl/workstation/workstation_profile_runtime.sv',)
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -222,6 +230,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + LCD_SDC + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    if runtime:
+        from tools.workstation_recognition_policy import adapt_constraints
+        selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
+        recognition['constraints'] = recognition_constraints
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
@@ -243,7 +255,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board excluded historical input changed: ' + relative)
     staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
-    metadata = dict(schema=1, identity=('custom138k-native-dual-rate-runtime-revision5' if runtime else
+    metadata = dict(schema=1, identity=(specification(profile['name'])['integration_identity'] if runtime else
                     PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY),
                     hdmi=video_mode,
                     native_timing_adaptations=native_timing,
@@ -287,13 +299,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
             physical_deadlines_verified=False, d01_complete=False, d04_complete=False)
         if runtime:
-            metadata['scan_window'].update(compilation_provider='rtl/workstation/workstation_profile_runtime.sv',
+            metadata['scan_window'].update(compilation_provider=selected_provider,
                                             provider_selection='included_with_runtime_macro')
     if runtime:
         metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
                                      if key not in ('sdc', 'runtime_cdc_sdc', 'bluetooth_sdc', 'shared_sdc', 'extra_cst')}
         metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
-            top_provider='rtl/workstation/workstation_profile_runtime.sv',
+            top_provider=selected_provider,
             common_parameter_owner='u_managed/runtime/service/workstation/parameters',
             clock_service_address='0xf8030000', legacy_capture_rate_hz=48000,
             tf_policy='manual_matching_rate_no_resampling_no_automatic_clock_request',
@@ -302,6 +314,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             held_notes_policy='preserve; no implicit MIDI/PANIC',
             media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11),
             display_metadata_minor=1)
+        metadata['recognition'] = recognition
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
         metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'
         metadata['volume_application']='once_in_runtime_final_pcm_before_I2S_display_and_BLE'

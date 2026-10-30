@@ -2,7 +2,8 @@
 
 module workstation_playback_service #(
     parameter integer MODEL_SETTLE_CYCLES = 2_500_000,
-    parameter integer RECOVERY_TIMEOUT_CYCLES = 480_000_000
+    parameter integer RECOVERY_TIMEOUT_CYCLES = 480_000_000,
+    parameter bit RECOGNITION_ENABLE = 1'b1
 ) (
     input wire clk_i, rst_ni,
     input wire [3:0] model_status_i,
@@ -28,6 +29,7 @@ module workstation_playback_service #(
     wire model_ready = model_status_i == 4'd14;
     wire model_became_ready = model_ready && !model_ready_q;
 
+    generate if (RECOGNITION_ENABLE) begin: recognition_enabled
     assign analysis_restart_o = run_reset_count != 0;
     assign analysis_enable_o = model_ready_q && song_started && restart_delay == 0 &&
         !analysis_restart_o && !tf_mode_i;
@@ -95,4 +97,14 @@ module workstation_playback_service #(
             end
         end
     end
+    end else begin: recognition_disabled
+        // Raw TF controls keep their own cancellation/run policy. Analysis song
+        // requests have no consumer and cannot manufacture reader restarts.
+        assign analysis_enable_o=1'b0;
+        assign analysis_restart_o=1'b0;
+        assign analysis_hold_o=1'b0;
+        assign reader_restart_o=tf_restart_i;
+        assign reader_track_o=tf_track_i;
+        assign score_accept_o=1'b0;
+    end endgenerate
 endmodule

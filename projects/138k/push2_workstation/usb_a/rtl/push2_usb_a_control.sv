@@ -1,7 +1,8 @@
 // USB Host CPU MMIO -> existing Push mapper -> audio event FIFO.
 // USB runs at 48 MHz; sample processing remains in the 76.8 MHz audio domain.
 module push2_usb_a_control #(
-    parameter integer STOP_CLOCK_QUEUE_FENCE=0
+    parameter integer STOP_CLOCK_QUEUE_FENCE=0,
+    parameter bit CNN_FOLLOW_ENABLE=1'b1
 )(
     input wire clk,reset_n,audio_clk,audio_reset_n,
     output wire audio_lifecycle,audio_cancel,
@@ -175,24 +176,29 @@ module push2_usb_a_control #(
     wire [15:0] guide_score_count,guide_cursor;
     wire [15:0] guide_wrong_count;
     reg analysis_done_meta,analysis_done_sync;
-    always @(posedge clk or negedge reset_n)
-        if (!reset_n) begin analysis_done_meta<=0;analysis_done_sync<=0;end
-        else begin analysis_done_meta<=analysis_done;analysis_done_sync<=analysis_done_meta;end
+    generate if(CNN_FOLLOW_ENABLE)begin: cnn_analysis_status
+        always @(posedge clk or negedge reset_n)
+            if(!reset_n)begin analysis_done_meta<=0;analysis_done_sync<=0;end
+            else begin analysis_done_meta<=analysis_done;analysis_done_sync<=analysis_done_meta;end
+    end else begin: no_cnn_analysis_status
+        assign analysis_done_sync=1'b0;
+    end endgenerate
     push2_controls #(.INITIAL_VOLUME(127)) controls(.clk(clk),.rst(input_reset),.connected(connected),
         .valid(valid && !generic_midi),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
         .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
-        .guide_enabled_i(1'b1),.guide_mode_i(guide_mode),
+        .guide_enabled_i(CNN_FOLLOW_ENABLE),.guide_mode_i(guide_mode),
         .guide_toggle_o(push_guide_toggle),.guide_prev_o(push_guide_prev),
         .guide_next_o(push_guide_next),.guide_select_o(push_guide_select),
         .event_valid(mapped_valid),.event_ready(mapped_ready),.event_data(mapped_event),
         .held(held),.last_note(note),.last_velocity(velocity),.mapped(mapped),.ignored(ignored));
+    reg [18:0] score_flush_count;
+    wire score_flushing=score_flush_count!=0;
+    generate if(CNN_FOLLOW_ENABLE)begin: cnn_follow
     push2_song_menu u_song_menu(.clk(clk),.rst(!reset_n),
         .toggle(guide_toggle),.mode(guide_mode),
         .prev(guide_prev),.next(guide_next),.select_key(guide_select),
         .track_count(guide_track_count),.chosen(guide_chosen),
         .browse_index(guide_browse),.track_index(track_index),.launch(track_launch));
-    reg [18:0] score_flush_count;
-    wire score_flushing=score_flush_count!=0;
     wire guide_score_ready;
     assign score_ready=score_flushing || guide_score_ready;
     always @(posedge clk or negedge reset_n)
@@ -210,6 +216,22 @@ module push2_usb_a_control #(
         .target_valid(guide_target_valid),.target_note(guide_target_note),
         .score_count(guide_score_count),.cursor(guide_cursor),
         .wrong_count(guide_wrong_count),.guide_mask(guide_mask));
+    end else begin: no_cnn_follow
+        assign score_flush_count=19'd0;
+        assign guide_mode=1'b0;
+        assign guide_chosen=1'b0;
+        assign guide_browse=4'd0;
+        assign track_index=4'd0;
+        assign track_launch=1'b0;
+        assign guide_target_valid=1'b0;
+        assign guide_target_note=7'd0;
+        assign guide_mask=64'd0;
+        assign guide_score_count=16'd0;
+        assign guide_cursor=16'd0;
+        assign guide_wrong_count=16'd0;
+        // The absent CNN producer must never backpressure unrelated owners.
+        assign score_ready=1'b1;
+    end endgenerate
     assign mapped_ready=fifo_ready && !input_reset && queue_write_ready;
     reg [31:0] generic_received;
     reg [6:0] generic_note,generic_velocity;

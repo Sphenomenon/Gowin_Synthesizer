@@ -46,6 +46,8 @@
 
 [采样率控制 level 注册修复](push2_workstation/usb_a/reports/WORKSTATION_RUNTIME_RATE_CONTROL_LEVELS_20261030.md)关闭了 PREFILL→RESUME 组合译码毛刺在数字模型中导致预填清空／重复请求的问题。双模式长期回归及旧行为负控、真实时钟／I2S、profile20／来源12／accepted10均通过；新 prepare `1aea3c01fa6c1b14` 仅一项RTL输入变化，已独立启动综合，结果另记。新网表的PCM源／完整closure需重新审核，完整物理／硬件接受仍未完成，无部署。
 
+[条件 no-CNN 源码候选](push2_workstation/usb_a/reports/WORKSTATION_CONDITIONAL_NO_CNN_SOURCE_20261030.md)已在主线复验并明确选入下一轮实验：父级独立双 prepare、识别7项、enabled profile20项、两配置来源各12项、accepted10项及八项行为检查通过。新 `custom138k-workstation-no-cnn-v1-525ffff10d622031` 只关闭CNN／跟奏，保留手工cue／本地曲谱、TF、录音、音频效果与可视化；默认配置保留识别。已启动独立整机综合；净资源、完整CDC／PLL、物理时序与硬件均待验证，无部署，任务方框不提前勾选。
+
 优先级：P0 为主线基础和关键阻断；P1 为目标架构及完整工作站必需；P2 为依赖产品决策或额外硬件的扩展。P2 也需给出最终范围结论，不能默默省略后宣称“完整项目完成”。实施仍优先在 138K，25K 设备侧遵守既有只读核对／建议边界。
 
 ## 2. 本次确认的目标架构（含绘制勘误）
