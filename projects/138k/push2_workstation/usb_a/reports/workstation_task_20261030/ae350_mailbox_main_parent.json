@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "author_commit": "d8e1105ddb93532ca44d44a157cef31fcd9e7f10",
+  "import_commit": "032eec2",
+  "source_sha256": {
+    "sim/services/ae350_ble_business_cosim.sv": "4f01130b1e7f64fa7a964f3b96d171534dbf1dbe47cfd371f60a70ee3e893d10",
+    "rtl/bluetooth/cpu_owner/ble_protocol_command.v": "1978b33a8828829a2fc0aab0a93a253e7075edf9f532658d194cf6e2087ac185",
+    "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "6285ca562b2afc226c4635bb8eecd012a7ab6ca11888181e4014caf5607e888d",
+    "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "f2f4a9203e0ebc2b5f2d79e34656a46dcaa3e1b7b18904b23b3012ebf23889e7",
+    "rtl/services/workstation_business_mailbox.sv": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa",
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "422a1bb4c3b0cf842b416b65f714d023c65b270d0fa5219f9adec1c72d290ede",
+    "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "firmware/ae350/recording_service.c": "a384488eba527df8d8f5399aeda4bf73f3b9b7df07a76b1294909979367ad165",
+    "firmware/ae350/ble_business_owner.c": "74ee788667ea24e2e9870c6f34be42cbe92404d0a72b7e0550fbd697cf0eff31",
+    "sim/services/ae350_ble_business_cosim.cpp": "8ae8ba50e38d55ce7fdcc10fbb7ed6de72bfec5395f904e0a947f3e8ea0c1b4d",
+    "sim/services/run_ae350_ble_business.py": "4090ff8b9dd3fd1026aae6d0cf86f7182fec5564fd0240a26127093dec151187",
+    "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "firmware/ae350/recording_service.h": "f6f083d77e38ea64f134388e7140a20e2471249fe8ac9081f43f6e02c28b038c",
+    "firmware/ae350/ble_business_owner.h": "1e6895fed3685308a14ccd530e7cc74b7a21ee3fb19c187f478e55ed91dd6dbf",
+    "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+    "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "tools/workstation_bluetooth_ddr.py": "5fd412e04e66c96eabb58e94c589cec4853750a24fccc1aeee16a097c314ebce",
+    "boards/custom_138k/workstation_profile_ae350_business_v1.json": "83ebc5df316e9f46e31fe335ac68403f443681815cbf4fd65f5864f25cf09201",
+    "sim/test_business_mailbox.py": "c25952753339a8ab3070eebe6582b622f5588dfcea994a4d44c6d1be48137efb",
+    "sim/services/tb_business_mailbox.sv": "ff755ffb652b7a0bb1cbaf1b40b8b581a68fed7522623b2e5fdfc50643dc0451"
+  },
+  "candidate_identity": "custom138k-workstation-ae350-business-v1-09ae2f713f688bb7",
+  "profile_sha256": "83ebc5df316e9f46e31fe335ac68403f443681815cbf4fd65f5864f25cf09201",
+  "staged_input_count": 612,
+  "enabled_input_count": 271,
+  "actual_tests": {
+    "mailbox": 3,
+    "prepared_sources": 8,
+    "accepted_sources": 17,
+    "profiles_loaded": 6
+  },
+  "equivalence": {
+    "complete_output_comparisons": 34196,
+    "all_read_addresses": 4096,
+    "bench_checks": 15302
+  },
+  "actual_C_APB_cosim": {
+    "passed": true,
+    "compared_messages": 35,
+    "wire_equal": true,
+    "harness_time_scaling": "First-batch fixture unchanged; functional only. Correct ns/ps scaling and extended timing-ratio coverage follow in second batch."
+  },
+  "synthesis_passed": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-main-parent-v1",
+  "seal_sha256": "cf9ba5e0166cd83281111941540223dffd7227aa5fe197d3c3c5c6a41f0dca73",
+  "external_files": 693
+}
