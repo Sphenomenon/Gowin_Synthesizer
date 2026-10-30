@@ -56,5 +56,17 @@
     "source": "projects/138k/push2_workstation/usb_a/baselines/objects/8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9.mem",
     "sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
   },
-  "policy": "Imported source bytes are preserved at introduction; later source edits are maintained here and recorded by each build. Frozen baseline files are never edited."
+  "policy": "Imported source bytes are preserved at introduction; later source edits are maintained here and recorded by each build. Frozen baseline files are never edited.",
+  "first_party_files": {
+    "audio_clock_service.c": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.c",
+      "sha256": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829"
+    },
+    "audio_clock_service.h": {
+      "kind": "maintained_first_party",
+      "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
+      "sha256": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+    }
+  }
 }

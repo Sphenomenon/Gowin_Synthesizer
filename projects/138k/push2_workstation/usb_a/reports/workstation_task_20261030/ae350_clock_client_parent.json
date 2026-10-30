@@ -1,0 +1,883 @@
+{
+  "schema": 1,
+  "passed": true,
+  "validation_stage": "independent-parent-offline-reverification",
+  "identity": "ae350-clock-client-offline-v1-68b32773b5ef9bed",
+  "owned_hashes_match_handoff": true,
+  "staging_tests": 9,
+  "accepted_pinned_tests": 10,
+  "input_hashes_and_host_metrics_equal_child": true,
+  "raw_result_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-client-parent-v1/verification.json",
+  "raw_result_sha256": "d4f1f3140864a26cef4da37dd804c896ab891110f9701fafa0fe8d1846965959",
+  "result": {
+    "schema": 1,
+    "passed": true,
+    "identity": "ae350-clock-client-offline-v1-68b32773b5ef9bed",
+    "source_set_sha256": "68b32773b5ef9bedaad36ba184c18f6d40b070630074b272c940804267bd6469",
+    "input_sha256": {
+      "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+      "firmware/ae350/audio_clock_service.h": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a",
+      "firmware/ae350/README.md": "6b046bb1f89900cba5fd3e4c3887b2eae8dc1e438fd9ed8c76229aa024a20e96",
+      "tools/stage_ae350_firmware.py": "823430aaa67144ad8fdbb5fbc762afd4b72ebf5ed8cee78588254d64d14ae25f",
+      "tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
+      "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "sim/test_stage_ae350_firmware.py": "c2aa259a85dfa493567105fcf6a26c50a6f1b96bb4eb9590c0faff60e121b28c",
+      "sim/ae350_clock_service_host.c": "ed6e81c224526ae9e64e671d75787276bc7cbc0c63a41f06e786158c97cdcc3b",
+      "sim/run_ae350_clock_service_api.py": "154b8008b748a9dd8012b93336cfb078c0cff3972b988e4c5b034274f86716a3",
+      "firmware/ae350/start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+      "firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+      "firmware/ae350/ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+      "firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+      "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+      "firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+      "firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+      "firmware/ae350/ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+      "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+      "firmware/ae350/provenance.json": "01ccda216a078a7e849547025bafb424d2865f9dfdb22a141dc8995b630bdf9b"
+    },
+    "inputs_unchanged": true,
+    "host": {
+      "compiler": "/usr/bin/cc",
+      "compiler_version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "checks": 821,
+      "sanitizer": "address,undefined",
+      "maximum_submit_accesses": 9,
+      "maximum_poll_accesses": 11,
+      "no_retry_loops": true,
+      "checked_mmio_model": true,
+      "physical_mmio_used": false
+    },
+    "rv32": {
+      "first": {
+        "schema": 1,
+        "firmware_profile": "maintained_ae350_workstation",
+        "isa": "rv32im_zicsr",
+        "abi": "ilp32",
+        "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+        "compiler_version": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+        "tool_versions": {
+          "gcc": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+          "objcopy": "GNU objcopy (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+          "size": "GNU size (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+          "nm": "GNU nm (xPack GNU RISC-V Embedded GCC arm64) 2.45"
+        },
+        "source_provenance": {
+          "schema": 1,
+          "identity": "ae350-workstation-maintained-20261030-v1",
+          "imported_from": {
+            "name": "resource_rework_route0",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+            "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+            "origin": {
+              "build": "results/resource_rework_final_route0_20261020_041042",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+              "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+            },
+            "source_files": 437,
+            "excluded_files": 180
+          },
+          "files": {
+            "start.S": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/start.S",
+              "sha256": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783"
+            },
+            "boot.ld": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.ld",
+              "sha256": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c"
+            },
+            "audio_services.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h",
+              "sha256": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430"
+            },
+            "firmware_checks.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/firmware_checks.h",
+              "sha256": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b"
+            },
+            "ui_main.c": {
+              "source": "projects/138k/push2_workstation/usb_a/baselines/objects/9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80.c",
+              "sha256": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80"
+            },
+            "ui_model.h": {
+              "source": "projects/138k/push2_workstation/usb_a/baselines/objects/444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5.h",
+              "sha256": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5"
+            },
+            "ui_render.c": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.c",
+              "sha256": "cf8734e50a60a3a03a1c57472cad84a20af5c198d1c43dde1ba779cd7aebeaa6"
+            },
+            "ui_render.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.h",
+              "sha256": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745"
+            },
+            "ui_runtime.c": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_runtime.c",
+              "sha256": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97"
+            }
+          },
+          "historical_rom": {
+            "path": "firmware/boot.mem",
+            "source": "projects/138k/push2_workstation/usb_a/baselines/objects/8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9.mem",
+            "sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
+          },
+          "policy": "Imported source bytes are preserved at introduction; later source edits are maintained here and recorded by each build. Frozen baseline files are never edited.",
+          "first_party_files": {
+            "audio_clock_service.c": {
+              "kind": "maintained_first_party",
+              "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.c",
+              "sha256": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829"
+            },
+            "audio_clock_service.h": {
+              "kind": "maintained_first_party",
+              "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
+              "sha256": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+            }
+          }
+        },
+        "input_sha256": {
+          "firmware/ae350/start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+          "firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+          "firmware/ae350/ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+          "firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+          "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+          "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+          "firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+          "firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+          "firmware/ae350/ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+          "firmware/ae350/audio_clock_service.h": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a",
+          "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+          "firmware/ae350/provenance.json": "01ccda216a078a7e849547025bafb424d2865f9dfdb22a141dc8995b630bdf9b"
+        },
+        "changed_from_import": [
+          "ui_render.c"
+        ],
+        "first_party_inputs": {
+          "audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+          "audio_clock_service.h": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+        },
+        "imported_inputs": {
+          "start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+          "ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+          "ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+          "ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+          "audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+          "firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+          "ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+          "ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+          "boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c"
+        },
+        "compiled_sources": [
+          "start.S",
+          "ui_main.c",
+          "ui_render.c",
+          "ui_runtime.c",
+          "audio_clock_service.c"
+        ],
+        "commands": [
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "start.S",
+            "-o",
+            "start.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_main.c",
+            "-o",
+            "ui_main.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_render.c",
+            "-o",
+            "ui_render.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_runtime.c",
+            "-o",
+            "ui_runtime.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "audio_clock_service.c",
+            "-o",
+            "audio_clock_service.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-nostdlib",
+            "-nostartfiles",
+            "-Wl,--build-id=none,-Map=firmware.map,-T,boot.ld",
+            "start.o",
+            "ui_main.o",
+            "ui_render.o",
+            "ui_runtime.o",
+            "audio_clock_service.o",
+            "-o",
+            "firmware.elf"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-objcopy",
+            "-O",
+            "binary",
+            "firmware.elf",
+            "firmware.bin"
+          ]
+        ],
+        "capacity": {
+          "rom_capacity_bytes": 16384,
+          "binary_bytes": 12380,
+          "text_bytes": 12380,
+          "initialized_data_bytes": 0,
+          "bss_bytes": 60,
+          "physical_ram_bytes": 8192,
+          "ram_reserved_prefix_bytes": 512,
+          "static_ram_span_bytes": 60,
+          "static_ram_end": 572,
+          "stack_top": 8192,
+          "stack_capacity_bytes": 7620,
+          "minimum_stack_bytes": 4096,
+          "symbols": {
+            "_start": 2147483648,
+            "__data_load_start": 2147496028,
+            "__data_start": 512,
+            "__data_end": 512,
+            "__bss_start": 512,
+            "__bss_end": 572
+          },
+          "whole_program_stack_bound_verified": false,
+          "hardware_stack_watermark_verified": false
+        },
+        "compiler_stack_frames": [
+          {
+            "function": "audio_clock_service.c:4:12:mmio_read",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:8:12:mmio_write",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:12:16:a138_clock_mmio_bus",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:19:19:a138_clock_probe",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:29:19:a138_clock_submit",
+            "bytes": 80,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:51:19:a138_clock_poll",
+            "bytes": 80,
+            "kind": "static"
+          },
+          {
+            "function": "ui_model.h:23:24:ui_touch",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:18:13:present",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:63:19:a138_score_load.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:50:19:a138_record_try_read.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:45:20:a138_snapshot.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:57:13:apply_model",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:95:6:services_main",
+            "bytes": 368,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:24:13:text",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:34:13:card",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:59:13:headline",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:39:13:effect.isra",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:43:13:chain_card.isra",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:63:6:ui_render",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:75:6:ui_patch",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_runtime.c:4:7:memset",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_runtime.c:9:7:memcpy",
+            "bytes": 0,
+            "kind": "static"
+          }
+        ],
+        "elf_sha256": "2c49703e2a46d3619a1f5830890b5a17f98ad67a8a4f03e7f965ecb7454f94fe",
+        "binary_sha256": "25918cf409f3cf0b507da2ffb07be5dadd1f0faf4b4e0878360ae5b9303c840a",
+        "rom_sha256": "c598c50aa0172be1c5644fa50a17c4a18ea304cce7aaeca476cd55b7dba0e752",
+        "reference_rom": {
+          "policy": "locked_resource_rework_route0",
+          "sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9",
+          "byte_identical": false,
+          "words_identical": false,
+          "differing_words": 2955
+        },
+        "hardware_tested": false,
+        "project_rom_installed": false,
+        "stack_validation": "Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified."
+      },
+      "second": {
+        "schema": 1,
+        "firmware_profile": "maintained_ae350_workstation",
+        "isa": "rv32im_zicsr",
+        "abi": "ilp32",
+        "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+        "compiler_version": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+        "tool_versions": {
+          "gcc": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+          "objcopy": "GNU objcopy (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+          "size": "GNU size (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+          "nm": "GNU nm (xPack GNU RISC-V Embedded GCC arm64) 2.45"
+        },
+        "source_provenance": {
+          "schema": 1,
+          "identity": "ae350-workstation-maintained-20261030-v1",
+          "imported_from": {
+            "name": "resource_rework_route0",
+            "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+            "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+            "origin": {
+              "build": "results/resource_rework_final_route0_20261020_041042",
+              "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+              "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+            },
+            "source_files": 437,
+            "excluded_files": 180
+          },
+          "files": {
+            "start.S": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/start.S",
+              "sha256": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783"
+            },
+            "boot.ld": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/boot.ld",
+              "sha256": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c"
+            },
+            "audio_services.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/audio_services.h",
+              "sha256": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430"
+            },
+            "firmware_checks.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/firmware_checks.h",
+              "sha256": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b"
+            },
+            "ui_main.c": {
+              "source": "projects/138k/push2_workstation/usb_a/baselines/objects/9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80.c",
+              "sha256": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80"
+            },
+            "ui_model.h": {
+              "source": "projects/138k/push2_workstation/usb_a/baselines/objects/444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5.h",
+              "sha256": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5"
+            },
+            "ui_render.c": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.c",
+              "sha256": "cf8734e50a60a3a03a1c57472cad84a20af5c198d1c43dde1ba779cd7aebeaa6"
+            },
+            "ui_render.h": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_render.h",
+              "sha256": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745"
+            },
+            "ui_runtime.c": {
+              "source": "projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/firmware/ui_runtime.c",
+              "sha256": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97"
+            }
+          },
+          "historical_rom": {
+            "path": "firmware/boot.mem",
+            "source": "projects/138k/push2_workstation/usb_a/baselines/objects/8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9.mem",
+            "sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
+          },
+          "policy": "Imported source bytes are preserved at introduction; later source edits are maintained here and recorded by each build. Frozen baseline files are never edited.",
+          "first_party_files": {
+            "audio_clock_service.c": {
+              "kind": "maintained_first_party",
+              "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.c",
+              "sha256": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829"
+            },
+            "audio_clock_service.h": {
+              "kind": "maintained_first_party",
+              "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.h",
+              "sha256": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+            }
+          }
+        },
+        "input_sha256": {
+          "firmware/ae350/start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+          "firmware/ae350/ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+          "firmware/ae350/ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+          "firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+          "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+          "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+          "firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+          "firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+          "firmware/ae350/ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+          "firmware/ae350/audio_clock_service.h": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a",
+          "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+          "firmware/ae350/provenance.json": "01ccda216a078a7e849547025bafb424d2865f9dfdb22a141dc8995b630bdf9b"
+        },
+        "changed_from_import": [
+          "ui_render.c"
+        ],
+        "first_party_inputs": {
+          "audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+          "audio_clock_service.h": "9d819c334b03c5af5f61f86402c70dd59b9c4902fe4b21e6df545bf73dca169a"
+        },
+        "imported_inputs": {
+          "start.S": "5e462091296daa030f22f6f98005471d57dcd46e7e2090aaa2dae7c63aee3783",
+          "ui_main.c": "9cff028d365f82762b7583e642f2479008b1f02c408791e36cc0b7be07bcfa80",
+          "ui_render.c": "5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91",
+          "ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+          "audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+          "firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+          "ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+          "ui_render.h": "addfde5a99a76edb839175792bf83ec4267928eff150ada82271a213b78a7745",
+          "boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c"
+        },
+        "compiled_sources": [
+          "start.S",
+          "ui_main.c",
+          "ui_render.c",
+          "ui_runtime.c",
+          "audio_clock_service.c"
+        ],
+        "commands": [
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "start.S",
+            "-o",
+            "start.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_main.c",
+            "-o",
+            "ui_main.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_render.c",
+            "-o",
+            "ui_render.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "ui_runtime.c",
+            "-o",
+            "ui_runtime.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-O2",
+            "-ffreestanding",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-fstack-usage",
+            "-c",
+            "audio_clock_service.c",
+            "-o",
+            "audio_clock_service.o"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+            "-march=rv32im_zicsr",
+            "-mabi=ilp32",
+            "-msmall-data-limit=0",
+            "-nostdlib",
+            "-nostartfiles",
+            "-Wl,--build-id=none,-Map=firmware.map,-T,boot.ld",
+            "start.o",
+            "ui_main.o",
+            "ui_render.o",
+            "ui_runtime.o",
+            "audio_clock_service.o",
+            "-o",
+            "firmware.elf"
+          ],
+          [
+            "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-objcopy",
+            "-O",
+            "binary",
+            "firmware.elf",
+            "firmware.bin"
+          ]
+        ],
+        "capacity": {
+          "rom_capacity_bytes": 16384,
+          "binary_bytes": 12380,
+          "text_bytes": 12380,
+          "initialized_data_bytes": 0,
+          "bss_bytes": 60,
+          "physical_ram_bytes": 8192,
+          "ram_reserved_prefix_bytes": 512,
+          "static_ram_span_bytes": 60,
+          "static_ram_end": 572,
+          "stack_top": 8192,
+          "stack_capacity_bytes": 7620,
+          "minimum_stack_bytes": 4096,
+          "symbols": {
+            "_start": 2147483648,
+            "__data_load_start": 2147496028,
+            "__data_start": 512,
+            "__data_end": 512,
+            "__bss_start": 512,
+            "__bss_end": 572
+          },
+          "whole_program_stack_bound_verified": false,
+          "hardware_stack_watermark_verified": false
+        },
+        "compiler_stack_frames": [
+          {
+            "function": "audio_clock_service.c:4:12:mmio_read",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:8:12:mmio_write",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:12:16:a138_clock_mmio_bus",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:19:19:a138_clock_probe",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:29:19:a138_clock_submit",
+            "bytes": 80,
+            "kind": "static"
+          },
+          {
+            "function": "audio_clock_service.c:51:19:a138_clock_poll",
+            "bytes": 80,
+            "kind": "static"
+          },
+          {
+            "function": "ui_model.h:23:24:ui_touch",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:18:13:present",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:63:19:a138_score_load.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:50:19:a138_record_try_read.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "audio_services.h:45:20:a138_snapshot.constprop",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:57:13:apply_model",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "ui_main.c:95:6:services_main",
+            "bytes": 368,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:24:13:text",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:34:13:card",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:59:13:headline",
+            "bytes": 48,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:39:13:effect.isra",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:43:13:chain_card.isra",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:63:6:ui_render",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_render.c:75:6:ui_patch",
+            "bytes": 32,
+            "kind": "static"
+          },
+          {
+            "function": "ui_runtime.c:4:7:memset",
+            "bytes": 0,
+            "kind": "static"
+          },
+          {
+            "function": "ui_runtime.c:9:7:memcpy",
+            "bytes": 0,
+            "kind": "static"
+          }
+        ],
+        "elf_sha256": "2c49703e2a46d3619a1f5830890b5a17f98ad67a8a4f03e7f965ecb7454f94fe",
+        "binary_sha256": "25918cf409f3cf0b507da2ffb07be5dadd1f0faf4b4e0878360ae5b9303c840a",
+        "rom_sha256": "c598c50aa0172be1c5644fa50a17c4a18ea304cce7aaeca476cd55b7dba0e752",
+        "reference_rom": {
+          "policy": "locked_resource_rework_route0",
+          "sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9",
+          "byte_identical": false,
+          "words_identical": false,
+          "differing_words": 2955
+        },
+        "hardware_tested": false,
+        "project_rom_installed": false,
+        "stack_validation": "Compiler per-function sizes and reserved capacity; whole-call-chain and runtime high-water mark remain unverified."
+      },
+      "elf_binary_rom_deterministic": true,
+      "full_linked_api_symbols_verified": true,
+      "io_fence_counts": {
+        "mmio_read": 2,
+        "mmio_write": 2
+      },
+      "original_four_compile_sources_preserved": true,
+      "automatic_api_references_in_original_sources": false
+    },
+    "commands": [
+      {
+        "name": "host_version",
+        "command": [
+          "/usr/bin/cc",
+          "--version"
+        ],
+        "exit_code": 0,
+        "log_sha256": "f6a41663474c412322e565ec1a1aa27bcb42151b98d527dc401b7d744b9a4237"
+      },
+      {
+        "name": "host_compile",
+        "command": [
+          "/usr/bin/cc",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-I/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/audio_clock_service.c",
+          "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/ae350_clock_service_host.c",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-client-parent-v1/checked_mmio_host"
+        ],
+        "exit_code": 0,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "host_execution",
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-client-parent-v1/checked_mmio_host"
+        ],
+        "exit_code": 0,
+        "log_sha256": "c912bbbe9c49bf0e462d6d3567162d51c4eb409cb2c1ed55e2efa0dd16787217"
+      },
+      {
+        "name": "rv32_disassembly",
+        "command": [
+          "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-objdump",
+          "-d",
+          "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-clock-client-parent-v1/first/firmware.elf"
+        ],
+        "exit_code": 0,
+        "log_sha256": "b8006bab83a52ad77f4384e1fc61db72f31d716b4815db3122691cf837981db8"
+      }
+    ],
+    "hardware_tested": false,
+    "synthesis_invoked": false,
+    "project_rom_installed": false,
+    "sram_deployed": false,
+    "flash_deployed": false,
+    "new_bitstream_identity": null,
+    "constraints_complete": false,
+    "release_ready": false,
+    "limits": [
+      "Host model verifies the C access contract, not APB CDC/RTL/media behavior",
+      "Raw MMIO cannot recover a bus fault without a platform trap handler",
+      "Caller serializes page access and discards tickets after observer reset; ID ABA is not fenced",
+      "Whole-program stack depth, runtime watermark, physical ROM boot and board behavior remain unverified"
+    ]
+  }
+}

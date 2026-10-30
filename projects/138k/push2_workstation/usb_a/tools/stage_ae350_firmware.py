@@ -16,8 +16,12 @@ from tools.stage_usb_firmware import compiler_prefix, sha
 from tools.workstation_baselines import load_baseline
 
 
-SOURCES = ('start.S', 'ui_main.c', 'ui_render.c', 'ui_runtime.c')
-HEADERS = ('audio_services.h', 'firmware_checks.h', 'ui_model.h', 'ui_render.h')
+IMPORTED_SOURCES = ('start.S', 'ui_main.c', 'ui_render.c', 'ui_runtime.c')
+IMPORTED_HEADERS = ('audio_services.h', 'firmware_checks.h', 'ui_model.h', 'ui_render.h')
+FIRST_PARTY_SOURCES = ('audio_clock_service.c',)
+FIRST_PARTY_HEADERS = ('audio_clock_service.h',)
+SOURCES = (*IMPORTED_SOURCES, *FIRST_PARTY_SOURCES)
+HEADERS = (*IMPORTED_HEADERS, *FIRST_PARTY_HEADERS)
 INPUTS = (*SOURCES, *HEADERS, 'boot.ld', 'provenance.json')
 ROM_BASE, ROM_BYTES = 0x80000000, 16384
 RAM_START, RAM_END, MIN_STACK_BYTES = 0x200, 0x2000, 4096
@@ -84,9 +88,19 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
     baseline = load_baseline(root, 'resource_rework_route0')
     if provenance.get('schema') != 1 or provenance.get('imported_from') != baseline.evidence():
         raise ValueError('AE350 import provenance does not match the locked baseline')
-    for name in (*SOURCES, *HEADERS, 'boot.ld'):
+    if set(provenance.get('files', {})) != set((*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')):
+        raise ValueError('AE350 imported source inventory drift')
+    for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld'):
         if provenance['files'].get(name) != baseline.descriptor['files']['firmware/' + name]:
             raise ValueError('AE350 imported source provenance drift: ' + name)
+    if set(provenance.get('first_party_files', {})) != set((*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS)):
+        raise ValueError('AE350 first-party source inventory drift')
+    for name in (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS):
+        expected = dict(kind='maintained_first_party',
+                        source='projects/138k/push2_workstation/usb_a/firmware/ae350/' + name,
+                        sha256=sha(source_dir / name))
+        if provenance['first_party_files'][name] != expected:
+            raise ValueError('AE350 first-party source provenance drift: ' + name)
     if provenance.get('historical_rom') != dict(path='firmware/boot.mem', **baseline.descriptor['files']['firmware/boot.mem']):
         raise ValueError('AE350 historical ROM provenance drift')
     identities = {str((source_dir / name).relative_to(root)): sha(source_dir / name) for name in INPUTS}
@@ -147,8 +161,13 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None)
     result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa='rv32im_zicsr', abi='ilp32',
                   compiler_prefix=prefix, compiler_version=versions['gcc'], tool_versions=versions,
                   source_provenance=provenance, input_sha256=identities,
-                  changed_from_import=[name for name in (*SOURCES, *HEADERS, 'boot.ld')
+                  changed_from_import=[name for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')
                                        if sha(source_dir / name) != provenance['files'][name]['sha256']],
+                  first_party_inputs={name: sha(source_dir / name)
+                                      for name in (*FIRST_PARTY_SOURCES, *FIRST_PARTY_HEADERS)},
+                  imported_inputs={name: sha(source_dir / name)
+                                   for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')},
+                  compiled_sources=list(SOURCES),
                   commands=commands, capacity=capacity, compiler_stack_frames=stack_frames,
                   elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'),
                   rom_sha256=sha(rom), reference_rom=dict(reference_description,
