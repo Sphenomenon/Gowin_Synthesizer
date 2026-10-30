@@ -79,6 +79,17 @@ busy 和 hold 直到真正 quiet；它不能伪造清空证明。计算域停钟
 没有结果的业务请求，也不能让未知的队列被当作空闲。源时钟停止后最后一次取消
 由帧桥的独立 generation 发布继续可见；源域 ACK 本身必须等源时钟恢复。
 
+送入 compute 首级同步器的 `source_quiesce` 是 50 MHz 保持寄存器，common
+reset 时置1；它在源边沿采样 IDLE／QUIESCE／RESTART_SETTLE 或本拍 invalidate。
+因此多寄存器状态／epoch／错误组合译码不再直接成为跨域控制发布源。
+`invalidate`、source PCM 准入和 native input hold 仍在原边沿执行；最后一个
+源边沿之后立即停高／停低时，generation 和已置位 quiesce 都继续供 compute
+观察。不能把 invalidate 也后移一拍。退出静止状态后，quiesce 保守多保持一个
+50 MHz 周期（20 ns），随后仍等待原 quiesce 回程及 generation ACK 才开放新帧。
+该延迟不停止采样时基、不改超时语义，也不替代真实清流、DDR／控制邮箱 ACK。
+源码注册不构成该首级 D 的物理时序或完整 CDC 接受；未新增 false path、
+multicycle 或更改时钟，后续实际网表必须以新身份重新核对。
+
 `eof_seen_o` 只表示真实 path 的 `pcm_end` 已出现。桥中仍可能有尾帧；本服务没有
 有序 EOS／最后物理帧完成协议，不产生成功完成或 drained 信号。EOF 不立即
 invalidate，不丢尾，保持 busy/route 直到显式取消／退出；尾帧耗尽后 runtime 可报告

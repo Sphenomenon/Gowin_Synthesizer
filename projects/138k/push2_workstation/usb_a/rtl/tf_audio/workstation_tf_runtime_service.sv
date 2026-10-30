@@ -111,7 +111,14 @@ module workstation_tf_runtime_service #(
     wire invalidate=resume_restart || auto_track_change || allowed_cancel || new_failure || (!mode_i && allowed_reader_restart) || stop_invalidate ||
         (!stop_latched && ((card_lost_o && !card_lost_q) || (transport_error_i && !transport_error_q)));
     wire bridge_source_ready,source_quiet,generation_pending;
-    wire source_quiesce=state==IDLE || state==QUIESCE || state==RESTART_SETTLE || invalidate;
+    // Publish a held source-clock level to the compute synchronizer. Keep
+    // invalidate combinational above: generation and source admission must
+    // cancel on this edge even if source_clk stops immediately afterward.
+    // Current-state sampling conservatively adds one source edge on release.
+    (* syn_preserve=1 *) reg source_quiesce;
+    always @(posedge clk_50m_i or negedge rst_ni)
+        if(!rst_ni)source_quiesce<=1;
+        else source_quiesce<=state==IDLE || state==QUIESCE || state==RESTART_SETTLE || invalidate;
     wire playback_accept=state==PLAY && mode_i && run_i && !invalidate && !stop_latched;
     wire path_pcm_valid,path_pcm_ready,path_pcm_end;
     wire signed [15:0] path_left,path_right;

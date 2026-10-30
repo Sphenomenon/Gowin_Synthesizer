@@ -49,7 +49,8 @@ module tf_sd_file_reader #(parameter [23:0] EXT="WAV",parameter integer SPI_CLK_
     end
 endmodule
 
-module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1,EXTERNAL_STOP_PROTOCOL=0);
+module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1,EXTERNAL_STOP_PROTOCOL=0,
+    OVERALL_TIMEOUT_NS=3000000);
     reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,memory_run=1,rst_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
     always begin #6.510416667;if(compute_run)compute_clk=~compute_clk;end
@@ -457,5 +458,5 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         $display("PASS tf_runtime_service: buffered=%0d cases=%0d delivered=%0d pause_zero_frames=%0d analysis_frames=%0d ddr_writes=%0d ddr_reads=%0d failures=%0d invalidates=%0d stopped_source=%0d stale=%0d discarded=%0d read_drain_wait_cycles=%0d queued_accepts=%0d downstream_stalls=%0d scope_compares=%0d scope_explicit=%0d scope_auto=%0d quiet_source_checks=%0d quiet_source_changes=%0d queued_drain_tests=%0d adjacent_drain_tests=%0d cancel_drain_tests=%0d",USE_COMMAND_BUFFER,tests,delivered,pause_zeros,analysis_frames,ddr_writes,ddr_reads,failures,invalidates,stop_checks,stale,discarded,read_drain_wait_cycles,queued_accepts,downstream_stalls,scope_compares,scope_explicit_count,scope_auto_count,quiet_source_checks,quiet_source_changes,queued_drain_tests,adjacent_drain_tests,cancel_drain_tests);
         $finish;
     end end
-    initial begin #3000000;$fatal(1,"overall TF service timeout state=%0d index=%0d failed=%b code=%0d track=%0d",dut.state,session_index,failed,failure,track);end
+    initial begin #(OVERALL_TIMEOUT_NS);$fatal(1,"overall TF service timeout state=%0d index=%0d failed=%b code=%0d track=%0d",dut.state,session_index,failed,failure,track);end
 endmodule
