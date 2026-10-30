@@ -98,6 +98,8 @@
 
 [录音封存桥本地释放](push2_workstation/usb_a/reports/WORKSTATION_RECORDING_SEAL_RELEASE_MAIN_20261030.md)已父级复验：11 场景／12 突变、真实 runtime 14 场景／五负控及严格 lint 通过，CPU observer reset 不撤销真实封存。四种新 prepare 来源各 12 项通过；enabled／no-CNN staged 不变，R00／no-panel 584 项中仅桥源码变化。Profile 20 项（一个旧默认可选项跳过）、accepted 17 项通过，保留 PCM v2 来源锁；新桥尚无综合、完整 CDC／reset／物理或实板接受，无部署。
 
+[PCM v2 新综合核验](push2_workstation/usb_a/reports/WORKSTATION_PCM_V2_FRESH_SYNTHESIS_20261030.md)已完成 `7d1c3b9b464ff722` 的 584 输入／四输出封存、18 项／109 负控及配对约束实际安装检查，四组 payload 静态覆盖无遗漏；综合 Logic 103,147／Register 58,602／BSRAM 253。未运行 P&R，不是物理资源；该网表不含随后封存桥修复和 BLE DDR 新组件，不能继承给后续来源。完整门禁／实板仍未接受，无部署。
+
 ## 2. 本次确认的目标架构（含绘制勘误）
 
 ### 2.1 统一输入和音频

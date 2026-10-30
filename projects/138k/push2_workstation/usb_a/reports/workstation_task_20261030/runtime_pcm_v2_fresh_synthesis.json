@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-30T13:17:03.533392+00:00",
+  "candidate": "custom138k-workstation-r00-no-local-panel-v1-7d1c3b9b464ff722",
+  "source_copy": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b/synthesis_copy.json",
+    "sha256": "14a90649c71b365977dc85905abaf70ec432e94a234308ab4049c02fc9aae5ca"
+  },
+  "synthesis_process": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-no-panel-synthesis-7d1c3b9b/runtime_synthesis_evidence/process.json",
+    "sha256": "9d90a33c79cc0856c3c07b2932cb819ce8e9bf3931b9001dee143d9423f74a90"
+  },
+  "elapsed_seconds": 364.2680481658317,
+  "exit_code": 0,
+  "staged_inputs": 584,
+  "outputs_reverified": {
+    "impl/gwsynthesis/custom_138k_integration.vg": "5d373e6a399afdcf30b3dce18ec9aa02a1c0a4baa909373509f45a4e84f1aadb",
+    "impl/gwsynthesis/custom_138k_integration.log": "d6d26df0b1a5c2be29eb5fa74346398fe9bdc1d7133bab75d7fc6d57991039b7",
+    "impl/gwsynthesis/custom_138k_integration_syn_resource.html": "87a1682e38c22652a30a167742a7b61023a226c9082b22f8e247072fa09fe5bf",
+    "impl/gwsynthesis/custom_138k_integration_syn.rpt.html": "7981ca8fc934a6ffbdf59e6ae4d3ec2c22aa1078cefc9003685d464332067f83"
+  },
+  "input_output_seals_rechecked": true,
+  "AG_diagnostics": [],
+  "synthesis_resources": {
+    "logic": 103147,
+    "register": 58602,
+    "BSRAM": 253,
+    "physical_occupancy": false
+  },
+  "audits": {
+    "pcm": {
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-fresh-parent-audit-v1.json",
+        "sha256": "a96b76e9ddf66017c54b116a28bbdddc39a723cf8a8379228e454a615475e720"
+      },
+      "identity": "runtime-pcm-context-source-v2-4333f5e7fdfa89b2"
+    },
+    "clock": {
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-fresh-clock-audit-v1.json",
+        "sha256": "4829e3cdad5edc5c2f7b09d94e264481e3abc25ca66c9fa6cd35531f28360b19"
+      },
+      "identity": "runtime-clock-source-audit-v1-3b10b24d292a0909"
+    },
+    "gray_media": {
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-fresh-partial-cdc-v2.json",
+        "sha256": "8e3a962c1e9ca14f625be091f69680805e9f42ee4e3e2dad8dded5d105e1d0b2"
+      },
+      "identity": "runtime-cdc-gray-media-fence-source-v2-1556f1f8c9e8f688"
+    }
+  },
+  "actual_tests": 18,
+  "negative_controls": 109,
+  "negative_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-fresh-parent-negatives-v1.json",
+    "sha256": "6a6566bcc327224b0a65d3afd341feb32cf68b5ec81c58c98771cdc6d0a87dd8"
+  },
+  "test_log": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/pcm-v2-fresh-parent-tests-v1.log",
+    "sha256": "24fcb5abdc1ffdb4e5471af48777cd62a17d78d49935bb2e3eabb9612b8846b9"
+  },
+  "paired_constraints_installed": true,
+  "payload_uncovered_pins": 0,
+  "tool_query_resolution_verified": false,
+  "routed_propagation_verified": false,
+  "complete_cdc_accepted": false,
+  "reset_inventory_complete": false,
+  "physical_timing_accepted": false,
+  "place_route_run": false,
+  "source_excludes_later_seal_bridge": true,
+  "physical_followup": "next integrated BLE DDR candidate will receive a fresh source identity and resource/physical check; no same-RTL P&R launched here",
+  "hardware_operated": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}
