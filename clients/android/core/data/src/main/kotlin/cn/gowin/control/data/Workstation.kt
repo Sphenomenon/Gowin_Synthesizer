@@ -71,7 +71,13 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             }
             _state.update{it.copy(parameters=params)}
             if(cap.has(2)) subscribe(200)
-            _state.update{it.copy(ready=true,connection=if(_state.value.builtInAudioTest)"已连接 · 内置音频录音测试"else if(cap.protocolTestOnly)"已连接 · 最小协议测试"else"已连接 · 可控制")}
+            _state.update{it.copy(ready=true,connection=when {
+                _state.value.builtInAudioTest->"已连接 · 内置音频录音测试"
+                cap.protocolTestOnly->"已连接 · 最小协议测试"
+                cap.has(0)||cap.has(1)->"已连接 · 可控制"
+                cap.has(3)||cap.has(4)||cap.has(5)->"已连接 · 录音服务"
+                else->"已连接 · 业务服务"
+            })}
             watcher=scope.launch {
                 t.connected.filter{!it}.first()
                 _state.update{it.copy(ready=false,connection=if(cap.protocolTestOnly)"连接已断开，可重新扫描连接"else"连接已断开，设备录音默认继续")}

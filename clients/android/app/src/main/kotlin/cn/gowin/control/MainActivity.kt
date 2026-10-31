@@ -140,7 +140,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
             }}
             if(s.busy)LinearProgressIndicator(Modifier.fillMaxWidth())
             when(tab){
-                0->Controls(s,vm)
+                0->Controls(s,vm){tab=3}
                 1->Recording(s,vm){
                     if(Build.VERSION.SDK_INT>=33&&!s.demo&&ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)notifyPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
                     vm.repo.download()
@@ -182,7 +182,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     Slider(value=value,onValueChange={value=it},valueRange=0f..127f,enabled=s.ready&&!s.busy&&s.capability?.has(1)==true&&id in s.parameters,
         onValueChangeFinished={vm.action{vm.repo.setParameter(id,value.toLong())}})
 }
-@Composable private fun Controls(s:WorkstationState,vm:ControlViewModel){
+@Composable internal fun Controls(s:WorkstationState,vm:ControlViewModel,openMusic:()->Unit){
     val capability=s.capability
     if(capability?.protocolTestOnly==true || s.builtInAudioTest) {
         Section(if(s.builtInAudioTest)"25K 内置音频测试"else"25K 最小协议联调") {
@@ -192,6 +192,21 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
             Text("快照 ${s.snapshot.id} · 设备时间 ${s.snapshot.time} ms")
             Text("有效组 0x${s.snapshot.valid.toString(16)} · 控制窗口${if(s.snapshot.flags and 8L!=0L)"开启"else"关闭"}")
             OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refreshStatus()}}){Text("发送 GET_STATUS")}
+        }
+        return
+    }
+    if(!s.demo && capability!=null && !capability.has(0) && !capability.has(1)) {
+        Section("设备业务") {
+            Text("当前设备未开放手机参数控制。")
+            Text("参数请在工作站或25K面板上调整。")
+            Text("设备录音：${if(capability.has(3)||capability.has(4))"已开放"else"未开放"}")
+            Text("录音下载：${if(capability.has(5))"已开放"else"未开放"}")
+            if(capability.has(3)||capability.has(4)||capability.has(5)) {
+                Text("在录音页操作设备录音和下载；录音状态以设备读取结果为准。")
+            }
+            Text("音乐页可选择手机音频，通过系统蓝牙媒体连接播放到工作站。")
+            Button(onClick=openMusic){Text("前往音乐")}
+            OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refresh()}}){Text("刷新状态")}
         }
         return
     }
