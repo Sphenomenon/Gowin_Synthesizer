@@ -6,7 +6,8 @@ pins from the sealed synthesis netlist; RTL block attributes are insufficient.
 import re
 from tools.workstation_synthesis_netlist import IDENTIFIER
 
-def audit(n):
+def audit(n,program='local-memory'):
+    if program not in ('local-memory','cache-pma-v1'):raise ValueError('unknown snapshot source program')
     zero={"1'b0"};one={"1'b1"};constant_drivers={}
     for name,c in n.cells.items():
         if c['kind'] in ('GND','VCC'):
@@ -71,6 +72,7 @@ def audit(n):
         data_inputs.update(di[:16])
         data_outputs.update(do[:16])
     expected_held={i for i in range(58*32)}|{58*32,59*32}
+    if program=='cache-pma-v1':expected_held.update(range(60*32,61*32))
     held={};held_nets=set();uart_cache_nets=set();reference_registers=0;other_clocks=set();wide=[];small_banks={k:set() for k in ('prefetch','prepared_page0','cache_data')}
     for name,c in n.cells.items():
         if not name.startswith('u_uart/') or not c['kind'].startswith('DFF'):continue

@@ -38,8 +38,14 @@ RTC_CLOCK_SDC=('create_generated_clock -name cpu_rtc_bound -source [get_ports {c
 BSRAM_METADATA=('rtl/probe/AE350_BSRAM_SNAPSHOT_CONTRACT.md',
     'tools/workstation_ae350_snapshot_ram_audit.py','tools/workstation_synthesis_netlist.py',
     'tools/decode_ae350_banked_gao.py','tools/decode_ae350_local_probe.py')
+CACHE_METADATA=('firmware/ae350/probes/CACHE_PMA_PROBE.md',
+    'tools/workstation_ae350_cache_probe.py','tools/decode_ae350_cache_probe.py')
 
-def native_sources(gao_mode):
+def native_sources(gao_mode,program='local-memory'):
+    if program not in ('local-memory','cache-pma-v1'):raise ValueError('unknown probe program')
+    if program=='cache-pma-v1':
+        if gao_mode!='bsram4':raise ValueError('cache-pma-v1 requires explicit bsram4 transport')
+        return native_sources(gao_mode)+('rtl/probe/workstation_ae350_cache_probe_memory.sv',)
     if gao_mode not in ('full64','banked4','bsram4'):raise ValueError('unknown probe GAO mode')
     if gao_mode=='bsram4':
         return tuple(n for n in NATIVE if n!='rtl/probe/workstation_ae350_probe_uart.sv')+(
@@ -65,7 +71,7 @@ def gao_record(gao_mode):
             uart_payload_wait='tagged32-bit cache; matching response within one16-clock sweep, launch at most one further edge later; no read-port stealing')
     return result
 
-def audit_gao_synthesis(netlist_text,gao_mode='full64'):
+def audit_gao_synthesis(netlist_text,gao_mode='full64',program='local-memory'):
     """Require every declared GAO bit to survive as a 50MHz register.
 
     Source/prepare checks cannot establish this. Root calls this on the new
@@ -88,7 +94,7 @@ def audit_gao_synthesis(netlist_text,gao_mode='full64'):
         physical_timing_verified=False,external_uart_reception_verified=False)
     if gao_mode=='bsram4':
         from tools.workstation_ae350_snapshot_ram_audit import audit
-        result['snapshot_ram']=audit(n)
+        result['snapshot_ram']=audit(n,program)
     return result
 
 def audit_rtc_synthesis(netlist_text):
@@ -138,17 +144,23 @@ def payload():
     return words,dict(words=8192,bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),
         crc32=zlib.crc32(raw),first=words[0],last=words[-1],algorithm='xorshift32(index xor 0xa1386401), shifts 13/17/5, little endian')
 
-def firmware(root,output,prefix):
+def firmware(root,output,prefix,program='local-memory'):
     output.mkdir(parents=True,exist_ok=False)
     prefix=compiler_prefix(prefix)
     identities={}
-    for name in FIRMWARE:
+    if program not in ('local-memory','cache-pma-v1'):raise ValueError('unknown probe program')
+    selected=FIRMWARE if program=='local-memory' else FIRMWARE[:3]+('probes/cache_pma_probe.c','probes/cache_pma_probe_trap.S')
+    for name in selected:
         source=root/'firmware/ae350'/name;target=output/Path(name).name
         identities['firmware/ae350/'+name]=sha(source);shutil.copyfile(source,target)
-    words,data=payload()
-    (output/'probe_payload.inc').write_text(''.join(f'0x{word:08x}u,\n' for word in words))
-    (output/'probe_payload.h').write_text(''.join(f'#define PROBE_PAYLOAD_{name} 0x{data[key]:08x}u\n'
-        for name,key in [('CRC','crc32'),('FIRST','first'),('LAST','last')]))
+    if program=='local-memory':
+        words,data=payload()
+        (output/'probe_payload.inc').write_text(''.join(f'0x{word:08x}u,\n' for word in words))
+        (output/'probe_payload.h').write_text(''.join(f'#define PROBE_PAYLOAD_{name} 0x{data[key]:08x}u\n'
+            for name,key in [('CRC','crc32'),('FIRST','first'),('LAST','last')]))
+    else:
+        from tools.workstation_ae350_cache_probe import contract
+        data=contract()
     commands=[];versions={}
     for tool in ('gcc','objcopy','objdump','size','nm'):
         versions[tool]=subprocess.check_output([prefix+'-'+tool,'--version'],text=True).splitlines()[0]
@@ -157,18 +169,19 @@ def firmware(root,output,prefix):
     with (output/'build.log').open('w') as log:
         def run(command):
             commands.append(command);subprocess.run(command,cwd=output,stdout=log,stderr=subprocess.STDOUT,check=True)
-        for name in ('start.S','local_memory_probe.c','local_memory_probe_trap.S'):
+        units=('start.S',*[Path(x).name for x in selected[3:]])
+        for name in units:
             run([prefix+'-gcc',*flags,'-c',name,'-o',Path(name).stem+'.o'])
         run([prefix+'-gcc',*flags,'-nostdlib','-nostartfiles',
             '-Wl,--build-id=none,--defsym=__boot_rom_bytes=65536,-Map=firmware.map,-T,boot_ilm_dlm.ld',
-            'start.o','local_memory_probe.o','local_memory_probe_trap.o','-o','firmware.elf'])
+            *[Path(x).stem+'.o' for x in units],'-o','firmware.elf'])
         run([prefix+'-objcopy','-O','binary','firmware.elf','firmware.bin'])
     for tool,name in [('size','firmware.size'),('nm','firmware.nm'),('objdump','firmware.dis')]:
         option=['-n'] if tool=='nm' else ['-d'] if tool=='objdump' else []
         (output/name).write_text(subprocess.check_output([prefix+'-'+tool,*option,'firmware.elf'],cwd=output,text=True))
     raw=(output/'firmware.bin').read_bytes()
     capacity=local_memory_report((output/'firmware.size').read_text(),(output/'firmware.nm').read_text(),len(raw),65536)
-    if not 16384<len(raw)<60000 or capacity['ilm_runtime_bytes']>=60000:
+    if (not (16384 if program=='local-memory' else 0)<len(raw)<60000 or capacity['ilm_runtime_bytes']>=60000):
         raise ValueError('probe must exercise upper ROM while leaving safe ILM pattern space')
     elf=verify_elf_image(output/'firmware.elf',raw,capacity['symbols'],65536)
     image=raw.ljust(65536,b'\0')
@@ -177,7 +190,10 @@ def firmware(root,output,prefix):
     for path in output.glob('*.su'):
         for line in path.read_text().splitlines():
             name,count,kind=line.split('\t');frames.append(dict(function=name,bytes=int(count),kind=kind))
-    stack=call_chain_report(output,frames,(output/'firmware.dis').read_text(),16384)
+    if program=='local-memory':stack=call_chain_report(output,frames,(output/'firmware.dis').read_text(),16384)
+    else:
+        from tools.workstation_ae350_cache_probe import audit_firmware
+        stack=audit_firmware(output,frames)
     for name,expected in identities.items():
         if sha(root/name)!=expected or sha(output/Path(name).name)!=expected:
             raise ValueError('probe firmware source changed during compilation: '+name)
@@ -192,6 +208,10 @@ def firmware(root,output,prefix):
         counter_policy='read-only mcycle/minstret high-low-high snapshots; no enable/inhibit write; optional CSR exact-site recovery',
         trap_policy='stackless probe handler after services_main only; precise illegal-CSR recovery; all other traps halt',
         hardware_tested=False)
+    if program!='local-memory':
+        result.update(probe_program=program,counter_policy='no timing claim',
+            trap_policy='terminal stackless handler; cache off then own PMA revoke/restore; unsupported cleanup can require reset',
+            cache_policy='explicit isolated PL cache/PMA test; final cache-off and PMA restore required')
     (output/'build_metadata.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
@@ -236,10 +256,10 @@ def audit_prepare(output):
     """
     output=Path(output).resolve();record=json.loads((output/'inputs.json').read_text())
     gao_mode=record['gao'].get('mode','full64')
-    native=native_sources(gao_mode)
+    program=record.get('probe_program','local-memory');native=native_sources(gao_mode,program)
     if record['gao']!=gao_record(gao_mode):raise ValueError('probe GAO contract changed')
     if gao_mode=='bsram4':
-        if set(record.get('noncompiled_sha256',{}))!=set(BSRAM_METADATA):
+        if set(record.get('noncompiled_sha256',{}))!=set(BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ())):
             raise ValueError('BSRAM noncompiled contract/audit/decoder closure changed')
         for name,expected in record['noncompiled_sha256'].items():
             if record['input_sha256'].get(name)!=expected or sha(output/name)!=expected:
@@ -273,6 +293,7 @@ def audit_prepare(output):
     identity="`define AE350_PROBE_USER_CODE 32'h"+record['user_code'][2:].upper()+'\n'
     if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
     if gao_mode=='bsram4':identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if program=='cache-pma-v1':identity+='`define AE350_PROBE_CACHE_PMA\n'
     if (output/'probe_identity.vh').read_text()!=identity:raise ValueError('probe identity or explicit GAO mode changed')
     cst=(output/'probe.cst').read_text()
     audit_cpu_pll_constraint(cst)
@@ -288,16 +309,21 @@ def audit_prepare(output):
     if bytes(decode_rom(output/'firmware/boot.mem',65536))!=raw.ljust(65536,b'\0'):
         raise ValueError('probe cold ROM no longer matches binary')
     verify_elf_image(output/'firmware/firmware.elf',raw,fw['capacity']['symbols'],65536)
-    if fw['payload']!=payload()[1]:raise ValueError('probe independent host payload identity changed')
+    if program=='local-memory':
+        if fw['payload']!=payload()[1]:raise ValueError('probe independent host payload identity changed')
+    else:
+        from tools.workstation_ae350_cache_probe import contract,audit_firmware
+        if fw['payload']!=contract():raise ValueError('cache probe contract changed')
+        audit_firmware(output/'firmware',fw['compiler_stack_frames'])
     return dict(manifest_sha256=sha(output/'inputs.json'),verified_inputs=len(record['input_sha256']),
         compiled_sources=len(selected),rom_bytes=65536,cold_binary_bytes=len(raw),
         synthesis_verified=False,physical_timing_verified=False,hardware_verified=False)
 
-def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64'):
+def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64',program='local-memory'):
     root,output=Path(root).resolve(),Path(output).resolve()
     if not re.fullmatch('[0-9a-fA-F]{8}',user_code or ''):raise ValueError('probe requires an explicit new eight-hex UserCode')
     if output.exists():raise FileExistsError(str(output))
-    native=native_sources(gao_mode)
+    native=native_sources(gao_mode,program)
     baseline=load_baseline(root,'resource_rework_route0')
     # Read and check every selected frozen input before creating a candidate.
     locked={name:baseline.read_bytes(name) for name in LOCKED}
@@ -318,6 +344,7 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64'):
     identity="`define AE350_PROBE_USER_CODE 32'h"+user_code.upper()+'\n'
     if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
     if gao_mode=='bsram4':identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if program=='cache-pma-v1':identity+='`define AE350_PROBE_CACHE_PMA\n'
     (output/'probe_identity.vh').write_text(identity)
     selected=[]
     for name,data in locked.items():
@@ -328,10 +355,10 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64'):
         target=output/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/relative,target)
         if sha(target)!=sha(root/relative):raise ValueError('probe source copy changed')
         selected.append(relative)
+    fw=firmware(root,output/'firmware',prefix,program)
     if gao_mode=='bsram4':
-        for relative in BSRAM_METADATA:
+        for relative in BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ()):
             target=output/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/relative,target)
-    fw=firmware(root,output/'firmware',prefix)
     common=['set root [file dirname [file normalize [info script]]]','cd $root',f'set_device {plan["device"]} -device_version C',
         'set_option -synthesis_tool gowinsynthesis',f'set_option -top_module {TOP}',f'set_option -output_base_name {BASE}',
         'set_option -verilog_std sysv2017','set_option -include_path $root',
@@ -370,7 +397,10 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64'):
         input_sha256={str(path.relative_to(output)):sha(path) for path in output.rglob('*') if path.is_file()})
     if gao_mode=='bsram4':
         record['source_policy']+='; explicit bsram4 canonical synchronous RAM publisher/exporter, schema A1386403'
-        record['noncompiled_sha256']={name:sha(root/name) for name in BSRAM_METADATA}
+        record['noncompiled_sha256']={name:sha(root/name) for name in BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ())}
+    if program=='cache-pma-v1':
+        record.update(probe_program=program,cache_policy=fw['cache_policy'],
+            source_policy=record['source_policy']+'; explicit isolated PL cache/PMA program and burst-aware memory owner')
     (output/'inputs.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n')
     audit_prepare(output)
     return output,record

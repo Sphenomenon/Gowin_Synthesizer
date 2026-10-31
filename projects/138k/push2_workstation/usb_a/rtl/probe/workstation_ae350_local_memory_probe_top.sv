@@ -39,6 +39,16 @@ module workstation_ae350_local_memory_probe_top(
     wire [63:0] ram_read_data,ram_write_data;
     wire [1:0] ram_transfer;
     wire [2:0] ram_size;
+    wire [2:0] ram_burst;
+    wire [3:0] ram_protection;
+`ifdef AE350_PROBE_CACHE_PMA
+    wire data_fault,unmapped_seen,ram_ready;
+    workstation_ae350_cache_probe_memory u_cache_memory(
+        .clk(ram_clk),.reset_n(ram_reset_n),.address(ram_address),.transfer(ram_transfer),
+        .size(ram_size),.burst(ram_burst),.protection(ram_protection),.write(ram_write),
+        .write_data(ram_write_data),.read_data(ram_read_data),.ready(ram_ready),
+        .response(data_fault),.unmapped_seen(unmapped_seen));
+`else
     wire local_address=ram_address[31:13]==0 && (ram_size==0 ||
         (ram_size==1 && !ram_address[0]) || (ram_size==2 && ram_address[1:0]==0) ||
         (ram_size==3 && ram_address[2:0]==0));
@@ -51,6 +61,7 @@ module workstation_ae350_local_memory_probe_top(
             data_fault<=ram_transfer[1] && !local_address;error_second<=0;
             if(ram_transfer[1] && !local_address)unmapped_seen<=1;
         end
+`endif
     reg upper_seen=0,rom_seen=0;
     always @(posedge rom_clk or negedge rom_reset_n)
         if(!rom_reset_n)begin upper_seen<=0;rom_seen<=0;end
@@ -62,8 +73,12 @@ module workstation_ae350_local_memory_probe_top(
         .rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
         .rom_transfer(rom_transfer),.rom_data(rom_data),.fetch_count(fetch_count),.last_fetch(last_fetch),
         .ram_clk(ram_clk),.ram_reset_n(ram_reset_n),.ram_address(ram_address),
+`ifdef AE350_PROBE_CACHE_PMA
+        .ram_transfer(2'b00),.ram_size(ram_size),.ram_write(1'b0),.ram_write_data(64'd0),.ram_read_data());
+`else
         .ram_transfer((ram_ready && local_address)?ram_transfer:2'b00),.ram_size(ram_size),
         .ram_write(ram_write),.ram_write_data(ram_write_data),.ram_read_data(ram_read_data));
+`endif
     wire pclk,preset_n,psel,penable,pwrite;
     wire [31:0] paddr,pwdata;
     wire [3:0] pstrb;
@@ -79,6 +94,10 @@ module workstation_ae350_local_memory_probe_top(
             if(psel && penable && pwrite && valid_address && pstrb==4'hf && paddr[7:2]<58)
                 diagnostic[paddr[7:2]]<=pwdata;
             diagnostic[58]<={31'd0,upper_sync[1]};diagnostic[59]<={31'd0,unmapped_sync[1]};
+`ifdef AE350_PROBE_CACHE_PMA
+            if(psel && penable && !pwrite && valid_address && paddr[7:2]==60)
+                diagnostic[60]<=diagnostic[60]+1'b1;
+`endif
         end
     wire [31:0] prdata=valid_address?diagnostic[paddr[7:2]]:32'd0;
     wire pslverr=!valid_address || (pwrite && (pstrb!=4'hf || paddr[7:2]>=58));
@@ -151,7 +170,7 @@ module workstation_ae350_local_memory_probe_top(
         .ROM_HRDATA(rom_data),.ROM_HREADY(1'b1),.ROM_HRESP(1'b0),.ROM_HADDR(rom_address),
         .ROM_HTRANS(rom_transfer),.ROM_HWRITE(rom_write),.ROM_HCLK(rom_clk),.ROM_HRSTN(rom_reset_n),
         .DDR_HRDATA(data_fault?64'd0:ram_read_data),.DDR_HREADY(ram_ready),.DDR_HRESP(data_fault),
-        .DDR_HADDR(ram_address),.DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
+        .DDR_HADDR(ram_address),.DDR_HBURST(ram_burst),.DDR_HPROT(ram_protection),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
         .APB_PRDATA(prdata),.APB_PREADY(1'b1),.APB_PSLVERR(pslverr),.APB_PADDR(paddr),
         .APB_PENABLE(penable),.APB_PSEL(psel),.APB_PWDATA(pwdata),.APB_PWRITE(pwrite),
