@@ -230,6 +230,8 @@ W真实performance三拍释放的[窄约束与50MHz专项报告已接入DEMO构�
 
 M的[PANIC交付保留窗／render握手／等价增益](push2_workstation/usb_a/reports/DUAL138K_AUDIO_CANCEL_DELIVERY_20261031.md)通过48,691请求全完成、48,645帧独立效果比较及22,532帧真实I2S整链；W的[描述符及许可组合修复](push2_workstation/usb_a/reports/DUAL138K_PCM_DESCRIPTOR_GATE_20261031.md)通过完整owner旧版对照、115,011向量／4负控、长测与1,454帧runtime，交叉审查无阻塞。新M10b `370f528922c4fcb5`／W9b `01aa047a4d25aaf1`均已从各821项来源锁完整prepare并双重校验，实际消费上述维护RTL／时序补充，分别587／644封存输入；已启动两套全量综合。首次prepare的recognition封口顺序拒绝保留，新输出已修正并通过，未预记新的综合／物理收益，仍未上板。
 
+M10b／W9b现已完成[全量综合及严格准备门](push2_workstation/usb_a/reports/DUAL138K_M10_W9_SYNTHESIS_20261031.md)，实测LUT＋ALU64,446／83,097、综合BSRAM195／257，`D2103111`／`D2103112`已启动默认完整P&R，未加旧far布局。W额外原生局部CDC门对APB请求资格新映射的拒绝正核验，不能以综合准备门PASS代替该项或完整物理验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

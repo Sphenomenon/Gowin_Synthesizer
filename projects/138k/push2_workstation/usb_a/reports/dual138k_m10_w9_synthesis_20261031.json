@@ -1,0 +1,117 @@
+{
+  "stage": "full_synthesis_and_strict_gate_passed_PNR_running",
+  "candidates": [
+    {
+      "role": "M",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b",
+      "identity": "custom138k-workstation-m-demo-v1-370f528922c4fcb5",
+      "strict_synthesis_gate": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-physical-v1/parent_synthesis_audit.json",
+        "sha256": "ae085aae6a2629f55a8ec1a89213372ad1e13b8e6055ce075a1c40ff36fb3136"
+      },
+      "synthesis_process": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-synthesis-process-v1.json",
+        "sha256": "4bb7d365bd98bac79e61433af0581160082db7a10d1f05df881da94944bd4956"
+      },
+      "netlist_sha256": "60b346962d8e467716c7ce664159932d948c823118daa964d7d1539921dcf229",
+      "resources": {
+        "Register": 46930,
+        "Lut": 51504,
+        "Alu": 12942,
+        "Bsram": 195,
+        "Ssram": 141,
+        "MULTALU27X18": 34,
+        "MULT12X12": 4,
+        "MULT27X36": 42
+      },
+      "auditor_sha256": {
+        "tools/workstation_demo_audit.py": "bfb7efcb9348c84b664b90fcc160b1e2632248bf5f25ff509baf7930203b0476",
+        "tools/workstation_demo_policy.py": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33",
+        "tools/workstation_custom_board_audit.py": "24103f0e06a098221d613a2611341c6a8ce7f7ce5750dd18db1d474c044348b2",
+        "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "tools/workstation_profile.py": "8529ba858ab041bf6e422bcda861d62d68e376c8e6d47fd8848bf384ca29aca2",
+        "tools/workstation_runtime_clock_audit.py": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+        "tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
+        "tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+        "tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
+        "tools/workstation_usb2_bridge_audit.py": "2ca71720c5ad14a4e00ff7090d3ef502635c5d19aa9b9b540f938cfb2505fa3d",
+        "tools/workstation_custom_timing.py": "6b95fcd680f0fe6c90cb8f1434af66490c5a33acf014ef902c7d3589675ccabe",
+        "tools/workstation_ae350_clock_placement.py": "118b02e7c9eee44c5080ccbc5d7dd88455579d4319350c126da89f520826503b",
+        "tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+        "tools/workstation_board_peripherals.py": "0ea1b704e682923710737632df2b77641c66d17dfddf3c105ec30135f576a349",
+        "tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
+        "tools/stage_usb_firmware.py": "a6fa68f11dc363cd223ad3f59e65d4405a8f349d5cd3d555838ef4981d6512d2",
+        "tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "tools/workstation_performance_reset.py": "870356b522f009984b967b23d5205567a525a72c94398d6e64d3afdf6d390c13",
+        "tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+        "tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+        "tools/workstation_runtime_profile.py": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+        "tools/workstation_runtime_cdc.py": "95a9839f143f806005ace2d9c3d78452da43df36c7de5a7237254f58422a86b8"
+      },
+      "source_policy": "immutable_prepared_closure",
+      "physical_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-physical-v1",
+      "user_code": "D2103111",
+      "physical_stage": "placement_and_routing_in_progress",
+      "timing_closed": false
+    },
+    {
+      "role": "W",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b",
+      "identity": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+      "strict_synthesis_gate": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-v1/parent_synthesis_audit.json",
+        "sha256": "e2573756fcc8f8cd18fb180d8834325e0c8a71b02fbd81d2c058c324136b84c3"
+      },
+      "synthesis_process": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w9b-synthesis-run-v1.json",
+        "sha256": "48e8fc39f8a932abcfc686a96189f35c0757b4704818b7e3c02f1c88df9aa169"
+      },
+      "netlist_sha256": "990302b2e222ef67b3c1cf6d0df555c0a02a55b281776e3ef44cc1c7d358ea1f",
+      "resources": {
+        "Register": 45072,
+        "Lut": 62798,
+        "Alu": 20299,
+        "Bsram": 257,
+        "Ssram": 310,
+        "MULTALU27X18": 9,
+        "MULT12X12": 2,
+        "MULT27X36": 29
+      },
+      "auditor_sha256": {
+        "tools/workstation_demo_audit.py": "bfb7efcb9348c84b664b90fcc160b1e2632248bf5f25ff509baf7930203b0476",
+        "tools/workstation_demo_policy.py": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33",
+        "tools/workstation_custom_board_audit.py": "24103f0e06a098221d613a2611341c6a8ce7f7ce5750dd18db1d474c044348b2",
+        "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "tools/workstation_profile.py": "8529ba858ab041bf6e422bcda861d62d68e376c8e6d47fd8848bf384ca29aca2",
+        "tools/workstation_runtime_clock_audit.py": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+        "tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
+        "tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+        "tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
+        "tools/workstation_usb2_bridge_audit.py": "2ca71720c5ad14a4e00ff7090d3ef502635c5d19aa9b9b540f938cfb2505fa3d",
+        "tools/workstation_custom_timing.py": "6b95fcd680f0fe6c90cb8f1434af66490c5a33acf014ef902c7d3589675ccabe",
+        "tools/workstation_ae350_clock_placement.py": "118b02e7c9eee44c5080ccbc5d7dd88455579d4319350c126da89f520826503b",
+        "tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+        "tools/workstation_board_peripherals.py": "0ea1b704e682923710737632df2b77641c66d17dfddf3c105ec30135f576a349",
+        "tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
+        "tools/stage_usb_firmware.py": "a6fa68f11dc363cd223ad3f59e65d4405a8f349d5cd3d555838ef4981d6512d2",
+        "tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "tools/workstation_performance_reset.py": "870356b522f009984b967b23d5205567a525a72c94398d6e64d3afdf6d390c13",
+        "tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+        "tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+        "tools/workstation_runtime_profile.py": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+        "tools/workstation_runtime_cdc.py": "95a9839f143f806005ace2d9c3d78452da43df36c7de5a7237254f58422a86b8"
+      },
+      "source_policy": "immutable_prepared_closure",
+      "physical_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-v1",
+      "user_code": "D2103112",
+      "physical_stage": "placement_and_routing_in_progress",
+      "timing_closed": false
+    }
+  ],
+  "additional_native_local_CDC_status": "W9 VG audit mapping rejection under investigation; distinct from passing complete DEMO synthesis preparation gate",
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false
+}
