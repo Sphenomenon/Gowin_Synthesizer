@@ -21,16 +21,21 @@ module gw138k_boot_memory #(
     localparam integer ROM_WORDS = ROM_BYTES / 4;
     localparam integer ROM_INDEX_BITS = $clog2(ROM_WORDS);
     localparam [31:0] ROM_MASK = ~(ROM_BYTES - 1);
+    // A 96 KiB depth is not a power of two. Its exact range must reject
+    // the unused high 32 KiB and preserve the middle 32 KiB without alias.
+    wire rom_address_valid = ROM_BYTES == 98304
+        ? (rom_address >= 32'h80000000 && rom_address < 32'h80018000)
+        : (rom_address & ROM_MASK) == 32'h80000000;
     reg [31:0] rom [0:ROM_WORDS-1];
     reg [63:0] ram [0:1023];
     initial begin
-        if (ROM_BYTES != 16384 && ROM_BYTES != 65536 && ROM_BYTES != 131072)
-            $error("AE350 ROM capacity must be explicitly 16, 64 or 128 KiB");
+        if (ROM_BYTES != 16384 && ROM_BYTES != 65536 && ROM_BYTES != 98304 && ROM_BYTES != 131072)
+            $error("AE350 ROM capacity must be explicitly 16, 64, 96 or 128 KiB");
         $readmemh(ROM_FILE,rom);
     end
     always @(posedge rom_clk) begin
         if(rom_transfer[1])
-            rom_data <= (rom_address & ROM_MASK) == 32'h80000000
+            rom_data <= rom_address_valid
                 ? rom[rom_address[ROM_INDEX_BITS+1:2]] : 32'h00100073;
     end
     always @(posedge rom_clk or negedge rom_reset_n)

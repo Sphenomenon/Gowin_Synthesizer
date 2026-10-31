@@ -1146,7 +1146,9 @@ module gw138k_push_workstation_top #(
             default:begin end
         endcase
     end
-`ifdef WORKSTATION_AE350_ROM128
+`ifdef WORKSTATION_AE350_ROM96
+    gw138k_boot_memory #(.ROM_BYTES(98304)) u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
+`elsif WORKSTATION_AE350_ROM128
     gw138k_boot_memory #(.ROM_BYTES(131072)) u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
 `else
     gw138k_boot_memory u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),

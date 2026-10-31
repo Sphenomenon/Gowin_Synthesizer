@@ -16,8 +16,11 @@ PLATFORM = {
 def selection(configuration):
     memory = configuration.get('ae350_memory_profile', DEFAULT_PROFILE)
     capacity = configuration.get('ae350_boot_rom_bytes', 16384)
-    runtime128=(memory,capacity)==(LOCAL_PROFILE,131072)and configuration.get('ae350_firmware_policy')=='ae350_classic_runtime_failclosed_v1'and configuration.get('hci_transport_policy')=='native_shared_hci_owner_v1'and configuration.get('ae350_pcm_policy')=='ae350_decoded_pcm_source_v1'
-    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not runtime128:
+    joint=(memory==LOCAL_PROFILE and configuration.get('hci_transport_policy')=='native_shared_hci_owner_v1'
+        and configuration.get('ae350_pcm_policy')=='ae350_decoded_pcm_source_v1')
+    runtime=(joint and (capacity,configuration.get('ae350_firmware_policy'))in
+        ((131072,'ae350_classic_runtime_failclosed_v1'),(98304,'ae350_classic_runtime_rom96_failclosed_v1')))
+    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not runtime:
         raise ValueError('unsupported workstation AE350 memory/storage composition')
     return dict(memory_profile=memory, boot_rom_bytes=capacity)
 
@@ -30,9 +33,9 @@ def verify_prepared(stage, build, configuration, sha):
             build.get('capacity', {}).get('rom_capacity_bytes') != chosen['boot_rom_bytes']):
         raise ValueError('AE350 generated runtime/storage selection changed')
     from tools.stage_ae350_firmware import decode_rom
-    if chosen['boot_rom_bytes']==131072:
+    if chosen['boot_rom_bytes']in (98304,131072):
         from tools.workstation_classic_runtime import decode_rom as decode_runtime_rom
-        decode_runtime_rom(stage/'firmware/boot.mem')
+        decode_runtime_rom(stage/'firmware/boot.mem',chosen['boot_rom_bytes'])
     else:decode_rom(stage / 'firmware/boot.mem', chosen['boot_rom_bytes'])
     entries = ElementTree.parse(stage / 'Prj1.gprj').find('FileList')
     enabled = [entry.get('path') for entry in entries if entry.get('enable') == '1']
@@ -40,7 +43,7 @@ def verify_prepared(stage, build, configuration, sha):
     if enabled.count(SOURCE) != int(expanded) or enabled.count(PARENT) != int(not expanded):
         raise ValueError('AE350 physical ROM compilation owner changed')
     if expanded:
-        storage='explicit_128k_pl_boot_rom_split'if chosen['boot_rom_bytes']==131072 else'explicit_64k_pl_boot_rom'
+        storage={65536:'explicit_64k_pl_boot_rom',98304:'explicit_96k_pl_boot_rom_split',131072:'explicit_128k_pl_boot_rom_split'}[chosen['boot_rom_bytes']]
         if (build.get('cold_boot', {}).get('image_capacity_bytes') != chosen['boot_rom_bytes'] or
                 build.get('cold_boot', {}).get('image_storage') != storage or
                 build.get('cold_boot', {}).get('cache_policy') != 'reject_enabled_i_or_d_cache_on_entry'):

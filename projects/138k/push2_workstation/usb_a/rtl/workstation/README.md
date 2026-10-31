@@ -12,6 +12,8 @@
 
 `--workstation-profile custom138k-workstation-classic-runtime-v1` 另行显式组合实际 cooperative AE350 Classic/SBC 固件、原生共享 HCI、PCM APB/CDC→既有 DSP/I2S，以及 ILM/DLM 各64KiB和128KiB冷启动ROM。它复用现有 prepare/固件构建入口，不切换默认、accepted 或旧 budget 路径。GeneralBonding、持续PCM能力位3和实测总延迟位4仍关闭；prepare 的完整来源/宏/回调闭包不代表物理CDC、周期预算或板测接受。来源策略、重建命令、失败及回滚见[联合候选记录](../../reports/WORKSTATION_CLASSIC_RUNTIME_PROFILE_20261031.md)。
 
+`custom138k-workstation-classic-runtime-rom96-v1` 是独立的96KiB物理ROM变体：64KiB热加载区加32KiB冷代码区，保持已审阅128KiB候选的ELF/BIN及全部代码地址。历史128KiB linker envelope不代表实际存储；额外逐ELF load/run span、96KiB image和严格非二次幂地址range门禁约束真实容量。ILM/DLM仍各64KiB，cache仍关闭；名义减少32KiB不代表已节省16块物理BSRAM，常量padding可能被工具裁剪。来源、等价与越界证据见[ROM96候选](../../reports/WORKSTATION_CLASSIC_RUNTIME_ROM96_20261031.md)。
+
 时钟请求使用独立 APB 页 `0xf8030000`；音频 `0xf8010000`、UI `0xf8020000` 和启动状态 `0xf8000000` 保留。顶层只组合、传递元数据、隔离存储事务并控制就绪，DSP、切换事务、TF 文件及显示发布分别保留所属 owner。首次启动须由[内存守护](../memory/RUNTIME_MEMORY_GUARD_CONTRACT.md)确认实际客户端就绪和时钟进展；之后 DDR／视频关联复位或计算 PLL 资格丢失会永久静音并隔离请求、接受和返回，直到 common reset。`started` 保持，不能以局部故障重置持音、公共参数或 stream epoch。DDR／视频复位尚未解耦。
 
 minor1 显示消费带实际采样率、epoch 和序号的最终物理帧，见[显示组合契约](RUNTIME_DISPLAY.md)。上游观察丢帧单独撤销新图发布的可信资格，直到 common reset；音频不等待显示。TF 仍使用原 DDR 文件中转，其 EOF 尚无有序物理排空成功语义；即时播放去 DDR 属 M03。revision 5 的[媒体准备组合器](../services/MEDIA_PREPARATION_CONTRACT.md)等待受控 REC／score／TF 和 BLE 的真实终态后才允许切换，CPU observer reset 不解除后台 fence。BLE format 1 仍仅接收合法 48 kHz 帧；正常 seal 保留原对象 ID／帧数／CRC，不重标旧对象采样率，不能据此宣告双率录音或整机硬件接受。

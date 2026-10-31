@@ -33,7 +33,7 @@ class Selection(unittest.TestCase):
         self.assertFalse(bundle['sustained_verified'])
         self.assertFalse(bundle['measured_total_delay_valid'])
         for name,spec in profile.PROFILE_REGISTRY.items():
-            self.assertEqual(spec.get('classic_runtime_enabled',False),name==profile.CLASSIC_RUNTIME_NAME)
+            self.assertEqual(spec.get('classic_runtime_enabled',False),name in (profile.CLASSIC_RUNTIME_NAME,profile.CLASSIC_ROM96_NAME))
         self.assertIn('firmware_runtime.enabled=0;',(ROOT/'firmware/ae350/classic_runtime.c').read_text())
 
     def test_rom128_requires_all_joint_policies_and_legacy_decoder_is_unchanged(self):

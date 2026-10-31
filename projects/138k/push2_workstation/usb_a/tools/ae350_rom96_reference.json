@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "policy": "rom96_same_elf_bin_layout_reference_v1",
+  "source_commit": "e0688427d517632cc61eae16300efa15500eb0e0",
+  "link_layout_bytes": 131072,
+  "physical_rom_bytes": 98304,
+  "elf_sha256": "92eca5d392a472cdc2f570c039cc36f8c84001f7c0f6670568f5ee7aaf0fed11",
+  "binary_sha256": "43e87f191099597e5357fa156f5f41b2deffcc1ccb1f851a84752b38a10478e0",
+  "layout128_rom_sha256": "535f56aa0efe6dd9862ebfaf1c6881448d01e7dc3070f5ef8164b954734af65e",
+  "nm_sha256": "a90cbd8172e6e3d4c4a927c3fce0e30e5b1845b35162dabf81f5cf2689f30daf",
+  "binary_bytes": 94752,
+  "upper_rom_code_bytes": 29216,
+  "reviewed_JALR_sites": 171,
+  "conservative_stack_bytes": 1904,
+  "hardware_resource_savings_verified": false
+}

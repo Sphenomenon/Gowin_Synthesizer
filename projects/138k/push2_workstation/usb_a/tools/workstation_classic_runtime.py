@@ -1,20 +1,84 @@
 """Explicit Classic CPU/HCI/PCM composition; reuses the existing ROM builder."""
 from pathlib import Path
-import hashlib,json,re,subprocess,shutil
+import copy,hashlib,json,re,struct,subprocess,shutil
 from tools.ae350_local_memory import call_chain_report
 POLICY='ae350_classic_runtime_failclosed_v1'
 PROVIDER='rtl/workstation/workstation_profile_classic_runtime_v1.sv'
+ROM96_POLICY='ae350_classic_runtime_rom96_failclosed_v1'
+ROM96_PROVIDER='rtl/workstation/workstation_profile_classic_runtime_rom96_v1.sv'
+ROM96_REFERENCE='tools/ae350_rom96_reference.json'
+ROM96_DEPENDENCIES=(ROM96_REFERENCE,)
 DEPENDENCIES=('tools/workstation_classic_runtime.py','tools/experiment_ae350_rom_split.py',
     'tools/ae350_classic_runtime_audit.py','firmware/ae350/boot_ilm_dlm_rom128_split.ld')
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def firmware_inputs(root):
     # Explicit new profile alone locks this entire maintained/vendor inventory.
     return sorted(str(p.relative_to(root))for p in (Path(root)/'firmware/ae350').rglob('*')if p.is_file())
-def decode_rom(path):
+def composition(physical_rom_bytes):
+    if physical_rom_bytes==131072:return POLICY,PROVIDER
+    if physical_rom_bytes==98304:return ROM96_POLICY,ROM96_PROVIDER
+    raise ValueError('Classic runtime physical ROM must explicitly be 96 or 128 KiB')
+def decode_rom(path,physical_rom_bytes=131072):
+    composition(physical_rom_bytes)
     words=Path(path).read_text().splitlines()
-    if len(words)!=32768 or any(not re.fullmatch('[0-9a-fA-F]{8}',w)for w in words):
-        raise ValueError('Classic runtime requires exact physical ROM128 image')
+    if len(words)!=physical_rom_bytes//4 or any(not re.fullmatch('[0-9a-fA-F]{8}',w)for w in words):
+        raise ValueError('Classic runtime requires exact physical ROM'+str(physical_rom_bytes//1024)+' image')
     return b''.join(int(w,16).to_bytes(4,'little')for w in words)
+def physical96_report(root,evidence):
+    """Revalidate actual ELF and impose a stricter physical bound than its layout.
+
+    The historical __boot_rom_bytes=128K linker symbol is an unchanged layout
+    envelope. It is not used to infer the selected physical storage capacity.
+    File load spans consume ROM; DLM NOLOAD tails consume runtime DLM only.
+    """
+    from tools.ae350_rom_split import split_memory_report
+    from tools.ae350_local_memory import symbol_values
+    root,evidence=Path(root),Path(evidence);base=0x80000000;limit=base+98304
+    binary=(evidence/'firmware.bin').read_bytes()
+    if len(binary)>98304:raise ValueError('ROM96 physical binary/cold bank overflow')
+    symbols=symbol_values((evidence/'firmware.nm').read_text())
+    if symbols.get('__boot_rom_bytes')!=131072:
+        raise ValueError('ROM96 unchanged linker layout envelope missing')
+    layout=split_memory_report((evidence/'firmware.size').read_text(),
+        (evidence/'firmware.nm').read_text(),binary,evidence/'firmware.elf')
+    if not base+65536==symbols['__rom_text_start']<symbols['__rom_text_end']<=limit or symbols['__image_end']!=base+len(binary):
+        raise ValueError('ROM96 physical cold address boundary overflow')
+    raw=(evidence/'firmware.elf').read_bytes();h=struct.unpack_from('<16sHHIIIIIHHHHHH',raw)
+    segments=[]
+    for n in range(h[10]):
+        kind,offset,vma,lma,size,memsize,flags,alignment=struct.unpack_from('<IIIIIIII',raw,h[5]+n*h[9])
+        if kind!=1:continue
+        if size>memsize or offset+size>len(raw)or not base<=lma<=limit or lma+size>limit:
+            raise ValueError('ROM96 actual ELF load segment escapes physical storage')
+        if base<=vma<limit:
+            owner='physical_ROM96'
+            valid=(lma==vma and vma+memsize<=limit)
+        elif 0xa0000000<=vma<0xa000fffc:
+            owner='ILM64'
+            valid=(vma+memsize<=0xa000fffc and lma+size<=base+65536)
+        elif 0xa0200100<=vma<symbols['__stack_bottom']:
+            owner='DLM64_before_stack'
+            valid=(vma+memsize<=symbols['__stack_bottom']and lma+size<=base+65536)
+        else:valid=False;owner='invalid'
+        if not valid:raise ValueError('ROM96 actual ELF runtime memory span invalid')
+        segments.append(dict(run_address=vma,run_end=vma+memsize,load_address=lma,
+            stored_end=lma+size,file_bytes=size,memory_bytes=memsize,owner=owner))
+    reference=json.loads((root/ROM96_REFERENCE).read_text())
+    actual=dict(elf_sha256=sha(evidence/'firmware.elf'),binary_sha256=sha(evidence/'firmware.bin'),
+        nm_sha256=sha(evidence/'firmware.nm'))
+    if reference.get('policy')!='rom96_same_elf_bin_layout_reference_v1'or reference.get('link_layout_bytes')!=131072 or reference.get('physical_rom_bytes')!=98304 or any(reference[k]!=v for k,v in actual.items()):
+        raise ValueError('ROM96 ELF/BIN/code address reference identity changed')
+    capacity=copy.deepcopy(layout)
+    capacity.update(rom_capacity_bytes=98304,cold_code_unallocated_bytes=limit-symbols['__rom_text_end'])
+    report=dict(policy='strict_rom96_actual_elf_storage_v1',physical_rom_bytes=98304,
+        link_layout_limit_bytes=131072,legacy_layout_symbol=dict(name='__boot_rom_bytes',value=131072,
+            meaning='unchanged link address envelope only; selected physical bound checked separately'),
+        actual_ELF_load_and_runtime_spans=segments,layout_capacity=layout,
+        reference=ROM96_REFERENCE,reference_sha256=sha(root/ROM96_REFERENCE),**actual,
+        all_original_ELF_BIN_and_code_addresses_identical=True,only_zero_ROM_padding_removed=True,
+        nominal_removed_storage_bytes=32768,nominal_removed_512x32_storage_banks=16,
+        actual_resource_savings_verified=False,constant_padding_may_be_pruned_by_synthesis=True)
+    return capacity,report
 def cdc_bundle():
     """Scoped synthesis constraints; physical endpoint resolution is still due."""
     bridge='u_managed/pcm_apb/commands';session='u_managed/runtime/cpu_pcm/session'
@@ -57,8 +121,9 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072):
     root,stage,output=map(Path,(root,stage,output))
+    policy,provider=composition(physical_rom_bytes)
     installed=shutil.which('iverilog')
     if not installed:raise ValueError('Classic runtime actual preprocessing requires iverilog')
     tool=Path(installed).resolve();enabled,hdl=_selected_hdl(stage)
@@ -66,22 +131,23 @@ def prepare_selection(root,stage,output):
     argv,payload,diagnostic=_preprocess(stage,tool,hdl)
     target.write_bytes(payload);log.write_text(diagnostic)
     from tools.workstation_ae350_pcm import source_bundle
-    record=dict(policy=POLICY,pcm=dict(source_bundle(root),profile_selected=True),
-        provider=PROVIDER,preprocessed_sha256=sha(target),command=argv,
+    record=dict(policy=policy,pcm=dict(source_bundle(root),profile_selected=True),
+        provider=provider,preprocessed_sha256=sha(target),command=argv,
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
-    verify_selection(root,stage,output,record)
+    verify_selection(root,stage,output,record,physical_rom_bytes)
     return record
-def verify_selection(root,stage,output,record):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072):
     root,stage,output=map(Path,(root,stage,output))
+    policy,provider=composition(physical_rom_bytes)
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
-    if record.get('policy')!=POLICY or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=PROVIDER:
+    if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
     target=output/'classic_runtime_preprocessed.v'
     if record['preprocessed_sha256']!=sha(target):raise ValueError('Classic runtime macro evidence changed')
     enabled,hdl=_selected_hdl(stage)
-    if enabled.count(PROVIDER)!=1 or any(enabled.count(s)!=1 for s in SOURCES):
+    if enabled.count(provider)!=1 or any(enabled.count(s)!=1 for s in SOURCES):
         raise ValueError('Classic runtime PCM/provider compilation owner omitted')
     if record.get('enabled_hdl_sha256')!={p:sha(stage/p)for p in hdl}or record.get('enabled_hdl_count')!=len(hdl):
         raise ValueError('Classic runtime actual enabled HDL closure changed')
@@ -92,7 +158,7 @@ def verify_selection(root,stage,output,record):
     if argv!=record['command']or hashlib.sha256(payload).hexdigest()!=record['preprocessed_sha256']:
         raise ValueError('Classic runtime actual macro closure cannot be reproduced')
     text=target.read_text()
-    for anchor in ['localparam AE350_PCM_ENABLED=1;','gw138k_boot_memory #(.ROM_BYTES(131072))',
+    for anchor in ['localparam AE350_PCM_ENABLED=1;','gw138k_boot_memory #(.ROM_BYTES('+str(physical_rom_bytes)+'))',
         '.hci_classic_ready_o(hci_pcm_session_ready)', '.hci_epoch_o(hci_pcm_controller_epoch)',
         '.hci_classic_generation_o(hci_pcm_transport_generation)',
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
@@ -103,28 +169,41 @@ def verify_selection(root,stage,output,record):
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072):
     from tools.experiment_ae350_rom_split import build as link
     from tools.ae350_classic_runtime_audit import analyze
     root,evidence=Path(root),Path(evidence)
+    policy,_=composition(physical_rom_bytes)
     linked=link(evidence,prefix,root,runtime_owner=True)
     if linked['link_returncode']:raise ValueError('Classic runtime actual ROM128 link failed')
     graph=analyze(evidence,root)
+    physical=None
+    if physical_rom_bytes==98304:
+        capacity,physical=physical96_report(root,evidence)
+        image=decode_rom(evidence/'boot.mem')
+        reference=json.loads((root/ROM96_REFERENCE).read_text())
+        if sha(evidence/'boot.mem')!=reference['layout128_rom_sha256']or any(image[98304:]):
+            raise ValueError('ROM96 removed layout128 padding is not exactly zero')
+        shutil.copyfile(evidence/'boot.mem',evidence/'link_layout128_boot.mem')
+        (evidence/'boot.mem').write_text(''.join(evidence.joinpath('link_layout128_boot.mem').read_text().splitlines(keepends=True)[:24576]))
+        linked['capacity']=capacity
     linked.update(callback_call_chain_audit=True,runtime_callgraph_report_sha256=sha(evidence/'runtime_callgraph_verification.json'))
     (evidence/'verification.json').write_text(json.dumps(linked,indent=2)+'\n')
     record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,
-        runtime_policy=POLICY,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
+        runtime_policy=policy,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
         binary_sha256=sha(evidence/'firmware.bin'),call_chain_stack=graph['stack'],
         tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
-        cold_boot=dict(image_capacity_bytes=131072,image_storage='explicit_128k_pl_boot_rom_split',
+        cold_boot=dict(image_capacity_bytes=physical_rom_bytes,image_storage='explicit_'+str(physical_rom_bytes//1024)+'k_pl_boot_rom_split',
             cache_policy='reject_enabled_i_or_d_cache_on_entry'),
         GeneralBonding_enabled=False,PCM_sustained_verified=False,measured_delay_valid=False)
+    if physical is not None:record['physical_storage']=physical
     (evidence/'build_metadata.json').write_text(json.dumps(record,indent=2)+'\n')
-    verify_build(root,evidence,record)
+    verify_build(root,evidence,record,physical_rom_bytes)
     return record
-def verify_build(root,evidence,record):
+def verify_build(root,evidence,record,physical_rom_bytes=131072):
     root,evidence=Path(root),Path(evidence)
-    if record.get('runtime_policy')!=POLICY or not record.get('runtime_owner') or record.get('source_text_overlay')is not False:
+    policy,_=composition(physical_rom_bytes)
+    if record.get('runtime_policy')!=policy or not record.get('runtime_owner') or record.get('source_text_overlay')is not False:
         raise ValueError('Classic runtime actual source root omitted')
     linked=json.loads((evidence/'verification.json').read_text())
     if not linked['callback_call_chain_audit'] or linked['input_sha256']!=record['input_sha256']:
@@ -135,7 +214,17 @@ def verify_build(root,evidence,record):
         raise ValueError('Classic runtime source root replaced by budget adapter')
     if record['rom_sha256']!=sha(evidence/'boot.mem')or record['elf_sha256']!=sha(evidence/'firmware.elf')or record['binary_sha256']!=sha(evidence/'firmware.bin'):
         raise ValueError('Classic runtime ELF/BIN/ROM identity drift')
-    decode_rom(evidence/'boot.mem')
+    image=decode_rom(evidence/'boot.mem',physical_rom_bytes)
+    if physical_rom_bytes==98304:
+        capacity,physical=physical96_report(root,evidence)
+        layout=decode_rom(evidence/'link_layout128_boot.mem')
+        reference=json.loads((root/ROM96_REFERENCE).read_text())
+        if (capacity!=record['capacity']or linked['capacity']!=capacity or record.get('physical_storage')!=physical
+            or sha(evidence/'link_layout128_boot.mem')!=reference['layout128_rom_sha256']
+            or image!=layout[:98304]or any(layout[98304:])or image!=(evidence/'firmware.bin').read_bytes().ljust(98304,b'\0')):
+            raise ValueError('ROM96 actual physical storage/padding evidence changed')
+    elif record.get('physical_storage')is not None or record['capacity']['rom_capacity_bytes']!=131072:
+        raise ValueError('ROM128 cannot claim ROM96 physical composition')
     graph=json.loads((evidence/'runtime_callgraph_verification.json').read_text())
     review=json.loads((evidence/'runtime_indirect_review.json').read_text())
     if linked['runtime_callgraph_report_sha256']!=sha(evidence/'runtime_callgraph_verification.json'):

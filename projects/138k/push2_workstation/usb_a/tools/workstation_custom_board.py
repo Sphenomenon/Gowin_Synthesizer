@@ -149,6 +149,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_classic_runtime import DEPENDENCIES as CLASSIC_DEPENDENCIES
         native_sources += PCM_SOURCES
         profile_dependencies += (*PCM_DEPENDENCIES,*CLASSIC_DEPENDENCIES)
+        if ae350_memory['boot_rom_bytes']==98304:
+            from tools.workstation_classic_runtime import ROM96_DEPENDENCIES
+            profile_dependencies += ROM96_DEPENDENCIES
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
@@ -406,7 +409,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['ae350_firmware'] = ae350_firmware
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output)
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'])
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata
