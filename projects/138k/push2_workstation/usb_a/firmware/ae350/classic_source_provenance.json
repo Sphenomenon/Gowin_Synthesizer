@@ -54,10 +54,16 @@
       "sha256": "148be562676c8d85bd5e3908840cbbb44541b02cccef6454514c631a95398880",
       "retrieved_utc": "2026-10-31T00:20:37.762948+00:00",
       "magic": "%PDF-"
+    },
+    "gap": {
+      "url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/generic-access-profile.html",
+      "sha256": "512f891798a3bb834d4614e1e7b5852ac41129e197c9f6acb13cf0641494244c",
+      "scope": "BR/EDR Security Mode4, bonding, NoIO/JustWorks, service-level security and SDP exception; immutable external receipt"
     }
   },
   "excluded_reference": "BTstack restrictive personal/noncommercial license; no code or HCI owner copied",
   "existing_decoder": "Existing sbc_decoder_service and pinned Android/OI Apache decoder; runner verifies adapted source hashes and actual reference PCM",
-  "limitations": "Not A2DP1.4 conformance: full connection/security/recovery/transport integration, real SNK latency measurement and +/-30ms/drift acceptance absent",
-  "delay_report_source_policy": "First-party SNK initiator via existing immutable HCI ACL token API; category08/00, remote SEID, BE16 units0.1ms; cooperative1000ms phases; sixteen no-reuse labels/link local bound; actual latency/drift external"
+  "limitations": "Not A2DP1.4 conformance: native shared transport/security wiring, physical persistent bond backend, full recovery/L2CAP timers, actual SNK delay/drift, aggregate firmware/cycles and phone/hardware acceptance absent",
+  "delay_report_source_policy": "First-party SNK initiator via existing immutable HCI ACL token API; category08/00, remote SEID, BE16 units0.1ms; cooperative1000ms phases; sixteen no-reuse labels/link local bound; actual latency/drift external",
+  "security_source_policy": "First-party unselected cooperative owner2 HCI command/async-event SSP Mode4 Level2 NoIO GeneralBonding; actual Classic default-deny gate; bounded abstract atomic bond-store callbacks; no board Flash/backend, MITM, SC, fixed PIN or native selection"
 }

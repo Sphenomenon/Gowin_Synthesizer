@@ -57,6 +57,18 @@ enum a138_classic_result a138_classic_cancel(struct a138_classic_service *s,uint
     s->delay_selected=0; s->delay_phase=A138_CLASSIC_DELAY_NONE; s->tx_is_delay=0;
     return A138_CLASSIC_OK;
 }
+enum a138_classic_result a138_classic_security(struct a138_classic_service *s,uint32_t e,uint32_t g,uint8_t secure) {
+    enum a138_classic_result r=identity(s,e,g);
+    if(r!=A138_CLASSIC_OK&&!(r==A138_CLASSIC_FENCED&&!secure))return r;
+    if(secure>1u)return A138_CLASSIC_ARGUMENT;
+    if(!secure&&s->security_ready){
+        silence(s);memset(&s->channel[1],0,2u*sizeof s->channel[0]);
+        s->ready=0;s->state=A138_CLASSIC_IDLE;s->pending_state=NO_STATE;
+        s->tx_bytes=0;s->offered=0;s->rx_complete=0;s->rx_bytes=0;s->avdtp_active=0;
+        s->delay_selected=0;s->delay_phase=A138_CLASSIC_DELAY_NONE;s->tx_is_delay=0;
+    }
+    s->security_ready=secure;return s->fenced?A138_CLASSIC_FENCED:A138_CLASSIC_OK;
+}
 enum a138_classic_result a138_classic_event(struct a138_classic_service *s,
         uint32_t e,uint32_t g,const uint8_t *p,uint16_t n) {
     enum a138_classic_result r=identity(s,e,g);
@@ -136,7 +148,10 @@ static enum a138_classic_result signaling(struct a138_classic_service *s,const u
             if (len!=4u) goto malformed;
             psm=le16(v); scid=le16(v+2); i=-1;
             if (psm==1u) i=0;
-            else if (psm==25u) i=s->channel[1].allocated ? 2 : 1;
+            else if (psm==25u) {
+                i=s->channel[1].allocated ? 2 : 1;
+                if(!s->security_ready){result=3;s->security_violation=1;}
+            }
             else result=2; /* PSM not supported. */
             if (scid<0x40u) result=6; /* Invalid source CID. */
             if (!result) {
@@ -714,6 +729,7 @@ enum a138_classic_result a138_classic_frame_pop(struct a138_classic_service *s,s
     enum a138_classic_result r;
     if (!s || !out) return A138_CLASSIC_ARGUMENT;
     r=identity(s,s->link_epoch,s->generation); if (r!=A138_CLASSIC_OK) return r;
+    if(!s->security_ready)return A138_CLASSIC_EMPTY;
     if (!s->frame_count) return A138_CLASSIC_EMPTY;
     *out=s->frame[s->frame_head]; s->frame_head=(uint8_t)((s->frame_head+1u)%A138_CLASSIC_FRAMES); --s->frame_count;
     return A138_CLASSIC_OK;

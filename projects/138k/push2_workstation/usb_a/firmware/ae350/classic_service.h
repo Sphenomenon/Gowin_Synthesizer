@@ -2,8 +2,9 @@
 #define A138_CLASSIC_SERVICE_H
 #include <stdint.h>
 
-/* Unselected EXPERIMENTAL source-stage; connection/security policy, actual
- * end-to-end delay measurement/drift control and production wiring are absent.
+/* Unselected EXPERIMENTAL source-stage; the separate classic_security owner
+ * supplies an offline SSP gate. Actual persistent keys, end-to-end delay
+ * measurement/drift control and production wiring remain absent.
  * No Bluetooth profile compliance or phone interoperability claim.
  * One cooperative CPU owner, no heap or MMIO. */
 #define A138_CLASSIC_ACL_BYTES 280u
@@ -68,6 +69,7 @@ struct a138_classic_service {
     uint8_t clock_valid, delay_valid, delay_selected, pending_delay_selected;
     uint8_t remote_seid, pending_remote_seid, delay_phase, delay_sent;
     uint8_t delay_label, delay_labels_used, delay_failure, tx_is_delay, avdtp_message_type;
+    uint8_t security_ready, security_violation;
     struct a138_classic_format format;
     struct a138_classic_channel channel[3]; /* SDP, AVDTP signal, media */
     uint8_t rx[A138_CLASSIC_MTU + 4u];
@@ -88,6 +90,12 @@ enum a138_classic_result a138_classic_begin(struct a138_classic_service *s,
     uint32_t link_epoch, uint32_t generation, uint16_t handle, uint16_t tx_payload_limit);
 enum a138_classic_result a138_classic_cancel(struct a138_classic_service *s,
     uint32_t link_epoch, uint32_t generation);
+/* Only the single connection/security owner grants after actual authentication,
+ * encryption, key-size verification and durable bonding. Default is denied.
+ * Revocation drops pending non-SDP work and all media; SDP stays available.
+ */
+enum a138_classic_result a138_classic_security(struct a138_classic_service *s,
+    uint32_t link_epoch, uint32_t generation, uint8_t secure);
 /* Original complete HCI event {code,length,parameters}. Only validated
  * Disconnection Complete for our handle retires the link; other events remain
  * the caller's connection/security-policy responsibility. */

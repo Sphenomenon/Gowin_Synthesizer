@@ -4,8 +4,10 @@ This component is an **unselected B04 source-stage**. It is not a complete or
 conforming A2DP 1.4 Sink, a selected workstation input, phone interoperability,
 ROM-fit or C04 timing acceptance, or hardware deployment. Its SDP record is an
 experimental record targeting A2DP 1.4. Delay Reporting wire transactions are
-implemented below, but physical latency measurement/drift control, connection
-security and native integration remain incomplete.
+implemented below. A separate unselected [security owner](CLASSIC_SECURITY_SOURCE_STAGE.md)
+now implements actual HCI command/async-event policy and the default-deny Classic
+gate. Physical persistent-key storage, latency measurement/drift control and
+native integration remain incomplete.
 Do not expose this record in a production image as a qualified standard Sink.
 
 `classic_service.c/.h` implements a single BR/EDR Basic-mode connection with SDP,
@@ -20,7 +22,10 @@ Apache Android/OI decoder is used unchanged by the end-to-end test.
 
 A cooperative CPU owner allocates `struct a138_classic_service` in local RAM.
 `begin(link_epoch, PL_generation, handle, tx_payload_limit)` binds it to a real
-BR/EDR connection already accepted by connection/security policy. Epochs strictly
+BR/EDR connection already admitted by the sole PL handle owner. The default-deny
+security grant is separate: SDP can operate before authentication, while AVDTP
+requires the actual security owner to grant after authenticated encryption,
+key-size verification and durable bonding. Epochs strictly
 increase for this object's lifetime. The transmit limit is immutable and is
 `min(controller BR ReadBufferSize ACL-data length, 276)`, range 4..276. It is a
 packet-size limit, not a physical-credit ledger. Controller-to-host HCI ACL
@@ -30,11 +35,12 @@ The sole PL HCI owner validates/routes handles and owns all physical credits.
 Feed complete original `{event_code, parameter_length, parameters}` events with
 `event()`, and original `{handle/PB/BC, length_le16, payload}` ACL fragments with
 `acl()`, always carrying the exact link epoch and PL generation. This component
-only retires a matching successful Disconnection Complete event. HCI boot,
-Connection Request/Complete, pairing, PIN/SSP, authentication/encryption, security
-policy, scan/visibility and event-driven connection acceptance remain missing
-CPU connection-policy work. Other events must still reach their actual owners.
-There is no HCI-command producer in this component.
+only retires a matching successful Disconnection Complete event. The separate
+`classic_security.c` consumes connection/security events and produces owner2 HCI
+commands; the protocol module itself still owns no HCI command queue or credits.
+Use that owner's ACL wrapper for the tested security-block/Disconnect policy.
+Other events must still reach their actual owners. Native boot/scan handoff and
+actual UART/H5 routing are not supplied by either CPU module.
 
 RX has one 676-byte reassembly buffer. A complete second PDU can wait while the
 control response is pending. `BUSY` consumes no bytes: retain the exact ACL packet.

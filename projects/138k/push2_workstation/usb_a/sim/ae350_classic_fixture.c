@@ -26,6 +26,10 @@ static unsigned little(const uint8_t *p) { return p[0]+256u*p[1]; }
 static unsigned big(const uint8_t *p) { return 256u*p[0]+p[1]; }
 static void reset(void) {
     a138_classic_init(&s); CHECK(a138_classic_begin(&s,1,9,0x23,276)==A138_CLASSIC_OK);
+    /* Prior protocol regression supplies an explicit trusted security grant.
+     * The separate security fixture obtains this only through real commands,
+     * asynchronous events, negotiated key size and durable-store completion. */
+    CHECK(a138_classic_security(&s,1,9,1)==A138_CLASSIC_OK);
 }
 static enum a138_classic_result pdu(unsigned cid,const uint8_t *p,unsigned n,unsigned fragment) {
     uint8_t data[680],acl[280]; unsigned off=0,total=n+4;
