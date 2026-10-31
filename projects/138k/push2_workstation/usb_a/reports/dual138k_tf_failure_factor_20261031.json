@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "stage": "dual138k_TF_immediate_failure_factor",
+  "passed": true,
+  "maintained_input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/fixtures/workstation_tf_runtime_service_before_failure_factor.sv": "c42dc0bbe4919adf86275388239f52ccf63d6670b30c2bdf362ebea5bcb0b483",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/workstation_tf_runtime_service_tb.sv": "fbe989e82827c1b41f3f1b99073eed7a6ccffc4d42242349fb6b4448500a0cec",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_failure_factor_equivalence.py": "fe0f6a50e6a86380610de9ece3f341469189d123eda4e8495bf8f8d7d1a7a9f1",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "424e515ccb1c97e18059661bc3f765d3d460eb41454284a24665f325529ebb18",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py": "cdf50bde15de1f691415b6632ffe4eafc658afe5c3c97d7d25cb6bc3b0ba061f",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/fixtures/README.md": "5d41c628d6cf4d68a3e092ce8b46cb23e65b013b395d94e500bbfddaf35de6ab"
+  },
+  "motivation": {
+    "routed_M11_clk50_report": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-clk50-v1.json",
+      "sha256": "533423c144e7d3787232d0402965bacaed5d720591ad8824a2e8048de1b0c688"
+    },
+    "worst_clk50_setup_slack_ns": -0.766,
+    "reported_negative_paths": 11,
+    "report_limit": 100,
+    "complete_violation_count_claimed": false,
+    "source": "u_managed/runtime/clocks/transaction/stream_epoch_o_22_s0/Q",
+    "destination": "u_tf_audio/path/u_file_reader/probe_resume_sector_3_s0/CE",
+    "measured_old_data_delay_ns": 20.609
+  },
+  "exact_source_inverse": true,
+  "full_domain_smt": {
+    "result": "UNSAT",
+    "free_input_bits": 99,
+    "error_priority": [
+      4,
+      3,
+      2,
+      7,
+      5,
+      6,
+      1
+    ],
+    "state_and_all_context_bits_unrestricted": true,
+    "z3_version": "5.1.0"
+  },
+  "whole_owner_inventory": {
+    "outputs": 50,
+    "inputs": 29,
+    "internal_state_groups": 24,
+    "mirrored_path_fault_injections": 22
+  },
+  "whole_real_path_twin_runs": {
+    "twin_b0_split0": {
+      "returncode": 0,
+      "summary": "PASS whole TF owner equivalence edges=263421 outputs=50 inputs=29 state_groups=24",
+      "log_sha256": "b45df14d6aeac8ef31dd4155c4ffe4688ed1a663e9e7e83066a7ddb9adefb233"
+    },
+    "twin_b1_split0": {
+      "returncode": 0,
+      "summary": "PASS whole TF owner equivalence edges=270886 outputs=50 inputs=29 state_groups=24",
+      "log_sha256": "5313701421e0c305265c89dd85c41ef7023a11a8458a41d4ad3260eb7deacd79"
+    },
+    "twin_b0_split1": {
+      "returncode": 0,
+      "summary": "PASS whole TF owner equivalence edges=263325 outputs=50 inputs=29 state_groups=24",
+      "log_sha256": "e22fb42f86c502601aa446b8f5c3e68f46efd610e650451b0fb53780126ce671"
+    },
+    "twin_b1_split1": {
+      "returncode": 0,
+      "summary": "PASS whole TF owner equivalence edges=271437 outputs=50 inputs=29 state_groups=24",
+      "log_sha256": "2626f2617da740f637612019de01c564141d0c685bb92e1693e2053694452aed"
+    }
+  },
+  "whole_real_path_equivalence_edges": 1069069,
+  "actual_source_directed_controls": {
+    "baseline": {
+      "returncode": 0,
+      "expected_failure": null,
+      "rejected": false,
+      "actual_source_sha256": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f",
+      "log_sha256": "efc02c9a7646f27b625b3e3607917d5ad56819f43908d177b85d782e7eca580b"
+    },
+    "epoch_bit22_omitted": {
+      "returncode": 1,
+      "expected_failure": "directed epoch bit 22",
+      "rejected": true,
+      "actual_source_sha256": "b27323b94dae7769b851a349ebdbf6e6c5934c91886a67bc9382436bd9769f7c",
+      "log_sha256": "f5bf20f3b396609c1741bb41d1d5ab917fbe40ab58bf8ceb1ed2f9b700c09b4e"
+    },
+    "physical_guard_removed": {
+      "returncode": 1,
+      "expected_failure": "directed physical guard",
+      "rejected": true,
+      "actual_source_sha256": "ea373b14407d0be6c9040b047f44b173c9862f0c78ba2eb5c47d42608fcabeed",
+      "log_sha256": "320f03e2293c7acc41911ed64d8d7d0fce37a63dc802c3aa396ccdf3477b9bda"
+    },
+    "stop_veto_removed": {
+      "returncode": 1,
+      "expected_failure": "directed immediate stop veto",
+      "rejected": true,
+      "actual_source_sha256": "f46401589dfe5714471e51be7a84ccac8efa55d592da3463a8472d8cfcf8fcc4",
+      "log_sha256": "5b457324b2c2a5ae5f32e9c6732d5a9cd0ba89e55996611fc5720df372a60525"
+    },
+    "diagnostic_priority_changed": {
+      "returncode": 1,
+      "expected_failure": "directed diagnostic priority",
+      "rejected": true,
+      "actual_source_sha256": "66f98c2052e1295d653da7e6aba1ba7187a11c5a36f91911cded4d25508d398d",
+      "log_sha256": "13b59de79c9fa42b3c5b51c862e00121028558493f6ffff75397c9453c5bfb73"
+    }
+  },
+  "equivalence_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/verification.json",
+    "sha256": "2b26b64bddc34f3b049276d3717f6694510bb5fa4b6f6fd779cb23e61b0a2ef2"
+  },
+  "complete_service_clear_stop_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-stop-v2/verification.json",
+    "sha256": "4fdd0424d995f9d4f77184b6296e45aadff6d890be7bf69179d5257fde787e70"
+  },
+  "stop_regression_identity": "native-tf-runtime-stop-v2-cbfbf63ce1a14c59",
+  "stop_metrics": {
+    "0": {
+      "buffered": 0,
+      "cases": 11,
+      "done": 12,
+      "failed": 4,
+      "coalesced": 3,
+      "paused_high": 1,
+      "paused_low": 1,
+      "mailbox_wait": 40,
+      "drain_wait": 30,
+      "stopped_checks": 300,
+      "idempotent_checks": 6,
+      "delivered": 91
+    },
+    "1": {
+      "buffered": 1,
+      "cases": 11,
+      "done": 12,
+      "failed": 4,
+      "coalesced": 3,
+      "paused_high": 1,
+      "paused_low": 1,
+      "mailbox_wait": 40,
+      "drain_wait": 30,
+      "stopped_checks": 300,
+      "idempotent_checks": 6,
+      "delivered": 91
+    }
+  },
+  "final_ack_bypass_rejected": true,
+  "original_loop_negative_rejected": true,
+  "independent_four_state_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-independent-review-v1/verification.json",
+    "sha256": "d0af444b4955a04a7ff7694f97893340570a55cee7e926c47397bf2c12325afc"
+  },
+  "independent_four_state_metrics": {
+    "abstract_physical_and_seven_failure_conditions_0_1_X_combinations": 6561,
+    "four_bit_inequality_vs_reduction_XOR_all_0_1_X_Z_operand_pairs": 65536
+  },
+  "reviewed_source_pin": {
+    "before_sha256": "49af05fd28776d3cae3ce64cb610df18462780325d4d91c5365e702e8d559658",
+    "after_sha256": "424e515ccb1c97e18059661bc3f765d3d460eb41454284a24665f325529ebb18",
+    "before_pins": {
+      "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+      "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+      "rtl/tf_audio/workstation_tf_runtime_service.sv": "c42dc0bbe4919adf86275388239f52ccf63d6670b30c2bdf362ebea5bcb0b483",
+      "rtl/tf_audio/workstation_tf_frame_bridge.sv": "c32000172587a674708d9454b1895b24ada26103d55206b0bda659817bcb4ac5"
+    },
+    "after_pins": {
+      "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+      "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+      "rtl/tf_audio/workstation_tf_runtime_service.sv": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f",
+      "rtl/tf_audio/workstation_tf_frame_bridge.sv": "c32000172587a674708d9454b1895b24ada26103d55206b0bda659817bcb4ac5"
+    },
+    "only_pin_changed": true
+  },
+  "reviewed_source_pin_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/native-auditor-pin-review.json",
+    "sha256": "ccec22da0b43c308a25b7aabdf2a175816822d0c98b2b06d3f365d3dd9766610"
+  },
+  "unchanged_boundaries": {
+    "immediate_invalidate": {
+      "exact_bytes_unchanged": true,
+      "sha256": "0c21a9953f15d73eb6f9b47546ee0d2ddc9b46a1870091e84743c0b03ed0ca99"
+    },
+    "registered_source_quiesce": {
+      "exact_bytes_unchanged": true,
+      "sha256": "96c5beeddf2f97cf869c078abe3cf5e4e8ce988311e9e60a6bcd569beec15892"
+    }
+  },
+  "boundary_review_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/unchanged-boundary-review.json",
+    "sha256": "a1acf3c3b5b62602ddf50eadb271178166cb14d3b41872cc0063ab32dce141e9"
+  },
+  "M11_existing_netlist_native_regression": {
+    "synthesis": {
+      "tests": 54,
+      "passed": 50,
+      "skipped": 4,
+      "rejected_actual_object_mutants": 45,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/m11-native-vg-regression.log",
+        "sha256": "91803d5324e9b7c1ae7ea088a6122e0a9ec0f6f31542040d2e080df5821a49e2"
+      },
+      "mutations": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/m11-native-vg-mutations.json",
+        "sha256": "b90ff0f0215dd40040cfe99d3b5d62b50251ec146b77b728acfcde7e43eeb77c"
+      }
+    },
+    "routed": {
+      "tests": 54,
+      "passed": 51,
+      "skipped": 3,
+      "rejected_actual_object_mutants": 46,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/m11-native-vo-regression.log",
+        "sha256": "6185251fdff06dd0b96099ec2d0d162dbb2c7d2de871c2e98aa083573b6dbb75"
+      },
+      "mutations": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v3/m11-native-vo-mutations.json",
+        "sha256": "1a665ee9c0cfcbc8b688d3f06e79df243701484315638d29e927c1178a2107c5"
+      }
+    }
+  },
+  "preserved_first_X_failure": {
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-failure-factor-equivalence-v1.log",
+      "sha256": "878940c7ec7cd4488d886766bbda62b05ba81245d856b10a5eb85e15c61f6dc7"
+    },
+    "candidate_source_sha256": "88f3837a876da1f2dc973199f89fd406ec618eade7442ee42ef4912228aae5cc",
+    "cause": "First memory edge 5ns precedes first source reset edge 10ns; uninitialized state X was suppressed by original procedural priority default but propagated by a continuous Boolean expression. Final source preserves procedural default0 without masking comparisons."
+  },
+  "all_recorded_inputs_unchanged_during_verification": true,
+  "new_candidate_prepared": false,
+  "new_synthesis_or_PnR_performed": false,
+  "resource_or_timing_improvement_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "limits": "Actual full-path simulations use the existing byte-boundary SD/FAT endpoint and ordered DDR models. Independent four-state operator/predicate exhaustion is not a full 32-bit owner four-state proof. M11 VG/VO regressions review original unchanged netlists under the new external source pin; they do not validate a new implementation."
+}

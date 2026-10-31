@@ -122,6 +122,8 @@ module workstation_tf_runtime_service #(
     wire memory_quiet_50,memory_gate;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_ready_sync;
     wire bad_context=!runtime_valid_i || runtime_fault_i || runtime_busy_i;
+    wire epoch_mismatch=|(runtime_epoch_i ^ launched_epoch);
+    wire rate_mismatch=runtime_44k1_i!=launched_rate;
     reg [3:0] error_now;
     always @* begin
         error_now=0;
@@ -131,13 +133,27 @@ module workstation_tf_runtime_service #(
             else if(state!=RESTART_SETTLE && unsupported_o)error_now=FORMAT;
             else if(transport_error_i)error_now=TRANSPORT;
             else if(bad_context)error_now=CONTEXT;
-            else if(runtime_epoch_i!=launched_epoch || runtime_44k1_i!=launched_rate)error_now=EPOCH;
+            else if(epoch_mismatch || rate_mismatch)error_now=EPOCH;
             else if(state!=RESTART_SETTLE && format_ready_o && file_sample_rate_o!=(launched_rate ? 20'd44100:20'd48000))error_now=RATE;
         end
     end
     // Every termination is visible to the generation bridge on THIS edge.
     // A registered invalidate pulse would be lost if source clock stopped now.
-    wire new_failure=error_now!=0;
+    // Admission needs only whether a failure exists. Keep it parallel to the
+    // diagnostic priority encoder rather than serializing encode then !=0.
+    reg new_failure;
+    always @* begin
+        new_failure=1'b0;
+        if(physical)begin
+            if(card_lost_o ||
+                (state!=RESTART_SETTLE && ddr_error_o) || !memory_ready_sync[1] ||
+                (state!=RESTART_SETTLE && unsupported_o) || transport_error_i ||
+                bad_context || epoch_mismatch || rate_mismatch ||
+                (state!=RESTART_SETTLE && format_ready_o &&
+                    file_sample_rate_o!=(launched_rate ? 20'd44100:20'd48000)))
+                new_failure=1'b1;
+        end
+    end
     wire invalidate=resume_restart || auto_track_change || allowed_cancel || new_failure || (!mode_i && allowed_reader_restart) || stop_invalidate ||
         (!stop_latched && ((card_lost_o && !card_lost_q) || (transport_error_i && !transport_error_q)));
     wire bridge_source_ready,source_quiet,generation_pending;
