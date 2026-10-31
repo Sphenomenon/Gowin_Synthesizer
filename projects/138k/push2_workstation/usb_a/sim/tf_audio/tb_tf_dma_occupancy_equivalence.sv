@@ -84,8 +84,63 @@ module tb_tf_dma_occupancy_equivalence;
     reg [31:0] test_occupancy;
     reg [6:0] test_delta;
     reg [32:0] oracle_sum;
+    reg [31:0] probe_available,probe_accepted;
+    reg [5:0] probe_pending,probe_response;
+    reg probe_read_pending;
+    integer pattern,control,parallel_four_state_checks=0;
+    function quad(input [1:0] code);
+        begin case(code)0:quad=0;1:quad=1;2:quad=1'bx;3:quad=1'bz;endcase end
+    endfunction
+    task check_parallel_four_state;
+        begin
+            // Exercise the real decision equations while reset holds the
+            // unforced state. Unknown late flags must use the original delta.
+            mem_ready=1;fifo_out_full=0;runtime_hold_i=0;
+            force dut.available_bytes=probe_available;force dut.accepted_used=probe_accepted;
+            force dut.pending_bytes=probe_pending;force dut.read_pending_bytes=probe_response;
+            force dut.read_pending=probe_read_pending;force dut.write_pending=1;
+            force dut.stream_started=1;force dut.read_buf_valid=0;
+            force dut.state=0;force dut.eof_finalized=1;force dut.capture_byte_count=0;
+            for(pattern=0;pattern<16;pattern=pattern+1)begin
+                probe_available=32'(pattern*31);probe_accepted=32'hfffffff0+32'(pattern);
+                probe_pending=6'(pattern*3);probe_response=6'(pattern*2);
+                case(pattern)
+                    1:probe_available=32'hffffffff;
+                    2:probe_available=32'h0000000x;
+                    3:probe_available=32'hxxxxxx80;
+                    4:probe_accepted=32'h0000000x;
+                    5:probe_accepted=32'hxxxxxx80;
+                    6:probe_pending=6'b00000x;
+                    7:probe_pending=6'bx00000;
+                    8:probe_response=6'b00000x;
+                    9:probe_response=6'bx00000;
+                    10:probe_available=32'hzzzzzzzz;
+                    11:probe_accepted=32'hzzzzzzzz;
+                    12:probe_pending=6'bzzzzzz;
+                    13:probe_response=6'bzzzzzz;
+                    14:begin probe_available=32'hxxxxxxxx;probe_accepted=32'hxxxxxxxx;end
+                    15:begin probe_pending=6'bxxxxxx;probe_response=6'bxxxxxx;end
+                endcase
+                for(control=0;control<1024;control=control+1)begin
+                    probe_read_pending=quad(control[1:0]);app_rdy=quad(control[3:2]);app_wrdy=quad(control[5:4]);
+                    app_rvalid=quad(control[7:6]);fifo_in_rd_valid=quad(control[9:8]);#1;
+                    if(dut.next_available_bytes !== dut.add_occupancy_delta(dut.available_bytes,dut.committed_delta) ||
+                       dut.next_accepted_used !== dut.add_occupancy_delta(dut.accepted_used,dut.accepted_delta))
+                        $fatal(1,"parallel occupancy selection differs pattern=%0d control=%0d",pattern,control);
+                    parallel_four_state_checks=parallel_four_state_checks+2;
+                end
+            end
+            release dut.available_bytes;release dut.accepted_used;release dut.pending_bytes;release dut.read_pending_bytes;
+            release dut.read_pending;release dut.write_pending;release dut.stream_started;release dut.read_buf_valid;
+            release dut.state;release dut.eof_finalized;release dut.capture_byte_count;
+            mem_ready=0;app_rdy=0;app_wrdy=0;app_rvalid=0;fifo_in_rd_valid=0;
+            repeat(2)@(negedge clk);
+            $display("PASS parallel occupancy four-state checks=%0d vectors=%0d",parallel_four_state_checks,parallel_four_state_checks/2);
+        end
+    endtask
     initial begin
         #1;compare();
+        check_parallel_four_state();compare();
         // Independent full-width signed-add oracle. Exhaust every low-six
         // input and every signed-seven delta, using each upper carry-chain
         // boundary in both polarities plus zero/all-ones wrap boundaries.

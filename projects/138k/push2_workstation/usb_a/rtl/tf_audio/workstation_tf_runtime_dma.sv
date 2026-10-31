@@ -117,6 +117,38 @@ module workstation_tf_runtime_dma #(
                                   {1'b0, (read_response ? read_response_bytes : 6'd0)};
     wire [6:0] accepted_delta = {6'd0, input_byte_accepted} -
                                  {1'b0, (read_response ? read_response_bytes : 6'd0)};
+    // A valid response is either the registered pending read, or an accepted
+    // immediate read while read_pending is clear. Select its size before the
+    // late DDR permission, then precompute complete occupancy alternatives.
+    wire [5:0] occupancy_response_bytes = read_pending ? read_pending_bytes : read_chunk_bytes;
+    wire [6:0] occupancy_write_delta = {1'b0, pending_bytes} - 7'd0;
+    wire [6:0] occupancy_read_delta = 7'd0 - {1'b0, occupancy_response_bytes};
+    wire [6:0] occupancy_write_read_delta = {1'b0, pending_bytes} - {1'b0, occupancy_response_bytes};
+    wire [6:0] occupancy_input_delta = 7'd1 - 7'd0;
+    wire [6:0] occupancy_input_read_delta = 7'd1 - {1'b0, occupancy_response_bytes};
+    wire [31:0] available_after_write = add_occupancy_delta(available_bytes, occupancy_write_delta);
+    wire [31:0] available_after_read = add_occupancy_delta(available_bytes, occupancy_read_delta);
+    wire [31:0] available_after_write_read = add_occupancy_delta(available_bytes, occupancy_write_read_delta);
+    wire [31:0] accepted_after_input = add_occupancy_delta(accepted_used, occupancy_input_delta);
+    wire [31:0] accepted_after_read = add_occupancy_delta(accepted_used, occupancy_read_delta);
+    wire [31:0] accepted_after_input_read = add_occupancy_delta(accepted_used, occupancy_input_read_delta);
+    reg [31:0] next_available_bytes, next_accepted_used;
+    always @* begin
+        case ({write_accept, read_response})
+            2'b00: next_available_bytes = add_occupancy_delta(available_bytes, 7'd0);
+            2'b01: next_available_bytes = available_after_read;
+            2'b10: next_available_bytes = available_after_write;
+            2'b11: next_available_bytes = available_after_write_read;
+            default: next_available_bytes = add_occupancy_delta(available_bytes, committed_delta);
+        endcase
+        case ({input_byte_accepted, read_response})
+            2'b00: next_accepted_used = add_occupancy_delta(accepted_used, 7'd0);
+            2'b01: next_accepted_used = accepted_after_read;
+            2'b10: next_accepted_used = accepted_after_input;
+            2'b11: next_accepted_used = accepted_after_input_read;
+            default: next_accepted_used = add_occupancy_delta(accepted_used, accepted_delta);
+        endcase
+    end
     wire emit_byte = !runtime_hold_i && (state == S_STREAM) && read_buf_valid && !fifo_out_full &&
                      (emit_bytes_left != 0);
 
@@ -362,8 +394,8 @@ module workstation_tf_runtime_dma #(
                     write_buf <= 256'd0;
                 end
             end else begin
-                available_bytes <= add_occupancy_delta(available_bytes, committed_delta);
-                accepted_used <= add_occupancy_delta(accepted_used, accepted_delta);
+                available_bytes <= next_available_bytes;
+                accepted_used <= next_accepted_used;
                 // Input is throttled by ring occupancy as well as the
                 // asynchronous FIFO.  This is the key no-overwrite rule.
                 if (!write_pending && !in_read_wait && !fifo_in_empty &&

@@ -268,6 +268,8 @@ W10实际18级D输入控制路径的[PCM命令许可分解](push2_workstation/us
 
 W10录音同域长链的[已持有事务许可因子化](push2_workstation/usb_a/reports/DUAL138K_RECORDING_OWNED_TRANSFER_20261101.md)只改owner的两个输出门控，保留即时故障、write／response冲突、范围／超时及全部状态。全域证明、16,777,216四态组合、2,547半边沿旧owner对照和11必要负控通过，原raw store与44项DDR队列／桥接回归通过；top分配负控的include cwd缺陷已纠正，原失败保留。未改SDC或预记物理收益。新W11 `bafd43c180d52b1c`已从822项锁prepare、645封存输入复验，四份新维护RTL确被实际编译消费，17项来源／15项DEMO回归通过，正全量综合；未上板。
 
+M12b实际TF占用路径的[晚许可并行运算](push2_workstation/usb_a/reports/DUAL138K_TF_PARALLEL_OCCUPANCY_20261101.md)已修改维护DMA，保留原容量、回绕、周期及restart／hold优先级。两容量各400,008模块检查、有限四态16,384向量及89自由位三项等价关系通过，8类负控拒绝、四组真实ring oracle通过；新源尚待新M候选封存、综合及P&R。这里不预记时序或资源收益，未进行SRAM或Flash操作。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

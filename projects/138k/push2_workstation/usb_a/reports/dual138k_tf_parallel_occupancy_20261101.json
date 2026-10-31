@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "TF_occupancy_parallel_candidates_source_verified",
+  "sources_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273",
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_storage.provenance.json": "d77d6e7792a19c6cb09b2e6bd1b0829a3d114d1d2fe88bc1b3818664964f1139",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_occupancy_equivalence.py": "b2f8aadac758e32dd6111e183d6f88aceea95fc6c99445aa8abcb0ad2189289f",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv": "fafa99d04dd26cbbc73b331b38640e66d4d3e36f5fdc8c6c1f1226542cff3b26"
+  },
+  "before_source": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-v1/original.sv",
+    "sha256": "5be6f263083122794b82f2e9d8069fae96a6d044b4cb02c024d92c58b4de2810",
+    "matches_M12b_consumed_bytes": true
+  },
+  "source_scope": {
+    "all_bytes_outside_added_combinational_candidates_and_two_next_assignments_identical": true,
+    "new_sequential_registers": 0,
+    "new_cycles": 0,
+    "add_occupancy_delta_unchanged": true,
+    "pending_fits_ring_unchanged": true,
+    "state_restart_hold_priority_unchanged": true,
+    "original_read_response_bytes_and_transport_bookkeeping_unchanged": true,
+    "seven_bit_subtraction_preserved": true,
+    "unknown_permission_case_default": "original add_occupancy_delta and original committed_delta/accepted_delta",
+    "zero_case": "add_occupancy_delta(base,7d0), preserving partial-X pessimism"
+  },
+  "source_candidate_rule": {
+    "early_response_bytes": "read_pending ? read_pending_bytes : read_chunk_bytes",
+    "available_candidates": [
+      "A + signed7(P - 0)",
+      "A + signed7(0 - R)",
+      "A + signed7(P - R)"
+    ],
+    "accepted_candidates": [
+      "B + signed7(1 - 0)",
+      "B + signed7(0 - R)",
+      "B + signed7(1 - R)"
+    ],
+    "selection_only_after_late_admission": true,
+    "simultaneous_write_and_pending_response_preserved": true
+  },
+  "prior_physical": {
+    "default": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v12b-physical-v1",
+      "path": 3,
+      "slack_ns": -1.642,
+      "levels": 16,
+      "data_ns": 11.401,
+      "cell_ns": 5.845,
+      "route_ns": 5.25,
+      "c2q_ns": 0.306,
+      "accepted_used_related_slack_ns": -1.491
+    },
+    "far": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v12b-physical-far-v1",
+      "path": 191,
+      "slack_ns": -0.915,
+      "levels": 16,
+      "data_ns": 10.657,
+      "cell_ns": 4.948,
+      "route_ns": 5.403,
+      "c2q_ns": 0.306
+    },
+    "path": "available_bytes→ring_can_commit→audio_ddr_write→read_response_bytes→committed_delta small subtract→low-six addition→carry/sign XOR→CE",
+    "upper_26bit_increment_decrement_is_not_the_actual_late_chain": true,
+    "selected_cells": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m12b-tf-occupancy-rca-v1/selected-cells.json",
+      "sha256": "d3b91de3e97702ae30b1b5d5fcdbd04f521c7721df7b597a17479df1ab5ffa14"
+    }
+  },
+  "validation": {
+    "symbolic": {
+      "results": {
+        "response_size_when_valid": "UNSAT",
+        "available_next": "UNSAT",
+        "accepted_next": "UNSAT"
+      },
+      "free_bits": 89,
+      "z3_version": "5.1.0",
+      "unreachable_state_assumptions": false,
+      "arbitrary_four_state_proof": false
+    },
+    "runs": [
+      {
+        "label": "scaled",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nPASS DMA occupancy: bank=64 checks=400008 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5 delta_checks=442368 commit_checks=245760\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:217: $finish called at 2016506000 (1ps)",
+        "negative_control": false
+      },
+      {
+        "label": "hardware_capacity",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nPASS DMA occupancy: bank=67108864 checks=400008 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5 delta_checks=442368 commit_checks=245760\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:217: $finish called at 2016506000 (1ps)",
+        "negative_control": false
+      },
+      {
+        "label": "drop_input_count",
+        "exit_code": 1,
+        "passed": true,
+        "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=0 control=256\n       Time: 258000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+        "negative_control": true
+      },
+      {
+        "label": "unsigned_delta",
+        "exit_code": 1,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:158: small-delta arithmetic differs base=00000000 delta=40\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+        "negative_control": true
+      },
+      {
+        "label": "lost_upper_carry",
+        "exit_code": 1,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:158: small-delta arithmetic differs base=00000001 delta=3f\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+        "negative_control": true
+      },
+      {
+        "label": "simultaneous_write_lost",
+        "exit_code": 1,
+        "passed": true,
+        "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=1 control=85\n       Time: 1111000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+        "negative_control": true
+      },
+      {
+        "label": "capacity_lost_carry",
+        "exit_code": 1,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:182: pending capacity arithmetic differs base=ffffffc1 pending=63\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+        "negative_control": true
+      },
+      {
+        "label": "capacity_equal_rejected",
+        "exit_code": 1,
+        "passed": true,
+        "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:182: pending capacity arithmetic differs base=00000041 pending=63\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+        "negative_control": true
+      },
+      {
+        "label": "zero_delta_pessimism_lost",
+        "exit_code": 1,
+        "passed": true,
+        "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=2 control=0\n       Time: 2050000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+        "negative_control": true
+      },
+      {
+        "label": "unknown_admission_fallback_lost",
+        "exit_code": 1,
+        "passed": true,
+        "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=1 control=24\n       Time: 1050000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+        "negative_control": true
+      },
+      {
+        "label": "ring_stall0_zero0",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-regression-v2/ring_stall0_zero0.sv:311: $finish called at 26285000 (1ps)",
+        "independent_ring_oracle": true
+      },
+      {
+        "label": "ring_stall0_zero1",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-regression-v2/ring_stall0_zero1.sv:310: $finish called at 26065000 (1ps)",
+        "independent_ring_oracle": true
+      },
+      {
+        "label": "ring_stall1_zero0",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-regression-v2/ring_stall1_zero0.sv:327: $finish called at 27075000 (1ps)",
+        "independent_ring_oracle": true
+      },
+      {
+        "label": "ring_stall1_zero1",
+        "exit_code": 0,
+        "passed": true,
+        "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-regression-v2/ring_stall1_zero1.sv:326: $finish called at 26845000 (1ps)",
+        "independent_ring_oracle": true
+      }
+    ],
+    "finite_four_state_vectors_per_capacity": 16384,
+    "finite_four_state_comparisons_per_capacity": 32768,
+    "full_checks_per_capacity": 400008,
+    "signed_delta_checks_per_capacity": 442368,
+    "capacity_checks_per_capacity": 245760,
+    "negative_controls_rejected": 8,
+    "ring_oracle_runs_passed": 4,
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-candidates-regression-v2/verification.json",
+      "sha256": "abaa1884c6ddab30256581f561d5d02a1fba6bfef1eb81730a7fdda55fe330b9"
+    },
+    "all_inputs_stable_during_verification": true
+  },
+  "physical_gain_measured": false,
+  "synthesis_run_for_modified_source": false,
+  "pnr_run_for_modified_source": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "profiles_or_task2_edited": false,
+  "rollback": "Restore maintained DMA bytes from frozen M12b consumed source 5be6f263083122794b82f2e9d8069fae96a6d044b4cb02c024d92c58b4de2810; build a fresh candidate identity."
+}
