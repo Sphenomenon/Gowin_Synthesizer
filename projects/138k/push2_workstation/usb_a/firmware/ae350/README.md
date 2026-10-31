@@ -73,3 +73,44 @@ python3 projects/138k/push2_workstation/usb_a/sim/run_ae350_clock_service_api.py
 ```
 
 runner 另需同一工具链的 `objdump`，检查实际 RV32 MMIO adapter 两侧 fence、四个 API 符号确实链接、ELF／binary／ROM 确定性、容量和输入身份。host 模型不代替 APB CDC、媒体协议、ROM 实板启动或完整调用链栈验证。
+
+## 显式 Classic CPU 运行时实验
+
+`tools/experiment_ae350_rom_split.py --runtime-owner --output <新目录>` 单独选择
+ROM128／ILM64／DLM64 的实际 CPU 组合根。它直接定义 `A138_CLASSIC_RUNTIME`，
+链接版本化的 `classic_runtime`／`hci_transport`／`pcm_media`／security／Classic／SBC，
+不使用 budget adapter 或源文本 overlay。原 budget 默认、维护固件入口、accepted／pinned
+和整机配置的选择保持原策略；本实验不会替换其 ROM。实际 `ui_main.c` 的背景 hook
+在现有 slice／poll 中每次执行四个固定 transport pass，总共最多解码一个 SBC frame，
+再执行一次原 BLE business pump。该工作量上界不等于 CPU／DDR 最长服务间隔。
+
+F8050200 原生 HCI 合同由 `rtl/bluetooth/hci_owner/NATIVE_TRANSPORT_CONTRACT.md`
+所在的 PL owner 维护；C 只适配该 ABI，不接管 UART、H5、共享 HCI credits 或 Reset。
+每个 pass 最多复制 16 TX／16 RX bytes。CPU 私有命令 token 与 security／Classic
+各自 token 分离；staging COMMIT、实际 ACCEPTED、transport_done 和 exact raw CC／CS
+分别观察，全部成立后才 ACK。RX 持有期间每轮刷新 retired，exact epoch／ticket 才释放。
+不确定写、descriptor 漂移、超时或 epoch 变化均 fence；exact-epoch Classic fence
+不得重置 BLE／BR 共享账本。此仓库实验可在 PL 合同尚未集成时独立编译。
+
+`pcm_media` 适配 F806 block queue 和原 F803 clock ticket。只有 PL capability bit3
+实际发布 sustained／drift 验收后才允许 ARM、切率或 source 命令；当前 PL `CAPS=0x67`
+的 bit3／4 均为零，因此没有播放或总延迟 grant。ARM／COMMIT／CANCEL 使用完整
+controller epoch、PL generation、Classic stream、rate、physical audio epoch key，
+提交每次最多写 16 个 stereo PCM16 words。只有完整 payload 和新的实际 command ID
+才表示队列接受；SELECT 接受与首个实际 sample 的 applied-source ID 是不同事实。
+`facts.ready` 表示队列入口就绪，不表示已经可听。当前流 failure 终止该 observer；重建的
+observer 可以让 PL 用 fresh key 检查新 ARM，不能绕过 PL 的旧 stream 防重放记忆。
+
+实际固件只安装返回 ERROR 的 unavailable bond callbacks，并明确 `enabled=0`；没有
+持久 bond backend，也没有 RAM／Flash 持久化替身，GeneralBonding 不会启动。
+raw MMIO 沿用 uncached volatile load／store 和 fence，其总线故障仍需平台 trap／超时，
+host checked callback 不构成物理可恢复保证。
+
+运行 `sim/run_ae350_classic_runtime.py --output <新目录>` 验证实际 C root、SBC 参考音频、
+checked-MMIO 边界、ASan／UBSan 与反向控制；
+`sim/run_ae350_hci_native_driver.py --rtl-root <原生 HCI usb_a目录> --output <新目录>`
+把外部实际 RTL 快照后与实际 C driver 联跑。后者的外层 H5 同步 RAM fixture 不等于 UART
+或板卡。显式 RV32 构建另对实际 ELF 的完整 callback／直接调用／栈链和 SBC 表字节闭合，
+未知目标、来源漂移、遗漏站点或栈溢出均失败。CPU cycles、物理栈水位、原生整机选择、
+持久存储、手机互通与硬件验收仍单独验证。阶段证据见
+[Classic CPU runtime 源阶段](../../reports/WORKSTATION_AE350_CLASSIC_RUNTIME_SOURCE_20261031.md)。

@@ -3,9 +3,25 @@
  * REC is a bounded PCM snapshot, not continuous file recording. */
 #include "firmware_checks.h"
 #include "ui_render.h"
-#ifdef A138_BLE_BUSINESS
+#ifdef A138_CLASSIC_RUNTIME
+#include "classic_runtime.h"
+#elif defined(A138_BLE_BUSINESS)
 #include "ble_business_owner.h"
 #endif
+static void background_init(void) {
+#ifdef A138_CLASSIC_RUNTIME
+    a138_classic_runtime_firmware_init();
+#elif defined(A138_BLE_BUSINESS)
+    a138_ble_business_firmware_init();
+#endif
+}
+static void background_step(void) {
+#ifdef A138_CLASSIC_RUNTIME
+    a138_classic_runtime_firmware_pump();
+#elif defined(A138_BLE_BUSINESS)
+    a138_ble_business_firmware_pump();
+#endif
+}
 #define UI_BASE UINT32_C(0xf8020000)
 static unsigned heartbeat,runtime_flags;
 static volatile a138_record captured[4];
@@ -177,9 +193,7 @@ static int read_model(ui_model*m) {
 }
 static void ui_service_step(ui_runtime*r) {
         idle_audio();
-#ifdef A138_BLE_BUSINESS
-        a138_ble_business_firmware_pump();
-#endif
+        background_step();
         capture_request(&r->capture,a138_read(AUDIO_BASE,0x18c)>>26);capture_step(&r->capture);
         diagnostic[5]=0x55490000u|((ur(12)&255u)<<8)|((ur(4)&7u)<<4)|3u;
         unsigned panic=r->model.panic_epoch,changed=(unsigned)read_model(&r->model);
@@ -223,25 +237,19 @@ void services_main(void) {
     ui_runtime runtime={.valid={1,1},.revision=1,.shown=1,
         .frame={(volatile uint32_t *)0x10000000u,(volatile uint32_t *)0x10400000u}};
     ui_init(&runtime.model);control_submit(&runtime.control,0,&runtime.model);
-#ifdef A138_BLE_BUSINESS
-    a138_ble_business_firmware_init();
-#endif
+    background_init();
     // Startup self-tests retain their existing acceptance. Service waits below
     // yield background work on every poll/slice; runtime has no wait loops.
     while(runtime.control.active) {
         idle_audio();
-#ifdef A138_BLE_BUSINESS
-        a138_ble_business_firmware_pump();
-#endif
+        background_step();
         if(control_step(&runtime.control)<0)fail(0xbad03002);
     }
     for(unsigned p=0;p<2;p++) {
         runtime.pages[p]=runtime.model;
         for(unsigned row=0;row<UI_FRAME_ROWS;row+=UI_SLICE_ROWS) {
             ui_render_rows(runtime.frame[p],&runtime.model,runtime.touch,row,UI_SLICE_ROWS);idle_audio();
-#ifdef A138_BLE_BUSINESS
-            a138_ble_business_firmware_pump();
-#endif
+            background_step();
         }
         a138_fence();beat();
         if(runtime.frame[p][0]!=0x08830883u || runtime.frame[p][1036799]!=0x08830883u || runtime.frame[p][72*960+32]!=0x11271127u) fail(0xbad03201+p);
@@ -252,9 +260,7 @@ void services_main(void) {
         ui_present_job job={0};if(present_begin(&job,startup_page[n],startup_visible[n])<0)fail(0xbad03001);
         while(job.active) {
             idle_audio();
-#ifdef A138_BLE_BUSINESS
-            a138_ble_business_firmware_pump();
-#endif
+            background_step();
             if(present_step(&job)<0)fail(0xbad03001);
         }
     }

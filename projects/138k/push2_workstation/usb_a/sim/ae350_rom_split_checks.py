@@ -78,6 +78,16 @@ def run_model_checks(output, root):
         return bytes(data)
     call('a138_classic_init', s['budget_classic'])
     assert call('a138_classic_begin', s['budget_classic'], 1, 9, 0x23, 276) == 0
+    # Real linked Classic now requires an independent security-owner grant.
+    # First prove this exported lower-level test path cannot open AVDTP on an
+    # unauthenticated link. The later grant is injected only into this CPU model;
+    # neither the budget adapter nor actual runtime supplies a fabricated grant.
+    pdu(1, struct.pack('<BBHHH', 2, 50, 4, 25, 0x70))
+    denied = take_one()
+    assert denied == struct.pack('<HHBBHHHHH', 12, 1, 3, 50, 8, 0, 0x70, 3, 0)
+    call('a138_classic_init', s['budget_classic'])
+    assert call('a138_classic_begin', s['budget_classic'], 1, 9, 0x23, 276) == 0
+    assert call('a138_classic_security', s['budget_classic'], 1, 9, 1) == 0
     pdu(1, struct.pack('<BBHHH', 2, 50, 4, 25, 0x70))
     connected = take_one()
     assert len(connected) == 28 and connected[4:6] == bytes([3,50])
@@ -158,6 +168,7 @@ def run_model_checks(output, root):
             instructions=cpu.steps-start, pcm_sha256=hashlib.sha256(pcm).hexdigest()))
     receipt = dict(schema=1, passed=True, startup_instructions=startup_steps,
         actual_cold_protocol_response_hex=response.hex(), delay_reporting=delay, calls=calls,
+        unauthenticated_AVDTP_denial_hex=denied.hex(), later_security_grant_injected_in_model_only=True,
         upper_rom_fetches=cpu.upper_rom_fetches, region_transitions=cpu.region_transitions,
         rv32m_instructions=cpu.m_instructions, vectors=vectors,
         scalar_samples=sum(v['scalar_samples'] for v in vectors),

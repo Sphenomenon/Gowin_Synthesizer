@@ -12,6 +12,9 @@ SECTIONS {
     .rom_text : {
         __rom_text_start = .;
         *classic_service.o(.text .text.*)
+        /* Explicit runtime-owner objects only; absent in the budget profile.
+         * Security command policy is cold, keeping decoder/transport in ILM. */
+        *classic_security.o(.text .text.*)
         *ui_render.o(.text .text.*)
         . = ALIGN(16); __rom_text_end = .;
     } > ROM_COLD

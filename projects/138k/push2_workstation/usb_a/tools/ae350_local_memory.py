@@ -186,8 +186,15 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
             edges.setdefault(e[1], set()).add(e[2])
     def normalized(name):
         # GCC retains .part.0 in some .ci/.su labels but omits clone numbers
-        # from others. Prefer the exact graph name before trying that alias.
-        return name if name in nodes.values() else re.sub(r'\.(constprop|isra|part)\.\d+', r'.\1', name)
+        # from others. The node title retains the complete machine clone name
+        # even for mixed suffixes such as .part.0.constprop.0.isra.0; use that
+        # exact identity before the older simple alias. Ambiguity fails closed.
+        if name in nodes.values():
+            return name
+        candidates = {label for title, label in nodes.items() if title.rsplit(':', 1)[-1] == name}
+        if len(candidates) > 1:
+            raise ValueError('ambiguous compiler clone identity: ' + name)
+        return next(iter(candidates)) if candidates else re.sub(r'\.(constprop|isra|part)\.\d+', r'.\1', name)
     long_calls = direct_long_calls(disassembly)
     for site in long_calls.values():
         site['caller'], site['target'] = normalized(site['caller']), normalized(site['target'])

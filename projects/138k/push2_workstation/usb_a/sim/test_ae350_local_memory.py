@@ -207,5 +207,32 @@ class LocalMemoryTest(unittest.TestCase):
             self.assertEqual(self.result[key], repeated[key])
 
 
+class CompilerCloneIdentityTest(unittest.TestCase):
+    def test_mixed_clone_suffix_resolves_only_exact_unique_gcc_title(self):
+        clone = 'revoke.part.0.constprop.0.isra.0'
+        label = 'revoke.part.0.constprop.isra'
+        frames = [dict(function='test.c:1:1:services_main', bytes=16, kind='static'),
+                  dict(function='test.c:2:1:' + label, bytes=32, kind='static')]
+        disassembly = ('a0000000 <services_main>:\n'
+                       'a0000000: 008000ef jal a0000008 <' + clone + '>\n'
+                       'a0000004: 00008067 ret\n'
+                       'a0000008 <' + clone + '>:\n'
+                       'a0000008: 00008067 ret\n')
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp)
+            graph = out / 'fixture.ci'
+            graph.write_text('node: { title: "services_main" label: "services_main\\n" }\n'
+                             'node: { title: "test.c:' + clone + '" label: "' + label + '\\n" }\n'
+                             'edge: { sourcename: "services_main" targetname: "test.c:' + clone + '" }\n')
+            report = call_chain_report(out, frames, disassembly, 16384)
+            self.assertEqual(report['conservative_peak_bytes'], 48)
+            self.assertEqual(report['longest_chain'], ['services_main', label])
+            graph.write_text(graph.read_text() + 'node: { title: "other.c:' + clone +
+                             '" label: "other_clone\\n" }\n')
+            frames.append(dict(function='test.c:3:1:other_clone', bytes=32, kind='static'))
+            with self.assertRaisesRegex(ValueError, 'ambiguous compiler clone identity'):
+                call_chain_report(out, frames, disassembly, 16384)
+
+
 if __name__ == '__main__':
     unittest.main()
