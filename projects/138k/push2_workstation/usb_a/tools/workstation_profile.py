@@ -40,6 +40,8 @@ R00_NO_LOCAL_PANEL_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local
 R00_NO_LOCAL_PANEL_PROVIDER = 'rtl/workstation/workstation_profile_r00_no_local_panel.sv'
 CPU_BUSINESS_NAME='custom138k-workstation-ae350-business-v1'
 CPU_BUSINESS_CONFIG='boards/custom_138k/workstation_profile_ae350_business_v1.json'
+HCI_OWNER_NAME='custom138k-workstation-hci-owner-v1'
+HCI_OWNER_CONFIG='boards/custom_138k/workstation_profile_hci_owner_v1.json'
 CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',
     recording_policy=R00_POLICY,local_panel_policy='disabled_local_lcd_touch_v1',
     ble_recording_storage_policy='native_raw_ddr_ae350_business_v2',business_owner_policy='ae350_ble_business_owner_v2',
@@ -49,6 +51,12 @@ CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabl
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
+    HCI_OWNER_NAME:dict(config=HCI_OWNER_CONFIG,revision=1,
+        configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1'),
+        provider='rtl/workstation/workstation_profile_hci_owner_v1.sv',recognition_enabled=False,
+        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        business_owner_enabled=True,hci_shared_owner_enabled=True,
+        integration_identity='custom138k-native-hci-shared-owner-revision1'),
     CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=4,configuration=CPU_BUSINESS_CONFIGURATION,
         provider='rtl/workstation/workstation_profile_ae350_business_v1.sv',recognition_enabled=False,
         recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
@@ -328,7 +336,9 @@ def _artifact(root, output, metadata, profile):
         ble_raw_adaptation = selected.pop('adaptation', None)
         if selected != ble_recording_metadata():
             raise ValueError('BLE raw DDR storage selection changed')
-        verify_ble_raw(root, stage, ble_raw_adaptation)
+        if business_selected:
+            verify_ble_raw(root,stage,ble_raw_adaptation,shared_hci=spec.get('hci_shared_owner_enabled',False))
+        else:verify_ble_raw(root, stage, ble_raw_adaptation)
     elif 'ble_recording_storage' in metadata:
         raise ValueError('unselected profile cannot claim raw BLE DDR storage')
     if spec.get('recording_enabled',False):

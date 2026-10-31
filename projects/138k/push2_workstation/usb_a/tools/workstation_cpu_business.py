@@ -18,6 +18,20 @@ DEPENDENCIES=(*COPIES.values(),DIRECTORY+'/provenance.json',
     DIRECTORY+'/CONTRACT.md','rtl/services/BUSINESS_MAILBOX_CONTRACT.md',
     'rtl/workstation/workstation_profile_r00_no_local_panel.sv','tools/workstation_cpu_business.py',
     'tools/ae350_ble_business_indirect_review.json')
+HCI_POLICY='native_shared_hci_owner_v1'
+HCI_DIRECTORY='rtl/bluetooth/hci_owner'
+HCI_COPIES=dict(COPIES,**{
+    'native_bluetooth/bt_verilog_core.v':HCI_DIRECTORY+'/workstation_hci_native_core.v',
+    'rtl/bluetooth/workstation_bluetooth.sv':HCI_DIRECTORY+'/workstation_hci_bluetooth.sv'})
+HCI_SOURCES=tuple(HCI_DIRECTORY+'/'+name for name in (
+    'workstation_hci_flow_owner.sv','workstation_hci_event_decoder.sv',
+    'workstation_hci_host_rx_owner.sv','workstation_hci_host_bootstrap.sv',
+    'workstation_hci_native_transport.sv','workstation_hci_cpu_mailbox.sv',
+    'workstation_hci_ble_queue.sv','workstation_hci_ble_bridge.v','workstation_hci_initializer.v'))
+HCI_DEPENDENCIES=(*HCI_COPIES.values(),HCI_DIRECTORY+'/NATIVE_TRANSPORT_CONTRACT.md',
+    'rtl/workstation/workstation_profile_hci_owner_v1.sv')
+def selection(shared_hci=False):
+    return (HCI_COPIES,(*SOURCES,*HCI_SOURCES),(*DEPENDENCIES,*HCI_DEPENDENCIES)) if shared_hci else (COPIES,SOURCES,DEPENDENCIES)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def metadata():
     m=raw_metadata()
@@ -27,7 +41,7 @@ def metadata():
         hardware_owned=['capture_crc','raw_storage','native_commit','media_seal','block_fetch','rice_codec','wire_bytes'],
         remaining_software_migration=[])
     return m
-def prepare(root,stage):
+def prepare(root,stage,*,shared_hci=False):
     root,stage=Path(root),Path(stage)
     # Verify exactly the original stage being replaced, without generating the
     # legacy raw recorder. Stable native sources already contain the raw ports.
@@ -36,24 +50,26 @@ def prepare(root,stage):
         p=stage/relative
         if sha(p)!=legacy.INPUT_SHA256[name]:raise ValueError('CPU business original stage drift: '+relative)
         before[relative]=sha(p)
-    for destination,source in COPIES.items():
+    copies,sources,dependencies=selection(shared_hci)
+    for destination,source in copies.items():
         shutil.copyfile(root/source,stage/destination)
     retired='native_bluetooth/ble_recording.v'
     (stage/retired).unlink()
-    evidence=dict(policy=POLICY,source_sha256={p:sha(root/p) for p in (*SOURCES,*DEPENDENCIES)},
-        copied={d:dict(source=s,sha256=sha(root/s)) for d,s in COPIES.items()},
+    evidence=dict(policy=HCI_POLICY if shared_hci else POLICY,source_sha256={p:sha(root/p) for p in (*sources,*dependencies)},
+        copied={d:dict(source=s,sha256=sha(root/s)) for d,s in copies.items()},
         replaced_input_sha256=before,retired=[retired],rtl_text_generation=False,
         hardware_tested=False,synthesis=False,pnr=False,deployment_allowed=False)
-    verify_prepared(root,stage,evidence)
+    verify_prepared(root,stage,evidence,shared_hci=shared_hci)
     return evidence
-def verify_prepared(root,stage,evidence):
+def verify_prepared(root,stage,evidence,*,shared_hci=False):
     root,stage=Path(root),Path(stage)
-    expected_sources={p:sha(root/p) for p in (*SOURCES,*DEPENDENCIES)}
-    expected_copies={d:dict(source=s,sha256=sha(root/s)) for d,s in COPIES.items()}
+    copies,sources,dependencies=selection(shared_hci)
+    expected_sources={p:sha(root/p) for p in (*sources,*dependencies)}
+    expected_copies={d:dict(source=s,sha256=sha(root/s)) for d,s in copies.items()}
     expected_before={legacy.STAGED_PATHS[n]:h for n,h in legacy.INPUT_SHA256.items()}
-    if evidence.get('policy')!=POLICY or evidence.get('source_sha256')!=expected_sources or evidence.get('copied')!=expected_copies or evidence.get('replaced_input_sha256')!=expected_before or evidence.get('retired')!=['native_bluetooth/ble_recording.v'] or evidence.get('rtl_text_generation') is not False:
+    if evidence.get('policy')!=(HCI_POLICY if shared_hci else POLICY) or evidence.get('source_sha256')!=expected_sources or evidence.get('copied')!=expected_copies or evidence.get('replaced_input_sha256')!=expected_before or evidence.get('retired')!=['native_bluetooth/ble_recording.v'] or evidence.get('rtl_text_generation') is not False:
         raise ValueError('CPU business source policy/evidence drift')
-    for destination,source in COPIES.items():
+    for destination,source in copies.items():
         if sha(stage/destination)!=sha(root/source):raise ValueError('CPU business staged source drift: '+destination)
     if (stage/'native_bluetooth/ble_recording.v').exists():raise ValueError('retired RTL business owner remains staged')
     engine=(root/SOURCES[0]).read_text()

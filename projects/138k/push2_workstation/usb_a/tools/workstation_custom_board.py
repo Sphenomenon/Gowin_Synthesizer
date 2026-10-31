@@ -121,6 +121,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
     ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
     business_selected=runtime and specification(profile['name']).get('business_owner_enabled',False)
+    hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
     expanded_boot = ae350_memory['boot_rom_bytes'] == 65536
@@ -138,9 +139,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_sources += BLE_RAW_SOURCES
         profile_dependencies += BLE_RAW_DEPENDENCIES
     if business_selected:
-        from tools.workstation_cpu_business import SOURCES as CPU_SOURCES,DEPENDENCIES as CPU_DEPENDENCIES
-        native_sources += CPU_SOURCES
-        profile_dependencies += CPU_DEPENDENCIES
+        from tools.workstation_cpu_business import selection as cpu_selection
+        _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected)
+        native_sources += cpu_sources
+        profile_dependencies += cpu_dependencies
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
@@ -247,7 +249,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     ble_raw_adaptation=None
     if business_selected:
         from tools.workstation_cpu_business import prepare as prepare_cpu_business
-        ble_raw_adaptation=prepare_cpu_business(root,stage)
+        ble_raw_adaptation=prepare_cpu_business(root,stage,shared_hci=hci_selected)
         bluetooth['sources'].remove('native_bluetooth/ble_recording.v')
     elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw

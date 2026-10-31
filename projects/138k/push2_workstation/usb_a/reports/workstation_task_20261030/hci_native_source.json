@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "stage": "native_shared_hci_source_prepare",
+  "base_commit": "f8882c5de1982c4f12f1246bdbcc028b6477d52d",
+  "candidate_identity": "custom138k-workstation-hci-owner-v1-42cfbbfe775a9d6b",
+  "profile": "custom138k-workstation-hci-owner-v1",
+  "configuration_sha256": "d8da281a54711218aa29bf8f1041eb596ab152d8303d19ad0e1b3dc8ae30e0b5",
+  "source_files": 474,
+  "staged_files": 626,
+  "enabled_inputs": 281,
+  "integration": {
+    "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+    "checks": 268
+  },
+  "behavior_mutants": {
+    "physical_debit_removed": {
+      "rejected": true,
+      "source_sha256": "b34f452510bcdc2d4fb7783a0eff61002a586bc56daddbf685554022aeb65383",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL one physical LE credit cannot authorize next fragment t=31300000 tx=5 rx=0 flow=0 host=0 boot=0"
+    },
+    "cpu_ack_before_transport": {
+      "rejected": true,
+      "source_sha256": "0a07a8b925b5b620f5d6c07e29712129a39ee413e8739c77feb411178a8e8a97",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL MMIO error semantics t=10661000 tx=5 rx=5 flow=0 host=0 boot=0"
+    },
+    "response_token_lost": {
+      "rejected": true,
+      "source_sha256": "3a742a502bf07da7ab17d18f5121253f4937c8c7e879356b082b5330ffd3625b",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL owner2 response original transport token t=11180000 tx=0 rx=0 flow=0 host=0 boot=0"
+    },
+    "other_owner_raw_response": {
+      "rejected": true,
+      "source_sha256": "af2db117341b9b406d68e7ceaf68db60735202e0a62b1af4dc9e4f4378f1be11",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL quota-only event cannot inherit the last CPU owner/token t=12470000 tx=1 rx=0 flow=0 host=0 boot=0"
+    },
+    "quota_only_inherits_cpu_owner": {
+      "rejected": true,
+      "source_sha256": "9a5dc936c343f85a470a3b8f0a3f08e33298f5a544eb2c35b2aa74c9c6a207d3",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL quota-only event cannot inherit the last CPU owner/token t=12470000 tx=1 rx=0 flow=0 host=0 boot=0"
+    },
+    "host_return_waits_ordinary_quota": {
+      "rejected": true,
+      "source_sha256": "b1f65df998863dfbe6db03a36d603ba394391c2d40f73e8a3648063d1b55f003",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL CPU slow copy never holds controller RX credit t=19150000 tx=4 rx=0 flow=0 host=0 boot=0"
+    },
+    "stale_cpu_generation_admitted": {
+      "rejected": true,
+      "source_sha256": "50d099765562008c0136ead69751618279f541e37f58ddbe3504be1b71ac7b03",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL stale generation command rejected before acceptance t=47480000 tx=1 rx=0 flow=0 host=0 boot=0"
+    },
+    "old_copy_not_retired": {
+      "rejected": true,
+      "source_sha256": "fd9c015ba6f2bf0a404aac36778ab4e2079d4bccdcc97370a9c48c4cc3b1546e",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL old generation CPU copy explicitly retired t=45650000 tx=1 rx=0 flow=0 host=0 boot=0"
+    },
+    "registered_ram_byte_shift": {
+      "rejected": true,
+      "source_sha256": "dce3f96c5171c3a9545427b4ed254819a9d44dd08ff69d8f92b418bdffb759a7",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL first synchronous event RAM byte t=9760000 tx=0 rx=0 flow=0 host=0 boot=0"
+    },
+    "physical_lease_never_released": {
+      "rejected": true,
+      "source_sha256": "590cd84eaa3dd8dcf7b0475b72f490fea21ce5b98b290da4c24c3a66588bad65",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL CPU slow copy never holds controller RX credit t=19150000 tx=1 rx=14 flow=1 host=1 boot=1"
+    },
+    "zero_le_credit_steals_private_slot": {
+      "rejected": true,
+      "source_sha256": "5679657a0f3d862151e5fbb503f72a323db9a286ecbf7dd7774b2ef74fe55181",
+      "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1/tree/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:331: FAIL native integration watchdog tx=4 rx=0 fault=0 flow=0 host=0 boot=0 cpu=2 checks=156 commands=6 le=1 br=0 cpuvalid=1 eligible=1 credits=  1 pending=0 grant=1"
+    }
+  },
+  "uart": {
+    "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+    "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+    "patch_bytes": 253,
+    "physical_uart": true,
+    "physical_board": false
+  },
+  "prior_bootstrap": {
+    "summary": "PASS checks=418 scenarios=32 commands4 pools2 timeout_phases5",
+    "checks": 418
+  },
+  "prior_host_rx": {
+    "checks": 160228,
+    "mutants": 13
+  },
+  "prior_shared_owner": {
+    "flow_checks": 116780,
+    "event_checks": 9174,
+    "mutants": 11
+  },
+  "business_regression": {
+    "behavioral_checks": 1701,
+    "groups": [
+      {
+        "name": "real C/APB/parser/raw-DDR owner",
+        "checks": 342
+      },
+      {
+        "name": "real download policy and replay vectors",
+        "checks": 840
+      },
+      {
+        "name": "read primitive disconnect admission",
+        "checks": 47
+      },
+      {
+        "name": "additional real C boundaries",
+        "checks": 316
+      },
+      {
+        "name": "uncommitted uncertain descriptor",
+        "checks": 13
+      },
+      {
+        "name": "uncommitted uncertain completion",
+        "checks": 15
+      },
+      {
+        "name": "actual APB torn COMPLETE observation",
+        "checks": 15
+      },
+      {
+        "name": "zero-frame START/seal",
+        "checks": 33
+      },
+      {
+        "name": "CRC phase 2",
+        "checks": 20
+      },
+      {
+        "name": "CRC phase 3",
+        "checks": 20
+      },
+      {
+        "name": "CRC phase 4",
+        "checks": 20
+      },
+      {
+        "name": "CRC phase 5",
+        "checks": 20
+      }
+    ],
+    "mutants": 15,
+    "wire_messages": 136,
+    "golden_wire_equal": true
+  },
+  "accepted_source_tests": 17,
+  "tools": {
+    "riscv_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "native_lint": "Verilator --lint-only -Wall, unused child diagnostic/output pins only; no width/latch/multidriver suppression"
+  },
+  "raw_evidence": {
+    "regression-final-v4/verification.json": "3242c1dd71fb6b70caf6e74feb628076563dffa52926bd727cb9a40ce744022e",
+    "c-business-final-v1/verification.json": "5b49f2ce232ea2da45adc74d353a9e01dcb00c961976202f307e1b11afdef9b8",
+    "prepare-final-v4/integration_inputs.json": "f74192574765099118c3c1e553d7c63b5478c26a20fa1f96d2d4a049995174b2",
+    "prepare-final-v4/workstation_profile.json": "547d11daf26d38be1b09acb52fb3af06b8e08319503448d5863a9875e21683fc",
+    "candidate_guards.json": "04c949b0057b08027051f499af89ed9c6b0aafb7b0c264da6b010df272a83912"
+  },
+  "external_package": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-owner-v1",
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "pending": [
+    "Integrate native C security/Classic service and PCM owner under one new source identity",
+    "Real controller/phone interoperability and sustained A2DP streaming",
+    "Complete resource, CDC/reset, clocks and physical routed timing",
+    "Cache/DMA visibility and measured CPU cycle/service latency"
+  ],
+  "candidate_guard_tests": {
+    "stage": "actual_prepared_hci_candidate_negative_controls",
+    "passed": true,
+    "mutants": {
+      "native_core_byte_drift": {
+        "rejected": true,
+        "error": "CPU business staged source drift: native_bluetooth/bt_verilog_core.v"
+      },
+      "mailbox_ram_byte_drift": {
+        "rejected": true,
+        "error": "workstation profile copied source drift: rtl/bluetooth/hci_owner/workstation_hci_cpu_mailbox.sv"
+      },
+      "retired_business_owner_returns": {
+        "rejected": true,
+        "error": "retired RTL business owner remains staged"
+      },
+      "original_initializer_returns": {
+        "rejected": true,
+        "error": "workstation profile prepared input drift: native_bluetooth/bt_hci_init.v"
+      },
+      "profile_identity_spoof": {
+        "rejected": true,
+        "error": "workstation profile artifact changed"
+      },
+      "generated_boot_image_drift": {
+        "rejected": true,
+        "error": "workstation profile AE350 evidence changed: boot.mem"
+      }
+    },
+    "restored_candidate_verified": true,
+    "hardware_tested": false,
+    "synthesis": false,
+    "pnr": false
+  }
+}

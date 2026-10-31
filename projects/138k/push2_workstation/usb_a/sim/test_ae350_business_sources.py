@@ -54,7 +54,7 @@ class BusinessSources(unittest.TestCase):
         selected=profile.load(ROOT,profile.CPU_BUSINESS_NAME)
         self.assertTrue(profile.specification(selected['name'])['business_owner_enabled'])
         for name,spec in profile.PROFILE_REGISTRY.items():
-            if name!=selected['name']:self.assertFalse(spec.get('business_owner_enabled',False))
+            self.assertEqual(spec.get('business_owner_enabled',False),name in (profile.CPU_BUSINESS_NAME,profile.HCI_OWNER_NAME))
         self.assertEqual(selected['configuration']['ae350_boot_rom_bytes'],65536)
         self.assertIn('projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c',selected['source_sha256'])
         self.assertIn('projects/138k/push2_workstation/usb_a/'+selection.SOURCES[0],selected['source_sha256'])

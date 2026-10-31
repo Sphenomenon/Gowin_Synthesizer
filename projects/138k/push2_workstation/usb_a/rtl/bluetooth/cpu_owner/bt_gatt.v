@@ -4,6 +4,7 @@
 // outside this module. No processor or firmware executes this ATT database.
 // Two response slots keep ACL reception independent of controller TX credit.
 module bt_gatt #(
+    parameter SHARED_HCI_OWNER=0,
     parameter [87:0] DEVICE_NAME="GW25K-PROTO",
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
     parameter CACHE_METADATA_RAM_STYLE="block_ram",
@@ -81,7 +82,7 @@ module bt_gatt #(
     reg read_slot, write_slot, tx_busy;
     reg [7:0] tx_credits;
     wire [7:0] credit_limit=acl_packet_count==0 ? 8'd1 : acl_packet_count;
-    wire tx_credit=tx_credits!=0;
+    wire tx_credit=SHARED_HCI_OWNER ? !tx_busy : tx_credits!=0;
     reg [31:0] ms_divider, notify_deadline;
     reg [11:0] completion_handle;
     reg [7:0] completion_count_low;
@@ -717,7 +718,7 @@ module bt_gatt #(
                         active_tx[10]<=8;active_tx[11]<=0;
                         active_tx[12]<=12;active_tx[13]<=0;active_tx[14]<=12;active_tx[15]<=0;
                         active_tx[16]<=0;active_tx[17]<=0;active_tx[18]<=8'h90;active_tx[19]<=1;
-                        tx_length<=20;tx_start<=1;tx_busy<=1;tx_credits<=tx_credits-1'b1;
+                        tx_length<=20;tx_start<=1;tx_busy<=1;if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
                     end else if(!tx_busy && tx_ready && tx_credit && queued!=0) begin
                         active_hci<=0;active_bulk<=0;
                         for(i=0;i<32;i=i+1) begin
@@ -726,7 +727,7 @@ module bt_gatt #(
                         end
                         tx_length<=response_length[read_slot]; tx_start<=1;
                         read_slot<=~read_slot; queued<=queued-1'b1;
-                        tx_busy<=1; tx_credits<=tx_credits-1'b1;
+                        tx_busy<=1; if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
                     end else if(!tx_busy && tx_ready && tx_credit && queued==0 &&
                                 connected && ((response_subscribed && reply_valid) || (transfer_subscribed && transfer_valid))) begin
                         response_base=write_slot ? 32 : 0;
@@ -762,7 +763,7 @@ module bt_gatt #(
                             work_crc=crc_byte(work_crc,work_byte);
                         end
                         active_tx[29]<=work_crc[7:0]; active_tx[30]<=work_crc[15:8];
-                        tx_length<=31; tx_start<=1; tx_busy<=1; tx_credits<=tx_credits-1'b1;
+                        tx_length<=31; tx_start<=1; tx_busy<=1; if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
                         notification_count<=notification_count+1'b1;
                         notify_deadline<=elapsed_ms+NOTIFY_MS;
                     end
@@ -856,8 +857,8 @@ module bt_gatt #(
                 COMPLETIONS: begin
                     if(connected && completion_sum!=0) begin
                         completed_packets<=completed_packets+completion_sum;
-                        if(tx_credits+completion_sum>=credit_limit)tx_credits<=credit_limit;
-                        else tx_credits<=tx_credits+completion_sum;
+                        if(!SHARED_HCI_OWNER && tx_credits+completion_sum>=credit_limit)tx_credits<=credit_limit;
+                        else if(!SHARED_HCI_OWNER)tx_credits<=tx_credits+completion_sum;
                     end
                     state<=IDLE;
                 end
@@ -888,7 +889,7 @@ module bt_gatt #(
                             // The block RAM is retained until the ACL bridge has
                             // copied and acknowledged every physical segment.
                             active_hci<=0;active_bulk<=1;tx_length<=business_length;
-                            tx_start<=1;tx_busy<=1;tx_credits<=tx_credits-1'b1;
+                            tx_start<=1;tx_busy<=1;if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
                         end else begin
                             response_length[write_slot]<=business_length;
                             write_slot<=~write_slot; queued<=queued+1'b1;
