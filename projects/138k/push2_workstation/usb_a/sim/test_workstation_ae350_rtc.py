@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tools'))
 from tools.workstation_ae350_rtc import (
     POLICY, SOURCE, SHARED_TOP, TOP, INSTANCE, SDC, CLOCK_ENTRY, SOURCE_BINDING,
-    CPU_BINDING, source_contract, prepared, verify_prepared, audit_netlist, validate_constraints,
+    CPU_BINDING, source_contract, prepared, verify_prepared, audit_netlist, audit_synthesis_netlist, validate_constraints,
 )
 from tools.workstation_custom_clocks import clock_bundle
 from tools.workstation_physical_pll_audit import rtc_gate
@@ -48,6 +48,58 @@ def copy_sources(root, stage):
 
 
 class IndependentRTC(unittest.TestCase):
+    def test_synthesis_wrapper_has_separate_scope_and_cannot_pass_physical_gate(self):
+        def opaque(text):
+            return text.replace('AE350_SOC', 'RiscV_AE350_SOC').replace(
+                'u_cpu/hard_macro', 'u_cpu/u_RiscV_AE350_SOC').replace('.RTC_CLK(', '.rtc_tick(')
+        text = opaque(fixture())
+        result = audit_synthesis_netlist(text)
+        self.assertEqual(result['visible_cpu_endpoint'], 'u_cpu/u_RiscV_AE350_SOC/rtc_tick')
+        self.assertEqual(result['connectivity_scope'], 'opaque_synthesis_wrapper_input')
+        self.assertIsNone(result['hard_macro'])
+        self.assertFalse(result['hard_macro_input_connectivity_verified'])
+        self.assertFalse(result['encrypted_internal_connectivity_verified'])
+        self.assertTrue(result['direct_unique_driver_verified'])
+        with self.assertRaisesRegex(ValueError, 'exactly one AE350 hard macro'):
+            audit_netlist(text)
+        with self.assertRaisesRegex(ValueError, 'opaque synthesis wrapper'):
+            audit_synthesis_netlist(fixture())
+        cases = [opaque(fixture(rtc='clk_50m')),
+                 opaque(fixture(clock='core_clk')),
+                 text.replace('.rtc_tick(rtc_tick)', '.OTHER(rtc_tick)'),
+                 text.replace('.rtc_tick(rtc_tick)', '.rtc_tick({rtc_tick})'),
+                 text.replace('u_cpu/u_RiscV_AE350_SOC', 'u_cpu/other'),
+                 text.replace('RiscV_AE350_SOC', 'unknown'),
+                 opaque(fixture(extra=cell('AE350_SOC', 'extra', [('RTC_CLK', 'rtc_tick')]))),
+                 text.replace('endmodule', cell('AE350_SOC', 'extra', [('RTC_CLK', 'rtc_tick')])+'endmodule'),
+                 opaque(fixture(extra=cell('LUT2','outside/driver',[('F','rtc_tick'),('I0','GND')]))),
+                 opaque(fixture(extra=cell('LUT2','outside/consumer',[('I0','rtc_tick'),('F','q')]))),
+                 text.replace('.rtc_tick(rtc_tick)', '.rtc_tick(rtc_tick),\n .rtc_tick(clk_50m)')]
+        for changed in cases:
+            with self.subTest(text=changed), self.assertRaises(ValueError):
+                audit_synthesis_netlist(changed)
+
+    def test_synthesis_vectors_cannot_hide_extra_rtc_consumers(self):
+        base = fixture().replace('AE350_SOC', 'RiscV_AE350_SOC').replace(
+            'u_cpu/hard_macro', 'u_cpu/u_RiscV_AE350_SOC').replace('.RTC_CLK(', '.rtc_tick(')
+        for stem, selection in [('payload', 'payload[0]'), ('\\payload ', '\\payload [0]')]:
+            child = ('module child ('+stem+');\ninput [1:0] '+stem+';\nwire out;\n'+
+                     cell('LUT2','leaf',[('I0',selection),('F','out')])+'endmodule\n')
+            for binding, hidden in [('{GND,GND}',False),('{GND,rtc_tick}',True)]:
+                text=base.replace('endmodule',cell('child','outside',[(stem,binding)])+'endmodule',1)+child
+                if hidden:
+                    with self.assertRaisesRegex(ValueError,'unreviewed|non-scalar driver/consumer'):
+                        audit_synthesis_netlist(text)
+                else:
+                    self.assertTrue(audit_synthesis_netlist(text)['direct_unique_driver_verified'])
+        for vector in ('[1:0]', '[0:0]', '[0:1]'):
+            text=base.replace('wire rtc_tick, q, GND, VCC;',
+                              'wire q, GND, VCC;\nwire '+vector+' rtc_tick;')
+            text=text.replace('endmodule', cell('LUT2','extra_driver',
+                [('F','rtc_tick[0]'),('I0','GND')])+'endmodule')
+            with self.subTest(vector=vector), self.assertRaisesRegex(ValueError,'same single scalar wire'):
+                audit_synthesis_netlist(text)
+
     def test_source_reset_and_timing_bound_are_distinct_from_average_frequency(self):
         result = source_contract(ROOT)
         self.assertEqual(result['average_frequency_hz'], 32768)
@@ -206,6 +258,20 @@ class FixedSynthesisSurface(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'kept RTC register'):
             audit_netlist(raw.decode())
         self.assertEqual(before, hashlib.sha256(path.read_bytes()).hexdigest())
+
+
+@unittest.skipUnless(os.environ.get('GW138K_AE350_RTC_NEW_VG'), 'select explicit new synthesis VG; no EDA fallback')
+class FixedNewSynthesisRTC(unittest.TestCase):
+    def test_actual_visible_wrapper_passes_only_synthesis_scope(self):
+        path=Path(os.environ['GW138K_AE350_RTC_NEW_VG'])
+        raw=path.read_bytes();before=hashlib.sha256(raw).hexdigest()
+        result=audit_synthesis_netlist(raw.decode())
+        self.assertEqual(result['visible_cpu_endpoint'], 'u_cpu/u_RiscV_AE350_SOC/rtc_tick')
+        self.assertEqual(result['connectivity_scope'], 'opaque_synthesis_wrapper_input')
+        self.assertFalse(result['hard_macro_input_connectivity_verified'])
+        with self.assertRaisesRegex(ValueError, 'exactly one AE350 hard macro'):
+            audit_netlist(raw.decode())
+        self.assertEqual(before,hashlib.sha256(path.read_bytes()).hexdigest())
 
 
 @unittest.skipUnless(os.environ.get('GW138K_AE350_RTC_PREPARED'), 'select fresh native RTC prepare explicitly')

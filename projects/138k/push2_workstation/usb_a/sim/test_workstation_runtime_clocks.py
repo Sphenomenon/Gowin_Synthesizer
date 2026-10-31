@@ -245,7 +245,7 @@ class ActualRuntimeClocks(unittest.TestCase):
         self.reject('DDR_PLL_wrong_instance', self.text.replace('u_pll_0', 'u_pll_changed'),
                     'clock target not resolved')
         self.reject('reference_lost_input', self.text.replace('input clk_16m9344;',
-                    'wire clk_16m9344;', 1), 'primary clock top input inventory')
+                    'output clk_16m9344;', 1), 'primary clock top input inventory')
         if self.panel_off:
             for port in ('lcd_bl', 'lcd_pclk', 'lcd_r[0]'):
                 buffers = [path for path, cell in self.netlist.cells.items()

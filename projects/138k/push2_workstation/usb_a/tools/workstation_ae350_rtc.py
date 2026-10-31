@@ -6,6 +6,7 @@ half-periods, not the average period. This is no measured jitter/board claim.
 from pathlib import Path
 import hashlib
 import re
+from functools import lru_cache
 
 try:
     from tools.workstation_ae350_clock_placement import check_named_ports, direct_net
@@ -100,6 +101,21 @@ def verify_prepared(root, stage, evidence):
 
 
 def audit_netlist(text, *, top=TOP):
+    """Require the visible post-route hard macro, never an encrypted wrapper."""
+    return _audit_netlist(text, top=top, synthesis_wrapper=False)
+
+
+def audit_synthesis_netlist(text, *, top=TOP):
+    """Check the visible VG boundary without claiming encrypted internals.
+
+    Gowin keeps RiscV_AE350_SOC opaque during synthesis and expands AE350_SOC
+    at P&R. The physical gate deliberately continues to require AE350_SOC.
+    The staged locked vendor inputs and source binding are verified separately.
+    """
+    return _audit_netlist(text, top=top, synthesis_wrapper=True)
+
+
+def _audit_netlist(text, *, top, synthesis_wrapper):
     n = SynthesisNetlist(check_named_ports(text), top)
     cell = n.cells.get(INSTANCE, {})
     require(cell.get('kind') == 'DFFCE' and {'CLK', 'D', 'CLEAR', 'CE', 'Q'}.issubset(cell.get('ports', {})) and
@@ -109,33 +125,110 @@ def audit_netlist(text, *, top=TOP):
     ones = {"1'b1"} | {n.pin(p, 'V') for p, c in n.cells.items() if c['kind'] == 'VCC'}
     require(n.pin(INSTANCE, 'CE') in ones, 'kept RTC toggle register enable is not constant one')
     cpus = [p for p, c in n.cells.items() if c['kind'] == 'AE350_SOC']
-    require(len(cpus) == 1, 'exactly one AE350 hard macro is required')
-    cpu = cpus[0]
+    wrappers = [p for p, c in n.cells.items() if c['kind'] == 'RiscV_AE350_SOC']
+    if synthesis_wrapper:
+        require(not cpus and wrappers == ['u_cpu/u_RiscV_AE350_SOC'],
+                'exactly one reviewed opaque synthesis wrapper is required')
+        cpu, cpu_port = wrappers[0], 'rtc_tick'
+    else:
+        require(len(cpus) == 1 and not wrappers, 'exactly one AE350 hard macro is required')
+        cpu, cpu_port = cpus[0], 'RTC_CLK'
 
     def net(name, port):
         require(port in n.cells[name]['ports'], 'required RTC pin missing: ' + name + '/' + port)
         return direct_net(n, n.scopes[name], n.cells[name]['ports'][port])
 
     rtc = net(INSTANCE, 'Q')
-    require(net(cpu, 'RTC_CLK') == rtc, 'RTC_CLK is not directly driven by the kept RTC Q')
+    require(net(cpu, cpu_port) == rtc, cpu_port + ' is not directly driven by the kept RTC Q')
     require(not any(direct_net(n, '', port) == rtc for port in n.directions[top]),
             'RTC output must not be an external top port')
+
+    # VG leaf data ports include vector-formal -> concatenation bindings.
+    # Resolve those as individual direct wires; do not collapse clock buffers,
+    # discard unrelated vectors on an exception, or flatten scope identities.
+    resolving = set()
+
+    @lru_cache(maxsize=262144)
+    def direct_bits(scope, expression):
+        key = scope, expression
+        require(key not in resolving, 'cyclic direct synthesis port binding')
+        resolving.add(key)
+        try:
+            expression = expression.strip()
+            if not expression:
+                return ()  # Explicitly unconnected leaf port carries no net.
+            if re.fullmatch(r"\d+'[bhd][0-9a-fA-FxzXZ]+", expression):
+                width = int(expression.partition("'")[0])
+                return (None,) * width
+            if expression.startswith('{') and expression.endswith('}'):
+                members, start, depth = [], 1, 0
+                for i, char in enumerate(expression[1:-1], 1):
+                    if char == '{': depth += 1
+                    elif char == '}': depth -= 1
+                    elif char == ',' and depth == 0:
+                        members.append(expression[start:i]); start = i + 1
+                    require(depth >= 0, 'unbalanced synthesis binding')
+                require(depth == 0, 'unbalanced synthesis binding')
+                members.append(expression[start:-1])
+                return tuple(bit for member in reversed(members) for bit in direct_bits(scope, member))
+            selected = (None if expression.startswith('\\') and re.fullmatch(IDENTIFIER, expression) else
+                        re.fullmatch(r'(' + IDENTIFIER + r')\s*\[(\d+)(?::(\d+))?\]', expression))
+            frame = n.frames[scope]
+            if selected:
+                stem = selected[1].removeprefix('\\'); left = int(selected[2]); right = int(selected[3] or selected[2])
+                declared = n.ranges[frame['kind']].get(stem)
+                require(declared is not None and all(min(declared) <= i <= max(declared) for i in (left, right)),
+                        'invalid direct synthesis vector selection')
+                step = 1 if left >= right else -1
+                if scope and stem in frame['ports']:
+                    actual = direct_bits(n.scopes[scope], frame['ports'][stem])
+                    require(len(actual) == abs(declared[0]-declared[1])+1,
+                            'direct synthesis vector binding width changed')
+                    return tuple(actual[abs(i-declared[1])] for i in range(right,left+step,step))
+                return tuple((scope, stem+'['+str(i)+']') for i in range(right,left+step,step))
+            require(re.fullmatch(IDENTIFIER, expression) is not None, 'unsupported direct synthesis binding: '+repr(expression))
+            name = expression.removeprefix('\\')
+            declared = n.ranges[frame['kind']].get(name)
+            if scope and name in frame['ports']:
+                actual = direct_bits(n.scopes[scope], frame['ports'][name])
+                require(len(actual) == (abs(declared[0]-declared[1])+1 if declared else 1),
+                        'direct synthesis port binding width changed')
+                return actual
+            if declared:
+                step = 1 if declared[0] >= declared[1] else -1
+                return tuple((scope, name+'['+str(i)+']') for i in range(declared[1],declared[0]+step,step))
+            return ((scope, name),)
+        finally:
+            resolving.remove(key)
+    if synthesis_wrapper:
+        require(direct_bits(n.scopes[INSTANCE], n.cells[INSTANCE]['ports']['Q']) == (rtc,) and
+                direct_bits(n.scopes[cpu], n.cells[cpu]['ports'][cpu_port]) == (rtc,),
+                'RTC source and CPU boundary must be the same single scalar wire')
     endpoints = []
     for name, cell in n.cells.items():
         if cell['kind'] in n.modules:
             continue
         for port, value in cell['ports'].items():
             scope = n.scopes[name]
-            if not any(direct_net(n, scope, token[0]) == rtc for token in re.finditer(IDENTIFIER, value)):
+            touches = (rtc in direct_bits(scope, value) if synthesis_wrapper else
+                       any(direct_net(n, scope, token[0]) == rtc for token in re.finditer(IDENTIFIER, value)))
+            if not touches:
                 continue
             require(re.fullmatch(IDENTIFIER, value) is not None,
                     'non-scalar driver/consumer on RTC output: ' + name + '/' + port)
             feedback = (name.startswith('u_rtc/') and re.fullmatch(r'LUT[1-6]', cell['kind']) and
                         re.fullmatch(r'I[0-5]', port) and int(port[1:]) < int(cell['kind'][3:]))
-            require((name == INSTANCE and port == 'Q') or (name == cpu and port == 'RTC_CLK') or feedback,
+            require((name == INSTANCE and port == 'Q') or (name == cpu and port == cpu_port) or feedback,
                     'unreviewed driver/consumer on RTC output: ' + name + '/' + port)
             endpoints.append(name + '/' + port)
-    return dict(policy=POLICY, register=INSTANCE, source_clock='clk_50m', hard_macro=cpu,
+    require({INSTANCE+'/Q', cpu+'/'+cpu_port}.issubset(endpoints),
+            'required RTC source and CPU endpoints were not both enumerated')
+    return dict(policy=POLICY, register=INSTANCE, source_clock='clk_50m',
+                hard_macro=None if synthesis_wrapper else cpu,
+                visible_cpu_endpoint=cpu + '/' + cpu_port,
+                connectivity_scope='opaque_synthesis_wrapper_input' if synthesis_wrapper else 'visible_routed_hard_macro_input',
+                hard_macro_input_connectivity_verified=not synthesis_wrapper,
+                encrypted_internal_connectivity_verified=False,
                 rtc_net_identity=dict(scope=rtc[0], name=rtc[1]), direct_endpoints=sorted(endpoints),
                 direct_unique_driver_verified=True, synthesis_connectivity_verified=True,
                 netlist_sha256=digest(text.encode()), average_frequency_hz=32768,

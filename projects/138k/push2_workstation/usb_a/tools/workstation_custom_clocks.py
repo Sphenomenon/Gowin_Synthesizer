@@ -10,7 +10,7 @@ from tools.stage_usb_firmware import sha
 from tools.workstation_synthesis_netlist import SynthesisNetlist
 from tools.workstation_baselines import load_baseline
 from tools.audit_clk50_timing import TimingTables
-from tools.workstation_ae350_rtc import CLOCK_ENTRY as RTC_CLOCK_ENTRY, SDC as RTC_SDC, audit_netlist as audit_rtc
+from tools.workstation_ae350_rtc import CLOCK_ENTRY as RTC_CLOCK_ENTRY, SDC as RTC_SDC, audit_synthesis_netlist as audit_rtc
 
 
 PLAN_SOURCE = 'boards/custom_138k/clocks.json'
