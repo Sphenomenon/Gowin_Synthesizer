@@ -326,6 +326,8 @@ W 的[HCI readiness 局部 drift 维护源阶段](push2_workstation/usb_a/report
 
 M15 `D211010C` 的[默认完整物理实现](push2_workstation/usb_a/reports/DUAL138K_M15_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50,186，setup3,590／−1.914ns、hold1／−3.478ns，recovery+3.239／removal+.275ns。实际VO54项（51通过／3跳过）及46负控、边界7／61、官方六PLL及7负控均通过；30物理文件、588staged／1365冻结输入及683PLL依赖重验。最差chorus、事件准入与TF容量消费仍须修复，未将源码证明当作时序闭合；同VG／完整SDC／原DDR3.500ns的`D211010D`far已启动P&R，未上板。
 
+W13 `D211010B` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_W13_FAR_PHYSICAL_20261101.md)已封存：同VG／完整SDC／DDR3.500ns，仅追加两条区域约束，物理BSRAM293／DSP66.5／CLS52,497，setup6,750／−5.562ns、hold0／+.135ns，原DDR路径+.473ns。recovery+2.202／removal+.281ns；真实VO54项（41通过／13跳过）及36负控、边界7／61、官方六PLL及7负控通过；32物理文件、645staged／1365冻结输入及915PLL依赖重验。50MHz端点823／TNS−1515.549ns，仍未闭合；far最差fetch_address CE不在CLEAR赋值块内，后续局部修改不预记其收益。未上板，保持两套原失败证据。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
