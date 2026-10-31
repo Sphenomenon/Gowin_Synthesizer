@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "scope": "same-function replay parser component synthesis; not whole-workstation or physical acceptance",
+  "source_commit": "d745697",
+  "functional_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-parent-v1",
+  "resources": {
+    "before": {
+      "logic": 10506,
+      "lut": 8531,
+      "alu": 1663,
+      "ram16": 52,
+      "register": 6057,
+      "synthesis_bsram": 7,
+      "warning_count": 17,
+      "algebraic_loop_diagnostics": 0
+    },
+    "after": {
+      "logic": 10250,
+      "lut": 8517,
+      "alu": 1661,
+      "ram16": 12,
+      "register": 6066,
+      "synthesis_bsram": 10,
+      "warning_count": 16,
+      "algebraic_loop_diagnostics": 0
+    }
+  },
+  "delta": {
+    "logic": -256,
+    "lut": -14,
+    "alu": -2,
+    "ram16": -40,
+    "register": 9,
+    "synthesis_bsram": 3
+  },
+  "metadata": [
+    {
+      "module": "workstation_sdp",
+      "instance": "g_block_metadata.ids",
+      "width": 32,
+      "slots": 32,
+      "primitive": "SDPB",
+      "read_mode": "bypass_synchronous",
+      "reset": "tied_inactive",
+      "clock": "clk_d",
+      "write_mask": "all_lanes",
+      "write_address": "{GND,GND,GND,GND,cache_slot[4:0],GND,VCC,VCC,VCC,VCC}",
+      "read_address": "{GND,GND,GND,GND,\\g_block_metadata.read_slot[4:0],GND,GND,GND,GND,GND}",
+      "distributed_ram_in_metadata_module": false
+    },
+    {
+      "module": "workstation_sdp_0",
+      "instance": "g_block_metadata.times",
+      "width": 32,
+      "slots": 32,
+      "primitive": "SDPB",
+      "read_mode": "bypass_synchronous",
+      "reset": "tied_inactive",
+      "clock": "clk_d",
+      "write_mask": "all_lanes",
+      "write_address": "{GND,GND,GND,GND,cache_slot[4:0],GND,VCC,VCC,VCC,VCC}",
+      "read_address": "{GND,GND,GND,GND,\\g_block_metadata.read_slot[4:0],GND,GND,GND,GND,GND}",
+      "distributed_ram_in_metadata_module": false
+    },
+    {
+      "module": "workstation_sdp_1",
+      "instance": "g_block_metadata.sizes",
+      "width": 16,
+      "slots": 32,
+      "primitive": "SDPB",
+      "read_mode": "bypass_synchronous",
+      "reset": "tied_inactive",
+      "clock": "clk_d",
+      "write_mask": "all_lanes",
+      "write_address": "{GND,GND,GND,GND,GND,cache_slot[4:0],GND,GND,VCC,VCC}",
+      "read_address": "{GND,GND,GND,GND,GND,\\g_block_metadata.read_slot[4:0],GND,GND,GND,GND}",
+      "distributed_ram_in_metadata_module": false
+    }
+  ],
+  "clocks": {
+    "constraint_period_ns": 20.0,
+    "frequency_mhz": 50,
+    "physical_timing_measured": false
+  },
+  "inputs_unchanged": true,
+  "source_selection": "before legacy distributed metadata; after prefetched block metadata; equal adapter except explicit RAM policy",
+  "tools": {
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2"
+  },
+  "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-cell-synthesis-v1/process.json",
+  "whole_workstation_synthesis": false,
+  "physical_cls_measured": false,
+  "pnr": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limitations": [
+    "Logic is tool LUT+ALU+6*RAM16 accounting, not physical CLS; the measured LUT decrease is 14.",
+    "Three metadata SDPB are confirmed; total component synthesis BSRAM changes 7 to 10; physical BSRAM remains unmeasured.",
+    "Existing width-truncation warnings are retained; neither success nor zero algebraic-loop diagnostics proves whole timing, CDC or phone audio.",
+    "Actual whole-workstation synthesis is an independent later identity and result."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-cell-resource-parent-v1",
+  "seal_sha256": "9d98874d38ec86c608b2c016f324b01c1344f00ca86e2b2e7b2e2d464d72dc9f",
+  "external_files": 37
+}
