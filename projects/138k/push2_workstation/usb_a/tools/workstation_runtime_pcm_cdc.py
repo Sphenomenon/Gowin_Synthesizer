@@ -144,6 +144,20 @@ def selectors(refs):
             for scope, stem, bits, pin in refs for bit in (bits if bits is not None else (None,))]
 
 
+def prepared_context_ack_policy(stage):
+    """Bind the ACK variant to its sealed source; never infer it from a VG."""
+    relative = 'rtl/workstation/workstation_runtime_audio.sv'
+    path = Path(stage) / relative
+    source = path.read_text()
+    guards = re.findall(r'CFG_ACK\s*:\s*if\s*\(([^()]*)\)\s*begin', source)
+    require(len(guards) == 1, 'staged context ACK guard missing/duplicate')
+    guard = re.sub(r'\s+', '', guards[0])
+    require(guard in ('config_applied', 'config_applied&&!integration_fault'),
+            'staged context ACK guard changed')
+    return dict(mode='fault-sticky' if 'integration_fault' in guard else 'legacy',
+                source_sha256={relative: file_sha(path)})
+
+
 def runtime_pcm_cdc_bundle(root, *, constraint_revision=CONSTRAINT_REVISIONS[0]):
     require(constraint_revision in CONSTRAINT_REVISIONS, 'unknown constraint revision')
     clocks = clock_bundle(root)['plan']
@@ -504,12 +518,12 @@ class BooleanDiagram:
         return value
 
 
-def audit_runtime_pcm_cdc(root, text, clocks, *, reset_policy=None):
+def audit_runtime_pcm_cdc(root, text, clocks, *, reset_policy=None, context_ack_policy=None):
     n = PcmNetlist(text, TOP)
-    return audit_netlist(root, n, clocks, reset_policy=reset_policy)
+    return audit_netlist(root, n, clocks, reset_policy=reset_policy, context_ack_policy=context_ack_policy)
 
 
-def audit_netlist(root, n, clocks, *, reset_policy=None):
+def audit_netlist(root, n, clocks, *, reset_policy=None, context_ack_policy=None):
     """The object form supports in-memory actual-VG negatives, never sealing."""
     g = Graph(n)
     base = clocks.get('base_clock_audit', clocks.get('base_13_clock_audit'))['clocks']
@@ -882,7 +896,25 @@ def audit_netlist(root, n, clocks, *, reset_policy=None):
     proofs.append(g.equivalent('context capture only CFG_SETTLE', [n.pin(reg(R, 'pending_rate'), 'CE'), *cfg], lambda x: x[0] == (x[1] and not x[2] and not x[3])))
     ack = reg(R, 'context_ack')
     applied, service_rate = R + '/config_applied', R + '/service_rate'
-    proofs.append(g.equivalent('context ACK only actual matching application', [n.pin(ack, 'CE'), *cfg, applied, service_rate, q(R, 'pending_rate')], lambda x: x[0] == (not x[1] and not x[2] and x[3] and x[4] and x[5] == x[6]), {applied, service_rate}))
+    context_ack_policy = context_ack_policy or dict(mode='legacy')
+    require(context_ack_policy.get('mode') in ('legacy', 'fault-sticky'), 'unknown context ACK policy')
+    sticky = context_ack_policy['mode'] == 'fault-sticky'
+    ack_inputs = [n.pin(ack, 'CE'), *cfg, applied, service_rate, q(R, 'pending_rate')]
+    context_failure_proof = None
+    if sticky:
+        context_fault = reg(R, 'integration_fault')
+        require(n.cells[context_fault]['kind'] == 'DFFCE' and n.pin(context_fault, 'CLK') == domains['compute'] and
+                n.pin(context_fault, 'CLEAR') == n.pin(ack, 'CLEAR') and n.pin(context_fault, 'D') in g.high,
+                'sticky context fault primitive/clock/reset/set changed')
+        ack_inputs.append(n.pin(context_fault, 'Q'))
+        context_failure_proof = g.equivalent('context fault sticks after invalid state or mismatched ACK',
+            [n.pin(context_fault, 'CE'), *cfg, applied, service_rate, q(R, 'pending_rate'), n.pin(context_fault, 'Q')],
+            lambda x: x[0] == ((x[1] + 2*x[2] + 4*x[3] > 4) or
+                (not x[1] and not x[2] and x[3] and x[4] and x[5] != x[6] and not x[7])),
+            {applied, service_rate})
+    proofs.append(g.equivalent('context ACK only actual matching application', ack_inputs,
+        lambda x: x[0] == (not x[1] and not x[2] and x[3] and x[4] and x[5] == x[6] and
+                          (not sticky or not x[7])), {applied, service_rate}))
     require(n.pin(ack, 'D') == bitq(R, 'context_sync', 1), 'context ACK token changed')
     guard = [bitq(R, 'serial_guard', i) for i in range(4)]
     sync_state = [q(R, 'serial_reset_n'), bitq(R, 'serial_context_ready', 1), bitq(R, 'serial_quiesce', 1)]
@@ -930,6 +962,7 @@ def audit_netlist(root, n, clocks, *, reset_policy=None):
     protected = sorted({p + '/' + pin for p in consumer_regs for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {p + '/' + pin for row in resets + chains for p in row['registers'] for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {p + '/' + pin for row in payloads for p in row['source_registers'] for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {reg(R, 'serial_reset_n') + '/CLEAR'})
     return dict(schema=1, policy=POLICY, acceptance_scope='partial native PCM/context source contracts only', lexical_connection_audit=n.lexical_connection_audit, payload_groups=payloads, payload_source_bits=229, synchronization_groups=chains,
         reset_release_groups=resets, reset_policy=reset_policy, reset_startup_next_q_proofs=reset_proofs,
+        context_ack_policy=context_ack_policy, context_failure_proof=context_failure_proof,
         level_source_boundaries=levels, boolean_contracts=proofs, resolved_pin_selectors=resolved,
         protected_async_pins=protected, candidate_constraints_installed=False,
         static_source_contracts_verified=True, complete_payload_closure_verified=True, selector_static_resolution_verified=True,
@@ -1011,7 +1044,8 @@ def run_audit(root, stage, evidence, *, installed=False, constraint_revision=CON
     sources = {p: file_sha(root / p) for p in AUDIT_SOURCES}
     text = (stage / VG_RELATIVE).read_text()
     clocks = audit_runtime_clocks(root, stage, text)
-    result = audit_runtime_pcm_cdc(root, text, clocks, reset_policy=prepared_reset_policy(stage))
+    result = audit_runtime_pcm_cdc(root, text, clocks, reset_policy=prepared_reset_policy(stage),
+                                   context_ack_policy=prepared_context_ack_policy(stage))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     installation = validate_constraints(root, sdc, result, installed=installed, constraint_revision=constraint_revision)
     result['constraint_installation'] = installation

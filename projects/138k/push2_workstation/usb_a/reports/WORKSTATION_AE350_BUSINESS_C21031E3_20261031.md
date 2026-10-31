@@ -410,3 +410,29 @@ DCS／I2S、CPU observer reset、超时后迟到 cleanup；focused 130410
 prepare 业务 12 项、profile 来源 7 项和 accepted 来源 17 项通过；通用
 profile 的实际 prepare 用例只适用于默认 revision5，未作为 business4
 接受依据。此阶段未写 SRAM／Flash，等待新综合及完整物理结果。
+
+### v3 综合与 EF 物理执行
+
+EE 因交互中断停在 routing，实际进程和会话均已消失；原输入及部分输出
+保留于同目录 `interrupted_attempt_1`，没有最终 STA／位流。不重跑该已知
+仍有动态 busy PRESET 的旧版本，直接推进包含修复的 v3。
+
+`e29fbebe1e44c8de` 完整综合通过：306.351 秒、614 项输入保持、无 AG
+诊断；VG `19705e36b309e46c3467103674396764d17083d4a8a19040994d77de298ef286`。
+Logic 92824、LUT 74696、ALU 16514、FF 59445、RAM16 269、综合 BSRAM
+250，相对迁移前为 −1799 Logic／−1271 LUT／−288 ALU／−1133 FF／
+−40 RAM16／+5 BSRAM；业务与配置未变，CPU／邮箱等新增成本已计入。
+EF 使用该完整网表、实际新 SDC 和 EE 已被工具接受的两行 CST 适配，
+place4／route0 已进入 routing，结果另记。
+
+实际新 VG 的时钟及已安装 common CDC 检查通过，后者为 21 组／400 位。
+两组 busy 的首级、级间和时钟连接匹配；映射保留用于复位的 DFFPE，
+PRESET 真值只含本地复位链，不再含动态 busy。PCM 原检查的 ACK 真值
+不含新增失败锁定，因此先拒绝；仅在现有 checker 中按 sealed source
+选择旧／新两种 guard，新增 !integration_fault 真值及该故障置位／锁存
+检查后，actual v3 installed paired-nextq-v2 通过。229 位／896 selector、
+原 19 合同与四个闭包不变，新增故障真值覆盖 128 组合；删除 ACK 故障
+门控的负控被捕获，源 guard 六项通过，v2 旧分支仍通过。此为必要的
+局部 CDC 合同，完整 routed 时序／PLL／物理接受仍待 EF，不授部署。
+checker 更新未回写任何冻结 stage／manifest，九份现有 profile 仅刷新
+两项工具依赖 SHA，不更改配置或 RTL。
