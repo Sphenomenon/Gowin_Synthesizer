@@ -238,6 +238,8 @@ M10b新实测定位的TF容量宽加法及配置ACCEPT准入链已在维护源�
 
 后续[APB routed精确映射审计](push2_workstation/usb_a/reports/DUAL138K_APB_ROUTED_INVERSE_AUDIT_20261031.md)补齐厂商INV→单输入反相LUT及M的唯一LUT2-AND启动拆分，不放行任意门。M10b／W9b真实VG、VO和W8旧VG各54项通过，负控分别45／46、36／38及34；两份far实际VO亦通过基线结构／SDC检查。旧v3证据、所有候选来源及失败日志保持不变，新v4审计器独立封口，完整时序与硬件仍未通过。
 
+M10b／W9b及其各自新far变体现已完成[四套完整物理测量](push2_workstation/usb_a/reports/DUAL138K_M10_W9_PHYSICAL_20261031.md)：M默认setup2,741／hold1，far3,299／hold0；W默认setup9,520／hold2，far9,158／hold1。DDR保持3.500ns，far目标hold为M+0.714／W+0.577ns；六PLL等局部门通过，整机仍不可部署。四条真实50MHz专项报告暴露W的HCI同步长度判定长链，D输入运算仍为W首要同步瓶颈，已按这些实测开展局部修复；未上板，不预记收益。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
