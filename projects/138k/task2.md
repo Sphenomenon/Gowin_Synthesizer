@@ -320,6 +320,8 @@ W13的[PCM真实primitive及消费证明](push2_workstation/usb_a/reports/DUAL13
 
 M15的[TF容量真实分组与准入锥证明](push2_workstation/usb_a/reports/dual138k_m15_tf_capacity_vg_20261101.md)已通过：五个模块级kept标量全部具备精确独立FF support且真实进入最终capacity／write准入锥，38个任意available／pending FF的原mod32容量式与实际primitive函数UNSAT等价。7项保留旁路节点但破坏真实consumer／INIT的负控全部给SAT反例；实际ALU模型与官方9模式288项核对通过。588staged／1365冻结输入和独立封存重验，M14部分失败记录保持；该专项成功仍不代表routed时序或实板声画通过。
 
+W13的[raw完整实际映射比较](push2_workstation/usb_a/reports/DUAL138K_W13_RAW_MAPPING_20261101.md)已封存：122目标FF／127完整D与CE锥、449实际状态／RAM／DDR边界逐项绑定，在报告明确的配对条件下全部有效next-Q为UNSAT；4项实际网表破坏均给SAT反例，官方LUT4800／ALU1152及RAM模型交叉检查通过。主要write-address CE退出64个timeout叶，其余CE保留；最差memory_next_index的CLEAR完成许可仍经过完整fault链。未证明异步reset／RAM历史／DDR内部或全机四态，不冒称全部初始化已短化、routed收益或实板验收；下一cache提案保持原CLEAR周期与优先级。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
