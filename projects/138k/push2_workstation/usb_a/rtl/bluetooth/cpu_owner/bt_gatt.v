@@ -602,18 +602,22 @@ module bt_gatt #(
                     if(captured_length!=13) att_error_response(4,0,8'h04);
                     else if(start_handle==0 || start_handle>end_handle)
                         att_error_response(4,start_handle,1);
+                    else if(start_handle>8) att_error_response(4,start_handle,8'h0a);
                     else begin
                         response[response_base+8]=5;
-                        response[response_base+9]=1; used=2;
-                        // Five entries fit MTU 23. A static loop is synthesizable.
-                        for(i=1;i<=8;i=i+1) begin
-                            if(i>=start_handle && i<=end_handle && used+4<=23) begin
-                                response_word(8+used,i);
-                                response_word(10+used,attribute_uuid(i)); used=used+4;
+                        response[response_base+9]=1;
+                        // Preserve the legacy five-entry cap even at MTU 247.
+                        // Fixed slots avoid a dependent variable write address;
+                        // gate unused slots so their previous bytes stay intact.
+                        used=(end_handle<8 ? end_handle : 8)-start_handle+1;
+                        if(used>5) used=5;
+                        for(i=0;i<5;i=i+1) begin
+                            if(i<used) begin
+                                response_word(10+4*i,start_handle+i);
+                                response_word(12+4*i,attribute_uuid(start_handle+i));
                             end
                         end
-                        if(used==2) att_error_response(4,start_handle,8'h0a);
-                        else response_begin(4,used);
+                        response_begin(4,2+4*used);
                     end
                 end
                 8'h0a: begin
