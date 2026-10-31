@@ -20,6 +20,23 @@ from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 
 
 class RuntimeCdcPolicy(unittest.TestCase):
+    def test_raw_common_reset_retires_only_obsolete_aliases_and_keeps_ble_clear(self):
+        legacy = runtime_cdc_bundle(ROOT)
+        selected = runtime_cdc_bundle(ROOT, raw_common_reset=True)
+        old = 'set_false_path -to [get_pins {u_managed/observation/drops/source_release_*_s*/CLEAR u_managed/midi_bytes/source_release_*_s*/CLEAR}]'
+        actual = 'set_false_path -to [get_pins {u_ble_pcm_cdc/source_release_*_s*/CLEAR u_ble_pcm_cdc/destination_release_*_s*/CLEAR}]'
+        self.assertEqual(legacy['sdc'].splitlines().count(old), 1)
+        self.assertEqual(selected['sdc'], legacy['sdc'].replace(old, actual, 1))
+        self.assertEqual(selected['sdc'].splitlines().count(actual), 1)
+        self.assertTrue(selected['raw_common_reset'])
+        self.assertFalse(legacy['raw_common_reset'])
+        ble = bluetooth_constraints(BLUETOOTH_SDC, raw_common_reset=True)
+        self.assertEqual(ble['sdc'], bluetooth_constraints(BLUETOOTH_SDC)['sdc'])
+        self.assertEqual(ble['evidence']['replacement']['constraint'], actual)
+        self.assertEqual(ble['evidence']['replacement']['owner'], 'runtime_cdc_bundle')
+        with self.assertRaisesRegex(ValueError, 'selection must be boolean'):
+            runtime_cdc_bundle(ROOT, raw_common_reset=1)
+
     def test_runtime_ble_keeps_payload_and_uart_and_uses_shared_release(self):
         selected = bluetooth_constraints(BLUETOOTH_SDC)
         self.assertEqual(selected['sdc'], BLUETOOTH_SDC.replace(LEGACY_BLE_RELEASE_RESET + '\n', '', 1))

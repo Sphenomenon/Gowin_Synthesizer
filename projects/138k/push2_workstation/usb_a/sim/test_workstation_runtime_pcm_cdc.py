@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_pcm_cdc import (
     B, R, T, Z, TOP, POLICY, PAYLOADS, RESETS, SYNCS, REPLY_FLEX, CONSTRAINT_REVISIONS,
     Graph, PcmNetlist, BooleanDiagram,
-    audit_netlist, audit_runtime_clocks, file_sha, run_audit,
+    audit_netlist, audit_runtime_clocks, file_sha, prepared_reset_policy, run_audit,
     runtime_pcm_cdc_bundle, validate_constraints, VG_RELATIVE,
 )
 
@@ -114,7 +114,8 @@ class ActualRuntimePcm(unittest.TestCase):
         cls.n = PcmNetlist(cls.text, TOP)
         cls.g = Graph(cls.n)
         cls.clocks = audit_runtime_clocks(ROOT, cls.stage, cls.text)
-        cls.result = audit_netlist(ROOT, cls.n, cls.clocks)
+        cls.reset_policy = prepared_reset_policy(cls.stage)
+        cls.result = audit_netlist(ROOT, cls.n, cls.clocks, reset_policy=cls.reset_policy)
         cls.sdc = (cls.stage / 'constraints/custom_138k.sdc').read_text()
         cls.bundle = runtime_pcm_cdc_bundle(ROOT, constraint_revision=cls.constraint_revision)
         cls.negative_cases = []
@@ -163,7 +164,7 @@ class ActualRuntimePcm(unittest.TestCase):
 
     def reject(self, name):
         with self.assertRaisesRegex(ValueError, 'runtime PCM CDC audit:') as caught:
-            audit_netlist(ROOT, self.n, self.clocks)
+            audit_netlist(ROOT, self.n, self.clocks, reset_policy=self.reset_policy)
         self.negative_cases.append(dict(case=name, rejected=True, error=str(caught.exception)))
 
     def reject_sdc(self, name, text, installed=True):
@@ -255,10 +256,20 @@ class ActualRuntimePcm(unittest.TestCase):
         for scope, stem, *_ in RESETS:
             with self.subTest(stem=stem), self.changed(self.reg(scope, stem, 0), port='D', value="1'b0"):
                 self.reject(scope + '/' + stem + ' first constant removed')
-        reset = self.n.pin(self.reg(R, 'control_release', 0), 'CLEAR')
-        driver = self.g.drivers[reset][0][0]
-        with self.changed(driver, parameter='INIT', value="4'h8"):
-            self.reject('all reset chains share wrong global assertion')
+        if self.reset_policy['mode'] == 'separate-raw-button':
+            with self.assertRaisesRegex(ValueError, 'global runtime assertion composition changed'):
+                audit_netlist(ROOT, self.n, self.clocks)
+            for path, port, value in (
+                    (self.reg(R, 'control_release', 0), 'CLEAR', "1'b1"),
+                    (self.reg(R, 'startup_compute', 1), 'D', "1'b1"),
+                    (self.reg(R, 'compute_release', 1), 'RESET', "1'b0")):
+                with self.changed(path, port=port, value=value):
+                    self.reject('separate common/startup/local release wrong connection: ' + path + '/' + port)
+        else:
+            reset = self.n.pin(self.reg(R, 'control_release', 0), 'CLEAR')
+            driver = self.g.drivers[reset][0][0]
+            with self.changed(driver, parameter='INIT', value="4'h8"):
+                self.reject('all reset chains share wrong global assertion')
 
     def test_06_closure_rejects_extra_ff_memory_and_first_stage_fanout(self):
         q = self.n.cells[self.reg(B, 'held_request', 0)]['ports']['Q']

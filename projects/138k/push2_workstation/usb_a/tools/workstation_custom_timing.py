@@ -63,6 +63,21 @@ RUNTIME_GRANT_CHAINS = (
     ('output_safe_sync', 'clk_50m+audio_76m8', 'audio_76m8'),
     ('u_runtime/g_usb_cdc_reset.usb_ready', 'clk_50m+usb_48m', 'usb_48m'),
 )
+# Actual v3 VG maps these first receivers to DFFRE: part of their asynchronous
+# level expression enters synchronous RESET, which is a data/setup input.
+# Include only the nine asynchronous/mixed receivers; same-clock and later
+# RESET inputs retain their timing checks. This is not an async CLEAR cut.
+RUNTIME_GRANT_RESET_INPUTS = (
+    'u_managed/startup_compute',
+    'u_managed/runtime/startup_compute',
+    'u_managed/runtime/startup_memory',
+    'u_managed/runtime/startup_serial',
+    'u_tf_audio/startup_compute',
+    'u_tf_audio/startup_memory',
+    'u_tf_audio/frames/startup_compute',
+    'output_safe_sync',
+    'u_runtime/g_usb_cdc_reset.usb_ready',
+)
 
 
 def once(text, original, replacement):
@@ -236,6 +251,8 @@ def constraints(*, runtime_reset=False):
                 lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]')
             lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_0_s*/Q}}] '
                          f'-to [get_pins {{{prefix}_1_s*/D}}]')
+        for prefix in RUNTIME_GRANT_RESET_INPUTS:
+            lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/RESET}}]')
     phy = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top'
     # E8's routed hold path misses by0.759ns with the original0.800ns floor.
     # Ask the router for more delay; retain the actual setup/hold checks.

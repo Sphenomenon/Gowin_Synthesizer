@@ -104,6 +104,41 @@ def require(condition, message):
         raise ValueError('runtime PCM CDC audit: ' + message)
 
 
+def prepared_reset_policy(stage):
+    """Select only the explicit, sealed custom-board common-reset wiring."""
+    stage = Path(stage)
+    relative = 'rtl/workstation/gw138k_push_workstation_top.v'
+    text = (stage / relative).read_text()
+    instances = re.findall(r'workstation_runtime_controlled\s*#\((.*?)\)\s*u_managed\s*\((.*?)\);', text, re.S)
+    require(len(instances) == 1, 'staged runtime instance missing/duplicate')
+    parameters, ports = instances[0]
+    selected = re.findall(r'\.SEPARATE_COMMON_RESET\s*\(\s*([^()]+)\s*\)', parameters)
+    if not selected or selected == ['0']:
+        return dict(mode='legacy-global')
+    require(selected == ['1'], 'staged common-reset selection is not explicit')
+    custom = text.split('`else', 1)[0]
+    require('module workstation_custom_138k_top' in custom and
+            len(re.findall(r"\bwire\s+button1_n\s*=\s*1'b1\s*;", custom)) == 1 and
+            re.search(r'\.common_reset_ni\s*\(\s*button1_n\s*\)', ports) is not None and
+            re.search(r'\.rst_ni\s*\(\s*runtime_reset_n\s*\)', ports) is not None and
+            len(re.findall(r'\bwire\s+runtime_reset_n\s*=\s*reset_n\s*&&\s*memory_guard_started\s*;', text)) == 1,
+            'staged raw button/common assertion or startup grant changed')
+    sources = [relative]
+    for relative in ('rtl/workstation/workstation_runtime_controlled.sv',
+                     'rtl/workstation/workstation_runtime_audio.sv',
+                     'rtl/audio/workstation_audio_clock_domain.sv'):
+        source = (stage / relative).read_text()
+        require(len(re.findall(r'\bwire\s+common_reset_n\s*=\s*SEPARATE_COMMON_RESET\s*\?\s*common_reset_ni\s*:\s*rst_ni\s*;', source)) == 1,
+                'staged common-reset selection changed: ' + relative)
+        if relative != 'rtl/audio/workstation_audio_clock_domain.sv':
+            require('.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)' in source and
+                    '.common_reset_ni(common_reset_n)' in source,
+                    'staged common-reset forwarding changed: ' + relative)
+        sources.append(relative)
+    return dict(mode='separate-raw-button', raw_button_constant=1,
+                source_sha256={relative: file_sha(stage / relative) for relative in sources})
+
+
 def selectors(refs):
     return [pattern(scope, stem + ('_' + str(bit) if bit is not None else ''), pin)
             for scope, stem, bits, pin in refs for bit in (bits if bits is not None else (None,))]
@@ -469,12 +504,12 @@ class BooleanDiagram:
         return value
 
 
-def audit_runtime_pcm_cdc(root, text, clocks):
+def audit_runtime_pcm_cdc(root, text, clocks, *, reset_policy=None):
     n = PcmNetlist(text, TOP)
-    return audit_netlist(root, n, clocks)
+    return audit_netlist(root, n, clocks, reset_policy=reset_policy)
 
 
-def audit_netlist(root, n, clocks):
+def audit_netlist(root, n, clocks, *, reset_policy=None):
     """The object form supports in-memory actual-VG negatives, never sealing."""
     g = Graph(n)
     base = clocks.get('base_clock_audit', clocks.get('base_13_clock_audit'))['clocks']
@@ -505,26 +540,70 @@ def audit_netlist(root, n, clocks):
         require(len(ces) == 1, 'capture CE differs: ' + label)
         return next(iter(ces))
 
-    # Bind the global assertion to the reviewed top-level reset composition,
-    # rather than accepting five chains that all point to the same wrong net.
+    reset_policy = reset_policy or dict(mode='legacy-global')
+    require(reset_policy.get('mode') in ('legacy-global', 'separate-raw-button'), 'unknown reset policy')
+    separate = reset_policy['mode'] == 'separate-raw-button'
+    reset_proofs = []
+    # Bind the global assertion to the reviewed top-level reset composition.
+    # Constant CLEAR is permitted only after the sealed source selected the
+    # raw custom-board button, whose input is tied high in this board top.
     first_reset = g.register(R, 'control_release', 0)
     common = n.pin(first_reset, 'CLEAR')
-    d = g.drivers[common]
-    require(len(d) == 1, 'global assertion driver ambiguous')
-    p, _ = d[0]
-    require(n.cells[p]['kind'] == 'LUT2' and n.cells[p]['parameters'].get('INIT') == "4'h7" and
-            {n.pin(p, x) for x in ('I0', 'I1')} == {'reset_n', 'memory_guard_started'}, 'global runtime assertion composition changed')
+    if separate:
+        require(common in g.low and 'button1_n' not in n.directions[TOP], 'raw button common assertion changed')
+    else:
+        d = g.drivers[common]
+        require(len(d) == 1, 'global assertion driver ambiguous')
+        p, _ = d[0]
+        require(n.cells[p]['kind'] == 'LUT2' and n.cells[p]['parameters'].get('INIT') == "4'h7" and
+                {n.pin(p, x) for x in ('I0', 'I1')} == {'reset_n', 'memory_guard_started'}, 'global runtime assertion composition changed')
+
+    def reset_next_q(p, domain, inputs, expected):
+        cell = n.cells[p]
+        require(cell['kind'] in ('DFFCE', 'DFFRE') and n.pin(p, 'CLK') == domains[domain]
+                and n.pin(p, 'CE') in g.high, 'startup/release FF primitive/clock/CE changed: ' + p)
+        if cell['kind'] == 'DFFCE':
+            require(n.pin(p, 'CLEAR') in g.low, 'startup/release raw assertion changed: ' + p)
+        named = list(dict.fromkeys([*inputs, n.pin(p, 'Q')]))
+        bd = BooleanDiagram(named)
+        actual = bd.net(g, n.pin(p, 'D'))
+        if cell['kind'] == 'DFFRE':
+            actual = bd.choose(bd.net(g, n.pin(p, 'RESET')), 0, actual)
+        require(actual == expected(bd), 'startup/release effective next-Q changed: ' + p)
+        reset_proofs.append(dict(register=p, clock=domains[domain], primitive=cell['kind'],
+            named_inputs=named, effective_next_q_verified=True, bdd_node_count=len(bd.nodes)))
+
+    def granted_release(scope, regs, domain):
+        stem = dict(control='startup_control', compute='startup_compute', memory='startup_memory')[domain]
+        startup = g.group(scope, stem, 2)
+        first, second = startup
+        reset_next_q(first, domain, ['reset_n', 'memory_guard_started'],
+            lambda bd: bd.both(bd.inputs['reset_n'], bd.inputs['memory_guard_started']))
+        require(g.fan[n.pin(first, 'Q')] == [(second, 'D', 'ff')], 'startup first-stage fanout changed: ' + first)
+        reset_next_q(second, domain, [n.pin(first, 'Q')], lambda bd: bd.inputs[n.pin(first, 'Q')])
+        grant = n.pin(second, 'Q')
+        for i, p in enumerate(regs):
+            previous = n.pin(regs[i - 1], 'Q') if i else grant
+            require(n.pin(p, 'D') == previous, 'startup release shift changed: ' + p)
+            reset_next_q(p, domain, [grant, previous],
+                lambda bd, previous=previous: bd.both(bd.inputs[grant], bd.inputs[previous]))
+            if i < len(regs) - 1:
+                require(g.fan[n.pin(p, 'Q')] == [(regs[i + 1], 'D', 'ff')], 'reset release intermediate fanout: ' + p)
     local = {}
     for scope, stem, width, domain, last in RESETS:
         regs = g.group(scope, stem, width)
         if last:
             regs.append(reg(scope, last))
-        for i, p in enumerate(regs):
-            ff(p, domain, common)
-            require(n.pin(p, 'CE') in g.high, 'reset release conditional enable: ' + p)
-            require(n.pin(p, 'D') in g.high if not i else n.pin(p, 'D') == n.pin(regs[i - 1], 'Q'), 'reset release shift/first constant: ' + p)
-            if i < len(regs) - 1:
-                require(g.fan[n.pin(p, 'Q')] == [(regs[i + 1], 'D', 'ff')], 'reset release intermediate fanout: ' + p)
+        if separate and scope == R:
+            granted_release(scope, regs, domain)
+        else:
+            for i, p in enumerate(regs):
+                ff(p, domain, n.pin(p, 'CLEAR') if separate else common)
+                require(not separate or n.pin(p, 'CLEAR') in g.low, 'bridge raw common assertion changed: ' + p)
+                require(n.pin(p, 'CE') in g.high, 'reset release conditional enable: ' + p)
+                require(n.pin(p, 'D') in g.high if not i else n.pin(p, 'D') == n.pin(regs[i - 1], 'Q'), 'reset release shift/first constant: ' + p)
+                if i < len(regs) - 1:
+                    require(g.fan[n.pin(p, 'Q')] == [(regs[i + 1], 'D', 'ff')], 'reset release intermediate fanout: ' + p)
         local[(scope, domain)] = n.pin(regs[-1], 'Q')
         resets.append(dict(scope=scope, stem=stem, registers=regs, domain=domain, assertion_net=common))
 
@@ -549,9 +628,12 @@ def audit_netlist(root, n, clocks):
     proofs.append(g.equivalent('serializer local stream reset', [serializer_clear, q(R, 'serial_reset_n')], lambda x: x[0] == (not x[1])))
     clock_reset = R + '/clocks'
     owner_release = [*g.group(clock_reset, 'control_reset_pre', 2), reg(clock_reset, 'control_reset_n')]
-    for i, p in enumerate(owner_release):
-        ff(p, 'control', common)
-        require(n.pin(p, 'CE') in g.high and (n.pin(p, 'D') in g.high if not i else n.pin(p, 'D') == n.pin(owner_release[i - 1], 'Q')), 'clock transaction release source changed')
+    if separate:
+        granted_release(clock_reset, owner_release, 'control')
+    else:
+        for i, p in enumerate(owner_release):
+            ff(p, 'control', common)
+            require(n.pin(p, 'CE') in g.high and (n.pin(p, 'D') in g.high if not i else n.pin(p, 'D') == n.pin(owner_release[i - 1], 'Q')), 'clock transaction release source changed')
     clock_clear = n.pin(reg(T, 'pending_44k1'), 'CLEAR')
     ds = g.drivers[clock_clear]
     require(len(ds) == 1 and n.cells[ds[0][0]]['kind'] == 'INV' and n.pin(ds[0][0], 'I') == n.pin(owner_release[-1], 'Q'), 'clock transaction payload reset owner changed')
@@ -847,7 +929,8 @@ def audit_netlist(root, n, clocks):
     consumer_regs.update(g.group(R, 'serial_guard', 4))
     protected = sorted({p + '/' + pin for p in consumer_regs for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {p + '/' + pin for row in resets + chains for p in row['registers'] for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {p + '/' + pin for row in payloads for p in row['source_registers'] for pin in ('CLEAR', 'PRESET') if pin in n.cells[p]['ports']} | {reg(R, 'serial_reset_n') + '/CLEAR'})
     return dict(schema=1, policy=POLICY, acceptance_scope='partial native PCM/context source contracts only', lexical_connection_audit=n.lexical_connection_audit, payload_groups=payloads, payload_source_bits=229, synchronization_groups=chains,
-        reset_release_groups=resets, level_source_boundaries=levels, boolean_contracts=proofs, resolved_pin_selectors=resolved,
+        reset_release_groups=resets, reset_policy=reset_policy, reset_startup_next_q_proofs=reset_proofs,
+        level_source_boundaries=levels, boolean_contracts=proofs, resolved_pin_selectors=resolved,
         protected_async_pins=protected, candidate_constraints_installed=False,
         static_source_contracts_verified=True, complete_payload_closure_verified=True, selector_static_resolution_verified=True,
         context_comparison_semantics_verified=True, reply_capture_header_gate_verified=True,
@@ -928,7 +1011,7 @@ def run_audit(root, stage, evidence, *, installed=False, constraint_revision=CON
     sources = {p: file_sha(root / p) for p in AUDIT_SOURCES}
     text = (stage / VG_RELATIVE).read_text()
     clocks = audit_runtime_clocks(root, stage, text)
-    result = audit_runtime_pcm_cdc(root, text, clocks)
+    result = audit_runtime_pcm_cdc(root, text, clocks, reset_policy=prepared_reset_policy(stage))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     installation = validate_constraints(root, sdc, result, installed=installed, constraint_revision=constraint_revision)
     result['constraint_installation'] = installation

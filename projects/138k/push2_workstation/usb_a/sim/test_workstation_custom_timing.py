@@ -194,8 +194,18 @@ endmodule
         expected = {f'set_false_path -to [get_pins {{{stem}_0_s*/D}}]' for stem in asynchronous}
         expected.update(f'set_max_delay 2.000 -from [get_pins {{{stem}_0_s*/Q}}] '
                         f'-to [get_pins {{{stem}_1_s*/D}}]' for stem in asynchronous | synchronous)
+        mapped_reset = {
+            'u_managed/startup_compute', 'u_managed/runtime/startup_compute',
+            'u_managed/runtime/startup_memory', 'u_managed/runtime/startup_serial',
+            'u_tf_audio/startup_compute', 'u_tf_audio/startup_memory',
+            'u_tf_audio/frames/startup_compute', 'output_safe_sync',
+            'u_runtime/g_usb_cdc_reset.usb_ready',
+        }
+        self.assertEqual(set(timing.RUNTIME_GRANT_RESET_INPUTS), mapped_reset)
+        self.assertTrue(mapped_reset.issubset(asynchronous))
+        expected.update(f'set_false_path -to [get_pins {{{stem}_0_s*/RESET}}]' for stem in mapped_reset)
         self.assertEqual(added, expected)
-        self.assertEqual(len(added), 29)
+        self.assertEqual(len(added), 38)
         # Existing raw assertion/CLEAR policy is unchanged. No functional,
         # second-stage, clock-wide or broad prefix exception is added.
         self.assertEqual([line for line in runtime.splitlines() if '/CLEAR' in line],

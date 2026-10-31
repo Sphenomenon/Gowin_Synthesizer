@@ -95,7 +95,8 @@ def require(condition, message):
         raise ValueError('runtime CDC audit: ' + message)
 
 
-def runtime_cdc_bundle(root):
+def runtime_cdc_bundle(root, *, raw_common_reset=False):
+    require(type(raw_common_reset) is bool, 'raw common reset selection must be boolean')
     clocks = clock_bundle(root)['plan']
     frequencies = {x['name']: x['frequency_hz'] for x in (*clocks['primary'], *clocks['generated'])}
     frequencies = dict(control=frequencies['clk_50m'], compute=frequencies['audio_76m8'],
@@ -118,8 +119,14 @@ def runtime_cdc_bundle(root):
             registered_msb_alias=GRAY_MSB_ALIASES.get(identity),
             max_delay_ns=delay, source_period_ns=1e9 / frequencies[origin],
             setup_false_path=False, propagation_skew_bound_method='nonnegative_bit_flight_bounded_by_source_period'))
-    reset_selectors = [pattern(scope, stem, 'CLEAR', True)
-                       for _, scope, stem, _, _ in BLE_RELEASE_ALIASES]
+    # The raw-common native composition no longer shares BLE release FFs with
+    # the physical-drop counter or constant MIDI adapter. Those aliases retire;
+    # the BLE mailbox retains its own actual source/destination CLEAR pins.
+    reset_selectors = ([pattern('u_ble_pcm_cdc', stem, 'CLEAR', True)
+                        for stem in ('source_release', 'destination_release')]
+                       if raw_common_reset else
+                       [pattern(scope, stem, 'CLEAR', True)
+                        for _, scope, stem, _, _ in BLE_RELEASE_ALIASES])
     lines.append('set_false_path -to ' + query(' '.join(reset_selectors)))
     media_groups = []
     for identity, source, receiver, stages, origin, destination in MEDIA_CONTROLS:
@@ -148,6 +155,7 @@ def runtime_cdc_bundle(root):
     return dict(policy=POLICY, source='tools/workstation_runtime_cdc.py',
         source_sha256=file_sha(Path(root) / 'tools/workstation_runtime_cdc.py'),
         gray_groups=groups, ble_reset_alias_selectors=reset_selectors,
+        raw_common_reset=raw_common_reset,
         media_control_groups=media_groups,
         media_hold_assertion=dict(selectors=hold_selectors, max_delay_ns=20.0, recovery_removal_cut=False),
         usb_queue_fence=dict(return_selectors=return_selectors, assertion_selectors=assertion_selectors,
