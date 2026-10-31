@@ -190,7 +190,11 @@ module workstation_tf_runtime_service #(
                     failure_count_o<=increment(failure_count_o);
                 end
             end else quiet_wait<=0;
-            if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done)begin
+            // The compute owner must acknowledge the held busy/generation
+            // snapshot before any new file work can start. A stopped compute
+            // clock therefore retains the source fence without an async
+            // busy signal driving destination PRESET pins.
+            if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done && !control_pending_o)begin
                 if(pending_start && mode_i)begin
                     if(bad_context)begin
                         pending_start<=0;state<=RESTART_SETTLE;failed_o<=1;restart_playback<=0;
@@ -301,7 +305,7 @@ module workstation_tf_runtime_service #(
         if(!source_reset_n)memory_stop<=0;
         else if(invalidate)memory_stop<=1;
         else if(state==RESTART_SETTLE && path_clear_done)memory_stop<=0;
-        else if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done && !pending_clear &&
+        else if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done && !control_pending_o && !pending_clear &&
             !(pending_start && mode_i) && !(pending_reader_restart && !mode_i))memory_stop<=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_gate_sync;
     always @(posedge memory_clk_i or negedge local_memory_reset_n)
@@ -370,7 +374,8 @@ module workstation_tf_runtime_service #(
     end
     assign control_pending_o=ack_sync[1]!=control_request || held_control!=desired_control;
     assign paused_o=state==PLAY && !run_q && !control_pending_o;
-    wire control_active=compute_control[2] && compute_control[35:4]==expected_generation_o && expected_valid;
+    wire control_generation_current=compute_control[35:4]==expected_generation_o && expected_valid;
+    wire control_active=compute_control[2] && control_generation_current;
     assign tf_active_o=control_active;
     // Pause supplies explicit silence while retaining every FIFO/decoder pair.
     assign tf_valid_o=control_active && (!compute_control[1] || bridge_valid);
@@ -380,11 +385,12 @@ module workstation_tf_runtime_service #(
     assign tf_right_o=compute_control[1] ? bridge_right:16'sd0;
     assign tf_generation_o=compute_control[1] ? bridge_generation:expected_generation_o;
     assign bridge_ready=tf_ready_i && control_active && compute_control[1];
-    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] busy_release;
-    always @(posedge compute_clk_i or negedge compute_reset_n or posedge busy_50_o)
-        if(!compute_reset_n || busy_50_o)busy_release<=3'b111;
-        else busy_release<={busy_release[1:0],1'b0};
-    assign tf_busy_o=busy_release[2] || compute_control[0];
+    // Busy is owned by the existing atomic compute snapshot. A generation
+    // gap or an unacknowledged control capture keeps its local fence closed;
+    // only the final inactive/busy=0 snapshot can release it. Source activity
+    // waits for that same mailbox ACK above, including after clock stoppage.
+    assign tf_busy_o=!control_generation_current || compute_control[0] ||
+        request_sync[1]!=control_ack || control_capture;
     assign media_quiescent_50_o=source_quiet && !busy_50_o;
     assign media_quiescent_o=bridge_quiet && !control_active && !tf_busy_o;
 endmodule

@@ -231,8 +231,9 @@ module workstation_runtime_controlled #(
         .cpu_valid(1'b0),.cpu_data(18'd0),.cpu_ready(),.event_valid(merged_valid),
         .event_ready(merged_ready),.event_data(merged_data));
 
-    // Register the combined proof before crossing. Assertion inhibits without
-    // waiting for a 50-MHz edge; release requires three destination edges.
+    // Register the combined proof before crossing. With media preparation,
+    // the completed stop/held-start fence authorizes a real clock change;
+    // this synchronized level is conservative status, not its sole proof.
     reg media_busy_compute;
     // Independent diagnostic reasons, sampled together in their source
     // domain. They never authorize a switch; media_busy_compute does that.
@@ -245,10 +246,16 @@ module workstation_runtime_controlled #(
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)reasons_compute<=0;
         else reasons_compute<={tf_active_i || tf_busy_i,score_running_o,record_enabled_o};
+    generate if(ENABLE_MEDIA_POLICY)begin: prepared_media_status
+        always @(posedge clk_50m_i or negedge reset_50_n)
+            if(!reset_50_n)media_busy_50<=3'b111;
+            else media_busy_50<={media_busy_50[1:0],media_busy_compute};
+    end else begin: immediate_media_inhibit
     always @(posedge clk_50m_i or posedge media_busy_compute or negedge reset_50_n)
         if(!reset_50_n)media_busy_50<=3'b111;
         else if(media_busy_compute)media_busy_50<=3'b111;
         else media_busy_50<={media_busy_50[1:0],1'b0};
+    end endgenerate
     always @(posedge clk_50m_i or negedge reset_50_n)
         if(!reset_50_n)begin reasons_meta<=0;reasons_sync<=0;end
         else begin reasons_meta<=reasons_compute;reasons_sync<=reasons_meta;end
@@ -263,6 +270,31 @@ module workstation_runtime_controlled #(
         .tf_stop_request_o,.tf_stop_pending_i,.tf_stop_done_i,.tf_stop_failed_i,.tf_stop_failure_code_i,
         .media_quiet_i(!media_busy_50[2] && media_quiescent_i),
         .ready_o(media_stop_ready_o),.done_o(media_stop_done_o),.failed_o(media_stop_failed_o),.failure_code_o(media_stop_failure_code_o));
+    // The existing stop ACK proves actual REC seal, score cancellation and
+    // TF drain. Retain that proof only while the caller keeps the same hold;
+    // a timeout/CPU reset cannot leave an authorization for a later request.
+    // Public request_ready remains the original clock/media readiness so the
+    // clock service can revalidate it before emitting its registered pulse.
+    reg media_prepared_50,preparation_rejected_50;
+    wire media_prepared=media_prepared_50 && media_stop_hold_i &&
+        media_quiescent_i && !tf_stop_pending_i && !media_stop_failed_o;
+    wire preparation_required=ENABLE_MEDIA_POLICY &&
+        (recover_i || request_44k1_i!=active_44k1_o);
+    wire prepared_request=request_i && (!preparation_required || media_prepared);
+    wire prepared_recover=recover_i && (!ENABLE_MEDIA_POLICY || (media_prepared && qualified_permit));
+    wire runtime_policy_rejected;
+    always @(posedge clk_50m_i or negedge reset_50_n)begin
+        if(!reset_50_n)begin media_prepared_50<=0;preparation_rejected_50<=0;end
+        else begin
+            if(!media_stop_hold_i || media_stop_request_i || media_stop_failed_o ||
+                !media_quiescent_i || tf_stop_pending_i)media_prepared_50<=0;
+            else if(media_stop_done_o)media_prepared_50<=1;
+            preparation_rejected_50<=ENABLE_MEDIA_POLICY &&
+                ((request_i && preparation_required && !media_prepared) ||
+                 (recover_i && !(media_prepared && qualified_permit)));
+        end
+    end
+    assign policy_rejected_o=runtime_policy_rejected || preparation_rejected_50;
     wire [5:0] voices,effect_order_compute;
     wire [1:0] mode,route;
     wire [2:0] profile,effect_mask_compute;
@@ -279,8 +311,8 @@ module workstation_runtime_controlled #(
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) runtime(
         .rst_ni,.common_reset_ni(common_reset_n),.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
-        .request_i,.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i,.media_quiescent_i,
-        .request_ready_o,.busy_o,.fault_o,.accepted_o,.applied_o,.rejected_o,.failed_o,.policy_rejected_o,
+        .request_i(prepared_request),.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i(prepared_recover),.media_quiescent_i,
+        .request_ready_o,.busy_o,.fault_o,.accepted_o,.applied_o,.rejected_o,.failed_o,.policy_rejected_o(runtime_policy_rejected),
         .reject_code_o,.fault_code_o,.clock_select_o,.active_44k1_o,.active_valid_o,.stream_epoch_o,
         .source_qualified_o,.quiesce_o,.stream_flush_o,.dsp_fault_o,.context_ready_o,
         .midi_byte_valid_i(midi_valid_compute),.midi_byte_i(midi_byte_compute),
@@ -322,19 +354,25 @@ module workstation_runtime_controlled #(
         .stream_change_o(observed_change),.sequence_gap_o(observed_gap));
     assign sample_valid_o=observed_valid;
     // Both public levels decode the clock owner's multibit state. Capture
-    // their union on 50 MHz. Assertion from this source flop must inhibit
-    // immediately: another two compute capture edges can let an in-flight
-    // frame-zero score finish before its failure is latched. Release alone
-    // waits for two compute edges. The public clock-owner levels are unchanged.
+    // their union on 50 MHz. Prepared switches already hold new media starts
+    // after their actual stop ACK, so this status can cross as ordinary data.
+    // The legacy interface has no preparation handshake: it retains immediate
+    // inhibition so an in-flight frame-zero score cannot finish in the gap.
     (* syn_preserve=1 *) reg switch_busy_50;
     always @(posedge clk_50m_i or negedge reset_50_n)
         if(!reset_50_n)switch_busy_50<=1;
         else switch_busy_50<=busy_o || quiesce_o;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] switch_busy_compute;
+    generate if(ENABLE_MEDIA_POLICY)begin: prepared_switch_status
+        always @(posedge compute_clk_i or negedge reset_compute_n)
+            if(!reset_compute_n)switch_busy_compute<=2'b11;
+            else switch_busy_compute<={switch_busy_compute[0],switch_busy_50};
+    end else begin: immediate_switch_inhibit
     always @(posedge compute_clk_i or posedge switch_busy_50 or negedge reset_compute_n)
         if(!reset_compute_n)switch_busy_compute<=2'b11;
         else if(switch_busy_50)switch_busy_compute<=2'b11;
         else switch_busy_compute<={switch_busy_compute[0],1'b0};
+    end endgenerate
     // Serializer counters reset per stream; a jump N->0 is NOT a unit-step
     // Gray counter. Sample the complete epoch-tagged health tuple instead.
     // APB/display see the last completed-frame snapshot, never a torn count.

@@ -97,11 +97,17 @@ module workstation_runtime_chorus_effect #(
   always_ff @(posedge clk_i) begin
     if(!local_history_clear && state==1) begin read_l<=memory_l[read_address];read_r<=memory_r[read_address];end
     if(!local_history_clear && state==3) begin memory_l[pointer]<=input_l;memory_r[pointer]<=input_r;end
+    // Scratch products are consumed only in state3 after this state2 write.
+    // Reset/clear cancels the state, so stale DSP data cannot become an output.
+    if(!local_history_clear && state==2) begin
+      product_l<=$signed(frames>=chorus_delay?read_l:32'sd0)*$signed({1'b0,gain});
+      product_r<=$signed(frames>=chorus_delay?read_r:32'sd0)*$signed({1'b0,gain});
+    end
   end
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       pointer<=0;read_address<=0;frames<=0;state<=0;gain<=0;lfo<=0;chorus_delay<=CHORUS_BASE;
-      valid_o<=0;clip_o<=0;input_l<=0;input_r<=0;product_l<=0;product_r<=0;
+      valid_o<=0;clip_o<=0;input_l<=0;input_r<=0;
       mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;
     end else begin
       valid_o<=0;clip_o<=0;
@@ -113,10 +119,7 @@ module workstation_runtime_chorus_effect #(
           read_address<=pointer-CHORUS_BITS'(next_chorus_delay);gain<=wet_slew(gain,enabled_i?16'd8192:16'd0,gain_delta);state<=1;
         end
         1:state<=2;
-        2:begin
-          product_l<=$signed(frames>=chorus_delay?read_l:32'sd0)*$signed({1'b0,gain});
-          product_r<=$signed(frames>=chorus_delay?read_r:32'sd0)*$signed({1'b0,gain});state<=3;
-        end
+        2:state<=3;
         3:begin mixed_l<=$signed(input_l)+rshift(product_l,15);mixed_r<=$signed(input_r)+rshift(product_r,15);state<=4;end
         4:begin
           left_o<=sat31(mixed_l);right_o<=sat31(mixed_r);valid_o<=1;

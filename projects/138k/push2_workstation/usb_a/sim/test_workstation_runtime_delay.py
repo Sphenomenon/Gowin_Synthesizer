@@ -16,6 +16,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_delay_storage_provenance import restore_delay_native
 
 
 def sha256(data):
@@ -36,6 +37,8 @@ class RuntimeDelayTest(unittest.TestCase):
             provenance_path = native.with_suffix('.provenance.json')
             provenance = json.loads(provenance_path.read_text())
             payload = native.read_bytes()
+            if name == 'workstation_runtime_delay_effect_ddr':
+                payload = restore_delay_native(payload, provenance_path.read_bytes())
             if sha256(payload) != provenance['native_sha256']:
                 raise ValueError('native source identity drifted: ' + name)
             restored = payload.decode()
@@ -67,7 +70,7 @@ class RuntimeDelayTest(unittest.TestCase):
         if sha256(fifo.read_bytes()) != 'e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792':
             raise ValueError('actual F02 prepared FIFO implementation drifted')
         tb = ROOT / 'sim/audio/tb_workstation_runtime_delay.sv'
-        for path in (fifo, tb, Path(__file__)):
+        for path in (fifo, tb, ROOT / 'tools/workstation_delay_storage_provenance.py', Path(__file__)):
             cls.source_hashes[str(path.relative_to(ROOT))] = sha256(path.read_bytes())
         command = ['verilator', '--binary', '--timing', '-j', '2', '-Wno-fatal',
                    '--top-module', 'tb_workstation_runtime_delay',

@@ -55,9 +55,11 @@ module workstation_final_pcm_router (
     wire [16:0] rate_step_product=17'd40960+{9'd0,gain_remainder};
     wire [8:0] gain_step=request_44k1_i ? 9'(rate_step_product/17'd147):9'd256;
     wire [15:0] target_gain=mute_i ? 16'd0:master_volume_i;
+    wire [16:0] gain_upper={1'b0,applied_gain}+{8'd0,gain_step};
+    wire [16:0] gain_lower={1'b0,applied_gain}-{8'd0,gain_step};
     wire [15:0] next_gain=target_gain==0 ? 16'd0:
-        target_gain>applied_gain && target_gain-applied_gain>{7'd0,gain_step} ? applied_gain+{7'd0,gain_step}:
-        applied_gain>target_gain && applied_gain-target_gain>{7'd0,gain_step} ? applied_gain-{7'd0,gain_step}:target_gain;
+        {1'b0,target_gain}>gain_upper ? gain_upper[15:0]:
+        !gain_lower[16] && {1'b0,target_gain}<gain_lower ? gain_lower[15:0]:target_gain;
     wire cancelled=held_epoch!=active_epoch_i || held_rate!=active_44k1_i ||
         held_cancel!=cancel_epoch_i || (held_tf && held_tf_generation!=expected_tf_generation_i);
     assign request_ready_o=rst_ni && state==IDLE;

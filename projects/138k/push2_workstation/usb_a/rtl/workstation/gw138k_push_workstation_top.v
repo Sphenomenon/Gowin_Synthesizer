@@ -271,7 +271,8 @@ module gw138k_push_workstation_top #(
         .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),
         .mute_o(memory_guard_mute),.channel_open_o(runtime_channel_open),.clock_alive_o(),.fault_code_o(memory_guard_code));
     wire compute_output_safe_n=reset_n && audio_reset_n && !memory_guard_mute;
-    // Safety still gates the output immediately; release crosses as local data.
+    // Raw safety still asserts DAC SMUTE immediately. Compute-domain gain
+    // policy consumes only the synchronized local permission, in both directions.
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] output_safe_sync;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
     always @(posedge audio_clk or negedge button1_n)
@@ -614,7 +615,7 @@ module gw138k_push_workstation_top #(
         .active_44k1_o(rate44),.active_valid_o(rate_valid),.stream_epoch_o(rate_epoch),
         .source_qualified_o(rate_qualified),.quiesce_o(rate_quiesce),.stream_flush_o(rate_flush),
         .dsp_fault_o(rate_dsp_fault),.context_ready_o(rate_context_ready),
-        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!compute_output_safe_n || !output_safe_compute[2]),
+        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!output_safe_compute[2]),
         .pcm_psel_i(pcm_select),.pcm_pready_o(pcm_bus_ready),.pcm_pslverr_o(pcm_bus_error),.pcm_prdata_o(pcm_bus_data),
         .hci_session_ready_i(hci_pcm_session_ready),.hci_controller_epoch_i(hci_pcm_controller_epoch),
         .hci_transport_generation_i(hci_pcm_transport_generation),

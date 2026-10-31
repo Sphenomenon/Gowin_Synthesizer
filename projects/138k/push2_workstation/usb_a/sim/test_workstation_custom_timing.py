@@ -204,8 +204,14 @@ endmodule
         self.assertEqual(set(timing.RUNTIME_GRANT_RESET_INPUTS), mapped_reset)
         self.assertTrue(mapped_reset.issubset(asynchronous))
         expected.update(f'set_false_path -to [get_pins {{{stem}_0_s*/RESET}}]' for stem in mapped_reset)
+        status_chains = {'u_managed/switch_busy_compute': 2, 'u_managed/media_busy_50': 3}
+        self.assertEqual(dict(timing.RUNTIME_MEDIA_STATUS_CHAINS), status_chains)
+        expected.update(f'set_false_path -to [get_pins {{{stem}_0_s*/D}}]' for stem in status_chains)
+        expected.update(f'set_max_delay 2.000 -from [get_pins {{{stem}_{stage}_s*/Q}}] '
+                        f'-to [get_pins {{{stem}_{stage+1}_s*/D}}]'
+                        for stem, stages in status_chains.items() for stage in range(stages - 1))
         self.assertEqual(added, expected)
-        self.assertEqual(len(added), 38)
+        self.assertEqual(len(added), 43)
         # Existing raw assertion/CLEAR policy is unchanged. No functional,
         # second-stage, clock-wide or broad prefix exception is added.
         self.assertEqual([line for line in runtime.splitlines() if '/CLEAR' in line],

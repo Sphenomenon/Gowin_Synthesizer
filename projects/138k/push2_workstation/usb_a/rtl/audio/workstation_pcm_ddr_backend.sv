@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `default_nettype none
 `include "src/memory/ddr_address_map.vh"
-// Unselected storage mechanism. All ports use the always-running DDR UI clock.
+// Storage mechanism. All ports use the always-running DDR UI clock.
 // The business owner supplies identity/rate/epoch; this module never generates
 // recording IDs, negotiates BLE formats or controls the audio sample schedule.
 module workstation_pcm_ddr_backend #(
@@ -87,6 +87,10 @@ module workstation_pcm_ddr_backend #(
     wire [31:0] fifo_ram_data;
     wire [31:0] fifo_head=fifo_forward ? fifo_forward_data : fifo_ram_data;
     reg [255:0] pack_data;
+    reg pack_word_valid;
+    reg [2:0] pack_word_index;
+    reg [31:0] pack_word_data;
+    wire [255:0] packed_payload;
     reg [3:0] pack_frames,command_frames;
     reg [28:0] write_address;
     reg read_outstanding,reference_closing,download_active;
@@ -140,13 +144,28 @@ module workstation_pcm_ddr_backend #(
     wire [5:0] next_read_bytes=(issue_remaining<32-{27'd0,issue_offset[4:0]}) ?
         issue_remaining[5:0] : 6'd32-{1'b0,issue_offset[4:0]};
 
+    // Admission/fault feedback ends at a one-bit strobe. Retire the accepted
+    // word on the next edge through a fixed lane, without clearing all 256
+    // payload bits on publish/cancel. Inactive lanes are zeroed at publication.
+    always @(posedge clk_i or negedge rst_ni) begin
+        if(!rst_ni) begin pack_word_index<=0;pack_word_data<=0;end
+        else begin pack_word_index<=pack_frames[2:0];pack_word_data<=fifo_head;end
+    end
+    generate for(genvar lane=0;lane<8;lane=lane+1)begin:g_pack_lane
+        always @(posedge clk_i or negedge rst_ni)
+            if(!rst_ni)pack_data[lane*32+:32]<=0;
+            else if(pack_word_valid && pack_word_index==3'(lane))
+                pack_data[lane*32+:32]<=pack_word_data;
+        assign packed_payload[lane*32+:32]=pack_frames>4'(lane) ? pack_data[lane*32+:32] : 32'd0;
+    end endgenerate
+
     always @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni) begin
             state_o<=EMPTY;failure_code_o<=0;object_id_o<=0;rate_44k1_o<=0;epoch_o<=0;
             frames_o<=0;committed_frames_o<=0;frame_limit<=0;expected_sequence<=0;
             generation<=0;read_generation<=0;gap_wait<=0;command_wait<=0;read_wait<=0;
             fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;fifo_forward_data<=0;fifo_peak_o<=0;
-            pack_data<=0;pack_frames<=0;command_frames<=0;write_address<=`PRJ1_DDR_RECORDING_CPU_APP_BASE;
+            pack_word_valid<=0;pack_frames<=0;command_frames<=0;write_address<=`PRJ1_DDR_RECORDING_CPU_APP_BASE;
             ddr_valid_o<=0;ddr_write_o<=0;ddr_address_o<=0;ddr_data_o<=0;ddr_mask_o<=0;
             read_outstanding<=0;reference_closing<=0;reference_held_o<=0;
             reference_granted_o<=0;reference_error_o<=0;reference_released_o<=0;
@@ -158,6 +177,7 @@ module workstation_pcm_ddr_backend #(
         end else begin
             reference_granted_o<=0;reference_error_o<=0;reference_released_o<=0;
             download_done_o<=0;download_error_o<=0;
+            pack_word_valid<=pop;
             fifo_forward_data<=pcm_pair_i;
             fifo_forward<=capture_o && (fifo_count==0 || (fifo_count==1 && pop));
             if(capture_o) begin
@@ -166,7 +186,6 @@ module workstation_pcm_ddr_backend #(
             end
             if(pop) begin
                 fifo_rd<=fifo_next_rd;
-                pack_data[pack_frames*32+:32]<=fifo_head;
                 pack_frames<=pack_frames+1'b1;
             end
             case({capture_o,pop})
@@ -223,11 +242,11 @@ module workstation_pcm_ddr_backend #(
                 default:begin end
             endcase
             if(!ddr_valid_o && !invalidate) begin
-                if((state_o==CAPTURE || state_o==SEALING) &&
+                if(!pack_word_valid && (state_o==CAPTURE || state_o==SEALING) &&
                    (pack_frames==8 || (state_o==SEALING && fifo_count==0 && pack_frames!=0))) begin
                     ddr_valid_o<=1;ddr_write_o<=1;ddr_address_o<=write_address;
-                    ddr_data_o<=pack_data;ddr_mask_o<=32'hffffffff<<(pack_frames*4);
-                    command_frames<=pack_frames;pack_frames<=0;pack_data<=0;
+                    ddr_data_o<=packed_payload;ddr_mask_o<=32'hffffffff<<(pack_frames*4);
+                    command_frames<=pack_frames;pack_frames<=0;
                 end else if(state_o==READY && reference_held_o && !reference_closing &&
                     !reference_release_i && download_active && issue_remaining!=0 &&
                     !read_outstanding && prefetch_count<2) begin
@@ -268,7 +287,7 @@ module workstation_pcm_ddr_backend #(
             if(clear_i && clear_ready_o)begin
                 state_o<=EMPTY;failure_code_o<=0;object_id_o<=0;epoch_o<=0;
                 frames_o<=0;committed_frames_o<=0;generation<=generation+1'b1;
-                fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;pack_frames<=0;pack_data<=0;
+                fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;pack_frames<=0;pack_word_valid<=0;
                 prefetch_count<=0;download_active<=0;issue_remaining<=0;
                 write_address<=`PRJ1_DDR_RECORDING_CPU_APP_BASE;
             end
@@ -291,7 +310,7 @@ module workstation_pcm_ddr_backend #(
                 end
                 // A published command remains stable through invalidate. Its
                 // native acceptance and any read response must still drain.
-                fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;pack_frames<=0;pack_data<=0;
+                fifo_wr<=0;fifo_rd<=0;fifo_count<=0;fifo_forward<=0;pack_frames<=0;pack_word_valid<=0;
                 download_active<=0;prefetch_count<=0;
                 if(reference_held_o && !reference_closing)reference_closing<=1;
             end

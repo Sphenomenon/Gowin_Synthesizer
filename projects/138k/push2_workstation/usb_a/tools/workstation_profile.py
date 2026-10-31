@@ -283,7 +283,9 @@ def _artifact(root, output, metadata, profile):
     # Metadata cannot promote an omitted live path or erase its replacement.
     from tools.workstation_bluetooth import SDC as bluetooth_sdc
     from tools.workstation_runtime_profile import bluetooth_constraints
-    bluetooth = bluetooth_constraints(bluetooth_sdc)
+    from tools.workstation_runtime_cdc import prepared_ble_reset_policy
+    bluetooth = bluetooth_constraints(bluetooth_sdc,
+        raw_common_reset=prepared_ble_reset_policy(stage)['raw_common_reset'])
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     staged_sdc = (stage / 'constraints/custom_138k.sdc').read_text().splitlines()

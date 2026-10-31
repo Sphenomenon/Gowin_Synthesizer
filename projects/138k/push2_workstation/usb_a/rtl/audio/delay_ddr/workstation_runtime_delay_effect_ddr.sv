@@ -177,13 +177,19 @@ module workstation_runtime_delay_effect_ddr #(
       if(use_pop) begin read_l<=rd_head[31:0];read_r<=rd_head[63:32];end
       else begin read_l<=32'sd0;read_r<=32'sd0;end
     end
+    // State3 consumes only the products written by the preceding state2.
+    // Control reset/clear invalidates that state, not these private DSP values.
+    if(!local_history_clear && state==2) begin
+      product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});
+      product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});
+    end
   end
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;
       input_l<=0;input_r<=0;feedback_l<=0;feedback_r<=0;
-      product_l<=0;product_r<=0;feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;
+      feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;
     end else begin
       valid_o<=0;clip_o<=0;
       if(local_history_clear) begin
@@ -195,8 +201,6 @@ module workstation_runtime_delay_effect_ddr #(
         end
         1:state<=2;
         2:begin
-          product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});
-          product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});
           feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=echo_samples?read_l:32'sd0),1);
           feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=echo_samples?read_r:32'sd0),1);state<=3;
         end

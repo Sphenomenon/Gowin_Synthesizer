@@ -56,11 +56,17 @@ def main():
         'rtl/audio/workstation_observation_consumers.sv',
         'rtl/audio/audio_capture_fifo.sv', 'rtl/input/score_led_player.sv',
         'rtl/workstation/workstation_runtime_controlled.sv')]
+    # A maintained native source must not be shadowed by the older prepared
+    # copy when collecting the historical delay dependency directory above.
+    maintained_names = {path.name for path in sources if path.is_relative_to(ROOT)}
+    sources = [path for path in sources if not (
+        path.is_relative_to(project / 'rtl/audio/delay_ddr') and path.name in maintained_names)]
     # Prepared audio closure already contains historical capture/score? Keep
     # exactly the maintained copies in this candidate, never duplicate owners.
     sources = [path for path in sources if not (
         path.parent == project / 'legacy/rtl/audio' and path.name == 'audio_capture_fifo.sv')]
-    inputs = list(dict.fromkeys(sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py',
+    top = ROOT / 'rtl/workstation/gw138k_push_workstation_top.v'
+    inputs = list(dict.fromkeys(sources + [Path(__file__).resolve(), top, ROOT / 'tools/workstation_runtime_counter.py',
         ROOT / 'rtl/audio/runtime_spatial_room_preset.svh',
         ROOT / 'rtl/services/workstation_controlled_services.provenance.json']))
     inputs += sorted((project / 'sim/data').rglob('*.mem'))
@@ -83,6 +89,10 @@ def main():
             memory_phase_ns=7, ring_samples=16384, echo_samples48=9600,
             memory_guard_timeout_cycles=25, startup_mute_frames=3, pdn_hold_frames=1))
     try:
+        top_text = re.sub(r'\s+', '', re.sub(r'//[^\n]*|/\*.*?\*/', '', top.read_text(), flags=re.S))
+        if (re.findall(r'\.output_mute_i\(([^()]*)\)', top_text) != ['!output_safe_compute[2]'] or
+                'assigndac_smute=runtime_smute||memory_guard_mute;' not in top_text):
+            raise ValueError('Actual top must keep raw hardware mute and local compute data permission')
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
             '--top-module', 'tb_workstation_runtime_memory_integration', '--Mdir', str(output / 'obj'),
             '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]

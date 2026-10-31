@@ -138,8 +138,10 @@ module workstation_tf_frame_bridge #(
     assign tf_valid_o=compute_reset_n && held_valid && expected_generation_valid_o &&
         !cancel_pending && !quiesce_sync[1] && tf_generation_o==expected_generation_o;
     assign {tf_generation_o,tf_sample_rate_o,tf_error_o,tf_left_o,tf_right_o}=held_packet;
-    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
-        (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire));
+    // A consumed packet frees this local slot on the next compute edge.
+    // Do not feed the final router's rate/epoch/ready cone back into the
+    // 85-bit payload capture enable through same-edge replacement.
+    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending && !held_valid;
     assign media_quiescent_o=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
         quiesce_sync[1] && quiet_settle==5 && !read_valid && !held_valid;
 

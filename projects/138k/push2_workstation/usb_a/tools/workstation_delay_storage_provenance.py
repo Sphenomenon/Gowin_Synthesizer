@@ -16,12 +16,84 @@ REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 # The reviewed native RTC/PCM, ROM and business observation composition changes
 # this maintained reference. Original effects provenance/adaptation bytes and
 # both non-runtime FIFO selectors remain locked; no effects lineage is rebased.
-REFERENCE_SHA256 = 'b9dcb9d0b80e074f7f469fa887b9c25888a154776b86a2f1af1351fd6599444a'
+REFERENCE_SHA256 = '2cbd21c66b18c6c0d1fbe2b121e86d4918547cbb59eabdce4fcdaa35c695ecfa'
 PREPARED_SOURCE = 'rtl/audio/stereo_effects.sv'
+
+# Current scratch data is written in state2 before every state3 consumer.
+# Keep the historical native/provenance chain byte-for-byte and reverse only
+# this identity-bound reset removal before applying that original chain.
+DELAY_SCRATCH_SOURCE_SHA256 = 'cf43513f998e182075e8c6dd61de20dfd1872c8570c88baa0dfb67955650b1fd'
+DELAY_SCRATCH_PARENT_SHA256 = '879a5d93fb3ee547cd517344a495452f7cb37f28c0605ceee2cb625f2126c62d'
+DELAY_SCRATCH_EDITS = (("      else begin read_l<=32'sd0;read_r<=32'sd0;end\n    end\n  end\n\n",
+  "      else begin read_l<=32'sd0;read_r<=32'sd0;end\n"
+  '    end\n'
+  '    // State3 consumes only the products written by the preceding state2.\n'
+  '    // Control reset/clear invalidates that state, not these private DSP values.\n'
+  '    if(!local_history_clear && state==2) begin\n'
+  "      product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});\n"
+  "      product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});\n"
+  '    end\n'
+  '  end\n'
+  '\n'),
+ ('      frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;\n'
+  '      input_l<=0;input_r<=0;feedback_l<=0;feedback_r<=0;\n'
+  '      '
+  'product_l<=0;product_r<=0;feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;\n'
+  '    end else begin\n'
+  '      valid_o<=0;clip_o<=0;\n',
+  '      frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;\n'
+  '      input_l<=0;input_r<=0;feedback_l<=0;feedback_r<=0;\n'
+  '      feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;\n'
+  '    end else begin\n'
+  '      valid_o<=0;clip_o<=0;\n'),
+ ('        1:state<=2;\n'
+  '        2:begin\n'
+  "          product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});\n"
+  "          product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});\n"
+  "          feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=echo_samples?read_l:32'sd0),1);\n"
+  '          '
+  "feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=echo_samples?read_r:32'sd0),1);state<=3;\n",
+  '        1:state<=2;\n'
+  '        2:begin\n'
+  "          feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=echo_samples?read_l:32'sd0),1);\n"
+  '          '
+  "feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=echo_samples?read_r:32'sd0),1);state<=3;\n"))
+
+DELAY_SCRATCH_SOURCE = 'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv'
+DELAY_SCRATCH_PROVENANCE = 'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json'
+DELAY_SCRATCH_PROVENANCE_SHA256 = 'e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b7da51ce66bf01016886'
 
 
 def sha(payload):
     return hashlib.sha256(payload).hexdigest()
+
+
+def restore_delay_native(source, provenance):
+    """Restore exactly the former native Delay before its unchanged lineage."""
+    if sha(provenance) != DELAY_SCRATCH_PROVENANCE_SHA256:
+        raise ValueError('Original Delay provenance bytes changed')
+    original = json.loads(provenance)
+    if original['native_sha256'] != DELAY_SCRATCH_PARENT_SHA256:
+        raise ValueError('Original native Delay identity changed')
+    if sha(source) == DELAY_SCRATCH_PARENT_SHA256:
+        return source
+    if sha(source) != DELAY_SCRATCH_SOURCE_SHA256:
+        raise ValueError('Current Delay scratch source identity changed')
+    current = source.decode()
+    for before, after in reversed(DELAY_SCRATCH_EDITS):
+        if current.count(after) != 1:
+            raise ValueError('Delay scratch reverse anchor drift')
+        current = current.replace(after, before)
+    if sha(current.encode()) != DELAY_SCRATCH_PARENT_SHA256:
+        raise ValueError('Delay scratch parent identity changed')
+    restored = current
+    for before, after in DELAY_SCRATCH_EDITS:
+        if current.count(before) != 1:
+            raise ValueError('Delay scratch forward anchor drift')
+        current = current.replace(before, after)
+    if current.encode() != source:
+        raise ValueError('Delay scratch round trip changed bytes')
+    return restored.encode()
 
 
 def restore_native(source, provenance, policy=STRICT_POLICY, adaptation=None):
@@ -104,7 +176,14 @@ def source_bundle(root):
     end = text.index('endmodule', begin) + len('endmodule')
     if text[begin:end] != prepared:
         raise ValueError('Exact original prepared effects slice changed')
-    evidence.update(original_locked_prepared_slice_verified=True,
+    delay_source = (root / DELAY_SCRATCH_SOURCE).read_bytes()
+    delay_provenance = (root / DELAY_SCRATCH_PROVENANCE).read_bytes()
+    delay_parent = restore_delay_native(delay_source, delay_provenance)
+    evidence.update(delay_scratch_reset=dict(source=DELAY_SCRATCH_SOURCE,
+        current_source_sha256=sha(delay_source), original_native_sha256=sha(delay_parent),
+        original_provenance_sha256=sha(delay_provenance),
+        scratch_products_without_reset=sha(delay_source) == DELAY_SCRATCH_SOURCE_SHA256),
+        original_locked_prepared_slice_verified=True,
         storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(reference),
         original_prepared_source=PREPARED_SOURCE, original_prepared_identity=info['prepared_source_identity'],
         accepted_baseline_storage_selection_inherited=False)

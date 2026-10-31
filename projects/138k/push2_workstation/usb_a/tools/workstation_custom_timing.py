@@ -78,6 +78,13 @@ RUNTIME_GRANT_RESET_INPUTS = (
     'output_safe_sync',
     'u_runtime/g_usb_cdc_reset.usb_ready',
 )
+# ENABLE_MEDIA_POLICY uses the completed stop/held-start contract before any
+# real change or recovery. Busy is then held status crossing through D only;
+# retain timing on every later stage and on all asynchronous reset pins.
+RUNTIME_MEDIA_STATUS_CHAINS = (
+    ('u_managed/switch_busy_compute', 2),
+    ('u_managed/media_busy_50', 3),
+)
 
 
 def once(text, original, replacement):
@@ -253,6 +260,11 @@ def constraints(*, runtime_reset=False):
                          f'-to [get_pins {{{prefix}_1_s*/D}}]')
         for prefix in RUNTIME_GRANT_RESET_INPUTS:
             lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/RESET}}]')
+        for prefix, stages in RUNTIME_MEDIA_STATUS_CHAINS:
+            lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]')
+            for stage in range(stages - 1):
+                lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_{stage}_s*/Q}}] '
+                             f'-to [get_pins {{{prefix}_{stage+1}_s*/D}}]')
     phy = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top'
     # E8's routed hold path misses by0.759ns with the original0.800ns floor.
     # Ask the router for more delay; retain the actual setup/hold checks.

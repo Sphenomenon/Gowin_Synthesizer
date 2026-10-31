@@ -18,6 +18,7 @@ from workstation_delay_storage_provenance import (
     verify as verify_delay_storage, STORAGE_POLICY, ADAPTATION as DELAY_STORAGE_ADAPTATION,
     source_bundle as delay_storage_source_bundle, PREPARED_SOURCE as DELAY_PREPARED_SOURCE,
     REFERENCE as DELAY_STORAGE_REFERENCE,
+    restore_delay_native,
 )
 from test_workstation_runtime_reverb import FixedRoom, sat, signed
 
@@ -203,6 +204,25 @@ class DelayStorageProvenance(unittest.TestCase):
             with self.subTest(path=name),mock.patch.object(Path,'read_bytes',changed),self.assertRaises(ValueError):
                 m.source_bundle(ROOT)
 
+    def test_scratch_product_lineage_keeps_originals_and_rejects_drift(self):
+        import workstation_chorus_provenance as chorus
+        m = self.storage
+        current = (ROOT / m.DELAY_SCRATCH_SOURCE).read_bytes()
+        provenance = (ROOT / m.DELAY_SCRATCH_PROVENANCE).read_bytes()
+        parent = m.restore_delay_native(current, provenance)
+        self.assertEqual(digest(parent), json.loads(provenance)['native_sha256'])
+        self.assertEqual(m.restore_delay_native(parent, provenance), parent)
+        with self.assertRaises(ValueError):
+            m.restore_delay_native(current.replace(b'!local_history_clear && state==2',
+                                                  b'!local_history_clear && state==3'), provenance)
+        with self.assertRaises(ValueError):
+            m.restore_delay_native(current, provenance + b'\n')
+        source = (ROOT / chorus.SOURCE).read_bytes()
+        narrowed = chorus.restore_scratch_products(source)
+        self.assertEqual(digest(narrowed), json.loads((ROOT / chorus.ADAPTATION).read_bytes())['current_source_sha256'])
+        with self.assertRaises(ValueError):
+            chorus.restore_scratch_products(source + b'\n')
+
 
 class RuntimeEffectsTest(unittest.TestCase):
     @classmethod
@@ -213,6 +233,7 @@ class RuntimeEffectsTest(unittest.TestCase):
         cls.stage = Path(cls.temp.name)
         cls.source_hashes = {}
         sources, restored = [], {}
+        baseline = load_baseline(ROOT, 'resource_rework_route0')
         names = ['rtl/audio/workstation_runtime_stereo_effects.sv',
                  'rtl/audio/workstation_runtime_chorus_effect.sv',
                  'rtl/audio/workstation_runtime_spatial_reverb.sv',
@@ -238,6 +259,21 @@ class RuntimeEffectsTest(unittest.TestCase):
                 for path in (adaptation_path, ROOT / 'tools/workstation_chorus_provenance.py'):
                     cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
             else:
+                if name == 'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv':
+                    payload = restore_delay_native(payload, provenance_path.read_bytes())
+                elif name == 'rtl/audio/workstation_runtime_spatial_reverb.sv':
+                    # The maintained scratch split is the actual DUT below.
+                    # Rebuild only its old reference from the unchanged chain.
+                    if digest(payload) != 'e9a93b4cf51fe8aae7ff46cd92e08b073314e87241d786eea7f445bc6bebbbb1':
+                        raise ValueError('reviewed Reverb scratch source drifted')
+                    reference = baseline.read_bytes('rtl/audio/serial_spatial_reverb.sv').decode()
+                    if digest(reference.encode()) != provenance['prepared_sha256']:
+                        raise ValueError('prepared Reverb reference identity drifted')
+                    for edit in provenance['forward_edits']:
+                        if reference.count(edit['before']) != edit['count']:
+                            raise ValueError('forward Reverb provenance drifted')
+                        reference = reference.replace(edit['before'], edit['after'])
+                    payload = reference.encode()
                 if digest(payload) != provenance['native_sha256']:
                     raise ValueError('native identity drifted: ' + name)
                 old = payload.decode()
@@ -251,7 +287,6 @@ class RuntimeEffectsTest(unittest.TestCase):
             sources.append(native)
             for path in (native, provenance_path):
                 cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
-        baseline = load_baseline(ROOT, 'resource_rework_route0')
         dependencies = ['legacy/rtl/audio/audio_math_pkg.sv', 'rtl/audio/serial_spatial_reverb.sv',
                         'rtl/audio/spatial_room_preset.svh', 'rtl/memory/workstation_sdp.sv',
                         'rtl/memory/workstation_sdp_banked.sv']
