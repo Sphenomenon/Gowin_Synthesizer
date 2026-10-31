@@ -44,14 +44,16 @@ C／APB／实际 RTL／DDR 协同仿真通过 1701 checks、136 条消息与旧�
 1376 B／预留 16384 B；ELF SHA256 为
 `8b520dda735def4f9ec1bf22719257806d465593a9cf69bdfa5f40ae1cd0b479`。
 
-`C21031E3` 已启动完整 P&R，place2／route0／不复制资源，不放宽时钟或
-数据路径例外。新 VG 时钟正向门禁通过；PCM CDC 检查发现 serializer
-`requested_s0/CE` 新消费端，当前正在做该端点的必要 next-Q 证明，
-未将拒绝计为通过。P&R、完整 STA、物理 PLL 与 SRAM 验证结果待收取。
+`C21031E3` 完整 P&R 运行 1327.706 秒后失败：2776 条未布通，物理
+CLS 61934/69120、BSRAM 297/340、Logic 97213、Register 62809。
+place2／route0／不复制资源，全部输入和工具身份前后保持，没有最终
+STA／位流。相对 E1 仅少 71 CLS 和 65 条未布通，仍不可上板。
+新 VG 时钟正向门禁通过；PCM CDC 检查发现 serializer
+`requested_s0/CE` 和禁用 guard 的差异，未将拒绝计为通过。
 
 外部产物：`~/.cache/gw138k-task-20261030/business-gatt-integrated-candidate-v2`
 及 `business-gatt-integrated-physical-C21031E3-v1`。本批未操作板卡、未写
-Flash；板上仍为回退身份 `C11028E5`。只有必要物理门禁通过后执行已授权
+Flash；最近读回的回退身份为 `C11028E5`。只有必要物理门禁通过后执行已授权
 SRAM 验证；失败时重载已有 Flash 并独立读回原身份，不改 Flash 内容。
 
 ### serializer 最小源码修正
@@ -61,5 +63,26 @@ PCM 反例定位到禁用 SOURCE_HOLD 时仍保留两个 guard FF 的反馈。
 未修改 checker 或扩大 CDC 例外。原／新 RTL 在 ENABLE、sample error、
 双率的八种组合下共 400 万配对周期全部输出／内部状态一致；启用 hold
 两项、默认双率 I2S、actual prepare 十一项、accepted 十七项通过。
-新候选 `42cdecbb2e9b8c7d` 沿用同一 profile／功能，等待 E3 结束后完整综合。
-E3 所有输入保持不变；本修正没有继承其综合／物理结果。
+新候选 `42cdecbb2e9b8c7d` 沿用同一 profile／功能，源码 `0192fae`，
+完整综合退出 0，359.777 秒，614 项输入保持，无 AG 诊断。新 VG 为
+`9be1d177f213999e686c81278ea0160af45e928e5014a402667861d845e9e257`。
+
+| 综合资源 | E4 | 相对迁移前 011fdc9c |
+|---|---:|---:|
+| Logic | 96935 | +2312 |
+| LUT | 78580 | +2613 |
+| ALU | 16741 | −61 |
+| Register | 62810 | +2232 |
+| RAM16 | 269 | −40 |
+| 等效 BSRAM | 248 | +3 |
+
+修正不计为净资源收益。原版 PCM `paired-nextq-v2` checker 未改，实际
+229 个源位／896 个 selector、reply 闭包／header／next-Q／已安装约束
+全部通过；六个共享 release 及 455+175 个消费者的实际连接检查通过。
+`C21031E4` 已直接进入 place0／route1 P&R，不改变时钟或数据路径例外，
+结果待收取；新 SRAM／Flash 操作仍为零。
+
+E3 所有输入保持不变；E4 没有继承其综合／物理接受。E4 外部目录为
+`business-serializer-integrated-candidate-v1`、
+`business-serializer-integrated-physical-C21031E4-v1` 和
+`business-serializer-integrated-necessary-gates-v1`，均在上述 cache 根目录。
