@@ -16,7 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_native_protocol_audit import (
     audit_native_protocol, protocol_netlist, validate_native_protocol_sdc, RAM_SCOPE, RAM_STEM, TOP,
+    APB, DELAY, DMA,
 )
+from tools.workstation_runtime_pcm_cdc import Graph
 from tools.workstation_runtime_profile import protocol_constraints
 
 
@@ -293,6 +295,107 @@ class ActualControlBoundaries(ActualNativeFixture):
         source = next(p for p in self.n.cells if re.fullmatch(r'u_managed/pc_bytes/drop_count_0_s\d+', p))
         self.reject('PC unregistered/wrong drop reduction', target, 'ports', 'D',
                     self.bind(target, source), 'drop reduction must be registered')
+
+
+class ActualTimingBoundaries(ActualNativeFixture):
+    def reg(self, scope, stem):
+        rows = [p for p, c in self.n.cells.items() if c['kind'].startswith('DFF') and
+                re.fullmatch(re.escape(scope + '/' + stem) + r'_s\d+', p)]
+        self.assertEqual(len(rows), 1)
+        return rows[0]
+
+    def bind(self, target, source):
+        net = self.n.pin(source, 'Q')
+        scope = self.n.scopes[target]
+        if scope:
+            self.assertTrue(net.startswith(scope + '/'))
+            return net[len(scope) + 1:]
+        return self.n.cells[source]['ports']['Q']
+
+    def test_delay_heartbeat_source_must_be_registered_unconditionally(self):
+        self.reject('heartbeat conditional publisher', self.reg(DELAY, 'heartbeat_counter_4'),
+                    'ports', 'CE', "1'b0", 'timing-boundary register')
+
+    def test_delay_meta_cannot_have_a_functional_consumer(self):
+        target = self.reg(DMA, 'peer_last')
+        self.reject('delay meta functional fanout', target, 'ports', 'D',
+                    self.bind(target, self.reg(DMA, 'peer_meta')), 'first-stage has another consumer')
+
+    def test_delay_first_stage_cannot_cross_to_a_different_bit(self):
+        target = self.reg(DMA, 'peer_meta')
+        self.reject('delay heartbeat bit swap', target, 'ports', 'D',
+                    self.bind(target, self.reg(DMA, 'heartbeat_counter_3')), 'synchronizer bypass/reset')
+
+    def test_apb_held_response_mapping_is_exact(self):
+        self.reject('APB response bit alias', self.reg(APB, 'response_local_0'), 'ports', 'D',
+                    self.n.cells[self.reg(APB, 'response_local_1')]['ports']['D'], 'payload bit mapping')
+
+    def test_apb_ack_cannot_precede_payload(self):
+        self.reject('APB ACK before response capture', self.reg(APB, 'acknowledge_toggle'),
+                    'ports', 'CE', "1'b1", 'ACK and response publication')
+
+    def test_apb_response_cannot_have_an_extra_consumer(self):
+        target = self.reg(APB, 'request_decoded')
+        self.reject('APB response extra consumer', target, 'ports', 'D',
+                    self.bind(target, self.reg(APB, 'response_held_0')), 'exact consumer closure')
+
+    def test_apb_command_valid_must_suppress_repeat_publication(self):
+        g = Graph(self.n)
+        enable = self.n.pin(self.reg(APB, 'acknowledge_toggle'), 'CE')
+        gate = g.drivers[enable][0][0]
+        width = int(self.n.cells[gate]['kind'][3:])
+        self.reject('APB ACK gating removed', gate, 'parameters', 'INIT',
+                    str(1 << width) + "'h" + 'F' * ((1 << width) // 4), 'command-valid may publish')
+
+    def test_apb_payload_cannot_capture_before_third_ack(self):
+        target = self.reg(APB, 'ack_settled')
+        self.reject('APB third ACK bypass', target, 'ports', 'D',
+                    self.bind(target, self.reg(APB, 'ack_meta')), 'first-stage has another consumer')
+
+    def test_apb_state_cannot_relaunch_while_waiting(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_toggle')
+        gate = g.drivers[self.n.pin(target, 'D')][0][0]
+        self.reject('APB relaunch while waiting', gate, 'parameters', 'INIT', "16'h5555", 'request can launch outside IDLE')
+
+    def test_apb_capture_gate_must_use_wait_state_and_settled_ack(self):
+        g = Graph(self.n)
+        gate = g.drivers[self.n.pin(self.reg(APB, 'response_local_0'), 'CE')][0][0]
+        self.reject('APB response premature capture', gate, 'parameters', 'INIT', "16'hFFFF", 'capture must wait')
+
+    def test_tf_quiesce_cannot_bypass_registered_source(self):
+        if self.profile != 'm-demo-base':
+            self.skipTest('W retires TF')
+        self.reject('TF quiesce unregistered source', self.reg('u_tf_audio/frames', 'quiesce_sync_0'),
+                    'ports', 'D', "1'b1", 'synchronizer bypass/reset')
+
+    def test_tf_quiesce_first_stage_cannot_reach_functional_state(self):
+        if self.profile != 'm-demo-base':
+            self.skipTest('W retires TF')
+        target = self.reg('u_tf_audio/frames', 'quiet_published')
+        self.reject('TF quiesce meta functional fanout', target, 'ports', 'D',
+                    self.bind(target, self.reg('u_tf_audio/frames', 'quiesce_sync_0')), 'first-stage has another consumer')
+
+    def test_sdc_protects_payload_setup_and_all_later_stages(self):
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        timing = result['timing_boundaries']
+        sdc = protocol_constraints()
+        checked = validate_native_protocol_sdc(sdc, self.n, result)
+        self.assertEqual(checked['apb_response_payload_pins_verified'], 33)
+        lines = [line for line in sdc.splitlines() if APB + '/response_held_' in line or DELAY + '/' in line or
+                 self.profile == 'm-demo-base' and 'u_tf_audio/frames/quiesce_sync_' in line]
+        for line in lines:
+            with self.subTest(missing=line), self.assertRaisesRegex(ValueError, 'missing, duplicated or changed'):
+                validate_native_protocol_sdc(sdc.replace(line + '\n', '', 1), self.n, result)
+        cuts = [row['second'] for row in timing['delay_heartbeats']]
+        cuts += [row[key] for row in timing['apb_response']['chains'] for key in ('second', 'third')]
+        cuts += timing['apb_response']['capture_pins'][:1]
+        if timing['tf_quiesce']:
+            cuts.append(timing['tf_quiesce']['second'])
+        for pin in cuts:
+            for option in ('', ' -hold'):
+                with self.subTest(cut=pin, option=option), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
+                    validate_native_protocol_sdc(sdc + f'set_false_path{option} -to [get_pins {{{pin}}}]\n', self.n, result)
 
 
 if __name__ == '__main__':

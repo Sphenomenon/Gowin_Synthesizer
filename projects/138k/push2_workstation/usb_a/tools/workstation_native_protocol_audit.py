@@ -18,13 +18,27 @@ if str(ROOT) not in sys.path:
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph, PcmNetlist
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
 from tools.workstation_runtime_profile import protocol_constraints
+from tools.workstation_recording_phase1_cdc import complete_closure
 
 TOP = 'workstation_custom_138k_top'
-POLICY = 'native-demo-mailbox-structure-v2'
+POLICY = 'native-demo-mailbox-structure-v3'
 RAM_SCOPE = 'u_managed/observation/frames/'
 RAM_STEM = 'g_small_head.memory_g_small_head.memory_0_'
 STREAM_SHA256 = '90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376'
 PROFILES = ('m-demo-base', 'w-demo-d')
+DELAY = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage'
+DMA = 'u_managed/runtime/delay_dma'
+APB = 'u_managed/control_cdc'
+REVIEWED_BOUNDARY_SOURCES = {
+    'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv':
+        'f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3',
+    'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv':
+        '4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551',
+    'rtl/tf_audio/workstation_tf_runtime_service.sv':
+        'c42dc0bbe4919adf86275388239f52ccf63d6670b30c2bdf362ebea5bcb0b483',
+    'rtl/tf_audio/workstation_tf_frame_bridge.sv':
+        'c32000172587a674708d9454b1895b24ada26103d55206b0bda659817bcb4ac5',
+}
 
 
 def require(condition, message):
@@ -213,8 +227,10 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     else:
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'W retained retired TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)
+    timing = audit_timing_boundaries(n, g, profile=profile)
     return dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
-                mailboxes=mailboxes, level_proofs=proofs, control_boundaries=controls, exact_payload_driver_closure=True,
+                mailboxes=mailboxes, level_proofs=proofs, control_boundaries=controls,
+                timing_boundaries=timing, exact_payload_driver_closure=True,
                 source_stop_loss_bypass_preserved=True, constraints_complete=False,
                 routed_timing_verified=False, physical_cdc_accepted=False, hardware_tested=False)
 
@@ -229,7 +245,8 @@ def protocol_netlist(text, *, mapping):
     n = SynthesisNetlist(text, TOP)
     prefixes = ('u_managed/pc_bytes/', 'u_managed/health_snapshot/', 'u_managed/display/',
                 'u_video/u_runtime_display/observation/', RAM_SCOPE,
-                'u_managed/display_observation_health/', 'u_tf_audio/', 'u_managed/pc_')
+                'u_managed/display_observation_health/', 'u_tf_audio/', 'u_managed/pc_',
+                APB + '/', DELAY + '/', DMA + '/')
     expected = {p for p, c in n.cells.items() if c['kind'] not in n.modules and p.startswith(prefixes)}
     require('' in n.frames and len(n.frames) == 1, 'routed mapping must be flat')
     instances = re.compile(r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)\);', re.M | re.S)
@@ -341,18 +358,197 @@ def audit_control_boundaries(n, g, *, profile):
     return dict(tf_control=tf, pc_health_levels=levels, complete_cdc_accepted=False)
 
 
+def audit_timing_boundaries(n, g, *, profile):
+    """Measured native heartbeat, APB response and TF held quiesce paths.
+
+    Counter arithmetic and stopped-source cancellation retain their reviewed
+    source identities and semantic regressions. Netlist proof independently
+    closes the actual register, synchronizer and held-response consumers.
+    """
+    def reg(scope, stem):
+        return g.register(scope, stem)
+
+    def clock(p):
+        # Hierarchical formal resolution can return a top-level buffer name
+        # once; resolve that real IBUF/BUFG alias again before comparison.
+        return n.canonical('', n.pin(p, 'CLK'))
+
+    def unconditional(p, domain, kind='DFFCE'):
+        require(n.cells[p]['kind'] == kind and clock(p) == domain and n.pin(p, 'CE') in g.high,
+                'timing-boundary register clock/primitive/CE changed: ' + p)
+
+    def stages(scope, source, first, second, domain, third=None):
+        a, b = reg(scope, first), reg(scope, second)
+        for p in (a, b):
+            unconditional(p, domain)
+        require(n.pin(a, 'D') == n.pin(source, 'Q') and n.pin(b, 'D') == n.pin(a, 'Q') and
+                n.pin(a, 'CLEAR') == n.pin(b, 'CLEAR'), 'timing-boundary synchronizer bypass/reset changed: ' + a)
+        closure = complete_closure(n, g, [a])
+        require(closure['ff_endpoints'] == {b + '/D': n.pin(b, 'CLK')} and
+                not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
+                'timing-boundary first-stage has another consumer: ' + a)
+        result = dict(source=source + '/Q', first=a + '/D', second=b + '/D',
+                      first_stage_only_second_consumer=True, second_stage_normally_timed=True)
+        if third:
+            c = reg(scope, third)
+            unconditional(c, domain)
+            require(n.pin(c, 'D') == n.pin(b, 'Q') and n.pin(c, 'CLEAR') == n.pin(b, 'CLEAR'),
+                    'timing-boundary third synchronizer stage bypass/reset changed: ' + c)
+            result['third'] = c + '/D'
+        return result
+
+    heartbeats = []
+    for origin, destination, source_clock, destination_clock in (
+            (DELAY, DMA, 'audio_clk', 'memory_clk'), (DMA, DELAY, 'memory_clk', 'audio_clk')):
+        source = reg(origin, 'heartbeat_counter_4')
+        unconditional(source, source_clock)
+        row = stages(destination, source, 'peer_meta', 'peer_sync', destination_clock)
+        closure = complete_closure(n, g, [source])
+        remote = {pin for pin, domain in closure['ff_endpoints'].items() if domain != source_clock}
+        require(remote == {row['first']} and not closure['primitive_endpoints'] and
+                not closure['top_output_endpoints'], 'delay heartbeat remote consumer closure changed')
+        row.update(source_clock=source_clock, destination_clock=destination_clock,
+                   source_is_registered_counter_bit=4, reviewed_source_counter_width=5,
+                   reviewed_source_free_running_increment=True, counter_arithmetic_equivalence_proven=False,
+                   exact_remote_consumer=sorted(remote), closure=closure)
+        heartbeats.append(row)
+
+    q = lambda stem: n.pin(reg(APB, stem), 'Q')
+    request, ack = reg(APB, 'request_toggle'), reg(APB, 'acknowledge_toggle')
+    held, capture = g.group(APB, 'response_held', 33), g.group(APB, 'response_local', 33)
+    require(clock(request) == 'ram_clk' and clock(ack) == 'audio_clk' and
+            all(clock(p) == 'audio_clk' for p in held) and all(clock(p) == 'ram_clk' for p in capture),
+            'APB response clock changed')
+    source_enables, capture_enables = {n.pin(p, 'CE') for p in held}, {n.pin(p, 'CE') for p in capture}
+    require(len(source_enables) == len(capture_enables) == 1, 'APB response payload enable differs')
+    source_ce, capture_ce = next(iter(source_enables)), next(iter(capture_enables))
+    require(n.pin(ack, 'CE') == source_ce and n.pin(ack, 'D') == q('req_settled') and
+            len({n.pin(p, 'CLEAR') for p in (*held, ack)}) == 1,
+            'APB ACK and response publication must share edge/reset')
+    require(all(n.pin(d, 'D') == n.pin(s, 'Q') for s, d in zip(held, capture)), 'APB response payload bit mapping changed')
+    closure = complete_closure(n, g, held)
+    require(closure['ff_endpoints'] == {p + '/D': 'ram_clk' for p in capture} and
+            not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
+            'APB response exact consumer closure changed')
+    chains = [stages(APB, request, 'req_meta', 'req_sync', 'audio_clk', 'req_settled'),
+              stages(APB, ack, 'ack_meta', 'ack_sync', 'ram_clk', 'ack_settled')]
+    # Prove the actual local ready/reset cone. Independent service-ready
+    # branches are unrestricted Boolean inputs, a conservative abstraction:
+    # no value of any such branch may permit publication after ACK. Do not
+    # assume M and W retain the same LUT factorization.
+    valid_inputs = {q('req_settled'), q('acknowledge_toggle'), q('request_decoded'),
+                    n.pin(reg(APB, 'a_release_2'), 'Q')}
+    external_ready = set()
+
+    def local_support(net, active=()):
+        if net in g.high | g.low:
+            return set()
+        require(net not in active, 'APB publication combinational cycle')
+        ds = g.drivers[net]
+        if not ds or len(ds) == 1 and not ds[0][0].startswith(APB + '/'):
+            require(not net.startswith(APB + '/'), 'APB publication local driver missing: ' + net)
+            external_ready.add(net)
+            return {net}
+        require(len(ds) == 1, 'APB publication driver ambiguous: ' + net)
+        p, port = ds[0]
+        if p in g.regs:
+            return {net}
+        kind = n.cells[p]['kind']
+        require(kind == 'INV' or re.fullmatch('LUT[1-6]', kind), 'APB publication local primitive changed')
+        inputs = ['I'] if kind == 'INV' else ['I' + str(i) for i in range(int(kind[3:]))]
+        return set().union(*(local_support(n.pin(p, pin), (*active, net)) for pin in inputs))
+
+    leaves = sorted(local_support(source_ce))
+    require(valid_inputs.issubset(leaves), 'APB publication must depend on request, ACK, decode and reset')
+    bd = BooleanDiagram(leaves)
+    expected = bd.all([bd.different(bd.inputs[q('req_settled')], bd.inputs[q('acknowledge_toggle')]),
+                       bd.inputs[q('request_decoded')], bd.inputs[n.pin(reg(APB, 'a_release_2'), 'Q')]])
+    accepted = bd.net(g, source_ce)
+    require(accepted != 0 and bd.both(accepted, bd.invert(expected)) == 0,
+            'APB command-valid may publish after ACK or before decode/reset')
+    req_sync, req_settled, ack_q = q('req_sync'), q('req_settled'), q('acknowledge_toggle')
+    bd = BooleanDiagram([req_sync, req_settled, ack_q])
+    decoded = bd.both(bd.invert(bd.different(bd.inputs[req_sync], bd.inputs[req_settled])),
+                      bd.different(bd.inputs[req_settled], bd.inputs[ack_q]))
+    unconditional(reg(APB, 'request_decoded'), 'audio_clk')
+    require(bd.net(g, n.pin(reg(APB, 'request_decoded'), 'D')) == decoded,
+            'APB request decode must wait for settled request and outstanding ACK')
+    state0, state1, req, ack_settled = q('state_0'), q('state_1'), q('request_toggle'), q('ack_settled')
+    toggle_gate, output = g.drivers[n.pin(request, 'D')][0]
+    require(n.cells[toggle_gate]['kind'] == 'LUT4' and output == 'F', 'APB request toggle gate changed')
+    inputs = [n.pin(toggle_gate, 'I' + str(i)) for i in range(4)]
+    require({state0, state1, req}.issubset(inputs) and len(set(inputs)) == 4, 'APB launch gate input inventory changed')
+    launch = next(x for x in inputs if x not in (state0, state1, req))
+    bd = BooleanDiagram([state0, state1, req, ack_settled, launch])
+    idle = bd.both(bd.invert(bd.inputs[state0]), bd.invert(bd.inputs[state1]))
+    wait = bd.both(bd.inputs[state0], bd.invert(bd.inputs[state1]))
+    complete = bd.both(bd.invert(bd.inputs[state0]), bd.inputs[state1])
+    equal = bd.invert(bd.different(bd.inputs[req], bd.inputs[ack_settled]))
+    captured = bd.both(wait, equal)
+    unconditional(request, 'ram_clk')
+    require(bd.net(g, n.pin(request, 'D')) == bd.different(bd.inputs[req], bd.both(idle, bd.inputs[launch])),
+            'APB request can launch outside IDLE')
+    require(bd.net(g, capture_ce) == captured, 'APB response capture must wait for third ACK stage')
+    for stem, expected in (
+            ('state_0', bd.either(bd.both(idle, bd.inputs[launch]), bd.both(wait, bd.invert(equal)))),
+            ('state_1', bd.either(captured, bd.both(complete, bd.invert(bd.inputs[launch]))))):
+        state = reg(APB, stem)
+        require(n.cells[state]['kind'] == 'DFFCE' and clock(state) == 'ram_clk' and
+                all(n.pin(p, 'CLEAR') == n.pin(state, 'CLEAR') for p in capture), 'APB local state clock/reset changed')
+        # Synthesis can move the hold mux into CE. Compare effective next-Q
+        # rather than requiring M's unconditional-state implementation.
+        next_q = bd.choose(bd.net(g, n.pin(state, 'CE')), bd.net(g, n.pin(state, 'D')), bd.inputs[q(stem)])
+        require(next_q == expected, 'APB one-outstanding state transition changed: ' + stem)
+    response = dict(scope=APB, source_pins=[p + '/Q' for p in held], capture_pins=[p + '/D' for p in capture],
+        payload_bits=33, source_clock='audio_clk', destination_clock='ram_clk', source_enable=source_ce,
+        capture_enable=capture_ce, chains=chains, source_publication_requires_outstanding_request=True,
+        publication_local_boolean_leaf_count=len(leaves),
+        publication_unrestricted_service_ready_leaves=sorted(external_ready),
+        response_and_ack_share_publication=True, request_launch_only_idle=True, exact_state_transitions_verified=True,
+        minimum_response_pipeline_stages=3, minimum_capture_edge_after_publication=4,
+        max_delay_ns=20.0, only_hold_exception=True, closure=closure,
+        payload_stable_until_next_request_round_trip=True)
+
+    quiesce = None
+    if profile == 'm-demo-base':
+        source = reg('u_tf_audio', 'source_quiesce')
+        unconditional(source, 'clk_50m', 'DFFPE')
+        row = stages('u_tf_audio/frames', source, 'quiesce_sync_0', 'quiesce_sync_1', 'audio_clk')
+        closure = complete_closure(n, g, [source])
+        remote = {pin for pin, domain in closure['ff_endpoints'].items()
+                  if n.canonical('', domain) != 'clk_50m'}
+        require(remote == {row['first']} and not closure['top_output_endpoints'], 'TF quiesce remote consumer closure changed')
+        require(all(pin.endswith('/WRE') and row['kind'] == 'RAM16SDP4' and
+                    row['clock_pins'] == {'CLK': 'clk_50m'} for pin, row in closure['primitive_endpoints'].items()),
+                'TF quiesce opaque primitive is not a local FIFO write enable')
+        quiesce = dict(**row, source_initially_quiet=True, registered_source_level=True,
+            exact_remote_consumer=sorted(remote), local_primitive_endpoints=closure['primitive_endpoints'],
+            local_ff_endpoints=len(closure['ff_endpoints']) - 1,
+            stopped_source_semantics='held quiesce; combinational invalidate and final Gray generation remain separate',
+            stopped_source_regression_required=True)
+    return dict(delay_heartbeats=heartbeats, apb_response=response, tf_quiesce=quiesce,
+                complete_cdc_accepted=False)
+
+
 def source_identity(root):
     root = Path(root)
     manifest = json.loads((root / 'vendor/workstation_inputs.json').read_text())
     require(manifest.get('src/migration/gw138k_stream_cdc.sv') == STREAM_SHA256,
             'reviewed stream protocol identity changed')
+    require(manifest.get('src/migration/gw138k_apb_cdc.sv') ==
+            '61047b3c2be74af1bc96567e2aed37be2d78773cd31364eb6bdb1eb4d9d9409a',
+            'reviewed APB input identity changed')
+    for name, expected in REVIEWED_BOUNDARY_SOURCES.items():
+        require(hashlib.sha256((root / name).read_bytes()).hexdigest() == expected,
+                'reviewed heartbeat/quiesce source identity changed: ' + name)
     return {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in (
         'tools/workstation_native_protocol_audit.py', 'tools/workstation_runtime_profile.py',
         'tools/workstation_runtime_pcm_cdc.py', 'tools/workstation_synthesis_netlist.py',
+        'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_resource_timing.py',
         'vendor/workstation_inputs.json',
         'rtl/tf_audio/workstation_tf_runtime_service.sv',
         'rtl/workstation/workstation_runtime_controlled.sv', 'rtl/audio/workstation_pcm_observation_bridge.sv',
-        'rtl/music/music_async_fifo.sv')}
+        'rtl/music/music_async_fifo.sv', *REVIEWED_BOUNDARY_SOURCES)}
 
 
 def validate_native_protocol_sdc(sdc, n, result):
@@ -364,10 +560,12 @@ def validate_native_protocol_sdc(sdc, n, result):
     mandatory = [line for line in protocol_constraints().splitlines()
                  if RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line
                  or 'u_managed/pc_health_meta_' in line
-                 or result['profile'] == 'm-demo-base' and 'u_tf_audio/held_control_' in line]
-    require(len(mandatory) == (12 if result['profile'] == 'm-demo-base' else 10) and
+                 or APB + '/response_held_' in line or DELAY + '/' in line or DMA + '/peer_' in line
+                 or result['profile'] == 'm-demo-base' and
+                    ('u_tf_audio/held_control_' in line or 'u_tf_audio/frames/quiesce_sync_' in line)]
+    require(len(mandatory) == (20 if result['profile'] == 'm-demo-base' else 16) and
             all(sdc.splitlines().count(line) == 1 for line in mandatory),
-            'local RAM/loss/TF/PC constraints missing, duplicated or changed')
+            'local RAM/loss/TF/PC/heartbeat/APB constraints missing, duplicated or changed')
     display = next(row for row in result['mailboxes'] if row['scope'] == 'u_managed/display')
     ram_pins = {row['cell'] + '/DO' for row in display['ram']}
     # Both mandatory selectors have fixed local scope prefixes. Index those
@@ -397,9 +595,41 @@ def validate_native_protocol_sdc(sdc, n, result):
         for body, expected in zip(queries, (tf['source_pins'], tf['capture_pins'])):
             actual = {pin for selector in body.split() for pin in pins if fnmatch.fnmatchcase(pin, selector)}
             require(actual == set(expected) and len(actual) == 36, 'TF held constraint source/capture inventory changed')
+    timing = result['timing_boundaries']
+    apb = timing['apb_response']
+    pins = {p + '/' + port for p, c in n.cells.items()
+            if p.startswith((APB + '/', DELAY + '/', DMA + '/', 'u_tf_audio/')) for port in c['ports']}
+
+    def exact_queries(line, expected):
+        bodies = re.findall(r'\[get_pins \{([^}]+)\}\]', line)
+        require(len(bodies) == len(expected), 'timing-boundary SDC query count changed')
+        for body, wanted in zip(bodies, expected):
+            actual = {pin for selector in body.split() for pin in pins if fnmatch.fnmatchcase(pin, selector)}
+            require(actual == set(wanted), 'timing-boundary SDC source/capture inventory changed')
+
+    apb_lines = [line for line in mandatory if APB + '/response_held_' in line]
+    require(len(apb_lines) == 2 and apb_lines[0].startswith('set_max_delay 20.000 ') and
+            apb_lines[1].startswith('set_false_path -hold '), 'APB response must retain finite setup and waive only hold')
+    for line in apb_lines:
+        exact_queries(line, (apb['source_pins'], apb['capture_pins']))
+    boundary_chains = [*timing['delay_heartbeats'], *([timing['tf_quiesce']] if timing['tf_quiesce'] else [])]
+    for row in boundary_chains:
+        protected.add(row['second'])
+        selected = [line for line in mandatory if row['first'].rsplit('_s', 1)[0] + '_s*/D' in line]
+        require(len(selected) == 1 and selected[0].startswith('set_false_path -from '),
+                'registered level first-stage exception must name its exact source')
+        exact_queries(selected[0], ([row['source']], [row['first']]))
+        bound = [line for line in mandatory if row['second'].rsplit('_s', 1)[0] + '_s*/D' in line]
+        require(len(bound) == 1 and bound[0].startswith('set_max_delay 2.000 '), 'level second stage lacks 2ns bound')
+        exact_queries(bound[0], ([row['first'].rsplit('/', 1)[0] + '/Q'], [row['second']]))
+    for row in apb['chains']:
+        protected.update((row['second'], row['third']))
+    protected.update(apb['capture_pins'])
     protected.discard(None)
     for line in sdc.splitlines():
         if not line.startswith('set_false_path'):
+            continue
+        if line == apb_lines[1]:
             continue
         for kind, body in re.findall(r'-to\s+\[(get_pins|get_regs)\s+\{([^}]+)\}\]', line):
             require(not any(fnmatch.fnmatchcase(pin if kind == 'get_pins' else pin.rsplit('/', 1)[0], selector)
@@ -409,6 +639,8 @@ def validate_native_protocol_sdc(sdc, n, result):
                 exact_98_registered_ram_capture_pins=sorted(captures),
                 protected_later_stage_pins=sorted(protected), later_stage_setup_hold_exceptions_absent=True,
                 tf_control_payload_pins_verified=bool(controls['tf_control']), pc_health_levels_verified=2,
+                apb_response_payload_pins_verified=33, delay_heartbeat_crossings_verified=2,
+                tf_quiesce_first_stage_verified=bool(timing['tf_quiesce']),
                 global_clock_exception_audit_complete=False)
 
 

@@ -1,0 +1,3 @@
+[2056000] %Fatal: tb_oscillator_expression_equivalence.sv:74: Assertion failed in tb_oscillator_expression_equivalence.whole_cycle_equivalence: EXPRESSION_SELECT_ORACLE note=60 actual=00100001 old=00000001 oracle=00000001
+%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_oscillator_expression_equivalence.sv:74: Verilog $stop
+Aborting...

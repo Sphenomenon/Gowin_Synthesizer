@@ -17,6 +17,7 @@ from tools.workstation_runtime_pcm_cdc import runtime_pcm_cdc_bundle
 from tools.workstation_usb2_owner_reset import source_bundle as usb2_owner_reset_bundle
 from tools.workstation_chorus_provenance import source_bundle as chorus_source_bundle
 from tools.workstation_delay_storage_provenance import source_bundle as delay_storage_source_bundle
+from tools.workstation_oscillator_expression_provenance import source_bundle as oscillator_expression_source_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -78,6 +79,8 @@ DEPENDENCIES = (
     'rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md',
     'rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md',
     'rtl/audio/workstation_runtime_oscillator_engine.provenance.json',
+    'rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json',
+    'tools/workstation_oscillator_expression_provenance.py',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json',
@@ -264,6 +267,24 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
         receiver('u_tf_audio', stem + '_0', stem + '_1')
     for bit, source in ((0, 'pc_framing_sticky'), (1, 'pc_drop_seen_50')):
         receiver('u_managed', 'pc_health_meta_' + str(bit), 'pc_health_sync_' + str(bit), source)
+    # The native APB response stays unchanged after the shared payload/ACK
+    # edge until a new request completes the full return trip. Keep setup
+    # bounded, and waive only the 33 exact held response hold paths.
+    held('u_managed/control_cdc/response_held_*_s*/Q',
+         'u_managed/control_cdc/response_local_*_s*/D', 20.0)
+    # Registered delay heartbeat and TF quiesce levels. Only the named
+    # source-Q -> first-D crossing is asynchronous; later stages stay timed.
+    delay = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage'
+    dma = 'u_managed/runtime/delay_dma'
+    for source_scope, destination_scope in ((delay, dma), (dma, delay)):
+        lines.extend(('set_false_path -from [get_pins {' + source_scope + '/heartbeat_counter_4_s*/Q}] '
+                      '-to [get_pins {' + destination_scope + '/peer_meta_s*/D}]',
+                      'set_max_delay 2.000 -from [get_pins {' + destination_scope + '/peer_meta_s*/Q}] '
+                      '-to [get_pins {' + destination_scope + '/peer_sync_s*/D}]'))
+    lines.extend(('set_false_path -from [get_pins {u_tf_audio/source_quiesce_s*/Q}] '
+                  '-to [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/D}]',
+                  'set_max_delay 2.000 -from [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/Q}] '
+                  '-to [get_pins {u_tf_audio/frames/quiesce_sync_1_s*/D}]'))
     for scope, stem in (('u_tf_audio/frames', 'quiet_sync'),
                         ('u_tf_audio/frames', 'expected_valid_sync'),
                         ('u_tf_audio/frames', 'quiesce_return_sync'),
@@ -344,6 +365,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_ena
     owner_reset = usb2_owner_reset_bundle(root)
     chorus_source = chorus_source_bundle(root)
     delay_fifo_storage = delay_storage_source_bundle(root)
+    oscillator_expression_source = oscillator_expression_source_bundle(root)
     bluetooth = bluetooth_constraints(BLUETOOTH_SDC, raw_common_reset=True)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
@@ -372,6 +394,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_ena
     return dict(policy=POLICY, sdc=clocks['sdc'] + audio_sdc + guard_reset_sdc + owner_reset['sdc'],
         chorus_source=chorus_source,
         delay_fifo_storage=delay_fifo_storage,
+        oscillator_expression_source=oscillator_expression_source,
         usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
         runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'] + protocol_constraints(
             ble_raw_enabled=ble_raw_enabled, business_owner_enabled=business_owner_enabled),

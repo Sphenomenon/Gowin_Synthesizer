@@ -14,6 +14,7 @@ import shutil
 import xml.etree.ElementTree as ElementTree
 
 from tools.workstation_baselines import load_baseline
+from tools.workstation_usb_fifo_reset import POLICY as DEMO_USB_FIFO_RESET_POLICY
 
 
 NAME = 'custom138k-workstation-v1'
@@ -60,6 +61,7 @@ PROFILE_REGISTRY = {
     M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
+            usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
@@ -68,6 +70,7 @@ PROFILE_REGISTRY = {
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_session_classic_runtime_v1',ae350_boot_rom_bytes=131072,
             ae350_pcm_policy='ae350_decoded_pcm_source_v1',demo_role='W',
+            usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
             recording_owner_policy='single_ble_ddr_object_v1',usb_adapter_policy='worker_25k_v1'),
         provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
@@ -285,6 +288,10 @@ def _artifact(root, output, metadata, profile):
     repository = root.parents[3]
     spec = specification(profile['name'])
     stage = output / 'workstation/Prj1'
+    if spec.get('demo_role') is not None:
+        from tools.workstation_usb_fifo_reset import verify_demo_selection
+        verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
+            metadata['enabled_inputs'], expected_configuration=spec['configuration'])
     from tools.workstation_ae350_clock_placement import verify_prepared as verify_ae350_clock
     ae350_clock_placement = verify_ae350_clock(root, stage, metadata.get('ae350_core_clock_placement'))
     from tools.workstation_ae350_rtc import verify_prepared as verify_ae350_rtc

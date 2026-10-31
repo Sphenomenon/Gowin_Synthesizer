@@ -186,7 +186,7 @@ CNN的历史缓存证据见[分析记录](push2_workstation/usb_a/reports/CNN_GU
 
 ### 5.4 W已确认的减负清单：保留D／25K／完整HDMI
 
-本节是用户已确认的实施范围，源码尚未修改。除退出合成／TF／CNN外，再按下表退出重复服务，不能只关UI或运行使能。删除后对应实例／存储应从实际选中网表消失；修改所属子系统和显式配置，组合根只做装配。
+本节是用户已确认的实施范围，已在显式W-DEMO源码中实施并经过完整综合的退出／保留审计，实板业务验收仍未完成。除退出合成／TF／CNN外，再按下表退出重复服务，不能只关UI或运行使能。删除后对应实例／存储应从实际选中网表消失；修改所属子系统和显式配置，组合根只做装配。
 
 | W处理项 | 保留与适配要求 | 旧Classic网表参考／退出检查 |
 |---|---|---|
@@ -219,6 +219,8 @@ M v7已完成独立P&R并生成位流：物理CLS49,996、BSRAM235、DSP120；se
 DDR保持原3.500 ns约束的M v7远端双region变体`D2103106`已完整P&R，reported hold归零（DDR +0.682 ns、整体最差 +0.143 ns），setup／recovery仍失败；近端变体`D2103104`失败记录保留。[定向布局证据](push2_workstation/usb_a/reports/DUAL138K_DDR_HOLD_20261031.md)不转授整机通过。M7／M8六PLL及serializer的[显式DEMO来源／同步RESET结构门禁](push2_workstation/usb_a/reports/DUAL138K_DEMO_PLL_SOURCE_GATE_20261031.md)已通过，不覆盖失败STA及未完成的完整CDC。后续维护源[取消epoch资格](push2_workstation/usb_a/reports/DUAL138K_EPOCH_MATCH_20261031.md)通过419万种穷举、完整service 48,645帧独立PCM及1.159亿次逐拍检查；[时钟下降沿释放／显示请求寄存](push2_workstation/usb_a/reports/DUAL138K_CLOCK_DISPLAY_CONTROL_20261031.md)通过旧版公共输出逐拍一致、完整display及负控。新物理收益待新身份全量重测，不倒填旧候选。至此仍未下载SRAM或写Flash，T2-D1／D2保持未勾选。
 
 M8的TF DDR同域32位减法反馈已在维护DMA中改为同拍提交的占用计数，原请求／响应／输出时序保持；两容量共800,014次新旧公共输出／内部状态比较、三种真实RTL负控、四种独立byte／ring oracle，以及四配置完整TF/WAV和停钟clear回归通过，见[TF占用计数证据](push2_workstation/usb_a/reports/DUAL138K_TF_OCCUPANCY_20261031.md)。物理收益待新候选，不转授M8时序通过。
+
+后续维护阶段已验证：[USB FIFO生产端本域复位](push2_workstation/usb_a/reports/DUAL138K_USB_FIFO_LOCAL_RESET_20261031.md)保持原audio清空／drain，新增显式配置及真实13FF／packet RAM写准入门禁；[W PCM窗口写资格因子化](push2_workstation/usb_a/reports/DUAL138K_PCM_WINDOW_GATE_20261031.md)通过7,190拍完整owner对照及1,454帧真实DSP／I2S runtime；[M逐音表情平衡前缀](push2_workstation/usb_a/reports/DUAL138K_EXPRESSION_PREFIX_20261031.md)通过613万半拍旧版对照，旧算术／ADSR provenance保持。Delay心跳／APB held response／TF quiesce的[精确CDC v3](push2_workstation/usb_a/reports/DUAL138K_NATIVE_TIMING_CDC_20261031.md)通过M8实际VG／VO和W7 VG及负控，拟安装新SDC未倒填旧STA。W7真实六PLL／serializer门禁也已通过。只刷新两份新DEMO配置锁，M9 `aa7abf5c6454a377`／W8 `d1109d2f36e8e171`已prepare并启动各自全量综合；新资源／时序尚待测量。
 
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 

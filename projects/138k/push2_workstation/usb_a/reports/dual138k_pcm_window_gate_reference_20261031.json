@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "passed": true,
+  "reference_sha256": "765e05213e6de5df1c729ef9b43ac2a40025fdaf90ebc060080079855d31dfb8",
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": "e1823ee42fb94a2bf2f1d8600881a0c401b95853766778878cecee13556adf2e",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_ae350_pcm_owner_before_window_gate.sv": "765e05213e6de5df1c729ef9b43ac2a40025fdaf90ebc060080079855d31dfb8",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_window_gate.py": "a6e9bf9b455a16778fda41402c45d94ef382c7e124511d89e48815eb508edd95",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_ae350_pcm_owner.py": "767a55a4961eeddc1ba64c11258ecf2432ee6ac1c64dab895fa59d639a167969"
+  },
+  "cases": {
+    "current": {
+      "returncode": 0,
+      "passed": true,
+      "negative_rejected": false,
+      "log_sha256": "4cac4e0e06bd89185a387999f9ec87d32c5b7dec3eeaed19d95564e44d99c3cb"
+    },
+    "missing_strobes": {
+      "returncode": 1,
+      "passed": false,
+      "negative_rejected": true,
+      "log_sha256": "cf64f43d051ca8feecf19ff95354bfb8f6ee97476b818357a029ea4eeaa836c5"
+    },
+    "missing_key": {
+      "returncode": 1,
+      "passed": false,
+      "negative_rejected": true,
+      "log_sha256": "65ef9f55d7ebb799b5a0b8be99e572cb4318625793f98b0b8ce29900677b739e"
+    },
+    "missing_ownership": {
+      "returncode": 1,
+      "passed": false,
+      "negative_rejected": true,
+      "log_sha256": "a4d45de8b0187775b3dcedb69ee7cfb8567ce7c7a7e276c3df845eaefacfb607"
+    },
+    "changed_revocation_priority": {
+      "returncode": 1,
+      "passed": false,
+      "negative_rejected": true,
+      "log_sha256": "46af8bdd91589505fffbd1345c81b3524f9692f95790757976bcef3415cb369a"
+    }
+  },
+  "hardware_tested": false,
+  "physical_timing_verified": false,
+  "PNR": false,
+  "outputs_sha256": {
+    "missing_ownership_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missing_key": "0d59499c7d7f32851223b8a90f76a89d0daf4299e5d91d2e4c78085a2e0e380d",
+    "current.log": "4cac4e0e06bd89185a387999f9ec87d32c5b7dec3eeaed19d95564e44d99c3cb",
+    "tb.sv": "e3fc78e4ae7f592b8de3f6685d4f23c996ff309d0126f1afc5b63c13164ec98b",
+    "current_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missing_strobes.log": "cf64f43d051ca8feecf19ff95354bfb8f6ee97476b818357a029ea4eeaa836c5",
+    "missing_ownership.log": "a4d45de8b0187775b3dcedb69ee7cfb8567ce7c7a7e276c3df845eaefacfb607",
+    "changed_revocation_priority_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missing_key.sv": "eb3f883e1802b16d72fe59b5e15c55ea64116df0bcb080cbd6f060cd31fb68dd",
+    "current.sv": "e1823ee42fb94a2bf2f1d8600881a0c401b95853766778878cecee13556adf2e",
+    "missing_ownership": "875a70f03234569129e47fbc28b12c8805e43ab400ed136f446d3e34e876fd4b",
+    "missing_strobes_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missing_ownership.sv": "234e4defaee3168ad49157c36bbf5b8844db845284908d5abce9cd0f9133f27a",
+    "missing_strobes.sv": "096786883b93ae529d1676b5be2f87ec5cb721a8bb4834500e1876e1e8d69e6d",
+    "current": "02b66bcdd4a48b1cfe467c8b0281e39609af0bb60830ad1da5f9e646d938e84e",
+    "changed_revocation_priority.log": "46af8bdd91589505fffbd1345c81b3524f9692f95790757976bcef3415cb369a",
+    "missing_key_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missing_key.log": "65ef9f55d7ebb799b5a0b8be99e572cb4318625793f98b0b8ce29900677b739e",
+    "reference.sv": "721f44bc2687615438ed3377911cc8989f431b8ad14fcad5e165c92ecae5048b",
+    "changed_revocation_priority": "6df00d19602a7c4d7a2b0fc83bab4d0c084b72bbeafb100ea20a987fd47a799d",
+    "missing_strobes": "5efee76a9b291fefa98ff431880d878b77c6df25c70f140d28f6a4e2a09a7c35",
+    "changed_revocation_priority.sv": "4d474768e296c38bfdccd62abf52131890d2f70c53bfd07bd1980039e0abd0bf"
+  }
+}

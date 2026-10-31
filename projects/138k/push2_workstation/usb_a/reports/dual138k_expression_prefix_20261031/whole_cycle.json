@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "identity": "whole-oscillator-expression-prefix-equivalence-v1",
+  "passed": true,
+  "hardware_tested": false,
+  "synthesis_or_routed_timing_tested": false,
+  "scope": "Same PIPELINED_RATE/ENVELOPE real oscillator against exact pre-selection parent at every half-clock; all32 gains/voices, real handshakes and PCM; both rates, all A/B/C and five profiles",
+  "provenance": {
+    "policy": "native_expression_balanced_prefix_v1",
+    "source": "rtl/audio/workstation_runtime_oscillator_engine.sv",
+    "current_source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+    "original_native_sha256": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+    "original_provenance_sha256": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+    "adaptation_sha256": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674",
+    "exact_prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+    "original_provenance_unchanged": true,
+    "arithmetic_provenance_unchanged": true,
+    "added_clock_latency": 0,
+    "physical_timing_verified": false,
+    "hardware_acceptance_inherited": false
+  },
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "baf45bdf6374bdaf96bd20cd15269653103130bf803e36e588c81e904f966bf9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_oscillator_expression_equivalence.sv": "62b7918247e9f6d79410644dcb7ad450a5717f0362828d3deaa0fb0ce0f6a7aa",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_expression_selection_equivalence.py": "7c76e1fddaab03f5b9bfeeea9c32621289b3625ae3363b00f1261ff30ca346f8"
+  },
+  "reference_adaptation": "Reverse only checked expression bridge, rename oscillator and its private quantizer modules; both instances use identical parameters",
+  "baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "runs": {
+    "production": {
+      "returncode": 0,
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_oscillator_expression_equivalence",
+        "--Mdir",
+        "/private/tmp/dual138k-expression-cycle-v2/production/obj",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_oscillator_expression_equivalence.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/production/workstation_runtime_oscillator_engine.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/reference_oscillator.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/midi_step_rom.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/sine_interp.sv"
+      ],
+      "log_sha256": "6a7a2e9041ec06a276f6a57475140ccbfe17507a7c3c61aedabbdb9e220543b5",
+      "source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9"
+    },
+    "missing_low_group_mutant": {
+      "returncode": 1,
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "4",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_oscillator_expression_equivalence",
+        "--Mdir",
+        "/private/tmp/dual138k-expression-cycle-v2/missing_low_group_mutant/obj",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_oscillator_expression_equivalence.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/missing_low_group_mutant/workstation_runtime_oscillator_engine.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/reference_oscillator.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/midi_step_rom.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/private/tmp/dual138k-expression-cycle-v2/reconstructed/legacy/rtl/audio/sine_interp.sv"
+      ],
+      "log_sha256": "935ae3b6a261cdc62104d2a1fbecc04d91e94853ed548f6d141de6b7af4d1cf4",
+      "source_sha256": "bb3d0d16ab3780d920c310a5ad0b09982887c5f8d0bca50b6a8436a8f9c5c02e"
+    },
+    "source_tamper": {
+      "rejected": true,
+      "reason": "Oscillator expression source identity changed"
+    },
+    "bridge_tamper": {
+      "rejected": true,
+      "reason": "Oscillator expression adaptation bytes changed"
+    },
+    "original_provenance_tamper": {
+      "rejected": true,
+      "reason": "Original oscillator provenance bytes changed"
+    }
+  },
+  "dependency_sha256": {
+    "legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+    "legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+    "legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+    "legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+    "sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+    "sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+    "sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+    "sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+    "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b"
+  },
+  "metrics": {
+    "frames": 6612,
+    "audible": 6456,
+    "slots": 6770688,
+    "panic": 34,
+    "max_latency": 1061,
+    "expression_updates": 4980,
+    "duplicate_releases": 960,
+    "half_edges": 6134628
+  },
+  "inputs_unchanged_during_run": true
+}

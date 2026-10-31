@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Exact runtime arithmetic against versioned pre-pipeline oracles and mutants.
 
-No prepared project or historical/private staging tree is required. Only the
-recorded arithmetic provenance tail is reversed; production is native RTL.
+No prepared project or historical/private staging tree is required. Normalize
+the checked expression bridge, then reverse the unchanged arithmetic tail;
+production is native RTL.
 """
 import argparse
 from collections import Counter
@@ -19,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_oscillator_expression_provenance import ADAPTATION, restore_native
 
 
 def sha(data):
@@ -65,6 +67,7 @@ def main():
         return data
 
     read(Path(__file__).resolve())
+    read(ROOT / 'tools/workstation_oscillator_expression_provenance.py')
     baseline = load_baseline(ROOT, 'resource_rework_route0')
     read(baseline.manifest)
     stage = output / 'reconstructed'
@@ -77,15 +80,17 @@ def main():
     for kind, name in names.items():
         source = ROOT / 'rtl/audio' / name
         data = read(source)
-        meta = json.loads(read(source.with_suffix('.provenance.json')))
+        provenance = read(source.with_suffix('.provenance.json'))
+        meta = json.loads(provenance)
+        parent = restore_native(data, provenance, read(ROOT / ADAPTATION)) if kind == 'osc' else data
         revision = meta['registered_runtime_arithmetic']
-        if sha(data) != meta['native_sha256'] or sha(data) != revision['source_sha256']:
+        if sha(parent) != meta['native_sha256'] or sha(parent) != revision['source_sha256']:
             raise ValueError('native provenance hash drifted: ' + name)
         edits = meta['forward_edits' if kind == 'osc' else 'edits']
         start, count = revision['reverse_edit_start'], revision['reverse_edit_count']
         if start + count != len(edits):
             raise ValueError('arithmetic edits must be the final provenance tail')
-        restored = data.decode()
+        restored = parent.decode()
         for edit in reversed(edits[start:start + count]):
             if restored.count(edit['after']) != edit.get('count', 1):
                 raise ValueError('arithmetic reverse anchor drifted: ' + name)
@@ -104,6 +109,8 @@ def main():
                 'workstation_runtime_scope_vec', 'fc_reference_vector')
         original[kind] = write(stage / (kind + '_reference.sv'), renamed.encode())
         ancestry[kind] = dict(base_commit=revision['base_commit'],
+                              current_source_sha256=sha(data), normalized_native_sha256=sha(parent),
+                              local_adaptation=ADAPTATION if kind == 'osc' else None,
                               oracle_sha256=sha(restored_bytes), reverse_edit_start=start,
                               reverse_edit_count=count, renamed_oracle_sha256=sha(renamed.encode()))
         metadata[kind] = meta
@@ -143,7 +150,7 @@ def main():
     report = dict(schema=1, identity='runtime-arithmetic-pipeline-baseline-regression-v1', passed=False,
                   validation_stage='rtl-simulation', synthesis_or_routed_timing_tested=False,
                   hardware_tested=False, deployment_allowed=False,
-                  reference_policy='Reverse only checked arithmetic provenance tail; dependencies from locked versioned baseline; rename reference modules only',
+                  reference_policy='Normalize identity-bound expression selection bridge; reverse unchanged checked arithmetic provenance tail; dependencies from locked versioned baseline; rename reference modules only',
                   baseline=baseline.evidence(), ancestry=ancestry, dependency_sha256=dependency_hashes,
                   selected_parameters={'oscillator': {'RUNTIME_RATE_ENABLE': 1, 'PIPELINED_RATE': 1, 'PIPELINED_ENVELOPE': 1},
                                        'vector': {'PIPELINED_RATE': 1}},

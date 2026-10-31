@@ -1,0 +1,23 @@
+...
+----------------------------------------------------------------------
+Ran 3 tests in 11.289s
+
+OK
+COMPILE_WARNINGS ["%Warning-UNSIGNED: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv:244:60: Comparison is constant due to unsigned arithmetic", "%Warning-UNSIGNED: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv:283:34: Comparison is constant due to unsigned arithmetic"]
+PASS ADSR pipeline transactions frames=264 PCM=264 max_latency_old=1039 new=1039 ADSR_finish_old=34 new=37
+RATE_MODE_LATENCY 48000 A=47 B=143 C=1039 44100 A=47 B=143 C=1039
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_adsr_pipeline.sv:242: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 1ms; walltime 0.196 s; speed 5.669 ms/s
+- Verilator: cpu 0.143 s on 1 threads; allocated 2 MB
+PASS ADSR pipeline PANIC47 offsets and fresh-note reuse
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_adsr_pipeline.sv:242: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 203us; walltime 0.035 s; speed 5.755 ms/s
+- Verilator: cpu 0.027 s on 1 threads; allocated 2 MB
+PASS ADSR pipeline arithmetic4096 voices both rates ADSR_finish=37
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_adsr_pipeline.sv:242: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 67us; walltime 0.013 s; speed 5.085 ms/s
+- Verilator: cpu 0.009 s on 1 threads; allocated 2 MB
+SOURCE_SHA256 {"rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674", "rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9", "rtl/audio/workstation_runtime_oscillator_engine.sv": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9", "sim/audio/tb_workstation_runtime_adsr_pipeline.sv": "575b9a4ab8d8e32f768326bd8cc5903e4ba034ec92af4448c936ab9e5d342de5", "tools/workstation_oscillator_expression_provenance.py": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29"}

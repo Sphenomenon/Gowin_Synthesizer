@@ -119,6 +119,68 @@
       "pll_gate_passed": true,
       "full_physical_acceptance": false,
       "hardware_tested": false
+    },
+    {
+      "id": "w7",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w7-full-pll-audit-v3.json",
+      "artifact_sha256": "669526fc0dd41d351b6294fad55b78245409698a45de30fdce65253edb638ff7",
+      "physical_identity": "custom138k-native-physical-D2103102",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-aec83bda901d0042",
+      "profile_selection": {
+        "policy": "sealed_immutable_demo_profile_source",
+        "candidate_identity": "custom138k-workstation-w-demo-v1-aec83bda901d0042",
+        "demo_role": "W",
+        "prepared_profile_sha256": "f74b88979ac4e4b77cd4a0b784e566c8c4e0dd1da8f2e2a9fc759f743896564f",
+        "vg_sha256": "823bf08d45c27ed765c80ae47d52683cd14a8a0f38a49eb00e204dc268034fef",
+        "synthesis_evidence_scope": "hash_bound_Gowin_emitted_log_not_driver_stdout",
+        "synthesis_log_sha256": "5a9625115348e7cac5b31548692427e442132285d366d0cca047451a805b0561",
+        "parent_synthesis_audit_sha256": "431f4d9fb46090f15f6783f3a6afd5180b2993bd18a8b7cf3201fb17c90df5a4",
+        "local_panel_enabled": false,
+        "acceptance_inherited": false
+      },
+      "expected_pll_count": 6,
+      "expected_shared_tuple_count": 3,
+      "shared_tuple_maximum_ns": 8.496,
+      "shared_tuple_budget_ns": 10.0,
+      "video_pll_maximum_ns": 9.405,
+      "video_pll_budget_ns": 10.0,
+      "serializer_reset_settle_recovery_maximum_ns": 6.465999999999999,
+      "ddr_reset_settle_recovery_maximum_ns": 6.886000000000001,
+      "stopped_clock_reset_budget_ns": 40.0,
+      "stopped_clock_window_ns": 80.0,
+      "synchronous_grant_count": 6,
+      "synchronous_grant_stage_maximum_ns": 1.257,
+      "synchronous_grant_stage_budget_ns": 2.0,
+      "negative_checks": {
+        "u_video/u_dvi/clock_lane/serializer/D0": [
+          "stopped-clock reset VO/SDF audit failed: TMDS clock D0 differs from the audited 10'b0000011111 clock word"
+        ],
+        "u_video/u_dvi/clock_lane/differential/I": [
+          "stopped-clock reset VO/SDF audit failed: u_video/u_dvi/clock_lane/serializer: serializer no longer directly drives its audited TMDS differential ports"
+        ],
+        "u_usb_pll/PLL_inst/RESET": [
+          "('PLL control constant changed', 'u_usb_pll/PLL_inst/RESET')"
+        ],
+        "AE350/requested_site": [
+          "AE350 dedicated core clock: exactly one u_cpu_pll/PLL_inst assignment to PLL_R[0] is required"
+        ],
+        "AE350/actual_site": [
+          "AE350 dedicated core clock: actual routed CPU PLL is not uniquely at PLL_R[0]"
+        ],
+        "AE350/RTC_minimum_period": [
+          "AE350 independent RTC: exact conservative RTC clock declaration is required"
+        ],
+        "AE350/RTC_direct_connection": [
+          "AE350 independent RTC: RTC_CLK is not directly driven by the kept RTC Q"
+        ]
+      },
+      "source_proofs_reexecuted": true,
+      "physical_inputs_unchanged": true,
+      "routed_inputs_unchanged": true,
+      "audit_dependencies_unchanged": true,
+      "pll_gate_passed": true,
+      "full_physical_acceptance": false,
+      "hardware_tested": false
     }
   ],
   "tests": {
@@ -149,9 +211,10 @@
       "passed": 28,
       "skipped": 0,
       "report": "DUAL138K_NATIVE_CONTROL_CDC_20261031.json"
-    }
+    },
+    "actual_W7_destructive_PLL_checks": 7
   },
-  "W_routed_PLL_gate_tested": false,
+  "W_routed_PLL_gate_tested": true,
   "legacy_seven_PLL_policy_preserved": true,
   "runtime_driver_seal_policy_preserved": true,
   "thresholds_relaxed": false,
@@ -168,9 +231,18 @@
   "flash_programmed": false,
   "release_ready": false,
   "remaining": [
-    "W actual routed candidate PLL/startup gate",
     "Complete routed STA/CDC/reset closure",
     "Real sound/video and parameter consistency",
     "Board and deployment acceptance"
+  ],
+  "W7_failed_or_interrupted_attempts_preserved": [
+    {
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w7-full-pll-audit-v1.log",
+      "reason": "wrong CLI directory argument; no success artifact"
+    },
+    {
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w7-full-pll-audit-v2.log",
+      "reason": "workstation_profile.py changed during audit; before-after seal correctly rejected; no success artifact"
+    }
   ]
 }

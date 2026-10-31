@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "policy": "native-demo-mailbox-structure-v3",
+  "sources": {
+    "tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+    "tools/workstation_runtime_profile.py": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+    "tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+    "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+    "tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+    "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "vendor/workstation_inputs.json": "a1d9c139bcb4ccfbda35e6f572a06653ac4b76be95a87cd45a17135a3c93928e",
+    "rtl/tf_audio/workstation_tf_runtime_service.sv": "c42dc0bbe4919adf86275388239f52ccf63d6670b30c2bdf362ebea5bcb0b483",
+    "rtl/workstation/workstation_runtime_controlled.sv": "70db34344a24bab3270e3c91d7a2a553590c4e0b4432f744252db23e23cfb87a",
+    "rtl/audio/workstation_pcm_observation_bridge.sv": "198dbf39ff6b6cfb6fe308444274849c507f222edcb0ea651abeb8d719f62c17",
+    "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+    "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+    "rtl/tf_audio/workstation_tf_frame_bridge.sv": "c32000172587a674708d9454b1895b24ada26103d55206b0bda659817bcb4ac5"
+  },
+  "test_source_sha256": "9b5a062cfd34964b26f9411da13ecaadc586d2950243d60658022e411ac53573",
+  "constraints": {
+    "delay_heartbeats": 2,
+    "registered_source_only_first_stage_exceptions": true,
+    "later_stage_max_delay_ns": 2.0,
+    "apb_response_bits": 33,
+    "apb_response_max_delay_ns": 20.0,
+    "apb_payload_exception": "hold only",
+    "tf_quiesce_m_only": true,
+    "required_local_sdc_lines": {
+      "m": 20,
+      "w": 16
+    },
+    "whole_clock_exceptions_added": false
+  },
+  "actual_evidence": [
+    {
+      "id": "m8-vg",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vg-controls-v3.json",
+      "artifact_sha256": "8aae334c41a60d29a4fb57cd6feecb0d0b9a935a1a9ccf5da4a3d70f7c7aa532",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "netlist_sha256": "2420981cfc95c12c94b48c900cdd85eef806141110cf793b47bb3370a7c8b68f",
+      "profile": "m-demo-base",
+      "mapping": "synthesis",
+      "source_seal": {
+        "maintained_source_stable_against_recorded_seal": true,
+        "netlist_stable_against_recorded_seal": true,
+        "installed_sdc_unchanged": true,
+        "proposed_sdc_unchanged": true,
+        "compilation_input_seal": false
+      },
+      "proposed_sdc": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vg-proposed-v3.sdc",
+        "sha256": "27271f18dbda4ead8aa5f47135ec5cea356c80102a9ab95155ef54c2de6a4638",
+        "original_installed_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8-physical-v1/physical.sdc",
+        "original_installed_sha256": "360b868d52b2e2063abf44827bebd098ffb804e6aadfe21534f75158096a8b0f",
+        "added_lines": [
+          "set_max_delay 20.000 -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -hold -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_sync_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/delay_dma/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_sync_s*/D}]",
+          "set_false_path -from [get_pins {u_tf_audio/source_quiesce_s*/Q}] -to [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/Q}] -to [get_pins {u_tf_audio/frames/quiesce_sync_1_s*/D}]"
+        ],
+        "installed_in_candidate": false,
+        "eda_rerun": false
+      },
+      "publication_boolean_leaves": 14,
+      "tests": {
+        "total": 41,
+        "passed": 40,
+        "skipped": 1,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vg-tests-v3r2.log",
+        "log_sha256": "cf4cc2fd61c6db216095c0417bf088a1dc865c5b0738241a8f611988e6500787"
+      },
+      "negative": {
+        "count": 35,
+        "all_rejected": true,
+        "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vg-mutations-v3r2.json",
+        "artifact_sha256": "b7cdce5b3e5b13a022f9341b5868b49ddbe773a4c7ef31d96dd1dbcc1a469753"
+      }
+    },
+    {
+      "id": "m8-vo",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vo-controls-v3.json",
+      "artifact_sha256": "6994df9321a4108a52dd8aff4030e18a18f26887573fba376b2a0c7d2fd1cf54",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8-physical-v1/impl/pnr/custom_138k_integration.vo",
+      "netlist_sha256": "b57084a046da4461e3c363e29a1923e5f4b048699098ca6247554f08a9ffab99",
+      "profile": "m-demo-base",
+      "mapping": "routed",
+      "source_seal": {
+        "maintained_source_stable_against_recorded_seal": true,
+        "netlist_stable_against_recorded_seal": true,
+        "installed_sdc_unchanged": true,
+        "proposed_sdc_unchanged": true,
+        "compilation_input_seal": false
+      },
+      "proposed_sdc": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vo-proposed-v3.sdc",
+        "sha256": "27271f18dbda4ead8aa5f47135ec5cea356c80102a9ab95155ef54c2de6a4638",
+        "original_installed_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8-physical-v1/physical.sdc",
+        "original_installed_sha256": "360b868d52b2e2063abf44827bebd098ffb804e6aadfe21534f75158096a8b0f",
+        "added_lines": [
+          "set_max_delay 20.000 -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -hold -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_sync_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/delay_dma/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_sync_s*/D}]",
+          "set_false_path -from [get_pins {u_tf_audio/source_quiesce_s*/Q}] -to [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_tf_audio/frames/quiesce_sync_0_s*/Q}] -to [get_pins {u_tf_audio/frames/quiesce_sync_1_s*/D}]"
+        ],
+        "installed_in_candidate": false,
+        "eda_rerun": false
+      },
+      "publication_boolean_leaves": 14,
+      "tests": {
+        "total": 41,
+        "passed": 41,
+        "skipped": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vo-tests-v3r2.log",
+        "log_sha256": "ad25618252dd943533af42bb1cd95c35936332e813361290ea134b0d5f5bbe7e"
+      },
+      "negative": {
+        "count": 36,
+        "all_rejected": true,
+        "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m8-vo-mutations-v3r2.json",
+        "artifact_sha256": "94c13dd78692d2530ec3763213fd84982072bcc88d40e2542fd1d538d70d0976"
+      }
+    },
+    {
+      "id": "w7-vg",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w7-vg-controls-v3.json",
+      "artifact_sha256": "f29525bd5be7fd10e901b9f009ec92bc771db72a1744c5cdd08556c9e8191bbf",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "netlist_sha256": "823bf08d45c27ed765c80ae47d52683cd14a8a0f38a49eb00e204dc268034fef",
+      "profile": "w-demo-d",
+      "mapping": "synthesis",
+      "source_seal": {
+        "maintained_source_stable_against_recorded_seal": true,
+        "netlist_stable_against_recorded_seal": true,
+        "installed_sdc_unchanged": true,
+        "proposed_sdc_unchanged": true,
+        "compilation_input_seal": false
+      },
+      "proposed_sdc": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w7-vg-proposed-v3.sdc",
+        "sha256": "22089a29cdf827cde70c331c2d1aeeb9e0beb81b72ad2f49fa60b718bcbb02fd",
+        "original_installed_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7-physical-v1/physical.sdc",
+        "original_installed_sha256": "44f8089aab7bc56f64ec508c524e8fa4bd2c22820b081b3fc5f64e260dd03409",
+        "added_lines": [
+          "set_max_delay 20.000 -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -hold -from [get_pins {u_managed/control_cdc/response_held_*_s*/Q}] -to [get_pins {u_managed/control_cdc/response_local_*_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/delay_dma/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/delay_dma/peer_sync_s*/D}]",
+          "set_false_path -from [get_pins {u_managed/runtime/delay_dma/heartbeat_counter_4_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/D}]",
+          "set_max_delay 2.000 -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_meta_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_sync_s*/D}]"
+        ],
+        "installed_in_candidate": false,
+        "eda_rerun": false
+      },
+      "publication_boolean_leaves": 23,
+      "tests": {
+        "total": 41,
+        "passed": 30,
+        "skipped": 11,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w7-vg-tests-v3r2.log",
+        "log_sha256": "7a47aba6ca14cce0f401c1a041f3e09f172ca690bdf9a1bdd3245c238bd5e5ab"
+      },
+      "negative": {
+        "count": 25,
+        "all_rejected": true,
+        "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w7-vg-mutations-v3r2.json",
+        "artifact_sha256": "c609b2c48fd2406d192fbe1642d30e929e7caae3083929441c7dbbeeefd559de"
+      }
+    }
+  ],
+  "tf_stopped_source": {
+    "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/tf-quiesce-v3/verification.json",
+    "artifact_sha256": "922c69305c429c96f98032ed5ee07d24518c38352f2b9db251752510e9207dcf",
+    "passed": true,
+    "runs": {
+      "default": {
+        "seed": 0,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 26,
+        "wav_frames": 16,
+        "source_stalls": 23,
+        "destination_stalls": 74,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1,
+        "quiet_invalidation_checks": 240,
+        "decode_checks": 2080
+      },
+      "wrap": {
+        "seed": 4294967293,
+        "accepted": 47,
+        "delivered": 35,
+        "invalidates": 26,
+        "wav_frames": 16,
+        "source_stalls": 23,
+        "destination_stalls": 74,
+        "stale": 6,
+        "quiesced": 5,
+        "router_mismatch_checks": 1,
+        "quiet_invalidation_checks": 240,
+        "decode_checks": 2080
+      }
+    },
+    "semantic_negatives_rejected": 2
+  },
+  "w_retirement": {
+    "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w-v3-retirement.json",
+    "artifact_sha256": "0e8c2fb02308f6932918124a8cb6624971171edd1654b4a04a47ec15f293cc5c",
+    "passed": true
+  },
+  "expression_prepare_hook": {
+    "source": "tools/workstation_oscillator_expression_provenance.py",
+    "report": "DUAL138K_EXPRESSION_PREFIX_20261031.md"
+  },
+  "scope": "Actual VG/VO structure and proposed local SDC only; source integration and fresh EDA remain separate",
+  "prior_candidate_sdc_modified": false,
+  "new_constraints_routed": false,
+  "complete_cdc_accepted": false,
+  "sta_verified": false,
+  "hardware_tested": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

@@ -87,6 +87,9 @@ module workstation_ae350_pcm_owner #(
     wire window_write=write_command && command_address_i[11];
     wire [1:0] write_slot=command_address_i[10:9];
     wire [6:0] write_index=command_address_i[8:2];
+    // The RAM window has its own complete validation rule. A descriptor's
+    // unrelated variable frame mask must not enter the PCM RAM write enable.
+    wire accepted_window_write=window_write && full_write && armed && key_matches && !owned[write_slot];
     wire [127:0] required_mask=~128'd0 >> (128-staged_frames);
     wire new_stream=staged_stream!=0 && (!retired_key_valid ||
         staged_controller!=last_controller || staged_generation!=last_generation || staged_stream>last_stream);
@@ -271,10 +274,11 @@ module workstation_ae350_pcm_owner #(
                 end
                 default:begin end
             endcase
-            if(accepted && !response_error_o)begin
-                if(window_write)begin
-                    memory[{write_slot,write_index}]<=command_data_i;written[write_slot][write_index]<=1;
-                end else if(command_write_i)case(command_address_i)
+            if(accepted_window_write)begin
+                memory[{write_slot,write_index}]<=command_data_i;written[write_slot][write_index]<=1;
+            end
+            if(accepted && !response_error_o && !command_address_i[11])begin
+                if(command_write_i)case(command_address_i)
                     12'h020:staged_controller<=command_data_i;
                     12'h024:staged_generation<=command_data_i;
                     12'h028:staged_stream<=command_data_i;

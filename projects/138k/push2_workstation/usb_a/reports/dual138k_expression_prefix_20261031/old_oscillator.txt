@@ -1,0 +1,23 @@
+....
+----------------------------------------------------------------------
+Ran 4 tests in 11.901s
+
+OK
+COMPILE_WARNINGS {"PINMISSING": 2, "UNSIGNED": 4}
+PASS runtime oscillator unity cycles=116883 frames=275 max_latency=1039
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_oscillator.sv:367: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 1ms; walltime 0.268 s; speed 4.360 ms/s
+- Verilator: cpu 0.237 s on 1 threads; allocated 2 MB
+PASS runtime oscillator rejects busy commit
+PASS runtime oscillator held switch frames=38 mute=9 restore=16 max_latency=1039
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_oscillator.sv:367: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 202us; walltime 0.052 s; speed 3.845 ms/s
+- Verilator: cpu 0.044 s on 1 threads; allocated 2 MB
+PASS runtime oscillator PANIC quiescent 12 pipeline offsets
+- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_oscillator.sv:367: Verilog $finish
+- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05
+- Verilator: $finish at 82us; walltime 0.023 s; speed 3.484 ms/s
+- Verilator: cpu 0.019 s on 1 threads; allocated 2 MB
+SOURCE_SHA256 {"rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674", "rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9", "rtl/audio/workstation_runtime_oscillator_engine.sv": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9", "sim/audio/tb_workstation_runtime_oscillator.sv": "5ae54222484fd4ede8da68ca6b2f7ebffb2185641c2a208dee32a1d93e96479c", "tools/workstation_oscillator_expression_provenance.py": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29"}

@@ -264,20 +264,35 @@ module workstation_runtime_oscillator_engine #(
   logic [4:0] expression_index;
   wire [6:0] off_note=SEPARATE_OFF_NOTE ? event_off_note_i : event_midi_note_i;
   wire [31:0] release_matches,release_select,expression_matches,expression_select;
+  // Keep the lowest matching voice in this same cycle. Explicit four-voice
+  // groups and a parallel prefix prevent sharing a serial 32-voice CE chain.
+  // No sample/event stage, note comparator or envelope state changes here.
+  (* syn_keep = 1 *) wire [7:0] expression_group_any;
+  (* syn_keep = 1 *) wire [7:0] expression_prefix_1,expression_prefix_2,expression_prefix_4;
+  for(genvar group_number=0;group_number<8;group_number=group_number+1) begin: g_expression_prefix
+    assign expression_group_any[group_number]=|expression_matches[group_number*4+:4];
+    if(group_number==0)assign expression_prefix_1[group_number]=expression_group_any[group_number];
+    else assign expression_prefix_1[group_number]=expression_group_any[group_number] || expression_group_any[group_number-1];
+    if(group_number<2)assign expression_prefix_2[group_number]=expression_prefix_1[group_number];
+    else assign expression_prefix_2[group_number]=expression_prefix_1[group_number] || expression_prefix_1[group_number-2];
+    if(group_number<4)assign expression_prefix_4[group_number]=expression_prefix_2[group_number];
+    else assign expression_prefix_4[group_number]=expression_prefix_2[group_number] || expression_prefix_2[group_number-4];
+  end
   for(genvar ev=0;ev<32;ev=ev+1) begin: g_direct_event_select
+    wire earlier_group,earlier_local;
     assign release_matches[ev]=ev<=maximum_voice_index && allocated_mask_o[ev] &&
         envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
         assigned_midi_note[ev]==off_note;
     assign expression_matches[ev]=allocated_mask_o[ev] &&
         envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
         assigned_midi_note[ev]==expression_note_i;
-    if(ev==0) begin
-      assign release_select[ev]=release_matches[ev];
-      assign expression_select[ev]=expression_matches[ev];
-    end else begin
-      assign release_select[ev]=release_matches[ev] && !(|release_matches[ev-1:0]);
-      assign expression_select[ev]=expression_matches[ev] && !(|expression_matches[ev-1:0]);
-    end
+    if(ev==0)assign release_select[ev]=release_matches[ev];
+    else assign release_select[ev]=release_matches[ev] && !(|release_matches[ev-1:0]);
+    if(ev<4)assign earlier_group=1'b0;
+    else assign earlier_group=expression_prefix_4[ev/4-1];
+    if(ev%4==0)assign earlier_local=1'b0;
+    else assign earlier_local=|expression_matches[ev-1:ev/4*4];
+    assign expression_select[ev]=expression_matches[ev] && !earlier_group && !earlier_local;
   end
   logic [4:0] maximum_voice_index;
   logic [5:0] current_partial_count;

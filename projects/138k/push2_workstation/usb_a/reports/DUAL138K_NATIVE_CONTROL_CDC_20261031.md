@@ -17,7 +17,8 @@ PC 的两条路径分别为 `pc_framing_sticky/Q → pc_health_meta_0/D → pc_h
 | W5 VG | PC2 通过，TF owner 确认不存在 | 4/4 通过；8 项 TF 专属测试按退出策略跳过 |
 | W6 封存 VG + 实际 SDC | v2 全部局部结构和 10 条必要 SDC 通过；source/netlist/SDC seal 均通过 | 19 项通过、9 项按角色/阶段跳过，15 项网表破坏全部拒绝 |
 | M8 封存 VG + 实际 SDC | v2 全部局部结构和 12 条必要 SDC 通过；source/netlist/SDC seal 均通过 | 27 项通过、1 项按阶段跳过，23 项网表破坏全部拒绝 |
+| M8 routed VO + 实际 SDC | 新 TF／PC 约束首次在实际 routed 快照中完成局部结构和 SDC 核对 | 28/28 通过，24 项网表破坏全部拒绝，含 18 位 RAM 拆分片段负控 |
 
-SDC 子测试另覆盖 M=22、W=17 个删除或非法后级例外场景；既有配置选择回归通过。正向结果、散列、source_seal 和负控清单见配套 `DUAL138K_NATIVE_CONTROL_CDC_20261031.json`。这些是实际网表结构及新约束策略的离线验证，**尚未把新约束安装到新的 M routed 结果中验收**；W6 全量综合 exit 0 后，已核对封存新 VG 及实际 `constraints/custom_138k.sdc`，两者局部 v2 验证通过；P&R 和整机接受仍分开进行。M8 prepare 身份为 `f11f1756db68044a`，全量综合 exit 0 后，已核对新 VG 和实际 SDC，局部 v2 验证通过。其 28 项完整回归中 27 项通过、1 项仅适用于 routed RAM 拆分的测试跳过；官方 18/36 位 registered RAM 模型测试通过。
+SDC 子测试另覆盖 M=22、W=17 个删除或非法后级例外场景；既有配置选择回归通过。正向结果、散列、source_seal 和负控清单见配套 `DUAL138K_NATIVE_CONTROL_CDC_20261031.json`。这些是实际网表结构及新约束策略的离线验证，**M8 的实际 routed VO 与 SDC 已通过本报告的局部结构／约束校验，完整 STA 与 CDC 仍未接受**；W6 全量综合 exit 0 后，已核对封存新 VG 及实际 `constraints/custom_138k.sdc`，两者局部 v2 验证通过；P&R 和整机接受仍分开进行。M8 prepare 身份为 `f11f1756db68044a`，全量综合 exit 0 后，已核对新 VG 和实际 SDC，局部 v2 验证通过。其 28 项完整回归中 27 项通过、1 项仅适用于 routed RAM 拆分的测试跳过；官方 18/36 位 registered RAM 模型测试通过。
 
 M7 的旧实际 SDC 不包含本阶段新增指令，因此 v2 CLI 携带旧 SDC 时应失败。前阶段 v1 安装证明保留在原报告，不因维护源码更新而重写。整机 CDC、PLL、reset、完整时序、真实声画和硬件部署继续未接受，本阶段不预记资源或时序收益。

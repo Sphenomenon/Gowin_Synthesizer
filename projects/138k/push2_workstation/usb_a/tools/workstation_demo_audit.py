@@ -38,6 +38,7 @@ AUDIT_SOURCES = (
     'tools/workstation_custom_timing.py', 'tools/workstation_ae350_clock_placement.py',
     'tools/workstation_ae350_rtc.py', 'tools/workstation_board_peripherals.py',
     'tools/workstation_memory.py', 'tools/stage_usb_firmware.py',
+    'tools/workstation_usb_fifo_reset.py',
 )
 COMMON_FEATURES = {
     'usb_host': 'u_native_usb/host', 'usb_cpu': 'u_native_usb/host/cpu',
@@ -96,7 +97,6 @@ def verify_prepared(output, metadata):
     from tools.workstation_profile import specification
     spec = specification(selected['name'])
     require(metadata.get('identity') == identity and profile.get('profile') == selected['name'] and
-            profile.get('configuration') == spec['configuration'] and
             profile.get('configuration', {}).get('demo_role') == role and
             profile.get('profile_source') == spec['config'] and
             profile.get('revision') == spec['revision'], 'role/configuration identity changed')
@@ -132,6 +132,9 @@ def verify_prepared(output, metadata):
     require(selected_inputs == metadata['enabled_inputs'] and
             len(selected_inputs) == len(set(selected_inputs)) and
             set(selected_inputs) == set(profile['enabled_inputs']), 'GPRJ compilation selection changed')
+    from tools.workstation_usb_fifo_reset import verify_demo_selection
+    verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
+        selected_inputs, expected_configuration=spec['configuration'])
     providers = {entry['provider'] for entry in __import__(
         'tools.workstation_profile', fromlist=['PROFILE_REGISTRY']).PROFILE_REGISTRY.values()}
     require([p for p in selected_inputs if p in providers] == [provider], 'selected top provider changed')
@@ -506,6 +509,11 @@ def audit(root, output, metadata):
     base_clocks = clocks['base_clock_audit']
     usb_cdc = audit_usb2_cdc(root, vg_text, base_clocks)
     input_cdc = audit_input_fifo(root, vg_text, base_clocks)
+    fifo_write_reset = None
+    if profile['configuration'].get('usb_fifo_reset_policy') is not None:
+        from tools.workstation_usb_fifo_reset import verify_prepared as verify_fifo_reset, audit_synthesis as audit_fifo_reset
+        fifo_write_reset = dict(prepared=verify_fifo_reset(stage, metadata['demo_usb_fifo_write_reset']),
+            actual_synthesis=audit_fifo_reset(netlist))
     bridge = audit_bridge_resets(vg_text, TOP)
     resets = audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8')
     feedback = (audit_worker_feedback(netlist, base_clocks) if role == 'W' else
@@ -536,6 +544,7 @@ def audit(root, output, metadata):
         rom_sha256=metadata['firmware']['rom_sha256'], high_speed_allowed=metadata['high_speed_allowed'],
         explicit_clock_audit=clocks, ae350_core_clock_placement=clock_placement, ae350_rtc=rtc,
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,
+        demo_usb_fifo_write_reset_audit=fifo_write_reset,
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,
         recording_diagnostic_retirement_audit=recording_diagnostics,

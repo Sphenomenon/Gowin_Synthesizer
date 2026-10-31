@@ -1,0 +1,14 @@
+{
+  "policy": "native_expression_balanced_prefix_v1",
+  "source": "rtl/audio/workstation_runtime_oscillator_engine.sv",
+  "current_source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+  "original_native_sha256": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+  "original_provenance_sha256": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+  "adaptation_sha256": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674",
+  "exact_prepared_sha256": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+  "original_provenance_unchanged": true,
+  "arithmetic_provenance_unchanged": true,
+  "added_clock_latency": 0,
+  "physical_timing_verified": false,
+  "hardware_acceptance_inherited": false
+}

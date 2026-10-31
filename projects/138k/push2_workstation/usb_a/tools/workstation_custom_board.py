@@ -125,6 +125,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
+    if demo_role is not None:
+        from tools.workstation_usb_fifo_reset import POLICY as FIFO_RESET_POLICY
+        if profile['configuration'].get('usb_fifo_reset_policy') != FIFO_RESET_POLICY:
+            raise ValueError('new DEMO prepare requires explicit USB FIFO local-reset policy')
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
     expanded_boot = ae350_memory['boot_rom_bytes'] != 16384
@@ -163,6 +167,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                  'rtl/workstation/workstation_profile_classic_runtime_v1.sv')
     if demo_role is not None:
         profile_dependencies += ('tools/workstation_demo_policy.py',)
+        from tools.workstation_usb_fifo_reset import SOURCE as FIFO_RESET_SOURCE, TOOL as FIFO_RESET_TOOL
+        native_sources += (FIFO_RESET_SOURCE,)
+        profile_dependencies += (FIFO_RESET_TOOL,)
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -192,6 +199,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
             business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W', **ae350_memory)
     native_timing = adapt_timing(stage)
+    demo_fifo_reset = None
+    if demo_role is not None:
+        from tools.workstation_usb_fifo_reset import prepare as prepare_fifo_reset
+        demo_fifo_reset = prepare_fifo_reset(root, stage, enabled=True)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
@@ -387,6 +398,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
     if business_telemetry_alias_selected:
         metadata['business_cpu_telemetry_reset_cdc']=business_telemetry_reset
+    if demo_fifo_reset is not None:
+        metadata['demo_usb_fifo_write_reset'] = demo_fifo_reset
     if not local_panel_enabled:
         metadata['local_panel'] = panel
     if workstation_profile is not None:

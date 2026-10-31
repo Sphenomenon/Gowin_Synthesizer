@@ -13,6 +13,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_oscillator_expression_provenance import ADAPTATION, restore_native
 
 
 def digest(data):
@@ -28,7 +29,8 @@ class RuntimeOscillatorTest(unittest.TestCase):
         cls.stage = Path(cls.temp.name)
         native = ROOT / 'rtl/audio/workstation_runtime_oscillator_engine.sv'
         provenance = json.loads(native.with_suffix('.provenance.json').read_text())
-        payload = native.read_bytes()
+        payload = restore_native(native.read_bytes(), native.with_suffix('.provenance.json').read_bytes(),
+                                 (ROOT / ADAPTATION).read_bytes())
         if digest(payload) != provenance['native_sha256']:
             raise ValueError('native migration drifted from its recorded identity')
         restored = payload.decode()
@@ -61,7 +63,8 @@ class RuntimeOscillatorTest(unittest.TestCase):
                 sources.append(target)
         tb = ROOT / 'sim/audio/tb_workstation_runtime_oscillator.sv'
         cls.source_hashes = {str(path.relative_to(ROOT)): digest(path.read_bytes())
-                             for path in (native, native.with_suffix('.provenance.json'), tb)}
+                             for path in (native, native.with_suffix('.provenance.json'), tb,
+                                          ROOT / ADAPTATION, ROOT / 'tools/workstation_oscillator_expression_provenance.py')}
         command = ['verilator', '--binary', '--timing', '-j', '2', '-Wno-fatal',
                    '--top-module', 'tb_workstation_runtime_oscillator',
                    '--Mdir', str(cls.stage / 'obj'), '-o', 'runtime_oscillator',

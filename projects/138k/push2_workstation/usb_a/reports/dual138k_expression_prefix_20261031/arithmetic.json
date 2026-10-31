@@ -1,0 +1,491 @@
+{
+  "schema": 1,
+  "identity": "runtime-arithmetic-pipeline-baseline-regression-v1-oscillator-only",
+  "passed": true,
+  "validation_stage": "rtl-simulation",
+  "synthesis_or_routed_timing_tested": false,
+  "hardware_tested": false,
+  "deployment_allowed": false,
+  "reference_policy": "Normalize identity-bound expression selection bridge; reverse unchanged checked arithmetic provenance tail; dependencies from locked versioned baseline; rename reference modules only",
+  "baseline": {
+    "name": "resource_rework_route0",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+    "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "origin": {
+      "build": "results/resource_rework_final_route0_20261020_041042",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+      "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+    },
+    "source_files": 437,
+    "excluded_files": 180
+  },
+  "ancestry": {
+    "osc": {
+      "base_commit": "a62070710cdbe2f65dd7d326bd94654d614b6348",
+      "current_source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+      "normalized_native_sha256": "f78307b44c346a52cc53334b20d3f507684511097c242d9cf1d8aeec866cb2cc",
+      "local_adaptation": "rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json",
+      "oracle_sha256": "9950b3cd95dc7224158254bff05bfd2c8658b780a86e4cf4faecd3744a026705",
+      "reverse_edit_start": 25,
+      "reverse_edit_count": 12,
+      "renamed_oracle_sha256": "7151e984fb0d7b7f4185b4b31f2fb34780a2516ce8ad93429aabfcba6f4ff4b2"
+    }
+  },
+  "dependency_sha256": {
+    "legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+    "legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+    "legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+    "legacy/rtl/audio/sine_interp.sv": "b3b7f5652366cc337dc4edd23964907b7a5f4a54f41bcf80840d01ac733c3cb3",
+    "sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+    "sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+    "sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+    "sim/matlab/output/stage15_unified_modes/stage15_mode_gain_q15.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+    "sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+    "rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+    "rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c"
+  },
+  "selected_parameters": {
+    "oscillator": {
+      "RUNTIME_RATE_ENABLE": 1,
+      "PIPELINED_RATE": 1,
+      "PIPELINED_ENVELOPE": 1
+    }
+  },
+  "optional_frozen_crosscheck": false,
+  "scope": "div147 and ordinary32-voice oscillator",
+  "helper": {
+    "helper_product": {
+      "compile_exit": 0,
+      "source_sha256": "baf45bdf6374bdaf96bd20cd15269653103130bf803e36e588c81e904f966bf9",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_product/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_product/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 0,
+      "marker": true,
+      "metrics": [
+        {
+          "width": 8,
+          "stages": 1,
+          "issued": 6888,
+          "checked": 6867,
+          "flushes": 52,
+          "flush_output_collisions": 20
+        },
+        {
+          "width": 25,
+          "stages": 9,
+          "issued": 6939,
+          "checked": 6749,
+          "flushes": 52,
+          "flush_output_collisions": 20
+        },
+        {
+          "width": 32,
+          "stages": 13,
+          "issued": 6960,
+          "checked": 6687,
+          "flushes": 52,
+          "flush_output_collisions": 20
+        },
+        {
+          "width": 32,
+          "stages": 13,
+          "issued": 6960,
+          "checked": 6687,
+          "flushes": 52,
+          "flush_output_collisions": 20
+        },
+        {
+          "width": 42,
+          "stages": 18,
+          "issued": 6990,
+          "checked": 6611,
+          "flushes": 52,
+          "flush_output_collisions": 21
+        },
+        {
+          "width": 42,
+          "stages": 18,
+          "issued": 6990,
+          "checked": 6611,
+          "flushes": 52,
+          "flush_output_collisions": 21
+        },
+        {
+          "width": 43,
+          "stages": 18,
+          "issued": 6993,
+          "checked": 6614,
+          "flushes": 52,
+          "flush_output_collisions": 21
+        },
+        {
+          "width": 80,
+          "stages": 37,
+          "issued": 7104,
+          "checked": 6341,
+          "flushes": 52,
+          "flush_output_collisions": 19
+        }
+      ],
+      "passed": true,
+      "log_tail": [
+        "DIV147_INDEPENDENT_PASS width=42 stages=18 issued=6990 checked=6611 flushes=52 flush_output_collisions=21",
+        "DIV147_INDEPENDENT_PASS width=43 stages=18 issued=6993 checked=6614 flushes=52 flush_output_collisions=21",
+        "DIV147_INDEPENDENT_PASS width=80 stages=37 issued=7104 checked=6341 flushes=52 flush_output_collisions=19",
+        "RUNTIME_DIV147_INDEPENDENT_PASS",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:161: $finish called at 82950000 (1ps)"
+      ]
+    },
+    "helper_wrong_divisor": {
+      "compile_exit": 0,
+      "source_sha256": "b68d6ae0eed360982368bdcccd078b19076339d2f732d1b64664bc2651132ade",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_wrong_divisor/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_wrong_divisor/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:61: DIV147_NUMERIC width=8 cycle=8 quotient=01 expected=00",
+        "       Time: 76000  Scope: tb_runtime_div147_independent.minimum_width"
+      ]
+    },
+    "helper_stale_tag": {
+      "compile_exit": 0,
+      "source_sha256": "326c7a74dca35af2074f158039b43d2d9ce8b0520cf98c1e56742afc4e693e59",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_stale_tag/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_stale_tag/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:63: DIV147_TAG width=25 cycle=14 tag=0101 expected=0000",
+        "       Time: 136000  Scope: tb_runtime_div147_independent.c25"
+      ]
+    },
+    "helper_ring_wrong_address": {
+      "compile_exit": 0,
+      "source_sha256": "f3d83fe220ec356beaea2c63eee43e4b75464cbcfbc18991df2b6622741bf10d",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_ring_wrong_address/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_ring_wrong_address/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:63: DIV147_TAG width=8 cycle=6 tag=xxxxxxxxxxxxxxxx expected=270f3a693a0ef4ce",
+        "       Time: 56000  Scope: tb_runtime_div147_independent.minimum_width"
+      ]
+    },
+    "helper_retain_flush": {
+      "compile_exit": 0,
+      "source_sha256": "61627959694bfa11bae179e5f0338a8913aec3720595ab7be686664dbecc06e5",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_retain_flush/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_retain_flush/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:58: DIV147_QUIESCENT width=8 cycle=3073 quiet=0 pipe=00",
+        "       Time: 30726000  Scope: tb_runtime_div147_independent.minimum_width"
+      ]
+    },
+    "helper_remove_output_kill": {
+      "compile_exit": 0,
+      "source_sha256": "0a2e92187b809e79b65954a76b1c1ffadb8e3a13d5ffb248d943fd2228368fa7",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_remove_output_kill/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_remove_output_kill/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:34: DIV147_FLUSH_GATE width=8 cycle=3072",
+        "       Time: 30721000  Scope: tb_runtime_div147_independent.minimum_width"
+      ]
+    },
+    "helper_skip_digit": {
+      "compile_exit": 0,
+      "source_sha256": "e87c4cc52e014252752bde49335507539ec5643036fed08103aa2e6ed1023712",
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_runtime_div147_independent",
+        "-o",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_skip_digit/test.vvp",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/helper_skip_digit/helper.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": [],
+      "passed": true,
+      "log_tail": [
+        "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv:61: DIV147_NUMERIC width=8 cycle=9 quotient=00 expected=01",
+        "       Time: 86000  Scope: tb_runtime_div147_independent.minimum_width"
+      ]
+    }
+  },
+  "consumers": {
+    "oscillator_product": {
+      "compile_exit": 0,
+      "compile_warnings": {
+        "UNSIGNED": 4
+      },
+      "source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_runtime_oscillator_pipeline_independent",
+        "--Mdir",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_product/obj",
+        "-o",
+        "test",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/midi_step_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/sine_interp.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_product/workstation_runtime_oscillator_engine.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/workstation_runtime_div147.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/osc_reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv"
+      ],
+      "run_exit": 0,
+      "marker": true,
+      "metrics": {
+        "rate": 44100,
+        "mode": 2,
+        "frames": 672,
+        "max_cycles": 1061,
+        "audible": 606,
+        "slots": 688128,
+        "panic": 34,
+        "max_latency": 1061
+      },
+      "latency_matrix": [
+        {
+          "rate": 48000,
+          "mode": 0,
+          "frames": 100,
+          "max_cycles": 69
+        },
+        {
+          "rate": 48000,
+          "mode": 1,
+          "frames": 100,
+          "max_cycles": 165
+        },
+        {
+          "rate": 48000,
+          "mode": 2,
+          "frames": 136,
+          "max_cycles": 1061
+        },
+        {
+          "rate": 44100,
+          "mode": 0,
+          "frames": 100,
+          "max_cycles": 69
+        },
+        {
+          "rate": 44100,
+          "mode": 1,
+          "frames": 100,
+          "max_cycles": 165
+        },
+        {
+          "rate": 44100,
+          "mode": 2,
+          "frames": 136,
+          "max_cycles": 1061
+        }
+      ],
+      "passed": true,
+      "log_tail": [
+        "OSC_LATENCY rate=44100 mode=0 frames=100 max_cycles=69",
+        "OSC_LATENCY rate=44100 mode=1 frames=100 max_cycles=165",
+        "OSC_LATENCY rate=44100 mode=2 frames=136 max_cycles=1061",
+        "OSC_PIPELINE_INDEPENDENT_PASS frames=672 audible=606 slots=688128 panic=34 max_latency=1061",
+        "- /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:200: Verilog $finish",
+        "- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05",
+        "- Verilator: $finish at 4ms; walltime 0.352 s; speed 11.784 ms/s",
+        "- Verilator: cpu 0.259 s on 1 threads; allocated 2 MB"
+      ]
+    },
+    "oscillator_slot_tag_mutant": {
+      "compile_exit": 0,
+      "compile_warnings": {
+        "UNSIGNED": 4
+      },
+      "source_sha256": "852cc8b655ef3f0f8ceda3e44805f7226e5381246d3e5f9d910be63ed1376e06",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_runtime_oscillator_pipeline_independent",
+        "--Mdir",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_slot_tag_mutant/obj",
+        "-o",
+        "test",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/midi_step_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/sine_interp.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_slot_tag_mutant/workstation_runtime_oscillator_engine.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/workstation_runtime_div147.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/osc_reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": {
+        "case": 0,
+        "frame": 1,
+        "slot": 0,
+        "dut": 0,
+        "ref": 0
+      },
+      "latency_matrix": [],
+      "passed": true,
+      "log_tail": [
+        "[3730000] %Fatal: tb_runtime_oscillator_pipeline_independent.sv:65: Assertion failed in tb_runtime_oscillator_pipeline_independent.compare_state.unnamedblk1: OSC_SLOT case=0 frame=1 slot=0 dut=0000000000b29a602850 ref=00b29a6000b29a602850",
+        "%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:65: Verilog $stop",
+        "Aborting..."
+      ]
+    },
+    "oscillator_gain_tag_mutant": {
+      "compile_exit": 0,
+      "compile_warnings": {
+        "UNSIGNED": 4
+      },
+      "source_sha256": "b6f8c14e9140279d29dc819f88f70dc40b0636faf1a65213ca0f5f5dd47895e2",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_runtime_oscillator_pipeline_independent",
+        "--Mdir",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_gain_tag_mutant/obj",
+        "-o",
+        "test",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/midi_step_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/legacy/rtl/audio/sine_interp.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/oscillator_gain_tag_mutant/workstation_runtime_oscillator_engine.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/workstation_runtime_div147.sv",
+        "/private/tmp/dual138k-expression-old-arithmetic-v2/reconstructed/osc_reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv"
+      ],
+      "run_exit": 1,
+      "marker": false,
+      "metrics": {
+        "case": 0,
+        "frame": 1,
+        "count": 1,
+        "dut": 0,
+        "ref": 47388
+      },
+      "latency_matrix": [],
+      "passed": true,
+      "log_tail": [
+        "[4440000] %Fatal: tb_runtime_oscillator_pipeline_independent.sv:88: Assertion failed in tb_runtime_oscillator_pipeline_independent.render: OSC_PCM case=0 frame=1 count=1/1 dut=0 ref=47388",
+        "%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv:88: Verilog $stop",
+        "Aborting..."
+      ]
+    }
+  },
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_arithmetic_pipeline.py": "b0f7c181addf3705303ad0b29421984119878fd53ab35aa2fce55b9f1c1242f4",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "baf45bdf6374bdaf96bd20cd15269653103130bf803e36e588c81e904f966bf9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/midi_step_rom.sv": "572ebecb2ac643d336060dbbff4ea7e58c1d923193876e612b9ef400fc3baf43",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/partial_step_generator_variable.sv": "579c7e8043de51c55dee9e58c1cae8a7ceec05ac824666a2f4f76787c4df960f",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/mode_timbre_rom.sv": "81778e46aafbe378a2bec73c3db361477e6603c0e3f09601fdf214890123a056",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/legacy/rtl/audio/sine_interp.sv": "1085c7ebba307faa6ea7d10d99c6111a253d1f383e13fefef81c595a7d8b2b61",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_midi_step.mem": "143df949e11ca8a0cd7bb1073248c46d2b0ef10523e14c62c78bbc86bdc8190c",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage3_sine2048x24.mem": "921e1206f40af8905fc5f8f9d2adcbd2ed7a4ab5d9441a7c10f913f5995b09cb",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_ratio_q18.mem": "2bb7f57e00e1df081a6dcd9986ce51148fb4beda973bd79e907e082cb25a98e6",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/baselines/objects/a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093.mem": "a8bf32d1874b19f0fef67f194276628c30bc2e83cd7ccf3f83f43fed23beb093",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/results/workstation_20260911_174045_306332/Prj1/sim/matlab/output/stage13_note_voice/stage13_adsr_q24.mem": "73edb2f8b3eae513ea6c498a9505f4e04e0cccc0e16fc203f7d8cde9b29d773b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/note_steps.mem": "0dfbcbe67b4430aed1d7648872f3847939effd5bb9f924bfe95bda1e2c55412c",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/paths.mem": "bd16511ec5dd9ec2e8d2e19838856ff6eec312a6ea4e597cd6d0b7800559dd6c",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/rotation.mem": "a2d4ab8bb1a8ad36037d16919e1db5bbd8e6efd27745de4623e8ac18e8352fcc",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/scope_vec/data/scene_controls.mem": "e1f24ae1028663f8f65d5c3dfe638f5124a7642a6bcf597a9d7ae88dc6bcc82c",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_div147_independent.sv": "ec017f1c8f49d1cd4d3ed2170229857f15cdb8abfa3d11eb37632f363aeb3ecb",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_oscillator_pipeline_independent.sv": "b0cf1dc9b4942438d6e4528e9a258b0f44a9dd306450618538c01e5ccb17ae96",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_vector_pipeline_independent.sv": "f118da040a75e1abc6d08ba99342c187b6e9208831ffaed948ef17fbf42e60df",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_render_engines.sv": "cd4ed71690c7780c047f350ee0c51818643a2768774793a68a0019810ffa2ae3"
+  },
+  "inputs_unchanged_during_run": true
+}

@@ -1,0 +1,111 @@
+{
+  "stage": "prepared_source_checkpoint_and_full_synthesis_started",
+  "candidates": [
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9",
+      "integration_manifest_sha256": "ea12a463fcea8691c6d413caa96663748d722daca867365708611ddb14e07c60",
+      "profile": {
+        "profile": "custom138k-workstation-m-demo-v1",
+        "revision": 1,
+        "profile_source": "boards/custom_138k/workstation_profile_m_demo_v1.json",
+        "profile_sha256": "c1c2fd2db717cf675762fec40e94b9f7011d2029ca435631d581769bc1e79c81",
+        "candidate_identity": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+        "candidate_input_sha256": "aa7abf5c6454a37785864b67f1fb8283f6418a3fe1f3a0562432e376b3a3ba69",
+        "configuration": {
+          "hdmi_mode": "1080p60",
+          "high_speed_allowed": true,
+          "tf_audio_kind": "wav",
+          "implemented_sample_rates_hz": [
+            48000,
+            44100
+          ],
+          "ae350_firmware_policy": "maintained_ae350_v1",
+          "scan_window_policy": "native_admission_v1",
+          "audio_policy": "native_dual_rate_runtime_v1",
+          "reserve_zero_epoch": true,
+          "display_metadata_minor": 1,
+          "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+          "recognition_policy": "disabled_cnn_and_follow_v1",
+          "local_panel_policy": "disabled_local_lcd_touch_v1",
+          "demo_role": "M",
+          "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+          "bluetooth_policy": "retired_for_independent_m_demo_v1",
+          "recording_policy": "disabled_m_demo_v1"
+        }
+      },
+      "profile_artifact_sha256": "b5a44d10592a5eecadc7dceeb5971d3ad25b0042009075e4052813d67c7eea41",
+      "enabled_input_count": 261,
+      "staged_input_count": 586,
+      "scope": "Prepare only; fixed candidate closures retain full per-file identities; no synthesis, P&R or hardware acceptance."
+    },
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8",
+      "integration_manifest_sha256": "44e9e0de5be65d6fc9efc023ed8eb7edc62c79f8f9bcd9781a23637b6bcd96fc",
+      "profile": {
+        "profile": "custom138k-workstation-w-demo-v1",
+        "revision": 1,
+        "profile_source": "boards/custom_138k/workstation_profile_w_demo_v1.json",
+        "profile_sha256": "ed337f6eee6f81fb859d8a05730854652b4e2b1f104834576b683a1a1d83e678",
+        "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+        "candidate_input_sha256": "d1109d2f36e8e171ab7a25e7458a3122fac6468f6328248cd4d2fafc98e2e57d",
+        "configuration": {
+          "hdmi_mode": "1080p60",
+          "high_speed_allowed": true,
+          "tf_audio_kind": "wav",
+          "implemented_sample_rates_hz": [
+            48000,
+            44100
+          ],
+          "ae350_firmware_policy": "ae350_worker_session_classic_runtime_v1",
+          "scan_window_policy": "native_admission_v1",
+          "audio_policy": "native_dual_rate_runtime_v1",
+          "reserve_zero_epoch": true,
+          "display_metadata_minor": 1,
+          "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+          "recognition_policy": "disabled_cnn_and_follow_v1",
+          "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+          "local_panel_policy": "disabled_local_lcd_touch_v1",
+          "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+          "business_owner_policy": "ae350_ble_business_owner_v2",
+          "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+          "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+          "ae350_memory_profile": "ilm64k_dlm64k",
+          "ae350_boot_rom_bytes": 131072,
+          "hci_transport_policy": "native_shared_hci_owner_v1",
+          "ae350_pcm_policy": "ae350_decoded_pcm_source_v1",
+          "demo_role": "W",
+          "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+          "synth_policy": "disabled_d_pcm_only_v1",
+          "tf_policy": "disabled_worker_demo_v1",
+          "recording_owner_policy": "single_ble_ddr_object_v1",
+          "usb_adapter_policy": "worker_25k_v1"
+        }
+      },
+      "profile_artifact_sha256": "1e809c9530466f3681b8221ebebe7f18071a6985c49b043d189085c786bd0e13",
+      "enabled_input_count": 284,
+      "staged_input_count": 643,
+      "scope": "Prepare only; fixed candidate closures retain full per-file identities; no synthesis, P&R or hardware acceptance."
+    }
+  ],
+  "synthesis_complete": false,
+  "pnr_complete": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "driver_restart": {
+    "stage": "aborted_synthesis_driver_start",
+    "reason": "Incorrect relative redirect used a shared cache-root driver log for the two own processes; stopped before accepting results and restarted with separate absolute log paths.",
+    "processes": [
+      82635,
+      82636
+    ],
+    "cwd_verified_by_lsof": true,
+    "source_inputs_changed": false,
+    "main_worktree_processes_touched": false,
+    "raw_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m9-w8-start-v1-interleaved-driver.log",
+    "raw_log_sha256": "e4f344dfce9099b9a7487ac2b8b1d658af25412ea13b9b5b197337639d968040"
+  },
+  "excluded_unvalidated_unused_work": [
+    "tools/workstation_performance_reset.py"
+  ]
+}
