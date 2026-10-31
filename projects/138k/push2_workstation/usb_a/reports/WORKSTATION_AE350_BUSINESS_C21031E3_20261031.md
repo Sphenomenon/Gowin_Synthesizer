@@ -86,3 +86,17 @@ E3 所有输入保持不变；E4 没有继承其综合／物理接受。E4 外�
 `business-serializer-integrated-candidate-v1`、
 `business-serializer-integrated-physical-C21031E4-v1` 和
 `business-serializer-integrated-necessary-gates-v1`，均在上述 cache 根目录。
+
+### 邮箱 RAM 实际替换
+
+源码 `cb405af` 将 mailbox staging/result 两份 512 bit 寄存器和 parser
+的 512 bit 副本删除，生产实例直接使用两块 `workstation_sdp` 16×32 RAM
+及同步 byte 口；没有禁用的新接口或第二套业务 owner。现有 APB CDC
+按真实 ready 背压 COMPLETE 18 个控制周期，保留部分 staging、旧结果、
+原 consume 时刻及取消优先级，CPU 的地址 ABI／固件／BLE 线规保持。
+固定源码协同仿真通过 1701 checks、136 条消息完全一致、15 个 C 突变
+均被拒绝；主树 mailbox 三项、GATT 两项、actual prepare 十一项、
+accepted 十七项通过。新候选为 `33e2b72a7bac6501`，沿用同一 business
+profile。新增两块 RAM、拷贝／读取／仲裁逻辑的成本必须纳入完整综合；
+当前尚不宣称净收益。E4 若成功，先进行其物理门禁和授权 SRAM 检查；
+若失败则立即启动已排队的本候选全量综合。E4 输入不变。
