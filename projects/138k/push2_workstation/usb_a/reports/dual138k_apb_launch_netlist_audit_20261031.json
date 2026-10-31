@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "validation_stage": "external_native_apb_launch_mapping_audit_repair",
+  "maintained_source_sha256": {
+    "tools/workstation_native_protocol_audit.py": "ffbf679e12619b3106392b4b3c359f084e635fce215b56bce081b21f7e675caf",
+    "sim/test_workstation_native_protocol.py": "f9ba4691a1ae67d6dbfa1cf98678a777c54096fc5185fb832d4039ce52bfa039"
+  },
+  "role": "W",
+  "rows": [
+    {
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+      "integration_inputs_sha256": "1521f16189119ad062d56bea5638b02a6e73d45887f6cdbdbac5b84e5b129837",
+      "prepared_inputs_reverified": 644,
+      "netlist_sha256": "990302b2e222ef67b3c1cf6d0df555c0a02a55b281776e3ef44cc1c7d358ea1f",
+      "sdc_sha256": "2db4589f552d3d4bdc8f88a3aeb46bc5f7c78dfe6a2f11b69a7f036904d9a432",
+      "launch_mapping": "invert_feedback_with_exact_idle_launch_ce",
+      "free_launch_leaves": [
+        "penable",
+        "request_held_48_9_1600"
+      ],
+      "boolean_assignments": 64,
+      "request_payload_bits": 49,
+      "request_payload_bit_mapping_exact": true,
+      "request_payload_consumer_count": 49,
+      "request_local_capture_on_third_request_stage": true,
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 52,
+        "passed": 41,
+        "skipped": 11,
+        "elapsed_seconds": 147.1,
+        "exit_code": 0,
+        "mutation_count": 36,
+        "all_mutants_rejected": true
+      }
+    },
+    {
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+      "integration_inputs_sha256": "44e9e0de5be65d6fc9efc023ed8eb7edc62c79f8f9bcd9781a23637b6bcd96fc",
+      "prepared_inputs_reverified": 643,
+      "netlist_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+      "sdc_sha256": "720eb6a3a63a699bd64d98e873b7b98a4f04971239946e9cc4306155857a36e7",
+      "launch_mapping": "unconditional_toggle_xor_lut4",
+      "free_launch_leaves": [
+        "u_managed/control_cdc/request_held_48_7"
+      ],
+      "boolean_assignments": 32,
+      "request_payload_bits": 49,
+      "request_payload_bit_mapping_exact": true,
+      "request_payload_consumer_count": 49,
+      "request_local_capture_on_third_request_stage": true,
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 52,
+        "passed": 39,
+        "skipped": 13,
+        "elapsed_seconds": 139.228,
+        "exit_code": 0,
+        "mutation_count": 34,
+        "all_mutants_rejected": true
+      }
+    }
+  ],
+  "first_failure_preserved": {
+    "audit_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg.log",
+    "reason": "APB request toggle gate changed",
+    "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-tests.log",
+    "tests": 41,
+    "failures": 1,
+    "errors": 4,
+    "skipped": 11
+  },
+  "intermediate_v2_regressions": {
+    "W9b": {
+      "total": 45,
+      "skipped": 11,
+      "exit_code": 0
+    },
+    "W8": {
+      "total": 45,
+      "skipped": 13,
+      "exit_code": 0
+    }
+  },
+  "candidate_compilation_inputs_changed": false,
+  "rtl_changed": false,
+  "sdc_changed": false,
+  "resynthesis_performed": false,
+  "gate_source_scope": "external current maintained audit implementation; original candidate gate and staged audit inputs retained",
+  "physical_cdc_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "evidence_file_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-mutations.json": "0e7509ac995fb50a2232c71ce61a83019d7890bf4922d905650f330543f0b115",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-tests.log": "a7e8a348b3e34db488b50d187c860caf7c730900e4e8d244acf18777cf615e00",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v2-mutations.json": "d3be021a8a53974c8ef95d97f12fd37461429b14c2d569d359111443821676cb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v2-tests.log": "bd23cc6a96d0877482b5e7cff2ce735be74e2d4786a3556a96bfe2b1e2176338",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v2.json": "843d85b06c0cf3765751455661fb2e310d0bd73088bee5f493077200ca9fc91e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v2.log": "6dabd2f98f04a6a6e9674af1a561fed79761b9850043cf347a548afa8f7e018b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v3-mutations.json": "9b8e961aac2f783ec1b3184d54cb09eb17caf41f652ebbc9d85bc7da47c85b7e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v3-tests.log": "da3c935a246360c063f6e2635f96bed591feb657d804c3ad23538de29e9a10fe",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v3.json": "650aca3c35c5949670b64785a64f3b7f3c0eea80e79dc9b532dd39f07a879614",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v3.log": "6dabd2f98f04a6a6e9674af1a561fed79761b9850043cf347a548afa8f7e018b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg.log": "87f73c1c9d19e8ed6089dbbe69a09f47ba31879f1e49b98ede1c830a4b9dfabc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v2-mutations.json": "d25aaf8a6ecf77ff4739bb21b4d905fa7728634c300c71e8be23d1f7ded90de7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v2-tests.log": "5af8fdeb0623a575a503d64431183b6116812a9c689f1cd6c0db0eedc783cce8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v2.json": "ec7db5d14f69b2bc8247cef27d509e96db6da9fd57bbaf67233fd8c58e9b17d9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v2.log": "6dabd2f98f04a6a6e9674af1a561fed79761b9850043cf347a548afa8f7e018b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v3-mutations.json": "aaf581ccb7574b6855e1b3777511c45c30282db309d07d8db8036a629d54305e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v3-tests.log": "1a8b380a0d898a60adbbcf20a0dd8311611e80752972ea82d33b79bb961ca83c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v3.json": "d484827f94f4e853adef6514333f523c7d6562e5a9c1f4fca0bdab13b3f40e6d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v3.log": "6dabd2f98f04a6a6e9674af1a561fed79761b9850043cf347a548afa8f7e018b"
+  }
+}

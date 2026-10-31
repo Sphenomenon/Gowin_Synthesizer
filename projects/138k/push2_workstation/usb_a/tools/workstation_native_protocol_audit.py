@@ -474,24 +474,74 @@ def audit_timing_boundaries(n, g, *, profile):
     require(bd.net(g, n.pin(reg(APB, 'request_decoded'), 'D')) == decoded,
             'APB request decode must wait for settled request and outstanding ACK')
     state0, state1, req, ack_settled = q('state_0'), q('state_1'), q('request_toggle'), q('ack_settled')
-    toggle_gate, output = g.drivers[n.pin(request, 'D')][0]
-    require(n.cells[toggle_gate]['kind'] == 'LUT4' and output == 'F', 'APB request toggle gate changed')
-    inputs = [n.pin(toggle_gate, 'I' + str(i)) for i in range(4)]
-    require({state0, state1, req}.issubset(inputs) and len(set(inputs)) == 4, 'APB launch gate input inventory changed')
-    launch = next(x for x in inputs if x not in (state0, state1, req))
-    bd = BooleanDiagram([state0, state1, req, ack_settled, launch])
+    toggle_drivers = g.drivers[n.pin(request, 'D')]
+    require(len(toggle_drivers) == 1, 'APB request toggle driver ambiguous')
+    toggle_gate, output = toggle_drivers[0]
+    request_held = g.group(APB, 'request_held', 49)
+    request_ces = {n.pin(p, 'CE') for p in request_held}
+    require(len(request_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == 'ram_clk' and
+                n.pin(p, 'CLEAR') == n.pin(request, 'CLEAR') for p in request_held),
+            'APB request payload capture CE/clock/reset differs')
+    request_ce = next(iter(request_ces))
+    request_local = g.group(APB, 'request_local', 49)
+    request_capture_ces = {n.pin(p, 'CE') for p in request_local}
+    require(len(request_capture_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == 'audio_clk' and
+                n.pin(p, 'CLEAR') == n.pin(reg(APB, 'req_settled'), 'CLEAR') for p in request_local),
+            'APB request local payload capture CE/clock/reset differs')
+    require(all(n.pin(d, 'D') == n.pin(s, 'Q') for s, d in zip(request_held, request_local)),
+            'APB request held/local payload bit mapping changed')
+    request_payload_closure = complete_closure(n, g, request_held)
+    require(request_payload_closure['ff_endpoints'] == {p + '/D': n.pin(p, 'CLK') for p in request_local} and
+            not request_payload_closure['primitive_endpoints'] and not request_payload_closure['top_output_endpoints'],
+            'APB request payload exact consumer closure changed')
+    request_capture_bd = BooleanDiagram([req_sync, req_settled])
+    require(request_capture_bd.net(g, next(iter(request_capture_ces))) ==
+            request_capture_bd.different(request_capture_bd.inputs[req_sync], request_capture_bd.inputs[req_settled]),
+            'APB request local capture must wait for third request stage')
+    require(n.cells[request]['kind'] == 'DFFCE' and clock(request) == 'ram_clk',
+            'APB request toggle clock/primitive changed')
+    if n.cells[toggle_gate]['kind'] == 'LUT4' and output == 'F':
+        inputs = [n.pin(toggle_gate, 'I' + str(i)) for i in range(4)]
+        require({state0, state1, req}.issubset(inputs) and len(set(inputs)) == 4,
+                'APB launch gate input inventory changed')
+        launch_inputs = [x for x in inputs if x not in (state0, state1, req)]
+        unconditional(request, 'ram_clk')
+        launch_mapping = 'unconditional_toggle_xor_lut4'
+    else:
+        # W9b maps exactly the same request update into the DFFCE enable:
+        # D=~Q, CE=IDLE && psel && penable. Both launch leaves stay free;
+        # neither a candidate signal name nor its sampled value is assumed.
+        require(n.cells[toggle_gate]['kind'] == 'INV' and output == 'O' and
+                n.pin(toggle_gate, 'I') == req, 'APB request toggle feedback must invert Q')
+        require(n.pin(request, 'CE') == request_ce, 'APB request toggle CE differs from payload capture')
+        enable_drivers = g.drivers[request_ce]
+        require(len(enable_drivers) == 1, 'APB request launch CE driver ambiguous')
+        enable_gate, enable_output = enable_drivers[0]
+        require(n.cells[enable_gate]['kind'] == 'LUT4' and enable_output == 'F',
+                'APB request launch CE must retain exact LUT4 structure')
+        inputs = [n.pin(enable_gate, 'I' + str(i)) for i in range(4)]
+        require({state0, state1}.issubset(inputs) and len(set(inputs)) == 4,
+                'APB request launch CE state/input inventory changed')
+        launch_inputs = [x for x in inputs if x not in (state0, state1)]
+        require(not set(launch_inputs) & ({req, ack_settled} | g.high | g.low),
+                'APB request launch CE leaves must be independent')
+        launch_mapping = 'invert_feedback_with_exact_idle_launch_ce'
+    bd = BooleanDiagram([state0, state1, req, ack_settled, *launch_inputs])
+    launch = bd.all([bd.inputs[x] for x in launch_inputs])
     idle = bd.both(bd.invert(bd.inputs[state0]), bd.invert(bd.inputs[state1]))
     wait = bd.both(bd.inputs[state0], bd.invert(bd.inputs[state1]))
     complete = bd.both(bd.invert(bd.inputs[state0]), bd.inputs[state1])
     equal = bd.invert(bd.different(bd.inputs[req], bd.inputs[ack_settled]))
     captured = bd.both(wait, equal)
-    unconditional(request, 'ram_clk')
-    require(bd.net(g, n.pin(request, 'D')) == bd.different(bd.inputs[req], bd.both(idle, bd.inputs[launch])),
+    launch_accept = bd.both(idle, launch)
+    require(bd.net(g, request_ce) == launch_accept, 'APB request payload can launch outside IDLE')
+    request_next = bd.choose(bd.net(g, n.pin(request, 'CE')), bd.net(g, n.pin(request, 'D')), bd.inputs[req])
+    require(request_next == bd.different(bd.inputs[req], launch_accept),
             'APB request can launch outside IDLE')
     require(bd.net(g, capture_ce) == captured, 'APB response capture must wait for third ACK stage')
     for stem, expected in (
-            ('state_0', bd.either(bd.both(idle, bd.inputs[launch]), bd.both(wait, bd.invert(equal)))),
-            ('state_1', bd.either(captured, bd.both(complete, bd.invert(bd.inputs[launch]))))):
+            ('state_0', bd.either(launch_accept, bd.both(wait, bd.invert(equal)))),
+            ('state_1', bd.either(captured, bd.both(complete, bd.invert(launch))))):
         state = reg(APB, stem)
         require(n.cells[state]['kind'] == 'DFFCE' and clock(state) == 'ram_clk' and
                 all(n.pin(p, 'CLEAR') == n.pin(state, 'CLEAR') for p in capture), 'APB local state clock/reset changed')
@@ -499,11 +549,27 @@ def audit_timing_boundaries(n, g, *, profile):
         # rather than requiring M's unconditional-state implementation.
         next_q = bd.choose(bd.net(g, n.pin(state, 'CE')), bd.net(g, n.pin(state, 'D')), bd.inputs[q(stem)])
         require(next_q == expected, 'APB one-outstanding state transition changed: ' + stem)
+    request_closure = complete_closure(n, g, [request])
+    request_consumers = {request + '/D': 'ram_clk', reg(APB, 'req_meta') + '/D': 'audio_clk',
+                         **{p + '/CE': 'ram_clk' for p in capture}}
+    for stem in ('state_0', 'state_1'):
+        for port in ('D', 'CE'):
+            request_consumers[reg(APB, stem) + '/' + port] = 'ram_clk'
+    require(set(request_closure['ff_endpoints']).issubset(request_consumers) and
+            all(domain == request_consumers[pin] for pin, domain in request_closure['ff_endpoints'].items()) and
+            {request + '/D', reg(APB, 'req_meta') + '/D'}.issubset(request_closure['ff_endpoints']) and
+            not request_closure['primitive_endpoints'] and not request_closure['top_output_endpoints'],
+            'APB request toggle has an unreviewed consumer')
     response = dict(scope=APB, source_pins=[p + '/Q' for p in held], capture_pins=[p + '/D' for p in capture],
         payload_bits=33, source_clock='audio_clk', destination_clock='ram_clk', source_enable=source_ce,
         capture_enable=capture_ce, chains=chains, source_publication_requires_outstanding_request=True,
         publication_local_boolean_leaf_count=len(leaves),
         publication_unrestricted_service_ready_leaves=sorted(external_ready),
+        request_launch_mapping=launch_mapping, request_launch_free_leaves=launch_inputs,
+        request_next_state_boolean_assignments=1 << len(bd.inputs), request_payload_bits=49,
+        request_payload_common_capture_ce_clock_reset=True, request_toggle_consumer_closure=request_closure,
+        request_payload_bit_mapping_exact=True, request_payload_consumer_closure=request_payload_closure,
+        request_local_capture_on_third_request_stage=True, request_local_capture_common_ce_clock_reset=True,
         response_and_ack_share_publication=True, request_launch_only_idle=True, exact_state_transitions_verified=True,
         minimum_response_pipeline_stages=3, minimum_capture_edge_after_publication=4,
         max_delay_ns=20.0, only_hold_exception=True, closure=closure,

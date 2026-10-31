@@ -356,7 +356,74 @@ class ActualTimingBoundaries(ActualNativeFixture):
         g = Graph(self.n)
         target = self.reg(APB, 'request_toggle')
         gate = g.drivers[self.n.pin(target, 'D')][0][0]
-        self.reject('APB relaunch while waiting', gate, 'parameters', 'INIT', "16'h5555", 'request can launch outside IDLE')
+        if self.n.cells[gate]['kind'] == 'INV':
+            gate = g.drivers[self.n.pin(target, 'CE')][0][0]
+            self.reject('APB CE relaunch while waiting', gate, 'parameters', 'INIT',
+                        "16'hFFFF", 'request payload can launch outside IDLE')
+        else:
+            self.reject('APB relaunch while waiting', gate, 'parameters', 'INIT',
+                        "16'h5555", 'request can launch outside IDLE')
+
+    def test_apb_ce_toggle_feedback_must_invert_its_own_q(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_toggle')
+        gate = g.drivers[self.n.pin(target, 'D')][0][0]
+        if self.n.cells[gate]['kind'] != 'INV':
+            self.skipTest('reviewed CE-factored request mapping not present')
+        self.reject('APB wrong inverse feedback', gate, 'ports', 'I',
+                    self.bind(gate, self.reg(APB, 'ack_settled')), 'toggle feedback must invert Q')
+
+    def test_apb_all_request_payload_bits_share_capture_ce(self):
+        self.reject('APB one request bit bypasses capture', self.reg(APB, 'request_held_48'),
+                    'ports', 'CE', "1'b1", 'request payload capture CE/clock/reset differs')
+
+    def test_apb_request_payload_source_clock_is_exact(self):
+        self.reject('APB one held request bit changes clock', self.reg(APB, 'request_held_48'),
+                    'ports', 'CLK', "1'b0", 'request payload capture CE/clock/reset differs')
+
+    def test_apb_request_payload_source_reset_is_exact(self):
+        self.reject('APB one held request bit changes reset', self.reg(APB, 'request_held_48'),
+                    'ports', 'CLEAR', "1'b0", 'request payload capture CE/clock/reset differs')
+
+    def test_apb_request_local_payload_clock_is_exact(self):
+        self.reject('APB one local request bit changes clock', self.reg(APB, 'request_local_48'),
+                    'ports', 'CLK', "1'b0", 'request local payload capture CE/clock/reset differs')
+
+    def test_apb_request_local_payload_reset_is_exact(self):
+        self.reject('APB one local request bit changes reset', self.reg(APB, 'request_local_48'),
+                    'ports', 'CLEAR', "1'b0", 'request local payload capture CE/clock/reset differs')
+
+    def test_apb_request_payload_mapping_cannot_alias_bits(self):
+        target = self.reg(APB, 'request_local_0')
+        self.reject('APB held request bit aliases another', target, 'ports', 'D',
+                    self.bind(target, self.reg(APB, 'request_held_1')), 'held/local payload bit mapping changed')
+
+    def test_apb_request_payload_cannot_have_an_extra_consumer(self):
+        target = self.reg(APB, 'state_0')
+        self.reject('APB held request has extra state consumer', target, 'ports', 'D',
+                    self.bind(target, self.reg(APB, 'request_held_0')), 'request payload exact consumer closure changed')
+
+    def test_apb_request_local_payload_cannot_capture_before_third_stage(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_local_0')
+        gate = g.drivers[self.n.pin(target, 'CE')][0][0]
+        width = int(self.n.cells[gate]['kind'][3:])
+        self.reject('APB request local capture loses third-stage gate', gate, 'parameters', 'INIT',
+                    str(1 << width) + "'h" + 'F' * ((1 << width) // 4), 'local capture must wait for third request stage')
+
+    def test_apb_ce_toggle_cannot_bypass_payload_capture(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_toggle')
+        gate = g.drivers[self.n.pin(target, 'D')][0][0]
+        if self.n.cells[gate]['kind'] != 'INV':
+            self.skipTest('reviewed CE-factored request mapping not present')
+        self.reject('APB toggle CE bypasses payload', target, 'ports', 'CE',
+                    "1'b1", 'toggle CE differs from payload capture')
+
+    def test_apb_toggle_cannot_drive_an_unreviewed_payload_input(self):
+        target = self.reg(APB, 'request_held_0')
+        self.reject('APB toggle extra payload consumer', target, 'ports', 'D',
+                    self.bind(target, self.reg(APB, 'request_toggle')), 'toggle has an unreviewed consumer')
 
     def test_apb_capture_gate_must_use_wait_state_and_settled_ack(self):
         g = Graph(self.n)

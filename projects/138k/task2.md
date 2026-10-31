@@ -232,6 +232,8 @@ M的[PANIC交付保留窗／render握手／等价增益](push2_workstation/usb_a
 
 M10b／W9b现已完成[全量综合及严格准备门](push2_workstation/usb_a/reports/DUAL138K_M10_W9_SYNTHESIS_20261031.md)，实测LUT＋ALU64,446／83,097、综合BSRAM195／257，`D2103111`／`D2103112`已启动默认完整P&R，未加旧far布局。W额外原生局部CDC门对APB请求资格新映射的拒绝正核验，不能以综合准备门PASS代替该项或完整物理验收。
 
+W9b的APB请求实际采用唯一INV反馈和精确IDLE／启动CE，维护[外部网表审计](push2_workstation/usb_a/reports/DUAL138K_APB_LAUNCH_NETLIST_AUDIT_20261031.md)现已补齐该合法映射、49位载荷保持／第三同步沿捕获及完整消费者闭包；W9b／W8实际VG和已装SDC通过，分别36／34个破坏负控均拒绝。原候选及其旧审计输入保持封存，新审计器另记hash，不重综合或追改原失败证据。该局部通过不转授完整CDC、P&R或硬件验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
