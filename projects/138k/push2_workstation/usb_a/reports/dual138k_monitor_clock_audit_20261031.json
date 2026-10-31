@@ -1,0 +1,436 @@
+{
+  "stage": "actual_synthesis_clock_audit_validation",
+  "candidate": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+  "netlist_sha256": "67814575f7dd095a7e3bb3b17c3460db3bb4fed2b84f723d7093d40fc8f8b590",
+  "test_summary": "6 tests pass; 41 actual netlist/SDC mutations rejected",
+  "test_log_sha256": "4188702b8f948099778de8285cec3bc11ff2cfb52312c3598e7a7357f77ef568",
+  "mutations": [
+    {
+      "case": "old_clock_period",
+      "rejected": true,
+      "error": "runtime clock audit: selected base-clock SDC prefix changed"
+    },
+    {
+      "case": "new_reference_period",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "selected44_lost_add",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "selected44_wrong_master",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "unexpected_clock",
+      "rejected": true,
+      "error": "runtime clock audit: runtime clock declarations changed"
+    },
+    {
+      "case": "missing_mode_exclusion",
+      "rejected": true,
+      "error": "runtime clock audit: selected-mode exclusion declarations changed"
+    },
+    {
+      "case": "retired_LCD_CDC_reintroduced",
+      "rejected": true,
+      "error": "disabled native local-panel constraint remains in SDC"
+    },
+    {
+      "case": "DCS_rising_mode",
+      "rejected": true,
+      "error": "runtime clock audit: DCS mode changed"
+    },
+    {
+      "case": "DCS_force",
+      "rejected": true,
+      "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+    },
+    {
+      "case": "DCS_reference_swap",
+      "rejected": true,
+      "error": "runtime clock audit: DCS reference wiring changed"
+    },
+    {
+      "case": "DCS_unused_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+    },
+    {
+      "case": "DCS_select_tie",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select bit is not a direct unique register Q"
+    },
+    {
+      "case": "DCS_select_upper_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select upper bits are not zero"
+    },
+    {
+      "case": "select_register_clock",
+      "rejected": true,
+      "error": "runtime clock audit: DCS select register owner or 50MHz clock changed"
+    },
+    {
+      "case": "serializer_clock",
+      "rejected": true,
+      "error": "runtime clock audit: serializer consumer clock differs from selected MCLK"
+    },
+    {
+      "case": "selected_monitor_clock",
+      "rejected": true,
+      "error": "runtime clock audit: monitor source/control clock changed: selected_monitor"
+    },
+    {
+      "case": "MCLK_bypass",
+      "rejected": true,
+      "error": "runtime clock audit: DAC MCLK is not directly driven by DCS output"
+    },
+    {
+      "case": "I2S_output_swap",
+      "rejected": true,
+      "error": "runtime clock audit: I2S output is not a direct selected-clock serializer register: hp_bck"
+    },
+    {
+      "case": "audio_PLL_ratio",
+      "rejected": true,
+      "error": "native PLL/divider frequency does not match SDC: audio_76m8"
+    },
+    {
+      "case": "audio_PLL_dynamic",
+      "rejected": true,
+      "error": "native unexpected dynamic PLL divider"
+    },
+    {
+      "case": "pixel_divider",
+      "rejected": true,
+      "error": "native pixel divider waveform changed"
+    },
+    {
+      "case": "extra_DCS",
+      "rejected": true,
+      "error": "runtime clock audit: single DCS inventory changed"
+    },
+    {
+      "case": "source_startup_clock",
+      "rejected": true,
+      "error": "runtime clock audit: monitor source/control clock changed: reference_48_monitor"
+    },
+    {
+      "case": "DDR_PLL_wrong_instance",
+      "rejected": true,
+      "error": "native clock target not resolved: u_memory/u_pll/u_pll_0/PLL_inst/CLKOUT2"
+    },
+    {
+      "case": "reference_lost_input",
+      "rejected": true,
+      "error": "runtime clock audit: primary clock top input inventory changed"
+    },
+    {
+      "case": "disabled_panel_pin_lcd_bl",
+      "rejected": true,
+      "error": "disabled native local-panel output is not static low: lcd_bl"
+    },
+    {
+      "case": "disabled_panel_pin_lcd_pclk",
+      "rejected": true,
+      "error": "disabled native local-panel output is not static low: lcd_pclk"
+    },
+    {
+      "case": "disabled_panel_pin_lcd_r[0]",
+      "rejected": true,
+      "error": "disabled native local-panel output is not static low: lcd_r[0]"
+    },
+    {
+      "case": "retired_LCD_owner_reintroduced",
+      "rejected": true,
+      "error": "disabled native local-panel hierarchy remains in synthesis"
+    },
+    {
+      "case": "reference_48_monitor_release_rising_edge",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_48_monitor"
+    },
+    {
+      "case": "reference_48_monitor_inverter_wrong_reference",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_48_monitor"
+    },
+    {
+      "case": "reference_48_monitor_release_too_early",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor"
+    },
+    {
+      "case": "reference_48_monitor_pre_chain_bypass",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor"
+    },
+    {
+      "case": "reference_44_monitor_release_rising_edge",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_44_monitor"
+    },
+    {
+      "case": "reference_44_monitor_inverter_wrong_reference",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_44_monitor"
+    },
+    {
+      "case": "reference_44_monitor_release_too_early",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_44_monitor"
+    },
+    {
+      "case": "reference_44_monitor_pre_chain_bypass",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_44_monitor"
+    },
+    {
+      "case": "selected_monitor_release_rising_edge",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: selected_monitor"
+    },
+    {
+      "case": "selected_monitor_inverter_wrong_reference",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release clock changed: selected_monitor"
+    },
+    {
+      "case": "selected_monitor_release_too_early",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: selected_monitor"
+    },
+    {
+      "case": "selected_monitor_pre_chain_bypass",
+      "rejected": true,
+      "error": "runtime clock audit: opposite-edge monitor release data chain changed: selected_monitor"
+    }
+  ],
+  "audit_source_sha256": {
+    "tools/workstation_runtime_clock_audit.py": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+    "sim/test_workstation_runtime_clocks.py": "798bc61c408952dfd156a46304110e5d9cafe4d7751427054d254718d2e8d4fa"
+  },
+  "release_inputs_modified": false,
+  "clock_or_timing_exceptions_changed": false,
+  "physical_or_hardware_acceptance": false,
+  "W8_independent_review": {
+    "netlist_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+    "tests": 6,
+    "mutations_rejected": 41,
+    "mutations": [
+      {
+        "case": "old_clock_period",
+        "rejected": true,
+        "error": "runtime clock audit: selected base-clock SDC prefix changed"
+      },
+      {
+        "case": "new_reference_period",
+        "rejected": true,
+        "error": "runtime clock audit: runtime clock declarations changed"
+      },
+      {
+        "case": "selected44_lost_add",
+        "rejected": true,
+        "error": "runtime clock audit: runtime clock declarations changed"
+      },
+      {
+        "case": "selected44_wrong_master",
+        "rejected": true,
+        "error": "runtime clock audit: runtime clock declarations changed"
+      },
+      {
+        "case": "unexpected_clock",
+        "rejected": true,
+        "error": "runtime clock audit: runtime clock declarations changed"
+      },
+      {
+        "case": "missing_mode_exclusion",
+        "rejected": true,
+        "error": "runtime clock audit: selected-mode exclusion declarations changed"
+      },
+      {
+        "case": "retired_LCD_CDC_reintroduced",
+        "rejected": true,
+        "error": "disabled native local-panel constraint remains in SDC"
+      },
+      {
+        "case": "DCS_rising_mode",
+        "rejected": true,
+        "error": "runtime clock audit: DCS mode changed"
+      },
+      {
+        "case": "DCS_force",
+        "rejected": true,
+        "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+      },
+      {
+        "case": "DCS_reference_swap",
+        "rejected": true,
+        "error": "runtime clock audit: DCS reference wiring changed"
+      },
+      {
+        "case": "DCS_unused_clock",
+        "rejected": true,
+        "error": "runtime clock audit: DCS unused inputs or SELFORCE are not constant zero"
+      },
+      {
+        "case": "DCS_select_tie",
+        "rejected": true,
+        "error": "runtime clock audit: DCS select bit is not a direct unique register Q"
+      },
+      {
+        "case": "DCS_select_upper_clock",
+        "rejected": true,
+        "error": "runtime clock audit: DCS select upper bits are not zero"
+      },
+      {
+        "case": "select_register_clock",
+        "rejected": true,
+        "error": "runtime clock audit: DCS select register owner or 50MHz clock changed"
+      },
+      {
+        "case": "serializer_clock",
+        "rejected": true,
+        "error": "runtime clock audit: serializer consumer clock differs from selected MCLK"
+      },
+      {
+        "case": "selected_monitor_clock",
+        "rejected": true,
+        "error": "runtime clock audit: monitor source/control clock changed: selected_monitor"
+      },
+      {
+        "case": "MCLK_bypass",
+        "rejected": true,
+        "error": "runtime clock audit: DAC MCLK is not directly driven by DCS output"
+      },
+      {
+        "case": "I2S_output_swap",
+        "rejected": true,
+        "error": "runtime clock audit: I2S output is not a direct selected-clock serializer register: hp_bck"
+      },
+      {
+        "case": "audio_PLL_ratio",
+        "rejected": true,
+        "error": "native PLL/divider frequency does not match SDC: audio_76m8"
+      },
+      {
+        "case": "audio_PLL_dynamic",
+        "rejected": true,
+        "error": "native unexpected dynamic PLL divider"
+      },
+      {
+        "case": "pixel_divider",
+        "rejected": true,
+        "error": "native pixel divider waveform changed"
+      },
+      {
+        "case": "extra_DCS",
+        "rejected": true,
+        "error": "runtime clock audit: single DCS inventory changed"
+      },
+      {
+        "case": "source_startup_clock",
+        "rejected": true,
+        "error": "runtime clock audit: monitor source/control clock changed: reference_48_monitor"
+      },
+      {
+        "case": "DDR_PLL_wrong_instance",
+        "rejected": true,
+        "error": "native clock target not resolved: u_memory/u_pll/u_pll_0/PLL_inst/CLKOUT2"
+      },
+      {
+        "case": "reference_lost_input",
+        "rejected": true,
+        "error": "runtime clock audit: primary clock top input inventory changed"
+      },
+      {
+        "case": "disabled_panel_pin_lcd_bl",
+        "rejected": true,
+        "error": "disabled native local-panel output is not static low: lcd_bl"
+      },
+      {
+        "case": "disabled_panel_pin_lcd_pclk",
+        "rejected": true,
+        "error": "disabled native local-panel output is not static low: lcd_pclk"
+      },
+      {
+        "case": "disabled_panel_pin_lcd_r[0]",
+        "rejected": true,
+        "error": "disabled native local-panel output is not static low: lcd_r[0]"
+      },
+      {
+        "case": "retired_LCD_owner_reintroduced",
+        "rejected": true,
+        "error": "disabled native local-panel hierarchy remains in synthesis"
+      },
+      {
+        "case": "reference_48_monitor_release_rising_edge",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_48_monitor"
+      },
+      {
+        "case": "reference_48_monitor_inverter_wrong_reference",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_48_monitor"
+      },
+      {
+        "case": "reference_48_monitor_release_too_early",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor"
+      },
+      {
+        "case": "reference_48_monitor_pre_chain_bypass",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor"
+      },
+      {
+        "case": "reference_44_monitor_release_rising_edge",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_44_monitor"
+      },
+      {
+        "case": "reference_44_monitor_inverter_wrong_reference",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: reference_44_monitor"
+      },
+      {
+        "case": "reference_44_monitor_release_too_early",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_44_monitor"
+      },
+      {
+        "case": "reference_44_monitor_pre_chain_bypass",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: reference_44_monitor"
+      },
+      {
+        "case": "selected_monitor_release_rising_edge",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: selected_monitor"
+      },
+      {
+        "case": "selected_monitor_inverter_wrong_reference",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release clock changed: selected_monitor"
+      },
+      {
+        "case": "selected_monitor_release_too_early",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: selected_monitor"
+      },
+      {
+        "case": "selected_monitor_pre_chain_bypass",
+        "rejected": true,
+        "error": "runtime clock audit: opposite-edge monitor release data chain changed: selected_monitor"
+      }
+    ],
+    "test_log_sha256": "aad205c2a0606ff3e9e8472ac17f0942d6d45eb23f157e19887d60268015575c",
+    "evidence_sha256": "a9e86eb720371691122b5ba2a63a9930f042b8457453d70d7d6915e404338e17",
+    "release_inputs_modified": false
+  }
+}

@@ -261,5 +261,37 @@ class ActualRuntimeClocks(unittest.TestCase):
                 append='\nPLL u_lcd (\n.CLKOUT0(unused_lcd_clock)\n);'), 'local-panel hierarchy remains')
 
 
+    def test_opposite_edge_release_mutations_are_rejected(self):
+        found = 0
+        for name in ('reference_48_monitor', 'reference_44_monitor', 'selected_monitor'):
+            prefix = 'u_managed/runtime/clocks/' + name + '/'
+            pre = {int(m[1]): p for p in self.netlist.cells
+                   if (m := re.fullmatch(re.escape(prefix) + r'source_reset_pre_(\d+)_s\d+', p))}
+            if 2 not in pre:
+                continue  # Frozen legacy monitors keep their rising-edge policy.
+            found += 1
+            release = [p for p in self.netlist.cells if
+                       re.fullmatch(re.escape(prefix) + r'source_reset_n_s\d+', p)]
+            self.assertEqual(len(release), 1)
+            p = release[0]
+            inverters = [q for q, c in self.netlist.cells.items() if c['kind'] == 'INV' and
+                         self.netlist.pin(q, 'O') == self.netlist.pin(p, 'CLK')]
+            self.assertEqual(len(inverters), 1)
+            inv = inverters[0]
+            source = self.netlist.cells[inv]['ports']['I']
+            self.reject(name + '_release_rising_edge', self.change_cell(p, port='CLK', value=source),
+                        'opposite-edge monitor release clock')
+            self.reject(name + '_inverter_wrong_reference', self.change_cell(inv, port='I', value='wrong_clock'),
+                        'opposite-edge monitor release clock')
+            self.reject(name + '_release_too_early', self.change_cell(p, port='D',
+                        value=self.netlist.cells[pre[1]]['ports']['Q']),
+                        'opposite-edge monitor release data chain')
+            self.reject(name + '_pre_chain_bypass', self.change_cell(pre[2], port='D',
+                        value=self.netlist.cells[pre[0]]['ports']['Q']),
+                        'opposite-edge monitor release data chain')
+        if found:
+            self.assertEqual(found, 3)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,1236 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "scope": "external FIFO reset/actual CEA/effective next-Q audit on immutable completed whole-workstation synthesis",
+  "passed": true,
+  "complete_workstation_gates": {
+    "W8": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8-physical-v1/parent_synthesis_audit.json",
+      "sha256": "1b8ed158f00b2009b9beb62db913d30fbc7d1a0c9b5c5fd8f8bfb9e68675f136",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+      "validation_stage": "demo_full_profile_synthesis_only",
+      "integration_inputs_sha256": "44e9e0de5be65d6fc9efc023ed8eb7edc62c79f8f9bcd9781a23637b6bcd96fc",
+      "netlist_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+      "audit_sources_sha256": {
+        "tools/workstation_demo_audit.py": "44c17088b1da40aa7c9c4966752d99b2c3f6589a4651ca15f454191c8260c0a8",
+        "tools/workstation_demo_policy.py": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33",
+        "tools/workstation_custom_board_audit.py": "24103f0e06a098221d613a2611341c6a8ce7f7ce5750dd18db1d474c044348b2",
+        "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "tools/workstation_profile.py": "8529ba858ab041bf6e422bcda861d62d68e376c8e6d47fd8848bf384ca29aca2",
+        "tools/workstation_runtime_clock_audit.py": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+        "tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
+        "tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+        "tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
+        "tools/workstation_usb2_bridge_audit.py": "2ca71720c5ad14a4e00ff7090d3ef502635c5d19aa9b9b540f938cfb2505fa3d",
+        "tools/workstation_custom_timing.py": "6b95fcd680f0fe6c90cb8f1434af66490c5a33acf014ef902c7d3589675ccabe",
+        "tools/workstation_ae350_clock_placement.py": "118b02e7c9eee44c5080ccbc5d7dd88455579d4319350c126da89f520826503b",
+        "tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+        "tools/workstation_board_peripherals.py": "0ea1b704e682923710737632df2b77641c66d17dfddf3c105ec30135f576a349",
+        "tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
+        "tools/stage_usb_firmware.py": "a6fa68f11dc363cd223ad3f59e65d4405a8f349d5cd3d555838ef4981d6512d2",
+        "tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca"
+      },
+      "audit_source_seal_before_and_after": true,
+      "immutable_closure_verified": true,
+      "current_live_tree_reproducibility_rechecked": false
+    }
+  },
+  "full_netlist_M9": {
+    "path": "/tmp/dual138k-m9-fifo-full-netlist-v3/verification.json",
+    "sha256": "291c520a567a39c0dc7cc182ad36e0269b0e802377d5d4a172a624552dde52fc",
+    "result": {
+      "schema": 1,
+      "passed": true,
+      "candidate_identity": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+      "role": "M",
+      "process_exit_code": 0,
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/integration_inputs.json": "ea12a463fcea8691c6d413caa96663748d722daca867365708611ddb14e07c60",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "67814575f7dd095a7e3bb3b17c3460db3bb4fed2b84f723d7093d40fc8f8b590",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/synthesis.log": "cbd6611786303b8c5ee25933253847742d05cc68786b15c6a716c09eccab5fe8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "44c17088b1da40aa7c9c4966752d99b2c3f6589a4651ca15f454191c8260c0a8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/run_workstation_usb_fifo_full_netlist_audit.py": "ebf6640466309a9d6cc24e66fbdc885f515577b9fedff769349c6f1a1ef602dc"
+      },
+      "lexical_connection_audit": {
+        "original_text_sha256": "67814575f7dd095a7e3bb3b17c3460db3bb4fed2b84f723d7093d40fc8f8b590",
+        "named_port_count": 522899,
+        "escaped_named_port_count": 258,
+        "duplicate_bindings_rejected": true,
+        "original_vg_rewritten": false,
+        "shared_parser_modified": false
+      },
+      "actual_gate": {
+        "policy": "demo_usb_fifo_producer_local_release_v1",
+        "actual_write_state_registers": 13,
+        "write_groups": {
+          "produce_w_bin": {
+            "6": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0",
+            "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_5_s0",
+            "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_4_s0",
+            "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_3_s0",
+            "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_2_s0",
+            "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_1_s0",
+            "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_0_s0"
+          },
+          "produce_w_gry": {
+            "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_5_s0",
+            "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_4_s0",
+            "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_3_s0",
+            "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_2_s0",
+            "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_1_s0",
+            "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_0_s0"
+          },
+          "consume_w_bin": {},
+          "w_level": {}
+        },
+        "release_registers": {
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0"
+        },
+        "usb_clock": "usb_clk",
+        "audio_clock": "audio_clk",
+        "async_assertion_net": "u_native_usb/input_owner/queue_fifo_reset",
+        "local_reset_net": "u_native_usb/input_owner/events/fifo/unbuffered/write_reset_4",
+        "reset_function": {
+          "contract": "only final USB release deasserts write reset",
+          "support": [
+            "u_native_usb/input_owner/events/fifo/unbuffered/write_ready"
+          ],
+          "cuts": [
+            "u_native_usb/input_owner/events/fifo/unbuffered/write_ready"
+          ],
+          "exhaustive_assignments": 2
+        },
+        "admission_function": {
+          "contract": "actual packet memory cannot write before local release",
+          "method": "bounded_actual_INV_LUT_zero_cofactor",
+          "support": [
+            "u_native_usb/generic_midi",
+            "u_native_usb/input_owner/\\$1_6",
+            "u_native_usb/input_owner/event_release[2]",
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_4",
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_9",
+            "u_native_usb/input_owner/events/fifo/unbuffered/n108_3",
+            "u_native_usb/input_owner/events/fifo/unbuffered/write_ready",
+            "u_native_usb/input_owner/input_reset",
+            "u_native_usb/input_owner/mapped_valid",
+            "u_native_usb/input_owner/midi/n597_12",
+            "u_native_usb/input_owner/n2057_13",
+            "u_native_usb/input_owner/n3331_10",
+            "u_native_usb/input_owner/n597_24",
+            "u_native_usb/input_owner/n597_4",
+            "u_native_usb/input_owner/panic_flush",
+            "u_native_usb/input_owner/panic_pending",
+            "u_native_usb/input_owner/queue_write_release[1]",
+            "u_native_usb/input_owner/valid",
+            "usb_words[1]"
+          ],
+          "cuts": [
+            "u_native_usb/generic_midi",
+            "u_native_usb/input_owner/\\$1_6",
+            "u_native_usb/input_owner/event_release[2]",
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_4",
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_9",
+            "u_native_usb/input_owner/events/fifo/unbuffered/n108_3",
+            "u_native_usb/input_owner/events/fifo/unbuffered/write_ready",
+            "u_native_usb/input_owner/input_reset",
+            "u_native_usb/input_owner/mapped_valid",
+            "u_native_usb/input_owner/midi/n597_12",
+            "u_native_usb/input_owner/n2057_13",
+            "u_native_usb/input_owner/n3331_10",
+            "u_native_usb/input_owner/n597_24",
+            "u_native_usb/input_owner/n597_4",
+            "u_native_usb/input_owner/panic_flush",
+            "u_native_usb/input_owner/panic_pending",
+            "u_native_usb/input_owner/queue_write_release[1]",
+            "u_native_usb/input_owner/valid",
+            "usb_words[1]"
+          ],
+          "fixed_assignment": {
+            "u_native_usb/input_owner/events/fifo/unbuffered/write_ready": 0
+          },
+          "actual_CEA_possible_values": [
+            0
+          ],
+          "other_inputs_independently_arbitrary": true,
+          "primitive_proofs": [
+            {
+              "primitive": "u_native_usb/input_owner/events/fifo/unbuffered/$1_s4",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_9",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/events/fifo/unbuffered/n108_3",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/queue_write_release[1]",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/events/fifo/unbuffered/write_ready",
+                  "possible_values": [
+                    0
+                  ]
+                }
+              },
+              "INIT": "16'hD000",
+              "exhaustive_local_assignments": 8,
+              "possible_outputs": [
+                0
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/events/fifo/unbuffered/$1_s7",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/panic_flush",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "usb_words[1]",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/event_release[2]",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/\\$1_7",
+                  "possible_values": [
+                    0
+                  ]
+                }
+              },
+              "INIT": "16'h4000",
+              "exhaustive_local_assignments": 8,
+              "possible_outputs": [
+                0
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/midi/event_valid_s6",
+              "kind": "LUT3",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/panic_pending",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/\\$1_11",
+                  "possible_values": [
+                    0
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/mapped_valid",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "8'h45",
+              "exhaustive_local_assignments": 4,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/midi/n597_s2",
+              "kind": "LUT3",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/event_valid_9",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/valid",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/midi/n597_12",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "8'hB0",
+              "exhaustive_local_assignments": 8,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/n3331_s3",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/input_reset",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/generic_midi",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/n597_4",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/n597_5",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "16'h00EF",
+              "exhaustive_local_assignments": 16,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/n3331_s6",
+              "kind": "LUT3",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/\\$1_7",
+                  "possible_values": [
+                    0
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/mapped_valid",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/\\$1_6",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "8'h0D",
+              "exhaustive_local_assignments": 4,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/n3331_s4",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/input_reset",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/n3331_11",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/generic_midi",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/n2057_13",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "16'hEF00",
+              "exhaustive_local_assignments": 16,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/n3331_s2",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/input_owner/n3331_8",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/n597_24",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/n3331_9",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/n3331_10",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                }
+              },
+              "INIT": "16'hF8FF",
+              "exhaustive_local_assignments": 16,
+              "possible_outputs": [
+                0,
+                1
+              ]
+            },
+            {
+              "primitive": "u_native_usb/input_owner/events/fifo/unbuffered/$1_s0",
+              "kind": "LUT4",
+              "output": "F",
+              "inputs": {
+                "I0": {
+                  "net": "u_native_usb/n3331_7",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I1": {
+                  "net": "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_4",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I2": {
+                  "net": "u_native_usb/input_owner/mapped_valid",
+                  "possible_values": [
+                    0,
+                    1
+                  ]
+                },
+                "I3": {
+                  "net": "u_native_usb/input_owner/\\$1_11",
+                  "possible_values": [
+                    0
+                  ]
+                }
+              },
+              "INIT": "16'hF400",
+              "exhaustive_local_assignments": 8,
+              "possible_outputs": [
+                0
+              ]
+            }
+          ],
+          "max_local_assignments": 64,
+          "global_truth_table_bound_unchanged": 16,
+          "nonzero_frontier_witness": {
+            "assignment": {
+              "u_native_usb/generic_midi": 1,
+              "u_native_usb/input_owner/\\$1_6": 0,
+              "u_native_usb/input_owner/event_release[2]": 1,
+              "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_4": 1,
+              "u_native_usb/input_owner/events/fifo/unbuffered/\\$1_9": 0,
+              "u_native_usb/input_owner/events/fifo/unbuffered/n108_3": 0,
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_ready": 1,
+              "u_native_usb/input_owner/input_reset": 1,
+              "u_native_usb/input_owner/mapped_valid": 1,
+              "u_native_usb/input_owner/midi/n597_12": 1,
+              "u_native_usb/input_owner/n2057_13": 0,
+              "u_native_usb/input_owner/n3331_10": 1,
+              "u_native_usb/input_owner/n597_24": 0,
+              "u_native_usb/input_owner/n597_4": 0,
+              "u_native_usb/input_owner/panic_flush": 0,
+              "u_native_usb/input_owner/panic_pending": 0,
+              "u_native_usb/input_owner/queue_write_release[1]": 1,
+              "u_native_usb/input_owner/valid": 1,
+              "usb_words[1]": 1
+            },
+            "actual_CEA": 1,
+            "attempts": 13,
+            "sequential_reachability_claimed": false
+          }
+        },
+        "pointer_increment_function": {
+          "contract": "effective producer Q0 toggles exactly on the real packet-memory write",
+          "support": [
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1",
+            "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin[0]"
+          ],
+          "cuts": [
+            "u_native_usb/input_owner/events/fifo/unbuffered/\\$1",
+            "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin[0]"
+          ],
+          "exhaustive_assignments": 4
+        },
+        "actual_memory_write_pin": "u_native_usb/input_owner/events/fifo/unbuffered/storage_storage_0_0_s/CEA",
+        "original_audio_reset_registers": [
+          "u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage1_s0",
+          "u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage0_s0"
+        ],
+        "no_pointer_reset_false_paths_added": true,
+        "two_domains_verified": true,
+        "physical_recovery_removal_accepted": false,
+        "hardware_tested": false
+      },
+      "negative_controls": {
+        "producer_reset_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "producer_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "release_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: write release clock/asynchronous assertion/enable changed"
+        },
+        "memory_admission_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: actual packet write admission lacks final USB release"
+        },
+        "admission_lut_truth_table_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: Boolean contract changed: actual packet memory cannot write before local release"
+        },
+        "pointer_data_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: producer Q0 data driver missing/ambiguous"
+        },
+        "pointer_enable_bypass": {
+          "rejected": true,
+          "error": "runtime PCM CDC audit: Boolean contract changed: effective producer Q0 toggles exactly on the real packet-memory write"
+        },
+        "pointer_lut_truth_table_bypass": {
+          "rejected": true,
+          "error": "runtime PCM CDC audit: Boolean contract changed: effective producer Q0 toggles exactly on the real packet-memory write"
+        }
+      },
+      "candidate_inputs_modified": false,
+      "source_RTL_modified": false,
+      "full_workstation_synthesis_gate_accepted": false,
+      "PNR": false,
+      "hardware_tested": false,
+      "legacy_parser_comparison": {
+        "gate_passed": true,
+        "alias_defect_triggered_by_this_mapping": false,
+        "strict_lexer_still_required": true
+      },
+      "pointer_increment_mapping": "effective_next_Q_actual_LUT"
+    }
+  },
+  "full_netlist_W8": {
+    "path": "/tmp/dual138k-w8-fifo-full-netlist-v6/verification.json",
+    "sha256": "2190c36fbf12d93a594a81a4a943fc1cf26d68b82a583da4b52d4211dd72df10",
+    "result": {
+      "schema": 1,
+      "passed": true,
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+      "role": "W",
+      "process_exit_code": 0,
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8/integration_inputs.json": "44e9e0de5be65d6fc9efc023ed8eb7edc62c79f8f9bcd9781a23637b6bcd96fc",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8/synthesis.log": "45ec7386f52fc24ebfe1a65671d9b611e4762baac409ca005979475e97be9813",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "44c17088b1da40aa7c9c4966752d99b2c3f6589a4651ca15f454191c8260c0a8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/run_workstation_usb_fifo_full_netlist_audit.py": "ebf6640466309a9d6cc24e66fbdc885f515577b9fedff769349c6f1a1ef602dc"
+      },
+      "lexical_connection_audit": {
+        "original_text_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+        "named_port_count": 608911,
+        "escaped_named_port_count": 543,
+        "duplicate_bindings_rejected": true,
+        "original_vg_rewritten": false,
+        "shared_parser_modified": false
+      },
+      "actual_gate": {
+        "policy": "demo_usb_fifo_producer_local_release_v1",
+        "actual_write_state_registers": 13,
+        "write_groups": {
+          "produce_w_bin": {
+            "6": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0",
+            "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_5_s0",
+            "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_4_s0",
+            "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_3_s0",
+            "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_2_s0",
+            "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_1_s0",
+            "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_0_s0"
+          },
+          "produce_w_gry": {
+            "5": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_5_s0",
+            "4": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_4_s0",
+            "3": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_3_s0",
+            "2": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_2_s0",
+            "1": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_1_s0",
+            "0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_0_s0"
+          },
+          "consume_w_bin": {},
+          "w_level": {}
+        },
+        "release_registers": {
+          "0": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0",
+          "1": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0"
+        },
+        "usb_clock": "usb_clk",
+        "audio_clock": "audio_clk",
+        "async_assertion_net": "u_native_usb/input_owner/queue_fifo_reset",
+        "local_reset_net": "u_native_usb/input_owner/events/fifo/unbuffered/write_reset_4",
+        "reset_function": {
+          "contract": "only final USB release deasserts write reset",
+          "support": [
+            "u_native_usb/input_owner/write_ready"
+          ],
+          "cuts": [
+            "u_native_usb/input_owner/write_ready"
+          ],
+          "exhaustive_assignments": 2
+        },
+        "admission_function": {
+          "contract": "actual packet memory cannot write before local release",
+          "support": [
+            "u_native_usb/generic_midi",
+            "u_native_usb/input_owner/GND",
+            "u_native_usb/input_owner/\\$1_17",
+            "u_native_usb/input_owner/\\$1_5",
+            "u_native_usb/input_owner/input_reset",
+            "u_native_usb/input_owner/mapped_boundary_12",
+            "u_native_usb/input_owner/mapped_boundary_16",
+            "u_native_usb/input_owner/mapped_boundary_20",
+            "u_native_usb/input_owner/mapped_boundary_28",
+            "u_native_usb/input_owner/n108_3",
+            "u_native_usb/input_owner/queue_write_release[1]",
+            "u_native_usb/input_owner/write_ready"
+          ],
+          "cuts": [
+            "u_native_usb/generic_midi",
+            "u_native_usb/input_owner/GND",
+            "u_native_usb/input_owner/\\$1_17",
+            "u_native_usb/input_owner/\\$1_5",
+            "u_native_usb/input_owner/input_reset",
+            "u_native_usb/input_owner/mapped_boundary_12",
+            "u_native_usb/input_owner/mapped_boundary_16",
+            "u_native_usb/input_owner/mapped_boundary_20",
+            "u_native_usb/input_owner/mapped_boundary_28",
+            "u_native_usb/input_owner/n108_3",
+            "u_native_usb/input_owner/queue_write_release[1]",
+            "u_native_usb/input_owner/write_ready"
+          ],
+          "exhaustive_assignments": 4096
+        },
+        "pointer_increment_function": {
+          "contract": "effective producer Q0 toggles exactly on the real packet-memory write",
+          "primitive": "u_native_usb/input_owner/events/fifo/unbuffered/$2_0_s",
+          "kind": "ALU",
+          "ALU_MODE": 0,
+          "CIN": 0,
+          "I3": 0,
+          "previous": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_0[0]",
+          "actual_memory_grant": "u_native_usb/input_owner/events/fifo/unbuffered/\\$1",
+          "CE": 1,
+          "primitive_pins": {
+            "SUM": "u_native_usb/input_owner/events/fifo/unbuffered/\\$2 [0]",
+            "I0": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_0[0]",
+            "I1": "u_native_usb/input_owner/events/fifo/unbuffered/\\$1",
+            "CIN": "u_native_usb/input_owner/events/fifo/unbuffered/GND",
+            "I3": "u_native_usb/input_owner/events/fifo/unbuffered/GND"
+          },
+          "equation": "SUM=(I0 XOR I1) XOR CIN; CIN=0; I0/I1 are exact Q0 and CEA",
+          "primitive_reference": "Gowin GW5A prim_sim.v ALU ADD=0",
+          "truth_table": [
+            {
+              "previous": 0,
+              "actual_memory_grant": 0,
+              "next_q": 0
+            },
+            {
+              "previous": 0,
+              "actual_memory_grant": 1,
+              "next_q": 1
+            },
+            {
+              "previous": 1,
+              "actual_memory_grant": 0,
+              "next_q": 1
+            },
+            {
+              "previous": 1,
+              "actual_memory_grant": 1,
+              "next_q": 0
+            }
+          ],
+          "exhaustive_assignments": 4
+        },
+        "actual_memory_write_pin": "u_native_usb/input_owner/events/fifo/unbuffered/storage_storage_0_0_s/CEA",
+        "original_audio_reset_registers": [
+          "u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage1_s0",
+          "u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage0_s0"
+        ],
+        "no_pointer_reset_false_paths_added": true,
+        "two_domains_verified": true,
+        "physical_recovery_removal_accepted": false,
+        "hardware_tested": false
+      },
+      "negative_controls": {
+        "escaped_formal_alias_omitted": {
+          "rejected": true,
+          "error": "runtime PCM CDC audit: Boolean contract changed: actual packet memory cannot write before local release"
+        },
+        "producer_reset_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "producer_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "release_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: write release clock/asynchronous assertion/enable changed"
+        },
+        "memory_admission_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: actual packet write admission lacks final USB release"
+        },
+        "admission_lut_truth_table_bypass": {
+          "rejected": true,
+          "error": "runtime PCM CDC audit: Boolean contract changed: actual packet memory cannot write before local release"
+        },
+        "adder_mode": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+        },
+        "adder_carry": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+        },
+        "adder_operand": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+        }
+      },
+      "candidate_inputs_modified": false,
+      "source_RTL_modified": false,
+      "full_workstation_synthesis_gate_accepted": false,
+      "PNR": false,
+      "hardware_tested": false,
+      "pointer_increment_mapping": "exact_real_ALU_MODE0"
+    }
+  },
+  "independent_FIFO_owner_regression": {
+    "path": "/tmp/dual138k-usb-fifo-local-gate-v6/verification.json",
+    "sha256": "0bbda2af526d816d42d40f2463b10464b2c4fac0aea7869cd51a15e98a69212c",
+    "result": {
+      "schema": 1,
+      "passed": true,
+      "policy": "demo_usb_fifo_producer_local_release_v1",
+      "input_sha256": {
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_fifo_write_reset.sv": "d28f5b05decb4b03ef09ba41ec157b7ba792016feb0da308a7ee554fe95bfbce",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb_fifo_local_reset.sv": "d47157271152ed02b2fd07a88de28b17727ad8a0f575236192d67f7ced51fc23",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_usb_stop_clock_fence.sv": "2c4ce3b1a2fca79824e381da693ce2974a3905ee267a4495101745e62008404a",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/usb2/run_workstation_usb_fifo_local_reset.py": "888a224117ec2f947848bfb391664b912f2964fc1b750ac5df274a70ba990236",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_usb_fifo_reset.py": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "d9df2048b318f4de744d56adad01aab1c888f9265a923dc535def85a5fecc313",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_service_adapter.sv": "fd3ec8d244bb5f521bc3fdfe6dcb316bed08a86cb7b447a07da3dd40d1d6313b",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/control/workstation_session.sv": "2c0ec3843b8b71f4717262a50c8b780cfc1d6634b9d800b141b5e23e59ebea51",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/push2/push2_song_screen.sv": "51638b9ba0e3cfb9a4e8c2a8b4ad330fad4cba3b168179abbf25de437c2c0702",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8/workstation/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8/workstation/Prj1/src/push2/push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v8/workstation/Prj1/src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b"
+      },
+      "default_generated_fifo_sha256": "2084bead34bf421610fd20489ece66601823b87f72887228be25de5374a956c6",
+      "adapted_fifo_sha256": "3df91e1cf0ce2c4f575bc66da2444e2f854018a989e67b05e80aa2b1fd1cc408",
+      "commands": {
+        "two_domains_compile": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--timescale-override",
+          "1ns/1ps",
+          "-j",
+          "4",
+          "-Wno-fatal",
+          "--top-module",
+          "tb_workstation_usb_fifo_local_reset",
+          "--Mdir",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/two_domains_obj",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/fifo.v",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/workstation_fifo_write_reset.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/tb_workstation_usb_fifo_local_reset.sv"
+        ],
+        "two_domains": [
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/two_domains_obj/Vtb_workstation_usb_fifo_local_reset"
+        ],
+        "negative_one_edge_compile": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--timescale-override",
+          "1ns/1ps",
+          "-j",
+          "4",
+          "-Wno-fatal",
+          "--top-module",
+          "tb_workstation_usb_fifo_local_reset",
+          "--Mdir",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_one_edge_obj",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/fifo.v",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_one_edge.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/tb_workstation_usb_fifo_local_reset.sv"
+        ],
+        "negative_one_edge": [
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_one_edge_obj/Vtb_workstation_usb_fifo_local_reset"
+        ],
+        "negative_synchronous_assertion_compile": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--timescale-override",
+          "1ns/1ps",
+          "-j",
+          "4",
+          "-Wno-fatal",
+          "--top-module",
+          "tb_workstation_usb_fifo_local_reset",
+          "--Mdir",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_synchronous_assertion_obj",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/fifo.v",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_synchronous_assertion.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/tb_workstation_usb_fifo_local_reset.sv"
+        ],
+        "negative_synchronous_assertion": [
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/negative_synchronous_assertion_obj/Vtb_workstation_usb_fifo_local_reset"
+        ],
+        "owner_compile": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--timescale-override",
+          "1ns/1ps",
+          "-j",
+          "4",
+          "-Wno-fatal",
+          "--top-module",
+          "tb_workstation_usb_stop_clock_fence",
+          "--Mdir",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_obj",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_0_push2_usb_a_control.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_1_push2_controls.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_2_workstation_usb2_service_adapter.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_3_push2_surface_pixels.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_4_workstation_session.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_5_push2_playlist_hold.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_6_push2_song_menu.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_7_push2_score_guide.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_8_push2_lights.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_9_push2_led_tx.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_10_push2_song_screen.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_11_gw138k_stream_cdc.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_12_push2_midi_rx.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_13_video_font_5x7.v",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/fifo.v",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/workstation_fifo_write_reset.sv",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/tb_workstation_usb_stop_clock_fence.sv"
+        ],
+        "owner_run": [
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/owner_obj/Vtb_workstation_usb_stop_clock_fence"
+        ],
+        "synthesis": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+          "/private/tmp/dual138k-usb-fifo-local-gate-v6/run.tcl"
+        ]
+      },
+      "hardware_tested": false,
+      "PNR": false,
+      "SRAM_deployed": false,
+      "Flash_deployed": false,
+      "two_domain_simulation": {
+        "passed": true,
+        "asynchronous_assertions": 6,
+        "transfers": 4,
+        "usb_stop": true,
+        "audio_stop": true,
+        "both_stopped_boundaries": 3,
+        "exact_usb_release_edges": 2
+      },
+      "simulation_negative_controls": {
+        "negative_one_edge": {
+          "rejected": true,
+          "oracle": "release before two real USB edges"
+        },
+        "negative_synchronous_assertion": {
+          "rejected": true,
+          "oracle": "write state did not assert asynchronously"
+        }
+      },
+      "owner_stop_clock_hotplug": {
+        "passed": true,
+        "summary": [
+          "USB_STOP_CLOCK_FENCE enabled=1 attaches=3 barriers=4 detaches=2 panics=1 defaults=39 stale=0 fresh=3 blocked=3 hold_stops=3 drain_stops=3 pointer_checks=3 stores=18",
+          "USB_STOP_CLOCK_FENCE enabled=0 attaches=3 barriers=4 detaches=2 panics=1 defaults=39 stale=8 fresh=6 blocked=3 hold_stops=0 drain_stops=0 pointer_checks=0 stores=18"
+        ],
+        "audio_six_edge_hold_and_six_edge_drain": true,
+        "legacy_replay_negative": true,
+        "concurrent_legacy_and_fenced_instances": true
+      },
+      "actual_synthesis": {
+        "gate": {
+          "policy": "demo_usb_fifo_producer_local_release_v1",
+          "actual_write_state_registers": 13,
+          "write_groups": {
+            "produce_w_bin": {
+              "6": "fifo/unbuffered/produce_w_bin_6_s0",
+              "5": "fifo/unbuffered/produce_w_bin_5_s0",
+              "4": "fifo/unbuffered/produce_w_bin_4_s0",
+              "3": "fifo/unbuffered/produce_w_bin_3_s0",
+              "2": "fifo/unbuffered/produce_w_bin_2_s0",
+              "1": "fifo/unbuffered/produce_w_bin_1_s0",
+              "0": "fifo/unbuffered/produce_w_bin_0_s0"
+            },
+            "produce_w_gry": {
+              "5": "fifo/unbuffered/produce_w_gry_5_s0",
+              "4": "fifo/unbuffered/produce_w_gry_4_s0",
+              "3": "fifo/unbuffered/produce_w_gry_3_s0",
+              "2": "fifo/unbuffered/produce_w_gry_2_s0",
+              "1": "fifo/unbuffered/produce_w_gry_1_s0",
+              "0": "fifo/unbuffered/produce_w_gry_0_s0"
+            },
+            "consume_w_bin": {},
+            "w_level": {}
+          },
+          "release_registers": {
+            "0": "fifo/unbuffered/write_domain_reset/release_q_0_s0",
+            "1": "fifo/unbuffered/write_domain_reset/release_q_1_s0"
+          },
+          "usb_clock": "usb_clk",
+          "audio_clock": "audio_clk",
+          "async_assertion_net": "usb_rst",
+          "local_reset_net": "fifo/unbuffered/write_reset_4",
+          "reset_function": {
+            "contract": "only final USB release deasserts write reset",
+            "support": [
+              "fifo/unbuffered/write_ready"
+            ],
+            "cuts": [
+              "fifo/unbuffered/write_ready"
+            ],
+            "exhaustive_assignments": 2
+          },
+          "admission_function": {
+            "contract": "actual packet memory cannot write before local release",
+            "support": [
+              "fifo/unbuffered/\\$1_4",
+              "fifo/unbuffered/n108_3",
+              "fifo/unbuffered/write_ready",
+              "w_en"
+            ],
+            "cuts": [
+              "fifo/unbuffered/\\$1_4",
+              "fifo/unbuffered/n108_3",
+              "fifo/unbuffered/write_ready",
+              "w_en"
+            ],
+            "exhaustive_assignments": 16
+          },
+          "pointer_increment_function": {
+            "contract": "effective producer Q0 toggles exactly on the real packet-memory write",
+            "support": [
+              "fifo/unbuffered/\\$1",
+              "fifo/unbuffered/produce_w_bin[0]"
+            ],
+            "cuts": [
+              "fifo/unbuffered/\\$1",
+              "fifo/unbuffered/produce_w_bin[0]"
+            ],
+            "exhaustive_assignments": 4
+          },
+          "actual_memory_write_pin": "fifo/unbuffered/storage_storage_0_0_s/CEA",
+          "original_audio_reset_registers": [
+            "fifo/unbuffered/rst_cdc/stage1_s0",
+            "fifo/unbuffered/rst_cdc/stage0_s0"
+          ],
+          "no_pointer_reset_false_paths_added": true,
+          "two_domains_verified": true,
+          "physical_recovery_removal_accepted": false,
+          "hardware_tested": false
+        },
+        "tool": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+        "vg_sha256": "bee7fd6652cd47794fa881f3c8b38b50cb571f7c5dffc733b919affa76b667fb"
+      },
+      "netlist_negative_controls": {
+        "producer_reset_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "producer_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: fifo/unbuffered/produce_w_bin_6_s0"
+        },
+        "release_wrong_clock": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: write release clock/asynchronous assertion/enable changed"
+        },
+        "release_shortcut": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: write release is not two real USB edges"
+        },
+        "memory_admission_bypass": {
+          "rejected": true,
+          "error": "USB FIFO local-reset synthesis audit: actual packet write admission lacks final USB release"
+        }
+      },
+      "outputs_sha256": {
+        "negative_one_edge.sv": "59f490a122a7603c66bed8d40f4b2d72ded958dc2baca7474dba65bb61ffa15a",
+        "owner_6_push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+        "owner_7_push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+        "owner_12_push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+        "owner_0_push2_usb_a_control.sv": "d9df2048b318f4de744d56adad01aab1c888f9265a923dc535def85a5fecc313",
+        "owner_3_push2_surface_pixels.sv": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+        "owner_run.log": "17c4a1d7d039a8a599b0b4be7f70ad695915db5a9464fc178ef2f1bed0d0eda2",
+        "negative_synchronous_assertion_compile.log": "1e4315b813f9943364cc37aa43b172072cbaae6b12b81311182d4dc4a0f6ad27",
+        "run.tcl": "118e315f7334bb07a827e1e556a03f4774af97d4c70387be52ac88834dba4eb4",
+        "two_domains.log": "2b2f6cfd82171b1e1b80e2fcf73102bb48f06b50c9ef048af33d3d5b0731af5b",
+        "owner_4_workstation_session.sv": "2c0ec3843b8b71f4717262a50c8b780cfc1d6634b9d800b141b5e23e59ebea51",
+        "owner_13_video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+        "workstation_fifo_write_reset.sv": "d28f5b05decb4b03ef09ba41ec157b7ba792016feb0da308a7ee554fe95bfbce",
+        "owner_compile.log": "fd9470a1d4e866f5d6653bbca6d02a5349330435a89e6bf00ee7079dd1d1cae6",
+        "synthesis.log": "c8289231a4b09ad9200be3aba71d723ac982e365e00d3ea1a1000e0ddac72e47",
+        "fifo.v": "3df91e1cf0ce2c4f575bc66da2444e2f854018a989e67b05e80aa2b1fd1cc408",
+        "owner_1_push2_controls.sv": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+        "negative_synchronous_assertion.log": "1b23be714b7cfd81392b13dc840e0e9af5e7ecec8f542e5de283c03ecc1805e4",
+        "negative_synchronous_assertion.sv": "a9aa1d1023c49d16dd319a96895b3f6fe735fdabeaeb16a61ac261030601a756",
+        "tb_workstation_usb_stop_clock_fence.sv": "2c4ce3b1a2fca79824e381da693ce2974a3905ee267a4495101745e62008404a",
+        "owner_9_push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+        "owner_11_gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+        "owner_2_workstation_usb2_service_adapter.sv": "fd3ec8d244bb5f521bc3fdfe6dcb316bed08a86cb7b447a07da3dd40d1d6313b",
+        "owner_10_push2_song_screen.sv": "51638b9ba0e3cfb9a4e8c2a8b4ad330fad4cba3b168179abbf25de437c2c0702",
+        "owner_8_push2_lights.sv": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+        "owner_5_push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+        "two_domains_compile.log": "fdb3458c61c9c4b2847cc6d75182a51f79f718424dd79d686ffdb673d3a64c96",
+        "negative_one_edge_compile.log": "9ce10dd69445f425b99040c40214ed0409a126d2a899170a915541ef86608861",
+        "tb_workstation_usb_fifo_local_reset.sv": "d47157271152ed02b2fd07a88de28b17727ad8a0f575236192d67f7ced51fc23",
+        "negative_one_edge.log": "a7e67d29898d94eb1903d995fd7bd8bcb636344e5bb6e44ea222eb6926790975",
+        "impl/gwsynthesis/fifo.vg": "bee7fd6652cd47794fa881f3c8b38b50cb571f7c5dffc733b919affa76b667fb",
+        "impl/gwsynthesis/fifo_syn_rsc.xml": "77c6d297363abcc9534556087df8be7e23bb746cbb3d2040980856456c96629a",
+        "impl/gwsynthesis/fifo.prj": "2f7d758ce27a8cd3479f625c339c2d0cebd98c0034b05cf0db9e2ae07f96fb8a",
+        "impl/gwsynthesis/fifo.log": "8b23cc85a83fa3d1c47b5f41a09eda0265ba2f4f1593071f86cf7076c4314800",
+        "impl/gwsynthesis/fifo_syn.rpt.html": "9de8d93b83621cf237edf60475a9b7d1e9eec7517005192912ff35cdb9c3c3fc",
+        "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+        "impl/gwsynthesis/fifo_syn_resource.html": "9d7369d4dc39a01529856103499028691e0767781ddf63806763898357f5dc42"
+      }
+    }
+  },
+  "original_failed_W8_audit": {
+    "path": "/tmp/dual138k-w8-fifo-audit-failure-v1.json",
+    "sha256": "09a1b7c2ad8c2d5f566a636664f3d1981d792f471a34c0ad3549f54f1bb219c6",
+    "result": {
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+      "process_exit_code": 0,
+      "scope": "FIFO standalone assumptions applied to actual complete-workstation netlist",
+      "netlist_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+      "auditor_sha256": "3920321cea58f6a22ca0f46b195df8949838651e4dc1c9cfe0d377af240e9737",
+      "failures": [
+        "SynthesisNetlist escaped scalar formal aliases yielded false independent Boolean cuts for actual packet CEA",
+        "Strict escaped-port PcmNetlist fixes CEA correlation; whole-workstation producer bit0 D maps to real ALU_MODE=0 SUM, unsupported by generic LUT-only Graph"
+      ],
+      "candidate_inputs_modified": false,
+      "source_RTL_modified": false,
+      "audit_passed": false,
+      "physical_prepared": false
+    }
+  },
+  "original_failed_M9_full_gate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9-synthesis-audit-v2.err",
+    "sha256": "3fd0df31a4204c2a4da216351d85c586e05d487e724937f3fe0fabc4cdf1cf05",
+    "error": "Traceback (most recent call last):\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py\", line 197, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py\", line 87, in _run_code\n    exec(code, run_globals)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py\", line 670, in <module>\n    main()\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py\", line 666, in main\n    print(json.dumps(audit(args.output), ensure_ascii=False, indent=2))\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py\", line 323, in audit\n    return audit_demo(ROOT, output, metadata)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py\", line 517, in audit\n    actual_synthesis=audit_fifo_reset(PcmNetlist(vg_text, TOP)))\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_usb_fifo_reset.py\", line 223, in audit_synthesis\n    admission = g.equivalent('actual packet memory cannot write before local release',\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py\", line 372, in equivalent\n    require(len(support) <= 16, 'Boolean support exceeds reviewed bound: ' + label)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py\", line 104, in require\n    raise ValueError('runtime PCM CDC audit: ' + message)\nValueError: runtime PCM CDC audit: Boolean support exceeds reviewed bound: actual packet memory cannot write before local release\n",
+    "preserved": true
+  },
+  "corrected_test_harness_mapping_assumptions": [
+    {
+      "path": "/tmp/dual138k-m9-fifo-full-netlist-v1/verification.json",
+      "sha256": "9245eee6b3200129ffd999edd28381c58ba2d7f4236d928bb93650068e229fe9",
+      "test_harness_assumption_failure": "W8-specific legacy parser failure expectation did not apply to M9 mapping",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+      "positive_actual_gate_completed": true,
+      "candidate_inputs_modified": false
+    },
+    {
+      "path": "/tmp/dual138k-m9-fifo-full-netlist-v2/verification.json",
+      "sha256": "3780486ff02cf3f144b319d607c715b93ee0be6930a7fd03b2af45d1ec5cf2ca",
+      "test_harness_assumption_failure": "W8-specific ALU mapping expectation did not apply to M9 actual Q0 LUT mapping",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+      "positive_actual_gate_completed": true,
+      "candidate_inputs_modified": false
+    }
+  ],
+  "external_auditor_vs_original_sealed_snapshot": {
+    "M9": {
+      "tools/workstation_usb_fifo_reset.py": {
+        "current_external_auditor_sha256": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "original_source_snapshot_sha256": "3920321cea58f6a22ca0f46b195df8949838651e4dc1c9cfe0d377af240e9737",
+        "original_staged_input_sha256": "3920321cea58f6a22ca0f46b195df8949838651e4dc1c9cfe0d377af240e9737"
+      },
+      "tools/workstation_demo_audit.py": {
+        "current_external_auditor_sha256": "44c17088b1da40aa7c9c4966752d99b2c3f6589a4651ca15f454191c8260c0a8",
+        "original_source_snapshot_sha256": "c5c3df387ac1873bc7b0e9bdee82a0ddcb6e634d80c727d219ce504dbb98d5dc",
+        "original_staged_input_sha256": null
+      },
+      "tools/workstation_runtime_clock_audit.py": {
+        "current_external_auditor_sha256": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+        "original_source_snapshot_sha256": "3ff6633ee3fa3a8fc15d0c77f4391567aa44fc9cb12824f338f20dc32a8ccb98",
+        "original_staged_input_sha256": null
+      },
+      "tools/workstation_runtime_pcm_cdc.py": {
+        "current_external_auditor_sha256": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "original_source_snapshot_sha256": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "original_staged_input_sha256": null
+      }
+    },
+    "W8": {
+      "tools/workstation_usb_fifo_reset.py": {
+        "current_external_auditor_sha256": "c8719805d77f2b30c5f27989f8c99fa2f37ed4bac3f5cba096e066307761a200",
+        "original_source_snapshot_sha256": "3920321cea58f6a22ca0f46b195df8949838651e4dc1c9cfe0d377af240e9737",
+        "original_staged_input_sha256": "3920321cea58f6a22ca0f46b195df8949838651e4dc1c9cfe0d377af240e9737"
+      },
+      "tools/workstation_demo_audit.py": {
+        "current_external_auditor_sha256": "44c17088b1da40aa7c9c4966752d99b2c3f6589a4651ca15f454191c8260c0a8",
+        "original_source_snapshot_sha256": "c5c3df387ac1873bc7b0e9bdee82a0ddcb6e634d80c727d219ce504dbb98d5dc",
+        "original_staged_input_sha256": null
+      },
+      "tools/workstation_runtime_clock_audit.py": {
+        "current_external_auditor_sha256": "0104a3af4ee2da74cee8ce1e2801b169450035f29ff778d6f58d9d85e1a41f5f",
+        "original_source_snapshot_sha256": "3ff6633ee3fa3a8fc15d0c77f4391567aa44fc9cb12824f338f20dc32a8ccb98",
+        "original_staged_input_sha256": null
+      },
+      "tools/workstation_runtime_pcm_cdc.py": {
+        "current_external_auditor_sha256": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "original_source_snapshot_sha256": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "original_staged_input_sha256": null
+      }
+    }
+  },
+  "vendor_primitive_reference": {
+    "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+    "sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "lines": [
+      329,
+      334,
+      335,
+      336
+    ],
+    "exact_equation": "ALU_MODE=0 ADD: SUM=(I0 XOR I1) XOR CIN; CIN=0",
+    "generic_ALU_evaluator_added": false
+  },
+  "regressions": {
+    "local_reset_policy_tests": 6,
+    "demo_policy_and_audit_tests": 22,
+    "accepted_source_boundary_tests": 17,
+    "all_passed": true,
+    "diff_check_passed": true
+  },
+  "release_inputs_modified": false,
+  "RTL_modified": false,
+  "firmware_modified": false,
+  "SDC_modified": false,
+  "original_staged_tools_or_manifests_modified": false,
+  "new_candidate_identity_required": false,
+  "policy": "candidate identity continues to identify original immutable release inputs; external audit tool identity is separately sealed",
+  "physical_implementation": "W8 D2103108 P&R independently started; result is not claimed by this FIFO audit",
+  "timing_closed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false
+}

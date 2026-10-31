@@ -15,7 +15,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from tools.workstation_baselines import load_baseline
 from tools.workstation_resource_timing import event_fifo
-from tools.workstation_synthesis_netlist import SynthesisNetlist
+from tools.workstation_runtime_pcm_cdc import PcmNetlist
 from tools import workstation_usb_fifo_reset as policy
 
 
@@ -111,7 +111,7 @@ def main():
             'add_file -type verilog {'+str(fifo)+'}\nadd_file -type verilog {'+str(local_source)+'}\nrun syn\n')
         text=run('synthesis',[str(tool),str(script)],env=env)
         require(text.count('GowinSynthesis finish')==1 and not re.search(r'^ERROR\b',text,re.M),'actual compiler did not finish')
-        vg=out/'impl/gwsynthesis/fifo.vg';n=SynthesisNetlist(vg.read_text(),'gw138k_usb_event_fifo')
+        vg=out/'impl/gwsynthesis/fifo.vg';n=PcmNetlist(vg.read_text(),'gw138k_usb_event_fifo')
         gate=policy.audit_synthesis(n,fifo_scope='fifo/unbuffered')
         result['actual_synthesis']=dict(gate=gate,tool=str(tool),tool_sha256=sha(tool),vg_sha256=sha(vg))
         result['netlist_negative_controls']={}

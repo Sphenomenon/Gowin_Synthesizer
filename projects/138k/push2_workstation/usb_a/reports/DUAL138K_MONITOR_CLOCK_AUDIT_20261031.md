@@ -1,0 +1,9 @@
+# 真实下降沿复位释放的时钟审计
+
+2026-10-31。M9完整综合生成真实VG后，旧时钟门禁正确拒绝其新增负沿释放时钟：旧规则要求monitor所有source寄存器都直接使用正相参考。生产RTL及离线等价证据不变，见[时钟释放修复](DUAL138K_CLOCK_DISPLAY_CONTROL_20261031.md)。本阶段只更新独立审计器，不改候选中的任何封存输入。
+
+Gowin实际将负沿`source_reset_n`映射为正沿DFFRE和唯一显式INV，数据取三个正沿pre级的最后一级。新门禁只有在真实pre寄存器恰为0／1／2、唯一release的D接pre2的Q、全部CE恒开、pre1／2逐级直连、release时钟只来自唯一INV且INV输入为对应真实参考时，才接受这个release时钟。其余source counter／Gray／startup仍要求正相源时钟，全部control仍要求50MHz。保留旧两pre级／正沿release审计路径；没有增加时钟、例外、延迟放宽或任意反相时钟许可。
+
+M9和W8两个真实VG的完整`sim/test_workstation_runtime_clocks.py`各六项回归通过，各41个真实网表／SDC破坏全部拒绝；每个monitor新增上升沿误接、INV错参考、过早释放、pre级旁路四个负控。已有DCS、PLL、serializer和控制域时钟负控继续保留。[实际门禁证据](dual138k_monitor_clock_audit_20261031.json)记录两VG与当前审计源码hash；W8由另一代理只读独立复核，未运行新EDA。
+
+审计器在已封存候选之外运行，当前工具身份随新审计结果记录；原候选中旧工具快照、RTL、固件、SDC和编译输入hash保持原样。完整综合已经完成，不因验证工具修复冒称再次综合。完整P&R时序、真实clock routing及实板仍待验收，本报告不预记时序收益。

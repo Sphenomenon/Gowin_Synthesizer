@@ -120,6 +120,7 @@ def audit_runtime_clocks(root, stage, netlist_text):
     require(n.pin(SELECTOR, 'CLKIN0') == 'clk_12m288' and
             n.pin(SELECTOR, 'CLKIN1') == 'clk_16m9344', 'DCS reference wiring changed')
     zero_nets = {"1'b0"} | {n.pin(p, 'G') for p, c in n.cells.items() if c['kind'] == 'GND'}
+    one_nets = {"1'b1"} | {n.pin(p, 'V') for p, c in n.cells.items() if c['kind'] == 'VCC'}
     require(all(n.pin(SELECTOR, pin) in zero_nets for pin in ('CLKIN2', 'CLKIN3', 'SELFORCE')),
             'DCS unused inputs or SELFORCE are not constant zero')
     scope = n.scopes[SELECTOR]
@@ -151,12 +152,43 @@ def audit_runtime_clocks(root, stage, netlist_text):
         prefix = 'u_managed/runtime/clocks/' + name + '/'
         source_regs = sorted(p for p in registers if p.startswith((prefix + 'source_', prefix + 'startup_source_')))
         control_regs = sorted(p for p in registers if p.startswith(prefix) and p not in source_regs)
+        pre = {}
+        release = [p for p in source_regs if re.fullmatch(re.escape(prefix) + r'source_reset_n_s\d+', p)]
+        for p in source_regs:
+            match = re.fullmatch(re.escape(prefix) + r'source_reset_pre_(\d+)_s\d+', p)
+            if match:
+                require(int(match[1]) not in pre, 'duplicate monitor release pre stage: ' + name)
+                pre[int(match[1])] = p
+        negative_release = []
+        release_evidence = dict(policy='legacy_rising_edge_release')
+        if 2 in pre:
+            # Gowin maps the maintained negedge release to a positive-edge
+            # FF with one explicit INV on its clock. Accept only that one
+            # release FF; all counters, Gray and startup FFs remain positive.
+            require(set(pre) == {0, 1, 2} and len(release) == 1,
+                    'opposite-edge monitor release inventory changed: ' + name)
+            p = release[0]
+            inverted = n.pin(p, 'CLK')
+            inverters = [q for q, c in n.cells.items() if c['kind'] == 'INV' and
+                         n.pin(q, 'O') == inverted]
+            require(len(inverters) == 1 and n.pin(inverters[0], 'I') == source and inverted != source,
+                    'opposite-edge monitor release clock changed: ' + name)
+            require(registers[p]['kind'] in ('DFFCE', 'DFFRE') and
+                    n.pin(p, 'CE') in one_nets and n.pin(p, 'D') == n.pin(pre[2], 'Q') and
+                    all(n.pin(pre[i], 'CE') in one_nets for i in range(3)) and
+                    all(n.pin(pre[i], 'D') == n.pin(pre[i-1], 'Q') for i in (1, 2)),
+                    'opposite-edge monitor release data chain changed: ' + name)
+            negative_release = release
+            release_evidence = dict(policy='three_positive_pre_stages_then_single_inverted_clock_release',
+                register=p, clock_inverter=inverters[0], inverted_clock=inverted,
+                pre_registers=[pre[i] for i in range(3)], no_clock_exception_added=True)
         require(source_regs and control_regs and
-                all(n.pin(p, 'CLK') == source for p in source_regs) and
+                all(n.pin(p, 'CLK') == source for p in source_regs if p not in negative_release) and
                 all(n.pin(p, 'CLK') == 'clk_50m' for p in control_regs),
                 'monitor source/control clock changed: ' + name)
         monitor_groups[name] = dict(source_clock=source, source_registers=source_regs,
-                                   control_clock='clk_50m', control_registers=control_regs)
+                                   control_clock='clk_50m', control_registers=control_regs,
+                                   reset_release=release_evidence)
     outputs = {}
     for port, label in (('dac_mclk', None), ('hp_bck', 'bck_o'),
                         ('hp_ws', 'lrck_o'), ('hp_din', 'data_o')):

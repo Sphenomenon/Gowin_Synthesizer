@@ -38,7 +38,7 @@ AUDIT_SOURCES = (
     'tools/workstation_custom_timing.py', 'tools/workstation_ae350_clock_placement.py',
     'tools/workstation_ae350_rtc.py', 'tools/workstation_board_peripherals.py',
     'tools/workstation_memory.py', 'tools/stage_usb_firmware.py',
-    'tools/workstation_usb_fifo_reset.py',
+    'tools/workstation_usb_fifo_reset.py', 'tools/workstation_runtime_pcm_cdc.py',
 )
 COMMON_FEATURES = {
     'usb_host': 'u_native_usb/host', 'usb_cpu': 'u_native_usb/host/cpu',
@@ -512,8 +512,9 @@ def audit(root, output, metadata):
     fifo_write_reset = None
     if profile['configuration'].get('usb_fifo_reset_policy') is not None:
         from tools.workstation_usb_fifo_reset import verify_prepared as verify_fifo_reset, audit_synthesis as audit_fifo_reset
+        from tools.workstation_runtime_pcm_cdc import PcmNetlist
         fifo_write_reset = dict(prepared=verify_fifo_reset(stage, metadata['demo_usb_fifo_write_reset']),
-            actual_synthesis=audit_fifo_reset(netlist))
+            actual_synthesis=audit_fifo_reset(PcmNetlist(vg_text, TOP)))
     bridge = audit_bridge_resets(vg_text, TOP)
     resets = audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8')
     feedback = (audit_worker_feedback(netlist, base_clocks) if role == 'W' else

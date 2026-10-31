@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "policy": "performance-telemetry-async-release-v1",
+  "sources": {
+    "tools/workstation_performance_reset.py": "ea3cec04816e2b474924b8e43e0abd7cc6f4def91da1d7755b57519101b66134",
+    "sim/test_workstation_performance_reset.py": "4f492e3f98cf6e4d14aef6feb8634e35db7cec3504d7f8f320056db05e17910b",
+    "sim/audio/run_performance_release.py": "dcac2bd4e2cb9a92d3d20e9543aad106b07c7eb42de50e5dca724be47f2350f9",
+    "sim/audio/tb_workstation_performance_release.sv": "db1d9b1445586510f288b68d1fe8aeb1e8cc0aa1f6aeade2463e4c75e783a0da"
+  },
+  "actual_evidence": [
+    {
+      "mapping": "synthesis",
+      "proof": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vg-v3.json",
+      "proof_sha256": "bb1eea4eff4bdc6a38d0eb6eeb9a147babbaa4b23e8310a7c506e58113259d19",
+      "source_identity": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/src/usb_host/gw138k_usb_performance_uart.sv": "5df104cd661e6467feca5aab92a2612ab5889d999157326032a228d8414848cf",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "823bf08d45c27ed765c80ae47d52683cd14a8a0f38a49eb00e204dc268034fef",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-proposed.sdc": "15d4cd8f2355a748320eefdb4cebb6f068179eb52d83598c285a0c27b6fe9a8d",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "ea3cec04816e2b474924b8e43e0abd7cc6f4def91da1d7755b57519101b66134",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/vendor/workstation_inputs.json": "a1d9c139bcb4ccfbda35e6f572a06653ac4b76be95a87cd45a17135a3c93928e",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8"
+      },
+      "release_chains": [
+        {
+          "stem": "source_release",
+          "clock": "audio_clk",
+          "stages": [
+            "u_runtime/u_performance_cdc/source_release_0_s0",
+            "u_runtime/u_performance_cdc/source_release_1_s0",
+            "u_runtime/u_performance_cdc/source_release_2_s0"
+          ],
+          "release_edges": 3,
+          "final_functional_clear_count": 342
+        },
+        {
+          "stem": "destination_release",
+          "clock": "clk_50m",
+          "stages": [
+            "u_runtime/u_performance_cdc/destination_release_0_s0",
+            "u_runtime/u_performance_cdc/destination_release_1_s0",
+            "u_runtime/u_performance_cdc/destination_release_2_s0"
+          ],
+          "release_edges": 3,
+          "final_functional_clear_count": 343
+        }
+      ],
+      "protected_pin_count": 689,
+      "tests": {
+        "total": 10,
+        "passed": 10,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vg-tests-v2.log",
+        "log_sha256": "6759f8e356d27df3f886c114ca7a8af49b637d4994a097f356d25aedbd887662",
+        "negative_count": 8,
+        "negative_artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vg-mutations-v2.json",
+        "negative_sha256": "7f605f41bf68f70da25ff1b721d4f3009327108104824a0047ffbe5e63cba28e"
+      }
+    },
+    {
+      "mapping": "routed",
+      "proof": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vo-v3.json",
+      "proof_sha256": "81110f399f6ef22962d4d2ed65aa75319ec37326d2b0a80de13c21fa567b56ba",
+      "source_identity": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7/workstation/Prj1/src/usb_host/gw138k_usb_performance_uart.sv": "5df104cd661e6467feca5aab92a2612ab5889d999157326032a228d8414848cf",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v7-physical-v1/impl/pnr/custom_138k_integration.vo": "97926489305f8ecaeba91ae51b76f04dd9c62cc432016dd265bc2cf68092e925",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-proposed.sdc": "15d4cd8f2355a748320eefdb4cebb6f068179eb52d83598c285a0c27b6fe9a8d",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "ea3cec04816e2b474924b8e43e0abd7cc6f4def91da1d7755b57519101b66134",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/vendor/workstation_inputs.json": "a1d9c139bcb4ccfbda35e6f572a06653ac4b76be95a87cd45a17135a3c93928e",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8"
+      },
+      "release_chains": [
+        {
+          "stem": "source_release",
+          "clock": "audio_clk",
+          "stages": [
+            "u_runtime/u_performance_cdc/source_release_0_s0",
+            "u_runtime/u_performance_cdc/source_release_1_s0",
+            "u_runtime/u_performance_cdc/source_release_2_s0"
+          ],
+          "release_edges": 3,
+          "final_functional_clear_count": 342
+        },
+        {
+          "stem": "destination_release",
+          "clock": "clk_50m",
+          "stages": [
+            "u_runtime/u_performance_cdc/destination_release_0_s0",
+            "u_runtime/u_performance_cdc/destination_release_1_s0",
+            "u_runtime/u_performance_cdc/destination_release_2_s0"
+          ],
+          "release_edges": 3,
+          "final_functional_clear_count": 343
+        }
+      ],
+      "protected_pin_count": 689,
+      "tests": {
+        "total": 10,
+        "passed": 10,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vo-tests-v2.log",
+        "log_sha256": "7fa6d6b9db3fa31f31d5a761fa5c26c3dc3db224d529b66f9b6cf606673d6d92",
+        "negative_count": 8,
+        "negative_artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-vo-mutations-v2.json",
+        "negative_sha256": "eb8be18119b8bcea5fe9928c3cfa0161bd307205c07d8c31c29471b5622863c1"
+      }
+    }
+  ],
+  "proposal": {
+    "sdc": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-w7-proposed.sdc",
+    "sha256": "15d4cd8f2355a748320eefdb4cebb6f068179eb52d83598c285a0c27b6fe9a8d",
+    "async_clear_pins": 6,
+    "actual_assertion_sources": 2,
+    "later_data_bounds": 4,
+    "later_data_budget_ns": 2.0,
+    "functional_recovery_removal_exceptions_added": false,
+    "profile_integrated": false,
+    "source_constraints_changed": false
+  },
+  "stopped_clock_semantics": {
+    "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/performance-reset-semantics-v1/verification.json",
+    "sha256": "082e8086e9125d50ee4f4b304d206153f0e8ff9ceb570db2b17a8fee0a179562",
+    "metrics": {
+      "cases": 16,
+      "async_checks": 49,
+      "release_checks": 102,
+      "payloads": 17,
+      "width": 448
+    },
+    "negative_controls_rejected": 3
+  },
+  "report_timing_plan": {
+    "in_sdc": true,
+    "clk50_same_domain_setup_and_hold_max_paths": 100,
+    "clk50_incoming_setup_and_hold_max_paths": 100,
+    "max_common_paths": 1,
+    "installed": false,
+    "strict_native_sdc_whitelist_update_required": true
+  },
+  "fresh_synthesis": false,
+  "fresh_pnr": false,
+  "routed_timing_verified": false,
+  "physical_cdc_accepted": false,
+  "recovery_removal_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false
+}

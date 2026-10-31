@@ -7,6 +7,8 @@ FIFO preserves its memory, output buffer, Gray and cancellation contracts.
 """
 from pathlib import Path
 import hashlib
+import itertools
+import random
 import re
 
 FIFO = 'src/usb_host/gw138k_usb_event_fifo.v'
@@ -220,15 +222,99 @@ def audit_synthesis(netlist, *, fifo_scope='u_native_usb/input_owner/events/fifo
         return set().union(*(frontier(n.pin(cell, port), (*active, net)) for port in ports))
     inputs = frontier(grant)
     require(q in inputs, 'actual packet write admission lacks final USB release')
-    admission = g.equivalent('actual packet memory cannot write before local release',
-        [grant, q], lambda x: bool(x[1]) or x[0] == 0, cuts=inputs)
     input_list = sorted(inputs)
-    require(any(g.value(grant, {net: (value >> bit) & 1 for bit, net in enumerate(input_list)})
-                for value in range(1 << len(input_list))), 'FIFO admission optimized to constant zero')
-    p = producers[0];previous = n.pin(p, 'Q')
-    increment = g.equivalent('effective producer Q0 toggles exactly on the real packet-memory write',
-        [n.pin(p, 'D'), n.pin(p, 'CE'), previous, grant],
-        lambda x: (x[0] if x[1] else x[2]) == (x[2] ^ x[3]), cuts={previous, grant})
+    contract = 'actual packet memory cannot write before local release'
+    if len(inputs) <= 16:
+        admission = g.equivalent(contract, [grant, q], lambda x: bool(x[1]) or x[0] == 0, cuts=inputs)
+        require(any(g.value(grant, {net: (value >> bit) & 1 for bit, net in enumerate(input_list)})
+                    for value in range(1 << len(input_list))), 'FIFO admission optimized to constant zero')
+    else:
+        # Absorption through the owner can expose more than 16 independent
+        # frontier nets. Do not raise Graph's reviewed global truth-table bound.
+        # Propagate the q=0 cofactor through each actual INV/LUT, enumerating
+        # at most 64 assignments per primitive. Every other input remains
+        # independently arbitrary, even where that overapproximates aliases.
+        # A singleton zero at the real CEA is therefore a universal proof.
+        cache, primitive_proofs = {}, []
+        def zero_cofactor(net, active=()):
+            if net == q:
+                return {0}
+            if net in g.high | g.low:
+                return {int(net in g.high)}
+            if net not in reachable:
+                return {0, 1}
+            if net in cache:
+                return cache[net]
+            require(net not in active, 'write admission cofactor combinational cycle')
+            require(len(primitive_proofs) < 4096, 'write admission cofactor exceeds reviewed primitive bound')
+            cell, output = g.drivers[net][0];c = n.cells[cell];kind = c['kind']
+            require(kind == 'INV' or re.fullmatch('LUT[1-6]', kind), 'unreviewed write admission cofactor primitive')
+            ports = ['I'] if kind == 'INV' else ['I' + str(i) for i in range(int(kind[3:]))]
+            values = [zero_cofactor(n.pin(cell, port), (*active, net)) for port in ports]
+            rows = list(itertools.product(*values))
+            if kind == 'INV':
+                result = {1 - row[0] for row in rows}
+            else:
+                init = re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)", c['parameters'].get('INIT', ''))
+                require(init is not None and int(init[1]) == 1 << len(ports), 'write admission cofactor LUT format')
+                table = int(init[2], 16)
+                result = {(table >> sum(value << bit for bit, value in enumerate(row))) & 1 for row in rows}
+            primitive_proofs.append(dict(primitive=cell, kind=kind, output=output,
+                inputs={port: dict(net=n.pin(cell, port), possible_values=sorted(value))
+                        for port, value in zip(ports, values)},
+                INIT=c['parameters'].get('INIT'), exhaustive_local_assignments=len(rows),
+                possible_outputs=sorted(result)))
+            cache[net] = result
+            return result
+        require(zero_cofactor(grant) == {0}, 'Boolean contract changed: ' + contract)
+        # A concrete frontier assignment, independently re-evaluated by Graph,
+        # rejects vacuous constant-zero mappings. Search is bounded; failure to
+        # find a witness fails closed and never weakens the universal proof.
+        rng = random.Random(0);witness = None
+        for attempt in range(4096):
+            assignment = {net: (0 if attempt == 0 else 1 if attempt == 1 else rng.randrange(2))
+                          for net in input_list}
+            assignment[q] = 1
+            if g.value(grant, assignment) == 1:
+                witness = assignment
+                break
+        require(witness is not None, 'FIFO admission lacks bounded concrete nonzero frontier witness')
+        admission = dict(contract=contract, method='bounded_actual_INV_LUT_zero_cofactor',
+            support=input_list, cuts=input_list, fixed_assignment={q: 0}, actual_CEA_possible_values=[0],
+            other_inputs_independently_arbitrary=True, primitive_proofs=primitive_proofs,
+            max_local_assignments=64, global_truth_table_bound_unchanged=16,
+            nonzero_frontier_witness=dict(assignment=witness, actual_CEA=1, attempts=attempt + 1,
+                sequential_reachability_claimed=False))
+    p = producers[0];previous = n.pin(p, 'Q');data = n.pin(p, 'D')
+    data_drivers = g.drivers[data]
+    require(len(data_drivers) == 1, 'producer Q0 data driver missing/ambiguous')
+    adder, output = data_drivers[0]
+    if n.cells[adder]['kind'] == 'ALU':
+        # GW5A prim_sim.v ALU ADD=0: SUM=(I0 XOR I1) XOR CIN.
+        # Admit only this exact LSB adder, with both spare inputs grounded;
+        # this is not a generic arithmetic or carry-chain timing exception.
+        require(output == 'SUM' and n.cells[adder]['parameters'].get('ALU_MODE') == '0' and
+                n.pin(adder, 'CIN') in g.low and n.pin(adder, 'I3') in g.low and
+                {n.pin(adder, 'I0'), n.pin(adder, 'I1')} == {previous, grant} and
+                n.pin(p, 'CE') in g.high, 'unreviewed producer Q0 ALU mapping')
+        truth_table = []
+        for old_q in (0, 1):
+            for memory_write in (0, 1):
+                values = {previous: old_q, grant: memory_write}
+                next_q = values[n.pin(adder, 'I0')] ^ values[n.pin(adder, 'I1')] ^ 0
+                require(next_q == old_q ^ memory_write, 'producer Q0 ADD truth table changed')
+                truth_table.append(dict(previous=old_q, actual_memory_grant=memory_write, next_q=next_q))
+        increment = dict(contract='effective producer Q0 toggles exactly on the real packet-memory write',
+            primitive=adder, kind='ALU', ALU_MODE=0, CIN=0, I3=0,
+            previous=previous, actual_memory_grant=grant, CE=1,
+            primitive_pins={pin: n.pin(adder, pin) for pin in ('SUM', 'I0', 'I1', 'CIN', 'I3')},
+            equation='SUM=(I0 XOR I1) XOR CIN; CIN=0; I0/I1 are exact Q0 and CEA',
+            primitive_reference='Gowin GW5A prim_sim.v ALU ADD=0',
+            truth_table=truth_table, exhaustive_assignments=len(truth_table))
+    else:
+        increment = g.equivalent('effective producer Q0 toggles exactly on the real packet-memory write',
+            [data, n.pin(p, 'CE'), previous, grant],
+            lambda x: (x[0] if x[1] else x[2]) == (x[2] ^ x[3]), cuts={previous, grant})
     require(all(n.pin(p, 'CLK') == audio and n.pin(p, 'PRESET') == assertion for p in read_regs),
             'original audio reset boundary changed')
     return dict(policy=POLICY, actual_write_state_registers=sum(map(len, groups.values())),
