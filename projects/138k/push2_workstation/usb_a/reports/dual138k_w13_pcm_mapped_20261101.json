@@ -1,0 +1,1768 @@
+{
+  "schema": 1,
+  "stage": "W13_actual_PCM_primitive_functions_and_live_rejected_COMMIT_action",
+  "passed": true,
+  "candidate_identity": "custom138k-native-w-demo-d-only-revision1",
+  "configuration_sha256": "444c183d47242b03e1e687c109dce0c3ed765a99ffcc34bc5c68e81466a9905c",
+  "VG_sha256": "3c7866321188f7b36dc601c36f6b572b04ee5c5f7786f434a10a1b0d2bb4a787",
+  "owner_sha256": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3",
+  "source_inventory": {
+    "source_tools": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-audits-v1/source-tools",
+      "count": 1365,
+      "bad_count": 0
+    },
+    "actual_staged": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13/workstation/Prj1",
+      "count": 645,
+      "bad_count": 0
+    },
+    "prepare_source": {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-audits-v1/prepare-source-snapshot",
+      "count": 951,
+      "bad_count": 0
+    }
+  },
+  "integration_manifest_sha256": "78c2602862e32ecc193c475f156d0ba58b164220f7ebeb84777fa26b997468cd",
+  "source_tools_seal_sha256": "40254df29c4dcb174595beb72373b7b2fa8db4f0a287fd08b82e2cf0900fa2b8",
+  "prepare_source_seal_sha256": "8e0303b42ca01c2d2e5c65671bb3e0f5629e58814e0e69f2d610091c6ee9db96",
+  "groups": {
+    "u_managed/runtime/cpu_pcm.owner/key_controller_match_0": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[0]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[0]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[1]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[1]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[2]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[2]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[3]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[3]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[4]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[4]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[5]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[5]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[6]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[6]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[7]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[7]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s17",
+          "pin": "I0",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_controller_match_1": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[8]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[8]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[9]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[9]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[10]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[10]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[11]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[11]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[12]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[12]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[13]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[13]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[14]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[14]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[15]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[15]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s17",
+          "pin": "I1",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_controller_match_2": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[16]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[16]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[17]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[17]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[18]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[18]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[19]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[19]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[20]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[20]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[21]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[21]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[22]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[22]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[23]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[23]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s17",
+          "pin": "I2",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_controller_match_3": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[24]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[24]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[25]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[25]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[26]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[26]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[27]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[27]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[28]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[28]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[29]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[29]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[30]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[30]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_controller[31]",
+          "u_managed/runtime/cpu_pcm.owner/active_controller[31]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s17",
+          "pin": "I3",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_generation_match_0": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[0]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[0]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[1]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[1]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[2]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[2]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[3]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[3]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[4]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[4]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[5]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[5]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[6]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[6]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[7]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[7]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s16",
+          "pin": "I0",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_generation_match_1": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[8]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[8]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[9]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[9]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[10]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[10]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[11]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[11]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[12]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[12]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[13]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[13]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[14]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[14]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[15]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[15]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s16",
+          "pin": "I1",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_generation_match_2": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[16]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[16]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[17]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[17]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[18]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[18]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[19]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[19]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[20]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[20]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[21]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[21]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[22]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[22]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[23]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[23]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s16",
+          "pin": "I2",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_generation_match_3": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[24]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[24]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[25]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[25]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[26]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[26]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[27]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[27]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[28]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[28]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[29]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[29]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[30]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[30]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_generation[31]",
+          "u_managed/runtime/cpu_pcm.owner/active_generation[31]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s16",
+          "pin": "I3",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_stream_match_0": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[0]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[0]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[1]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[1]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[2]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[2]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[3]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[3]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[4]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[4]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[5]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[5]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[6]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[6]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[7]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[7]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s22",
+          "pin": "I0",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_stream_match_1": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[8]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[8]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[9]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[9]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[10]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[10]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[11]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[11]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[12]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[12]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[13]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[13]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[14]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[14]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[15]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[15]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s22",
+          "pin": "I1",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_stream_match_2": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[16]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[16]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[17]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[17]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[18]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[18]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[19]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[19]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[20]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[20]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[21]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[21]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[22]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[22]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[23]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[23]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s22",
+          "pin": "I2",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_stream_match_3": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[24]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[24]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[25]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[25]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[26]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[26]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[27]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[27]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[28]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[28]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[29]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[29]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[30]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[30]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_stream[31]",
+          "u_managed/runtime/cpu_pcm.owner/active_stream[31]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s22",
+          "pin": "I3",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_rate_match_0": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[0]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[0]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[1]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[1]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[2]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[2]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[3]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[3]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[4]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[4]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[5]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[5]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[6]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[6]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[7]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[7]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s21",
+          "pin": "I0",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_rate_match_1": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[8]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[8]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[9]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[9]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[10]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[10]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[11]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[11]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[12]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[12]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[13]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[13]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[14]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[14]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[15]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[15]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s21",
+          "pin": "I1",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_rate_match_2": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[16]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[16]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[17]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[17]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[18]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[18]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[19]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[19]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[20]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[20]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[21]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[21]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[22]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[22]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[23]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[23]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s21",
+          "pin": "I2",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_rate_match_3": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[24]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[24]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[25]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[25]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[26]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[26]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[27]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[27]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[28]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[28]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[29]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[29]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[30]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[30]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_rate[31]",
+          "u_managed/runtime/cpu_pcm.owner/active_rate[31]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s21",
+          "pin": "I3",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_physical_match_0": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[0]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[0]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[1]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[1]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[2]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[2]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[3]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[3]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[4]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[4]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[5]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[5]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[6]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[6]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[7]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[7]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s20",
+          "pin": "I0",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_physical_match_1": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[8]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[8]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[9]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[9]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[10]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[10]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[11]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[11]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[12]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[12]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[13]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[13]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[14]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[14]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[15]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[15]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s20",
+          "pin": "I1",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_physical_match_2": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[16]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[16]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[17]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[17]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[18]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[18]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[19]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[19]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[20]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[20]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[21]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[21]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[22]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[22]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[23]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[23]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s20",
+          "pin": "I2",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    },
+    "u_managed/runtime/cpu_pcm.owner/key_physical_match_3": {
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 16,
+        "primitive_nodes": 8,
+        "assumptions": 0
+      },
+      "actual_bit_pairs": [
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[24]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[24]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[25]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[25]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[26]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[26]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[27]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[27]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[28]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[28]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[29]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[29]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[30]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[30]"
+        ],
+        [
+          "u_managed/runtime/cpu_pcm.owner/staged_physical[31]",
+          "u_managed/runtime/cpu_pcm.owner/active_physical[31]"
+        ]
+      ],
+      "counts": {
+        "LUT3": 1,
+        "ALU": 7
+      },
+      "max_comb_levels": 8,
+      "max_ALU_CIN_chain": 7,
+      "fanout": [
+        {
+          "path": "u_managed/runtime/cpu_pcm.owner/n2383_s20",
+          "pin": "I3",
+          "kind": "LUT4",
+          "role": "comb"
+        }
+      ]
+    }
+  },
+  "all_group_functions_UNSAT": 20,
+  "additional_proofs": {
+    "kept_AND20": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n2383_19",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 20,
+        "primitive_nodes": 7,
+        "assumptions": 0
+      }
+    },
+    "full_160_bit_equality": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n2383_19",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 320,
+        "primitive_nodes": 167,
+        "assumptions": 0
+      }
+    },
+    "context_input_composition": {
+      "target": "u_managed/runtime/n3019_5",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 2,
+        "assumptions": 0
+      }
+    },
+    "accepted_valid_reset_composition": {
+      "target": "u_managed/n432_4",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 3,
+        "assumptions": 0
+      }
+    },
+    "key_matches": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n2383_19",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 170,
+        "assumptions": 0
+      }
+    },
+    "live_matches": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n16547_10",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 235,
+        "assumptions": 0
+      }
+    },
+    "physical_matches": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n16547_7",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 282,
+        "assumptions": 0
+      }
+    },
+    "usable": {
+      "target": "u_managed/runtime/cpu_pcm.owner/minimum_queue_9_10",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 284,
+        "assumptions": 0
+      }
+    },
+    "full_write": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n21369_15",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 286,
+        "assumptions": 0
+      }
+    },
+    "write_command": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n21369_6",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 287,
+        "assumptions": 0
+      }
+    },
+    "tail_owned": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n2005_9",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 290,
+        "assumptions": 0
+      }
+    },
+    "id_saturated": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n16547_29",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 301,
+        "assumptions": 0
+      }
+    },
+    "sequence_valid": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n16548_8",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 344,
+        "assumptions": 0
+      }
+    },
+    "commit_valid": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n21655_7",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 964,
+        "assumptions": 0
+      }
+    },
+    "commit_opcode_and_address": {
+      "target": "u_managed/runtime/cpu_pcm.owner/overflows_31_23",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 979,
+        "assumptions": 0
+      }
+    },
+    "live_rejected_commit_action": {
+      "target": "u_managed/runtime/cpu_pcm.owner/n16547_5",
+      "proof": {
+        "result": "UNSAT",
+        "atom_count": 1158,
+        "primitive_nodes": 981,
+        "assumptions": 0
+      }
+    },
+    "live_terminate_flush_nextQ": {
+      "result": "UNSAT",
+      "source_action_assumption": true,
+      "endpoint_count": 531,
+      "bitmap_endpoints": 512,
+      "primitive_nodes": 2008
+    }
+  },
+  "destructive_controls": [
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_controller_match_0",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n249_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_controller_match_1",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n259_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_controller_match_2",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n269_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_controller_match_3",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n279_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_generation_match_0",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n289_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_generation_match_1",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n299_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_generation_match_2",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n309_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_generation_match_3",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n319_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_stream_match_0",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n329_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_stream_match_1",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n339_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_stream_match_2",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n349_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_stream_match_3",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n359_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_rate_match_0",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n369_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_rate_match_1",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n379_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_rate_match_2",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n389_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_rate_match_3",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n399_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_physical_match_0",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n409_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_physical_match_1",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n419_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_physical_match_2",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n429_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "target": "u_managed/runtime/cpu_pcm.owner/key_physical_match_3",
+      "cell": "u_managed/runtime/cpu_pcm.owner/n439_s0",
+      "mutation": "actual ALU I0 replaced by I1",
+      "result": "SAT_counterexample"
+    },
+    {
+      "mutation": "actual key group LUT INIT forced zero",
+      "result": "SAT_counterexample"
+    },
+    {
+      "mutation": "missing controller group 0 at live AND20 consumer",
+      "result": "SAT_counterexample"
+    },
+    {
+      "mutation": "actual reject action LUT forced zero",
+      "result": "SAT_counterexample"
+    },
+    {
+      "mutation": "actual reject action LUT full_write veto removed",
+      "result": "SAT_counterexample"
+    },
+    {
+      "mutation": "severed reject action detected at actual failed nextQ",
+      "result": "SAT_counterexample"
+    }
+  ],
+  "official_primitive_equation_binary_check": {
+    "passed": true,
+    "vendor_sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "selected_verbatim_sha256": "7383eb474e91a1121f3d469202c35731cfa2e1da470b44822fd92d94f9d015ef",
+    "runner_sha256": "a4347dcfaa183e05fd01c59839c302c9494b2252b41157904e89ddd3c6f7c19d",
+    "input_vectors": 16,
+    "ALU_modes": 9,
+    "ALU_vectors": 144,
+    "LUT3_vectors": 8,
+    "LUT4_vectors": 16,
+    "MUX2_vectors": 8,
+    "scope": "all binary inputs of every implemented primitive equation using literal official module extracts; not four-state or timing proof",
+    "rows": [
+      {
+        "input": 0,
+        "actual": [
+          446,
+          0,
+          1,
+          0,
+          0
+        ],
+        "expected": [
+          446,
+          0,
+          1,
+          0,
+          0
+        ]
+      },
+      {
+        "input": 1,
+        "actual": [
+          65,
+          414,
+          0,
+          0,
+          1
+        ],
+        "expected": [
+          65,
+          414,
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "input": 2,
+        "actual": [
+          385,
+          40,
+          0,
+          0,
+          0
+        ],
+        "expected": [
+          385,
+          40,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "input": 3,
+        "actual": [
+          126,
+          385,
+          0,
+          0,
+          1
+        ],
+        "expected": [
+          126,
+          385,
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "input": 4,
+        "actual": [
+          65,
+          446,
+          0,
+          0,
+          0
+        ],
+        "expected": [
+          65,
+          446,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "input": 5,
+        "actual": [
+          446,
+          479,
+          0,
+          0,
+          0
+        ],
+        "expected": [
+          446,
+          479,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "input": 6,
+        "actual": [
+          126,
+          425,
+          1,
+          0,
+          1
+        ],
+        "expected": [
+          126,
+          425,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "input": 7,
+        "actual": [
+          385,
+          511,
+          0,
+          0,
+          1
+        ],
+        "expected": [
+          385,
+          511,
+          0,
+          0,
+          1
+        ]
+      },
+      {
+        "input": 8,
+        "actual": [
+          186,
+          0,
+          1,
+          1,
+          0
+        ],
+        "expected": [
+          186,
+          0,
+          1,
+          1,
+          0
+        ]
+      },
+      {
+        "input": 9,
+        "actual": [
+          325,
+          154,
+          0,
+          1,
+          1
+        ],
+        "expected": [
+          325,
+          154,
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "input": 10,
+        "actual": [
+          133,
+          40,
+          0,
+          1,
+          0
+        ],
+        "expected": [
+          133,
+          40,
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "input": 11,
+        "actual": [
+          378,
+          133,
+          0,
+          1,
+          1
+        ],
+        "expected": [
+          378,
+          133,
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "input": 12,
+        "actual": [
+          325,
+          186,
+          0,
+          1,
+          0
+        ],
+        "expected": [
+          325,
+          186,
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "input": 13,
+        "actual": [
+          186,
+          479,
+          0,
+          1,
+          0
+        ],
+        "expected": [
+          186,
+          479,
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "input": 14,
+        "actual": [
+          378,
+          173,
+          1,
+          0,
+          1
+        ],
+        "expected": [
+          378,
+          173,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "input": 15,
+        "actual": [
+          133,
+          511,
+          0,
+          1,
+          1
+        ],
+        "expected": [
+          133,
+          511,
+          0,
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "source_composition_binding": {
+    "check_count": 17,
+    "publisher_bit_count": 96,
+    "escaped_session_vector_alias": "64 input bits matched to actual epoch_o/generation_o FF Qs through identical exact vector bindings and ranges at same parent; parser itself does not canonicalize these escaped vector bits",
+    "original_vg_rewritten": false
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/certificate-v5.py": "53c5d8bb99c27ea5d35bf39e9004a64602fd58cdb5b7ce9772696d67207324c1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/certificate-v5.json": "f75b084d2bfeadb4c58ee523f805478f95610fca880c4fec93533451a4e9bba6",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/certificate-v5.log": "6ca1899eb3303898c0c4f1adb489eb5722046af5efc36c938e38a74f4cb513d6",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/certificate-v5.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/source-binding.json": "9a39a7f14e277bfe350c9e3a39bfe2ebaba4d9564772f997a0681754d4294f11",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/verify_bindings.py": "0f3c4a33a848b26094ba52bc43b170152517ec936d05904932f2f33387d467bb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/source-binding.log": "bad78917e265a1eb069a3505c455785d13dd454fb0a9bd8eb6b9838fe31daf41",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/vendor-primitive-check.json": "d3f88231510fe33e6f5fc6eb0af837b467d89355ab649582bf6791a5a376304d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/check_vendor_primitives.py": "a4347dcfaa183e05fd01c59839c302c9494b2252b41157904e89ddd3c6f7c19d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/primitive-run.log": "1d992cdf0cf72a2639d68c33dae0f5942b8bdb8842283d8eb235f3092e913737",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-pcm-mapped-v1/mapped_inspector.py": "6a7145e87f30794be1f1908d69f73368837885940f15ead7a4b999e8155ea853"
+  },
+  "failed_attempts_retained": [
+    "certificate-v1: wrong guessed session register stem rejected before source-contract proof",
+    "certificate-v2: source contracts passed; intermediate without next-Q gate",
+    "certificate-v3: compute_release register wrong scope rejected",
+    "certificate-v4: source contracts passed; absent head_slot endpoint rejected rather than inventing preserved state",
+    "primitive checker first compile: missing literal official MUX dependencies, preserved under attempts/primitive-v1",
+    "binding first versions: wrong TF macro location and unresolved escaped-vector publisher assertion rejected; corrected by exact enabled profile and explicit original-vector binding witness"
+  ],
+  "scope": "Boolean source-owner admission/actions and mapped actual state update, not four-state primitive equivalence, full owner sequential equivalence, timing closure or hardware acceptance",
+  "physical_timing_gain_claimed": false,
+  "P_and_R_tested_by_this_report": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "production_changed": false
+}

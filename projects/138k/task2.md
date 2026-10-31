@@ -316,6 +316,8 @@ W13 `D211010A`的[默认完整物理测量](push2_workstation/usb_a/reports/DUAL
 
 M15已完成[全量综合及严格门](push2_workstation/usb_a/reports/DUAL138K_M15_SYNTHESIS_20261101.md)：FF46,932／LUT52,130／ALU12,875／BSRAM equivalent195，native实际VG54项（50通过／4跳过）及45负控、边界7／61通过。875原始来源、588staged及1365冻结审计输入复验，默认physical prepare重新完整审计且与CLI深等价，`D211010C`已启动全量P&R；新TF分组的专项实际消费锥证明另记，不预填routed收益，未上板。
 
+W13的[PCM真实primitive及消费证明](push2_workstation/usb_a/reports/DUAL138K_W13_PCM_MAPPED_20261101.md)已完成：20组8位key、完整160对FF比较、实际rejected COMMIT作用锥和531个真实next-Q（含512bitmap）共37项UNSAT，25项实际网表破坏均给SAT反例。官方primitive二态方程与实际formal/publisher逐位绑定另核；59份证据、951prepare／645staged／1365冻结输入重验。范围仅限所列mapped函数／更新，不升级为全owner形式化、时序、无线或声画实板验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
