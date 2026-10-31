@@ -46,8 +46,8 @@ def native_sources(gao_mode,program='local-memory'):
     if program=='cache-pma-v1':
         if gao_mode!='bsram4':raise ValueError('cache-pma-v1 requires explicit bsram4 transport')
         return native_sources(gao_mode)+('rtl/probe/workstation_ae350_cache_probe_memory.sv',)
-    if gao_mode not in ('full64','banked4','bsram4'):raise ValueError('unknown probe GAO mode')
-    if gao_mode=='bsram4':
+    if gao_mode not in ('full64','banked4','bsram4','bsram8'):raise ValueError('unknown probe GAO mode')
+    if gao_mode in ('bsram4','bsram8'):
         return tuple(n for n in NATIVE if n!='rtl/probe/workstation_ae350_probe_uart.sv')+(
             'rtl/memory/workstation_sdp.sv','rtl/probe/workstation_ae350_probe_snapshot_ram.sv')
     return NATIVE+(('rtl/probe/workstation_ae350_probe_gao_banks.sv',) if gao_mode=='banked4' else ())
@@ -61,7 +61,7 @@ def gao_record(gao_mode):
         result.update(mode='banked4',schema='A1386402',capture_bits=704,pages=4,page_words=16,page_cycles=4,
             snapshot='four fixed pages of one frozen UART snapshot; only a new sequence replaces it at page3-to0',
             io='frozen with the new UART sequence at a sweep boundary; no pad or external receiver readback')
-    if gao_mode=='bsram4':
+    if gao_mode in ('bsram4','bsram8'):
         result.update(mode='bsram4',schema='A1386403',capture_bits=704,pages=4,page_words=16,page_cycles=4,
             snapshot='canonical double-buffered synchronous RAM, prepared before publication; new sequence selected only at page3-to0',
             io='frozen at adoption of the new sequence at sweep boundary; no pad or external receiver readback',
@@ -69,7 +69,14 @@ def gao_record(gao_mode):
                 prepare_copy_cycles=16,read_latency_cycles=1,physical_bsram_verified=False),
             publication_delay='16 reference copy clocks plus one publish edge after settled held capture; initial timeout also initializes one zero bank',
             uart_payload_wait='tagged32-bit cache; matching response within one16-clock sweep, launch at most one further edge later; no read-port stealing')
+    if gao_mode=='bsram8':
+        result.update(mode='bsram8',schema='A1386404',capture_bits=448,pages=8,page_words=8,
+            snapshot='canonical double-buffered synchronous RAM, prepared before publication; new sequence selected only at page7-to0',
+            uart_payload_wait='tagged32-bit cache; matching response within one32-clock sweep, launch at most one further edge later; no read-port stealing')
     return result
+
+def metadata_sources(gao_mode,program='local-memory'):
+    return BSRAM_METADATA+(('rtl/probe/AE350_BSRAM8_GAO_CONTRACT.md','tools/decode_ae350_bsram8_gao.py') if gao_mode=='bsram8' else ())+ (CACHE_METADATA if program=='cache-pma-v1' else ())
 
 def audit_gao_synthesis(netlist_text,gao_mode='full64',program='local-memory'):
     """Require every declared GAO bit to survive as a 50MHz register.
@@ -92,9 +99,9 @@ def audit_gao_synthesis(netlist_text,gao_mode='full64',program='local-memory'):
         raise ValueError(f'complete {width}-bit GAO register bank not present in actual netlist')
     result=dict(registered_bits=width,clock='clk_50m',snapshot_words=64,gao_mode=gao_mode,
         physical_timing_verified=False,external_uart_reception_verified=False)
-    if gao_mode=='bsram4':
+    if gao_mode in ('bsram4','bsram8'):
         from tools.workstation_ae350_snapshot_ram_audit import audit
-        result['snapshot_ram']=audit(n,program)
+        result['snapshot_ram']=audit(n,program,gao_mode)
     return result
 
 def audit_rtc_synthesis(netlist_text):
@@ -230,7 +237,7 @@ def constraints(root,gao_mode='full64'):
               'set_max_delay 20.000 -from [get_regs {u_uart/held_words*}] -to [get_regs {u_uart/words*}]',
               'set_false_path -hold -from [get_regs {u_uart/held_words*}] -to [get_regs {u_uart/words*}]',
               'set_false_path -to [get_pins {core_reset_pipe*_s0/CLEAR core_reset_pipe*_s0/PRESET}]']
-    if gao_mode=='bsram4':
+    if gao_mode in ('bsram4','bsram8'):
         lines=[line.replace('[get_regs {u_uart/words*}]','[get_pins {u_uart/lanes*.ram/ram/DI*}]') for line in lines]
     lines += [f'report_timing -{kind} -max_paths 2000 -max_common_paths 1' for kind in ('setup','hold','recovery','removal')]
     return '\n'.join(lines)+'\n'
@@ -258,8 +265,8 @@ def audit_prepare(output):
     gao_mode=record['gao'].get('mode','full64')
     program=record.get('probe_program','local-memory');native=native_sources(gao_mode,program)
     if record['gao']!=gao_record(gao_mode):raise ValueError('probe GAO contract changed')
-    if gao_mode=='bsram4':
-        if set(record.get('noncompiled_sha256',{}))!=set(BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ())):
+    if gao_mode in ('bsram4','bsram8'):
+        if set(record.get('noncompiled_sha256',{}))!=set(metadata_sources(gao_mode,program)):
             raise ValueError('BSRAM noncompiled contract/audit/decoder closure changed')
         for name,expected in record['noncompiled_sha256'].items():
             if record['input_sha256'].get(name)!=expected or sha(output/name)!=expected:
@@ -282,7 +289,7 @@ def audit_prepare(output):
     if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
     if (output/'probe.sdc').read_text().splitlines().count(RTC_CLOCK_SDC)!=1:
         raise ValueError('probe RTC timing target or minimum period changed')
-    if gao_mode=='bsram4':
+    if gao_mode in ('bsram4','bsram8'):
         sdc=(output/'probe.sdc').read_text().splitlines()
         for command in ('set_max_delay 20.000','set_false_path -hold'):
             required=command+' -from [get_regs {u_uart/held_words*}] -to [get_pins {u_uart/lanes*.ram/ram/DI*}]'
@@ -292,7 +299,8 @@ def audit_prepare(output):
         raise ValueError('probe complete diagnostic GAO schema changed')
     identity="`define AE350_PROBE_USER_CODE 32'h"+record['user_code'][2:].upper()+'\n'
     if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
-    if gao_mode=='bsram4':identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if gao_mode in ('bsram4','bsram8'):identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if gao_mode=='bsram8':identity+='`define AE350_PROBE_BSRAM8_GAO\n'
     if program=='cache-pma-v1':identity+='`define AE350_PROBE_CACHE_PMA\n'
     if (output/'probe_identity.vh').read_text()!=identity:raise ValueError('probe identity or explicit GAO mode changed')
     cst=(output/'probe.cst').read_text()
@@ -343,7 +351,8 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64',program
     (output/'probe.gao').write_text(gao(user_code.upper(),gao_mode))
     identity="`define AE350_PROBE_USER_CODE 32'h"+user_code.upper()+'\n'
     if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
-    if gao_mode=='bsram4':identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if gao_mode in ('bsram4','bsram8'):identity+='`define AE350_PROBE_BSRAM_GAO\n'
+    if gao_mode=='bsram8':identity+='`define AE350_PROBE_BSRAM8_GAO\n'
     if program=='cache-pma-v1':identity+='`define AE350_PROBE_CACHE_PMA\n'
     (output/'probe_identity.vh').write_text(identity)
     selected=[]
@@ -356,8 +365,8 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64',program
         if sha(target)!=sha(root/relative):raise ValueError('probe source copy changed')
         selected.append(relative)
     fw=firmware(root,output/'firmware',prefix,program)
-    if gao_mode=='bsram4':
-        for relative in BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ()):
+    if gao_mode in ('bsram4','bsram8'):
+        for relative in metadata_sources(gao_mode,program):
             target=output/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/relative,target)
     common=['set root [file dirname [file normalize [info script]]]','cd $root',f'set_device {plan["device"]} -device_version C',
         'set_option -synthesis_tool gowinsynthesis',f'set_option -top_module {TOP}',f'set_option -output_base_name {BASE}',
@@ -395,9 +404,9 @@ def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64',program
         omissions=['DDR controller','HDMI','audio','USB','BLE','workstation business'],
         rollback='Root selects a hash-checked prior SRAM candidate; Flash is not changed by this preparation.',
         input_sha256={str(path.relative_to(output)):sha(path) for path in output.rglob('*') if path.is_file()})
-    if gao_mode=='bsram4':
-        record['source_policy']+='; explicit bsram4 canonical synchronous RAM publisher/exporter, schema A1386403'
-        record['noncompiled_sha256']={name:sha(root/name) for name in BSRAM_METADATA+(CACHE_METADATA if program=='cache-pma-v1' else ())}
+    if gao_mode in ('bsram4','bsram8'):
+        record['source_policy']+='; explicit '+gao_mode+' canonical synchronous RAM publisher/exporter, schema '+gao_record(gao_mode)['schema']
+        record['noncompiled_sha256']={name:sha(root/name) for name in metadata_sources(gao_mode,program)}
     if program=='cache-pma-v1':
         record.update(probe_program=program,cache_policy=fw['cache_policy'],
             source_policy=record['source_policy']+'; explicit isolated PL cache/PMA program and burst-aware memory owner')

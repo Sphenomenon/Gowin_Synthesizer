@@ -6,7 +6,9 @@ pins from the sealed synthesis netlist; RTL block attributes are insufficient.
 import re
 from tools.workstation_synthesis_netlist import IDENTIFIER
 
-def audit(n,program='local-memory'):
+def audit(n,program='local-memory',mode='bsram4'):
+    if mode not in ('bsram4','bsram8'):raise ValueError('unknown snapshot export mode')
+    prefetch_bits,page0_bits,reference_limit=(128,256,1100) if mode=='bsram8' else (384,512,1600)
     if program not in ('local-memory','cache-pma-v1'):raise ValueError('unknown snapshot source program')
     zero={"1'b0"};one={"1'b1"};constant_drivers={}
     for name,c in n.cells.items():
@@ -92,8 +94,8 @@ def audit(n,program='local-memory'):
         if re.search(r'/(?:words|full_snapshot_50mhz|frozen_snapshot)(?:\[|_)',q):wide.append(q)
     if set(held)!=expected_held or len(other_clocks)!=1 or 'clk_50m' in other_clocks:
         raise ValueError('snapshot one-edge pclk held capture missing/changed')
-    if wide or reference_registers>1600:raise ValueError('redundant reference-domain snapshot FF storage returned')
-    if any(small_banks[k]!=set(range(width)) for k,width in (('prefetch',384),('prepared_page0',512),('cache_data',32))):
+    if wide or reference_registers>reference_limit:raise ValueError('redundant reference-domain snapshot FF storage returned')
+    if any(small_banks[k]!=set(range(width)) for k,width in (('prefetch',prefetch_bits),('prepared_page0',page0_bits),('cache_data',32))):
         raise ValueError('snapshot required bounded caches missing/changed')
     # All128 native read bits must reach the registered top payload through
     # at most two explicit FF stages. A decoy unused RAM cannot satisfy this.
@@ -124,7 +126,7 @@ def audit(n,program='local-memory'):
     for name,c in n.cells.items():
         if c['kind'].startswith('DFF') and re.fullmatch(r'status_50mhz\[(?:[0-9]+)\]',n.pin(name,'Q')):
             bit=int(n.pin(name,'Q').split('[')[1][:-1])
-            if bit<512:payload.append(n.pin(name,'D'))
+            if bit<page0_bits:payload.append(n.pin(name,'D'))
     reached=reachable(payload,data_outputs,2)
     if reached!=data_outputs:raise ValueError('snapshot native RAM read data does not reach all registered GAO payload lanes')
     written=reachable(data_inputs,held_nets,0)
@@ -135,7 +137,7 @@ def audit(n,program='local-memory'):
     # identity/state/UART counters. It is a structural gate, not a CLS estimate.
     return dict(native_sdp_lanes=8,lane_bits=16,read_bandwidth_bits_per_cycle=128,
         held_pclk_bits=len(held),held_clock=next(iter(other_clocks)),reference_registers=reference_registers,
-        reference_register_limit=1600,cache_bits={k:len(v) for k,v in small_banks.items()},
+        reference_register_limit=reference_limit,cache_bits={k:len(v) for k,v in small_banks.items()},
         ram_read_bits_reaching_gao=len(reached),redundant_snapshot_ff_names=wide,
         held_bits_reaching_ram=len(written),ram_read_bits_reaching_uart=len(uart_read),
         physical_bsram_count_verified=False,physical_timing_verified=False)

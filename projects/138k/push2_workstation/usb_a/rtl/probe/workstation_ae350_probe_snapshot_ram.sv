@@ -1,9 +1,10 @@
 `timescale 1ns/1ps
 `default_nettype none
-// Explicit bsram4 probe mode. One canonical immutable double-buffered snapshot
+// Explicit bsram4/bsram8 probe modes. One canonical immutable double-buffered snapshot
 // serves UART and GAO. No 2048-bit reference-domain words/full/frozen copies.
 module workstation_ae350_probe_snapshot_ram #(
     parameter [31:0] USER_CODE=0,
+    parameter integer PAGE_WORDS=16,
     parameter integer BAUD_DIVISOR=434,PERIOD_CYCLES=5000000,SNAPSHOT_TIMEOUT=2500000
 )(
     input wire clk_50m,reset_n,pclk,preset_n,
@@ -13,11 +14,13 @@ module workstation_ae350_probe_snapshot_ram #(
     output reg tx=1,
     output wire [6:0] transport_health_50mhz,
     output reg snapshot_published_50mhz=0,
-    // Valid only on sample_update_o. Caller retains the top-level704-bit FF
+    // Valid only on sample_update_o. Caller retains the top-level704/448-bit FF
     // bank between updates, preserving exactly four50MHz cycles per page.
     output wire sample_update_o,
-    output wire [703:0] sample_50mhz
+    output wire [PAGE_WORDS*32+191:0] sample_50mhz
 );
+    localparam integer PAGE_COUNT=64/PAGE_WORDS,PAGE_BITS=$clog2(PAGE_COUNT),GROUPS_PER_PAGE=PAGE_WORDS/4;
+    initial if(PAGE_WORDS!=16 && PAGE_WORDS!=8)$fatal(1,"only explicit16/8-word GAO pages are supported");
     localparam [2:0] PERIOD=0,WAIT_ACK=1,SETTLE=2,COPY=3,PUBLISH=4,TRANSMIT=5,DRAIN=6;
     reg request=0,ack=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg request_meta=0,request_sync=0,ack_meta=0,ack_sync=0;
@@ -37,7 +40,7 @@ module workstation_ae350_probe_snapshot_ram #(
     reg published_bank=0,copy_bank=0,copy_zero=0;
     reg [4:0] published_flags=0,pending_flags=0;
     reg [3:0] copy_group=0;
-    reg [511:0] prepared_page0=0;
+    reg [PAGE_WORDS*32-1:0] prepared_page0=0;
     reg [8:0] byte_index=0;
     reg [31:0] crc=32'hffffffff;
     reg [9:0] shift=10'h3ff;
@@ -48,19 +51,24 @@ module workstation_ae350_probe_snapshot_ram #(
     reg frozen_valid=0,frozen_bank=0;
     reg [31:0] frozen_sequence=0,frozen_io=0,frozen_health=0;
     reg [4:0] frozen_flags=0;
-    reg [1:0] page=3,phase=0;
-    reg [383:0] prefetch=0;
+    reg [PAGE_BITS-1:0] page=PAGE_BITS'(PAGE_COUNT-1);
+    reg [1:0] phase=0;
+    reg [PAGE_WORDS*32-129:0] prefetch=0;
     wire boundary=phase==3;
-    wire replace_snapshot=boundary && page==3 && snapshot_published_50mhz &&
+    wire replace_snapshot=boundary && page==PAGE_BITS'(PAGE_COUNT-1) && snapshot_published_50mhz &&
         (!frozen_valid || published_sequence!=frozen_sequence);
-    wire [1:0] next_page=page+2'd1;
-    // Read group0 of the following page at the current boundary. Groups1..3
-    // then return during the next three cycles; bypass final group at commit.
+    wire [PAGE_BITS-1:0] next_page=page+1'b1;
+    // Read group0 of the following page at the current boundary. In16-word mode groups1..3
+    // return in the next three cycles. In8-word mode request group1 at phase0,
+    // hold its output until the boundary, and bypass that final group at commit.
     wire [1:0] read_group=phase+2'd1;
-    wire [1:0] read_page=phase==3 ? page+2'd2:next_page;
+    wire [PAGE_BITS-1:0] read_page=phase==3 ? page+PAGE_BITS'(2):next_page;
     wire read_bank=replace_snapshot ? published_bank:frozen_bank;
-    wire read_enable=reset_n && (frozen_valid || replace_snapshot);
-    wire [4:0] read_address={read_bank,read_page,read_group};
+    wire read_enable=reset_n && (frozen_valid || replace_snapshot) &&
+        (PAGE_WORDS==16 || phase==0 || phase==3);
+    wire narrow_group=phase!=3;
+    wire [4:0] read_address=PAGE_WORDS==8 ? {read_bank,3'(read_page),narrow_group}:
+        {read_bank,2'(read_page),read_group};
     wire write_enable=reset_n && state==COPY;
     wire [4:0] write_address={copy_bank,copy_group};
     wire [127:0] copy_data=copy_zero ? 128'd0:held_words[copy_group*128+:128];
@@ -80,11 +88,11 @@ module workstation_ae350_probe_snapshot_ram #(
         if(!reset_n)begin
             read_valid<=0;read_bank_q<=0;read_group_q<=0;
             frozen_valid<=0;frozen_bank<=0;frozen_sequence<=0;frozen_flags<=0;frozen_io<=0;frozen_health<=0;
-            page<=3;phase<=0;prefetch<=0;
+            page<=PAGE_BITS'(PAGE_COUNT-1);phase<=0;prefetch<=0;
         end else begin
-            read_valid<=read_enable;read_bank_q<=read_bank;read_group_q<={read_page,read_group};
+            read_valid<=read_enable;read_bank_q<=read_bank;read_group_q<=PAGE_WORDS==8 ? {3'(read_page),narrow_group}:{2'(read_page),read_group};
             phase<=phase+1'b1;
-            if(phase<3 && read_valid)prefetch[phase*128+:128]<=ram_data;
+            if(phase<2'(GROUPS_PER_PAGE-1) && read_valid)prefetch[phase*128+:128]<=ram_data;
             if(boundary)begin
                 page<=next_page;
                 if(replace_snapshot)begin
@@ -98,18 +106,20 @@ module workstation_ae350_probe_snapshot_ram #(
     wire [31:0] outgoing_sequence=replace_snapshot ? published_sequence:frozen_sequence;
     wire [31:0] outgoing_io=replace_snapshot ? digital_io_50mhz:frozen_io;
     wire [31:0] outgoing_health=replace_snapshot ? health_50mhz:frozen_health;
-    reg [511:0] outgoing_page;
+    reg [PAGE_WORDS*32-1:0] outgoing_page;
     always @*begin
         outgoing_page=replace_snapshot ? prepared_page0:{ram_data,prefetch};
-        if(next_page==3)outgoing_page[13*32+:32]={27'd0,frozen_flags};
+        if(next_page==PAGE_BITS'(PAGE_COUNT-1))outgoing_page[(61%PAGE_WORDS)*32+:32]={27'd0,frozen_flags};
         if(!outgoing_valid)outgoing_page=0;
     end
-    wire [31:0] metadata={8'd4,8'd64,8'd16,5'd0,outgoing_valid,next_page};
+    wire [31:0] metadata=PAGE_WORDS==8 ? {8'd8,8'd64,8'd8,4'd0,outgoing_valid,3'(next_page)}:
+        {8'd4,8'd64,8'd16,5'd0,outgoing_valid,2'(next_page)};
+    wire [31:0] schema_magic=PAGE_WORDS==8 ? 32'ha1386404:32'ha1386403;
     assign sample_update_o=boundary;
-    assign sample_50mhz={outgoing_health,outgoing_io,metadata,32'ha1386403,USER_CODE,outgoing_sequence,outgoing_page};
+    assign sample_50mhz={outgoing_health,outgoing_io,metadata,schema_magic,USER_CODE,outgoing_sequence,outgoing_page};
 
     // UART borrows the continuous GAO read stream, never steals a RAM cycle.
-    // Every32-bit word appears once per16reference clocks. A tagged cache
+    // Every32-bit word appears once per16 (bsram4) or32 (bsram8) reference clocks. A tagged cache
     // absorbs that latency before launching the next 8N1 byte.
     wire payload_byte=byte_index>=20 && byte_index<276;
     wire [5:0] uart_word=6'((byte_index-9'd20)>>2);
@@ -169,7 +179,7 @@ module workstation_ae350_probe_snapshot_ram #(
                 SETTLE:if(wait_count!=0)wait_count<=wait_count-1'b1;
                     else begin pending_flags<={1'b0,flags_sync};copy_group<=0;copy_bank<=!published_bank;copy_zero<=0;state<=COPY;end
                 COPY:begin
-                    if(copy_group<4)prepared_page0[copy_group[1:0]*128+:128]<=copy_data;
+                    if(copy_group<4'(GROUPS_PER_PAGE))prepared_page0[copy_group*128+:128]<=copy_data;
                     if(copy_group==15)begin published_bank<=copy_bank;state<=PUBLISH;end
                     else copy_group<=copy_group+1'b1;
                 end

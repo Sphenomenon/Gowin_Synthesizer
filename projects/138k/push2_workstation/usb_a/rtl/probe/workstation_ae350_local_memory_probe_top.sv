@@ -124,13 +124,18 @@ module workstation_ae350_local_memory_probe_top(
             if(last_tx!=debug_uart_tx)tx_edges<=tx_edges+1'b1;
         end
 `ifdef AE350_PROBE_BSRAM_GAO
-    wire [703:0] ram_sample_50mhz;
+ `ifdef AE350_PROBE_BSRAM8_GAO
+    localparam integer RAM_GAO_WORDS=8;
+ `else
+    localparam integer RAM_GAO_WORDS=16;
+ `endif
+    wire [RAM_GAO_WORDS*32+191:0] ram_sample_50mhz;
     wire ram_sample_update;
-    (* syn_keep=1,syn_preserve=1 *) reg [703:0] status_50mhz;
+    (* syn_keep=1,syn_preserve=1 *) reg [RAM_GAO_WORDS*32+191:0] status_50mhz;
     always @(posedge clk_50m or negedge system_reset_n)
         if(!system_reset_n)status_50mhz<=0;
         else if(ram_sample_update)status_50mhz<=ram_sample_50mhz;
-    workstation_ae350_probe_snapshot_ram #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
+    workstation_ae350_probe_snapshot_ram #(.USER_CODE(`AE350_PROBE_USER_CODE),.PAGE_WORDS(RAM_GAO_WORDS)) u_uart(
         .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
         .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
         .digital_io_50mhz({tx_edges,snapshot_published_50mhz,debug_uart_tx}),

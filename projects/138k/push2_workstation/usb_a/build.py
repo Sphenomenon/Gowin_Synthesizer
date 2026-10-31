@@ -73,7 +73,7 @@ def main():
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     ap.add_argument('--ae350-local-memory-probe',action='store_true',help='Prepare only a minimal same-hard-IP ILM/DLM/boot64 diagnostic')
     ap.add_argument('--ae350-probe-output',type=Path,help='New output directory for the explicit AE350 local-memory probe')
-    ap.add_argument('--ae350-probe-gao',choices=('full64','banked4','bsram4'),help='Explicit GAO transport for the standalone AE350 probe; default full64')
+    ap.add_argument('--ae350-probe-gao',choices=('full64','banked4','bsram4','bsram8'),help='Explicit GAO transport for the standalone AE350 probe; default full64')
     ap.add_argument('--ae350-probe-program',choices=('local-memory','cache-pma-v1'),help='Explicit standalone probe program; default local-memory')
     args=ap.parse_args()
     if args.ae350_local_memory_probe:
