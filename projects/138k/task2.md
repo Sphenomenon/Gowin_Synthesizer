@@ -284,6 +284,8 @@ W11最差PCM路径的[physical epoch四组比较](push2_workstation/usb_a/report
 
 W11真实50MHz长链的[HCI比较分组](push2_workstation/usb_a/reports/DUAL138K_HCI_KEPT_GROUPS_20261101.md)已完成：仅将先后串行的12位handle和32位generation比较加入8位组保留边界，原last-match、默认值、信用／租约及周期不变。完整host／native旧新模块、原160,228／268业务检查、全部原及新增负控、二态全域关系与4,504次有限四态比较通过，真实UART8E1／H5仿真通过。两份新维护源等待W12实际消费，是否阻止carry重建及真实路由收益仍待综合／P&R检查。
 
+W11参考时钟同域hold的[显式区域派生入口](push2_workstation/usb_a/reports/dual138k_reference_monitor_regions_prepare_20261101.md)已通过39项floorplan回归及5项真实父输入负控。按实际VO固定48／44参考monitor各32位binary＋32位Gray，共128FF，第三selected不改；仅追加区域CST，原VG／完整SDC／IO／DDR远区及3.500ns要求保持。`D2110105`已从完整实测W11far父派生并启动全量P&R，新VO／PLL／时序及收益待测，不升级为硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

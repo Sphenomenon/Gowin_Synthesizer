@@ -33,6 +33,10 @@ DDR_FAR_CAPTURE_REGION = 'R[2:10]C[2:20]'
 DDR_FAR_LAUNCH_REGION = 'R[104:110]C[175:181]'
 # DQS hard sites may use border row111; ordinary logic ends at row110.
 DDR_DQS_HOLD_REGIONS = tuple(f'R[{104-10*lane}:{min(110,118-10*lane)}]C[2:30]' for lane in range(4))
+REFERENCE_SOURCE_MONITORS = (
+    ('reference_48_monitor', 'clk_12m288', 'R[54:54]C[64:84]'),
+    ('reference_44_monitor', 'clk_16m9344', 'R[56:56]C[64:84]'))
+REFERENCE_MONITOR_ROOT = 'u_managed/runtime/clocks/'
 
 
 def implementation_script(user_code, place_option=2, route_option=0, replicate_resources=False):
@@ -247,14 +251,80 @@ def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist, *, lut_only=Fa
         new_route_verified=False)
 
 
+def reference_monitor_source_region_constraints(payload, sdc, routed_netlist):
+    """Place the complete observed 128-FF source banks, with no clock edits.
+
+    This experiment fixes the two actual 32-bit binary/Gray source banks.
+    It deliberately does not infer a width or include the selected monitor.
+    """
+    text = payload.decode('utf-8')
+    # Reuse the strict DDR boundary audit while retaining every parent byte,
+    # including an existing far launch/capture placement, in the real payload.
+    validation_lines = [line for line in text.splitlines() if not any(
+        re.match(r'\s*INS_LOC\s+"' + re.escape(name) + r'"\s', line)
+        for name in (DDR_CAPTURE, DDR_LAUNCH))]
+    ddr_capture_region_constraints(('\n'.join(validation_lines) + '\n').encode(),
+                                   sdc, routed_netlist, strict_minimum=True)
+    netlist = SynthesisNetlist(routed_netlist, TOP)
+    power = {netlist.pin(name, 'V') for name, cell in netlist.cells.items() if cell['kind'] == 'VCC'}
+    monitors, constraints = [], []
+    for monitor, port, region in REFERENCE_SOURCE_MONITORS:
+        stem = REFERENCE_MONITOR_ROOT + monitor
+        names = {f'{stem}/source_{bank}_{bit}_s0'
+                 for bank in ('binary', 'gray') for bit in range(32)}
+        observed = {name for name in netlist.cells if name.startswith(stem + '/source_binary_') or
+                    name.startswith(stem + '/source_gray_')}
+        if observed != names:
+            raise ValueError('reference monitor complete fixed 32-bit binary/Gray inventory changed: ' + monitor)
+        if any(name in text for name in names):
+            raise ValueError('reference monitor source target already appears in the parent CST')
+        ibuf = netlist.cells.get(port + '_ibuf', {})
+        if (ibuf.get('kind') != 'IBUF' or ibuf.get('ports') != {'I': port, 'O': port + '_d'}):
+            raise ValueError('reference monitor direct IBUF clock identity changed: ' + monitor)
+        registers = []
+        for bank in ('binary', 'gray'):
+            for bit in range(32):
+                name = f'{stem}/source_{bank}_{bit}_s0'
+                cell = netlist.cells[name]
+                if (cell['kind'] != 'DFFCE' or cell['parameters'] != {'INIT': "1'b0"} or
+                        set(cell['ports']) != {'D', 'Q', 'CLK', 'CE', 'CLEAR'}):
+                    raise ValueError('reference monitor source FF type/INIT/pins changed: ' + name)
+                compact = lambda net: re.sub(r'\s+', '', net).removeprefix('\\')
+                if (cell['ports']['CLK'] != port + '_d' or netlist.pin(name, 'CE') not in power or
+                        compact(cell['ports']['CLEAR']) != stem + '/n60_6' or
+                        compact(cell['ports']['Q']) != f'{stem}/source_{bank}[{bit}]'):
+                    raise ValueError('reference monitor source clock/enable/reset/output topology changed: ' + name)
+                constraints.append(f'INS_LOC "{name}" {region};')
+                registers.append(dict(instance=name, kind=cell['kind'], parameters=cell['parameters'],
+                                      ports=cell['ports']))
+        monitors.append(dict(monitor=stem, binary_bits=32, gray_bits=32, register_count=64,
+                             clock_input=port, clock_ibuf=ibuf, region=region,
+                             registers=registers))
+    adapted = payload + ('\n' + '\n'.join(constraints) + '\n').encode()
+    if not adapted.startswith(payload) or parse_locations(adapted.decode()) != parse_locations(text):
+        raise ValueError('reference monitor placement unexpectedly changed parent constraints or IO locations')
+    return adapted, dict(monitors=monitors, register_count=128, constraints=constraints,
+        fixed_width_inventory=True, selected_monitor_constrained=False,
+        before_sha256=digest(payload), after_sha256=digest(adapted),
+        exact_appended_bytes_hex=adapted[len(payload):].hex(), parent_bytes_preserved=True,
+        io_locations_unchanged=True, hard_locations_unchanged=True, sdc_unchanged=True,
+        minimum_delay_ns=3.5, minimum_delay_constraint=DDR_STRICT_MINIMUM,
+        logic_unchanged=True, clocks_unchanged=True, timing_exceptions_unchanged=True,
+        topology_evidence_scope='hash_bound_previous_route_VO_of_same_synthesis_VG',
+        new_route_verified=False)
+
+
 def derive_ddr_capture_region(source, output, user_code, parent_evidence,
                               expected_parent_evidence_sha256, acknowledge_electrical_risk=False,
                               *, dqs_hold_regions=False, dqs_hold_lut_only=False,
-                              launch_capture_regions=False, launch_capture_far_regions=False):
+                              launch_capture_regions=False, launch_capture_far_regions=False,
+                              reference_monitor_source_regions=False):
     """Prepare only a hash-locked physical child; never audit mutable current RTL."""
     if dqs_hold_regions and dqs_hold_lut_only:
         raise ValueError('DQS HOLD FF/LUT and LUT-only modes are mutually exclusive')
     dqs_regions = dqs_hold_regions or dqs_hold_lut_only
+    if reference_monitor_source_regions and (dqs_regions or launch_capture_regions or launch_capture_far_regions):
+        raise ValueError('reference monitor and DDR placement modes are mutually exclusive')
     if ((dqs_regions and (launch_capture_regions or launch_capture_far_regions)) or
             (launch_capture_regions and launch_capture_far_regions)):
         raise ValueError('DQS HOLD and launch/capture placement modes are mutually exclusive')
@@ -328,7 +398,9 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         raise ValueError('parent route VO needs original hash-bound physical evidence')
     arguments = ((source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
                  (source / routed_name).read_text())
-    if launch_capture_regions or launch_capture_far_regions:
+    if reference_monitor_source_regions:
+        adapted, placement = reference_monitor_source_region_constraints(*arguments)
+    elif launch_capture_regions or launch_capture_far_regions:
         adapted, placement = ddr_launch_capture_region_constraints(
             *arguments, far_regions=launch_capture_far_regions)
     elif dqs_regions:
@@ -367,7 +439,9 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         identity='custom138k-native-physical-' + user_code.upper(), user_code='0x' + user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_variant_prepared_no_EDA',
-        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_far_regions_CST_append'
+        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_reference_monitor_source_regions_CST_append'
+                       if reference_monitor_source_regions else
+                       'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_far_regions_CST_append'
                        if launch_capture_far_regions else
                        'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_regions_CST_append'
                        if launch_capture_regions else
@@ -393,7 +467,8 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         physical_gates_passed=False, timing_closed=False, deployment_allowed=False, release_ready=False,
         hardware_tested=False, board_programming_authorized=False, bitstream_sha256=None,
         sram_programmed=False, flash_programmed=False)
-    result['ddr_launch_capture_far_regions_adaptation' if launch_capture_far_regions else
+    result['reference_monitor_source_regions_adaptation' if reference_monitor_source_regions else
+           'ddr_launch_capture_far_regions_adaptation' if launch_capture_far_regions else
            'ddr_launch_capture_regions_adaptation' if launch_capture_regions else
            'ddr_dqs_hold_regions_adaptation' if dqs_regions else 'ddr_capture_region_adaptation'] = placement
     (output / 'physical_inputs.json').write_text(json.dumps(result, indent=2) + '\n')
@@ -508,6 +583,8 @@ def main():
                           help='Place both observed initialization ends; requires unchanged 3.500ns minimum')
     dqs_mode.add_argument('--ddr-launch-capture-far-regions', action='store_true',
                           help='Use the explicit opposite-corner initialization regions; keeps 3.500ns minimum')
+    dqs_mode.add_argument('--reference-monitor-source-regions', action='store_true',
+                          help='Place only the fixed 128 FFs in the two observed reference source banks')
     parser.add_argument('--expected-parent-evidence-sha256',
                         help='Required explicit identity when deriving the DDR capture-region experiment')
     args = parser.parse_args()
@@ -521,10 +598,12 @@ def main():
                                           dqs_hold_regions=args.ddr_dqs_hold_regions,
                                           dqs_hold_lut_only=args.ddr_dqs_hold_lut_only,
                                           launch_capture_regions=args.ddr_launch_capture_regions,
-                                          launch_capture_far_regions=args.ddr_launch_capture_far_regions)
+                                          launch_capture_far_regions=args.ddr_launch_capture_far_regions,
+                                          reference_monitor_source_regions=args.reference_monitor_source_regions)
     else:
         if (args.ddr_dqs_hold_regions or args.ddr_dqs_hold_lut_only or
-                args.ddr_launch_capture_regions or args.ddr_launch_capture_far_regions):
+                args.ddr_launch_capture_regions or args.ddr_launch_capture_far_regions or
+                args.reference_monitor_source_regions):
             parser.error('DQS HOLD placement modes require an explicit floorplan parent evidence')
         if args.expected_parent_evidence_sha256:
             parser.error('--expected-parent-evidence-sha256 requires the explicit DDR derivation')
