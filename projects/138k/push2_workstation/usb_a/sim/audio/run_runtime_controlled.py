@@ -16,15 +16,7 @@ from tools.workstation_runtime_counter import selected_source, selection_evidenc
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--project', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--nonzero-epoch',action='store_true')
-    parser.add_argument('--inflight-score-boundary',action='store_true')
-    args = parser.parse_args()
-    project, output = args.project.resolve(), args.output.resolve()
-    output.mkdir(parents=True, exist_ok=False)
+def runtime_sources(project,testbench=None):
     simlib = Path(os.environ.get('GOWIN_GW5A_SIMLIB', '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v'))
     sources = sorted((project / 'legacy/rtl/audio').glob('*.sv'),
                      key=lambda path: (not path.name.endswith('_pkg.sv'), str(path)))
@@ -46,7 +38,7 @@ def main():
         'workstation_pcm_frame_bridge.sv', 'workstation_i2s_serializer.sv',
         'workstation_final_pcm_router.sv', 'workstation_pcm_frame_fanout.sv')]
     sources += [ROOT / 'rtl/workstation/workstation_runtime_audio.sv', simlib,
-                Path(__file__).with_name('tb_workstation_runtime_controlled.sv')]
+                testbench or Path(__file__).with_name('tb_workstation_runtime_controlled.sv')]
     sources += [project / ('src/migration/' + name) for name in (
         'gw138k_apb_cdc.sv', 'gw138k_stream_cdc.sv')]
     sources += [selected_source(project)]
@@ -62,6 +54,19 @@ def main():
     # exactly the maintained copies in this candidate, never duplicate owners.
     sources = [path for path in sources if not (
         path.parent == project / 'legacy/rtl/audio' and path.name == 'audio_capture_fifo.sv')]
+    return sources
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--project', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--nonzero-epoch',action='store_true')
+    parser.add_argument('--inflight-score-boundary',action='store_true')
+    args = parser.parse_args()
+    project, output = args.project.resolve(), args.output.resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    simlib = Path(os.environ.get('GOWIN_GW5A_SIMLIB', '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v'))
+    sources = runtime_sources(project)
     consumer_tb = Path(__file__).with_name('tb_workstation_observation_consumers.sv')
     consumer_sources = [project / 'legacy/rtl/audio/audio_math_pkg.sv',
                         project / 'legacy/rtl/audio/spectrum_fft256.sv',

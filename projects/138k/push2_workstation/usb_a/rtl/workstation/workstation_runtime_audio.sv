@@ -10,6 +10,7 @@ module workstation_runtime_audio #(
     parameter integer PDN_HOLD_FRAMES=4, STARTUP_MUTE_FRAMES=1028,
     parameter integer DMA_TIMEOUT_CYCLES=1048576,
     parameter bit RESERVE_ZERO_EPOCH=0,
+    parameter bit ENABLE_AE350_PCM=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
 ) (
     input wire rst_ni, clk_50m_i, compute_clk_i, memory_clk_i,
@@ -34,6 +35,16 @@ module workstation_runtime_audio #(
     output wire cpu_event_ready_o,
     input wire signed [31:0] pcm_left_i, pcm_right_i,
     input wire output_mute_i,
+    // Explicit F806 page, already crossed as immutable commands to compute.
+    input wire pcm_cpu_ready_i,pcm_command_valid_i,pcm_command_write_i,
+    input wire [11:0] pcm_command_address_i,
+    input wire [31:0] pcm_command_data_i,
+    input wire [3:0] pcm_command_strobes_i,
+    output wire pcm_command_ready_o,pcm_response_error_o,
+    output wire [31:0] pcm_response_data_o,
+    input wire hci_session_ready_i,
+    input wire [31:0] hci_controller_epoch_i,hci_transport_generation_i,
+    input wire pcm_tf_busy_i,
     output wire [127:0] held_notes_o,
     output wire [9:0] panic_epoch_o,
     output wire panic_muted_o,
@@ -92,7 +103,10 @@ module workstation_runtime_audio #(
     wire [31:0] router_pcm;
     wire config_ready,config_applied;
     reg integration_fault;
-    wire compute_fault=service_fault || integration_fault;
+    wire pcm_hard_fault,pcm_history_request,pcm_history_ready,pcm_history_done,pcm_serial_hold;
+    wire [21:0] pcm_cancel_epoch;
+    wire signed [31:0] input_left,input_right;
+    wire compute_fault=service_fault || integration_fault || pcm_hard_fault;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] fault_sync,quiet_sync,prefill_sync,running_sync;
     reg fault_previous;
     // Register the combined compute-domain proof before synchronizing it;
@@ -183,6 +197,46 @@ module workstation_runtime_audio #(
         end
     end
 
+    // Stream ingress and source policy remain audio-owned. No new DSP or gain.
+    generate if(ENABLE_AE350_PCM)begin: cpu_pcm
+        wire session_live;
+        wire [31:0] session_epoch,session_generation;
+        workstation_ae350_pcm_session session(
+            .reset_ni(rst_ni),.clk_i(compute_clk_i),.source_ready_i(hci_session_ready_i),
+            .source_epoch_i(hci_controller_epoch_i),.source_generation_i(hci_transport_generation_i),
+            .live_o(session_live),.epoch_o(session_epoch),.generation_o(session_generation));
+        reg switch_inhibit_50;
+        (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] switch_inhibit_compute;
+        always @(posedge clk_50m_i or negedge rst_ni)
+            if(!rst_ni)switch_inhibit_50<=1;else switch_inhibit_50<=busy_o || quiesce_o;
+        always @(posedge compute_clk_i or posedge switch_inhibit_50 or negedge rst_ni)
+            if(!rst_ni || switch_inhibit_50)switch_inhibit_compute<=3;
+            else switch_inhibit_compute<={switch_inhibit_compute[0],1'b0};
+        workstation_ae350_pcm_owner owner(
+            .clk_i(compute_clk_i),.reset_ni(compute_reset_n),.cpu_ready_i(pcm_cpu_ready_i),
+            .command_valid_i(pcm_command_valid_i),.command_write_i(pcm_command_write_i),
+            .command_address_i(pcm_command_address_i),.command_data_i(pcm_command_data_i),
+            .command_strobes_i(pcm_command_strobes_i),.command_ready_o(pcm_command_ready_o),
+            .response_data_o(pcm_response_data_o),.response_error_o(pcm_response_error_o),
+            .session_live_i(session_live),.controller_epoch_i(session_epoch),.transport_generation_i(session_generation),
+            .context_ready_i(compute_context_valid && config_state==CFG_IDLE && !compute_fault),
+            .rate_44100_i(compute_rate),.physical_epoch_i(compute_epoch),.tf_busy_i(pcm_tf_busy_i),
+            .switch_busy_i(switch_inhibit_compute[1]),.sample_take_i(render_request && service_ready),
+            .legacy_left_i(pcm_left_i),.legacy_right_i(pcm_right_i),.pcm_left_o(input_left),.pcm_right_o(input_right),
+            .history_clear_o(pcm_history_request),.history_ready_i(pcm_history_ready && !config_valid),.history_done_i(pcm_history_done),
+            .serial_hold_o(pcm_serial_hold),.cancel_epoch_o(pcm_cancel_epoch),.selected_o(),.failed_o(),.hard_fault_o(pcm_hard_fault));
+    end else begin: no_cpu_pcm
+        assign input_left=pcm_left_i;assign input_right=pcm_right_i;
+        assign pcm_command_ready_o=1'b1;assign pcm_response_data_o=0;assign pcm_response_error_o=1'b1;
+        assign pcm_history_request=1'b0;assign pcm_serial_hold=1'b0;assign pcm_cancel_epoch=0;assign pcm_hard_fault=1'b0;
+    end endgenerate
+    // A held source revoke drops pending serial payloads. Assertion is immediate;
+    // release crosses two selected-clock flops and the serializer's frame guard.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] pcm_hold_serial;
+    always @(posedge selected_clock or posedge pcm_serial_hold or negedge rst_ni)
+        if(!rst_ni || pcm_serial_hold)pcm_hold_serial<=3;
+        else pcm_hold_serial<={pcm_hold_serial[0],1'b0};
+
     // Local serializer reset is only asserted by the clock transaction/fault.
     // A new staged context MUST NOT cut the old frame during QUIESCE.
     // On each restart wait for the atomic config ACK, then eight real selected
@@ -232,7 +286,7 @@ module workstation_runtime_audio #(
     workstation_final_pcm_router final_pcm(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),.request_i(bridge_request),.request_44k1_i(bridge_rate),
         .request_epoch_i(bridge_epoch),.request_sequence_i(bridge_sequence),.request_ready_o(router_ready),
-        .active_44k1_i(compute_rate),.active_epoch_i(compute_epoch),.cancel_epoch_i({22'd0,panic_epoch_o}),
+        .active_44k1_i(compute_rate),.active_epoch_i(compute_epoch),.cancel_epoch_i({pcm_cancel_epoch,panic_epoch_o}),
         .scope_enable_i(scope_status_o[8]),.tf_active_i,.master_volume_i(master_volume_o),
         .mute_i(output_mute_i || panic_muted_o),.tf_valid_i,.tf_error_i,.tf_left_i,.tf_right_i,
         .tf_sample_rate_i,.tf_generation_i,.expected_tf_generation_i,.tf_ready_o,
@@ -246,15 +300,15 @@ module workstation_runtime_audio #(
     wire [64:0] dwr_data,drd_data;
     workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1)) service(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),
-        .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(1'b0),
-        .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(),.history_done_o(),
+        .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(pcm_history_request),
+        .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(pcm_history_ready),.history_done_o(pcm_history_done),
         .quiescent_o(service_quiet),.fault_o(service_fault),.applied_rate_44100_o(service_rate),
         .delay_peer_heartbeat_i(memory_heartbeat),.delay_dma_fault_i(dma_fault),.delay_heartbeat_o(audio_heartbeat),
         .render_request_i(render_request),.render_44k1_i(render_rate),.render_ready_o(service_ready),
         .render_done_o(service_done),.render_error_o(service_error),.render_left_o(service_left),.render_right_o(service_right),
         .render_busy_o(),.sample_ce_o(),.rejected_request_count_o(),.unsupported_rate_count_o(),
         .cancelled_response_count_o(),.drained_result_count_o(),.midi_byte_valid_i,.midi_byte_i,
-        .pc_byte_valid_i,.pc_byte_i,.cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,.pcm_left_i,.pcm_right_i,
+        .pc_byte_valid_i,.pc_byte_i,.cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,.pcm_left_i(input_left),.pcm_right_i(input_right),
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,.panic_epoch_o,.panic_muted_o,
         .active_mask_o,.active_voice_count_o,.mode_o,.pitch_q20_o,.deadline_miss_o,.midi_overflow_o,.note_drop_o,
         .clip_o,.synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,.effect_mask_o,.effect_order_o,
@@ -270,9 +324,9 @@ module workstation_runtime_audio #(
     wire serializer_pdn,serializer_mute,physical_error,physical_rate;
     wire [31:0] physical_epoch,physical_sequence,physical_pcm;
     workstation_i2s_serializer #(.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),.STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),
-        .SAMPLE_ERROR_ENABLE(1)) serializer(
+        .SAMPLE_ERROR_ENABLE(1),.SOURCE_HOLD_ENABLE(ENABLE_AE350_PCM)) serializer(
         .clk_i(selected_clock),.rst_ni(serial_reset_n),.rate_44k1_i(serial_rate),.epoch_i(serial_epoch),
-        .quiesce_i(serial_quiesce[1]),.resume_i(serial_resume[1]),.serial_quiescent_o(serial_quiet),
+        .quiesce_i(serial_quiesce[1]),.resume_i(serial_resume[1]),.source_hold_i(pcm_hold_serial[1]),.serial_quiescent_o(serial_quiet),
         .output_running_o(serial_running),.prefill_ready_o(serial_prefill),.request_o(serial_request),
         .request_sequence_o(serial_request_sequence),.request_44k1_o(serial_request_rate),.request_epoch_o(serial_request_epoch),
         .sample_valid_i(sample_valid),.sample_ready_o(sample_ready),.sample_44k1_i(sample_rate),.sample_error_i(sample_error),

@@ -7,7 +7,8 @@ module workstation_i2s_serializer #(
     parameter integer STARTUP_MUTE_FRAMES = 1028,
     // Explicit opt-in keeps existing unconnected/legacy sample interfaces
     // unchanged. Tagged frame compositions must enable and connect this bit.
-    parameter bit SAMPLE_ERROR_ENABLE = 0
+    parameter bit SAMPLE_ERROR_ENABLE = 0,
+    parameter bit SOURCE_HOLD_ENABLE = 0
 ) (
     input wire clk_i, rst_ni,
     // Stable before local reset release through the first selected-clock edge.
@@ -15,6 +16,7 @@ module workstation_i2s_serializer #(
     input wire rate_44k1_i,
     input wire [31:0] epoch_i,
     input wire quiesce_i, resume_i,
+    input wire source_hold_i,
     output reg serial_quiescent_o, output_running_o,
     output wire prefill_ready_o,
     // Request the next output slot, one full frame ahead after prefill.
@@ -57,10 +59,13 @@ module workstation_i2s_serializer #(
     wire frame_boundary = half_end && bck_o && bit_position == 6'd63;
     wire startup_done = startup_frames == STARTUP_BITS'(STARTUP_MUTE_FRAMES);
     wire incoming = sample_valid_i && sample_ready_o;
-    wire incoming_match = incoming && requested &&
+    wire source_hold=SOURCE_HOLD_ENABLE && source_hold_i;
+    reg [1:0] source_guard;
+    wire source_blocked=source_hold || source_guard!=0;
+    wire incoming_match = incoming && !source_blocked && requested &&
         sample_44k1_i == mode_44k1 && sample_epoch_i == epoch &&
         sample_sequence_i == wanted_sequence;
-    wire next_available = have_next || incoming_match;
+    wire next_available = !source_blocked && (have_next || incoming_match);
     wire [31:0] available_pcm = have_next ? next_pcm : sample_pcm_i;
     wire available_error = SAMPLE_ERROR_ENABLE && (have_next ? next_error : sample_error_i);
 
@@ -85,7 +90,7 @@ module workstation_i2s_serializer #(
             bck_o <= 0; lrck_o <= 0; data_o <= 0;
             startup_frames <= 0;
             playing <= 0; current_error <= 0; current_pcm <= 0; current_sequence <= 0;
-            requested <= 0; have_next <= 0; next_error <= 0; next_pcm <= 0; wanted_sequence <= 0;
+            source_guard<=0;requested <= 0; have_next <= 0; next_error <= 0; next_pcm <= 0; wanted_sequence <= 0;
             serial_quiescent_o <= 1; output_running_o <= 0;
             request_o <= 0; request_sequence_o <= 0;
             frame_valid_o <= 0; frame_error_o <= 0;
@@ -100,6 +105,8 @@ module workstation_i2s_serializer #(
         end else begin
             request_o <= 0;
             frame_valid_o <= 0;
+            if(source_hold)source_guard<=2;
+            else if(frame_boundary && source_guard!=0)source_guard<=source_guard-1'b1;
             if (quiesce_i) begin
                 // The current serial frame continues until its final bit.
                 have_next <= 0;
@@ -107,11 +114,12 @@ module workstation_i2s_serializer #(
                 output_running_o <= 0;
             end else begin
                 serial_quiescent_o <= 0;
-                if (!requested) begin
+                if (!requested && !source_blocked) begin
                     requested <= 1;
                     request_o <= 1;
                     request_sequence_o <= wanted_sequence;
                 end
+                if(source_blocked)begin have_next<=0;requested<=0;output_running_o<=0;end
                 if (incoming) begin
                     if (incoming_match) begin
                         have_next <= 1; next_pcm <= sample_pcm_i;
@@ -162,8 +170,8 @@ module workstation_i2s_serializer #(
                                 source_error_count_o <= saturating_increment(source_error_count_o);
                             have_next <= 0;
                             wanted_sequence <= wanted_sequence + 1'b1;
-                            requested <= 1;
-                            request_o <= 1;
+                            requested <= !source_blocked;
+                            request_o <= !source_blocked;
                             request_sequence_o <= wanted_sequence + 1'b1;
                         end else begin
                             playing <= 0;

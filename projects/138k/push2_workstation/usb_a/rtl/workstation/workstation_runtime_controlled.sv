@@ -11,7 +11,8 @@ module workstation_runtime_controlled #(
     parameter integer DMA_TIMEOUT_CYCLES=1048576,RECORD_ADDRESS_BITS=8,
     parameter bit RESERVE_ZERO_EPOCH=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
-    parameter bit ENABLE_MEDIA_POLICY=0
+    parameter bit ENABLE_MEDIA_POLICY=0,
+    parameter bit ENABLE_AE350_PCM=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,
     input wire reference_48_i,reference_44_i,midi_rx_i,pc_uart_rx_i,
@@ -39,6 +40,11 @@ module workstation_runtime_controlled #(
     output wire quiesce_o,stream_flush_o,dsp_fault_o,context_ready_o,
     input wire signed [31:0] pcm_left_i,pcm_right_i,
     input wire output_mute_i,
+    input wire pcm_psel_i,
+    output wire pcm_pready_o,pcm_pslverr_o,
+    output wire [31:0] pcm_prdata_o,
+    input wire hci_session_ready_i,
+    input wire [31:0] hci_controller_epoch_i,hci_transport_generation_i,
     // Atomic compute-domain TF packet. tf_busy also includes file-side work.
     input wire tf_active_i,tf_busy_i,tf_valid_i,tf_error_i,
     input wire signed [15:0] tf_left_i,tf_right_i,
@@ -143,6 +149,23 @@ module workstation_runtime_controlled #(
         .psel,.penable,.pwrite,.paddr,.pwdata,.pstrb,.pready,.pslverr,.prdata,
         .command_reset_n,.command_valid,.command_ready,.command_write,.command_address,
         .command_data,.command_strobes,.response_data,.response_error);
+    wire pcm_owner_reset,pcm_command_valid,pcm_command_ready,pcm_command_write,pcm_response_error;
+    wire [11:0] pcm_command_address;
+    wire [31:0] pcm_command_data,pcm_response_data;
+    wire [3:0] pcm_command_strobes;
+    generate if(ENABLE_AE350_PCM)begin: pcm_apb
+        gw138k_apb_cdc commands(
+            .reset_n(rst_ni && preset_n),.pclk,.audio_clk(compute_clk_i),
+            .psel(pcm_psel_i),.penable,.pwrite,.paddr,.pwdata,.pstrb,
+            .pready(pcm_pready_o),.pslverr(pcm_pslverr_o),.prdata(pcm_prdata_o),
+            .command_reset_n(pcm_owner_reset),.command_valid(pcm_command_valid),.command_ready(pcm_command_ready),
+            .command_write(pcm_command_write),.command_address(pcm_command_address),.command_data(pcm_command_data),
+            .command_strobes(pcm_command_strobes),.response_data(pcm_response_data),.response_error(pcm_response_error));
+    end else begin: no_pcm_apb
+        assign pcm_pready_o=1;assign pcm_pslverr_o=1;assign pcm_prdata_o=0;
+        assign pcm_owner_reset=1;assign pcm_command_valid=0;assign pcm_command_write=0;
+        assign pcm_command_address=0;assign pcm_command_data=0;assign pcm_command_strobes=0;
+    end endgenerate
     wire cpu_event_valid,cpu_event_ready,merged_valid,merged_ready;
     wire [17:0] cpu_event,merged_data;
     wire panel_event_valid,panel_event_ready;
@@ -232,7 +255,7 @@ module workstation_runtime_controlled #(
         .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),
         .SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),
         .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
-        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM)
     ) runtime(
         .rst_ni,.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i,.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i,.media_quiescent_i,
@@ -242,7 +265,11 @@ module workstation_runtime_controlled #(
         .midi_byte_valid_i(midi_valid_compute),.midi_byte_i(midi_byte_compute),
         .pc_byte_valid_i(pc_valid_compute),.pc_byte_i(pc_byte_compute),
         .cpu_event_valid_i(merged_valid),.cpu_event_i(merged_data),.cpu_event_ready_o(merged_ready),
-        .pcm_left_i,.pcm_right_i,.output_mute_i,.held_notes_o,.panic_epoch_o(panic_epoch),.panic_muted_o(),
+        .pcm_left_i,.pcm_right_i,.output_mute_i,
+        .pcm_cpu_ready_i(pcm_owner_reset),.pcm_command_valid_i(pcm_command_valid),.pcm_command_write_i(pcm_command_write),
+        .pcm_command_address_i(pcm_command_address),.pcm_command_data_i(pcm_command_data),.pcm_command_strobes_i(pcm_command_strobes),
+        .pcm_command_ready_o(pcm_command_ready),.pcm_response_error_o(pcm_response_error),.pcm_response_data_o(pcm_response_data),
+        .hci_session_ready_i,.hci_controller_epoch_i,.hci_transport_generation_i,.pcm_tf_busy_i(tf_active_i || tf_busy_i),.held_notes_o,.panic_epoch_o(panic_epoch),.panic_muted_o(),
         .active_mask_o,.scope_status_o,.tf_scope_control_o,.applied_events_o,.control_options_o,
         .active_voice_count_o(voices),.mode_o(mode),.master_volume_o,.pitch_q20_o(pitch),
         .pc_overflow_o(pc_overflow),.deadline_miss_o,.midi_overflow_o,.note_drop_o,.clip_o(),

@@ -226,6 +226,17 @@ module gw138k_push_workstation_top #(
         .pending(ui_pending),.visible(ui_visible),.next_visible(ui_next_visible),.front_base(ui_front_base),.next_base(ui_next_base));
     wire service_select=psel && paddr[31:12]==20'hf8010;
 `ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_AE350_PCM
+    // New source requires a separately locked explicit candidate/profile.
+    localparam AE350_PCM_ENABLED=1;
+    wire pcm_select=psel && paddr[31:12]==20'hf8060;
+    wire pcm_bus_ready,pcm_bus_error,hci_pcm_session_ready;
+    wire [31:0] pcm_bus_data,hci_pcm_controller_epoch,hci_pcm_transport_generation;
+`else
+    localparam AE350_PCM_ENABLED=0;
+    wire pcm_select=1'b0,pcm_bus_ready=1'b1,pcm_bus_error=1'b1,hci_pcm_session_ready=1'b0;
+    wire [31:0] pcm_bus_data=0,hci_pcm_controller_epoch=0,hci_pcm_transport_generation=0;
+`endif
     // This page is distinct from legacy audio F8010, UI F8020 and boot F8000.
     wire clock_service_select=psel && paddr[31:12]==20'hf8030;
     wire clock_service_ready,clock_service_error;
@@ -577,7 +588,7 @@ module gw138k_push_workstation_top #(
 `endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire [15:0] master_volume;
-    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) u_managed(
+    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED)) u_managed(
         .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
         .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
         .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
@@ -596,6 +607,9 @@ module gw138k_push_workstation_top #(
         .source_qualified_o(rate_qualified),.quiesce_o(rate_quiesce),.stream_flush_o(rate_flush),
         .dsp_fault_o(rate_dsp_fault),.context_ready_o(rate_context_ready),
         .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!output_safe_compute[2]),
+        .pcm_psel_i(pcm_select),.pcm_pready_o(pcm_bus_ready),.pcm_pslverr_o(pcm_bus_error),.pcm_prdata_o(pcm_bus_data),
+        .hci_session_ready_i(hci_pcm_session_ready),.hci_controller_epoch_i(hci_pcm_controller_epoch),
+        .hci_transport_generation_i(hci_pcm_transport_generation),
         .tf_active_i(tf_packet_active),.tf_busy_i(tf_packet_busy),.tf_valid_i(tf_packet_valid),
         .tf_error_i(tf_packet_error),.tf_left_i(tf_packet_left),.tf_right_i(tf_packet_right),
         .tf_sample_rate_i(tf_packet_rate),.tf_generation_i(tf_packet_generation),
@@ -958,6 +972,10 @@ module gw138k_push_workstation_top #(
         .business_command_data_i(business_command_data),.business_command_strobes_i(business_command_strobes),
         .business_command_ready_o(business_command_ready),.business_response_error_o(business_response_error),
         .business_response_data_o(business_response_data),
+`ifdef WORKSTATION_AE350_PCM
+        .hci_classic_ready_o(hci_pcm_session_ready),.hci_epoch_o(hci_pcm_controller_epoch),
+        .hci_classic_generation_o(hci_pcm_transport_generation),
+`endif
 `endif
         .pcm_valid_i(ble_pcm_valid),.pcm_pair_i(ble_pcm),.pcm_sequence_i(ble_sequence),
 `ifdef WORKSTATION_RUNTIME_NATIVE
@@ -1139,13 +1157,13 @@ module gw138k_push_workstation_top #(
         .DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
 `ifdef WORKSTATION_RECORDING_DDR
-        .APB_PRDATA(business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
-        .APB_PREADY(business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
-        .APB_PSLVERR(business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+        .APB_PRDATA(pcm_select?pcm_bus_data:business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(pcm_select?pcm_bus_ready:business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(pcm_select?pcm_bus_error:business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
 `elsif WORKSTATION_RUNTIME_NATIVE
-        .APB_PRDATA(clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
-        .APB_PREADY(clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
-        .APB_PSLVERR(clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+        .APB_PRDATA(pcm_select?pcm_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(pcm_select?pcm_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(pcm_select?pcm_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
 `else
         .APB_PRDATA(service_select?service_data:ui_select?ui_read_data:32'h41313338),.APB_PREADY(service_select?service_ready:ui_select?ui_ready:1'b1),.APB_PSLVERR(service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
 `endif

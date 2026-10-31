@@ -57,6 +57,8 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         .rejected_o(),.failed_o(),.policy_rejected_o(policy_rejected),.reject_code_o(),.fault_code_o(),.clock_select_o(),
         .switch_block_reason_o(block_reason),.active_44k1_o(rate),.active_valid_o(active_valid),.stream_epoch_o(epoch),
         .source_qualified_o(),.quiesce_o(),.stream_flush_o(),.dsp_fault_o(),.context_ready_o(),
+        .pcm_psel_i(1'b0),.pcm_pready_o(),.pcm_pslverr_o(),.pcm_prdata_o(),
+        .hci_session_ready_i(1'b0),.hci_controller_epoch_i(32'd0),.hci_transport_generation_i(32'd0),
         .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(1'b0),
         .tf_active_i(tf_active),.tf_busy_i(tf_busy),.tf_valid_i(1'b1),.tf_error_i(tf_error),
         .tf_left_i(16'sd25000),.tf_right_i(-16'sd17000),.tf_sample_rate_i(tf_rate),
