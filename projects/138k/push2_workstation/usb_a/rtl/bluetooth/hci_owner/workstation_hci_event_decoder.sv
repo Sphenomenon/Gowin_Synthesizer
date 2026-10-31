@@ -26,6 +26,7 @@ module workstation_hci_event_decoder (
     output reg completion_commit_o,
 
     output reg command_response_o,
+    output reg response_is_complete_o,
     output reg [7:0] response_credits_o, response_status_o,
     output reg [15:0] response_opcode_o,
     output reg buffer_info_valid_o, buffer_info_is_le_o,
@@ -65,7 +66,7 @@ module workstation_hci_event_decoder (
             packet_event_o<=0;fault_o<=0;fault_reason_o<=0;
             handle_is_le_o<=0;handle_o<=0;handle_admitted_o<=0;handle_generation_o<=0;
             completion_handle_o<=0;completion_count_o<=0;
-            response_credits_o<=0;response_status_o<=0;response_opcode_o<=0;
+            response_credits_o<=0;response_status_o<=0;response_opcode_o<=0;response_is_complete_o<=0;
             buffer_info_is_le_o<=0;buffer_info_length_o<=0;buffer_info_count_o<=0;
             pair_handle_low<=0;pair_handle_high<=0;pair_count_low<=0;
             for(index=0;index<16;index=index+1)prefix[index]<=0;
@@ -147,6 +148,7 @@ module workstation_hci_event_decoder (
                     end
                     8'h05: if(prefix[2]==0)begin handle_close_o<=1;handle_o<=lifecycle_handle[11:0];end
                     8'h0e: begin
+                        response_is_complete_o<=1;
                         command_response_o<=1;response_credits_o<=prefix[2];response_opcode_o<=complete_opcode;
                         response_status_o<=complete_opcode == 0 ? 0 : prefix[5];
                         if(prefix[5]==0 && (complete_opcode==16'h1005 || complete_opcode==16'h2002))begin
@@ -156,6 +158,7 @@ module workstation_hci_event_decoder (
                         end
                     end
                     8'h0f: begin
+                        response_is_complete_o<=0;
                         command_response_o<=1;response_status_o<=prefix[2];response_credits_o<=prefix[3];
                         response_opcode_o<=status_opcode;
                     end

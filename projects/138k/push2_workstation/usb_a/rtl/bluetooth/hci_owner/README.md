@@ -51,3 +51,15 @@ Core HCI §4.3允许控制器在Disconnection Complete后假定host已flush对�
 断连不会把仍被读者持有的RAM槽直接重用，而是标为retired。`release_lease_i`为严格递增的非零32-bit token，只有真实copy／DMA／总线读者全部结束后才可释放；外层不能将未经硬件完成复核的CPU意图直接当作release。retired槽释放只回收内存，不再次退controller credit。重复／旧token拒绝；相同HCI handle的新generation不能覆盖旧槽。连续多次断连导致旧读者占满槽时，连BLE也可能被明确丢弃并停止相应链路；保留槽不承诺绕过未完成的物理读者。BLE reserve只消除本机正常Classic慢端的RAM占满，不证明无线或H5端到端服务时限。
 
 所有账本动作同域、有界，优先级为disconnect→完整RX→consumer release→return accept。controller超预算、坏handle／长度、丢失生命周期导致权威表漂移、非法transport完成或违规send均fail closed；不猜测退款。后续仍需完整H5路由与buffer复制、host-flow bootstrap／能力拒绝、CPU慢端的终止／恢复、原bridge和GATT信用退役，以及真实硬件验证。回归入口为 `sim/run_workstation_hci_host_rx_owner.py`，会复跑原共享发送owner／event回归。
+
+## 真实 host flow bootstrap 源组件
+
+`workstation_hci_host_bootstrap.sv` 新增一个未选择的、有界命令 producer。外层在原 initializer 完成固件下载、Reset 和所需能力设置后，**在 LE advertising／任何 link 准入前**显式交接；交接时必须无活动 link，且原 initializer 不再并发发命令或修改配额。当前原 initializer 会继续配置／开启 advertising，不能直接将其 `initialized` 当作此交接条件。生产输入及其原行为没有变化。
+
+该组件经唯一 flow owner 的普通 owner0 顺序发送 BR Read_Buffer_Size0x1005、LE Read_Buffer_Size0x2002、Host_Buffer_Size0x0c33 和 ACL-only Set_Controller_To_Host_Flow_Control0x0c31。BR length／count 保留原始16-bit实际返回，不能为零；LE count 必须符合8-bit字段，0明确表示与BR共享，而非能力失败。两次读取后单独与 flow owner 完成 `pool_config_valid_o && pool_config_ready_i` 事务，然后才发送接收流控命令。Host_Buffer_Size 的data length和slot count必须直接连接 RX owner的 `host_data_limit_o/host_packet_count_o`；默认276／4，SCO长度及count为0，不得冒报更大的CPU逻辑队列。
+
+`command_accept_i`只接不可撤回的唯一发送owner／H5私有槽接受，`command_transport_done_i`只接该packet的真实退役。命令bytes从offer到退役期间保持不变，响应先到也不改写。四条命令均要求匹配owner0／opcode、status0的 **CommandComplete**；CommandStatus即使status0也不代表完成。event decoder新增 `response_is_complete_o`，flow owner在原owner路由旁保持这一种类；该sideband与既有18-bit应用event布局无关。仅在最后一条命令响应和transport退役都成功后，发出一次 `activate_host_rx_o`，持续提供 `ready_o`。原始buffer字段必须由完整event decoder校验后与同一响应关联传入，不能使用另一条旧事件的缓存值。
+
+每个OFFER、WAIT、POOL阶段各有独立32-bit硬时钟超时；等待quota、响应、transport或pool backpressure都继续计时。默认50,000,000周期，50MHz下每阶段1秒；成功路径4次OFFER＋4次WAIT＋1次POOL，最长接近9秒，加有限状态转移边沿。实际时钟改变须明确配置，不能称其在任意频率下固定为1秒。参数范围2..1,000,000,000。共同controller fault、geometry drift、busy期间出现link或到达deadline，优先于同拍的最终成功。错误status／意外或重复结果／坏容量／非法transport完成均锁定fault，外层必须连接回公共controller恢复，不能自动重放。共同reset仍需排空原transport、RX读者和旧CPU描述符。
+
+这一producer补齐了源级命令顺序，并未建立native wiring、payload RAM／router、BLE优先调度或硬件命令支持证据。原initializer的LE读取、原bridge的非零／截断credit假设尚未退休；必须在新候选集成时统一替换。BLE ATT／GATT、MTU、UUID、原业务向量、重连及timeout回归仍为硬门槛。**不能根据该仿真宣称现有profile的H5接收上限已生效或BLE行为已被保持。** 完整回归入口 `sim/run_workstation_hci_host_bootstrap.py`，包括此前RX、flow、event回归；阶段身份和范围见[报告](../../../reports/WORKSTATION_HCI_HOST_BOOTSTRAP_SOURCE_20261031.md)。

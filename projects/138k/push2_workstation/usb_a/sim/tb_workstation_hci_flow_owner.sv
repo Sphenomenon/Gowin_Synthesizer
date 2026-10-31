@@ -34,6 +34,8 @@ module tb_workstation_hci_flow_owner;
     wire [7:0] command_credits_o;
     wire command_pending_o;
     reg command_response_i=0,command_timeout_i=0;
+    reg response_is_complete_i=1;
+    wire response_is_complete_o;
     reg [7:0] response_credits_i=0,response_status_i=0;
     reg [15:0] response_opcode_i=0;
     wire response_valid_o;

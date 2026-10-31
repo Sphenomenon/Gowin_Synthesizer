@@ -53,9 +53,11 @@ module workstation_hci_flow_owner #(
     output reg [7:0] command_credits_o,
     output reg command_pending_o,
     input wire command_response_i, command_timeout_i,
+    input wire response_is_complete_i,
     input wire [7:0] response_credits_i, response_status_i,
     input wire [15:0] response_opcode_i,
     output reg response_valid_o,
+    output reg response_is_complete_o,
     output reg [1:0] response_owner_o,
     output reg [15:0] response_opcode_o,
     output reg [7:0] response_status_o
@@ -179,7 +181,7 @@ module workstation_hci_flow_owner #(
             br_available_o<=0;le_available_o<=0;active<=0;is_le<=0;last_generation<=0;
             completion_active_o<=0;batch_unknown<=0;batch_pairs<=0;unknown_completion_packets_o<=0;
             command_credits_o<=1;command_pending_o<=0;pending_opcode<=0;pending_owner<=0;
-            response_owner_o<=0;response_opcode_o<=0;response_status_o<=0;
+            response_owner_o<=0;response_opcode_o<=0;response_status_o<=0;response_is_complete_o<=0;
             for (index=0;index<HANDLE_SLOTS;index=index+1) begin
                 numbers[index]<=0;generations[index]<=0;outstanding[index]<=0;returns[index]<=0;
             end
@@ -266,6 +268,7 @@ module workstation_hci_flow_owner #(
                     if (response_opcode_i == 16'h0000) begin end
                     else begin
                         command_pending_o<=0;response_valid_o<=1;response_owner_o<=pending_owner;
+                        response_is_complete_o<=response_is_complete_i;
                         response_opcode_o<=response_opcode_i;response_status_o<=response_status_i;
                     end
                 end

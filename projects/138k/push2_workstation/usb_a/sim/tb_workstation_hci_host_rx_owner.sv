@@ -58,6 +58,7 @@ module tb_workstation_hci_host_rx_owner;
         .command_opcode_i(ordinary_send ? 16'h1001 : return_opcode_o),
         .command_ready_o(command_ready),.command_credits_o(command_credits),
         .command_response_i(1'b0),.command_timeout_i(1'b0),.response_credits_i(8'd0),
+        .response_is_complete_i(1'b1),
         .response_status_i(8'd0),.response_opcode_i(16'd0)
     );
     integer checks=0,scenarios=0,received=0,returned=0;

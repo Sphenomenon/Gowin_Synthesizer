@@ -17,6 +17,7 @@ module tb_workstation_hci_event_decoder;
     wire [11:0] completion_handle_o;
     wire [15:0] completion_count_o;
     wire command_response_o;
+    wire response_is_complete_o,owner_complete;
     wire [7:0] response_credits_o,response_status_o;
     wire [15:0] response_opcode_o;
     wire buffer_info_valid_o,buffer_info_is_le_o;
@@ -56,6 +57,7 @@ module tb_workstation_hci_event_decoder;
         .command_valid_i(command_valid),.command_send_i(command_send),.command_owner_i(command_owner),
         .command_opcode_i(command_opcode),.command_ready_o(command_ready),
         .command_response_i(command_response_o),.command_timeout_i(1'b0),
+        .response_is_complete_i(response_is_complete_o),.response_is_complete_o(owner_complete),
         .response_credits_i(response_credits_o),.response_status_i(response_status_o),
         .response_opcode_i(response_opcode_o),.response_valid_o(owner_response),
         .response_owner_o(response_owner),.response_status_o(owner_status)
@@ -148,11 +150,11 @@ module tb_workstation_hci_event_decoder;
 
         reset_all();send_command(16'h1005,0);packet(8'h0e,13);memory[2]=1;memory[3]=5;memory[4]=8'h10;
         memory[6]=8'hfd;memory[7]=3;memory[9]=7;receive(1);
-        check(responses==1&&response_owner==0&&buffer_infos==1&&!seen_buffer_le&&seen_buffer_length==1021&&seen_buffer_count==7,"BR ReadBufferSize parsed in native little endian");release_packet();
+        check(responses==1&&owner_complete&&response_owner==0&&buffer_infos==1&&!seen_buffer_le&&seen_buffer_length==1021&&seen_buffer_count==7,"BR ReadBufferSize parsed with exact CommandComplete kind");release_packet();
         send_command(16'h2002,0);packet(8'h0e,9);memory[2]=1;memory[3]=2;memory[4]=8'h20;memory[6]=27;
         receive(1);check(responses==2&&buffer_infos==2&&seen_buffer_le&&seen_buffer_length==27&&seen_buffer_count==0,"LE zero packet count preserved for shared BR pool policy");release_packet();
         send_command(16'h0409,2);packet(8'h0f,6);memory[2]=8'h0c;memory[3]=1;memory[4]=9;memory[5]=4;
-        receive(1);check(responses==3&&response_owner==2&&owner_status==8'h0c,"raw CommandStatus failure routed to CPU owner");release_packet();
+        receive(1);check(responses==3&&!owner_complete&&response_owner==2&&owner_status==8'h0c,"raw CommandStatus kind/failure routed to CPU owner");release_packet();
         packet(8'h0e,5);memory[2]=1;receive(1);check(responses==3,"opcode-zero quota event never retires pending transaction");release_packet();
 
         reset_all();packet(8'h3e,33);memory[2]=10;memory[4]=8'h42;receive(1);
