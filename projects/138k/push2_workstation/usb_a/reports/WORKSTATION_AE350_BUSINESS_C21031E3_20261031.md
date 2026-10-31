@@ -436,3 +436,65 @@ PRESET 真值只含本地复位链，不再含动态 busy。PCM 原检查的 ACK
 局部 CDC 合同，完整 routed 时序／PLL／物理接受仍待 EF，不授部署。
 checker 更新未回写任何冻结 stage／manifest，九份现有 profile 仅刷新
 两项工具依赖 SHA，不更改配置或 RTL。
+
+EF 完整 P&R 在 750.606 秒后退出 0，输入及工具身份保持，生成位流但
+未通过 STA，未烧录。物理 CLS 62733/69120、BSRAM 301/340、DSP
+120/298、FF 59445；相对 EC 为 −204 CLS、BSRAM 不变。最差 setup
+−14.043 ns、hold −1.537 ns、recovery −0.384 ns、removal −0.741 ns，
+pulse-width +0.580 ns；setup 端点为 clk50 572、audio 16155、DDR UI
+5322。旧 controlled 动态 busy 已退出负 reset 路径，但并未关闭其他违例。
+
+主要真实同域反馈为 DDR 仲裁 owner→BLE store 宽命令／发布 CE（23.845
+ns）和 audio config_state→rate／vector／effect config-ready→state CE
+（26.785 ns）。工具 PR1014 警告 clk50 可能走普通布线，实际资源表仍列
+PRIMARY；不能将 CST 意图或资源表单独当成低 skew 证明。多条 clk50
+hold 与 DDR capture、视频／录音守护复位边界继续按实际路径修正。
+下一批分别修改所属数据通路／配置握手和必要本地复位，不改变冻结 EF。
+
+### EF 后的整机纠错批次
+
+BLE raw store 的宽命令字段改为空槽预装，原准入／故障／取消条件仅提交
+valid，仍在真实 native acceptance 后退休；已发布字段保持不变。音频
+idle 改用效果的被动 quiet，实际启动仍使用 ready，切断 config 接受反馈。
+显示两域各自三级复位释放，录音 epoch 上升资格在控制域同步，原始丢失
+仍立即隔离。TF native 文件大小的 valid 增加一拍 settle，hold／restart
+立即撤销 metadata，避免同拍发布时以旧长度启动，legacy 行为保持。
+
+上述修改通过 raw store 两配置／满16384帧／8112字节读取、rawBLE
+2×24 场景、实际 owner8 组合、内存 975415 checks／10034 I2S 帧、音频
+20192 帧／8 次切率、render 48652 请求响应／48644 PCM 对照；显示
+166525 原子 tuple／131072 XY 像素，录音 authority 10×17×666 及六负控
+通过。TF 四配置各23场景、双 clear 各六场景及去掉 metadata settle 的
+负控通过，配置与采样竞争负控也被捕获。各回归输入保持。
+
+同时补齐实际候选漏装的 TF／显示／APB／BLE 等具体 CDC 边界：首级
+D 例外、级间时限以及已确认 held-until-ACK 的 payload 最大延迟／hold
+例外；Gray 保留源周期相干预算。选择依照已有 raw/BLE business 配置，
+未选 scope 不生成查询，不增加全域例外。DDR capture 最小延迟请求提高
+至3.500 ns，实际 setup／hold 门限保持。该批资源和物理收益由下一整机
+候选确认，尚未写 SRAM／Flash。
+
+本批完整综合 `a4ed8c44e76beefa` 通过，316.633 秒、614 输入保持、无 AG
+诊断。Logic 92827、LUT 74700、ALU 16513、FF 59453、RAM16 269、
+综合 BSRAM 250；相对迁移前为 −1796／−1267／−289／−1125／−40／+5。
+VG `404dcd9c51738f842e592fea4add3fae5a28871592f7a40d84f4643352113eaa`。
+v4 freeze 后收尾的 TF 首级一组和 seal 返回字两条约束进入原入口新 prepare
+`a30d5965a2378f36`；272 enabled 路径、配置及全部非 SDC staged 字节与
+v4 相同，SDC 仅增加四行，无删除。故 F0 复用此完整 v4 VG，显式采用
+最终 v5 SDC，保留独立物理身份 `C21031F0`，不回写任何冻结输入、不重复
+综合相同 RTL。现有 physical runner 已以 place4／route0 启动 F0。
+
+v4 实际 VG 的时钟、runtime CDC 和 installed paired-nextq-v2 PCM 三项
+必要门禁通过，身份分别为 `196ba0a304b98a7b`、`e4350dcb16f3e208`、
+`faa629058f3cb23c`；CDC 为21组／400位，PCM 为229位／896 selector。
+它们仍是原有局部合同，不代表完整 routed 时序或硬件接受。DDR checker
+只对白名单中的准确端点接受3.500 ns，3.499 ns、999 ns及错误端点仍拒绝。
+accepted 来源17项、custom timing 8项及CDC策略7项通过；策略中原有的
+可选实际网表用例未设置环境而跳过，实际 v4 则由上述门禁另行验证。
+
+当前源码最终 prepare `41270ea5601cd6a6` 的实际业务来源12项、实际
+runtime来源13项通过；后者解析269编译单元／301模块／2包。profile来源
+7项通过，其15个默认revision5专用实际用例保持原条件跳过。与 v5 的
+614 staged输入逐项核验，实际字节和SHA均无差异，272 enabled路径一致；
+故最终helper依赖SHA刷新不要求重复综合或改变F0输入。用户更新的
+`projects/138k/task.md` 保留在工作区，不随本阶段提交。

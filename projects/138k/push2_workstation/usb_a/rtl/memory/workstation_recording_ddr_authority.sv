@@ -34,6 +34,15 @@ module workstation_recording_ddr_authority #(
         if(!survival_reset_n)epoch_survived<=0;
         else if(!boot_seen)epoch_survived<=1;
 
+    // The guard stretches raw ledger/backend loss itself. Its control-domain
+    // availability release must only see a locally sampled survival assertion,
+    // not a memory-clock Q edge on its asynchronous reset release. The raw
+    // survival gate below still closes authority immediately after epoch loss.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] survived_control;
+    always @(posedge control_clk_i or negedge root_reset_ni)
+        if(!root_reset_ni)survived_control<=0;
+        else survived_control<={survived_control[0],epoch_survived};
+
     wire guard_channel,guard_fault;
     workstation_runtime_memory_guard #(
         .HEARTBEAT_TIMEOUT_CYCLES(HEARTBEAT_TIMEOUT_CYCLES),
@@ -41,7 +50,7 @@ module workstation_recording_ddr_authority #(
     ) guard(
         .reset_ni(root_reset_ni),.clk_50m_i(control_clk_i),.memory_clk_i(memory_clk_i),
         .backend_reset_ni(ledger_reset_ni),
-        .backend_ready_i(backend_ready_i && epoch_survived),
+        .backend_ready_i(backend_ready_i && survived_control[1]),
         .started_o(started_o),.fault_o(guard_fault),.start_ready_o(),.mute_o(),
         .channel_open_o(guard_channel),.clock_alive_o(),.fault_code_o());
     assign boot_seen_o=boot_seen;

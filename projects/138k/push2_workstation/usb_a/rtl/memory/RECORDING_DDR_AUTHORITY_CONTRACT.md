@@ -40,8 +40,11 @@ epoch together. A later ledger-reset pulse clears survival immediately, even
 if the memory clock stops. Because `boot_seen` stays one, recovery cannot set
 survival again. No opposite asynchronous set/reset controls are required.
 
-Survival qualifies both the existing guard's backend-ready input and the final
-`channel_ready_o` output. A reset before BIST/ready, after the first usable
+Survival reaches the existing guard's backend-ready input through a two-stage
+control-clock level synchronizer. The guard still receives raw ledger reset
+and backend readiness, so a short loss is stretched immediately. The final
+`channel_ready_o` output remains gated by raw survival and does not wait for
+that synchronizer. A reset before BIST/ready, after the first usable
 ledger edge, is permanent failure just like a reset after recording startup.
 This includes an epoch containing only BIST or another non-recording read:
 old global responses have no recording subowner or reset-generation tag.

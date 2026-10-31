@@ -33,7 +33,7 @@ variants=[
  ('survival_rearms','else if(!boot_seen)epoch_survived<=1;','else epoch_survived<=1;'),
  ('survival_ignores_ledger','root_memory_reset_n && ledger_reset_ni','root_memory_reset_n'),
  ('boot_seen_waits_ready','else if(ledger_reset_ni)boot_seen<=1;','else if(ledger_reset_ni && backend_ready_i)boot_seen<=1;'),
- ('guard_only_prearm_gap','backend_ready_i && epoch_survived','backend_ready_i'),
+ ('guard_only_prearm_gap','backend_ready_i && survived_control[1]','backend_ready_i'),
  ('guard_local_reset','reset_ni(root_reset_ni)','reset_ni(root_reset_ni && ledger_reset_ni)')]
 for label,old,new in variants:
  assert old in original,label

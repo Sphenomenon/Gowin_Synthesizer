@@ -187,13 +187,16 @@ def main():
         match = re.search(r'PASS workstation_display_runtime: publications=(\d+) commits=(\d+) tuple_checks=(\d+) waveform=(\d+) xy=(\d+) fft_columns=(\d+) cdc_drops=(\d+) tail_cancel=1 reader_cancel=1 idle_cache_lease=1 gray_drop_cycle_checks=(\d+) drop_revocations=(\d+) drop_completion_races=(\d+)', log)
         if not match or int(match[1]) < 6 or int(match[3]) < 10000 or list(map(int, match.groups()[3:6])) != [1024, 131072, 1024] or int(match[7]) < 1 or int(match[8]) < 10000 or int(match[9]) < 1 or int(match[10]) != 1:
             raise ValueError('Incomplete runtime display context/CDC/raster coverage')
+        if 'reset_local_release=1' not in log:
+            raise ValueError('Stopped-clock local reset release was not checked')
         result['metrics'] = dict(zip(('publications', 'commits', 'atomic_tuples', 'waveform_samples', 'xy_pixels',
                                      'fft_columns', 'cdc_drops', 'gray_drop_cycle_checks', 'drop_revocations', 'drop_completion_races'), map(int, match.groups())))
         result['checks'] = ['initial_image_required', 'actual_48_and_44_fft_wave_xy', '204bit_tuple_atomicity',
             'raster_idle_cache_lease', 'pending_old_epoch_cancel', 'stalled_commit_tail_cancel',
             'partial_reader_cancel', 'same_epoch_final_cdc_drop_cancel', 'cycle_exact_gray_drop_revocation',
             'drop_coincident_with_reader_publication_cancel', 'error_frame_cancel',
-            'epoch_zero_reject', 'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes',
+            'epoch_zero_reject', 'source_reset_async_revoke_both_domains', 'stopped_clock_local_reset_release',
+            'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes',
             'live_hdmi_provider_not_shadowed', 'native_render_without_local_fft', 'single_fft_owner_both_modes',
             'both_analysis_dashboards_enabled', 'runtime_reader_two_cache_banks']
         if args.hdmi_adaptation:

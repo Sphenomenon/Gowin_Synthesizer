@@ -286,9 +286,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     runtime_constraints = None
     if runtime:
         from tools.workstation_runtime_profile import constraints
-        runtime_constraints = constraints(root, shared_crossings, local_panel_enabled=local_panel_enabled)
+        runtime_constraints = constraints(root, shared_crossings, local_panel_enabled=local_panel_enabled,
+            ble_raw_enabled=ble_raw_selected, business_owner_enabled=business_selected)
         combined_cst += runtime_constraints['extra_cst']
-        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True) + MODEL_FLASH_SDC
+        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True, recording_authority=ble_raw_selected) + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
     if classic_selected:

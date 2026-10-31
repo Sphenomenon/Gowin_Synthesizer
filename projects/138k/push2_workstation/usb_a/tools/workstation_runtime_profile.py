@@ -221,7 +221,98 @@ def shared_constraints(sdc):
                 omitted=omitted, adapted=adapted)
 
 
-def constraints(root, shared_crossings, *, local_panel_enabled=True):
+def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False):
+    """Bound existing held-word handshakes at their native runtime scopes.
+
+    SUG940 5.4.1/5.4.2: max delay retains setup; only the specified held
+    payload paths lose hold. First-stage D exceptions never cover later
+    synchronizer stages, functional resets, or whole clock domains.
+    """
+    if type(ble_raw_enabled) is not bool or type(business_owner_enabled) is not bool:
+        raise ValueError('runtime protocol selections must be boolean')
+    if business_owner_enabled and not ble_raw_enabled:
+        raise ValueError('business mailbox requires selected BLE raw storage')
+    lines = []
+
+    def held(source, destination, budget):
+        path = '-from [get_pins {' + source + '}] -to [get_pins {' + destination + '}]'
+        lines.extend((f'set_max_delay {budget:.3f} ' + path, 'set_false_path -hold ' + path))
+
+    def receiver(scope, first, second):
+        a, b = scope + '/' + first, scope + '/' + second
+        lines.extend(('set_false_path -to [get_pins {' + a + '_s*/D}]',
+                      'set_max_delay 2.000 -from [get_pins {' + a + '_s*/Q}] '
+                      '-to [get_pins {' + b + '_s*/D}]'))
+
+    # The stream adapter holds its word until the two-stage ACK returns;
+    # req_meta -> req_sync -> req_settled precedes the capture/ACK edge.
+    for scope, budget in (('u_managed/display', 20.0), ('u_managed/health_snapshot', 13.020)):
+        held(scope + '/held_data_*_s*/Q', scope + '/destination_data_*_s*/D', budget)
+        receiver(scope, 'req_meta', 'req_sync')
+        receiver(scope, 'ack_meta', 'ack_sync')
+    # TF control is a two-flop toggle exchange, with a further capture edge.
+    for stem in ('request_sync', 'ack_sync'):
+        receiver('u_tf_audio', stem + '_0', stem + '_1')
+    for scope, stem in (('u_tf_audio/frames', 'quiet_sync'),
+                        ('u_tf_audio/frames', 'expected_valid_sync'),
+                        ('u_tf_audio/frames', 'quiesce_return_sync'),
+                        ('u_tf_audio', 'memory_gate_sync'), ('u_tf_audio', 'memory_quiet_sync'),
+                        ('u_tf_audio', 'memory_open_sync')):
+        receiver(scope, stem + '_0', stem + '_1')
+    # Native DMA holds metadata until restart. The receiving valid now has
+    # its own third settled stage before playback can consume the sampled bus.
+    held('u_tf_audio/path/g_runtime_dma.u_dma/staged_file_size_*_s*/Q',
+         'u_tf_audio/path/file_size_meta_*_s*/D', 10.0)
+    for first, second in (('file_size_valid_meta', 'file_size_valid_sync'),
+                          ('ddr_error_meta', 'ddr_error_sync'), ('pb_meta', 'pb_sync'),
+                          ('pb_done_meta', 'pb_done_sync')):
+        receiver('u_tf_audio/path', first, second)
+    # Only ACK bits 1/2/4 originate in memory_clk; bits 0/3 are already local.
+    for bit in (1, 2, 4):
+        receiver('u_tf_audio/path', 'runtime_ack_meta_' + str(bit), 'runtime_ack_sync_' + str(bit))
+    # Existing one-word adapters acknowledge only after their local capture.
+    for scope in ('u_managed/pc_bytes', 'u_video/u_renderer/u_capture',
+                  'u_video/u_runtime_display/observation'):
+        receiver(scope, 'ack_meta', 'ack_sync')
+    # This is a held loss indication (sticky OR nonzero), not a binary count
+    # sampled as a word. Its second stage and fault latch remain normally timed.
+    receiver('u_managed/display_observation_health', 'loss_meta_1', 'loss_sync_1')
+    # APB waits for the settled response ACK before launching another word.
+    for scope in ('u_clock_control', *(['business_commands'] if business_owner_enabled else [])):
+        for source, destination in (('request_held', 'request_local'), ('response_held', 'response_local')):
+            held(scope + '/' + source + '_*_s*/Q', scope + '/' + destination + '_*_s*/D', 20.0)
+        receiver(scope, 'req_meta', 'req_sync')
+        receiver(scope, 'ack_meta', 'ack_sync')
+    if ble_raw_enabled:
+        scope = 'recording_ble_store/'
+        # A return is held through request synchronization and all eight
+        # unpack cycles; ACK returns only after the final local write.
+        for source, destination in (('return_data', 'unpack_data'), ('return_generation', 'unpack_generation'),
+                                    ('return_word', 'unpack_word')):
+            held(scope + source + '_*_s*/Q', scope + destination + '_*_s*/D', 10.0)
+        for first, second in (('command_req_meta', 'command_req_sync'), ('command_ack_meta', 'command_ack_sync'),
+                              ('cancel_meta', 'cancel_sync'), ('status_req_meta', 'status_req_sync'),
+                              ('status_ack_meta', 'status_ack_sync'), ('return_req_meta', 'return_req_sync'),
+                              ('return_ack_meta', 'return_ack_sync')):
+            receiver(scope[:-1], first, second)
+        # Status is held until status_ack; completion remains unchanged until
+        # a subsequent command, which cannot launch before its ACK returns.
+        # Include only their control-domain capture/qualification registers.
+        for sources, destinations in (
+            (('status_payload_*',), ('committed_frames_o_*', 'memory_drained', 'channel_fault_o',
+                                    'failure_code_o_*', 'capture_active', 'cache_valid_o')),
+            (('completion_generation_*', 'completion_committed_*', 'completion_kind_*', 'completion_code_*'),
+             ('committed_frames_o_*', 'channel_fault_o', 'fetch_fault_o', 'object_fault_o', 'clear_pending',
+              'cache_valid_o', 'clear_sent', 'capture_active', 'failure_code_o_*', 'start_done_o',
+              'clear_done_o', 'fetch_done_o', 'fetch_active', 'raw_empty'))):
+            source = ' '.join(scope + stem + '_s*/Q' for stem in sources)
+            destination = ' '.join(scope + stem + '_s*/' + pin for stem in destinations for pin in ('D', 'CE'))
+            held(source, destination, 10.0)
+    return '\n'.join(lines) + '\n'
+
+
+def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_enabled=False,
+                business_owner_enabled=False):
     """Keep surviving constraints, inventory removed hierarchy, fail closed.
 
     The new runtime CDC needs a separate endpoint audit after synthesis. No
@@ -270,7 +361,8 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True):
         chorus_source=chorus_source,
         delay_fifo_storage=delay_fifo_storage,
         usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
-        runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'],
+        runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'] + protocol_constraints(
+            ble_raw_enabled=ble_raw_enabled, business_owner_enabled=business_owner_enabled),
         bluetooth_sdc=bluetooth['sdc'], bluetooth_cdc_adaptation=bluetooth['evidence'],
         runtime_cdc={key: value for key, value in runtime_cdc.items() if key != 'sdc'},
         runtime_pcm_cdc={key: value for key, value in runtime_pcm_cdc.items() if key != 'sdc'},

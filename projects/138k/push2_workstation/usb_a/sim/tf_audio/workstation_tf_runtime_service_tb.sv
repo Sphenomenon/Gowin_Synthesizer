@@ -372,6 +372,51 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
     endtask
     integer accepted_before,frames_before;
     reg [31:0] generation_before;
+    task metadata_publication;
+        begin
+            // A routed payload can miss the first edge that observes valid.
+            // Preload a stale short length, then deliver the final word after
+            // that edge. Neither metadata nor its short-file threshold may
+            // authorize playback before the extra settling edge.
+            force dut.path.native_source_hold=1'b0;
+            force dut.path.dma_file_size_valid=1'b0;
+            force dut.path.dma_file_size=32'd64;
+            force dut.path.out_rd_count=13'd128;
+            force dut.path.playback_pending=1'b1;
+            repeat(3)@(negedge source_clk);
+            force dut.path.dma_file_size_valid=1'b1;
+            @(posedge source_clk);#1;
+            force dut.path.dma_file_size=32'd512;
+            @(posedge source_clk);#1;
+            if(dut.path.file_size_ready || dut.path.audio_file_size!=0 ||
+               dut.path.playback_fill_target!=1024 || dut.path.playback_active)
+                $fatal(1,"TF metadata accepted stale word with newly synchronized valid");
+            @(posedge source_clk);#1;
+            if(!dut.path.file_size_ready || dut.path.audio_file_size!=512 ||
+               dut.path.playback_fill_target!=512 || dut.path.playback_active)
+                $fatal(1,"TF metadata failed settled final-word publication");
+            @(posedge source_clk);#1;
+            if(dut.path.playback_active)$fatal(1,"TF metadata started below final prebuffer threshold");
+            force dut.path.native_source_hold=1'b1;#1;
+            if(dut.path.file_size_ready || dut.path.audio_file_size!=0)
+                $fatal(1,"TF restart hold retained public metadata");
+            force dut.path.dma_file_size_valid=1'b0;
+            force dut.path.dma_file_size=32'd0;
+            repeat(3)@(negedge source_clk);
+            force dut.path.native_source_hold=1'b0;
+            repeat(3)begin
+                @(negedge source_clk);
+                if(dut.path.file_size_ready || dut.path.audio_file_size!=0)
+                    $fatal(1,"TF restart republished stale metadata");
+            end
+            release dut.path.playback_pending;
+            release dut.path.out_rd_count;
+            release dut.path.dma_file_size;
+            release dut.path.dma_file_size_valid;
+            release dut.path.native_source_hold;
+            tests=tests+1;
+        end
+    endtask
     initial begin if(RUN_SCENARIOS)begin
         repeat(6)@(negedge source_clk);
         if(SEPARATE_COMMON_RESET)begin
@@ -384,6 +429,7 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
             if(!dut.compute_reset_n || !dut.frames.compute_reset_n)$fatal(1,"TF startup owner failed fifth-edge release");
         end else begin common_reset_n=1;rst_n=1;end
         repeat(30)@(negedge source_clk);
+        metadata_publication();
         begin_file(0);await_frames(10);
         @(negedge source_clk);run=0;wait(paused);repeat(5)@(negedge compute_clk);
         accepted_before=accepted;frames_before=session_index;generation_before=source_generation;

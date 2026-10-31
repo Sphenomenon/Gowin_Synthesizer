@@ -39,6 +39,19 @@ module workstation_display_runtime (
     output wire [3:0] reader_diagnostic_o
 );
     wire common_reset_n=source_reset_ni && rst_ni;
+    // Either domain may revoke the whole display immediately. Each owner's
+    // release must nevertheless wait for its own clock, including a stopped
+    // DDR clock; a 50MHz release must not drive the cache's asynchronous reset.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] source_release,memory_release;
+    always @(posedge source_clk_i or negedge common_reset_n)
+        if(!common_reset_n)source_release<=0;
+        else source_release<={source_release[1:0],1'b1};
+    always @(posedge clk_i or negedge common_reset_n)
+        if(!common_reset_n)memory_release<=0;
+        else memory_release<={memory_release[1:0],1'b1};
+    wire source_reset_n=source_release[2];
+    wire memory_reset_n=memory_release[2];
+    wire memory_enabled=enabled_i && memory_reset_n;
     wire tuple_valid,tuple_rate,tuple_error,tuple_trusted;
     wire [31:0] tuple_epoch,tuple_sequence,tuple_pcm,tuple_reference,tuple_voices,tuple_status;
     wire [2:0] tuple_mask;
@@ -63,15 +76,15 @@ module workstation_display_runtime (
     // The reused mailbox counter wraps. Reaching its maximum permanently
     // revokes this observation path until common reset, before wrap can hide
     // loss. The 50MHz source clock is independent of the audio clock switch.
-    always @(posedge source_clk_i or negedge common_reset_n)
-        if(!common_reset_n)drop_wrap_fault<=0;
+    always @(posedge source_clk_i or negedge source_reset_n)
+        if(!source_reset_n)drop_wrap_fault<=0;
         else if(observation_drop_o==32'hffff_ffff)drop_wrap_fault<=1;
     (* ASYNC_REG="TRUE" *) reg [1:0] trusted_sync;
-    always @(posedge clk_i or negedge common_reset_n)
-        if(!common_reset_n)trusted_sync<=0;
+    always @(posedge clk_i or negedge memory_reset_n)
+        if(!memory_reset_n)trusted_sync<=0;
         else trusted_sync<={trusted_sync[0],observation_trusted_i && !drop_wrap_fault};
-    always @(posedge clk_i or negedge common_reset_n)
-        if(!common_reset_n)previous_drop_gray<=0;else previous_drop_gray<=destination_drop_gray;
+    always @(posedge clk_i or negedge memory_reset_n)
+        if(!memory_reset_n)previous_drop_gray<=0;else previous_drop_gray<=destination_drop_gray;
     // Gray is bijective, so change detection has the same cycle and wrap
     // behavior without putting the binary decode on immediate revocation.
     // Keep the small reductions explicit to avoid an ALU carry comparator.
@@ -85,8 +98,8 @@ module workstation_display_runtime (
     reg [31:0] reference_q,voices_q,status_q;
     reg [2:0] mask_q;
     reg [5:0] order_q;
-    always @(posedge clk_i or negedge common_reset_n)begin
-        if(!common_reset_n)begin reference_q<=0;voices_q<=0;status_q<=0;mask_q<=0;order_q<=6'b10_01_00;end
+    always @(posedge clk_i or negedge memory_reset_n)begin
+        if(!memory_reset_n)begin reference_q<=0;voices_q<=0;status_q<=0;mask_q<=0;order_q<=6'b10_01_00;end
         else if(tuple_valid)begin
             reference_q<=tuple_reference;voices_q<=tuple_voices;status_q<=tuple_status;
             mask_q<=tuple_mask;order_q<=tuple_order;
@@ -116,7 +129,7 @@ module workstation_display_runtime (
     wire load_start=load_request && enabled_i && export_live && !loading &&
         !reader_busy_o && !raster_busy_i && !raster_start_i;
     display_data_analysis_source producer(
-        .clk(clk_i),.rst_ni(common_reset_n),.frame_valid_i(tuple_valid),.frame_error_i(tuple_error),
+        .clk(clk_i),.rst_ni(memory_reset_n),.frame_valid_i(tuple_valid),.frame_error_i(tuple_error),
         .frame_44k1_i(tuple_rate),.frame_epoch_i(tuple_epoch),.frame_sequence_i(tuple_sequence),.frame_pcm_i(tuple_pcm),
         .observation_trusted_i(trusted),.observation_loss_i(observation_loss),
         .trigger_reference_i(tuple_valid ? tuple_reference:reference_q),
@@ -131,7 +144,7 @@ module workstation_display_runtime (
         .analysis_skipped_o(analysis_skipped),.stereo_peaks_o(peaks),.analysis_valid_o(analysis_valid),.image_gain_o(gain),
         .discarded_contexts_o(),.read_enable_i(read_enable),.read_kind_i(read_kind),.read_addr_i(read_address),.read_data_o(read_data));
     display_data_writer #(.METADATA_MINOR(1)) writer(
-        .clk(clk_i),.rst_n(common_reset_n),.enabled(enabled_i),.start(export_start),.effect_meta(metadata),
+        .clk(clk_i),.rst_n(memory_reset_n),.enabled(memory_enabled),.start(export_start),.effect_meta(metadata),
         .analysis_sequence(analysis_sequence),.analysis_skipped(analysis_skipped),.stereo_peaks(peaks),
         .analysis_valid(analysis_valid),.image_gain(gain),
         .source_context_valid_i(source_valid),.source_sample_rate_i(source_rate),.source_epoch_i(source_epoch),
@@ -143,7 +156,7 @@ module workstation_display_runtime (
         .req_ready(writer_ready_i),.req_addr(writer_address_o),.req_wdata(writer_data_o),
         .read_enable(read_enable),.read_kind(read_kind),.read_addr(read_address),.read_data(read_data));
     display_data_reader #(.METADATA_MINOR(1)) reader(
-        .clk(clk_i),.rst_n(common_reset_n),.enabled(enabled_i),.start(load_start),
+        .clk(clk_i),.rst_n(memory_reset_n),.enabled(memory_enabled),.start(load_start),
         .busy(reader_busy_o),.done(reader_done_o),.valid(reader_valid_o),.fault(reader_fault_o),
         .req_valid(reader_req_o),.req_ready(reader_ready_i),.req_addr(reader_address_o),
         .rsp_valid(reader_response_i),.rsp_data(reader_data_i),.render_read_enable(render_read_enable_i),
@@ -160,8 +173,8 @@ module workstation_display_runtime (
         image_generation==source_generation && render_sample_rate_o==source_rate && render_epoch_o==source_epoch;
     assign raster_allowed_o=enabled_i && current_image_o && !pending && !loading && !reader_busy_o;
     assign summary_publish_o=enabled_i && publish && current_image_o;
-    always @(posedge clk_i or negedge common_reset_n)begin
-        if(!common_reset_n)begin
+    always @(posedge clk_i or negedge memory_reset_n)begin
+        if(!memory_reset_n)begin
             pending<=0;loading<=0;have_image<=0;publish<=0;load_request<=0;export_live<=0;
             export_rate<=0;export_epoch<=0;export_generation<=0;image_generation<=0;
         end else begin

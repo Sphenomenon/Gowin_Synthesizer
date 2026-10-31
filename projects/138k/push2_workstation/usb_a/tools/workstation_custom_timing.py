@@ -85,6 +85,14 @@ RUNTIME_MEDIA_STATUS_CHAINS = (
     ('u_managed/switch_busy_compute', 2),
     ('u_managed/media_busy_50', 3),
 )
+# These are reset-release synchronizers, not functional state registers. Only
+# their asynchronous assertion inputs are excepted; the final stage's reset
+# distribution to the display owners remains subject to recovery/removal.
+RUNTIME_DISPLAY_RESET_CHAINS = (
+    'u_video/u_runtime_display/source_release',
+    'u_video/u_runtime_display/memory_release',
+)
+RECORDING_SURVIVAL_CHAIN = 'recording_authority/survived_control'
 
 
 def once(text, original, replacement):
@@ -238,9 +246,11 @@ def apply(stage):
     return evidence
 
 
-def constraints(*, runtime_reset=False):
+def constraints(*, runtime_reset=False, recording_authority=False):
     if type(runtime_reset) is not bool:
         raise ValueError('native runtime reset selection must be boolean')
+    if type(recording_authority) is not bool or (recording_authority and not runtime_reset):
+        raise ValueError('recording authority selection requires a boolean runtime selection')
     lines = []
     for prefix in RESET_CHAINS:
         lines.append(f'set_false_path -to [get_pins {{{prefix}_*/CLEAR}}]')
@@ -265,10 +275,71 @@ def constraints(*, runtime_reset=False):
             for stage in range(stages - 1):
                 lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_{stage}_s*/Q}}] '
                              f'-to [get_pins {{{prefix}_{stage+1}_s*/D}}]')
+        for prefix in RUNTIME_DISPLAY_RESET_CHAINS:
+            for stage in range(3):
+                lines.append(f'set_false_path -to [get_pins {{{prefix}_{stage}_s*/CLEAR}}]')
+            for stage in range(2):
+                lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_{stage}_s*/Q}}] '
+                             f'-to [get_pins {{{prefix}_{stage+1}_s*/D}}]')
+        if recording_authority:
+            prefix = RECORDING_SURVIVAL_CHAIN
+            lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]')
+            lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_0_s*/Q}}] '
+                         f'-to [get_pins {{{prefix}_1_s*/D}}]')
+            guard = 'recording_authority/guard'
+            lines.append(f'set_false_path -to [get_pins {{{guard}/open_meta_s*/D}}]')
+            lines.append(f'set_max_delay 2.000 -from [get_pins {{{guard}/open_meta_s*/Q}}] '
+                         f'-to [get_pins {{{guard}/open_ack_s*/D}}]')
+            # Existing one-outstanding seal toggles/held hold/registered ready
+            # and the root-epoch channel status cross through two FFs. Only
+            # their first D receives the asynchronous-level exception.
+            recording_levels = (
+                ('u_recording/seal_cdc/ready_meta', 'u_recording/seal_cdc/ready_sync'),
+                ('u_recording/seal_cdc/result_meta', 'u_recording/seal_cdc/result_sync'),
+                ('u_recording/seal_cdc/request_meta', 'u_recording/seal_cdc/request_sync'),
+                ('u_recording/seal_cdc/hold_meta', 'u_recording/seal_cdc/hold_sync'),
+                ('recording_channel_meta', 'recording_channel_ready50'),
+            )
+            for first, second in recording_levels:
+                lines.append(f'set_false_path -to [get_pins {{{first}_s*/D}}]')
+                lines.append(f'set_max_delay 2.000 -from [get_pins {{{first}_s*/Q}}] '
+                             f'-to [get_pins {{{second}_s*/D}}]')
+            # Result status changes with result_toggle and remains held until
+            # a later request. The two result synchronizer stages precede its
+            # capture into these two source-domain terminal flags.
+            result_path = ('-from [get_pins {u_recording/seal_cdc/result_failed_s*/Q}] '
+                           '-to [get_pins {u_recording/seal_cdc/failed_o_s*/D '
+                           'u_recording/seal_cdc/done_o_s*/D}]')
+            lines.append('set_max_delay 10.000 ' + result_path)
+            lines.append('set_false_path -hold ' + result_path)
+            # These are the same reviewed memory-guard heartbeat and FIFO
+            # Gray protocols used elsewhere in the runtime. Preserve a full
+            # source-period flight/skew bound. Only the first asynchronous
+            # capture loses a clock-phase hold check; all later stages retain
+            # setup/hold and receive a 2ns routing bound. FIFO bit 8's Gray MSB
+            # is physically the corresponding binary MSB in Gowin's netlist.
+            gray_groups = (
+                (guard, 'memory_gray', 'gray_meta', 'gray_sync', 32, 10.000, None),
+                ('recording_ble_store/capture_fifo', 'read_gray', 'read_gray_meta', 'read_gray_sync',
+                 9, 10.000, 'read_binary'),
+                ('recording_ble_store/capture_fifo', 'write_gray', 'write_gray_meta', 'write_gray_sync',
+                 9, 20.000, 'write_binary'),
+            )
+            for scope, source, first, second, width, budget, msb in gray_groups:
+                sources = ' '.join(f'{scope}/{msb if msb and bit==width-1 else source}_{bit}_s*/Q'
+                                   for bit in range(width))
+                captures = ' '.join(f'{scope}/{first}_{bit}_s*/D' for bit in range(width))
+                path = f'-from [get_pins {{{sources}}}] -to [get_pins {{{captures}}}]'
+                lines.append(f'set_max_delay {budget:.3f} {path}')
+                lines.append('set_false_path -hold ' + path)
+                first_q = ' '.join(f'{scope}/{first}_{bit}_s*/Q' for bit in range(width))
+                second_d = ' '.join(f'{scope}/{second}_{bit}_s*/D' for bit in range(width))
+                lines.append(f'set_max_delay 2.000 -from [get_pins {{{first_q}}}] '
+                             f'-to [get_pins {{{second_d}}}]')
     phy = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top'
-    # E8's routed hold path misses by0.759ns with the original0.800ns floor.
-    # Ask the router for more delay; retain the actual setup/hold checks.
-    lines.append(f'set_min_delay 1.800 -from [get_pins {{{phy}/ddr_init_internal_r_s0/Q}}] -to [get_pins {{{phy}/wloadn_3_s0/D}}]')
+    # EF still misses capture hold by 1.537 ns with the 1.800 ns floor.
+    # Request additional routed delay; retain the actual setup/hold checks.
+    lines.append(f'set_min_delay 3.500 -from [get_pins {{{phy}/ddr_init_internal_r_s0/Q}}] -to [get_pins {{{phy}/wloadn_3_s0/D}}]')
     for kind in ('setup', 'hold', 'recovery', 'removal'):
         lines.append(f'report_timing -{kind} -max_paths 2000 -max_common_paths 1')
     # The global worst paths can omit every noncritical hard-CPU clock path.

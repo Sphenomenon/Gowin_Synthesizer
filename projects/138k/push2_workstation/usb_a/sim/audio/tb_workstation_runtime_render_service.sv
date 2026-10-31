@@ -114,8 +114,12 @@ module tb_workstation_runtime_render_service;
     begin
       idle();@(negedge clk);before_count=histories;config_rate=next_rate;
       config_valid=!history_only;history_clear=history_only;
+      // Config/history has priority even when a sample is offered on the
+      // same edge. Passive idle must not become permission to admit it.
+      request=1;rate=next_rate;
       do @(posedge clk);while(history_only ? !history_ready : !config_ready);
-      @(negedge clk);config_valid=0;history_clear=0;timeout=0;
+      if(ready || sample_ce)$fatal(1,"configuration admitted competing frame");
+      @(negedge clk);request=0;config_valid=0;history_clear=0;timeout=0;
       while(histories==before_count && timeout<2000000)begin @(negedge clk);timeout=timeout+1;end
       if(histories!=before_count+1 || applied_rate!=next_rate)$fatal(1,"config/history commit failed");
       idle();
@@ -146,7 +150,7 @@ module tb_workstation_runtime_render_service;
     orders[0]=6'b10_01_00;orders[1]=6'b01_10_00;orders[2]=6'b10_00_01;
     orders[3]=6'b00_10_01;orders[4]=6'b01_00_10;orders[5]=6'b00_01_10;
     repeat(8)@(negedge clk);rst_n=1;mrst_n=1;repeat(100)@(negedge clk);
-    send(2,16,127);send(2,81,7);send(1,69,100);
+    configure(0,0);send(2,16,127);send(2,81,7);send(1,69,100);
     for(integer rate_index=0;rate_index<2;rate_index=rate_index+1)begin
       // The first 44.1 request must retain its PCM and auto-configure.
       for(integer n=0;n<12000;n=n+1)render(1'(rate_index),n);

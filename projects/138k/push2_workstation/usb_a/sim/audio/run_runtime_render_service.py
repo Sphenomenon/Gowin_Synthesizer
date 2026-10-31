@@ -42,6 +42,9 @@ def main():
         'rtl/audio/workstation_runtime_spatial_reverb.sv',
         'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv',
         'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv')]
+    maintained_names = {path.name for path in sources if path.is_relative_to(ROOT)}
+    sources = [path for path in sources if not (
+        path.is_relative_to(project / 'rtl/audio/delay_ddr') and path.name in maintained_names)]
     memory_reference = ROOT / 'sim/audio/tb_workstation_runtime_effects.sv'
     memory_text = memory_reference.read_text()
     anchor = '\nmodule tb_workstation_runtime_effects;'

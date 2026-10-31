@@ -22,6 +22,23 @@ from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 
 
 class RuntimeCdcPolicy(unittest.TestCase):
+    def test_native_ddr_minimum_keeps_exact_current_and_historical_paths(self):
+        path = (' -from [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q}]'
+                ' -to [get_pins {u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D}]')
+        for native, accepted in ((False, ('0.800',)), (True, ('1.800', '3.500'))):
+            result = dict(raw_common_reset=native, resolved_pin_selectors={}, protected_async_pins=[])
+            sdc = runtime_cdc_bundle(ROOT, raw_common_reset=native)['sdc']
+            for value in accepted:
+                self.assertTrue(validate_installed_constraints(ROOT, sdc + 'set_min_delay ' + value + path + '\n',
+                                                               result)['reviewed_group_lines_installed'])
+            rejected = [value for value in ('0.800', '1.800', '3.500', '3.499', '999.000') if value not in accepted]
+            changes = ['set_min_delay ' + value + path for value in rejected]
+            changes += ['set_min_delay ' + accepted[0] + path.replace('wloadn_3_s0', 'wloadn_2_s0'),
+                        'set_min_delay ' + accepted[0] + path.replace('ddr_init_internal_r_s0', 'ddr_init_internal_r_s1')]
+            for line in changes:
+                with self.subTest(native=native, line=line), self.assertRaisesRegex(ValueError, 'unreviewed peripheral SDC command'):
+                    validate_installed_constraints(ROOT, sdc + line + '\n', result)
+
     def test_staged_common_reset_selects_only_explicit_own_ble_release(self):
         top = """module workstation_custom_138k_top();
 wire button1_n=1'b1;

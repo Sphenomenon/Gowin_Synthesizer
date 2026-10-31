@@ -1,9 +1,10 @@
 `timescale 1ns/1ps
 module tb_workstation_display_runtime;
     import display_data_layout_pkg::*;
-    reg source_clk=0,clk=0,rst_n=0;
-    always #10 source_clk=!source_clk;
-    always #5 clk=!clk;
+    reg source_clk=0,clk=0,rst_n=0,source_rst_n=0;
+    reg source_clock_run=1,memory_clock_run=1;
+    always #10 if(source_clock_run)source_clk=!source_clk;
+    always #5 if(memory_clock_run)clk=!clk;
     reg trusted=1,rate44=0,frame_error=0,burst=0,pause_frames=0,frame_valid=0;
     reg [31:0] epoch=1,sequence_number=0,pcm=0;
     integer ticks=0;
@@ -17,7 +18,7 @@ module tb_workstation_display_runtime;
     always @(negedge source_clk)begin
         if(frame_valid)sequence_number=sequence_number+1'b1;
         frame_valid=0;
-        if(rst_n)begin
+        if(rst_n && source_rst_n)begin
             ticks=ticks+1;
             if(!pause_frames && (burst || ticks%16==0))begin
                 frame_valid=1;pcm={16'(left_pcm(integer'(sequence_number%64))),16'(right_pcm(integer'(sequence_number%64)))};
@@ -38,7 +39,7 @@ module tb_workstation_display_runtime;
     reg render_enable=0,response=0,pending_response=0;
     reg [255:0] response_data=0,pending_data=0;
     workstation_display_runtime dut(
-        .source_clk_i(source_clk),.source_reset_ni(rst_n),.clk_i(clk),.rst_ni(rst_n),.enabled_i(rst_n),
+        .source_clk_i(source_clk),.source_reset_ni(source_rst_n),.clk_i(clk),.rst_ni(rst_n),.enabled_i(rst_n),
         .frame_valid_i(frame_valid),.frame_44k1_i(rate44),.frame_error_i(frame_error),.observation_trusted_i(trusted),
         .frame_epoch_i(epoch),.frame_sequence_i(sequence_number),.frame_pcm_i(pcm),.trigger_reference_i(reference_data),
         .active_voices_i(voices),.status_i(status),.effect_mask_i(effect_mask),.effect_order_i(effect_order),
@@ -62,11 +63,12 @@ module tb_workstation_display_runtime;
     endfunction
     integer publications=0,commits=0,tuple_checks=0,checked_wave=0,checked_xy=0,checked_columns=0;
     integer drop_cycle_checks=0,drop_revocations=0,drop_completion_races=0;
+    integer reset_prior_drops=0;
     reg [31:0] previous_binary_drop=0;
     // Retain the former binary implementation only as a cycle-exact oracle.
     // Every loss must revoke public state before the next destination edge.
-    always @(posedge clk or negedge rst_n)
-        if(!rst_n)previous_binary_drop<=0;else previous_binary_drop<=dut.destination_drop;
+    always @(posedge clk or negedge dut.memory_reset_n)
+        if(!dut.memory_reset_n)previous_binary_drop<=0;else previous_binary_drop<=dut.destination_drop;
     always @(negedge clk)if(rst_n)begin
         if(dut.observation_loss!==(dut.destination_drop!=previous_binary_drop))
             $fatal(1,"Gray drop detection added a publication aperture");
@@ -157,7 +159,7 @@ module tb_workstation_display_runtime;
     reg [31:0] completion_drop_binary,completion_drop_gray;
     initial begin
         for(integer i=0;i<16384;i=i+1)memory[i]=0;
-        clocks(4);rst_n=1;clocks(30);if(allowed || current_image)$fatal(1,"raster admitted without first validated image");
+        clocks(4);rst_n=1;source_rst_n=1;clocks(30);if(allowed || current_image)$fatal(1,"raster admitted without first validated image");
         verify_current(48000,1);
         // A second export can complete in the background, but reader must wait
         // for the currently rendering cache lease to finish.
@@ -210,12 +212,31 @@ module tb_workstation_display_runtime;
         wait(dut.tuple_valid && dut.tuple_error);@(negedge source_clk);frame_error=0;
         clocks(10);if(current_image || allowed)$fatal(1,"error PCM kept current image");
         wait(summary);clocks(3);
+        // A source-only reset revokes both owners asynchronously. Neither
+        // owner may release while its own clock is stopped, and restarting
+        // one clock cannot release the other owner's cache or request state.
+        pause_frames=1;raster_busy=1;wait(!wbusy && !rbusy);clocks(3);
+        @(negedge clk);memory_clock_run=0;
+        @(negedge source_clk);source_clock_run=0;
+        #2;reset_prior_drops=integer'(drops);source_rst_n=0;#1;
+        if(dut.memory_reset_n || dut.source_reset_n || current_image || allowed || summary || wreq || rreq)
+            $fatal(1,"source reset did not asynchronously revoke stopped display owners memory=%b source=%b image=%b allowed=%b summary=%b wreq=%b rreq=%b",dut.memory_reset_n,dut.source_reset_n,current_image,allowed,summary,wreq,rreq);
+        #2;source_rst_n=1;#80;
+        if(dut.memory_reset_n || dut.source_reset_n || initialized || wreq || rreq)
+            $fatal(1,"stopped clock released display owner");
+        source_clock_run=1;repeat(3)@(negedge source_clk);
+        if(!dut.source_reset_n || dut.memory_reset_n || initialized || wreq || rreq)
+            $fatal(1,"source release escaped into stopped DDR owner");
+        memory_clock_run=1;clocks(2);
+        if(dut.memory_reset_n)$fatal(1,"DDR owner released before three local edges");
+        clocks(1);if(!dut.memory_reset_n)$fatal(1,"DDR owner did not release after three local edges");
+        pause_frames=0;raster_busy=0;wait(summary);clocks(3);
         before_publications=publications;@(negedge source_clk);epoch=0;
         clocks(1000);if(current_image || allowed || publications!=before_publications)$fatal(1,"zero epoch reached raster");
         if(checked_wave!=1024 || checked_xy!=131072 || checked_columns!=1024 || publications<6 || tuple_checks<10000 ||
            drop_cycle_checks<10000 || drop_revocations<1 || drop_completion_races!=1)
             $fatal(1,"runtime composition coverage");
-        $display("PASS workstation_display_runtime: publications=%0d commits=%0d tuple_checks=%0d waveform=%0d xy=%0d fft_columns=%0d cdc_drops=%0d tail_cancel=1 reader_cancel=1 idle_cache_lease=1 gray_drop_cycle_checks=%0d drop_revocations=%0d drop_completion_races=%0d",publications,commits,tuple_checks,checked_wave,checked_xy,checked_columns,drops,drop_cycle_checks,drop_revocations,drop_completion_races);
+        $display("PASS workstation_display_runtime: publications=%0d commits=%0d tuple_checks=%0d waveform=%0d xy=%0d fft_columns=%0d cdc_drops=%0d tail_cancel=1 reader_cancel=1 idle_cache_lease=1 gray_drop_cycle_checks=%0d drop_revocations=%0d drop_completion_races=%0d reset_local_release=1",publications,commits,tuple_checks,checked_wave,checked_xy,checked_columns,reset_prior_drops+integer'(drops),drop_cycle_checks,drop_revocations,drop_completion_races);
         $finish;
     end
     initial begin #200000000;$fatal(1,"runtime display watchdog publications=%0d writer=%0d reader=%0d",publications,dut.writer.state,dut.reader.state);end

@@ -262,7 +262,10 @@ module gw138k_event_workstation #(
   // the joined effects completion; cancellation uses the explicit tail fence.
   assign render_idle_o=rst_ni && (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0) &&
       !pending && !frame_inflight && !synth_joined && !vec_joined &&
-      !load_busy && !mix_busy && vec_ready && fx_ready &&
+      // Runtime readiness also vetoes this cycle's configuration accept.
+      // Idle observes stored work/history instead, so a held config request
+      // cannot feed through effect admission and back to its drain fence.
+      !load_busy && !mix_busy && vec_ready && (RUNTIME_EFFECTS_ENABLE ? fx_quiet : fx_ready) &&
       !synth_valid_o && !vec_valid && !sample_valid_o && !runtime_config_busy && !runtime_fault;
   assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
       !synth_joined && !vec_joined && !panic_accept && !runtime_config_block && !runtime_config_busy && !runtime_fault &&

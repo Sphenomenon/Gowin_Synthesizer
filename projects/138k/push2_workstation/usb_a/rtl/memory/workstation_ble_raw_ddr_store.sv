@@ -323,6 +323,7 @@ module workstation_ble_raw_ddr_store #(
     wire fifo_pop=fifo_read_valid && fifo_read_ready;
     wire [32:0] memory_fetch_end={1'b0,command_offset}+{19'd0,command_length};
     wire [8:0] memory_fetch_beats=9'(({10'd0,command_offset[4:0]}+{1'b0,command_length}+15'd31)>>5);
+    wire publish_pack=pack_frames==8 || (memory_closed && pack_frames!=0 && !fifo_read_valid);
 
     // Retire one previously admitted FIFO word through a fixed lane enable.
     // Native fault/acceptance feedback terminates at the one-bit valid strobe;
@@ -364,6 +365,19 @@ module workstation_ble_raw_ddr_store #(
             status_ack_meta<=status_ack;status_ack_sync<=status_ack_meta;
             return_ack_meta<=return_ack;return_ack_sync<=return_ack_meta;
             pack_word_valid<=0;
+            // Payload is private while this local slot is empty. Preload it
+            // without broadcasting native-accept/fault feedback to its wide
+            // enables; only published_valid below commits the complete tuple.
+            // A published command keeps every field stable until real native
+            // acceptance, including through cancel, timeout or quarantine.
+            if(!published_valid)begin
+                ddr_write_o<=publish_pack;ddr_address_o<=publish_pack ? write_address:fetch_address;
+                ddr_data_o<=publish_pack ? packed_payload:256'd0;
+                ddr_mask_o<=publish_pack ? 32'hffffffff<<(pack_frames*4):32'd0;
+                published_frames<=publish_pack ? pack_frames:4'd0;
+                published_generation<=memory_generation;
+                published_word<={fetch_beats_issued[7:0],3'b000};
+            end
             if(status_req==status_ack_sync && status_payload!=status_current)begin
                 status_payload<=status_current;status_req<=~status_req;
             end
@@ -412,16 +426,12 @@ module workstation_ble_raw_ddr_store #(
             end
             if(!published_valid && !pack_word_valid && !memory_channel_fault && !memory_fault_now &&
                !memory_command_start && !memory_clear_pending)begin
-                if(pack_frames==8 || (memory_closed && pack_frames!=0 && !fifo_read_valid))begin
-                    published_valid<=1;ddr_write_o<=1;ddr_address_o<=write_address;
-                    ddr_data_o<=packed_payload;ddr_mask_o<=32'hffffffff<<(pack_frames*4);
-                    published_frames<=pack_frames;published_generation<=memory_generation;
+                if(publish_pack)begin
+                    published_valid<=1;
                     pack_frames<=0;
                 end else if(memory_fetch_active && !memory_fetch_cancel && !cancel_now &&
                     !read_outstanding && !return_pending && fetch_beats_issued<fetch_beats_total)begin
-                    published_valid<=1;ddr_write_o<=0;ddr_address_o<=fetch_address;
-                    ddr_data_o<=0;ddr_mask_o<=0;published_frames<=0;published_generation<=memory_generation;
-                    published_word<={fetch_beats_issued[7:0],3'b000};
+                    published_valid<=1;
                     fetch_address<=fetch_address+29'd8;fetch_beats_issued<=fetch_beats_issued+1'b1;
                 end
             end
