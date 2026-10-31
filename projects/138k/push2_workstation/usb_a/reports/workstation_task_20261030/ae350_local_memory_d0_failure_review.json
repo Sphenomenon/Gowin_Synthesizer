@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "review": "independent final D0 failed physical evidence review",
+  "candidate": "custom138k-ae350-local-memory-probe-C21031D0",
+  "source_commit": "b3b487700f5c35703bdadf2ef3b7f741363e7ddd",
+  "process_exit_code": 1,
+  "physical_failure": "ERROR  (PR0009) : Failed to route with '1' unrouted nets for GAO design",
+  "elapsed_seconds": 1516.1728391670622,
+  "process_sha256": "05a3581a6b4293ba1c17235e5ac1956f659b097076ee4e2df5435ee5de83c697",
+  "process_input_files": 45,
+  "process_output_files": 31,
+  "all_process_hashes_verified": true,
+  "external_review_directory": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-bsram-probe-independent-v14",
+  "external_review_sha256": "7cae4557419ff6e100905483e49bac2de003c87d89a4f6a70476b09a10da934b",
+  "seal_sha256": "2a3be33a56197e48e1f9051834712233fbee4d652debdc755b260fca6357a75f",
+  "seal_verification": {
+    "passed": true,
+    "seal_sha256": "2a3be33a56197e48e1f9051834712233fbee4d652debdc755b260fca6357a75f",
+    "evidence": 13,
+    "external_inputs_and_outputs": 84,
+    "helpers": 7,
+    "vendor_tools": 2,
+    "final_failed_process_reproduced": true,
+    "physical_CDC_accepted": false,
+    "hardware_operated": false
+  },
+  "absent_success_artifacts": [
+    "impl/pnr/ao_0.fs",
+    "impl/pnr/ae350_local_memory_probe.tr",
+    "impl/pnr/ae350_local_memory_probe.sdf"
+  ],
+  "artifacts": {
+    "impl/gwsynthesis/ae350_local_memory_probe.vg": {
+      "sha256": "516dd970a77d2e840213bb92d2d4ba8fcdd9a19e2718744b18ffb34b8f4db099",
+      "bytes": 2194937
+    },
+    "impl/pnr/ae350_local_memory_probe.vo": {
+      "sha256": "4b0722b2fcd26fa1a905bede7cc935fa69aaabb18156cf8f310c8c19a3883546",
+      "bytes": 2379302
+    },
+    "impl/pnr/ae350_local_memory_probe.rpt.txt": {
+      "sha256": "ab863ec86c66194fc2df76bd1b262237d1a13a694052bac56e8fa2b160fa13c9",
+      "bytes": 81915
+    },
+    "probe.sdc": {
+      "sha256": "62af51751a82868318fbda2deee3dfef08b1819cbac63c7bd73ec1b38f55e0fb",
+      "bytes": 1451
+    },
+    "probe.gao": {
+      "sha256": "0dc06bbc9492dccead3a4ff03b4b4b25ea91790743fa8583dc832124ce9115f9",
+      "bytes": 27139
+    },
+    "probe.cst": {
+      "sha256": "0b4b05afd377988b79495c7b6fee8985ad34588ea271bc998dfd821463aa806c",
+      "bytes": 781
+    },
+    "inputs.json": {
+      "sha256": "ce3b8322ae07699e8f5d4573ebb414aae6dfed2353fd067fcb32ce7c8707199d",
+      "bytes": 25355
+    },
+    "physical_process.json": {
+      "sha256": "05a3581a6b4293ba1c17235e5ac1956f659b097076ee4e2df5435ee5de83c697",
+      "bytes": 9315
+    },
+    "physical_tool.log": {
+      "sha256": "8c10c2fd5ba00c310ba0e5eed40ee487df2ab208cb32b24b3fc15156922e8703",
+      "bytes": 11038
+    },
+    "impl/gwsynthesis/ae350_local_memory_probe_syn_rsc.xml": {
+      "sha256": "3171541e668e403f72ce932df50a9d0ecef9219d3f8b929dc98573b87e58048a",
+      "bytes": 1328
+    },
+    "impl/gao/gao_syn_rsc.xml": {
+      "sha256": "398466082d01a6eae26280e938b5bd96c42e25b2d848ea59299b00d690d21874",
+      "bytes": 185
+    }
+  },
+  "strict_RTC": {
+    "VG_pin": "u_rtc/rtc_tick_s1/Q",
+    "VO_hard_IP_scope": "u_cpu/u_RiscV_AE350_SOC/u_AE350_SOC",
+    "VO_hard_IP_pin": "RTC_CLK",
+    "net": "rtc_tick",
+    "actual_source_and_VO_scope_verified": true,
+    "STA_query_consumed_verified": false,
+    "physical_frequency_measured": false,
+    "hard_IP_internal_timing_verified": false
+  },
+  "CORE_PLL": {
+    "instance": "u_cpu_pll/PLL_inst",
+    "mandatory_location_input": "PLL_R[0]",
+    "output": "CLKOUT1",
+    "VO_hard_IP_pin": "u_cpu/u_RiscV_AE350_SOC/u_AE350_SOC/CORE_CLK",
+    "ratios_verified": true,
+    "actual_physical_location_verified": false,
+    "missing_evidence": "no final TR/explicit actual site record"
+  },
+  "synchronizer_pairs": 10,
+  "all_first_stage_fanout_closed": true,
+  "snapshot": {
+    "native_sdp_lanes": 8,
+    "lane_bits": 16,
+    "read_bandwidth_bits_per_cycle": 128,
+    "held_pclk_bits": 1858,
+    "held_clock": "ram_clk",
+    "reference_registers": 1292,
+    "reference_register_limit": 1600,
+    "cache_bits": {
+      "prefetch": 384,
+      "prepared_page0": 512,
+      "cache_data": 32
+    },
+    "ram_read_bits_reaching_gao": 128,
+    "redundant_snapshot_ff_names": [],
+    "physical_bsram_count_verified": false,
+    "physical_timing_verified": false
+  },
+  "held_payload": {
+    "source_bits": 1858,
+    "active_native_DI_bits": 128,
+    "additional_prepared_page0_D_pins": 512,
+    "all_1858_bits_reach_native_RAM": true,
+    "source_max_delay_ns": 20,
+    "hold_cut_to_native_DI_only": true,
+    "actual_routed_flight_and_STA_verified": false
+  },
+  "SDC": {
+    "VG_object_model_resolved": true,
+    "Gowin_query_engine_invoked": false
+  },
+  "GAO": {
+    "capture_bits": 704,
+    "registered_bits": 704,
+    "pages": 4,
+    "page_words": 16,
+    "page_cycles": 4,
+    "storage_depth": 128,
+    "schema": "A1386403",
+    "input_GAO_ID": "0011000111010000",
+    "FS_GAOCRC_verified": false,
+    "configuration_identity_bound": true
+  },
+  "physical_report_resources": {
+    "main": {
+      "Logic": 4985,
+      "Register": 6058,
+      "BSRAM": 48,
+      "CLS": 5284
+    },
+    "GAO": {
+      "Logic": 1078,
+      "Register": 3032,
+      "BSRAM": 40
+    }
+  },
+  "timing": {
+    "setup_verified": false,
+    "hold_verified": false,
+    "recovery_verified": false,
+    "removal_verified": false,
+    "pulsewidth_verified": false,
+    "reason": "final TR and SDF not emitted after GAO routing failure"
+  },
+  "comparison": {
+    "external_sha256": "2abba4fec9b706c6d44d815e30aa6fb29a8e0d7622dd90e7b9af3d3b9c96a943",
+    "scope": "synthesis resource counts only; no physical BSRAM inference or hardware operation",
+    "resources": {
+      "C10": {
+        "GAO_bits": 544,
+        "GAO_depth": 128,
+        "synthesis_main": {
+          "Register": 7180,
+          "Lut": 3929,
+          "Alu": 87,
+          "Bsram": 40
+        },
+        "synthesis_GAO": {
+          "Register": 2392,
+          "Lut": 897,
+          "Alu": 10,
+          "Bsram": 16
+        }
+      },
+      "D0": {
+        "GAO_bits": 704,
+        "GAO_depth": 128,
+        "synthesis_main": {
+          "Register": 6058,
+          "Lut": 4812,
+          "Alu": 184,
+          "Bsram": 48
+        },
+        "synthesis_GAO": {
+          "Register": 3032,
+          "Lut": 1071,
+          "Alu": 10,
+          "Bsram": 20
+        }
+      }
+    },
+    "recommendation": {
+      "next_candidate_only": true,
+      "preferred_payload_words": 8,
+      "pages": 8,
+      "metadata_bits": 192,
+      "total_bits": 448,
+      "page_cycles": 4,
+      "sweep_cycles": 32,
+      "capture_depth": 128,
+      "complete_sweeps_per_capture": 4,
+      "preserve64_diagnostic_words": true,
+      "optional_smaller": {
+        "page_words": 4,
+        "pages": 16,
+        "total_bits": 320,
+        "sweep_cycles": 64
+      },
+      "clocks_changed": false,
+      "timing_exceptions_changed": false,
+      "source_changed": false
+    }
+  },
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "hardware_acceptance": false,
+  "physical_CDC_accepted": false,
+  "release_ready": false,
+  "gaps": [
+    "one GAO unrouted net prevents FS generation",
+    "no final TR/SDF: all5 STA classes and20ns held payload route are unverified",
+    "mandatory PLL_R[0] is in source constraints but actual-site acceptance lacks final evidence",
+    "VG query matches do not establish Gowin query-engine coverage",
+    "no FS GAOCRC, hardware execution or captured UART/GAO acceptance"
+  ]
+}
