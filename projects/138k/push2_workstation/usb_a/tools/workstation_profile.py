@@ -42,6 +42,8 @@ CPU_BUSINESS_NAME='custom138k-workstation-ae350-business-v1'
 CPU_BUSINESS_CONFIG='boards/custom_138k/workstation_profile_ae350_business_v1.json'
 HCI_OWNER_NAME='custom138k-workstation-hci-owner-v1'
 HCI_OWNER_CONFIG='boards/custom_138k/workstation_profile_hci_owner_v1.json'
+CLASSIC_RUNTIME_NAME='custom138k-workstation-classic-runtime-v1'
+CLASSIC_RUNTIME_CONFIG='boards/custom_138k/workstation_profile_classic_runtime_v1.json'
 CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabled_cnn_and_follow_v1',
     recording_policy=R00_POLICY,local_panel_policy='disabled_local_lcd_touch_v1',
     ble_recording_storage_policy='native_raw_ddr_ae350_business_v2',business_owner_policy='ae350_ble_business_owner_v2',
@@ -51,6 +53,14 @@ CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabl
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
+    CLASSIC_RUNTIME_NAME:dict(config=CLASSIC_RUNTIME_CONFIG,revision=1,
+        configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
+            ae350_firmware_policy='ae350_classic_runtime_failclosed_v1',ae350_boot_rom_bytes=131072,
+            ae350_pcm_policy='ae350_decoded_pcm_source_v1'),
+        provider='rtl/workstation/workstation_profile_classic_runtime_v1.sv',recognition_enabled=False,
+        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,
+        integration_identity='custom138k-native-classic-runtime-revision1'),
     HCI_OWNER_NAME:dict(config=HCI_OWNER_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1'),
         provider='rtl/workstation/workstation_profile_hci_owner_v1.sv',recognition_enabled=False,
@@ -160,7 +170,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -170,14 +180,21 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     if sha(stage / rom_path) != historical:
         raise ValueError('AE350 profile installation requires the unchanged parent ROM')
     evidence = output / AE350_DIRECTORY
-    build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
-        memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
+    policy=AE350_POLICY
+    if classic_runtime:
+        if not recording_api or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes!=131072:
+            raise ValueError('Classic runtime requires explicit local64/ROM128/business composition')
+        from tools.workstation_classic_runtime import build as build_runtime,POLICY
+        build=build_runtime(root,evidence,riscv_prefix);policy=POLICY
+    else:
+        build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
+            memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
     if sha(evidence / 'boot.mem') != build['rom_sha256']:
         raise ValueError('AE350 generated ROM changed before installation')
     shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
     if sha(stage / rom_path) != build['rom_sha256']:
         raise ValueError('AE350 installed ROM identity differs from the build')
-    return dict(policy=AE350_POLICY, project_rom_installed=True, evidence_directory=AE350_DIRECTORY,
+    return dict(policy=policy, project_rom_installed=True, evidence_directory=AE350_DIRECTORY,
                 installed_rom=dict(path=rom_path, sha256=build['rom_sha256'],
                                    parent_baseline_sha256=historical),
                 build=build, artifacts_sha256={path.relative_to(evidence).as_posix(): sha(path)
@@ -203,11 +220,15 @@ def _ae350_evidence(root, output, metadata, profile):
     from tools.stage_ae350_firmware import selected_sources
     recording_api = specification(profile['name']).get('recording_enabled', False)
     business_owner=specification(profile['name']).get('business_owner_enabled',False)
+    classic_runtime=specification(profile['name']).get('classic_runtime_enabled',False)
     if (build.get('recording_api_enabled') is not recording_api or
             build.get('business_owner_enabled',False) is not business_owner or
-            build.get('compiled_sources') != list(selected_sources(recording_api,business_owner))):
+            (not classic_runtime and build.get('compiled_sources') != list(selected_sources(recording_api,business_owner)))):
         raise ValueError('workstation profile AE350 recording API selection changed')
-    if business_owner:
+    if classic_runtime:
+        from tools.workstation_classic_runtime import verify_build
+        verify_build(root,evidence,build)
+    elif business_owner:
         proof='tools/ae350_ble_business_indirect_review.json'
         if (build.get('indirect_call_review',{}).get('source')!=proof or
             build['indirect_call_review'].get('sha256')!=sha(root/proof) or
@@ -437,6 +458,11 @@ def _artifact(root, output, metadata, profile):
                            evidence=reference['evidence'], files=rows)
     config_hash = sha(root / spec['config'])
     ae350 = _ae350_evidence(root, output, metadata, profile)
+    if spec.get('classic_runtime_enabled',False):
+        from tools.workstation_classic_runtime import verify_selection
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}))
+    elif 'classic_runtime'in metadata:
+        raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']
     if bluetooth.get('rom_path_policy') != 'stage_relative':
         raise ValueError('workstation runtime BLE ROM path policy changed')
@@ -476,6 +502,7 @@ def _artifact(root, output, metadata, profile):
                     for target, owner in bindings.items()},
                 firmware=metadata['firmware'],
                 ae350_firmware=ae350,
+                **({'classic_runtime':metadata['classic_runtime']}if spec.get('classic_runtime_enabled',False)else{}),
                 scan_window=metadata['scan_window'],
                 runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
                 ae350_core_clock_placement=ae350_clock_placement, ae350_rtc=ae350_rtc,

@@ -1146,7 +1146,11 @@ module gw138k_push_workstation_top #(
             default:begin end
         endcase
     end
+`ifdef WORKSTATION_AE350_ROM128
+    gw138k_boot_memory #(.ROM_BYTES(131072)) u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
+`else
     gw138k_boot_memory u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
+`endif
         .rom_transfer(rom_transfer),.rom_data(rom_read_data),.fetch_count(fetch_count),.last_fetch(last_fetch),
         .ram_clk(ram_clk),.ram_reset_n(ram_reset_n),.ram_address(ram_address),.ram_transfer((cpu_bus_ready && local_address)?ram_transfer:2'b00),
         .ram_size(ram_size),.ram_write(ram_write),.ram_write_data(ram_write_data),.ram_read_data(ram_read_data));

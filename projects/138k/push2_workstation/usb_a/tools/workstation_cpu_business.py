@@ -29,8 +29,8 @@ HCI_SOURCES=tuple(HCI_DIRECTORY+'/'+name for name in (
     'workstation_hci_native_transport.sv','workstation_hci_cpu_mailbox.sv',
     'workstation_hci_ble_queue.sv','workstation_hci_ble_bridge.v','workstation_hci_initializer.v'))
 HCI_DEPENDENCIES=(*HCI_COPIES.values(),HCI_DIRECTORY+'/NATIVE_TRANSPORT_CONTRACT.md',
-    'rtl/workstation/workstation_profile_hci_owner_v1.sv',
-    'rtl/workstation/workstation_profile_ae350_business_v1.sv')
+    'rtl/workstation/workstation_profile_ae350_business_v1.sv',
+    'rtl/workstation/workstation_profile_hci_owner_v1.sv')
 def selection(shared_hci=False):
     return (HCI_COPIES,(*SOURCES,*HCI_SOURCES),(*DEPENDENCIES,*HCI_DEPENDENCIES)) if shared_hci else (COPIES,SOURCES,DEPENDENCIES)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

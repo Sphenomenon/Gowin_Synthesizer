@@ -122,9 +122,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
     business_selected=runtime and specification(profile['name']).get('business_owner_enabled',False)
     hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
+    classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
-    expanded_boot = ae350_memory['boot_rom_bytes'] == 65536
+    expanded_boot = ae350_memory['boot_rom_bytes'] != 16384
     if expanded_boot:
         native_sources += (BOOT_MEMORY_SOURCE,)
     if recording_selected:
@@ -143,6 +144,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected)
         native_sources += cpu_sources
         profile_dependencies += cpu_dependencies
+    if classic_selected:
+        from tools.workstation_ae350_pcm import SOURCES as PCM_SOURCES,DEPENDENCIES as PCM_DEPENDENCIES
+        from tools.workstation_classic_runtime import DEPENDENCIES as CLASSIC_DEPENDENCIES
+        native_sources += PCM_SOURCES
+        profile_dependencies += (*PCM_DEPENDENCIES,*CLASSIC_DEPENDENCIES)
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
@@ -160,6 +166,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.stage_ae350_firmware import selected_inputs
         extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'], business_selected)]
+        if classic_selected:
+            from tools.workstation_classic_runtime import firmware_inputs
+            extra_inputs += firmware_inputs(root)
     snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -170,7 +179,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-            business_owner=business_selected, **ae350_memory)
+            business_owner=business_selected,classic_runtime=classic_selected, **ae350_memory)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -278,6 +287,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    if classic_selected:
+        from tools.workstation_classic_runtime import cdc_bundle as classic_cdc_bundle
+        selected_sdc += classic_cdc_bundle()['sdc']
     if runtime:
         from tools.workstation_recognition_policy import adapt_constraints
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
@@ -392,6 +404,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import attach as attach_profile
         metadata['ae350_firmware'] = ae350_firmware
+        if classic_selected:
+            from tools.workstation_classic_runtime import prepare_selection
+            metadata['classic_runtime']=prepare_selection(root,stage,output)
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata
