@@ -315,7 +315,7 @@
     ]
   },
   "source_sha256": {
-    "docs/ae350/manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC\u786c\u4ef6\u8bbe\u8ba1\u7528\u6237\u624b\u518c.pdf": "0f357e21c8341a23a399a32a54bc706de953767235826ed39886924549756dc3",
+    "docs/ae350/manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC硬件设计用户手册.pdf": "0f357e21c8341a23a399a32a54bc706de953767235826ed39886924549756dc3",
     "example/AK4493_AMP/constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
     "example/AK4493_AMP/rtl/ak4493_pin_test.v": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28",
     "example/CLOCK_MEASURE/reports/measurement.json": "53873dcb8d3161af9b5c79b4805601f338ebe7ce9cf5664a9a7f913703eafff2",
@@ -344,7 +344,7 @@
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/peripherals.json": "ac1b0f47d88875aaa46cfd6a79273c7b416d9041f6386dc8bcc45e5bbdd8a523",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/usb2_cdc.json": "64d29331247c7c9b76fcb93a200b870aec38645edc3dd7c88f8e6ef6b38826e1",
-    "projects/138k/push2_workstation/usb_a/build.py": "eb35d86b15c0eff176e3c7ec6eb6a55d243b2d5667815d79970471f8d065ca14",
+    "projects/138k/push2_workstation/usb_a/build.py": "2be62544b4dd5d090ec49782e58815e7c8327095702a4654d560dae08a935c0a",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.c": "527c5e420bc35b39c829f6fc0c83c71a445fbf3a4f2cedab0254f0eae7d86a28",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.h": "2b8530fe2ef0ad98b42d14070c25c0895b6a4b5c6dee8bd05a11cf1539821d17",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_cpu_port.c": "cd841c339aad4f99d00af9a694f7a119cf2f2c4067ba8befd18de805e4df3589",
@@ -677,7 +677,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_flash.py": "30cc354d1ccd89d43b936e08eb2dea00bfd888708b5728ee8ab0a5e2628545a4",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_timing.py": "d8cf7b9d57a7b95ea52b3df4779f1a3389c6a03ccc497bd9c8d9d7f98c2ba5a9",
@@ -732,8 +732,8 @@
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a",
     "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099",
-    "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": "e3a8af1202172f3afb48b04c1c625f666154c15ae227d87b71e0eb0ace24060c",
     "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be"
   },
   "revision": 1

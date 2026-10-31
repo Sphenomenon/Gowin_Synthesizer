@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "scope": "merged explicit banked probe and separate RTC synthesis-versus-routed gates; native input isolation",
+  "imported_author_commits": [
+    "fe8e44bd0a7cc7e45249e2fc783a81bd5ea7615c",
+    "693d6ab93c3e00b25e99e71a9d00970828940f80",
+    "a4e5fb3d305d004b758ce687744235bbf45999a4"
+  ],
+  "main_source_head": "68ce3ed35ee674800ceea3c372e70324d40e4b71",
+  "author_banked_seal_sha256": "8f50fea120648d5d1e2dd6b911f236118802dab025be9cea35e02a28ec295a99",
+  "successful_tests": 73,
+  "optin_skips": 3,
+  "checks": {
+    "banked-rtc-main-banked-accepted-tests-v1.log": {
+      "run": 26,
+      "skipped": 0,
+      "sha256": "1d70e392961265bb15eb09b837a8c7311dc356c98977b22cc8955bd12f2cd41a"
+    },
+    "banked-rtc-main-rtc-tests-v1.log": {
+      "run": 13,
+      "skipped": 2,
+      "sha256": "6641d7775f6ba3196d0c179b0e31e2e25b08d045297b7c985b728dae6774e2ec"
+    },
+    "banked-rtc-main-default-profile-tests-v1.log": {
+      "run": 22,
+      "skipped": 1,
+      "sha256": "161d932d8beb07ead8d3789d8151576206451302d0e514c70a268befd8851c6a"
+    },
+    "banked-rtc-main-business-profile-tests-v1.log": {
+      "run": 8,
+      "skipped": 0,
+      "sha256": "e70d0ce281244dfab1a55309f0b26745fb208d53312051ecd0a08345c7ff9330"
+    },
+    "banked-rtc-main-final-pcm-baseline-v1.log": {
+      "run": 2,
+      "skipped": 0,
+      "sha256": "631685e8238d1387b654bf879c721f3261cda15fdfbb687318eff52e62450b93"
+    },
+    "native-business-rtc-clock-tests-v4.log": {
+      "run": 5,
+      "skipped": 0,
+      "sha256": "1ad7a46b3195402a1e126ab739db3fa1b0306469e9c33cc18b326a53e58d2af4"
+    }
+  },
+  "source_snapshots": 468,
+  "profiles": {
+    "workstation_profile_ae350_business_v1.json": {
+      "sha256": "69cf093ab7ba8a9fbd7ee5e90fbf0dd9ee30d093518049bfb12daa776641a172",
+      "revision": 4
+    },
+    "workstation_profile_no_cnn_v1.json": {
+      "sha256": "b2994599534993316843cc79a2c71afb484abd826f9113c7e2aa2d6f428b0c05",
+      "revision": 1
+    },
+    "workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": {
+      "sha256": "7f34cd6929dae62dc31171131e2ae2391be34caa1eaa1c0bfd7246b43dd02a6a",
+      "revision": 1
+    },
+    "workstation_profile_r00_no_local_panel_v1.json": {
+      "sha256": "01e9b51e429ac999592f939558c925810d56e4031543e025af1e77ae148fd8b9",
+      "revision": 2
+    },
+    "workstation_profile_r00_v1.json": {
+      "sha256": "33d6a3c9ffb8566751f6f4f69c81469929749fec0e2202c50362a851785a8cee",
+      "revision": 1
+    },
+    "workstation_profile_v1.json": {
+      "sha256": "74645c00c84ace1ef64b116bf185b3c3c0947b7987969778ef7fce0dd96b91e3",
+      "revision": 5
+    }
+  },
+  "prepares": {
+    "business": {
+      "identity": "custom138k-workstation-ae350-business-v1-b552eccbad9c5b0a",
+      "staged": 614,
+      "enabled": 272,
+      "all_staged_bytes_equal_prior_native_rtc": true,
+      "prior": "custom138k-workstation-ae350-business-v1-0981b403bb531b2b"
+    },
+    "default": {
+      "identity": "custom138k-workstation-v1-4e5dfeea3cc39ed2",
+      "staged": 581,
+      "enabled": 261,
+      "all_staged_bytes_equal_prior_native_rtc": true,
+      "prior": "custom138k-workstation-v1-36edc57605b9a09f"
+    }
+  },
+  "banked_probe": {
+    "user_code": "C21031CE",
+    "prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-prepare-v12",
+    "source_commit": "fe8e44bd0a7cc7e45249e2fc783a81bd5ea7615c",
+    "gao_bits": 704,
+    "pages": 4,
+    "words_per_page": 16,
+    "firmware_unchanged_from_C11": true,
+    "decoder_commit": "693d6ab93c3e00b25e99e71a9d00970828940f80",
+    "trailing_unknown_invalidates_latest": true,
+    "physical_process_is_separate": true,
+    "physical_result_not_inherited": true
+  },
+  "lock_refresh": "four known changed keys per six native profiles; no accepted or frozen baseline bytes changed",
+  "fresh_prepare_staged_bytes_equal_prior_rtc": true,
+  "main_new_synthesis": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limits": [
+    "The independently running CE physical process uses frozen fe8e44b RTL/firmware, not this source-stage seal.",
+    "Opaque VG boundary and routed hard-macro gates remain separate; a wrapper cannot pass the physical gate.",
+    "New native candidate identities reflect changed audited source/configuration, even though every declared staged compiler input is byte-identical to the previous RTC prepares.",
+    "No new SRAM acceptance, PMA/cache address attributes, CPU cycles or phone/audio acceptance is inferred."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/banked-rtc-main-parent-v1",
+  "seal_sha256": "f4c875500942c9ae28b988892837c2961f1b5684467dd5ffc42bc3a4e37c3d43",
+  "external_files": 1679
+}
