@@ -254,6 +254,8 @@ M11的新[far物理测量](push2_workstation/usb_a/reports/DUAL138K_M11_FAR_PHYS
 
 M11真实50MHz路径的[TF即时失败判定等价因子化](push2_workstation/usb_a/reports/DUAL138K_TF_FAILURE_FACTOR_20261031.md)已通过：完整epoch归约和并行失败谓词保留原错误优先级、physical及即时stop／invalidate；过程式默认0保留首个复位沿前的X语义，原连续表达式失败日志保留。99bit全域证明、四组合实际owner共1,069,069边沿／50公共输出／24状态组、4源码负控与完整stop／clear通过，独立四态审查通过。原生审计器仅更新已审TF source pin，M11实际VG／VO各54项回归及45／46负控通过；新源尚未物理验证，不转授旧far CLI或硬件通过。
 
+新只读效果接口的[精确可逆来源适配](push2_workstation/usb_a/reports/DUAL138K_EFFECT_SLOT_LINEAGE_20261031.md)通过7项测试及完整native→prepared链，原D适配／manifest保持逐字节不变。第一次M12 prepare的身份拒绝保留；M12b `0af82c38b1902d92`从新锁prepare及588项复验通过，三项新RTL已核对确为实际编译消费来源，已启动全量综合。该阶段未预记综合／物理收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

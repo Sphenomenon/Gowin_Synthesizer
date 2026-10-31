@@ -172,6 +172,46 @@ class DelayStorageProvenance(unittest.TestCase):
         for key in ('physical_ram_mapping_verified','physical_timing_verified','hardware_acceptance_inherited','accepted_baseline_storage_selection_inherited'):
             self.assertFalse(bundle[key],key)
 
+    def test_sample_slot_restores_exact_previous_d_source(self):
+        m=self.storage
+        self.assertEqual(digest(self.source),m.EFFECT_SLOT_SOURCE_SHA256)
+        parent=m.restore_effect_sample_slot(self.source)
+        self.assertEqual(digest(parent),m.EFFECT_SLOT_PARENT_SHA256)
+        self.assertEqual(m.EFFECT_SLOT_PARENT_SHA256,m.D_CONTROL_ADAPTATIONS[m.SOURCE]['source_sha256'])
+        reconstructed=parent.decode()
+        for before,after in m.EFFECT_SLOT_EDITS:
+            self.assertEqual(reconstructed.count(before),1)
+            reconstructed=reconstructed.replace(before,after)
+        self.assertEqual(reconstructed.encode(),self.source)
+        self.assertEqual(m.restore_effect_sample_slot(parent),parent)
+        self.assertEqual(m.verify(self.source,self.provenance,STORAGE_POLICY,self.adaptation)[0],
+                         m.verify(parent,self.provenance,STORAGE_POLICY,self.adaptation)[0])
+
+    def test_sample_slot_changed_bytes_and_broken_reverse_anchors_rejected(self):
+        from unittest import mock
+        m=self.storage
+        assign=b'  assign sample_slot_ready_o=state==IDLE && !barrier_busy;\n'
+        mutations=[
+            self.source.replace(b'Stored slot state only.',b'Stored slot state drift.'),
+            self.source.replace(assign,b'  assign sample_slot_ready_o=state==IDLE;\n'),
+            self.source.replace(assign,b''),
+            self.source.replace(assign,assign+assign),
+            self.source.replace(b'output wire sample_slot_ready_o,',b'output wire changed_slot_ready_o,'),
+            self.source+b'// unreviewed unrelated change\n',
+        ]
+        for mutant in mutations:
+            self.assertNotEqual(mutant,self.source)
+            with self.subTest(identity=digest(mutant)),self.assertRaises(ValueError):
+                m.verify(mutant,self.provenance,STORAGE_POLICY,self.adaptation)
+        # Even if an input hash were mistakenly rebased, missing/duplicate
+        # anchors or unrelated bytes must still fail before the original chain.
+        for mutant in (mutations[0],mutations[3],mutations[-1]):
+            with self.subTest(rebased_identity=digest(mutant)),mock.patch.object(
+                    m,'EFFECT_SLOT_SOURCE_SHA256',digest(mutant)),self.assertRaises(ValueError):
+                m.restore_effect_sample_slot(mutant)
+        with mock.patch.object(m,'EFFECT_SLOT_PARENT_SHA256','0'*64),self.assertRaises(ValueError):
+            m.restore_effect_sample_slot(self.source)
+
     def test_old_policy_and_changed_original_provenance_rejected(self):
         m=self.storage
         for source,provenance,policy,adaptation in [

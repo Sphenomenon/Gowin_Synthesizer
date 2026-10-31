@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "stage": "effect_readonly_slot_exact_reversible_lineage",
+  "new_tool": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py",
+    "sha256": "c80aeb2c64176c67ff2c3ca123de013363e068736bce0416314a25904833982f"
+  },
+  "old_tool_sha256": "f41d07e2dca5fce4a10d881aec773564b93a4ba677004fb3cd1932f82c68dde6",
+  "test": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py",
+    "sha256": "ee11b8152dd1dd053eb37517ad457a2182666388c36f9ae03ac5c133d9b7b1fb"
+  },
+  "verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/effect-slot-lineage-v1/verification.json",
+    "sha256": "e1d9b82cb93cb3e8744e2ed8414c7cd92a8a1567e4641b9e3d6134f373bd51d2"
+  },
+  "source_and_parent": {
+    "new": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50",
+    "parent": "7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826"
+  },
+  "semantics": "exact new source identity, two exact reverse anchors, exact old source identity, byte-exact forward roundtrip; continue original D/storage/native/prepared lineage",
+  "original_D_adaptations_and_frozen_manifests_unchanged": true,
+  "tests_passed": 7,
+  "conditional_prepared_test_skipped": true,
+  "actual_new_prepare": {
+    "candidate_identity": "custom138k-workstation-m-demo-v1-0af82c38b1902d92",
+    "manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v12b/integration_inputs.json",
+      "sha256": "447bd987fc19e9b6944c46803dfa8e468ebdf28c73d2f8bc0ffd2ff751114499"
+    },
+    "consumed_maintained_source_sha256": {
+      "rtl/audio/gw138k_event_workstation.sv": "87d9497ec7e228453aa8e29a96d6f79e693696b324e09a69aaece3dcece19809",
+      "rtl/audio/workstation_runtime_stereo_effects.sv": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50",
+      "rtl/tf_audio/workstation_tf_runtime_service.sv": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f"
+    },
+    "passed": true
+  },
+  "prior_failed_prepare_log": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v12-prepare.log",
+    "sha256": "4c16780ed96256fe18f1bd191731792967fb4ca74498bc13fcbeed335355b0eb"
+  },
+  "new_synthesis_running": true,
+  "physical_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false
+}

@@ -68,6 +68,46 @@ def sha(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+# Read-only stored-slot observation added after the reviewed D-control source.
+# Undo only these hash-bound bytes before the unchanged D/storage/provenance
+# chain; neither the original manifests nor the D adaptations are rebased.
+EFFECT_SLOT_SOURCE_SHA256 = 'e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50'
+EFFECT_SLOT_PARENT_SHA256 = '7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826'
+EFFECT_SLOT_EDITS = (
+    ('    output logic ready_o,valid_o,\n',
+     '    output logic ready_o,valid_o,\n'
+     '    // Stored slot state only. The owning sample scheduler must separately\n'
+     '    // veto fault, clear and accepted configuration/history transactions.\n'
+     '    output wire sample_slot_ready_o,\n'),
+    ('  assign ready_o=state==IDLE && !barrier_busy && !fault_o && !clear_i && !config_accept && !history_accept;\n',
+     '  assign sample_slot_ready_o=state==IDLE && !barrier_busy;\n'
+     '  assign ready_o=state==IDLE && !barrier_busy && !fault_o && !clear_i && !config_accept && !history_accept;\n'),
+)
+
+
+def restore_effect_sample_slot(source):
+    """Reverse only the exact read-only slot addition, then keep prior gates."""
+    if sha(source) != EFFECT_SLOT_SOURCE_SHA256:
+        # Existing historical/D source identities are still enforced by the
+        # original downstream adapter; unrecognized bytes cannot bypass it.
+        return source
+    current = source.decode()
+    for before, after in reversed(EFFECT_SLOT_EDITS):
+        if current.count(after) != 1:
+            raise ValueError('Effects sample slot reverse anchor drift')
+        current = current.replace(after, before)
+    restored = current.encode()
+    if sha(restored) != EFFECT_SLOT_PARENT_SHA256:
+        raise ValueError('Effects sample slot parent identity changed')
+    for before, after in EFFECT_SLOT_EDITS:
+        if current.count(before) != 1:
+            raise ValueError('Effects sample slot forward anchor drift')
+        current = current.replace(before, after)
+    if current.encode() != source:
+        raise ValueError('Effects sample slot round trip changed bytes')
+    return restored
+
+
 # D-DEMO adds only opt-in committed CC22 wet depth plumbing. Reversing
 # these exact identity-bound edits restores the E8-compatible default runtime
 # source before its unchanged scratch/FIFO/original prepared provenance chain.
@@ -256,6 +296,7 @@ def restore_native(source, provenance, policy=STRICT_POLICY, adaptation=None):
     if sha(provenance) != PROVENANCE_SHA256:
         raise ValueError('Original effects provenance bytes changed')
     original = json.loads(provenance)
+    source = restore_effect_sample_slot(source)
     source = restore_demo_d_controls(source, SOURCE)
     current = source.decode()
     if policy == STORAGE_POLICY:
