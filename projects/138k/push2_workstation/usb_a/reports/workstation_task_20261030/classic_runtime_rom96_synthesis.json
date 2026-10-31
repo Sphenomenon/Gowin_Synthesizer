@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "scope": "actual same-source same-machine-code whole-workstation ROM128 vs ROM96 synthesis measurement",
+  "source_commit": "72960ac7fc76bb7e09c18e90226ded29291f0759",
+  "ROM128_identity": "custom138k-workstation-classic-runtime-v1-130e2dec1ad6dfbf",
+  "ROM96_identity": "custom138k-workstation-classic-runtime-rom96-v1-9d02b8107b256773",
+  "source_snapshots": 1046,
+  "staged_delta": {
+    "Prj1.gprj": {
+      "ROM128": "f189bd6b43c55c2cda5bce43523138c5206e93cc7d946a5da525ee70aa17cf3d",
+      "ROM96": "a63bf788c134b1b49c38f5c9284748b0776ebe61ddd385d286417140bab9a95c"
+    },
+    "firmware/boot.mem": {
+      "ROM128": "535f56aa0efe6dd9862ebfaf1c6881448d01e7dc3070f5ef8164b954734af65e",
+      "ROM96": "82c8daab98745ff61636691d7e8e786e3ca159c88c3ea0023546d5361aac9294"
+    },
+    "rtl/workstation/workstation_profile_classic_runtime_rom96_v1.sv": {
+      "ROM128": null,
+      "ROM96": "2ee24530433142b15957a5adb2f00c23db0baff50bd4d549096ad27acbf42317"
+    },
+    "rtl/workstation/workstation_profile_classic_runtime_v1.sv": {
+      "ROM128": "b3be52e09c22e4cd94b6bdaabdc381dec439dc68d7c3eebdf51266bbb7aa2fa1",
+      "ROM96": null
+    },
+    "tools/ae350_rom96_reference.json": {
+      "ROM128": null,
+      "ROM96": "75266175348d63ec9729dc8ed0f2115319d4d2beaf721bee41b172a9985da77b"
+    }
+  },
+  "same_ELF_BIN_NM_dis": true,
+  "resources_ROM128": {
+    "Logic": 124974,
+    "LUT": 90575,
+    "ALU": 31495,
+    "RAM16": 484,
+    "Register": 66818,
+    "synthesis_BSRAM": 299
+  },
+  "resources_ROM96": {
+    "Logic": 124975,
+    "LUT": 90576,
+    "ALU": 31495,
+    "RAM16": 484,
+    "Register": 66818,
+    "synthesis_BSRAM": 299
+  },
+  "resource_delta_ROM96_minus_ROM128": {
+    "Logic": 1,
+    "LUT": 1,
+    "ALU": 0,
+    "RAM16": 0,
+    "Register": 0,
+    "synthesis_BSRAM": 0
+  },
+  "boot_resources_ROM128": {
+    "Register": 257,
+    "Lut": 184,
+    "Alu": 40,
+    "Bsram": 72,
+    "Ssram": 0,
+    "MULTALU27X18": 0,
+    "MULT12X12": 0,
+    "MULT27X36": 0
+  },
+  "boot_resources_ROM96": {
+    "Register": 257,
+    "Lut": 185,
+    "Alu": 40,
+    "Bsram": 72,
+    "Ssram": 0,
+    "MULTALU27X18": 0,
+    "MULT12X12": 0,
+    "MULT27X36": 0
+  },
+  "vg_sha256": {
+    "classic-runtime-rom128-ab-full-synthesis-130e2dec-v1": "58023eabd80349baaff2e8faad616dc57fc6d98bbad4be54df0099da80d305ee",
+    "classic-runtime-rom96-main-full-synthesis-9d02b810-v1": "02749a358bd13902f792dbcb3ece99ac321f9d48f2d0c2f21d3f9af67f7aeb82"
+  },
+  "warnings": {
+    "classic-runtime-rom128-ab-full-synthesis-130e2dec-v1": 151,
+    "classic-runtime-rom96-main-full-synthesis-9d02b810-v1": 151
+  },
+  "all_inputs_unchanged": true,
+  "original_prepares_verified": true,
+  "actual_clock_RTC_audits_passed": true,
+  "net_BSRAM_savings": 0,
+  "logical_capacity_removed_bytes": 32768,
+  "physical_resource_savings_verified": false,
+  "routed_timing_verified": false,
+  "full_CDC_verified": false,
+  "whole_functional_acceptance": false,
+  "hardware_operated": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "limitations": [
+    "A smaller logical ROM depth did not reduce actual synthesis BSRAM; no sixteen-block savings may be claimed.",
+    "Both actual boot-memory instances consume 72 synthesis BSRAM and 257 registers; ROM96 adds one LUT.",
+    "The monolithic inferred ROM needs a separate mapping experiment before any BSRAM savings can be asserted.",
+    "Physical resource counts, routed STA and hardware behavior remain unmeasured for both whole-workstation candidates.",
+    "Runtime pipeline fixes and future explicit firmware revisions are not compiled into these immutable candidates."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-rom96-synthesis-comparison-parent-v1",
+  "seal_sha256": "332dd2fc62d15ce8f4c3e9c976c67715b91a63608bbfd0dd0624c239c45f62b6",
+  "external_files": 3441
+}

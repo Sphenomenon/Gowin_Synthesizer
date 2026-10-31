@@ -73,3 +73,22 @@ python3 -B projects/138k/push2_workstation/usb_a/build.py \
 根端重跑 ROM96 11 项、ROM128 12 项、默认 22 项（1 项未配置 legacy 入口跳过）、accepted 17 项和旧 boot storage 4 项，均通过。ELF／BIN／NM／dis 与原联合128逐字相同，ROM96 是原 ROM128 的精确前98,304字节，删除的32,768字节全零；171 JALR／1,904-byte保守栈保持。另逐文件确认原1,644帧PCM fixture实际消费的输入在新prepare／维护源均同字节，此处是来源绑定，没有重新计作该fixture执行。
 
 根端封存 `/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-rom96-main-parent-v1`：1,046 份源码快照、2,340 份外部文件身份，seal SHA256 `b7a27983e6ee386742322775cefc0a5db0a8bbf75fe30f56f6ab86b7e8479c6a`；[机器记录](workstation_task_20261030/classic_runtime_rom96_main.json)保存精确容量、配置和输入绑定。ROM96剩余cold空间仅3,552bytes，后续增长继续严格拒绝越界。此源码阶段未完成综合或物理验收；资源对照另行排队，不将逻辑bank数计为收益。
+
+## 实际同源综合：尚未节省 BSRAM
+
+随后完成冻结源码 `72960ac7fc76bb7e09c18e90226ded29291f0759` 的两次实际整机综合：ROM128 `130e2dec1ad6dfbf` 与 ROM96 `9d02b8107b256773`。原 prepare 分别独立复验，所有综合输入前后保持；ELF／BIN／NM／dis 完全相同，staged 差异严格限定为工程选择、两个 profile provider、ROM 和 ROM96 reference 五项。
+
+| 综合项 | ROM128 | ROM96 | ROM96 − ROM128 |
+|---|---:|---:|---:|
+| Logic | 124,974 | 124,975 | +1 |
+| LUT | 90,575 | 90,576 | +1 |
+| ALU | 31,495 | 31,495 | 0 |
+| RAM16 | 484 | 484 | 0 |
+| Register | 66,818 | 66,818 | 0 |
+| BSRAM | 299 | 299 | 0 |
+
+两份实际 `u_boot_memory` 都是 72 个综合 BSRAM、257 个寄存器，ROM96 多一个 LUT。**本次映射没有节省 BSRAM**，此前减少 16 个 512×32 逻辑容量单位不能计作实际块收益。单数组推断的存储映射需要另立候选验证；尚未测得物理 BSRAM／CLS 或 routed 时序，不能从本表推断物理结果。
+
+两次实际 clock／RTC 审计均通过各自范围，各有 151 条警告，无 AG 诊断；完整 CDC／PLL／功能验收仍未通过，没有 P&R、SRAM 或 Flash 操作。后续播放修复不属于这两份网表。
+
+[同源综合机器记录](workstation_task_20261030/classic_runtime_rom96_synthesis.json)绑定实际 VG、五项 staged 差异和完整输入／输出。封存目录 `/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-rom96-synthesis-comparison-parent-v1` 含 1,046 份源码快照、3,441 份外部身份；seal SHA256 `332dd2fc62d15ce8f4c3e9c976c67715b91a63608bbfd0dd0624c239c45f62b6`。其 `verify.py` 可重验身份，不能替代重新综合或物理验收。
