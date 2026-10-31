@@ -288,6 +288,8 @@ W11参考时钟同域hold的[显式区域派生入口](push2_workstation/usb_a/r
 
 M13的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_M13_PHYSICAL_20261101.md)已封存：两次物理BSRAM235／DSP119；默认`D2110103` setup6,958／−3.133ns、hold1／−3.489ns，far`D2110104` setup6,490／−2.943ns、hold0／+0.135ns，原DDR3.500ns余量+0.579ns。完整VG／SDC保持、84份证据及588封存输入复验，各实际VO／边界／六PLL子门通过；相较M12b far的setup回退如实保留，仍不可部署。按新实测控制锥继续局部修复，未上板，不转授硬件或双板通过。
 
+W11真实录音长链的[START宽初始化许可因子化](push2_workstation/usb_a/reports/DUAL138K_RAW_START_20261101.md)已完成：仅在已知memory_quiescent时使用精确fault cofactor，完整故障／超时／隔离和START原周期、四态及CLEAR优先级保持。完整旧新owner661,577边沿、16,777,216四态方程、4,114非法／任意状态单沿及7专项负控通过，raw／owner8／native DDR／正式BLE业务回归均通过。唯一生产raw-store来源pin同步并拒绝漂移；新RTL`214c0a5d…09da1d`已进入W12封存输入，物理收益待测，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

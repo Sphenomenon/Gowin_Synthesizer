@@ -316,6 +316,26 @@ module workstation_ble_raw_ddr_store #(
         !memory_fetch_active && !fifo_read_valid && pack_frames==0 && memory_quiescent && !memory_channel_fault;
     wire [69:0] status_current={memory_generation,memory_committed,memory_drained_now,memory_channel_fault,memory_failure};
     wire memory_command_start=command_req_sync!=command_ack && !memory_command_active;
+    wire start_context_bad=!memory_empty || !memory_closed || memory_active || memory_clear_pending ||
+        memory_fetch_active || pack_frames!=0 || !memory_quiescent ||
+        fifo_consumed!=command_event_target || command_generation!=memory_generation+1'b1 ||
+        memory_generation==32'hffffffff;
+    // Only a quiescent START uses this cofactor. The original expression is
+    // retained for false/unknown quiescent, preserving procedural X behavior.
+    reg start_fault_now,start_initialize;
+    always @* begin
+        start_fault_now=memory_fault_now;
+        if(memory_quiescent)start_fault_now=transport_fault_i || native_protocol_fault_o ||
+            unused_submitted || native_accept_i || read_response_i;
+        start_initialize=0;
+        if(memory_command_start)begin
+            if(memory_channel_fault || start_fault_now)begin end
+            else if(command_kind==CMD_START)begin
+                if(start_context_bad)begin end
+                else start_initialize=1;
+            end
+        end
+    end
     wire clear_fifo_pop=memory_clear_pending && fifo_consumed!=memory_clear_target;
     wire normal_fifo_pop=memory_active && pack_frames<8;
     assign fifo_read_ready=memory_reset_n && !memory_channel_fault && !memory_fault_now &&
@@ -446,14 +466,10 @@ module workstation_ble_raw_ddr_store #(
                         // New-epoch frames may reach the FIFO synchronizer at
                         // the same time as START. Prove the old epoch retired
                         // using its immutable event target, not FIFO visibility.
-                        if(!memory_empty || !memory_closed || memory_active || memory_clear_pending ||
-                           memory_fetch_active || pack_frames!=0 || !memory_quiescent ||
-                           fifo_consumed!=command_event_target || command_generation!=memory_generation+1'b1 ||
-                           memory_generation==32'hffffffff)begin
+                        if(start_context_bad)begin
                             memory_channel_fault<=1;memory_failure<=F_PROTOCOL;completion_code<=F_PROTOCOL;
                         end else begin
-                            memory_generation<=command_generation;memory_active<=1;memory_closed<=0;memory_empty<=0;
-                            memory_next_index<=0;memory_committed<=0;write_address<=BASE_APP;completion_code<=0;
+                            memory_active<=1;memory_closed<=0;memory_empty<=0;completion_code<=0;
                         end
                         completion_generation<=command_generation;completion_committed<=0;completion_kind<=CMD_START;
                         command_ack<=command_req_sync;
@@ -487,6 +503,12 @@ module workstation_ble_raw_ddr_store #(
                         completion_kind<=command_kind;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
                     end
                 endcase
+            end
+            // Preserve the original START assignment priority, before CLEAR
+            // completion. No request, acknowledgement or fault state moves.
+            if(start_initialize)begin
+                memory_generation<=command_generation;memory_next_index<=0;
+                memory_committed<=0;write_address<=BASE_APP;
             end
             if(memory_clear_pending && fifo_consumed==memory_clear_target &&
                !fifo_read_valid && memory_quiescent && !memory_channel_fault && !memory_fault_now)begin
