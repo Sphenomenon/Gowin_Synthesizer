@@ -193,8 +193,10 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual([name for name in metadata['enabled_inputs'] if name.endswith('.cst')],
                              ['constraints/custom_138k.cst'])
             combined = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
-                               for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
+                               for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr', 'ae350'))
             self.assertEqual((stage / 'constraints/custom_138k.cst').read_text(), combined)
+            self.assertEqual(combined.count('INS_LOC "u_cpu_pll/PLL_inst" PLL_R[0];'), 1)
+            self.assertFalse(metadata['ae350_core_clock_placement']['placement_verified'])
             self.assertEqual((stage / 'constraints/custom_138k.display.cst').read_bytes(),
                              (ROOT / integration.DISPLAY_CST).read_bytes())
             self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261027-a26')
@@ -243,6 +245,14 @@ class NativeBoard(unittest.TestCase):
                 self.assertEqual(digest(ROOT / relative), expected, relative)
             with self.assertRaisesRegex(FileNotFoundError, 'synthesis.log'):
                 audit_synthesis(output)
+            manifest = output / 'integration_inputs.json'
+            original_manifest = manifest.read_text()
+            changed_metadata = json.loads(original_manifest)
+            changed_metadata['ae350_core_clock_placement']['placement_verified'] = True
+            manifest.write_text(json.dumps(changed_metadata))
+            with self.assertRaisesRegex(ValueError, 'dedicated clock metadata changed'):
+                audit_synthesis(output)
+            manifest.write_text(original_manifest)
             for relative in (*integration.REPLACED_INPUTS, *integration.EXCLUDED_INPUTS):
                 self.assertNotIn(relative, metadata['enabled_inputs'])
             for relative in integration.NATIVE_SOURCES:

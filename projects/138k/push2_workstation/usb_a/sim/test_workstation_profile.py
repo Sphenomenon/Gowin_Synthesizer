@@ -21,6 +21,41 @@ from tools.workstation_baselines import load_baseline
 
 
 class ProfileSources(unittest.TestCase):
+    def test_fresh_native_profiles_lock_dedicated_core_clock_and_business_revision3(self):
+        prefix = 'projects/138k/push2_workstation/usb_a/'
+        dependencies = ('boards/custom_138k/ae350.cst',
+                        'tools/workstation_ae350_clock_placement.py',
+                        'tools/workstation_physical_pll_audit.py',
+                        'sim/test_workstation_ae350_clock_placement.py',
+                        'sim/test_workstation_physical_pll_audit.py')
+        revisions = {profile.NAME: 5, profile.NO_CNN_NAME: 1, profile.R00_NAME: 1,
+                     profile.R00_NO_LOCAL_PANEL_NAME: 2, profile.LOCAL_BOOT64_NAME: 1,
+                     profile.CPU_BUSINESS_NAME: 3}
+        for name, revision in revisions.items():
+            with self.subTest(name=name):
+                selected = profile.load(ROOT, name)
+                self.assertEqual(selected['revision'], revision)
+                self.assertTrue(all(prefix + path in selected['source_sha256'] for path in dependencies))
+                if name == profile.CPU_BUSINESS_NAME:
+                    self.assertEqual(selected['configuration']['ae350_core_clock_policy'], 'pll_r0_clkout1_v1')
+                else:
+                    self.assertNotIn('ae350_core_clock_policy', selected['configuration'])
+        original = Path.read_text
+        business = json.loads((ROOT / profile.CPU_BUSINESS_CONFIG).read_text())
+        for field, value in (('revision', 2), ('policy', None), ('policy', 'unconstrained')):
+            changed = copy.deepcopy(business)
+            if field == 'revision':
+                changed[field] = value
+            elif value is None:
+                del changed['configuration']['ae350_core_clock_policy']
+            else:
+                changed['configuration']['ae350_core_clock_policy'] = value
+            with self.subTest(field=field, value=value), patch.object(Path, 'read_text',
+                    lambda path, *args, **kwargs: json.dumps(changed)
+                    if path == ROOT / profile.CPU_BUSINESS_CONFIG else original(path, *args, **kwargs)), \
+                    self.assertRaisesRegex(ValueError, 'identity changed|configuration mismatch'):
+                profile.load(ROOT, profile.CPU_BUSINESS_NAME)
+
     def test_real_lock_and_honest_feature_matrix(self):
         selected = profile.load(ROOT, profile.NAME)
         features = {item['name']: item for item in selected['features']}
@@ -332,7 +367,7 @@ class PreparedClosure(unittest.TestCase):
                        self.stage / 'firmware/boot.mem'):
             original = source.read_bytes()
             source.write_bytes(original + b'\n')
-            with self.subTest(path=source), self.assertRaisesRegex(ValueError, 'AE350.*changed'):
+            with self.subTest(path=source), self.assertRaisesRegex(ValueError, 'AE350.*changed|AE350 ROM must contain exactly'):
                 profile.verify(ROOT, self.output)
             source.write_bytes(original)
 

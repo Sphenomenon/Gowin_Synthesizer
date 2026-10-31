@@ -14,7 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from workstation_physical_pll_audit import (physical_snapshot, sha, verify_unchanged,
     pll_inventory, shared_clock_plls, source_context, audit_workspace, audit_output_path)
 from workstation_runtime_clock_audit import PLL_PATHS, verify_synthesis_identity
-from workstation_profile import R00_NO_LOCAL_PANEL_NAME, specification, identity_digest
+from workstation_profile import (R00_NO_LOCAL_PANEL_NAME, LOCAL_BOOT64_NAME,
+                                 CPU_BUSINESS_NAME, specification, identity_digest)
 
 
 class InputBindingTests(unittest.TestCase):
@@ -172,7 +173,7 @@ class SourceSelectionTests(unittest.TestCase):
         self.stage = self.root / 'source/workstation/Prj1'
         self.stage.mkdir(parents=True)
 
-    def fixture(self, *, profile_change=None, panel_change=None):
+    def fixture(self, *, profile_name=R00_NO_LOCAL_PANEL_NAME, profile_change=None, panel_change=None):
         stage = self.stage
         (stage / 'source.sv').write_text('source input\n')
         vg = stage / 'impl/gwsynthesis/custom_138k_integration.vg'
@@ -182,8 +183,8 @@ class SourceSelectionTests(unittest.TestCase):
         parent = dict(staged_input_sha256=closure, local_panel=dict(enabled=False, sources=[], sdc='',
             touch_input_selected=False, output_behavior='all_21_lcd_output_bits_static_low_backlight_off'))
         if panel_change: panel_change(parent)
-        spec = specification(R00_NO_LOCAL_PANEL_NAME)
-        profile = dict(profile=R00_NO_LOCAL_PANEL_NAME, revision=spec['revision'], configuration=copy.deepcopy(spec['configuration']),
+        spec = specification(profile_name)
+        profile = dict(profile=profile_name, revision=spec['revision'], configuration=copy.deepcopy(spec['configuration']),
             profile_source=spec['config'], profile_sha256='a' * 64, source_snapshot_sha256={}, firmware={}, ae350_firmware={},
             staged_input_sha256=closure, integration_metadata_sha256=identity_digest(parent))
         if profile_change: profile_change(profile)
@@ -222,6 +223,19 @@ class SourceSelectionTests(unittest.TestCase):
         self.assertIs(panel, False)
         self.assertIs(selection['acceptance_inherited'], False)
         self.assertEqual(selection['candidate_identity'], inputs['source']['candidate_identity'])
+
+    def test_explicit_boot64_and_business_profiles_require_current_configuration(self):
+        for name in (LOCAL_BOOT64_NAME, CPU_BUSINESS_NAME):
+            with self.subTest(profile=name):
+                self.assertIs(self.context(self.fixture(profile_name=name))[2], False)
+                mutations = [('revision', lambda p: p.update(revision=specification(name)['revision'] - 1)),
+                             ('source', lambda p: p.update(profile_source='other.json')),
+                             ('memory', lambda p: p['configuration'].update(ae350_memory_profile='pl16k_8k'))]
+                if name == CPU_BUSINESS_NAME:
+                    mutations += [('clock', lambda p: p['configuration'].pop('ae350_core_clock_policy'))]
+                for field, mutate in mutations:
+                    with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'Explicit no-local-panel'):
+                        self.context(self.fixture(profile_name=name, profile_change=mutate))
 
     def test_source_context_standalone_import_keeps_the_same_binding(self):
         self.fixture()

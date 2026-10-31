@@ -15,6 +15,7 @@ import sys
 
 sys.dont_write_bytecode = True
 from workstation_serializer_startup_audit import inspect_serializer_startup
+from workstation_ae350_clock_placement import audit_routed as audit_ae350_clock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -108,7 +109,8 @@ def source_context(physical, inputs, snapshot):
     physical manifests retain the seven-PLL/default LCD contract.
     """
     from workstation_runtime_clock_audit import verify_synthesis_identity
-    from workstation_profile import R00_NO_LOCAL_PANEL_NAME, specification, identity_digest
+    from workstation_profile import (R00_NO_LOCAL_PANEL_NAME, LOCAL_BOOT64_NAME,
+                                     CPU_BUSINESS_NAME, specification, identity_digest)
     source = inputs.get('source', {})
     if 'synthesis' not in source:
         parent_path = physical / 'parent_integration_inputs.json'
@@ -153,8 +155,8 @@ def source_context(physical, inputs, snapshot):
     for name, expected in profile['staged_input_sha256'].items():
         snapshot[stage / name] = expected
     local_panel_enabled = True
-    if profile.get('profile') == R00_NO_LOCAL_PANEL_NAME:
-        spec = specification(R00_NO_LOCAL_PANEL_NAME)
+    if profile.get('profile') in (R00_NO_LOCAL_PANEL_NAME, LOCAL_BOOT64_NAME, CPU_BUSINESS_NAME):
+        spec = specification(profile['profile'])
         if (profile.get('configuration') != spec['configuration'] or profile.get('revision') != spec['revision'] or
                 profile.get('profile_source') != spec['config'] or
                 parent.get('local_panel', {}).get('enabled') is not False or
@@ -208,7 +210,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
     reference = ROOT / 'vendor/ddr3_reference/ddr3_memory_interface.vo'
     inputs, snapshot = physical_snapshot(physical, (
         Path(__file__), Path(__file__).with_name('workstation_serializer_startup_audit.py'),
-        reference, base.with_suffix('.sdf'), base.with_suffix('.vo')))
+        Path(__file__).with_name('workstation_ae350_clock_placement.py'),
+        reference, physical / 'physical.cst', base.with_suffix('.sdf'), base.with_suffix('.vo'), base.with_suffix('.tr')))
     stage, parent, local_panel_enabled, selection = source_context(physical, inputs, snapshot)
     if workspace is not None and output is not None:
         audit_output_path(physical, stage, output)
@@ -258,7 +261,14 @@ def audit(physical, self_test=False, workspace=None, output=None):
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native')
     video_errors, video = inspect_video_pll_init(sdf, vo, stage)
     shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled)
-    errors = ddr_errors + config_errors + startup_errors + video_errors + shared_errors
+    core_clock, core_errors = {}, []
+    cst = (physical / 'physical.cst').read_text()
+    timing_report = base.with_suffix('.tr').read_text()
+    try:
+        core_clock = audit_ae350_clock(cst, timing_report, vo)
+    except (ValueError, KeyError) as error:
+        core_errors.append(str(error))
+    errors = ddr_errors + config_errors + startup_errors + video_errors + shared_errors + core_errors
     negatives = {}
     if self_test:
         if errors:
@@ -280,6 +290,16 @@ def audit(physical, self_test=False, workspace=None, output=None):
             if not bad or not any(reason in message for message in bad):
                 raise ValueError('Negative mutation did not fail its gate: ' + name + ' ' + str(bad))
             negatives[name + '/' + pin] = bad
+        for name, changed_cst, changed_report in (
+                ('AE350/requested_site', cst.replace('"u_cpu_pll/PLL_inst" PLL_R[0]',
+                                                   '"u_cpu_pll/PLL_inst" PLL_B[2]'), timing_report),
+                ('AE350/actual_site', cst, timing_report.replace('PLL_R[0]', 'PLL_B[2]'))):
+            try:
+                audit_ae350_clock(changed_cst, changed_report, vo)
+            except ValueError as error:
+                negatives[name] = [str(error)]
+            else:
+                raise ValueError('Dedicated core PLL negative mutation did not fail: ' + name)
     evidence = {str(path): digest for path, digest in snapshot.items()}
     evidence.update({str(path): sha(path) for path in outputs.glob('*.json')})
     verify_unchanged(snapshot)
@@ -287,6 +307,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 scope='Complete maintained native PLL/startup subgate; not full STA/CDC/electrical or board acceptance',
                 pll_gate_passed=not errors, errors=errors, ddr_source=ddr, ddr_configuration=config,
                 serializer_startup=startup, video_pll=video, shared_clock_plls=shared,
+                ae350_dedicated_core_clock=core_clock, ae350_dedicated_core_clock_errors=core_errors,
                 profile_selection=selection, expected_pll_count=7 if local_panel_enabled else 6,
                 expected_shared_tuple_count=4 if local_panel_enabled else 3,
                 audit_workspace=str(view),

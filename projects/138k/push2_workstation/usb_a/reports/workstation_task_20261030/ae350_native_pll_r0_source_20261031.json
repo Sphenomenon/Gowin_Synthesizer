@@ -1,0 +1,388 @@
+{
+  "schema": 1,
+  "scope": "native AE350 dedicated core PLL source and prepare; no full physical or board acceptance",
+  "source_parent": "20633651136c8a919ad2c647c7556ac98e89fa37",
+  "branch": "codex/native-ae350-pllr0",
+  "helper_sha256": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+  "source_manual": {
+    "path": "docs/ae350/manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC硬件设计用户手册.pdf",
+    "sha256": "0f357e21c8341a23a399a32a54bc706de953767235826ed39886924549756dc3",
+    "pdf_pages": [
+      54,
+      56
+    ],
+    "printed_pages": [
+      46,
+      48
+    ]
+  },
+  "checks": {
+    "delivery-clock-and-prepared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-clock-and-prepared.json",
+      "sha256": "bca8f2602bf7125a2f1b840d00e1aa3fbe83bbfab38c4a24c67537e24b12fe37",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-clock-and-prepared.log",
+      "log_sha256": "9f3add84eca7d7ad6146472275e6c59858467c3f86e308e33c2291c69155f9c3"
+    },
+    "delivery-default-profile": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-default-profile.json",
+      "sha256": "610981ddce50ce30bc1890847e073644b605a3f9051ba6a16e4f3e5108b86597",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-default-profile.log",
+      "log_sha256": "3ed7de4b29bcebb8256f2f4a0ef3f0500d32e3c91b6979390d50a44bfb1b5b08"
+    },
+    "delivery-business-profile": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-profile.json",
+      "sha256": "10d8506d3ec51d1aabab56872882a7d2b8055d92d9991a2f3c703fc5137cd52c",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-profile.log",
+      "log_sha256": "ac0cc19b055e2b0f97e0c18e11b87045518b18c3c400c11ad76fcd961b048aae"
+    },
+    "final-physical-pll": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-physical-pll.json",
+      "sha256": "592020a894563b56d2e69dcafd3a81dacb84a9e6518cd97f6bd7388d75db6a89",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-physical-pll.log",
+      "log_sha256": "ff17406c6b6cb862e7d32d583f548868f0a7a3a6a1a1ff89fd574cf47fbe38f5"
+    },
+    "delivery-implementation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-implementation.json",
+      "sha256": "1be79be8493d96bf578f12a2a50f22215ba2fe876806b22e0f54dce5a10235d3",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-implementation.log",
+      "log_sha256": "1be4b36165928bfe9d82819e02c4244707cc058392afddfbc5266203bb5e77a6"
+    },
+    "delivery-accepted-current": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-accepted-current.json",
+      "sha256": "7b42395636afec4ba9b7e955b885d595ee3e75a3ebe696ce40e78bf6d07b3b27",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-accepted-current.log",
+      "log_sha256": "5d4df9d02abcfa1d439d0d1991d4f805f4a1ddaea670be2d0901c8b0468ef26b"
+    },
+    "final-native-closure": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-native-closure.json",
+      "sha256": "9640086600e6a544fe9c2a0780c33fef3b79221ce5879983555a6518ceed35a0",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-native-closure.log",
+      "log_sha256": "dba18c4cfe0da53fa96dc96bd19f508e7d437fc26e662dd001231dec5eb5ffda"
+    },
+    "delivery-business-prepare1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-prepare1.json",
+      "sha256": "1a1df8f2970a33b14e94381e2ac180e949ca374a9993f0d2927e71d9a156fee4",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-prepare1.log",
+      "log_sha256": "bda6e001649e90697ef7847b6e771bf369577b19141d1547af812d074093a4f5"
+    },
+    "delivery-business-prepare2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-prepare2.json",
+      "sha256": "75a6ebf7f612703bb7b205dd86044d32251a1e8aa897b58839ad84402f526eb6",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-business-prepare2.log",
+      "log_sha256": "6f0f0ba738cf9ddb24baedbf93c90308486ff824299aa477878ca029f09fda05"
+    },
+    "delivery-default-prepare": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-default-prepare.json",
+      "sha256": "1c6a821bb716b99db056b645880070a1f908ab9b59f68df15dc6594a01602d4f",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-default-prepare.log",
+      "log_sha256": "ec80c9911c08eb74e0159b87f3efcea1308c4d2a49d5af7a1762c9ff6622d3a2"
+    },
+    "delivery-prepare-comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-prepare-comparison.json",
+      "sha256": "8af515f54af6f8efce9a41a683ffd275c0c0c7738b3ed5e9a1e3e9486668e562",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/delivery-prepare-comparison.log",
+      "log_sha256": "1e2fae1ab08018a09bea390d5aa2b20f2e80b6101735b8bed87058c97f1a40ca"
+    },
+    "final-fixed-reference": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-fixed-reference.json",
+      "sha256": "4af5d9f6705c6c6a77fead79d0aea6b8ac7ec98cf1a3fba0a31ac42ea9d362d4",
+      "log": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/final-fixed-reference.log",
+      "log_sha256": "86fc2d7729ef96732690fabc529158bf6ed73bc8a9babb30312b1c47ca51f6bf"
+    }
+  },
+  "candidate_identities": [
+    "custom138k-workstation-ae350-business-v1-8c0ef557459188f4",
+    "custom138k-workstation-ae350-business-v1-7a8f1f13ff44073c"
+  ],
+  "default_candidate": "custom138k-workstation-v1-0d440146e9b35242",
+  "prepared_directories": [
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/prepare-business-final5",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/prepare-business-final6",
+    "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/prepare-default-final3"
+  ],
+  "prepare_comparison": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/prepare-comparison-final.json",
+    "sha256": "89070f8dc714303b688fd7716edcdb7e1cdeed5437d2a8762e306f46a04dd39f"
+  },
+  "fixed_reference": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/fixed-reference-result-final.json",
+    "sha256": "f6ffa3e5f129b65cebc042b36214bab14edde22c55340d07d29aea794f6897ca",
+    "observed_site": "PLL_R[0]",
+    "routed_rows": 4107,
+    "locationless_rows": 16,
+    "c8_negative": "AE350 dedicated core clock: actual routed CPU PLL is not uniquely at PLL_R[0]",
+    "inputs_unchanged": true
+  },
+  "generic_no_eda_suite": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-source-v1/validation/native-board-no-eda-v2.log",
+    "sha256": "c9532c439504626dff9d2018be62c7388a50f1aa2e0ee6f400813a16df15942c",
+    "passed_unaffected_tests": 7,
+    "resolved_failure": "combined CST union omitted new eighth component; corrected and final-native-closure passed"
+  },
+  "source_profile_scope": {
+    "custom138k-workstation-ae350-business-v1": {
+      "revision_before": 2,
+      "revision_after": 3,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536,
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1"
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "7f1aee6138ab51e9e751bb9c66228a9633ae6b867438287ce226722a586ea902"
+    },
+    "custom138k-workstation-no-cnn-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "61b99e29f6bd63eca2fa55734813e45df871fb42d3faf80dafa591a9c64316fc"
+    },
+    "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "8603a24e2ea5a67bd3b73eccf6d4b962870e6351b0a357f4fcb136f19fe6a5cb"
+    },
+    "custom138k-workstation-r00-no-local-panel-v1": {
+      "revision_before": 2,
+      "revision_after": 2,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1"
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "e009ffecdc46b6afd73c933ca997165600095ca7cad251199cc2c70331bdcd1e"
+    },
+    "custom138k-workstation-r00-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "3cc23fd49461ac1ce9d24da229f5990a1513e7c7915c831f8b487804eda09ef2"
+    },
+    "custom138k-workstation-v1": {
+      "revision_before": 5,
+      "revision_after": 5,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "source_sets_unchanged": true,
+      "profile_sha256": "75bed9311ec0fe4ee12bb06ba791112d806caf01555b974a0822028264304f03"
+    }
+  },
+  "thresholds_relaxed": false,
+  "accepted_inputs_changed": false,
+  "full_synthesis_executed": false,
+  "full_physical_gate_executed": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "next_step": "Merge onto current main, refresh any concurrent source locks, then prepare a new integrated candidate; do not reuse these source-only identities for changed merged inputs."
+}

@@ -18,6 +18,7 @@ from tools.workstation_usb2_bridge_audit import audit_bridge_resets
 from tools.workstation_custom_usb2_cdc import PLAN_SOURCE as CDC_PLAN_SOURCE, cdc_bundle, audit_usb2_cdc
 from tools.workstation_custom_input_cdc import PLAN_SOURCE as INPUT_CDC_PLAN_SOURCE, input_cdc_bundle, audit_input_fifo
 from tools.workstation_synthesis_netlist import SynthesisNetlist
+from tools.workstation_ae350_clock_placement import verify_prepared as verify_ae350_clock, SOURCE as AE350_CLOCK_CST
 from tools.workstation_custom_timing import INPUTS as TIMING_INPUTS, constraints as timing_constraints, audit_resets as audit_usb_resets
 from tools.workstation_custom_flash import CST as MODEL_FLASH_CST, SDC as MODEL_FLASH_SDC, reviewed_cst as reviewed_flash_cst
 from tools.workstation_video_mode import IDENTITY_720, LOCKED_INPUTS as VIDEO_INPUTS, RENDERER, PROFILES_720, MODES
@@ -352,6 +353,7 @@ def audit(output):
         if metadata.get(flag) is not False:
             raise ValueError('native synthesis is not board acceptance: ' + flag)
     stage = output / 'workstation/Prj1'
+    ae350_clock_placement = verify_ae350_clock(ROOT, stage, metadata.get('ae350_core_clock_placement'))
     hdmi_mode = metadata.get('hdmi', {}).get('mode', '1080p60')
     if hdmi_mode not in MODES:
         raise ValueError('unsupported native HDMI mode')
@@ -380,7 +382,8 @@ def audit(output):
                          'tools/workstation_custom_board.py', 'tools/build_resource_rework.py',
                          'tools/workstation_baselines.py', 'tools/stage_usb_firmware.py',
                          'tools/workstation_usb2_soc.py', 'tools/workstation_usb2_input.py',
-                         'tools/workstation_pinout.py', 'baselines/index.json', 'boards/custom_138k/pinout.json'}
+                         'tools/workstation_pinout.py', 'baselines/index.json', 'boards/custom_138k/pinout.json',
+                         'tools/workstation_ae350_clock_placement.py', AE350_CLOCK_CST}
     if metadata['identity'].endswith(('-a17', '-a18', '-a19', '-a20', '-a21', '-a22', '-a23', '-a24', '-a25', '-a26')):
         required_snapshot.update(('boards/custom_138k/peripherals.json', 'tools/workstation_board_peripherals.py'))
         if (metadata.get('volume_application') != 'post_effects_post_source_selection_once_before_I2S_and_BLE' or
@@ -455,7 +458,7 @@ def audit(output):
                 raise ValueError('native DDR hard-resource constraints changed')
             parts += ('ddr',)
         combined = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
-                           for part in parts)
+                           for part in (*parts, 'ae350'))
         if (stage / 'constraints/custom_138k.cst').read_text() != combined:
             raise ValueError('native combined physical constraints changed')
     check_files(stage, metadata['staged_input_sha256'], 'staged input')
@@ -596,6 +599,7 @@ def audit(output):
                 verified_rom_words=rom_words, rom_sha256=metadata['firmware']['rom_sha256'],
                 high_speed_allowed=metadata['high_speed_allowed'],
                 explicit_clock_audit=clocks,
+                ae350_core_clock_placement=ae350_clock_placement,
                 native_receiver_audit=receivers,
                 shared_cdc_audit=shared_crossings,
                 bridge_reset_audit=resets,

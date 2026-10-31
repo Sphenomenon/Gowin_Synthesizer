@@ -279,6 +279,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_recognition_policy import adapt_constraints
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
         recognition['constraints'] = recognition_constraints
+    from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
+    combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
@@ -330,6 +332,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     synthesis_allowed=True, place_route_allowed=False, io_electrical_complete=False,
                     timing_constraints_complete=False, hardware_tested=False,
                     clock_plan_source=clocks['source'], clock_plan_sha256=clocks['source_sha256'],
+                    ae350_core_clock_placement=ae350_clock_placement,
                     usb2_cdc_plan_source=crossings['source'], usb2_cdc_plan_sha256=crossings['source_sha256'],
                     input_cdc_plan_source=input_crossings['source'], input_cdc_plan_sha256=input_crossings['source_sha256'],
                     shared_cdc_adaptation={key: value for key, value in shared_crossings.items() if key != 'sdc'},
