@@ -40,14 +40,14 @@ module display_data_writer #(
     end
     localparam [3:0] INIT_CONTROL=0,INIT_BANK0=1,INIT_BANK1=2,IDLE=3,SNAPSHOT=4,
         INVALIDATE=5,READ=6,WAIT_RAM=7,CAPTURE=8,WRITE=9,META=10,DESC=11,
-        COMMIT_BANK=12,COMMIT_GLOBAL=13,FINISH=14;
+        COMMIT_BANK=12,COMMIT_GLOBAL=13,FINISH=14,VERIFY_CONTEXT=15;
     reg [3:0] state;
     reg bank,published_bank;
     reg [31:0] frame_sequence;
     reg [255:0] meta_q,pack_data;
     reg [31:0] analysis_sequence_q,analysis_skipped_q,peaks_q;
     reg [31:0] sample_rate_q,epoch_q,context_generation_q;
-    reg abort_pending;
+    reg abort_pending,changed_context_q;
     reg valid_q;
     reg [2:0] gain_q;
     reg [1:0] kind,descriptor;
@@ -73,8 +73,12 @@ module display_data_writer #(
     // Once all RAM elements have been read, the captured packet is immutable.
     // A context change before that point cancels publication. An advertised
     // stalled DDR beat is drained without changing/withdrawing its payload.
-    wire exporting_source=state>=INVALIDATE && state<=WRITE;
-    wire abort_now=exporting_source && (abort_pending || changed_context);
+    // Register the wide identity comparison before it gates the 256-bit pack
+    // register. VERIFY_CONTEXT drains the final WRITE edge's comparison before
+    // any metadata can be published. Legacy context-free exports keep their
+    // original cycle/byte schedule.
+    wire exporting_source=(state>=INVALIDATE && state<=WRITE) || state==VERIFY_CONTEXT;
+    wire abort_now=exporting_source && (abort_pending || changed_context_q);
     control_record_t control_data;
     block_descriptor_t desc_data;
     always @* begin
@@ -158,12 +162,13 @@ module display_data_writer #(
         if(!rst_n) begin
             state<=INIT_CONTROL;bank<=0;published_bank<=0;frame_sequence<=0;initialized<=0;done<=0;
             meta_q<=0;analysis_sequence_q<=0;analysis_skipped_q<=0;peaks_q<=0;valid_q<=0;gain_q<=0;
-            sample_rate_q<=SAMPLE_RATE_HZ;epoch_q<=0;context_generation_q<=0;abort_pending<=0;
+            sample_rate_q<=SAMPLE_RATE_HZ;epoch_q<=0;context_generation_q<=0;abort_pending<=0;changed_context_q<=0;
             context_rejected_o<=0;context_aborted_o<=0;context_unavailable_o<=0;context_diagnostic_o<=0;
             kind<=0;index<=0;descriptor<=0;high_beat<=0;payload_address<=0;pack_data<=0;
         end else begin
             done<=0;
             context_rejected_o<=0;context_aborted_o<=0;
+            changed_context_q<=state==SNAPSHOT || state==IDLE ? 1'b0 : changed_context;
             if(abort_now)begin
                 abort_pending<=1;context_unavailable_o<=1;context_diagnostic_o<=5;
                 if(!req_valid || req_ready)begin
@@ -210,10 +215,11 @@ module display_data_writer #(
                     payload_address<=payload_address+29'd8;
                     if(last_element)begin
                         index<=0;
-                        if(kind==2)begin high_beat<=0;state<=META;end
+                        if(kind==2)begin high_beat<=0;state<=CONTEXT_ENABLED ? VERIFY_CONTEXT : META;end
                         else begin kind<=kind+1'b1;state<=READ;end
                     end else begin index<=index+1'b1;state<=READ;end
                 end
+                VERIFY_CONTEXT:state<=META;
                 META:if(req_valid && req_ready)begin
                     high_beat<=~high_beat;
                     if(high_beat)begin descriptor<=0;state<=DESC;end

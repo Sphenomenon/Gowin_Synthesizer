@@ -14,6 +14,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
+from workstation_reverb_provenance import verify as verify_reverb, restore as restore_reverb, ADAPTATION
 
 
 def digest(data):
@@ -122,15 +123,13 @@ class RuntimeReverbTest(unittest.TestCase):
         provenance_path = native.with_suffix('.provenance.json')
         provenance = json.loads(provenance_path.read_text())
         payload = native.read_bytes()
-        if digest(payload) != provenance['native_sha256']:
-            raise ValueError('native Reverb identity drifted')
-        restored = payload.decode()
-        for edit in reversed(provenance['forward_edits']):
-            if restored.count(edit['after']) != edit['count']:
-                raise ValueError('reverse Reverb provenance drifted')
-            restored = restored.replace(edit['after'], edit['before'])
-        if digest(restored.encode()) != provenance['prepared_sha256']:
-            raise ValueError('Reverb cannot reverse to prepared bytes')
+        adaptation_path = ROOT / ADAPTATION
+        restored, cls.reverb_provenance_evidence = verify_reverb(
+            payload, provenance_path.read_bytes(), adaptation_path.read_bytes())
+        scratch = restore_reverb(payload, provenance_path.read_bytes(), adaptation_path.read_bytes(), scratch=True)
+        scratch_reference = cls.stage / 'scratch_reference_spatial_reverb.sv'
+        scratch_reference.write_bytes(scratch.replace(b'module workstation_runtime_spatial_reverb (',
+                                                       b'module scratch_reference_spatial_reverb ('))
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         if baseline.read_bytes('rtl/audio/serial_spatial_reverb.sv') != restored.encode():
             raise ValueError('prepared Reverb does not match versioned baseline')
@@ -158,11 +157,14 @@ class RuntimeReverbTest(unittest.TestCase):
         cls.banks = json.loads(bank_path.read_text())['banks']
         tb = ROOT / 'sim/audio/tb_workstation_runtime_reverb.sv'
         cls.source_hashes = {str(path.relative_to(ROOT)): digest(path.read_bytes())
-                             for path in (native, provenance_path, bank_path, header, tb, Path(__file__))}
+                             for path in (native, provenance_path, adaptation_path,
+                                          ROOT / 'tools/workstation_reverb_provenance.py',
+                                          bank_path, header, tb, Path(__file__))}
         command = ['verilator', '--binary', '--timing', '-j', '2', '-Wno-fatal',
                    '--top-module', 'tb_workstation_runtime_reverb',
                    '--Mdir', str(cls.stage / 'obj'), '-o', 'runtime_reverb',
-                   *map(str, sources), str(native), str(tb)]
+                   '-DRUNTIME_REVERB_SCRATCH_REFERENCE',
+                   *map(str, sources), str(native), str(scratch_reference), str(tb)]
         result = subprocess.run(command, cwd=cls.stage, capture_output=True, text=True, timeout=180)
         if result.returncode:
             raise RuntimeError(result.stdout[-3000:] + result.stderr[-16000:])
@@ -173,8 +175,11 @@ class RuntimeReverbTest(unittest.TestCase):
                 cls.warning_counts[name] = cls.warning_counts.get(name, 0) + 1
         if cls.warning_counts != {'TIMESCALEMOD': 1, 'WIDTHEXPAND': 26, 'WIDTHTRUNC': 8}:
             raise RuntimeError('unexpected compile warnings: ' + result.stderr)
-        # Exact prepared/native signed widths and frozen banked RAM indexing;
-        # no new coefficient/configuration or testbench width warnings.
+        if any(str(native) + ':' in line for line in result.stderr.splitlines()
+               if line.startswith('%Warning-')):
+            raise RuntimeError('maintained Reverb must compile without width warnings')
+        # Exact frozen prepared/scratch references and banked RAM indexing;
+        # maintained Reverb has explicit widths and no compile warnings.
         print('COMPILE_WARNINGS', json.dumps(cls.warning_counts, sort_keys=True))
         cls.compile_warnings = result.stderr
         cls.binary = cls.stage / 'obj/runtime_reverb'

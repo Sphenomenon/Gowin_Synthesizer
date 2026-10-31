@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
 from workstation_chorus_provenance import verify as verify_chorus, NARROW_POLICY, ADAPTATION
+from workstation_reverb_provenance import restore as restore_reverb, ADAPTATION as REVERB_ADAPTATION
 from workstation_delay_storage_provenance import (
     verify as verify_delay_storage, STORAGE_POLICY, ADAPTATION as DELAY_STORAGE_ADAPTATION,
     source_bundle as delay_storage_source_bundle, PREPARED_SOURCE as DELAY_PREPARED_SOURCE,
@@ -262,18 +263,10 @@ class RuntimeEffectsTest(unittest.TestCase):
                 if name == 'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv':
                     payload = restore_delay_native(payload, provenance_path.read_bytes())
                 elif name == 'rtl/audio/workstation_runtime_spatial_reverb.sv':
-                    # The maintained scratch split is the actual DUT below.
-                    # Rebuild only its old reference from the unchanged chain.
-                    if digest(payload) != 'e9a93b4cf51fe8aae7ff46cd92e08b073314e87241d786eea7f445bc6bebbbb1':
-                        raise ValueError('reviewed Reverb scratch source drifted')
-                    reference = baseline.read_bytes('rtl/audio/serial_spatial_reverb.sv').decode()
-                    if digest(reference.encode()) != provenance['prepared_sha256']:
-                        raise ValueError('prepared Reverb reference identity drifted')
-                    for edit in provenance['forward_edits']:
-                        if reference.count(edit['before']) != edit['count']:
-                            raise ValueError('forward Reverb provenance drifted')
-                        reference = reference.replace(edit['before'], edit['after'])
-                    payload = reference.encode()
+                    adaptation_path = ROOT / REVERB_ADAPTATION
+                    payload = restore_reverb(payload, provenance_path.read_bytes(), adaptation_path.read_bytes())
+                    for path in (adaptation_path, ROOT / 'tools/workstation_reverb_provenance.py'):
+                        cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
                 if digest(payload) != provenance['native_sha256']:
                     raise ValueError('native identity drifted: ' + name)
                 old = payload.decode()
@@ -328,8 +321,11 @@ class RuntimeEffectsTest(unittest.TestCase):
             if line.startswith('%Warning-'):
                 key = line.split(':', 1)[0][9:]
                 cls.warning_counts[key] = cls.warning_counts.get(key, 0) + 1
-        if cls.warning_counts != {'TIMESCALEMOD': 1, 'WIDTHEXPAND': 65, 'WIDTHTRUNC': 16}:
+        if cls.warning_counts != {'TIMESCALEMOD': 1, 'WIDTHEXPAND': 55, 'WIDTHTRUNC': 16}:
             raise RuntimeError('unexpected compile warnings: ' + result.stderr)
+        if any(str(ROOT / 'rtl/audio/workstation_runtime_spatial_reverb.sv') + ':' in line
+               for line in result.stderr.splitlines() if line.startswith('%Warning-')):
+            raise RuntimeError('maintained Reverb must compile without width warnings')
         # Inherited native/reference arithmetic, VECTOR_ENABLE integer, frozen
         # RAM indexing and exact prepared DMA address/debug widths only.
         print('COMPILE_WARNINGS', json.dumps(cls.warning_counts, sort_keys=True))

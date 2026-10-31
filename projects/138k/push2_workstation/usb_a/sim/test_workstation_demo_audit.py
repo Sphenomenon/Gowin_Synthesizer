@@ -66,6 +66,31 @@ class VisibleConstraints(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'still has live endpoints'):
             audit.audit_constraint_retirement(selected, record, 'M', fixture(bluetooth=True))
 
+    def test_rebinding_requires_old_absent_and_new_actual_pin_present(self):
+        old = 'u_managed/runtime/cpu_pcm/switch_inhibit_compute'
+        new = 'u_managed/runtime/cpu_pcm.switch_inhibit_compute'
+        source = 'set_false_path -to [get_pins {' + old + '*/CLEAR}]\n'
+        selected, evidence = adapt_constraints(source, 'W')
+        n = SimpleNamespace(cells={new + '_0_s0': dict(kind='DFFPE', ports={'PRESET': 'rst'})},
+                            directions={audit.TOP: {}})
+        result = audit.audit_constraint_retirement(selected, evidence, 'W', n)
+        self.assertTrue(result['every_rebound_selector_verified'])
+        self.assertEqual(next(iter(result['rebound_selectors'].values()))['matched'], 1)
+        n.cells[old + '_0_s0'] = dict(kind='DFFCE', ports={'CLEAR': 'rst'})
+        with self.assertRaisesRegex(ValueError, 'source selector still has live'):
+            audit.audit_constraint_retirement(selected, evidence, 'W', n)
+        n.cells.clear()
+        with self.assertRaisesRegex(ValueError, 'replacement has no live'):
+            audit.audit_constraint_retirement(selected, evidence, 'W', n)
+
+    def test_retirement_cannot_hide_a_live_member_in_the_actual_generate_scope(self):
+        source = 'set_false_path -to [get_pins {u_managed/pcm_apb/commands/p_release*/CLEAR}]\n'
+        selected, evidence = adapt_constraints(source, 'W')
+        n = SimpleNamespace(cells={'u_managed/pcm_apb.commands/p_release_0_s0':
+            dict(kind='DFFCE', ports={'CLEAR': 'rst'})}, directions={audit.TOP: {}})
+        with self.assertRaisesRegex(ValueError, 'live rebound endpoints'):
+            audit.audit_constraint_retirement(selected, evidence, 'W', n)
+
 
 class RoleFeatures(unittest.TestCase):
     def setUp(self):
@@ -105,6 +130,64 @@ class RoleFeatures(unittest.TestCase):
         cells.pop(audit.ENGINES + '/oscillator/envelope_state[31]_2_s0')
         with self.assertRaisesRegex(ValueError, '32-voice storage swept'):
             audit.audit_m_voice_storage(SimpleNamespace(cells=cells))
+
+
+class Worker25kFeedback(unittest.TestCase):
+    def setUp(self):
+        prefix = self.prefix = 'u_native_usb/input_owner/feedback/'
+        self.cells = {}
+        def ff(stem, clock, q, d, ce='always'):
+            self.cells[prefix + stem + '_s0'] = dict(kind='DFFCE',
+                ports=dict(CLK=clock, Q=q, D=d, CE=ce, CLEAR='reset'))
+        ff('request_toggle', 'audio', 'request', 'new_request', 'source_capture')
+        ff('acknowledge_toggle', 'usb', 'ack', 'settled', 'destination_capture')
+        for stem, clock, q, d in (
+            ('req_meta', 'usb', 'meta', 'request'), ('req_sync', 'usb', 'sync', 'meta'),
+            ('req_settled', 'usb', 'settled', 'sync'), ('ack_meta', 'audio', 'ameta', 'ack'),
+            ('ack_sync', 'audio', 'async', 'ameta')):
+            ff(stem, clock, q, d)
+        for stem, clock in (('source_release', 'audio'), ('destination_release', 'usb')):
+            for bit in range(3):
+                ff(stem + '_' + str(bit), clock, stem + str(bit), stem + str(bit - 1))
+        bits = {*range(32, 35), *range(37, 42), *range(56, 64), *range(132, 196),
+                *range(224, 245), 276, *range(278, 288)}
+        for bit in bits:
+            ff('held_data_' + str(bit), 'audio', 'payload' + str(bit), 'input' + str(bit), 'source_capture')
+            ff('destination_data_' + str(bit), 'usb', 'result' + str(bit), 'payload' + str(bit), 'destination_capture')
+        self.n = SimpleNamespace(cells=self.cells,
+            pin=lambda p, pin: self.cells[p]['ports'][pin])
+        self.clocks = dict(clocks=dict(audio_76m8=dict(net='audio'), usb_48m=dict(net='usb')))
+
+    def test_live_parameter_payload_and_handshake_pass_without_a_Push_pulse(self):
+        result = audit.audit_worker_feedback(self.n, self.clocks)
+        self.assertEqual(len(result['live_payload_bits']), 112)
+        self.assertEqual((result['source_registers'], result['destination_registers']), (118, 119))
+        self.assertFalse(result['physical_timing_verified'])
+
+    def test_missing_payload_bit_is_rejected(self):
+        self.cells.pop(self.prefix + 'held_data_132_s0')
+        with self.assertRaisesRegex(ValueError, 'bitmap changed'):
+            audit.audit_worker_feedback(self.n, self.clocks)
+
+    def test_payload_mutation_or_capture_clock_change_is_rejected(self):
+        path = self.prefix + 'destination_data_132_s0'
+        self.cells[path]['ports']['D'] = 'unheld'
+        with self.assertRaisesRegex(ValueError, 'immutable payload'):
+            audit.audit_worker_feedback(self.n, self.clocks)
+        self.cells[path]['ports']['D'] = 'payload132'
+        self.cells[path]['ports']['CLK'] = 'audio'
+        with self.assertRaisesRegex(ValueError, 'clock changed'):
+            audit.audit_worker_feedback(self.n, self.clocks)
+
+    def test_handshake_bypass_or_missing_reset_stage_is_rejected(self):
+        path = self.prefix + 'ack_sync_s0'
+        self.cells[path]['ports']['D'] = 'ack'
+        with self.assertRaisesRegex(ValueError, 'direct stage changed'):
+            audit.audit_worker_feedback(self.n, self.clocks)
+        self.cells[path]['ports']['D'] = 'ameta'
+        self.cells.pop(self.prefix + 'destination_release_1_s0')
+        with self.assertRaisesRegex(ValueError, 'reset release inventory'):
+            audit.audit_worker_feedback(self.n, self.clocks)
 
 
 if __name__ == '__main__':

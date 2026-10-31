@@ -6,7 +6,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.workstation_demo_policy import adapt_constraints, verify_constraints
+from tools.workstation_demo_policy import adapt_constraints, verify_constraints, _adapt
 
 
 class DemoConstraintPolicy(unittest.TestCase):
@@ -50,6 +50,36 @@ class DemoConstraintPolicy(unittest.TestCase):
     def test_no_general_retirement_mode(self):
         with self.assertRaises(ValueError):
             adapt_constraints('', 'unknown')
+
+    def test_w_binds_actual_generate_scopes_and_async_preset_only(self):
+        source = ('set_max_delay 10.000 -from [get_regs {u_managed/pcm_apb/commands/request_held*}] '
+            '-to [get_regs {u_managed/pcm_apb/commands/request_local*}]\n'
+            'set_false_path -to [get_pins {u_managed/runtime/cpu_pcm/switch_inhibit_compute*/CLEAR '
+            'u_managed/runtime/pcm_hold_serial*/CLEAR '
+            'u_managed/runtime/cpu_pcm/session/live_o*/CLEAR}]\n'
+            'set_false_path -to [get_pins {u_managed/pcm_apb/commands/p_release*/CLEAR '
+            'u_managed/pcm_apb/commands/request_local*/CLEAR}]\n')
+        selected, evidence = adapt_constraints(source, 'W')
+        self.assertIn('set_max_delay 10.000 -from [get_regs {u_managed/pcm_apb.commands/request_held*}]', selected)
+        self.assertIn('cpu_pcm.switch_inhibit_compute*/PRESET', selected)
+        self.assertIn('pcm_hold_serial*/PRESET', selected)
+        self.assertIn('cpu_pcm.session/live_o*/CLEAR', selected)
+        self.assertIn('pcm_apb.commands/request_local*/CLEAR', selected)
+        self.assertNotIn('p_release', selected)
+        self.assertEqual(source, verify_constraints(selected, evidence, 'W'))
+        changed = copy.deepcopy(evidence)
+        changed['changes'][0]['rebound_selectors'][0]['selected'] += '*'
+        with self.assertRaises(ValueError):
+            verify_constraints(selected, changed, 'W')
+        self.assertEqual(source, adapt_constraints(source, 'M')[0])
+
+    def test_old_frozen_candidate_evidence_replays_its_original_policy(self):
+        source = ('set_false_path -to [get_pins {u_display_push_cdc/req_meta/D '
+                  'u_managed/pcm_apb/commands/request_local*/CLEAR}]\n')
+        selected, evidence = _adapt(source, 'W', legacy=True)
+        self.assertEqual(source, selected)
+        self.assertEqual(source, verify_constraints(selected, evidence, 'W'))
+        self.assertNotEqual(source, adapt_constraints(source, 'W')[0])
 
 
 if __name__ == '__main__':

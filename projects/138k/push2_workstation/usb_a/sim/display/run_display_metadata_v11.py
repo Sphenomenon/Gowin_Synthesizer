@@ -108,11 +108,27 @@ def main():
         v11_log = icarus('tb_display_metadata_v11', [package, writer, reader, fixtures[0]],
                           'PASS display_metadata_v11:')
         match = re.search(r'checks=(\d+) writes=(\d+) commits=(\d+) reads=(\d+) rejected=(\d+) aborted=(\d+) first_reads=(\d+) local_banks=2', v11_log)
-        if not match or int(match[1]) < 12 or int(match[5]) != 5 or int(match[6]) != 1 or int(match[7]) < 6:
+        if not match or int(match[1]) < 14 or int(match[5]) != 5 or int(match[6]) != 3 or int(match[7]) < 6 or 'final_payload_aborts=2' not in v11_log:
             raise ValueError('Incomplete minor1 snapshot/cache coverage')
         result['minor1_transport'] = dict(zip(
             ('full_cache_checks', 'writes', 'commits', 'reads', 'rejected', 'aborted', 'first_publish_reads'),
             map(int, match.groups())))
+        # Removing the final comparison drain must be detected specifically by
+        # the accepted-last-WRITE boundary, rather than a generic watchdog.
+        anchor = 'state<=CONTEXT_ENABLED ? VERIFY_CONTEXT : META;'
+        if writer.read_text().count(anchor) != 1:
+            raise ValueError('Final context-drain negative-control anchor drift')
+        mutant = output / 'display_data_writer_without_final_context_drain.v'
+        mutant.write_text(writer.read_text().replace(anchor, 'state<=META;'))
+        mutant_binary = output / 'without_final_context_drain.vvp'
+        run('final_context_negative_compile', ['iverilog', '-g2012', '-s', 'tb_display_metadata_v11',
+            '-o', str(mutant_binary), str(package), str(mutant), str(reader), str(fixtures[0])], 60)
+        negative = subprocess.run(['vvp', str(mutant_binary)], cwd=project,
+            capture_output=True, text=True, timeout=180)
+        (output / 'final_context_negative_run.log').write_text(negative.stdout + negative.stderr)
+        if negative.returncode == 0 or 'final payload context change published during_write=1' not in negative.stdout:
+            raise ValueError('Final context-drain negative control did not reject last-WRITE publication')
+        result['final_context_drain_negative_control_passed'] = True
         compile_log = run('analysis_compile', ['verilator', '--binary', '--timing', '-j', '4',
             '-Wno-fatal', '--top-module', 'tb_display_analysis_context', '--Mdir', str(output / 'obj'),
             '-I' + str(project), *map(str, analysis_sources)], 180)
@@ -140,6 +156,7 @@ def main():
             'mixed_wave_analysis_generation_rejection', 'all_descriptor_versions_epochs',
             'late_metadata_corruption_last_image', 'final_seqlock_corruption_last_image',
             'slow_reader_bank_reuse', 'stalled_writer_context_abort_stability',
+            'final_capture_and_accepted_write_context_abort', 'final_context_drain_negative_control',
             'sealed_snapshot_keeps_old_tags', 'first_synchronous_publish_read', 'reset',
             'default_writer_exact_cycle_bytes', 'default_reader_unselected_minor1',
             'context_aware_minor0_refuses_44100', 'untrusted_source_rejected', 'actual_fft_and_xy']

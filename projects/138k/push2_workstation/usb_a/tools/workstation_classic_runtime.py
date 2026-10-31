@@ -144,6 +144,17 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
     verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider)
     return record
+def verify_cdc_selection(text,record,*,worker_demo=False):
+    """Check the exact final scoped lines for the explicitly selected role."""
+    cdc=cdc_bundle()
+    selected=cdc['sdc']
+    if worker_demo:
+        from tools.workstation_demo_policy import adapt_constraints
+        selected,_=adapt_constraints(selected,'W')
+    if record!={k:v for k,v in cdc.items()if k!='sdc'}or any(
+            text.splitlines().count(line)!=1 for line in selected.splitlines()):
+        raise ValueError('Classic runtime scoped CDC input changed')
+
 def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
@@ -174,9 +185,8 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         '.hci_classic_generation_o(hci_pcm_transport_generation)',
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
-    cdc=cdc_bundle()
-    if record['cdc']!={k:v for k,v in cdc.items()if k!='sdc'}or any((stage/'constraints/custom_138k.sdc').read_text().splitlines().count(line)!=1 for line in cdc['sdc'].splitlines()):
-        raise ValueError('Classic runtime scoped CDC input changed')
+    verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
+        worker_demo=selected_provider=='rtl/workstation/workstation_profile_w_demo.sv')
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record

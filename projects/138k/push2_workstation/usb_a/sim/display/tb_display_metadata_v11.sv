@@ -14,9 +14,9 @@ module tb_display_metadata_v11;
     wire [1:0] kind;
     wire [15:0] address;
     reg [31:0] source_data=0;
-    reg write_stall=0,reader_stall=0;
+    reg write_stall=0,reader_stall=0,write_always_ready=0;
     integer cycles=0,writes=0,commits=0,rejections=0,aborts=0,reads=0,checks=0,first_reads=0;
-    wire wready=!write_stall && cycles%7!=0;
+    wire wready=!write_stall && (write_always_ready || cycles%7!=0);
     wire [255:0] effect_meta={32'h44495350,23'd0,6'b10_01_00,3'd3,32'h32100000,32'h3,
         32'h11223344,tag+32'd100,32'd9,32'hcb};
     display_data_writer #(.METADATA_MINOR(1)) writer(
@@ -99,6 +99,21 @@ module tb_display_metadata_v11;
     task clocks(input integer n);begin repeat(n)@(negedge clk);end endtask
     task write_frame;
         begin @(negedge clk);wstart=1;clocks(1);wstart=0;wait(wdone);clocks(1);end
+    endtask
+    task abort_final_payload(input bit during_write);
+        integer old_commits,old_aborts;
+        begin
+            old_commits=commits;old_aborts=aborts;write_always_ready=1;
+            @(negedge clk);wstart=1;clocks(1);wstart=0;
+            wait(writer.kind==2 && writer.index==511 &&
+                writer.state==(during_write ? writer.WRITE : writer.CAPTURE));
+            // Change only across the final capture/accepted-write edge. Even
+            // a one-edge identity loss must cancel the unpublished packet.
+            @(negedge clk);source_valid=0;clocks(1);source_valid=1;
+            wait(wdone);clocks(2);write_always_ready=0;
+            if(commits!=old_commits || aborts!=old_aborts+1 || !unavailable)
+                $fatal(1,"final payload context change published during_write=%0d",during_write);
+        end
     endtask
     task read_frame(input bit good);
         reg [31:0] expected_wave,expected_image,expected_spectrum;
@@ -215,10 +230,12 @@ module tb_display_metadata_v11;
         if(aborts!=1 || unavailable)$fatal(1,"sealed packet changed context/aborted after capture");
         tag=5;read_frame(1);check_cache(5,48000,3);
         tag=6;write_frame();read_frame(1);check_cache(6,44100,4);
+        abort_final_payload(0);check_cache(6,44100,4);
+        abort_final_payload(1);check_cache(6,44100,4);
         // Reset invalidates local publication and all DDR headers coherently.
         rst_n=0;clocks(4);rst_n=1;wait(initialized);clocks(2);
         if(rvalid || render_epoch!=0 || memory[slot(DISPLAY_CONTROL_WORD)]!=0)$fatal(1,"reset retained old publication");
-        $display("PASS display_metadata_v11: checks=%0d writes=%0d commits=%0d reads=%0d rejected=%0d aborted=%0d first_reads=%0d local_banks=2",checks,writes,commits,reads,rejections,aborts,first_reads);
+        $display("PASS display_metadata_v11: checks=%0d writes=%0d commits=%0d reads=%0d rejected=%0d aborted=%0d first_reads=%0d local_banks=2 final_payload_aborts=2",checks,writes,commits,reads,rejections,aborts,first_reads);
         $finish;
     end
     initial begin #100000000;$fatal(1,"display metadata watchdog");end

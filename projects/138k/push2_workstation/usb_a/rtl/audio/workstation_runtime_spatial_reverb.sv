@@ -23,16 +23,15 @@ module workstation_runtime_spatial_reverb (
     function automatic integer delay_length(input integer lane);
         delay_length=32'(runtime_room_fdn_length(applied_rate_44100_o,2'(lane)));
     endfunction
-    function automatic logic signed [31:0] rate_damping(
+    function automatic logic signed [31:0] finish_damping(
+        input logic signed [63:0] previous_product,tail_product,
         input logic signed [31:0] previous_value,tail_value,input logic rate44);
-        logic signed [63:0] previous_product,tail_product,weighted;
+        logic signed [63:0] weighted;
         begin
             if(rate44)begin
-                previous_product=previous_value*RUNTIME_ROOM_ALPHA_44;
-                tail_product=tail_value*RUNTIME_ROOM_INPUT_44;
                 weighted=previous_product+tail_product;
-                rate_damping=sat31(weighted>>>31);
-            end else rate_damping=sat31(($signed({{32{previous_value[31]}},previous_value})+
+                finish_damping=sat31(weighted>>>31);
+            end else finish_damping=sat31(($signed({{32{previous_value[31]}},previous_value})+
                 $signed({{32{tail_value[31]}},tail_value}))>>>1);
         end
     endfunction
@@ -52,6 +51,10 @@ module workstation_runtime_spatial_reverb (
     wire [3:0] line_valid;
     wire early_valid;
     logic signed [31:0] line_write[0:3],tail[0:3],damping[0:3];
+    logic signed [63:0] damping_previous_product[0:3],damping_tail_product[0:3];
+    logic [3:0] line_history_valid;
+    logic early_history_valid;
+    logic [15:0] early_tap_gain;
     logic [10:0] early_pointer,early_address;
     wire [31:0] early_data;
     logic [11:0] frames; // saturates once every delay line is initialized
@@ -119,19 +122,35 @@ module workstation_runtime_spatial_reverb (
     // accepted only in state 0; PANIC may finish a speculative scratch write
     // on its cancellation edge, while the control block immediately returns
     // to state 0, suppresses output and clears the delay history. Every next
-    // frame overwrites sums (3), h/tail mix (4), products/loop gain (5),
-    // feedback (6), line write (7), wet products (8) and mix (9) before use.
+    // frame overwrites history predicates (0/3), damping products (2),
+    // damping (3), sums (4), h/tail mix (5), loop gain (6), feedback (3/tap1),
+    // line write (7), wet products (8) and mix (9) before use. The extra
+    // registers fit inside existing early-RAM wait cycles: no frame latency
+    // or RAM access schedule changes, and every signed product keeps 64 bits.
     // Keep this wide datapath's enables local to its registered state.
     always_ff @(posedge clk_i or negedge rst_ni)begin
         if(!rst_ni)begin
             early_product<=0;wet_product_l<=0;wet_product_r<=0;mixed_l<=0;mixed_r<=0;
+            line_history_valid<=0;early_history_valid<=0;early_tap_gain<=0;
             sum01<=0;diff01<=0;sum23<=0;diff23<=0;
             tail_sum01<=0;tail_diff01<=0;tail_sum23<=0;tail_diff23<=0;tail_mix_l<=0;tail_mix_r<=0;
             for(integer lane=0;lane<4;lane=lane+1)begin
                 line_write[lane]<=0;h[lane]<=0;loop_gain[lane]<=0;feedback[lane]<=0;
+                damping_previous_product[lane]<=0;damping_tail_product[lane]<=0;
             end
         end else case(state)
-            3:if(tap==0)begin
+            0:if(valid_i && ready_o)for(integer lane=0;lane<4;lane=lane+1)
+                line_history_valid[lane]<=frames>=12'(delay_length(lane));
+            2:if(&line_valid)for(integer lane=0;lane<4;lane=lane+1)begin
+                damping_previous_product[lane]<=damping[lane]*RUNTIME_ROOM_ALPHA_44;
+                damping_tail_product[lane]<=$signed(32'(line_history_valid[lane] ? line_data[lane] : 32'd0))*RUNTIME_ROOM_INPUT_44;
+            end
+            3:begin
+                early_history_valid<=frames>=12'(runtime_room_early_delay(applied_rate_44100_o,tap));
+                early_tap_gain<=runtime_room_early_gain(applied_rate_44100_o,tap);
+                if(tap==1)for(integer lane=0;lane<4;lane=lane+1)feedback[lane]<=(mono>>>3)+loop_gain[lane];
+            end
+            4:if(tap==0)begin
                 tail_sum01<=$signed({tail[0][31],tail[0]})+$signed({tail[1][31],tail[1]});
                 tail_diff01<=$signed({tail[0][31],tail[0]})-$signed({tail[1][31],tail[1]});
                 tail_sum23<=$signed({tail[2][31],tail[2]})+$signed({tail[3][31],tail[3]});
@@ -141,24 +160,23 @@ module workstation_runtime_spatial_reverb (
                 sum23<=$signed({damping[2][31],damping[2]})+$signed({damping[3][31],damping[3]});
                 diff23<=$signed({damping[2][31],damping[2]})-$signed({damping[3][31],damping[3]});
             end
-            4:if(tap==0)begin
-                tail_mix_l<=32'((ts0-ts2)>>>2);tail_mix_r<=32'((ts1+ts3)>>>2);
-                h[0]<=(p0+p2)>>>1;h[1]<=(p1+p3)>>>1;
-                h[2]<=(p0-p2)>>>1;h[3]<=(p1-p3)>>>1;
-            end
             5:if(early_valid)begin
-                if(tap==0)for(integer lane=0;lane<4;lane=lane+1)loop_gain[lane]<=h[lane]-(h[lane]>>>3);
-                early_product<=(frames>=runtime_room_early_delay(applied_rate_44100_o,tap) ? $signed(early_data) : 32'sd0)*$signed({1'b0,runtime_room_early_gain(applied_rate_44100_o,tap)});
+                if(tap==0)begin
+                    tail_mix_l<=32'((ts0-ts2)>>>2);tail_mix_r<=32'((ts1+ts3)>>>2);
+                    h[0]<=(p0+p2)>>>1;h[1]<=(p1+p3)>>>1;
+                    h[2]<=(p0-p2)>>>1;h[3]<=(p1-p3)>>>1;
+                end
+                early_product<=$signed(32'(early_history_valid ? early_data : 32'd0))*$signed({1'b0,early_tap_gain});
             end
-            6:if(tap==0)for(integer lane=0;lane<4;lane=lane+1)feedback[lane]<=(mono>>>3)+loop_gain[lane];
+            6:if(tap==0)for(integer lane=0;lane<4;lane=lane+1)loop_gain[lane]<=h[lane]-(h[lane]>>>3);
             7:for(integer lane=0;lane<4;lane=lane+1)line_write[lane]<=sat31(feedback[lane]);
             8:begin
                 wet_product_l<=$signed(wet_l)*$signed({1'b0,gain});
                 wet_product_r<=$signed(wet_r)*$signed({1'b0,gain});
             end
             9:begin
-                mixed_l<=$signed({{32{dry_l[31]}},dry_l})+($signed(wet_product_l)>>>15);
-                mixed_r<=$signed({{32{dry_r[31]}},dry_r})+($signed(wet_product_r)>>>15);
+                mixed_l<=$signed({{32{dry_l[31]}},dry_l})+($signed({{15{wet_product_l[48]}},wet_product_l})>>>15);
+                mixed_r<=$signed({{32{dry_r[31]}},dry_r})+($signed({{15{wet_product_r[48]}},wet_product_r})>>>15);
             end
             default:begin end
         endcase
@@ -187,15 +205,16 @@ module workstation_runtime_spatial_reverb (
                 1:state<=2;
                 2:if(&line_valid)begin
                     for(i=0;i<4;i=i+1) begin
-                        tail[i]<=frames>=delay_length(i) ? $signed(line_data[i]) : 32'sd0;
-                        damping[i]<=rate_damping(damping[i],
-                            frames>=delay_length(i) ? $signed(line_data[i]) : 32'sd0,applied_rate_44100_o);
+                        tail[i]<=line_history_valid[i] ? $signed(line_data[i]) : 32'sd0;
                     end
                     state<=3;
                 end
                 // Hide the feedback pipeline behind the early-reflection RAM
                 // reads. Every operation keeps the original signed precision.
                 3:begin
+                    if(tap==0)for(i=0;i<4;i=i+1)
+                        damping[i]<=finish_damping(damping_previous_product[i],damping_tail_product[i],
+                            damping[i],tail[i],applied_rate_44100_o);
                     early_address<=early_pointer-11'(runtime_room_early_delay(applied_rate_44100_o,tap));state<=4;
                 end
                 4:begin
@@ -205,8 +224,8 @@ module workstation_runtime_spatial_reverb (
                     state<=6;
                 end
                 6:begin
-                    if(tap[0]) early_r<=early_r+($signed(early_product)>>>15);
-                    else early_l<=early_l+($signed(early_product)>>>15);
+                    if(tap[0]) early_r<=early_r+($signed({{15{early_product[48]}},early_product})>>>15);
+                    else early_l<=early_l+($signed({{15{early_product[48]}},early_product})>>>15);
                     if(tap==11) state<=7;else begin tap<=tap+1'b1;state<=3;end
                 end
                 7:begin
@@ -225,7 +244,7 @@ module workstation_runtime_spatial_reverb (
                     left_o<=sat31(mixed_l);right_o<=sat31(mixed_r);valid_o<=1;
                     clip_o<=internal_clip || mixed_l>64'sd2147483647 || mixed_l< -64'sd2147483648 ||
                                             mixed_r>64'sd2147483647 || mixed_r< -64'sd2147483648;
-                    for(i=0;i<4;i=i+1) pointer[i]<=pointer[i]==delay_length(i)-1 ? 12'd0 : pointer[i]+1'b1;
+                    for(i=0;i<4;i=i+1) pointer[i]<=pointer[i]==12'(delay_length(i)-1) ? 12'd0 : pointer[i]+1'b1;
                     early_pointer<=early_pointer+1'b1;
                     if(frames<12'd2131)frames<=frames+1'b1;
                     state<=0;

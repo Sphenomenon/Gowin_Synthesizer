@@ -265,6 +265,11 @@ def audit_worker_feedback(netlist, clocks):
     dest = [p for p in regs if p.removeprefix(prefix).startswith(dest_stems)]
     require(set(regs) == {*source, *dest, *groups['held_data'].values(), *groups['destination_data'].values()},
             'unknown W feedback register or unexpected destination_valid consumer')
+    for stem in ('source_release', 'destination_release'):
+        actual = [p for p in regs if p.startswith(prefix + stem + '_')]
+        require(len(actual) == 3 and all(sum(bool(re.fullmatch(
+            re.escape(prefix + stem + '_' + str(bit)) + r'_s\d+', p)) for p in actual) == 1
+            for bit in range(3)), 'W feedback reset release inventory changed: ' + stem)
     for paths, clock in (([*source, *groups['held_data'].values()], source_clock),
                          ([*dest, *groups['destination_data'].values()], destination_clock)):
         require(all(regs[p]['kind'] == 'DFFCE' and netlist.pin(p, 'CLK') == clock for p in paths),
@@ -295,28 +300,46 @@ def audit_worker_feedback(netlist, clocks):
 
 
 def audit_constraint_retirement(sdc, evidence, role, netlist):
-    from tools.workstation_demo_policy import verify_constraints
+    from tools.workstation_demo_policy import verify_constraints, W_SCOPE_BINDINGS
     original = verify_constraints(sdc, evidence, role)
     universes = dict(get_regs=sorted(p for p, c in netlist.cells.items() if c['kind'].startswith('DFF')),
         get_pins=sorted(p + '/' + pin for p, c in netlist.cells.items() for pin in c['ports']),
         get_ports=sorted(netlist.directions[TOP]),
         get_clocks=sorted(set(re.findall(r'^create_(?:generated_)?clock -name (\S+)', original, re.M))))
     query = re.compile(r'\[(get_pins|get_regs|get_ports|get_clocks)\s+\{([^{}]+)\}\]')
-    absent = {}
+    absent, rebound = {}, {}
+    def matches(kind, member):
+        prefix = re.split(r'[*?\[]', member, maxsplit=1)[0]
+        values = universes[kind]
+        candidates = values[bisect_left(values, prefix):bisect_left(values, prefix + '\U0010ffff')]
+        pattern = re.compile(fnmatch.translate(member))
+        return [p for p in candidates if p == member or pattern.fullmatch(p)]
     for change in evidence['changes']:
         for kind, body in query.findall(change['original']):
             for member in body.split():
                 if member not in change['removed_selectors']:
                     continue
-                prefix = re.split(r'[*?\[]', member, maxsplit=1)[0]
-                values = universes[kind]
-                candidates = values[bisect_left(values, prefix):bisect_left(values, prefix + '\U0010ffff')]
-                pattern = re.compile(fnmatch.translate(member))
-                matches = [p for p in candidates if p == member or pattern.fullmatch(p)]
-                require(not matches, 'retired SDC selector still has live endpoints: ' + member)
-                absent[kind + ' ' + member] = dict(matches=0, original_line_index=change['line_index'])
+                require(not matches(kind, member), 'retired SDC selector still has live endpoints: ' + member)
+                actual_member = member
+                if role == 'W':
+                    for old, new in W_SCOPE_BINDINGS:
+                        if member.startswith(old):
+                            actual_member = new + member[len(old):]
+                            break
+                require(not matches(kind, actual_member),
+                        'retired SDC selector still has live rebound endpoints: ' + actual_member)
+                absent[kind + ' ' + member] = dict(matches=0,
+                    canonical_selector=actual_member, original_line_index=change['line_index'])
+        for binding in change.get('rebound_selectors', []):
+            kind, old, new = binding['query'], binding['original'], binding['selected']
+            require(not matches(kind, old), 'rebound SDC source selector still has live endpoints: ' + old)
+            actual = matches(kind, new)
+            require(bool(actual), 'rebound SDC replacement has no live endpoints: ' + new)
+            rebound[kind + ' ' + old] = dict(selected=new, matched=len(actual),
+                endpoints_sha256=digest(actual), original_line_index=change['line_index'])
     return dict(policy=evidence['policy'], role=role, input_sha256=evidence['input_sha256'],
                 output_sha256=evidence['output_sha256'], retired_selectors=absent,
+                rebound_selectors=rebound, every_rebound_selector_verified=True,
                 every_retired_selector_proven_absent=True, clocks_or_live_exceptions_relaxed=False)
 
 
