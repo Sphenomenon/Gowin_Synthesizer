@@ -36,6 +36,14 @@ frames at the existing format-1 48 kHz. No DDR allocation, external wire opcode,
 
 The unchanged S1a slot transports one already-validated 16-byte command and a
 64-byte result. Admission, CLAIM, application and publication are separate.
+The payload staging and immutable result each use a 16-by-32 SDP RAM.
+S1a COMPLETE holds the actual APB command until its bounded local copy ends;
+result-word reads use the same held-command handshake for the SDP latency.
+The parser consumes completion metadata at the original RECORD_WAIT edge,
+then reads retained result bytes while building the reply. Its serial FSM
+cannot admit another business request during that build. The old staging,
+result and parser 512-bit payload registers are removed; byte order, padding,
+MMIO addresses, wire CRC and replay cache contents retain their existing ABI.
 START PENDING requires actual raw START acceptance; its task succeeds only at
 an actual complete first frame. STOP waits for READY and the native committed
 prefix; zero-frame START fails after terminal sealing. Task retention uses

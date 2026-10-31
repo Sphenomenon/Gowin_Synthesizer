@@ -32,7 +32,11 @@ module workstation_business_mailbox #(
     output wire [7:0] completion_phase_o,completion_status_o,completion_reason_o,
     output wire [6:0] completion_length_o,
     output wire [31:0] completion_operation_o,
-    output wire [511:0] completion_payload_o
+    input wire completion_read_valid_i,
+    output wire completion_read_ready_o,
+    input wire [5:0] completion_read_address_i,
+    output wire completion_data_valid_o,
+    output wire [7:0] completion_data_o
 );
     localparam [1:0] EMPTY=0,QUEUED=1,CLAIMED=2,RESULT=3;
     localparam [7:0] PENDING=1,APPLIED=2,FAILED=3,REJECTED=4,UNCERTAIN=5;
@@ -65,7 +69,11 @@ module workstation_business_mailbox #(
     reg [31:0] key_ticket,key_owner,key_session;
     reg [63:0] key_boot;
     reg [31:0] staged_meta,staged_operation;
-    reg [511:0] staged_payload,result_payload;
+    reg [15:0] staged_written;
+    reg copy_busy,copy_done,copy_issue,copy_data_valid;
+    reg [3:0] copy_index,copy_word;
+    reg result_read_pending,byte_read_pending;
+    reg [1:0] byte_lane;
     reg [7:0] result_phase,result_status,result_reason;
     reg [6:0] result_length;
     reg [31:0] result_operation,last_ticket,last_owner,last_session,last_meta,last_operation;
@@ -82,11 +90,46 @@ module workstation_business_mailbox #(
     wire staged_valid=staged_meta[31:24]==0 && staged_meta[23:16]<=64 &&
         staged_meta[7:0]>=PENDING && staged_meta[7:0]<=FAILED &&
         (staged_meta[7:0]!=PENDING || staged_operation!=0);
-    wire bus_write=command_valid_i && command_write_i && !response_error_o;
+    wire bus_write=rst_ni && command_valid_i && command_ready_o && command_write_i && !response_error_o;
     wire owner_available=owner_reset_ni && good_boot && !owner_event && !owner_exhausted;
     wire local_fence_pending=state!=EMPTY && !(state==RESULT && result_reason!=0) && slot_fence;
     wire closing=command_valid_i && command_write_i && command_address_i==COMMAND && command_data_i==CLOSE;
-    assign command_ready_o=1'b1;
+    wire payload_address=command_address_i>=RESULT_DATA0 && command_address_i<=RESULT_DATA15 &&
+        command_address_i[1:0]==0;
+    wire payload_read=command_valid_i && !command_write_i && payload_address;
+    wire copy_abort=owner_event || !owner_reset_ni || !good_boot || local_fence_pending;
+    wire copy_start=rst_ni && command_valid_i && command_write_i &&
+        command_address_i==COMMAND && command_data_i==COMPLETE && !response_error_o &&
+        !copy_busy && !copy_done;
+    // The existing APB CDC holds its local command until this handshake. No
+    // command is applied on the first (not-ready) COMPLETE or RAM-read cycle.
+    assign command_ready_o=response_error_o ||
+        (copy_busy ? copy_done : copy_start ? 1'b0 : payload_read ? result_read_pending : 1'b1);
+    wire result_read_start=rst_ni && payload_read && !result_read_pending && !copy_busy;
+    assign completion_read_ready_o=rst_ni && !copy_busy && !copy_start && !result_read_start;
+    wire byte_read_start=completion_read_valid_i && completion_read_ready_o;
+    wire [3:0] payload_word=command_address_i[7:2]-6'd39;
+    wire [31:0] staged_word,result_word;
+    wire staged_read=copy_busy && !copy_done && copy_issue && !copy_abort;
+    wire result_write=copy_busy && !copy_done && copy_data_valid && !copy_abort && rst_ni;
+    function automatic [31:0] padded_word(input [31:0] value,input [3:0] at,input [6:0] length);
+        integer lane;
+        begin
+            for(lane=0;lane<4;lane=lane+1)
+                padded_word[lane*8+:8]={1'b0,at,lane[1:0]}<length ? value[lane*8+:8] : 8'd0;
+        end
+    endfunction
+    workstation_sdp #(.DATA_WIDTH(32),.ADDR_WIDTH(4)) staging_payload(
+        .write_clk_i(clk_i),.write_enable_i(bus_write && payload_address),.write_addr_i(payload_word),
+        .write_data_i(command_data_i),.read_clk_i(clk_i),.read_enable_i(staged_read),
+        .read_addr_i(copy_index),.read_data_o(staged_word));
+    workstation_sdp #(.DATA_WIDTH(32),.ADDR_WIDTH(4)) completed_payload(
+        .write_clk_i(clk_i),.write_enable_i(result_write),.write_addr_i(copy_word),
+        .write_data_i(padded_word(staged_written[copy_word] ? staged_word : 32'd0,copy_word,staged_meta[22:16])),
+        .read_clk_i(clk_i),.read_enable_i(result_read_start || byte_read_start),
+        .read_addr_i(result_read_start ? payload_word : completion_read_address_i[5:2]),.read_data_o(result_word));
+    assign completion_data_valid_o=byte_read_pending && rst_ni;
+    assign completion_data_o=result_length==0 ? 8'd0 : result_word[byte_lane*8+:8];
     assign request_ready_o=rst_ni && owner_available && owner_open && !ticket_exhausted &&
         control_open_i && session_generation_i!=0 && !fence_i && !cancel_i && !closing && state==EMPTY;
     // A changing session cannot consume a previous business result. The next
@@ -95,14 +138,14 @@ module workstation_business_mailbox #(
     assign completion_ticket_o=slot_ticket,completion_owner_o=slot_owner,completion_session_o=slot_session;
     assign completion_boot_o=slot_boot,completion_phase_o=result_phase,completion_status_o=result_status;
     assign completion_reason_o=result_reason,completion_length_o=result_length;
-    assign completion_operation_o=result_operation,completion_payload_o=result_payload;
+    assign completion_operation_o=result_operation;
     function automatic [31:0] sat(input [31:0] value);
         sat=&value ? value : value+1'b1;
     endfunction
     task automatic local_result(input [7:0] reason);
         begin
             state<=RESULT;result_phase<=state==QUEUED ? REJECTED : UNCERTAIN;
-            result_status<=0;result_length<=0;result_reason<=reason;result_payload<=0;
+            result_status<=0;result_length<=0;result_reason<=reason;
             result_operation<=state==RESULT ? result_operation : 0;
             last_ticket<=slot_ticket;last_owner<=slot_owner;last_session<=slot_session;last_boot<=slot_boot;
             last_meta<={reason,8'd0,8'd0,(state==QUEUED ? REJECTED : UNCERTAIN)};
@@ -148,34 +191,53 @@ module workstation_business_mailbox #(
             ABANDONED:response_data_o=abandoned_count;LAST_REASON:response_data_o={24'd0,last_reason};
             RESULT_META:response_data_o={result_reason,1'b0,result_length,result_status,result_phase};
             RESULT_OPERATION:response_data_o=result_operation;
-            // Constant word selects preserve the combinational ABI without
-            // synthesizing a wide address-subtract/shift barrel selector.
+            // Request words remain direct register selects; result words use
+            // the held-command SDP read below with the same 32-bit address ABI.
             REQUEST_DATA0:response_data_o=slot_payload[0+:32];
             REQUEST_DATA0+12'd4:response_data_o=slot_payload[32+:32];
             REQUEST_DATA0+12'd8:response_data_o=slot_payload[64+:32];
             REQUEST_DATA0+12'd12:response_data_o=slot_payload[96+:32];
-            RESULT_DATA0:response_data_o=result_payload[0+:32];
-            RESULT_DATA0+12'd4:response_data_o=result_payload[32+:32];
-            RESULT_DATA0+12'd8:response_data_o=result_payload[64+:32];
-            RESULT_DATA0+12'd12:response_data_o=result_payload[96+:32];
-            RESULT_DATA0+12'd16:response_data_o=result_payload[128+:32];
-            RESULT_DATA0+12'd20:response_data_o=result_payload[160+:32];
-            RESULT_DATA0+12'd24:response_data_o=result_payload[192+:32];
-            RESULT_DATA0+12'd28:response_data_o=result_payload[224+:32];
-            RESULT_DATA0+12'd32:response_data_o=result_payload[256+:32];
-            RESULT_DATA0+12'd36:response_data_o=result_payload[288+:32];
-            RESULT_DATA0+12'd40:response_data_o=result_payload[320+:32];
-            RESULT_DATA0+12'd44:response_data_o=result_payload[352+:32];
-            RESULT_DATA0+12'd48:response_data_o=result_payload[384+:32];
-            RESULT_DATA0+12'd52:response_data_o=result_payload[416+:32];
-            RESULT_DATA0+12'd56:response_data_o=result_payload[448+:32];
-            RESULT_DATA0+12'd60:response_data_o=result_payload[480+:32];
+            RESULT_DATA0,RESULT_DATA0+12'd4,RESULT_DATA0+12'd8,RESULT_DATA0+12'd12,
+            RESULT_DATA0+12'd16,RESULT_DATA0+12'd20,RESULT_DATA0+12'd24,RESULT_DATA0+12'd28,
+            RESULT_DATA0+12'd32,RESULT_DATA0+12'd36,RESULT_DATA0+12'd40,RESULT_DATA0+12'd44,
+            RESULT_DATA0+12'd48,RESULT_DATA0+12'd52,RESULT_DATA0+12'd56,RESULT_DATA0+12'd60:
+                response_data_o=result_length==0 ? 32'd0 : result_word;
             LAST_TICKET:response_data_o=last_ticket;LAST_OWNER:response_data_o=last_owner;
             LAST_SESSION:response_data_o=last_session;LAST_BOOT_LOW:response_data_o=last_boot[31:0];
             LAST_BOOT_HIGH:response_data_o=last_boot[63:32];LAST_META:response_data_o=last_meta;
             LAST_OPERATION:response_data_o=last_operation;
             default:response_error_o=1;
         endcase
+    end
+    // One-cycle SDP address/read latency. Staging is never swapped with the
+    // result bank: unwritten words keep their previous staging value. Valid
+    // bits supply reset zeros without resetting either physical RAM.
+    always @(posedge clk_i or negedge rst_ni)begin
+        if(!rst_ni)begin
+            copy_busy<=0;copy_done<=0;copy_issue<=0;copy_data_valid<=0;
+            copy_index<=0;copy_word<=0;result_read_pending<=0;byte_read_pending<=0;byte_lane<=0;
+        end else begin
+            byte_read_pending<=byte_read_start;
+            if(byte_read_start)byte_lane<=completion_read_address_i[1:0];
+            if(result_read_start)result_read_pending<=1;
+            else if(!command_valid_i || command_ready_o)result_read_pending<=0;
+            if(copy_abort)begin
+                copy_busy<=0;copy_done<=0;copy_issue<=0;copy_data_valid<=0;
+            end else if(copy_start)begin
+                copy_busy<=1;copy_done<=0;copy_issue<=1;copy_data_valid<=0;copy_index<=0;
+            end else if(copy_busy)begin
+                copy_data_valid<=staged_read;
+                if(staged_read)begin
+                    copy_word<=copy_index;
+                    if(copy_index==15)copy_issue<=0;
+                    else copy_index<=copy_index+1'b1;
+                end
+                if(result_write && copy_word==15)copy_done<=1;
+                if(bus_write && command_address_i==COMMAND && command_data_i==COMPLETE)begin
+                    copy_busy<=0;copy_done<=0;copy_data_valid<=0;
+                end
+            end
+        end
     end
     integer i;
     always @(posedge clk_i or negedge rst_ni)begin
@@ -185,8 +247,8 @@ module workstation_business_mailbox #(
             slot_ticket<=0;slot_owner<=0;slot_session<=0;slot_boot<=0;slot_nonce<=0;
             slot_request_id<=0;slot_opcode<=0;slot_length<=0;slot_payload<=0;age<=0;
             admitted_count<=0;rejected_count<=0;timeout_count<=0;stale_count<=0;abandoned_count<=0;last_reason<=0;
-            key_ticket<=0;key_owner<=0;key_session<=0;key_boot<=0;staged_meta<=0;staged_operation<=0;staged_payload<=0;
-            result_phase<=0;result_status<=0;result_reason<=0;result_length<=0;result_operation<=0;result_payload<=0;
+            key_ticket<=0;key_owner<=0;key_session<=0;key_boot<=0;staged_meta<=0;staged_operation<=0;staged_written<=0;
+            result_phase<=0;result_status<=0;result_reason<=0;result_length<=0;result_operation<=0;
             last_ticket<=0;last_owner<=0;last_session<=0;last_boot<=0;last_meta<=0;last_operation<=0;
             request_admitted_o<=0;request_rejected_o<=0;request_reject_reason_o<=0;
         end else begin
@@ -214,7 +276,7 @@ module workstation_business_mailbox #(
             end
             if(owner_event || !owner_reset_ni || !good_boot)begin
                 owner_open<=0;key_ticket<=0;key_owner<=0;key_session<=0;key_boot<=0;
-                staged_meta<=0;staged_operation<=0;staged_payload<=0;
+                staged_meta<=0;staged_operation<=0;staged_written<=0;
                 if(owner_event)begin
                     if(&owner_generation)owner_exhausted<=1;else owner_generation<=owner_generation+1'b1;
                 end
@@ -236,7 +298,6 @@ module workstation_business_mailbox #(
                         COMPLETE:begin
                             state<=RESULT;result_phase<=staged_meta[7:0];result_status<=staged_meta[15:8];
                             result_length<=staged_meta[22:16];result_reason<=0;result_operation<=staged_operation;
-                            for(i=0;i<64;i=i+1)result_payload[i*8+:8]<=i<staged_meta[23:16] ? staged_payload[i*8+:8] : 8'd0;
                             last_ticket<=slot_ticket;last_owner<=slot_owner;last_session<=slot_session;last_boot<=slot_boot;
                             last_meta<={8'd0,staged_meta[23:0]};last_operation<=staged_operation;
                         end
@@ -247,23 +308,7 @@ module workstation_business_mailbox #(
                         end
                         default:begin end
                     endcase
-                    RESULT_DATA0:staged_payload[0+:32]<=command_data_i;
-                    RESULT_DATA0+12'd4:staged_payload[32+:32]<=command_data_i;
-                    RESULT_DATA0+12'd8:staged_payload[64+:32]<=command_data_i;
-                    RESULT_DATA0+12'd12:staged_payload[96+:32]<=command_data_i;
-                    RESULT_DATA0+12'd16:staged_payload[128+:32]<=command_data_i;
-                    RESULT_DATA0+12'd20:staged_payload[160+:32]<=command_data_i;
-                    RESULT_DATA0+12'd24:staged_payload[192+:32]<=command_data_i;
-                    RESULT_DATA0+12'd28:staged_payload[224+:32]<=command_data_i;
-                    RESULT_DATA0+12'd32:staged_payload[256+:32]<=command_data_i;
-                    RESULT_DATA0+12'd36:staged_payload[288+:32]<=command_data_i;
-                    RESULT_DATA0+12'd40:staged_payload[320+:32]<=command_data_i;
-                    RESULT_DATA0+12'd44:staged_payload[352+:32]<=command_data_i;
-                    RESULT_DATA0+12'd48:staged_payload[384+:32]<=command_data_i;
-                    RESULT_DATA0+12'd52:staged_payload[416+:32]<=command_data_i;
-                    RESULT_DATA0+12'd56:staged_payload[448+:32]<=command_data_i;
-                    RESULT_DATA0+12'd60:staged_payload[480+:32]<=command_data_i;
-                    default:begin end
+                    default:if(payload_address)staged_written[payload_word]<=1;
                 endcase
             end
             if(command_valid_i && command_write_i && command_address_i==COMMAND && response_error_o &&

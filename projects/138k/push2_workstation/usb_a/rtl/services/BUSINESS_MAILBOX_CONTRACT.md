@@ -20,7 +20,11 @@ observer reset 后 OPEN 还要求真正的业务 owner 已恢复／核对后台�
 
 本地 reason 为 cancel=1、owner reset=2、session=3、timeout=4、close=5、boot=6；这些不是 BLE 错误码。适配器须区分 reason!=0 的本地终结与真实业务响应，在失效旧会话中只排空旧观察，不能把它编成“任务已取消”。重新连接后按既有协议查询／恢复实际任务。timeout 从进入 QUEUED 起计算，默认 5,000,000 控制周期；不得阻塞音频。RESULT 保持到 consumer 消费，满槽不会分配第二条请求，也不自动覆盖未消费完成。
 
-优先级为 common reset；boot／owner reset；session／cancel／timeout fence；完成消费；CPU 写操作。fence 胜过同拍 CLAIM／COMPLETE，写返回错误。关闭与新 offer 同拍时不 admission。CPU reset 低期间允许 consumer 排空已有本地终结。请求和结果总线访问从不等待 CPU、无线、DDR 或后台任务，ready 恒为 1。错误写无状态动作；合法写只在其单一接受边沿生效。
+优先级为 common reset；boot／owner reset；session／cancel／timeout fence；完成消费；CPU 写操作。fence 胜过同拍 CLAIM／COMPLETE，写返回错误。关闭与新 offer 同拍时不 admission。CPU reset 低期间允许 consumer 排空已有本地终结。总线访问只等待本地固定 RAM 流水，不等待 CPU、无线、DDR 或后台任务。错误写无状态动作；合法写只在其单一接受边沿公开生效。
+
+staging 和完成 payload 各使用一个 16×32 SDP RAM。合法 COMPLETE 先将 16 字 staging 复制到独立完成 RAM，并按 length 填零尾部；从首个合法、保持的 COMPLETE 采样沿到最终接受沿为 18 个控制周期，期间 command ready 为零，元数据和 RESULT 状态尚未发布。调用方须保持 command valid／地址／数据直到 ready。复制期间若 fence／reset／timeout 到达，停止私有复制，原 COMPLETE 返回错误，只保留既有本地终结语义；部分复制的物理 RAM 不得作为有效 payload 公开。common reset 中止在途访问，集成 CDC 同样复位。
+
+0x09c..0x0d8 的 32-bit 读在本地 SDP 地址采样后返回 ready，其他合法访问仍立即 ready。内部 consumer 通过 byte 地址／ready／下一周期 data valid 读取同一完成 RAM；新 MMIO 读优先，byte 请求可在 MMIO 应答周期进入，复制期间暂停两者。完成消费后 payload 和元数据保留至下一次完成、本地终结或 common reset；EMPTY 中的 owner reset 仍只清 staging。parser 在构建一条回复期间不提供下一条请求，因此可消费槽后从保留完成 RAM 逐字节构建原有 wire 回复，无需第二份 512-bit 快照。
 
 ## 相对寄存器 ABI
 
@@ -41,7 +45,7 @@ observer reset 后 OPEN 还要求真正的业务 owner 已恢复／核对后台�
 | 0x0dc | COMMAND：OPEN=1、CLAIM=2、COMPLETE=3、ABANDON=4、CLOSE=5，只写 |
 | 0x0e0..0x0f8 | 最近发布键五字、完成 meta、operation_id；消费后保留，仅是观察事实 |
 
-CLAIM／COMPLETE／ABANDON 必须匹配完整槽键，COMPLETE 仅限 CLAIMED。OPEN／CLOSE 要求 ticket=0 的当前完整上下文。写 staging 不授权业务执行。所有 staging 值都要由调用者完整重新填写，不能把上一次失败调用的部分写入当成新描述符。
+CLAIM／COMPLETE／ABANDON 必须匹配完整槽键，COMPLETE 仅限 CLAIMED。OPEN／CLOSE 要求 ticket=0 的当前完整上下文。写 staging 不授权业务执行。硬件保持未重写的 staging 字，短完成的尾部填零不修改 staging；common／owner reset 或 boot 变化使未写 staging 字读作零。C 调用者仍须完整重新填写描述符，不能把上一次失败调用的部分写入当成新描述符。
 
 ## C 调用与验证边界
 

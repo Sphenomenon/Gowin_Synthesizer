@@ -74,7 +74,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
 );
     localparam IDLE=0,CHECK=1,DUP=2,ORDER=3,COPY=4,VALIDATE=5,
         SESSION=6,LOOKUP=7,COMPARE_ADDR=8,COMPARE=9,DISPATCH=10,
-        STORE_REQ=11,BUILD=12,CRC=13,REPLAY_ADDR=14,REPLAY=15,DONE=16,RECORD_WAIT=17,BUILD_FETCH=18,REPLAY_RECORD_WAIT=19,STORE_META=20,META_ADDR=21,META_READ=22;
+        STORE_REQ=11,BUILD=12,CRC=13,REPLAY_ADDR=14,REPLAY=15,DONE=16,RECORD_WAIT=17,BUILD_FETCH=18,REPLAY_RECORD_WAIT=19,STORE_META=20,META_ADDR=21,META_READ=22,BUILD_DATA=23;
     reg [4:0] state;
     reg [7:0] frag[0:19], previous[0:19], header[0:35];
     (* syn_ramstyle="distributed_ram" *) reg [7:0] reply[0:83];
@@ -192,14 +192,16 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [127:0] recording_payload={header[31],header[30],header[29],header[28],header[27],header[26],header[25],header[24],
         header[23],header[22],header[21],header[20],header[19],header[18],header[17],header[16]};
     reg cpu_offer,cpu_uncertain_fence;
-    reg [511:0] cpu_reply_payload;
     reg [31:0] business_session;
     reg business_session_q;
     wire cpu_admitted,cpu_rejected,cpu_request_ready;
     wire cpu_completion_valid;
     wire [7:0] cpu_completion_status,cpu_completion_reason,cpu_completion_phase;
     wire [6:0] cpu_completion_length;
-    wire [511:0] cpu_completion_payload;
+    wire cpu_read_ready,cpu_data_valid;
+    wire [7:0] cpu_data_byte;
+    wire cpu_read_valid=state==BUILD_FETCH && !reply_status[7] && header[0]!=1 && header[0]!=2 && index>=16;
+    wire [5:0] cpu_read_address=index-7'd16;
     wire cpu_consume=(state==RECORD_WAIT || state==REPLAY_RECORD_WAIT) && cpu_completion_valid;
     wire [31:0] cpu_key_ticket,cpu_key_owner,cpu_key_session;wire [63:0] cpu_key_boot;
     wire mb_ready,mb_error,data_ready,data_error,data_observer_fault;
@@ -220,7 +222,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire data_source_good,data_mutation_hold;
     assign recording_done=cpu_completion_valid;
     assign recording_result=cpu_completion_status;
-    assign recording_byte=cpu_reply_payload[(index-7'd16)*8+:8];
+    assign recording_byte=cpu_data_byte;
     assign recording_length=cpu_completion_length;
     always @(posedge clk or negedge resetn)begin
         if(!resetn)begin business_session<=0;business_session_q<=0;end
@@ -246,7 +248,10 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .completion_consume_i(cpu_consume),.completion_ticket_o(cpu_key_ticket),.completion_owner_o(cpu_key_owner),
         .completion_session_o(cpu_key_session),.completion_boot_o(cpu_key_boot),.completion_phase_o(cpu_completion_phase),
         .completion_status_o(cpu_completion_status),.completion_reason_o(cpu_completion_reason),
-        .completion_length_o(cpu_completion_length),.completion_operation_o(),.completion_payload_o(cpu_completion_payload));
+        .completion_length_o(cpu_completion_length),.completion_operation_o(),
+        .completion_read_valid_i(cpu_read_valid),.completion_read_ready_o(cpu_read_ready),
+        .completion_read_address_i(cpu_read_address),.completion_data_valid_o(cpu_data_valid),
+        .completion_data_o(cpu_data_byte));
     workstation_ble_record_data_service cpu_data(
         .clk_i(clk),.rst_ni(resetn),.owner_reset_ni(business_owner_reset_ni),
         .command_valid_i(business_command_valid_i && data_select),.command_write_i(business_command_write_i),
@@ -398,7 +403,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
             index<=0; frag_size<=0; prev_size<=0; crc_work<=32'hffffffff;
             reply_status<=0; reply_detail<=0; accept_request<=0;
             snapshot_counter<=0; snapshot_time<=0; snapshot_number<=0;
-            recording_start<=0;recording_replay<=0;current_reply_byte<=0;cpu_offer<=0;cpu_reply_payload<=0;cpu_uncertain_fence<=0;
+            recording_start<=0;recording_replay<=0;current_reply_byte<=0;cpu_offer<=0;cpu_uncertain_fence<=0;
             snapshot_record_state<=0;snapshot_recording_id<=0;snapshot_recorded_frames<=0;
             summary<=0; accepted_count<=0; crc_reject_count<=0;
         end else begin
@@ -523,7 +528,6 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                             error_reply(8'h82,0);
                         end else if(cpu_completion_status[7])error_reply(cpu_completion_status,0);
                         else begin
-                            cpu_reply_payload<=cpu_completion_payload;
                             high_water<=request_id;accepted_count<=accepted_count+1;accept_request<=1;
                             reply_status<=cpu_completion_status;reply_detail<=0;response_length<=cpu_completion_length+20;
                             cache_slot<=cache_next;index<=0;state<=STORE_REQ;
@@ -540,7 +544,15 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                     if(index+1==total) begin index<=0; crc_work<=32'hffffffff; state<=BUILD_FETCH; end
                     else index<=index+1'b1;
                 end
-                BUILD_FETCH: begin current_reply_byte<=logical_byte(index);state<=BUILD;end
+                BUILD_FETCH: begin
+                    // The consumed result bank retains its bytes until the
+                    // next COMPLETE. This parser cannot offer another command
+                    // until this reply has been copied into its existing cache.
+                    if(cpu_read_valid)begin
+                        if(cpu_read_ready)state<=BUILD_DATA;
+                    end else begin current_reply_byte<=logical_byte(index);state<=BUILD;end
+                end
+                BUILD_DATA: if(cpu_data_valid)begin current_reply_byte<=recording_byte;state<=BUILD;end
                 BUILD: begin
                     crc_work<=crc_byte(crc_work,current_reply_byte);
                     if(index+5==response_length) begin index<=0; state<=CRC; end

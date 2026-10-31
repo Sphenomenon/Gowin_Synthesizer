@@ -15,7 +15,8 @@ class BusinessMailbox(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='business-mailbox-rtl-') as directory:
             binary=Path(directory)/'simulation'
             result=subprocess.run(['iverilog','-g2012','-Wall','-s','tb_business_mailbox','-o',str(binary),
-                str(ROOT/'sim/services/tb_business_mailbox.sv'),str(ROOT/'rtl/services/workstation_business_mailbox.sv')],
+                str(ROOT/'sim/services/tb_business_mailbox.sv'),str(ROOT/'rtl/services/workstation_business_mailbox.sv'),
+                str(ROOT/'rtl/memory/workstation_sdp.sv')],
                 capture_output=True,text=True,timeout=30)
             self.assertEqual(result.returncode,0,result.stdout+result.stderr)
             result=subprocess.run(['vvp',str(binary)],capture_output=True,text=True,timeout=30)

@@ -14,7 +14,9 @@ module tb_business_mailbox;
     wire bus_ready,bus_error;wire [31:0] rdata;
     wire done;wire [31:0] ticket,owner,done_session,operation;
     wire [63:0] done_boot;wire [7:0] phase,status,reason;
-    wire [6:0] result_length;wire [511:0] result_payload;
+    wire [6:0] result_length;reg [511:0] result_payload;
+    reg payload_read=0;reg [5:0] payload_address=0;
+    wire payload_ready,payload_valid;wire [7:0] payload_data;
     workstation_business_mailbox #(.TIMEOUT_CYCLES(128)) dut (
         .clk_i(clk),.rst_ni(rst),.owner_reset_ni(owner_reset),.boot_valid_i(boot_valid),.control_open_i(control_open),
         .boot_id_i(boot),.session_generation_i(session),.fence_i(fence),.cancel_i(cancel),
@@ -26,26 +28,48 @@ module tb_business_mailbox;
         .completion_valid_o(done),.completion_consume_i(consume),.completion_ticket_o(ticket),.completion_owner_o(owner),
         .completion_session_o(done_session),.completion_boot_o(done_boot),.completion_phase_o(phase),
         .completion_status_o(status),.completion_reason_o(reason),.completion_length_o(result_length),
-        .completion_operation_o(operation),.completion_payload_o(result_payload));
+        .completion_operation_o(operation),.completion_read_valid_i(payload_read),
+        .completion_read_ready_o(payload_ready),.completion_read_address_i(payload_address),
+        .completion_data_valid_o(payload_valid),.completion_data_o(payload_data));
     integer checks=0;reg [31:0] generation,old_generation,old_ticket,word;
-    integer result_bytes,payload_word,payload_byte;
+    integer result_bytes,payload_word,payload_byte,abort_kind;
     reg [127:0] expected_request;
-    reg [511:0] expected_result;
+    reg [511:0] expected_result,expected_staging;
     task check(input condition,input [511:0] message);
         begin checks=checks+1;if(!condition)$fatal(1,"%0s",message);end
     endtask
     task wr(input [11:0] a,input [31:0] d,input expected_error);
+        integer waits;
         begin
             @(negedge clk);bus_valid=1;bus_write=1;address=a;data=d;#1;
-            check(bus_ready===1'b1,"MMIO must never wait");check(bus_error===expected_error,"MMIO write error mismatch");
+            waits=0;
+            while(!bus_ready && waits<32)begin @(negedge clk);#1;waits=waits+1;end
+            check(bus_ready===1'b1,"MMIO bounded write completion");check(bus_error===expected_error,"MMIO write error mismatch");
+            if(a=='h0dc && d==3 && !expected_error)check(waits==18,"COMPLETE has the documented fixed local copy latency");
             @(posedge clk);#1;@(negedge clk);bus_valid=0;bus_write=0;
         end
     endtask
     task rd(input [11:0] a,output [31:0] d,input expected_error);
+        integer waits;
         begin
             @(negedge clk);bus_valid=1;bus_write=0;address=a;#1;
-            check(bus_ready===1'b1,"MMIO read must never wait");check(bus_error===expected_error,"MMIO read error mismatch");d=rdata;
-            @(negedge clk);bus_valid=0;
+            waits=0;
+            while(!bus_ready && waits<4)begin @(negedge clk);#1;waits=waits+1;end
+            check(bus_ready===1'b1,"MMIO bounded RAM read");check(bus_error===expected_error,"MMIO read error mismatch");d=rdata;
+            @(posedge clk);#1;@(negedge clk);bus_valid=0;
+        end
+    endtask
+    task snapshot_payload;
+        integer at,waits;
+        begin
+            for(at=0;at<64;at=at+1)begin
+                @(negedge clk);payload_read=1;payload_address=at;#1;waits=0;
+                while(!payload_ready && waits<32)begin @(negedge clk);#1;waits=waits+1;end
+                check(payload_ready,"bounded result-byte read grant");
+                @(posedge clk);#1;check(payload_valid,"one-cycle SDP result-byte response");
+                result_payload[at*8+:8]=payload_data;
+                @(negedge clk);payload_read=0;
+            end
         end
     endtask
     task keys(input [31:0] t,input [31:0] g,input [31:0] s,input [63:0] b);
@@ -73,6 +97,49 @@ module tb_business_mailbox;
     task complete_pending(input [31:0] id);
         begin wr('h094,32'h00050101,0);wr('h098,id,0);wr('h09c,32'h44332211,0);wr('h0a0,32'h88776655,0);wr('h0dc,3,0);end
     endtask
+    task start_held_complete;
+        begin
+            wr('h094,32'h00405a02,0);wr('h098,123,0);
+            @(negedge clk);bus_valid=1;bus_write=1;address='h0dc;data=3;#1;
+            check(!bus_ready && !bus_error && !done && !payload_ready,"legal COMPLETE begins with backpressure");
+            repeat(4)begin @(posedge clk);#1;
+                check(!bus_ready && !done,"private copy cannot publish before its handshake");end
+            @(negedge clk);
+        end
+    endtask
+    task abort_held_complete(input integer kind);
+        reg [7:0] expected_reason;
+        begin
+            send_request(1,0);claim_current();start_held_complete();
+            case(kind)
+                0:begin cancel=1;expected_reason=1;end
+                1:begin owner_reset=0;expected_reason=2;end
+                2:begin session=session+1;expected_reason=3;end
+                3:begin dut.age=127;expected_reason=4;end
+                4:begin fence=1;expected_reason=3;end
+                5:begin boot=boot+1;expected_reason=6;end
+                6:begin
+                    while(!dut.copy_done)begin @(posedge clk);#1;end
+                    @(negedge clk);cancel=1;expected_reason=1;
+                end
+            endcase
+            #1;check(bus_ready && bus_error,"copy interruption acknowledges held COMPLETE as error");
+            @(posedge clk);#1;
+            check(done && phase==5 && reason==expected_reason && result_length==0,
+                "copy interruption publishes only a local UNCERTAIN result");
+            @(negedge clk);bus_valid=0;bus_write=0;cancel=0;fence=0;owner_reset=1;
+            snapshot_payload();check(result_payload===0,"partial copied RAM is hidden by local zero length");
+            check(done && phase==5 && reason==expected_reason && !dut.copy_busy,
+                "abandoned copy never publishes a late owner completion");
+            drain();
+            if(kind==1 || kind==5)begin
+                repeat(2)@(posedge clk);open_owner();
+                // Reset invalidates staging words without clearing the RAM.
+                send_request(1,0);claim_current();wr('h094,32'h00400002,0);wr('h0dc,3,0);
+                snapshot_payload();check(result_payload===0,"owner or boot reset clears all staged validity bits");drain();
+            end
+        end
+    endtask
     initial begin
         #2;rst=0;repeat(3)@(posedge clk);@(negedge clk);rst=1;repeat(3)@(posedge clk);
         rd('h000,word,0);check(word==32'h424d4201,"ABI identity");rd('h004,word,0);check(word==32'h00401001,"ABI capacities");
@@ -88,8 +155,8 @@ module tb_business_mailbox;
         wr('h094,32'h00410001,0);wr('h0dc,3,1);wr('h094,32'h01000001,0);wr('h0dc,3,1);
         wr('h094,32'h00000004,0);wr('h0dc,3,1);wr('h094,32'h00000001,0);wr('h098,0,0);wr('h0dc,3,1);
         complete_pending(77);check(done && phase==1 && status==1 && operation==77 && result_length==5,"pending result fact");
-        check(result_payload[39:0]==40'h5544332211 && result_payload[511:40]==0,"completion byte order and zero tail");
-        wr('h0dc,3,1);wr('h09c,32'hdeadbeef,0);check(result_payload[31:0]==32'h44332211,"result immutable during staging");
+        snapshot_payload();check(result_payload[39:0]==40'h5544332211 && result_payload[511:40]==0,"completion byte order and zero tail");
+        wr('h0dc,3,1);wr('h09c,32'hdeadbeef,0);snapshot_payload();check(result_payload[31:0]==32'h44332211,"result immutable during staging");
         drain();wr('h0dc,3,1);rd('h0e0,word,0);check(word==old_ticket,"publication survives consume");
         length=16;send_request(1,0);check(ticket==old_ticket+1,"ticket not reused");
         @(negedge clk);cancel=1;#1;check(!done,"cancel before sampling");@(posedge clk);#1;
@@ -148,17 +215,60 @@ module tb_business_mailbox;
             for(payload_byte=0;payload_byte<64;payload_byte=payload_byte+1)
                 if(payload_byte>=result_bytes)expected_result[payload_byte*8+:8]=0;
             wr('h094,(result_bytes<<16)|32'h00005a02,0);wr('h098,result_bytes+1,0);wr('h0dc,3,0);
-            check(done && phase==2 && status==8'h5a && result_length==result_bytes,"all legal result lengths complete in one edge");
-            check(result_payload===expected_result,"all completion bytes and zero tail match staged words");
+            check(done && phase==2 && status==8'h5a && result_length==result_bytes,"all legal result lengths publish after bounded handshake");
+            snapshot_payload();check(result_payload===expected_result,"all completion bytes and zero tail match staged words");
             for(payload_word=0;payload_word<16;payload_word=payload_word+1)begin
                 rd('h09c+payload_word*4,word,0);
                 check(word===expected_result[payload_word*32+:32],"all result words select the exact byte lane");
                 wr('h09c+payload_word*4,32'hbad00000+payload_word,0);
-                check(result_payload===expected_result,"later staging cannot modify any published result word");
+                snapshot_payload();check(result_payload===expected_result,"later staging cannot modify any published result word");
                 rd('h09d+payload_word*4,word,1);wr('h09e+payload_word*4,0,1);
             end
             drain();
         end
+        // Consuming a result leaves the last immutable bytes readable in EMPTY.
+        snapshot_payload();check(result_payload===expected_result,"result byte API retains publication after consume");
+        for(payload_word=0;payload_word<16;payload_word=payload_word+1)begin
+            word=32'h12345678^(payload_word*32'h01030507);
+            expected_staging[payload_word*32+:32]=word;wr('h09c+payload_word*4,word,0);
+        end
+        snapshot_payload();check(result_payload===expected_result,"EMPTY staging does not alter retained result");
+        send_request(1,0);claim_current();wr('h094,32'h00400002,0);wr('h0dc,3,0);
+        snapshot_payload();check(result_payload===expected_staging,"first full staging publication");drain();
+        send_request(1,0);claim_current();expected_staging[7*32+:32]=32'hdecafbad;
+        wr('h0b8,32'hdecafbad,0);wr('h0dc,3,0);
+        snapshot_payload();check(result_payload===expected_staging,"partial staging keeps every untouched word across COMPLETE");drain();
+        send_request(1,0);claim_current();wr('h094,32'h00030002,0);wr('h0dc,3,0);
+        snapshot_payload();check(result_payload[23:0]===expected_staging[23:0] && result_payload[511:24]===0,
+            "short result masks only its published tail");drain();
+        send_request(1,0);claim_current();wr('h094,32'h00400002,0);wr('h0dc,3,0);
+        snapshot_payload();check(result_payload===expected_staging,"long result recovers staging tail after a short publication");drain();
+        // A new MMIO RAM address wins over a simultaneous endpoint byte read.
+        // The byte can then issue on the MMIO response edge without changing
+        // the word which the CPU samples on that edge.
+        @(negedge clk);bus_valid=1;bus_write=0;address='h0b0;payload_read=1;payload_address=43;#1;
+        check(!bus_ready && !payload_ready,"MMIO address has read-port priority");
+        @(posedge clk);#1;check(bus_ready && !payload_valid,"MMIO data appears after one SDP edge");
+        check(rdata===expected_staging[5*32+:32],"MMIO competing read selects its own word");
+        @(negedge clk);#1;check(payload_ready,"endpoint byte can issue on MMIO response cycle");
+        check(rdata===expected_staging[5*32+:32],"MMIO response stays stable until acceptance");
+        @(posedge clk);#1;
+        check(payload_valid && payload_data===expected_staging[43*8+:8],"queued endpoint byte selects its own lane");
+        @(negedge clk);bus_valid=0;payload_read=0;
+        @(posedge clk);#1;check(!payload_valid,"byte response is exactly one cycle");
+        @(negedge clk);owner_reset=0;@(posedge clk);#1;
+        snapshot_payload();check(result_payload===expected_staging,"owner reset in EMPTY preserves retained result bytes");
+        @(negedge clk);owner_reset=1;repeat(2)@(posedge clk);open_owner();
+        for(abort_kind=0;abort_kind<7;abort_kind=abort_kind+1)abort_held_complete(abort_kind);
+        // A common reset also stops the private copy, without exposing its
+        // uninitialised physical RAM. Reopen only with a fresh boot identity.
+        send_request(1,0);claim_current();wr('h09c,32'hcafef00d,0);start_held_complete();
+        rst=0;boot_valid=0;bus_valid=0;bus_write=0;#1;
+        check(!done && !dut.copy_busy && !payload_valid,"common reset aborts the in-progress copy");
+        repeat(3)@(posedge clk);@(negedge clk);boot=boot+1;boot_valid=1;rst=1;
+        repeat(3)@(posedge clk);snapshot_payload();check(result_payload===0,"common reset masks retained RAM bytes");
+        open_owner();send_request(1,0);claim_current();wr('h094,32'h00400002,0);wr('h0dc,3,0);
+        snapshot_payload();check(result_payload===0,"common reset invalidates all unwritten staging words");drain();
         @(negedge clk);dut.next_ticket=32'hffffffff;send_request(1,0);check(ticket==32'hffffffff,"last ticket admitted once");
         @(negedge clk);cancel=1;@(posedge clk);@(negedge clk);cancel=0;drain();send_request(0,13);
         @(negedge clk);dut.rejected_count=32'hffffffff;send_request(0,13);rd('h058,word,0);check(word==32'hffffffff,"counter saturates");
@@ -167,5 +277,5 @@ module tb_business_mailbox;
         wr('h0dc,1,1);
         $display("PASS business mailbox: %0d checks; claim/reset/session/timeout are fenced observation facts",checks);$finish;
     end
-    initial begin #500000;$fatal(1,"mailbox test timeout");end
+    initial begin #5000000;$fatal(1,"mailbox test timeout");end
 endmodule
