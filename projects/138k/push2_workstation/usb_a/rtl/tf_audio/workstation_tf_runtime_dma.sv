@@ -75,6 +75,10 @@ module workstation_tf_runtime_dma #(
     reg [31:0] size_meta, size_sync;
     reg [31:0] capture_byte_count;
     reg [31:0] write_total_bytes, read_total_bytes;
+    // Keep the two modulo-32-bit occupancies at the same commit boundary as
+    // their total counters. Request admission no longer subtracts two wide
+    // totals and then feeds that result back into the read-response update.
+    reg [31:0] available_bytes, accepted_used;
     reg [31:0] write_ring_offset, read_ring_offset;
     reg [255:0] write_buf, read_buf;
     reg [5:0] write_count;
@@ -89,14 +93,12 @@ module workstation_tf_runtime_dma #(
 
     wire capture_finished = (capture_sync != capture_seen);
     wire restart_event = (restart_sync != restart_seen);
-    wire [31:0] committed_used = write_total_bytes - read_total_bytes;
-    wire [31:0] accepted_used = capture_byte_count - read_total_bytes;
+    wire [31:0] committed_used = available_bytes;
     wire [31:0] pending_used = committed_used + {26'd0, pending_bytes};
     wire ring_has_room_for_input = accepted_used < AUDIO_TOTAL_BYTES;
     wire ring_can_commit = pending_used <= AUDIO_TOTAL_BYTES;
     wire write_selected = mem_ready && !runtime_hold_i && write_pending && ring_can_commit;
 
-    wire [31:0] available_bytes = write_total_bytes - read_total_bytes;
     wire read_has_full_beat = (available_bytes >= 32'd32);
     wire read_has_partial_beat = eof_finalized && (available_bytes != 0);
     wire read_request = mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&
@@ -109,6 +111,13 @@ module workstation_tf_runtime_dma #(
     wire read_response = app_rvalid && (read_pending || read_accept);
     wire [5:0] read_response_bytes = read_accept ? read_chunk_bytes :
                                                    read_pending_bytes;
+    // At most 32 bytes enter or leave in one cycle. Form each signed delta
+    // at seven bits, then use one wide addition rather than serial add/sub.
+    wire input_byte_accepted = fifo_in_rd_valid && capture_byte_count != 32'hffff_ffff;
+    wire [6:0] committed_delta = {1'b0, (write_accept ? pending_bytes : 6'd0)} -
+                                  {1'b0, (read_response ? read_response_bytes : 6'd0)};
+    wire [6:0] accepted_delta = {6'd0, input_byte_accepted} -
+                                 {1'b0, (read_response ? read_response_bytes : 6'd0)};
     wire emit_byte = !runtime_hold_i && (state == S_STREAM) && read_buf_valid && !fifo_out_full &&
                      (emit_bytes_left != 0);
 
@@ -206,6 +215,8 @@ module workstation_tf_runtime_dma #(
             capture_byte_count <= 32'd0;
             write_total_bytes <= 32'd0;
             read_total_bytes <= 32'd0;
+            available_bytes <= 32'd0;
+            accepted_used <= 32'd0;
             write_ring_offset <= 32'd0;
             read_ring_offset <= 32'd0;
             write_buf <= 256'd0;
@@ -248,6 +259,8 @@ module workstation_tf_runtime_dma #(
                 capture_byte_count <= 32'd0;
                 write_total_bytes <= 32'd0;
                 read_total_bytes <= 32'd0;
+                available_bytes <= 32'd0;
+                accepted_used <= 32'd0;
                 write_ring_offset <= 32'd0;
                 read_ring_offset <= 32'd0;
                 write_count <= 6'd0;
@@ -282,6 +295,8 @@ module workstation_tf_runtime_dma #(
                     capture_byte_count <= 32'd0;
                     write_total_bytes <= 32'd0;
                     read_total_bytes <= 32'd0;
+                    available_bytes <= 32'd0;
+                    accepted_used <= 32'd0;
                     write_ring_offset <= 32'd0;
                     read_ring_offset <= 32'd0;
                     write_count <= 6'd0;
@@ -304,6 +319,8 @@ module workstation_tf_runtime_dma #(
                     write_buf <= 256'd0;
                 end
             end else begin
+                available_bytes <= available_bytes + {{25{committed_delta[6]}}, committed_delta};
+                accepted_used <= accepted_used + {{25{accepted_delta[6]}}, accepted_delta};
                 // Input is throttled by ring occupancy as well as the
                 // asynchronous FIFO.  This is the key no-overwrite rule.
                 if (!write_pending && !in_read_wait && !fifo_in_empty &&

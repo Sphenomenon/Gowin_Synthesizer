@@ -1,0 +1,199 @@
+{
+  "passed": true,
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "1490f1d94bad1b1a5e9b50ed8038b55d36d9ea2935a438b16d53261e63fd6348",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/fixtures/workstation_tf_runtime_dma_pre_occupancy.sv": "bc1dcfad79af5777c27d7bfa65ae3b397ce103ca0a992b938027201877119752",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv": "6cbd81485df88ea8c8cacf28fb0fa1cf8e00a288b37f06f8d508731cdd114c12",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "cff09dd9296089f0fd548f2110e02ac980540f231f242e05d317abb3d7337b03",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_occupancy_equivalence.py": "0ee7125bc1cfa79fdcbc4d4120b7079bd1ecc15a8a089320503a09a7a8b30bcf",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_audio_ddr_dma.sv": "02f0cfcd2b7498bae92b59aac32784b9f8c7daef4b7e9e30bd6bfee63459f44a",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/test_cnn_tf_write_buffer_retime.py": "3edf1e37876fc75a16baf302c0e42f1c33ca133f083696a6802584491f9c6717"
+  },
+  "hardware_tested": false,
+  "routed_timing_verified": false,
+  "deployment_allowed": false,
+  "runs": [
+    {
+      "label": "scaled",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_dma_occupancy_equivalence",
+        "-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=64",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/scaled.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS DMA occupancy: bank=64 checks=400007 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:116: $finish called at 2000106000 (1ps)",
+      "negative_control": false
+    },
+    {
+      "label": "hardware_capacity",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_dma_occupancy_equivalence",
+        "-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=67108864",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/hardware_capacity.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS DMA occupancy: bank=67108864 checks=400007 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:116: $finish called at 2000106000 (1ps)",
+      "negative_control": false
+    },
+    {
+      "label": "drop_input_count",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_dma_occupancy_equivalence",
+        "-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=64",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/drop_input_count.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/mutant.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv"
+      ],
+      "exit_code": 1,
+      "passed": true,
+      "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:53: occupancy invariant differs checks=1\n       Time: 46000  Scope: tb_tf_dma_occupancy_equivalence.compare",
+      "negative_control": true
+    },
+    {
+      "label": "unsigned_delta",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_dma_occupancy_equivalence",
+        "-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=64",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/unsigned_delta.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/unsigned_delta.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv"
+      ],
+      "exit_code": 1,
+      "passed": true,
+      "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:53: occupancy invariant differs checks=206\n       Time: 1106000  Scope: tb_tf_dma_occupancy_equivalence.compare",
+      "negative_control": true
+    },
+    {
+      "label": "simultaneous_write_lost",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_dma_occupancy_equivalence",
+        "-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=64",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/simultaneous_write_lost.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/simultaneous.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv"
+      ],
+      "exit_code": 1,
+      "passed": true,
+      "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:53: occupancy invariant differs checks=15318\n       Time: 76666000  Scope: tb_tf_dma_occupancy_equivalence.compare",
+      "negative_control": true
+    },
+    {
+      "label": "ring_stall0_zero0",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_audio_ddr_dma",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero0.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero0.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero0.sv:311: $finish called at 26285000 (1ps)",
+      "independent_ring_oracle": true
+    },
+    {
+      "label": "ring_stall0_zero1",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_audio_ddr_dma",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero1.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero1.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall0_zero1.sv:310: $finish called at 26065000 (1ps)",
+      "independent_ring_oracle": true
+    },
+    {
+      "label": "ring_stall1_zero0",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_audio_ddr_dma",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero0.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero0.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero0.sv:327: $finish called at 27075000 (1ps)",
+      "independent_ring_oracle": true
+    },
+    {
+      "label": "ring_stall1_zero1",
+      "command": [
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3",
+        "-s",
+        "tb_tf_audio_ddr_dma",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero1.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero1.sv"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-occupancy-equivalence-v3/ring_stall1_zero1.sv:326: $finish called at 26845000 (1ps)",
+      "independent_ring_oracle": true
+    }
+  ],
+  "inputs_unchanged": true
+}

@@ -218,6 +218,8 @@ M v7已完成独立P&R并生成位流：物理CLS49,996、BSRAM235、DSP120；se
 
 DDR保持原3.500 ns约束的M v7远端双region变体`D2103106`已完整P&R，reported hold归零（DDR +0.682 ns、整体最差 +0.143 ns），setup／recovery仍失败；近端变体`D2103104`失败记录保留。[定向布局证据](push2_workstation/usb_a/reports/DUAL138K_DDR_HOLD_20261031.md)不转授整机通过。M7／M8六PLL及serializer的[显式DEMO来源／同步RESET结构门禁](push2_workstation/usb_a/reports/DUAL138K_DEMO_PLL_SOURCE_GATE_20261031.md)已通过，不覆盖失败STA及未完成的完整CDC。后续维护源[取消epoch资格](push2_workstation/usb_a/reports/DUAL138K_EPOCH_MATCH_20261031.md)通过419万种穷举、完整service 48,645帧独立PCM及1.159亿次逐拍检查；[时钟下降沿释放／显示请求寄存](push2_workstation/usb_a/reports/DUAL138K_CLOCK_DISPLAY_CONTROL_20261031.md)通过旧版公共输出逐拍一致、完整display及负控。新物理收益待新身份全量重测，不倒填旧候选。至此仍未下载SRAM或写Flash，T2-D1／D2保持未勾选。
 
+M8的TF DDR同域32位减法反馈已在维护DMA中改为同拍提交的占用计数，原请求／响应／输出时序保持；两容量共800,014次新旧公共输出／内部状态比较、三种真实RTL负控、四种独立byte／ring oracle，以及四配置完整TF/WAV和停钟clear回归通过，见[TF占用计数证据](push2_workstation/usb_a/reports/DUAL138K_TF_OCCUPANCY_20261031.md)。物理收益待新候选，不转授M8时序通过。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
