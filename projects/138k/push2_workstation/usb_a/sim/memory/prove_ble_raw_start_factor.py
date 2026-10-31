@@ -26,13 +26,31 @@ NEW_BLOCK = '''    wire start_context_bad=!memory_empty || !memory_closed || mem
         if(memory_quiescent)start_fault_now=transport_fault_i || native_protocol_fault_o ||
             unused_submitted || native_accept_i || read_response_i;
         start_initialize=0;
-        if(memory_command_start)begin
-            if(memory_channel_fault || start_fault_now)begin end
-            else if(command_kind==CMD_START)begin
-                if(start_context_bad)begin end
-                else start_initialize=1;
+        // An occupied memory slot makes start_context_bad known true. Keep
+        // its false and unknown cases explicit so binary mapping need not
+        // share the complete command/read fault cone into wide START state.
+        case(memory_quiescent)
+            1'b0:begin end
+            1'b1:begin
+                if(memory_command_start)begin
+                    if(memory_channel_fault || transport_fault_i || native_protocol_fault_o ||
+                       unused_submitted || native_accept_i || read_response_i)begin end
+                    else if(command_kind==CMD_START)begin
+                        if(start_context_bad)begin end
+                        else start_initialize=1;
+                    end
+                end
             end
-        end
+            default:begin
+                if(memory_command_start)begin
+                    if(memory_channel_fault || start_fault_now)begin end
+                    else if(command_kind==CMD_START)begin
+                        if(start_context_bad)begin end
+                        else start_initialize=1;
+                    end
+                end
+            end
+        endcase
     end
 '''
 NEW_INIT = '''            // Preserve the original START assignment priority, before CLEAR
@@ -128,8 +146,13 @@ def symbolic():
     quiet = z3.And(z3.Not(p), z3.Not(r), z3.Not(ret), z3.Not(pack))
     fast = z3.Or(t, f, s, n, response)
     selected = z3.If(quiet, fast, fault)
-    old_enable = z3.And(command, z3.Not(z3.Or(channel, fault)), kind == 0, z3.Not(bad))
-    new_enable = z3.And(command, z3.Not(z3.Or(channel, selected)), kind == 0, z3.Not(bad))
+    # The complete source context includes !memory_quiescent. The other
+    # comparisons remain one independent predicate, including illegal state.
+    context_bad = z3.Or(bad, z3.Not(quiet))
+    old_enable = z3.And(command, z3.Not(z3.Or(channel, fault)), kind == 0, z3.Not(context_bad))
+    # Exact binary case(quiet): zero cannot initialize, one uses the cofactor;
+    # the X/Z default is checked by the four-state complete-module proof.
+    new_enable = z3.And(quiet, command, z3.Not(z3.Or(channel, fast)), kind == 0, z3.Not(context_bad))
     solver = z3.Solver()
     solver.add(z3.Or(fault != selected, old_enable != new_enable))
     require(solver.check() == z3.unsat, 'actual-source full-domain fault/START enable differs')
@@ -449,11 +472,11 @@ def main():
             result['cases'][name] = simulate(output, name, [output/'twin.sv', SOURCE, reference_copy, *deps], 'tb_ble_raw_ddr_store', params)
         result['cases']['arbitrary_state'] = simulate(output, 'arbitrary-state', [output/'directed.sv', SOURCE, reference_copy, *deps], 'directed', timeout=180)
         mutants = [
-            ('drop_native_veto', 'unused_submitted || native_accept_i || read_response_i', 'unused_submitted || read_response_i'),
-            ('drop_submitted_veto', 'unused_submitted || native_accept_i || read_response_i', 'native_accept_i || read_response_i'),
-            ('drop_response_veto', 'unused_submitted || native_accept_i || read_response_i', 'unused_submitted || native_accept_i'),
+            ('drop_native_veto', '                       unused_submitted || native_accept_i || read_response_i)begin end', '                       unused_submitted || read_response_i)begin end'),
+            ('drop_submitted_veto', '                       unused_submitted || native_accept_i || read_response_i)begin end', '                       native_accept_i || read_response_i)begin end'),
+            ('drop_response_veto', '                       unused_submitted || native_accept_i || read_response_i)begin end', '                       unused_submitted || native_accept_i)begin end'),
             ('omit_unknown_quiescent_fallback', 'if(memory_quiescent)start_fault_now=', 'start_fault_now='),
-            ('positive_guard_changes_X_else', 'else start_initialize=1;', 'else start_initialize=!start_context_bad;'),
+            ('positive_guard_changes_X_else', "                        else start_initialize=1;\n                    end\n                end\n            end\n            default:", "                        else start_initialize=!start_context_bad;\n                    end\n                end\n            end\n            default:"),
             ('wrong_generation', 'memory_generation<=command_generation;memory_next_index<=0;', "memory_generation<=command_generation+1'b1;memory_next_index<=0;"),
             ('missing_committed_reset', 'memory_committed<=0;write_address<=BASE_APP;\n            end', 'write_address<=BASE_APP;\n            end'),
         ]

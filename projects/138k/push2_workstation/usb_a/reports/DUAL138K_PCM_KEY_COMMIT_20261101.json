@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "stage": "combined_PCM_key_groups_and_local_rejected_COMMIT_offline_validation",
+  "passed": true,
+  "source_sha256": {
+    "rtl/audio/workstation_ae350_pcm_owner.sv": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3",
+    "sim/audio/run_ae350_pcm_key_commit.py": "4c735e66846b1fa8673fe9c3c6f16e4d136ab9c3414c73dc22d6eadeec9a879a"
+  },
+  "reference": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v12/workstation/Prj1/rtl/audio/workstation_ae350_pcm_owner.sv",
+    "sha256": "3342a94cfd4e103efbb11808c5753aa8839069634ebf5d78ed80c0dab9cff837"
+  },
+  "combined_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-key-commit-combined-v1/verification.json",
+    "sha256": "0871d248c3de4225421cb8050bf6173434f129f0e05a423674c15eef4eab6663"
+  },
+  "full_owner_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-key-commit-owner-full-v1.log",
+    "sha256": "0c0a202de8c4c9213698e1b61279d5d984526ecd5606cd2d915e6803a25dba64",
+    "tests": 8,
+    "drift_cases": 4,
+    "frames_per_case": 576000,
+    "passed": true
+  },
+  "source_and_demo_regressions": {
+    "current_tests": 17,
+    "demo_tests": 15,
+    "passed": true
+  },
+  "measured_W12_PCM_path": {
+    "slack_ns": -4.341,
+    "logic_levels": 20,
+    "data_delay_ns": 17.167,
+    "cell_ns": 6.248,
+    "route_ns": 10.613,
+    "c2q_ns": 0.306,
+    "last_fanout": 256,
+    "last_route_ns": 3.034,
+    "VG_VO_data_pins_checked": 90
+  },
+  "hardware_accepted": false,
+  "physical_timing_verified": false,
+  "resource_saving_claimed": false,
+  "limits": [
+    "The new source has not been synthesized or routed in this stage; no timing or resource improvement is claimed.",
+    "Both edits are combined in the real module for final twins and four-state/negative checks; independent proposal records are not substituted for the combined run.",
+    "The local Z3 proofs cover arbitrary binary combinational states and grouped comparator four-state symbols; whole owner sequential behavior is checked by simulation, not a whole-owner formal proof.",
+    "The initial shortened drift run did not meet its zero-step coverage gate; the full unmodified default run passed."
+  ],
+  "evidence_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-key-commit-sealed-evidence-v1.json",
+    "sha256": "d6f69298469bf050038fc42d1072040d9419cc4acba373da53ef46b77753c68c",
+    "files": 100
+  }
+}

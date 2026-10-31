@@ -328,13 +328,31 @@ module workstation_ble_raw_ddr_store #(
         if(memory_quiescent)start_fault_now=transport_fault_i || native_protocol_fault_o ||
             unused_submitted || native_accept_i || read_response_i;
         start_initialize=0;
-        if(memory_command_start)begin
-            if(memory_channel_fault || start_fault_now)begin end
-            else if(command_kind==CMD_START)begin
-                if(start_context_bad)begin end
-                else start_initialize=1;
+        // An occupied memory slot makes start_context_bad known true. Keep
+        // its false and unknown cases explicit so binary mapping need not
+        // share the complete command/read fault cone into wide START state.
+        case(memory_quiescent)
+            1'b0:begin end
+            1'b1:begin
+                if(memory_command_start)begin
+                    if(memory_channel_fault || transport_fault_i || native_protocol_fault_o ||
+                       unused_submitted || native_accept_i || read_response_i)begin end
+                    else if(command_kind==CMD_START)begin
+                        if(start_context_bad)begin end
+                        else start_initialize=1;
+                    end
+                end
             end
-        end
+            default:begin
+                if(memory_command_start)begin
+                    if(memory_channel_fault || start_fault_now)begin end
+                    else if(command_kind==CMD_START)begin
+                        if(start_context_bad)begin end
+                        else start_initialize=1;
+                    end
+                end
+            end
+        endcase
     end
     wire clear_fifo_pop=memory_clear_pending && fifo_consumed!=memory_clear_target;
     wire normal_fifo_pop=memory_active && pack_frames<8;

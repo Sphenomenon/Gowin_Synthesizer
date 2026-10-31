@@ -74,10 +74,52 @@ module workstation_ae350_pcm_owner #(
         cache_address<=address0;cache_valid<=pair_available;
     end
     wire cache_current=cache_valid && cache_address==address0 && pair_available;
-    // Express equality as an XOR mismatch reduction in the real-time PCM
-    // permission path; actual mapping/timing needs a new synthesis and P&R.
-    wire key_matches=!(|(staged_controller^active_controller)) && !(|(staged_generation^active_generation)) &&
-        !(|(staged_stream^active_stream)) && !(|(staged_rate^active_rate)) && !(|(staged_physical^active_physical));
+    // Preserve independent eight-bit key comparisons on the PCM write and command paths.
+    wire key_controller_match_0 /* synthesis syn_keep=1 */;
+    assign key_controller_match_0=!(|(staged_controller[7:0]^active_controller[7:0]));
+    wire key_controller_match_1 /* synthesis syn_keep=1 */;
+    assign key_controller_match_1=!(|(staged_controller[15:8]^active_controller[15:8]));
+    wire key_controller_match_2 /* synthesis syn_keep=1 */;
+    assign key_controller_match_2=!(|(staged_controller[23:16]^active_controller[23:16]));
+    wire key_controller_match_3 /* synthesis syn_keep=1 */;
+    assign key_controller_match_3=!(|(staged_controller[31:24]^active_controller[31:24]));
+    wire key_generation_match_0 /* synthesis syn_keep=1 */;
+    assign key_generation_match_0=!(|(staged_generation[7:0]^active_generation[7:0]));
+    wire key_generation_match_1 /* synthesis syn_keep=1 */;
+    assign key_generation_match_1=!(|(staged_generation[15:8]^active_generation[15:8]));
+    wire key_generation_match_2 /* synthesis syn_keep=1 */;
+    assign key_generation_match_2=!(|(staged_generation[23:16]^active_generation[23:16]));
+    wire key_generation_match_3 /* synthesis syn_keep=1 */;
+    assign key_generation_match_3=!(|(staged_generation[31:24]^active_generation[31:24]));
+    wire key_stream_match_0 /* synthesis syn_keep=1 */;
+    assign key_stream_match_0=!(|(staged_stream[7:0]^active_stream[7:0]));
+    wire key_stream_match_1 /* synthesis syn_keep=1 */;
+    assign key_stream_match_1=!(|(staged_stream[15:8]^active_stream[15:8]));
+    wire key_stream_match_2 /* synthesis syn_keep=1 */;
+    assign key_stream_match_2=!(|(staged_stream[23:16]^active_stream[23:16]));
+    wire key_stream_match_3 /* synthesis syn_keep=1 */;
+    assign key_stream_match_3=!(|(staged_stream[31:24]^active_stream[31:24]));
+    wire key_rate_match_0 /* synthesis syn_keep=1 */;
+    assign key_rate_match_0=!(|(staged_rate[7:0]^active_rate[7:0]));
+    wire key_rate_match_1 /* synthesis syn_keep=1 */;
+    assign key_rate_match_1=!(|(staged_rate[15:8]^active_rate[15:8]));
+    wire key_rate_match_2 /* synthesis syn_keep=1 */;
+    assign key_rate_match_2=!(|(staged_rate[23:16]^active_rate[23:16]));
+    wire key_rate_match_3 /* synthesis syn_keep=1 */;
+    assign key_rate_match_3=!(|(staged_rate[31:24]^active_rate[31:24]));
+    wire key_physical_match_0 /* synthesis syn_keep=1 */;
+    assign key_physical_match_0=!(|(staged_physical[7:0]^active_physical[7:0]));
+    wire key_physical_match_1 /* synthesis syn_keep=1 */;
+    assign key_physical_match_1=!(|(staged_physical[15:8]^active_physical[15:8]));
+    wire key_physical_match_2 /* synthesis syn_keep=1 */;
+    assign key_physical_match_2=!(|(staged_physical[23:16]^active_physical[23:16]));
+    wire key_physical_match_3 /* synthesis syn_keep=1 */;
+    assign key_physical_match_3=!(|(staged_physical[31:24]^active_physical[31:24]));
+    wire key_matches=key_controller_match_0 && key_controller_match_1 && key_controller_match_2 && key_controller_match_3 &&
+        key_generation_match_0 && key_generation_match_1 && key_generation_match_2 && key_generation_match_3 &&
+        key_stream_match_0 && key_stream_match_1 && key_stream_match_2 && key_stream_match_3 &&
+        key_rate_match_0 && key_rate_match_1 && key_rate_match_2 && key_rate_match_3 &&
+        key_physical_match_0 && key_physical_match_1 && key_physical_match_2 && key_physical_match_3;
     wire live_matches=session_live_i && !(|(controller_epoch_i^active_controller)) && !(|(transport_generation_i^active_generation));
     // Keep four independent epoch comparisons so synthesis cannot rebuild the
     // full 32-bit serial inequality chain on the PCM permission path.
@@ -166,6 +208,9 @@ module workstation_ae350_pcm_owner #(
     wire accepted_stop=control_write && command_data_i==32'd4 && !stop_error;
     wire accepted_cancel=control_write && command_data_i==32'd5 && !cancel_error;
     wire accepted_control=accepted_start || accepted_commit || accepted_select || accepted_stop || accepted_cancel;
+    // The rejected COMMIT state update must not traverse unrelated response decodes.
+    wire rejected_commit=write_command && command_address_i==12'h040 && command_data_i==32'd2 &&
+        (!control_format_ok || !control_id_ok || commit_error);
     wire accepted_staging_write=write_command && control_format_ok && !command_address_i[11] &&
         command_address_i>=12'h020 && command_address_i<=12'h03c;
     reg command_error;
@@ -365,8 +410,7 @@ module workstation_ae350_pcm_owner #(
             end
             if(write_command && response_error_o && (command_address_i[11] ||
                 (command_address_i==12'h040 && command_data_i==2 && owned[tail_slot])))overflows<=increment(overflows);
-            if(write_command && response_error_o && command_address_i==12'h040 && command_data_i==2 &&
-                usable && key_matches && !owned[tail_slot])begin
+            if(rejected_commit && usable && key_matches && !owned[tail_slot])begin
                 if(staged_sequence!=expected_sequence || &expected_sequence)terminate(F_SEQUENCE);
                 else terminate(F_DESCRIPTOR);
             end

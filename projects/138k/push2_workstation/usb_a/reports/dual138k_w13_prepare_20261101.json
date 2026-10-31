@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "stage": "W13_complete_DEMO_prepare_source_seal",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-bc065b3de8977725",
+  "candidate_input_sha256": "bc065b3de89777256bab6fe775c7187588f08f7740f2e335dc4278b06a55fe99",
+  "configuration_sha256": "444c183d47242b03e1e687c109dce0c3ed765a99ffcc34bc5c68e81466a9905c",
+  "manifest_sha256": "78c2602862e32ecc193c475f156d0ba58b164220f7ebeb84777fa26b997468cd",
+  "artifact_sha256": "d13f781fc6d03821fbf6b7df75b5890f23e334c928666e9380aea8397f9f17f9",
+  "source_snapshot_count": 951,
+  "source_snapshot_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-audits-v1/prepare-source-snapshot",
+  "staged_count": 645,
+  "enabled_count": 284,
+  "all_prepared_source_and_staged_bytes_verified": true,
+  "consumed_critical_RTL": {
+    "rtl/audio/workstation_ae350_pcm_owner.sv": {
+      "staged_path": "workstation/Prj1/rtl/audio/workstation_ae350_pcm_owner.sv",
+      "sha256": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3",
+      "matches_maintained_source": true
+    },
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": {
+      "staged_path": "workstation/Prj1/rtl/memory/workstation_ble_raw_ddr_store.sv",
+      "sha256": "21471d722da294e841829f6ff1ec396fab016358bf6a796f93d17ec0f95c978d",
+      "matches_maintained_source": true
+    },
+    "rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": {
+      "staged_path": "workstation/Prj1/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv",
+      "sha256": "271e3d701eb8f84e238ac9ccf3114c2669ef44e09d56407fc22afb1e5e9785ea",
+      "matches_maintained_source": true
+    },
+    "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": {
+      "staged_path": "workstation/Prj1/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv",
+      "sha256": "02dc68255bad7182d6b1616f3809c53b672887726fbb69790a58271183700787",
+      "matches_maintained_source": true
+    }
+  },
+  "source_tools_seal_sha256": "40254df29c4dcb174595beb72373b7b2fa8db4f0a287fd08b82e2cf0900fa2b8",
+  "source_tools_count": 1365,
+  "source_regressions": {
+    "current": 17,
+    "demo_audit": 15,
+    "demo_policy": 7
+  },
+  "hardware_tested": false,
+  "synthesis_started": true,
+  "timing_closed": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "retained_failed_preseal_attempt": "First source sealing query wrongly treated an inactive source as enabled; assertion rejected; no candidate bytes changed. Final enabled checks use actual input inventory.",
+  "date": "2026-11-01",
+  "source_commit_parent": "62b80b5ee3544c31d5fb9e3cd8bb97ce3bfd1f4b",
+  "profile_locks": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": {
+      "sha256": "e05ddf9783131b71c424091f0625e2ee6d7208a6a9a9243393ce1166c31636a6",
+      "source_count": 822,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "old": "3342a94cfd4e103efbb11808c5753aa8839069634ebf5d78ed80c0dab9cff837",
+          "new": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": {
+          "old": "214c0a5df77d11921fecb4848e5897f7b116de039f48b69cae47b7953809da1d",
+          "new": "21471d722da294e841829f6ff1ec396fab016358bf6a796f93d17ec0f95c978d"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+          "old": "388e079464140ea53d1265798e44b854318b85168a23fa893306208864991c7f",
+          "new": "f4e3e9630d36cf4b573ee851ba9076210149d60e44d17b373ff178fb6fa78276"
+        }
+      }
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": {
+      "sha256": "444c183d47242b03e1e687c109dce0c3ed765a99ffcc34bc5c68e81466a9905c",
+      "source_count": 822,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "old": "3342a94cfd4e103efbb11808c5753aa8839069634ebf5d78ed80c0dab9cff837",
+          "new": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": {
+          "old": "214c0a5df77d11921fecb4848e5897f7b116de039f48b69cae47b7953809da1d",
+          "new": "21471d722da294e841829f6ff1ec396fab016358bf6a796f93d17ec0f95c978d"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+          "old": "388e079464140ea53d1265798e44b854318b85168a23fa893306208864991c7f",
+          "new": "f4e3e9630d36cf4b573ee851ba9076210149d60e44d17b373ff178fb6fa78276"
+        }
+      }
+    }
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-prepare-source-seal-v1.json": "8e0303b42ca01c2d2e5c65671bb3e0f5629e58814e0e69f2d610091c6ee9db96",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-prepare-v1.log": "47312d66ff3e700be1102647b76e208936625760fb6b8b37374347671e7f7bbb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-audits-v1/source-tools-seal.json": "40254df29c4dcb174595beb72373b7b2fa8db4f0a287fd08b82e2cf0900fa2b8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-audit-job-v1.py": "6593ee17e9bcbb7e23231057d77ac0190763e9964ca8a36fc2cb4356d224f093",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m14-build-runner-v1.py": "1a2d61cadb4c71d643745374c1962b0ff6197996090e28c21593fd28dfc530e5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-current-sources-v1.log": "df06bb62bf49d5fcdd95bd28294f884301a1b8d9dc3afd1cac3ad180315e7b35",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-demo-audit-v1.log": "104f82d7145cd0638db3f7aa39d5df50b08d80edc2481f25d8257a53f4daec5c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w13-demo-policy-v1.log": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_PCM_KEY_COMMIT_20261101.json": "130df5e31e0268d4c08a4214e8cf4c69896c4b449ca6b2b0ce61c1a75e1a8bad",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/dual138k_raw_start_case_20261101.json": "d5b8fa8e68665c2428c1155ea87ece38fafc8f0057a34c13116bcee0cfa68dc7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-key-commit-sealed-evidence-v1.json": "d6f69298469bf050038fc42d1072040d9419cc4acba373da53ef46b77753c68c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/raw-start-quiescent-case-source-seal-v1.json": "be4c91954f39e533f1aedc056bf0233dad08a670a39b1988c468c70b0b4a276d"
+  },
+  "synthesis_result_pending": true,
+  "physical_UserCodes_reserved": {
+    "default": "D211010A",
+    "far": "D211010B"
+  },
+  "source_stages": {
+    "PCM": "full W12 twins, binary/four-state key and COMMIT proofs, five negatives and 2.304 million drift frames passed",
+    "raw": "full W11/W12 twins, exact guards, 16M four-state matrix, original raw/native BLE regressions and negative controls passed"
+  },
+  "protected_main_worktree_written": false,
+  "release_ready": false
+}
