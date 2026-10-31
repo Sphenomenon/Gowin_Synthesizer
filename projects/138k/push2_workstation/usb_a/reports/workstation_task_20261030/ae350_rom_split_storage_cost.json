@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "source_commit": "caf6c05",
+  "scope": "isolated native boot storage, actual ROM64 complete-budget versus ROM128 split-budget images",
+  "resource_rows": [
+    {
+      "rom_bytes": 65536,
+      "logic_utilization": 281,
+      "lut_utilization": 241,
+      "alu": 40,
+      "registers": 255,
+      "synthesis_bsram": 40,
+      "prom_instances": 32,
+      "sdPb_instances": 8,
+      "rom_sha256": "e57f8612ade14f8bb6b00db86e6961e1d79b58e6c49f9991f7707aff111d0360",
+      "elapsed_seconds": 1.4905602091457695,
+      "input_sha256": {
+        "boot.mem": "e57f8612ade14f8bb6b00db86e6961e1d79b58e6c49f9991f7707aff111d0360",
+        "run.tcl": "879cbc71590f3ba3342b7e664cc41f55f3c5a4cbf746ec20682534c6f0dd0090",
+        "clock.sdc": "ed5968f745d0c9daeaa807dfd01a00359822755f87f99ba9face7fd26d6e4f89",
+        "top.sv": "20785611ed364d590485828b2a1511a94b2f148b6da83749e21041fb661b73f5",
+        "workstation_ae350_boot_memory.sv": "610f88feee4fcb91d7c40036812a6fb33a21491dff058875e44a6edbced0a154"
+      },
+      "process_sha256": "3151c8b37b309848ce3d301f0019c68414f3d62c1f44605e9a2a011224ec329d"
+    },
+    {
+      "rom_bytes": 131072,
+      "logic_utilization": 310,
+      "lut_utilization": 270,
+      "alu": 40,
+      "registers": 256,
+      "synthesis_bsram": 72,
+      "prom_instances": 64,
+      "sdPb_instances": 8,
+      "rom_sha256": "bf75b3d3bb25701ed85677f2e11d486690de1f4815ea78f55cc76ea058dcbfd4",
+      "elapsed_seconds": 0.883984874933958,
+      "input_sha256": {
+        "boot.mem": "bf75b3d3bb25701ed85677f2e11d486690de1f4815ea78f55cc76ea058dcbfd4",
+        "run.tcl": "879cbc71590f3ba3342b7e664cc41f55f3c5a4cbf746ec20682534c6f0dd0090",
+        "clock.sdc": "ed5968f745d0c9daeaa807dfd01a00359822755f87f99ba9face7fd26d6e4f89",
+        "top.sv": "dacb8be7d5482c2912f7baad86527f1d0d01072988aafc8f257e035a6d7cb031",
+        "workstation_ae350_boot_memory.sv": "610f88feee4fcb91d7c40036812a6fb33a21491dff058875e44a6edbced0a154"
+      },
+      "process_sha256": "5ede89ed23b18076a91426019798c00ec37cb90aa8af637a9f235ef0a1095bcf"
+    }
+  ],
+  "delta": {
+    "logic_utilization": 29,
+    "lut_utilization": 29,
+    "alu": 0,
+    "registers": 1,
+    "synthesis_bsram": 32,
+    "prom_instances": 32
+  },
+  "wrapper_policy": "Identical top ports and versioned storage source; explicit ROM_BYTES parameter and distinct previously validated executable layouts. Both include unchanged 8 KiB scratch RAM.",
+  "interpretation": "Expansion costs 32 additional synthesis pROM/BSRAM instances and 29 vendor Logic for these layouts; no whole-workstation net saving or physical block/timing claim.",
+  "synthesis_performed": true,
+  "place_route_performed": false,
+  "physical_bsram_count_verified": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "Images use different executable placements and far calls; source behavior preservation is from the separate ROM split experiment",
+    "No complete-workstation resource addition/saving extrapolation",
+    "No measured ROM instruction fetch timing or cache use"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rom-split-storage-cost-parent-v1",
+  "seal_sha256": "5b6c2297bf83d02faf74ecb0a56772785cef1c42ce12241ec398f854511d6ccf",
+  "external_files": 30
+}
