@@ -77,7 +77,10 @@ def run(output):
             argv=['iverilog','-g2012','-i','-s','tb_ble_ddr_top_composition',
                 '-Ptb_ble_ddr_top_composition.CASE='+str(index),'-I',str(stage),'-I',str(ROOT),'-I',str(output),
                 '-o',str(stage/'test.vvp'),*[str(ROOT/n) for n in SOURCES],str(output/'gw138k_counter_cdc.sv')]
-            compile_run=subprocess.run(argv,capture_output=True,text=True,timeout=30)
+            # Icarus searches its current directory before -I paths. Compile
+            # from this case so allocation mutants cannot resolve the real
+            # project's unmodified rtl/ddr_address_map.vh first.
+            compile_run=subprocess.run(argv,cwd=stage,capture_output=True,text=True,timeout=30)
             compile_log=compile_run.stdout+compile_run.stderr;(stage/'compile.log').write_text(compile_log)
             if compile_run.returncode or compile_log.strip():raise ValueError('compile diagnostics: '+compile_log)
             execution=subprocess.run(['vvp',str(stage/'test.vvp')],capture_output=True,text=True,timeout=30)

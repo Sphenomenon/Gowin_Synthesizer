@@ -1,0 +1,220 @@
+{
+  "schema": 1,
+  "stage": "dual138k_recording_owned_transfer_factor",
+  "date": "2026-11-01",
+  "passed_offline_validation": true,
+  "maintained_input_sha256": {
+    "rtl/memory/workstation_recording_ddr_owner_mux.sv": "f13e76e3185b0ab96fe3f7a88bd2f46a2ab9d6fcfe060943889fc1993328e5fb",
+    "sim/test_recording_ddr_owner_mux.py": "7ef2c54e8627f1003d8c9f2467f6b3c7f648d614d4350184e08dee28127cff82",
+    "sim/memory/run_ble_ddr_top_composition.py": "05063f74890ac413f7f1c259397222c4b9e01fdaec5b16e10034db695e406ca9",
+    "sim/memory/prove_recording_owned_transfer.py": "8e79acc77f1490065c56a4deb03245446c398835749c3129abe6f86a5e2c4cc0",
+    "sim/memory/fixtures/workstation_recording_ddr_owner_mux_before_owned_factor.sv": "2af5a52d3bf9c67f93eef803e07bd9b9e636c1f65348676289dc13b487e76bf5",
+    "sim/memory/fixtures/README.md": "b616829cd5109741d21dfa966b4b8ca0779fa0f6e9742b59d6ce4e901115c60f"
+  },
+  "old_consumed_source": {
+    "candidate_identity": "custom138k-workstation-w-demo-v1-d1dddd2e83ad1cfd",
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/rtl/memory/workstation_recording_ddr_owner_mux.sv",
+    "sha256": "2af5a52d3bf9c67f93eef803e07bd9b9e636c1f65348676289dc13b487e76bf5",
+    "full_fixture_bytes_equal": true
+  },
+  "motivation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-recording-ce-readonly-review-v1/review.json",
+      "sha256": "a941320b429b8e63c1b93290ed18a0888d52262a703aba75a4916d27656bb0c0"
+    },
+    "launch": "recording_ble_store/published_valid_s1/Q",
+    "capture": "recording_ble_store/write_address_9_s1/CE",
+    "both_actual_CLK_pins": "memory_clk",
+    "STA_clock": "ddr_ui100",
+    "period_ns": 10,
+    "setup_slack_ns": -5.583,
+    "levels": 13,
+    "cell_ns": 3.531,
+    "route_ns": 11.404,
+    "clock_to_Q_ns": 0.306,
+    "source_Q_fanout": 347,
+    "SDC_changed": false
+  },
+  "changed_boundary": "Only native_accept_o and response_o combinational owned-transfer output gates; no register or latency added.",
+  "unchanged_boundaries": [
+    "fault_now",
+    "transport_fault_o",
+    "open",
+    "request valid/ready",
+    "address ranges",
+    "timeouts",
+    "owner/fairness",
+    "authority withdrawal",
+    "quarantine",
+    "all sequential state"
+  ],
+  "equivalence": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v2/verification.json",
+      "sha256": "df93e0bc829b8e05d9f8b6ed9a4b4d4271172a3c5302453aeffad9241d1ded38"
+    },
+    "complete_source_inverse": true,
+    "full_domain_two_state": {
+      "result": "UNSAT",
+      "free_state_bits": 2,
+      "independent_boolean_predicates": 10,
+      "reachable_state_assumptions": false,
+      "z3_version": "5.1.0"
+    },
+    "four_state_combinations": 16777216,
+    "four_state_state_encodings": 16,
+    "independent_four_state_predicates": 10,
+    "four_state_explicit_reuse": {
+      "explicit_reused_completed_execution": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1/four-state.sv": "64d5db28d8747cda6720629c9c10954f9d29ec0fe35496f3c42af702fca35d05",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1/four-state.vvp": "b78aea3714d142835e79f4c5665d24767ff4d27d05d8c5368b5ca2096bfb0d29",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1/four-state-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1/four-state.log": "4b2ff80dbbc1c6a932ee675762a104e39529b9e944621981207adcb11e8a2760"
+      },
+      "exhaustive_combinations": 16777216,
+      "summary": "PASS owned-transfer four-state combinations=16777216 state_encodings=16 predicates=10\n/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1/four-state.sv:33: $finish called at 0 (1ps)"
+    },
+    "complete_owner_bridge_twin": {
+      "edges": 2547,
+      "public_outputs": 11,
+      "internal_state_groups": 5,
+      "combinational_groups": 4,
+      "reset_or_X_comparison_mask": false,
+      "workload_checks": 1937,
+      "writes": 88,
+      "reads": 75,
+      "log_sha256": "0eb30628b3d8941985da27f69d7c28949634e290a0576780941ef829d314cfef"
+    }
+  },
+  "owner_regression": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-basic-v2.log",
+      "sha256": "dd4fc950c3db57e1055b6ff9f61df2bb57baf9341db85407b69dab590949ea06"
+    },
+    "tests": 3,
+    "original_source_mutants_rejected": 8,
+    "new_source_mutants_rejected": 3,
+    "new_controls": [
+      "transport fault veto",
+      "simultaneous write and response veto",
+      "invalid native while RESPONSE veto"
+    ]
+  },
+  "top_recording_composition": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-top-v2/verification.json",
+      "sha256": "32c4485b607261e73b2a85461921e9320d8d1cbc92a620868eea8c3ad31f667e"
+    },
+    "scope": "real selected top + recording runtime/service/CDC/backend + raw store + owner8 mux + boot authority",
+    "fixtures": "BLE raw and CPU command owner ports; global DDR slot/native/response model; unrelated full-system modules ignored with Icarus -i",
+    "normal_cases": {
+      "concurrent_windows_download_and_late_return": {
+        "case": 0,
+        "checks": 110,
+        "cpu_writes": 3,
+        "ble_writes": 3,
+        "cpu_reads": 1,
+        "ble_reads": 4
+      },
+      "pre_ready_ledger_epoch_loss": {
+        "case": 1,
+        "checks": 4,
+        "cpu_writes": 0,
+        "ble_writes": 0,
+        "cpu_reads": 0,
+        "ble_reads": 0
+      },
+      "root_release_waits_for_memory_clock": {
+        "case": 2,
+        "checks": 5,
+        "cpu_writes": 0,
+        "ble_writes": 0,
+        "cpu_reads": 0,
+        "ble_reads": 0
+      }
+    },
+    "allocation_mutants_rejected": 5,
+    "full_ddr_arbiter_tested": false,
+    "ble_business_protocol_tested": false,
+    "source_inputs_unchanged_during_run": true
+  },
+  "raw_store_regression": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-raw-store-v1/verification.json",
+      "sha256": "7d3e0bbf6a2e2aa62c1368dee0e122034c85a418adf534c24ce6c705f7f10407"
+    },
+    "scope": "raw storage component; BLE business owner and owner8 integration are external",
+    "owner_mux_instantiated": false,
+    "checks": [
+      94766,
+      93238
+    ],
+    "full_frames": 16384,
+    "max_fetch_bytes": 8112,
+    "actual_source_mutants_rejected": 5,
+    "reviewed_warning_count": 4,
+    "source_inputs_unchanged_during_run": true
+  },
+  "native_ddr_regression": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-native-ddr-v1/verification.json",
+      "sha256": "18a221c4f38e432ea5b69e66fa0f042fc36ec530d466f976e368184362955e6f"
+    },
+    "scope": "Actual maintained DDR queues/core/native bridge with legacy miters; DDR endpoint model, no PHY/hardware.",
+    "total_cases": 44,
+    "pipeline_cases": 27,
+    "bridge_fault_cases": 6,
+    "actual_source_mutants_rejected": 11,
+    "tag_bits": [
+      2,
+      3,
+      5
+    ],
+    "owners": [
+      8,
+      9
+    ],
+    "source_inputs_unchanged_during_run": true
+  },
+  "owner_lint": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-lint-v2/verification.json",
+      "sha256": "e28110ac7cf99a440f9059d5b703d6ce8c986f12a186a56f86115e562f1f83b8"
+    },
+    "strict_lint_clean": false,
+    "no_new_warnings": true,
+    "both_strict_exit_codes": 1,
+    "unchanged_warning": [
+      [
+        "UNSIGNED",
+        "37",
+        "28",
+        "Comparison is constant due to unsigned arithmetic"
+      ]
+    ],
+    "waivers_added": false
+  },
+  "preserved_failures": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-equivalence-v1",
+      "reason": "Exhaustive four-state completed; later full port inventory included an empty token from trailing comma. v2 excludes only empty token and checks actual 15 inputs plus 11 outputs."
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-top-v1",
+      "reason": "First three normal cases passed; first allocation mutant escaped because current project directory shadowed staged include. v2 compile cwd is the case stage; no RTL/assertion/constraint waiver."
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/owner-mux-owned-factor-lint-v1",
+      "reason": "Direct fixture filename produced additional DECLFILENAME warning; v2 compares byte-identical copies with matching module filenames, without waivers."
+    }
+  ],
+  "new_synthesis": false,
+  "new_pnr": false,
+  "resource_or_timing_improvement_claimed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "next_candidate": "Fresh W full synthesis/P&R consuming frozen new maintained source, followed by actual timing/CDC/PLL and formal business audio/video/recording-download validation. MIDI acknowledge hold path requires separate actual-source/VO/SDC identity review.",
+  "rollback": "Restore only original two output assignments from exact old fixture and prepare a new candidate identity; do not edit frozen W10 inputs or evidence."
+}

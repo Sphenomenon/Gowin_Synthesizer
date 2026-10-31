@@ -266,6 +266,8 @@ M12b／W10的[far完整物理测量](push2_workstation/usb_a/reports/DUAL138K_M1
 
 W10实际18级D输入控制路径的[PCM命令许可分解](push2_workstation/usb_a/reports/DUAL138K_PCM_CONTROL_ADMISSION_20261101.md)已完成：各操作复用相同校验但直接驱动其状态更新，原周期、采样、ID和末尾撤销优先级保留。7,811周期完整旧owner／512RAM对照、57bit许可证明、4负控和576四态组合通过，独立复核修复了首版未知strobes／ID差异；原8项含双率±2000ppm回归、描述符和正式D→完整效果→I2S／显示／PANIC仿真通过。新物理收益待整机候选测量，未上板。
 
+W10录音同域长链的[已持有事务许可因子化](push2_workstation/usb_a/reports/DUAL138K_RECORDING_OWNED_TRANSFER_20261101.md)只改owner的两个输出门控，保留即时故障、write／response冲突、范围／超时及全部状态。全域证明、16,777,216四态组合、2,547半边沿旧owner对照和11必要负控通过，原raw store与44项DDR队列／桥接回归通过；top分配负控的include cwd缺陷已纠正，原失败保留。未改SDC或预记物理收益。新W11 `bafd43c180d52b1c`已从822项锁prepare、645封存输入复验，四份新维护RTL确被实际编译消费，17项来源／15项DEMO回归通过，正全量综合；未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

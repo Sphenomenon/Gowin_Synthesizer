@@ -50,8 +50,17 @@ module workstation_recording_ddr_owner_mux #(
     wire open=rst_ni && channel_ready_i && !transport_fault_o;
     assign valid_o=open && state==IDLE && available;
     assign ready_o=valid_o && ready_i ? (chosen ? 2'b10:2'b01):2'b00;
-    assign native_accept_o=open && native_event ? (owner ? 2'b10:2'b01):2'b00;
-    assign response_o=open && read_return ? (owner ? 2'b10:2'b01):2'b00;
+    // An owned transfer excludes IDLE address admission and its timeout.
+    // Keep immediate transport and write/response protocol vetoes. The false
+    // arms retain the original four-state behavior before state initialization;
+    // their binary transfer predicates are zero.
+    wire owned_open=rst_ni && channel_ready_i && !fault_o && !transport_fault_i;
+    wire owned_native_allowed=native_event ?
+        (owned_open && !(response_i && active_write)) : (open && native_event);
+    wire owned_response_allowed=read_return ?
+        (owned_open && !invalid_native) : (open && read_return);
+    assign native_accept_o=owned_native_allowed ? (owner ? 2'b10:2'b01):2'b00;
+    assign response_o=owned_response_allowed ? (owner ? 2'b10:2'b01):2'b00;
     assign busy_o=state!=IDLE;
     initial begin
         if(BUDGET_CYCLES<2 || FIRST0>LAST0 || FIRST1>LAST1 ||
