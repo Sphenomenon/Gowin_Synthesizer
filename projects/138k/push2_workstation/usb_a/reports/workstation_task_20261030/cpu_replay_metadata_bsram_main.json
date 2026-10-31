@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "scope": "main-tree prefetched replay metadata BSRAM source integration and actual parser/C/APB regressions",
+  "author_commit": "681bf5efe17ec99c8d59933fb54ef92c1a468fc5",
+  "main_import_commit": "2224e1aa956c44c1f36d1455ca23146187493346",
+  "source_snapshots": 462,
+  "parser_results": {
+    "behavioral": {
+      "passed": true,
+      "half_cycle_comparisons": 103617,
+      "cycles": 51737,
+      "compared_bytes": 11680,
+      "all32_slots_hit": true,
+      "stdout": "PASS real parser metadata equivalence checks=103617 cycles=51737 bytes=11680 hit_mask=ffffffff\n/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-v1/tb_ble_replay_metadata_body.svh:118: $finish called at 517372000 (1ps)\n"
+    },
+    "official_sdpb": {
+      "passed": true,
+      "half_cycle_comparisons": 103617,
+      "cycles": 51737,
+      "compared_bytes": 11680,
+      "all32_slots_hit": true,
+      "stdout": "PASS real parser metadata equivalence checks=103617 cycles=51737 bytes=11680 hit_mask=ffffffff\n/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-v1/tb_ble_replay_metadata_body.svh:118: $finish called at 517372000 (1ps)\n"
+    }
+  },
+  "rtl_mutants": 4,
+  "business_checks": 1701,
+  "C_mutants": 15,
+  "compared_wire_block_messages": 136,
+  "clock_fixture": {
+    "timeprecision_ps": 1,
+    "cpp_step_ps": 1000,
+    "control_period_ns": 20,
+    "memory_period_ns": 14,
+    "historical_first_batch_control_period_ps": 20,
+    "historical_first_batch_memory_period_ns": 14,
+    "reconnect_hello_input_elapsed_ms": 65536,
+    "wire_bytes_normalized": false
+  },
+  "accepted_tests": 17,
+  "business_profile_tests": 8,
+  "staged_delta": {
+    "before": "custom138k-workstation-ae350-business-v1-b552eccbad9c5b0a",
+    "after": "custom138k-workstation-ae350-business-v1-1a806f236eaef843",
+    "staged_inputs": 614,
+    "enabled_inputs": 272,
+    "changed": {
+      "native_bluetooth/ble_protocol_command.v": {
+        "before": "e27e1dea4a07888b205b998be6e3b29141365f64605afaad1799aaeaf7214078",
+        "after": "d61d35dd0b0e4784d67f6e8da9fb94e68f8335c5275e602637f84b7f57568591"
+      },
+      "rtl/bluetooth/workstation_bluetooth.sv": {
+        "before": "cd0a056afc5af626fe4416b39568425e832cae330e9548cdfdc6073b7d04508e",
+        "after": "e438bbd980de6396b60ecf2ab3a0a406bd5db8f5d84f017b030b4014db5df54d"
+      },
+      "rtl/bluetooth/cpu_owner/ble_protocol_command.v": {
+        "before": "e27e1dea4a07888b205b998be6e3b29141365f64605afaad1799aaeaf7214078",
+        "after": "d61d35dd0b0e4784d67f6e8da9fb94e68f8335c5275e602637f84b7f57568591"
+      },
+      "rtl/bluetooth/cpu_owner/workstation_bluetooth.sv": {
+        "before": "cd0a056afc5af626fe4416b39568425e832cae330e9548cdfdc6073b7d04508e",
+        "after": "e438bbd980de6396b60ecf2ab3a0a406bd5db8f5d84f017b030b4014db5df54d"
+      }
+    }
+  },
+  "lock_refresh": "Only the two known CPU-owner RTL keys in the business profile; all other native profile locks retained.",
+  "metadata_bits": 2464,
+  "expected_metadata_sdpb": 3,
+  "read_write_conflict": "mutually exclusive parser states SESSION/LOOKUP vs CRC publication",
+  "cell_comparison": "/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-v1/cell-comparison",
+  "synthesis_performed": false,
+  "whole_workstation_resource_comparison": false,
+  "measured_cls_savings": false,
+  "physical_bsram_verified": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limits": [
+    "3 SDPB is an expected mapping, not a measured resource count; physical BSRAM and CLS require their own gates.",
+    "Per-slot/expiry/public-output timing is checked under behavioral and official GW5A SDPB models, including four compiled mutations.",
+    "The complete C/APB/raw-DDR business owner is unchanged and replayed with actual 20ns/14ns clocks; this proves function, not CPU deadlines.",
+    "Only two compiled RTL inputs and their two copied source counterparts changed among the 614 staged files.",
+    "CE probe physical process is a separate frozen candidate and is not part of this source milestone."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-replay-metadata-main-parent-v1",
+  "seal_sha256": "10113f9f67f68231d2bb12eeb83a756943c2870fd427da82c2b154688554ceb2",
+  "external_files": 930
+}
