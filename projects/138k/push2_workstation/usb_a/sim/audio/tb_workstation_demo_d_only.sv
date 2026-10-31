@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 module tb_workstation_demo_d_only;
+`include "sim/audio/fixtures/d_process_before_exact_mask.svh"
   reg clk=0,mclk=0,rst_n=0,mrst_n=0,run_memory=1;
   always #7 clk=~clk;
   always #10 if(run_memory)mclk=~mclk;
@@ -44,6 +45,16 @@ module tb_workstation_demo_d_only;
       .ready_i(1'b1),.hold_fence,.address_i(ddr_addr),.data_i(ddr_wdata),.is_fence(dma.state==8),
       .response_o(ddr_response),.data_o(ddr_rdata));
   integer frames=0,events=0,waited=0;
+  integer old_function_snapshots=0,delayed_parameter_frames=0;
+  reg signed [31:0] expected_capture_l,expected_capture_r;
+  always @(posedge clk)if(rst_n && dut.workstation.core_ce)begin
+    expected_capture_l=d_process_old_reference(dut.workstation.pcm_left_i,dut.workstation.d_crush,dut.workstation.d_drive);
+    expected_capture_r=d_process_old_reference(dut.workstation.pcm_right_i,dut.workstation.d_crush,dut.workstation.d_drive);
+    #1;
+    if(dut.workstation.held_pcm_l!==expected_capture_l || dut.workstation.held_pcm_r!==expected_capture_r)
+      $fatal(1,"D original core_ce snapshot changed");
+    old_function_snapshots=old_function_snapshots+1;
+  end
   task clocks(input integer n);repeat(n)@(negedge clk);endtask
   task event_send(input [17:0] data);begin
     event_data=data;event_valid=1;waited=0;
@@ -64,6 +75,27 @@ module tb_workstation_demo_d_only;
     while(!config_applied)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"config timeout");end
     if(applied_rate!=next_rate || fault)$fatal(1,"config ACK before all-rate agreement");rate=next_rate;clocks(2);
   end endtask
+  task delayed_parameter_frame(input signed [31:0] l,r,input [6:0] crush,drive);
+    reg signed [31:0] expected_l,expected_r;
+    begin
+      while(!ready)clocks(1);
+      // Hold the real DDR config fence, accept one immutable PCM slot, then
+      // change both controls while that pending sample awaits its new rate.
+      hold_fence=1;rate=!rate;pcm_l=l;pcm_r=r;request=1;clocks(1);request=0;
+      wait(dut.workstation.runtime_configuration.busy);
+      pcm_l=32'sh76543210;pcm_r=-32'sh76543210;
+      cc(20,crush);cc(21,drive);
+      if(!dut.workstation.runtime_configuration.busy || !dut.workstation.pending)
+        $fatal(1,"D deferred parameter case did not retain a pending sample");
+      expected_l=d_process_old_reference(l,crush,drive);
+      expected_r=d_process_old_reference(r,crush,drive);
+      hold_fence=0;waited=0;
+      while(!done)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"deferred parameter timeout");end
+      if(error || left_o!==expected_l || right_o!==expected_r)
+        $fatal(1,"D moved accepted PCM or core_ce parameter sampling across config drain");
+      delayed_parameter_frames=delayed_parameter_frames+1;frames=frames+1;clocks(2);
+    end
+  endtask
   initial begin
     clocks(4);rst_n=1;mrst_n=1;clocks(10);
     if(mode!=3 || dut.workstation.pcm_gain_o!=32768)$fatal(1,"D-only startup not actual PCM unity/modeD");
@@ -81,6 +113,9 @@ module tb_workstation_demo_d_only;
     if(dut.workstation.runtime_effects.effects.delay_stage.gain!=4096)$fatal(1,"CC22 depth was only boolean");
     cc(22,0);for(integer i=0;i<50;i=i+1)frame(32'sh12345678,-32'sh12345678);
     if(left_o!=32'sh12345678 || right_o!=-32'sh12345678)$fatal(1,"D momentary release lost dry PCM");
+    delayed_parameter_frame(32'sh12345678,-32'sh12345678,7'd31,7'd17);
+    delayed_parameter_frame(32'sh23456789,-32'sh23456789,7'd84,7'd32);
+    cc(20,0);cc(21,0);
     change_rate(1);for(integer i=0;i<300;i=i+1)frame(32'sh12345678,-32'sh12345678);
     if(left_o!=32'sh12345678 || right_o!=-32'sh12345678)$fatal(1,"44.1 dry PCM");
     cc(81,7);for(integer i=0;i<1200;i=i+1)frame(32'sh10000000,32'sh08000000);
@@ -98,7 +133,8 @@ module tb_workstation_demo_d_only;
     for(integer i=0;i<300;i=i+1)frame(32'sh12345678,-32'sh12345678);
     if(left_o!=32'sh12345678 || right_o!=-32'sh12345678)$fatal(1,"D did not resume after25K attach withoutNoteOn");
     if(deadline!=0 || unsupported!=0 || duplicates!=0 || note_drops!=0)$fatal(1,"D health counters");
-    $display("PASS demo_d_only frames=%0d events=%0d rate44=%0d full_effects=1 no_instrument_engines=1",frames,events,rate);$finish;
+    if(old_function_snapshots!=frames || delayed_parameter_frames!=2)$fatal(1,"D old-function/config sampling coverage");
+    $display("PASS demo_d_only frames=%0d events=%0d rate44=%0d full_effects=1 no_instrument_engines=1 old_function_snapshots=%0d deferred_parameter_frames=%0d",frames,events,rate,old_function_snapshots,delayed_parameter_frames);$finish;
   end
   initial begin #100000000;$fatal(1,"test watchdog");end
 endmodule

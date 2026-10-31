@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "stage": "D-function exact arithmetic and unchanged core_ce snapshot validation",
+  "passed": true,
+  "synthesis_verified": false,
+  "physical_timing_verified": false,
+  "hardware_accepted": false,
+  "resource_saving_claimed": false,
+  "added_sample_cycles": 0,
+  "input_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2",
+    "projects/138k/push2_workstation/usb_a/sim/audio/prove_d_process.py": "94144c3e60b36b549f8ce7a3db8fc42c173a3556806e0b5555341e25b410d689",
+    "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/d_process_before_exact_mask.svh": "b3490ae7c034bf254084490e97b1481ee12a70955dc7fefc5079e9cfc41b24c3",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_demo_d_only.py": "c08ac7fe7a562576717f4abc714eb6edd19303836ce612058b63b73ff920cb4a",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_demo_d_only.sv": "e0dde5dd6cc2b3166b3c34fb100ba454e7b8c7d6f38dcd48266e89fe93cf36de"
+  },
+  "reference": {
+    "candidate": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+    "prepared_project": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b/workstation/Prj1",
+    "consumed_source": "src/ae350/gw138k_event_workstation.sv",
+    "original_module_sha256": "238d1274e1ad5d724632607374f08a8f03a8fe9d4df26c69613f7dbb26de2646"
+  },
+  "evidence": {
+    "arithmetic": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/arithmetic-v2/verification.json",
+      "sha256": "90ed661018aa07867baba21084930958c4490ccf6280543a343c6695cdc566bf",
+      "passed": true
+    },
+    "render_and_retirement": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/demo-d-snapshot/verification.json",
+      "sha256": "968cfbb2de342bd556b8e459413f94ac0efc16fd2955e3f581b475e9da132cf4",
+      "passed": true
+    }
+  },
+  "old_function_sha256": "11247717c12f218bd37fe96d399cc6a6e1ae6b7aa6228388bd3c9a6d414742e2",
+  "new_function_sha256": "3c64039789e097306086e3bb015dc1cd2ec08027bfb2c646d3670d559433dbf5",
+  "arithmetic": {
+    "smt": [
+      {
+        "name": "crush_all_32bit_clipped_7bit_control",
+        "result": "unsat",
+        "input_bits": 39,
+        "seconds": 0.009716332890093327
+      },
+      {
+        "name": "drive_all_32bit_pcm_7bit_control",
+        "result": "unsat",
+        "input_bits": 39,
+        "seconds": 0.054406666895374656
+      },
+      {
+        "name": "saturation_all_64bit_amplified",
+        "result": "unsat",
+        "input_bits": 64,
+        "seconds": 0.002297084080055356
+      }
+    ],
+    "vectors": {
+      "count": 444064,
+      "directed_with_duplicates": 344064,
+      "random": 100000,
+      "seed": 13832241,
+      "clamped_outside_pcm32_boundary_seeds": 256,
+      "all_submitted_inputs_within_declared_domain": true,
+      "independent_integer_comparisons": true,
+      "stream_format": "<iBBII x,crush,drive,old,new",
+      "stream_sha256": "d3a5b3c52e8f8e3130be59f580799dd7aaf0785520818335418188fbb59f9713",
+      "mem_sha256": "de8d85ad54701fded00328faa18d4154340f36954998bd4cc5ba9e6d96a00ccd"
+    },
+    "python_version": "3.14.6 | packaged by conda-forge | (main, Aug 11 2026, 10:24:52) [Clang 20.1.8 ]",
+    "z3_version": "Z3 5.1.0.0",
+    "negative_mutations": {
+      "threshold_off_by_one": {
+        "rejected": true,
+        "exit_code": 1,
+        "log_sha256": "156f3d953a02027c9af5cfc80e64ef889f8fc89ca8c69494164a31ea47ff6d34"
+      },
+      "crush_zero_bypass_removed": {
+        "rejected": true,
+        "exit_code": 1,
+        "log_sha256": "55d6508cf14b8416ca968473ef33e7a62031a902659c74ffab8064bc3db156d0"
+      },
+      "drive_factor_off_by_one": {
+        "rejected": true,
+        "exit_code": 1,
+        "log_sha256": "9f80d90c968151ed7377cf8bdc44fc03dea2d72a0c2a007c3870ea8c3993fc1f"
+      },
+      "positive_saturation_off_by_one": {
+        "rejected": true,
+        "exit_code": 1,
+        "log_sha256": "a9404a2538bd45840742861037d70382459e1a3c6cb70ef92436a3d50053ac53"
+      }
+    }
+  },
+  "render_and_retirement_results": [
+    "PASS demo_d_only frames=2294 events=23 rate44=1 full_effects=1 no_instrument_engines=1 old_function_snapshots=2294 deferred_parameter_frames=2",
+    "PASS demo_retirement retired_reads=27 retired_writes=27 fft_bins=128"
+  ],
+  "prior_attempts": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/arithmetic",
+      "status": "failed runner mutation-anchor ambiguity after actual functions passed; threshold anchor matched10 and105; corrected exact comma suffix; no production arithmetic defect"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-old-numeric",
+      "status": "old numeric full function and new numeric full function both exposed the same existing serializer source-hold count defect; handled by separate serializer report"
+    }
+  ],
+  "remaining": [
+    "Full candidate synthesis and routed timing after source identity changes",
+    "Real HCI/SBC/A2DP ingress, HDMI pixels, DAC and board acceptance",
+    "No claimed resource reduction before new physical reports"
+  ]
+}

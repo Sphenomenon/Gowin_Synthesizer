@@ -45,7 +45,8 @@ def main():
     retired += [ROOT / path for path in ('rtl/services/workstation_controlled_services.sv',
         'rtl/audio/workstation_observation_consumers.sv', 'rtl/memory/workstation_sdp.sv',
         'sim/audio/tb_workstation_demo_retirement.sv')]
-    inputs = list(dict.fromkeys(selected + retired + [Path(__file__).resolve(), memory_reference]))
+    inputs = list(dict.fromkeys(selected + retired + [Path(__file__).resolve(), memory_reference,
+        ROOT / 'sim/audio/fixtures/d_process_before_exact_mask.svh']))
     inputs += sorted((project / 'sim/data').rglob('*.mem'))
     report = dict(passed=False, hardware_tested=False, synthesis_tested=False,
                   scope='D-only native render/effects/ordered-DDR and retired local REC/cue; true FFT/context retained',

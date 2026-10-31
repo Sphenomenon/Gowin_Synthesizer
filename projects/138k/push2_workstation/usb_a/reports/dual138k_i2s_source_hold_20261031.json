@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "stage": "source-hold completed-frame classification and runtime physical-pin simulation",
+  "passed": true,
+  "hardware_accepted": false,
+  "synthesis_verified": false,
+  "physical_timing_verified": false,
+  "resource_saving_claimed": false,
+  "input_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "abd0c52bfa1f638ff1c88ae449bd912e92a9a9148753d18d1260f232af3bf8a6",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/PCM_FRAME_CONTRACT.md": "ce31f132719559f438c78c4888c704dcb0531ffc18d2dc9624ccdc30858e0fd4",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_i2s_serializer.py": "bcab3c12306e4185a4cf6e3df5fa07d7c02f81ae0cc4d17e0dfbb3ba821f5c35",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_i2s_source_hold.sv": "edd964fdb89a1337823ad2dcf8e99d66bd9d3214db490591e623ee7d82f2f9c7",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_runtime.py": "2fd930e3775ccdef3650bd2e462663b1d2e1181b9cb21df1e4d28beb43a34231",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_ae350_pcm_runtime.sv": "01220dc15d3bb9021be6c76bc0690d4a7feaff076602598e1068b9704b1a0c31"
+  },
+  "semantics": {
+    "physical_clocks_continue": true,
+    "sequences_continue": true,
+    "current_frame_drains": true,
+    "held_and_guard_slots": "zero PCM with frame_error, increments source_error",
+    "actual_nonblocked_missing_response": "zero PCM with frame_error, increments underrun",
+    "stale_replies": "consumed and rejected",
+    "recovery": "new matched PCM after guard",
+    "parameters_and_public_panic_timing_changed": false
+  },
+  "evidence": {
+    "source_hold_before_after": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/serializer-source-fence/verification.json",
+      "sha256": "7a8b6649534b454cb3408a09b027172390a29cbc78439d91c190b0d3b3f3713b",
+      "passed": true
+    },
+    "new_numeric_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-source-fence/result.json",
+      "sha256": "304c56682a1634571f8e422660d581d1936b8e7c41eee454db86dafc2450d543",
+      "passed": true,
+      "run_log_sha256": "5bbbacce378ac694d58278cb35bc33dfcaaf0b5384bed9eb9968a54cd8512909",
+      "result_line": "PASS D real APB/CDC owner, exact old core_ce snapshots, complete effects, I2S both rates/PANIC: physical=1918 snapshots=1913 display_snapshots=1917 panic_cases=12 inflight_panics=10 dry48=143 dry44=143 drive48=32 drive44=32 crush48=32 crush44=32 wet48=547 wet44=547"
+    },
+    "old_numeric_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-source-fence-old-numeric/result.json",
+      "sha256": "c0491452e7cea808d0ce690360502d5bcc7b369feae3f6e721d640d7e0524255",
+      "passed": true,
+      "run_log_sha256": "251e0ce8dc44cc9097605c26dc988a1bb5f11cf8818b55ceb58fe622e12db885",
+      "result_line": "PASS D real APB/CDC owner, exact old core_ce snapshots, complete effects, I2S both rates/PANIC: physical=1918 snapshots=1913 display_snapshots=1917 panic_cases=12 inflight_panics=10 dry48=143 dry44=143 drive48=32 drive44=32 crush48=32 crush44=32 wet48=547 wet44=547"
+    },
+    "generic_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/legacy-owner-source-fence/result.json",
+      "sha256": "4483f9aeb5aa5acf769a57cbeae74fdf71b650112811695f1d5d86e14aaf1355",
+      "passed": true,
+      "run_log_sha256": "3216f155fd1b8efb6797d3774359973a2e5ad9de67b8dcd708afa1509c5485e0",
+      "result_line": "PASS AE350 PCM real APB/CDC owner, DSP/chorus, one-volume final PCM, I2S, MIDI retention, CPU/session fence, TF and both rates: physical=       1454 good=       1436 errors=         18 direct_pcm=        119 half_pcm=         37 history=          9 wet=        446"
+    }
+  },
+  "before": {
+    "old_numeric_original_serializer": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-old-numeric/run.log",
+      "sha256": "ba7861be10b00357b6963f22397cab4a7149776cc2f581f4c9321fe5f3e98f3f",
+      "result": "failed strict underrun==0; all12 PANIC phases had no underrun increment"
+    },
+    "new_numeric_original_serializer": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-v7/run.log",
+      "sha256": "ba7861be10b00357b6963f22397cab4a7149776cc2f581f4c9321fe5f3e98f3f",
+      "result": "failed strict underrun==0; all12 PANIC phases had no underrun increment"
+    },
+    "per_transition_diagnostics": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-v8-diagnostics/run.log",
+      "sha256": "462a517f09d41afcceb17714f990d7b71c44d63ff42204f6762224e75565381a",
+      "result": "failed strict underrun==0; all12 PANIC phases had no underrun increment"
+    },
+    "classification": {
+      "underruns_per_local_rate": 4,
+      "total_observed_in_two_rate_run": 8,
+      "local_reset_clears_counter_between_rates": true,
+      "per_rate_owner_begin": 2,
+      "per_rate_owner_cancel": 2,
+      "cause": "source guard intentionally revoked next PCM but playing entered missing-deadline branch; blocked completed old good frame could also reassert running"
+    }
+  },
+  "after": {
+    "source_hold_bench": {
+      "per_rate_completed_frames": 53,
+      "per_rate_good_frames": 28,
+      "per_rate_zero_error_frames": 25,
+      "per_rate_source_errors": 24,
+      "per_rate_deliberate_actual_underruns": 1,
+      "rates": [
+        48000,
+        44100
+      ],
+      "hold_bit_phases": [
+        3,
+        24,
+        51
+      ],
+      "source_sha256": "abd0c52bfa1f638ff1c88ae449bd912e92a9a9148753d18d1260f232af3bf8a6",
+      "bench_sha256": "edd964fdb89a1337823ad2dcf8e99d66bd9d3214db490591e623ee7d82f2f9c7",
+      "old_source_same_bench": "fails blocked running/prefill assertion"
+    },
+    "real_d_runtime": {
+      "physical_frames": 1918,
+      "old_numeric_core_ce_comparisons": 1913,
+      "display_snapshots_compared_to_completed_i2s": 1917,
+      "panic_cases": 12,
+      "inflight_panic_cases": 10,
+      "per_rate_dry_frames": 143,
+      "per_rate_driven_frames": 32,
+      "per_rate_crushed_frames": 32,
+      "per_rate_wet_frames": 547,
+      "final_underrun_count": 0,
+      "health": "fault,observation_drop,record_drop,midi_drop,display_fault,deadline_miss all0; zero/error frames retained"
+    },
+    "generic_runtime": {
+      "physical_frames": 1454,
+      "good_frames": 1436,
+      "explicit_error_frames": 18,
+      "direct_pcm_frames": 119,
+      "half_volume_pcm_frames": 37,
+      "history_clears": 9,
+      "wet_products": 446
+    }
+  },
+  "additional_validation": [
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_i2s_serializer.py",
+      "result": "2tests PASS; legacy three local streams retain genuine underrun1/rejected3 each; enabled source-hold both rates PASS",
+      "runner_sha256": "bcab3c12306e4185a4cf6e3df5fa07d7c02f81ae0cc4d17e0dfbb3ba821f5c35"
+    },
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_ae350_pcm_boundaries.py",
+      "result": "2tests PASS; held session tuple, asynchronous revoke, current-frame completion, cached/late discard, continuous zero slots and guarded recovery",
+      "runner_sha256": "8ad85218ce4f9fa03d048292ac9860716e3d5fd891d931b8a0ce60ad6e2bf1dc"
+    },
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_pcm_frame_bridge.py",
+      "result": "PASS two oscillator offsets; each accepted463/render453/delivered451, good436/error24; source-error4, deadline/pressure/drain/stopped-high recovery",
+      "runner_sha256": "5c037910985a23a41b07d2e028c2285fc2f631fc73a90bf42cc34532f066bcbe"
+    },
+    {
+      "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_i2s.py",
+      "result": "PASS actual default PDN4/startup1028;48->44.1->48;4streams34frames;CDC/drain/prefill/running and lost-clock recovery",
+      "runner_sha256": "26ae1e1d27704d0b00bc842f26c5df018853edc779353025439602899c38e84a"
+    }
+  ],
+  "prior_fixture_corrections": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime",
+      "description": "fixture demanded nonzero chorus after228frames before unchanged576frame history fill; extended real APB feed"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-v2",
+      "description": "fixture asserted lifecycle flags without formal valid/data/ready; corrected actual USB handshake"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-v4",
+      "description": "second-rate dry comparison retained previous wet controls; dry established through real CC81 and existing slew settling"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-d-process-exact-v1/d-runtime-v6",
+      "description": "all numerical/I2S/display/PANIC comparisons passed but strict underrun assertion exposed production source-hold classification defect; assertion retained"
+    }
+  ],
+  "remaining": [
+    "Actual candidate synthesis, P&R and board verification",
+    "Real A2DP/HCI/SBC ingress and HDMI pixel capture",
+    "Recording authority and real downloader coexistence acceptance",
+    "Physical shared-CDC timing constraint and board audit"
+  ]
+}

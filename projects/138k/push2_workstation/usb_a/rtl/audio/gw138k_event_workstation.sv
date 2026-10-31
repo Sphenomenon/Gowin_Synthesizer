@@ -540,14 +540,22 @@ module gw138k_event_workstation #(
   function automatic signed [31:0] d_process(input signed [31:0] x,input [6:0] crush,drive);
     reg signed [63:0] amplified;
     reg signed [31:0] clipped;
-    integer shift;
+    reg [31:0] keep_mask;
     begin
-      amplified=($signed(x)*$signed({1'b0,12'(128+int'(drive)*8)}))>>>7;
-      if(amplified>64'sd2147483647)clipped=32'sh7fffffff;
-      else if(amplified< -64'sd2147483648)clipped=32'sh80000000;
-      else clipped=amplified[31:0];
-      shift=crush==0 ? 0 : 16+int'(crush)*12/127;
-      d_process=($signed(clipped)>>>shift)<<<shift;
+      // Cancel the exact common factor eight before the signed multiply.
+      // Keep the 64-bit context: no product truncation or added sample stage.
+      amplified=($signed(x)*$signed({1'b0,8'(16+int'(drive))}))>>>4;
+      if(amplified[63:31]=={33{amplified[31]}})clipped=amplified[31:0];
+      else clipped=amplified[63] ? 32'sh80000000 : 32'sh7fffffff;
+      // (clipped >>> (16+floor(12*crush/127))) <<< that same shift
+      // clears a constant prefix. These exact thresholds avoid a divide and
+      // two variable shifters; crush zero still retains every original bit.
+      keep_mask={4'hf,crush<=7'd126,crush<=7'd116,crush<=7'd105,
+          crush<=7'd95,crush<=7'd84,crush<=7'd74,crush<=7'd63,
+          crush<=7'd52,crush<=7'd42,crush<=7'd31,crush<=7'd21,
+          crush<=7'd10,16'd0};
+      if(crush==0)keep_mask=32'hffffffff;
+      d_process=clipped & keep_mask;
     end
   endfunction
   always_ff @(posedge clk_i or negedge rst_ni) begin

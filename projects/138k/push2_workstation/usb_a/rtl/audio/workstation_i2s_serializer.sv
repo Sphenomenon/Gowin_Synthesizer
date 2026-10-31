@@ -72,7 +72,7 @@ module workstation_i2s_serializer #(
     assign mclk_o = clk_i;
     assign pdn_no = rst_ni && configured && startup_frames >= STARTUP_BITS'(PDN_HOLD_FRAMES);
     assign smute_o = !pdn_no || !startup_done || !playing;
-    assign prefill_ready_o = configured && startup_done && have_next && !quiesce_i;
+    assign prefill_ready_o = configured && startup_done && have_next && !quiesce_i && !source_blocked;
     assign sample_ready_o = configured && !have_next && !quiesce_i;
     assign request_44k1_o = mode_44k1;
     assign request_epoch_o = epoch;
@@ -153,7 +153,7 @@ module workstation_i2s_serializer #(
                             frame_error_o <= current_error;
                             frame_pcm_o <= current_pcm;
                             frame_sequence_o <= current_sequence;
-                            if (!current_error && !quiesce_i) output_running_o <= 1;
+                            if (!current_error && !quiesce_i && !source_blocked) output_running_o <= 1;
                         end
                         if (quiesce_i) begin
                             playing <= 0;
@@ -165,7 +165,13 @@ module workstation_i2s_serializer #(
                             current_pcm <= next_available && !available_error ? available_pcm : 32'd0;
                             current_sequence <= wanted_sequence;
                             current_error <= !next_available || available_error;
-                            if (!next_available)
+                            // A source fence deliberately revokes prefetched
+                            // PCM. Keep the physical slot/sequence continuous
+                            // with an explicit zero/error frame, classified
+                            // separately from an unfulfilled render deadline.
+                            if (source_blocked)
+                                source_error_count_o <= saturating_increment(source_error_count_o);
+                            else if (!next_available)
                                 underrun_count_o <= saturating_increment(underrun_count_o);
                             else if (available_error)
                                 source_error_count_o <= saturating_increment(source_error_count_o);

@@ -242,6 +242,8 @@ M10b／W9b及其各自新far变体现已完成[四套完整物理测量](push2_w
 
 W的[HCI池长度比较修正](push2_workstation/usb_a/reports/DUAL138K_HCI_POOL_COMPARE_20261031.md)已完成源码验证：先并行比较两个池上限，再选择单比特结果，三处句柄查询保留完整12位匹配。118,730周期完整旧版对照、270,336独立向量、全域符号证明及4个破坏负控通过，完整owner／event与native UART8E1／H5回归通过；不增加延迟或改变信用／错误优先级。新候选尚未综合／P&R，原候选证据保持封存，物理收益及硬件验收仍待实测。
 
+W的[D精确组合运算改写](push2_workstation/usb_a/reports/dual138k_d_process_exact_20261031.md)通过3项全域证明、444,064组实际旧／新函数与独立整数比较及4个破坏负控；2294个完整效果帧保留原PCM／参数采样时刻。新增正式APB／CDC／I2S测试定位并修复[I2S源切换保护窗口](push2_workstation/usb_a/reports/dual138k_i2s_source_hold_20261031.md)：连续零值error槽计入明确source_error，真正缺样仍计underrun，保护期running／prefill不冒脉冲。双率逐bit测试及新旧数值整链均通过，1918个物理模型完成帧、1917个显示快照、12次PANIC一致；通用runtime与默认1028帧启动测试通过。此为离线正式链路验证，仍不等于真实蓝牙／HDMI像素／DAC或硬件验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
