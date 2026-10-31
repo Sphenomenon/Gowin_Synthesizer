@@ -2,6 +2,7 @@
 """Prove accepted START factoring against the complete, immutable W11 raw store."""
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -449,7 +450,14 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(); output = args.output.resolve(); output.mkdir(parents=True, exist_ok=False)
     require(sha(REFERENCE) == OLD_SHA, 'complete W11 reference identity')
-    old, new = REFERENCE.read_text(), SOURCE.read_text()
+    clear_proof = Path(__file__).with_name('prove_ble_raw_clear_quiescent_case.py')
+    clear_baseline = Path(__file__).with_name('fixtures') / 'workstation_ble_raw_ddr_store_before_clear_case.sv'
+    clear_spec = importlib.util.spec_from_file_location('clear_inverse', clear_proof)
+    clear = importlib.util.module_from_spec(clear_spec); clear_spec.loader.exec_module(clear)
+    require(sha(clear_baseline) == clear.BASELINE_SHA256, 'immutable pre-CLEAR reference identity')
+    old, new = REFERENCE.read_text(), clear.restore_before_clear(SOURCE.read_text())
+    require(new == clear_baseline.read_text(), 'exact CLEAR inverse equals immutable W13 source')
+    normalized = output / 'normalized-before-clear.sv'; normalized.write_text(new)
     structure = source_equations(old, new)
     proof = symbolic()
     ports, states, nets = inventories(old)
@@ -461,16 +469,18 @@ def main():
     (output / 'directed.sv').write_text(directed)
     (output / 'four-state.sv').write_text(four_state_bench(structure['source_equations'], new))
     deps = [ROOT / 'rtl/memory/workstation_sdp.sv', ROOT / 'rtl/music/music_async_fifo.sv', BRIDGE]
-    source_paths = (SOURCE, REFERENCE, TB, BRIDGE, *deps[:2], Path(__file__).resolve())
+    source_paths = (SOURCE, REFERENCE, TB, BRIDGE, *deps[:2], Path(__file__).resolve(), clear_proof, clear_baseline)
     hashes = {str(path.relative_to(ROOT)):sha(path) for path in source_paths}
     result = dict(passed=False, complete_W11_source_structure=structure, full_domain_two_state=proof,
                   whole_twin_inventory=inventory, directed_cases=directed_cases, inputs_sha256=hashes,
+                  maintained_source_sha256=sha(SOURCE), normalized_pre_CLEAR_sha256=sha(normalized),
+                  exact_reviewed_CLEAR_inverse=True, source_implementation=True,
                   synthesis=False, pnr=False, hardware_tested=False, sram_programmed=False, flash_written=False,
                   timing_or_resource_improvement_claimed=False, cases={})
     try:
         for name, params in [('fifo8_async_memory', [('FIFO_BITS',8),('MEM_HALF',7)]), ('fifo3_100mhz_memory', [('FIFO_BITS',3),('MEM_HALF',5)])]:
-            result['cases'][name] = simulate(output, name, [output/'twin.sv', SOURCE, reference_copy, *deps], 'tb_ble_raw_ddr_store', params)
-        result['cases']['arbitrary_state'] = simulate(output, 'arbitrary-state', [output/'directed.sv', SOURCE, reference_copy, *deps], 'directed', timeout=180)
+            result['cases'][name] = simulate(output, name, [output/'twin.sv', normalized, reference_copy, *deps], 'tb_ble_raw_ddr_store', params)
+        result['cases']['arbitrary_state'] = simulate(output, 'arbitrary-state', [output/'directed.sv', normalized, reference_copy, *deps], 'directed', timeout=180)
         mutants = [
             ('drop_native_veto', '                       unused_submitted || native_accept_i || read_response_i)begin end', '                       unused_submitted || read_response_i)begin end'),
             ('drop_submitted_veto', '                       unused_submitted || native_accept_i || read_response_i)begin end', '                       native_accept_i || read_response_i)begin end'),

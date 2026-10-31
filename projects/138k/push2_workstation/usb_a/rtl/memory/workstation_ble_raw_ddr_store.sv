@@ -354,6 +354,28 @@ module workstation_ble_raw_ddr_store #(
             end
         endcase
     end
+    // Cache-only proposal: the CLEAR completion assignments remain in their
+    // original sequential position. Only a known quiescent slot uses the exact
+    // immediate fault cofactor; unknown quiescence retains the complete guard.
+    reg clear_initialize;
+    always @* begin
+        clear_initialize=0;
+        case(memory_quiescent)
+            1'b0:begin end
+            1'b1:begin
+                if(memory_clear_pending && fifo_consumed==memory_clear_target &&
+                   !fifo_read_valid && !memory_channel_fault &&
+                   !(transport_fault_i || native_protocol_fault_o ||
+                     unused_submitted || native_accept_i || read_response_i))
+                    clear_initialize=1;
+            end
+            default:begin
+                if(memory_clear_pending && fifo_consumed==memory_clear_target &&
+                   !fifo_read_valid && memory_quiescent && !memory_channel_fault && !memory_fault_now)
+                    clear_initialize=1;
+            end
+        endcase
+    end
     wire clear_fifo_pop=memory_clear_pending && fifo_consumed!=memory_clear_target;
     wire normal_fifo_pop=memory_active && pack_frames<8;
     assign fifo_read_ready=memory_reset_n && !memory_channel_fault && !memory_fault_now &&
@@ -528,8 +550,7 @@ module workstation_ble_raw_ddr_store #(
                 memory_generation<=command_generation;memory_next_index<=0;
                 memory_committed<=0;write_address<=BASE_APP;
             end
-            if(memory_clear_pending && fifo_consumed==memory_clear_target &&
-               !fifo_read_valid && memory_quiescent && !memory_channel_fault && !memory_fault_now)begin
+            if(clear_initialize)begin
                 memory_clear_pending<=0;memory_command_active<=0;memory_empty<=1;memory_closed<=1;
                 memory_next_index<=0;memory_committed<=0;memory_fetch_cancel<=0;
                 completion_generation<=memory_generation;completion_committed<=0;

@@ -334,6 +334,8 @@ M15 `D211010D` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL13
 
 原生音频的[采样准入同周期cofactor维护阶段](push2_workstation/usb_a/reports/DUAL138K_AUDIO_SAMPLE_ADMISSION_20261101.md)已完成：仅core_ce组合表达式使用实际dispatch互斥和已有quiescence，保留全部取消／配置／fault／效果栅栏及X/Z原表达式，无状态／周期变化。二态／四态证明及负控、M完整50输出／31内部边界115,929,947半周期、48,691请求与48,645帧独立湿声模型通过；W／legacy和原event／effect门全部通过，warning数量按实记录。89份最终证据重验，另将157项当时输入以内容hash保存到`audio-core-ce-maintained-input-snapshot-v1`（snapshot SHA `28b10a0359f0d4a215ac2cb9104c8e1b88ad9a844c03ac522245693ac76c73eb`），后续chorus演进不改本阶段证据。两锁待统一刷新，未预记实际映射／资源／routed收益或硬件验收。
 
+W的[raw CLEAR完成许可维护阶段](push2_workstation/usb_a/reports/DUAL138K_RAW_CLEAR_CASE_20261101.md)已完成：实际源码`39ae3b91…290b`仅新增组合许可并替换原CLEAR guard，全部NBA位置／右值／顺序及原fault／超时保留。二态UNSAT、16,384四态guard、16,777,216实际fault组合、661,577完整twin边沿、36定向／4096任意四态及4负控通过；旧W11／W12 START门以严格CLEAR逆变换继续全通过，未改旧fixture或16项helper。原raw、BLE完整对象／协议／27负控、authority及来源17项回归通过，唯一生产raw pin同步。54实际输入、331证据和48个内容hash快照blob重验；两锁待统一刷新，CLEAR实际映射／资源／routed收益另验，far最差fetch_address CE不在本赋值块内，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
