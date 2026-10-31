@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "stage": "source_implementation_and_offline_equivalence_only",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": "271e3d701eb8f84e238ac9ccf3114c2669ef44e09d56407fc22afb1e5e9785ea",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "02dc68255bad7182d6b1616f3809c53b672887726fbb69790a58271183700787",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_identity_compare.py": "9919c122d78c934df3d5490b121496d2aabf3b61727a65cfcbc62ab6c5aca724"
+  },
+  "triggering_actual_candidate": "W11 D2110101",
+  "triggering_path": {
+    "source": "u_bluetooth/u_core/owner/decoder/handle_o_2_s0/Q",
+    "destination": "u_bluetooth/u_core/owner/host_rx/pending[0]_15_s0/CE",
+    "slack_ns": -4.876,
+    "data_delay_ns": 24.676,
+    "cell_ns": 9.106,
+    "route_ns": 15.265,
+    "tC2Q_ns": 0.306,
+    "logic_levels": 26,
+    "actual_VG_and_VO_matched_path_cells": 55,
+    "actual_comparators": [
+      {
+        "owner": "native close generation handle selection",
+        "width": 12,
+        "ALU_MODE": 3
+      },
+      {
+        "owner": "host RX disconnect generation identity",
+        "width": 32,
+        "ALU_MODE": 3
+      }
+    ],
+    "evidence_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-hci-host-rx-rca-v1",
+    "summary_sha256": "298e4a7e4d51287d86440c451bbd00029d973e5069552821ff7d54473687c030"
+  },
+  "change": {
+    "native_close_handle_groups": [
+      8,
+      4
+    ],
+    "host_disconnect_generation_groups": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "group_outputs_kept": true,
+    "existing_last_match_priority_default_zero_and_control_order_unchanged": true,
+    "new_state_or_cycles": 0,
+    "interfaces_credit_or_business_contracts_changed": false,
+    "other_production_bytes_unchanged_against_pinned_W10_plus_reviewed_identity_changes": true
+  },
+  "verification": {
+    "whole_module_compare": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-kept-group-whole-compare-v1/verification.json",
+      "sha256": "3a6a8c9f0f600734912befcd2df625c68bf75cee978a5e56a7797d0896c7f4fc",
+      "relation_laws": {
+        "12": {
+          "result": "UNSAT",
+          "free_bits": 24,
+          "eight_bit_groups": "UNSAT"
+        },
+        "16": {
+          "result": "UNSAT",
+          "free_bits": 32,
+          "eight_bit_groups": "UNSAT"
+        },
+        "32": {
+          "result": "UNSAT",
+          "free_bits": 64,
+          "eight_bit_groups": "UNSAT"
+        }
+      },
+      "modules": {
+        "host_rx_owner": {
+          "outputs": 33,
+          "states": 39,
+          "summaries": [
+            "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822",
+            "IDENTITY TWIN cycles=17674 outputs=33 states=39"
+          ]
+        },
+        "native_transport": {
+          "outputs": 33,
+          "states": 2716,
+          "summaries": [
+            "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+            "IDENTITY TWIN cycles=6545 outputs=33 states=2716"
+          ]
+        }
+      },
+      "finite_four_state": {
+        "vectors_by_width": {
+          "12": 601,
+          "32": 1651
+        },
+        "comparisons_per_vector": 2,
+        "summary": "PASS grouped finite four-state checks=2252\n/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-kept-group-whole-compare-v1/grouped-four-state/bench.sv:2296: $finish called at 2252 (1s)",
+        "source_boundaries_from_actual_RTL": true
+      },
+      "negative_controls": 11,
+      "all_rejected": true
+    },
+    "host_rx": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-kept-group-host-rx-v1/verification.json",
+      "sha256": "6e600be1fe2ad79be58b4f99461061b802cf721a375ce96f04f71f3efb1d3f0c",
+      "baseline": {
+        "summary": "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822",
+        "checks": 160228
+      },
+      "strict_lint": "passed_Wall_no_waivers",
+      "negative_controls": 13,
+      "invalid_parameters": 8
+    },
+    "native": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-kept-group-native-v1/verification.json",
+      "sha256": "95a4b39f5da4fe79a3ce0cce1502124aa92257bd6b1b45089336e31ec2ed9213",
+      "baseline": {
+        "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+        "checks": 268
+      },
+      "checks": null,
+      "negative_controls": 11,
+      "uart": {
+        "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+        "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+        "patch_bytes": 253,
+        "physical_uart": true,
+        "physical_board": false
+      }
+    },
+    "git_diff_check": "PASS"
+  },
+  "physical_gain_measured_for_new_source": false,
+  "full_synthesis_or_PNR_of_new_source_completed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "remaining": [
+    "Refresh next candidate source lock and prepare actual consuming sources",
+    "Full synthesis, P&R and strict physical gates on the changed source",
+    "Actual D audio, 25K, HDMI/I2S and recording/download hardware acceptance"
+  ],
+  "rollback": "Revert only the two grouped comparison blocks and their 2+1 predicate replacements; W11 sealed candidates and M13 physical candidates remain unchanged."
+}

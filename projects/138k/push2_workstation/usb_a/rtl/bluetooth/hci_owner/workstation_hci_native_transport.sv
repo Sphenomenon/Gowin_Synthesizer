@@ -222,6 +222,17 @@ module workstation_hci_native_transport #(
     assign tx_handle={tx_header[1][3:0],tx_header[0]};
     // Preserve the existing last-match priority while mapping handle tests
     // as bitwise reductions before the selected generation fans out.
+    // Keep eight-bit compare groups separate from the final reduction so
+    // the mapper cannot rebuild a full-width equality carry chain.
+    (* syn_keep=1 *) wire [3:0] close_handle_changed_groups;
+    wire [1:0] close_handle_changed;
+    for(genvar identity_handle=0;identity_handle<2;identity_handle=identity_handle+1)begin:close_identity
+        assign close_handle_changed_groups[identity_handle*2]=
+            |(known_handles[identity_handle*12+:8]^decoder_handle[0+:8]);
+        assign close_handle_changed_groups[identity_handle*2+1]=
+            |(known_handles[identity_handle*12+8+:4]^decoder_handle[8+:4]);
+        assign close_handle_changed[identity_handle]=|close_handle_changed_groups[identity_handle*2+:2];
+    end
     always @* begin
         br_slot=-1;tx_handle_slot=-1;close_slot=-1;
         current_br_generation=0;current_br_handle=0;close_generation=0;
@@ -230,7 +241,7 @@ module workstation_hci_native_transport #(
                 br_slot=at;current_br_generation=known_generations[32*at+:32];current_br_handle=known_handles[12*at+:12];
             end
             if(known_active[at] && !(|(known_handles[12*at+:12]^tx_handle)))tx_handle_slot=at;
-            if(known_active[at] && !(|(known_handles[12*at+:12]^decoder_handle)))begin
+            if(known_active[at] && !close_handle_changed[at])begin
                 close_slot=at;close_generation=known_generations[32*at+:32];
             end
         end

@@ -282,6 +282,8 @@ W11的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_
 
 W11最差PCM路径的[physical epoch四组比较](push2_workstation/usb_a/reports/dual138k_pcm_physical_groups_20261101.md)已实施并验证。实际VG／VO证实原32位XOR仍被映射为NE串行carry；现仅该比较用四组8位 `syn_keep` net，其余许可和位图清理优先级不变。完整64位二态／128符号位四态证明、1,536实际四态向量、完整owner对照及默认双率漂移、正式D APB→I2S回归均通过。新owner `3342a94c…cff837`等待W12实际编译及物理测量，不预记收益。
 
+W11真实50MHz长链的[HCI比较分组](push2_workstation/usb_a/reports/DUAL138K_HCI_KEPT_GROUPS_20261101.md)已完成：仅将先后串行的12位handle和32位generation比较加入8位组保留边界，原last-match、默认值、信用／租约及周期不变。完整host／native旧新模块、原160,228／268业务检查、全部原及新增负控、二态全域关系与4,504次有限四态比较通过，真实UART8E1／H5仿真通过。两份新维护源等待W12实际消费，是否阻止carry重建及真实路由收益仍待综合／P&R检查。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

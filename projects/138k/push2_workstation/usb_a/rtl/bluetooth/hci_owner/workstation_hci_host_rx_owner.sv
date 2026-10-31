@@ -87,6 +87,18 @@ module workstation_hci_host_rx_owner #(
     end
     // Keep identity tests as bitwise trees, including the late disconnect
     // generation, rather than a serial equality carry chain after selection.
+    // Preserve eight-bit boundaries: a full-width XOR reduction is otherwise
+    // recognized as another equality carry chain by the device mapper.
+    (* syn_keep=1 *) wire [HANDLE_SLOTS*4-1:0] disconnect_generation_changed_groups;
+    wire [HANDLE_SLOTS-1:0] disconnect_generation_changed;
+    for(genvar identity_handle=0;identity_handle<HANDLE_SLOTS;identity_handle=identity_handle+1)begin:disconnect_identity
+        for(genvar identity_group=0;identity_group<4;identity_group=identity_group+1)begin:g_generation
+            assign disconnect_generation_changed_groups[identity_handle*4+identity_group]=
+                |(generations[identity_handle][identity_group*8+:8]^disconnect_generation_i[identity_group*8+:8]);
+        end
+        assign disconnect_generation_changed[identity_handle]=
+            |disconnect_generation_changed_groups[identity_handle*4+:4];
+    end
     always @* begin
         rx_owner=-1;free_slot=-1;free_count=0;release_slot=-1;release_owner=-1;
         disconnect_slot=-1;return_candidate=-1;owner_drift=0;invariant_bad=0;total_outstanding=0;
@@ -97,7 +109,7 @@ module workstation_hci_host_rx_owner #(
         for(integer at=0;at<HANDLE_SLOTS;at=at+1)begin
             if(known_active_i[at]&&!(|({4'd0,known_handles_i[12*at+:12]}^rx_handle_i)))rx_owner=at;
             if(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
-                !(|(generations[at]^disconnect_generation_i)))disconnect_slot=at;
+                !disconnect_generation_changed[at])disconnect_slot=at;
             if(release_slot!=-1&&!(|(handles[at]^lease_handles[release_slot]))&&
                 !(|(generations[at]^lease_generations[release_slot])))release_owner=at;
             if(pending[at]!=0&&return_candidate==-1)return_candidate=at;
@@ -106,7 +118,7 @@ module workstation_hci_host_rx_owner #(
             if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
                 (|(generations[at]^known_generations_i[32*at+:32])))&&
                 !(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
-                    !(|(generations[at]^disconnect_generation_i))))owner_drift=1;
+                    !disconnect_generation_changed[at]))owner_drift=1;
         end
         if({16'd0,controller_budget_o}+total_outstanding!={16'd0,CAPACITY})invariant_bad=1;
     end
