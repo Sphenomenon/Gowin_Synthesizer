@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "owning_PCM_physical_epoch_groups_source_verification",
+  "source": {
+    "path": "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+    "sha256": "3342a94cfd4e103efbb11808c5753aa8839069634ebf5d78ed80c0dab9cff837",
+    "W11_consumed_sha256": "a28f84ee8ba95e8aa0a3ea7faf764f9c5cbcaf40dc25e13f17f01871ce5645ae"
+  },
+  "test": {
+    "path": "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_physical_groups.py",
+    "sha256": "bdb40179b19f0f8e7dd71dcb0edc3138405b2e57e5842ff01b05437dfd00bb99"
+  },
+  "trigger": {
+    "candidate": "W11 0xD2110101",
+    "physical_output": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-v1",
+    "from": "u_managed/runtime/compute_epoch_7_s0/Q",
+    "to": "u_managed/runtime/cpu_pcm.owner/written[2]_11_s1/CE",
+    "setup_slack_ns": -5.018,
+    "data_delay_ns": 17.793,
+    "logic_levels": 20,
+    "cell_ns": 5.796,
+    "route_ns": 11.691,
+    "clock_to_q_ns": 0.306,
+    "launch_clock_route_ns": 3.139,
+    "capture_clock_route_ns": 3.142,
+    "clock_skew_ns": 0.003,
+    "period_ns": 13.021,
+    "routed_serial_comparison": "ALU_MODE=3 NE for active_physical versus physical compute epoch; first path traverses bit7 through bit31"
+  },
+  "CE_endpoint": {
+    "local_LUT_cofactors": {
+      "vg:n5320_s4": {
+        "INIT": "16'h0100",
+        "ports": {
+          "F": "n5320_10",
+          "I0": "accepted_start",
+          "I1": "applied_id_31_8",
+          "I2": "tail_slot_1_10",
+          "I3": "failed_9"
+        },
+        "all_binary_cofactors_checked": 16
+      },
+      "vg:n5576_s3": {
+        "INIT": "16'hBF00",
+        "ports": {
+          "F": "n5576_9",
+          "I0": "tail_slot[0]",
+          "I1": "tail_slot[1]",
+          "I2": "n21597_4",
+          "I3": "n5320_10"
+        },
+        "all_binary_cofactors_checked": 16
+      },
+      "vg:written[2]_11_s3": {
+        "INIT": "8'h8F",
+        "ports": {
+          "F": "written[2]_11_8",
+          "I0": "written[0]_11_11",
+          "I1": "written[2]_127_9",
+          "I2": "n5576_9"
+        },
+        "all_binary_cofactors_checked": 8
+      },
+      "vo:n5320_s4": {
+        "INIT": "16'h0100",
+        "ports": {
+          "I0": "u_managed/runtime/cpu_pcm.owner/accepted_start",
+          "I1": "u_managed/runtime/cpu_pcm.owner/applied_id_31_8",
+          "I2": "u_managed/runtime/cpu_pcm.owner/tail_slot_1_10",
+          "I3": "u_managed/runtime/cpu_pcm.owner/failed_9",
+          "F": "u_managed/runtime/cpu_pcm.owner/n5320_10"
+        },
+        "all_binary_cofactors_checked": 16
+      },
+      "vo:n5576_s3": {
+        "INIT": "16'hBF00",
+        "ports": {
+          "I0": "u_managed/runtime/cpu_pcm.owner/tail_slot[0]",
+          "I1": "u_managed/runtime/cpu_pcm.owner/tail_slot[1]",
+          "I2": "u_managed/runtime/cpu_pcm.owner/n21597_4",
+          "I3": "u_managed/runtime/cpu_pcm.owner/n5320_10",
+          "F": "u_managed/runtime/cpu_pcm.owner/n5576_9"
+        },
+        "all_binary_cofactors_checked": 16
+      },
+      "vo:written[2]_11_s3": {
+        "INIT": "8'h8F",
+        "ports": {
+          "I0": "u_managed/runtime/cpu_pcm.owner/written[0]_11_11",
+          "I1": "u_managed/runtime/cpu_pcm.owner/written[2]_127_9",
+          "I2": "u_managed/runtime/cpu_pcm.owner/n5576_9",
+          "F": "u_managed/runtime/cpu_pcm.owner/written[2]_11_8"
+        },
+        "all_binary_cofactors_checked": 8
+      }
+    },
+    "D": "n5576_9 (slot2 no-clear permission)",
+    "CE": "!n5576_9 || (written[0]_11_11 && written[2]_127_9)",
+    "n5320_10": "failed_9 && !accepted_start && !applied_id_31_8 && !tail_slot_1_10",
+    "n5576_9": "n5320_10 && !(!tail_slot[0] && tail_slot[1] && n21597_4)",
+    "n5576_9_fanout": 256,
+    "final_routes_ns": [
+      1.758,
+      1.293
+    ],
+    "whole_combinational_CE_cone": {
+      "VG_cells": 1214,
+      "VO_cells": 1215,
+      "unsupported_nodes": 0,
+      "formal_VG_VO_equivalence_claimed": false
+    }
+  },
+  "implementation": [
+    "Only active_physical versus physical_epoch_i is split into independent bits7:0,15:8,23:16,31:24 mismatch reductions.",
+    "Four scalar results use documented /* synthesis syn_keep=1 */ net constraints and final logical AND.",
+    "All other physical_matches conditions and full source outside this exact replacement remain byte-identical to the W11 owner (reverse replacement SHA checked).",
+    "No added sequential state, pipeline cycle, authority, rate/sampling, cancellation, bitmap, or epoch semantics."
+  ],
+  "constraint_authority": {
+    "document": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/doc/EN/SUG550-2.1E_GowinSynthesis User Guide.pdf",
+    "document_sha256": "40b11d0756afdb6dfb87a323a20f671ce313dfba2893fca826ee51a345caf819",
+    "section": "5.8 syn_keep",
+    "PDF_pages": [
+      55,
+      56
+    ],
+    "printed_pages": [
+      47,
+      48
+    ],
+    "object": "wire/signal, port",
+    "value_1": "Preserve net without optimization",
+    "documented_Verilog": "wire top1 /*synthesis syn_keep=1*/;",
+    "register_constraint_used": false
+  },
+  "targeted_proof": {
+    "proof": {
+      "binary_all_64_input_bits": {
+        "result": "unsat",
+        "counterexample": null
+      },
+      "four_state_all_128_symbol_bits": {
+        "result": "unsat",
+        "counterexample": null
+      },
+      "binary_negative_missing_bit31": {
+        "result": "sat",
+        "counterexample": "[physical_active = 2147483648, physical_input = 0]"
+      },
+      "binary_negative_group_OR": {
+        "result": "sat",
+        "counterexample": "[physical_input = 0, physical_active = 4294958336]"
+      },
+      "z3_version": "5.1.0"
+    },
+    "strict_source_negatives": {
+      "missing_high_slice_bit": {
+        "rejected": true,
+        "reason": "PCM physical groups: exact four slices/kept scalar groups/final AND changed"
+      },
+      "final_OR": {
+        "rejected": true,
+        "reason": "PCM physical groups: exact four slices/kept scalar groups/final AND changed"
+      },
+      "missing_keep": {
+        "rejected": true,
+        "reason": "PCM physical groups: exact four slices/kept scalar groups/final AND changed"
+      },
+      "outside_boundary_rate_change": {
+        "rejected": true,
+        "reason": "PCM physical groups: change outside approved comparison boundary"
+      }
+    },
+    "actual_owner_four_state_vectors": 1536,
+    "unknown_rule": "A definite bit mismatch dominates X/Z; absent a definite mismatch any X/Z returns X, otherwise equality returns 1."
+  },
+  "existing_regressions": {
+    "complete_old_owner_miter": {
+      "cycles": 7811,
+      "public_and_state_groups": 61,
+      "PCM_RAM_words": 512,
+      "written_frame_slots": 4,
+      "random_commands": 6000,
+      "direct_admission_checks": 7369,
+      "format_ID_four_state_vectors": 576,
+      "negative_controls": 4
+    },
+    "owner_tests": 8,
+    "long_drift": "576000 output frames each at +/-2000ppm and 48000/44100Hz (default unshortened)",
+    "actual_runtime_D": {
+      "physical_I2S_model_frames": 1918,
+      "display_snapshots": 1917,
+      "PANIC_cases": 12,
+      "inflight_panics": 10,
+      "both_rates": true,
+      "complete_effects": true,
+      "APB_CDC_owner_to_I2S": true,
+      "ideal_clock_ordered_DDR_model": true,
+      "real_HCI_SBC_radio_board": false
+    }
+  },
+  "commands": [
+    "/Users/sphenicidition/miniforge3/bin/python3 projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_physical_groups.py --output <fresh-output>",
+    "/Users/sphenicidition/miniforge3/bin/python3 projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_control_admission.py --output <fresh-output>",
+    "python3 projects/138k/push2_workstation/usb_a/sim/test_ae350_pcm_owner.py",
+    "python3 projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_runtime.py --project /Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/workstation/Prj1 --output <fresh-output> --d-only"
+  ],
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/input_sha256.json": "4be6d1a908739997e51630db4b8ad378eac429cb4801e221fb54142bcf03c1cd",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/worst_path.tr.txt": "50b8b4876a303367cdf0b06e9837dd3f49ecb2c7ecf615292c60d3b17840d4ea",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/path_cells_vg.json": "6394fc1dde0f60912f86367289f79237641ba3c8b1469ae481ec046960bde4d0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/path_cells_vo.json": "7762ca711269872d42613a9db31dee497523351d785d56a1bd7516e68d4c35a4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/vg_full_CE_cone.json": "ca49d036023da0f9ff27453338e7abf974fe02f9b1680d6bbf5f67c7680f093a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/vo_full_CE_cone.json": "357c5d65117a4951c404f9e58311fe2a59ce2f4e868b2414e4d2857e3883e231",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pcm-owner-rca-20261101-v1/syn_keep_manual.json": "01adcccea1975f5edc14d7597219226982a43ee6c0e8cadfe01e0c5d74dbbcd1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-physical-groups-20261101-v1/comparison-proof/verification.json": "de64057bbde2a6621e2a479ad4a0c1737e1f320f66627664d6146c90b9ff3b68",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-physical-groups-20261101-v1/control-admission/verification.json": "0c786c331d62dfbfcdedb0ce3b1faed378b5f7695b984d7a6a919ef08ea490f2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-physical-groups-owner-20261101-v1.log": "6d6a6c10ee3e67cfcffe4e95092dd5d66740308151c4900d6a2f8c296a809063",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-physical-groups-20261101-v1/d-runtime/result.json": "2a7f95652b1072ffbcedb05a1c3da92fb41b2808eb94b0ae9ef0a6d9ea0f4632",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-physical-groups-20261101-v1/d-runtime/run.log": "630c9fb48384e2dc032c205dcbf2d14e2ac7dd4ffafdd3adbd1866e748ae5f69",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-v1/physical_inputs.json": "e131ad0c5502a205f3439a7f61995abcad189d993ecaac224be00455bd8b5861"
+  },
+  "source_validation_passed": true,
+  "synthesis_or_PNR_run_by_this_stage": false,
+  "timing_or_resource_gain_claimed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "rollback": "Restore owner a28f84ee8ba95e8aa0a3ea7faf764f9c5cbcaf40dc25e13f17f01871ce5645ae, bind a new candidate identity and rerun preparation; frozen W11/M13 inputs remain unchanged."
+}

@@ -79,7 +79,18 @@ module workstation_ae350_pcm_owner #(
     wire key_matches=!(|(staged_controller^active_controller)) && !(|(staged_generation^active_generation)) &&
         !(|(staged_stream^active_stream)) && !(|(staged_rate^active_rate)) && !(|(staged_physical^active_physical));
     wire live_matches=session_live_i && !(|(controller_epoch_i^active_controller)) && !(|(transport_generation_i^active_generation));
-    wire physical_matches=context_ready_i && !(|(active_physical^physical_epoch_i)) &&
+    // Keep four independent epoch comparisons so synthesis cannot rebuild the
+    // full 32-bit serial inequality chain on the PCM permission path.
+    wire physical_epoch_match_0 /* synthesis syn_keep=1 */;
+    wire physical_epoch_match_1 /* synthesis syn_keep=1 */;
+    wire physical_epoch_match_2 /* synthesis syn_keep=1 */;
+    wire physical_epoch_match_3 /* synthesis syn_keep=1 */;
+    assign physical_epoch_match_0=!(|(active_physical[7:0]^physical_epoch_i[7:0]));
+    assign physical_epoch_match_1=!(|(active_physical[15:8]^physical_epoch_i[15:8]));
+    assign physical_epoch_match_2=!(|(active_physical[23:16]^physical_epoch_i[23:16]));
+    assign physical_epoch_match_3=!(|(active_physical[31:24]^physical_epoch_i[31:24]));
+    wire physical_matches=context_ready_i && physical_epoch_match_0 && physical_epoch_match_1 &&
+        physical_epoch_match_2 && physical_epoch_match_3 &&
         active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i;
     wire usable=armed && !failed && live_matches && physical_matches && cpu_ready_i && !tf_busy_i;
     wire prefilled=usable && queued>=10'(PREFILL_FRAMES) && cache_current;

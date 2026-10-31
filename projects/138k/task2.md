@@ -280,6 +280,8 @@ M13综合与完整strict来源／功能／角色／CDC门已通过；三个旧TF
 
 W11的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_W11_PHYSICAL_20261101.md)已封存：`D2110101`物理CLS52,251／BSRAM293／DSP67.5，setup6,423／−5.018ns、hold2／−3.675ns；`D2110102` setup6,394／−4.648ns、hold11／−0.585ns，原DDR3.500ns路径余量+0.673ns。两次实际VO、完整边界和官方PLL子门独立通过，整机时序仍失败。余下参考时钟同域hold未豁免；PCM／HCI分组比较及录音START局部修复正按实际路径推进W12。只读JTAG仍为单块 `C11028E5`，无外部HDMI／线路音频采集，未烧录，未将模拟器或单板计为无线／双板验收。
 
+W11最差PCM路径的[physical epoch四组比较](push2_workstation/usb_a/reports/dual138k_pcm_physical_groups_20261101.md)已实施并验证。实际VG／VO证实原32位XOR仍被映射为NE串行carry；现仅该比较用四组8位 `syn_keep` net，其余许可和位图清理优先级不变。完整64位二态／128符号位四态证明、1,536实际四态向量、完整owner对照及默认双率漂移、正式D APB→I2S回归均通过。新owner `3342a94c…cff837`等待W12实际编译及物理测量，不预记收益。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
