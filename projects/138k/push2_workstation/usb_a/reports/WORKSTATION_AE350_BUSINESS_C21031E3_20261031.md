@@ -258,3 +258,39 @@ prepipeline oracle 均通过：每表约 443216 周期、23012 个系数、680 �
 未改生产源。PIPELINED_RATE 0／1 lint 通过；accepted 来源十七项、业务
 九项通过，九个现有 profile 仅刷新两个已消费源码哈希。该源码将进入
 下一独立候选，E8 冻结输入保持，资源收益待完整综合。
+
+
+E8 place1／route0 完整 P&R 成功，744.215 秒、输入／工具身份保持；物理
+CLS 61298/69120、BSRAM 301/340、DSP 120/298、Logic 93808、FF 59477。
+但最终 STA 未通过：21187 setup、297 hold 端点违规，最差 −13.127 ns；
+最小 pulse-width slack 0.587 ns。两组异步 PRESET／CLEAR max-delay
+未产生 TR data paths。没有执行 SRAM，FS SHA256 为
+`407991e861711b753ddd16736ff16a818cd254a04570c4502beaaabe35515ff4`，
+只作为失败候选保留。PLL 首次检查缺 GOWIN_SIMLIB，补环境后 DDR／视频／
+shared PLL 无报错，但 AE350 专用 CLKOUT1 缺实际位置行，routed RAM
+紧凑结尾又超出现有 parser 支持，仍未计整机 PLL 通过。
+
+主要实际长路径为 published_valid→recording owner fault／仲裁反馈→
+store pack_data（18 logic levels／−13.127 ns）、显示 drop Gray 解码→
+差异检测→producer analysis（−11.958 ns）、USB settle_wait→core_ce／
+配置广播→reverb scratch CE（−11.130 ns）。跨域 PANIC 读控制与共同复位
+释放另有实际违规，按所属 owner 修正，不放宽时钟或扩大 false path。
+
+下一同功能候选 `c435701f9890c806`（源码 `01291b5`）完整综合通过：
+333.587 秒、614 项输入保持、无 AG，实际 prepare 业务十二项通过；
+VG `7f8c298f68f7970775c2e16725b19c45a9706ecb75c534c17b3ecd8d53d153a0`。
+三个 oscillator 系数 divider 均退出，完整总量如下：
+
+| 综合资源 | E9（c435701f） | 相对 E8 | 相对迁移前 011fdc9c |
+|---|---:|---:|---:|
+| Logic | 99566 | +6245 | +4943 |
+| LUT | 76621 | +1689 | +654 |
+| ALU | 21187 | +4412 | +4385 |
+| Register | 58283 | −1194 | −2295 |
+| DSP | 74 | −6 | −9 |
+| RAM16 | 293 | +24 | −16 |
+| 等效 BSRAM | 247 | −3 | +2 |
+
+工具对多个未改模块的 LUT／ALU／RAM 映射同时变化，因此 FF 的减少
+不能代替整机 Logic／物理 CLS 收益。`C21031E9` 已开始 place1／route0
+P&R，输入冻结；当前源码修复进入后续新候选，未回写 E8／E9。
