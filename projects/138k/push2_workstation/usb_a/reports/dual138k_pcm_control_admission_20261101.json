@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "owning_PCM_command_admission_source_verification",
+  "source": {
+    "path": "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+    "sha256": "a28f84ee8ba95e8aa0a3ea7faf764f9c5cbcaf40dc25e13f17f01871ce5645ae",
+    "W10_consumed_source_sha256": "95d6fb4d693178b04bf075450e22c1c40da8c5ca9d5cb710e66a2bc8f9a26514"
+  },
+  "modified_test": {
+    "path": "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_control_admission.py",
+    "sha256": "f6944cca9536b33eea2e5678e9ce60219969c9f9d854a92954b7f03665d4b02e"
+  },
+  "trigger": {
+    "candidate": "W10 D2103116",
+    "path": "staged_stream_10_s0/Q to written[2]_77_s0/D",
+    "clock": "audio_76m8",
+    "setup_slack_ns": -5.502,
+    "logic_levels": 18,
+    "data_delay_ns": 18.458,
+    "cell_ns": 6.172,
+    "route_ns": 11.98,
+    "clock_to_q_ns": 0.306
+  },
+  "implementation": [
+    "Parallel operation-specific validation predicates feed specific accepted START/COMMIT/SELECT/STOP/CANCEL operations directly.",
+    "Response/error decoder reuses identical predicates; stage writes have their own exact admission.",
+    "Procedural format/ID guards preserve original unknown-strobe/ID handling.",
+    "No new sequential state, cycle, authority, queue capacity, SRC parameter or sample schedule; terminal revocation remains after same-edge commands."
+  ],
+  "comparison": {
+    "clock_edges": 7811,
+    "public_outputs_and_state_groups": 61,
+    "PCM_RAM_words": 512,
+    "written_slots": 4,
+    "random_commands": 6000,
+    "direct_admission_checks": 7369,
+    "four_state_vectors": 576,
+    "symbolic": {
+      "operation_acceptance": {
+        "1": "UNSAT",
+        "2": "UNSAT",
+        "3": "UNSAT",
+        "4": "UNSAT",
+        "5": "UNSAT"
+      },
+      "staging": "UNSAT",
+      "free_bits": 57,
+      "unreachable_state_assumptions": false,
+      "z3_version": "5.1.0"
+    },
+    "negative_controls": 4
+  },
+  "existing_regressions": {
+    "owner_tests": 8,
+    "long_drift": "576000 output frames each at +/-2000ppm and 48000/44100Hz",
+    "descriptor": "115011 mask vectors, 16384 prefix/hole pairs, 256 permission mismatches; four negative controls",
+    "boundaries": 2,
+    "actual_runtime_D": {
+      "physical_model_frames": 1918,
+      "display_snapshots": 1917,
+      "PANIC_cases": 12,
+      "both_rates": true,
+      "full_effects": true,
+      "APB_CDC_owner_I2S": true,
+      "ideal_clock_and_ordered_DDR_model": true,
+      "real_Bluetooth_and_board": false
+    }
+  },
+  "independent_review": {
+    "four_state_edge_reproductions": 3,
+    "STOP_CANCEL_same_edge_revocation_cases": 10,
+    "reasons": [
+      "TF busy",
+      "session loss",
+      "context loss",
+      "switch busy",
+      "CPU not ready"
+    ],
+    "final_source_verified": true
+  },
+  "preserved_failed_attempts": [
+    "First runner invocation used Python without z3; rerun with explicit miniforge interpreter.",
+    "Initial common guards changed original procedural unknown-strobe/ID behavior; independent review reproduced differences and final local procedural guards restored them."
+  ],
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-admission-v4/verification.json": "d749db0cfabd3fdecc39ef102c4f6ec5df68f39c6946d9b6b6edab15e918e2af",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-owner-final-v1.log": "ef8eedc8a192742bdb8f8164014e211c78c64c6f8c6dd1d7c997d0a3396fdab2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-runtime-d-final-v1/result.json": "ab4798c9cfe7fb886ee99878b42787ee700936c345e43b6071fa96d413ac0bfe",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-runtime-d-final-v1/run.log": "afd2c0cc414e08f335c26b28b0b250a477d49c7f62337e2471dc103fc4169777",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-descriptor-final-v1/verification.json": "750a07c04795115d3f287676a5b3a5b809e251b1fdca7993fb208bc884a8ed17",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-boundaries-v1.log": "9e28a137f457b156c89ccc2e9da9d9c2d3745cc9d2214a525af0185f55a16308",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-fourstate-review-v2/review.json": "fd949eab928bdcfc29b69dc2d4aa34825f7ec4e46bf5b127651a0032c4b76bed",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-revoke-review-v1/review.json": "580bc8fef5dcb35390afd37c5b69b294587e32a2efe2ded6889a0448a8695f83",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-control-admission-v1.log": "ec7f7d91af6d7ee3ab6db7fbeafbdbb9f6ccf28fb3875b6f23f5be8954f990a5"
+  },
+  "new_candidate_prepared": false,
+  "synthesis_run_for_modified_source": false,
+  "physical_timing_or_resource_gain_measured": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "rollback": "Restore the W10 consumed owner bytes and rebuild under a new identity; frozen W10 unchanged."
+}

@@ -131,6 +131,32 @@ module workstation_ae350_pcm_owner #(
     wire [31:0] rate_hz=rate_44100_i ? 32'd44100:32'd48000;
     wire [31:0] status={24'd0,session_live_i,context_ready_i,history_state==H_REQUEST || history_state==H_WAIT,
         history_state!=H_IDLE,failed,prefilled,selected,armed};
+    // Validate each command in parallel. A specific accepted operation must
+    // not traverse the response-data/error mux for unrelated commands before
+    // reaching its queue/bitmap updates. The response uses the same predicates.
+    wire start_error=armed || selected || history_state!=H_IDLE || !staging_live || !new_stream || &cancel_epoch_o;
+    wire commit_error=!usable || !key_matches || staged_slot!={30'd0,tail_slot} || owned[tail_slot] ||
+        !descriptor_frames_valid || staged_sequence!=expected_sequence || &expected_sequence || descriptor_missing_frames;
+    wire select_error=!key_matches || !prefilled || history_state!=H_IDLE || selected || &cancel_epoch_o;
+    wire stop_error=!key_matches || history_state!=H_IDLE || &cancel_epoch_o;
+    wire cancel_error=!key_matches || history_state==H_FAULT || &cancel_epoch_o;
+    // Match the original response decoder's procedural treatment of unknown
+    // strobes/ID bits as well as its binary hardware admission rule.
+    reg control_format_ok,control_id_ok;
+    always @* begin
+        control_format_ok=1'b1;control_id_ok=1'b1;
+        if(!full_write)control_format_ok=1'b0;
+        if(&command_id)control_id_ok=1'b0;
+    end
+    wire control_write=write_command && control_format_ok && command_address_i==12'h040 && control_id_ok;
+    wire accepted_start=control_write && command_data_i==32'd1 && !start_error;
+    wire accepted_commit=control_write && command_data_i==32'd2 && !commit_error;
+    wire accepted_select=control_write && command_data_i==32'd3 && !select_error;
+    wire accepted_stop=control_write && command_data_i==32'd4 && !stop_error;
+    wire accepted_cancel=control_write && command_data_i==32'd5 && !cancel_error;
+    wire accepted_control=accepted_start || accepted_commit || accepted_select || accepted_stop || accepted_cancel;
+    wire accepted_staging_write=write_command && control_format_ok && !command_address_i[11] &&
+        command_address_i>=12'h020 && command_address_i<=12'h03c;
     reg command_error;
     always @* begin
         response_data_o=0;response_error_o=0;command_error=0;
@@ -154,13 +180,11 @@ module workstation_ae350_pcm_owner #(
             12'h040:begin
                 response_data_o=command_id+1'b1;
                 case(command_data_i)
-                    1:command_error=armed || selected || history_state!=H_IDLE || !staging_live || !new_stream || &cancel_epoch_o;
-                    2:command_error=!usable || !key_matches || staged_slot!= {30'd0,tail_slot} || owned[tail_slot] ||
-                        !descriptor_frames_valid || staged_sequence!=expected_sequence || &expected_sequence ||
-                        descriptor_missing_frames;
-                    3:command_error=!key_matches || !prefilled || history_state!=H_IDLE || selected || &cancel_epoch_o;
-                    4:command_error=!key_matches || history_state!=H_IDLE || &cancel_epoch_o;
-                    5:command_error=!key_matches || history_state==H_FAULT || &cancel_epoch_o;
+                    1:command_error=start_error;
+                    2:command_error=commit_error;
+                    3:command_error=select_error;
+                    4:command_error=stop_error;
+                    5:command_error=cancel_error;
                     default:command_error=1;
                 endcase
                 if(&command_id)command_error=1;
@@ -287,8 +311,8 @@ module workstation_ae350_pcm_owner #(
             if(accepted_window_write)begin
                 memory[{write_slot,write_index}]<=command_data_i;written[write_slot][write_index]<=1;
             end
-            if(accepted && !response_error_o && !command_address_i[11])begin
-                if(command_write_i)case(command_address_i)
+            if(accepted_staging_write)begin
+                case(command_address_i)
                     12'h020:staged_controller<=command_data_i;
                     12'h024:staged_generation<=command_data_i;
                     12'h028:staged_stream<=command_data_i;
@@ -297,41 +321,36 @@ module workstation_ae350_pcm_owner #(
                     12'h034:staged_slot<=command_data_i;
                     12'h038:staged_frames<=command_data_i;
                     12'h03c:staged_sequence<=command_data_i;
-                    12'h040:begin
-                        command_id<=command_id+1'b1;
-                        case(command_data_i)
-                            1:begin
-                                active_controller<=staged_controller;active_generation<=staged_generation;
-                                active_stream<=staged_stream;active_rate<=staged_rate;active_physical<=staged_physical;
-                                last_controller<=staged_controller;last_generation<=staged_generation;last_stream<=staged_stream;
-                                retired_key_valid<=1;armed<=1;failed<=0;failure<=0;expected_sequence<=0;
-                                input_frames<=0;output_frames<=0;minimum_queue<=512;maximum_queue<=0;flush_queue();
-                            end
-                            2:begin
-                                owned<=(owned&~(sample_advance ? release_mask:4'd0))|(4'b1<<tail_slot);
-                                frames[tail_slot]<=staged_frames[7:0];written[tail_slot]<=0;tail_slot<=tail_slot+1'b1;
-                                queued<=queued+staged_frames[9:0]-(sample_advance ? {8'd0,consume}:10'd0);
-                                expected_sequence<=expected_sequence+1'b1;
-                            end
-                            3,4:begin
-                                desired_source<=command_data_i==3;hold_serial<=1;history_state<=H_REQUEST;
-                                pending_id<=command_id+1'b1;cancel_epoch_o<=cancel_epoch_o+1'b1;
-                                if(command_data_i==4)begin armed<=0;flush_queue();end
-                            end
-                            5:begin
-                                armed<=0;flush_queue();desired_source<=0;
-                                cancel_epoch_o<=cancel_epoch_o+1'b1;
-                                if(selected || history_state!=H_IDLE)begin
-                                    hold_serial<=1;pending_id<=command_id+1'b1;
-                                    if(history_state==H_IDLE || history_state==H_SAMPLE)history_state<=H_REQUEST;
-                                end
-                                else applied_id<=command_id+1'b1;
-                            end
-                            default:begin end
-                        endcase
-                    end
                     default:begin end
                 endcase
+            end
+            if(accepted_control)command_id<=command_id+1'b1;
+            if(accepted_start)begin
+                active_controller<=staged_controller;active_generation<=staged_generation;
+                active_stream<=staged_stream;active_rate<=staged_rate;active_physical<=staged_physical;
+                last_controller<=staged_controller;last_generation<=staged_generation;last_stream<=staged_stream;
+                retired_key_valid<=1;armed<=1;failed<=0;failure<=0;expected_sequence<=0;
+                input_frames<=0;output_frames<=0;minimum_queue<=512;maximum_queue<=0;flush_queue();
+            end
+            if(accepted_commit)begin
+                owned<=(owned&~(sample_advance ? release_mask:4'd0))|(4'b1<<tail_slot);
+                frames[tail_slot]<=staged_frames[7:0];written[tail_slot]<=0;tail_slot<=tail_slot+1'b1;
+                queued<=queued+staged_frames[9:0]-(sample_advance ? {8'd0,consume}:10'd0);
+                expected_sequence<=expected_sequence+1'b1;
+            end
+            if(accepted_select || accepted_stop)begin
+                desired_source<=accepted_select;hold_serial<=1;history_state<=H_REQUEST;
+                pending_id<=command_id+1'b1;cancel_epoch_o<=cancel_epoch_o+1'b1;
+                if(accepted_stop)begin armed<=0;flush_queue();end
+            end
+            if(accepted_cancel)begin
+                armed<=0;flush_queue();desired_source<=0;
+                cancel_epoch_o<=cancel_epoch_o+1'b1;
+                if(selected || history_state!=H_IDLE)begin
+                    hold_serial<=1;pending_id<=command_id+1'b1;
+                    if(history_state==H_IDLE || history_state==H_SAMPLE)history_state<=H_REQUEST;
+                end
+                else applied_id<=command_id+1'b1;
             end
             if(write_command && response_error_o && (command_address_i[11] ||
                 (command_address_i==12'h040 && command_data_i==2 && owned[tail_slot])))overflows<=increment(overflows);

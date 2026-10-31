@@ -264,6 +264,8 @@ M12b／W10的[完整默认物理实现](push2_workstation/usb_a/reports/DUAL138K
 
 M12b／W10的[far完整物理测量](push2_workstation/usb_a/reports/DUAL138K_M12B_W10_FAR_PHYSICAL_20261101.md)已完成，VG／完整SDC保持原字节和DDR3.500ns：M `D210311A` setup1,524／−1.299ns、hold0／+0.143ns；W `D2103119` setup5,532／−5.338ns、hold1／−0.063ns。目标DDR hold分别+0.624／+0.662ns；W剩余为midi_bytes的ack首级路径，尚未豁免或接受。两份M实际VO／SDC／PLL及W far各子门分别通过，整机仍不可部署，未烧录。下一候选继续消费已审源码修复，不把局部门或分时验证升级为声画／双板验收。
 
+W10实际18级D输入控制路径的[PCM命令许可分解](push2_workstation/usb_a/reports/DUAL138K_PCM_CONTROL_ADMISSION_20261101.md)已完成：各操作复用相同校验但直接驱动其状态更新，原周期、采样、ID和末尾撤销优先级保留。7,811周期完整旧owner／512RAM对照、57bit许可证明、4负控和576四态组合通过，独立复核修复了首版未知strobes／ID差异；原8项含双率±2000ppm回归、描述符和正式D→完整效果→I2S／显示／PANIC仿真通过。新物理收益待整机候选测量，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
