@@ -24,11 +24,11 @@ banked4 使用 `AE350_PROBE_BANKED_GAO` 显式宏，GAO schema 为 `A1386402`、
 
 只有页3→页0边界能替换整个 2080-bit 快照、IO 与健康字，条件为 UART 已发布，且首次有效或序列号改变。重复扫同一序列时，即使 TX、边沿数和平台健康持续变化，所有页的 payload 与冻结元数据也逐位相同。公共 transport reset 清空该 bank；PRESET 不会清空它或伪造 UART ack。实际 TX/health 的冻结值只描述那个序列被 bank 接纳时的数字逻辑状态，不证明 pad 电压或外部 UART 收到了字节。
 
-`tools/decode_ae350_banked_gao.py` 要求精确 704-bit CSV 列、packed/逐位一致、正确 UserCode/schema/页几何、按顺序的完整四页和每页至少两个相同样本。相同序列中任何页内容或冻结元数据改变都会失败；新序列不完整时也失败，不回退宣称旧序列是最新。未知样本打断未完成页组；明确 unpublished 和顶层精确全零 reset 样本分隔 reset context，不能跨 reset 拼页。除全零 reset 外，错误 magic 均失败。已完成同序列扫描后的额外局部扫描不撤销那份已证明快照。它沿用 full64 的诊断评估，诊断 word61 timeout 位继续否决 freshness；GAO 不拥有 UART CRC 证明。
+`tools/decode_ae350_banked_gao.py` 要求精确 704-bit CSV 列、packed/逐位一致、正确 UserCode/schema/页几何、按顺序的完整四页和每页至少两个相同样本。相同序列中任何页内容或冻结元数据改变都会失败；新序列不完整时也失败，不回退宣称旧序列是最新。未知样本使当前 latest 失效，必须在其后重获完整四页；明确 unpublished 和顶层精确全零 reset 样本分隔 reset context，不能跨 reset 拼页。除全零 reset 外，错误 magic 均失败。已完成同序列扫描后的额外局部扫描不撤销那份已证明快照。它沿用 full64 的诊断评估，诊断 word61 timeout 位继续否决 freshness；GAO 不拥有 UART CRC 证明。
 
 ## 离线验证
 
-- `sim/test_ae350_banked_gao.py`：8 项通过。包括全部64字重建、重复页、缺首/中/末页、单样本页、未知间隙、新序列不完整、跨序列回返、复位隔离、timeout、身份/几何/位序错误、legacy544/full2208拒绝、实际704-bit顶层及DAC固定安全驱动。
+- `sim/test_ae350_banked_gao.py`：初版8项通过；追加 unknown 尾部 freshness 回归后9项通过。包括全部64字重建、重复页、缺首/中/末页、单样本页、未知间隙、新序列不完整、跨序列回返、复位隔离、timeout、身份/几何/位序错误、legacy544/full2208拒绝、实际704-bit顶层及DAC固定安全驱动。
 - 实际 bank RTL 中，UART 序列远慢于页扫描，源字、IO、健康字持续变化；验证同序列不更新、恰好页边界更新和公共 reset。
 - 实际异步 UART RTL（pclk周期14、参考周期20）经 banks 和顶层同形寄存器捕获后导出 CSV；normal、PRESET pending、timeout recovery、common reset 四种模式各3个 CRC-valid UART 帧，与 GAO 重建的所有64字及原始序列精确一致。旧的 PRESET-reset ack mutant 在相同刺激下因 forged ack 正确失败。CRC 只证明这些离线 UART 字节，不转移为真实板上 UART 证据。
 - 原 `sim/test_ae350_full_gao.py` 5 项、`sim/test_ae350_local_probe.py` 9 项与 `sim/test_current_workstation_sources.py` 17 项通过；默认 full64 GAO XML 与 C11 对同一 UserCode 逐字相同。
@@ -40,3 +40,5 @@ banked4 使用 `AE350_PROBE_BANKED_GAO` 显式宏，GAO schema 为 `A1386402`、
 ## 后续门禁与回退
 
 该变体是否减少实际 GAO 路由成本仍未知，可能增加页mux、冻结寄存器和控制逻辑；源码通过不能替代 EDA。后续若选择实现，应分配全新部署 UserCode、重新 prepare、锁定所有输入，执行综合网表绑定、资源、PLL、CDC、routed timing 后，再由主任务按既有授权决定 SRAM 与独立读回。Flash 没有变化。回退是保留并选择已封存的 C11/full64 候选；不覆盖、重命名或复用它的身份和输入。
+
+2026-10-31 父级独立审查补充：已完成序列A后出现 X/Z 尾部，可能遮住更新序列，不能继续称A为 latest。新解码器在 unknown 样本清除 latest；尾部 unknown／unknown 后仅三页均失败，完整重获同序列或新序列才成功。该修复仅改解码器、测试和本报告，不改 RTL、firmware 或 prepare 输入；v1封存保留，追加 v2。

@@ -37,7 +37,9 @@ def decode(text,manifest):
         if len(row)!=BITS+2:raise ValueError('truncated or extra banked GAO columns')
         if not re.fullmatch(r'\d+(?:\.\d+)?',row[0]):raise ValueError('invalid banked GAO sample position')
         if any(v.lower() in ('x','z') for v in row[1:]):
-            unknown+=1;page=None;counts={};pages={};continue
+            # Unknown bits may hide a newer sequence or reset. A previous
+            # complete group cannot establish freshness beyond this sample.
+            unknown+=1;page=None;counts={};pages={};latest=None;continue
         if not re.fullmatch('[0-9a-fA-F]+',row[1]) or any(v not in ('0','1') for v in row[2:]):
             raise ValueError('invalid banked GAO sample radix')
         value=int(row[1],16)

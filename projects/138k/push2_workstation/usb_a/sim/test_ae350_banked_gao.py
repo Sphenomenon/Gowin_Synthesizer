@@ -68,6 +68,14 @@ class BankedGaoTest(unittest.TestCase):
         self.assertFalse(r['latest']['checks']['fresh_snapshot'])
         self.assertFalse(r['latest']['counter_observation_passed'])
 
+    def test_unknown_tail_requires_another_complete_group(self):
+        for tail in ([None],[None,*self.sweep()[:12]]):
+            with self.assertRaises(ValueError):decode(self.csv([*self.sweep(),*tail]),self.manifest())
+        for sequence in (0,1):
+            r=decode(self.csv([*self.sweep(),None,*self.sweep(sequence=sequence)]),self.manifest())
+            self.assertEqual(r['latest']['sequence'],sequence)
+            self.assertEqual(r['unknown_rows'],1)
+
     def test_rejects_identity_schema_geometry_header_bits_and_legacy_width(self):
         for kw in (dict(user=1),dict(magic=0),dict(io=1)):
             with self.assertRaises(ValueError):decode(self.csv(self.sweep(**kw)),self.manifest())
