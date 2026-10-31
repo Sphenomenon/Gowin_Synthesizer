@@ -1,0 +1,535 @@
+{
+  "schema": 1,
+  "scope": "C12 actual route failure, read-only independent evidence audit",
+  "candidate_identity": "custom138k-ae350-local-memory-probe-C21031CE",
+  "user_code": "0xC21031CE",
+  "build_source_commit": "fe8e44bd0a7cc7e45249e2fc783a81bd5ea7615c",
+  "audit_tools_commit": "d745697",
+  "prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-prepare-v12",
+  "physical": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031CE-v12",
+  "runner": "/Users/sphenicidition/.cache/gw138k-task-20261030/run_ae350_local_probe_physical_v12.py",
+  "runner_sha256": "a156d489ec66cd916013aa532049da6dec7834e06afa9a5bc65c559c6edf79d4",
+  "outer_log_sha256": "20790558a3df71f713d1dbf68dd6b67a8bad0dc63e820213a7672fb9dfd15739",
+  "physical_process_sha256": "b8ab63ebab8971c2aa361dfa5a499ec03685a273a52b436be3ba3ec5e7d965e7",
+  "manifest_sha256": "6bc6b38cd5935a1da7f62a1f6446113acf2dc8cae4681b201c1303313268f777",
+  "elapsed_seconds": 1743.6582871670835,
+  "exit_code": 1,
+  "completion": "tool route failure, not agent budget interruption",
+  "error": "PR0004",
+  "unrouted_nets": 91,
+  "input_files": 40,
+  "manifest_inputs": 39,
+  "inputs_unchanged": true,
+  "complete_prepare_inventory_matches_runner": true,
+  "output_files": 30,
+  "all_recorded_output_hashes_match": true,
+  "actual_build_sources_verified_in_git": {
+    "rtl/memory/workstation_ae350_boot_memory.sv": "610f88feee4fcb91d7c40036812a6fb33a21491dff058875e44a6edbced0a154",
+    "rtl/clock/workstation_ae350_rtc.sv": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+    "rtl/probe/workstation_ae350_probe_uart.sv": "d1759e46694c355b6bd94f75d0adb2ec9db87986355ccefd8a7b592f558021cb",
+    "rtl/probe/workstation_ae350_local_memory_probe_top.sv": "b6862bf4dde3a28bfca22babdf463b1ba6b63279175404069d671b5711233cb0",
+    "rtl/probe/workstation_ae350_probe_gao_banks.sv": "429b318995c4c42583092a6a8a2324e2bdf455a0cfcb36a85134f3d8b1f53d5d",
+    "firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
+    "firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
+    "firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc",
+    "firmware/ae350/probes/local_memory_probe.c": "44eba8810c2d6a641c22694a48dcf6d2b39988b45efb4a0eef061906c7ef8b84",
+    "firmware/ae350/probes/local_memory_probe_trap.S": "bbc710d6696bfce9fe0612d54ba3ee70e54c7d29e453b742ac093589dd02a71d"
+  },
+  "audit_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b",
+    "projects/138k/push2_workstation/usb_a/tools/stage_ae350_firmware.py": "dd6152ec121a17eef8a06042d0595806aa23ef7437b109d7859abf42ebdab28c",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445",
+    "projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+    "projects/138k/push2_workstation/usb_a/tools/cnn_ddr_pipeline_patch.py": "47b2086f90abab0b4ec6e058b2f294fde71ae1cfa09a460c629fac0da8bbd400",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_timing_constraints.py": "210f5a801c0883cd60900a8023406fd96752dc18471225d1d31763eb31fa6cd5",
+    "projects/138k/push2_workstation/usb_a/tools/audit_workstation_timing.py": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_hdmi_isolation.py": "55faefab7b3025da21d1ea3638cc34208f07e11a057f36b670a39afcd74a780d",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_audio_probe.py": "9aa19aca883a6cf308fb97a12f71215d22950bc8defed947fa8e819487cbecfe",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_local_probe.py": "40c31bc3eb1ae748248078c159f665bcb95e5e7bdde1ac7635e25c34fac78527"
+  },
+  "checks": {
+    "prepare_original": {
+      "passed": true,
+      "result": {
+        "manifest_sha256": "6bc6b38cd5935a1da7f62a1f6446113acf2dc8cae4681b201c1303313268f777",
+        "verified_inputs": 39,
+        "compiled_sources": 9,
+        "rom_bytes": 65536,
+        "cold_binary_bytes": 36368,
+        "synthesis_verified": false,
+        "physical_timing_verified": false,
+        "hardware_verified": false
+      }
+    },
+    "prepare_physical": {
+      "passed": true,
+      "result": {
+        "manifest_sha256": "6bc6b38cd5935a1da7f62a1f6446113acf2dc8cae4681b201c1303313268f777",
+        "verified_inputs": 39,
+        "compiled_sources": 9,
+        "rom_bytes": 65536,
+        "cold_binary_bytes": 36368,
+        "synthesis_verified": false,
+        "physical_timing_verified": false,
+        "hardware_verified": false
+      }
+    },
+    "gao_synthesis_banked4": {
+      "passed": true,
+      "result": {
+        "registered_bits": 704,
+        "clock": "clk_50m",
+        "snapshot_words": 64,
+        "gao_mode": "banked4",
+        "physical_timing_verified": false,
+        "external_uart_reception_verified": false
+      }
+    },
+    "rtc_probe_synthesis": {
+      "passed": true,
+      "result": {
+        "pin": "u_rtc/rtc_tick_s1/Q",
+        "cell": "DFFCE",
+        "source": "clk_50m",
+        "hard_ip_wrapper_port": "u_cpu/rtc_tick",
+        "average_hz": 32768,
+        "sta_minimum_period_cycles": 1524
+      }
+    },
+    "rtc_strict_synthesis": {
+      "passed": true,
+      "result": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "register": "u_rtc/rtc_tick_s1",
+        "source_clock": "clk_50m",
+        "hard_macro": null,
+        "visible_cpu_endpoint": "u_cpu/u_RiscV_AE350_SOC/rtc_tick",
+        "connectivity_scope": "opaque_synthesis_wrapper_input",
+        "hard_macro_input_connectivity_verified": false,
+        "encrypted_internal_connectivity_verified": false,
+        "rtc_net_identity": {
+          "scope": "",
+          "name": "rtc_tick"
+        },
+        "direct_endpoints": [
+          "u_cpu/u_RiscV_AE350_SOC/rtc_tick",
+          "u_rtc/n76_s0/I0",
+          "u_rtc/rtc_tick_s1/Q"
+        ],
+        "direct_unique_driver_verified": true,
+        "synthesis_connectivity_verified": true,
+        "netlist_sha256": "c902f25c20e8057a844dc15b1396b94713bbae4cae7022ff899e5f77857283e5",
+        "average_frequency_hz": 32768,
+        "sta_minimum_period_ns": 30480,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      }
+    },
+    "rtc_exact_conservative_constraint": {
+      "passed": true,
+      "result": {
+        "clock_name": "cpu_rtc_bound",
+        "clock_pin": "u_rtc/rtc_tick_s1/Q",
+        "sta_divide_by": 1524,
+        "sta_minimum_period_ns": 30480,
+        "average_frequency_hz": 32768,
+        "average_is_not_sta_frequency": true
+      }
+    },
+    "cpu_pll_explicit_constraint": {
+      "passed": true,
+      "result": null
+    },
+    "rtc_visible_hard_macro_vo": {
+      "passed": true,
+      "result": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "register": "u_rtc/rtc_tick_s1",
+        "source_clock": "clk_50m",
+        "hard_macro": "u_cpu/u_RiscV_AE350_SOC/u_AE350_SOC",
+        "visible_cpu_endpoint": "u_cpu/u_RiscV_AE350_SOC/u_AE350_SOC/RTC_CLK",
+        "connectivity_scope": "visible_routed_hard_macro_input",
+        "hard_macro_input_connectivity_verified": true,
+        "encrypted_internal_connectivity_verified": false,
+        "rtc_net_identity": {
+          "scope": "",
+          "name": "rtc_tick"
+        },
+        "direct_endpoints": [
+          "u_cpu/u_RiscV_AE350_SOC/u_AE350_SOC/RTC_CLK",
+          "u_rtc/n76_s0/I0",
+          "u_rtc/rtc_tick_s1/Q"
+        ],
+        "direct_unique_driver_verified": true,
+        "synthesis_connectivity_verified": true,
+        "netlist_sha256": "a1ad1887bca23d4e5288ab770ad27dc87043ecad5399faea7285113e85119791",
+        "average_frequency_hz": 32768,
+        "sta_minimum_period_ns": 30480,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      }
+    },
+    "cpu_pll_routed_location": {
+      "passed": false,
+      "error": "routed AE350 CORE_CLK PLL evidence missing",
+      "exception": "ValueError",
+      "availability": "unavailable: routing failed before timing/PLL location report"
+    }
+  },
+  "gao_contract": {
+    "schema": "A1386402",
+    "capture_bits": 704,
+    "word_count": 64,
+    "storage_depth": 128,
+    "snapshot": "four fixed pages of one frozen UART snapshot; only a new sequence replaces it at page3-to0",
+    "io": "frozen with the new UART sequence at a sweep boundary; no pad or external receiver readback",
+    "mode": "banked4",
+    "pages": 4,
+    "page_words": 16,
+    "page_cycles": 4
+  },
+  "clocks_hz": {
+    "core": 100000000,
+    "bus": 50000000,
+    "reference": 50000000
+  },
+  "resources": {
+    "main_design": {
+      "title": "Resource Usage Summary",
+      "rows": {
+        "Logic": [
+          "5031/138240",
+          "4%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "5031(4881 LUT, 150 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "0",
+          "-"
+        ],
+        "Register": [
+          "10687/139095",
+          "8%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "10687/138240",
+          "8%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "7800/69120",
+          "12%"
+        ],
+        "I/O Port": [
+          "8/297",
+          "3%"
+        ],
+        "I/O Buf": [
+          "8",
+          "-"
+        ],
+        "--Input Buf": [
+          "1",
+          "-"
+        ],
+        "--Output Buf": [
+          "7",
+          "-"
+        ],
+        "--Inout Buf": [
+          "0",
+          "-"
+        ],
+        "BSRAM": [
+          "40/340",
+          "12%"
+        ],
+        "--SDPB": [
+          "8"
+        ],
+        "--pROM": [
+          "32"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ]
+      }
+    },
+    "gao_instrumentation": {
+      "title": "GAO Resource Usage Summary",
+      "rows": {
+        "Logic": [
+          "1078"
+        ],
+        "--LUT,ALU,ROM16": [
+          "1078(1068 LUT, 10 ALU, 0 ROM16)"
+        ],
+        "--SSRAM(RAM16)": [
+          "0"
+        ],
+        "Register": [
+          "3032"
+        ],
+        "I/O Port": [
+          "709"
+        ],
+        "I/O Buf": [
+          "4"
+        ],
+        "--Input Buf": [
+          "3"
+        ],
+        "--Output Buf": [
+          "1"
+        ],
+        "--Inout Buf": [
+          "0"
+        ],
+        "BSRAM": [
+          "40"
+        ]
+      }
+    },
+    "clock_resources": {
+      "title": "Clock Resource Usage Summary",
+      "rows": {
+        "PRIMARY": [
+          "4/8",
+          "50%"
+        ],
+        "LW": [
+          "4/8",
+          "50%"
+        ],
+        "GCLK_PIN": [
+          "1/24",
+          "5%"
+        ],
+        "PLL": [
+          "1/12",
+          "9%"
+        ]
+      }
+    }
+  },
+  "resource_interpretation": {
+    "main_design_is_not_combined_gao_resource_table": true,
+    "gao_is_separately_reported_instrumentation": true,
+    "gao_io_port709_is_instrumentation_interface_count_not709_package_pins": true,
+    "separate_synthesis_gao_bsram": "20(20)",
+    "physical_gao_report_bsram": 40,
+    "not_a_full_workstation_resource_or_net_saving_measurement": true
+  },
+  "netlist_cells": {
+    "synthesis_vg": {
+      "IBUF": 1,
+      "OBUF": 7,
+      "LUT3": 1649,
+      "LUT4": 3083,
+      "LUT2": 144,
+      "DFFRE": 146,
+      "DFFCE": 10498,
+      "DFFPE": 43,
+      "ALU": 148,
+      "MUX2_LUT5": 449,
+      "MUX2_LUT6": 224,
+      "MUX2_LUT7": 96,
+      "MUX2_LUT8": 32,
+      "INV": 20,
+      "gw138k_cpu_pll_cell": 1,
+      "PLL": 1,
+      "video_pll_init": 1,
+      "VCC": 8,
+      "GND": 8,
+      "workstation_ae350_rtc": 1,
+      "gw138k_boot_memory": 1,
+      "pROM": 32,
+      "SDPB": 8,
+      "workstation_ae350_probe_gao_banks": 1,
+      "workstation_ae350_probe_uart": 1,
+      "RiscV_AE350_SOC_Top": 1,
+      "RiscV_AE350_SOC": 1,
+      "GSR": 1
+    },
+    "failed_route_vo": {
+      "VCC": 1,
+      "GND": 1,
+      "GSR": 1,
+      "IBUF": 1,
+      "OBUF": 7,
+      "LUT3": 1649,
+      "LUT4": 3083,
+      "LUT2": 144,
+      "DFFRE": 146,
+      "DFFCE": 10498,
+      "DFFPE": 43,
+      "ALU": 148,
+      "MUX2_LUT5": 449,
+      "MUX2_LUT6": 224,
+      "MUX2_LUT7": 96,
+      "MUX2_LUT8": 32,
+      "INV": 15,
+      "LUT1": 5,
+      "PLL": 1,
+      "pROM": 32,
+      "SDPB": 8,
+      "AE350_SOC": 1
+    }
+  },
+  "tool_version": "V1.9.12",
+  "recorded_tools_sha256": {
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/GowinSynthesis": "5dbd2b4d47f823c8844d55867eb06c9c0151e5ae79a93e2b61322f5e474f17b2"
+  },
+  "independent_pnr_executable_hash_available": false,
+  "firmware_compiler_versions": {
+    "gcc": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+    "objcopy": "GNU objcopy (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+    "objdump": "GNU objdump (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+    "size": "GNU size (xPack GNU RISC-V Embedded GCC arm64) 2.45",
+    "nm": "GNU nm (xPack GNU RISC-V Embedded GCC arm64) 2.45"
+  },
+  "firmware_capacity": {
+    "rom_capacity_bytes": 65536,
+    "binary_bytes": 36368,
+    "text_bytes": 36352,
+    "initialized_data_bytes": 16,
+    "bss_bytes": 16,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 35760,
+    "ilm_reserved_final_word_bytes": 4,
+    "dlm_capacity_bytes": 65536,
+    "ram_reserved_prefix_bytes": 256,
+    "static_ram_span_bytes": 32,
+    "static_ram_end": 2686452000,
+    "heap_bytes": 0,
+    "stack_top": 2686517248,
+    "stack_bottom": 2686500864,
+    "stack_capacity_bytes": 16384,
+    "minimum_stack_bytes": 16384,
+    "unallocated_dlm_bytes": 48864,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684355860,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684390320,
+      "__data_load_start": 2147520000,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686452000,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686452000,
+      "__heap_end": 2686452000,
+      "__image_end": 2147520016,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984
+    },
+    "whole_program_stack_bound_verified": false,
+    "hardware_stack_watermark_verified": false
+  },
+  "artifacts_missing": {
+    "fs": true,
+    "tr": true,
+    "sdf": true
+  },
+  "vo_present": true,
+  "vo_connectivity_does_not_prove_completed_routing": true,
+  "timing": {
+    "setup": null,
+    "hold": null,
+    "recovery": null,
+    "removal": null,
+    "clock_timing_summary": null
+  },
+  "physical_acceptance": false,
+  "full_workstation": false,
+  "hardware_operated_during_audit": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployed": false,
+  "last_independent_board_identity": {
+    "user_code": "C11028E5",
+    "status": "00022020",
+    "source": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-c11-route-budget-parent-v1/identity.json",
+    "sha256": "77bbe8aa3cc6192873cc239ab30841ec04b8d18a4e5425742603e0276aa65453",
+    "reused_prior_read_only_evidence": true,
+    "fresh_jtag_query_performed": false,
+    "scope": "No board operation in C12 attempt/audit; prior independently read board identity remains latest recorded E5"
+  },
+  "output_sha256": {
+    "impl/gao/ao_0/gw_ao_expression.v": "c34fab171db0fe2b4636dcc1ddfedf7505ed03fe2880772147a6d3ff9fc39f0f",
+    "impl/gao/ao_0/gw_ao_init.v": "a4c1d450421523de4870c4868add5ef370da725e17500c56c009089072f28103",
+    "impl/gao/ao_0/gw_ao_parameter.v": "9bb5f9bffb8fe58272483f06b8c554fffc7aeb44a8d77b0a4396aef01fbf830d",
+    "impl/gao/ao_0/gw_ao_top_define.v": "a8acbede192a83432f0f67d63ba2eb773f1f987e983f30d73078bb70a52cc184",
+    "impl/gao/ao_control/gw_con_parameter.v": "884d49415785b50a1a92e9ac9771d1d5ea1de688359bee1c5a74cb3d0836202c",
+    "impl/gao/ao_control/gw_con_top_define.v": "3977c5b5d577f62ebbca918caf83a9bd67b2c4521d7901cb17730038ba4186a8",
+    "impl/gao/gao.log": "eb08b996c95027752d290de7e5ea8aa4164857f67200c8af0ec8d2ae8328b021",
+    "impl/gao/gao.v": "05f72481ee84e05928befe7d198d067cfa6a0311abb9788ae5f5d3a865a27d71",
+    "impl/gao/gao_std.prj": "b42662ec992d294657c64cc370068284ae4952eea38b560941d830e4e91b4e65",
+    "impl/gao/gao_syn.rpt.html": "8da2a359a5720078d307c94e3e216e50fc5c99f8b51a9eb742de4a059a7d9db8",
+    "impl/gao/gao_syn_resource.html": "4e23225f4f086d396cf839a915b2f75c8375411776ceac55763dd5991a2a9a26",
+    "impl/gao/gao_syn_rsc.xml": "398466082d01a6eae26280e938b5bd96c42e25b2d848ea59299b00d690d21874",
+    "impl/gao/gw_gao_top.v": "78a121ebca67b653c31d42a883ba9563aa623a2485d752957d538459d9713d75",
+    "impl/gao/project.ini": "a5eb5dab6ab12ad2ae4171007c36bb35f780f26cec8bf9b5b97e6af0f3826b08",
+    "impl/gwsynthesis/ae350_local_memory_probe.log": "aaab35467c6d5f63a82be337eebae6451f3fe6ec0f344698f730545512fe4a34",
+    "impl/gwsynthesis/ae350_local_memory_probe.prj": "148d270b69c08fcd1e5f8786d527f6f40b9076deb3e3f0afc46f5462c19a9766",
+    "impl/gwsynthesis/ae350_local_memory_probe.vg": "c902f25c20e8057a844dc15b1396b94713bbae4cae7022ff899e5f77857283e5",
+    "impl/gwsynthesis/ae350_local_memory_probe_syn.rpt.html": "a75545b76ac58abe037c707c33d1ae012a89f1142dc7600c87b4513f5f2ffc60",
+    "impl/gwsynthesis/ae350_local_memory_probe_syn_resource.html": "90751a6722aa8c353838429a6c5394677de149b0bb06311aad1e0253b793cc6b",
+    "impl/gwsynthesis/ae350_local_memory_probe_syn_rsc.xml": "41b4bb46861befa2612347e9a1cd471e6da071a3ace4d8021a7ee8b52c9b8dbf",
+    "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+    "impl/pnr/ae350_local_memory_probe.db": "c4bf215e2476da2a6339f83809049c7cd4084849bc1207aad5295c04e4a0d88a",
+    "impl/pnr/ae350_local_memory_probe.log": "3e86b07591e25378519328d07b2eb0f66418df8b7db471fb545c17c10015fcc8",
+    "impl/pnr/ae350_local_memory_probe.p": "e8c0c3c339884886a1bb28386e713a8682020159993c3aa7a4fc5a5d93584a0a",
+    "impl/pnr/ae350_local_memory_probe.pin.html": "5b2456b58aef4a814b1acd8669fc3fa2c2f9dba9b1d8b521650ef652d1a35073",
+    "impl/pnr/ae350_local_memory_probe.rpt.html": "e1696714eecb88ccd0811e22024af9ac354882fac3014a9adf32a71a6f5d8230",
+    "impl/pnr/ae350_local_memory_probe.rpt.txt": "27dd433c84ff9e431912762ee390c5eac669d6f7161b58c11a5c73fc735b1e08",
+    "impl/pnr/ae350_local_memory_probe.vo": "a1ad1887bca23d4e5288ab770ad27dc87043ecad5399faea7285113e85119791",
+    "impl/pnr/cmd.do": "a4ac69de9ac73fea78afbe8eb4ac026b924a16479e2b1f8bb55d3104c17df1ae",
+    "impl/pnr/device.cfg": "ef7328952e3830149bbccdfbbc63617c0b273d8d7597c40a055613248e195f89"
+  },
+  "remaining": [
+    "91 unrouted nets; ownership/root cause not established",
+    "No final bitstream, routed STA, actual PLL location proof or physical acceptance",
+    "No banked64 hardware capture, real CPU cycles/cache/PMA/UART acceptance",
+    "Prior SRAM Verify failures retain their identity and remain unresolved"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-c12-route-failure-audit-v1",
+  "seal_sha256": "db8e0fd8a311780b4fc82ebe9a284067541ee0f1866e593dde04b34e4897a588",
+  "sealed_fixed_files": 135,
+  "sealed_original_files": 117
+}
