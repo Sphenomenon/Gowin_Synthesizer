@@ -9,7 +9,7 @@
 | profile | 新候选身份 | staged／enabled |
 |---|---|---:|
 | AE350 business revision 3 | `custom138k-workstation-ae350-business-v1-60960c9725e08e89` | 613／271 |
-| 默认 native revision 5 | `custom138k-workstation-v1-8a8105661ada8b07` | 603／260 |
+| 默认 native revision 5 | `custom138k-workstation-v1-8a8105661ada8b07` | 580／260 |
 
 两者都记录 requested PLL_R[0]、placement 尚未验证、hardware_tested=false。主树独立通过 97 项有效检查：新门禁 8（包括实际 C9 正例／C8 错位负例与真实 prepared 元数据篡改）、默认来源及闭包 21、business 来源及闭包 8、物理 PLL 工具 21、implementation preparation 22、accepted 来源 17。两个历史 opt-in 条件未运行，分别为旧的 unprofiled native 候选和完整物理 manifest，不补称通过。
 
