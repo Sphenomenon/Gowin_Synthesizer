@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,hashlib,json,subprocess,sys,re,shlex
 ROOT=Path(__file__).resolve().parents[2]
-def run(output):
+def run(output,diagnostics=False):
     output=output.resolve();output.mkdir(parents=True,exist_ok=False)
     sys.path.insert(0,str(ROOT))
     from tools.workstation_baselines import load_baseline
@@ -31,11 +31,12 @@ def run(output):
         if result.returncode:raise RuntimeError(name+' failed: '+ '\n'.join(line for line in combined.splitlines() if line.startswith(('FAIL ','facts ','engine ')))+'; log='+str(output/(name+'.log')))
         return result.stdout
     include=ROOT/'firmware/ae350'
+    diagnostic_flags=['-DA138_BLE_BUSINESS_DIAGNOSTICS']if diagnostics else[]
     for p in cfiles:
         target=output/(p.stem+'.o');objects.append(target)
-        execute(['cc','-std=c11','-O2','-DA138_BLE_BUSINESS','-Wall','-Wextra','-Werror','-I'+str(include),'-c',str(p),'-o',str(target)],p.stem)
+        execute(['cc','-std=c11','-O2','-DA138_BLE_BUSINESS',*diagnostic_flags,'-Wall','-Wextra','-Werror','-I'+str(include),'-c',str(p),'-o',str(target)],p.stem)
     execute(['verilator','--cc','--exe','--build','--timing','-Wno-fatal','--top-module','ae350_ble_business_cosim',
-        '--Mdir',str(output/'obj'),'-CFLAGS','-I'+str(include),'-LDFLAGS',' '.join(map(str,objects)),
+        '--Mdir',str(output/'obj'),'-CFLAGS',' '.join(['-I'+str(include),*diagnostic_flags]),'-LDFLAGS',' '.join(map(str,objects)),
         *map(str,files),str(cpp)],'compile')
     result=execute([str(output/'obj/Vae350_ble_business_cosim')],'run',60)
     # Reuse the compiled real RTL model, replacing only one maintained C
@@ -63,7 +64,7 @@ def run(output):
         if owner_source.count(old)!=1:raise ValueError('mutant anchor drift: '+name)
         source=output/(name+'.c');source.write_text(owner_source.replace(old,new))
         obj=output/(name+'.o')
-        execute(['cc','-std=c11','-O2','-DA138_BLE_BUSINESS','-Wall','-Wextra','-Werror','-I'+str(include),'-c',str(source),'-o',str(obj)],name+'-compile')
+        execute(['cc','-std=c11','-O2','-DA138_BLE_BUSINESS',*diagnostic_flags,'-Wall','-Wextra','-Werror','-I'+str(include),'-c',str(source),'-o',str(obj)],name+'-compile')
         command=shlex.split(link);command=[str(obj) if arg==str(objects[-1]) else arg for arg in command]
         command[command.index('-o')+1]=str(output/name)
         built=subprocess.run(command,cwd=output/'obj',text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=60)
@@ -93,7 +94,7 @@ def run(output):
     reference=generated/'ae350_ble_business_cosim.sv';reference.write_text(fixture)
     old_files=[reference,cdc,generated/'ble_protocol_command.v',generated/'ble_recording.v',*files[6:]]
     execute(['verilator','--cc','--exe','--build','--timing','-Wno-fatal','--top-module','ae350_ble_business_cosim',
-        '--Mdir',str(output/'golden-obj'),'-CFLAGS','-DGOLDEN -I'+str(include),'-LDFLAGS',' '.join(map(str,objects)),
+        '--Mdir',str(output/'golden-obj'),'-CFLAGS',' '.join(['-DGOLDEN','-I'+str(include),*diagnostic_flags]),'-LDFLAGS',' '.join(map(str,objects)),
         *map(str,old_files),str(cpp)],'golden-compile')
     golden=execute([str(output/'golden-obj/Vae350_ble_business_cosim')],'golden-run',60)
     wire=lambda text:[line for line in text.splitlines() if line.startswith(('WIRE ','BLOCK '))]
@@ -110,10 +111,11 @@ def run(output):
             historical_first_batch_control_period_ps=20,historical_first_batch_memory_period_ns=14,
             reconnect_hello_input_elapsed_ms=65536,wire_bytes_normalized=False),
         golden_input_sha256={n:hashlib.sha256(data).hexdigest() for n,data in original_inputs.items()},
-        synthesis=False,pnr=False,hardware_tested=False,profile_selected=False)
+        business_diagnostics_compiled=diagnostics,synthesis=False,pnr=False,hardware_tested=False,profile_selected=False)
     (output/'verification.json').write_text(json.dumps(evidence,indent=2)+'\n')
     print(json.dumps(dict(passed=evidence['passed'],compared_messages=evidence['compared_messages'],golden_wire_equal=comparison,evidence=str(output/'verification.json'))))
     if not evidence['passed']:raise RuntimeError('C business source drift, execution or golden-wire comparison failed')
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',required=True,type=Path)
-    run(parser.parse_args().output)
+    parser.add_argument('--diagnostics',action='store_true',help='compile the selected business diagnostic counters in both C and C++')
+    args=parser.parse_args();run(args.output,args.diagnostics)

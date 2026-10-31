@@ -145,3 +145,59 @@ ratio. Revision 2 reruns the original cases and expanded wire/behavior vectors
 at the corrected ratio; historical outputs are retained unchanged. Routed
 resources/timing/full CDC, CPU performance/watermark, Android and hardware
 acceptance remain separate candidate stages.
+
+## Existing C350 UART observation
+
+The maintained non-Classic business firmware compiles
+`A138_BLE_BUSINESS_DIAGNOSTICS`. Its matching business/HCI provider selects
+`WORKSTATION_CPU_BLE_DIAGNOSTICS`; the Classic PCM providers retain their
+original fetch fields. Default and accepted providers do not select this mode.
+No new UART, command protocol or probe is introduced. Startup signature/PASS,
+heartbeat, UI marker and trap fields retain their existing meanings.
+
+In this explicit C350 variant, word2 is metadata and word3 is its full 32-bit
+value. Metadata is `{8'hb5, fault[7:0], page[7:0], flags[7:0]}`. Flags are
+bound[0], opened[1], phase[4:2], transfer-open[5], pending-block[6], active-read[7].
+The existing f800 diagnostic page accepts a value stage at byte offset 24; a
+write to offset 28 publishes metadata and that staged value together. Only the
+published pair enters the existing held CPU snapshot and CRC-protected C350
+UART. It is not an externally writable CPU command interface.
+
+| Page | Value |
+| --- | --- |
+| 0 | Real firmware wrapper pump count |
+| 1 / 2 | Successful S1a CLAIM / COMPLETE call counts |
+| 3 | Last request ID |
+| 4 | opcode[7:0], completion-status[15:8], phase[23:16], length[31:24] |
+| 5 / 6 / 7 | C operation / object / transfer monotonic counters |
+| 8 | Last C physical descriptor sequence |
+| 9 / 10 / 11 | Confirmed byte offset / pending byte offset / pending byte length |
+| 12 / 13 | Actual captured / native committed frames last observed by C |
+| 14 / 15 | Physical accepted / applied descriptor sequence last observed by C |
+
+The firmware holds each normal page for 1500 ms because C350 is emitted about
+once per second. A 40-second capture normally sees the full 16-page rotation.
+Before binding, page0 still shows actual pump progress; a newly observed fault
+immediately publishes page0 with its fault code. Counters are observation only
+and never enter business decisions. Pages are separate observations and must
+not be treated as one atomic owner snapshot or as measured CPU performance.
+
+Use the existing capture entry point with a Python environment containing
+pyserial, for example from usb_a:
+
+```sh
+python3 -B tools/capture_scope_smoke.py --business-only --port /dev/cu.usbserial-21201 --seconds 40 --output /tmp/business-before.json
+```
+
+This mode is read-only and skips the historical CNN/general instrument smoke
+assertions. It requires CRC-valid C350, startup/PASS, no trap, a real nonzero
+pump count, an advancing CPU heartbeat and no reported business fault.
+`business_ready=false` explicitly means the owner is not yet bound/opened.
+That capture alone does not accept REC or download behavior. Over the existing
+BLE protocol, issue REC_START(0x20), REC_GET(0x22), REC_STOP(0x21), then
+OPEN(0x30), READ(0x31), ACK(0x32), CLOSE(0x33) using their existing payloads;
+do not send these binary opcodes to the MIDI UART. Compare before/after request
+IDs, CLAIM/COMPLETE counts, object/operation/transfer counters, physical
+accepted/applied sequences and confirmed/pending offsets against the actual
+BLE replies and downloaded PCM CRC. Source selection must also prove that the
+retired `ble_recording.v` is absent. No data path is replaced by these metrics.

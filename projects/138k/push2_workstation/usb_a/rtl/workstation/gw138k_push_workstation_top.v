@@ -89,6 +89,9 @@ module gw138k_push_workstation_top #(
     wire [4:0] tf_track_count;
     wire [31:0] fetch_count,last_fetch;
     reg [31:0] signature,ram_result,heartbeat,trap_cause,trap_pc,ui_report;
+`ifdef WORKSTATION_CPU_BLE_DIAGNOSTICS
+    reg [31:0] business_diagnostic_stage,business_diagnostic_meta,business_diagnostic_data;
+`endif
 `endif
     wire reset_n;
     reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));
@@ -685,7 +688,12 @@ module gw138k_push_workstation_top #(
         .clk_50m(clk_50m),.reset_n(reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
         .audio_locked(audio_locked),.sample_valid(audio_sample_valid),.memory_flags(memory_flags),
         .audio_status(synth_display_status),.video_diagnostics(video_diagnostics),.serial_out(runtime_serial),
-        .cpu_clk(pclk),.cpu_reset_n(preset_n),.cpu_words({trap_cause,heartbeat,ram_result,signature,last_fetch,fetch_count,ui_report}));
+        .cpu_clk(pclk),.cpu_reset_n(preset_n),
+`ifdef WORKSTATION_CPU_BLE_DIAGNOSTICS
+        .cpu_words({trap_cause,heartbeat,ram_result,signature,business_diagnostic_data,business_diagnostic_meta,ui_report}));
+`else
+        .cpu_words({trap_cause,heartbeat,ram_result,signature,last_fetch,fetch_count,ui_report}));
+`endif
     assign hdmi_tx_en = 1'b1;
     wire [2:0] app_cmd;
     wire app_en,app_rdy,app_wren,app_wend,app_wrdy,app_rvalid;
@@ -1146,6 +1154,19 @@ module gw138k_push_workstation_top #(
             default:begin end
         endcase
     end
+`ifdef WORKSTATION_CPU_BLE_DIAGNOSTICS
+    // Reuse the boot diagnostic page and existing C350 snapshot. A staged
+    // value never appears with a preceding page/status word on the UART.
+    always @(posedge pclk or negedge preset_n) begin
+        if(!preset_n) begin
+            business_diagnostic_stage<=0;business_diagnostic_meta<=0;business_diagnostic_data<=0;
+        end else if(psel && penable && pwrite && valid_word) case(paddr[11:0])
+            24:business_diagnostic_stage<=pwdata;
+            28:begin business_diagnostic_meta<=pwdata;business_diagnostic_data<=business_diagnostic_stage;end
+            default:begin end
+        endcase
+    end
+`endif
 `ifdef WORKSTATION_AE350_ROM96
     gw138k_boot_memory #(.ROM_BYTES(98304)) u_boot_memory(.rom_clk(rom_clk),.rom_reset_n(rom_reset_n),.rom_address(rom_address),
 `elsif WORKSTATION_AE350_ROM128

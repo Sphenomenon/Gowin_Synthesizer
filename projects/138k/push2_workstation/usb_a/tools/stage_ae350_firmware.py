@@ -162,7 +162,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     if memory_profile == 'ilm64k_dlm64k':
         common += ['-DA138_ILM64K_DLM64K', '-fcallgraph-info=su']
         linker = 'boot_ilm_dlm.ld'
-    if business_owner:common += ['-DA138_BLE_BUSINESS','-fno-jump-tables']
+    if business_owner:common += ['-DA138_BLE_BUSINESS','-DA138_BLE_BUSINESS_DIAGNOSTICS','-fno-jump-tables']
     commands = []
     with (output / 'build.log').open('w') as log:
         def run(command):

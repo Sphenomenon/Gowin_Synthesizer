@@ -260,6 +260,9 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
             o->completion_length,o->completion_payload};
         o->submission_ms=o->facts.time_ms;
         int result=a138_business_complete(&o->mailbox,&o->request.key,&c);
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+        if(result==A138_BM_OK)o->diagnostic_completed++;
+#endif
         if(result==A138_BM_OK || result==A138_BM_STALE)o->phase=IDLE;
         else if(result==A138_BM_COMMIT_UNCERTAIN)o->phase=OBSERVE;
         else o->fault=A138_OWNER_COMPLETE_IO;
@@ -286,11 +289,70 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
     if(result==A138_BM_NONE || result==A138_BM_STALE)return;
     if(result!=A138_BM_OK) {o->fault=A138_OWNER_REQUEST_IO;return;}
     if(a138_business_claim(&o->mailbox,&o->request.key)!=A138_BM_OK) {o->fault=A138_OWNER_CLAIM_IO;return;}
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+    o->diagnostic_claimed++;
+#endif
     o->submission_ms=o->facts.time_ms;o->phase=INSPECT;
 }
 static a138_ble_business_owner firmware_owner;
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+#include "audio_services.h"
+static uint32_t diagnostic_pumps,diagnostic_ms,diagnostic_page,diagnostic_fault;
+static void business_diagnostic(uint32_t page,uint32_t value) {
+    const a138_ble_business_owner *o=&firmware_owner;
+    uint32_t flags=o->bound|(o->opened<<1)|(o->phase<<2)|((uint32_t)o->transfer.open<<5)|
+        ((uint32_t)o->transfer.pending<<6)|((uint32_t)o->active_read<<7);
+    /* The second write atomically publishes the staged value and metadata.
+     * C350 retains its existing CRC, held snapshot and UART scheduling. */
+    a138_write(UINT32_C(0xf8000000),24,value);
+    a138_write(UINT32_C(0xf8000000),28,UINT32_C(0xb5000000)|(o->fault<<16)|(page<<8)|flags);
+}
+static void business_diagnostic_step(void) {
+    const a138_ble_business_owner *o=&firmware_owner;
+    diagnostic_pumps++;
+    if(o->fault!=diagnostic_fault || !o->bound) {
+        if(o->fault!=diagnostic_fault || !(diagnostic_pumps&255u)) {
+            diagnostic_fault=o->fault;business_diagnostic(0,diagnostic_pumps);
+        }
+        return;
+    }
+    /* UART emits C350 about once a second. Keep every page for 1.5 seconds;
+     * no diagnostic operation waits or changes the business service cadence. */
+    if((uint32_t)(o->facts.time_ms-diagnostic_ms)<1500u)return;
+    diagnostic_ms=o->facts.time_ms;
+    uint32_t value=0,page=diagnostic_page;
+    switch(page) {
+    case 0:value=diagnostic_pumps;break;
+    case 1:value=o->diagnostic_claimed;break;
+    case 2:value=o->diagnostic_completed;break;
+    case 3:value=o->request.request_id;break;
+    case 4:value=o->request.opcode|(o->completion_status<<8)|(o->completion_phase<<16)|(o->completion_length<<24);break;
+    case 5:value=o->operation_counter;break;
+    case 6:value=o->object_counter;break;
+    case 7:value=o->transfer_counter;break;
+    case 8:value=o->command_sequence;break;
+    case 9:value=o->transfer.offset;break;
+    case 10:value=o->transfer.pending_offset;break;
+    case 11:value=o->transfer.pending_length;break;
+    case 12:value=o->facts.frames;break;
+    case 13:value=o->facts.committed;break;
+    case 14:value=o->facts.accepted_seq;break;
+    case 15:value=o->facts.applied_seq;break;
+    }
+    business_diagnostic(page,value);diagnostic_page=(page+1u)&15u;
+}
+#endif
 void a138_ble_business_firmware_init(void) {
     a138_ble_business_init(&firmware_owner,a138_business_mmio_bus(A138_BLE_BUSINESS_BASE),
         a138_record_mmio_bus(A138_BLE_DATA_BASE));
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+    diagnostic_pumps=0;diagnostic_ms=0;diagnostic_page=0;diagnostic_fault=0;
+    business_diagnostic(0,0);
+#endif
 }
-void a138_ble_business_firmware_pump(void) {a138_ble_business_pump(&firmware_owner);}
+void a138_ble_business_firmware_pump(void) {
+    a138_ble_business_pump(&firmware_owner);
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+    business_diagnostic_step();
+#endif
+}

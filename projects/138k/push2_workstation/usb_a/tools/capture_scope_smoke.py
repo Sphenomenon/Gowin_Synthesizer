@@ -23,6 +23,23 @@ from midi_serial import performance, expression
 
 RECORD = re.compile(rb'(A138|C350|K138|E138|P138|U138) ((?:[0-9A-F]{8} ){8})([0-9A-F]{4})')
 MUSIC = re.compile(rb'B138 ([0-9A-F]{8}) ([0-9A-F]{8}) ([0-9A-F]{8}) ([0-9A-F]{8})')
+BUSINESS_PAGES = ('pump_count', 'claimed_count', 'completed_count', 'request_id',
+    'request_result', 'operation_id', 'object_id', 'transfer_id', 'physical_sequence',
+    'confirmed_offset', 'pending_offset', 'pending_length', 'captured_frames',
+    'committed_frames', 'accepted_sequence', 'applied_sequence')
+
+
+def business_diagnostic(words):
+    """Decode only the explicit business C350 variant; startup fields stay intact."""
+    meta, value = words[2:4]
+    page = (meta >> 8) & 255
+    if meta >> 24 != 0xb5 or page >= len(BUSINESS_PAGES):
+        return None
+    return dict(page=page, field=BUSINESS_PAGES[page], value=value,
+        fault=(meta >> 16) & 255, bound=bool(meta & 1), opened=bool(meta & 2),
+        phase=(meta >> 2) & 7, transfer_open=bool(meta & 32),
+        block_pending=bool(meta & 64), active_read=bool(meta & 128),
+        sequence=words[0], cpu_heartbeat=words[6])
 
 
 def wait_for_controls(pump, read_last, label, expected_performance=None,
@@ -75,7 +92,10 @@ def main():
     parser.add_argument('--exercise-live', action='store_true')
     parser.add_argument('--exercise-controls', action='store_true', help='Exercise committed modes, gains, effects, routes, sustain and PANIC')
     parser.add_argument('--exercise-polyphony', action='store_true', help='Exercise 32 held mode-A voices, release and PANIC at reduced gain')
+    parser.add_argument('--business-only', action='store_true', help='Read existing business C350 pages only; no MIDI writes or functional REC/download acceptance')
     args = parser.parse_args()
+    if args.business_only and (args.exercise_live or args.exercise_controls or args.exercise_polyphony):
+        parser.error('--business-only cannot send exercise controls')
     if not 3 <= args.seconds <= 60:
         parser.error('--seconds must be 3..60')
     if args.output.exists():
@@ -93,6 +113,7 @@ def main():
     screen_frames = []
     commands = []
     snapshot_pair=(0,0)
+    cpu_heartbeats=[]
     try:
         port = serial.Serial(port=None, baudrate=115200, timeout=0.1, write_timeout=2, exclusive=True)
         port.dtr=False; port.rts=False; port.port=args.port
@@ -131,6 +152,11 @@ def main():
                             result['last'][kind] = state
                         else:
                             result['last'][kind] = [f'{v:08X}' for v in words]
+                            if kind == 'C350':
+                                cpu_heartbeats.append(words[6])
+                                business = business_diagnostic(words)
+                                if business is not None:
+                                    result.setdefault('business_pages', {})[business['field']] = business
                             if kind == 'A138': sample_counts.append((words[0],words[2]))
                             if kind == 'P138': screen_frames.append(words[5])
 
@@ -147,6 +173,24 @@ def main():
                 return wait_for_snapshot(pump, lambda: result['last'], lambda: snapshot_pair, initial)
 
             pump(args.seconds)
+            if args.business_only:
+                if counts['C350'] < 2 or crc_bad:
+                    raise RuntimeError('insufficient CRC-valid business C350 records')
+                cpu=[int(v,16) for v in result['last']['C350']]
+                if cpu[4:6]!=[0x43505531,0x50415353] or cpu[7]:
+                    raise RuntimeError('AE350 startup signature or trap failed')
+                pages=result.get('business_pages',{})
+                if ('pump_count' not in pages or not pages['pump_count']['value'] or
+                        cpu_heartbeats[-1]==cpu_heartbeats[0]):
+                    raise RuntimeError('real business pump and advancing CPU heartbeat not observed')
+                if any(page['fault'] for page in pages.values()):
+                    raise RuntimeError('business owner reports a fault')
+                result['tests']['business_runtime_observed']='passed'
+                result['business_ready']=any(p['bound'] and p['opened'] for p in pages.values())
+                result['limits']=['Read-only runtime observation; REC/transfer/PCM correctness, radio connection and hardware timing require separate evidence. Pages are individual timed observations, not one atomic multi-page state.']
+                result['passed']=True
+                print(json.dumps(dict(passed=True,business_ready=result['business_ready'],pages=len(pages),output=str(args.output))))
+                return
             result['startup_panic_epoch']=result['last'].get('E138',{}).get('panic_epoch',0)
             for kind in ['A138', 'C350', 'K138', 'E138', 'P138', 'B138']:
                 if counts[kind] < 2: raise RuntimeError('insufficient valid records: ' + kind)

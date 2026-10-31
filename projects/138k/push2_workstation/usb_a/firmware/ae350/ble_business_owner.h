@@ -34,6 +34,10 @@ typedef struct {
     uint32_t phase,opened,bound,fault,completion_phase,completion_status,completion_length;
     uint8_t active_read,active_replay;
     uint8_t completion_payload[64];
+#ifdef A138_BLE_BUSINESS_DIAGNOSTICS
+    /* Observation only; never used to decide command/task/transfer behavior. */
+    uint32_t diagnostic_claimed,diagnostic_completed;
+#endif
 } a138_ble_business_owner;
 /* One caller, fixed work per pump, no waits, allocation or PCM copies. At most
  * one new descriptor or mailbox completion is submitted by a pump. An access
