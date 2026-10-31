@@ -1,0 +1,446 @@
+{
+  "schema": 1,
+  "candidate_identity": "custom138k-workstation-ae350-business-v1-09ae2f713f688bb7",
+  "source_commit": "fd7625dc70fb85bd60ee7842a6e1f3aae1f5606c",
+  "process": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-main-synthesis-09ae2f71-v1/runtime_synthesis_evidence/process.json",
+  "elapsed_seconds": 391.88523224997334,
+  "inputs_unchanged": true,
+  "aggregates": {
+    "before": {
+      "Logic": 94623,
+      "LUT": 75967,
+      "ALU": 16802,
+      "Register": 60578,
+      "synthesis_BSRAM": 245,
+      "RAM16": 309,
+      "raw_LUT_primitives": 75654,
+      "INV_primitives": 313,
+      "DSP_primitives": {
+        "MULTALU27X18": 37,
+        "MULT12X12": 4,
+        "MULT27X36": 42
+      }
+    },
+    "first_business": {
+      "Logic": 102224,
+      "LUT": 83325,
+      "ALU": 17045,
+      "Register": 63180,
+      "synthesis_BSRAM": 245,
+      "RAM16": 309,
+      "raw_LUT_primitives": 83011,
+      "INV_primitives": 314,
+      "DSP_primitives": {
+        "MULTALU27X18": 37,
+        "MULT12X12": 4,
+        "MULT27X36": 42
+      }
+    },
+    "mailbox": {
+      "Logic": 99616,
+      "LUT": 80719,
+      "ALU": 17043,
+      "Register": 63178,
+      "synthesis_BSRAM": 245,
+      "RAM16": 309,
+      "raw_LUT_primitives": 80412,
+      "INV_primitives": 307,
+      "DSP_primitives": {
+        "MULTALU27X18": 37,
+        "MULT12X12": 4,
+        "MULT27X36": 42
+      }
+    }
+  },
+  "delta_vs": {
+    "before": {
+      "Logic": 4993,
+      "LUT": 4752,
+      "ALU": 241,
+      "Register": 2600,
+      "RAM16": 0,
+      "synthesis_BSRAM": 0
+    },
+    "first_business": {
+      "Logic": -2608,
+      "LUT": -2606,
+      "ALU": -2,
+      "Register": -2,
+      "RAM16": 0,
+      "synthesis_BSRAM": 0
+    }
+  },
+  "changed_staged_inputs_from_first_business": [
+    {
+      "path": "rtl/services/workstation_business_mailbox.sv",
+      "before": "6871b511721f9ff1988de0bfa22f9e9bd830efdead9cabbf16406fab509238ed",
+      "after": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa"
+    }
+  ],
+  "unchanged_staged_inputs_from_first_business": 611,
+  "validation": {
+    "mailbox_rtl": "previous main 34196 half-cycle output comparisons and all4096 read addresses",
+    "clock_tests": 5,
+    "clock_negative_controls": 28,
+    "pcm": {
+      "schema": 1,
+      "passed": true,
+      "tests": 18,
+      "negative_controls": 109,
+      "vg_sha256": "2c914764d8985b3335d4c9892f706fa4e49482cabe6ebc2100dc848b402ad703",
+      "constraint_revision": "paired-nextq-v2",
+      "candidate_constraints_installed": true,
+      "complete_closure_counts": [
+        65,
+        263,
+        141,
+        207
+      ],
+      "resolved_selector_count": 896,
+      "reply_next_q_proof": {
+        "all_assignments": true,
+        "bdd_node_count": 10429,
+        "effective_update": "Q_next = CE ? D : Q (outside independently checked async assertion)",
+        "entire_serializer_fsm_proved": false,
+        "flexible_consumer_register_count": 32,
+        "header_operand_pairs_verified": true,
+        "header_predicate_cuts": [
+          "u_managed/runtime/serializer/n57_3",
+          "u_managed/runtime/serializer/n91_3"
+        ],
+        "method": "canonical reduced ordered Boolean decision diagrams",
+        "named_inputs": [
+          "u_managed/runtime/serializer/n57_3",
+          "u_managed/runtime/serializer/n91_3",
+          "u_managed/runtime/configured",
+          "u_managed/runtime/serial_quiesce[1]",
+          "u_managed/runtime/bridge/serial_reset_n_37",
+          "u_managed/runtime/serial_reset_n",
+          "u_managed/runtime/bridge/serial_quiesce_sync[1]",
+          "u_managed/runtime/reply_sync[1]",
+          "u_managed/runtime/reply_ack",
+          "u_managed/runtime/have_next",
+          "u_managed/runtime/serializer/requested",
+          "u_managed/runtime/sample_rate",
+          "physical_frame44",
+          "u_managed/runtime/serializer/wanted_sequence[0]",
+          "u_managed/runtime/serializer/wanted_sequence[1]",
+          "u_managed/runtime/serializer/wanted_sequence[2]",
+          "u_managed/runtime/serializer/wanted_sequence[3]",
+          "u_managed/runtime/serializer/wanted_sequence[4]",
+          "u_managed/runtime/serializer/wanted_sequence[5]",
+          "u_managed/runtime/serializer/wanted_sequence[6]",
+          "u_managed/runtime/serializer/wanted_sequence[7]",
+          "u_managed/runtime/serializer/wanted_sequence[8]",
+          "u_managed/runtime/serializer/wanted_sequence[9]",
+          "u_managed/runtime/serializer/wanted_sequence[10]",
+          "u_managed/runtime/serializer/wanted_sequence[11]",
+          "u_managed/runtime/serializer/wanted_sequence[12]",
+          "u_managed/runtime/serializer/wanted_sequence[13]",
+          "u_managed/runtime/serializer/wanted_sequence[14]",
+          "u_managed/runtime/serializer/wanted_sequence[15]",
+          "u_managed/runtime/serializer/wanted_sequence[16]",
+          "u_managed/runtime/serializer/wanted_sequence[17]",
+          "u_managed/runtime/serializer/wanted_sequence[18]",
+          "u_managed/runtime/serializer/wanted_sequence[19]",
+          "u_managed/runtime/serializer/wanted_sequence[20]",
+          "u_managed/runtime/serializer/wanted_sequence[21]",
+          "u_managed/runtime/serializer/wanted_sequence[22]",
+          "u_managed/runtime/serializer/wanted_sequence[23]",
+          "u_managed/runtime/serializer/wanted_sequence[24]",
+          "u_managed/runtime/serializer/wanted_sequence[25]",
+          "u_managed/runtime/serializer/wanted_sequence[26]",
+          "u_managed/runtime/serializer/wanted_sequence[27]",
+          "u_managed/runtime/serializer/wanted_sequence[28]",
+          "u_managed/runtime/serializer/wanted_sequence[29]",
+          "u_managed/runtime/serializer/wanted_sequence[30]",
+          "u_managed/runtime/serializer/wanted_sequence[31]",
+          "u_managed/underrun_count_o_Z[0]",
+          "u_managed/underrun_count_o_Z[1]",
+          "u_managed/underrun_count_o_Z[2]",
+          "u_managed/underrun_count_o_Z[3]",
+          "u_managed/underrun_count_o_Z[4]",
+          "u_managed/underrun_count_o_Z[5]",
+          "u_managed/underrun_count_o_Z[6]",
+          "u_managed/underrun_count_o_Z[7]",
+          "u_managed/underrun_count_o_Z[8]",
+          "u_managed/underrun_count_o_Z[9]",
+          "u_managed/underrun_count_o_Z[10]",
+          "u_managed/underrun_count_o_Z[11]",
+          "u_managed/underrun_count_o_Z[12]",
+          "u_managed/underrun_count_o_Z[13]",
+          "u_managed/underrun_count_o_Z[14]",
+          "u_managed/underrun_count_o_Z[15]",
+          "u_managed/underrun_count_o_Z[16]",
+          "u_managed/underrun_count_o_Z[17]",
+          "u_managed/underrun_count_o_Z[18]",
+          "u_managed/underrun_count_o_Z[19]",
+          "u_managed/underrun_count_o_Z[20]",
+          "u_managed/underrun_count_o_Z[21]",
+          "u_managed/underrun_count_o_Z[22]",
+          "u_managed/underrun_count_o_Z[23]",
+          "u_managed/underrun_count_o_Z[24]",
+          "u_managed/underrun_count_o_Z[25]",
+          "u_managed/underrun_count_o_Z[26]",
+          "u_managed/underrun_count_o_Z[27]",
+          "u_managed/underrun_count_o_Z[28]",
+          "u_managed/underrun_count_o_Z[29]",
+          "u_managed/underrun_count_o_Z[30]",
+          "u_managed/underrun_count_o_Z[31]",
+          "u_managed/runtime/serializer/half_count[0]",
+          "u_managed/runtime/serializer/half_count[1]",
+          "u_managed/runtime/serializer/bit_position[0]",
+          "u_managed/runtime/serializer/bit_position[1]",
+          "u_managed/runtime/serializer/bit_position[2]",
+          "u_managed/runtime/serializer/bit_position[3]",
+          "u_managed/runtime/serializer/bit_position[4]",
+          "u_managed/runtime/serializer/bit_position[5]",
+          "startup_frames[0]",
+          "startup_frames[1]",
+          "startup_frames[2]",
+          "u_managed/runtime/startup_frames_3[3]",
+          "u_managed/runtime/startup_frames_3[4]",
+          "u_managed/runtime/startup_frames_3[5]",
+          "u_managed/runtime/startup_frames_3[6]",
+          "u_managed/runtime/startup_frames_3[7]",
+          "u_managed/runtime/startup_frames_3[8]",
+          "u_managed/runtime/startup_frames_3[9]",
+          "startup_frames[10]",
+          "playing",
+          "hp_bck_d",
+          "u_managed/runtime/serial_resume[1]"
+        ],
+        "proved_register_count": 33,
+        "registers": [
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1058_12",
+            "register": "u_managed/runtime/serializer/wanted_sequence_0_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1057_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_1_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1056_7",
+            "register": "u_managed/runtime/serializer/wanted_sequence_2_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1055_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_3_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1054_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_4_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1053_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_5_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1052_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_6_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1051_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_7_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1050_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_8_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1049_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_9_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1048_7",
+            "register": "u_managed/runtime/serializer/wanted_sequence_10_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1047_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_11_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1046_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_12_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1045_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_13_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1044_14",
+            "register": "u_managed/runtime/serializer/wanted_sequence_14_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1043_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_15_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1042_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_16_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1041_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_17_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1040_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_18_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1039_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_19_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1038_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_20_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1037_9",
+            "register": "u_managed/runtime/serializer/wanted_sequence_21_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1036_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_22_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1035_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_23_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1034_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_24_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1033_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_25_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1032_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_26_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1031_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_27_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1030_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_28_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1029_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_29_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/VCC",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1028_10",
+            "register": "u_managed/runtime/serializer/wanted_sequence_30_s1"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/n5922_26",
+            "contract": "wanted sequence increments only on admitted frame",
+            "d_net": "u_managed/runtime/serializer/n1027_5",
+            "register": "u_managed/runtime/serializer/wanted_sequence_31_s0"
+          },
+          {
+            "ce_net": "u_managed/runtime/serializer/underrun_count_o_31_4",
+            "contract": "underrun bit0 saturates and increments only without next frame",
+            "d_net": "u_managed/runtime/serializer/n831_6",
+            "register": "u_managed/runtime/serializer/underrun_count_o_0_s0"
+          }
+        ],
+        "sampling_used": false,
+        "startup_frames_constant": 1028,
+        "unknown_leaf_inputs_allowed": false
+      },
+      "gate_source_commit": "fd7625dc70fb85bd60ee7842a6e1f3aae1f5606c",
+      "resource_seal_sha256": "b406d8beeb8df1cd01805fe041964824f8496aeec5ec87700d42a5cb93680164",
+      "constraints_complete": false,
+      "reset_inventory_complete": false,
+      "physical_cdc_accepted": false,
+      "eda_invoked": false,
+      "hardware_operated": false
+    }
+  },
+  "resource_review_seal_sha256": "b406d8beeb8df1cd01805fe041964824f8496aeec5ec87700d42a5cb93680164",
+  "pcm_review_seal_sha256": "e5561af43e7e1914c2ac45b10fda4d8cf002ea2edc22d292f32cf4b2541c32c2",
+  "net_reduction_vs_before": false,
+  "net_reduction_vs_first_business": true,
+  "physical_CLS_verified": false,
+  "physical_BSRAM_verified": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limitations": [
+    "fixed first-batch revision1; second-download-batch not part of this synthesis",
+    "vendor Logic is not physical CLS",
+    "no native PLL_R[0] constraint in this dated candidate",
+    "partial clock/PCM gates do not prove full CDC/reset/functional equivalence or hardware"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-synthesis-main-parent-v1",
+  "seal_sha256": "27d7d735aa8eedebbdad896d4f210f6f6fd80ba36652a7d6f7829767c8db0dee",
+  "external_files": 2051
+}
