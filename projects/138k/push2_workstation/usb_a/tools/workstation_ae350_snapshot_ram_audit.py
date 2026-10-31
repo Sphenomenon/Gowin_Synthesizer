@@ -45,7 +45,7 @@ def audit(n):
     rams={k:c for k,c in n.cells.items() if k.startswith('u_uart/') and c['kind'] in ('SDPB','DPB','SP','SDPX9B','DPX9B','SPX9','RAM16SDP1','RAM16SDP2','RAM16SDP4')}
     if len(rams)!=8 or any(c['kind']!='SDPB' for c in rams.values()):
         raise ValueError('bsram4 requires exactly eight actual native16-bit SDPB lanes')
-    addresses=None;controls=None;data_outputs=set()
+    addresses=None;controls=None;data_outputs=set();data_inputs=set()
     for name,c in sorted(rams.items()):
         p=c['parameters']
         if any(p.get(k)!=v for k,v in dict(BIT_WIDTH_0='16',BIT_WIDTH_1='16',READ_MODE="1'b0",RESET_MODE='"SYNC"',BLK_SEL_0="3'b000",BLK_SEL_1="3'b000").items()):
@@ -66,10 +66,12 @@ def audit(n):
         addresses,controls=addr,ctrl
         di,do=expand(name,'DI',32),expand(name,'DO',32)
         if any(x not in zero for x in di[16:]):raise ValueError('snapshot RAM unexpected upper write lane')
+        if any(x in zero|one or x in data_inputs for x in di[:16]):raise ValueError('snapshot RAM write lane missing/aliased')
         if any(x in zero|one or x in data_outputs for x in do[:16]):raise ValueError('snapshot RAM read lane missing/aliased')
+        data_inputs.update(di[:16])
         data_outputs.update(do[:16])
     expected_held={i for i in range(58*32)}|{58*32,59*32}
-    held={};reference_registers=0;other_clocks=set();wide=[];small_banks={k:set() for k in ('prefetch','prepared_page0','cache_data')}
+    held={};held_nets=set();uart_cache_nets=set();reference_registers=0;other_clocks=set();wide=[];small_banks={k:set() for k in ('prefetch','prepared_page0','cache_data')}
     for name,c in n.cells.items():
         if not name.startswith('u_uart/') or not c['kind'].startswith('DFF'):continue
         q=n.pin(name,'Q');clk=n.pin(name,'CLK')
@@ -78,12 +80,13 @@ def audit(n):
         if match:
             bit=int(match[1])
             if bit in held:raise ValueError('snapshot held bit duplicate driver')
-            held[bit]=clk;other_clocks.add(clk)
+            held[bit]=clk;held_nets.add(q);other_clocks.add(clk)
         for stem,bits in small_banks.items():
             m=re.fullmatch(r'u_uart/'+stem+r'\[(\d+)\]',q) or re.fullmatch(r'u_uart/'+stem+r'_(\d+)_s[0-9]+',name)
             if m:
                 if clk!='clk_50m' or int(m[1]) in bits or q!=n.canonical(n.scopes[name],stem+'['+m[1]+']'):raise ValueError('snapshot cache bit clock/driver drift')
                 bits.add(int(m[1]))
+                if stem=='cache_data':uart_cache_nets.add(q)
         if re.search(r'/(?:words|full_snapshot_50mhz|frozen_snapshot)(?:\[|_)',q):wide.append(q)
     if set(held)!=expected_held or len(other_clocks)!=1 or 'clk_50m' in other_clocks:
         raise ValueError('snapshot one-edge pclk held capture missing/changed')
@@ -99,28 +102,38 @@ def audit(n):
             q=n.pin(name,output)
             if q in drivers or q in constant_drivers:raise ValueError('snapshot ambiguous scalar driver')
             drivers[q]=(name,output)
-    reached=set();seen=set()
-    def walk(net,depth):
-        key=(net,depth)
-        if key in seen:return
-        seen.add(key)
-        if net in data_outputs:reached.add(net);return
-        if net in zero|one or net not in drivers:return
-        name,output=drivers[net];c=n.cells[name]
-        if c['kind'].startswith('DFF'):
-            if depth<2:walk(n.pin(name,'D'),depth+1)
-        else:
-            for p in c['ports']:
-                if p!=output:walk(n.pin(name,p),depth)
+    def reachable(roots,leaves,ff_limit):
+        reached=set();seen=set()
+        def walk(net,depth):
+            key=(net,depth)
+            if key in seen:return
+            seen.add(key)
+            if net in leaves:reached.add(net);return
+            if net in zero|one or net not in drivers:return
+            name,output=drivers[net];c=n.cells[name]
+            if c['kind'].startswith('DFF'):
+                if depth<ff_limit:walk(n.pin(name,'D'),depth+1)
+            else:
+                for p in c['ports']:
+                    if p!=output:walk(n.pin(name,p),depth)
+        for root in roots:walk(root,0)
+        return reached
+    payload=[]
     for name,c in n.cells.items():
         if c['kind'].startswith('DFF') and re.fullmatch(r'status_50mhz\[(?:[0-9]+)\]',n.pin(name,'Q')):
             bit=int(n.pin(name,'Q').split('[')[1][:-1])
-            if bit<512:walk(n.pin(name,'D'),0)
+            if bit<512:payload.append(n.pin(name,'D'))
+    reached=reachable(payload,data_outputs,2)
     if reached!=data_outputs:raise ValueError('snapshot native RAM read data does not reach all registered GAO payload lanes')
+    written=reachable(data_inputs,held_nets,0)
+    if written!=held_nets:raise ValueError('snapshot held capture does not reach native RAM write data')
+    uart_read=reachable([n.pin(drivers[q][0],'D') for q in uart_cache_nets],data_outputs,0)
+    if uart_read!=data_outputs:raise ValueError('snapshot native RAM read data does not reach UART cache')
     # This bound includes prepublication page0, next-page prefetch, UART cache,
     # identity/state/UART counters. It is a structural gate, not a CLS estimate.
     return dict(native_sdp_lanes=8,lane_bits=16,read_bandwidth_bits_per_cycle=128,
         held_pclk_bits=len(held),held_clock=next(iter(other_clocks)),reference_registers=reference_registers,
         reference_register_limit=1600,cache_bits={k:len(v) for k,v in small_banks.items()},
         ram_read_bits_reaching_gao=len(reached),redundant_snapshot_ff_names=wide,
+        held_bits_reaching_ram=len(written),ram_read_bits_reaching_uart=len(uart_read),
         physical_bsram_count_verified=False,physical_timing_verified=False)

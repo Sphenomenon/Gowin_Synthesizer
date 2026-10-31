@@ -25,6 +25,9 @@ CF actual VG then passes the structure gate: top704registered bits, eight
 native16 SDPB lanes with one-cycle read mode and canonical50MHz clocks,
 1858held bits on `ram_clk`,1292reference FFs below the1600bound,512/384/32-bit
 caches,128RAM read bits reaching GAO and no legacy wide snapshot FF names.
+The strengthened consumer audit also proves every1858held capture bit reaches
+the native DI cone and every128native DO bit reaches the UART cache. A decoy
+RAM with disconnected write input or UART consumer cannot pass.
 These are actual synthesis structure facts. They do not establish routed
 resource count, timing, JTAG identity, SRAM acceptance or external reception.
 
@@ -35,7 +38,7 @@ noncompiled audit-metadata changes. A small preliminary D0 source prepare was
 superseded before any root EDA dispatch; root must use the explicitly delivered
 final prepare rather than a local latest pointer.
 
-Validation: existing structure fixture14negative controls, new per-wrapper
+Validation: structure fixture16negative controls, new per-wrapper
 constant fixture and contradictory-driver negative control pass; the new CDC
 geometry regression covers all eight lanes and sixteen active DI bits/lane.
 Actual VG audit and original source-stage UART/GAO evidence remain separately
