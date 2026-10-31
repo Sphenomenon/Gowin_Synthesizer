@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "scope": "root integration of native PLL constraint, merged ROM tooling locks and actual fresh prepares; no new EDA/board operation",
+  "source_commit": "3cce72e",
+  "imported_commit": "200a925",
+  "author_commit": "43aaa112b86411a1c060c0d7095f419c73dd0f82",
+  "author_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pllr0-delivery-v1",
+  "author_seal_sha256": "d3ed4e43053a3602b0875a25003c10e0304ac8a602d2a2ea5a5552dfdbc54dac",
+  "prepares": {
+    "business": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pll-main-prepare-v1",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-60960c9725e08e89",
+      "artifact_sha256": "db8b823394c6722f4f40591bee79c4bbbceed59c7253d148a945314d934cba08",
+      "staged_inputs": 613,
+      "enabled_inputs": 271,
+      "firmware_rom_sha256": "98e8d2880f1109391e43a3e7babafd12e62d3a5b2b10730187294e66d2ed6b1a",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536,
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1"
+      }
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pll-main-default-v1",
+      "candidate_identity": "custom138k-workstation-v1-8a8105661ada8b07",
+      "artifact_sha256": "837f6e3666a6bd2b898e2754ff1feac53000e9df523ac7ee758061c9956292aa",
+      "staged_inputs": 580,
+      "enabled_inputs": 260,
+      "firmware_rom_sha256": "1e033ca53e43280ca2c008587676cd7ccb058050d9d01c9837925bc42a623be1",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      }
+    }
+  },
+  "source_snapshot_files": 458,
+  "unique_passed_tests": 97,
+  "remaining_optin_skips": [
+    "unprofiled historical native candidate",
+    "existing full physical manifest"
+  ],
+  "root_validations": {
+    "gate": [
+      8,
+      1
+    ],
+    "prepared-gate": [
+      1,
+      0
+    ],
+    "default": [
+      22,
+      1
+    ],
+    "business": [
+      8,
+      3
+    ],
+    "prepared-business": [
+      3,
+      0
+    ],
+    "physical": [
+      22,
+      1
+    ],
+    "implementation": [
+      22,
+      0
+    ],
+    "accepted": [
+      17,
+      0
+    ]
+  },
+  "merged_source_lock_changes": [
+    "rtl/memory/workstation_ae350_boot_memory.sv",
+    "sim/ae350_rv32_startup.py",
+    "tools/ae350_local_memory.py"
+  ],
+  "actual_C9_positive_and_C8_negative": true,
+  "physical_gate_source_changed": true,
+  "new_full_synthesis": false,
+  "new_full_place_route": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "accepted_profile_selected": false,
+  "limitations": [
+    "Fresh native PLL placement is requested only until actual P&R is checked",
+    "C9 positive and C8 negative are isolated existing probes, not this native candidate",
+    "Native RTC still uses legacy reference; separate source stage in progress",
+    "128 KiB ROM is not selected by native profiles"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-pll-main-parent-v1",
+  "seal_sha256": "7ed422795fa4a930e0066823933b6d33f71ff1261ec613be4469b0be02e3340b",
+  "external_files": 1333
+}
