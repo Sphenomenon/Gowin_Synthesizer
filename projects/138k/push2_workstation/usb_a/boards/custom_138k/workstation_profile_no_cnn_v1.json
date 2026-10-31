@@ -343,7 +343,7 @@
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/peripherals.json": "ac1b0f47d88875aaa46cfd6a79273c7b416d9041f6386dc8bcc45e5bbdd8a523",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75",
     "projects/138k/push2_workstation/usb_a/boards/custom_138k/usb2_cdc.json": "64d29331247c7c9b76fcb93a200b870aec38645edc3dd7c88f8e6ef6b38826e1",
-    "projects/138k/push2_workstation/usb_a/build.py": "bbee17e13ed402260e6a7c61e7e2d33a090dfc8c1d3637f987ea7239668354cb",
+    "projects/138k/push2_workstation/usb_a/build.py": "d15433a18a7c23b22f985e9b8d85a9e187af3ce6e579f8fc703f1a1f4d467b24",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.c": "527c5e420bc35b39c829f6fc0c83c71a445fbf3a4f2cedab0254f0eae7d86a28",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_backend.h": "2b8530fe2ef0ad98b42d14070c25c0895b6a4b5c6dee8bd05a11cf1539821d17",
     "projects/138k/push2_workstation/usb_a/drivers/usb2/workstation_usb2_cpu_port.c": "cd841c339aad4f99d00af9a694f7a119cf2f2c4067ba8befd18de805e4df3589",

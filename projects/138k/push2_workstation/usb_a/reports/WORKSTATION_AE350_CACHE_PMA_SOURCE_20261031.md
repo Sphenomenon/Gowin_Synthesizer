@@ -63,3 +63,13 @@ to a previous accepted SRAM identity. The structural gate expects the additional
 word60 APB counter in this variant, but that expectation is not physical proof.
 Only4KiB page behavior is exercised; full32KiB/all-way stress, shared DDR
 coherence, real performance and workstation integration are separate work.
+
+## Main integration and independent root checks
+
+Main commit `a5370b2` imports the isolated probe source. The root reran seven actual-firmware/abstract-model tests, three RTL tests, 17 accepted-source tests, nine local-memory, nine banked, nine snapshot and three snapshot-audit tests; all passed. The 296-file author delivery was independently reverified. These checks exercise the actual compiled probe in an abstract cache model, not encrypted hard-IP cache behavior.
+
+A fresh main prepare uses UserCode `C21031D5`, manifest SHA256 `c7eb105fe96ab297a18411032799400cf364f82266d3e806536f3c4173c7610b`: 46 inputs, ten compiled sources, 4,416-byte firmware and 64 KiB ROM. D5 is prepare only and is not queued for physical implementation. The failed D0 GAO route does not provide physical acceptance for this changed program.
+
+All nine complete-workstation source locks pass after refreshing the changed `build.py` CLI hash. Only the two profiles with a closed full-firmware inventory add the exact three new standalone probe files. No old source hash, reference firmware identity or ROM96 decoder was substituted. Fresh ROM96 candidate `b36c837269036d3e` passes its verifier; all 637 staged inputs and 283 enabled inputs remain byte-identical to the earlier `9d02b8107b256773` candidate. The standalone files affect source provenance without entering that workstation build.
+
+The [main machine record](workstation_task_20261030/ae350_cache_pma_main.json) binds 29 source snapshots and 1,200 external records. Immutable evidence: `/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-cache-pma-main-parent-v1`; seal SHA256 `aa22fb17b86e18d54b4c07d52610d7f88b78ee7bfb7a62caa6acc70f85b03584`. Recheck with its `verify.py`. Production cache remains off; full cache capacity, shared DDR coherence, synthesis, physical timing and hardware behavior remain unverified.
