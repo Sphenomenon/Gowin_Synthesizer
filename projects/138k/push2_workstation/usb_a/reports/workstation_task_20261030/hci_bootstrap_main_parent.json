@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "source_commit": "7aa9180",
+  "author_commit": "37973f1b89c867fe2e9ea195b66d5f79cfaffbab",
+  "author_seal_sha256": "6401a53f8b6a1064f58c69b2bb6719ea200b9852964c760072326cdebeb8d8ab",
+  "source_sha256": {
+    "sim/run_workstation_hci_owner.py": "4534bba07d3e30d5f695c2b6e2d92eb42d8f357fbd930c2b6a009c8290e68f4c",
+    "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+    "rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv": "f0b25d9f41d789d322728c5d9b8fa3887130d48711a21e56249dba77cf546d45",
+    "sim/tb_workstation_hci_flow_owner.sv": "507c4f187037eaadaeab9cd9ac4be43a82598c00c3e08005522a92716dff24db",
+    "sim/tb_workstation_hci_event_decoder.sv": "b290f5a6d894a3dda518b4c3c28a94dde3d8c44b5cb4b4917176a030d3e9a8e8",
+    "rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105",
+    "sim/tb_workstation_hci_host_rx_owner.sv": "753572d777a632f9c35eac4c7ed7d53f097cdb251ea4ccdfb2dd62f191685664",
+    "sim/run_workstation_hci_host_rx_owner.py": "b371c76144cd3ad1b96afe6f51cc556086d4ee9aa89915d49417bf640c861874",
+    "rtl/bluetooth/hci_owner/workstation_hci_host_bootstrap.sv": "497865e4498f3174a592a77d4f2a7b61a61cef4a4b07a97f868d5ad870a5b5d0",
+    "sim/tb_workstation_hci_host_bootstrap.sv": "09a0aab7de79e2b46fc6dc345059fb7ab88558744cb16bfacacb226b520c61c1",
+    "sim/run_workstation_hci_host_bootstrap.py": "bb0fb0cc044cf3d12b3169e6b3a2c3488dc0df2e856b33824c39f561c6036d99",
+    "projects/138k/push2_workstation/usb_a/reports/WORKSTATION_HCI_HOST_BOOTSTRAP_SOURCE_20261031.md": "8e870ccb28bf399b50736113bf3b22df2ccb9b6a3684071504234b03dd368a57",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/README.md": "6d0dbef52f927661b51911e7341dfca82d2653f560f32720da744ba258f7c021",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv": "f0b25d9f41d789d322728c5d9b8fa3887130d48711a21e56249dba77cf546d45",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_bootstrap.sv": "497865e4498f3174a592a77d4f2a7b61a61cef4a4b07a97f868d5ad870a5b5d0",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_host_bootstrap.py": "bb0fb0cc044cf3d12b3169e6b3a2c3488dc0df2e856b33824c39f561c6036d99",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_event_decoder.sv": "b290f5a6d894a3dda518b4c3c28a94dde3d8c44b5cb4b4917176a030d3e9a8e8",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_flow_owner.sv": "507c4f187037eaadaeab9cd9ac4be43a82598c00c3e08005522a92716dff24db",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_host_bootstrap.sv": "09a0aab7de79e2b46fc6dc345059fb7ab88558744cb16bfacacb226b520c61c1",
+    "projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_host_rx_owner.sv": "753572d777a632f9c35eac4c7ed7d53f097cdb251ea4ccdfb2dd62f191685664"
+  },
+  "actual_checks": 418,
+  "scenarios": 32,
+  "commands": 4,
+  "timeout_phases": 5,
+  "mutants_rejected": 17,
+  "invalid_parameters_rejected": 3,
+  "prior_shared_owner": {
+    "flow_checks": 116780,
+    "event_checks": 9174,
+    "mutants": 11
+  },
+  "prior_host_rx": {
+    "checks": 160228,
+    "mutants": 13
+  },
+  "accepted_tests": 17,
+  "strict_lint": "passed_Wall_no_waivers",
+  "independent_review": "Root read exact bootstrap and typed-response changes: command bytes/capacity, immutable payload until transport_done, per-phase deadline, handoff/idle-link precondition, status/complete distinction and one-shot activation; no blocker found within unselected component contract.",
+  "selected_in_production": false,
+  "synthesis_passed": false,
+  "hardware_tested": false,
+  "flash_written": false,
+  "limitations": [
+    "no payload RAM/router/native integration or real initializer handoff before advertising",
+    "physical release requires actual reader completion",
+    "inflight 0x0c35/disconnect controller behavior untested",
+    "no complete BLE/A2DP/audio/hardware acceptance"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/hci-bootstrap-main-parent-v1",
+  "seal_sha256": "a188ae30341c8a8a1e78d1124596ef1fc65de2921861e0ee2c0df0a08dec2fa9",
+  "external_files": 240
+}
