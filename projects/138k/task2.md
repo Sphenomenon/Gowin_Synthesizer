@@ -286,6 +286,8 @@ W11真实50MHz长链的[HCI比较分组](push2_workstation/usb_a/reports/DUAL138
 
 W11参考时钟同域hold的[显式区域派生入口](push2_workstation/usb_a/reports/dual138k_reference_monitor_regions_prepare_20261101.md)已通过39项floorplan回归及5项真实父输入负控。按实际VO固定48／44参考monitor各32位binary＋32位Gray，共128FF，第三selected不改；仅追加区域CST，原VG／完整SDC／IO／DDR远区及3.500ns要求保持。`D2110105`已从完整实测W11far父派生并启动全量P&R，新VO／PLL／时序及收益待测，不升级为硬件接受。
 
+M13的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_M13_PHYSICAL_20261101.md)已封存：两次物理BSRAM235／DSP119；默认`D2110103` setup6,958／−3.133ns、hold1／−3.489ns，far`D2110104` setup6,490／−2.943ns、hold0／+0.135ns，原DDR3.500ns余量+0.579ns。完整VG／SDC保持、84份证据及588封存输入复验，各实际VO／边界／六PLL子门通过；相较M12b far的setup回退如实保留，仍不可部署。按新实测控制锥继续局部修复，未上板，不转授硬件或双板通过。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
