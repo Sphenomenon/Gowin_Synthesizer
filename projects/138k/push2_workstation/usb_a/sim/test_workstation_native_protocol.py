@@ -244,6 +244,22 @@ class ActualControlBoundaries(ActualNativeFixture):
         if self.profile != 'm-demo-base':
             self.skipTest('W explicitly retires the TF owner')
 
+    def tf_lut_driver(self, net, kind):
+        # Bind the mutation to its actual register consumer, never a generated
+        # optimizer name. Ambiguous drivers and changed gate shapes fail closed.
+        drivers = Graph(self.n).drivers.get(net, [])
+        self.assertEqual(len(drivers), 1)
+        path, port = drivers[0]
+        self.assertEqual(port, 'F')
+        self.assertEqual(self.n.cells[path]['kind'], kind)
+        return path
+
+    def tf_lut_init(self, path, function):
+        width = int(self.n.cells[path]['kind'][3:])
+        value = sum(int(function(tuple((row >> bit) & 1 for bit in range(width)))) << row
+                    for row in range(1 << width))
+        return str(1 << width) + "'h" + format(value, '0' + str((1 << width) // 4) + 'X')
+
     def test_tf_payload_bit_swap_rejected(self):
         self.tf()
         self.reject('TF payload bit swapped', 'u_tf_audio/compute_control_0_s0', 'ports', 'D',
@@ -251,7 +267,12 @@ class ActualControlBoundaries(ActualNativeFixture):
 
     def test_tf_source_busy_gate_rejected(self):
         self.tf()
-        self.reject('TF busy overwrite', 'u_tf_audio/n2708_s1', 'parameters', 'INIT', "8'hFF", 'TF acceptance must require')
+        g = Graph(self.n)
+        held = g.group('u_tf_audio', 'held_control', 36)
+        enables = {self.n.pin(path, 'CE') for path in held}
+        self.assertEqual(len(enables), 1)
+        gate = self.tf_lut_driver(next(iter(enables)), 'LUT3')
+        self.reject('TF busy overwrite', gate, 'parameters', 'INIT', "8'hFF", 'TF acceptance must require')
 
     def test_tf_compare_must_cover_same_desired_bits(self):
         self.tf()
@@ -260,11 +281,25 @@ class ActualControlBoundaries(ActualNativeFixture):
 
     def test_tf_request_must_toggle_on_capture(self):
         self.tf()
-        self.reject('TF request no longer follows capture', 'u_tf_audio/n2746_s5', 'parameters', 'INIT', "16'hAAAA", 'TF request must toggle')
+        request = Graph(self.n).register('u_tf_audio', 'control_request')
+        gate = self.tf_lut_driver(self.n.pin(request, 'D'), 'LUT4')
+        request_q = self.n.pin(request, 'Q')
+        request_inputs = [bit for bit in range(4) if self.n.pin(gate, 'I' + str(bit)) == request_q]
+        self.assertEqual(len(request_inputs), 2)
+        hold_q = self.tf_lut_init(gate, lambda values: values[request_inputs[0]])
+        self.reject('TF request no longer follows capture', gate, 'parameters', 'INIT', hold_q, 'TF request must toggle')
 
     def test_tf_capture_needs_registered_settling(self):
         self.tf()
-        self.reject('TF capture bypasses its settled state', 'u_tf_audio/n2827_s1', 'parameters', 'INIT', "8'h3C", 'TF capture must register')
+        g = Graph(self.n)
+        capture = g.register('u_tf_audio', 'control_capture')
+        gate = self.tf_lut_driver(self.n.pin(capture, 'D'), 'LUT3')
+        request_q = self.n.pin(g.register('u_tf_audio', 'request_sync', 1), 'Q')
+        ack_q = self.n.pin(g.register('u_tf_audio', 'control_ack'), 'Q')
+        leaves = [self.n.pin(gate, 'I' + str(bit)) for bit in range(3)]
+        self.assertEqual(set(leaves), {request_q, ack_q, self.n.pin(capture, 'Q')})
+        bypass_settling = self.tf_lut_init(gate, lambda values: values[leaves.index(request_q)] != values[leaves.index(ack_q)])
+        self.reject('TF capture bypasses its settled state', gate, 'parameters', 'INIT', bypass_settling, 'TF capture must register')
 
     def test_tf_ack_must_wait_for_payload_capture(self):
         self.tf()

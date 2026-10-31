@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "test_source_sha256": "e88c20d29753fa0ffd0c4b197d379a38365d4b3b368f4d5f31b9330ff789b101",
+  "all_four_candidates_passed": true,
+  "results": {
+    "M13": {
+      "tests": 54,
+      "skip": 4,
+      "mutations": 45,
+      "log_sha256": "3ea50b5c58db56c34887289c42bc6b4e9f16dbe047c13e1398c00417f00ed84b",
+      "mutants_sha256": "b90ff0f0215dd40040cfe99d3b5d62b50251ec146b77b728acfcde7e43eeb77c",
+      "all_mutants_rejected": true
+    },
+    "M12b": {
+      "tests": 54,
+      "skip": 5,
+      "mutations": 44,
+      "log_sha256": "722652b2157214b4418f76a286e5df6241f740c1c6a24c609bbb4b605122acba",
+      "mutants_sha256": "39c224e0065933928e3eb05069105ef3386ec79404706baa3b32beb7d4430db6",
+      "all_mutants_rejected": true
+    },
+    "W10": {
+      "tests": 54,
+      "skip": 15,
+      "mutations": 34,
+      "log_sha256": "36b6214ccf1928c8eca110bfb1df623d62438173fd59aa8907549169078bea57",
+      "mutants_sha256": "aaf581ccb7574b6855e1b3777511c45c30282db309d07d8db8036a629d54305e",
+      "all_mutants_rejected": true
+    },
+    "W11": {
+      "tests": 54,
+      "skip": 14,
+      "mutations": 35,
+      "log_sha256": "fe914acac620e03fcf1929a2581ad08efce9a1383cee2e8359306e345def4986",
+      "mutants_sha256": "0c97645235a8d2e4fa8cee0bff5140845738772586197e14c27c6704aa941189",
+      "all_mutants_rejected": true
+    }
+  },
+  "M13_staged_inputs_unchanged_by_fix": true,
+  "original_fixed_name_failure_retained": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13-physical-audits-v1/native-vg-regression.log",
+  "shared_parser_or_production_gate_changed": false,
+  "evidence_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13-native-semantic-test-v2/verification.json",
+  "evidence_sha256": "67b55cb9e7e2cbf4dc4975e4c983802701fb66f7d51913f0e7aadd840c579a05",
+  "scope": "Three TF mutant injection anchors bound to real held payload CE and request/capture register D drivers; unchanged production rejection oracle.",
+  "hardware_tested": false
+}

@@ -276,6 +276,8 @@ W11全量综合与[严格角色门禁修复](push2_workstation/usb_a/reports/DUA
 
 M实际配置广播长链的[局部组合简化](push2_workstation/usb_a/reports/DUAL138K_CONFIG_BROADCAST_20261101.md)已通过全域二态证明、81,920有限四态向量、115,929,947半周期完整服务旧新对照及真实APB／I2S／FFT控制仿真。公开ready／采样周期不变，engines／effects共用一个接受广播。两份822来源锁已刷新；M13 `eae1eec8001e068f`已prepare并核实588封存／261启用输入确消费新广播、chorus和TF DMA，正全量综合。默认编译器失败保留，显式同M12b工具链重试通过；尚无新物理或硬件接受结论。
 
+M13综合与完整strict来源／功能／角色／CDC门已通过；三个旧TF网表负控因综合LUT名变化而报错，已[改为真实消费者唯一绑定](push2_workstation/usb_a/reports/DUAL138K_NATIVE_MUTANT_BINDINGS_20261101.md)，原审计oracle不变。M13／M12b／W10／W11各54项回归及全部实际负控通过，旧失败保留；不改变封存编译输入。M13 `D2110103`默认P&R已完成，完整物理证据正在封存，仍不能作为硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
