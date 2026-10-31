@@ -1,0 +1,353 @@
+{
+  "schema": 1,
+  "stage": "M15_actual_synthesis_TF_capacity_scalar_live_consumer_certificate",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-cf9d6319a310d6fe",
+  "passed": true,
+  "scope": "All binary assignments of actual available/pending FF Qs; exact LUT truth tables and GW5A ALU functions; no reachability assumptions. DDR calibrated output remains opaque.",
+  "inventories": {
+    "staged_files_verified": 588,
+    "frozen_files_verified": 1365,
+    "source_snapshot_entries": 875,
+    "available_FF_count": 32,
+    "pending_FF_count": 6
+  },
+  "rows": {
+    "ring_upper_equal_0": {
+      "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_0",
+      "driver": [
+        "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_0_s4",
+        "F"
+      ],
+      "equivalence": "UNSAT",
+      "depth": 2,
+      "cell_count": 2,
+      "types": {
+        "LUT4": 1,
+        "LUT3": 1
+      },
+      "arbitrary_FF_bits": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "exact_independent_FF_support": true,
+      "all_equivalent_live_roots": [
+        {
+          "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_0",
+          "driver": [
+            "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_0_s4",
+            "F"
+          ],
+          "equivalence": "UNSAT",
+          "depth": 2,
+          "cell_count": 2,
+          "types": {
+            "LUT4": 1,
+            "LUT3": 1
+          }
+        }
+      ],
+      "in_actual_final_capacity_predicate_cone": true,
+      "in_actual_write_admission_cone": true
+    },
+    "ring_upper_equal_1": {
+      "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_1",
+      "driver": [
+        "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_1_s1",
+        "F"
+      ],
+      "equivalence": "UNSAT",
+      "depth": 2,
+      "cell_count": 3,
+      "types": {
+        "LUT4": 1,
+        "LUT2": 1,
+        "LUT3": 1
+      },
+      "arbitrary_FF_bits": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "exact_independent_FF_support": true,
+      "all_equivalent_live_roots": [
+        {
+          "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_1",
+          "driver": [
+            "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_1_s1",
+            "F"
+          ],
+          "equivalence": "UNSAT",
+          "depth": 2,
+          "cell_count": 3,
+          "types": {
+            "LUT4": 1,
+            "LUT2": 1,
+            "LUT3": 1
+          }
+        }
+      ],
+      "in_actual_final_capacity_predicate_cone": true,
+      "in_actual_write_admission_cone": true
+    },
+    "ring_upper_equal_2": {
+      "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_2",
+      "driver": [
+        "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_2_s1",
+        "F"
+      ],
+      "equivalence": "UNSAT",
+      "depth": 2,
+      "cell_count": 2,
+      "types": {
+        "LUT4": 2
+      },
+      "arbitrary_FF_bits": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "exact_independent_FF_support": true,
+      "all_equivalent_live_roots": [
+        {
+          "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_2",
+          "driver": [
+            "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_2_s1",
+            "F"
+          ],
+          "equivalence": "UNSAT",
+          "depth": 2,
+          "cell_count": 2,
+          "types": {
+            "LUT4": 2
+          }
+        }
+      ],
+      "in_actual_final_capacity_predicate_cone": true,
+      "in_actual_write_admission_cone": true
+    },
+    "ring_upper_equal_3": {
+      "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_3",
+      "driver": [
+        "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_3_s5",
+        "F"
+      ],
+      "equivalence": "UNSAT",
+      "depth": 2,
+      "cell_count": 2,
+      "types": {
+        "LUT3": 1,
+        "LUT4": 1
+      },
+      "arbitrary_FF_bits": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "exact_independent_FF_support": true,
+      "all_equivalent_live_roots": [
+        {
+          "root": "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_3",
+          "driver": [
+            "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_3_s5",
+            "F"
+          ],
+          "equivalence": "UNSAT",
+          "depth": 2,
+          "cell_count": 2,
+          "types": {
+            "LUT3": 1,
+            "LUT4": 1
+          }
+        }
+      ],
+      "in_actual_final_capacity_predicate_cone": true,
+      "in_actual_write_admission_cone": true
+    },
+    "ring_upper_equal": {
+      "root": "u_tf_audio/ring_upper_equal",
+      "driver": [
+        "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_s1",
+        "F"
+      ],
+      "equivalence": "UNSAT",
+      "depth": 3,
+      "cell_count": 10,
+      "types": {
+        "LUT4": 6,
+        "LUT3": 3,
+        "LUT2": 1
+      },
+      "arbitrary_FF_bits": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "exact_independent_FF_support": true,
+      "all_equivalent_live_roots": [
+        {
+          "root": "u_tf_audio/ring_upper_equal",
+          "driver": [
+            "u_tf_audio/path/g_runtime_dma.u_dma/ring_upper_equal_s1",
+            "F"
+          ],
+          "equivalence": "UNSAT",
+          "depth": 3,
+          "cell_count": 10,
+          "types": {
+            "LUT4": 6,
+            "LUT3": 3,
+            "LUT2": 1
+          }
+        }
+      ],
+      "in_actual_final_capacity_predicate_cone": true,
+      "in_actual_write_admission_cone": true
+    }
+  },
+  "actual_capacity_predicate": {
+    "root": "u_tf_audio/audio_ddr_write_3",
+    "driver": [
+      "u_tf_audio/audio_ddr_write_s0",
+      "F"
+    ],
+    "inverted": true,
+    "equivalence": "UNSAT",
+    "depth": 9,
+    "cell_count": 33,
+    "types": {
+      "LUT4": 15,
+      "LUT2": 4,
+      "LUT3": 8,
+      "ALU": 6
+    }
+  },
+  "actual_write_admission": {
+    "root": "audio_ddr_write",
+    "driver": [
+      "u_tf_audio/audio_ddr_write_s",
+      "F"
+    ],
+    "INIT": "16'h1000",
+    "input_bindings": {
+      "I0": "u_tf_audio/memory_gate_sync[1]",
+      "I1": "u_tf_audio/audio_ddr_write_3",
+      "I2": "n4202_3",
+      "I3": "u_tf_audio/write_pending"
+    },
+    "equivalence_to_original_gated_modulo_capacity": "UNSAT"
+  },
+  "negative_controls": {
+    "kept_side_output_ring_upper_equal_0": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "kept_side_output_ring_upper_equal_1": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "kept_side_output_ring_upper_equal_2": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "kept_side_output_ring_upper_equal_3": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "kept_side_output_ring_upper_equal": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "actual_final_equality_LUT_INIT_flip": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    },
+    "actual_final_write_consumer_capacity_bypass": {
+      "rejected": true,
+      "semantic_counterexample": "SAT"
+    }
+  },
+  "negative_control_count": 7,
+  "certificate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-tf-capacity-vg-certificate-v2/certificate.json",
+  "certificate_sha256": "254f4fcec799388b7ee12335219acaccb2dd03872a7d50706bd57fe92791fabd",
+  "certificate_proof_seal_sha256": "28562ce3aa8ec9fa218df8f0b0c75df20ea35a37341fa32663da110f97480386",
+  "primitive_model_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-alu-primitive-model-v1/verification.json",
+    "sha256": "6bee08c03728d633ce97d24c5a29bf093ec5b39a5cab40c322a4be2479ade32e",
+    "binary_checks": 288,
+    "actual_model_source_AST_bound": true,
+    "primitive_module_sha256": "0119b36a67d45377338116fd5470b69db15041778630c224967b803c67f1b94f"
+  },
+  "previous_M14": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/dual138k_m14_tf_groups_vg_20261101.json",
+    "sha256": "a33679e0a3c291db17079e2322481993ccfac4caa230344d4a4ee33175d4da04",
+    "passed": false,
+    "capacity_mapping_incomplete": true,
+    "retained": true
+  },
+  "all_input_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4707d235626cd446faf4ab00174f51c363c32db7926199cb2aa2449f51eb6a06",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-prepare-source-seal-v1.json": "b48faa3fb96fe2040c3d20ef02ba20f4ec3c0e8f0a5e7b49b8ec2d28c910e217",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/source-tools-seal.json": "3af97689a317fcfa7fe7c4a9a36af67bfa19f1dd1e6f03f87d7c8cf666adb98f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/integration_inputs.json": "50061dbe1c805af258d1846a336f9128dc89c6fa2fa4966b06a7a37d117e50bb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation_profile.json": "e902df99ccce5f63e2cb657081c7b3ca006b148c4fa0e68ac1d1158953629fb7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/rtl/tf_audio/workstation_tf_runtime_dma.sv": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/source-tools/rtl/tf_audio/workstation_tf_runtime_dma.sv": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/source-tools/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/certify_m14_tf_groups_v5.py": "37799fe24c470611e60ebf9ffd0ec76aea654417abf67465b84a5d3f69600762",
+    "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/certify_m15_tf_capacity_v2.py": "c5a0712be0ffa0b84ea4608199ed1209b85b3aca911388c26915b9c837cdfe24"
+  },
+  "production_modified": false,
+  "profile_modified": false,
+  "task2_modified": false,
+  "commit_created": false,
+  "source_four_state_verification": "Separate actual-maintained-source occupancy/threshold/runtime-stop report dual138k_tf_capacity_module_groups_20261101; VG proof is binary, not four-state or formal SV elaboration.",
+  "limits": "Capacity/admission primitive semantics and exact structural FF support only; no complete TF data/chunk next-state or audio path proof. No resource, routed timing or hardware improvement inferred.",
+  "timing_improvement_claimed": false,
+  "resource_improvement_claimed": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "independent_seal": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-tf-capacity-vg-certificate-v2/independent-report-seal.json",
+  "independent_seal_sha256": "fa5212e1283e8802fa9d05605cc481d425db382923278049ffc34f9afe8acce7",
+  "independent_proof_seal_sha256": "cc755ef96e5829cd971bac4eb2e1d51a65ee3f8221d4e866d2c0d89808692360"
+}
