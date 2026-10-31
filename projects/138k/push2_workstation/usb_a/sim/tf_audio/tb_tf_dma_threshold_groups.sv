@@ -6,6 +6,7 @@ module tb_tf_dma_threshold_groups;
  reg [5:0] pending=0;
  reg eof=0;
  integer i,j,k,e,p,v,checks=0;
+ reg [5:0] components;
  workstation_tf_runtime_dma #(.AUDIO_BANK_BYTES(BANK_BYTES)) dut(
   .clk(1'b0),.rst_n(1'b0),.mem_ready(1'b0),.capture_done_toggle(1'b0),.restart_toggle(1'b0),
   .file_size_bytes(32'b0),.fifo_in_empty(1'b1),.fifo_in_rd_valid(1'b0),.fifo_in_rd_data(8'b0),
@@ -36,7 +37,21 @@ module tb_tf_dma_threshold_groups;
     $fatal(1,"threshold chunk differs value=%h eof=%b got=%b expected=%b",value,eof,dut.read_chunk_bytes,((eof&&(value<32'd32))?value[5:0]:6'd32));
    if(dut.ring_can_commit !== old_capacity(value,pending))
     $fatal(1,"threshold capacity differs value=%h pending=%b got=%b expected=%b",value,pending,dut.ring_can_commit,old_capacity(value,pending));
-   checks=checks+4;
+   // The real consumer and arbitrary-input probes call this same helper.
+   // Check its five fields independently against original slice equations.
+   components=dut.pending_fits_ring(value,pending);
+   if(components[0] !== old_capacity(value,pending))
+    $fatal(1,"threshold function predicate differs value=%h pending=%b",value,pending);
+   if(components[2] !== (value[11:6]==CAPACITY[11:6]) ||
+      components[3] !== (value[18:12]==CAPACITY[18:12]) ||
+      components[4] !== (value[25:19]==CAPACITY[25:19]) ||
+      components[5] !== (value[31:26]==CAPACITY[31:26]) ||
+      components[1] !== (value[31:6]==CAPACITY[31:6]))
+    $fatal(1,"threshold function fields differs value=%h fields=%b",value,components[5:1]);
+   if({dut.ring_upper_equal_3,dut.ring_upper_equal_2,dut.ring_upper_equal_1,
+       dut.ring_upper_equal_0,dut.ring_upper_equal,dut.ring_can_commit} !== components)
+    $fatal(1,"threshold real consumer binding differs value=%h pending=%b",value,pending);
+   checks=checks+11;
   end
  endtask
  task pending_cases;
@@ -61,7 +76,7 @@ module tb_tf_dma_threshold_groups;
    value[26]=quad(v[7:6]);value[27]=quad(v[9:8]);value[31]=quad(v[11:10]);pending_cases();
   end
   value='x;pending_cases();value='z;pending_cases();
-  $display("PASS threshold capacity four-state: bank=%0d checks=%0d vectors=%0d",BANK_BYTES,checks,checks/4);
+  $display("PASS threshold capacity four-state: bank=%0d checks=%0d vectors=%0d",BANK_BYTES,checks,checks/11);
   $finish;
  end
 endmodule

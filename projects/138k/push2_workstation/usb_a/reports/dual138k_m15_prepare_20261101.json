@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "stage": "M15_complete_DEMO_prepare_source_seal",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-cf9d6319a310d6fe",
+  "candidate_input_sha256": "cf9d6319a310d6feb482e8a60e9a2e2311f45311a4821c87ff687974c97d656e",
+  "configuration_sha256": "7f0643a6167796baa767a822699b1e60449f59803f2dba66d5c82e3d6025ed5e",
+  "manifest_sha256": "50061dbe1c805af258d1846a336f9128dc89c6fa2fa4966b06a7a37d117e50bb",
+  "artifact_sha256": "e902df99ccce5f63e2cb657081c7b3ca006b148c4fa0e68ac1d1158953629fb7",
+  "source_snapshot_count": 875,
+  "source_snapshot_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/prepare-source-snapshot",
+  "staged_count": 588,
+  "enabled_count": 261,
+  "all_prepared_source_and_staged_bytes_verified": true,
+  "TF_consumed_sha256": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+  "source_tools_seal_sha256": "3af97689a317fcfa7fe7c4a9a36af67bfa19f1dd1e6f03f87d7c8cf666adb98f",
+  "source_tools_count": 1365,
+  "hardware_tested": false,
+  "physical_UserCodes_reserved": [
+    "D211010C",
+    "D211010D"
+  ],
+  "date": "2026-11-01",
+  "profile_locks": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": {
+      "sha256": "7f0643a6167796baa767a822699b1e60449f59803f2dba66d5c82e3d6025ed5e",
+      "source_count": 822,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "old": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1",
+          "new": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b"
+        }
+      }
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": {
+      "sha256": "1549d396a70683e3a62d67aaaf5853b3067f52272298686adf18381f5a2c25f2",
+      "source_count": 822,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "old": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1",
+          "new": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b"
+        }
+      }
+    }
+  },
+  "source_regressions": {
+    "current": 17,
+    "demo_audit": 15,
+    "demo_policy": 7
+  },
+  "TF_source_stage_artifacts_reverified": 146,
+  "M14_mapping_partial_failure_retained": true,
+  "M15_mapping_pending": true,
+  "source_commit_parent": "47c4310ef15d8d8f47b8b8eca89b1144fa66c62e",
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-prepare-source-seal-v1.json": "b48faa3fb96fe2040c3d20ef02ba20f4ec3c0e8f0a5e7b49b8ec2d28c910e217",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-prepare-v1.log": "121cd9b72147d952a9ec3884c6ff9f5d4bff63b5b12802ab306ba9ede2e1d61e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/source-tools-seal.json": "3af97689a317fcfa7fe7c4a9a36af67bfa19f1dd1e6f03f87d7c8cf666adb98f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audit-job-v1.py": "c71c0322cf5a1ccc4459fbe6b2eb944b8a29aac91df462d9271656f72163f580",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-current-sources-v1.log": "32970371e0f0125bce0460102ea198a25d2cf61d55d3195edfbd4cf365719610",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-demo-audit-v1.log": "3f45aabdbfde3adb656e778e76682b1df807a235156fe35401a55ad20f671b5e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-demo-policy-v1.log": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/dual138k_tf_capacity_module_groups_20261101.json": "453ce3bae145bc01d09b5aa40db6ea96c594145e8134caa0e87c64b67d2834e7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-module-groups-production-v1/sealed_stage.json": "d652f3bd6509cff3ffe02863d8cfae0ed8b026e2505599e41f5b39af5c95d413"
+  },
+  "synthesis_started": true,
+  "physical_results_pending": true,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false
+}

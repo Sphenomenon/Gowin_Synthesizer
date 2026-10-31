@@ -79,6 +79,12 @@ def main():
         'capacity_group2_lost':
             ('upper_equal = upper_equal_0 && upper_equal_1 && upper_equal_2 && upper_equal_3;',
              'upper_equal = upper_equal_0 && upper_equal_1 && upper_equal_3;'),
+        'returned_group_fields_swapped':
+            ('pending_fits_ring = {upper_equal_3, upper_equal_2, upper_equal_1,\n                upper_equal_0, upper_equal,',
+             'pending_fits_ring = {upper_equal_3, upper_equal_2, upper_equal_0,\n                upper_equal_1, upper_equal,'),
+        'consumer_predicate_bypassed':
+            ('ring_upper_equal_0, ring_upper_equal, ring_can_commit} =',
+             'ring_upper_equal_0, ring_can_commit, ring_upper_equal} ='),
         'chunk_guard_lost':
             ('(eof_finalized && !read_has_full_beat) ?',
              '(eof_finalized && !available_full_binary) ?'),

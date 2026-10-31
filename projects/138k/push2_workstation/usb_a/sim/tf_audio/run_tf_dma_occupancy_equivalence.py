@@ -119,8 +119,8 @@ def main():
         if source.read_text().count(changed) != 2:
             raise ValueError('capacity carry negative-control anchor drift')
         # Only change the capacity predicate, leaving occupancy arithmetic intact.
-        prefix, capacity = source.read_text().split('    function pending_fits_ring;', 1)
-        commit_carry.write_text(prefix + '    function pending_fits_ring;' +
+        prefix, capacity = source.read_text().split('    function [5:0] pending_fits_ring;', 1)
+        commit_carry.write_text(prefix + '    function [5:0] pending_fits_ring;' +
                                capacity.replace(changed, 'upper_plus = occupancy[31:6];', 1))
         commit_equal = out / 'commit_equal.sv'
         changed = 'low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0]'

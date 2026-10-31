@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "stage": "maintained_source_TF_capacity_module_groups_verified",
+  "created_utc": "2026-10-31T18:59:56.167839+00:00",
+  "source_applied": true,
+  "source_sha256": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+  "reviewed_patch_sha256": "fd21d56b6b8b3f33597c3d1fbcb12ed73b019d25c8d280d63a521891f697006b",
+  "reviewed_cache_manifest_sha256": "b69eb61855de43659d6ce77f5286e9e26c8115d26dd842981d735f52c9a4ce84",
+  "files": [
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv",
+      "sha256": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+      "reviewed_candidate_sha256": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+      "base_sha256": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv",
+      "sha256": "25fd2b783e1b8db82ff5a58f5469e8b34016ac603514c6b6e233909e9e91c071",
+      "reviewed_candidate_sha256": "25fd2b783e1b8db82ff5a58f5469e8b34016ac603514c6b6e233909e9e91c071",
+      "base_sha256": "fafa99d04dd26cbbc73b331b38640e66d4d3e36f5fdc8c6c1f1226542cff3b26"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_occupancy_equivalence.py",
+      "sha256": "18f247ec4e982d5730af765689efc06e2a705c90baa3bbbd8a0ff094ebc46059",
+      "reviewed_candidate_sha256": "18f247ec4e982d5730af765689efc06e2a705c90baa3bbbd8a0ff094ebc46059",
+      "base_sha256": "b2f8aadac758e32dd6111e183d6f88aceea95fc6c99445aa8abcb0ad2189289f"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv",
+      "sha256": "4c772e5bb7de8438d18375dfbf3058143f7e893f080d0116ad6c858919b3f76d",
+      "reviewed_candidate_sha256": "4c772e5bb7de8438d18375dfbf3058143f7e893f080d0116ad6c858919b3f76d",
+      "base_sha256": "5130bbc758d138ca289f11260ed6525e91852716e79782a637d926388f7800ce"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_threshold_groups.py",
+      "sha256": "c62ae6f780ddb22d8c938524897f7f70614244adfd3f930b43c06cecc856134a",
+      "reviewed_candidate_sha256": "c62ae6f780ddb22d8c938524897f7f70614244adfd3f930b43c06cecc856134a",
+      "base_sha256": "30764038e3338a40fe07af61ec2316f3bf24ee70ddffb8ee3307edb8083194af"
+    }
+  ],
+  "proofs": {
+    "occupancy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-module-groups-production-v1/occupancy/verification.json",
+      "sha256": "1844c74551efe398834b684637923928051014df3f2e1e7106b850522a99a2b9",
+      "passed": true,
+      "input_count": 7,
+      "runs": 14,
+      "negative_controls": 8,
+      "independent_ring_oracles": 4,
+      "symbolic": {
+        "results": {
+          "response_size_when_valid": "UNSAT",
+          "available_next": "UNSAT",
+          "accepted_next": "UNSAT"
+        },
+        "free_bits": 89,
+        "z3_version": "5.1.0",
+        "unreachable_state_assumptions": false,
+        "arbitrary_four_state_proof": false
+      }
+    },
+    "threshold": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-module-groups-production-v1/threshold/verification.json",
+      "sha256": "c8d2267c91c851c6ad48ba83076ba97b3e589367b130fd74e3887310ff805442",
+      "passed": true,
+      "input_count": 4,
+      "runs": 8,
+      "negative_controls": 6,
+      "independent_ring_oracles": 0,
+      "symbolic": {
+        "results": {
+          "capacity26_equality_groups_four_state": "UNSAT",
+          "full32_groups_with_relational_unknown_fallback": "UNSAT",
+          "chunk_less32_equals_not_guarded_full": "UNSAT"
+        },
+        "z3_version": "5.1.0",
+        "capacity_free_bits": 78,
+        "threshold_free_bits": 64,
+        "scope": "Expression algebra, not formal SystemVerilog elaboration",
+        "reachability_assumptions": false
+      }
+    },
+    "runtime-stop": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-module-groups-production-v1/runtime-stop/verification.json",
+      "sha256": "569a35dbaa582161b53d24f82f73cf3c1a9002e57dde3c7a9dece42a9ddc21b2",
+      "passed": true,
+      "input_count": 35,
+      "scope": "actual runtime service buffered 0/1 x23 cases; legacy default x12531 cycles; clear buffered 0/1 x6; stop buffered 0/1 x11; disabled; all ACK/registered-source/comb-loop negative controls and structural lint"
+    }
+  },
+  "prior_actual_M14_mapping": {
+    "report": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/dual138k_m14_tf_groups_vg_20261101.json",
+    "sha256": "a33679e0a3c291db17079e2322481993ccfac4caa230344d4a4ee33175d4da04",
+    "passed": false,
+    "full_threshold_groups_passed": true,
+    "capacity_all_groups_and_final_present": false,
+    "detail": "Function-local keep produced only capacity group0 as an independent live semantic node; groups1/2/3 and final equality absent. This result is preserved and is not superseded by source tests."
+  },
+  "exact_scope": "One maintained DMA plus four necessary tests; same two arbitrary arguments and original equations; actual low-bit predicate; no state, schedule, priority, registered publication, profile, firmware or parameter change.",
+  "next_gate": "M15 actual full VG: all five module scalar kept nodes must match primitive semantics and exact FF support and be actual fanin of the live ring_can_commit consumer; retained unused side outputs fail.",
+  "mapping_verified": false,
+  "synthesis_run": false,
+  "place_route_run": false,
+  "routed_timing_verified": false,
+  "resource_benefit_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "commits_created": false,
+  "profiles_changed_by_this_stage": false,
+  "task2_changed_by_this_stage": false,
+  "proof_seal_sha256": "c771637b4a2c2bfe33873c04a25e1cd284a9f4d0bfbf9703f0919ee94e2332d1",
+  "cache_stage_manifest": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-module-groups-production-v1/sealed_stage.json",
+  "cache_stage_manifest_sha256": "d652f3bd6509cff3ffe02863d8cfae0ed8b026e2505599e41f5b39af5c95d413"
+}

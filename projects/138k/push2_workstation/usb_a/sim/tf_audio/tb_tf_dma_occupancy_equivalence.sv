@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 module tb_tf_dma_occupancy_equivalence;
     parameter [31:0] BANK_BYTES = 64;
+    localparam [31:0] TEST_CAPACITY = BANK_BYTES + BANK_BYTES;
     reg clk=0;
     always #5 clk=~clk;
     reg rst_n=0,mem_ready=0,capture_done_toggle=0,restart_toggle=0;
@@ -83,6 +84,7 @@ module tb_tf_dma_occupancy_equivalence;
     reg [25:0] test_upper;
     reg [31:0] test_occupancy;
     reg [6:0] test_delta;
+    reg [5:0] test_capacity_components;
     reg [32:0] oracle_sum;
     reg [31:0] probe_available,probe_accepted;
     reg [5:0] probe_pending,probe_response;
@@ -177,9 +179,18 @@ module tb_tf_dma_occupancy_equivalence;
                 for(delta_case=0;delta_case<64;delta_case=delta_case+1)begin
                     test_occupancy={test_upper,6'(low_case)};
                     oracle_sum={1'b0,test_occupancy}+33'(delta_case);
-                    if(dut.pending_fits_ring(test_occupancy,6'(delta_case))!==
+                    test_capacity_components=dut.pending_fits_ring(test_occupancy,6'(delta_case));
+                    if(test_capacity_components[0]!==
                        (oracle_sum[31:0]<=32'(BANK_BYTES+BANK_BYTES)))
                         $fatal(1,"pending capacity arithmetic differs base=%h pending=%0d",test_occupancy,delta_case);
+                    // Probe the same helper at arbitrary occupancy values,
+                    // independently of the real consumer's current state.
+                    if(test_capacity_components[2] !== (test_occupancy[11:6]==TEST_CAPACITY[11:6]) ||
+                       test_capacity_components[3] !== (test_occupancy[18:12]==TEST_CAPACITY[18:12]) ||
+                       test_capacity_components[4] !== (test_occupancy[25:19]==TEST_CAPACITY[25:19]) ||
+                       test_capacity_components[5] !== (test_occupancy[31:26]==TEST_CAPACITY[31:26]) ||
+                       test_capacity_components[1] !== (test_occupancy[31:6]==TEST_CAPACITY[31:6]))
+                        $fatal(1,"pending capacity fields differs base=%h fields=%b",test_occupancy,test_capacity_components[5:1]);
                     commit_checks=commit_checks+1;
                 end
         end

@@ -95,7 +95,17 @@ module workstation_tf_runtime_dma #(
     wire restart_event = (restart_sync != restart_seen);
     wire [31:0] committed_used = available_bytes;
     wire ring_has_room_for_input = accepted_used < AUDIO_TOTAL_BYTES;
-    wire ring_can_commit = pending_fits_ring(committed_used, pending_bytes);
+    // Export the same function's intermediates to kept module-level nets.
+    // Its low bit remains the sole capacity predicate used for admission.
+    wire ring_upper_equal_0 /* synthesis syn_keep=1 */;
+    wire ring_upper_equal_1 /* synthesis syn_keep=1 */;
+    wire ring_upper_equal_2 /* synthesis syn_keep=1 */;
+    wire ring_upper_equal_3 /* synthesis syn_keep=1 */;
+    wire ring_upper_equal /* synthesis syn_keep=1 */;
+    wire ring_can_commit;
+    assign {ring_upper_equal_3, ring_upper_equal_2, ring_upper_equal_1,
+            ring_upper_equal_0, ring_upper_equal, ring_can_commit} =
+        pending_fits_ring(committed_used, pending_bytes);
     wire write_selected = mem_ready && !runtime_hold_i && write_pending && ring_can_commit;
 
     // Bound the shared full-beat/chunk zero test. These are combinational
@@ -207,17 +217,15 @@ module workstation_tf_runtime_dma #(
     // late pending count through a full-width carry chain. The two upper
     // comparisons depend only on the current occupancy; a six-bit sum then
     // selects between them. This also preserves the old wrap-at-2^32 case.
-    function pending_fits_ring;
+    // Return the original predicate at bit 0; the other five bits expose
+    // exactly the equality intermediates used by that same computation.
+    function [5:0] pending_fits_ring;
         input [31:0] occupancy;
         input [5:0] pending;
         reg [6:0] low_sum;
         reg [25:0] upper_plus;
         reg upper_less, incremented_less, incremented_equal;
-        reg upper_equal /* synthesis syn_keep=1 */;
-        reg upper_equal_0 /* synthesis syn_keep=1 */;
-        reg upper_equal_1 /* synthesis syn_keep=1 */;
-        reg upper_equal_2 /* synthesis syn_keep=1 */;
-        reg upper_equal_3 /* synthesis syn_keep=1 */;
+        reg upper_equal, upper_equal_0, upper_equal_1, upper_equal_2, upper_equal_3;
         begin
             low_sum = {1'b0, occupancy[5:0]} + {1'b0, pending};
             upper_plus = occupancy[31:6] + 26'd1;
@@ -232,9 +240,11 @@ module workstation_tf_runtime_dma #(
             upper_equal = upper_equal_0 && upper_equal_1 && upper_equal_2 && upper_equal_3;
             incremented_less = upper_plus < AUDIO_TOTAL_BYTES[31:6];
             incremented_equal = upper_plus == AUDIO_TOTAL_BYTES[31:6];
-            pending_fits_ring = low_sum[6] ?
-                (incremented_less || (incremented_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0])) :
-                (upper_less || (upper_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0]));
+            pending_fits_ring = {upper_equal_3, upper_equal_2, upper_equal_1,
+                upper_equal_0, upper_equal,
+                (low_sum[6] ?
+                    (incremented_less || (incremented_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0])) :
+                    (upper_less || (upper_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0])))};
         end
     endfunction
 
