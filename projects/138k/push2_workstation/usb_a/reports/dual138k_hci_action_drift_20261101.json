@@ -1,0 +1,302 @@
+{
+  "schema": 1,
+  "stage": "HCI_readiness_action_drift_source_implementation",
+  "passed": true,
+  "source_implementation": true,
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": "20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "02dc68255bad7182d6b1616f3809c53b672887726fbb69790a58271183700787",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_action_drift.py": "13b5c0430a605c910cd1e6f68559d0b4d9aa324f5420c7f5815ca1a5b3173ba9",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_identity_compare.py": "5e0ef7ca28b459605c973b12eaf673b83f563be1c14dd7cd82d5126dc7a27a12",
+    "projects/138k/push2_workstation/usb_a/sim/fixtures/workstation_hci_host_rx_owner_before_identity_compare.sv": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105",
+    "projects/138k/push2_workstation/usb_a/sim/fixtures/workstation_hci_native_transport_before_identity_compare.sv": "a151aa426f4880dbcbf85239688ec910e8f43a2c2fb240e52161e166f029a10a"
+  },
+  "approved_variant_sha256": "20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f",
+  "exact_pre_action_inverse_sha256": "271e3d701eb8f84e238ac9ccf3114c2669ef44e09d56407fc22afb1e5e9785ea",
+  "native_transport_unchanged": true,
+  "whole_owner": {
+    "outputs": 33,
+    "states": 39,
+    "summary": "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822\n/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/whole-owner-tb.sv:285: $finish called at 176746000 (1ps)\nIDENTITY TWIN cycles=17674 outputs=33 states=39\n",
+    "exit_code": 0
+  },
+  "symbolic": {
+    "source_equations_audited": true,
+    "source_procedural_if_truth_preserved": true,
+    "proofs": [
+      {
+        "HANDLE_SLOTS": 1,
+        "binary": "UNSAT",
+        "four_state": "UNSAT",
+        "reachability_assumptions": []
+      },
+      {
+        "HANDLE_SLOTS": 2,
+        "binary": "UNSAT",
+        "four_state": "UNSAT",
+        "reachability_assumptions": []
+      },
+      {
+        "HANDLE_SLOTS": 16,
+        "binary": "UNSAT",
+        "four_state": "UNSAT",
+        "reachability_assumptions": []
+      }
+    ],
+    "negative": {
+      "result": "SAT",
+      "mutation": "unconditional base fallback",
+      "witness": "[valid4 = 3,\n base4_1 = 2,\n match4_1 = 3,\n base4_0 = 1,\n match4_0 = 3,\n all_other_ready_terms4 = 3]"
+    },
+    "scope": "local arbitrary-state cofactor; not whole-owner temporal proof"
+  },
+  "four_state_cases": {
+    "positive": {
+      "exit_code": 0,
+      "expected_rejection": false,
+      "source_sha256": "20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f",
+      "summary": "PASS complete owner action drift four-state checks=147464\n/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/four-state-tb.sv:100: $finish called at 147464 (1s)\n"
+    },
+    "unconditional_fallback": {
+      "exit_code": 1,
+      "expected_rejection": true,
+      "source_sha256": "6a41362d634d15b0a3679452485e4642fa99e663feb57c6500efc30c525983b3",
+      "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/four-state-tb.sv:68: action drift four-state mismatch vector=66 valid=x drift=0 base=1 ready=0/x\n       Time: 67  Scope: tb.check\n"
+    },
+    "missing_outstanding_guard": {
+      "exit_code": 1,
+      "expected_rejection": true,
+      "source_sha256": "3489643e19ecb8703e184c91a2bdc86ab0b7e0293b3edb01c41ac618a72a74bc",
+      "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/four-state-tb.sv:68: action drift four-state mismatch vector=0 valid=0 drift=0 base=1 ready=0/1\n       Time: 1  Scope: tb.check\n"
+    },
+    "missing_disconnect_ready_guard": {
+      "exit_code": 1,
+      "expected_rejection": true,
+      "source_sha256": "25835415fcae89fe78967d94e92a3a7e96728f2efdda3212b4e2bbd26c21ff4e",
+      "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/four-state-tb.sv:68: action drift four-state mismatch vector=1 valid=1 drift=0 base=0 ready=0/0\n       Time: 2  Scope: tb.check\n"
+    }
+  },
+  "inverse_source_controls": {
+    "unreviewed_bytes": {
+      "rejected": true,
+      "reason": "HCI action drift: unreviewed bytes outside exact action transform"
+    },
+    "keep_removed": {
+      "rejected": true,
+      "reason": "HCI action drift: inverse anchor     // Action readiness excludes a known disconnect edge. Preserve the full\n    // owner drift for real disconnect/fault processing and unknown controls.\n    (* syn_keep=1 *) reg action_owner_drift_fence;\n    always @* begin\n        case(disconnect_valid_i)\n            1'b0,1'b1:action_owner_drift_fence=action_owner_drift;\n            default:action_owner_drift_fence=owner_drift;\n        endcase\n    end\n    always @* begin\n        rx_owner=-1;"
+    }
+  },
+  "W10_complete_identity": {
+    "whole_modules": {
+      "host_rx_owner": {
+        "outputs": 33,
+        "states": 39,
+        "summaries": [
+          "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822",
+          "IDENTITY TWIN cycles=17674 outputs=33 states=39"
+        ]
+      },
+      "native_transport": {
+        "outputs": 33,
+        "states": 2716,
+        "summaries": [
+          "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+          "IDENTITY TWIN cycles=6545 outputs=33 states=2716"
+        ]
+      }
+    },
+    "relation_laws": {
+      "12": {
+        "result": "UNSAT",
+        "free_bits": 24,
+        "eight_bit_groups": "UNSAT"
+      },
+      "16": {
+        "result": "UNSAT",
+        "free_bits": 32,
+        "eight_bit_groups": "UNSAT"
+      },
+      "32": {
+        "result": "UNSAT",
+        "free_bits": 64,
+        "eight_bit_groups": "UNSAT"
+      }
+    },
+    "grouped_four_state": {
+      "vectors_by_width": {
+        "12": 601,
+        "32": 1651
+      },
+      "comparisons_per_vector": 2,
+      "summary": "PASS grouped finite four-state checks=2252\n/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/grouped-four-state/bench.sv:2296: $finish called at 2252 (1s)",
+      "source_boundaries_from_actual_RTL": true
+    },
+    "mutants": {
+      "ignored_bit_12": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_12": 1,
+          "identity_b_12": 0
+        }
+      },
+      "ignored_bit_16": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_16": 1,
+          "identity_b_16": 0
+        }
+      },
+      "ignored_bit_32": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_32": 1,
+          "identity_b_32": 0
+        }
+      },
+      "host_rx_owner_keep_removed": {
+        "rejected": true,
+        "scope": "source boundary contract"
+      },
+      "host_rx_owner_group_boundary_changed": {
+        "rejected": true,
+        "scope": "source boundary contract"
+      },
+      "native_transport_keep_removed": {
+        "rejected": true,
+        "scope": "source boundary contract"
+      },
+      "native_transport_group_boundary_changed": {
+        "rejected": true,
+        "scope": "source boundary contract"
+      },
+      "host_ignored_high_bit": {
+        "rejected": true,
+        "scope": "actual grouped four-state function",
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/grouped-four-state/host-ignored-high-bit.sv:38: grouped32 a=00000000000000000000000000000000 b=00000000000000000000000010000000"
+      },
+      "native_ignored_high_bit": {
+        "rejected": true,
+        "scope": "actual grouped four-state function",
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/grouped-four-state/native-ignored-high-bit.sv:41: grouped12 a=000000000000 b=100000000000"
+      },
+      "whole_host_rx_owner": {
+        "rejected": true,
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/host_rx_owner_mutant/bench.sv:354: IDENTITY TWIN dut.release_slot cycle=9"
+      },
+      "whole_native_transport": {
+        "rejected": true,
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/native_transport_mutant/bench.sv:508: IDENTITY TWIN dut.close_generation cycle=377"
+      }
+    },
+    "exact_bytes_outside_reviewed_comparisons": true,
+    "action_drift_reviewed_transform": true
+  },
+  "complete_native": {
+    "baseline": {
+      "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+      "checks": 268
+    },
+    "mutants": {
+      "physical_debit_removed": {
+        "rejected": true,
+        "source_sha256": "7eee0997c915df97124ac24cffb1810a91618e4725c16f19bd304cc0a346db09",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL one physical LE credit cannot authorize next fragment t=31300000 tx=5 rx=0 flow=0 host=0 boot=0"
+      },
+      "cpu_ack_before_transport": {
+        "rejected": true,
+        "source_sha256": "0a07a8b925b5b620f5d6c07e29712129a39ee413e8739c77feb411178a8e8a97",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL MMIO error semantics t=10661000 tx=5 rx=5 flow=0 host=0 boot=0"
+      },
+      "response_token_lost": {
+        "rejected": true,
+        "source_sha256": "cafa00ec231fc4b053a6cae20c878feb22bd629632bd28663a931a305a07f420",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL owner2 response original transport token t=11180000 tx=0 rx=0 flow=0 host=0 boot=0"
+      },
+      "other_owner_raw_response": {
+        "rejected": true,
+        "source_sha256": "4b13f5ab54130409b6d07726336033708a9b953cf7d5bf8f64a6a11c6d8d09be",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL quota-only event cannot inherit the last CPU owner/token t=12470000 tx=1 rx=0 flow=0 host=0 boot=0"
+      },
+      "quota_only_inherits_cpu_owner": {
+        "rejected": true,
+        "source_sha256": "7bbecad9580d5bc72be2d69d5744c065a33710798c257ac7ca1fa06864ff2095",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL quota-only event cannot inherit the last CPU owner/token t=12470000 tx=1 rx=0 flow=0 host=0 boot=0"
+      },
+      "host_return_waits_ordinary_quota": {
+        "rejected": true,
+        "source_sha256": "0fa8fce6fffcaa80d304523d56d84ad396c0625e5a3e1e3f32d726e351e20414",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL CPU slow copy never holds controller RX credit t=19150000 tx=4 rx=0 flow=0 host=0 boot=0"
+      },
+      "stale_cpu_generation_admitted": {
+        "rejected": true,
+        "source_sha256": "1490853b870e167b217563cbee10591eea87b86fb9630b924db6b992eeafa5f3",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL stale generation command rejected before acceptance t=47480000 tx=1 rx=0 flow=0 host=0 boot=0"
+      },
+      "old_copy_not_retired": {
+        "rejected": true,
+        "source_sha256": "fd9c015ba6f2bf0a404aac36778ab4e2079d4bccdcc97370a9c48c4cc3b1546e",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL old generation CPU copy explicitly retired t=45650000 tx=1 rx=0 flow=0 host=0 boot=0"
+      },
+      "registered_ram_byte_shift": {
+        "rejected": true,
+        "source_sha256": "dce3f96c5171c3a9545427b4ed254819a9d44dd08ff69d8f92b418bdffb759a7",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL first synchronous event RAM byte t=9760000 tx=0 rx=0 flow=0 host=0 boot=0"
+      },
+      "physical_lease_never_released": {
+        "rejected": true,
+        "source_sha256": "1fd0eab91bd50bcab280030e898bf278dc8266ee3dec90f34602b4257f8b5639",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:155: FAIL CPU slow copy never holds controller RX credit t=19150000 tx=1 rx=14 flow=1 host=1 boot=1"
+      },
+      "zero_le_credit_steals_private_slot": {
+        "rejected": true,
+        "source_sha256": "926491ecf43a39cd1c4314a225f7de985ca9f97a986f6717fef644d8bd089866",
+        "failure": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tb_workstation_hci_native_transport.sv:401: FAIL native integration watchdog tx=4 rx=0 fault=0 flow=0 host=0 boot=0 cpu=2 checks=156 commands=6 le=1 br=0 cpuvalid=1 eligible=1 credits=  1 pending=0 grant=1"
+      }
+    },
+    "uart": {
+      "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+      "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+      "patch_bytes": 253,
+      "physical_uart": true,
+      "physical_board": false
+    },
+    "prior_bootstrap": {
+      "summary": "PASS checks=418 scenarios=32 commands4 pools2 timeout_phases5",
+      "checks": 418
+    },
+    "prior_host": {
+      "checks": 160228,
+      "mutants": 13
+    },
+    "prior_shared": {
+      "flow_checks": 116780,
+      "event_checks": 9174,
+      "mutants": 11
+    },
+    "host_strict_lint": "passed -Wall without waivers",
+    "native_lint": {
+      "passed": true,
+      "exceptions": [
+        "unused child diagnostic outputs",
+        "explicit unused output pins"
+      ],
+      "width_latch_multidriver_timing_warnings_suppressed": false
+    }
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-maintained-v1/verification.json": "4fd5559ea3b79438a62fe5f3ebeb60ccf25aa52da3a377e157882d5c6aa7351b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-identity-v1/verification.json": "46aace2a2e6aacce0d83479f060398c7fba0dc58c07a2e2b0aeecb8aa35190ed",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-action-drift-native-v1/verification.json": "86fb3692e2f3de805d52736776deebd169b309d5a76950cffd1a9b08023cd255"
+  },
+  "scope": "Three existing readiness consumers use the base cofactor; original full drift, all sequential statements, native close_generation/default/last-match and protocol remain unchanged. New source phase requires a new candidate identity and real mapped cone verification.",
+  "new_mapped_primitive_or_routed_evidence": false,
+  "timing_gain_claimed": false,
+  "resource_gain_claimed": false,
+  "P_and_R": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "production_RTL_changed": true,
+  "profile_locks_changed": false,
+  "task2_changed": false
+}

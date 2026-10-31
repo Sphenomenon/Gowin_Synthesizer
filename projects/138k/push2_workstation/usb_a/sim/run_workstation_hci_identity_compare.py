@@ -8,6 +8,7 @@ import re
 import subprocess
 import itertools
 import z3
+from run_workstation_hci_action_drift import apply_action_transform, reverse_action_transform
 
 ROOT = Path(__file__).resolve().parents[1]
 OWNER = ROOT / 'rtl/bluetooth/hci_owner'
@@ -114,8 +115,8 @@ def state_checks(text, prefix=''):
     return result
 
 
-def twin_bench(name):
-    source = reference(name).read_text()
+def twin_bench(name, reference_path=None):
+    source = (reference_path or reference(name)).read_text()
     spec = ports(source)
     text = (ROOT / 'sim' / ('tb_' + module(name) + '.sv')).read_text()
     declarations = ['wire ' + width + ' reference_' + port + ';'
@@ -267,13 +268,18 @@ def main():
     out.mkdir(parents=True)
     inputs = {str(path): sha(path) for path in [*(OWNER / (module(name) + '.sv') for name in SHAS),
         *(reference(name) for name in SHAS), ROOT / 'sim/tb_workstation_hci_host_rx_owner.sv',
-        ROOT / 'sim/tb_workstation_hci_native_transport.sv', Path(__file__).resolve()]}
+        ROOT / 'sim/tb_workstation_hci_native_transport.sv',
+        ROOT / 'sim/run_workstation_hci_action_drift.py', Path(__file__).resolve()]}
     for name, identity in SHAS.items():
         require(sha(reference(name)) == identity, 'W10 reference changed: ' + name)
         expected = reference(name).read_text()
         for before, after, count, replacements in CHANGES[name]:
             require(expected.count(before) == count, 'exact source anchor ' + before)
             expected = expected.replace(before, after, replacements)
+        if name == 'host_rx_owner':
+            pre_action = expected
+            expected = apply_action_transform(pre_action)
+            require(reverse_action_transform(expected) == pre_action, 'exact reviewed action drift inverse')
         require(expected == (OWNER / (module(name) + '.sv')).read_text(), 'bytes changed outside reviewed identity expressions: ' + name)
         grouped_contract(name, expected)
         text = reference(name).read_text().replace(module(name) + ' #(', module(name) + '_reference #(', 1)
@@ -302,6 +308,7 @@ def main():
     four_state, group_mutants = four_state_groups(out)
     mutants.update(group_mutants)
     report = dict(stage='W10_complete_HCI_grouped_identity_comparison', inputs_sha256=inputs, exact_bytes_outside_reviewed_comparisons=True,
+                  action_drift_reviewed_transform=True, original_full_drift_and_sequential_bytes_preserved=True,
                   relation_laws=laws, z3_version=z3.get_version_string(), whole_modules={}, mutants=mutants,
                   finite_four_state_grouped_relations=four_state,
                   new_registers_or_cycles=0, priorities_and_credit_owner_unchanged=True, physical_gain_measured=False, hardware_tested=False)

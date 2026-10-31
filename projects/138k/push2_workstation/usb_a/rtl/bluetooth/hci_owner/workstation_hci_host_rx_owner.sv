@@ -67,7 +67,7 @@ module workstation_hci_host_rx_owner #(
     reg [15:0] offer_count;
     integer offer_slot;
     integer rx_owner,free_slot,free_count,release_slot,release_owner,disconnect_slot,return_candidate,index;
-    reg owner_drift,invariant_bad;
+    reg owner_drift,action_owner_drift,invariant_bad;
     reg [31:0] total_outstanding;
     assign host_data_limit_o=DATA_LIMIT;
     assign host_packet_count_o=CAPACITY;
@@ -99,9 +99,18 @@ module workstation_hci_host_rx_owner #(
         assign disconnect_generation_changed[identity_handle]=
             |disconnect_generation_changed_groups[identity_handle*4+:4];
     end
+    // Action readiness excludes a known disconnect edge. Preserve the full
+    // owner drift for real disconnect/fault processing and unknown controls.
+    (* syn_keep=1 *) reg action_owner_drift_fence;
+    always @* begin
+        case(disconnect_valid_i)
+            1'b0,1'b1:action_owner_drift_fence=action_owner_drift;
+            default:action_owner_drift_fence=owner_drift;
+        endcase
+    end
     always @* begin
         rx_owner=-1;free_slot=-1;free_count=0;release_slot=-1;release_owner=-1;
-        disconnect_slot=-1;return_candidate=-1;owner_drift=0;invariant_bad=0;total_outstanding=0;
+        disconnect_slot=-1;return_candidate=-1;owner_drift=0;action_owner_drift=0;invariant_bad=0;total_outstanding=0;
         for(integer at=0;at<RX_SLOTS;at=at+1)begin
             if(!leased[at])begin free_count=free_count+1;if(free_slot==-1)free_slot=at;end
             if(leased[at]&&!(|(tokens[at]^release_lease_i)))release_slot=at;
@@ -116,6 +125,8 @@ module workstation_hci_host_rx_owner #(
             total_outstanding=total_outstanding+{16'd0,outstanding[at]};
             if(pending[at]>outstanding[at])invariant_bad=1;
             if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
+                (|(generations[at]^known_generations_i[32*at+:32]))))action_owner_drift=1;
+            if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
                 (|(generations[at]^known_generations_i[32*at+:32])))&&
                 !(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
                     !disconnect_generation_changed[at]))owner_drift=1;
@@ -127,16 +138,16 @@ module workstation_hci_host_rx_owner #(
     wire rx_le=rx_owner!=-1&&known_is_le_i[rx_owner];
     assign rx_ready_o=active_o&&!fault_o&&!transport_fault_i&&!disconnect_valid_i&&
         !activate_i&&!(return_transport_done_i&&!return_inflight_o)&&
-        controller_budget_o!=0&&rx_schema_good&&!owner_drift&&!invariant_bad;
+        controller_budget_o!=0&&rx_schema_good&&!action_owner_drift_fence&&!invariant_bad;
     assign rx_can_hold_o=rx_ready_o&&free_slot!=-1&&last_lease!=32'hffffffff&&
         (rx_le||free_count>BLE_RESERVE);
     assign release_ready_o=active_o&&!fault_o&&!transport_fault_i&&!disconnect_valid_i&&
         !activate_i&&!(return_transport_done_i&&!return_inflight_o)&&
-        !rx_valid_i&&!owner_drift&&!invariant_bad;
+        !rx_valid_i&&!action_owner_drift_fence&&!invariant_bad;
     assign return_valid_o=offered&&!return_inflight_o&&!fault_o;
     assign return_can_send_o=return_valid_o&&active_o&&!transport_fault_i&&
         !activate_i&&!(return_transport_done_i&&!return_inflight_o)&&
-        !disconnect_valid_i&&!rx_valid_i&&!release_valid_i&&!owner_drift&&!invariant_bad;
+        !disconnect_valid_i&&!rx_valid_i&&!release_valid_i&&!action_owner_drift_fence&&!invariant_bad;
     always @* begin
         case(return_address_i)
             0:return_data_o=8'h35;

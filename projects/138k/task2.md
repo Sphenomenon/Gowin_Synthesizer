@@ -322,6 +322,8 @@ M15的[TF容量真实分组与准入锥证明](push2_workstation/usb_a/reports/d
 
 W13的[raw完整实际映射比较](push2_workstation/usb_a/reports/DUAL138K_W13_RAW_MAPPING_20261101.md)已封存：122目标FF／127完整D与CE锥、449实际状态／RAM／DDR边界逐项绑定，在报告明确的配对条件下全部有效next-Q为UNSAT；4项实际网表破坏均给SAT反例，官方LUT4800／ALU1152及RAM模型交叉检查通过。主要write-address CE退出64个timeout叶，其余CE保留；最差memory_next_index的CLEAR完成许可仍经过完整fault链。未证明异步reset／RAM历史／DDR内部或全机四态，不冒称全部初始化已短化、routed收益或实板验收；下一cache提案保持原CLEAR周期与优先级。
 
+W 的[HCI readiness 局部 drift 维护源阶段](push2_workstation/usb_a/reports/DUAL138K_HCI_ACTION_DRIFT_20261101.md)已完成：仅三个已有断开否决的 readiness consumer 使用 action fence，原 full drift、全部顺序逻辑及 X/Z fallback 保持。完整 host 对照17,674周期／33输出／39状态、147,464次有限四态探针、六项二态／四态SMT、原W10及UART8E1／H5回归和全部负控通过；359份最终证据由主线程逐项重验。两份DEMO来源锁尚未刷新，此阶段不混入W13／M15冻结输入；下一完整候选另立身份并检查真实consumer及物理时序，未预记资源收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
