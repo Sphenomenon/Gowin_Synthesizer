@@ -1,0 +1,42 @@
+{
+  "positive": {
+    "pin": "u_rtc/rtc_tick_s1/Q",
+    "cell": "DFFCE",
+    "source": "clk_50m",
+    "hard_ip_wrapper_port": "u_cpu/rtc_tick",
+    "average_hz": 32768,
+    "sta_minimum_period_cycles": 1524
+  },
+  "rejected_mutants": [
+    "wrong_clock",
+    "wrong_output",
+    "wrong_target"
+  ],
+  "failed_process": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031CA-v8/physical_process.json",
+  "failed_process_sha256": "cf3a1479490f745b5b93bf3908bad6074aca9e48ef8b1c831de8c938d2af4480",
+  "failed_vg_sha256": "f52e9948c5cd1f1c523ac8362a718113a9b4be3cd9365969cde5ebc573c4fb80",
+  "new_prepare_audit": {
+    "manifest_sha256": "16f304977ba41db08fb7dbf21f4fce9de38b8aeffe58f8649e374b0b2a9cd233",
+    "verified_inputs": 38,
+    "compiled_sources": 8,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "new_identity": "C21031CC",
+  "new_inputs_sha256": "16f304977ba41db08fb7dbf21f4fce9de38b8aeffe58f8649e374b0b2a9cd233",
+  "new_rtc_source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+  "rtc_cleanup": "26-bit bounded arithmetic, explicit initial reset values; no warning waiver",
+  "firmware_unchanged": true,
+  "hardware_operated": false,
+  "tests": 9,
+  "strict_lint": "passed_Wall_no_waivers",
+  "new_physical_verified": false,
+  "hardware_tested": false,
+  "previous_seal_failure": "Unsealed v1 incorrectly required an empty Verilator log; normal Verilator report lines are valid. No RTL results or original artifacts modified.",
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rtc-target-fix-main-parent-v2",
+  "seal_sha256": "ad76692c2e562878fc2a6da68b220cd731b9f613c4e4f9188807aeb408870b84",
+  "external_files": 109
+}

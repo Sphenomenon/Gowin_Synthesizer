@@ -16,6 +16,7 @@ from tools.workstation_hdmi_isolation import gao_configuration as base_gao
 from tools.workstation_audio_probe import load_config as audio_config, pin_constraints as audio_constraints
 from tools.workstation_pinout import prepare as prepare_pinout, render_constraints, parse_locations
 from tools.ae350_local_memory import local_memory_report, verify_elf_image, call_chain_report
+from tools.workstation_synthesis_netlist import SynthesisNetlist
 
 TOP='workstation_ae350_local_memory_probe_top'
 BASE='ae350_local_memory_probe'
@@ -31,6 +32,20 @@ SAFE_DAC_PINS=dict(ak_pdn=['C13'],ak_mclk=['B13'],ak_bick=['A13'],ak_lrck=['B15'
 CPU_PLL_INSTANCE='u_cpu_pll/PLL_inst'
 CPU_PLL_SITE='PLL_R[0]'
 CPU_PLL_CONSTRAINT=f'INS_LOC "{CPU_PLL_INSTANCE}" {CPU_PLL_SITE};'
+RTC_CLOCK_PIN='u_rtc/rtc_tick_s1/Q'
+RTC_CLOCK_SDC=('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
+               '-divide_by 1524 [get_pins {'+RTC_CLOCK_PIN+'}]')
+
+def audit_rtc_synthesis(netlist_text):
+    n=SynthesisNetlist(netlist_text,TOP)
+    instance=RTC_CLOCK_PIN.rpartition('/')[0]
+    if (n.cells.get(instance,{}).get('kind')!='DFFCE' or
+            n.pin(instance,'CLK')!='clk_50m' or
+            n.pin(instance,'Q')!=n.pin('u_cpu','rtc_tick') or
+            n.pin(instance,'Q') in ('clk_50m','core_clk','ram_clk')):
+        raise ValueError('probe RTC register/constraint target or hard-IP wiring changed')
+    return dict(pin=RTC_CLOCK_PIN,cell='DFFCE',source='clk_50m',
+                hard_ip_wrapper_port='u_cpu/rtc_tick',average_hz=32768,sta_minimum_period_cycles=1524)
 
 def audit_cpu_pll_constraint(cst):
     # MUG1031 v1.3.1 section 7.3: CORE_CLK must use PLL_R[0].clkout1;
@@ -132,8 +147,7 @@ def constraints(root):
     # The fractional RTC has bounded edge jitter. Use its minimum possible
     # two-half-period length as a conservative periodic STA bound (not its
     # 32.768kHz average), without removing paths or changing other clocks.
-    lines.append('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
-                 '-divide_by 1524 [get_pins {u_rtc/rtc_tick_s0/Q}]')
+    lines.append(RTC_CLOCK_SDC)
     first=('u_uart/request_meta_s0/D u_uart/ack_meta_s0/D u_uart/flags_meta*_s0/D '
            'upper_sync_0_s0/D unmapped_sync_0_s0/D rom_health_sync_0_s0/D upper_health_sync_0_s0/D')
     lines += [f'set_max_delay 15.000 -to [get_pins {{{first}}}]',
@@ -180,6 +194,8 @@ def audit_prepare(output):
         raise ValueError('probe clock declaration changed')
     names=re.findall(r'^create_(?:generated_)?clock -name (\S+)',(output/'probe.sdc').read_text(),re.M)
     if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
+    if (output/'probe.sdc').read_text().splitlines().count(RTC_CLOCK_SDC)!=1:
+        raise ValueError('probe RTC timing target or minimum period changed')
     cst=(output/'probe.cst').read_text()
     audit_cpu_pll_constraint(cst)
     if parse_locations(cst)!=record['port_locations']:
