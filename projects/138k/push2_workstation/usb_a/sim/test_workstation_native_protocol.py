@@ -87,7 +87,7 @@ endmodule
             self.assertIn(f'set_max_delay 2.000 -from [get_pins {{{first}/Q}}] -to [get_pins {{{second}/D}}]', sdc)
 
 
-class ActualNativeProtocol(unittest.TestCase):
+class ActualNativeFixture(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         selected = os.environ.get('GW138K_NATIVE_PROTOCOL_VG')
@@ -102,8 +102,14 @@ class ActualNativeProtocol(unittest.TestCase):
     def tearDownClass(cls):
         evidence = os.environ.get('GW138K_NATIVE_PROTOCOL_EVIDENCE')
         if evidence:
-            Path(evidence).write_text(json.dumps(dict(profile=cls.profile, mutations=cls.mutations,
-                mutation_count=len(cls.mutations), physical_cdc_accepted=False), indent=2) + '\n')
+            path = Path(evidence)
+            earlier = json.loads(path.read_text()) if path.is_file() else {}
+            if earlier:
+                assert earlier['profile'] == cls.profile and earlier['mapping'] == cls.mapping
+            mutations = [row for row in earlier.get('mutations', []) if row.get('test_class') != cls.__name__]
+            mutations.extend(dict(**row, test_class=cls.__name__) for row in cls.mutations)
+            path.write_text(json.dumps(dict(profile=cls.profile, mapping=cls.mapping, mutations=mutations,
+                mutation_count=len(mutations), physical_cdc_accepted=False), indent=2) + '\n')
 
     @contextmanager
     def change(self, path, part, key, value):
@@ -121,6 +127,7 @@ class ActualNativeProtocol(unittest.TestCase):
                 audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
         self.mutations.append(dict(case=name, rejected=True, error=str(error.exception)))
 
+class ActualNativeProtocol(ActualNativeFixture):
     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
         self.assertEqual(result['mailbox_count'], 4)
@@ -155,6 +162,18 @@ class ActualNativeProtocol(unittest.TestCase):
         changed = sdc + 'set_false_path -to [get_regs {u_managed/display_observation_health/loss_sync_0_s*}]\n'
         with self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
             validate_native_protocol_sdc(changed, self.n, result)
+        for stem in ('pc_health_sync_0', 'pc_health_sync_1'):
+            with self.subTest(cut=stem), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
+                validate_native_protocol_sdc(sdc + f'set_false_path -hold -to [get_pins {{u_managed/{stem}_s*/D}}]\n', self.n, result)
+        control_lines = [line for line in sdc.splitlines() if 'u_managed/pc_health_meta_' in line or
+                         self.profile == 'm-demo-base' and 'u_tf_audio/held_control_' in line]
+        for line in control_lines:
+            with self.subTest(missing_control=line), self.assertRaisesRegex(ValueError, 'missing, duplicated or changed'):
+                validate_native_protocol_sdc(sdc.replace(line + '\n', '', 1), self.n, result)
+        if self.profile == 'm-demo-base':
+            for stem in ('request_sync_1', 'ack_sync_1', 'control_capture'):
+                with self.subTest(cut_tf=stem), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
+                    validate_native_protocol_sdc(sdc + f'set_false_path -hold -to [get_pins {{u_tf_audio/{stem}_s*/D}}]\n', self.n, result)
 
     def test_ram_enable_cannot_ignore_mailbox_busy(self):
         self.reject('RAM overwrite while busy', RAM_SCOPE + RAM_STEM + '0_s', 'ports', 'CEB', "1'b1", 'RAM read register')
@@ -208,6 +227,72 @@ class ActualNativeProtocol(unittest.TestCase):
             self.skipTest('routed 18-bit split only')
         self.reject('routed added half ignores busy', RAM_SCOPE + 'gowin_add_SDPX9B_' + RAM_STEM + '0_s',
                     'ports', 'CEB', "1'b1", 'RAM read register')
+
+
+class ActualControlBoundaries(ActualNativeFixture):
+    def bind(self, target, source, port='Q'):
+        net = self.n.pin(source, port)
+        scope = self.n.scopes[target]
+        if scope:
+            self.assertTrue(net.startswith(scope + '/'))
+            return net[len(scope) + 1:]
+        return self.n.cells[source]['ports'][port]
+
+    def tf(self):
+        if self.profile != 'm-demo-base':
+            self.skipTest('W explicitly retires the TF owner')
+
+    def test_tf_payload_bit_swap_rejected(self):
+        self.tf()
+        self.reject('TF payload bit swapped', 'u_tf_audio/compute_control_0_s0', 'ports', 'D',
+                    self.n.cells['u_tf_audio/compute_control_1_s0']['ports']['D'], 'TF held payload bit mapping')
+
+    def test_tf_source_busy_gate_rejected(self):
+        self.tf()
+        self.reject('TF busy overwrite', 'u_tf_audio/n2708_s1', 'parameters', 'INIT', "8'hFF", 'TF acceptance must require')
+
+    def test_tf_compare_must_cover_same_desired_bits(self):
+        self.tf()
+        self.reject('TF desired comparison bit mismatch', 'u_tf_audio/held_control_0_s0', 'ports', 'D',
+                    self.n.cells['u_tf_audio/held_control_1_s0']['ports']['D'], 'comparison must include every exact')
+
+    def test_tf_request_must_toggle_on_capture(self):
+        self.tf()
+        self.reject('TF request no longer follows capture', 'u_tf_audio/n2746_s5', 'parameters', 'INIT', "16'hAAAA", 'TF request must toggle')
+
+    def test_tf_capture_needs_registered_settling(self):
+        self.tf()
+        self.reject('TF capture bypasses its settled state', 'u_tf_audio/n2827_s1', 'parameters', 'INIT', "8'h3C", 'TF capture must register')
+
+    def test_tf_ack_must_wait_for_payload_capture(self):
+        self.tf()
+        self.reject('TF ACK before payload', 'u_tf_audio/control_ack_s0', 'ports', 'CE', "1'b1", 'TF ACK and payload')
+
+    def test_tf_request_second_cannot_bypass_first(self):
+        self.tf()
+        target = 'u_tf_audio/request_sync_1_s0'
+        self.reject('TF request synchronizer bypass', target, 'ports', 'D',
+                    self.bind(target, 'u_tf_audio/control_request_s2'), 'control synchronizer direct')
+
+    def test_tf_request_meta_extra_consumer_rejected(self):
+        self.tf()
+        target = 'u_tf_audio/launched_epoch_0_s0'
+        self.reject('TF request meta extra consumer', target, 'ports', 'D',
+                    self.bind(target, 'u_tf_audio/request_sync_0_s0'), 'first-stage fanout changed')
+
+    def test_pc_source_bits_cannot_swap(self):
+        target = 'u_managed/pc_health_meta_0_s0'
+        self.reject('PC health source bit swapped', target, 'ports', 'D',
+                    self.bind(target, 'u_managed/pc_drop_seen_50_s0'), 'control synchronizer direct')
+
+    def test_pc_meta_must_be_unconditional(self):
+        self.reject('PC health conditional meta', 'u_managed/pc_health_meta_0_s0', 'ports', 'CE', "1'b0", 'control synchronizer clock/primitive/CE')
+
+    def test_pc_drop_reduction_must_include_all_bits(self):
+        target = 'u_managed/pc_drop_seen_50_s0'
+        source = next(p for p in self.n.cells if re.fullmatch(r'u_managed/pc_bytes/drop_count_0_s\d+', p))
+        self.reject('PC unregistered/wrong drop reduction', target, 'ports', 'D',
+                    self.bind(target, source), 'drop reduction must be registered')
 
 
 if __name__ == '__main__':

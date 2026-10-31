@@ -1,0 +1,31 @@
+{
+  "stage": "HCI_capture_compiler_fix_evidence",
+  "original_evidence": {
+    "bootstrap_synthesis.json": {
+      "path": "/tmp/dual138k-hci-bootstrap-capture-gate-v3/verification.json",
+      "sha256": "c017419130c622a0e975ad8ef0a8622d679e183b0a52c37916ccb9de8b09fa53"
+    },
+    "minimal_diagnostic.json": {
+      "path": "/tmp/dual138k-bootstrap-fixed-capacity-synthesis-diagnostic-v1.json",
+      "sha256": "711ee51f1062e2c576e3543eab7451dc78447502e70f4d134596d35281cc4c23"
+    },
+    "native_regression.json": {
+      "path": "/tmp/dual138k-hci-capture-native-regression-v1/verification.json",
+      "sha256": "26133763c1a8b1ad454dda58c033c7577d5c8f9378ba8ea368194453b0bf390b"
+    },
+    "w5_generation_proof.json": {
+      "path": "/tmp/dual138k-w5-hci-generation-proof.json",
+      "sha256": "251ca12f0eef3acbb4e068b025dc7a40c127124301547a13842bb9e7d923929b"
+    }
+  },
+  "repository_evidence_sha256": {
+    "native_regression.json": "26133763c1a8b1ad454dda58c033c7577d5c8f9378ba8ea368194453b0bf390b",
+    "w5_generation_proof.json": "251ca12f0eef3acbb4e068b025dc7a40c127124301547a13842bb9e7d923929b",
+    "native_synthesis.json": "e9a0eed1e96a6b4212a98b68cc16b391526e10b833a5614141df8dd4cc9154a0",
+    "bootstrap_synthesis.json": "c017419130c622a0e975ad8ef0a8622d679e183b0a52c37916ccb9de8b09fa53",
+    "minimal_diagnostic.json": "711ee51f1062e2c576e3543eab7451dc78447502e70f4d134596d35281cc4c23"
+  },
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}

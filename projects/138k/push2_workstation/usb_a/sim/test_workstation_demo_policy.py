@@ -81,6 +81,22 @@ class DemoConstraintPolicy(unittest.TestCase):
         self.assertEqual(source, verify_constraints(selected, evidence, 'W'))
         self.assertNotEqual(source, adapt_constraints(source, 'W')[0])
 
+    def test_only_two_unused_w_diagnostics_retire_and_previous_v2_replays(self):
+        source = ('set_max_delay 10.000 -from [get_regs {recording_ble_store/status_payload*}] '
+            '-to [get_pins {recording_ble_store/failure_code_o_*_s*/D '
+            'recording_ble_store/start_done_o_s*/CE recording_ble_store/clear_done_o_s*/D '
+            'recording_ble_store/channel_fault_o_s*/CE recording_ble_store/committed_frames_o_*_s*/D}]\n')
+        selected, evidence = adapt_constraints(source, 'W')
+        self.assertNotIn('failure_code_o_', selected)
+        self.assertNotIn('start_done_o_', selected)
+        for live in ('clear_done_o_', 'channel_fault_o_', 'committed_frames_o_'):
+            self.assertIn(live, selected)
+        self.assertEqual(source, verify_constraints(selected, evidence, 'W'))
+        old, old_evidence = _adapt(source, 'W', legacy=False, previous=True)
+        self.assertEqual(old, source)
+        self.assertEqual(source, verify_constraints(old, old_evidence, 'W'))
+        self.assertEqual(source, adapt_constraints(source, 'M')[0])
+
 
 if __name__ == '__main__':
     unittest.main()

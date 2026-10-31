@@ -1,0 +1,422 @@
+{
+  "vg_sha256": "4647aa544a7b4ccd590bad2d43f36907b216aef782667b0c72f4b6ef6b0422b7",
+  "key": [
+    {
+      "bit": 0,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 1,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 2,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 3,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 4,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 5,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 6,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 7,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 8,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 9,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 10,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 11,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 12,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 13,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 14,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 15,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 16,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 17,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 18,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 19,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 20,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 21,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 22,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 23,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 24,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 25,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 26,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 27,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 28,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 29,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 30,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "bit": 31,
+      "support": [
+        "u_bluetooth/u_core/owner/known_active[0]",
+        "u_bluetooth/u_core/owner/known_active[1]"
+      ],
+      "values": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "all_bits_proven_constant_zero": true
+}

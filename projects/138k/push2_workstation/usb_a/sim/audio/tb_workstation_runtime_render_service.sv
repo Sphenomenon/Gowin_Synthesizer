@@ -46,10 +46,26 @@ module tb_workstation_runtime_render_service;
   integer wet48=0,wet44=0,engine_samples48=0,engine_samples44=0,pitch_checks=0;
   integer pending_count=0,posted_writes=0,ordered_fences=0;
   integer max_steady_latency=0,max_auto_config_latency=0,max_loader_latency=0;
+  integer vector_dispatch_cycles=0,vector_accepted_events=0,vector_release_cases=0;
   real pitch_error_hz;
   reg trace_on=1,allow_fault=0,old_rate=0;
   string trace_path;
   always @(posedge clk)if(rst_n)begin
+    // Prove the local timing factorization against the real vector engine,
+    // including pending samples, rate barriers and release-sweep traffic.
+    if(dut.workstation.dispatch && dut.workstation.core_ce)
+      $fatal(1,"event dispatch overlapped a real engine sample");
+    if(dut.workstation.dispatch)begin
+      if(dut.workstation.vec_dispatch_ready!==dut.workstation.vec_event_ready)
+        $fatal(1,"dispatch state-ready differs from real vector acceptance");
+      if(dut.workstation.scope_enable)vector_dispatch_cycles=vector_dispatch_cycles+1;
+    end
+    if(dut.workstation.scope_enable && dut.workstation.core_event_valid &&
+       dut.workstation.vec_dispatch_ready)begin
+      if(!dut.workstation.vec_event_ready)
+        $fatal(1,"held/release state advanced without a real vector handshake");
+      vector_accepted_events=vector_accepted_events+1;
+    end
     if(request && ready)begin requests=requests+1;pending_count=pending_count+1;end
     if(dut.workstation.core_ce)begin
       if(applied_rate!=rate || dut.workstation.engine_rate!=applied_rate ||
@@ -176,6 +192,28 @@ module tb_workstation_runtime_render_service;
         if(held==0 || active==0)$fatal(1,"engine mode lost held allocation");
       end
     end
+    // Release two deferred real vector notes while a new-rate sample is
+    // offered. Neither the held map nor release cursor may outrun the engine.
+    if(!dut.workstation.scope_enable)$fatal(1,"vector release fixture lost source");
+    send(2,64,127);send(0,48,0);send(0,49,0);
+    wait(dut.workstation.deferred[48] && dut.workstation.deferred[49]);
+    fork
+      begin render(0,901);end
+      begin send(2,64,0);end
+    join
+    wait(!dut.workstation.releasing);
+    if(dut.workstation.deferred!=0 || held[48] || held[49])
+      $fatal(1,"vector sustain release left deferred/held notes");
+    vector_release_cases=vector_release_cases+1;
+    // Lifecycle cancellation bypasses the ordinary queue during a second
+    // real vector release sweep and must clear its private cursor immediately.
+    send(2,64,127);send(0,50,0);wait(dut.workstation.deferred[50]);
+    send(2,123,0);wait(dut.workstation.releasing);send(15,0,0);
+    if(held!=0 || dut.workstation.deferred!=0 || dut.workstation.releasing)
+      $fatal(1,"lifecycle did not cancel real vector release state");
+    vector_release_cases=vector_release_cases+1;
+    if(vector_dispatch_cycles==0 || vector_accepted_events<10)
+      $fatal(1,"missing real vector dispatch coverage");
     send(2,120,0);idle();send(2,90,0);send(2,80,0);wait(dut.mode_o==0);send(1,69,100);render(1,0);
     trace_on=0;
     // An already-muted accepted slot is a deterministic good zero, even if a
@@ -222,7 +260,7 @@ module tb_workstation_runtime_render_service;
     if(posted_writes==0 || ordered_fences==0)$fatal(1,"missing real DDR transactions");
     @(negedge clk);rst_n=0;mrst_n=0;repeat(8)@(negedge clk);rst_n=1;mrst_n=1;
     repeat(100)@(negedge clk);allow_fault=0;old_rate=0;idle();if(applied_rate || fault)$fatal(1,"coordinated reset recovery failed");
-    $display("PASS runtime_render_service: requests=%0d responses=%0d modeled_frames=%0d configs=%0d histories=%0d cancels=%0d wet48=%0d wet44=%0d pitch_checks=%0d max_latency=%0d max_steady_latency=%0d max_auto_config_latency=%0d max_loader_latency=%0d posted_writes=%0d ordered_fences=%0d",requests,responses,frames,configs,histories,cancels,wet48,wet44,pitch_checks,max_latency,max_steady_latency,max_auto_config_latency,max_loader_latency,posted_writes,ordered_fences);
+    $display("PASS runtime_render_service: requests=%0d responses=%0d modeled_frames=%0d configs=%0d histories=%0d cancels=%0d wet48=%0d wet44=%0d pitch_checks=%0d max_latency=%0d max_steady_latency=%0d max_auto_config_latency=%0d max_loader_latency=%0d posted_writes=%0d ordered_fences=%0d vector_dispatch_cycles=%0d vector_accepted_events=%0d vector_release_cases=%0d",requests,responses,frames,configs,histories,cancels,wet48,wet44,pitch_checks,max_latency,max_steady_latency,max_auto_config_latency,max_loader_latency,posted_writes,ordered_fences,vector_dispatch_cycles,vector_accepted_events,vector_release_cases);
     $fclose(trace_file);$finish;
   end
   initial begin #2000000000;$fatal(1,"test timeout");end

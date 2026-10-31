@@ -65,7 +65,10 @@ def main():
             if not re.search(r'parameter\s+integer\s+STOP_CLOCK_QUEUE_FENCE\s*=\s*0\b', source.read_text()):
                 raise ValueError('Fence must remain default zero: ' + str(source))
         prefix = wrapper.read_text().split('input_owner', 1)[0]
-        if not re.search(r'push2_usb_a_control\s*#\(\.STOP_CLOCK_QUEUE_FENCE\(STOP_CLOCK_QUEUE_FENCE\)\)\s*$', prefix):
+        binding = re.search(r'push2_usb_a_control\s*#\((.*?)\)\s*$', prefix, re.S)
+        forwarded = [] if binding is None else re.findall(
+            r'\.STOP_CLOCK_QUEUE_FENCE\(([^()]+)\)', binding.group(1))
+        if [value.strip() for value in forwarded] != ['STOP_CLOCK_QUEUE_FENCE']:
             raise ValueError('Wrapper does not forward the explicit fence parameter')
         run('default_regression', [sys.executable, str(old_runner), '--project', str(project),
             '--output', str(output / 'default')], 240)

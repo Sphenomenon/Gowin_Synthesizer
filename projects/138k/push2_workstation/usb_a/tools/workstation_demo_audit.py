@@ -343,6 +343,62 @@ def audit_constraint_retirement(sdc, evidence, role, netlist):
                 every_retired_selector_proven_absent=True, clocks_or_live_exceptions_relaxed=False)
 
 
+def audit_w_recording_diagnostic_retirement(stage, netlist):
+    """Prove two unused diagnostics absent while the real completion path lives."""
+    source = Path(stage) / 'rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv'
+    text = re.sub(r'//[^\n]*|/\*.*?\*/', '', source.read_text(), flags=re.S)
+    unused = ('raw_start_done_i', 'raw_failure_code_i')
+    for name in unused:
+        require(len(re.findall(r'\b' + name + r'\b', text)) == 1 and
+                re.search(r'\binput\s+wire\s+[^;]*\b' + name + r'\b', text),
+                'recording diagnostic gained a source consumer: ' + name)
+    for name in ('raw_start_ready_i', 'raw_capture_ready_i', 'raw_committed_frames_i',
+                 'raw_channel_fault_i', 'raw_clear_done_i', 'raw_fetch_done_i',
+                 'raw_fetch_fault_i', 'raw_cache_valid_i', 'raw_drained_i'):
+        require(len(re.findall(r'\b' + name + r'\b', text)) > 1,
+                'recording true completion/fault source consumer missing: ' + name)
+    engine = 'u_bluetooth/u_core/application/command_endpoint/recording/'
+    sources = {}
+    for stem, net in (('channel_fault_o', 'raw_channel_fault'), ('clear_done_o', 'raw_clear_done'),
+                      ('fetch_done_o', 'raw_fetch_done'), ('fetch_fault_o', 'raw_fetch_fault'),
+                      ('cache_valid_o', 'raw_cache_valid'), ('object_fault_o', 'raw_object_fault')):
+        names = [p for p, c in netlist.cells.items() if c['kind'].startswith('DFF') and
+                 re.fullmatch('recording_ble_store/' + stem + r'_s\d+', p)]
+        require(len(names) == 1 and netlist.pin(names[0], 'Q') == net and
+                netlist.pin(names[0], 'CLK') == 'clk_50m',
+                'recording true completion/fault driver missing: ' + stem)
+        sources[net] = names[0]
+    for bit in range(32):
+        names = [p for p, c in netlist.cells.items() if c['kind'].startswith('DFF') and
+                 re.fullmatch(f'recording_ble_store/committed_frames_o_{bit}_s' + r'\d+', p)]
+        net = f'raw_committed[{bit}]'
+        require(len(names) == 1 and netlist.pin(names[0], 'Q') == net and
+                netlist.pin(names[0], 'CLK') == 'clk_50m',
+                'recording committed frame driver missing: ' + str(bit))
+        sources[net] = names[0]
+    consumers = {net: [] for net in sources}
+    for path, cell in netlist.cells.items():
+        if not path.startswith(engine) or not re.fullmatch(r'LUT[1-6]|ALU', cell['kind']):
+            continue
+        for pin in cell['ports']:
+            if not re.fullmatch(r'I[0-5]|CIN', pin):
+                continue
+            net = netlist.pin(path, pin)
+            if net in consumers:
+                consumers[net].append(path + '/' + pin)
+    for net, pins in consumers.items():
+        require(bool(pins), 'recording true completion/fault netlist consumer missing: ' + net)
+    aliases = ('raw_start_done', 'raw_failure')
+    for cell in netlist.cells.values():
+        require(not any(re.search(r'\b(?:' + '|'.join(aliases) + r')\b', value)
+                        for value in cell['ports'].values()), 'retired diagnostic has an actual alias')
+    return dict(source_sha256=sha(source), unused_source_formals=list(unused),
+        diagnostic_aliases_absent=list(aliases), true_status_source_count=len(sources),
+        true_status={net: dict(driver=sources[net], actual_consumers=len(pins),
+                              consumer_sha256=digest(sorted(pins))) for net, pins in consumers.items()},
+        source_and_actual_consumer_closure_verified=True, hardware_acceptance=False)
+
+
 def audit_sdc_selectors(sdc, netlist):
     """Fail on every unresolved retained member, including mixed collections.
 
@@ -456,6 +512,9 @@ def audit(root, output, metadata):
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist)
+    from tools.workstation_demo_policy import POLICY
+    recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
+        if role == 'W' and retirement['policy'] == POLICY else None)
     selectors = audit_sdc_selectors(sdc, netlist)
     rom_words = check_rom(stage, vg_text, metadata['firmware']['rom_sha256'])
     # Rehash the frozen closure after all source/netlist checks.
@@ -479,6 +538,7 @@ def audit(root, output, metadata):
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,
+        recording_diagnostic_retirement_audit=recording_diagnostics,
         synthesis_clock_estimates=clock_estimates(base.with_name(BASE + '_syn.rpt.html')),
         synthesis_warnings=len(re.findall(r'(?m)^WARN\s+\(', log_text)),
         electrical_check=electrical, electrical_blocked=metadata['electrical_blocked'],

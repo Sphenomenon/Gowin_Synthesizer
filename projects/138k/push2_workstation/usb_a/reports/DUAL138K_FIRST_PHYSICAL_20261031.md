@@ -61,6 +61,18 @@ M v6 `custom138k-workstation-m-demo-v1-0fb50b6129cca888` 在局部混响／显�
 
 M v7严格综合网表门禁已通过，包括完整乐器／效果／HDMI／TF保留、蓝牙及录音退出、32声部真存储、时钟与每个可见SDC selector。综合网表SHA256 `4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6`。物理目录 `/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v7-physical-v1`，新UserCode `D2103103`；真实P&R已经启动，时序／资源结果尚待取得，未部署SRAM。
 
+## 后续完整候选：M8、W6／W7
+
+M8 `custom138k-workstation-m-demo-v1-f11f1756db68044a`已完成全量综合并通过严格网表门禁。综合LUT51,392、ALU12,940、FF46,859、BSRAM equivalent195、SSRAM141；DSP primitive为MULTALU27X18=34、MULT12X12=4、MULT27X36=42。该候选包含TF／PC精确CDC、矢量dispatch许可因子化、显示分析身份比较和接收时序号预测；不能将整机差额归于单项修改。新物理目录`m-demo-base-v8-physical-v1`、UserCode `D2103105`已启动完整P&R，尚无可接受的routed结果。
+
+W6 `custom138k-workstation-w-demo-v1-e7561d05d8100764`已完成全量综合，LUT60,866、ALU20,515、FF45,041、BSRAM equivalent257、SSRAM310；DSP primitive为MULTALU27X18=9、MULT12X12=2、MULT27X36=29。真实HCI会话键恢复，VG与实际SDC的native v2局部门禁通过。驱动会话exit0，但stdout未重定向；候选根`synthesis.log`为Gowin原生生成日志逐字节副本，原路径及SHA见其`synthesis_log_provenance.json`，没有补写成功标志。旧W5错误裁剪不能计作资源收益。
+
+W6严格整机审计继续拒绝两个无消费者诊断输出的四个selector；[源码及实际网表证明](DUAL138K_W_RECORDING_DIAGNOSTICS_20261031.md)后，W的v3策略只退出这两组selector，保留38个实际fault／completion／committed消费者及原v2重放。W7 `custom138k-workstation-w-demo-v1-aec83bda901d0042`重新prepare；639项staged集合相同，但policy、SDC、显示分析源和event工作站源四项实际不同。因此重新全量综合，未复用W6输出，也未改写W6输入。W的首次P&R仍须严格新门禁通过。
+
+M8显示分析新旧全部21个输出在5,645,819次比较中一致，真实2048点FFT／XY和32位身份边界、序号回绕均通过。整机display runtime另有166,525个原子tuple、1,024波形样本、131,072 XY像素、1,024谱列及5,528,428次Gray撤销周期检查；真实writer／reader加载边界12类用例、47项检查和4个行为负控通过。证据在`~/.cache/gw138k-dual-20261031/display-admission-{runtime,load}-v1/verification.json`。这些均为离线验证，不代替实体声画。
+
+同VG的M7 `D2103104`布局实验保持全部原SDC和3.500 ns最小延迟；实际单hold改善至−1.799 ns但仍失败，完整测量见[DDR布局报告](DUAL138K_DDR_HOLD_20261031.md)。M7完整PLL预查还遇到DEMO六PLL来源识别与同步RESET分类缺口，尚未通过。当前所有新位流继续未SRAM／Flash部署。
+
 手机实际可用性由用户确认当前只有模拟器，真实安卓无线验收推迟到实机可用时。模拟器结果不替代手机A2DP、W D处理或BLE录音下载共存。
 
 M v7实际P&R已全部布通并生成位流，退出0，所有准备输入hash在完成后保持。物理Logic65,950、FF46,859、CLS49,996／69,120、BSRAM235／340、DSP120／298。setup违例4,069、hold1；最差setup−2.074 ns，音频Fmax67.089 MHz仍低于76.8 MHz。setup端点较M v5减少4,150个，hold减少70个，仍未闭合。DDR报告Fmax187.196 MHz不能覆盖其850个setup违例，实际同步epoch→framebuffer控制路径仍−1.894 ns；音频DMA故障→USB输入settle同步路径为−1.885 ns。

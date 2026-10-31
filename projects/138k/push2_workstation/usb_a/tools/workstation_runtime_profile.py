@@ -238,9 +238,10 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
         path = '-from [get_pins {' + source + '}] -to [get_pins {' + destination + '}]'
         lines.extend((f'set_max_delay {budget:.3f} ' + path, 'set_false_path -hold ' + path))
 
-    def receiver(scope, first, second):
+    def receiver(scope, first, second, source=None):
         a, b = scope + '/' + first, scope + '/' + second
-        lines.extend(('set_false_path -to [get_pins {' + a + '_s*/D}]',
+        origin = ('-from [get_pins {' + scope + '/' + source + '_s*/Q}] ') if source else ''
+        lines.extend(('set_false_path ' + origin + '-to [get_pins {' + a + '_s*/D}]',
                       'set_max_delay 2.000 -from [get_pins {' + a + '_s*/Q}] '
                       '-to [get_pins {' + b + '_s*/D}]'))
 
@@ -258,8 +259,11 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
     held('u_managed/observation/frames/*g_small_head.memory_g_small_head.memory_0_*_s/DO*',
          ' '.join(f'u_managed/display/destination_data_{bit}_s*/D' for bit in range(105, 203)), 20.0)
     # TF control is a two-flop toggle exchange, with a further capture edge.
+    held('u_tf_audio/held_control_*_s*/Q', 'u_tf_audio/compute_control_*_s*/D', 13.020)
     for stem in ('request_sync', 'ack_sync'):
         receiver('u_tf_audio', stem + '_0', stem + '_1')
+    for bit, source in ((0, 'pc_framing_sticky'), (1, 'pc_drop_seen_50')):
+        receiver('u_managed', 'pc_health_meta_' + str(bit), 'pc_health_sync_' + str(bit), source)
     for scope, stem in (('u_tf_audio/frames', 'quiet_sync'),
                         ('u_tf_audio/frames', 'expected_valid_sync'),
                         ('u_tf_audio/frames', 'quiesce_return_sync'),

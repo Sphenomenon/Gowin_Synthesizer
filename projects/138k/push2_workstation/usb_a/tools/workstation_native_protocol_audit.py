@@ -20,7 +20,7 @@ from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
 from tools.workstation_runtime_profile import protocol_constraints
 
 TOP = 'workstation_custom_138k_top'
-POLICY = 'native-demo-mailbox-structure-v1'
+POLICY = 'native-demo-mailbox-structure-v2'
 RAM_SCOPE = 'u_managed/observation/frames/'
 RAM_STEM = 'g_small_head.memory_g_small_head.memory_0_'
 STREAM_SHA256 = '90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376'
@@ -212,8 +212,9 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
                             'memory', 'control'))
     else:
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'W retained retired TF owner')
+    controls = audit_control_boundaries(n, g, profile=profile)
     return dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
-                mailboxes=mailboxes, level_proofs=proofs, exact_payload_driver_closure=True,
+                mailboxes=mailboxes, level_proofs=proofs, control_boundaries=controls, exact_payload_driver_closure=True,
                 source_stop_loss_bypass_preserved=True, constraints_complete=False,
                 routed_timing_verified=False, physical_cdc_accepted=False, hardware_tested=False)
 
@@ -228,7 +229,7 @@ def protocol_netlist(text, *, mapping):
     n = SynthesisNetlist(text, TOP)
     prefixes = ('u_managed/pc_bytes/', 'u_managed/health_snapshot/', 'u_managed/display/',
                 'u_video/u_runtime_display/observation/', RAM_SCOPE,
-                'u_managed/display_observation_health/', 'u_tf_audio/memory_quiet')
+                'u_managed/display_observation_health/', 'u_tf_audio/', 'u_managed/pc_')
     expected = {p for p, c in n.cells.items() if c['kind'] not in n.modules and p.startswith(prefixes)}
     require('' in n.frames and len(n.frames) == 1, 'routed mapping must be flat')
     instances = re.compile(r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)\);', re.M | re.S)
@@ -254,6 +255,92 @@ def protocol_netlist(text, *, mapping):
     return n
 
 
+def audit_control_boundaries(n, g, *, profile):
+    """Exact maintained TF one-outstanding control and registered PC levels."""
+    def register(scope, stem, bit=None):
+        return g.register(scope, stem, bit)
+
+    def sync(scope, source, first, second, origin, destination):
+        source, first, second = (register(scope, stem) for stem in (source, first, second))
+        require(n.pin(source, 'CLK') == origin, 'control source clock changed: ' + source)
+        for p in (first, second):
+            require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLK') == destination and n.pin(p, 'CE') in g.high,
+                    'control synchronizer clock/primitive/CE changed: ' + p)
+        require(n.pin(first, 'CLEAR') == n.pin(second, 'CLEAR') and
+                n.pin(first, 'D') == n.pin(source, 'Q') and n.pin(second, 'D') == n.pin(first, 'Q'),
+                'control synchronizer direct connection/reset changed: ' + first)
+        require(set(g.closure([first])['endpoints']) == {second + '/D'},
+                'control synchronizer first-stage fanout changed: ' + first)
+        return dict(source=source + '/Q', first=first + '/D', second=second + '/D')
+
+    tf = None
+    if profile == 'm-demo-base':
+        scope = 'u_tf_audio'
+        reg = lambda stem: register(scope, stem)
+        q = lambda stem: n.pin(reg(stem), 'Q')
+        held, capture = g.group(scope, 'held_control', 36), g.group(scope, 'compute_control', 36)
+        require(all(n.pin(p, 'CLK') == 'clk_50m' for p in held) and
+                all(n.pin(p, 'CLK') == 'audio_clk' for p in capture), 'TF control payload clock changed')
+        require(all(n.pin(d, 'D') == n.pin(s, 'Q') for s, d in zip(held, capture)), 'TF held payload bit mapping changed')
+        enables = {n.pin(p, 'CE') for p in held}
+        require(len(enables) == 1, 'TF held payload acceptance enable differs')
+        enable = next(iter(enables))
+        require(len(g.drivers[enable]) == 1, 'TF control acceptance driver absent/ambiguous')
+        gate, port = g.drivers[enable][0]
+        require(n.cells[gate]['kind'] == 'LUT3' and port == 'F', 'TF control acceptance gate shape changed')
+        leaves = [n.pin(gate, 'I' + str(i)) for i in range(3)]
+        request, ack = q('control_request'), n.pin(register(scope, 'ack_sync', 1), 'Q')
+        require(request in leaves and ack in leaves and len(set(leaves)) == 3, 'TF control acceptance inputs changed')
+        changed = next(x for x in leaves if x not in (request, ack))
+        pairs = g.inequality_chain(changed)
+        require(len(pairs) == 36 and pairs == {frozenset((n.pin(p, 'Q'), n.pin(p, 'D'))) for p in held},
+                'TF held/desired comparison must include every exact payload bit')
+        bd = BooleanDiagram(leaves)
+        accepted = bd.both(bd.invert(bd.different(bd.inputs[request], bd.inputs[ack])), bd.inputs[changed])
+        require(bd.net(g, enable) == accepted, 'TF acceptance must require returned ACK and changed payload')
+        require(n.pin(reg('control_request'), 'CE') in g.high and
+                bd.net(g, n.pin(reg('control_request'), 'D')) == bd.different(bd.inputs[request], accepted),
+                'TF request must toggle exactly with payload capture')
+        request_sync = n.pin(register(scope, 'request_sync', 1), 'Q')
+        capture_q, ack_q = q('control_capture'), q('control_ack')
+        bd = BooleanDiagram([request_sync, capture_q, ack_q])
+        settled = bd.both(bd.invert(bd.inputs[capture_q]), bd.different(bd.inputs[request_sync], bd.inputs[ack_q]))
+        require(n.pin(reg('control_capture'), 'CLK') == 'audio_clk' and n.pin(reg('control_capture'), 'CE') in g.high and
+                bd.net(g, n.pin(reg('control_capture'), 'D')) == settled,
+                'TF capture must register settled request and clear after capture')
+        require(all(n.pin(p, 'CE') == capture_q for p in capture) and
+                n.pin(reg('control_ack'), 'CE') == capture_q and n.pin(reg('control_ack'), 'D') == request_sync,
+                'TF ACK and payload must share capture enable')
+        chains = [sync(scope, 'control_request', 'request_sync_0', 'request_sync_1', 'clk_50m', 'audio_clk'),
+                  sync(scope, 'control_ack', 'ack_sync_0', 'ack_sync_1', 'audio_clk', 'clk_50m')]
+        closure = g.closure(held)
+        remote = {pin for pin, domain in closure['endpoints'].items() if domain != 'clk_50m'}
+        require(remote == {p + '/D' for p in capture}, 'TF held payload remote consumer closure changed')
+        tf = dict(payload_bits=36, source_pins=[p + '/Q' for p in held], capture_pins=[p + '/D' for p in capture],
+                  acceptance_enable=enable, capture_enable=capture_q, minimum_destination_wait_edges=3,
+                  held_desired_comparison_all_bits=True, busy_prevents_overwrite=True, request_toggles_on_capture=True,
+                  registered_capture_next_q_verified=True, payload_and_ack_share_capture=True,
+                  chains=chains, capture_state=reg('control_capture') + '/D', closure=closure,
+                  only_remote_consumers_are_exact_36_capture_pins=True)
+    levels = []
+    for bit, stem in ((0, 'pc_framing_sticky'), (1, 'pc_drop_seen_50')):
+        row = sync('u_managed', stem, 'pc_health_meta_' + str(bit), 'pc_health_sync_' + str(bit), 'clk_50m', 'audio_clk')
+        source = register('u_managed', stem)
+        if bit == 0:
+            require(n.pin(source, 'D') in g.high, 'PC framing source must retain sticky-set data')
+        else:
+            counter = g.group('u_managed/pc_bytes', 'drop_count', 32)
+            require(all(n.pin(p, 'CLK') == 'clk_50m' for p in counter), 'PC diagnostic count source clock changed')
+            leaves = [n.pin(p, 'Q') for p in counter]
+            bd, expected = BooleanDiagram(leaves), 0
+            for leaf in leaves:
+                expected = bd.either(expected, bd.inputs[leaf])
+            require(n.pin(source, 'CE') in g.high and bd.net(g, n.pin(source, 'D')) == expected,
+                    'PC drop reduction must be registered before crossing')
+        levels.append(dict(**row, source_registered_before_crossing=True, first_stage_only_second_consumer=True))
+    return dict(tf_control=tf, pc_health_levels=levels, complete_cdc_accepted=False)
+
+
 def source_identity(root):
     root = Path(root)
     manifest = json.loads((root / 'vendor/workstation_inputs.json').read_text())
@@ -263,6 +350,7 @@ def source_identity(root):
         'tools/workstation_native_protocol_audit.py', 'tools/workstation_runtime_profile.py',
         'tools/workstation_runtime_pcm_cdc.py', 'tools/workstation_synthesis_netlist.py',
         'vendor/workstation_inputs.json',
+        'rtl/tf_audio/workstation_tf_runtime_service.sv',
         'rtl/workstation/workstation_runtime_controlled.sv', 'rtl/audio/workstation_pcm_observation_bridge.sv',
         'rtl/music/music_async_fifo.sv')}
 
@@ -274,9 +362,12 @@ def validate_native_protocol_sdc(sdc, n, result):
     resolution, other exceptions and complete synthesis/input provenance.
     """
     mandatory = [line for line in protocol_constraints().splitlines()
-                 if RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line]
-    require(len(mandatory) == 6 and all(sdc.splitlines().count(line) == 1 for line in mandatory),
-            'local registered-RAM/loss constraints missing, duplicated or changed')
+                 if RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line
+                 or 'u_managed/pc_health_meta_' in line
+                 or result['profile'] == 'm-demo-base' and 'u_tf_audio/held_control_' in line]
+    require(len(mandatory) == (12 if result['profile'] == 'm-demo-base' else 10) and
+            all(sdc.splitlines().count(line) == 1 for line in mandatory),
+            'local RAM/loss/TF/PC constraints missing, duplicated or changed')
     display = next(row for row in result['mailboxes'] if row['scope'] == 'u_managed/display')
     ram_pins = {row['cell'] + '/DO' for row in display['ram']}
     # Both mandatory selectors have fixed local scope prefixes. Index those
@@ -294,6 +385,18 @@ def validate_native_protocol_sdc(sdc, n, result):
     protected.update(row['third_request_stage'] for row in result['mailboxes'])
     for row in result['level_proofs']:
         protected.add(row.get('second_stage', row.get('second')))
+    controls = result['control_boundaries']
+    protected.update(row['second'] for row in controls['pc_health_levels'])
+    if controls['tf_control']:
+        tf = controls['tf_control']
+        protected.update(row['second'] for row in tf['chains'])
+        protected.add(tf['capture_state'])
+        tf_lines = [line for line in mandatory if 'u_tf_audio/held_control_' in line]
+        queries = re.findall(r'\[get_pins \{([^}]+)\}\]', tf_lines[0])
+        pins = {p + '/' + port for p, c in n.cells.items() if p.startswith('u_tf_audio/') for port in c['ports']}
+        for body, expected in zip(queries, (tf['source_pins'], tf['capture_pins'])):
+            actual = {pin for selector in body.split() for pin in pins if fnmatch.fnmatchcase(pin, selector)}
+            require(actual == set(expected) and len(actual) == 36, 'TF held constraint source/capture inventory changed')
     protected.discard(None)
     for line in sdc.splitlines():
         if not line.startswith('set_false_path'):
@@ -305,6 +408,7 @@ def validate_native_protocol_sdc(sdc, n, result):
     return dict(required_local_lines_installed_once=True, registered_ram_source_pins=sorted(ram_pins),
                 exact_98_registered_ram_capture_pins=sorted(captures),
                 protected_later_stage_pins=sorted(protected), later_stage_setup_hold_exceptions_absent=True,
+                tf_control_payload_pins_verified=bool(controls['tf_control']), pc_health_levels_verified=2,
                 global_clock_exception_audit_complete=False)
 
 

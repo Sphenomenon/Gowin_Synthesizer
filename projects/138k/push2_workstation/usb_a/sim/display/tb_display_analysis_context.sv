@@ -4,7 +4,7 @@ module tb_display_analysis_context;
     reg clk=0,rst_n=0,start=0,rate44=0,trusted=1,loss=0;
     reg [31:0] epoch=1,sequence_number=0;
     always #5 clk=!clk;
-    reg frame_valid=0,frame_error=0;
+    reg frame_valid=0,frame_error=0,automatic_frames=1;
     reg [31:0] pcm=0;
     integer ticks=0;
     function automatic integer left_pcm(input integer n);left_pcm=$rtoi(12000.0*$sin(6.283185307179586*32.0*n/2048.0));endfunction
@@ -12,7 +12,7 @@ module tb_display_analysis_context;
     function automatic [31:0] mono(input integer n);mono=32'(left_pcm(n)+right_pcm(n))<<15;endfunction
     always @(negedge clk)begin
         frame_valid=0;
-        if(rst_n)begin
+        if(rst_n && automatic_frames)begin
             ticks=ticks+1;
             if(ticks%16==0)begin
                 frame_valid=1;pcm={16'(left_pcm(integer'(sequence_number%64))),16'(right_pcm(integer'(sequence_number%64)))};
@@ -43,6 +43,20 @@ module tb_display_analysis_context;
         .analysis_sample_rate_o(analysis_rate),.analysis_epoch_o(analysis_epoch),.analysis_generation_o(analysis_generation),
         .effect_meta_o(meta),.analysis_sequence_o(aseq),.analysis_skipped_o(askip),.stereo_peaks_o(peaks),.analysis_valid_o(av),
         .image_gain_o(gain),.discarded_contexts_o(discarded),.read_enable_i(wread),.read_kind_i(kind),.read_addr_i(address),.read_data_o(source_data));
+`ifdef DISPLAY_ANALYSIS_EQUIVALENCE
+    display_analysis_equivalence_checker equivalence(
+        .clk,.rst_ni(rst_n),.frame_valid_i(frame_valid),.frame_error_i(frame_error),.frame_44k1_i(rate44),
+        .frame_epoch_i(epoch),.frame_sequence_i(sequence_number),.frame_pcm_i(pcm),
+        .observation_trusted_i(trusted),.observation_loss_i(loss),.trigger_reference_i(32'd0),
+        .active_voices_i(32'd3),.status_i(32'd0),.memory_status_i(32'hcb),.effect_mask_i(3'd3),.effect_order_i(6'b10_01_00),
+        .start_i(start),.export_done_i(wdone),.start_ready_o(start_ready),.source_context_valid_o(source_valid),
+        .source_sample_rate_o(source_rate),.source_epoch_o(source_epoch),.source_generation_o(source_generation),
+        .waveform_context_valid_o(wave_valid),.analysis_context_valid_o(analysis_context),
+        .waveform_sample_rate_o(wave_rate),.waveform_epoch_o(wave_epoch),.waveform_generation_o(wave_generation),
+        .analysis_sample_rate_o(analysis_rate),.analysis_epoch_o(analysis_epoch),.analysis_generation_o(analysis_generation),
+        .effect_meta_o(meta),.analysis_sequence_o(aseq),.analysis_skipped_o(askip),.stereo_peaks_o(peaks),.analysis_valid_o(av),
+        .image_gain_o(gain),.discarded_contexts_o(discarded),.read_enable_i(wread),.read_kind_i(kind),.read_addr_i(address),.read_data_o(source_data));
+`endif
     display_data_writer #(.METADATA_MINOR(1)) writer(
         .clk,.rst_n,.enabled(rst_n),.start,.effect_meta(meta),.analysis_sequence(aseq),.analysis_skipped(askip),.stereo_peaks(peaks),.analysis_valid(av),.image_gain(gain),
         .source_context_valid_i(source_valid),.source_sample_rate_i(source_rate),.source_epoch_i(source_epoch),.source_generation_i(source_generation),
@@ -87,7 +101,43 @@ module tb_display_analysis_context;
         .render_analysis_valid(),.render_frame_sequence(),.render_sample_rate_o(render_rate),.render_epoch_o(render_epoch),
         .render_generation_o(render_generation),.render_context_changed_o(),.incompatible_o(),.diagnostic_code_o());
     task clocks(input integer n);begin repeat(n)@(negedge clk);end endtask
-    task export_and_verify(input integer actual_rate,input integer actual_epoch);
+    integer identity_cases=0,wrap_frames=0,epoch_bit_cases=0,sequence_faults=0;
+    integer trust_cases=0,loss_cases=0,error_cases=0,reset_cases=0,fft_reset_cases=0;
+    // Drive away from the clock event so both implementations see the same
+    // physical-frame setup. The expected revocation is an independent oracle.
+    task manual_frame(input [31:0] next_epoch,next_sequence,input bit next_rate,error_value,break_expected);
+        reg [31:0] old_discarded,old_generation;
+        begin
+            old_discarded=discarded;old_generation=source_generation;
+            @(negedge clk);#1;
+            epoch=next_epoch;sequence_number=next_sequence;rate44=next_rate;frame_error=error_value;
+            pcm={16'(left_pcm(integer'(next_sequence%64))),16'(right_pcm(integer'(next_sequence%64)))};
+            frame_valid=1;
+            #2;
+            if(break_expected && (source_valid || start_ready || wave_valid || av))
+                $fatal(1,"identity edge did not revoke admission before its clock edge");
+            if(!break_expected && !source_valid)$fatal(1,"continuous sequence revoked a trusted context");
+            @(posedge clk);#2;
+            if(discarded!=old_discarded+32'(break_expected) ||
+               source_generation!=old_generation+32'(break_expected))
+                $fatal(1,"wrong context-break generation epoch=%h sequence=%h expected=%0d",next_epoch,next_sequence,break_expected);
+            @(negedge clk);#1;frame_valid=0;frame_error=0;
+            clocks(3);identity_cases=identity_cases+1;
+        end
+    endtask
+    task reset_context(input bit during_fft);
+        bit resume_frames;
+        begin
+            resume_frames=automatic_frames;automatic_frames=0;
+            @(negedge clk);#1;rst_n=0;frame_valid=0;start=0;
+            clocks(4);#1;rst_n=1;clocks(4);
+            if(source_valid || start_ready || wave_valid || av || source_epoch!=0 || source_generation!=1)
+                $fatal(1,"reset retained producer context");
+            automatic_frames=resume_frames;
+            reset_cases=reset_cases+1;if(during_fft)fft_reset_cases=fft_reset_cases+1;
+        end
+    endtask
+    task export_and_verify(input integer actual_rate,input [31:0] actual_epoch);
         integer peak_l,peak_r,max_l,max_r,phase,px,py;
         reg expected_pixel;
         begin
@@ -131,6 +181,54 @@ module tb_display_analysis_context;
             $display("RATE_CHECK rate=%0d epoch=%0d left_bin=%0d right_bin=%0d left_hz_q16=%0d right_hz_q16=%0d generation=%0d",actual_rate,actual_epoch,peak_l,peak_r,(64'(peak_l)*64'(render_rate)*65536)/2048,(64'(peak_r)*64'(render_rate)*65536)/2048,render_generation);
         end
     endtask
+    task identity_edge_cases;
+        reg [31:0] before_discarded,next_sequence,base_epoch;
+        begin
+            automatic_frames=0;trusted=1;loss=0;frame_error=0;clocks(4);
+            reset_context(0);
+            // Continuity is modulo 2^32, including both full carry chains.
+            manual_frame(32'h80000000,32'hfffffffe,0,0,1);wrap_frames++;
+            manual_frame(32'h80000000,32'hffffffff,0,0,0);wrap_frames++;
+            manual_frame(32'h80000000,32'h00000000,0,0,0);wrap_frames++;
+            manual_frame(32'h80000000,32'h00000001,0,0,0);wrap_frames++;
+            manual_frame(32'h80000000,32'h00000001,0,0,1);sequence_faults++;
+            manual_frame(32'h80000000,32'h00000002,0,0,0);
+            manual_frame(32'h80000000,32'h00000004,0,0,1);sequence_faults++;
+            manual_frame(32'h80000000,32'h00000005,0,0,0);
+            // Toggle every epoch bit with a continuous sequence so the epoch
+            // comparison alone must revoke, including every high nibble.
+            base_epoch=32'h89abcdef;next_sequence=6;
+            manual_frame(base_epoch,next_sequence,0,0,1);
+            for(integer bit_index=0;bit_index<32;bit_index++)begin
+                next_sequence++;manual_frame(base_epoch^(32'd1<<bit_index),next_sequence,0,0,1);
+                next_sequence++;manual_frame(base_epoch,next_sequence,0,0,1);epoch_bit_cases++;
+            end
+            // Context change and sequence loss may occur together; the old
+            // sequence guard is absorbed by the independent epoch revocation.
+            manual_frame(32'hf9abcdef,32'h76543210,1,0,1);
+            manual_frame(32'hf9abcdef,32'h76543211,1,0,0);
+            // Trust/loss are meaningful with no frame strobe and revoke once
+            // across a sustained assertion, rather than once per UI clock.
+            before_discarded=discarded;@(negedge clk);#1;trusted=0;
+            #2;if(source_valid || start_ready || av)$fatal(1,"trust loss did not revoke combinationally");
+            clocks(12);if(discarded!=before_discarded+1)$fatal(1,"held trust loss recounted generations");
+            trusted=1;clocks(4);if(!source_valid)$fatal(1,"trusted context did not recover");trust_cases++;
+            before_discarded=discarded;@(negedge clk);#1;loss=1;
+            #2;if(source_valid || start_ready || av)$fatal(1,"observation loss did not revoke combinationally");
+            clocks(5);if(discarded!=before_discarded+1)$fatal(1,"held observation loss recounted generations");
+            loss=0;clocks(4);loss_cases++;
+            manual_frame(32'hf9abcdef,32'h76543212,1,1,1);error_cases++;
+            manual_frame(32'hf9abcdef,32'h76543213,1,0,0);
+            manual_frame(0,32'h76543214,1,0,1);
+            manual_frame(32'h89abcdef,32'h76543215,0,0,1);
+            // Complete and read a real high-epoch FFT/XY/wave snapshot before
+            // resetting another in-flight FFT. This exercises all public tags.
+            automatic_frames=1;export_and_verify(48000,32'h89abcdef);
+            wait(start_ready && !wbusy);@(negedge clk);start=1;clocks(1);start=0;
+            wait(source.analysis.state==source.analysis.FFT_MULT);reset_context(1);
+            $display("IDENTITY_EDGE_CHECK cases=%0d wrap_frames=%0d epoch_bits=%0d sequence_faults=%0d trust=%0d loss=%0d error=%0d resets=%0d fft_resets=%0d",identity_cases,wrap_frames,epoch_bit_cases,sequence_faults,trust_cases,loss_cases,error_cases,reset_cases,fft_reset_cases);
+        end
+    endtask
     initial begin
         for(integer i=0;i<16384;i=i+1)memory[i]=0;
         clocks(4);rst_n=1;wait(initialized);export_and_verify(48000,1);
@@ -148,6 +246,11 @@ module tb_display_analysis_context;
         export_and_verify(44100,2);
         trusted=0;clocks(20);if(start_ready || source_valid || av)$fatal(1,"untrusted source admitted image");
         if(published!=3 || commits!=3 || discarded<3)$fatal(1,"analysis context coverage");
+        if($test$plusargs("IDENTITY_EDGES"))identity_edge_cases();
+`ifdef DISPLAY_ANALYSIS_EQUIVALENCE
+        if(equivalence.compared_edges<100000)$fatal(1,"insufficient whole-output comparison coverage");
+        $display("PASS display_analysis_equivalence: compared_edges=%0d output_ports=21 published=%0d identity_cases=%0d",equivalence.compared_edges,published,identity_cases);
+`endif
         $display("PASS display_analysis_context: published=%0d physical_wave_samples=%0d xy_pixels=%0d fft_columns=%0d discarded=%0d early_rejected=%0d",published,checked_wave,checked_image,checked_columns,discarded,early_rejects);
         $finish;
     end

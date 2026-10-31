@@ -28,11 +28,32 @@ module display_data_analysis_source (
     output wire [31:0] read_data_o
 );
     reg have_context,rate_q,have_previous,break_previous,local_reset_n,aligned,exporting;
-    reg [31:0] epoch_q,previous_sequence,generation_q,memory_status_q;
+    reg [31:0] epoch_q,expected_sequence,generation_q,memory_status_q;
     reg [2:0] effect_mask_q;
     reg [5:0] effect_order_q;
-    wire context_changed=frame_valid_i && (!have_context || frame_44k1_i!=rate_q || frame_epoch_i!=epoch_q);
-    wire sequence_gap=frame_valid_i && have_previous && !context_changed && frame_sequence_i!=previous_sequence+1'b1;
+    // These identities revoke raster/export admission in the same cycle. Keep
+    // their equality reductions balanced instead of a 32-bit carry comparator
+    // followed by the complete admission cone. Predict the following sequence
+    // on receipt of each frame, outside the immediate loss/revocation path;
+    // the addition keeps the original modulo-2^32 continuity rule.
+    (* syn_keep=1 *) wire [7:0] epoch_changed_groups,sequence_changed_groups;
+    (* syn_keep=1 *) wire [7:0] waveform_changed_groups,analysis_changed_groups;
+    for(genvar identity_group=0;identity_group<8;identity_group=identity_group+1)begin:context_identity
+        assign epoch_changed_groups[identity_group]=
+            |(frame_epoch_i[identity_group*4+:4]^epoch_q[identity_group*4+:4]);
+        assign sequence_changed_groups[identity_group]=
+            |(frame_sequence_i[identity_group*4+:4]^expected_sequence[identity_group*4+:4]);
+        assign waveform_changed_groups[identity_group]=
+            |(waveform_epoch_o[identity_group*4+:4]^epoch_q[identity_group*4+:4]) |
+            |(waveform_generation_o[identity_group*4+:4]^generation_q[identity_group*4+:4]);
+        assign analysis_changed_groups[identity_group]=
+            |(analysis_epoch_o[identity_group*4+:4]^epoch_q[identity_group*4+:4]) |
+            |(analysis_generation_o[identity_group*4+:4]^generation_q[identity_group*4+:4]);
+    end
+    wire context_changed=frame_valid_i && (!have_context || frame_44k1_i!=rate_q || |epoch_changed_groups);
+    // context_changed already independently revokes the same sample below;
+    // its negation need not sit in series with the sequence comparator.
+    wire sequence_gap=frame_valid_i && have_previous && |sequence_changed_groups;
     wire context_break=!observation_trusted_i || observation_loss_i ||
         (frame_valid_i && (frame_error_i || frame_epoch_i==0 || context_changed || sequence_gap));
     assign source_sample_rate_o=rate_q ? 32'd44100:32'd48000;
@@ -71,9 +92,9 @@ module display_data_analysis_source (
         .display_read_enable(read_enable_i && read_kind_i!=0),.spectrum_column(read_addr_i[8:0]),.image_addr(read_addr_i),
         .spectrum_left,.spectrum_right,.image_hit,.display_valid(front_valid));
     assign waveform_context_valid_o=aligned && source_context_valid_o &&
-        waveform_sample_rate_o==source_sample_rate_o && waveform_epoch_o==epoch_q && waveform_generation_o==generation_q;
+        waveform_sample_rate_o==source_sample_rate_o && !(|waveform_changed_groups);
     assign analysis_context_valid_o=front_valid && source_context_valid_o &&
-        analysis_sample_rate_o==source_sample_rate_o && analysis_epoch_o==epoch_q && analysis_generation_o==generation_q;
+        analysis_sample_rate_o==source_sample_rate_o && !(|analysis_changed_groups);
     assign analysis_valid_o=analysis_context_valid_o;
     // A newly finished analysis swaps on accept_start, then writer SNAPSHOT
     // reads its new immutable front and tags on the following clk edge.
@@ -85,7 +106,7 @@ module display_data_analysis_source (
         {16'd0,spectrum_right,spectrum_left};
     always @(posedge clk or negedge rst_ni)begin
         if(!rst_ni)begin
-            have_context<=0;rate_q<=0;epoch_q<=0;have_previous<=0;previous_sequence<=0;
+            have_context<=0;rate_q<=0;epoch_q<=0;have_previous<=0;expected_sequence<=0;
             generation_q<=1;break_previous<=0;local_reset_n<=0;aligned<=0;exporting<=0;
             waveform_sample_rate_o<=0;waveform_epoch_o<=0;waveform_generation_o<=0;
             analysis_sample_rate_o<=0;analysis_epoch_o<=0;analysis_generation_o<=0;
@@ -94,7 +115,7 @@ module display_data_analysis_source (
             local_reset_n<=!context_break;break_previous<=context_break;
             if(frame_valid_i)begin
                 have_context<=1;rate_q<=frame_44k1_i;epoch_q<=frame_epoch_i;
-                previous_sequence<=frame_sequence_i;have_previous<=1;
+                expected_sequence<=frame_sequence_i+1'b1;have_previous<=1;
             end
             if(context_break)begin
                 aligned<=0;exporting<=0;

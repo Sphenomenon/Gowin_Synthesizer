@@ -214,6 +214,10 @@ M v6完整综合已完成，M v7只修正routed RAM拆分selector、581个非SDC
 
 M v7已完成独立P&R并生成位流：物理CLS49,996、BSRAM235、DSP120；setup4,069／hold1，audio Fmax67.089 MHz，时序仍失败，未上板。实际VG／VO的4邮箱及98位注册RAM等[局部CDC结构与已装约束验证](push2_workstation/usb_a/reports/DUAL138K_NATIVE_CDC_20261031.md)通过，不转授完整CDC／PLL接受。剩余同步逻辑、TF／PC健康窄CDC和DDR单个hold继续按真实路径纠错。
 
+本批已完成维护HCI能力捕获的[真实综合缺陷修复](push2_workstation/usb_a/reports/DUAL138K_HCI_CAPTURE_20261031.md)、[矢量事件许可等价因子化](push2_workstation/usb_a/reports/DUAL138K_VECTOR_DISPATCH_20261031.md)、[显示分析入口逐拍等价](push2_workstation/usb_a/reports/DUAL138K_DISPLAY_ANALYSIS_EQUIVALENCE_20261031.md)及[TF／PC精确CDC](push2_workstation/usb_a/reports/DUAL138K_NATIVE_CONTROL_CDC_20261031.md)。新M v8 `f11f1756db68044a`已全量综合并通过严格网表门禁，`D2103105`完整P&R进行中；未预记实际时序收益。W v6已全量综合，HCI会话键恢复；其剩余约束指向两个无人消费的诊断输出，[实际消费者及故障／完成闭包](push2_workstation/usb_a/reports/DUAL138K_W_RECORDING_DIAGNOSTICS_20261031.md)与负控已核验。W v7 `aec83bda901d0042`包含四项真实输入差异，已启动新一轮全量综合，明确未冒充SDC单独变化而复用W v6。
+
+DDR保留原3.500 ns约束的M v7布局变体`D2103104`已完整P&R：单hold由−3.647改善至−1.799 ns，仍失败；setup3,663、另有recovery−0.424 ns。该[定向布局证据](push2_workstation/usb_a/reports/DUAL138K_DDR_HOLD_20261031.md)不是部署通过。完整PLL／serializer门禁还需为显式DEMO身份补严格来源识别和同步RESET结构证明，历史配置／时钟预算不放宽。至此仍未下载SRAM或写Flash，T2-D1／D2保持未勾选。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

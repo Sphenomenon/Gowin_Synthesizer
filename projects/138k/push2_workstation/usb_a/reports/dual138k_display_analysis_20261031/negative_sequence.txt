@@ -1,0 +1,3 @@
+[352000] %Fatal: display_analysis_equivalence_checker.sv:100: Assertion failed in tb_display_analysis_context.equivalence: display analysis output mismatch: source_context_valid_o edge=70 dut=0 reference=1
+%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/display_analysis_equivalence_checker.sv:100: Verilog $stop
+Aborting...

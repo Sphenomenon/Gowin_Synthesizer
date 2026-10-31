@@ -151,6 +151,12 @@ module gw138k_event_workstation #(
   logic [6:0] scope_shape,scope_morph,scope_scale,scope_rotation;
   logic [6:0] scope_cal_x,scope_cal_y,scope_offset_x,scope_offset_y;
   wire vec_ready,vec_event_ready,vec_valid,vec_busy,vec_config_error,vec_frequency_error,vec_clip,fx_clip;
+  // Runtime vector event_ready adds only !core_ce to its stored ready state.
+  // Dispatch already implies !core_ce: it excludes sample_ce_i and requires
+  // !pending || runtime_config_busy, while core_ce needs a pending/new sample
+  // and !runtime_config_busy. Use that same-cycle exclusion at this boundary
+  // so event acceptance does not feed through the render/configuration cone.
+  wire vec_dispatch_ready=RUNTIME_RATE_ENABLE ? vec_ready : vec_event_ready;
   wire [7:0] vec_active;
   wire [3:0] vec_count;
   wire [31:0] vec_rejected;
@@ -355,7 +361,7 @@ module gw138k_event_workstation #(
         // A public NoteOn/Off is accepted only with the owning engine's
         // handshake, so held state cannot advance while its event is rejected.
         event_ready=dispatch && ((TIMING_OPTIMIZED && !RUNTIME_RATE_ENABLE) ||
-            (kind==1 && full) || (scope_enable ? vec_event_ready : core_event_ready));
+            (kind==1 && full) || (scope_enable ? vec_dispatch_ready : core_event_ready));
       end else if(kind==5) begin
         core_expression_valid=dispatch && core_expression_ready;
         event_ready=dispatch && core_expression_ready;
@@ -551,7 +557,7 @@ module gw138k_event_workstation #(
         end
         if(effects_valid && !fx_ready) deadline_miss_o<=deadline_miss_o+1;
       end
-      if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_event_ready : core_event_ready))) begin
+      if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_dispatch_ready : core_event_ready))) begin
         deferred[release_index]<=0;
         if(release_index==127) begin releasing<=0;deferred_current<=0;end
         else begin release_index<=next_release_index;deferred_current<=deferred[next_release_index];end

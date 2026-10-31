@@ -1,0 +1,241 @@
+{
+  "stage": "frozen_W_actual_recording_diagnostic_retirement",
+  "inputs_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v6/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4413aa73e00180fd4217881b60e9b009263dfd6bffe7c3b625efe1dfaab82b2d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v6/workstation/Prj1/rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "0ac9f44f22c239ddfc37f90234661922fb2817052914ebe3872c8a9e595433b7",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/run_workstation_w_recording_diagnostic_audit.py": "b5670232c5c122af970b24031caab599b424ab50dafdf9c0f6f754f5e2777407",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "61c85f630b6b900112a67425048cd5079f950d423153e2721de42ec2bb6f7ac6",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_policy.py": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33"
+  },
+  "baseline": {
+    "source_sha256": "0ac9f44f22c239ddfc37f90234661922fb2817052914ebe3872c8a9e595433b7",
+    "unused_source_formals": [
+      "raw_start_done_i",
+      "raw_failure_code_i"
+    ],
+    "diagnostic_aliases_absent": [
+      "raw_start_done",
+      "raw_failure"
+    ],
+    "true_status_source_count": 38,
+    "true_status": {
+      "raw_channel_fault": {
+        "driver": "recording_ble_store/channel_fault_o_s0",
+        "actual_consumers": 9,
+        "consumer_sha256": "3853d57e08906b531ff3488fcba63bb32a70058a3fa426706a61895995700e9a"
+      },
+      "raw_clear_done": {
+        "driver": "recording_ble_store/clear_done_o_s0",
+        "actual_consumers": 5,
+        "consumer_sha256": "5b7a2bc7e1779932f58b45646b6278c225bcc3cfed0966314675c9051b59caba"
+      },
+      "raw_fetch_done": {
+        "driver": "recording_ble_store/fetch_done_o_s0",
+        "actual_consumers": 2,
+        "consumer_sha256": "97b233ca1c9c63100288de79a97b7685e6fb585a4c560b0c78a76fb0002a8f8d"
+      },
+      "raw_fetch_fault": {
+        "driver": "recording_ble_store/fetch_fault_o_s0",
+        "actual_consumers": 2,
+        "consumer_sha256": "ceaef542245c56f41d082ec8f89dc5d4ff59368d1f65b2f9c745b962ca8be648"
+      },
+      "raw_cache_valid": {
+        "driver": "recording_ble_store/cache_valid_o_s0",
+        "actual_consumers": 4,
+        "consumer_sha256": "9f2ab3444fa23995d664db7a43a2fc85e77ae6d2a47e23f36c17ce68f751c50b"
+      },
+      "raw_object_fault": {
+        "driver": "recording_ble_store/object_fault_o_s1",
+        "actual_consumers": 8,
+        "consumer_sha256": "c715b16e4fafa377078a580dd622acea92c281e4ad555771c9636a6ffffe1873"
+      },
+      "raw_committed[0]": {
+        "driver": "recording_ble_store/committed_frames_o_0_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "e671db1f6be2304eaf332d73e2c40ee5e99416571bab2674ed9e66607d05210b"
+      },
+      "raw_committed[1]": {
+        "driver": "recording_ble_store/committed_frames_o_1_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "90ec0a785df678e949780b68bb21badef92efd848e36a5e40f1b2eaf6522a382"
+      },
+      "raw_committed[2]": {
+        "driver": "recording_ble_store/committed_frames_o_2_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "c7aeb10311281308f7fb267e04f6568634a978dce70211e1926763c25e110265"
+      },
+      "raw_committed[3]": {
+        "driver": "recording_ble_store/committed_frames_o_3_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "f1bb9a0172d1abc5e3a5fefee3f78c8a57b53713ea0a84d0ba051a5418c2de17"
+      },
+      "raw_committed[4]": {
+        "driver": "recording_ble_store/committed_frames_o_4_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "7274a3a54b591c4443e5edc56581fbbae137e3d67a69cf074bab57a0e17a2dcb"
+      },
+      "raw_committed[5]": {
+        "driver": "recording_ble_store/committed_frames_o_5_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "0bd4714ff277ab73ebbf29e4c2694b7c25069f452fb51a3b398a28050736b488"
+      },
+      "raw_committed[6]": {
+        "driver": "recording_ble_store/committed_frames_o_6_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "2b8670cbbc2b0c46dec397cea6a360c63091a1d9fd86d3cc8561163dae7683e2"
+      },
+      "raw_committed[7]": {
+        "driver": "recording_ble_store/committed_frames_o_7_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "3b7b68cd3cf9bc2d1720e247ede0d205db61a00ed5957ab03cecb540aeaa891b"
+      },
+      "raw_committed[8]": {
+        "driver": "recording_ble_store/committed_frames_o_8_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "ba29b3f74bca13d00f2eef9c782a5a533f34b838f6036a9b2d0ce7c50484f381"
+      },
+      "raw_committed[9]": {
+        "driver": "recording_ble_store/committed_frames_o_9_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "1ef8b3f232aa0c5da793d6c53adf569db336ecebb577ff71cac5d9426159d9a6"
+      },
+      "raw_committed[10]": {
+        "driver": "recording_ble_store/committed_frames_o_10_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "3aaa4122799b024abe4b5c68ad723d84cabebc6c542fbbf55992a994f729898a"
+      },
+      "raw_committed[11]": {
+        "driver": "recording_ble_store/committed_frames_o_11_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "92689c4f968d472740873faafb21fc3bb6cdbfd71d8955da42634aa8b98f5a7e"
+      },
+      "raw_committed[12]": {
+        "driver": "recording_ble_store/committed_frames_o_12_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "5ae208917f17ca2c84e1ec4631395fa812707707db48d605fca5bfa5c7f37f61"
+      },
+      "raw_committed[13]": {
+        "driver": "recording_ble_store/committed_frames_o_13_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "3c8466b57d6df6de5efd0daa3a62fe8c939527219aa04f1f1f046520a65b9eca"
+      },
+      "raw_committed[14]": {
+        "driver": "recording_ble_store/committed_frames_o_14_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "1de19a8ab270162c57d98ef4efc6d5c6300621d23b861e0fc2dfcb2b09147334"
+      },
+      "raw_committed[15]": {
+        "driver": "recording_ble_store/committed_frames_o_15_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "99a64960fa2c37e9bdb771448c8ed6e6b4e7e54fdb6c146998ea659a02db81f4"
+      },
+      "raw_committed[16]": {
+        "driver": "recording_ble_store/committed_frames_o_16_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "f7fa15ddcec55c10e67cd40c03ce5b910b763a37de22fadbb11500a74ae95def"
+      },
+      "raw_committed[17]": {
+        "driver": "recording_ble_store/committed_frames_o_17_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "0fb325973f892e3619190cee08f049e3cd3fb61bd345aefb0c0f222de9a56463"
+      },
+      "raw_committed[18]": {
+        "driver": "recording_ble_store/committed_frames_o_18_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "113e23dc4ebeb2611c6a1ef7336c94d22de50b11bb88cc1642348de7dc0d8bf4"
+      },
+      "raw_committed[19]": {
+        "driver": "recording_ble_store/committed_frames_o_19_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "deb884e5a3b0857245fc3d25e8cccc6d1d9d56ed99c4ec3de1c9d3d36330d8bf"
+      },
+      "raw_committed[20]": {
+        "driver": "recording_ble_store/committed_frames_o_20_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "8e293b5c2319fabd2b86621d508e78904bf6a5e8ca90ecac4e16e69da14c56cb"
+      },
+      "raw_committed[21]": {
+        "driver": "recording_ble_store/committed_frames_o_21_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "c837c06e9ded97b7207b4f9fdf18bfce162c94354c41d44f8d281889c4ea2722"
+      },
+      "raw_committed[22]": {
+        "driver": "recording_ble_store/committed_frames_o_22_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "3b198664a089c600f73a3de61885a3cdde3dc65e549c171d48b9e0bee913cee3"
+      },
+      "raw_committed[23]": {
+        "driver": "recording_ble_store/committed_frames_o_23_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "8668b98f0471dc9b3a8c3c21d2e96e81978ea7e64cd7ee85b7d2b5da4686e158"
+      },
+      "raw_committed[24]": {
+        "driver": "recording_ble_store/committed_frames_o_24_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "f253f57d74670ccc7eecf7489cf6d1241eb9c36d03c9a26b0898f311f0e65b6f"
+      },
+      "raw_committed[25]": {
+        "driver": "recording_ble_store/committed_frames_o_25_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "d3f863800a7e1679c1612998702d5c49ff01533715a1d7310b856a2e55604e50"
+      },
+      "raw_committed[26]": {
+        "driver": "recording_ble_store/committed_frames_o_26_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "66aa16f98276ae36b1947e279e4b15f116ca00747407279976568c638d902acd"
+      },
+      "raw_committed[27]": {
+        "driver": "recording_ble_store/committed_frames_o_27_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "1f4bbb5a27e7380e5b45f9cd1c407c1bfc44bdf5398c164a5baee227c064287e"
+      },
+      "raw_committed[28]": {
+        "driver": "recording_ble_store/committed_frames_o_28_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "4b7f3adf4542a0189d984a7c64f1b411c4ac057e2a0dc90d5061e99b6075f599"
+      },
+      "raw_committed[29]": {
+        "driver": "recording_ble_store/committed_frames_o_29_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "8fb9a26473cc7e424584916cf46ff105a4ad15194904c7564502dc3009d334e5"
+      },
+      "raw_committed[30]": {
+        "driver": "recording_ble_store/committed_frames_o_30_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "779733d0b7e175fcd1a02957a2f2923cd90a727e59249c3972a1f3cb7be7b79a"
+      },
+      "raw_committed[31]": {
+        "driver": "recording_ble_store/committed_frames_o_31_s1",
+        "actual_consumers": 2,
+        "consumer_sha256": "2d4849447551f424a7343aa98f6bf682bc76575eb19608122f54dadfc9d0946d"
+      }
+    },
+    "source_and_actual_consumer_closure_verified": true,
+    "hardware_acceptance": false
+  },
+  "mutants": {
+    "source_consumer_resurrected": {
+      "rejected": true,
+      "failure": "demo synthesis audit: recording diagnostic gained a source consumer: raw_start_done_i"
+    },
+    "real_fault_driver_removed": {
+      "rejected": true,
+      "failure": "demo synthesis audit: recording true completion/fault driver missing: channel_fault_o"
+    },
+    "committed_frame_clock_bypassed": {
+      "rejected": true,
+      "failure": "demo synthesis audit: recording committed frame driver missing: 0"
+    },
+    "committed_frame_consumers_bypassed": {
+      "rejected": true,
+      "failure": "demo synthesis audit: recording true completion/fault netlist consumer missing: raw_committed[0]"
+    },
+    "diagnostic_actual_alias_resurrected": {
+      "rejected": true,
+      "failure": "demo synthesis audit: retired diagnostic has an actual alias"
+    }
+  },
+  "immutable_inputs_unchanged": true,
+  "PNR": false,
+  "hardware_tested": false
+}

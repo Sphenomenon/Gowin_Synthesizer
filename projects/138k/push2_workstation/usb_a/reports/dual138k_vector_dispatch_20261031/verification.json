@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "stage": "native_vector_event_admission_offline",
+  "passed": true,
+  "baseline_candidate": "M7",
+  "hardware_tested": false,
+  "synthesis_tested": false,
+  "place_and_route_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "source_policy": "maintained runtime event workstation; unchanged legacy vector admission; no generated overlay",
+  "input_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "d238ed4147ae6167ebc7e6adf803891816f5a2bc5dda0498b1a533a9179ea213",
+    "sim/audio/tb_workstation_runtime_render_service.sv": "455804f011389f5a74e6512eb9bb4fc30821dd981b1fc5c3da846d214f2a492b",
+    "sim/usb2/run_workstation_usb_stop_clock_fence.py": "375067e5b7126766dc8cd1ba0bf80ff0913fdd30b01b6f8dad8c65b7e6a0ea8e"
+  },
+  "before_input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "2c6332ad520c5e435e5e8ff122952d80e59069f529a24830572c73232c144a46",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_scope_vec.sv": "77ae436c8d1a854c4cd847fd85ecc9df65e743697e9a8720f2bd1741b45cbdea"
+  },
+  "observed_baseline_timing": {
+    "timing_sha256": "9b9216b9941bd8dd98599f4735a04c395f6239e26939cc30f30241a305329bc0",
+    "routed_netlist_sha256": "0b8d04a02a519fb19eb42599b216aad7ef12af67da765711fa04e9eb82d5ed67",
+    "path10": {
+      "slack_ns": -1.885,
+      "logic_levels": 13,
+      "cell_ns": 4.773,
+      "route_ns": 9.62,
+      "from_register": "runtime_effects.effects/dma_fault_sync",
+      "to_register": "u_native_usb/input_owner/settle_wait",
+      "cone": [
+        "compute_fault_s2",
+        "service/requested_rate_s2",
+        "runtime_configuration.config_accept_s3",
+        "core_ce_s2",
+        "n3485_s8",
+        "n3485_s7",
+        "n3485_s2",
+        "u_events/room_s2",
+        "input_owner/n2029_s5",
+        "input_owner/n2029_s3",
+        "input_owner/n2029_s0",
+        "input_owner/n2032_s1"
+      ]
+    },
+    "path11": {
+      "slack_ns": -1.869,
+      "logic_levels": 12,
+      "high_fanout": [
+        {
+          "node": "n3485_s16",
+          "fanout": 257
+        },
+        {
+          "node": "n6530_s5",
+          "fanout": 128
+        }
+      ],
+      "route_ns": 10.097
+    }
+  },
+  "equivalence_proof": {
+    "vector_event_ready": "vec_ready && !core_ce",
+    "dispatch_fence": "(!pending || runtime_config_busy) && !sample_ce_i",
+    "core_fence": "(pending || sample_ce_i) && !runtime_config_busy",
+    "dispatch_implies_no_core_ce": true,
+    "exhaustive_cases": [
+      {
+        "pending": false,
+        "sample_ce": false,
+        "config_busy": false,
+        "dispatch_fence": true,
+        "core_fence": false,
+        "overlap": false
+      },
+      {
+        "pending": false,
+        "sample_ce": false,
+        "config_busy": true,
+        "dispatch_fence": true,
+        "core_fence": false,
+        "overlap": false
+      },
+      {
+        "pending": false,
+        "sample_ce": true,
+        "config_busy": false,
+        "dispatch_fence": false,
+        "core_fence": true,
+        "overlap": false
+      },
+      {
+        "pending": false,
+        "sample_ce": true,
+        "config_busy": true,
+        "dispatch_fence": false,
+        "core_fence": false,
+        "overlap": false
+      },
+      {
+        "pending": true,
+        "sample_ce": false,
+        "config_busy": false,
+        "dispatch_fence": false,
+        "core_fence": true,
+        "overlap": false
+      },
+      {
+        "pending": true,
+        "sample_ce": false,
+        "config_busy": true,
+        "dispatch_fence": true,
+        "core_fence": false,
+        "overlap": false
+      },
+      {
+        "pending": true,
+        "sample_ce": true,
+        "config_busy": false,
+        "dispatch_fence": false,
+        "core_fence": true,
+        "overlap": false
+      },
+      {
+        "pending": true,
+        "sample_ce": true,
+        "config_busy": true,
+        "dispatch_fence": false,
+        "core_fence": false,
+        "overlap": false
+      }
+    ]
+  },
+  "runtime_service": {
+    "verification": "/tmp/dual138k-m7-vector-dispatch-service-v1/verification.json",
+    "verification_sha256": "9b2c4af0b40f25210e484a916a17c0300e592fd3147968e26f5140c215779f2d",
+    "metrics": {
+      "requests": 48653,
+      "responses": 48653,
+      "modeled_frames": 48645,
+      "configs": 19,
+      "histories": 28,
+      "cancels": 4,
+      "wet48": 17185293,
+      "wet44": 18098972,
+      "pitch_checks": 49781440,
+      "max_latency": 1620,
+      "max_steady_latency": 1168,
+      "max_auto_config_latency": 1620,
+      "max_loader_latency": 1204,
+      "posted_writes": 12160,
+      "ordered_fences": 30,
+      "vector_dispatch_cycles": 2058,
+      "vector_accepted_events": 10,
+      "vector_release_cases": 2
+    },
+    "independent_fixed_point_compared_frames": {
+      "48000": 24323,
+      "44100": 24322
+    },
+    "trace_sha256": "216d75c99496e7121dc145a313ec6274fd5a6f1400516b08e396bc7ca0fc379d",
+    "compile_warning_counts": {
+      "PINMISSING": 35,
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 41,
+      "WIDTHTRUNC": 12,
+      "UNSIGNED": 2
+    },
+    "inputs_unchanged_during_run": true
+  },
+  "usb_stop_clock": {
+    "verification": "/tmp/dual138k-m7-vector-dispatch-stopclock-v2/verification.json",
+    "verification_sha256": "83eb83f8b850e0305472eff5f41c7873e9d89731c869593ae85f4627b3bfad62",
+    "identity": "native-usb-stop-clock-fence-offline-v1-39b9681cfe3e6ecf",
+    "metrics": {
+      "opt_in": {
+        "enabled": 1,
+        "attaches": 3,
+        "barriers": 4,
+        "detaches": 2,
+        "panics": 1,
+        "defaults": 39,
+        "stale": 0,
+        "fresh": 3,
+        "blocked": 3,
+        "hold_stops": 3,
+        "drain_stops": 3,
+        "pointer_checks": 3,
+        "stores": 18
+      },
+      "legacy": {
+        "enabled": 0,
+        "attaches": 3,
+        "barriers": 4,
+        "detaches": 2,
+        "panics": 1,
+        "defaults": 39,
+        "stale": 8,
+        "fresh": 6,
+        "blocked": 3,
+        "hold_stops": 0,
+        "drain_stops": 0,
+        "pointer_checks": 0,
+        "stores": 18
+      }
+    },
+    "default_compatibility": {
+      "passed": true,
+      "identity": "native-usb-runtime-reset-offline-v1-d1551df8d6f75a04",
+      "verification_sha256": "f79f272f88db039110c3a3ebc3ad360f5a7c41a12afc7a24326bcd8d833f7d71",
+      "original_metrics_equal": true,
+      "metrics": {
+        "current": {
+          "old": 0,
+          "attaches": 2,
+          "barriers": 3,
+          "detaches": 1,
+          "panics": 1,
+          "default_events": 26,
+          "recovery_checks": 2,
+          "resumed_queue_events": 2,
+          "detach_flush_checks": 1,
+          "stores": 14,
+          "notes": 5
+        },
+        "old_connection": {
+          "old": 1,
+          "attaches": 4,
+          "barriers": 5,
+          "detaches": 1,
+          "panics": 1,
+          "default_events": 52,
+          "recovery_checks": 2,
+          "resumed_queue_events": 0,
+          "detach_flush_checks": 1,
+          "stores": 14,
+          "notes": 123
+        },
+        "current_phantom_attaches": 0,
+        "old_phantom_attaches": 2,
+        "old_extra_default_events": 26
+      }
+    },
+    "native_profile_opt_in_verified": true
+  },
+  "current_workstation_sources": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+    "passed": true,
+    "tests": 17
+  },
+  "limitations": [
+    "No timing or resource improvement is claimed before the next full-image synthesis and routed implementation.",
+    "This verification does not accept physical audio, HDMI, USB enumeration, SRAM deployment or dual-board concurrent operation."
+  ]
+}

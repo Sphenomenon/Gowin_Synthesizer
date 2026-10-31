@@ -1,0 +1,705 @@
+{
+  "schema": 1,
+  "scope": "independent fixed-capacity bootstrap source/Gowin synthesis diagnostic only; not whole-image or hardware acceptance",
+  "production_edited": false,
+  "cases": {
+    "dynamic_host_inputs": {
+      "directory": "/tmp/dual138k-hci-bootstrap-synthesis-v1",
+      "source_sha256": "497865e4498f3174a592a77d4f2a7b61a61cef4a4b07a97f868d5ad870a5b5d0",
+      "tcl_sha256": "ed4f96c72b08e5267e4f66f543000425dea91bcd174fba28f6b17828fef5c60e",
+      "synthesis_log_sha256": "010e8cf20ce48383b863ab87b4a648456c879dac296ebd5fba37cbe2adb8ed75",
+      "netlist_sha256": "fb84af8a15e44b8f7cc439c7300b52c4b0eb49bca5108197a4aed170c939505c",
+      "ff_total": 141,
+      "elapsed_ff_count": 32,
+      "first_elapsed_ff": "elapsed_31_s0",
+      "capture_ff_count": 32,
+      "capture_ff": [
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_15_s0",
+          "line": 2986
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_14_s0",
+          "line": 2993
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_13_s0",
+          "line": 3000
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_12_s0",
+          "line": 3007
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_11_s0",
+          "line": 3014
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_10_s0",
+          "line": 3021
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_9_s0",
+          "line": 3028
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_8_s0",
+          "line": 3035
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_7_s0",
+          "line": 3042
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_6_s0",
+          "line": 3049
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_5_s0",
+          "line": 3056
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_4_s0",
+          "line": 3063
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_3_s0",
+          "line": 3070
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_2_s0",
+          "line": 3077
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_1_s0",
+          "line": 3084
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_0_s0",
+          "line": 3091
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_15_s0",
+          "line": 3098
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_14_s0",
+          "line": 3105
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_13_s0",
+          "line": 3112
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_12_s0",
+          "line": 3119
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_11_s0",
+          "line": 3126
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_10_s0",
+          "line": 3133
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_9_s0",
+          "line": 3140
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_8_s0",
+          "line": 3147
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_7_s0",
+          "line": 3154
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_6_s0",
+          "line": 3161
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_5_s0",
+          "line": 3168
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_4_s0",
+          "line": 3175
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_3_s0",
+          "line": 3182
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_2_s0",
+          "line": 3189
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_1_s0",
+          "line": 3196
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_0_s0",
+          "line": 3203
+        }
+      ],
+      "output_drivers": {
+        "pool_config_valid_o": {
+          "instance": "pool_config_valid_o_obuf",
+          "input_net": "pool_config_valid_o_d",
+          "netlist_line": 989
+        },
+        "ready_o": {
+          "instance": "ready_o_obuf",
+          "input_net": "ready_o_d",
+          "netlist_line": 837
+        },
+        "command_valid_o": {
+          "instance": "command_valid_o_obuf",
+          "input_net": "command_valid_o_d",
+          "netlist_line": 845
+        },
+        "activate_host_rx_o": {
+          "instance": "activate_host_rx_o_obuf",
+          "input_net": "activate_host_rx_o_d",
+          "netlist_line": 841
+        }
+      },
+      "tool_version": "V1.9.12",
+      "source_capture_declaration": [
+        "    reg [15:0] host_length,host_count;"
+      ]
+    },
+    "fixed_276_4_original": {
+      "directory": "/tmp/dual138k-adapter-bootstrap-fixedboth-v1",
+      "source_sha256": "2a01bed77779fe2ef27ccf1d518e11c6595fb2662b260cc6d8bd11b860815086",
+      "tcl_sha256": "e6977a7c33e6d1b996f95ed737c2e18ebe9f4ca14bb354c2bb51f6dbf5db21bd",
+      "synthesis_log_sha256": "9cf6605a20ea1c03e37cd9abcb28fc23eff69502a2827541cf8f637801ed6157",
+      "netlist_sha256": "1129d5d4291160ead524208fd906fdbad07efb9006041e44bb01c5fa842ac4e2",
+      "ff_total": 8,
+      "elapsed_ff_count": 0,
+      "first_elapsed_ff": null,
+      "capture_ff_count": 1,
+      "capture_ff": [
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_8_s0",
+          "line": 858
+        }
+      ],
+      "output_drivers": {
+        "pool_config_valid_o": {
+          "instance": "pool_config_valid_o_obuf",
+          "input_net": "GND",
+          "netlist_line": 336
+        },
+        "ready_o": {
+          "instance": "ready_o_obuf",
+          "input_net": "GND",
+          "netlist_line": 184
+        },
+        "command_valid_o": {
+          "instance": "command_valid_o_obuf",
+          "input_net": "GND",
+          "netlist_line": 192
+        },
+        "activate_host_rx_o": {
+          "instance": "activate_host_rx_o_obuf",
+          "input_net": "GND",
+          "netlist_line": 188
+        }
+      },
+      "tool_version": "V1.9.12",
+      "source_capture_declaration": [
+        "    reg [15:0] host_length,host_count;"
+      ]
+    },
+    "fixed_276_4_preserved_capture": {
+      "directory": "/tmp/dual138k-adapter-bootstrap-preservecapture-v1",
+      "source_sha256": "a1989a6c9bf9af93ed5cb3076df4f49ecea8766dc0d8a98818dce4996f31b4c0",
+      "tcl_sha256": "b8a65a5f0040b7747d8c0a9e8cc4cedabf9baf657be3a8bdae7659ed020e0cb1",
+      "synthesis_log_sha256": "e31a2bcb28946ee41e0cf0e9ded3e06f881bf7a8df00d962c6eed380b9fe09a9",
+      "netlist_sha256": "0fa44497ff99f54de0f8041223e0e94ea5c103bb0cf6bda3b31e4a30c9f97eba",
+      "ff_total": 141,
+      "elapsed_ff_count": 32,
+      "first_elapsed_ff": "elapsed_31_s0",
+      "capture_ff_count": 32,
+      "capture_ff": [
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_15_s0",
+          "line": 2871
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_14_s0",
+          "line": 2878
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_13_s0",
+          "line": 2885
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_12_s0",
+          "line": 2892
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_11_s0",
+          "line": 2899
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_10_s0",
+          "line": 2906
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_9_s0",
+          "line": 2913
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_8_s0",
+          "line": 2920
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_7_s0",
+          "line": 2927
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_6_s0",
+          "line": 2934
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_5_s0",
+          "line": 2941
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_4_s0",
+          "line": 2948
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_3_s0",
+          "line": 2955
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_2_s0",
+          "line": 2962
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_1_s0",
+          "line": 2969
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_0_s0",
+          "line": 2976
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_15_s0",
+          "line": 2983
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_14_s0",
+          "line": 2990
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_13_s0",
+          "line": 2997
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_12_s0",
+          "line": 3004
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_11_s0",
+          "line": 3011
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_10_s0",
+          "line": 3018
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_9_s0",
+          "line": 3025
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_8_s0",
+          "line": 3032
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_7_s0",
+          "line": 3039
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_6_s0",
+          "line": 3046
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_5_s0",
+          "line": 3053
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_4_s0",
+          "line": 3060
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_3_s0",
+          "line": 3067
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_2_s0",
+          "line": 3074
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_1_s0",
+          "line": 3081
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_0_s0",
+          "line": 3088
+        }
+      ],
+      "output_drivers": {
+        "pool_config_valid_o": {
+          "instance": "pool_config_valid_o_obuf",
+          "input_net": "pool_config_valid_o_d",
+          "netlist_line": 799
+        },
+        "ready_o": {
+          "instance": "ready_o_obuf",
+          "input_net": "ready_o_d",
+          "netlist_line": 647
+        },
+        "command_valid_o": {
+          "instance": "command_valid_o_obuf",
+          "input_net": "command_valid_o_d",
+          "netlist_line": 655
+        },
+        "activate_host_rx_o": {
+          "instance": "activate_host_rx_o_obuf",
+          "input_net": "activate_host_rx_o_d",
+          "netlist_line": 651
+        }
+      },
+      "tool_version": "V1.9.12",
+      "source_capture_declaration": [
+        "    (* syn_preserve=1 *) reg [15:0] host_length,host_count;"
+      ]
+    },
+    "fixed_276_dynamic_count": {
+      "directory": "/tmp/dual138k-adapter-bootstrap-fixedlength-v1",
+      "source_sha256": "44ecea286510b44bd5fd447b290b81eeb7de67b2868d46b93369a05dff78afd9",
+      "tcl_sha256": "7a6a9e628510a32e3289afb334c8ab1bb0b28ac0d9f3776fedf8b2890dc4b202",
+      "synthesis_log_sha256": "5b34f9a3581b25a2e3f8519161310eaf3cd65c3117867a330461ce80f9553596",
+      "netlist_sha256": "abacc7836adf6de06ae0aad2546de9d955ea9dfb35bdd8c9566fbf74c66f2e69",
+      "ff_total": 126,
+      "elapsed_ff_count": 32,
+      "first_elapsed_ff": "elapsed_31_s0",
+      "capture_ff_count": 17,
+      "capture_ff": [
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_8_s0",
+          "line": 2657
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_15_s0",
+          "line": 2664
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_14_s0",
+          "line": 2671
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_13_s0",
+          "line": 2678
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_12_s0",
+          "line": 2685
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_11_s0",
+          "line": 2692
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_10_s0",
+          "line": 2699
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_9_s0",
+          "line": 2706
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_8_s0",
+          "line": 2713
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_7_s0",
+          "line": 2720
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_6_s0",
+          "line": 2727
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_5_s0",
+          "line": 2734
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_4_s0",
+          "line": 2741
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_3_s0",
+          "line": 2748
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_2_s0",
+          "line": 2755
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_1_s0",
+          "line": 2762
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_0_s0",
+          "line": 2769
+        }
+      ],
+      "output_drivers": {
+        "pool_config_valid_o": {
+          "instance": "pool_config_valid_o_obuf",
+          "input_net": "pool_config_valid_o_d",
+          "netlist_line": 867
+        },
+        "ready_o": {
+          "instance": "ready_o_obuf",
+          "input_net": "ready_o_d",
+          "netlist_line": 715
+        },
+        "command_valid_o": {
+          "instance": "command_valid_o_obuf",
+          "input_net": "command_valid_o_d",
+          "netlist_line": 723
+        },
+        "activate_host_rx_o": {
+          "instance": "activate_host_rx_o_obuf",
+          "input_net": "activate_host_rx_o_d",
+          "netlist_line": 719
+        }
+      },
+      "tool_version": "V1.9.12",
+      "source_capture_declaration": [
+        "    reg [15:0] host_length,host_count;"
+      ]
+    },
+    "dynamic_length_fixed_4": {
+      "directory": "/tmp/dual138k-adapter-bootstrap-fixedcount-v1",
+      "source_sha256": "fe92f68d5a0f2f40713b71a4e4c9999c404be1aa1832dfcb41b832bdf3cace3b",
+      "tcl_sha256": "db3f67cbc74f4c8ebea5cb2ced3aff7c08f5e097f9d734d17377935926303de0",
+      "synthesis_log_sha256": "ff349af360c579e955bc03cb365025d1acac012a194f4711590fff4df46fb1fc",
+      "netlist_sha256": "a733bdd56ba3f9474cef748cbb2cd39c65e9f7320ecb37dea5ffb6a8e4a71148",
+      "ff_total": 126,
+      "elapsed_ff_count": 32,
+      "first_elapsed_ff": "elapsed_31_s0",
+      "capture_ff_count": 17,
+      "capture_ff": [
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_15_s0",
+          "line": 2690
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_14_s0",
+          "line": 2697
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_13_s0",
+          "line": 2704
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_12_s0",
+          "line": 2711
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_11_s0",
+          "line": 2718
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_10_s0",
+          "line": 2725
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_9_s0",
+          "line": 2732
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_8_s0",
+          "line": 2739
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_7_s0",
+          "line": 2746
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_6_s0",
+          "line": 2753
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_5_s0",
+          "line": 2760
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_4_s0",
+          "line": 2767
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_3_s0",
+          "line": 2774
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_2_s0",
+          "line": 2781
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_1_s0",
+          "line": 2788
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_length_0_s0",
+          "line": 2795
+        },
+        {
+          "primitive": "DFFRE",
+          "instance": "host_count_2_s0",
+          "line": 2802
+        }
+      ],
+      "output_drivers": {
+        "pool_config_valid_o": {
+          "instance": "pool_config_valid_o_obuf",
+          "input_net": "pool_config_valid_o_d",
+          "netlist_line": 867
+        },
+        "ready_o": {
+          "instance": "ready_o_obuf",
+          "input_net": "ready_o_d",
+          "netlist_line": 715
+        },
+        "command_valid_o": {
+          "instance": "command_valid_o_obuf",
+          "input_net": "command_valid_o_d",
+          "netlist_line": 723
+        },
+        "activate_host_rx_o": {
+          "instance": "activate_host_rx_o_obuf",
+          "input_net": "activate_host_rx_o_d",
+          "netlist_line": 719
+        }
+      },
+      "tool_version": "V1.9.12",
+      "source_capture_declaration": [
+        "    reg [15:0] host_length,host_count;"
+      ]
+    }
+  },
+  "exact_zero_behavior_change_fix": {
+    "old": "    reg [15:0] host_length,host_count;",
+    "new": "    (* syn_preserve=1 *) reg [15:0] host_length,host_count;",
+    "location": "rtl/bluetooth/hci_owner/workstation_hci_host_bootstrap.sv:40",
+    "logical_behavior_changed": false,
+    "dynamic_interface_and_drift_checks_preserved": true,
+    "accepted_only_after_full_native_and_whole_image_gates": true
+  }
+}

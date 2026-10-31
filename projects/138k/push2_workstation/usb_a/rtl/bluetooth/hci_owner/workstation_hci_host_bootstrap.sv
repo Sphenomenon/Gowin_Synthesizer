@@ -32,7 +32,10 @@ module workstation_hci_host_bootstrap #(
         F_STATUS=5,F_TRANSPORT=6,F_TIMEOUT=7,F_BUFFERS=8,F_LINK=9;
     reg [2:0] state;
     reg [1:0] step;
-    reg [15:0] host_length,host_count;
+    // Gowin V1.9.12 folds both constant-bound capabilities into a false drift
+    // condition unless these captures survive optimization. Keep the dynamic
+    // capability/drift contract, including the start-edge capture and reset.
+    (* syn_preserve=1 *) reg [15:0] host_length,host_count;
     reg response_seen,transport_owned;
     reg [31:0] elapsed;
     wire started=state!=IDLE;
