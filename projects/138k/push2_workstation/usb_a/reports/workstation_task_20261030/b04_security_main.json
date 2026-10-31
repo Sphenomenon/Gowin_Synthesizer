@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "scope": "main-tree Classic SSP security source integration and independent executable replay",
+  "author_commit": "45ef475f92f4b0d132903de62287c78df72df5e3",
+  "main_import_commit": "28b9f00",
+  "source_files": 51,
+  "verification_sha256": "e81a85f4b08fcc8d0fdfece873d12fd9d2dfc8bbe185a00eae2ab782b6a5ddd1",
+  "baseline": {
+    "native": {
+      "checks": 14445,
+      "valid_envelope_fuzz_cases": 4000,
+      "summary": "classic security source-stage: 14445 checks passed"
+    },
+    "sanitized": {
+      "checks": 14445,
+      "valid_envelope_fuzz_cases": 4000,
+      "summary": "classic security source-stage: 14445 checks passed"
+    }
+  },
+  "killed_mutants": 26,
+  "masked_expected_pass_controls": {
+    "retired-generation-single-deletion": {
+      "expected_pass": true,
+      "passed": true,
+      "source_sha256": "7b411ce1d04921d17c9345a2244be7e25d4c22c2f59023ef1a5cb470ea3835c0",
+      "masking_guard": "close_link refuses inactive contexts",
+      "summary": "classic security source-stage: 14445 checks passed"
+    }
+  },
+  "delay": {
+    "native": {
+      "checks": 11199,
+      "summary": "delay reporting source-stage: 11199 checks passed; object=2876, no hardware delay claim"
+    },
+    "sanitized": {
+      "checks": 11199,
+      "summary": "delay reporting source-stage: 11199 checks passed; object=2876, no hardware delay claim"
+    }
+  },
+  "classic": [
+    {
+      "tag": "native",
+      "summary": "classic source-stage: 49640 checks passed; object=2876 frame=252 tx=296"
+    },
+    {
+      "tag": "sanitized",
+      "summary": "classic source-stage: 49640 checks passed; object=2876 frame=252 tx=296"
+    }
+  ],
+  "delay_mutants": 18,
+  "sbc_reference_cases": [
+    {
+      "case": "00",
+      "samples": 4096,
+      "max_abs_error": 5,
+      "pcm_sha256": "b48b91a4835855f277c21feb8133fd3ebba92aea89ab6b5f9aa7675104ee26ed"
+    },
+    {
+      "case": "02",
+      "samples": 8192,
+      "max_abs_error": 6,
+      "pcm_sha256": "f7d0bade97f35b44a4a4593022a1d5e72e55e8ee28f9c2c6db6262962b66d008"
+    },
+    {
+      "case": "12",
+      "samples": 8192,
+      "max_abs_error": 5,
+      "pcm_sha256": "30ccf5ae95849e151f09b1dc3f77607c27c7fb491427bc164971d70f026e4ef3"
+    },
+    {
+      "case": "14",
+      "samples": 16384,
+      "max_abs_error": 6,
+      "pcm_sha256": "cf45616ae288272a40a1721a536b7d6f8d17df57210b98f4c66a2e3506510e77"
+    },
+    {
+      "case": "16",
+      "samples": 4096,
+      "max_abs_error": 5,
+      "pcm_sha256": "f34a0d9eee6ac6d30429d5ae6986092e25a4a4158ce5bfed6635cac74250ded3"
+    },
+    {
+      "case": "18",
+      "samples": 8192,
+      "max_abs_error": 6,
+      "pcm_sha256": "263b03e279644290a6828ceeec239066d26ca2721d89ada90b335915480fd022"
+    },
+    {
+      "case": "28",
+      "samples": 8192,
+      "max_abs_error": 5,
+      "pcm_sha256": "9d8b432f10cccb0374efecbeb5e6dc9346805839771c3f89ce51ca562f014267"
+    },
+    {
+      "case": "30",
+      "samples": 16384,
+      "max_abs_error": 6,
+      "pcm_sha256": "82371cd60231c3148877d6003140b2f89fdfccd4f3a8ad79c66488e708e11864"
+    },
+    {
+      "case": "32",
+      "samples": 16384,
+      "max_abs_error": 4,
+      "pcm_sha256": "d17861408b836edb6d101a1a2c4f4003ddcaa9b5231edb16a27d66c9c8f10483"
+    },
+    {
+      "case": "37",
+      "samples": 16384,
+      "max_abs_error": 5,
+      "pcm_sha256": "9ee4b7e938fef831b18d9db9e91107bd43ac7c83e7531e20ea47bb3ce9702c3a"
+    },
+    {
+      "case": "41",
+      "samples": 12288,
+      "max_abs_error": 5,
+      "pcm_sha256": "e3c3d815fec267b2bca6792eada98cb53fcf3e1e08d348aa58fe941b311ba500"
+    }
+  ],
+  "security_rv32_budget": {
+    "sections": {
+      ".text": 10964,
+      ".data": 0,
+      ".bss": 0,
+      ".rodata": 600,
+      ".comment": 51,
+      ".note.GNU-stack": 0,
+      ".riscv.attributes": 63
+    },
+    "text_rodata_bytes": 11564,
+    "objects": {
+      "bond": 32,
+      "command": 48,
+      "owner": 540
+    },
+    "maximum_function_frame": 64,
+    "function_frames": [
+      {
+        "function": "retire",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "revoke.part.0.constprop.isra",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "close_link",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "enqueue",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "queue_handle",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "address_reply.isra",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_init",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_start",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_tick",
+        "bytes": 48,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_pump",
+        "bytes": 64,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_tx_peek",
+        "bytes": 0,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_tx_result",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_transport_done",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_response",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_event",
+        "bytes": 64,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_classic_acl",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_forget",
+        "bytes": 32,
+        "kind": "static"
+      },
+      {
+        "function": "a138_security_observer_reset",
+        "bytes": 32,
+        "kind": "static"
+      }
+    ],
+    "undefined_symbols": [
+      "a138_classic_acl",
+      "a138_classic_begin",
+      "a138_classic_cancel",
+      "a138_classic_security",
+      "a138_classic_tick",
+      "memcmp",
+      "memcpy",
+      "memset"
+    ],
+    "scope": "Incremental RV32 object, not aggregate firmware fit, whole-call-chain/callback stack, cycles, service deadline or hardware proof"
+  },
+  "compiler": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+  "author_vs_root_object_cost": "Author compiler cost 11876B and root xPack15.2 cost 11564B are distinct; no cross-tool exact-cost claim.",
+  "native_prepared_source_isolation": {
+    "business": {
+      "profile": "custom138k-workstation-ae350-business-v1",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-b552eccbad9c5b0a",
+      "enabled_inputs": 272,
+      "validation_stage": "prepare_only"
+    },
+    "default": {
+      "profile": "custom138k-workstation-v1",
+      "candidate_identity": "custom138k-workstation-v1-4e5dfeea3cc39ed2",
+      "enabled_inputs": 261,
+      "validation_stage": "prepare_only"
+    }
+  },
+  "policy": "SSP Mode4 Level2; NoInputNoOutput; GeneralBonding; no MITM/SC/legacy pairing",
+  "physical_key_backend_implemented": false,
+  "native_transport_selected": false,
+  "aggregate_firmware_fit_verified": false,
+  "whole_call_chain_stack_verified": false,
+  "service_deadlines_verified": false,
+  "phone_interoperability_verified": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "fixes_verified": [
+    "Unsaved new key is discarded on disconnect so forget does not remain BUSY.",
+    "Disconnect status is normalized to valid HCI disconnect reasons.",
+    "Late old CommandStatus cannot reopen an inactive closing context.",
+    "Late ACL and peer key/PIN/IO events cannot revive an inactive generation or issue stale negative replies."
+  ],
+  "limits": [
+    "The initial root mutation runner failure is retained; a masked single deletion is explicitly expected to pass, while the combined two-guard deletion is killed.",
+    "Atomic durable key-store callback is a contract, not a physical backend. Missing storage fails closed; no RAM-as-durable claim.",
+    "GeneralBonding remains the frozen default; any explicit NoBonding session strategy is separate work.",
+    "Incremental object size and per-function frames do not prove aggregate firmware capacity, callback stack or runtime cycle budget.",
+    "No native HCI/audio/phone acceptance is inherited from host fixtures or prior source stages."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-security-main-parent-v1",
+  "seal_sha256": "5d537e4b2a55f2ef83e3a8295e544ecf0d7b7453531b0b77a676916d94b2a7e3",
+  "external_files": 400
+}
