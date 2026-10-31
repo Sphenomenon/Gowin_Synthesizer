@@ -304,6 +304,8 @@ W12 `D2110107`的[完整far物理对照](push2_workstation/usb_a/reports/DUAL138
 
 W12真实长链的[PCM key／COMMIT修复](push2_workstation/usb_a/reports/DUAL138K_PCM_KEY_COMMIT_20261101.md)及[raw START显式case](push2_workstation/usb_a/reports/DUAL138K_RAW_START_CASE_20261101.md)已通过完整旧新owner、全域／四态、正式回归及破坏负控；PCM默认双率漂移共230.4万帧、raw实际fault四态1677万组合通过。两份822来源锁各仅更新三项，W13 `bc065b3de8977725`已完成[完整来源冻结与prepare](push2_workstation/usb_a/reports/DUAL138K_W13_PREPARE_20261101.md)：951原始来源、645封存／284启用输入及1365审计输入逐项核验，来源17／DEMO15／策略7通过，已启动全量综合。真实分组／许可映射及物理收益另验，不继承W12时序结果；未上板，真机无线验收继续待实机。
 
+M14 `D2110108`已完成[默认完整物理审计](push2_workstation/usb_a/reports/DUAL138K_M14_DEFAULT_PHYSICAL_20261101.md)：物理BSRAM235／DSP119／CLS50,306，setup3,764／−1.940ns、hold1／−3.453ns，recovery+1.603／removal+.278ns。native实际VO54项（51通过／3跳过）及46负控、边界7／61、官方六PLL及7负控通过，30份物理文件、588staged及1207冻结审计输入稳定；仍因STA失败不能部署。同VG／完整SDC／DDR3.500ns的`D2110109`远区对照已启动全量P&R，不预填结果；M基础CNN、完整实板声画及双板并发仍未验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
