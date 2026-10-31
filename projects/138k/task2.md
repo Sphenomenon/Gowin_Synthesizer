@@ -290,6 +290,8 @@ M13的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_
 
 W11真实录音长链的[START宽初始化许可因子化](push2_workstation/usb_a/reports/DUAL138K_RAW_START_20261101.md)已完成：仅在已知memory_quiescent时使用精确fault cofactor，完整故障／超时／隔离和START原周期、四态及CLEAR优先级保持。完整旧新owner661,577边沿、16,777,216四态方程、4,114非法／任意状态单沿及7专项负控通过，raw／owner8／native DDR／正式BLE业务回归均通过。唯一生产raw-store来源pin同步并拒绝漂移；新RTL`214c0a5d…09da1d`已进入W12封存输入，物理收益待测，未上板。
 
+参考monitor单行区域试验`D2110105`的[完整物理结果](push2_workstation/usb_a/reports/dual138k_reference_monitor_regions_physical_20261101.md)已封存：setup7,024／−5.878ns、hold18／−0.487ns，未闭合。44.1k参考hold清零，但48k增至18；同排目标FF仍有1.110ns fabric clock偏斜。保持父VG／SDC及DDR3.500ns（实测+0.679ns），完整VO／边界／PLL子门和前后hash通过；该区域不作为W12默认，不预记收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
