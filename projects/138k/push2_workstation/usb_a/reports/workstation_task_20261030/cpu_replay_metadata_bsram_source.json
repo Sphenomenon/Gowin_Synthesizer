@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "identity": "cpu-replay-metadata-bsram-v1",
+  "base_commit": "525ead19b244145dbb33b0b4c260488b2f43c2fa",
+  "owner": "rtl/bluetooth/cpu_owner/ble_protocol_command.v",
+  "business_owner": "unchanged AE350 ble_business_owner.c",
+  "stored_entries": 32,
+  "entry_bits": 77,
+  "stored_bits": 2464,
+  "physical_source_blocks": [
+    {
+      "name": "ids",
+      "data_width": 32,
+      "address_width": 5
+    },
+    {
+      "name": "times",
+      "data_width": 32,
+      "address_width": 5
+    },
+    {
+      "name": "sizes",
+      "data_width": 16,
+      "address_width": 5,
+      "used_width": 13
+    }
+  ],
+  "source_sha256": {
+    "rtl/bluetooth/cpu_owner/ble_protocol_command.v": "d61d35dd0b0e4784d67f6e8da9fb94e68f8335c5275e602637f84b7f57568591",
+    "rtl/bluetooth/cpu_owner/workstation_bluetooth.sv": "e438bbd980de6396b60ecf2ab3a0a406bd5db8f5d84f017b030b4014db5df54d",
+    "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "a8d9abc2976ba205ee58cf068957eba2a370dd0132d2c1122124639a053dfcf2",
+    "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "f8e1fba8441fe6b6f243950db4b653268ff21442e5fe77dbc963935f62caf3b9",
+    "rtl/services/workstation_business_mailbox.sv": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "sim/services/tb_ble_replay_metadata_body.svh": "ae1f1b9ff3d005f0496a82160644e7b134ee8e51a15d5854c404b714bfafa72c",
+    "sim/services/run_ble_replay_metadata.py": "930578cb72cfeca4e954b0a0f1ad22a48740c6ebc27d25d450e88d43169a84d2",
+    "boards/custom_138k/pinout.json": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75"
+  },
+  "parser_equivalence": {
+    "behavioral": {
+      "passed": true,
+      "half_cycle_comparisons": 103617,
+      "cycles": 51737,
+      "compared_bytes": 11680,
+      "all32_slots_hit": true,
+      "stdout": "PASS real parser metadata equivalence checks=103617 cycles=51737 bytes=11680 hit_mask=ffffffff\n/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/tb_ble_replay_metadata_body.svh:118: $finish called at 517372000 (1ps)\n"
+    },
+    "official_sdpb": {
+      "passed": true,
+      "half_cycle_comparisons": 103617,
+      "cycles": 51737,
+      "compared_bytes": 11680,
+      "all32_slots_hit": true,
+      "stdout": "PASS real parser metadata equivalence checks=103617 cycles=51737 bytes=11680 hit_mask=ffffffff\n/Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/tb_ble_replay_metadata_body.svh:118: $finish called at 517372000 (1ps)\n"
+    }
+  },
+  "rtl_negative_controls": {
+    "stale-prefetch": {
+      "rejected": true,
+      "returncode": 1,
+      "stdout": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/tb_ble_replay_metadata_body.svh:24: parser state changed cycle=11347 new=7 old=8\n       Time: 113466000  Scope: tb\n"
+    },
+    "ignore-validity": {
+      "rejected": true,
+      "returncode": 1,
+      "stdout": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/tb_ble_replay_metadata_body.svh:24: parser state changed cycle=48558 new=8 old=7\n       Time: 485576000  Scope: tb\n"
+    },
+    "truncate-time": {
+      "rejected": true,
+      "returncode": 1,
+      "stdout": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/tb_ble_replay_metadata_body.svh:24: parser state changed cycle=49683 new=7 old=8\n       Time: 496826000  Scope: tb\n"
+    },
+    "wrong-length": {
+      "rejected": true,
+      "returncode": 1,
+      "stdout": "FATAL: /Users/sphenicidition/.cache/gw138k-task-20261030/cpu-shared-bsram-v1/final2/compare_outputs.svh:8: output mismatch response_length cycle=11150\n       Time: 111496000  Scope: tb\n"
+    }
+  },
+  "comparison_preparation": {
+    "identity": "cpu-replay-metadata-cell-compare-v1",
+    "source_sha256": {
+      "before": {
+        "ble_protocol_command.v": "e27e1dea4a07888b205b998be6e3b29141365f64605afaad1799aaeaf7214078",
+        "clock.sdc": "9dc373b635cda2b58562710c9edca420402fef1766bd0a837f127dbfa715d519",
+        "synthesis.tcl": "402445eaf4dc4bb89f75230d64ce47290a3f138ce7747e07f7580fe1eae08b36",
+        "top.sv": "93099036620c62068afbbdb15981e628d1f280adc8e42ff513ded190fa7f9bf0",
+        "workstation_ble_record_data_engine.sv": "a8d9abc2976ba205ee58cf068957eba2a370dd0132d2c1122124639a053dfcf2",
+        "workstation_ble_record_data_service.sv": "f8e1fba8441fe6b6f243950db4b653268ff21442e5fe77dbc963935f62caf3b9",
+        "workstation_business_mailbox.sv": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa",
+        "workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec"
+      },
+      "after": {
+        "ble_protocol_command.v": "d61d35dd0b0e4784d67f6e8da9fb94e68f8335c5275e602637f84b7f57568591",
+        "clock.sdc": "9dc373b635cda2b58562710c9edca420402fef1766bd0a837f127dbfa715d519",
+        "synthesis.tcl": "15e09802c3bd53df8149ec3f561993ad54141152a1a1dcc0ffc49201be694d30",
+        "top.sv": "d90ade6a223c43881997d4d8e4add3d07a57263fc253e0e325f93309a7c46191",
+        "workstation_ble_record_data_engine.sv": "a8d9abc2976ba205ee58cf068957eba2a370dd0132d2c1122124639a053dfcf2",
+        "workstation_ble_record_data_service.sv": "f8e1fba8441fe6b6f243950db4b653268ff21442e5fe77dbc963935f62caf3b9",
+        "workstation_business_mailbox.sv": "4473759b3292471119a20bdab6173c8b7ca7cf62c6c163266eca9fbe6c4864fa",
+        "workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec"
+      }
+    },
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "clock_hz": 50000000,
+    "top": "ble_replay_resource_top",
+    "capacity_frames": 16384,
+    "external_pcm": true,
+    "external_raw_store": true,
+    "external_seal": true,
+    "differences": [
+      "parent/current parser storage implementation",
+      "metadata storage parameter"
+    ],
+    "unchanged_common_sources": [
+      "workstation_ble_record_data_engine.sv",
+      "workstation_ble_record_data_service.sv",
+      "workstation_business_mailbox.sv",
+      "workstation_sdp.sv"
+    ],
+    "after_expected_metadata_sdpb": 3,
+    "metadata_payload_bits": 2464,
+    "resource_fields_to_compare": [
+      "Logic",
+      "LUT",
+      "ALU",
+      "Register",
+      "RAM16",
+      "synthesis_BSRAM"
+    ],
+    "required_memory_audit": "3 metadata SDPB: 32/32/16-bit, read bypass, same50MHz clock, address5, full byte masks; no distributed metadata remnants",
+    "both_actual_source_closures_elaborated": true,
+    "synthesis_performed": false,
+    "pnr": false,
+    "physical_CLS_measured": false,
+    "whole_workstation_comparison": false,
+    "hardware_operated": false
+  },
+  "historical_cell_evidence": {
+    "candidate": "custom138k-workstation-ae350-business-v1-09ae2f713f688bb7",
+    "source_commit": "fd7625dc70fb85bd60ee7842a6e1f3aae1f5606c",
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-mailbox-main-synthesis-09ae2f71-v1/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+    "sha256": "2c914764d8985b3335d4c9892f706fa4e49482cabe6ebc2100dc848b402ad703",
+    "matched_cells": [
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_0_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_1_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_2_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_3_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_4_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_5_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_6_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_7_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_8_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_9_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_10_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_11_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_12_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_13_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_14_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_0_15_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_0_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_1_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_2_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_3_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_4_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_5_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_6_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_7_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_8_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_9_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_10_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_11_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_12_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_13_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_14_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_time_cache_time_1_15_s"
+      },
+      {
+        "kind": "RAM16S4",
+        "instance": "cache_reply_length_cache_reply_length_0_0_s"
+      },
+      {
+        "kind": "RAM16S4",
+        "instance": "cache_reply_length_cache_reply_length_0_1_s"
+      },
+      {
+        "kind": "RAM16S4",
+        "instance": "cache_reply_length_cache_reply_length_1_0_s"
+      },
+      {
+        "kind": "RAM16S4",
+        "instance": "cache_reply_length_cache_reply_length_1_1_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_req_length_cache_req_length_0_0_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_req_length_cache_req_length_0_1_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_req_length_cache_req_length_1_0_s"
+      },
+      {
+        "kind": "RAM16SDP4",
+        "instance": "cache_req_length_cache_req_length_1_1_s"
+      }
+    ],
+    "counts": {
+      "RAM16SDP4": 36,
+      "RAM16S4": 4
+    },
+    "scope": "historical lower-bound named metadata cells only; not current same-function resource baseline",
+    "cache_id_unresolved_by_original_name": true
+  },
+  "full_business_regression": {
+    "passed": true,
+    "behavioral_checks": 1701,
+    "groups": 12,
+    "C_negative_controls": 15,
+    "messages": 136,
+    "golden_wire_equal": true,
+    "verification_sha256": "562132f93bbe469e704e306473797fb3973a5e42afc98c97d536b25c8a8c1bb9"
+  },
+  "source_regression": {
+    "accepted_tests": 17,
+    "passed_nonprofile_business_tests": 4,
+    "profile_check": "fails honestly on unchanged CPU business source locks; root will refresh them with integration",
+    "prepared_opt_in_tests_not_run": 3
+  },
+  "expected_new_metadata_SDPB": 3,
+  "synthesis_performed": false,
+  "physical_CLS_savings_measured": false,
+  "whole_workstation_net_resources_measured": false,
+  "routed_timing": false,
+  "hardware_operated": false,
+  "task_reference": {
+    "path": "/Users/sphenicidition/Documents/Gowin_Synthesizer/projects/138k/task.md",
+    "sha256": "df3fa58953f059cbcc8cae02918c36c7b34059a5e8577c70fb0ac53bec950569",
+    "sections": [
+      "C04",
+      "C06"
+    ]
+  }
+}

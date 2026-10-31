@@ -81,10 +81,6 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [7:0] reply_opcode, reply_result;
     (* ram_style="block" *) reg [7:0] request_cache[0:2047];
     (* ram_style="block" *) reg [7:0] reply_cache[0:4095];
-    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_id[0:31];
-    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_time[0:31];
-    reg [5:0] cache_req_length[0:31];
-    reg [6:0] cache_reply_length[0:31];
     reg [31:0] cache_valid;
     reg [4:0] cache_next, cache_slot, lookup_slot;
     reg [7:0] request_cache_data, reply_cache_data;
@@ -103,6 +99,51 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [31:0] request_id={header[7],header[6],header[5],header[4]};
     wire [63:0] request_nonce={header[15],header[14],header[13],header[12],header[11],header[10],header[9],header[8]};
     wire [15:0] payload_length={header[3],header[2]};
+    wire metadata_write=resetn && enable && state==CRC && index==3 && accept_request;
+    wire [31:0] metadata_id,metadata_time;
+    wire [5:0] metadata_request_length;
+    wire [6:0] metadata_reply_length;
+    wire metadata_hit=cache_valid[lookup_slot] && elapsed_ms-metadata_time<60000 &&
+        metadata_id==request_id;
+    generate if(CACHE_METADATA_RAM_STYLE=="block_ram")begin:g_block_metadata
+        // SESSION loads slot0 before the first LOOKUP; each LOOKUP preloads
+        // its successor. Thus all32 candidates retain one comparison/clock.
+        // Writes occur only in CRC, so they cannot collide with these reads.
+        wire read_enable=resetn && enable && (state==SESSION || state==LOOKUP);
+        wire [4:0] read_slot=state==SESSION ? 5'd0 : lookup_slot+5'd1;
+        wire [15:0] lengths;
+        reg [6:0] matched_reply_length;
+        workstation_sdp #(.DATA_WIDTH(32),.ADDR_WIDTH(5)) ids(
+            .write_clk_i(clk),.write_enable_i(metadata_write),.write_addr_i(cache_slot),.write_data_i(request_id),
+            .read_clk_i(clk),.read_enable_i(read_enable),.read_addr_i(read_slot),.read_data_o(metadata_id));
+        workstation_sdp #(.DATA_WIDTH(32),.ADDR_WIDTH(5)) times(
+            .write_clk_i(clk),.write_enable_i(metadata_write),.write_addr_i(cache_slot),.write_data_i(elapsed_ms),
+            .read_clk_i(clk),.read_enable_i(read_enable),.read_addr_i(read_slot),.read_data_o(metadata_time));
+        workstation_sdp #(.DATA_WIDTH(16),.ADDR_WIDTH(5)) sizes(
+            .write_clk_i(clk),.write_enable_i(metadata_write),.write_addr_i(cache_slot),
+            .write_data_i({3'd0,response_length,total[5:0]}),
+            .read_clk_i(clk),.read_enable_i(read_enable),.read_addr_i(read_slot),.read_data_o(lengths));
+        assign metadata_request_length=lengths[5:0];
+        assign metadata_reply_length=matched_reply_length;
+        always @(posedge clk)begin
+            if(!resetn || !enable)matched_reply_length<=0;
+            else if(state==LOOKUP && metadata_hit)matched_reply_length<=lengths[12:6];
+        end
+        // RAM has no reset. cache_valid is the common-reset/session fence;
+        // no uninitialized or old slot is used without a new valid entry.
+    end else begin:g_distributed_metadata
+        (* syn_ramstyle="distributed_ram" *) reg [31:0] cache_id[0:31];
+        (* syn_ramstyle="distributed_ram" *) reg [31:0] cache_time[0:31];
+        reg [5:0] cache_req_length[0:31];
+        reg [6:0] cache_reply_length[0:31];
+        assign metadata_id=cache_id[lookup_slot],metadata_time=cache_time[lookup_slot];
+        assign metadata_request_length=cache_req_length[lookup_slot];
+        assign metadata_reply_length=cache_reply_length[cache_slot];
+        always @(posedge clk)if(metadata_write)begin
+            cache_id[cache_slot]<=request_id;cache_time[cache_slot]<=elapsed_ms;
+            cache_req_length[cache_slot]<=total[5:0];cache_reply_length[cache_slot]<=response_length;
+        end
+    end endgenerate
     wire supported_business=header[0]==4 || (header[0]>=8'h20 && header[0]<=8'h23) ||
         (header[0]>=8'h30 && header[0]<=8'h42 && header[0]!=8'h3a); 
     wire [15:0] fragment_token={frag[2],frag[1]};
@@ -435,10 +476,9 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                     else state<=DISPATCH;
                 end
                 LOOKUP: begin
-                    if(cache_valid[lookup_slot] && elapsed_ms-cache_time[lookup_slot]<60000 &&
-                       cache_id[lookup_slot]==request_id) begin
+                    if(metadata_hit) begin
                         cache_slot<=lookup_slot; index<=0;
-                        if(total!=cache_req_length[lookup_slot]) error_reply(8'h86,0);
+                        if(total!=metadata_request_length) error_reply(8'h86,0);
                         else state<=COMPARE_ADDR;
                     end else if(lookup_slot==31) error_reply(8'h87,0);
                     else lookup_slot<=lookup_slot+1'b1;
@@ -447,7 +487,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                 COMPARE: begin
                     if(header[index]!=request_cache_data) error_reply(8'h86,0);
                     else if(index+1==total) begin
-                        response_length<=cache_reply_length[cache_slot];
+                        response_length<=metadata_reply_length;
                         index<=0;
                         if(header[0]==8'h31 || header[0]==8'h35 || header[0]==8'h3e || header[0]==8'h3f || header[0]==8'h41 || header[0]==8'h42) state<=META_ADDR;
                         else state<=REPLAY_ADDR;
@@ -509,9 +549,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                 CRC: begin
                     if(index==3) begin
                         if(accept_request) begin
-                            cache_valid[cache_slot]<=1; cache_id[cache_slot]<=request_id;
-                            cache_time[cache_slot]<=elapsed_ms; cache_req_length[cache_slot]<=total;
-                            cache_reply_length[cache_slot]<=response_length; cache_next<=cache_next+1'b1;
+                            cache_valid[cache_slot]<=1; cache_next<=cache_next+1'b1;
                         end
                         if(accept_request) begin index<=0;state<=STORE_META;end
                         else state<=DONE;
