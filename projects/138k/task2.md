@@ -306,6 +306,8 @@ W12真实长链的[PCM key／COMMIT修复](push2_workstation/usb_a/reports/DUAL1
 
 M14 `D2110108`已完成[默认完整物理审计](push2_workstation/usb_a/reports/DUAL138K_M14_DEFAULT_PHYSICAL_20261101.md)：物理BSRAM235／DSP119／CLS50,306，setup3,764／−1.940ns、hold1／−3.453ns，recovery+1.603／removal+.278ns。native实际VO54项（51通过／3跳过）及46负控、边界7／61、官方六PLL及7负控通过，30份物理文件、588staged及1207冻结审计输入稳定；仍因STA失败不能部署。同VG／完整SDC／DDR3.500ns的`D2110109`远区对照已启动全量P&R，不预填结果；M基础CNN、完整实板声画及双板并发仍未验收。
 
+W13已完成[全量综合与严格门](push2_workstation/usb_a/reports/DUAL138K_W13_SYNTHESIS_20261101.md)：FF45,092／LUT55,249／ALU14,135／BSRAM equivalent257，实际VG native54项（40通过／14跳过）及35负控、边界7／61通过。951原始来源、645staged及1365冻结审计输入复验，默认physical prepare重新完整审计并与CLI深等价，`D211010A`已启动全量P&R；实际PCM／raw映射目标另审，不预记物理收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
