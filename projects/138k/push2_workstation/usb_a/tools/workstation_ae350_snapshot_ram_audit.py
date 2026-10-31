@@ -7,10 +7,17 @@ import re
 from tools.workstation_synthesis_netlist import IDENTIFIER
 
 def audit(n):
-    zero={"1'b0"};one={"1'b1"}
+    zero={"1'b0"};one={"1'b1"};constant_drivers={}
     for name,c in n.cells.items():
-        if c['kind']=='GND':zero.add(n.pin(name,'G'))
-        if c['kind']=='VCC':one.add(n.pin(name,'V'))
+        if c['kind'] in ('GND','VCC'):
+            net=n.pin(name,'G' if c['kind']=='GND' else 'V')
+            if net in constant_drivers:raise ValueError('snapshot constant has multiple primitive drivers')
+            constant_drivers[net]=name
+            (zero if c['kind']=='GND' else one).add(net)
+    def logical(net):
+        # Gowin emits a GND/VCC cell in each RAM wrapper. Different canonical
+        # net names are equal only after proving their actual primitive driver.
+        return "1'b0" if net in zero else "1'b1" if net in one else net
     def expand(name,port,width):
         scope=n.scopes[name];binding=n.cells[name]['ports'].get(port)
         if binding is None:raise ValueError('snapshot RAM missing primitive pin: '+name+'.'+port)
@@ -52,7 +59,7 @@ def audit(n):
             raise ValueError('snapshot RAM byte enable/address padding drift')
         if len(set(wa[4:9]))!=5 or len(set(ra[4:9]))!=5 or any(x in zero|one for x in (*wa[4:9],*ra[4:9])):
             raise ValueError('snapshot RAM bank/group address lost')
-        addr=(tuple(wa),tuple(ra));ctrl=tuple(n.pin(name,p) for p in ('CEA','CEB','OCE'))
+        addr=(tuple(map(logical,wa)),tuple(map(logical,ra)));ctrl=tuple(logical(n.pin(name,p)) for p in ('CEA','CEB','OCE'))
         if ctrl[0] in zero|one or ctrl[1] in zero or ctrl[2] not in one:
             raise ValueError('snapshot RAM write/read/output enable lost')
         if addresses is not None and (addr!=addresses or ctrl!=controls):raise ValueError('snapshot RAM lanes do not share one address/control owner')
@@ -90,7 +97,7 @@ def audit(n):
         output='Q' if c['kind'].startswith('DFF') else 'F' if re.fullmatch(r'LUT[1-8]',c['kind']) else 'O' if c['kind'].startswith('MUX') else None
         if output and output in c['ports']:
             q=n.pin(name,output)
-            if q in drivers:raise ValueError('snapshot ambiguous scalar driver')
+            if q in drivers or q in constant_drivers:raise ValueError('snapshot ambiguous scalar driver')
             drivers[q]=(name,output)
     reached=set();seen=set()
     def walk(net,depth):

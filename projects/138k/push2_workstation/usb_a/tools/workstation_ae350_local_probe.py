@@ -211,7 +211,7 @@ def constraints(root,gao_mode='full64'):
               'set_false_path -hold -from [get_regs {u_uart/held_words*}] -to [get_regs {u_uart/words*}]',
               'set_false_path -to [get_pins {core_reset_pipe*_s0/CLEAR core_reset_pipe*_s0/PRESET}]']
     if gao_mode=='bsram4':
-        lines=[line.replace('[get_regs {u_uart/words*}]','[get_pins {u_uart/lanes*/ram/ram/DI*}]') for line in lines]
+        lines=[line.replace('[get_regs {u_uart/words*}]','[get_pins {u_uart/lanes*.ram/ram/DI*}]') for line in lines]
     lines += [f'report_timing -{kind} -max_paths 2000 -max_common_paths 1' for kind in ('setup','hold','recovery','removal')]
     return '\n'.join(lines)+'\n'
 
@@ -265,7 +265,7 @@ def audit_prepare(output):
     if gao_mode=='bsram4':
         sdc=(output/'probe.sdc').read_text().splitlines()
         for command in ('set_max_delay 20.000','set_false_path -hold'):
-            required=command+' -from [get_regs {u_uart/held_words*}] -to [get_pins {u_uart/lanes*/ram/ram/DI*}]'
+            required=command+' -from [get_regs {u_uart/held_words*}] -to [get_pins {u_uart/lanes*.ram/ram/DI*}]'
             if sdc.count(required)!=1:raise ValueError('BSRAM held-to-native-RAM CDC constraint changed')
         if any('u_uart/words*' in line for line in sdc):raise ValueError('BSRAM mode retained obsolete CDC endpoint')
     if (output/'probe.gao').read_text()!=gao(record['user_code'][2:],gao_mode):

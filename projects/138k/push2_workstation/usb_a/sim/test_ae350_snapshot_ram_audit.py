@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys,unittest
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-from tools.workstation_ae350_local_probe import audit_gao_synthesis,TOP
+from tools.workstation_ae350_local_probe import audit_gao_synthesis,TOP,constraints
 
 def fixture():
     child=['module snapshot (clk_50m,pclk,prefetch);','input clk_50m;','input pclk;','output [383:0] prefetch;',
@@ -26,6 +26,23 @@ def fixture():
     for i in range(704):top+=['  DFF s%d (\n.Q(status_50mhz[%d]),\n.D(payload[%d]),\n.CLK(clk_50m)\n);'%(i,i,i%384)]
     top+=['endmodule'];return '\n'.join(child+top)+'\n'
 class RamAudit(unittest.TestCase):
+ def test_actual_wrapper_constant_names_are_compared_by_proven_polarity(self):
+  text=fixture();cells=[]
+  for i in range(8):
+   start=text.index('  SDPB lane'+str(i)+' (');end=text.index(');',start)+2
+   text=text[:start]+text[start:end].replace('GND','GND_'+str(i)).replace('VCC','VCC_'+str(i))+text[end:]
+   cells+=['  GND g%d (\n.G(GND_%d)\n);'%(i,i),'  VCC v%d (\n.V(VCC_%d)\n);'%(i,i)]
+  text=text.replace('endmodule','\n'.join(cells)+'\nendmodule',1)
+  self.assertEqual(audit_gao_synthesis(text,'bsram4')['snapshot_ram']['native_sdp_lanes'],8)
+  with self.assertRaises(ValueError):audit_gao_synthesis(text.replace('.V(VCC_7)','.V(GND_7)'),'bsram4')
+ def test_native_cdc_target_matches_actual_generated_wrapper_geometry(self):
+  import fnmatch,re
+  sdc=constraints(ROOT,'bsram4')
+  target=re.search(r'set_max_delay 20.000 -from \[get_regs \{u_uart/held_words\*\}\] -to \[get_pins \{([^}]+)\}\]',sdc)[1]
+  self.assertEqual(target,'u_uart/lanes*.ram/ram/DI*')
+  for lane in range(8):
+   for bit in range(16):self.assertTrue(fnmatch.fnmatchcase('u_uart/lanes[%d].ram/ram/DI[%d]'%(lane,bit),target))
+  self.assertIn('set_false_path -hold -from [get_regs {u_uart/held_words*}] -to [get_pins {'+target+'}]',sdc)
  def test_actual_primitive_structure_gate_and_negative_controls(self):
   text=fixture();r=audit_gao_synthesis(text,'bsram4');self.assertEqual(r['snapshot_ram']['ram_read_bits_reaching_gao'],128)
   self.assertEqual(r['snapshot_ram']['held_pclk_bits'],1858)
