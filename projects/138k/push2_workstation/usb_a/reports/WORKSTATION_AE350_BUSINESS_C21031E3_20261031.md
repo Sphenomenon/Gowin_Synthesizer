@@ -13,6 +13,8 @@ CLOSE／CANCEL 与 30 秒超时。原 `native_bluetooth/ble_recording.v`
 封存、Rice、线规和重放缓存等数据通路。本轮增加共享 20 周期 GATT
 sample／CRC builder、现有 C350 上的真实 pump 观测，并修正六个共享
 release FF 的旧空 CLEAR 选择器；没有新探针或长期 profile。
+上述替换已由固件／RV32／APB／实际 RTL 协同仿真覆盖；硬核 AE350 的
+实板执行尚未验证，不能作为整机迁移验收完成。
 
 ## 完整综合
 
@@ -168,11 +170,40 @@ VG 为 `d470c1b250d07f2a589e26416ce6ebb62cf96b87048f10616c62e1894588162d`。
 
 GATT 独占映射从 6230 降至 6005 LUT；全表包含其余网表映射变化，
 不把全部 −373 LUT 归给该分支。当前仍无相对迁移前的净资源收益。
-原版 PCM／实际 reset6 必要正向门禁通过；新 `C21031E6` 已启动同一
-place1／route0 完整 P&R，时钟及例外不变，物理／SRAM 结果待收取。
+原版 PCM／实际 reset6 必要正向门禁通过。`C21031E6` 的同一 place1／
+route0 P&R 运行 871.908 秒后失败，788 条未布通；物理 CLS 61926/69120、
+BSRAM 301/340、Logic 95476、Register 61303，全部输入及工具身份保持。
+虽然综合 LUT 减少，物理 CLS 反而增加 401；没有最终 STA／位流或 SRAM。
 
 维护源码进一步将 `0x06`／`0x08`／`0x10` 的服务／声明响应改为固定一／二／
 三槽，删除其余递推 `used` 写地址；同一 PARSE 拍、类型及长度错误、
 尾部和队列保持。新旧完整入口矩阵的 12692 条响应与 6346 次双 bank
 快照逐字一致，含六次满队列拒绝；没有扩大配置或改变 E6 输入。
-本批资源收益待下一候选全量综合测量。
+完整候选 `ba876207401f8441` 全量综合通过：343.831 秒，614 项输入保持，
+无 AG 诊断，VG 为
+`5e69f354b1e0b79b0c7d84019b0316dca0a56a5abec6817fc044aced99c4b69d`。
+整机 Logic 94978、LUT 76592、ALU 16772、Register 61306、DSP 84、
+等效 BSRAM 250／RAM16 269；相对 E6 为 +18 LUT／+3 FF／+1 DSP，
+未取得整机净资源收益。GATT 独占 LUT 从 6005 降至 5940，不能代替总量。
+新增 DSP 来自服务计数长度乘法，未混入 A2DP／SBC 成本；维护源已将其
+改成固定长度选择，新旧完整矩阵再次通过，等待下一批完整综合。
+`C21031E7` 的 place3／route0 完整 P&R 运行 724.961 秒后失败，878 条
+未布通；物理 CLS 61830/69120、BSRAM 301/340、Logic 95494、Register
+61306，输入及工具身份保持。原版 PCM 和实际 reset6 正向门禁通过；
+仍无最终 STA／位流，未执行 SRAM。
+
+
+### 同功能矢量系数 ROM
+
+原生矢量引擎的五个 ADSR profile 固定来自 `ADSR_FILE`，现在同一
+`$readmemh` 初始化后以原 `envelope_step` 函数预计算 44.1 kHz 系数 ROM，
+退出 attack／decay／release 三个 WIDTH32 div147 流水。phase divider
+保留；原系数前寄存器和十四级 valid／profile／voice tag 延迟保持，
+没有改变音符接受、PANIC、reset、quiet 或持音切率周期。默认与边界
+ADSR 表在 Verilator／Icarus 的新旧逐拍比较均通过，每表 217152 周期、
+530 系数结果、546 accepted notes、708 帧、40 PANIC、12 reset、10 次
+并发事件及 10 次持音切率；既有双率矢量回归及零警告 lint 通过。
+九个现有原生 profile 仅刷新已消费源码哈希，功能配置不变。
+accepted 来源十七项、业务九项及 profile 七项通过（外部输入相关
+十五项跳过）。尚无本次全量资源结果；ROM 初始化的 Gowin 综合及真实
+净收益由紧接着的完整候选确认，不把理论除法器规模记作收益。

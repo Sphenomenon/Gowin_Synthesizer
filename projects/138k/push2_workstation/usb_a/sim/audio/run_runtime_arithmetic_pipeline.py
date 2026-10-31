@@ -204,7 +204,11 @@ def main():
             ('oscillator_slot_tag_mutant', 'osc', ('slot_write_address=pitched_tag[124:115];', "slot_write_address=pitched_tag[124:115]+10'd1;", 'OSC_SLOT')),
             ('oscillator_gain_tag_mutant', 'osc', ("pitched_step>=35'd1932735283 ? 16'd0 : pitched_tag[34:19]", "pitched_step>=35'd1932735283 ? 16'd0 : 16'd0", 'OSC_PCM')),
             ('vector_phase_mutant', 'vector', ('phase[phase_result_tag[5:3]]<=phase[phase_result_tag[5:3]]+registered_step[31:0];', "phase[phase_result_tag[5:3]]<=phase[phase_result_tag[5:3]]+registered_step[31:0]+32'd1;", 'VEC_VOICE')),
-            ('vector_coefficient_mutant', 'vector', ('attack_quotient[23:0]', "(attack_quotient[23:0]+24'd1)", 'VEC_COEFFICIENT'))]
+            ('vector_coefficient_mutant', 'vector', (
+                'assign {registered_release,registered_decay,registered_attack}=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]];',
+                'assign {registered_release,registered_decay}=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]][71:24];\n'
+                "        assign registered_attack=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]][23:0]+24'd1;",
+                'VEC_COEFFICIENT'))]
         with ThreadPoolExecutor(max_workers=2) as pool:
             report['consumers'] = dict(pool.map(consumer_case, cases))
         report['passed'] = all(case['passed'] for group in ('helper', 'consumers') for case in report[group].values())

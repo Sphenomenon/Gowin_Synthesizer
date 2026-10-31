@@ -48,13 +48,14 @@ module workstation_runtime_scope_vec #(
         assign note_above_limit[n]=note_rom[n]>MAX_STEP;
     end
     reg [23:0] adsr_rom[0:19];
+    reg [71:0] adsr_44_rom[0:4];
     reg [31:0] phase[0:VOICES-1],base_step[0:VOICES-1];
     reg [21:0] own_pitch[0:VOICES-1];
     reg [6:0] note[0:VOICES-1];
     reg [2:0] shape[0:VOICES-1],morph_shape[0:VOICES-1],env_state[0:VOICES-1];
     reg [23:0] envelope[0:VOICES-1],attack[0:VOICES-1],decay[0:VOICES-1],sustain[0:VOICES-1],release_step[0:VOICES-1];
-    // Compute the three 44.1 kHz coefficients from the incoming profile once
-    // per Note On, sharing the dividers across voices.
+    // The five profiles supply constant 44.1 kHz coefficient triples. Only
+    // profile/voice tags traverse the original Note On coefficient latency.
     // Canonical 48 kHz coefficients remain untouched; held rate changes select
     // these paired values without reloading the voice or current event profile.
     reg [23:0] attack_44[0:VOICES-1],decay_44[0:VOICES-1],release_44[0:VOICES-1];
@@ -156,22 +157,25 @@ module workstation_runtime_scope_vec #(
         logic [41:0] phase_dividend;
         logic [6:0] phase_scaled_tag,phase_dividend_tag;
         wire [41:0] phase_quotient;
-        wire phase_quiet,attack_quiet,decay_quiet,release_quiet;
-        wire attack_valid,decay_valid,release_valid;
-        logic [31:0] attack_numerator,decay_numerator,release_numerator;
-        logic [2:0] numerator_index;
-        wire [31:0] attack_quotient,decay_quotient,release_quotient;
+        // Match the removed WIDTH=32 div147: one input register plus thirteen
+        // radix-four stages, after the existing coefficient front register.
+        localparam integer COEFFICIENT_STAGES=(32-6)/2;
+        wire phase_quiet;
+        logic [COEFFICIENT_STAGES:0] coefficient_valid;
+        logic [2:0] numerator_index,numerator_profile;
+        logic [2:0] profile_delay[0:COEFFICIENT_STAGES],index_delay[0:COEFFICIENT_STAGES];
         wire [2:0] incoming_index={|(free_select&8'hf0),|(free_select&8'hcc),|(free_select&8'haa)};
         wire accepted_note=event_valid_i && event_ready_o && event_note_on_i && free_found &&
             32'(event_shape_i)<SHAPES && 32'(event_morph_shape_i)<SHAPES && event_profile_i<5 &&
             event_pitch_q20_i!=0 && event_velocity_i!=0 && !note_above_limit[event_note_i];
         always @(posedge clk_i or negedge rst_ni)begin
-            if(!rst_ni)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;end
-            else if(panic_i)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;end
+            if(!rst_ni)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;coefficient_valid<='0;end
+            else if(panic_i)begin phase_scaled_valid<=0;phase_dividend_valid<=0;coefficient_numerator_valid<=0;coefficient_valid<='0;end
             else begin
                 phase_scaled_valid<=state==3;
                 phase_dividend_valid<=phase_scaled_valid;
                 coefficient_numerator_valid<=accepted_note;
+                coefficient_valid<={coefficient_valid[COEFFICIENT_STAGES-1:0],coefficient_numerator_valid};
             end
         end
         always @(posedge clk_i)begin
@@ -184,38 +188,34 @@ module workstation_runtime_scope_vec #(
                 phase_dividend_tag<=phase_scaled_tag;
             end
             if(accepted_note && !panic_i)begin
-                attack_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}]}*32'd160+32'd73;
-                decay_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}+1]}*32'd160+32'd73;
-                release_numerator<={8'd0,adsr_rom[{event_profile_i,2'b00}+3]}*32'd160+32'd73;
                 numerator_index<=incoming_index;
+                numerator_profile<=event_profile_i;
+            end
+            if(coefficient_numerator_valid && !panic_i)begin
+                profile_delay[0]<=numerator_profile;
+                index_delay[0]<=numerator_index;
+            end
+        end
+        for(genvar s=0;s<COEFFICIENT_STAGES;s=s+1)begin:g_coefficient_delay
+            always @(posedge clk_i)if(coefficient_valid[s] && !panic_i)begin
+                profile_delay[s+1]<=profile_delay[s];
+                index_delay[s+1]<=index_delay[s];
             end
         end
         workstation_runtime_div147 #(.WIDTH(42),.TAG_WIDTH(7)) phase_divider(
             .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(phase_dividend_valid),.dividend_i(phase_dividend),
             .tag_i(phase_dividend_tag),.valid_o(phase_result_valid),.quotient_o(phase_quotient),
             .tag_o(phase_result_tag),.quiescent_o(phase_quiet));
-        workstation_runtime_div147 #(.WIDTH(32),.TAG_WIDTH(3)) attack_divider(
-            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(attack_numerator),
-            .tag_i(numerator_index),.valid_o(attack_valid),.quotient_o(attack_quotient),
-            .tag_o(coefficient_index),.quiescent_o(attack_quiet));
-        workstation_runtime_div147 #(.WIDTH(32)) decay_divider(
-            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(decay_numerator),
-            .tag_i(1'b0),.valid_o(decay_valid),.quotient_o(decay_quotient),.tag_o(),.quiescent_o(decay_quiet));
-        workstation_runtime_div147 #(.WIDTH(32)) release_divider(
-            .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(coefficient_numerator_valid),.dividend_i(release_numerator),
-            .tag_i(1'b0),.valid_o(release_valid),.quotient_o(release_quotient),.tag_o(),.quiescent_o(release_quiet));
         assign registered_step=phase_result_tag[6] ? phase_quotient[34:0] : {3'd0,pitch_product[51:20]};
         assign registered_step_invalid=(|phase_result_tag[2:0]) || registered_step>step_limit || registered_step==0;
-        assign registered_attack=attack_quotient>32'hffffff ? 24'hffffff : attack_quotient[23:0];
-        assign registered_decay=decay_quotient>32'hffffff ? 24'hffffff : decay_quotient[23:0];
-        assign registered_release=release_quotient>32'hffffff ? 24'hffffff : release_quotient[23:0];
-        assign coefficient_result_valid=attack_valid && decay_valid && release_valid;
-        assign pipeline_quiet=phase_quiet && attack_quiet && decay_quiet && release_quiet &&
+        assign {registered_release,registered_decay,registered_attack}=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]];
+        assign coefficient_index=index_delay[COEFFICIENT_STAGES];
+        assign coefficient_result_valid=coefficient_valid[COEFFICIENT_STAGES] && !panic_i;
+        assign pipeline_quiet=phase_quiet && !(|coefficient_valid) &&
             !phase_scaled_valid && !phase_dividend_valid && !coefficient_numerator_valid;
 `ifndef SYNTHESIS
         always @(posedge clk_i)if(rst_ni && !panic_i)begin
             if(phase_result_valid && (state!=19 || phase_result_tag[5:3]!=voice_index))$fatal(1,"vector phase tag/state mismatch");
-            if(attack_valid!=decay_valid || attack_valid!=release_valid)$fatal(1,"vector envelope valid alignment");
         end
 `endif
     end else begin:g_rate_original
@@ -232,6 +232,9 @@ module workstation_runtime_scope_vec #(
         $readmemh(NOTE_FILE,note_rom);
         $readmemh(ROTATION_FILE,rotation_rom);
         $readmemh(ADSR_FILE,adsr_rom);
+        for(integer profile=0;profile<5;profile=profile+1)
+            adsr_44_rom[profile]={envelope_step(adsr_rom[profile*4+3],1'b1),
+                envelope_step(adsr_rom[profile*4+1],1'b1),envelope_step(adsr_rom[profile*4],1'b1)};
     end
     function automatic [15:0] slew(input [15:0] old_value,target,input [15:0] step);
         begin

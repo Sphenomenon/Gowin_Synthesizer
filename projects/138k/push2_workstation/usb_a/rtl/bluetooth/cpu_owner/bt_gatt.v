@@ -576,7 +576,7 @@ module bt_gatt #(
                             response_word(22,5); response_word(24,8); response_word(26,16'hfff0);
                         end
                         if(used==0) att_error_response(8'h10,start_handle,8'h0a);
-                        else response_begin(4,2+6*used);
+                        else response_begin(4,used==1 ? 8 : used==2 ? 14 : 20);
                     end
                 end
                 8'h08: begin
