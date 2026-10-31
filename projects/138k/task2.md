@@ -300,6 +300,8 @@ W12的[实际分组与默认完整物理审计](push2_workstation/usb_a/reports/
 
 M14已完成[全量综合和严格门](push2_workstation/usb_a/reports/DUAL138K_M14_SYNTHESIS_20261101.md)：综合FF46,932／LUT52,153／ALU12,875／BSRAM equivalent195，native实际VG54项（50通过／4跳过）及45负控、边界7项及61负控通过。实际TF full四组与final函数已保留，但函数内容量只有最低组保留，[完整实际锥审查](push2_workstation/usb_a/reports/dual138k_m14_tf_groups_vg_20261101.md)明确分组目标部分失败，不冒称物理收益。1207工具／源码／测试输入冻结复验，`D2110108`重新严格审计后已启动完整P&R，硬件与CNN仍未验收。
 
+W12 `D2110107`的[完整far物理对照](push2_workstation/usb_a/reports/DUAL138K_W12_FAR_20261101.md)已封存：保持VG／完整SDC／DDR3.500ns，原DDR hold实测+0.672ns，全局hold0违例／+0.085ns；setup却回退至7,373／−5.845ns，整机时序仍失败。物理BSRAM293／DSP66.5／CLS52,488，实际VO54项（41通过／13跳过）及36负控、边界7／61、官方六PLL及7负控通过，32份物理文件与父／来源前后稳定。新PCM key及raw许可修复另属下一候选，不转授本位流接受；未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
