@@ -93,9 +93,12 @@ def main():
     parser.add_argument('--exercise-controls', action='store_true', help='Exercise committed modes, gains, effects, routes, sustain and PANIC')
     parser.add_argument('--exercise-polyphony', action='store_true', help='Exercise 32 held mode-A voices, release and PANIC at reduced gain')
     parser.add_argument('--business-only', action='store_true', help='Read existing business C350 pages only; no MIDI writes or functional REC/download acceptance')
+    parser.add_argument('--recognition-disabled', action='store_true', help='Require no B138/model reports for an explicit recognition-disabled candidate; retain all other full smoke checks')
     args = parser.parse_args()
     if args.business_only and (args.exercise_live or args.exercise_controls or args.exercise_polyphony):
         parser.error('--business-only cannot send exercise controls')
+    if args.business_only and args.recognition_disabled:
+        parser.error('--recognition-disabled requires full smoke checks')
     if not 3 <= args.seconds <= 60:
         parser.error('--seconds must be 3..60')
     if args.output.exists():
@@ -106,6 +109,7 @@ def main():
                   limits=['UART smoke does not verify physical DAC waveform, HDMI reception, TF hotplug or CNN song-score correctness.'])
     result['exercise_controls'] = args.exercise_controls
     result['exercise_polyphony'] = args.exercise_polyphony
+    result['recognition_disabled'] = args.recognition_disabled
     counts = Counter()
     model_statuses = set()
     crc_bad = 0
@@ -192,7 +196,10 @@ def main():
                 print(json.dumps(dict(passed=True,business_ready=result['business_ready'],pages=len(pages),output=str(args.output))))
                 return
             result['startup_panic_epoch']=result['last'].get('E138',{}).get('panic_epoch',0)
-            for kind in ['A138', 'C350', 'K138', 'E138', 'P138', 'B138']:
+            required_records = ['A138', 'C350', 'K138', 'E138', 'P138']
+            if not args.recognition_disabled:
+                required_records.append('B138')
+            for kind in required_records:
                 if counts[kind] < 2: raise RuntimeError('insufficient valid records: ' + kind)
             cpu = [int(v, 16) for v in result['last']['C350']]
             if cpu[4:6] != [0x43505531, 0x50415353] or cpu[7] != 0:
@@ -208,9 +215,15 @@ def main():
                 raise RuntimeError('audio cadence is not 48000 samples per runtime report')
             if result['last']['K138']['pc_input_errors']:
                 raise RuntimeError('PC MIDI input reports errors')
-            if model_statuses != {14}:
-                raise RuntimeError(f'CNN model readiness changed: {model_statuses}')
-            result['tests']['startup_cpu_audio_ddr_model'] = 'passed'
+            if args.recognition_disabled:
+                if counts['B138'] or model_statuses:
+                    raise RuntimeError('recognition disabled but B138/model reports observed')
+                result['tests']['startup_cpu_audio_ddr'] = 'passed'
+                result['tests']['recognition'] = 'disabled'
+            else:
+                if model_statuses != {14}:
+                    raise RuntimeError(f'CNN model readiness changed: {model_statuses}')
+                result['tests']['startup_cpu_audio_ddr_model'] = 'passed'
             usb=[int(v,16) for v in result['last']['P138']]
             if usb[1]&2 and len(screen_frames)>1 and screen_frames[-1]>screen_frames[0]:
                 result['tests']['push_connected_screen_frames_advancing']='passed'
@@ -344,11 +357,15 @@ def main():
             result['tests']['audio_health_zero']='passed'
             if result['last']['K138']['pc_input_errors'] or crc_bad:
                 raise RuntimeError('input/telemetry integrity fault observed')
+            if args.recognition_disabled and (counts['B138'] or model_statuses):
+                raise RuntimeError('recognition disabled but B138/model reports observed')
             result['passed'] = True
     except (OSError, RuntimeError, ValueError) as exc:
         result['error'] = str(exc)
     finally:
         result['crc_valid_records'] = dict(counts)
+        if args.recognition_disabled:
+            result['crc_valid_records'].setdefault('B138', 0)
         result['crc_bad'] = crc_bad
         result['model_statuses'] = sorted(model_statuses)
         result['sample_counter_delta'] = ((sample_counts[-1][1] - sample_counts[0][1]) & 0xffffffff) if len(sample_counts) > 1 else 0

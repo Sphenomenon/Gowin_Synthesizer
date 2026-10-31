@@ -79,8 +79,10 @@ PCM 反例定位到禁用 SOURCE_HOLD 时仍保留两个 guard FF 的反馈。
 修正不计为净资源收益。原版 PCM `paired-nextq-v2` checker 未改，实际
 229 个源位／896 个 selector、reply 闭包／header／next-Q／已安装约束
 全部通过；六个共享 release 及 455+175 个消费者的实际连接检查通过。
-`C21031E4` 已直接进入 place0／route1 P&R，不改变时钟或数据路径例外，
-结果待收取；新 SRAM／Flash 操作仍为零。
+`C21031E4` 的 place0／route1 P&R 已失败：2611.896 秒、退出 1，
+PR0004 报 28051 条未布通；物理 CLS 62431/69120、BSRAM 297/340、
+Logic 97432、Register 62810。全部输入和工具身份前后保持，未改变时钟
+或数据路径例外；没有最终 STA／位流，新 SRAM／Flash 操作仍为零。
 
 E3 所有输入保持不变；E4 没有继承其综合／物理接受。E4 外部目录为
 `business-serializer-integrated-candidate-v1`、
@@ -98,5 +100,19 @@ E3 所有输入保持不变；E4 没有继承其综合／物理接受。E4 外�
 均被拒绝；主树 mailbox 三项、GATT 两项、actual prepare 十一项、
 accepted 十七项通过。新候选为 `33e2b72a7bac6501`，沿用同一 business
 profile。新增两块 RAM、拷贝／读取／仲裁逻辑的成本必须纳入完整综合；
-当前尚不宣称净收益。E4 若成功，先进行其物理门禁和授权 SRAM 检查；
-若失败则立即启动已排队的本候选全量综合。E4 输入不变。
+当前尚不宣称净收益。该候选尚未运行 EDA；其等待队列已由下面同批
+完整候选替换，原 prepare 输入保留，E4 输入不变。
+
+源码 `df3856e` 进一步将 data service 的 12 个结果读字及 4 个 staging
+写字改为固定选择，删除宽向量动态切片，保持地址／错误／快照 ABI。
+原／新 RTL 各 672 项检查通过；实际 prepare 业务十二项和 accepted
+来源十七项通过，源码及共享输入已 push 至 `9bb9086`。与 RAM 改动合并
+后的同一候选为 `3484de847173bbfa`，614 staged／272 enabled，功能配置
+与 E4 完全相同。E4 失败后已立即开始全量综合；结果将同时计入 RAM、
+同步拷贝、字节握手和仲裁成本，再以新 UserCode `C21031E5` 做 place1／
+route0 完整 P&R。没有为这些改动新增长期 profile 或构建器。
+
+既有 UART smoke 增加显式 `--recognition-disabled`：当前配置不会发送
+B138，选中时要求全程无该报文／模型状态；CPU／DDR／CRC／音频节拍、
+控制／复音门禁保留，不产生 CNN 模型验收。现有定向测试十四项通过。
+这是 SRAM 后保留功能测试的配置适配，未访问板卡。
