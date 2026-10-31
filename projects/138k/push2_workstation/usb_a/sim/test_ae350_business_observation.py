@@ -40,7 +40,7 @@ class BusinessCpu(SplitCpu):
     def pump(self):return self.call('a138_ble_business_firmware_pump')
     def pages(self):
         rows={}
-        for _ in range(16):
+        for _ in range(30):
             self.mmio[0xf8050148]=self.mmio.get(0xf8050148,0)+1500;self.pump()
             meta,value=self.publications[-1];rows[(meta>>8)&255]=(meta,value)
         return rows
@@ -158,6 +158,8 @@ class ActualFirmware(unittest.TestCase):
         self.assertFalse(any(x[:2]==('W',0xf8050108)for x in c.trace))
         c.mmio[0xf8050008]=256
         pages=c.pages();self.assertEqual(set(pages),set(range(16)))
+        self.assertEqual([(meta>>8)&255 for meta,_ in c.publications[-30:]],
+            [page for next_page in range(1,16)for page in(0,next_page)])
         self.assertGreater(pages[0][1],0)
         self.assertEqual((pages[1][1],pages[2][1],pages[3][1]),(1,1,17))
         self.assertEqual(pages[4][1]&255,0x22)

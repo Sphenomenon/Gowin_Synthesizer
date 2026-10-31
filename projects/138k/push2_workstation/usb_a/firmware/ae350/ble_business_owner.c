@@ -320,7 +320,8 @@ static void business_diagnostic_step(void) {
      * no diagnostic operation waits or changes the business service cadence. */
     if((uint32_t)(o->facts.time_ms-diagnostic_ms)<1500u)return;
     diagnostic_ms=o->facts.time_ms;
-    uint32_t value=0,page=diagnostic_page;
+    /* Interleave pump progress so a short capture need not await every page. */
+    uint32_t value=0,page=(diagnostic_page&1u)?(diagnostic_page+1u)>>1:0;
     switch(page) {
     case 0:value=diagnostic_pumps;break;
     case 1:value=o->diagnostic_claimed;break;
@@ -339,7 +340,8 @@ static void business_diagnostic_step(void) {
     case 14:value=o->facts.accepted_seq;break;
     case 15:value=o->facts.applied_seq;break;
     }
-    business_diagnostic(page,value);diagnostic_page=(page+1u)&15u;
+    business_diagnostic(page,value);
+    if(++diagnostic_page==30u)diagnostic_page=0;
 }
 #endif
 void a138_ble_business_firmware_init(void) {

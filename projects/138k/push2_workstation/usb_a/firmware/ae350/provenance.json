@@ -101,7 +101,7 @@
     "ble_business_owner.c": {
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c",
-      "sha256": "bf4e098edeca96151e687d4b5084ff3c5ff0bd944a0fd5c89f4e711900a50ce5"
+      "sha256": "71661e3f0f11a668966e5b9cdabd8a4599e6990d1e299c91cd1310cb4273792a"
     },
     "ble_business_owner.h": {
       "kind": "maintained_first_party",

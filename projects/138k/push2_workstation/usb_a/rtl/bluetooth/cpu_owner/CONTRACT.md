@@ -176,7 +176,9 @@ UART. It is not an externally writable CPU command interface.
 | 14 / 15 | Physical accepted / applied descriptor sequence last observed by C |
 
 The firmware holds each normal page for 1500 ms because C350 is emitted about
-once per second. A 40-second capture normally sees the full 16-page rotation.
+once per second. Page0 alternates with pages1 through15, so pump progress is
+available every three seconds; a short capture can validate runtime immediately.
+A 60-second capture normally sees all pages and is optional.
 Before binding, page0 still shows actual pump progress; a newly observed fault
 immediately publishes page0 with its fault code. Counters are observation only
 and never enter business decisions. Pages are separate observations and must
@@ -186,7 +188,7 @@ Use the existing capture entry point with a Python environment containing
 pyserial, for example from usb_a:
 
 ```sh
-python3 -B tools/capture_scope_smoke.py --business-only --port /dev/cu.usbserial-21201 --seconds 40 --output /tmp/business-before.json
+python3 -B tools/capture_scope_smoke.py --business-only --port /dev/cu.usbserial-21201 --seconds 10 --output /tmp/business-before.json
 ```
 
 This mode is read-only and skips the historical CNN/general instrument smoke
