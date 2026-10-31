@@ -262,6 +262,8 @@ M12b／W10的[完整默认物理实现](push2_workstation/usb_a/reports/DUAL138K
 
 针对W10实际50MHz长链的[HCI身份比较修正](push2_workstation/usb_a/reports/DUAL138K_HCI_IDENTITY_20261101.md)已完成：两维护模块使用完整12／16／32bit XOR归约，周期、优先级及信用owner不变。host RX／native旧版对照17,674／6,545周期，后者包括2,608个包RAM元素；全域关系与5新破坏负控、原13＋11业务负控及UART8E1／H5通过。固定W10输入不改，下一候选重新综合／P&R测收益，尚未上板。
 
+M12b／W10的[far完整物理测量](push2_workstation/usb_a/reports/DUAL138K_M12B_W10_FAR_PHYSICAL_20261101.md)已完成，VG／完整SDC保持原字节和DDR3.500ns：M `D210311A` setup1,524／−1.299ns、hold0／+0.143ns；W `D2103119` setup5,532／−5.338ns、hold1／−0.063ns。目标DDR hold分别+0.624／+0.662ns；W剩余为midi_bytes的ack首级路径，尚未豁免或接受。两份M实际VO／SDC／PLL及W far各子门分别通过，整机仍不可部署，未烧录。下一候选继续消费已审源码修复，不把局部门或分时验证升级为声画／双板验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
