@@ -91,11 +91,26 @@ module feedback_capture #(
         integer k;
         wire signed [32:0] slope=$signed({poles[5][31],poles[5]})-$signed({previous[31],previous});
         function signed [31:0] smooth(input signed [31:0] value,old_value);
-            reg signed [32:0] delta,updated;
+            reg [6:0] low_sum;
+            reg [31:0] value_upper,old_upper_complement,round_carry,overflow_correction;
+            reg [31:0] sum1,carry1,sum2,carry2,sum3,carry3;
             begin
-                delta=$signed({value[31],value})-$signed({old_value[31],old_value});
-                updated=$signed({old_value[31],old_value})+((delta+33'sd16)>>>5);
-                smooth=updated[31:0];
+                // Preserve the signed 33-bit subtract/round wrap, then form
+                // the update with one final carry-propagating addition.
+                low_sum={2'b00,value[4:0]}+{2'b00,~old_value[4:0]}+7'd17;
+                value_upper={{5{value[31]}},value[31:5]};
+                old_upper_complement=~{{5{old_value[31]}},old_value[31:5]};
+                round_carry={30'd0,low_sum[6:5]};
+                overflow_correction=(value[31:5]==27'h3ffffff &&
+                    old_value[31:5]==27'h4000000 && low_sum[6:5]==2'd2) ? 32'hf0000000 : 32'd0;
+                sum1=old_value^value_upper^old_upper_complement;
+                carry1=((old_value&value_upper)|(old_value&old_upper_complement)|
+                    (value_upper&old_upper_complement))<<1;
+                sum2=sum1^carry1^round_carry;
+                carry2=((sum1&carry1)|(sum1&round_carry)|(carry1&round_carry))<<1;
+                sum3=sum2^carry2^overflow_correction;
+                carry3=((sum2&carry2)|(sum2&overflow_correction)|(carry2&overflow_correction))<<1;
+                smooth=sum3+carry3;
             end
         endfunction
         assign smooth_trigger=armed && !slope[32];

@@ -1,0 +1,459 @@
+{
+  "schema": 1,
+  "stage": "maintained_feedback_smooth_csa_source_implementation",
+  "passed": true,
+  "source_implementation": true,
+  "source_sha256": {
+    "rtl/display_data/feedback_capture.v": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
+    "sim/display/run_feedback_smooth_csa.py": "3d536c1430d58bbee838a6934a8e5858eeadf084e2222b97c0ff5ee6ca626b98",
+    "sim/fixtures/feedback_capture_before_smooth_csa.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56"
+  },
+  "identity": {
+    "source": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v",
+    "source_sha256": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
+    "fixture": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/fixtures/feedback_capture_before_smooth_csa.v",
+    "fixture_sha256": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56",
+    "old_function_sha256": "f94f22f1b875a1bf57252a14ac7c474c736658483350a402f04200616fb73694",
+    "new_function_sha256": "0904354561c364a4722eac08493db7e03e3ce8fe70b2ccf189bd0accf487dff8",
+    "outside_function_byte_identical": true,
+    "state_ports_parameters_clocks_and_latency_changed": false
+  },
+  "approved_independent_review": {
+    "review_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-independent-review-v1/review.json",
+    "review_sha256": "4e9530e9e826959cec5fef575f551628d3c72819c64136a4f8facfd0d7dba4da",
+    "final_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-independent-review-v1/final-seal-v2.json",
+    "final_seal_sha256": "473d1a41254dc08de385fac64bb0bd283c45b5092ebc6272fa382010ba03a156"
+  },
+  "proof": {
+    "binary": {
+      "result": "unsat",
+      "seconds": 3.883610875112936,
+      "arbitrary_input_bits": 64,
+      "reachable_state_assumptions": false
+    },
+    "four_state": {
+      "result": "unsat",
+      "seconds": 0.0004704580642282963,
+      "arbitrary_known_mask_bits": 64,
+      "method": "sound IEEE operator known-mask upper bound"
+    },
+    "negative_controls": {
+      "missing_33bit_overflow": {
+        "result": "sat",
+        "seconds": 0.0807740418240428,
+        "counterexample": {
+          "value": "7fffffff",
+          "old_value": "80000009"
+        }
+      },
+      "bad_rounding": {
+        "result": "sat",
+        "seconds": 0.005220791790634394,
+        "counterexample": {
+          "value": "ee5641e9",
+          "old_value": "1d8580f9"
+        }
+      },
+      "lost_carry_operand": {
+        "result": "sat",
+        "seconds": 0.008739207871258259,
+        "counterexample": {
+          "value": "1997fffe",
+          "old_value": "ff680000"
+        }
+      }
+    },
+    "critical_original_33bit_wrap": {
+      "value": "7fffffff",
+      "old_value": "80000000",
+      "result": "78000000"
+    },
+    "scope": "Exact source hashes bind independently hand-translated arithmetic and IEEE operator argument. No source-language frontend or whole temporal formal equivalence claim.",
+    "z3_version": "5.1.0"
+  },
+  "complete_capture_cases": {
+    "input0-complete_capture_and_function": {
+      "input_registered": 0,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=0",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input0-complete_capture_and_function.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 0,
+      "expected_success": true,
+      "seconds": 8.998920083977282,
+      "metrics": {
+        "input_registered": 0,
+        "probes": 1067717,
+        "cycles": 44000,
+        "source_checks": 44004,
+        "render_checks": 31431,
+        "memory_writes": 23152,
+        "bank_words": 45056,
+        "publications": 43,
+        "releases": 39,
+        "reads": 23376,
+        "skipped": 7417,
+        "timeout": 1,
+        "smooth": 1,
+        "phase": 42,
+        "silence": 4,
+        "x": 152,
+        "z": 100,
+        "resets": 3
+      },
+      "source_sha256": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
+      "log_sha256": "756bd401138e6303aa8d3695f3581fe662445fceac782887696a555038d202df"
+    },
+    "input1-complete_capture_and_function": {
+      "input_registered": 1,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=1",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input1-complete_capture_and_function.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 0,
+      "expected_success": true,
+      "seconds": 9.052195334108546,
+      "metrics": {
+        "input_registered": 1,
+        "probes": 1067717,
+        "cycles": 44000,
+        "source_checks": 44004,
+        "render_checks": 31431,
+        "memory_writes": 23149,
+        "bank_words": 45056,
+        "publications": 43,
+        "releases": 39,
+        "reads": 23372,
+        "skipped": 7411,
+        "timeout": 1,
+        "smooth": 1,
+        "phase": 42,
+        "silence": 4,
+        "x": 152,
+        "z": 100,
+        "resets": 3
+      },
+      "source_sha256": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
+      "log_sha256": "66a8025e3612e5dff31ab1510290c34b70e9e7c6307a120aea1006b0f0c6a3a8"
+    }
+  },
+  "actual_source_negative_controls": {
+    "input0-missing_33bit_overflow": {
+      "input_registered": 0,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=0",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input0-missing_33bit_overflow.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/missing_33bit_overflow.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.009037290932610631,
+      "metrics": null,
+      "source_sha256": "e9b112e64fbd5680ee5bb28603a11b12bf7adf95d8565b77295e2a40639eb1ec",
+      "log_sha256": "fd698d29ec310868fb6f01bb2a9cb4c8d8ae1d23526f94b99ff97bf533e8e76a"
+    },
+    "input0-bad_rounding": {
+      "input_registered": 0,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=0",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input0-bad_rounding.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/bad_rounding.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.009680832969024777,
+      "metrics": null,
+      "source_sha256": "fdae80d8499233468d3eb9bf10451e4fd97fba6ab9ad9a290ba1b89db276cb05",
+      "log_sha256": "9fd9369f8536989faff65ed91a8080cc60ec9d173a0760e50c1e6cfa1db6a63f"
+    },
+    "input0-lost_carry_operand": {
+      "input_registered": 0,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=0",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input0-lost_carry_operand.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/lost_carry_operand.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.009279875084757805,
+      "metrics": null,
+      "source_sha256": "b4368ec45b05f130b13b59d6bc511d678b3484bd7ee14ec52d080d7e6babc20d",
+      "log_sha256": "a817a43dc76b419adb0583ea7011bf65dbabee356659c95be2bc8f4c699356fa"
+    },
+    "input1-missing_33bit_overflow": {
+      "input_registered": 1,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=1",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input1-missing_33bit_overflow.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/missing_33bit_overflow.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.009750833036378026,
+      "metrics": null,
+      "source_sha256": "e9b112e64fbd5680ee5bb28603a11b12bf7adf95d8565b77295e2a40639eb1ec",
+      "log_sha256": "fd698d29ec310868fb6f01bb2a9cb4c8d8ae1d23526f94b99ff97bf533e8e76a"
+    },
+    "input1-bad_rounding": {
+      "input_registered": 1,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=1",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input1-bad_rounding.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/bad_rounding.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.00941879185847938,
+      "metrics": null,
+      "source_sha256": "fdae80d8499233468d3eb9bf10451e4fd97fba6ab9ad9a290ba1b89db276cb05",
+      "log_sha256": "9fd9369f8536989faff65ed91a8080cc60ec9d173a0760e50c1e6cfa1db6a63f"
+    },
+    "input1-lost_carry_operand": {
+      "input_registered": 1,
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb",
+        "-Ptb.INPUT_REGISTERED=1",
+        "-o",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/input1-lost_carry_operand.vvp",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/lost_carry_operand.v",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/feedback_capture_reference.v"
+      ],
+      "returncode": 1,
+      "expected_success": false,
+      "seconds": 0.009010917041450739,
+      "metrics": null,
+      "source_sha256": "b4368ec45b05f130b13b59d6bc511d678b3484bd7ee14ec52d080d7e6babc20d",
+      "log_sha256": "a817a43dc76b419adb0583ea7011bf65dbabee356659c95be2bc8f4c699356fa"
+    }
+  },
+  "maintained_proof_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-v2/verification.json",
+    "sha256": "4aa3c3ca307f22ea5e5c7a9995b9d07bb9af0fdec8a9905cf5b83a6710434370",
+    "exit_code": 0,
+    "final_input_guard_passed": true
+  },
+  "metadata_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-metadata-v1/verification.json",
+    "sha256": "c0f58afcf999240198c644208208f65b42bce8851ef21c79875e7adca5f41419",
+    "exit_code": 0,
+    "identity": "native-display-metadata-v11-offline-v1-4fa195bbae0ee701",
+    "minor0_compatibility": {
+      "compared_cycles": 615641,
+      "default_beats": 1098,
+      "context44_rejected": true,
+      "reader_minor1_rejected": true
+    },
+    "minor1_transport": {
+      "full_cache_checks": 14,
+      "writes": 2904,
+      "commits": 6,
+      "reads": 3712,
+      "rejected": 5,
+      "aborted": 3,
+      "first_publish_reads": 6
+    },
+    "real_analysis": {
+      "published": 3,
+      "wave_samples": 1536,
+      "xy_pixels": 196608,
+      "fft_columns": 1536,
+      "discarded_contexts": 4,
+      "early_rejected": 1
+    },
+    "rate_results": [
+      {
+        "rate_hz": 48000,
+        "epoch": 1,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 49152000,
+        "right_hz_q16": 98304000,
+        "commit_generation": 2
+      },
+      {
+        "rate_hz": 44100,
+        "epoch": 2,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 45158400,
+        "right_hz_q16": 90316800,
+        "commit_generation": 8
+      },
+      {
+        "rate_hz": 44100,
+        "epoch": 2,
+        "left_bin": 32,
+        "right_bin": 64,
+        "left_hz_q16": 45158400,
+        "right_hz_q16": 90316800,
+        "commit_generation": 10
+      }
+    ],
+    "checks": [
+      "48_to_44_to_48",
+      "same_epoch_observation_loss",
+      "epoch_zero_rejection",
+      "mixed_wave_analysis_generation_rejection",
+      "all_descriptor_versions_epochs",
+      "late_metadata_corruption_last_image",
+      "final_seqlock_corruption_last_image",
+      "slow_reader_bank_reuse",
+      "stalled_writer_context_abort_stability",
+      "final_capture_and_accepted_write_context_abort",
+      "final_context_drain_negative_control",
+      "sealed_snapshot_keeps_old_tags",
+      "first_synchronous_publish_read",
+      "reset",
+      "default_writer_exact_cycle_bytes",
+      "default_reader_unselected_minor1",
+      "context_aware_minor0_refuses_44100",
+      "untrusted_source_rejected",
+      "actual_fft_and_xy"
+    ]
+  },
+  "runtime_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-display-runtime-owner8-v2/verification.json",
+    "sha256": "59ca467c7001c6a48cfa82bb3fd9cf9c0cfa5188bcfd5444278effb110a0e1b2",
+    "exit_code": 0,
+    "identity": "native-runtime-display-offline-v1-fb67ab642a8a5781",
+    "metrics": {
+      "publications": 8,
+      "commits": 13,
+      "atomic_tuples": 166525,
+      "waveform_samples": 1024,
+      "xy_pixels": 131072,
+      "fft_columns": 1024,
+      "cdc_drops": 60,
+      "gray_drop_cycle_checks": 5528428,
+      "drop_revocations": 62,
+      "drop_completion_races": 1
+    },
+    "full_hdmi_elaboration": {
+      "default": true,
+      "runtime": true,
+      "runtime_owner8": true,
+      "official_gw5a": true
+    },
+    "owner8_elaboration": {
+      "arbiter": "workstation_recording_ddr_client_queues",
+      "core": "workstation_recording_ddr_arbiter_pipeline",
+      "recording_enabled": true,
+      "request_slots": 9,
+      "actual_prepared_sources": true,
+      "behavioral_or_hardware_acceptance": false
+    },
+    "checks": [
+      "initial_image_required",
+      "actual_48_and_44_fft_wave_xy",
+      "204bit_tuple_atomicity",
+      "raster_idle_cache_lease",
+      "pending_old_epoch_cancel",
+      "stalled_commit_tail_cancel",
+      "partial_reader_cancel",
+      "same_epoch_final_cdc_drop_cancel",
+      "cycle_exact_gray_drop_revocation",
+      "drop_coincident_with_reader_publication_cancel",
+      "error_frame_cancel",
+      "epoch_zero_reject",
+      "source_reset_async_revoke_both_domains",
+      "stopped_clock_local_reset_release",
+      "default_tokens_equal",
+      "reverse_exact_parent_bytes",
+      "full_hdmi_elaboration_both_modes",
+      "live_hdmi_provider_not_shadowed",
+      "native_render_without_local_fft",
+      "single_fft_owner_both_modes",
+      "both_analysis_dashboards_enabled",
+      "runtime_reader_two_cache_banks",
+      "explicit_owner8_adaptation_reverse_to_original_native",
+      "actual_owner8_arbiter_core_nine_slots_elaboration"
+    ]
+  },
+  "frozen_m15_w13_feedback_inputs_unchanged": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/rtl/display_data/feedback_capture.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/src/video/feedback_capture.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13/workstation/Prj1/rtl/display_data/feedback_capture.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13/workstation/Prj1/src/video/feedback_capture.v": "62195a1777f8308f0e20687e6dcae14af932e65eac0cf6ca814b6e40d294bb56"
+  },
+  "attempt_history": {
+    "maintained_v1": "passed before final input recheck was added; original successful evidence preserved",
+    "maintained_v2": "same complete tests rerun with final source/fixture identity guard; final maintained runner identity",
+    "runtime_m15_owner8": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-display-runtime-v1/attempt-result.json",
+      "sha256": "95e4c4bd4995b8f3a35a8fddcdbe9e14327174dde5d430ac474711668bdc44fe",
+      "result": "missing frozen M15 owner8 queue input; no gate relaxation or frozen project modification"
+    },
+    "runtime_w13_owner8": "passed with explicit frozen W13 support which actually supplies owner8 queues",
+    "prior_cache_inventory": "Original proposal inventory has 18 entries with verify-run-v1.log still open at capture time; existing independent review records the one final-log mismatch. Original JSON/log are preserved, not rewritten."
+  },
+  "seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/waveform-smooth-csa-maintained-sealed-v1.json",
+  "routed_timing_verified": false,
+  "resource_improvement_measured": false,
+  "synthesis_performed": false,
+  "hardware_tested": false,
+  "profile_locks_changed": false,
+  "task2_changed_by_subtask": false,
+  "commit_push_by_subtask": false,
+  "board_operation_by_subtask": false,
+  "limits": [
+    "Independent hand translated binary arithmetic SMT and sound IEEE known-mask argument are not a source-language frontend or whole temporal equivalence proof.",
+    "Selected complete dual-clock temporal simulation includes all persistent state except unused loop integer, all public outputs, every RAM write, both complete banks at publication and end. It is not physical CDC/timing or hardware acceptance.",
+    "Metadata/runtime use live maintained feedback_capture and explicit frozen support. Their default 48/44 kHz accelerated PCM fixtures and HDMI elaboration are not real board HDMI/I2S measurements.",
+    "M15/W13 old frozen identities remain unchanged. A new candidate and accepted-source checks are required before claiming any mapped/timing/resource improvement."
+  ]
+}
