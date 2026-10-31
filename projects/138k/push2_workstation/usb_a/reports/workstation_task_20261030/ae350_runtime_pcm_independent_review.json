@@ -1,0 +1,137 @@
+{
+  "schema": "ae350-runtime-pcm-independent-review-v1",
+  "stage": "source-and-native-C-RTL-offline-review",
+  "review_passed": true,
+  "implementation_changes": false,
+  "review_tree_base": "9c32437d880f3486540ee522ae9bea9ddc40f1f6",
+  "runtime_delivery_commit": "01ed9c973993dc2daf4f7a51ef716a5673c44169",
+  "PCM_delivery_commit": "0652ce04d7720c3db185a4d91888ba1c2fb845b9",
+  "bound_profile": "custom138k-workstation-classic-runtime-v1",
+  "bound_candidate": "3961efe8f7b81db7",
+  "bound_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-profile-v1/prepare-v6",
+  "actual_root_review": true,
+  "whole_block_runtime_retention_review": true,
+  "exact_HCI_token_epoch_copy_review": true,
+  "PCM_identity_CDC_cancel_and_volume_review": true,
+  "default_firmware_GeneralBonding_enabled": false,
+  "default_native_PCM_capabilities": 103,
+  "durable_bond_backend": false,
+  "sustained_verified": false,
+  "total_delay_valid": false,
+  "physical_stack_watermark": false,
+  "CPU_cycles_measured": false,
+  "physical_CDC_accepted": false,
+  "physical_timing_verified": false,
+  "hardware_operated": false,
+  "Flash_written": false,
+  "SBC_decoder_in_native_PCM_fixture": false,
+  "actual_full_HCI_SBC_PCM_runtime_verified": false,
+  "phone_interoperability": false,
+  "stack": {
+    "reviewed_JALR": 171,
+    "total_nonreturn_JALR": 200,
+    "peak_bytes": 1904,
+    "required_actual_roots": 21,
+    "negative_controls": [
+      {
+        "name": "missing-machine-site",
+        "rejected": true,
+        "error": "unresolved or unreachable machine indirect call sites in service graph"
+      },
+      {
+        "name": "unknown-callback-target",
+        "rejected": true,
+        "error": "invalid reviewed indirect call site or target"
+      },
+      {
+        "name": "source-identity-drift",
+        "rejected": true,
+        "error": "indirect call review input/disassembly identity changed"
+      },
+      {
+        "name": "reserved-stack-overflow",
+        "rejected": true,
+        "error": "service call chain exceeds reserved DLM stack"
+      }
+    ],
+    "ELF_sha256": "92eca5d392a472cdc2f570c039cc36f8c84001f7c0f6670568f5ee7aaf0fed11",
+    "BIN_sha256": "43e87f191099597e5357fa156f5f41b2deffcc1ccb1f851a84752b38a10478e0"
+  },
+  "native_PCM_metrics": {
+    "checks": 1763672,
+    "scheduler_events": 16005780,
+    "reads": 711,
+    "writes": 3395,
+    "window": 3089,
+    "frames": 1644,
+    "direct": 181,
+    "half": 37,
+    "mono": 150,
+    "history": 8,
+    "chorus": 360,
+    "complete_blocks": 24,
+    "complete_words": 3072,
+    "max_APB_wait": 7,
+    "native": 0
+  },
+  "native_PCM_cases": {
+    "native-pcm-final-baseline-v2": {
+      "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/native-pcm-final-baseline-v2/verification.json",
+      "verification_sha256": "353e358a1e6c93e06fc8f086e4c2e2b5b0c2382ef3c445596a4030681d16f5ce",
+      "negative_control": null,
+      "negative_control_killed": false,
+      "passed": true
+    },
+    "native-pcm-final-capability-mutant-v2": {
+      "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/native-pcm-final-capability-mutant-v2/verification.json",
+      "verification_sha256": "284ff981043ec9a3903054b38f6e47c4194fd3682f1ab0494b2b407be915838c",
+      "negative_control": "capability-gate",
+      "negative_control_killed": true,
+      "passed": true
+    },
+    "native-pcm-final-partial-mutant-v2": {
+      "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/native-pcm-final-partial-mutant-v2/verification.json",
+      "verification_sha256": "c674849983bcac5b9a347511fda0c65912940986aa792fe45653edf620fa1bd1",
+      "negative_control": "partial-accept",
+      "negative_control_killed": true,
+      "passed": true
+    },
+    "native-pcm-final-mono-mutant-v2": {
+      "verification_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/native-pcm-final-mono-mutant-v2/verification.json",
+      "verification_sha256": "1a571da336e328bbe31239644ec6befafb60845f489bea11419dfb60fb7deee7",
+      "negative_control": "mono-channel",
+      "negative_control_killed": true,
+      "passed": true
+    }
+  },
+  "additional_evidence": {
+    "foundation-joint-source-binding.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/foundation-joint-source-binding.json",
+      "sha256": "c5e51e6f22b3740191df5bba720a5d43f1d9977aa92988358eefd842ec69dd17"
+    },
+    "profile-v6-consumed-byte-binding.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/profile-v6-consumed-byte-binding.json",
+      "sha256": "e19355171db9dd2cd7f8a497e7f11d8617feb78a2f1bd10f17ab32c17948a4fd"
+    },
+    "legacy-64k-review-independent.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/legacy-64k-review-independent.json",
+      "sha256": "020f52d0a88ad2e45d8897e4dfd40a4c7bdc851d848d46c174e475a0b37f5e73"
+    },
+    "link-v10-independent/runtime_callgraph_verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/b04-runtime-pcm-independent-review-v1/link-v10-independent/runtime_callgraph_verification.json",
+      "sha256": "b3ee02bad3a45eba54a5dea87ea4871ea5e5405a07908a821db55ce9d6add741"
+    }
+  },
+  "new_test_source_sha256": {
+    "sim/audio/run_ae350_pcm_native_cosim.py": "742569df4e4f111f776a5629f415503a8563d661e597cc85b1449dabe908b5a3",
+    "sim/audio/ae350_pcm_native_cosim.cpp": "e97f16557b3b053bd6cf3be1e234295629b69d961595a4481780eb3a2d81167c",
+    "sim/audio/ae350_pcm_native_cosim.sv": "c15eead0039fa7039b9c446eda1ccd7af230f77906f06d8de6b36583040b4004"
+  },
+  "remaining": [
+    "Implement and verify an actual durable bond backend before enabling GeneralBonding.",
+    "Measure sustained throughput, decode cycles, deadlines, short-queue drift recovery and total end-to-end delay on the selected candidate.",
+    "Integrate complete HCI/SBC runtime into this physical media fixture and verify actual phone audio.",
+    "Resolve actual synthesis CDC endpoints and perform complete routed setup/hold/resource gates.",
+    "Hardware stack watermark, SRAM/readback and audio acceptance remain separate."
+  ]
+}
