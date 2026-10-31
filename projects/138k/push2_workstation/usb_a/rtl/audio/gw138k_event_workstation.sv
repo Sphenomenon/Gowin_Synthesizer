@@ -323,7 +323,19 @@ module gw138k_event_workstation #(
     wire pipeline_quiet=runtime_quiescent && fx_quiet && !load_busy && !mix_busy &&
         vec_ready && !synth_joined && !vec_joined && !synth_valid_o && !vec_valid &&
         !sample_valid_o && !native_clear && (!frame_inflight || pending);
-    wire config_accept=rate_commit_i && rate_ready_o;
+    // A real broadcast already blocks dispatch through runtime_config_block.
+    // Use that cofactor here, keeping queued event qualification out of the
+    // engine/effect broadcast. Unknown request/busy values retain the public
+    // ready expression and its original four-state behavior.
+    logic config_accept;
+    always_comb begin
+      case ({rate_commit_i,busy})
+        2'b00,2'b01,2'b11: config_accept=1'b0;
+        2'b10: config_accept=rst_ni && !runtime_fault && pipeline_quiet &&
+            !usb_lifecycle && fx_config_ready;
+        default: config_accept=rate_commit_i && rate_ready_o;
+      endcase
+    end
     wire history_accept=history_clear_i && history_ready_o;
     assign runtime_config_busy=busy;
     assign runtime_fault=failed || fx_fault;
@@ -519,7 +531,7 @@ module gw138k_event_workstation #(
       .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
       .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o),
-      .config_valid_i(rate_commit_i && rate_ready_o),.rate_44100_i,
+      .config_valid_i(engine_rate_commit),.rate_44100_i,
       .history_clear_i(history_clear_i && history_ready_o),
       .config_ready_o(fx_config_ready),.config_applied_o(fx_config_applied),
       .history_ready_o(fx_history_ready),.history_done_o(fx_history_done),

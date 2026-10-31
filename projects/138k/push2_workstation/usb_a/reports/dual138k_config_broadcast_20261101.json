@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "stage": "runtime configuration broadcast cofactor source validation",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": "5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1",
+    "projects/138k/push2_workstation/usb_a/sim/audio/prove_effect_slot_admission.py": "c5016cb95249b726d56a340e6f54b63d6e53786d9fdb3a60259bd53324dfdbf3"
+  },
+  "implementation": "Only runtime configuration admission and shared engine/effect config broadcast. Public rate_ready, history admission, state, priority and sample cycles unchanged. Binary request/busy case uses an event-dispatch cofactor; unknown controls retain exact original expression.",
+  "binary_equivalence": "UNSAT over unrestricted combinational input/state; event qualification abstracted freely after checking every actual event-valid assignment is dispatch-qualified",
+  "configuration_mutant_equations": 4,
+  "configuration_mutants_all_detected": true,
+  "existing_effect_slot_relations_and_negatives_retained": true,
+  "four_state": {
+    "scope": "actual source procedural cone, finite four-state vectors; no cycle/physical timing claim",
+    "vectors": 81920,
+    "seven_inputs_all_four_value_combinations": 16384,
+    "seeded_additional_vectors": 65536,
+    "fixture_sha256": "48a869bdf914a6fcc64c758dd3e7344f951be7e3e44628aa26b8d8d3729914d7",
+    "compile_log_sha256": "6ce410311212e9ab1e7628c0c711f35536b6146f5c94a1a709d7b3d872291d1b",
+    "run_log_sha256": "ffdb88fbb74fadb971c25ab2923acb080da274072841aae5193b10aa831700a3"
+  },
+  "full_service_miter": {
+    "halfcycles": 115929947,
+    "public_outputs": 50,
+    "actual_core_ce_compared": true,
+    "model_frames": 48645,
+    "rate48000_model_frames": 24323,
+    "rate44100_model_frames": 24322,
+    "configurations": 21,
+    "history_transactions": 324,
+    "cancellations": 11,
+    "ordered_fences": 326,
+    "reference": "exact original consumed M11 event/effects/service modules; all original hashes checked by existing runner",
+    "all_inputs_stable": true
+  },
+  "controlled": {
+    "real_I2S_frames": 1078,
+    "display_tuple_checks": 1077,
+    "FFT_bins": 384,
+    "nonzero_FFT_bins": 382,
+    "APB_transactions": 1082,
+    "USB_events": 33,
+    "CPU_events": 28,
+    "rate_switches": 2,
+    "inflight_score_boundary_additional_run_passed": true,
+    "all_inputs_stable": true
+  },
+  "source_regressions": {
+    "current_workstation_sources_tests": 17,
+    "workstation_demo_audit_tests": 15,
+    "passed": true
+  },
+  "initial_proof_runner_failure": "Unsupported multi-digit SV equality literals in the old restricted parser; actual grammar widened to decimal tokens and final source-anchored proof rerun successfully.",
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/config-broadcast-proof-v3/verification.json": "e4f4d2d934f54d41293e5b653bcc945c650ec48c6db4dfac4a59efd723338bb3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-config-accept-20261101-v1/verification.json": "69eb9d34abebbc210e9a373fa9b9ea4c75c940c657ede721791940afa9cbd393",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-config-accept-20261101-v1/full-service-miter/verification.json": "38cbfac3b9e3756bc6e2a3e91b881bfa5a45d8f2f72cedd0c286c0c28078874a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-config-accept-20261101-v1/controlled-full/verification.json": "25b9dc2b2ccf6d78041606b0fa9e918d3bdaf3377b66e9613e7b0265060b7aee",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-config-accept-20261101-v1/controlled/verification.json": "3a777e8b836d8e97f4d55fd0014436e8f1e06e418c91eae163c59afb464bb68b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13-current-sources-v1.log": "c7cb808f7b83f7db92cae23ea5d2a5b58e0515e72f1b5edece8b266084b11194",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13-demo-audit-v1.log": "845bf2218f103dc953858efccc475b16d7ddf07c9d98ab23404efda3e4a9e0c0"
+  },
+  "physical_timing_verified": false,
+  "resource_saving_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "rollback": "Restore parent gw138k_event_workstation source 87d9497ec7e228453aa8e29a96d6f79e693696b324e09a69aaece3dcece19809 and regenerate a distinct candidate."
+}

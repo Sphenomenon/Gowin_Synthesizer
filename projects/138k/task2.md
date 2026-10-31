@@ -274,6 +274,8 @@ M12b far实际chorus长链的[44.1k精确组合替换](push2_workstation/usb_a/r
 
 W11全量综合与[严格角色门禁修复](push2_workstation/usb_a/reports/DUAL138K_DEMO_BOUNDARY_ROLE_20261101.md)已通过：FF45,091、LUT54,836、ALU14,096、BSRAM equivalent257。首次门禁把663端点DMA映射误判为M，失败保留；现将DMA完整映射和USB完整queue角色分开，原两份完整清单及全部pin／clock／SDC检查不放宽，61负控拒绝，旧W10／M12b兼容复验通过。W11新严格门全通过，默认 `D2110101` 完整P&R正在运行，物理资源／时序未测得，未上板。
 
+M实际配置广播长链的[局部组合简化](push2_workstation/usb_a/reports/DUAL138K_CONFIG_BROADCAST_20261101.md)已通过全域二态证明、81,920有限四态向量、115,929,947半周期完整服务旧新对照及真实APB／I2S／FFT控制仿真。公开ready／采样周期不变，engines／effects共用一个接受广播。两份822来源锁已刷新；M13 `eae1eec8001e068f`已prepare并核实588封存／261启用输入确消费新广播、chorus和TF DMA，正全量综合。默认编译器失败保留，显式同M12b工具链重试通过；尚无新物理或硬件接受结论。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

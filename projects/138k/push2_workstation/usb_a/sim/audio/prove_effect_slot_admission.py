@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Prove the native core_ce cofactor from actual maintained SV equations."""
 from pathlib import Path
-import argparse,hashlib,json,re,sys
+import argparse,hashlib,json,re,subprocess,sys
 import z3
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -17,7 +17,7 @@ def equation(text,name):return one(text,r'\b(?:assign|wire)\s+'+re.escape(name)+
 class BooleanSV:
     """Only the boolean/equality/conditional grammar used by these equations."""
     def __init__(self,text,values):
-        self.tokens=re.findall(r'&&|\|\||==|[!()?:]|[A-Za-z_]\w*|[01]',text)
+        self.tokens=re.findall(r'&&|\|\||==|[!()?:]|[A-Za-z_]\w*|\d+',text)
         if ''.join(self.tokens)!=re.sub(r'\s+','',text):raise ValueError('unsupported SV expression '+text)
         self.i=0;self.values=values
     def take(self,value):
@@ -31,7 +31,7 @@ class BooleanSV:
         value=z3.BoolVal(name=='1') if name in ('0','1') else self.values[name] if name in self.values else z3.Bool(name)
         if self.take('=='):
             other=self.tokens[self.i];self.i+=1
-            rhs=z3.BitVecVal(int(other),value.size()) if other in ('0','1') else self.values[other]
+            rhs=z3.BitVecVal(int(other),value.size()) if other.isdecimal() else self.values[other]
             value=value==rhs
         return value
     def conjunction(self):
@@ -52,6 +52,94 @@ class BooleanSV:
 
 def parse(text,values):return BooleanSV(text,values).result()
 
+def broadcast_expression(text,native):
+    """Read the binary cofactor and check every non-binary fallback anchor."""
+    body=one(native,r'logic config_accept;\s*always_comb begin\s*case \(\{rate_commit_i,busy\}\)(.*?)endcase\s*end')
+    expression=one(body,r"2'b10:\s*config_accept=(.*?);")
+    rest=re.sub(r"2'b10:\s*config_accept=.*?;",'',body,flags=re.S)
+    assert re.sub(r'\s+','',rest)=="2'b00,2'b01,2'b11:config_accept=1'b0;default:config_accept=rate_commit_i&&rate_ready_o;",'configuration case/fallback changed'
+    assert equation(native,'engine_rate_commit')=='config_accept','engine broadcast split'
+    assert one(text,r'\.config_valid_i\((.*?)\),\.rate_44100_i,')=='engine_rate_commit','effect broadcast split'
+    return 'rate_commit_i && !busy && ('+expression+')'
+
+def prove_configuration(text,native,expression):
+    # Every actual procedural event-valid assignment is zero or dispatch
+    # qualified. Abstract the remaining event qualification freely; this
+    # includes every input/state without a reachability assumption.
+    control=one(text,r'always_comb begin\s*(core_event_valid=0;.*?)\n  end\n  wire decoder_valid')
+    event=re.findall(r'\bcore_event_valid\s*=\s*(.*?);',control)
+    expr=re.findall(r'\bcore_expression_valid\s*=\s*(.*?);',control)
+    assert [re.sub(r'\s+','',v) for v in event]==['0','dispatch&&deferred_current','dispatch&&!(kind==1&&full)']
+    assert [re.sub(r'\s+','',v) for v in expr]==['0','dispatch&&core_expression_ready']
+    env={'allocated':z3.BitVec('allocated',32),'kind':z3.BitVec('kind',4),'a':z3.BitVec('a',7)}
+    for name in ('runtime_config_busy','runtime_config_block','runtime_fault'):
+        env[name]=parse(equation(native,name),env)
+    for name in ('mode_valid','dispatch','panic_accept'):
+        env[name]=parse(equation(text,name),env)
+    env['core_event_valid']=z3.And(env['dispatch'],z3.Bool('event_qualification'))
+    env['core_expression_valid']=parse('dispatch && core_expression_ready',env)
+    env['rate_ready_o']=parse(equation(native,'rate_ready_o'),env)
+    old=parse('rate_commit_i && rate_ready_o',env);new=parse(expression,env)
+    solver=z3.Solver();solver.add(old!=new);status=str(solver.check());assert status=='unsat',solver.model()
+    rows=[{'configuration_broadcast_all_combinational_states':status,'reachability_assumptions':[],
+           'event_qualification':'arbitrary, actual assignments all dispatch-qualified'}]
+    for name,anchor in [('lifecycle_veto_removed','!usb_lifecycle'),('fault_veto_removed','!runtime_fault'),
+                        ('quiet_veto_removed','pipeline_quiet'),('busy_veto_removed','!busy')]:
+        assert expression.count(anchor)==1
+        mutant=parse(expression.replace(anchor,'1'),env)
+        solver=z3.Solver();solver.add(old!=mutant);status=str(solver.check());assert status=='sat',name
+        rows.append({'mutant':name,'different_actual_broadcast':status,'counterexample':str(solver.model())})
+    return rows
+
+def four_state_configuration(text,native,out):
+    # Compile the actual procedural event cone and actual new case, keeping
+    # the previous public-ready expression as the independent reference.
+    control=one(text,r'(always_comb begin\s*core_event_valid=0;.*?)\n  end\n  wire decoder_valid')+'\n  end\n'
+    case=one(native,r'(always_comb begin\s*case \(\{rate_commit_i,busy\}\).*?endcase\s*end)')
+    names='rate_commit_i busy rst_ni failed fx_fault pipeline_quiet usb_lifecycle fx_config_ready history_clear_i mode_pending mode_ready pending sample_ce_i native_clear load_busy mix_busy vec_busy TIMING_OPTIMIZED event_valid releasing deferred_current sustain core_expression_ready scope_enable vec_dispatch_ready core_event_ready RUNTIME_RATE_ENABLE full'
+    declarations='logic '+','.join(names.split())+';\n'
+    declarations+='logic [3:0] kind;logic [6:0] a,b,release_index;logic [31:0] allocated;logic [12:0] tf_scope_control_o;\n'
+    declarations+='logic mode_valid,dispatch,panic_accept,runtime_config_block,runtime_config_busy,runtime_fault,rate_ready_o,config_accept;\n'
+    declarations+='logic core_event_valid,core_expression_valid,core_note_on,event_ready;logic [6:0] core_note,core_velocity,core_expression_note,core_expression_value;\n'
+    assigns=''.join('assign '+name+'='+equation(native if name in ('runtime_config_block','runtime_config_busy','runtime_fault','rate_ready_o') else text,name)+';\n'
+                    for name in ('runtime_config_block','runtime_config_busy','runtime_fault','mode_valid','dispatch','panic_accept','rate_ready_o'))
+    random_assign=''.join(name+'=random4();\n' for name in names.split())
+    generated=('module tb;\n'+declarations+assigns+control+case+'''
+integer checks=0;integer k,j;reg [31:0] rng=32'h7ad1395b;
+function automatic [1:0] random_code();begin rng=(rng>>1)^((rng&1)?32'h80200003:0);random_code=rng[1:0];end endfunction
+function automatic random4();begin case(random_code()) 0:random4=0;1:random4=1;2:random4=1'bx;3:random4=1'bz;endcase end endfunction
+function automatic digit4(input integer value);begin case(value&3) 0:digit4=0;1:digit4=1;2:digit4=1'bx;3:digit4=1'bz;endcase end endfunction
+task automatic check;begin #1;if(config_accept !== (rate_commit_i && rate_ready_o))$fatal(1,"broadcast four-state mismatch vector=%0d",checks);checks=checks+1;end endtask
+initial begin
+'''+random_assign+'''
+kind=2;a=120;b=0;release_index=0;allocated=0;tf_scope_control_o=0;
+// All four values of seven acceptance inputs; other event/state inputs
+// vary independently on each vector, including X and Z.
+for(k=0;k<16384;k=k+1)begin
+'''+random_assign+'''
+rate_commit_i=digit4(k);busy=digit4(k>>2);rst_ni=digit4(k>>4);failed=digit4(k>>6);
+pipeline_quiet=digit4(k>>8);usb_lifecycle=digit4(k>>10);fx_config_ready=digit4(k>>12);
+fx_fault=0;kind=random_code();a=7'(rng);b=7'(rng>>7);allocated=rng;tf_scope_control_o=13'(rng>>11);check();
+end
+for(j=0;j<65536;j=j+1)begin
+'''+random_assign+'''
+kind=4'(rng);a=7'(rng>>4);b=7'(rng>>11);allocated=rng;tf_scope_control_o=13'(rng>>15);check();
+end
+$display("PASS configuration four-state vectors=%0d",checks);$finish;end
+endmodule
+''')
+    source=out/'configuration_four_state.sv';source.write_text(generated)
+    executable=out/'configuration_four_state.vvp'
+    compile=subprocess.run(['iverilog','-g2012','-s','tb','-o',str(executable),str(source)],capture_output=True,text=True,timeout=60)
+    (out/'fourstate_compile.log').write_text(compile.stdout+compile.stderr)
+    if compile.returncode:raise ValueError('four-state cone compile failed: '+compile.stderr)
+    run=subprocess.run(['vvp',str(executable)],capture_output=True,text=True,timeout=60)
+    (out/'fourstate_run.log').write_text(run.stdout+run.stderr)
+    assert run.returncode==0 and 'PASS configuration four-state vectors=81920' in run.stdout,run.stdout+run.stderr
+    return {'scope':'actual source procedural cone, finite four-state vectors; no cycle/physical timing claim','vectors':81920,
+            'seven_inputs_all_four_value_combinations':16384,'seeded_additional_vectors':65536,
+            'fixture_sha256':sha(source),'compile_log_sha256':sha(out/'fourstate_compile.log'),'run_log_sha256':sha(out/'fourstate_run.log')}
+
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -65,13 +153,14 @@ def main():
     expr.update({k:equation(native,k) for k in ['runtime_config_busy','runtime_config_block','runtime_fault']})
     expr.update({k:equation(effect,k) for k in ['sample_slot_ready_o','ready_o','config_accept','history_accept']})
     expr['old_core_ce']=old.split('=',1)[1].rstrip(';')
-    expr['effect_config_input']=one(text,r'\.config_valid_i\((rate_commit_i && rate_ready_o)\)')
+    broadcast=broadcast_expression(text,native)
+    expr['effect_config_input']=broadcast
     expr['effect_history_input']=one(text,r'\.history_clear_i\((history_clear_i && history_ready_o)\)')
     assert '.clear_i(engine_clear)' in text
     original_ready='state==IDLE && !barrier_busy && !fault_o && !clear_i && !config_accept && !history_accept'
     assert re.sub(r'\s+','',expr['ready_o'])==re.sub(r'\s+','',original_ready),'full external ready changed'
     state=z3.BitVec('effect_state',4);fault=z3.Bool('effect_fault')
-    rows=[]
+    rows=prove_configuration(text,native,broadcast)
     for runtime in (False,True):
         env={'RUNTIME_EFFECTS_ENABLE':z3.BoolVal(runtime),'busy':z3.Bool('runtime_busy'),'fx_fault':fault,
              'legacy_cancel_tail':z3.BitVec('legacy_cancel_tail',6)}
@@ -100,9 +189,10 @@ def main():
                 mutant=parse(changed if key=='core_ce' else expr['core_ce'],changed_env)
                 solver=z3.Solver();solver.add(old_ce!=mutant);status=str(solver.check());assert status=='sat',name
                 rows.append({'mutant':name,'different_actual_core_ce':'sat','counterexample':str(solver.model())})
+    four_state=four_state_configuration(text,native,out)
     assert before=={str(p):sha(p) for p in paths},'source drift'
     record={'passed':True,'scope':'actual SV boolean equations, all combinational states and both runtime/legacy selection; no clock-cycle or sampling changes',
-        'input_sha256':before,'old_core_ce_sha256':OLD_SHA,'equations':expr,'proofs':rows,'z3_version':z3.get_full_version(),
+        'input_sha256':before,'old_core_ce_sha256':OLD_SHA,'equations':expr,'proofs':rows,'configuration_four_state':four_state,'z3_version':z3.get_full_version(),
         'hardware_accepted':False,'physical_timing_verified':False,'resource_saving_claimed':False}
     (out/'verification.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(rows,indent=2))
 if __name__=='__main__':main()
