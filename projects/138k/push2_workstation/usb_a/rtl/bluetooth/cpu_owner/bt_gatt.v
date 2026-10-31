@@ -513,6 +513,7 @@ module bt_gatt #(
     // ATT MTU up to247. Legacy attributes still return their original values:
     // GAP/device-name, GATT, FFF0 service, read+notify FFF1 and CCCD.
     task process_att;
+        reg first_in_range, second_in_range, third_in_range;
         begin
             start_handle=word_at(9); end_handle=word_at(11);
             attribute_type=word_at(13);
@@ -531,20 +532,19 @@ module bt_gatt #(
                     else if(start_handle==0 || start_handle>end_handle)
                         att_error_response(6,start_handle,1);
                     else begin
-                        response[response_base+8]=7; used=1;
-                        for(i=1;i<=5;i=i+1) begin
-                            if(i>=start_handle && i<=end_handle &&
-                               attribute_type==16'h2800 &&
-                               ((i==1 && word_at(15)==16'h1800) ||
-                                (i==4 && word_at(15)==16'h1801) ||
-                                (i==5 && word_at(15)==16'hfff0))) begin
-                                response_word(8+used,i);
-                                response_word(10+used,i==1 ? 3 : i==4 ? 4 : 8);
-                                used=used+4;
-                            end
+                        // Each supported service UUID has exactly one range.
+                        used=word_at(15)==16'h1800 ? 1 :
+                             word_at(15)==16'h1801 ? 4 :
+                             word_at(15)==16'hfff0 ? 5 : 0;
+                        if(attribute_type!=16'h2800 || used==0 ||
+                           used<start_handle || used>end_handle)
+                            att_error_response(6,start_handle,8'h0a);
+                        else begin
+                            response[response_base+8]=7;
+                            response_word(9,used);
+                            response_word(11,used==1 ? 3 : used==4 ? 4 : 8);
+                            response_begin(4,5);
                         end
-                        if(used==1) att_error_response(6,start_handle,8'h0a);
-                        else response_begin(4,used);
                     end
                 end
                 8'h10: begin
@@ -554,20 +554,29 @@ module bt_gatt #(
                     else if(attribute_type!=16'h2800)
                         att_error_response(8'h10,start_handle,8'h10);
                     else begin
+                        first_in_range=start_handle<=1 && end_handle>=1;
+                        second_in_range=start_handle<=4 && end_handle>=4;
+                        third_in_range=start_handle<=5 && end_handle>=5;
+                        used=first_in_range+second_in_range+third_in_range;
                         response[response_base+8]=8'h11;
-                        response[response_base+9]=6; used=2;
-                        for(i=1;i<=5;i=i+1) begin
-                            if((i==1 || i==4 || i==5) &&
-                               i>=start_handle && i<=end_handle) begin
-                                response_word(8+used,i);
-                                response_word(10+used,i==1 ? 3 : i==4 ? 4 : 8);
-                                response_word(12+used,i==1 ? 16'h1800 :
-                                                         i==4 ? 16'h1801 : 16'hfff0);
-                                used=used+6;
-                            end
+                        response[response_base+9]=6;
+                        // Pack the ordered service ranges into fixed slots.
+                        if(used!=0) begin
+                            response_word(10,first_in_range ? 1 : second_in_range ? 4 : 5);
+                            response_word(12,first_in_range ? 3 : second_in_range ? 4 : 8);
+                            response_word(14,first_in_range ? 16'h1800 :
+                                             second_in_range ? 16'h1801 : 16'hfff0);
                         end
-                        if(used==2) att_error_response(8'h10,start_handle,8'h0a);
-                        else response_begin(4,used);
+                        if(used>=2) begin
+                            response_word(16,first_in_range && second_in_range ? 4 : 5);
+                            response_word(18,first_in_range && second_in_range ? 4 : 8);
+                            response_word(20,first_in_range && second_in_range ? 16'h1801 : 16'hfff0);
+                        end
+                        if(used==3) begin
+                            response_word(22,5); response_word(24,8); response_word(26,16'hfff0);
+                        end
+                        if(used==0) att_error_response(8'h10,start_handle,8'h0a);
+                        else response_begin(4,2+6*used);
                     end
                 end
                 8'h08: begin
@@ -577,15 +586,20 @@ module bt_gatt #(
                     else begin
                         response[response_base+8]=9; used=2;
                         if(attribute_type==16'h2803) begin
+                            first_in_range=start_handle<=2 && end_handle>=2;
+                            second_in_range=start_handle<=6 && end_handle>=6;
                             response[response_base+9]=7;
-                            for(i=2;i<=6;i=i+4) begin
-                                if(i>=start_handle && i<=end_handle) begin
-                                    response_word(8+used,i);
-                                    response[response_base+10+used]=i==2 ? 2 : 8'h12;
-                                    response_word(11+used,i==2 ? 3 : 7);
-                                    response_word(13+used,i==2 ? 16'h2a00 : 16'hfff1);
-                                    used=used+7;
-                                end
+                            if(first_in_range || second_in_range) begin
+                                response_word(10,first_in_range ? 2 : 6);
+                                response[response_base+12]=first_in_range ? 2 : 8'h12;
+                                response_word(13,first_in_range ? 3 : 7);
+                                response_word(15,first_in_range ? 16'h2a00 : 16'hfff1);
+                                used=9;
+                            end
+                            if(first_in_range && second_in_range) begin
+                                response_word(17,6); response[response_base+19]=8'h12;
+                                response_word(20,7); response_word(22,16'hfff1);
+                                used=16;
                             end
                         end else if(attribute_type==16'h2a00 &&
                                     start_handle<=3 && end_handle>=3) begin
