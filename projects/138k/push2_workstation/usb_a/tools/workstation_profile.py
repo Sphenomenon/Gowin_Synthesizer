@@ -287,6 +287,10 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     staged_sdc = (stage / 'constraints/custom_138k.sdc').read_text().splitlines()
+    if profile['name']==CPU_BUSINESS_NAME:
+        from tools.workstation_cpu_business import verify_telemetry_reset_constraints
+        verify_telemetry_reset_constraints((stage / 'constraints/custom_138k.sdc').read_text(),
+                                          metadata.get('business_cpu_telemetry_reset_cdc'))
     local_panel_enabled = spec.get('local_panel_enabled', True)
     if metadata.get('peripherals', {}).get('local_panel_enabled', True) is not local_panel_enabled:
         raise ValueError('workstation profile local panel selection changed')

@@ -8,6 +8,26 @@ sys.path.insert(0,str(ROOT))
 from tools import workstation_cpu_business as selection
 from tools import workstation_bluetooth_ddr as legacy
 from tools import workstation_profile as profile
+class BusinessTelemetryReset(unittest.TestCase):
+    def test_only_shared_release_selector_changes(self):
+        before='create_clock -period 20 [get_ports {clk_50m}]\n'+selection.CPU_TELEMETRY_RELEASE_RESET+'\n'+(
+            'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/req_meta*/D u_runtime/u_cpu_cdc/ack_meta*/D}]\n')
+        after,evidence=selection.telemetry_reset_constraints(before)
+        self.assertEqual(after,before.replace(selection.CPU_TELEMETRY_RELEASE_RESET,selection.BUSINESS_TELEMETRY_RELEASE_RESET))
+        self.assertFalse(evidence['clocks_or_exceptions_relaxed'])
+        selection.verify_telemetry_reset_constraints(after,evidence)
+    def test_changed_missing_duplicate_or_preinstalled_anchor_rejected(self):
+        old=selection.CPU_TELEMETRY_RELEASE_RESET+'\n'
+        for before in ('',old+old,old.replace('source_release*','source_release_0*'),
+                       old+selection.BUSINESS_TELEMETRY_RELEASE_RESET+'\n'):
+            with self.subTest(before=before),self.assertRaisesRegex(ValueError,'missing, duplicated or changed'):
+                selection.telemetry_reset_constraints(before)
+    def test_changed_installed_constraints_or_evidence_rejected(self):
+        after,evidence=selection.telemetry_reset_constraints(selection.CPU_TELEMETRY_RELEASE_RESET+'\n')
+        for sdc,proof in ((after.replace('p_release*','p_release_0*'),evidence),
+                          (after,dict(evidence,shared_release_register_count=5))):
+            with self.subTest(sdc=sdc),self.assertRaisesRegex(ValueError,'installation changed|evidence changed'):
+                selection.verify_telemetry_reset_constraints(sdc,proof)
 class BusinessSources(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
@@ -77,6 +97,11 @@ class PreparedBusiness(unittest.TestCase):
         self.assertEqual(build['call_chain_stack']['reviewed_indirect_calls']['sites'],
             json.loads((ROOT/'tools/ae350_ble_business_indirect_review.json').read_text())['sites'])
         self.assertFalse(artifact['hardware_tested'])
+        sdc=(self.stage/'constraints/custom_138k.sdc').read_text()
+        self.assertNotIn(selection.CPU_TELEMETRY_RELEASE_RESET,sdc)
+        self.assertEqual(sdc.splitlines().count(selection.BUSINESS_TELEMETRY_RELEASE_RESET),1)
+        selection.verify_telemetry_reset_constraints(sdc,
+            json.loads((self.output/'integration_inputs.json').read_text())['business_cpu_telemetry_reset_cdc'])
     def test_changed_native_engine_and_reintroduced_retired_owner_rejected(self):
         p=self.stage/selection.SOURCES[0];old=p.read_bytes();p.write_bytes(old+b'\n')
         with self.assertRaisesRegex(ValueError,'drift|closure changed'):profile.verify(ROOT,self.output)

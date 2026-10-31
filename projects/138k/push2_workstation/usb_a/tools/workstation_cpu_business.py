@@ -31,6 +31,41 @@ HCI_SOURCES=tuple(HCI_DIRECTORY+'/'+name for name in (
 HCI_DEPENDENCIES=(*HCI_COPIES.values(),HCI_DIRECTORY+'/NATIVE_TRANSPORT_CONTRACT.md',
     'rtl/workstation/workstation_profile_ae350_business_v1.sv',
     'rtl/workstation/workstation_profile_hci_owner_v1.sv')
+CPU_TELEMETRY_RELEASE_RESET=(
+    'set_false_path -to [get_pins {u_runtime/u_cpu_cdc/source_release*/CLEAR '
+    'u_runtime/u_cpu_cdc/destination_release*/CLEAR}]')
+BUSINESS_TELEMETRY_RELEASE_RESET=(
+    'set_false_path -to [get_pins {business_commands/p_release*/CLEAR '
+    'business_commands/a_release*/CLEAR}]')
+def telemetry_reset_constraints(sdc):
+    """Retarget the CPU telemetry's shared release FFs in the business build.
+
+    Actual VG 903cd61c...0cf916 merges both three-stage release chains into
+    business_commands. The mailbox data/handshake constraints remain intact.
+    A changed netlist must still resolve these six reset pins before use.
+    """
+    old=CPU_TELEMETRY_RELEASE_RESET+'\n'
+    if sdc.splitlines(keepends=True).count(old)!=1 or BUSINESS_TELEMETRY_RELEASE_RESET in sdc:
+        raise ValueError('CPU business telemetry reset constraint missing, duplicated or changed')
+    selected=sdc.replace(old,BUSINESS_TELEMETRY_RELEASE_RESET+'\n',1)
+    return selected,dict(policy='ae350_business_cpu_telemetry_release_alias_v1',
+        original_constraint_sha256=hashlib.sha256(old.encode()).hexdigest(),
+        selected_constraint_sha256=hashlib.sha256((BUSINESS_TELEMETRY_RELEASE_RESET+'\n').encode()).hexdigest(),
+        original_constraint=CPU_TELEMETRY_RELEASE_RESET,
+        selected_constraint=BUSINESS_TELEMETRY_RELEASE_RESET,
+        reference_vg_sha256='903cd61c606b6419bd45ee2004b3e9d93520509d2e6cdb2ee4654ca52e0cf916',
+        shared_release_register_count=6,candidate_netlist_alias_validation_required=True,
+        data_or_handshake_constraints_changed=False,clocks_or_exceptions_relaxed=False,
+        physical_cdc_accepted=False)
+def verify_telemetry_reset_constraints(sdc,evidence):
+    selected=BUSINESS_TELEMETRY_RELEASE_RESET+'\n'
+    if sdc.splitlines(keepends=True).count(selected)!=1 or CPU_TELEMETRY_RELEASE_RESET in sdc:
+        raise ValueError('CPU business telemetry reset constraint installation changed')
+    original=sdc.replace(selected,CPU_TELEMETRY_RELEASE_RESET+'\n',1)
+    checked,expected=telemetry_reset_constraints(original)
+    if checked!=sdc or evidence!=expected:
+        raise ValueError('CPU business telemetry reset constraint evidence changed')
+    return evidence
 def selection(shared_hci=False):
     return (HCI_COPIES,(*SOURCES,*HCI_SOURCES),(*DEPENDENCIES,*HCI_DEPENDENCIES)) if shared_hci else (COPIES,SOURCES,DEPENDENCIES)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

@@ -102,7 +102,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     runtime = profile is not None and profile['configuration'].get('audio_policy') == 'native_dual_rate_runtime_v1'
     local_panel_enabled = True
     if runtime:
-        from tools.workstation_profile import specification, recognition_metadata
+        from tools.workstation_profile import specification, recognition_metadata, CPU_BUSINESS_NAME
         selected_provider = specification(profile['name'])['provider']
         recognition = recognition_metadata(profile)
         local_panel_enabled = specification(profile['name']).get('local_panel_enabled', True)
@@ -121,6 +121,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     recording_selected=runtime and specification(profile['name']).get('recording_enabled',False)
     ble_raw_selected=runtime and specification(profile['name']).get('ble_recording_storage_enabled',False)
     business_selected=runtime and specification(profile['name']).get('business_owner_enabled',False)
+    business_telemetry_alias_selected=business_selected and profile['name']==CPU_BUSINESS_NAME
     hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
@@ -293,6 +294,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if classic_selected:
         from tools.workstation_classic_runtime import cdc_bundle as classic_cdc_bundle
         selected_sdc += classic_cdc_bundle()['sdc']
+    business_telemetry_reset=None
+    if business_telemetry_alias_selected:
+        from tools.workstation_cpu_business import telemetry_reset_constraints
+        selected_sdc,business_telemetry_reset=telemetry_reset_constraints(selected_sdc)
     if runtime:
         from tools.workstation_recognition_policy import adapt_constraints
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
@@ -368,6 +373,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if business_selected:
             from tools.workstation_cpu_business import metadata as ble_recording_metadata
         metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
+    if business_telemetry_alias_selected:
+        metadata['business_cpu_telemetry_reset_cdc']=business_telemetry_reset
     if not local_panel_enabled:
         metadata['local_panel'] = panel
     if workstation_profile is not None:
