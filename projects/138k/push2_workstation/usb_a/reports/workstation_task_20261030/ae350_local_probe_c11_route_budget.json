@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "scope": "retained C11 wide-GAO EDA attempt, explicitly interrupted by diagnostic runtime budget",
+  "candidate_identity": "custom138k-ae350-local-memory-probe-C21031CD",
+  "source_commit": "1ff14c3",
+  "verification_tools_commit": "f8882c5",
+  "physical_attempt": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031CD-v11",
+  "elapsed_seconds": 2441.4465042077936,
+  "tool_exit_code": -15,
+  "inputs_unchanged": true,
+  "stop_decision": {
+    "schema": 1,
+    "time_utc": "2026-10-31T01:18:37.923194+00:00",
+    "pid": 31702,
+    "observed_command": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh run.tcl",
+    "observed_elapsed_seconds": 2441,
+    "reason": "Explicit diagnostic EDA budget: wide 2208-bit GAO-specific maze routing remains active after 40 minutes; retain this attempt and use separately identified banked diagnostics. Not classified as a tool routing failure or hang.",
+    "sample_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/c11-gwsh-sample-20261031.txt",
+    "sample_sha256": "2edacae846ebe4f52767a76c975351ca5e0f2aaf237a6ebc19140c9fab349e73",
+    "tool_log_before_sha256": "b1623456f52ef5bccdeebd83adf89d45c2087b95fcc996cb260f90af76675ba9",
+    "signal": "SIGTERM",
+    "sram_programmed": false,
+    "flash_written": false
+  },
+  "actual_prepare_audit": {
+    "manifest_sha256": "d3b6dddd7d4c5394124b570b737260cb802a61e1d2c09ef268a581e99fe1923c",
+    "verified_inputs": 38,
+    "compiled_sources": 8,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "actual_synthesis_gao": {
+    "registered_bits": 2208,
+    "clock": "clk_50m",
+    "snapshot_words": 64,
+    "physical_timing_verified": false,
+    "external_uart_reception_verified": false
+  },
+  "actual_synthesis_rtc": {
+    "pin": "u_rtc/rtc_tick_s1/Q",
+    "cell": "DFFCE",
+    "source": "clk_50m",
+    "hard_ip_wrapper_port": "u_cpu/rtc_tick",
+    "average_hz": 32768,
+    "sta_minimum_period_cycles": 1524
+  },
+  "final_bitstream_generated": false,
+  "final_routed_timing_available": false,
+  "physical_acceptance": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "hardware_acceptance": false,
+  "board_identity_after_read": "C11028E5",
+  "board_status_after_read": "00022020",
+  "board_read_only": true,
+  "limitations": [
+    "The 95% tool log is not final routed STA evidence",
+    "No tool routing-failure or hang verdict; agent stopped an active GAO-specific router",
+    "C11 was never programmed or captured on hardware",
+    "Complete64 diagnostic/cycle/cache observations remain pending",
+    "Separate narrower banked candidate must pass fresh source/physical/hardware gates"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-c11-route-budget-parent-v1",
+  "seal_sha256": "11d498412425caa1d1e8608419704fb707e1468e313bd6af1b560f11a96a5f5a",
+  "external_files": 72
+}
