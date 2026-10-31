@@ -14,9 +14,12 @@ AE350 的 CORE_CLK 必须来自 `PLL_R[0].clkout1`，并显式约束 PLL_ADV
 仍须独立核查完整 STA。C7／C8 的实际位置为 `PLL_B[2]`，即使可见 PL
 路径 STA 为正，也未满足硬核物理要求，不能视作完整物理接受。
 
-C9 仅修正 PLL 位置，固件及 100／50 MHz 配置不变，便于单变量板测。
-当前 RTC_CLK 仍继承 50 MHz 接线，偏离手册规定的 32.768 kHz，留待后续
-独立修正；不能从探针的离线通过推导硬核启动或缓存可用。
+C9 仅修正 PLL 位置，固件及 100／50 MHz 配置不变，已观察到软件摘要 PASS，
+SRAM Verify 仍失败。后续 C10 独立修正 RTC_CLK：由常开 50 MHz reference
+产生平均 32.768 kHz，半周期 762／763 reference cycles，边沿相位误差小于
+一个 reference tick。STA 按最短两半周期 1,524 ticks 保守约束，不能将该
+周期上界误写成实际平均频率；CPU／APB 不控制 RTC 的进度。固件、100／50 MHz、
+PLL 位置和摘要布局均保持，后续物理和板测须另立证据。
 
 ## 准备与身份
 
@@ -30,7 +33,7 @@ python3 build.py --ae350-local-memory-probe --prepare-only \
 ```
 
 准备只生成输入、固件和 `run.tcl`，不会启动 EDA 或访问板卡。
-`inputs.json` 记录全部准备字节的哈希、7 个编译源、硬核基线、时钟、
+`inputs.json` 记录全部准备字节的哈希、8 个编译源、硬核基线、时钟、
 引脚、编译命令／版本、ELF／BIN／ROM 和 payload 身份；
 `tools.workstation_ae350_local_probe.audit_prepare(output)` 可重新检查。
 输出目录不可重用，来源变化必须建立新的候选和固定清单。

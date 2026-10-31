@@ -29,6 +29,8 @@ module workstation_ae350_local_memory_probe_top(
         if(!lock_qualified)core_reset_pipe<=0;
         else core_reset_pipe<={core_reset_pipe[2:0],1'b1};
     wire cpu_reset_n=core_reset_pipe[3];
+    wire rtc_clk;
+    workstation_ae350_rtc u_rtc(.clk_50m(clk_50m),.reset_n(system_reset_n),.rtc_clk(rtc_clk));
     wire rom_clk,rom_reset_n,rom_write;
     wire [31:0] rom_address,rom_data,fetch_count,last_fetch;
     wire [1:0] rom_transfer;
@@ -111,6 +113,6 @@ module workstation_ae350_local_memory_probe_top(
         .APB_PPROT(),.APB_PSTRB(pstrb),.APB_PCLK(pclk),.APB_PRSTN(preset_n),
         .TCK_IN(1'b0),.TMS_IN(1'b1),.TRST_IN(1'b1),.TDI_IN(1'b0),.TDO_OUT(),.TDO_OE(),
         .CORE0_WFI_MODE(),.RTC_WAKEUP(),.CORE_CLK(core_clk),.DDR_CLK(bus_clk),
-        .AHB_CLK(bus_clk),.APB_CLK(bus_clk),.RTC_CLK(clk_50m),.POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));
+        .AHB_CLK(bus_clk),.APB_CLK(bus_clk),.RTC_CLK(rtc_clk),.POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));
 endmodule
 `default_nettype wire

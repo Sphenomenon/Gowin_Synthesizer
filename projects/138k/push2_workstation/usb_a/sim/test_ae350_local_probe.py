@@ -133,10 +133,50 @@ end $display("PASS probe top frozen wrapper ports and permanent DAC safety");$fi
             result=subprocess.run(['iverilog','-g2012','-I.','-s','tb','-o','sim','tb.sv','cpu_stub.v','pll_stub.v',
                 str(ROOT/'rtl/probe/workstation_ae350_local_memory_probe_top.sv'),
                 str(ROOT/'rtl/probe/workstation_ae350_probe_uart.sv'),
+                str(ROOT/'rtl/clock/workstation_ae350_rtc.sv'),
                 str(ROOT/'rtl/memory/workstation_ae350_boot_memory.sv')],cwd=path,text=True,capture_output=True)
             self.assertEqual(result.returncode,0,result.stderr)
             result=subprocess.run(['vvp','sim'],cwd=path,check=True,text=True,capture_output=True,timeout=10)
             self.assertIn('PASS probe top',result.stdout)
+
+    def test_rtc_rate_pulse_width_phase_and_reset(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)
+            (path/'tb.sv').write_text('''module tb;
+reg clk=0,rst=0;always #10 clk=~clk;wire rtc;
+workstation_ae350_rtc dut(.clk_50m(clk),.reset_n(rst),.rtc_clk(rtc));
+integer cycle=0,edges=0,last_edge=0,last_rise=0,rises=0;
+reg previous=0;real exact_edge,error_ticks;
+initial begin
+#41;rst=1;
+// One full reference second: rate and error are checked in reference cycles,
+// independently of the implementation's accumulator arithmetic.
+repeat(50000000)begin @(posedge clk);#1;cycle=cycle+1;
+ if(rtc!==previous)begin
+  edges=edges+1;
+  if(cycle-last_edge<762||cycle-last_edge>763)$fatal(1,"RTC half pulse width");
+  exact_edge=edges*50000000.0/65536.0;error_ticks=cycle-exact_edge;
+  if(error_ticks<0.0||error_ticks>=1.000001)$fatal(1,"RTC phase error");
+  if(rtc)begin
+   rises=rises+1;
+   if(last_rise!=0&&(cycle-last_rise<1525||cycle-last_rise>1526))$fatal(1,"RTC rising period");
+   last_rise=cycle;
+  end
+  last_edge=cycle;previous=rtc;
+ end
+end
+if(edges!=65536||rises!=32768||rtc!==0)$fatal(1,"RTC exact one-second rate");
+@(negedge clk);rst=0;#1;if(rtc!==0)$fatal(1,"RTC asynchronous reset");
+repeat(1000)begin @(posedge clk);#1;if(rtc!==0)$fatal(1,"RTC reset held");end
+@(negedge clk);rst=1;
+repeat(762)begin @(posedge clk);#1;if(rtc!==0)$fatal(1,"RTC restart short pulse");end
+@(posedge clk);#1;if(rtc!==1)$fatal(1,"RTC restart first pulse");
+$display("PASS RTC 32768Hz average, bounded jitter, reset/restart");$finish;
+end endmodule''')
+            subprocess.run(['iverilog','-g2012','-s','tb','-o','sim','tb.sv',
+                str(ROOT/'rtl/clock/workstation_ae350_rtc.sv')],cwd=path,check=True,capture_output=True)
+            result=subprocess.run(['vvp','sim'],cwd=path,check=True,text=True,capture_output=True,timeout=90)
+            self.assertIn('PASS RTC 32768Hz',result.stdout)
 
     def test_uart_async_atomic_snapshot_crc_and_timeout(self):
         for timeout in (False,True):

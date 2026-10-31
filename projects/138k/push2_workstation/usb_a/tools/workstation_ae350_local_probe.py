@@ -22,6 +22,7 @@ BASE='ae350_local_memory_probe'
 FIRMWARE=('start.S','start_ilm_dlm.inc','boot_ilm_dlm.ld',
           'probes/local_memory_probe.c','probes/local_memory_probe_trap.S')
 NATIVE=('rtl/memory/workstation_ae350_boot_memory.sv',
+        'rtl/clock/workstation_ae350_rtc.sv',
         'rtl/probe/workstation_ae350_probe_uart.sv','rtl/probe/'+TOP+'.sv')
 LOCKED=('riscv_ae350_config.v','src/ae350/riscv_ae350_config.v',
         'src/ae350/riscv_ae350_top.v','src/ae350/riscv_ae350_soc.v',
@@ -128,6 +129,11 @@ def constraints(root):
     selected=('clk_50m','cpu_ram50','cpu_core100')
     lines=[line for line in clock_bundle(root)['sdc'].splitlines() if any('-name '+name+' ' in line for name in selected)]
     if len(lines)!=3:raise ValueError('probe clock policy drift')
+    # The fractional RTC has bounded edge jitter. Use its minimum possible
+    # two-half-period length as a conservative periodic STA bound (not its
+    # 32.768kHz average), without removing paths or changing other clocks.
+    lines.append('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
+                 '-divide_by 1524 [get_pins {u_rtc/rtc_tick_s0/Q}]')
     first=('u_uart/request_meta_s0/D u_uart/ack_meta_s0/D u_uart/flags_meta*_s0/D '
            'upper_sync_0_s0/D unmapped_sync_0_s0/D rom_health_sync_0_s0/D upper_health_sync_0_s0/D')
     lines += [f'set_max_delay 15.000 -to [get_pins {{{first}}}]',
@@ -173,7 +179,7 @@ def audit_prepare(output):
     if record['clocks_hz']!=dict(core=100000000,bus=50000000,reference=50000000):
         raise ValueError('probe clock declaration changed')
     names=re.findall(r'^create_(?:generated_)?clock -name (\S+)',(output/'probe.sdc').read_text(),re.M)
-    if names!=['clk_50m','cpu_ram50','cpu_core100']:raise ValueError('probe SDC clock inventory changed')
+    if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
     cst=(output/'probe.cst').read_text()
     audit_cpu_pll_constraint(cst)
     if parse_locations(cst)!=record['port_locations']:
@@ -244,7 +250,10 @@ def prepare(root,netlists,output,user_code,prefix=None):
         clocks_hz=dict(core=100000000,bus=50000000,reference=50000000),
         core_clock_requirement=dict(instance=CPU_PLL_INSTANCE,site=CPU_PLL_SITE,output='CLKOUT1',
             reference='MUG1031 v1.3.1 section 7.3, PDF page 56 / printed page 48'),
-        rtc_use='50MHz inherited wiring; differs from documented 32.768kHz RTC; separate diagnostic pending; not a measurement timebase',
+        rtc_use='reference-derived 32768Hz average; half-periods 762/763 reference cycles; no CPU/APB dependency',
+        rtc_clock=dict(average_hz=32768,reference_hz=50000000,half_period_cycles=[762,763],
+            sta_minimum_period_cycles=1524,sta_policy='conservative minimum period bound, not the average rate',
+            phase_error_bound_reference_cycles=1,measurement_timebase=False),
         uart=dict(baud_divisor=434,reference_hz=50000000,baud=50000000/434,format='8N1',frame_bytes=280,
             header='A138LM01',word_count=64,crc='reflected CRC32/ISO-HDLC over first276bytes, final xor, LE tail'),
         port_locations=expected,electrical_check=plan['electrical_check'],
