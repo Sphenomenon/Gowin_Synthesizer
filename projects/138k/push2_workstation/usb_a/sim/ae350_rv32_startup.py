@@ -23,8 +23,8 @@ def signed(value, bits=32):
 class StartupCpu:
     def __init__(self, image, symbols, *, csr_overrides=None, unsupported_csrs=(),
                  stuck_enable=(), writable=True, corrupt_copy_address=None, rom_readable=True):
-        if len(image) not in (16384, 65536):
-            raise ModelError('model requires selected physical 16 or 64 KiB ROM')
+        if len(image) not in (16384, 65536, 131072):
+            raise ModelError('model requires selected physical 16, 64 or 128 KiB ROM')
         self.image, self.symbols = bytearray(image), symbols
         self.ilm, self.dlm = bytearray([0xA7] * 65536), bytearray([0xB9] * 65536)
         self.registers, self.pc = [0] * 32, ROM

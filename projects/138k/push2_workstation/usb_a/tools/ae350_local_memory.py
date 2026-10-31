@@ -120,6 +120,48 @@ def verify_elf_image(path, binary, symbols, rom_bytes=ROM_BYTES):
                 rom_loader_bytes=result['.boot']['bytes'])
 
 
+def direct_long_calls(disassembly):
+    """Resolve only adjacent actual AUIPC+JALR calls to exact function entries.
+
+    Cross-region RV32 calls can exceed JAL's reach. Decode instruction words;
+    objdump comments alone are not a points-to proof. Unrecognized sequences
+    remain indirect and need the existing exhaustive review.
+    """
+    entries, instructions = {}, []
+    current = None
+    for line in disassembly.splitlines():
+        header = re.match(r'^([0-9a-f]+) <([^>]+)>:', line)
+        if header:
+            address = int(header[1], 16)
+            if address in entries:
+                raise ValueError('ambiguous machine function entry')
+            entries[address] = current = header[2]
+        insn = re.match(r'^\s*([0-9a-f]+):\s+([0-9a-f]{8})\s+', line)
+        if insn:
+            instructions.append((int(insn[1], 16), int(insn[2], 16), current))
+    result = {}
+    for previous, actual in zip(instructions, instructions[1:]):
+        p, upper, owner = previous
+        address, word, caller = actual
+        rd, base = (word >> 7) & 31, (word >> 15) & 31
+        if (word & 0x707f != 0x67 or rd not in (0, 1) or not base or
+                upper & 0x7f != 0x17 or (upper >> 7) & 31 != base or
+                address != p + 4 or owner != caller):
+            continue
+        high = upper & 0xfffff000
+        high -= (high >> 31) << 32
+        low = word >> 20
+        low -= (low >> 11) << 12
+        target = (p + high + low) & 0xfffffffe
+        if target not in entries:
+            continue
+        result[address] = dict(caller=caller, target=entries[target],
+            address=f'0x{address:08x}', instruction=f'{word:08x}',
+            auipc_address=f'0x{p:08x}', auipc_instruction=f'{upper:08x}',
+            target_address=f'0x{target:08x}', tail_call=rd == 0)
+    return result
+
+
 def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirect_calls=None,
                       input_sha256=None):
     """Conservative sum over GCC's direct graph, rooted at actual services_main.
@@ -146,6 +188,9 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
         # GCC retains .part.0 in some .ci/.su labels but omits clone numbers
         # from others. Prefer the exact graph name before trying that alias.
         return name if name in nodes.values() else re.sub(r'\.(constprop|isra|part)\.\d+', r'.\1', name)
+    long_calls = direct_long_calls(disassembly)
+    for site in long_calls.values():
+        site['caller'], site['target'] = normalized(site['caller']), normalized(site['target'])
     machine_sites, machine_functions = {}, set()
     current = None
     for line in disassembly.splitlines():
@@ -157,7 +202,7 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
         if insn:
             value = int(insn[2], 16)
             # JALR x0,0(ra) is a return, all other JALR instructions need closure.
-            if value & 0x7f == 0x67 and value != 0x00008067:
+            if value & 0x7f == 0x67 and value != 0x00008067 and int(insn[1], 16) not in long_calls:
                 address = int(insn[1], 16)
                 if current is None or address in machine_sites:
                     raise ValueError('ambiguous machine indirect call site')
@@ -246,6 +291,10 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
         if current in reachable_names and re.search(r'\b(?:jalr|jr)\b', line) and not re.search(r'\bret\b', line):
             instruction = re.match(r'^\s*([0-9a-f]+):\s+([0-9a-f]{8})\s+', line)
             address = int(instruction[1], 16) if instruction else None
+            if address in long_calls:
+                if (current, long_calls[address]['target']) not in verified_edges:
+                    raise ValueError('machine direct long call escapes verified service graph: ' + current)
+                continue
             if address not in reviewed:
                 raise ValueError('unresolved machine indirect call in service graph: ' + current)
             consumed_sites.add(address)
@@ -267,6 +316,8 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
                 assembly_loader_stack_bytes=0, assembly_selftest_stack_bytes=16,
                 interrupts_enabled=False, hardware_watermark_verified=False,
                 tail_calls_counted_as_nested=True,
+                resolved_direct_long_calls=[site for _, site in sorted(long_calls.items())
+                    if site['caller'] in reachable_names],
                 reviewed_indirect_calls=(dict(
                     manifest_sha256=hashlib.sha256(json.dumps(reviewed_indirect_calls, sort_keys=True,
                         separators=(',', ':')).encode()).hexdigest(),

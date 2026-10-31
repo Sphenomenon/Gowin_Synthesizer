@@ -24,8 +24,8 @@ module gw138k_boot_memory #(
     reg [31:0] rom [0:ROM_WORDS-1];
     reg [63:0] ram [0:1023];
     initial begin
-        if (ROM_BYTES != 16384 && ROM_BYTES != 65536)
-            $error("AE350 ROM capacity must be explicitly 16 or 64 KiB");
+        if (ROM_BYTES != 16384 && ROM_BYTES != 65536 && ROM_BYTES != 131072)
+            $error("AE350 ROM capacity must be explicitly 16, 64 or 128 KiB");
         $readmemh(ROM_FILE,rom);
     end
     always @(posedge rom_clk) begin
