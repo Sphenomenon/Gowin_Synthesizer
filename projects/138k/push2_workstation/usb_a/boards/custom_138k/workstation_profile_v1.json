@@ -639,7 +639,7 @@
     "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_BLE_DDR_PREFIX_CDC.md": "addefa1e9a8dbe3727846dc64cb00cbdbf64cb377195e1f356c360d2f772aa9a",
     "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_PCM_CDC.md": "b47fd75bec47f85d37c05aa8226925eced17d88e1d9caf63d750ecb1b14b1c70",
     "projects/138k/push2_workstation/usb_a/tools/WORKSTATION_RUNTIME_SHARED_CDC.md": "c30065e5c89bb8ab171b22e4ddc2889fc2e76ffd5510aaa0841e301140f33096",
-    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "a20406a73f3a90979781eb5e3a08487ec691d4998c5022e114e91dd2fd1c40df",
+    "projects/138k/push2_workstation/usb_a/tools/ae350_local_memory.py": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b",
     "projects/138k/push2_workstation/usb_a/tools/audit_clk50_cdc_routes.py": "e4b186bcc6156fac533de7ee970cc88ddf430c6eb9ee96674f23c88563a7eaa1",
     "projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
     "projects/138k/push2_workstation/usb_a/tools/audit_workstation_cdc.py": "b38de900689355ba526adc29a9685967cde2ff610620cf76e556fec700a8caf4",

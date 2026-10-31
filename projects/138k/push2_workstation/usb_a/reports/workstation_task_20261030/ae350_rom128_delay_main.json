@@ -1,0 +1,1116 @@
+{
+  "schema": 1,
+  "scope": "root independent complete Delay-inclusive ROM128 rebuild and merged six native helper-lock verification",
+  "source_commit": "525ead1",
+  "author_commit": "f9a4052409229aa8073bd1099f9b5fb379641657",
+  "author_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rom128-delay-budget-parent-v1",
+  "author_seal_sha256": "3c2b6f550d63239bf19e27e241b08c0d1b98367a46beba1548b5b7b5f5be1de8",
+  "actual_rebuild_artifacts": {
+    "firmware.elf": "6c4b8bfe19ab3ca51caa6863d46e7ea9168381eb3667668c8515c254e446f3da",
+    "firmware.bin": "053be0565c6bb923be9ebab2285e2f24ba3093d8cc93523acdd5ed17b756501c",
+    "boot.mem": "4eb21507d0685b4aba95c5a0d3670ded1e879db1aa4a1c8a8e84463a3b943a86"
+  },
+  "capacity": {
+    "rom_capacity_bytes": 131072,
+    "binary_bytes": 83488,
+    "payload_bytes": 65136,
+    "padding_hole_bytes": 18352,
+    "upper_rom_code_bytes": 17952,
+    "cold_code_unallocated_bytes": 47584,
+    "hot_load_bank_bytes": 47184,
+    "hot_load_unallocated_bytes": 18352,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 46576,
+    "ilm_reserved_final_word_bytes": 4,
+    "ilm_usable_remaining_bytes": 18956,
+    "dlm_capacity_bytes": 65536,
+    "static_ram_span_bytes": 8480,
+    "ram_reserved_prefix_bytes": 256,
+    "stack_capacity_bytes": 16384,
+    "unallocated_dlm_bytes": 40416,
+    "heap_bytes": 0,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684357580,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684401136,
+      "__data_load_start": 2147530816,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__data_image_end": 2147530832,
+      "__rom_text_start": 2147549184,
+      "__rom_text_end": 2147567136,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686460448,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686460448,
+      "__heap_end": 2686460448,
+      "__image_end": 2147567136,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984,
+      "a138_classic_init": 2147561632,
+      "a138_classic_acl": 2147562248,
+      "ui_render_rows": 2147566884,
+      "a138_sbc_decode": 2684380456,
+      "OI_CODEC_SBC_DecodeFrame": 2684387900,
+      "a138_ble_business_firmware_init": 2684379904,
+      "a138_ble_business_firmware_pump": 2684380028
+    },
+    "elf_image_validation": {
+      "binary_reconstructed": true,
+      "sections": {
+        ".boot": {
+          "address": 2147483648,
+          "bytes": 592,
+          "sha256": "57477d24da72b569f7e73a41a009805539693e6d457536e000b2b67c429ab00f"
+        },
+        ".rom_text": {
+          "address": 2147549184,
+          "bytes": 17952,
+          "sha256": "1647b1166b72f5618947bd5fb5225b0da33a8a0a1ef334a4124d27b43100aad4"
+        },
+        ".text": {
+          "address": 2684354560,
+          "bytes": 44592,
+          "sha256": "3277c7aaa21376b9084a72e887a3b39deb5fe14a19ce459215be604360dd4356"
+        },
+        ".rodata": {
+          "address": 2684399152,
+          "bytes": 1984,
+          "sha256": "960f9c9551b56b1def12cbad503dff425d636058d31d90519bf96622c764705a"
+        },
+        ".data": {
+          "address": 2686451968,
+          "bytes": 16,
+          "sha256": "25d670162b3b3fe95ebc111a408f2db97a75068feb4aa70b56df9e9c82ba1946"
+        },
+        ".bss": {
+          "address": 2686451984,
+          "bytes": 8464,
+          "sha256": null
+        }
+      },
+      "segments": [
+        {
+          "run_address": 2147483648,
+          "load_address": 2147483648,
+          "file_bytes": 592,
+          "memory_bytes": 592,
+          "flags": 5
+        },
+        {
+          "run_address": 2684354560,
+          "load_address": 2147484240,
+          "file_bytes": 46576,
+          "memory_bytes": 46576,
+          "flags": 5
+        },
+        {
+          "run_address": 2686451968,
+          "load_address": 2147530816,
+          "file_bytes": 16,
+          "memory_bytes": 8480,
+          "flags": 6
+        },
+        {
+          "run_address": 2147549184,
+          "load_address": 2147549184,
+          "file_bytes": 17952,
+          "memory_bytes": 17952,
+          "flags": 5
+        }
+      ]
+    },
+    "selected_in_production": false,
+    "hardware_acceptance": false
+  },
+  "linked_translation_units": 25,
+  "stack_bound_bytes": 1808,
+  "reachable_functions": 115,
+  "direct_far_calls": 38,
+  "reviewed_indirect_calls": 77,
+  "model": {
+    "schema": 1,
+    "passed": true,
+    "startup_instructions": 282133,
+    "actual_cold_protocol_response_hex": "23201c001800010003320800400041000000000004010800410000000102a002",
+    "delay_reporting": {
+      "first_report_hex": "05007000000d8c1234",
+      "second_report_hex": "05007000100d8c1235",
+      "first_accept": true,
+      "changed_value_after_accept": true,
+      "outstanding_update_busy": true,
+      "deadline_ms": 1200,
+      "exact_deadline_fenced": true,
+      "late_accept_fenced": true,
+      "independent_tick_max_gap_ms": 100,
+      "physical_delay_measured": false
+    },
+    "calls": [
+      {
+        "function": "a138_classic_init",
+        "result": 2686457568,
+        "instructions": 8638
+      },
+      {
+        "function": "a138_classic_begin",
+        "result": 0,
+        "instructions": 8693
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 618
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 207
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 59
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 2,
+        "instructions": 13
+      },
+      {
+        "function": "a138_classic_init",
+        "result": 2686457568,
+        "instructions": 8638
+      },
+      {
+        "function": "a138_classic_begin",
+        "result": 0,
+        "instructions": 8693
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 116
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 577
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 207
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 59
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 116
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 105
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 396
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 137
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 59
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 116
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 237
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 8,
+        "instructions": 12
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 23
+      },
+      {
+        "function": "a138_classic_delay_update",
+        "result": 0,
+        "instructions": 23
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 116
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 105
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 521
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 97
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 289
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 112
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 41
+      },
+      {
+        "function": "a138_classic_delay_update",
+        "result": 4,
+        "instructions": 26
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 199
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 8,
+        "instructions": 12
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 26
+      },
+      {
+        "function": "a138_classic_delay_update",
+        "result": 0,
+        "instructions": 135
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 112
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 41
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 0,
+        "instructions": 30
+      },
+      {
+        "function": "a138_classic_tick",
+        "result": 7,
+        "instructions": 48
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 7,
+        "instructions": 11
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12890
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12861
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27686
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27654
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 25270
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24632
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56191
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56151
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12848
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12860
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27575
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27660
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24908
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24631
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56195
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 55583
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51746
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51707
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51743
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51705
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 41608
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 41529
+      }
+    ],
+    "upper_rom_fetches": 4011,
+    "region_transitions": [
+      {
+        "pc": "0x80000000",
+        "region": "ROM_LOAD"
+      },
+      {
+        "pc": "0xa0000000",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800130a0",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800130bc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013138",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800112dc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800112dc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800130bc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013138",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800112dc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800112dc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800112dc",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80011a04",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x800111d8",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013784",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x8001343c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010848",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013580",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0006388",
+        "region": "ILM"
+      }
+    ],
+    "rv32m_instructions": 60312,
+    "vectors": [
+      {
+        "name": "00",
+        "rate_hz": 44100,
+        "mode": 0,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 128,
+        "maximum_lsb_error": 3,
+        "instructions": 25751,
+        "pcm_sha256": "4d74c1a3c623efa19849d821d4d97c140348550517b7f8e50cb09a1b7181438d"
+      },
+      {
+        "name": "02",
+        "rate_hz": 44100,
+        "mode": 0,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 55340,
+        "pcm_sha256": "8fa43c29600e558973104d25692e73a79c786a6af24cd73abeee74668beead98"
+      },
+      {
+        "name": "12",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 3,
+        "instructions": 49902,
+        "pcm_sha256": "7dc40a2b1a9d08fb4665caa8ed7178d4f3f6b48169c752bc3a8e5cda647daac2"
+      },
+      {
+        "name": "14",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 112342,
+        "pcm_sha256": "99b726da201a88fa7d9a501bb17b3f8bc6c2b59fbc30a637bae8c17a25032ada"
+      },
+      {
+        "name": "16",
+        "rate_hz": 48000,
+        "mode": 0,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 128,
+        "maximum_lsb_error": 4,
+        "instructions": 25708,
+        "pcm_sha256": "40c1ea61860055294eb37d402aed33ec063856ca2abfc7e0fd6f8a00d9ac5009"
+      },
+      {
+        "name": "18",
+        "rate_hz": 48000,
+        "mode": 0,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 55235,
+        "pcm_sha256": "c1b4a69cdf1511d522a66a12683ba83f93dca14b97ad28d21e3f26c2705bcd63"
+      },
+      {
+        "name": "28",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 49539,
+        "pcm_sha256": "a334c68840923d2b07883953ef41babe5d2788721d621b4bcf0db68497059ec6"
+      },
+      {
+        "name": "30",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 5,
+        "instructions": 111778,
+        "pcm_sha256": "2225b039154b8b2aa355e193582279ffd4ed088efdd547701fd450dd3700e5a8"
+      },
+      {
+        "name": "32",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 103453,
+        "pcm_sha256": "4ac351b3578e036f0e46e6987b80d6a09076f2ec5e3c3eb50a8570f629cc0ada"
+      },
+      {
+        "name": "37",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 103448,
+        "pcm_sha256": "89c3af96d8ad95c565a0ba443abe5f17d626cc5f8f7b08b7008adfd3759b936a"
+      },
+      {
+        "name": "41",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 384,
+        "maximum_lsb_error": 5,
+        "instructions": 83137,
+        "pcm_sha256": "bff398ae6c79c42021898ac51808497f7d6216187bd9ea9253a64b89b99d44d5"
+      }
+    ],
+    "scalar_samples": 3712,
+    "maximum_lsb_error": 5,
+    "observed_stack_bytes": 336,
+    "cache_enabled": false,
+    "actual_cpu_cycles_measured": false,
+    "hardware_acceptance": false,
+    "runtime_transport_closed": false
+  },
+  "root_regressions": {
+    "budget": 49,
+    "business": 8,
+    "default": 21,
+    "default_historical_skip": 1
+  },
+  "prepares": {
+    "business": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/rom128-delay-lock-main-business-v2",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-c1751488445e0c8f",
+      "artifact_sha256": "453db2e561304648e6cdebff1339dc000b779af9e5130bf1e4564abbd391bc8a",
+      "staged_inputs": 613,
+      "enabled_inputs": 271,
+      "production_rom_bytes": 65536
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/rom128-delay-lock-main-default-v2",
+      "candidate_identity": "custom138k-workstation-v1-60fa7d66fc6db9a4",
+      "artifact_sha256": "bdd8a3e715e71d38e73d4e0217798674bd4df6b326038b6013bc3bd65d1545b0",
+      "staged_inputs": 580,
+      "enabled_inputs": 260,
+      "production_rom_bytes": 16384
+    }
+  },
+  "merged_native_lock_key": "tools/ae350_local_memory.py",
+  "source_snapshot_files": 269,
+  "selected_in_production": false,
+  "cache_enabled": false,
+  "new_synthesis_performed": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "ROM128 is an explicit experiment; native profiles retain existing ROM capacities",
+    "Cache/PMA/DMA coherence and actual CPU service-cycle measurements remain unverified",
+    "No native HCI/PCM integration or phone interoperability",
+    "Native RTC migration remains a separate candidate; existing evidence identities are retained"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rom128-delay-main-parent-v3",
+  "seal_sha256": "f1d676bf7926477440d7ba0b4f4ad5d37f2a92bf6504567119ffb33f67a3e779",
+  "external_files": 1948
+}
