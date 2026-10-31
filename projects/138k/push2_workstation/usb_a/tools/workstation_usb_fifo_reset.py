@@ -132,6 +132,101 @@ def verify_demo_selection(stage, configuration, evidence, enabled_inputs, *, exp
         prepared=verify_prepared(stage, evidence), explicit_local_release_selected=True)
 
 
+def _expanded_admission_proof(n, g, memory, q, contract):
+    """Keep all shared INV/LUT equations when independent cuts lose correlation.
+
+    Register Qs and explicitly identified ALU outputs are arbitrary inputs.
+    No sequential reachability or ALU function is assumed. An exact zero BDD
+    therefore proves the guard for every valuation of this larger state space.
+    """
+    from tools.workstation_runtime_pcm_cdc import BooleanDiagram
+    from tools.workstation_recording_phase1_cdc import complete_closure
+
+    def require(ok, message):
+        if not ok:
+            raise ValueError('USB FIFO expanded admission audit: ' + contract + ': ' + message)
+
+    lexical = getattr(n, 'lexical_connection_audit', {})
+    require(lexical.get('duplicate_bindings_rejected') is True and
+            lexical.get('original_vg_rewritten') is False,
+            'strict complete named-port inventory required')
+    grant = n.pin(memory, 'CEA')
+    cone, terminals, visited = {}, {}, set()
+
+    def expand(net, active=()):
+        if net in g.high | g.low:
+            return
+        require(net not in active, 'actual admission combinational cycle')
+        if net in visited:
+            return
+        visited.add(net)
+        drivers = g.drivers[net]
+        require(len(drivers) == 1, 'actual admission driver missing/ambiguous: ' + net)
+        cell, output = drivers[0]
+        c, kind = n.cells[cell], n.cells[cell]['kind']
+        if kind == 'INV' or re.fullmatch('LUT[1-6]', kind):
+            require(len(cone) < 4096, 'actual admission exceeds reviewed primitive bound')
+            ports = ['I'] if kind == 'INV' else ['I' + str(i) for i in range(int(kind[3:]))]
+            require(output == ('O' if kind == 'INV' else 'F') and
+                    set(c['ports']) == {output, *ports}, 'actual INV/LUT pin inventory changed')
+            cone[cell] = dict(kind=kind, output=net,
+                inputs={pin: n.pin(cell, pin) for pin in ports},
+                parameters=dict(c['parameters']))
+            for value in cone[cell]['inputs'].values():
+                expand(value, (*active, net))
+            return
+        # Opaque outputs only enlarge the quantified input space. Accept
+        # exactly the reviewed scalar terminal kinds, never an unknown gate.
+        require((cell in g.regs and output == 'Q') or
+                (kind == 'ALU' and output in ('SUM', 'COUT')),
+                'unreviewed actual admission terminal: ' + cell + '/' + output)
+        terminals[net] = dict(cell=cell, kind=kind, output=output,
+            independently_arbitrary=True, parameters=dict(c['parameters']))
+
+    expand(grant)
+    require(q in terminals, 'actual CEA lacks the final USB release Q')
+    names = [q, *sorted(set(terminals) - {q})]
+    require(len(names) <= 120, 'actual admission exceeds reviewed BDD input bound')
+    diagram = BooleanDiagram(names)
+    value = diagram.net(g, grant)
+    bad = diagram.both(diagram.invert(diagram.inputs[q]), value)
+    require(bad == 0, 'actual CEA can write before final USB release')
+    nonzero = diagram.both(diagram.inputs[q], value)
+    require(nonzero != 0, 'actual CEA has no nonzero final-release witness')
+    assignment, node = {}, nonzero
+    while node > 1:
+        variable, low, high = diagram.nodes[node]
+        assignment[names[variable]] = int(high != 0)
+        node = high if high != 0 else low
+    assignment = {net: assignment.get(net, 0) for net in names}
+    require(assignment[q] == 1 and g.value(grant, assignment) == 1,
+            'independent concrete CEA witness evaluation failed')
+
+    release_driver = g.drivers[q]
+    require(len(release_driver) == 1 and release_driver[0][0] in g.regs and
+            release_driver[0][1] == 'Q', 'final release must be an actual unique FF Q')
+    release = release_driver[0][0]
+    closure = complete_closure(n, g, [release])
+    usb = n.pin(release, 'CLK')
+    require(all(clock == usb for clock in closure['ff_endpoints'].values()),
+            'final release gained a cross-domain FF consumer')
+    require(closure['primitive_endpoints'] == {memory + '/CEA': dict(kind='SDPX9B',
+            clock_pins={'CLKA': n.pin(memory, 'CLKA'), 'CLKB': n.pin(memory, 'CLKB')})},
+            'final release gained or lost an opaque consumer')
+    require(not closure['top_output_endpoints'], 'final release gained a top output consumer')
+    return dict(contract=contract, method='exact_complete_shared_INV_LUT_BDD',
+        support=sorted(terminals), terminal_inputs=terminals,
+        actual_INV_LUT_equations=cone, actual_INV_LUT_count=len(cone),
+        BDD_nodes=len(diagram.nodes), BDD_input_bound=120, BDD_node_bound=200000,
+        no_sequential_reachability_assumptions=True, opaque_ALU_outputs_independently_arbitrary=True,
+        actual_CEA_q0_cofactor=0, final_release_Q=q, actual_CEA=grant,
+        nonzero_frontier_witness=dict(assignment=assignment, actual_CEA=1,
+            sequential_reachability_claimed=False),
+        final_release_complete_source_consumers=closure,
+        all_source_consumers_enumerated_without_domain_or_prefix_filter=True,
+        global_truth_table_bound_unchanged=16)
+
+
 def audit_synthesis(netlist, *, fifo_scope='u_native_usb/input_owner/events/fifo/unbuffered'):
     """Prove actual reset clocks/consumers; this does not waive STA endpoints."""
     from tools.workstation_runtime_pcm_cdc import Graph, COMB
@@ -219,15 +314,28 @@ def audit_synthesis(netlist, *, fifo_scope='u_native_usb/input_owner/events/fifo
         cell = drivers[0][0];kind = n.cells[cell]['kind']
         require(kind == 'INV' or re.fullmatch('LUT[1-6]', kind), 'unreviewed write admission primitive')
         ports = ['I'] if kind == 'INV' else ['I' + str(i) for i in range(int(kind[3:]))]
+        require(set(n.cells[cell]['ports']) == {('O' if kind == 'INV' else 'F'), *ports},
+                'write admission INV/LUT pin inventory changed')
         return set().union(*(frontier(n.pin(cell, port), (*active, net)) for port in ports))
     inputs = frontier(grant)
     require(q in inputs, 'actual packet write admission lacks final USB release')
     input_list = sorted(inputs)
     contract = 'actual packet memory cannot write before local release'
     if len(inputs) <= 16:
-        admission = g.equivalent(contract, [grant, q], lambda x: bool(x[1]) or x[0] == 0, cuts=inputs)
-        require(any(g.value(grant, {net: (value >> bit) & 1 for bit, net in enumerate(input_list)})
-                    for value in range(1 << len(input_list))), 'FIFO admission optimized to constant zero')
+        try:
+            admission = g.equivalent(contract, [grant, q], lambda x: bool(x[1]) or x[0] == 0, cuts=inputs)
+        except ValueError as error:
+            if 'Boolean contract changed: ' + contract not in str(error):
+                raise
+            # An independent frontier can include both a combinational net
+            # and its own inputs. A counterexample at those cuts need not be
+            # realizable by the actual shared equations; expand them exactly.
+            admission = _expanded_admission_proof(n, g, memories[0], q, contract)
+            admission['independent_frontier_failure'] = str(error)
+            admission['independent_frontier'] = input_list
+        else:
+            require(any(g.value(grant, {net: (value >> bit) & 1 for bit, net in enumerate(input_list)})
+                        for value in range(1 << len(input_list))), 'FIFO admission optimized to constant zero')
     else:
         # Absorption through the owner can expose more than 16 independent
         # frontier nets. Do not raise Graph's reviewed global truth-table bound.
@@ -266,25 +374,30 @@ def audit_synthesis(netlist, *, fifo_scope='u_native_usb/input_owner/events/fifo
                 possible_outputs=sorted(result)))
             cache[net] = result
             return result
-        require(zero_cofactor(grant) == {0}, 'Boolean contract changed: ' + contract)
+        possible = zero_cofactor(grant)
+        if possible != {0}:
+            admission = _expanded_admission_proof(n, g, memories[0], q, contract)
+            admission['independent_frontier'] = input_list
+            admission['independent_local_cofactor_possible_values'] = sorted(possible)
         # A concrete frontier assignment, independently re-evaluated by Graph,
         # rejects vacuous constant-zero mappings. Search is bounded; failure to
         # find a witness fails closed and never weakens the universal proof.
-        rng = random.Random(0);witness = None
-        for attempt in range(4096):
-            assignment = {net: (0 if attempt == 0 else 1 if attempt == 1 else rng.randrange(2))
-                          for net in input_list}
-            assignment[q] = 1
-            if g.value(grant, assignment) == 1:
-                witness = assignment
-                break
-        require(witness is not None, 'FIFO admission lacks bounded concrete nonzero frontier witness')
-        admission = dict(contract=contract, method='bounded_actual_INV_LUT_zero_cofactor',
-            support=input_list, cuts=input_list, fixed_assignment={q: 0}, actual_CEA_possible_values=[0],
-            other_inputs_independently_arbitrary=True, primitive_proofs=primitive_proofs,
-            max_local_assignments=64, global_truth_table_bound_unchanged=16,
-            nonzero_frontier_witness=dict(assignment=witness, actual_CEA=1, attempts=attempt + 1,
-                sequential_reachability_claimed=False))
+        if possible == {0}:
+            rng = random.Random(0);witness = None
+            for attempt in range(4096):
+                assignment = {net: (0 if attempt == 0 else 1 if attempt == 1 else rng.randrange(2))
+                              for net in input_list}
+                assignment[q] = 1
+                if g.value(grant, assignment) == 1:
+                    witness = assignment
+                    break
+            require(witness is not None, 'FIFO admission lacks bounded concrete nonzero frontier witness')
+            admission = dict(contract=contract, method='bounded_actual_INV_LUT_zero_cofactor',
+                support=input_list, cuts=input_list, fixed_assignment={q: 0}, actual_CEA_possible_values=[0],
+                other_inputs_independently_arbitrary=True, primitive_proofs=primitive_proofs,
+                max_local_assignments=64, global_truth_table_bound_unchanged=16,
+                nonzero_frontier_witness=dict(assignment=witness, actual_CEA=1, attempts=attempt + 1,
+                    sequential_reachability_claimed=False))
     p = producers[0];previous = n.pin(p, 'Q');data = n.pin(p, 'D')
     data_drivers = g.drivers[data]
     require(len(data_drivers) == 1, 'producer Q0 data driver missing/ambiguous')

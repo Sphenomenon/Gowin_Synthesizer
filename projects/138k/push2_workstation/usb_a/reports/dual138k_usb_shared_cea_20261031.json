@@ -1,0 +1,195 @@
+{
+  "schema": 1,
+  "stage": "exact_USB_CEA_shared_combinational_proof",
+  "sources": {
+    "tools/workstation_usb_fifo_reset.py": "5ec63ef6bee7f1bcc9a14d7d58de810e625e87ab9d9a4fcaf3d5402f6df9ff20",
+    "tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+    "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+    "tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+    "sim/test_workstation_usb_fifo_admission.py": "a875bc1307bede18a5c71b69f62b220fdb7ba954dfb98d4f7dfc84c2d0bab106"
+  },
+  "target_VG": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+    "sha256": "cb72a1b61b32a0dfd85e8bf67559de70ed08ae2de22baf6953afbea8de1114e9"
+  },
+  "original_false_counterexample": {
+    "cut_inputs": {
+      "fifo/$1_4": 0,
+      "fifo/$1_5": 0,
+      "fifo/n1969_4": 0
+    },
+    "actual_NOR_equation": "$1_4 = ~($1_5 | n1969_4)",
+    "cause": "Independent frontier included a combinational net and its own inputs, losing their correlation."
+  },
+  "exact_proof": {
+    "method": "exact_complete_shared_INV_LUT_BDD",
+    "gate_count": 46,
+    "arbitrary_terminals": 44,
+    "BDD_nodes": 1190,
+    "all_reachable_and_unreachable_two_state_assignments": true,
+    "no_sequential_reachability_assumptions": true,
+    "actual_CEA_q0_cofactor": 0,
+    "nonzero_witness": true,
+    "complete_final_release_ff_consumers": 354,
+    "opaque_consumers": {
+      "u_native_usb/input_owner/events/fifo/unbuffered/storage_storage_0_0_s/CEA": {
+        "kind": "SDPX9B",
+        "clock_pins": {
+          "CLKA": "usb_clk",
+          "CLKB": "audio_clk"
+        }
+      }
+    },
+    "top_output_consumers": {}
+  },
+  "verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-fifo-maintained-full-tests-v2.json",
+    "sha256": "c2bcb84883d658f9eb2e5ea091b2b85eab6c8f3365e6ffc91f0529e635f00db3"
+  },
+  "negative_controls": {
+    "count": 19,
+    "all_rejected": true,
+    "results": [
+      {
+        "name": "wrong_first_release_source_Q",
+        "rejected": true
+      },
+      {
+        "name": "extra_final_Q_consumer_DFFCE",
+        "rejected": true
+      },
+      {
+        "name": "extra_final_Q_consumer_UNREVIEWED_RAM",
+        "rejected": true
+      },
+      {
+        "name": "extra_final_Q_top_output",
+        "rejected": true
+      },
+      {
+        "name": "strict_named_port_inventory_absent",
+        "rejected": true
+      },
+      {
+        "name": "producer_reset_bypass",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "runtime PCM CDC audit: Boolean contract changed: only final USB release deasserts write reset"
+      },
+      {
+        "name": "producer_wrong_clock",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: real producer state lacks local USB reset: u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_0_s0"
+      },
+      {
+        "name": "release_wrong_clock",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: write release clock/asynchronous assertion/enable changed"
+      },
+      {
+        "name": "release_second_bypass",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: write release is not two real USB edges"
+      },
+      {
+        "name": "memory_CEA_bypass",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: actual packet write admission lacks final USB release"
+      },
+      {
+        "name": "actual_CEA_truth_all_one",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO expanded admission audit: actual packet memory cannot write before local release: actual CEA can write before final USB release"
+      },
+      {
+        "name": "actual_CEA_truth_all_zero",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: FIFO admission optimized to constant zero"
+      },
+      {
+        "name": "guard_truth_release_bypassed",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO expanded admission audit: actual packet memory cannot write before local release: actual CEA can write before final USB release"
+      },
+      {
+        "name": "guard_release_input_tied_high",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: actual packet write admission lacks final USB release"
+      },
+      {
+        "name": "actual_reconvergent_NOR_truth_removed",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO expanded admission audit: actual packet memory cannot write before local release: actual CEA can write before final USB release"
+      },
+      {
+        "name": "unreviewed_actual_LUT_input",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: write admission INV/LUT pin inventory changed"
+      },
+      {
+        "name": "adder_mode",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+      },
+      {
+        "name": "adder_carry",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+      },
+      {
+        "name": "adder_operand",
+        "kind": "parsed_complete_actual_netlist_mutant",
+        "rejected": true,
+        "error": "USB FIFO local-reset synthesis audit: unreviewed producer Q0 ALU mapping"
+      }
+    ]
+  },
+  "old_fast_paths": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/fifo-admission-original-fast-paths-v2.json",
+    "sha256": "c27e407ab2ccfc1c3ff12ad8fda65087c694bd453e945a9c813faee24a7a5451"
+  },
+  "old_fast_path_methods": {
+    "m10b": "exact_independent_frontier_truth_table",
+    "w9b": "exact_independent_frontier_truth_table"
+  },
+  "independent_SMT": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-synthesis-audit-v1/usb-admission-expanded-smt-review.json",
+    "sha256": "ebc743eaa0640c643ad866d7726930067b5c1e362f993e00638bb4edbba00a9f"
+  },
+  "independent_SMT_six_mutants": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-synthesis-audit-v1/usb-admission-six-mutants-independent-smt.json",
+    "sha256": "12f0a036aa0846e69058f6ccc23b7fa374719069cec7daed9c9bd2ad65bf5e80"
+  },
+  "complete_W10_strict_gate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-synthesis-audit-v2/strict-gate.json",
+    "sha256": "367831fb673a9993a7edfb6b8a4210c625d5dc1f701306ed4628a776b7c4f0a6"
+  },
+  "first_failure": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-synthesis-audit-v1/strict-gate.log",
+    "sha256": "7ed4b3d672477212404ec3644bc12bc0da0a4697a89c2ddc7b57c42c879fdf0f"
+  },
+  "first_negative_attempt": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-fifo-maintained-full-tests-v1.json",
+    "sha256": "9e408e29b7d852453ba0a3137c08088ad3c47dbc89445ae9ecdb4548056ef579"
+  },
+  "first_negative_attempt_behavior": "18/19 rejected; malformed LUT pin could take old direct path. v2 validates exact INV/LUT pin inventory before either proof branch.",
+  "original_candidate_inputs_unmodified": true,
+  "changes_emit_RTL_or_SDC": false,
+  "whole_CDC_accepted": false,
+  "physical_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false
+}

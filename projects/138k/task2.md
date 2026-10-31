@@ -256,6 +256,8 @@ M11真实50MHz路径的[TF即时失败判定等价因子化](push2_workstation/u
 
 新只读效果接口的[精确可逆来源适配](push2_workstation/usb_a/reports/DUAL138K_EFFECT_SLOT_LINEAGE_20261031.md)通过7项测试及完整native→prepared链，原D适配／manifest保持逐字节不变。第一次M12 prepare的身份拒绝保留；M12b `0af82c38b1902d92`从新锁prepare及588项复验通过，三项新RTL已核对确为实际编译消费来源，已启动全量综合。该阶段未预记综合／物理收益，未上板。
 
+W10的[USB实际CEA共享组合证明](push2_workstation/usb_a/reports/DUAL138K_USB_SHARED_CEA_20261031.md)已修复旧frontier的NOR重汇合假反例：46真实门／44任意terminal精确BDD与独立SMT一致，19负控全拒绝，原13指针／实际写入增量及旧M／W直接证明保持。新外部完整严格门通过，原失败及VG／SDC输入不改，`D2103116`默认完整P&R已启动。M12b全量综合及严格门亦通过，实际消费新音频／TF源，`D2103118`默认完整P&R同时运行；新物理收益与硬件仍待测。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
