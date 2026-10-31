@@ -34,6 +34,13 @@ module workstation_rate_pitch_expression (
     wire [16:0] current_glide_step = rate_44k1_i
         ? {1'b0,glide_step_q20_i} + {4'd0,glide_extra_step}
         : {1'b0,glide_step_q20_i};
+    // A strict magnitude comparison is the borrow of distance-step-1. Keep
+    // it on the carry chain instead of a wide comparator after the reciprocal
+    // multiply. The selected direction always gives a nonnegative distance.
+    wire [21:0] upward_distance=target_ratio_q20_i-glide_ratio;
+    wire [21:0] downward_distance=glide_ratio-target_ratio_q20_i;
+    wire [22:0] upward_test={1'b0,upward_distance}-{6'd0,current_glide_step}-23'd1;
+    wire [22:0] downward_test={1'b0,downward_distance}-{6'd0,current_glide_step}-23'd1;
     always_comb begin
         triangle = phase[31] ? $signed({1'b0,~phase[30:15]}) - 17'sd32768
                              : $signed({1'b0,phase[30:15]}) - 17'sd32768;
@@ -56,11 +63,11 @@ module workstation_rate_pitch_expression (
             phase <= phase + (rate_44k1_i ? LFO_STEP_44 : LFO_STEP_48);
             if (rate_44k1_i && glide_step_q20_i != 0)
                 glide_remainder <= next_glide_remainder;
-            if (current_glide_step == 0) glide_ratio <= target_ratio_q20_i;
+            if (glide_step_q20_i == 0) glide_ratio <= target_ratio_q20_i;
             else if (target_ratio_q20_i > glide_ratio)
-                glide_ratio <= target_ratio_q20_i-glide_ratio > {5'd0,current_glide_step}
+                glide_ratio <= !upward_test[22]
                     ? glide_ratio + {5'd0,current_glide_step} : target_ratio_q20_i;
-            else glide_ratio <= glide_ratio-target_ratio_q20_i > {5'd0,current_glide_step}
+            else glide_ratio <= !downward_test[22]
                     ? glide_ratio - {5'd0,current_glide_step} : target_ratio_q20_i;
         end
     end

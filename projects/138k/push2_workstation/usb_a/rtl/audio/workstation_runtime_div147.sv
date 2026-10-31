@@ -5,6 +5,9 @@
 // Every later register consumes two bits with three parallel ten-bit trial
 // subtractions. There is no combinational divider or multiply in a stage.
 // Payload, quotient and valid retain one fixed clock delay; flush kills all tags.
+// Private data may advance speculatively on a flush edge. Cleared valid bits
+// prevent every such value from becoming public; only valid/output kill need
+// the global flush signal, so wide local data enables do not share its fanout.
 module workstation_runtime_div147 #(
     parameter integer WIDTH=42,
     parameter integer TAG_WIDTH=1
@@ -33,7 +36,7 @@ module workstation_runtime_div147 #(
         else if(flush_i)valid<='0;
         else valid<={valid[STAGES-1:0],valid_i};
     end
-    always @(posedge clk_i) if(valid_i && !flush_i) begin
+    always @(posedge clk_i) if(valid_i) begin
         remainder[0]<={{(8-PREFIX_BITS){1'b0}},dividend_i[WIDTH-1 -: PREFIX_BITS]};
         dividend[0]<=dividend_i<<PREFIX_BITS;
         quotient[0]<='0;
@@ -54,15 +57,15 @@ module workstation_runtime_div147 #(
             if(!rst_ni)address<='0;
             else address<=address+1'b1;
         always @(posedge clk_i) begin
-            if(valid_i && !flush_i)memory[address]<=tag_i;
+            if(valid_i)memory[address]<=tag_i;
             read_tag<=memory[read_address];
         end
         assign tag_o=read_tag;
     end else begin:g_tag_registers
         reg [TAG_WIDTH-1:0] tag[0:STAGES];
-        always @(posedge clk_i) if(valid_i && !flush_i)tag[0]<=tag_i;
+        always @(posedge clk_i) if(valid_i)tag[0]<=tag_i;
         for(genvar s=0;s<STAGES;s=s+1)begin:g_delay
-            always @(posedge clk_i) if(valid[s] && !flush_i)tag[s+1]<=tag[s];
+            always @(posedge clk_i) if(valid[s])tag[s+1]<=tag[s];
         end
         assign tag_o=tag[STAGES];
     end
@@ -74,7 +77,7 @@ module workstation_runtime_div147 #(
         wire [1:0] digit=!minus3[10] ? 2'd3 : !minus2[10] ? 2'd2 : !minus1[10] ? 2'd1 : 2'd0;
         wire [7:0] next_remainder=!minus3[10] ? minus3[7:0] :
             !minus2[10] ? minus2[7:0] : !minus1[10] ? minus1[7:0] : trial[7:0];
-        always @(posedge clk_i) if(valid[s] && !flush_i) begin
+        always @(posedge clk_i) if(valid[s]) begin
             remainder[s+1]<=next_remainder;
             dividend[s+1]<=dividend[s]<<2;
             quotient[s+1]<={quotient[s][WIDTH-3:0],digit};

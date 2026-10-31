@@ -1,0 +1,229 @@
+{
+  "schema": 1,
+  "policy": "native-demo-mailbox-structure-v1",
+  "report": "DUL138K_NATIVE_CDC_20261031.md",
+  "maintained_sources": {
+    "tools/workstation_native_protocol_audit.py": "3b48cce8d741e6ec0dd00893d6933a0b102b64d810ec5b654d16dad6ab7b608d",
+    "sim/test_workstation_native_protocol.py": "0c8fefb0cc335e69f00183ba825a3cc88f89a3c137c6ce5d4c33326fe640890f",
+    "tools/workstation_runtime_profile.py": "e1dc423033d515732022c4f63aafa04d5d774e55680e01ae880faf620d3ad371"
+  },
+  "actual_evidence": [
+    {
+      "id": "m5-vg",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m5-vg-final.json",
+      "artifact_sha256": "7e48f73b46adac1cce71928dd2c2068baa2af4b5544f635184b8bac5b1ecaa5a",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v5-physical-v1/custom_138k_integration.vg",
+      "netlist_sha256": "d3906d766d5ff2f05caadd823df75f97e5e86d063fe5a61c4b6c29ae5d5a5572",
+      "profile": "m-demo-base",
+      "mapping": "synthesis",
+      "mailbox_count": 4,
+      "display_held_ff_bits": 73,
+      "display_registered_ram_bits": 98,
+      "display_ram_cells": 3,
+      "exact_payload_driver_closure": true,
+      "source_stop_loss_bypass_preserved": true,
+      "actual_installed_local_sdc_checked": false,
+      "installed_sdc_sha256": null,
+      "source_seal": {
+        "maintained_source_stable_before_after": true,
+        "netlist_stable_before_after": true,
+        "installed_sdc_stable_before_after": false,
+        "scope": "audit code, maintained contracts and selected netlist/SDC only; no compilation-input seal"
+      },
+      "lexical_audit": {
+        "original_text_sha256": "d3906d766d5ff2f05caadd823df75f97e5e86d063fe5a61c4b6c29ae5d5a5572",
+        "named_port_count": 516528,
+        "escaped_named_port_count": 238,
+        "duplicate_bindings_rejected": true,
+        "original_vg_rewritten": false,
+        "shared_parser_modified": false
+      }
+    },
+    {
+      "id": "w5-vg",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/w5-vg-final.json",
+      "artifact_sha256": "7378b7a3accda236c411a3c64f2d008373cbef1b8731fd24c641e737b65514db",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v5/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "netlist_sha256": "4647aa544a7b4ccd590bad2d43f36907b216aef782667b0c72f4b6ef6b0422b7",
+      "profile": "w-demo-d",
+      "mapping": "synthesis",
+      "mailbox_count": 4,
+      "display_held_ff_bits": 41,
+      "display_registered_ram_bits": 98,
+      "display_ram_cells": 3,
+      "exact_payload_driver_closure": true,
+      "source_stop_loss_bypass_preserved": true,
+      "actual_installed_local_sdc_checked": false,
+      "installed_sdc_sha256": null,
+      "source_seal": {
+        "maintained_source_stable_before_after": true,
+        "netlist_stable_before_after": true,
+        "installed_sdc_stable_before_after": false,
+        "scope": "audit code, maintained contracts and selected netlist/SDC only; no compilation-input seal"
+      },
+      "lexical_audit": {
+        "original_text_sha256": "4647aa544a7b4ccd590bad2d43f36907b216aef782667b0c72f4b6ef6b0422b7",
+        "named_port_count": 598567,
+        "escaped_named_port_count": 523,
+        "duplicate_bindings_rejected": true,
+        "original_vg_rewritten": false,
+        "shared_parser_modified": false
+      }
+    },
+    {
+      "id": "m5-vo",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m5-vo-final.json",
+      "artifact_sha256": "1fa77cdc68f74d424158cac8399b1a442a76ad9e195f4ce561798cb53104ae0b",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v5-physical-v1/impl/pnr/custom_138k_integration.vo",
+      "netlist_sha256": "8e3001016a383244ccdfb6d6163b4c926a2dd38763b40b1b6ebdda508c77a1d7",
+      "profile": "m-demo-base",
+      "mapping": "routed",
+      "mailbox_count": 4,
+      "display_held_ff_bits": 73,
+      "display_registered_ram_bits": 98,
+      "display_ram_cells": 6,
+      "exact_payload_driver_closure": true,
+      "source_stop_loss_bypass_preserved": true,
+      "actual_installed_local_sdc_checked": false,
+      "installed_sdc_sha256": null,
+      "source_seal": {
+        "maintained_source_stable_before_after": true,
+        "netlist_stable_before_after": true,
+        "installed_sdc_stable_before_after": false,
+        "scope": "audit code, maintained contracts and selected netlist/SDC only; no compilation-input seal"
+      },
+      "lexical_audit": {
+        "local_primitive_count": 1022,
+        "named_port_count": 5203,
+        "complete_local_named_port_parse": true,
+        "original_bytes_rewritten": false,
+        "global_parser_modified": false
+      }
+    },
+    {
+      "id": "m7-vg",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m7-vg-final.json",
+      "artifact_sha256": "2ed80086df20a6dac8c80d9671c822081bae447f82b50687b2dd94ebe739c399",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v7/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "netlist_sha256": "4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6",
+      "profile": "m-demo-base",
+      "mapping": "synthesis",
+      "mailbox_count": 4,
+      "display_held_ff_bits": 73,
+      "display_registered_ram_bits": 98,
+      "display_ram_cells": 3,
+      "exact_payload_driver_closure": true,
+      "source_stop_loss_bypass_preserved": true,
+      "actual_installed_local_sdc_checked": true,
+      "installed_sdc_sha256": "4df35329bc60126353f75f5cbd60593d6200332d2d8cfb0883c3dbdf7159c9c8",
+      "source_seal": {
+        "maintained_source_stable_before_after": true,
+        "netlist_stable_before_after": true,
+        "installed_sdc_stable_before_after": true,
+        "scope": "audit code, maintained contracts and selected netlist/SDC only; no compilation-input seal"
+      },
+      "lexical_audit": {
+        "original_text_sha256": "4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6",
+        "named_port_count": 522844,
+        "escaped_named_port_count": 234,
+        "duplicate_bindings_rejected": true,
+        "original_vg_rewritten": false,
+        "shared_parser_modified": false
+      }
+    },
+    {
+      "id": "m7-vo",
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/m7-vo-final.json",
+      "artifact_sha256": "9db3ead2ed406fd84730d533d24dcb32f65ead34118eddcb98d8f3400511a585",
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v7-physical-v1/impl/pnr/custom_138k_integration.vo",
+      "netlist_sha256": "0b8d04a02a519fb19eb42599b216aad7ef12af67da765711fa04e9eb82d5ed67",
+      "profile": "m-demo-base",
+      "mapping": "routed",
+      "mailbox_count": 4,
+      "display_held_ff_bits": 73,
+      "display_registered_ram_bits": 98,
+      "display_ram_cells": 6,
+      "exact_payload_driver_closure": true,
+      "source_stop_loss_bypass_preserved": true,
+      "actual_installed_local_sdc_checked": true,
+      "installed_sdc_sha256": "4df35329bc60126353f75f5cbd60593d6200332d2d8cfb0883c3dbdf7159c9c8",
+      "source_seal": {
+        "maintained_source_stable_before_after": true,
+        "netlist_stable_before_after": true,
+        "installed_sdc_stable_before_after": true,
+        "scope": "audit code, maintained contracts and selected netlist/SDC only; no compilation-input seal"
+      },
+      "lexical_audit": {
+        "local_primitive_count": 1022,
+        "named_port_count": 5203,
+        "complete_local_named_port_parse": true,
+        "original_bytes_rewritten": false,
+        "global_parser_modified": false
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "id": "m5-vg",
+      "artifact": "/tmp/dual138k-native-protocol-m-mutations.json",
+      "artifact_sha256": "6edffb9caab2745e15969432e4505b39edf4f8f12a373de4a9dbdb75d45447f3",
+      "rejected_netlist_mutations": 11,
+      "every_listed_mutation_rejected": true
+    },
+    {
+      "id": "w5-vg",
+      "artifact": "/tmp/dual138k-native-protocol-w-mutations.json",
+      "artifact_sha256": "769ba9d16e20b2bd335ad081a107e017c5a99a8e6ee343dd2a73420b573381ec",
+      "rejected_netlist_mutations": 11,
+      "every_listed_mutation_rejected": true
+    },
+    {
+      "id": "m5-vo",
+      "artifact": "/tmp/dual138k-native-protocol-m-vo-mutations-final.json",
+      "artifact_sha256": "dd557930bdb7267cc1e32174c152412fe5643cbb161fcf9974f095af80d28705",
+      "rejected_netlist_mutations": 13,
+      "every_listed_mutation_rejected": true
+    }
+  ],
+  "final_m5_routed_test_count": 17,
+  "final_m5_routed_tests_passed": true,
+  "additional_sdc_negative_cases": 11,
+  "additional_final_setup_hold_and_w_extra_consumer_tests_passed": true,
+  "vendor_registered_ram_test": {
+    "passed": true,
+    "source": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+    "sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5",
+    "read_mode": 0,
+    "widths": [
+      18,
+      36
+    ],
+    "busy_writes": 1024,
+    "stopped_read_clock_writes": 512,
+    "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/vendor-and-policy.log"
+  },
+  "final_drop_test": {
+    "passed": true,
+    "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/native-protocol-cdc-v1/health-verification.json",
+    "artifact_sha256": "9f0696faeaedabee733d314ce86405bd6f8abc43028ced804914f06365620b69",
+    "physical_final_drop": 1,
+    "display_final_drop": 1,
+    "source_stops": 2,
+    "resets": 4,
+    "counter_wrap": true,
+    "no_following_frames": true
+  },
+  "m5_vo_with_m7_sdc_was_compatibility_only": true,
+  "limitations": [
+    "Local pin/structure audit only; complete compilation-input sealing is separate",
+    "No whole CDC, PLL, reset or complete routed timing acceptance",
+    "M7 remains blocked by other setup/hold failures",
+    "No board audio/video acceptance or SRAM/Flash deployment evidence"
+  ],
+  "constraints_complete": false,
+  "physical_cdc_accepted": false,
+  "sta_verified": false,
+  "hardware_tested": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}

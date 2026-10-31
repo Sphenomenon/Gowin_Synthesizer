@@ -210,6 +210,10 @@ CNN的历史缓存证据见[分析记录](push2_workstation/usb_a/reports/CNN_GU
 
 后续只合并主线已提交`a4e2804`／`44f804f`的原生CDC及数据路径修复，未导入其未提交reverb／task／报告。合并后raw DDR、录音authority、TF、显示及生产启动真实I2S组合的定向回归通过。W v5已完成全量综合，仍有两项真实会话存储selector闭包待核验，未绕过端点门禁进入P&R；M新候选继续补窄CDC与同步音高关键路径修复，结果另立身份。
 
+M v6完整综合已完成，M v7只修正routed RAM拆分selector、581个非SDC输入与260条编译路径逐项保持；显式复用同一VG并保留独立身份`0067ea90a6354485`。M v7严格综合网表门禁通过，新`D2103103`已启动独立P&R。音高／除法器修复的独立数值与32声部PANIC回归见[音高报告](push2_workstation/usb_a/reports/DUAL138K_PITCH_LOCAL_TIMING_20261031.md)；实际物理收益尚待本次结果。用户确认目前只有模拟器，真实手机A2DP／D处理／BLE共存待实机可用后验收。
+
+M v7已完成独立P&R并生成位流：物理CLS49,996、BSRAM235、DSP120；setup4,069／hold1，audio Fmax67.089 MHz，时序仍失败，未上板。实际VG／VO的4邮箱及98位注册RAM等[局部CDC结构与已装约束验证](push2_workstation/usb_a/reports/DUAL138K_NATIVE_CDC_20261031.md)通过，不转授完整CDC／PLL接受。剩余同步逻辑、TF／PC健康窄CDC和DDR单个hold继续按真实路径纠错。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

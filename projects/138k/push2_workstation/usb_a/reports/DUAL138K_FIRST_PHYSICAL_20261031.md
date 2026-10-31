@@ -52,3 +52,19 @@ W v5 `custom138k-workstation-w-demo-v1-13cd785895ee9996` 已成功准备并完�
 合并后复验：raw store两配置与行为负控、authority十相位／17场景和六负控、TF四配置各23场景及默认逐周期对照通过。显示runtime同时覆盖新增停钟复位释放，记录 `display-merged-runtime-v1/verification.json`。生产启动实际I2S组合回归通过211个有效帧／127个非零帧、两次配置确认和一次中帧切换，最大render1168／slot1197拍；该定向短场景不代替32声部压力或长期实板检查。运行文件位于 `/Users/sphenicidition/.cache/gw138k-dual-20261031/` 对应的 `recording-merged-raw-v1`、`recording-merged-authority-v1`、`tf-merged-runtime-v1`、`audio-merged-runtime-v3`。音频fixture显式连接新增只读 `effect_state_o`，没有忽略缺端口warning。
 
 原始音频测试首次选择旧Classic准备工程时缺少新增D参数接口，重新选择固定M v5支持源完成；默认来源17项回归另行直接运行通过。由模块方式启动该来源测试曾因其既有本地fixture导入路径失败，随后按文档直接执行原脚本通过，未改测试放行。上述失败启动保留日志，没有修改冻结候选补文件或改变参考输入。
+
+## M v7：同RTL的完整综合与新物理候选
+
+M v6 `custom138k-workstation-m-demo-v1-0fb50b6129cca888` 在局部混响／显示／音高及已提交主线修复后完成全量综合。综合LUT51,820、ALU12,904、FF46,859、BSRAM equivalent195、SSRAM141，DSP primitive为MULTALU27X18=34、MULT12X12=4、MULT27X36=42。与M v5的差额包含本轮全部修改，不能记作某一个局部修复的资源收益。
+
+后续routed VO证明，98位已保持的物理观测数据被Gowin从3片36-bit SDPX9B拆为6片18-bit，新增片带`gowin_add`名称。维护约束源增加一个通配符匹配该拆分，目的端仍逐位列出同样的98个D。M v7 `custom138k-workstation-m-demo-v1-0067ea90a6354485`另行prepare，全部582个staged输入集合及260个enabled路径相同；唯一变化是SDC这两行source selector，581个非SDC输入逐项hash／字节一致。因此透明复用M v6已经完成的全部综合输出，未再宣称第二次综合，也未修改M v6原输入或身份。[复用证据](dual138k_m_demo_v7_synthesis_reuse_20261031.json)记录两候选及每个综合输出hash，M v7仍需独立新P&R。
+
+M v7严格综合网表门禁已通过，包括完整乐器／效果／HDMI／TF保留、蓝牙及录音退出、32声部真存储、时钟与每个可见SDC selector。综合网表SHA256 `4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6`。物理目录 `/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v7-physical-v1`，新UserCode `D2103103`；真实P&R已经启动，时序／资源结果尚待取得，未部署SRAM。
+
+手机实际可用性由用户确认当前只有模拟器，真实安卓无线验收推迟到实机可用时。模拟器结果不替代手机A2DP、W D处理或BLE录音下载共存。
+
+M v7实际P&R已全部布通并生成位流，退出0，所有准备输入hash在完成后保持。物理Logic65,950、FF46,859、CLS49,996／69,120、BSRAM235／340、DSP120／298。setup违例4,069、hold1；最差setup−2.074 ns，音频Fmax67.089 MHz仍低于76.8 MHz。setup端点较M v5减少4,150个，hold减少70个，仍未闭合。DDR报告Fmax187.196 MHz不能覆盖其850个setup违例，实际同步epoch→framebuffer控制路径仍−1.894 ns；音频DMA故障→USB输入settle同步路径为−1.885 ns。
+
+唯一hold为DDR初始化→wloadn；slack−3.647 ns含已导入的精确`set_min_delay3.500`要求，数据延迟0.386 ns／skew−0.485 ns，仍是失败门禁，不能与旧1.800 ns约束下数值直接当作物理退化量。PR1014仍警告clk50和12.288MHz参考可能使用普通布线。完整测量／输入与输出hash见[M v7物理证据](dual138k_m_demo_v7_physical_20261031.json)，未下载SRAM或写Flash。
+
+新M v7实际VG与VO、实际安装physical.sdc的4个原生邮箱／98位注册RAM／丢帧健康局部结构闭包通过，详见[原生CDC验证](DUAL138K_NATIVE_CDC_20261031.md)。这是明确局部范围，完整CDC、PLL和routed时序仍未通过。后续继续按实际剩余路径修复，不以新增例外掩盖同步逻辑。

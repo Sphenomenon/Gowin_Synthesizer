@@ -250,6 +250,13 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
         held(scope + '/held_data_*_s*/Q', scope + '/destination_data_*_s*/D', budget)
         receiver(scope, 'req_meta', 'req_sync')
         receiver(scope, 'ack_meta', 'ack_sync')
+    # Gowin absorbs the 98 physical-observation held bits into the FIFO's
+    # synchronous RAM read outputs. They share the mailbox acceptance CE and
+    # cannot update until its ACK returns. Keep this path separate from the
+    # 73 ordinary held FFs: the native-protocol audit proves each selected D
+    # has exactly one registered SDPX9B DO driver and the exact acceptance CE.
+    held('u_managed/observation/frames/*g_small_head.memory_g_small_head.memory_0_*_s/DO*',
+         ' '.join(f'u_managed/display/destination_data_{bit}_s*/D' for bit in range(105, 203)), 20.0)
     # TF control is a two-flop toggle exchange, with a further capture edge.
     for stem in ('request_sync', 'ack_sync'):
         receiver('u_tf_audio', stem + '_0', stem + '_1')
@@ -276,7 +283,8 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
         receiver(scope, 'ack_meta', 'ack_sync')
     # This is a held loss indication (sticky OR nonzero), not a binary count
     # sampled as a word. Its second stage and fault latch remain normally timed.
-    receiver('u_managed/display_observation_health', 'loss_meta_1', 'loss_sync_1')
+    for bit in (0, 1):
+        receiver('u_managed/display_observation_health', 'loss_meta_' + str(bit), 'loss_sync_' + str(bit))
     # APB waits for the settled response ACK before launching another word.
     for scope in ('u_clock_control', *(['business_commands'] if business_owner_enabled else [])):
         for source, destination in (('request_held', 'request_local'), ('response_held', 'response_local')):

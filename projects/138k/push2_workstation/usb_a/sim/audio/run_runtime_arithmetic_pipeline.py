@@ -49,6 +49,8 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--reference-project', type=Path,
                         help='Optional independent frozen project cross-check; never a dependency')
+    parser.add_argument('--oscillator-only', action='store_true',
+                        help='Target div147 and all ordinary oscillator modes; retain default vector provenance gate')
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -69,6 +71,8 @@ def main():
     original, native, ancestry = {}, {}, {}
     names = {'osc': 'workstation_runtime_oscillator_engine.sv',
              'vector': 'workstation_runtime_scope_vec.sv'}
+    if args.oscillator_only:
+        names.pop('vector')
     metadata = {}
     for kind, name in names.items():
         source = ROOT / 'rtl/audio' / name
@@ -144,6 +148,10 @@ def main():
                   selected_parameters={'oscillator': {'RUNTIME_RATE_ENABLE': 1, 'PIPELINED_RATE': 1, 'PIPELINED_ENVELOPE': 1},
                                        'vector': {'PIPELINED_RATE': 1}},
                   optional_frozen_crosscheck=args.reference_project is not None)
+    if args.oscillator_only:
+        report['identity'] += '-oscillator-only'
+        report['selected_parameters'].pop('vector')
+    report['scope'] = 'div147 and ordinary32-voice oscillator' if args.oscillator_only else 'div147,ordinary32-voice oscillator and vector'
     (output / 'inputs.json').write_text(json.dumps(report | {'input_sha256': inputs}, indent=2) + '\n')
 
     def helper_case(item):
@@ -197,6 +205,7 @@ def main():
             'helper_stale_tag': ('tag[s+1]<=tag[s];', 'tag[s+1]<=tag[0];', 'DIV147_TAG'),
             'helper_ring_wrong_address': ('read_address=address-DELAY;', "read_address=address-DELAY+1'b1;", 'DIV147_TAG'),
             'helper_retain_flush': ("else if(flush_i)valid<='0;", 'else if(flush_i)valid<=valid;', 'DIV147_QUIESCENT'),
+            'helper_remove_output_kill': ('assign valid_o=valid[STAGES] && !flush_i;', 'assign valid_o=valid[STAGES];', 'DIV147_FLUSH_GATE'),
             'helper_skip_digit': ('quotient[s+1]<={quotient[s][WIDTH-3:0],digit};', 'quotient[s+1]<=quotient[s];', 'DIV147_NUMERIC')}
         report['helper'] = dict(map(helper_case, helper_specs.items()))
         cases = [
@@ -209,6 +218,7 @@ def main():
                 'assign {registered_release,registered_decay}=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]][71:24];\n'
                 "        assign registered_attack=adsr_44_rom[profile_delay[COEFFICIENT_STAGES]][23:0]+24'd1;",
                 'VEC_COEFFICIENT'))]
+        cases = [case for case in cases if case[1] in names]
         with ThreadPoolExecutor(max_workers=2) as pool:
             report['consumers'] = dict(pool.map(consumer_case, cases))
         report['passed'] = all(case['passed'] for group in ('helper', 'consumers') for case in report[group].values())

@@ -23,8 +23,17 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
   reg [TAG_WIDTH-1:0] expected_tag[0:STAGES];
   reg [63:0] random_state=64'hfc20261030000000+WIDTH;
   reg [63:0] rv;
-  integer cycle=0, issued=0, checked=0, flushes=0, k, n, b;
+  integer cycle=0, issued=0, checked=0, flushes=0, flush_output_collisions=0, k, n, b;
   reg [WIDTH-1:0] x;
+  // Cancellation must kill a currently visible result before the next
+  // pipeline clock, independently of the edge that clears valid storage.
+  always @(negedge clk)begin
+    #1;
+    if(rst_n && flush)begin
+      if(expected_valid[STAGES])flush_output_collisions=flush_output_collisions+1;
+      if(out_valid!==1'b0)$fatal(1,"DIV147_FLUSH_GATE width=%0d cycle=%0d",WIDTH,cycle);
+    end
+  end
 
   always @(posedge clk) begin
     cycle=cycle+1;
@@ -129,9 +138,9 @@ module div147_checker #(parameter integer WIDTH=42, TAG_WIDTH=16)(output reg don
     end
     drive(0,0,0,0);
     repeat(STAGES+4) @(negedge clk);
-    if(checked<5000 || flushes<20 || !quiet)
+    if(checked<5000 || flushes<20 || flush_output_collisions==0 || !quiet)
       $fatal(1,"DIV147_COVERAGE width=%0d checked=%0d flushes=%0d quiet=%b",WIDTH,checked,flushes,quiet);
-    $display("DIV147_INDEPENDENT_PASS width=%0d stages=%0d issued=%0d checked=%0d flushes=%0d",WIDTH,STAGES,issued,checked,flushes);
+    $display("DIV147_INDEPENDENT_PASS width=%0d stages=%0d issued=%0d checked=%0d flushes=%0d flush_output_collisions=%0d",WIDTH,STAGES,issued,checked,flushes,flush_output_collisions);
     done_o=1;
   end
 endmodule

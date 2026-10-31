@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "source_candidate": {
+    "name": "custom138k-workstation-m-demo-v1",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-0fb50b6129cca888",
+    "configuration_sha256": "ab1f465b01e9a3bf2a30f329bd6d49c2044eff603ff51f8d9acfbf261c13b0e5",
+    "artifact": "workstation_profile.json",
+    "artifact_sha256": "b82547014d9a50021eaea9531c75f19178c63102a9473082398d51873b9e1863"
+  },
+  "destination_candidate": {
+    "name": "custom138k-workstation-m-demo-v1",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-0067ea90a6354485",
+    "configuration_sha256": "4b785827f30fe8d772808f8d3edd75ad7efbd56633f6f0dd39b4b10fdbfd5e0c",
+    "artifact": "workstation_profile.json",
+    "artifact_sha256": "7a3d9c691fc672121312d58151a5dab9ea0f9698028000e39952c7b19c485546"
+  },
+  "source_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v6",
+  "destination_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v7",
+  "source_integration_sha256": "51a8deac917bba0b9be7395deffc0ac990216d17bb40fbffc57aae850c5af5ab",
+  "destination_integration_sha256": "41c36c7fd3a7fb0d848f59ff16f3cd1733d1f5243ffe44970f8f196109e9b37c",
+  "enabled_inputs_identical": true,
+  "staged_inventory_identical": true,
+  "all_non_sdc_staged_bytes_identical": true,
+  "non_sdc_count": 581,
+  "changed_input_only": "constraints/custom_138k.sdc",
+  "constraint_adaptation": {
+    "before_sha256": "c282c9fc5858879356a096ba11c416f0f4fae2e932da0b0eec3f3fc994d7758c",
+    "after_sha256": "4df35329bc60126353f75f5cbd60593d6200332d2d8cfb0883c3dbdf7159c9c8",
+    "old_selector": "u_managed/observation/frames/g_small_head.memory_g_small_head.memory_0_*_s/DO*",
+    "new_selector": "u_managed/observation/frames/*g_small_head.memory_g_small_head.memory_0_*_s/DO*",
+    "exact_occurrences": 2,
+    "reason": "The routed registered SDPX9B read outputs split from 3x36 into 6x18 under preserved and gowin_add names; explicit destination remains the same 98 bits; native structural audit required"
+  },
+  "original_manifests_unchanged": true,
+  "reused_outputs_sha256": {
+    "custom_138k_integration.vg": "4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6",
+    "custom_138k_integration_syn_rsc.xml": "1d61d4d5acba46c002e21ff303af5517db79facda0fd97d9e3d9b6afe51a9116",
+    "project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+    "custom_138k_integration.log": "0e8c996c474e9fb5fc3ced6f2eb2e3fee0c70e9ecb1a324b06dc20c17931e76c",
+    "custom_138k_integration.prj": "78e7f19d30c61981f24ac8c34bc15750e5d2ef26c9fa10a54b0a74ec3e084eab",
+    "custom_138k_integration_syn_resource.html": "be3ffa6e93ab9037e22b57bb266aab68674fa3b1823db293be80c0b407046af0",
+    "custom_138k_integration_syn.rpt.html": "48174812a7acbbce44246d0c339b67c40998ce1bd61a2ac5be7d86d8290db5d5"
+  },
+  "synthesis_log_sha256": "f50fd43651a4b88373b3799a9b130f12dacbc7b715041345d9c160e5a2e90268",
+  "original_synthesis_run": true,
+  "new_synthesis_invoked": false,
+  "new_pnr_required": true,
+  "source_and_destination_inputs_reverified_after_copy": true,
+  "hardware_tested": false,
+  "release_ready": false,
+  "evidence_file_sha256": "8a0987aabfa09643a241a92f63726742eac3a14fcb66a1c2e958f19ede0062d4"
+}
