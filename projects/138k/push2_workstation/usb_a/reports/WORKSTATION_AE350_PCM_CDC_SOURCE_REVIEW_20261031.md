@@ -32,3 +32,9 @@ python3 sim/test_ae350_pcm_boundaries.py
 实际 joint128 整机综合网表到达后，必须对真实 APB inventory/Boolean gates、HCI epoch/generation mux 源与全部消费者、selected-MCLK hold、PCM RAM clocks/ports、SDC D/CE/async pins 作严格审计。缺失对象或错误 PRESET/CLEAR 不能以“源上有约束”解释为通过；未知或多驱动拓扑失败。之后单独绑定 routed STA/传播、recovery/removal 和硬件证据。不得放宽既定 10 ns payload / 2 ns synchronizer 预算或添加整域 false path 以取得通过。
 
 该提交只新增 checker、仿真及报告；撤销这些新增文件即可回退，功能与候选输入不改变。ROM96、其它存储配置或新的 RTL 身份需另立显式策略，不能静默沿用 joint128 的哈希或物理结论。
+
+## 主线复验
+
+主线接入 `b870d88` 后，根端重新执行 4 项 checker 回归、真实 HCI/session 三相位及四个负控、真实 prepared F806 APB 的 54 项／6 次接受及四个负控，全部通过。源码／prepare gate 重新绑定根端 joint128 候选 `3855490f159913c6`；15 份来源和实际 APB 字节保持，作者 5,930 份源码／54 份证据／3 个工具身份重新验封通过。
+
+根端封存位于 `/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-pcm-cdc-main-parent-v1`，包含源码快照、原始回归与独立 verifier；精确 seal 和范围见[主线机器记录](workstation_task_20261030/ae350_pcm_cdc_main.json)。本阶段未修改 RTL／约束，未做新综合、P&R、SRAM 或 Flash；actual VG、物理端点和 routed STA 仍待验证。

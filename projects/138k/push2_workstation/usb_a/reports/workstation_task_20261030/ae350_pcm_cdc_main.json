@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "scope": "main joint128 CDC source/prepare and asynchronous behavior review",
+  "source_commit": "b870d88",
+  "candidate_identity": "custom138k-workstation-classic-runtime-v1-3855490f159913c6",
+  "locked_sources": 15,
+  "root_tests": 4,
+  "root_HCI_phases": {
+    "0.0": {
+      "summary": "PASS HCI/session CDC captures=3 revokes=3 independent_phase=0.0",
+      "captures": 3,
+      "revokes": 3,
+      "native_checks": 269,
+      "source_clock_ns": 20,
+      "compute_clock_ns": 13.020834,
+      "phase_ns": 0.0
+    },
+    "1.37": {
+      "summary": "PASS HCI/session CDC captures=3 revokes=3 independent_phase=1.37",
+      "captures": 3,
+      "revokes": 3,
+      "native_checks": 269,
+      "source_clock_ns": 20,
+      "compute_clock_ns": 13.020834,
+      "phase_ns": 1.37
+    },
+    "5.9": {
+      "summary": "PASS HCI/session CDC captures=3 revokes=3 independent_phase=5.9",
+      "captures": 3,
+      "revokes": 3,
+      "native_checks": 269,
+      "source_clock_ns": 20,
+      "compute_clock_ns": 13.020834,
+      "phase_ns": 5.9
+    }
+  },
+  "root_HCI_mutants": 4,
+  "root_APB_baseline": {
+    "summary": "PASS APB CDC reset checks=54 accepted=6 pre_capture=1 post_accept=1 stopped_producer=1 stopped_compute=1",
+    "checks": 54,
+    "accepted": 6
+  },
+  "root_APB_mutants": 4,
+  "prepared_scope": {
+    "policy": "ae350-pcm-cdc-boundaries-v1",
+    "policy_sha256": "46a8e7f3eca611833ebd8f19efd03cb2455bc3ad6b1ba66499bed6bae3a21e34",
+    "source_sha256": {
+      "rtl/audio/workstation_ae350_pcm_owner.sv": "765e05213e6de5df1c729ef9b43ac2a40025fdaf90ebc060080079855d31dfb8",
+      "rtl/audio/workstation_ae350_pcm_session.sv": "e3f484857d767b2f12f700badaf7f5e40409a0568ec0d26d1015ccf735d7b5bb",
+      "rtl/audio/workstation_i2s_serializer.sv": "9a46866c4395e067fab7f433f71ca9c7711482993d4f9de75fc37282748f0612",
+      "rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
+      "rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+      "rtl/workstation/workstation_runtime_audio.sv": "c470d8dfc314a785778e166a6c717d03dd385e845f8bce5e1f06c54efcb07a0d",
+      "rtl/workstation/workstation_runtime_controlled.sv": "62527c308e3699a76e6bec3553531f4b49c72a964b6ccf6f984caccde218790d",
+      "rtl/workstation/gw138k_push_workstation_top.v": "ba87c7be7e1379dcdcb4d157625628a254645c608b089d00ba2491a941b4a213",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "01c72a3b365e711e2425d552dec2eaaa5863292ca38295a27bb35a0c666f6d8e",
+      "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "3df4ce98983befedff74089b204bd38088649c81a5559a1cdcb87ed3c5cc44b3",
+      "rtl/bluetooth/hci_owner/workstation_hci_bluetooth.sv": "991be5ff27114acd682c2eb569e8bec0bfadd259c337f7f2fefbd01287dfec7b",
+      "rtl/bluetooth/hci_owner/workstation_hci_initializer.v": "0141ad4c497de8190b22193cb9bbe7d7002757935379b2fce462bc53677619f1",
+      "tools/workstation_classic_runtime.py": "f22e819e3ef26703116aac55b18e9c71efe79a4aab41e299e31eb7cf56ac79a0",
+      "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3"
+    },
+    "prepared_APB_source": "src/migration/gw138k_apb_cdc.sv",
+    "prepared_APB_sha256": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "reviewed_source_contracts": true,
+    "physical_CDC_accepted": false,
+    "release_ready": false,
+    "candidate_identity": "custom138k-workstation-classic-runtime-v1-3855490f159913c6",
+    "prepared_profile_sha256": "49d09991a5cba99b412cfadceb20223440b50bd4459a83a75a2203f2211273e6",
+    "staged_source_identity_verified": true,
+    "macro_and_port_closure_verified": true,
+    "constraints": {
+      "reviewed_line_count": 16,
+      "candidate_lines_exact": true,
+      "wildcard_exception_scan_verified": true,
+      "source_name_witnesses_are_actual_objects": false,
+      "payload_max_delay_ns": 10,
+      "synchronizer_max_delay_ns": 2,
+      "actual_endpoint_resolution_verified": false,
+      "actual_CLEAR_PRESET_resolution_verified": false,
+      "recovery_removal_verified": false,
+      "routed_propagation_verified": false,
+      "physical_CDC_accepted": false
+    }
+  },
+  "author_seal_sha256": "01d2dc6ee8df2dc17e2eeef4252534286518d63cb83d5aaa9ec13e711b2480b9",
+  "synthesis": false,
+  "pnr": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "limitations": [
+    "Synthetic APB netlist proves checker behavior only. Actual VG endpoint closure and routed STA remain open.",
+    "Policy deliberately fixes joint128 sources; later ROM96/top/helper changes must use a separate reviewed scope and must reject v1 policy."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-pcm-cdc-main-parent-v1",
+  "seal_sha256": "4544411865f287baea853e0a698ff28fbeecf3cd9b965165dd56463ecef56fcb",
+  "source_snapshots": 21,
+  "external_files": 59
+}
