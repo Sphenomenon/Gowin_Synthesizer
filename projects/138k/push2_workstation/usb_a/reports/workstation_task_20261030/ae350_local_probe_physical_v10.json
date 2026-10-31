@@ -1,0 +1,154 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031CC",
+  "scope": "isolated same-hard-IP boot64 ILM/DLM probe",
+  "iterations": [
+    {
+      "version": 10,
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031CC-v10",
+      "exit_code": 0,
+      "elapsed_seconds": 298.1138694998808,
+      "process_sha256": "95ab97fd0ce804de410a06e0bed7e19c423be966ad3e7a9164c7bbbe53883f2e"
+    }
+  ],
+  "prepare_audit": {
+    "manifest_sha256": "16f304977ba41db08fb7dbf21f4fce9de38b8aeffe58f8649e374b0b2a9cd233",
+    "verified_inputs": 38,
+    "compiled_sources": 8,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "vg_sha256": "293ed42abaddafcdb15ca00b7b2d7530b928a5a1de8812347d391d0ca3a9da55",
+  "bitstream_path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-C21031CC-v10/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "135fb6c29b612b8ec444943d80e716dd9337b61964eff4ff688fa7f383a97784",
+  "timing_slacks": {
+    "setup": {
+      "reported_paths": 2000,
+      "minimum_ns": 4.675
+    },
+    "hold": {
+      "reported_paths": 2000,
+      "minimum_ns": 0.162
+    },
+    "recovery": {
+      "reported_paths": 1390,
+      "minimum_ns": 7.59
+    },
+    "removal": {
+      "reported_paths": 1390,
+      "minimum_ns": 0.402
+    }
+  },
+  "pll_placement": {
+    "instance": "u_cpu_pll/PLL_inst",
+    "site": "PLL_R[0]",
+    "core_output": "CLKOUT1",
+    "reported_rows": 4235,
+    "outputs": [
+      "CLKOUT0",
+      "CLKOUT1"
+    ]
+  },
+  "source_commit": "26b9438",
+  "rtc_synthesis": {
+    "pin": "u_rtc/rtc_tick_s1/Q",
+    "cell": "DFFCE",
+    "source": "clk_50m",
+    "hard_ip_wrapper_port": "u_cpu/rtc_tick",
+    "average_hz": 32768,
+    "sta_minimum_period_cycles": 1524
+  },
+  "minimum_reported_pulse_width_slack_ns": 3.556,
+  "synchronizer_first_stages": {
+    "u_uart/request_meta_s0": {
+      "D": "u_uart/request",
+      "Q": "u_uart/request_meta",
+      "CLK": "ram_clk",
+      "CLEAR": "n385_6"
+    },
+    "u_uart/ack_meta_s0": {
+      "D": "u_uart/ack",
+      "Q": "u_uart/ack_meta",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "upper_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n385_6"
+    },
+    "unmapped_sync_0_s0": {
+      "D": "unmapped_seen",
+      "Q": "unmapped_sync[0]",
+      "CLK": "ram_clk",
+      "CLEAR": "n385_6"
+    },
+    "u_uart/flags_meta_0_s0": {
+      "D": "pll_locked",
+      "Q": "u_uart/flags_meta[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "u_uart/flags_meta_1_s0": {
+      "D": "lock_qualified",
+      "Q": "u_uart/flags_meta[1]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "u_uart/flags_meta_2_s0": {
+      "D": "core_reset_pipe[3]",
+      "Q": "u_uart/flags_meta[2]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "u_uart/flags_meta_3_s0": {
+      "D": "preset_n",
+      "Q": "u_uart/flags_meta[3]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "rom_health_sync_0_s0": {
+      "D": "rom_seen",
+      "Q": "rom_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    },
+    "upper_health_sync_0_s0": {
+      "D": "upper_seen",
+      "Q": "upper_health_sync[0]",
+      "CLK": "clk_50m",
+      "CLEAR": "n8772_7"
+    }
+  },
+  "clocks_hz": {
+    "reference": 50000000,
+    "bus": 50000000,
+    "core": 100000000
+  },
+  "warnings": [
+    "PR1014 reference clock generic routing retained; actual routed timing reviewed",
+    "EX2478 output declaration initialization ignored; explicit reset remains",
+    "Frozen PLL EX3791 truncation diagnostics retained"
+  ],
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "full_workstation": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "Visible PL clocks/FF chains and actual routed reports reviewed; encrypted hard IP internals are not independently timed by this probe.",
+    "UART and GAO are observations; cache remains disabled; PMACFG without PMAADDR does not establish address-range cache attributes."
+  ],
+  "rtc_routed_pin": "u_rtc/rtc_tick_s1/Q",
+  "rtc_hard_ip_input_net": "rtc_tick",
+  "rtc_constraint_consumed": true,
+  "rtc_hard_ip_internal_timing_verified": false,
+  "rtc_physical_frequency_measured": false,
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v10",
+  "seal_sha256": "e953162b602b9d8de6fe55c69f3a3035ebeb866525d1b3b0c3d92a0f79a3d2df",
+  "external_files": 84
+}

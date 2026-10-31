@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "identity": "custom138k-ae350-local-memory-probe-C21031CC",
+  "source_commit": "26b9438",
+  "bitstream_sha256": "135fb6c29b612b8ec444943d80e716dd9337b61964eff4ff688fa7f383a97784",
+  "physical_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-main-physical-parent-v10",
+  "physical_parent_seal_sha256": "e953162b602b9d8de6fe55c69f3a3035ebeb866525d1b3b0c3d92a0f79a3d2df",
+  "timing_slacks": {
+    "setup": {
+      "reported_paths": 2000,
+      "minimum_ns": 4.675
+    },
+    "hold": {
+      "reported_paths": 2000,
+      "minimum_ns": 0.162
+    },
+    "recovery": {
+      "reported_paths": 1390,
+      "minimum_ns": 7.59
+    },
+    "removal": {
+      "reported_paths": 1390,
+      "minimum_ns": 0.402
+    }
+  },
+  "minimum_reported_pulse_width_slack_ns": 3.556,
+  "pll_placement": {
+    "instance": "u_cpu_pll/PLL_inst",
+    "site": "PLL_R[0]",
+    "core_output": "CLKOUT1",
+    "reported_rows": 4235,
+    "outputs": [
+      "CLKOUT0",
+      "CLKOUT1"
+    ]
+  },
+  "rtc_route": {
+    "pin": "u_rtc/rtc_tick_s1/Q",
+    "cell": "DFFCE",
+    "source": "clk_50m",
+    "hard_ip_wrapper_port": "u_cpu/rtc_tick",
+    "average_hz": 32768,
+    "sta_minimum_period_cycles": 1524
+  },
+  "rtc_constraint_consumed": true,
+  "rtc_physical_frequency_measured": false,
+  "sram_programmed": true,
+  "sram_program_returncode": 18,
+  "sram_verify_passed": false,
+  "main_configuration_readback": false,
+  "gao": {
+    "valid_rows": 128,
+    "health_words": [
+      "0xffff078f"
+    ],
+    "software_summary_unique": [
+      "0x66ba777d1aba497df44c0cf9a0200001a00000012007f03900439ada00439ada000001ffa020ffc0a0000a640000200000000007000000005041535350415353"
+    ]
+  },
+  "summary_assessment": {
+    "words": {
+      "1": "0x50415353",
+      "6": "0x50415353",
+      "7": "0x0",
+      "8": "0x7",
+      "9": "0x2000",
+      "11": "0xa0000a64",
+      "12": "0xa020ffc0",
+      "14": "0x1ff",
+      "16": "0x439ada",
+      "17": "0x439ada",
+      "18": "0x2007f039",
+      "19": "0xa0000001",
+      "20": "0xa0200001",
+      "32": "0xf44c0cf9",
+      "34": "0x1aba497d",
+      "35": "0x66ba777d"
+    },
+    "checks": {
+      "loader_pass": true,
+      "service_pass": true,
+      "payload_crc": true,
+      "payload_edges": true,
+      "local_geometry": true,
+      "local_enabled": true,
+      "executing_ilm": true,
+      "stack": true
+    },
+    "summary_checks_passed": true,
+    "not_observed": [
+      "cache control register",
+      "memory pattern counts and errors",
+      "counter delta snapshots",
+      "full 64-word frame and CRC"
+    ],
+    "comparison_to_c9": "All16 summary words exactly equal to fixed C9; independent packed/per-bit C10 capture checked."
+  },
+  "uart": {
+    "port": "/dev/cu.usbserial-21201",
+    "baud": 115200,
+    "format": "8N1",
+    "duration_seconds": 5.080824249889702,
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "read_only": true
+  },
+  "observed_hard_ip_startup": true,
+  "observed_ilm_execution": true,
+  "observed_dlm_stack": true,
+  "observed_rom_payload_crc": true,
+  "full_64word_diagnostics_observed": false,
+  "counter_deltas_observed": false,
+  "cache_dma_verified": false,
+  "hardware_acceptance": false,
+  "full_workstation": false,
+  "flash_written": false,
+  "comparison": "C9 and final C10 have byte-identical firmware and all16 captured summary words. C10 adds reference-derived RTC32768Hz average with corrected physical timing target; core/bus/PLL location unchanged.",
+  "rollback": {
+    "user_code": "C11028E5",
+    "status": "00022020",
+    "independent_read": "/Users/sphenicidition/.cache/gw138k-task-20261030/hardware/ae350_local_memory_c10/rollback_identity_3.json"
+  },
+  "remaining": [
+    "SRAM Verify Failed",
+    "UART no data",
+    "full diagnostic frame not captured",
+    "RTC physical frequency/jitter not measured; source RTL one-second proof only",
+    "cache remains disabled",
+    "no complete workstation validation"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-local-probe-c10-hardware-parent-v1",
+  "seal_sha256": "e60ebe1d7ffc5d31ff7335cbd0f419d642f2e71e9b893e2e9dc991afffae8d61",
+  "external_files": 39
+}
