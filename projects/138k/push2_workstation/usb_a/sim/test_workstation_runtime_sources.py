@@ -136,6 +136,43 @@ class DeclarationParser(unittest.TestCase):
 
 
 class SharedConstraintSelection(unittest.TestCase):
+    def test_protocol_constraints_are_scoped_and_configuration_selected(self):
+        base = runtime.protocol_constraints()
+        raw = runtime.protocol_constraints(ble_raw_enabled=True)
+        business = runtime.protocol_constraints(ble_raw_enabled=True, business_owner_enabled=True)
+        self.assertNotIn('recording_ble_store/', base)
+        self.assertNotIn('business_commands/', base)
+        self.assertNotIn('business_commands/', raw)
+        self.assertIn('recording_ble_store/return_data_*_s*/Q', raw)
+        self.assertIn('business_commands/request_held_*_s*/Q', business)
+        self.assertTrue(set(base.splitlines()).issubset(raw.splitlines()))
+        self.assertTrue(set(raw.splitlines()).issubset(business.splitlines()))
+        self.assertIn('set_false_path -to [get_pins {u_tf_audio/ack_sync_0_s*/D}]', base)
+        self.assertIn('set_max_delay 2.000 -from [get_pins {u_tf_audio/ack_sync_0_s*/Q}] '
+                      '-to [get_pins {u_tf_audio/ack_sync_1_s*/D}]', base)
+        for source, destination, budget in (
+            ('u_managed/display/held_data_*', 'u_managed/display/destination_data_*', '20.000'),
+            ('u_managed/health_snapshot/held_data_*', 'u_managed/health_snapshot/destination_data_*', '13.020'),
+            ('u_clock_control/request_held_*', 'u_clock_control/request_local_*', '20.000'),
+            ('recording_ble_store/return_generation_*', 'recording_ble_store/unpack_generation_*', '10.000'),
+            ('business_commands/request_held_*', 'business_commands/request_local_*', '20.000')):
+            path = '-from [get_pins {' + source + '_s*/Q}] -to [get_pins {' + destination + '_s*/D}]'
+            self.assertIn('set_max_delay ' + budget + ' ' + path, business)
+            self.assertIn('set_false_path -hold ' + path, business)
+        self.assertNotIn('get_clocks', business)
+        self.assertNotIn('set_clock_groups', business)
+        self.assertNotIn('/CLEAR', business)
+        self.assertNotIn('/RESET', business)
+        self.assertIn('set_max_delay 10.000 -from [get_pins {u_tf_audio/path/g_runtime_dma.u_dma/'
+                      'staged_file_size_*_s*/Q}] -to [get_pins {u_tf_audio/path/file_size_meta_*_s*/D}]', business)
+        self.assertNotIn('set_false_path -to [get_pins {u_tf_audio/path/file_size_sync_ui', business)
+        self.assertNotIn('runtime_ack_meta_0_s*/D', business)
+        self.assertNotIn('runtime_ack_meta_3_s*/D', business)
+        for kwargs in (dict(ble_raw_enabled=1), dict(business_owner_enabled=1),
+                       dict(business_owner_enabled=True)):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
+                runtime.protocol_constraints(**kwargs)
+
     def test_usb_write_release_keeps_bounded_setup_and_other_first_stages(self):
         selected = runtime.shared_constraints(runtime.LEGACY_USB_FIRST_STAGE_SETUP + '\n')
         self.assertEqual(selected['sdc'],

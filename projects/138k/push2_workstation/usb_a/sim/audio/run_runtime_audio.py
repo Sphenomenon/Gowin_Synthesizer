@@ -48,6 +48,9 @@ def main():
         'workstation_final_pcm_router.sv', 'workstation_pcm_frame_fanout.sv')]
     sources += [ROOT / 'rtl/workstation/workstation_runtime_audio.sv', simlib,
                 Path(__file__).with_name('tb_workstation_runtime_audio.sv')]
+    maintained_names = {path.name for path in sources if path.is_relative_to(ROOT)}
+    sources = [path for path in sources if not (
+        path.is_relative_to(project / 'rtl/audio/delay_ddr') and path.name in maintained_names)]
     original_event = ROOT / 'rtl/audio/gw138k_event_workstation.sv'
     if args.negative_legacy_note_admission:
         text = original_event.read_text()

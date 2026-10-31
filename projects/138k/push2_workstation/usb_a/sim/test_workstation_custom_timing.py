@@ -169,7 +169,7 @@ endmodule
         self.assertNotIn('get_clocks', exceptions)
         self.assertEqual(sum('-from_clock [get_clocks {cpu_core100}]' in line
                              for line in constraints.splitlines() if line.startswith('report_timing ')), 2)
-        self.assertIn('set_min_delay 1.800 -from [get_pins', constraints)
+        self.assertIn('set_min_delay 3.500 -from [get_pins', constraints)
         runtime = timing.constraints(runtime_reset=True)
         added = set(runtime.splitlines()) - set(constraints.splitlines())
         asynchronous = {
@@ -210,15 +210,77 @@ endmodule
         expected.update(f'set_max_delay 2.000 -from [get_pins {{{stem}_{stage}_s*/Q}}] '
                         f'-to [get_pins {{{stem}_{stage+1}_s*/D}}]'
                         for stem, stages in status_chains.items() for stage in range(stages - 1))
+        display_chains = {'u_video/u_runtime_display/source_release',
+                          'u_video/u_runtime_display/memory_release'}
+        self.assertEqual(set(timing.RUNTIME_DISPLAY_RESET_CHAINS), display_chains)
+        display_clears = {f'set_false_path -to [get_pins {{{stem}_{stage}_s*/CLEAR}}]'
+                          for stem in display_chains for stage in range(3)}
+        expected.update(display_clears)
+        expected.update(f'set_max_delay 2.000 -from [get_pins {{{stem}_{stage}_s*/Q}}] '
+                        f'-to [get_pins {{{stem}_{stage+1}_s*/D}}]'
+                        for stem in display_chains for stage in range(2))
         self.assertEqual(added, expected)
-        self.assertEqual(len(added), 43)
-        # Existing raw assertion/CLEAR policy is unchanged. No functional,
-        # second-stage, clock-wide or broad prefix exception is added.
+        self.assertEqual(len(added), 53)
+        # Only the two new reset-release chains except their assertion pins.
+        # Their final Q -> owner CLEAR paths and all functional stages remain
+        # timed. Recording's data synchronizer exists only with raw DDR BLE.
         self.assertEqual([line for line in runtime.splitlines() if '/CLEAR' in line],
-                         [line for line in constraints.splitlines() if '/CLEAR' in line])
+                         [line for line in constraints.splitlines() if '/CLEAR' in line] +
+                         [line for line in runtime.splitlines() if line in display_clears])
+        recording = timing.constraints(runtime_reset=True, recording_authority=True)
+        self.assertEqual(timing.RECORDING_SURVIVAL_CHAIN, 'recording_authority/survived_control')
+        recording_added = set(recording.splitlines()) - set(runtime.splitlines())
+        recording_levels = {
+            'set_false_path -to [get_pins {recording_authority/survived_control_0_s*/D}]',
+            'set_max_delay 2.000 -from [get_pins {recording_authority/survived_control_0_s*/Q}] '
+            '-to [get_pins {recording_authority/survived_control_1_s*/D}]',
+            'set_false_path -to [get_pins {recording_authority/guard/open_meta_s*/D}]',
+            'set_max_delay 2.000 -from [get_pins {recording_authority/guard/open_meta_s*/Q}] '
+            '-to [get_pins {recording_authority/guard/open_ack_s*/D}]',
+        }
+        for first, second in (
+            ('u_recording/seal_cdc/ready_meta', 'u_recording/seal_cdc/ready_sync'),
+            ('u_recording/seal_cdc/result_meta', 'u_recording/seal_cdc/result_sync'),
+            ('u_recording/seal_cdc/request_meta', 'u_recording/seal_cdc/request_sync'),
+            ('u_recording/seal_cdc/hold_meta', 'u_recording/seal_cdc/hold_sync'),
+            ('recording_channel_meta', 'recording_channel_ready50'),
+        ):
+            recording_levels.add(f'set_false_path -to [get_pins {{{first}_s*/D}}]')
+            recording_levels.add(f'set_max_delay 2.000 -from [get_pins {{{first}_s*/Q}}] '
+                                 f'-to [get_pins {{{second}_s*/D}}]')
+        result_path = ('-from [get_pins {u_recording/seal_cdc/result_failed_s*/Q}] '
+                       '-to [get_pins {u_recording/seal_cdc/failed_o_s*/D '
+                       'u_recording/seal_cdc/done_o_s*/D}]')
+        recording_levels.update({'set_max_delay 10.000 ' + result_path,
+                                 'set_false_path -hold ' + result_path})
+        self.assertTrue(recording_levels.issubset(recording_added))
+        gray_lines = recording_added - recording_levels
+        self.assertEqual(len(gray_lines), 9)
+        for scope, source, first, second, width, budget, msb in (
+            ('recording_authority/guard', 'memory_gray', 'gray_meta', 'gray_sync', 32, 10.000, None),
+            ('recording_ble_store/capture_fifo', 'read_gray', 'read_gray_meta', 'read_gray_sync', 9, 10.000, 'read_binary'),
+            ('recording_ble_store/capture_fifo', 'write_gray', 'write_gray_meta', 'write_gray_sync', 9, 20.000, 'write_binary'),
+        ):
+            sources = ' '.join(f'{scope}/{msb if msb and bit==width-1 else source}_{bit}_s*/Q'
+                               for bit in range(width))
+            captures = ' '.join(f'{scope}/{first}_{bit}_s*/D' for bit in range(width))
+            path = f'-from [get_pins {{{sources}}}] -to [get_pins {{{captures}}}]'
+            self.assertIn(f'set_max_delay {budget:.3f} {path}', gray_lines)
+            self.assertIn('set_false_path -hold ' + path, gray_lines)
+            first_q = ' '.join(f'{scope}/{first}_{bit}_s*/Q' for bit in range(width))
+            second_d = ' '.join(f'{scope}/{second}_{bit}_s*/D' for bit in range(width))
+            self.assertIn(f'set_max_delay 2.000 -from [get_pins {{{first_q}}}] '
+                          f'-to [get_pins {{{second_d}}}]', gray_lines)
+        self.assertFalse(any('/CLEAR' in line or '/CE' in line for line in recording_added))
+        self.assertNotIn('recording_authority', runtime)
+        self.assertNotIn('u_runtime_display', constraints)
         self.assertTrue(set(constraints.splitlines()).issubset(runtime.splitlines()))
         with self.assertRaisesRegex(ValueError, 'selection must be boolean'):
             timing.constraints(runtime_reset=1)
+        with self.assertRaisesRegex(ValueError, 'authority selection requires'):
+            timing.constraints(recording_authority=True)
+        with self.assertRaisesRegex(ValueError, 'authority selection requires'):
+            timing.constraints(runtime_reset=True, recording_authority=1)
 
     def test_parallel_voice_control_preserves_allocation_and_gain_cycles(self):
         original = self.original_sources()['legacy/rtl/audio/unified_oscillator_engine.sv'].decode()

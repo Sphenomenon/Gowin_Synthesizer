@@ -60,7 +60,7 @@ module tb_workstation_runtime_audio #(
         .mode_o(mode),.master_volume_o(volume),.tf_active_i(tf_active),.tf_valid_i(1'b1),.tf_error_i(tf_error),
         .pitch_q20_o(),.pc_overflow_o(pc_overflows),.deadline_miss_o(deadlines),.midi_overflow_o(midi_overflows),
         .note_drop_o(note_drops),.clip_o(),.synth_gain_o(),.pcm_gain_o(),.route_o(),.profile_o(),.effect_mask_o(),
-        .effect_order_o(),.panel_event_valid_o(),.panel_command_o(),
+        .effect_order_o(),.effect_state_o(),.panel_event_valid_o(),.panel_command_o(),
         .tf_left_i(16'sd25000),.tf_right_i(-16'sd17000),.tf_sample_rate_i(tf_rate),.tf_generation_i(32'd1),
         .expected_tf_generation_i(32'd1),.tf_ready_o(tf_ready),.ddr_req_o(ddr_req),.ddr_write_o(ddr_write),
         .ddr_address_o(ddr_address),.ddr_data_o(ddr_data),.ddr_mask_o(ddr_mask),.ddr_ready_i(ddr_ready),

@@ -14,12 +14,26 @@ sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_pcm_cdc import (
     B, R, T, Z, TOP, POLICY, PAYLOADS, RESETS, SYNCS, REPLY_FLEX, CONSTRAINT_REVISIONS,
     Graph, PcmNetlist, BooleanDiagram,
-    audit_netlist, audit_runtime_clocks, file_sha, prepared_reset_policy, run_audit,
+    audit_netlist, audit_runtime_clocks, file_sha, prepared_reset_policy, prepared_context_ack_policy, run_audit,
     runtime_pcm_cdc_bundle, validate_constraints, VG_RELATIVE,
 )
 
 
 class RuntimePcmPolicy(unittest.TestCase):
+    def test_context_ack_source_policy_is_explicit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'rtl/workstation/workstation_runtime_audio.sv'
+            path.parent.mkdir(parents=True)
+            for guard, mode in [('config_applied', 'legacy'),
+                                ('config_applied && !integration_fault', 'fault-sticky')]:
+                path.write_text('CFG_ACK:if(' + guard + ')begin\n')
+                self.assertEqual(prepared_context_ack_policy(tmp)['mode'], mode)
+            for text in ('', 'CFG_ACK:if(config_applied || integration_fault)begin',
+                         'CFG_ACK:if(config_applied)begin\nCFG_ACK:if(config_applied)begin'):
+                path.write_text(text)
+                with self.assertRaisesRegex(ValueError, 'staged context ACK guard'):
+                    prepared_context_ack_policy(tmp)
+
     def test_partial_scope_and_fast_destination_budget(self):
         b = runtime_pcm_cdc_bundle(ROOT)
         self.assertEqual(b['policy'], POLICY)
@@ -115,7 +129,9 @@ class ActualRuntimePcm(unittest.TestCase):
         cls.g = Graph(cls.n)
         cls.clocks = audit_runtime_clocks(ROOT, cls.stage, cls.text)
         cls.reset_policy = prepared_reset_policy(cls.stage)
-        cls.result = audit_netlist(ROOT, cls.n, cls.clocks, reset_policy=cls.reset_policy)
+        cls.context_ack_policy = prepared_context_ack_policy(cls.stage)
+        cls.result = audit_netlist(ROOT, cls.n, cls.clocks, reset_policy=cls.reset_policy,
+                                  context_ack_policy=cls.context_ack_policy)
         cls.sdc = (cls.stage / 'constraints/custom_138k.sdc').read_text()
         cls.bundle = runtime_pcm_cdc_bundle(ROOT, constraint_revision=cls.constraint_revision)
         cls.negative_cases = []
@@ -164,7 +180,8 @@ class ActualRuntimePcm(unittest.TestCase):
 
     def reject(self, name):
         with self.assertRaisesRegex(ValueError, 'runtime PCM CDC audit:') as caught:
-            audit_netlist(ROOT, self.n, self.clocks, reset_policy=self.reset_policy)
+            audit_netlist(ROOT, self.n, self.clocks, reset_policy=self.reset_policy,
+                          context_ack_policy=self.context_ack_policy)
         self.negative_cases.append(dict(case=name, rejected=True, error=str(caught.exception)))
 
     def reject_sdc(self, name, text, installed=True):
@@ -474,6 +491,18 @@ class ActualRuntimePcm(unittest.TestCase):
         self.assertEqual(result['selected_constraint_capture_coverage_verified'], actual <= legacy_pins)
         with self.assertRaisesRegex(ValueError, 'installed PCM lines'):
             validate_constraints(ROOT, old_text, self.result, installed=True)
+
+    def test_14_fault_sticky_context_ack_rejects_removed_fault_gate(self):
+        if self.context_ack_policy['mode'] != 'fault-sticky':
+            self.skipTest('explicit legacy ACK policy')
+        fault = self.n.pin(self.reg(R, 'integration_fault'), 'Q')
+        gate = self.g.drivers[self.n.pin(self.reg(R, 'context_ack'), 'CE')][0][0]
+        inputs = [pin for pin in self.n.cells[gate]['ports']
+                  if pin.startswith('I') and self.n.pin(gate, pin) == fault]
+        self.assertEqual(len(inputs), 1)
+        with self.changed(gate, port=inputs[0], value="1'b0"):
+            self.reject('late matching ACK ignores latched integration failure')
+            self.assertIn('context ACK only actual matching application', self.negative_cases[-1]['error'])
 
     def test_09_constraint_negatives(self):
         original = self.sdc.replace(self.bundle['sdc'], '') if self.installed else self.sdc

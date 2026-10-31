@@ -96,9 +96,9 @@ def verify(output):
              'wire response_bad=read_response_i && !read_outstanding;', 'complete fetch publishes cache'),
             ('slot_mistaken_for_native_accept',
              'wire native_commit=published_valid && native_ready;',
-             'wire native_commit=published_valid && slot_valid_o && slot_ready_i;', 'ordered close admission'),
+             'wire native_commit=published_valid && slot_valid_o && slot_ready_i;', 'published fields changed before native acceptance'),
             ('partial_mask_lost',
-             "ddr_mask_o<=32'hffffffff<<(pack_frames*4);",
+             "ddr_mask_o<=publish_pack ? 32'hffffffff<<(pack_frames*4):32'd0;",
              "ddr_mask_o<=32'd0;", 'last partial byte mask preserves unused data'),
         )
         for name, anchor, replacement, expected in mutants:

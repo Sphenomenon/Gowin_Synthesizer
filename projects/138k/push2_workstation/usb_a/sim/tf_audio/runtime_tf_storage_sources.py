@@ -21,6 +21,26 @@ def before_runtime_clear_adapter(text):
     edits.extend([('    wire native_memory_hold;\n',''),
         ("    assign native_memory_hold=NATIVE_RESTART_HOLD ? native_memory_hold_i:1'b0;",
          "    wire native_memory_hold=NATIVE_RESTART_HOLD ? native_memory_hold_i:1'b0;")])
+    edits.extend([
+        ('    reg file_size_valid_settled;\n'
+         '    // Native DMA publishes length and valid together, then holds both until\n'
+         '    // restart. Give the continuously sampled word one extra destination edge\n'
+         '    // before it may change a playback threshold or become public metadata.\n'
+         '    wire file_size_ready=NATIVE_RUNTIME_PROTOCOL ?\n'
+         '        (file_size_valid_settled && !native_source_hold && !soft_restart):file_size_valid_sync;\n',''),
+        ("    assign audio_file_size = NATIVE_RUNTIME_PROTOCOL && !file_size_ready ? 32'd0:file_size_sync_ui;\n"
+         '    always @(posedge clk_50m or negedge reset_n)begin\n'
+         '        if(!reset_n)file_size_valid_settled<=0;\n'
+         '        else if(soft_restart || native_source_hold)file_size_valid_settled<=0;\n'
+         '        else file_size_valid_settled<=file_size_valid_sync;\n'
+         '    end',
+         '    assign audio_file_size = file_size_sync_ui;'),
+        ("            if(NATIVE_RUNTIME_PROTOCOL && (soft_restart || native_source_hold))begin\n"
+         "                file_size_valid_meta <= 1'b0;\n"
+         "                file_size_valid_sync <= 1'b0;\n"
+         '            end\n',''),
+        ("        (file_size_ready && file_size_sync_ui < 32'd1024) ?",
+         "        (file_size_valid_sync && file_size_sync_ui < 32'd1024) ?")])
     for changed,original in edits:
         if text.count(changed)!=1:raise ValueError('Runtime clear inverse anchor drift: '+changed[:60])
         text=text.replace(changed,original)

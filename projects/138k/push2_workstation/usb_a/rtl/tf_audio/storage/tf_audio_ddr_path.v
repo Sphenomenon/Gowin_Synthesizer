@@ -419,10 +419,21 @@ module tf_audio_ddr_path #(
     reg bank0_meta, bank0_sync, bank1_meta, bank1_sync;
     reg file_size_valid_meta, file_size_valid_sync;
     reg [31:0] file_size_meta, file_size_sync_ui;
+    reg file_size_valid_settled;
+    // Native DMA publishes length and valid together, then holds both until
+    // restart. Give the continuously sampled word one extra destination edge
+    // before it may change a playback threshold or become public metadata.
+    wire file_size_ready=NATIVE_RUNTIME_PROTOCOL ?
+        (file_size_valid_settled && !native_source_hold && !soft_restart):file_size_valid_sync;
     assign audio_ddr_error = ddr_error_sync;
     assign audio_bank0_valid = bank0_sync;
     assign audio_bank1_valid = bank1_sync;
-    assign audio_file_size = file_size_sync_ui;
+    assign audio_file_size = NATIVE_RUNTIME_PROTOCOL && !file_size_ready ? 32'd0:file_size_sync_ui;
+    always @(posedge clk_50m or negedge reset_n)begin
+        if(!reset_n)file_size_valid_settled<=0;
+        else if(soft_restart || native_source_hold)file_size_valid_settled<=0;
+        else file_size_valid_settled<=file_size_valid_sync;
+    end
     always @(posedge clk_50m or negedge reset_n) begin
         if (!reset_n) begin
             ddr_error_meta <= 1'b0;
@@ -446,6 +457,10 @@ module tf_audio_ddr_path #(
             file_size_valid_sync <= file_size_valid_meta;
             file_size_meta <= dma_file_size;
             file_size_sync_ui <= file_size_meta;
+            if(NATIVE_RUNTIME_PROTOCOL && (soft_restart || native_source_hold))begin
+                file_size_valid_meta <= 1'b0;
+                file_size_valid_sync <= 1'b0;
+            end
         end
     end
 
@@ -462,7 +477,7 @@ module tf_audio_ddr_path #(
                      !playback_active && !pcm_valid;
     wire [7:0] decoder_byte = out_rd_data;
     wire [12:0] playback_fill_target =
-        (file_size_valid_sync && file_size_sync_ui < 32'd1024) ?
+        (file_size_ready && file_size_sync_ui < 32'd1024) ?
         file_size_sync_ui[12:0] : 13'd1024;
     always @(posedge clk_50m or negedge reset_n) begin
         if (!reset_n) begin

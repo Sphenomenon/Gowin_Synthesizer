@@ -88,7 +88,10 @@ PERIPHERAL_SDC = (
       for kind in ('setup', 'hold', 'recovery', 'removal')),
 )
 NATIVE_PERIPHERAL_SDC = (
+    # Keep the sealed historical native candidate's 1.800 ns request and
+    # the current 3.500 ns physical hold repair as separate exact commands.
     PERIPHERAL_SDC[0].replace('0.800', '1.800', 1),
+    PERIPHERAL_SDC[0].replace('0.800', '3.500', 1),
     *PERIPHERAL_SDC[1:],
     *(f'report_timing -{kind} -from_clock [get_clocks {{cpu_core100}}] '
       '-to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1'

@@ -39,8 +39,16 @@ Reverb使用既有RAM等待拍拆分运算，其逐周期等价和双率验证�
 
 ## W 的约束与候选门禁
 
-W v3已全量综合，但HCI函数隐式依赖缺陷使真实会话寄存器被异常折叠，不能部署。维护源已改为显式参数，旧v3保留作资源测量。W SDC v2只对实际generate层级重绑定／已退出分支退休；每个退休selector须在VG中零匹配，重绑定后的selector须命中，不能忽略缺失端点。
+W v3已全量综合，之后定向仿真确认HCI函数隐式依赖缺陷，维护源已改为显式参数，旧v3保留作资源测量。v3／新v5网表均有两项真实会话存储selector未命中，正在区分实际存储映射与逻辑裁剪原因；此前把未命中直接归因于函数缺陷的推断尚无网表证据，不能当作已确认因果，也不能退休该路径或部署。W SDC v2对已确认generate层级重绑定／已退出分支退休；每个退休selector须在VG中零匹配，重绑定后的selector须命中。
 
 W v4准备因Classic verifier仍要求旧层级SDC原文而失败；未修改该输出继续构建。修复仅使明确W角色逐行验证适配后SDC；默认Classic原规则保持。21项角色／审计测试通过，删行、重复、10→100 ns松绑、PRESET→CLEAR和伪造元数据均有负控。
 
-W v5 `custom138k-workstation-w-demo-v1-13cd785895ee9996` 已成功准备并启动全量综合，包含显式HCI依赖、SDC v2、reverb和显示流水；本记录不预记其综合／P&R结果。W实际长期录音容量、手机无线和声画共存仍未完成。
+W v5 `custom138k-workstation-w-demo-v1-13cd785895ee9996` 已成功准备并完成全量综合，包含显式HCI依赖、SDC v2、reverb和显示流水；实际会话存储端点闭包仍待核验，尚未P&R。W实际长期录音容量、手机无线和声画共存仍未完成。
+
+## 继续复用主线已提交修复
+
+只读核对主工作区后，合并其 `a4e2804143b266fb06eb46aa82e3a0a51a794ac1` 与 `44f804f80ab2aadc73f322a4ae159ccb093c74f8` 两个已提交成果：原生 held-word协议窄约束、显示本地域复位释放、录音epoch资格同步、BLE raw宽字段空槽预装、TF长度有效settle及被动效果quiet。未纳入其未提交reverb、provenance、task或报告；没有中断主线程工具。非DEMO profile保留导入提交的hash，没有为本分支共享源差异静默刷新旧身份。
+
+合并后复验：raw store两配置与行为负控、authority十相位／17场景和六负控、TF四配置各23场景及默认逐周期对照通过。显示runtime同时覆盖新增停钟复位释放，记录 `display-merged-runtime-v1/verification.json`。生产启动实际I2S组合回归通过211个有效帧／127个非零帧、两次配置确认和一次中帧切换，最大render1168／slot1197拍；该定向短场景不代替32声部压力或长期实板检查。运行文件位于 `/Users/sphenicidition/.cache/gw138k-dual-20261031/` 对应的 `recording-merged-raw-v1`、`recording-merged-authority-v1`、`tf-merged-runtime-v1`、`audio-merged-runtime-v3`。音频fixture显式连接新增只读 `effect_state_o`，没有忽略缺端口warning。
+
+原始音频测试首次选择旧Classic准备工程时缺少新增D参数接口，重新选择固定M v5支持源完成；默认来源17项回归另行直接运行通过。由模块方式启动该来源测试曾因其既有本地fixture导入路径失败，随后按文档直接执行原脚本通过，未改测试放行。上述失败启动保留日志，没有修改冻结候选补文件或改变参考输入。
