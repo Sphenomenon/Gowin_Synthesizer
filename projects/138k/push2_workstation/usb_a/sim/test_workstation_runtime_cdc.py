@@ -6,12 +6,14 @@ import json
 import os
 import re
 import sys
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_runtime_cdc import (
-    GRAY, GRAY_MSB_ALIASES, audit_runtime_cdc, runtime_cdc_bundle, run_audit, validate_installed_constraints,
+    GRAY, GRAY_MSB_ALIASES, audit_runtime_cdc, prepared_ble_reset_policy,
+    runtime_cdc_bundle, run_audit, validate_installed_constraints,
 )
 from tools.workstation_runtime_clock_audit import VG_RELATIVE, audit_runtime_clocks, file_sha
 from tools.workstation_synthesis_netlist import IDENTIFIER, SynthesisNetlist
@@ -20,6 +22,55 @@ from tools.workstation_bluetooth import SDC as BLUETOOTH_SDC
 
 
 class RuntimeCdcPolicy(unittest.TestCase):
+    def test_staged_common_reset_selects_only_explicit_own_ble_release(self):
+        top = """module workstation_custom_138k_top();
+wire button1_n=1'b1;
+`else
+wire runtime_reset_n=reset_n && memory_guard_started;
+workstation_runtime_controlled #(.SEPARATE_COMMON_RESET(1)) u_managed(
+  .rst_ni(runtime_reset_n),.common_reset_ni(button1_n));
+gw138k_stream_cdc #(.WIDTH(98)) u_ble_pcm_cdc (
+  .reset_n(runtime_reset_n),.source_clk(ble_frame_clock),.destination_clk(clk_50m));
+"""
+        controlled = """wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+workstation_runtime_media_stop_bridge #(.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) media_stop(
+  .reset_ni(common_reset_n),.control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n));
+module workstation_runtime_media_stop_bridge();
+wire local_control_reset_n=SEPARATE_DOMAIN_RESETS ? control_reset_ni:reset_ni;
+wire local_compute_reset_n=SEPARATE_DOMAIN_RESETS ? compute_reset_ni:reset_ni;
+endmodule
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            stage = Path(directory)
+            source = stage / 'rtl/workstation/gw138k_push_workstation_top.v'
+            source.parent.mkdir(parents=True)
+            source.write_text(top)
+            owner = source.with_name('workstation_runtime_controlled.sv')
+            owner.write_text(controlled)
+            selected = prepared_ble_reset_policy(stage)
+            self.assertTrue(selected['raw_common_reset'])
+            self.assertEqual(selected['ble_reset'], 'runtime_reset_n')
+            self.assertEqual(selected['source_sha256'], {str(p.relative_to(stage)): file_sha(p) for p in (source, owner)})
+            for parameter in ('.SEPARATE_COMMON_RESET(0)', ''):
+                source.write_text(top.replace('.SEPARATE_COMMON_RESET(1)', parameter))
+                self.assertFalse(prepared_ble_reset_policy(stage)['raw_common_reset'])
+            for old, new, message in (
+                    ('SEPARATE_COMMON_RESET(1)', 'SEPARATE_COMMON_RESET(ENABLE)', 'selection is not explicit'),
+                    ('common_reset_ni(button1_n)', 'common_reset_ni(runtime_reset_n)', 'raw button/common assertion'),
+                    ('.reset_n(runtime_reset_n)', '.reset_n(button1_n)', 'BLE runtime-reset or clock wiring')):
+                source.write_text(top.replace(old, new))
+                with self.subTest(change=new), self.assertRaisesRegex(ValueError, message):
+                    prepared_ble_reset_policy(stage)
+            source.write_text(top)
+            owner.write_text(controlled.replace('.compute_reset_ni(reset_compute_n)', '.compute_reset_ni(common_reset_n)'))
+            with self.assertRaisesRegex(ValueError, 'media domain-reset selection or wiring'):
+                prepared_ble_reset_policy(stage)
+        result = dict(raw_common_reset=True, resolved_pin_selectors={}, protected_async_pins=[])
+        selected_sdc = runtime_cdc_bundle(ROOT, raw_common_reset=True)['sdc']
+        self.assertTrue(validate_installed_constraints(ROOT, selected_sdc, result)['reviewed_group_lines_installed'])
+        with self.assertRaisesRegex(ValueError, 'missing or duplicated'):
+            validate_installed_constraints(ROOT, runtime_cdc_bundle(ROOT)['sdc'], result)
+
     def test_raw_common_reset_retires_only_obsolete_aliases_and_keeps_ble_clear(self):
         legacy = runtime_cdc_bundle(ROOT)
         selected = runtime_cdc_bundle(ROOT, raw_common_reset=True)

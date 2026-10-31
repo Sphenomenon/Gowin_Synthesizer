@@ -74,6 +74,10 @@ BLE_RELEASE_ALIASES = (
     ('source', 'u_managed/observation/drops', 'source_release', 'selected', 'ack_meta'),
     ('destination', 'u_managed/midi_bytes', 'source_release', 'control', 'req_meta'),
 )
+BLE_RELEASE_SEPARATE_COMMON = (
+    ('source', 'u_ble_pcm_cdc', 'source_release', 'selected', 'ack_meta'),
+    ('destination', 'u_ble_pcm_cdc', 'destination_release', 'control', 'req_meta'),
+)
 # These unchanged peripheral commands do not alter reviewed Gray setup paths.
 # Keep exact shapes instead of allowing arbitrary new timing commands.
 PERIPHERAL_SDC = (
@@ -82,6 +86,13 @@ PERIPHERAL_SDC = (
     'set_input_delay 15.000 -clock [get_clocks {clk_50m}] [get_ports {flash_miso}]',
     *(f'report_timing -{kind} -max_paths 2000 -max_common_paths 1'
       for kind in ('setup', 'hold', 'recovery', 'removal')),
+)
+NATIVE_PERIPHERAL_SDC = (
+    PERIPHERAL_SDC[0].replace('0.800', '1.800', 1),
+    *PERIPHERAL_SDC[1:],
+    *(f'report_timing -{kind} -from_clock [get_clocks {{cpu_core100}}] '
+      '-to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1'
+      for kind in ('setup', 'hold')),
 )
 AUDIT_SOURCES = tuple(dict.fromkeys((*CLOCK_AUDIT_SOURCES,
     'tools/workstation_runtime_cdc.py', 'tools/workstation_runtime_profile.py',
@@ -93,6 +104,51 @@ AUDIT_SOURCES = tuple(dict.fromkeys((*CLOCK_AUDIT_SOURCES,
 def require(condition, message):
     if not condition:
         raise ValueError('runtime CDC audit: ' + message)
+
+
+def prepared_ble_reset_policy(stage):
+    """Select only the explicit common-reset wiring in a sealed staged top."""
+    relative = 'rtl/workstation/gw138k_push_workstation_top.v'
+    text = (Path(stage) / relative).read_text()
+    instances = re.findall(r'workstation_runtime_controlled\s*#\((.*?)\)\s*u_managed\s*\((.*?)\);', text, re.S)
+    require(len(instances) == 1, 'staged runtime instance missing/duplicate')
+    parameters, ports = instances[0]
+    selected = re.findall(r'\.SEPARATE_COMMON_RESET\s*\(\s*([^()]+)\s*\)', parameters)
+    if not selected or selected == ['0']:
+        return dict(mode='legacy-shared-release', raw_common_reset=False)
+    require(selected == ['1'], 'staged common-reset selection is not explicit')
+    custom = text.split('`else', 1)[0]
+    require('module workstation_custom_138k_top' in custom and
+            len(re.findall(r"\bwire\s+button1_n\s*=\s*1'b1\s*;", custom)) == 1 and
+            len(re.findall(r'\.common_reset_ni\s*\(\s*button1_n\s*\)', ports)) == 1 and
+            len(re.findall(r'\.rst_ni\s*\(\s*runtime_reset_n\s*\)', ports)) == 1 and
+            len(re.findall(r'\bwire\s+runtime_reset_n\s*=\s*reset_n\s*&&\s*memory_guard_started\s*;', text)) == 1,
+            'staged raw button/common assertion or startup grant changed')
+    mailboxes = re.findall(r'gw138k_stream_cdc\s*#\(\s*\.WIDTH\s*\(\s*98\s*\)\s*\)\s*u_ble_pcm_cdc\s*\((.*?)\);', text, re.S)
+    require(len(mailboxes) == 1 and
+            len(re.findall(r'\.reset_n\s*\(\s*runtime_reset_n\s*\)', mailboxes[0])) == 1 and
+            len(re.findall(r'\.source_clk\s*\(\s*ble_frame_clock\s*\)', mailboxes[0])) == 1 and
+            len(re.findall(r'\.destination_clk\s*\(\s*clk_50m\s*\)', mailboxes[0])) == 1,
+            'staged BLE runtime-reset or clock wiring changed')
+    controlled_relative = 'rtl/workstation/workstation_runtime_controlled.sv'
+    controlled = (Path(stage) / controlled_relative).read_text()
+    media = re.findall(r'workstation_runtime_media_stop_bridge\s*#\((.*?)\)\s*media_stop\s*\((.*?)\);', controlled, re.S)
+    require(len(media) == 1 and
+            re.findall(r'\.SEPARATE_DOMAIN_RESETS\s*\(\s*([^()]+)\s*\)', media[0][0]) == ['SEPARATE_COMMON_RESET'] and
+            all(len(re.findall(r'\.' + port + r'\s*\(\s*' + signal + r'\s*\)', media[0][1])) == 1
+                for port, signal in (('reset_ni', 'common_reset_n'), ('control_reset_ni', 'reset_50_n'),
+                                     ('compute_reset_ni', 'reset_compute_n'))),
+            'staged media domain-reset selection or wiring changed')
+    media_modules = re.findall(r'module\s+workstation_runtime_media_stop_bridge\b(.*?)endmodule', controlled, re.S)
+    require(len(media_modules) == 1 and
+            all(len(re.findall(r'\bwire\s+local_' + domain + r'_reset_n\s*=\s*SEPARATE_DOMAIN_RESETS\s*\?\s*' +
+                               domain + r'_reset_ni\s*:\s*reset_ni\s*;', media_modules[0])) == 1
+                for domain in ('control', 'compute')) and
+            len(re.findall(r'\bwire\s+common_reset_n\s*=\s*SEPARATE_COMMON_RESET\s*\?\s*common_reset_ni\s*:\s*rst_ni\s*;', controlled)) == 1,
+            'staged media/common assertion changed')
+    return dict(mode='separate-common-own-ble-release', raw_common_reset=True,
+                raw_button_constant=1, ble_reset='runtime_reset_n',
+                source_sha256={p: file_sha(Path(stage) / p) for p in (relative, controlled_relative)})
 
 
 def runtime_cdc_bundle(root, *, raw_common_reset=False):
@@ -122,11 +178,9 @@ def runtime_cdc_bundle(root, *, raw_common_reset=False):
     # The raw-common native composition no longer shares BLE release FFs with
     # the physical-drop counter or constant MIDI adapter. Those aliases retire;
     # the BLE mailbox retains its own actual source/destination CLEAR pins.
-    reset_selectors = ([pattern('u_ble_pcm_cdc', stem, 'CLEAR', True)
-                        for stem in ('source_release', 'destination_release')]
-                       if raw_common_reset else
-                       [pattern(scope, stem, 'CLEAR', True)
-                        for _, scope, stem, _, _ in BLE_RELEASE_ALIASES])
+    releases = BLE_RELEASE_SEPARATE_COMMON if raw_common_reset else BLE_RELEASE_ALIASES
+    reset_selectors = [pattern(scope, stem, 'CLEAR', True)
+                       for _, scope, stem, _, _ in releases]
     lines.append('set_false_path -to ' + query(' '.join(reset_selectors)))
     media_groups = []
     for identity, source, receiver, stages, origin, destination in MEDIA_CONTROLS:
@@ -196,7 +250,7 @@ def _register_scalar(n, scope, stem):
 
 
 def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinational,
-                             consumers, high, common_clear, resolved):
+                             consumers, high, common_clear, resolved, *, raw_common_reset=False):
     """Strict source topology for held stop result and stopped-compute fence.
 
     Maximum flights are proposals. No async preset/clear hold/recovery/removal
@@ -281,14 +335,63 @@ def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinationa
         return chain
 
     media, usb = 'u_managed/media_stop', 'u_native_usb/input_owner'
+    assertions = dict(control=common_clear, compute=common_clear)
+    domain_resets = []
+    if raw_common_reset:
+        require('button1_n' not in n.directions[TOP], 'managed raw button assertion changed')
+
+        def next_q(p, domain, inputs, predicate):
+            cell = n.cells[p]
+            require(cell['kind'] in ('DFFCE', 'DFFRE') and n.pin(p, 'CLK') == domains[domain] and
+                    n.pin(p, 'CE') in high and q_drivers[n.pin(p, 'Q')] == [p],
+                    'managed startup/release primitive/clock/CE/producer changed: ' + p)
+            reset = n.pin(p, 'RESET' if cell['kind'] == 'DFFRE' else 'CLEAR')
+            if cell['kind'] == 'DFFCE':
+                require(reset in low, 'managed raw common assertion changed: ' + p)
+            named = set(inputs) | {n.pin(p, 'Q')}
+            require(cone(n.pin(p, 'D')) | cone(reset) <= named,
+                    'managed startup/release unexpected next-Q input: ' + p)
+            proof = equivalent('managed startup/release effective next-Q: ' + p,
+                [n.pin(p, 'D'), reset, *inputs],
+                lambda values: (values[0] and not values[1]) == predicate(values[2:]))
+            return dict(register=p, primitive=cell['kind'], effective_next_q_verified=True, **proof)
+
+        for domain, startup_stem, release_stem, consumer in (
+                ('control', 'startup_control', 'reset_50_pipe', 'request_toggle'),
+                ('compute', 'startup_compute', 'reset_compute_pipe', 'acknowledge_toggle')):
+            startup = _register_bits(n, 'u_managed', startup_stem, 2)
+            release = _register_bits(n, 'u_managed', release_stem, 3)
+            proofs = [next_q(startup[0], domain, ['reset_n', 'memory_guard_started'], lambda values: values[0] and values[1])]
+            require(consumers[n.pin(startup[0], 'Q')] == [(startup[1], 'D')],
+                    'managed startup first-stage fanout changed: ' + startup[0])
+            proofs.append(next_q(startup[1], domain, [n.pin(startup[0], 'Q')], lambda values: values[0]))
+            grant = n.pin(startup[1], 'Q')
+            for bit, p in release.items():
+                previous = n.pin(release[bit - 1], 'Q') if bit else grant
+                require(n.pin(p, 'D') == previous, 'managed reset release shift changed: ' + p)
+                proofs.append(next_q(p, domain, [grant, previous], lambda values: values[0] and values[1]))
+                if bit < 2:
+                    require(consumers[n.pin(p, 'Q')] == [(release[bit + 1], 'D')],
+                            'managed reset release intermediate fanout changed: ' + p)
+            assertion = n.pin(_register_scalar(n, media, consumer), 'CLEAR')
+            drivers = combinational[assertion]
+            require(len(drivers) == 1 and n.cells[drivers[0]]['kind'] == 'INV' and
+                    n.pin(drivers[0], 'I') == n.pin(release[2], 'Q'),
+                    'media local domain reset inverse changed: ' + domain)
+            assertions[domain] = assertion
+            domain_resets.append(dict(domain=domain, startup=startup, release=release,
+                assertion_net=assertion, inverter=drivers[0], effective_next_q_proofs=proofs))
     control_rows = []
     for group in bundle['media_control_groups']:
         source = _register_scalar(n, media, group['source'])
         chain = _register_bits(n, media, group['receiver'], group['stages'])
         require(n.pin(source, 'CLK') == domains[group['source_domain']],
                 'media source clock: ' + source)
+        if raw_common_reset:
+            require(n.cells[source]['kind'] == 'DFFCE' and n.pin(source, 'CLEAR') == assertions[group['source_domain']],
+                    'media source domain reset or primitive changed: ' + source)
         for bit, p in chain.items():
-            require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLEAR') == common_clear,
+            require(n.cells[p]['kind'] == 'DFFCE' and n.pin(p, 'CLEAR') == assertions[group['destination_domain']],
                     'media receiver reset or primitive kind: ' + p)
             require(n.pin(p, 'CLK') == domains[group['destination_domain']],
                     'media destination clock: ' + p)
@@ -306,7 +409,7 @@ def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinationa
     failure = _register_scalar(n, media, 'compute_failure')
     ack = _register_scalar(n, media, 'acknowledge_toggle')
     require(n.cells[failure]['kind'] == n.cells[ack]['kind'] == 'DFFCE' and
-            n.pin(failure, 'CLEAR') == common_clear and n.pin(ack, 'CLEAR') == common_clear,
+            n.pin(failure, 'CLEAR') == assertions['compute'] and n.pin(ack, 'CLEAR') == assertions['compute'],
             'media result producer reset or primitive changed')
     # Gowin can encode the same toggle event in the D cone or in CE. Compare
     # the actual enabled state transition, not one particular mapped shape.
@@ -316,13 +419,13 @@ def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinationa
 
     hold_source = _register_scalar(n, media, 'hold_50')
     require(n.pin(hold_source, 'CLK') == domains['control'] and
-            n.pin(hold_source, 'CLEAR') == common_clear, 'media hold source identity/reset/clock')
+            n.pin(hold_source, 'CLEAR') == assertions['control'], 'media hold source identity/reset/clock')
     hold = _register_bits(n, media, 'hold_compute', 2)
     require(all(n.cells[p]['kind'] == 'DFFPE' for p in hold.values()),
             'media hold requires exactly two preset release flops')
     assertion = n.pin(hold[0], 'PRESET')
     hold_function = equivalent('common reset OR hold asserts preset',
-        [assertion, common_clear, n.pin(hold_source, 'Q')],
+        [assertion, assertions['compute'], n.pin(hold_source, 'Q')],
         lambda values: values[0] == (values[1] | values[2]))
     hold = shift(media, 'hold_compute', 2, domains['compute'], 'DFFPE', 'PRESET', assertion,
                  n.pin(hold[0], 'D'))
@@ -369,7 +472,7 @@ def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinationa
     assertion_selectors = bundle['usb_queue_fence']['assertion_selectors']
     exact_selectors(assertion_selectors['source'], [release[5]], 'Q')
     exact_selectors(assertion_selectors['assertion'], list(drain.values()), 'CLEAR')
-    return dict(media_control_groups=control_rows,
+    return dict(media_control_groups=control_rows, media_domain_resets=domain_resets,
         media_result_correlation=result_correlation,
         media_hold=dict(source=pins(hold_source), release=[pins(hold[i]) for i in range(2)],
                         assertion_function=hold_function, async_recovery_removal_verified=False),
@@ -382,9 +485,9 @@ def _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers, combinationa
                                     [p + '/CLEAR' for p in drain.values()]))
 
 
-def audit_runtime_cdc(root, netlist_text, clock_audit):
+def audit_runtime_cdc(root, netlist_text, clock_audit, *, raw_common_reset=False):
     """Map every reviewed bit and reset alias; physical gates remain false."""
-    bundle = runtime_cdc_bundle(root)
+    bundle = runtime_cdc_bundle(root, raw_common_reset=raw_common_reset)
     n = SynthesisNetlist(netlist_text, TOP)
     clocks = clock_audit.get('base_clock_audit', clock_audit.get('base_13_clock_audit'))['clocks']
     domains = {k: clocks[v]['net'] for k, v in
@@ -453,7 +556,8 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
             require(union == {p + '/' + port for p in collection.values()}, 'selector misses reviewed bits: ' + group['id'])
         rows.append(dict(**group, paths=paths, bit_identity_and_clock_verified=True))
     aliases, common_clear = [], None
-    for direction, scope, stem, domain, consumer in BLE_RELEASE_ALIASES:
+    releases = BLE_RELEASE_SEPARATE_COMMON if raw_common_reset else BLE_RELEASE_ALIASES
+    for direction, scope, stem, domain, consumer in releases:
         chain = _register_bits(n, scope, stem, 3)
         for bit, p in chain.items():
             require(n.pin(p, 'CLK') == domains[domain], 'BLE release alias clock: ' + p)
@@ -483,11 +587,11 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
     require(not any('tf_run_meta' in p or 'tf_run_audio' in p for p in regs),
             'legacy TF run synchronizer unexpectedly active in native runtime')
     media_fence = _audit_media_and_usb_fence(n, bundle, domains, regs, q_drivers,
-        combinational, consumers, high, common_clear, resolved)
+        combinational, consumers, high, common_clear, resolved, raw_common_reset=raw_common_reset)
     return dict(schema=2, policy=POLICY, scope='reviewed_21_direct_gray_ble_release_media_stop_and_usb_queue_fence',
         **media_fence,
         gray_groups=rows, gray_group_count=len(rows), gray_first_stage_bits=sum(len(x['paths']) for x in rows),
-        ble_reset_aliases=aliases, resolved_pin_selectors=resolved,
+        ble_reset_aliases=aliases, raw_common_reset=raw_common_reset, resolved_pin_selectors=resolved,
         legacy_tf_run_pruned=True, reviewed_source_netlist_endpoints_verified=True,
         gray_encoding_behavior_verified=False,
         remaining_inventory_complete=False, held_payload_complete=False, fifo_payload_complete=False,
@@ -500,7 +604,8 @@ def audit_runtime_cdc(root, netlist_text, clock_audit):
 def validate_installed_constraints(root, sdc, result):
     """Check exact proposed lines and prohibit setup cuts on reviewed Gray data."""
     lines = sdc.splitlines()
-    expected = runtime_cdc_bundle(root)['sdc'].splitlines()
+    expected = runtime_cdc_bundle(root, raw_common_reset=result.get('raw_common_reset', False))['sdc'].splitlines()
+    peripheral = NATIVE_PERIPHERAL_SDC if result.get('raw_common_reset', False) else PERIPHERAL_SDC
     require(all(lines.count(line) == 1 for line in expected), 'reviewed runtime CDC constraints missing or duplicated')
     first_pins = {path for selector, paths in result['resolved_pin_selectors'].items()
                   if selector.endswith('/D') for path in paths} | set(result['protected_async_pins'])
@@ -525,7 +630,7 @@ def validate_installed_constraints(root, sdc, result):
         require(not any(symbol in line for symbol in (';', '\\', '$')),
                 'unsupported Tcl evaluation or continuation: ' + line)
         if command in ('set_min_delay', 'set_input_delay', 'report_timing'):
-            require(line in PERIPHERAL_SDC, 'unreviewed peripheral SDC command: ' + line)
+            require(line in peripheral, 'unreviewed peripheral SDC command: ' + line)
             continue
         if command in ('create_clock', 'create_generated_clock'):
             # run_audit separately requires the full exact clock declarations.
@@ -578,7 +683,9 @@ def run_audit(root, stage, evidence, *, endpoint_development=False):
     sources = {p: file_sha(root / p) for p in AUDIT_SOURCES}
     text = (stage / VG_RELATIVE).read_text()
     clocks = audit_runtime_clocks(root, stage, text)
-    result = audit_runtime_cdc(root, text, clocks)
+    reset_policy = prepared_ble_reset_policy(stage)
+    result = audit_runtime_cdc(root, text, clocks, raw_common_reset=reset_policy['raw_common_reset'])
+    result['ble_reset_source_policy'] = reset_policy
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     result['candidate_constraints_installed'] = False
     if not endpoint_development:
