@@ -240,3 +240,21 @@ ROM LUT3 的 INIT 对五个有效 profile 均与 staged ADSR 文件计算一致�
 160 个系数状态 D pin 逐项匹配，确认初始化没有被综合成错误常量。
 以上均为必要正向门禁，614 项输入前后保持；完整 routed CDC／STA／PLL
 仍待本次 P&R，不以这些局部通过替代整机验收。
+
+
+### 合成器系数同功能缩减
+
+原生 oscillator 的 ADSR 同样仅由 NoteOn 锁存的五个 profile 决定，现将
+三个 WIDTH32 系数 divider 改为 canonical／44.1k ROM，保留原前寄存器、
+十四级 valid 和十三级圆环 tag RAM。先应用原 RATE_SCALE／ffffc0 饱和，
+再做 44.1k round／saturate；reset 未写声部仍为零，非法 profile 保留
+原越界 X 语义，PANIC 不改已锁存 profile。接口及非 PIPELINED_RATE 分支
+不变，仍由硬件计算实时包络与 PCM，没有将 DSP 移给 CPU。
+默认及边界 ADSR 表在 Verilator／Icarus 的旧 E7 流水逐拍比较和既有
+prepipeline oracle 均通过：每表约 443216 周期、23012 个系数、680 帧、
+696320 slot 比较、34 PANIC、26 reset、6 非法 profile 和 10 次加载提交
+同拍 PANIC，最坏 1061 cycles，原 deadline 1599。Icarus 仅在外部 staging
+对已有声明排序及 parameter string 类型作兼容适配，Verilator 直接运行
+未改生产源。PIPELINED_RATE 0／1 lint 通过；accepted 来源十七项、业务
+九项通过，九个现有 profile 仅刷新两个已消费源码哈希。该源码将进入
+下一独立候选，E8 冻结输入保持，资源收益待完整综合。

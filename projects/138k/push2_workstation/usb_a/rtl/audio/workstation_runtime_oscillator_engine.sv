@@ -96,6 +96,8 @@ module workstation_runtime_oscillator_engine #(
   logic [23:0] decay_step_q24 [0:31];
   logic [23:0] sustain_level_q24 [0:31];
   logic [23:0] release_step_q24 [0:31];
+  logic [2:0] coefficient_profile [0:31];
+  logic [31:0] coefficient_initialized;
   logic [17:0] envelope_level_q18 [0:31];
   logic [17:0] sample_envelope_q18 [0:31];
   logic [2:0] envelope_state [0:31];
@@ -113,6 +115,8 @@ module workstation_runtime_oscillator_engine #(
   logic [23:0] envelope_update_decay_q24;
   logic [23:0] envelope_update_sustain_q24;
   logic [23:0] envelope_update_release_q24;
+  logic [2:0] envelope_update_profile;
+  logic envelope_update_initialized;
   logic [24:0] envelope_update_attack_sum;
   logic [23:0] envelope_next_level_q24;
   logic [17:0] envelope_next_level_q18;
@@ -521,50 +525,63 @@ module workstation_runtime_oscillator_engine #(
     wire [23:0] coefficient_level,coefficient_sustain,coefficient_attack,coefficient_decay,coefficient_release;
 
     if(PIPELINED_RATE)begin:g_coefficients
+      localparam integer COEFFICIENT_STAGES=(32-6)/2;
+      localparam integer ADDRESS_BITS=$clog2(COEFFICIENT_STAGES+1);
+      localparam integer TAG_DEPTH=1<<ADDRESS_BITS;
+      localparam [ADDRESS_BITS-1:0] TAG_DELAY=ADDRESS_BITS'(COEFFICIENT_STAGES);
+      logic [23:0] adsr_rom[0:19];
+      logic [71:0] canonical_rom[0:4],rate44_rom[0:4];
       logic numerator_valid;
-      logic [31:0] attack_numerator,decay_numerator,release_numerator;
-      logic [56:0] numerator_tag;
-      wire [56:0] result_tag;
-      wire [31:0] attack_result,decay_result,release_result;
-      wire attack_valid,decay_valid,release_valid,attack_quiet,decay_quiet,release_quiet;
-      always_ff @(posedge clk_i or negedge rst_ni)begin
-        if(!rst_ni)numerator_valid<=0;
-        else if(panic_i)numerator_valid<=0;
-        else numerator_valid<=envelope_update_valid;
+      logic [COEFFICIENT_STAGES:0] valid;
+      logic [60:0] numerator_tag,result_tag;
+      logic [ADDRESS_BITS-1:0] tag_address;
+      wire [ADDRESS_BITS-1:0] tag_read_address=tag_address-TAG_DELAY;
+      (* ram_style="block",syn_ramstyle="block_ram" *)
+      logic [60:0] tag_memory[0:TAG_DEPTH-1];
+      wire [71:0] result_coefficients;
+      initial begin
+        $readmemh(`UNIFIED_ADSR_MEM_FILE,adsr_rom);
+        for(integer profile=0;profile<5;profile=profile+1)begin
+          canonical_rom[profile]={scale_envelope_step(adsr_rom[profile*4+3]),
+              scale_envelope_step(adsr_rom[profile*4+1]),scale_envelope_step(adsr_rom[profile*4])};
+          rate44_rom[profile]={rate_envelope_step(scale_envelope_step(adsr_rom[profile*4+3]),1'b1),
+              rate_envelope_step(scale_envelope_step(adsr_rom[profile*4+1]),1'b1),
+              rate_envelope_step(scale_envelope_step(adsr_rom[profile*4]),1'b1)};
+        end
       end
-      // Multiplication/addition and every quotient digit terminate at actual
-      // registers. At48k divide(canonical*147) returns canonical exactly,
-      // including values above the44k1 saturation ceiling.
+      always_ff @(posedge clk_i or negedge rst_ni)begin
+        if(!rst_ni)begin numerator_valid<=0;valid<='0;end
+        else if(panic_i)begin numerator_valid<=0;valid<='0;end
+        else begin
+          numerator_valid<=envelope_update_valid;
+          valid<={valid[COEFFICIENT_STAGES-1:0],numerator_valid};
+        end
+      end
+      // Only NoteOn's latched profile selects immutable ADSR coefficients.
+      // Preserve canonical saturation before44k1 rounding, including custom
+      // ADSR files. An unwritten voice retains its reset-zero coefficients;
+      // initialized invalid profiles retain the original out-of-range read.
       always_ff @(posedge clk_i)if(envelope_update_valid && !panic_i)begin
-        attack_numerator<=frame_rate_44100 ? {8'd0,envelope_update_attack_q24}*32'd160+32'd73 :
-            {8'd0,envelope_update_attack_q24}*32'd147;
-        decay_numerator<=frame_rate_44100 ? {8'd0,envelope_update_decay_q24}*32'd160+32'd73 :
-            {8'd0,envelope_update_decay_q24}*32'd147;
-        release_numerator<=frame_rate_44100 ? {8'd0,envelope_update_release_q24}*32'd160+32'd73 :
-            {8'd0,envelope_update_release_q24}*32'd147;
-        numerator_tag<={frame_rate_44100,envelope_update_write_index,envelope_update_state,
+        numerator_tag<={envelope_update_initialized,envelope_update_profile,
+            frame_rate_44100,envelope_update_write_index,envelope_update_state,
             envelope_update_level_q24,envelope_update_sustain_q24};
       end
-      workstation_runtime_div147 #(.WIDTH(32),.TAG_WIDTH(57)) attack_divider(
-          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(attack_numerator),
-          .tag_i(numerator_tag),.valid_o(attack_valid),.quotient_o(attack_result),.tag_o(result_tag),.quiescent_o(attack_quiet));
-      workstation_runtime_div147 #(.WIDTH(32)) decay_divider(
-          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(decay_numerator),
-          .tag_i(1'b0),.valid_o(decay_valid),.quotient_o(decay_result),.tag_o(),.quiescent_o(decay_quiet));
-      workstation_runtime_div147 #(.WIDTH(32)) release_divider(
-          .clk_i,.rst_ni,.flush_i(panic_i),.valid_i(numerator_valid),.dividend_i(release_numerator),
-          .tag_i(1'b0),.valid_o(release_valid),.quotient_o(release_result),.tag_o(),.quiescent_o(release_quiet));
-      assign coefficient_valid=attack_valid && decay_valid && release_valid;
-      assign coefficient_busy=numerator_valid || !attack_quiet || !decay_quiet || !release_quiet;
+      // Retain the divider's fixed13-stage circular tag RAM and valid timing.
+      // No transaction is published until its original quotient cycle.
+      always_ff @(posedge clk_i or negedge rst_ni)
+        if(!rst_ni)tag_address<='0;
+        else tag_address<=tag_address+1'b1;
+      always_ff @(posedge clk_i)begin
+        if(numerator_valid && !panic_i)tag_memory[tag_address]<=numerator_tag;
+        result_tag<=tag_memory[tag_read_address];
+      end
+      assign coefficient_valid=valid[COEFFICIENT_STAGES] && !panic_i;
+      assign coefficient_busy=numerator_valid || (|valid);
       assign coefficient_index=result_tag[55:51],coefficient_state=result_tag[50:48];
       assign coefficient_level=result_tag[47:24],coefficient_sustain=result_tag[23:0];
-      assign coefficient_attack=result_tag[56] && attack_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : attack_result[23:0];
-      assign coefficient_decay=result_tag[56] && decay_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : decay_result[23:0];
-      assign coefficient_release=result_tag[56] && release_result>32'hffffc0 ? MAXIMUM_LEVEL_Q24 : release_result[23:0];
-`ifndef SYNTHESIS
-      always @(posedge clk_i)if(rst_ni && !panic_i)
-        if(attack_valid!=decay_valid || attack_valid!=release_valid)$fatal(1,"ADSR coefficient valid alignment");
-`endif
+      assign result_coefficients=!result_tag[60] ? 72'd0 :
+          result_tag[56] ? rate44_rom[result_tag[59:57]] : canonical_rom[result_tag[59:57]];
+      assign {coefficient_release,coefficient_decay,coefficient_attack}=result_coefficients;
     end else begin:g_coefficients_original
       assign coefficient_valid=envelope_update_valid,coefficient_busy=1'b0;
       assign coefficient_index=envelope_update_write_index,coefficient_state=envelope_update_state;
@@ -939,6 +956,9 @@ module workstation_runtime_oscillator_engine #(
       envelope_update_decay_q24 <= '0;
       envelope_update_sustain_q24 <= '0;
       envelope_update_release_q24 <= '0;
+      envelope_update_profile <= '0;
+      envelope_update_initialized <= 1'b0;
+      coefficient_initialized <= '0;
       partial_index_delay <= '0;
       partial_step_delay <= '0;
       partial_enable_delay <= 1'b0;
@@ -962,6 +982,7 @@ module workstation_runtime_oscillator_engine #(
         decay_step_q24[voice_index] <= '0;
         sustain_level_q24[voice_index] <= '0;
         release_step_q24[voice_index] <= '0;
+        coefficient_profile[voice_index] <= '0;
         envelope_level_q24[voice_index] <= '0;
         envelope_level_q18[voice_index] <= '0;
         envelope_state[voice_index] <= ENVELOPE_IDLE;
@@ -988,6 +1009,8 @@ module workstation_runtime_oscillator_engine #(
             sustain_level_q24[envelope_update_index];
         envelope_update_release_q24 <=
             release_step_q24[envelope_update_index];
+        envelope_update_profile <= coefficient_profile[envelope_update_index];
+        envelope_update_initialized <= coefficient_initialized[envelope_update_index];
         if (envelope_update_index == 5'd31) begin
           envelope_update_active <= 1'b0;
         end else begin
@@ -1035,6 +1058,8 @@ module workstation_runtime_oscillator_engine #(
               decay_step_q24[load_voice_index] <= scale_envelope_step(rom_decay_step_q24);
               sustain_level_q24[load_voice_index] <= rom_sustain_level_q24;
               release_step_q24[load_voice_index] <= scale_envelope_step(rom_release_step_q24);
+              coefficient_profile[load_voice_index] <= load_profile;
+              coefficient_initialized[load_voice_index] <= 1'b1;
               load_state <= LOAD_PARTIALS;
             end
           end
