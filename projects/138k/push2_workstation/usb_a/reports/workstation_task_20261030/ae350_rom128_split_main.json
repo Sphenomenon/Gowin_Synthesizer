@@ -1,0 +1,635 @@
+{
+  "schema": 1,
+  "scope": "root independent rebuild and targeted validation of unselected ROM128 split experiment",
+  "source_commit": "387cb93",
+  "author_commit": "f0a5792268d58d3aadae16ad06dd86c4e525b372",
+  "author_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rom128-split-parent-v1",
+  "author_seal_sha256": "75711989f6acdc341b74914203d98b025a701ca0200de3235f2c1c06d8ba5ba6",
+  "actual_rebuild_artifacts": {
+    "firmware.elf": "729794de24b7e669ba562e3360ca172614944187d391aa5a3c8c6ca57eb34b86",
+    "firmware.bin": "4368c2365201e57feec031c649e42f096f6d71370f4baed24b85cfcd1e91da92",
+    "boot.mem": "bf75b3d3bb25701ed85677f2e11d486690de1f4815ea78f55cc76ea058dcbfd4"
+  },
+  "capacity": {
+    "rom_capacity_bytes": 131072,
+    "binary_bytes": 82288,
+    "payload_bytes": 63936,
+    "padding_hole_bytes": 18352,
+    "upper_rom_code_bytes": 16752,
+    "cold_code_unallocated_bytes": 48784,
+    "hot_load_bank_bytes": 47184,
+    "hot_load_unallocated_bytes": 18352,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 46576,
+    "ilm_reserved_final_word_bytes": 4,
+    "ilm_usable_remaining_bytes": 18956,
+    "dlm_capacity_bytes": 65536,
+    "static_ram_span_bytes": 8448,
+    "ram_reserved_prefix_bytes": 256,
+    "stack_capacity_bytes": 16384,
+    "unallocated_dlm_bytes": 40448,
+    "heap_bytes": 0,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684357580,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684401136,
+      "__data_load_start": 2147530816,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__data_image_end": 2147530832,
+      "__rom_text_start": 2147549184,
+      "__rom_text_end": 2147565936,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686460416,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686460416,
+      "__heap_end": 2686460416,
+      "__image_end": 2147565936,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984,
+      "a138_classic_init": 2147560844,
+      "a138_classic_acl": 2147561476,
+      "ui_render_rows": 2147565688,
+      "a138_sbc_decode": 2684380456,
+      "OI_CODEC_SBC_DecodeFrame": 2684387892,
+      "a138_ble_business_firmware_init": 2684379904,
+      "a138_ble_business_firmware_pump": 2684380028
+    },
+    "elf_image_validation": {
+      "binary_reconstructed": true,
+      "sections": {
+        ".boot": {
+          "address": 2147483648,
+          "bytes": 592,
+          "sha256": "877a9f589687fb7ad6c5bdb313fc8f8a381800dc7db6f38942d07818cbbe1e40"
+        },
+        ".rom_text": {
+          "address": 2147549184,
+          "bytes": 16752,
+          "sha256": "e5b16d27f9056dc192f927119e415abfb7b752f04e82c575b1202068491afc97"
+        },
+        ".text": {
+          "address": 2684354560,
+          "bytes": 44592,
+          "sha256": "2f6b38d5e6673c60f9e798a96d26d89fd4477502c8dbd2dacd8c3782a43ef3b8"
+        },
+        ".rodata": {
+          "address": 2684399152,
+          "bytes": 1984,
+          "sha256": "2c170b6a4123738f86037179ec05742be01cb2219973f11e32e02e37283ad1a2"
+        },
+        ".data": {
+          "address": 2686451968,
+          "bytes": 16,
+          "sha256": "25d670162b3b3fe95ebc111a408f2db97a75068feb4aa70b56df9e9c82ba1946"
+        },
+        ".bss": {
+          "address": 2686451984,
+          "bytes": 8432,
+          "sha256": null
+        }
+      },
+      "segments": [
+        {
+          "run_address": 2147483648,
+          "load_address": 2147483648,
+          "file_bytes": 592,
+          "memory_bytes": 592,
+          "flags": 5
+        },
+        {
+          "run_address": 2684354560,
+          "load_address": 2147484240,
+          "file_bytes": 46576,
+          "memory_bytes": 46576,
+          "flags": 5
+        },
+        {
+          "run_address": 2686451968,
+          "load_address": 2147530816,
+          "file_bytes": 16,
+          "memory_bytes": 8448,
+          "flags": 6
+        },
+        {
+          "run_address": 2147549184,
+          "load_address": 2147549184,
+          "file_bytes": 16752,
+          "memory_bytes": 16752,
+          "flags": 5
+        }
+      ]
+    },
+    "selected_in_production": false,
+    "hardware_acceptance": false
+  },
+  "actual_linked_translation_units": 25,
+  "stack_bound_bytes": 1792,
+  "actual_direct_far_calls": 35,
+  "reachable_functions": 112,
+  "model": {
+    "schema": 1,
+    "passed": true,
+    "startup_instructions": 282085,
+    "actual_cold_protocol_response_hex": "23201c001800010003320800400041000000000004010800410000000102a002",
+    "calls": [
+      {
+        "function": "a138_classic_init",
+        "result": 2686457560,
+        "instructions": 8554
+      },
+      {
+        "function": "a138_classic_begin",
+        "result": 0,
+        "instructions": 8609
+      },
+      {
+        "function": "a138_classic_acl",
+        "result": 0,
+        "instructions": 648
+      },
+      {
+        "function": "a138_classic_tx_peek",
+        "result": 0,
+        "instructions": 207
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 0,
+        "instructions": 43
+      },
+      {
+        "function": "a138_classic_tx_result",
+        "result": 2,
+        "instructions": 13
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12890
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12861
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27686
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27654
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 25270
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24632
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56191
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56151
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12848
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 12860
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27575
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 27660
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24908
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 24631
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 56195
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 55583
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6085
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51746
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51707
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51743
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 51705
+      },
+      {
+        "function": "a138_sbc_init",
+        "result": 2686452592,
+        "instructions": 5996
+      },
+      {
+        "function": "a138_sbc_begin",
+        "result": 0,
+        "instructions": 6090
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 41608
+      },
+      {
+        "function": "a138_sbc_decode",
+        "result": 0,
+        "instructions": 41529
+      }
+    ],
+    "upper_rom_fetches": 634,
+    "region_transitions": [
+      {
+        "pc": "0x80000000",
+        "region": "ROM_LOAD"
+      },
+      {
+        "pc": "0xa0000000",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80012d8c",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80012da8",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0002370",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80012e24",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013138",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010838",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010838",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010838",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80010838",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa000238c",
+        "region": "ILM"
+      },
+      {
+        "pc": "0x80013284",
+        "region": "ROM_COLD"
+      },
+      {
+        "pc": "0xa0006388",
+        "region": "ILM"
+      }
+    ],
+    "rv32m_instructions": 60308,
+    "vectors": [
+      {
+        "name": "00",
+        "rate_hz": 44100,
+        "mode": 0,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 128,
+        "maximum_lsb_error": 3,
+        "instructions": 25751,
+        "pcm_sha256": "4d74c1a3c623efa19849d821d4d97c140348550517b7f8e50cb09a1b7181438d"
+      },
+      {
+        "name": "02",
+        "rate_hz": 44100,
+        "mode": 0,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 55340,
+        "pcm_sha256": "8fa43c29600e558973104d25692e73a79c786a6af24cd73abeee74668beead98"
+      },
+      {
+        "name": "12",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 3,
+        "instructions": 49902,
+        "pcm_sha256": "7dc40a2b1a9d08fb4665caa8ed7178d4f3f6b48169c752bc3a8e5cda647daac2"
+      },
+      {
+        "name": "14",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 112342,
+        "pcm_sha256": "99b726da201a88fa7d9a501bb17b3f8bc6c2b59fbc30a637bae8c17a25032ada"
+      },
+      {
+        "name": "16",
+        "rate_hz": 48000,
+        "mode": 0,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 128,
+        "maximum_lsb_error": 4,
+        "instructions": 25708,
+        "pcm_sha256": "40c1ea61860055294eb37d402aed33ec063856ca2abfc7e0fd6f8a00d9ac5009"
+      },
+      {
+        "name": "18",
+        "rate_hz": 48000,
+        "mode": 0,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 55235,
+        "pcm_sha256": "c1b4a69cdf1511d522a66a12683ba83f93dca14b97ad28d21e3f26c2705bcd63"
+      },
+      {
+        "name": "28",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 4,
+        "frames": 2,
+        "scalar_samples": 256,
+        "maximum_lsb_error": 4,
+        "instructions": 49539,
+        "pcm_sha256": "a334c68840923d2b07883953ef41babe5d2788721d621b4bcf0db68497059ec6"
+      },
+      {
+        "name": "30",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 5,
+        "instructions": 111778,
+        "pcm_sha256": "2225b039154b8b2aa355e193582279ffd4ed088efdd547701fd450dd3700e5a8"
+      },
+      {
+        "name": "32",
+        "rate_hz": 44100,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 103453,
+        "pcm_sha256": "4ac351b3578e036f0e46e6987b80d6a09076f2ec5e3c3eb50a8570f629cc0ada"
+      },
+      {
+        "name": "37",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 512,
+        "maximum_lsb_error": 4,
+        "instructions": 103448,
+        "pcm_sha256": "89c3af96d8ad95c565a0ba443abe5f17d626cc5f8f7b08b7008adfd3759b936a"
+      },
+      {
+        "name": "41",
+        "rate_hz": 48000,
+        "mode": 3,
+        "subbands": 8,
+        "frames": 2,
+        "scalar_samples": 384,
+        "maximum_lsb_error": 5,
+        "instructions": 83137,
+        "pcm_sha256": "bff398ae6c79c42021898ac51808497f7d6216187bd9ea9253a64b89b99d44d5"
+      }
+    ],
+    "scalar_samples": 3712,
+    "maximum_lsb_error": 5,
+    "observed_stack_bytes": 304,
+    "cache_enabled": false,
+    "actual_cpu_cycles_measured": false,
+    "hardware_acceptance": false,
+    "runtime_transport_closed": false
+  },
+  "targeted_tests": {
+    "split": 10,
+    "local_memory": 12,
+    "boot_storage": 4,
+    "callback_stack": 4,
+    "accepted_sources": 17
+  },
+  "validation_scope": "Actual source compile/link, ELF reconstruction, instruction model, exhaustive ROM simulation and source boundary regressions; no EDA or board operation.",
+  "selected_in_production": false,
+  "cache_enabled": false,
+  "synthesis_performed": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "No actual BSRAM physical cost or CPU timing measurement",
+    "Budget-only adapter retains API roots; actual HCI and PCM transport not integrated",
+    "No standard phone interoperability or security completion",
+    "Existing generated candidate identities remain separate"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-rom128-split-main-parent-v2",
+  "seal_sha256": "364e7bf0da1e40af797815f14aead3e021150a568e3ae8a5631f6c5f52942451",
+  "external_files": 458
+}
