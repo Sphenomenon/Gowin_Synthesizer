@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "validation_stage": "maintained_native_HCI_pool_compare_source_equivalence",
+  "candidate_reference": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b",
+    "identity": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+    "integration_inputs_sha256": "1521f16189119ad062d56bea5638b02a6e73d45887f6cdbdbac5b84e5b129837",
+    "consumed_source": "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv",
+    "consumed_source_sha256": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+    "old_candidate_unchanged": true
+  },
+  "modified_sources_sha256": {
+    "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "51fb7a96487b4aa27fdf9fce38901c6ee3a5403ce29292bac51ab3c7901fa2c8",
+    "sim/fixtures/workstation_hci_flow_owner_before_pool_compare.sv": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+    "sim/run_workstation_hci_pool_compare.py": "e72484c21527a4598dd0230341bcaa00d5a0beb5d85a9a599e4011810fc948c7"
+  },
+  "actual_routed_trigger": {
+    "default_user_code": "D2103112",
+    "same_clk50_first_100_setup_paths_source": "u_bluetooth/u_core/owner/tx_header[0]_1_s0/Q",
+    "worst_ns": -5.967,
+    "path": "12-bit handle lookup before 16-bit selected ACL limit comparator; consumers include host_rx handle RAM WRE and bootstrap elapsed CE",
+    "far_user_code": "D2103114",
+    "far_same_clk50_worst_ns": -4.08
+  },
+  "rewrite": [
+    "evaluate both unsigned 16-bit ACL limit comparisons in parallel and select one result bit using unchanged LE/shared-pool decision",
+    "express all three complete 12-bit handle equalities as XOR reduction equality"
+  ],
+  "state_machine_command_credits_error_priority_latency_unchanged": true,
+  "exact_reference_comparison": {
+    "summary": "PASS exact HCI comparison cycles=118730 public_outputs=32 internal_scalar_groups=19 array_groups=8 semantic_vectors=270336",
+    "public_outputs": 32,
+    "input_ports": 33,
+    "internal_scalar_groups": 19,
+    "internal_array_elements": 8,
+    "cycles": 118730,
+    "independent_vectors": 270336,
+    "full_length_domain_per_pool_and_handle": 65536,
+    "full_handle_domain": 4096,
+    "hardware_parameter_HANDLE_SLOTS": 2,
+    "z3": {
+      "pool_free_bits": 49,
+      "pool_comparison": "UNSAT",
+      "handle_free_bits": 24,
+      "handle_equality": "UNSAT",
+      "version": "5.1.0"
+    },
+    "negative_controls": {
+      "wrong_pool": {
+        "rejected": true,
+        "source_sha256": "869b8fe896347a120ac32e80e1376c051cd05481076203a1c4e56399f8047e42",
+        "failure": "FAIL ACL physical packet authorized t=58000"
+      },
+      "shared_le_uses_private_pool": {
+        "rejected": true,
+        "source_sha256": "33eae1d3f3545dac29a4863903224d97405d49a4b5bb6c868524128277d9a052",
+        "failure": "FAIL ACL physical packet authorized t=58000"
+      },
+      "one_handle_bit_ignored": {
+        "rejected": true,
+        "source_sha256": "7c4242520f0fa5ced982e53a4a85982f1a5b7436346e131679473f9b03907f2b",
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-compare-v2/bench.sv:338: independent handle oracle number=48"
+      },
+      "le_boundary_rejected": {
+        "rejected": true,
+        "source_sha256": "0e2f94f7df1a4b1adba44c609ee1f2266cbe4523bc0eaf59f18d403590c0b8dd",
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-compare-v2/bench.sv:98: whole owner output acl_ready_o cycle=24"
+      }
+    }
+  },
+  "existing_owner_regression": {
+    "baseline": {
+      "flow": {
+        "summary": "PASS checks=116780 scenarios=15 random_steps=10000",
+        "checks": 116780
+      },
+      "event": {
+        "summary": "PASS checks=9174 events=1830 exhaustive_schema_lengths=1806",
+        "checks": 9174
+      }
+    },
+    "negative_controls": 11,
+    "strict_lint": {
+      "workstation_hci_flow_owner.sv": "passed_strict_Wall",
+      "workstation_hci_event_decoder.sv": "passed_strict_Wall"
+    }
+  },
+  "full_native_regression": {
+    "baseline": {
+      "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+      "checks": 268
+    },
+    "negative_controls": 11,
+    "uart": {
+      "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+      "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+      "patch_bytes": 253,
+      "physical_uart": true,
+      "physical_board": false
+    },
+    "strict_lint": {
+      "passed": true,
+      "exceptions": [
+        "unused child diagnostic outputs",
+        "explicit unused output pins"
+      ],
+      "width_latch_multidriver_timing_warnings_suppressed": false
+    },
+    "skip_prior": false,
+    "skip_uart": false
+  },
+  "first_test_harness_attempt": {
+    "output": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-compare-v1",
+    "failure_before_compile": "test runner incorrectly expected 64 ports; actual complete parsed inventory is 33 inputs plus 32 outputs, 65 total",
+    "correction": "fix exact expected inventory to 65; RTL unchanged for this test harness correction; final complete verification in new v2 output"
+  },
+  "evidence_file_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-compare-v2/verification.json": "fd4c8f7fc237ffd2f2c5760af542ff05567cf2b30b96b509f79882cbc5fad5be",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-owner-v1/verification.json": "a78eb744db1be5f51db362d102a268e5d760c0fa78c014fe83e35ef4e4656611",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-pool-native-v1/verification.json": "f0fa57a623a1234ff7cd29a57294f47a9c8ee4e687736b9f0c24bfd0fed2677f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/physical-measurement.json": "6f12b558023749bcf06b986310547bc12125e660a0d3c52a74b8c4eeaedd495b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/clk50-four-reports.json": "7bced43c311117c682c6735c580049248cf03a4f25217f2d0b38b907809dd523",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-far-audits-v1/physical-measurement.json": "90ec6c6673f3374d66b05aefffedd3002b0931189ff2b201abca0d34242276ec"
+  },
+  "new_candidate_prepared": false,
+  "synthesis_verified": false,
+  "physical_timing_verified": false,
+  "resource_gain_measured": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "next_stage": "Update selected DEMO source locks and prepare new identities; run complete synthesis/P&R before measuring benefit. Prior W9b/M10b inputs and physical evidence stay immutable."
+}

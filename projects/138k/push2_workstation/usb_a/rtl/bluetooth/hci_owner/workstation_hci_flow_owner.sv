@@ -85,6 +85,10 @@ module workstation_hci_flow_owner #(
     wire completion_action = completion_start_i || completion_pair_valid_i ||
                              completion_commit_i || completion_abort_i;
     wire control_action = config_valid_i || lifecycle_action || completion_action;
+    // Compare the two controller limits in parallel. Handle lookup selects a
+    // one-bit result instead of driving the front of a 16-bit comparator.
+    wire acl_exceeds_br = acl_data_length_i > br_length;
+    wire acl_exceeds_le = acl_data_length_i > le_length;
     wire special_command = command_owner_i == 3 && command_opcode_i == 16'h0c35;
     wire ordinary_command = command_owner_i != 3 && command_opcode_i != 16'h0c35 &&
                             command_opcode_i != 16'h0000;
@@ -131,9 +135,9 @@ module workstation_hci_flow_owner #(
         br_return=0; le_return=0; completion_bad=0;
         for (integer at = 0; at < HANDLE_SLOTS; at = at + 1) begin
             if (!active[at] && free_slot == -1) free_slot=at;
-            if (active[at] && numbers[at] == handle_i) lifecycle_slot=at;
-            if (active[at] && numbers[at] == acl_handle_i) acl_slot=at;
-            if (active[at] && numbers[at] == completion_handle_i) completion_slot=at;
+            if (active[at] && !(|(numbers[at] ^ handle_i))) lifecycle_slot=at;
+            if (active[at] && !(|(numbers[at] ^ acl_handle_i))) acl_slot=at;
+            if (active[at] && !(|(numbers[at] ^ completion_handle_i))) completion_slot=at;
             if (returns[at] > {16'd0,outstanding[at]}) completion_bad=1;
             if (is_le[at] && !shared_pool) le_return=le_return+{1'b0,returns[at]};
             else br_return=br_return+{1'b0,returns[at]};
@@ -145,7 +149,7 @@ module workstation_hci_flow_owner #(
         else if (acl_slot == -1) acl_error_o=2;
         else if (acl_generation_i != generations[acl_slot]) acl_error_o=3;
         else if (acl_data_length_i == 0 ||
-            acl_data_length_i > (is_le[acl_slot] && !shared_pool ? le_length : br_length)) acl_error_o=4;
+            (is_le[acl_slot] && !shared_pool ? acl_exceeds_le : acl_exceeds_br)) acl_error_o=4;
     end
     wire acl_credit = acl_slot != -1 &&
         (is_le[acl_slot] && !shared_pool ? le_available_o != 0 : br_available_o != 0);
