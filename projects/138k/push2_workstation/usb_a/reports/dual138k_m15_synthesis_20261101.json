@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "M15_complete_synthesis_and_strict_gate",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-cf9d6319a310d6fe",
+  "manifest_sha256": "50061dbe1c805af258d1846a336f9128dc89c6fa2fa4966b06a7a37d117e50bb",
+  "VG_sha256": "4707d235626cd446faf4ab00174f51c363c32db7926199cb2aa2449f51eb6a06",
+  "synthesis_resources": {
+    "Register": 46932,
+    "Lut": 52130,
+    "Alu": 12875,
+    "Bsram": 195,
+    "Ssram": 141,
+    "MULTALU27X18": 33,
+    "MULT12X12": 4,
+    "MULT27X36": 42
+  },
+  "synthesis_BSRAM_equivalent": 195,
+  "synthesis_run": {
+    "schema": "dual138k-build-run-v1",
+    "stage": "synthesis",
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-cf9d6319a310d6fe",
+    "manifest_sha256": "50061dbe1c805af258d1846a336f9128dc89c6fa2fa4966b06a7a37d117e50bb",
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "scripts/custom_board_synthesis.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1",
+    "environment": {
+      "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+    },
+    "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "runner_sha256": "1a2d61cadb4c71d643745374c1962b0ff6197996090e28c21593fd28dfc530e5",
+    "sealed_input_count": 590,
+    "started_utc": "2026-10-31T18:59:56.259446+00:00",
+    "exit_code": 0,
+    "child_pid": 90491,
+    "finished_utc": "2026-10-31T19:03:26.475146+00:00",
+    "elapsed_seconds": 210.211552333,
+    "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/synthesis.log",
+    "log_sha256": "13fe52430082b1fbe1b142809cc4d58c67d1e804d546ff168db9d480c794637f",
+    "sealed_inputs_reverified_after_run": true
+  },
+  "strict_gate_passed": true,
+  "strict_gate_sha256": "9bede6b5ec7ae42a4c3aeeeff97ee0ad7d21a92757fa85d0eb70a7ec10a6f10b",
+  "physical_prepare_reaudited_full_gate_and_deep_equals_CLI": true,
+  "regressions": {
+    "native": {
+      "tests": 54,
+      "passed": 50,
+      "skipped": 4,
+      "mutants": 45,
+      "all_rejected": true
+    },
+    "boundary": {
+      "tests": 7,
+      "passed": 7,
+      "skipped": 0,
+      "mutants": 61,
+      "all_rejected": true
+    }
+  },
+  "source_files_reverified": 875,
+  "staged_files_reverified": 588,
+  "audit_snapshot_files_reverified": 1365,
+  "M15_TF_five_live_group_mapping_pending": true,
+  "physical_PNR_started": "D211010C",
+  "physical_results_pending": true,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false,
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-strict-gate-v1.json": "9bede6b5ec7ae42a4c3aeeeff97ee0ad7d21a92757fa85d0eb70a7ec10a6f10b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-synthesis-run-v1.json": "f6cd5eb10fd83d3a0230a9008359496f4861e881212cb7c06d42b1b367c3ca98",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-prepare-source-seal-v1.json": "b48faa3fb96fe2040c3d20ef02ba20f4ec3c0e8f0a5e7b49b8ec2d28c910e217",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/source-tools-seal.json": "3af97689a317fcfa7fe7c4a9a36af67bfa19f1dd1e6f03f87d7c8cf666adb98f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15-physical-v1/physical_inputs.json": "e79a0e1ced980cf4b0211d5c5889b88d9b5879b885d06a423c2a4947f181ace7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15-physical-v1/parent_synthesis_audit.json": "0994b4ba63da07358dd4a5583feca52cc73ff7c2bd961f7ee8255172313b33d4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-default-prepare-v1.json": "e79a0e1ced980cf4b0211d5c5889b88d9b5879b885d06a423c2a4947f181ace7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-build-runner-v1.py": "df4ec896d0cde8f05a2bdfacc5cd3ee105edb8e915466ad04944a1557a6a690f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audit-job-v1.py": "c71c0322cf5a1ccc4459fbe6b2eb944b8a29aac91df462d9271656f72163f580",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/synthesis.log": "13fe52430082b1fbe1b142809cc4d58c67d1e804d546ff168db9d480c794637f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4707d235626cd446faf4ab00174f51c363c32db7926199cb2aa2449f51eb6a06",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml": "25833bf30b564b1039d04e9385121b3f1d346ec744bd2d882fa6f666f606b4de",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-vg-regression-run.json": "b793ad7f0b0179ce974f20f4a5529ce4d0ad2ad2eb89568e819ed2b1a21a661b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-mutants-vg.json": "b90ff0f0215dd40040cfe99d3b5d62b50251ec146b77b728acfcde7e43eeb77c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-vg-regression.log": "c427b426fb99282921301b493117999cb8fa9368cee4dcfa2242a618b8c691a6",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-vg-regression.stderr": "7c8e259d57c8bb9bd1b0af3656b7fa03cec533644cc9b961bd4e2b5da807be7f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/boundary-vg-regression-run.json": "105ed78c751a05f0bb96457a2eee3278df104fbb462d3aded43ab687d4801f97",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/boundary-mutants-vg.json": "81a432904e6516dffa927b2e4d1be51bb4864c242cc6e2dfb13d9f39316109a4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/boundary-vg-regression.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/boundary-vg-regression.stderr": "83d418879c0947039fd29e9633530c8a57262edcc9ee5fbbf5b11432494e1ae2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-vg-cli-run.json": "1a4a1350a3cd05ac90d603017fd7c35cb7899b9b45afbc8d6547a7866bdf51a8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m15-audits-v1/native-protocol-vg.json": "662ba2cebdb1eb231bec957c5c0b50adc6a0f8890f03b2a524f95bec2ab27dd3"
+  }
+}

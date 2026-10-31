@@ -314,6 +314,8 @@ TF容量比较已按[精确维护源阶段](push2_workstation/usb_a/reports/dual
 
 W13 `D211010A`的[默认完整物理测量](push2_workstation/usb_a/reports/DUAL138K_W13_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS52,540，setup6,829／−5.765ns、hold3／−3.537ns，recovery+2.468／removal+.281ns。native实际VO54项（41通过／13跳过）及36负控、边界7／61、官方六PLL及7负控通过，30物理文件、645staged与1365冻结审计输入稳定。最差转至raw memory_next_index CE，未将局部映射变化冒充全局收益；同VG／SDC／DDR3.500ns的`D211010B`far已启动P&R，仍未上板。
 
+M15已完成[全量综合及严格门](push2_workstation/usb_a/reports/DUAL138K_M15_SYNTHESIS_20261101.md)：FF46,932／LUT52,130／ALU12,875／BSRAM equivalent195，native实际VG54项（50通过／4跳过）及45负控、边界7／61通过。875原始来源、588staged及1365冻结审计输入复验，默认physical prepare重新完整审计且与CLI深等价，`D211010C`已启动全量P&R；新TF分组的专项实际消费锥证明另记，不预填routed收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
