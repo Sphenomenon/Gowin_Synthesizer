@@ -12,7 +12,10 @@ METADATA=0x04401000
 def page_value(value,manifest):
     if not isinstance(value,int) or value<0 or value>>BITS:raise ValueError('banked GAO value exceeds bus width')
     word=lambda i:(value>>(32*i))&0xffffffff
-    if word(18)!=MAGIC:raise ValueError('banked GAO schema magic missing')
+    mode=manifest.get('gao',{}).get('mode','banked4')
+    if mode not in ('banked4','bsram4'):raise ValueError('unsupported banked GAO manifest mode')
+    expected_magic=0xa1386403 if mode=='bsram4' else MAGIC
+    if word(18)!=expected_magic:raise ValueError('banked GAO schema magic missing or wrong explicit mode')
     if word(17)!=int(manifest['user_code'],16):raise ValueError('banked GAO UserCode differs from manifest')
     if word(19)&~7!=METADATA:raise ValueError('banked GAO page geometry or reserved bits changed')
     valid=bool(word(19)&4)

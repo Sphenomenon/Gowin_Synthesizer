@@ -104,7 +104,22 @@ module workstation_ae350_local_memory_probe_top(
             last_tx<=debug_uart_tx;
             if(last_tx!=debug_uart_tx)tx_edges<=tx_edges+1'b1;
         end
-`ifdef AE350_PROBE_BANKED_GAO
+`ifdef AE350_PROBE_BSRAM_GAO
+    wire [703:0] ram_sample_50mhz;
+    wire ram_sample_update;
+    (* syn_keep=1,syn_preserve=1 *) reg [703:0] status_50mhz;
+    always @(posedge clk_50m or negedge system_reset_n)
+        if(!system_reset_n)status_50mhz<=0;
+        else if(ram_sample_update)status_50mhz<=ram_sample_50mhz;
+    workstation_ae350_probe_snapshot_ram #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
+        .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
+        .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
+        .digital_io_50mhz({tx_edges,snapshot_published_50mhz,debug_uart_tx}),
+        .health_50mhz({power_on,lock_count[4:0],rom_health_sync[1],upper_health_sync[1],
+            lock_qualified,system_reset_n,transport_health_50mhz}),
+        .tx(debug_uart_tx),.snapshot_published_50mhz(snapshot_published_50mhz),
+        .transport_health_50mhz(transport_health_50mhz),.sample_update_o(ram_sample_update),.sample_50mhz(ram_sample_50mhz));
+`elsif AE350_PROBE_BANKED_GAO
     wire [703:0] banked_sample_50mhz;
     workstation_ae350_probe_gao_banks #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_gao_banks(
         .clk_50m(clk_50m),.reset_n(system_reset_n),
@@ -125,11 +140,13 @@ module workstation_ae350_local_memory_probe_top(
             tx_edges,snapshot_published_50mhz,debug_uart_tx,
             32'ha1386401,`AE350_PROBE_USER_CODE,full_snapshot_50mhz};
 `endif
+`ifndef AE350_PROBE_BSRAM_GAO
     workstation_ae350_probe_uart #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
         .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
         .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
         .full_snapshot_50mhz(full_snapshot_50mhz),.snapshot_published_50mhz(snapshot_published_50mhz),
         .tx(debug_uart_tx),.status_50mhz(uart_status_50mhz),.transport_health_50mhz(transport_health_50mhz));
+`endif
     RiscV_AE350_SOC_Top u_cpu(
         .ROM_HRDATA(rom_data),.ROM_HREADY(1'b1),.ROM_HRESP(1'b0),.ROM_HADDR(rom_address),
         .ROM_HTRANS(rom_transfer),.ROM_HWRITE(rom_write),.ROM_HCLK(rom_clk),.ROM_HRSTN(rom_reset_n),
