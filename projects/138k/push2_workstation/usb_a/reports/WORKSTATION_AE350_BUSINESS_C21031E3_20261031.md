@@ -112,6 +112,31 @@ profile。新增两块 RAM、拷贝／读取／仲裁逻辑的成本必须纳入
 同步拷贝、字节握手和仲裁成本，再以新 UserCode `C21031E5` 做 place1／
 route0 完整 P&R。没有为这些改动新增长期 profile 或构建器。
 
+完整综合已通过：341.612 秒、退出 0、614 项输入保持、无 AG 诊断。
+VG SHA256：`32dd16e15b63424e255f1dffc98474cb6fdcc9a6502e284109bbb04a7b78d191`。
+
+| 综合资源 | E5（3484de84） | 相对 E4 | 相对迁移前 011fdc9c |
+|---|---:|---:|---:|
+| Logic | 95317 | −1618 | +694 |
+| LUT | 76947 | −1633 | +980 |
+| ALU | 16756 | +15 | −46 |
+| Register | 61306 | −1504 | +728 |
+| RAM16 | 269 | 0 | −40 |
+| 等效 BSRAM | 250 | +2 | +5 |
+
+完整总量包含新增两块 SDP 实例及全部接口／同步拷贝／仲裁逻辑；RAM 化
+及固定字选择已降低当前候选资源，但相对迁移前仍无净收益。独占映射
+明细为 mailbox 1247 FF／586 ALU／2527 LUT、parser 1260 FF／380 ALU／
+1876 LUT、data service 853 FF／32 ALU／37 LUT；后者由 300 LUT 降至
+37 LUT。旧 `recording` owner 从 2381 FF／4048 LUT 降至 843 FF／1848
+LUT，该减少量没有与新增接口成本分开计算净收益。A2DP／SBC 仍未选择。
+`C21031E5` 已直接启动完整 P&R，输入保持新身份；物理／SRAM 结果待收取。
+新 VG 的原版 PCM `--installed --constraint-revision paired-nextq-v2`
+检查通过，229 位源载荷／selector／next-Q／已安装约束闭合；六个实际
+shared release、455 个 CPU CDC 和 175 个 business 消费者连接通过。
+检查器与 E4 字节一致，未跑新的负控大套或改门槛；结果位于 cache 下
+`business-ram-datawords-integrated-necessary-gates-v1`，不代替物理 CDC／STA。
+
 既有 UART smoke 增加显式 `--recognition-disabled`：当前配置不会发送
 B138，选中时要求全程无该报文／模型状态；CPU／DDR／CRC／音频节拍、
 控制／复音门禁保留，不产生 CNN 模型验收。现有定向测试十四项通过。
