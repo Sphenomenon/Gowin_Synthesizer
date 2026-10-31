@@ -65,3 +65,11 @@ python3 -B projects/138k/push2_workstation/usb_a/build.py \
 原始ROM声明范围减少32768 bytes，相当于16个512×32逻辑存储bank；metadata不宣称少16块物理BSRAM。Gowin可能已裁掉128K中的不可达或常量零padding，逻辑bank不保证与物理BSRAM一一对应，推断/打包/优化也可能改变结果。此阶段没有真实综合、P&R或净资源收益，`actual_resource_savings_verified=False`；需要由根任务在相同业务、tool/source/约束下对128K和96K做实际综合/物理对照后决定选择。
 
 已冻结128K目录及其seal保持不变；新96K不会自动替换128K或accepted。退出新variant即可恢复128K profile选择；物理容量/DDR/PLL/CDC/时序和真实音频/手机仍按独立门禁验收。本阶段无位流、SRAM或Flash状态改变。
+
+## 主线接入与复验
+
+主线 `9a0e959`／`72960ac` 保留 bsram4 构建入口，将新 ROM96 manifest 的唯一旧 `build.py` hash 刷新为当前已审查值；其余 8 个 profile 的新锁保持。根端真实 prepare 产生 ROM96 `9d02b8107b256773`（927 项完整来源、637 staged／283 enabled／280 HDL）、ROM128 `130e2dec1ad6dfbf`、默认 `9a7b46eb2ce98dc9`，三者均通过 verifier，9 个 profile 来源锁全部通过。
+
+根端重跑 ROM96 11 项、ROM128 12 项、默认 22 项（1 项未配置 legacy 入口跳过）、accepted 17 项和旧 boot storage 4 项，均通过。ELF／BIN／NM／dis 与原联合128逐字相同，ROM96 是原 ROM128 的精确前98,304字节，删除的32,768字节全零；171 JALR／1,904-byte保守栈保持。另逐文件确认原1,644帧PCM fixture实际消费的输入在新prepare／维护源均同字节，此处是来源绑定，没有重新计作该fixture执行。
+
+根端封存 `/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-rom96-main-parent-v1`：1,046 份源码快照、2,340 份外部文件身份，seal SHA256 `b7a27983e6ee386742322775cefc0a5db0a8bbf75fe30f56f6ab86b7e8479c6a`；[机器记录](workstation_task_20261030/classic_runtime_rom96_main.json)保存精确容量、配置和输入绑定。ROM96剩余cold空间仅3,552bytes，后续增长继续严格拒绝越界。此源码阶段未完成综合或物理验收；资源对照另行排队，不将逻辑bank数计为收益。
