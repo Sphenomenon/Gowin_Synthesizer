@@ -70,8 +70,8 @@ module bt_gatt #(
     input wire [31:0] raw_sample_word_i
 );
     localparam integer MS_CYCLES = CLK_HZ / 1000;
-    localparam [2:0] IDLE=0, CAPTURE=1, PARSE=2, WAIT_DROP=3, COMPLETIONS=4, BIZ_BUILD=5, BIZ_COPY=6, BIZ_WAIT=7;
-    reg [2:0] state;
+    localparam [3:0] IDLE=0, CAPTURE=1, PARSE=2, WAIT_DROP=3, COMPLETIONS=4, BIZ_BUILD=5, BIZ_COPY=6, BIZ_WAIT=7, VALUE_BUILD=8;
+    reg [3:0] state;
     reg [3:0] captured_type;
     reg [8:0] captured_length;
     reg [7:0] packet [0:31];
@@ -89,8 +89,10 @@ module bt_gatt #(
     reg [31:0] completion_sum;
     integer i, used, start_handle, end_handle, attribute_type;
     integer response_base;
-    reg [15:0] work_crc;
-    reg [7:0] work_byte;
+    reg value_notification;
+    reg [4:0] value_index;
+    reg [15:0] value_crc;
+    reg [31:0] value_sequence, value_milliseconds;
 
     reg active_hci, active_bulk;
     reg [8:0] att_mtu;
@@ -104,7 +106,7 @@ module bt_gatt #(
     assign tx_type = active_hci ? 4'd1 : 4'd2;
     assign tx_payload_data = active_bulk ? bulk_data : tx_payload_addr < 32 ?
                              active_tx[tx_payload_addr] : 8'h00;
-    assign debug_state = {tx_busy, tx_credit, queued, 1'b0, state};
+    assign debug_state = {tx_busy, tx_credit, queued, state};
 
     function [15:0] word_at;
         input integer address;
@@ -195,17 +197,15 @@ module bt_gatt #(
             response[response_base+12]=code;
         end
     endtask
-    task response_value;
-        input integer address;
-        integer n;
+    wire [7:0] value_byte=sample_byte(value_index,value_sequence,value_milliseconds);
+    task value_begin;
+        input notification;
         begin
-            work_crc=16'hffff;
-            for(n=0;n<18;n=n+1) begin
-                work_byte=sample_byte(n,notification_count,elapsed_ms);
-                response[response_base+address+n]=work_byte;
-                work_crc=crc_byte(work_crc,work_byte);
-            end
-            response_word(address+18,work_crc);
+            // Hold the request's counters while one shared byte/CRC datapath
+            // builds the unchanged 18-byte sample and two-byte CRC.
+            value_notification<=notification; value_index<=0; value_crc<=16'hffff;
+            value_sequence<=notification_count; value_milliseconds<=elapsed_ms;
+            state<=VALUE_BUILD;
         end
     endtask
 
@@ -623,7 +623,7 @@ module bt_gatt #(
                         for(i=0;i<11;i=i+1) response[response_base+9+i]=name_byte(i);
                     end else if(start_handle==7) begin
                         response_begin(4,21); response[response_base+8]=8'h0b;
-                        response_value(9);
+                        value_begin(0);
                     end else if(start_handle==8) begin
                         response_begin(4,3); response[response_base+8]=8'h0b;
                         response_word(9,{15'b0,subscribed});
@@ -671,6 +671,8 @@ module bt_gatt #(
             business_offset<=0; business_data_length<=0;business_compact<=0;business_bulk<=0; summary_wait<=0;business_transfer<=0;
             capture_wait<=1; active_hci<=0;active_bulk<=0;att_mtu<=23;mtu_exchanged<=0; fast_link_pending<=0;fast_link_requested<=0;advertise_pending<=0; advertise_wait<=0; advertise_time<=0;
             completion_handle<=0;completion_count_low<=0;completion_sum<=0;
+            value_notification<=0;value_index<=0;value_crc<=16'hffff;
+            value_sequence<=0;value_milliseconds<=0;
             queued<=0; read_slot<=0; write_slot<=0; tx_busy<=0; tx_credits<=1;
         end else begin
             rx_consume<=0; tx_start<=0;
@@ -756,15 +758,7 @@ module bt_gatt #(
                         active_tx[4]<=23; active_tx[5]<=0;
                         active_tx[6]<=4; active_tx[7]<=0;
                         active_tx[8]<=8'h1b; active_tx[9]<=7; active_tx[10]<=0;
-                        work_crc=16'hffff;
-                        for(i=0;i<18;i=i+1) begin
-                            work_byte=sample_byte(i,notification_count,elapsed_ms);
-                            active_tx[11+i]<=work_byte;
-                            work_crc=crc_byte(work_crc,work_byte);
-                        end
-                        active_tx[29]<=work_crc[7:0]; active_tx[30]<=work_crc[15:8];
-                        tx_length<=31; tx_start<=1; tx_busy<=1; if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
-                        notification_count<=notification_count+1'b1;
+                        value_begin(1);
                         notify_deadline<=elapsed_ms+NOTIFY_MS;
                     end
                 end
@@ -905,6 +899,25 @@ module bt_gatt #(
                         end
                         state<=IDLE;
                     end else business_index<=business_index+1'b1;
+                end
+                VALUE_BUILD: begin
+                    if(value_index<18) begin
+                        if(value_notification)active_tx[11+value_index]<=value_byte;
+                        else response[response_base+9+value_index]=value_byte;
+                        value_crc<=crc_byte(value_crc,value_byte);
+                    end else if(value_index==18) begin
+                        if(value_notification)active_tx[29]<=value_crc[7:0];
+                        else response[response_base+27]=value_crc[7:0];
+                    end else begin
+                        if(value_notification) begin
+                            active_tx[30]<=value_crc[15:8];
+                            tx_length<=31;tx_start<=1;tx_busy<=1;
+                            if(!SHARED_HCI_OWNER)tx_credits<=tx_credits-1'b1;
+                            notification_count<=notification_count+1'b1;
+                        end else response[response_base+28]=value_crc[15:8];
+                        state<=IDLE;
+                    end
+                    value_index<=value_index+1'b1;
                 end
                 WAIT_DROP: if(!rx_valid) state<=IDLE;
                 default: state<=IDLE;
