@@ -154,7 +154,13 @@ def main():
     fixture=ROOT/'sim/audio/fixtures/core_ce_before_effect_slot.svh'
     paths=[top,fx,fixture,Path(__file__).resolve()];before={str(p):sha(p) for p in paths}
     old=fixture.read_text().strip();assert hashlib.sha256(('  '+old).encode()).hexdigest()==OLD_SHA
-    text=top.read_text();effect=fx.read_text()
+    text=top.read_text();effect=fx.read_text();sample_contract=None
+    if 'begin: native_sample_admission' in text:
+        import prove_sample_admission_cofactor as admission
+        sample_contract=admission.source_contract(text)
+        text=admission.reference_view(text)
+        paths.extend([Path(admission.__file__).resolve(),admission.REFERENCE])
+        before.update({str(p):sha(p)for p in (Path(admission.__file__).resolve(),admission.REFERENCE)})
     from prove_event_config_cofactor import binary_proof
     service=ROOT/'rtl/audio/workstation_audio_render_service.sv'
     private_proof=Path(__file__).with_name('prove_event_config_cofactor.py')
@@ -205,6 +211,8 @@ def main():
     assert before=={str(p):sha(p) for p in paths},'source drift'
     record={'passed':True,'scope':'actual SV boolean equations, all combinational states and both runtime/legacy selection; no clock-cycle or sampling changes',
         'input_sha256':before,'old_core_ce_sha256':OLD_SHA,'equations':expr,'proofs':rows,'private_service_contract':private_contract,'configuration_four_state':four_state,'z3_version':z3.get_full_version(),
+        'sample_admission_source_contract':sample_contract,
+        'core_ce_proof_view':'Exact inverse to the pre-sample-admission source when present; its later cofactor has a separate maintained proof and full-module miter',
         'hardware_accepted':False,'physical_timing_verified':False,'resource_saving_claimed':False}
     (out/'verification.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(rows,indent=2))
 if __name__=='__main__':main()

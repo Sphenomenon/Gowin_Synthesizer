@@ -332,6 +332,8 @@ W13 `D211010B` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL13
 
 M15 `D211010D` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M15_FAR_PHYSICAL_20261101.md)已封存：同VG／完整SDC／DDR3.500ns，原DDR hold+.619ns、全局hold0／+.143ns；setup仍3,081／−1.774ns，recovery+.686／removal+.281ns。物理BSRAM235／DSP119／CLS50,221，实际VO54项（51通过／3跳过）及46负控、边界7／61和官方六PLL／7负控均通过。32物理文件、588staged／1365冻结输入和685PLL依赖复验；chorus、oscillator准入及TF容量仍有真实长链，下一来源候选独立验证，不继承接受，未上板。
 
+原生音频的[采样准入同周期cofactor维护阶段](push2_workstation/usb_a/reports/DUAL138K_AUDIO_SAMPLE_ADMISSION_20261101.md)已完成：仅core_ce组合表达式使用实际dispatch互斥和已有quiescence，保留全部取消／配置／fault／效果栅栏及X/Z原表达式，无状态／周期变化。二态／四态证明及负控、M完整50输出／31内部边界115,929,947半周期、48,691请求与48,645帧独立湿声模型通过；W／legacy和原event／effect门全部通过，warning数量按实记录。89份最终证据重验，另将157项当时输入以内容hash保存到`audio-core-ce-maintained-input-snapshot-v1`（snapshot SHA `28b10a0359f0d4a215ac2cb9104c8e1b88ad9a844c03ac522245693ac76c73eb`），后续chorus演进不改本阶段证据。两锁待统一刷新，未预记实际映射／资源／routed收益或硬件验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

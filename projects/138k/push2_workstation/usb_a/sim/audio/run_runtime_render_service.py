@@ -26,6 +26,8 @@ def main():
                        help='Compare every public service output and core_ce to exact consumed M11 modules every half cycle')
     miter.add_argument('--event-config-miter', action='store_true',
                        help='Compare the complete service/event pair to exact consumed M13 modules, including dispatch and configuration transactions')
+    miter.add_argument('--sample-admission-miter', action='store_true',
+                       help='Compare every public output and private boundary to the immutable source before native sample admission factoring')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -61,20 +63,28 @@ def main():
     sources += [memory, tb]
     miter_inputs = []
     private_paths = []
-    if args.effect_slot_miter or args.event_config_miter:
-        references = ([
-            (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',
-             '5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1'),
-            (project / 'rtl/audio/workstation_audio_render_service.sv', 'workstation_audio_render_service',
-             '148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968')]
-            if args.event_config_miter else [
-            (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',
-             '5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2'),
-            (project / 'rtl/audio/workstation_runtime_stereo_effects.sv', 'workstation_runtime_stereo_effects',
-             '7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826'),
-            (project / 'rtl/audio/workstation_audio_render_service.sv', 'workstation_audio_render_service',
-             '148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968')])
-        reference_label = 'M13 service/event pair' if args.event_config_miter else 'M11 reference'
+    sample_contract = None
+    if args.effect_slot_miter or args.event_config_miter or args.sample_admission_miter:
+        if args.sample_admission_miter:
+            import prove_sample_admission_cofactor as admission
+            sample_contract = admission.source_contract()
+            references = list(admission.SAMPLE_ADMISSION_REFERENCES)
+            miter_inputs.append(Path(admission.__file__).resolve())
+        else:
+            references = ([
+                (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',
+                 '5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1'),
+                (project / 'rtl/audio/workstation_audio_render_service.sv', 'workstation_audio_render_service',
+                 '148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968')]
+                if args.event_config_miter else [
+                (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',
+                 '5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2'),
+                (project / 'rtl/audio/workstation_runtime_stereo_effects.sv', 'workstation_runtime_stereo_effects',
+                 '7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826'),
+                (project / 'rtl/audio/workstation_audio_render_service.sv', 'workstation_audio_render_service',
+                 '148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968')])
+        reference_label = ('pre-sample-admission fixture' if args.sample_admission_miter else
+                           'M13 service/event pair' if args.event_config_miter else 'M11 reference')
         for path, name, expected in references:
             if expected is not None and digest(path) != expected:
                 raise ValueError('Exact consumed ' + reference_label + ' drift: ' + str(path))
@@ -114,7 +124,7 @@ def main():
         wrapper += 'integer comparisons=0;\nalways @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
         wrapper += 'if({' + ','.join(outputs) + '} !== {' + ','.join('reference_' + name for name in outputs) + '})$fatal(1,"actual old/new full service public output differs");\n'
         wrapper += 'if(actual.workstation.core_ce!==reference.workstation.core_ce)$fatal(1,"actual old/new core_ce sampling edge differs");comparisons=comparisons+1;end\n'
-        if args.event_config_miter:
+        if args.event_config_miter or args.sample_admission_miter:
             private_paths = ['accepted', 'core_config', 'requested_rate', 'active', 'response_sent',
                 'held_rate', 'external_busy', 'request_muted', 'request_cancel_epoch', 'request_epoch_match',
                 'held_pcm_left', 'held_pcm_right', 'core_rate_busy', 'core_fault',
@@ -127,9 +137,11 @@ def main():
                 'workstation.runtime_configuration.failed', 'workstation.runtime_configuration.applied',
                 'workstation.runtime_configuration.history_done']
             wrapper += 'always @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
+            boundary_label = 'pre-sample/new' if args.sample_admission_miter else 'M13/new'
             wrapper += ''.join('if(actual.' + path + '!==reference.' + path +
-                ')$fatal(1,"actual M13/new private boundary differs: ' + path + '");\n' for path in private_paths)
-            wrapper += 'end\nfinal $display("EVENT_CONFIG_MITER private_boundaries=' + str(len(private_paths)) + '");\n'
+                ')$fatal(1,"actual ' + boundary_label + ' private boundary differs: ' + path + '");\n' for path in private_paths)
+            label = 'SAMPLE_ADMISSION_MITER' if args.sample_admission_miter else 'EVENT_CONFIG_MITER'
+            wrapper += 'end\nfinal $display("' + label + ' private_boundaries=' + str(len(private_paths)) + '");\n'
         wrapper += 'final $display("EFFECT_SLOT_MITER comparisons=%0d public_outputs=' + str(len(outputs)) + '",comparisons);\nendmodule\n'
         target = output / 'effect_slot_service_miter.sv';target.write_text(wrapper);sources.append(target)
         adapted = output / tb.name
@@ -147,6 +159,7 @@ def main():
                   scope='Opt-in full native dual-rate render service; real 200ms delay ring and ordered posted DDR model',
                   project=str(project), input_sha256=hashes, effect_slot_miter=args.effect_slot_miter,
                   event_config_miter=args.event_config_miter, private_boundaries_compared=private_paths,
+                  sample_admission_miter=args.sample_admission_miter, sample_admission_source_contract=sample_contract,
                   memory_model='Exact leading module extracted from committed effects TB; writes execute after command acceptance, fence ACK follows ordered read response')
     try:
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',

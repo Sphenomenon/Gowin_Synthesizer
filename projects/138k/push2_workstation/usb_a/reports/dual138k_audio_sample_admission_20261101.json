@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "stage": "maintained_native_sample_admission_cofactor_offline",
+  "passed": true,
+  "identity": "native-sample-admission-maintained-v1-79d24b36166fe72b",
+  "source_set_sha256": "79d24b36166fe72bca0e6bb2214cc43afb09e48b75a91375f26bd5ad46e5fd7c",
+  "source_files_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "5569269a1d5ef02f2b1702f928d282fbab7455fba9af6ac229a97cbf8dc77bc9",
+    "sim/audio/fixtures/gw138k_event_workstation_before_sample_admission.sv": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09",
+    "sim/audio/prove_sample_admission_cofactor.py": "fbcfaa8e1566f2fd524dc337b27ae229d868f7280abc1c52eb0be26cbeef1227",
+    "sim/audio/prove_effect_slot_admission.py": "88dc3346a41fdadcdf54b0f1457a7dafaddfb0817a2f9e1662306d4c74cfba08",
+    "sim/audio/prove_event_config_cofactor.py": "b2222ba8a547c4ceb7468775597fde3e6bfb80e3ddb4c30a4a6f4292823105ac",
+    "sim/audio/run_runtime_render_service.py": "b048c1fd5e54b9f6d53ef23114d811387a616efcf9dc9fa18b39ec68c1c77794",
+    "sim/audio/run_event_config_contract.py": "a20e8f6b1433b54974e56b5b9da88973e2ef8a9c71fba62b1fb1946d72451454",
+    "sim/audio/fixtures/README.md": "fc63c0c97ee46b3771a1a51e4595bcb41f2125a2f0e6af083e5b18daaa7fa099"
+  },
+  "maintained_event_sha256": "5569269a1d5ef02f2b1702f928d282fbab7455fba9af6ac229a97cbf8dc77bc9",
+  "immutable_pre_change_event_sha256": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09",
+  "source_implementation": true,
+  "native_selection": "REQUEST_DRIVEN_RENDER && RUNTIME_RATE_ENABLE && RUNTIME_EFFECTS_ENABLE; actual private service retains TIMING_OPTIMIZED=1",
+  "behavior": "Known render-eligible controls100/010/110 use stored runtime quiescence with lifecycle/clear/config/fault/effect-slot/join guards. Five other known cases are0; any unknown selector uses exact original expression. No new state, cycle, parameter owner, event format or public interface.",
+  "preserved_source": "Exact inverse to complete pre-change fixture, all NBA targets/RHS/order; unchanged render service hash9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0. Old event/effect proofs normalize only this verified later cofactor and keep their earlier source gates.",
+  "proof": {
+    "binary_UNSAT_configurations": 2,
+    "removed_veto_SAT_controls": 10,
+    "exact_source_drift_controls": [
+      {
+        "mutation": "native_fast_fault_veto",
+        "rejected": true,
+        "diagnostic": "native sample admission exact block drift"
+      },
+      {
+        "mutation": "outside_core_ce_parameter_commit",
+        "rejected": true,
+        "diagnostic": "sample admission edits escape exact original source"
+      }
+    ],
+    "actual_source_four_state_vectors_each": 139792,
+    "actual_source_four_state_configurations": 2,
+    "actual_source_negative_four_state": [
+      {
+        "mutation": "drop_fault",
+        "expected_failure_observed": true,
+        "source_sha256": "cb0ad7afeda974fdf6758bc2356126d09adb66ea93ade239db8a15b95e6c8916",
+        "run_log_sha256": "ee3b05b314eafbf487a07f5facd936ee2fdcb0a7bd146eac043677cfb4aa8068"
+      },
+      {
+        "mutation": "drop_lifecycle",
+        "expected_failure_observed": true,
+        "source_sha256": "a18d6bef3729f75428797ff5db756ec5003f82bebac45542a6bf387409b37243",
+        "run_log_sha256": "b590dafd324364f48cd59736e9de0864b638c914dbb5dd72a292eba89773f139"
+      },
+      {
+        "mutation": "unknown_controls_use_fast",
+        "expected_failure_observed": true,
+        "source_sha256": "fe7ac0d969d3c3f2b8e475533d3716bdee173b018ebcdc7a6fbddcb74b4c476f",
+        "run_log_sha256": "9a74268cb9e6a8b3a534162e0b7a2ab32c6a55323025b0bc3779a511ddccac55"
+      }
+    ],
+    "whole_module_formal_equivalence": false
+  },
+  "complete_M_miter": {
+    "halfcycles": 115929947,
+    "public_outputs": 50,
+    "private_boundaries": 31,
+    "metrics": {
+      "requests": 48691,
+      "responses": 48691,
+      "modeled_frames": 48645,
+      "configs": 21,
+      "histories": 324,
+      "cancels": 11,
+      "wet48": 17185293,
+      "wet44": 18098972,
+      "pitch_checks": 49784608,
+      "max_latency": 1620,
+      "max_steady_latency": 1168,
+      "max_auto_config_latency": 1620,
+      "max_loader_latency": 1204,
+      "posted_writes": 12160,
+      "ordered_fences": 326,
+      "vector_dispatch_cycles": 2056,
+      "vector_accepted_events": 10,
+      "vector_release_cases": 2,
+      "epoch_equality_checks": 115929946,
+      "epoch_advances": 1074,
+      "epoch_wraps": 1,
+      "epoch_match_returns": 36,
+      "simultaneous_request_panic": 3,
+      "epoch_wrap_cases": 1
+    },
+    "fixed_point_compared_frames": {
+      "48000": 24323,
+      "44100": 24322
+    },
+    "compile_warning_counts": {
+      "PINMISSING": 35,
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 42,
+      "WIDTHTRUNC": 12,
+      "UNSIGNED": 2
+    },
+    "UNOPTFLAT": false
+  },
+  "complete_W_legacy_miter": {
+    "public_outputs": 50,
+    "common_boundaries": 25,
+    "native_boundaries": 7,
+    "cases": [
+      {
+        "native": 1,
+        "d_only": 1,
+        "requests": 34,
+        "responses": 34,
+        "configs": 27,
+        "histories": 37,
+        "events": 88,
+        "coincidences": 22,
+        "fault_checks": 28
+      },
+      {
+        "native": 0,
+        "d_only": 0,
+        "requests": 34,
+        "responses": 34,
+        "configs": 0,
+        "histories": 0,
+        "events": 68,
+        "coincidences": 2,
+        "fault_checks": 0
+      }
+    ],
+    "miter_metrics": [
+      {
+        "native": 0,
+        "d_only": 0,
+        "halfcycles": 45895,
+        "public_outputs": 50,
+        "common_boundaries": 25,
+        "native_boundaries": 7
+      },
+      {
+        "native": 1,
+        "d_only": 1,
+        "halfcycles": 45863,
+        "public_outputs": 50,
+        "common_boundaries": 25,
+        "native_boundaries": 7
+      }
+    ]
+  },
+  "prior_regressions": {
+    "event_config_binary": [
+      {
+        "property": "native sample_ce equals accepted",
+        "result": "unsat",
+        "reachability_assumptions": []
+      },
+      {
+        "property": "private request equals complete request whenever sample_ce=0",
+        "result": "unsat",
+        "reachability_assumptions": []
+      },
+      {
+        "property": "mode_valid all binary service inputs and event states",
+        "result": "unsat",
+        "reachability_assumptions": []
+      },
+      {
+        "property": "dispatch all binary service inputs and event states",
+        "result": "unsat",
+        "reachability_assumptions": []
+      }
+    ],
+    "event_config_four_state": {
+      "vectors": 147456,
+      "expected_rejection": false,
+      "exit_code": 0,
+      "fixture_sha256": "7917fc4d7f6d61a406f9f3244a907f8462381b0433b943ed1f268a4714d29341",
+      "run_log_sha256": "82c71838115159cba96903c24186cec8a8005818f67b6cb631aac5c48cb3151a"
+    },
+    "event_config_misuse_controls": [
+      {
+        "misuse": "private_accepted_dependency",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "private event request regained accepted-sample dependency"
+      },
+      {
+        "misuse": "disconnected_private_port",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "private port binding drift: event_rate_commit_i",
+        "actual_module_runtime_rejected": {
+          "exit_code": 1,
+          "diagnostic": "M13/current",
+          "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/event-config-proof/disconnected_private_port-module/verification.json",
+          "run_log_sha256": "71a36dacb602033e378eaa29988c5373019a0272fa2f477eb220041de65998c8"
+        }
+      },
+      {
+        "misuse": "real_core_uses_private_fence",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "event fence escaped private consumers"
+      },
+      {
+        "misuse": "history_veto_dropped",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "mode_valid all binary service inputs and event states: [external_busy = False,\n mode_ready = True,\n core_rate = True,\n core_rate_busy = False,\n cancelled = False,\n history_clear_i = True,\n native_clear = False,\n render_ready_o = True,\n pending = False,\n response_sent = False,\n held_rate = False,\n active = False,\n render_44k1_i = True,\n render_request_i = False,\n usb_lifecycle = False,\n busy = False,\n core_fault = False,\n mode_pending = True,\n config_valid_i = False]",
+        "actual_source_four_state": {
+          "vectors": null,
+          "expected_rejection": true,
+          "exit_code": 1,
+          "fixture_sha256": "944ed412f35da2b9516d9595b06e80276fcc70b0a755bd58164830565b5de03f",
+          "run_log_sha256": "fbbe06595d65d2afea4544cee8a169f1fd248e182b3e5eedadb34b06c1d08ebf"
+        },
+        "actual_module_runtime_rejected": {
+          "exit_code": 1,
+          "diagnostic": "M13/current",
+          "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/event-config-proof/history_veto_dropped-module/verification.json",
+          "run_log_sha256": "68522173aa5cec6426de0c6439c8347cbe5e00b1e2e8d33578604a5e2dbdb178"
+        }
+      },
+      {
+        "misuse": "existing_active_config_omitted",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "private request equals complete request whenever sample_ce=0: [held_rate = False,\n active = True,\n render_44k1_i = False,\n external_busy = False,\n render_request_i = True,\n core_rate = True,\n cancelled = False,\n core_fault = False,\n core_rate_busy = False,\n render_ready_o = False,\n config_valid_i = False,\n response_sent = False]",
+        "actual_source_four_state": {
+          "vectors": null,
+          "expected_rejection": true,
+          "exit_code": 1,
+          "fixture_sha256": "e8fb2780353a304635301cdf5fbf92cb1e90022c15438b0faf65845e0e0c4b32",
+          "run_log_sha256": "58954e18ceed02c3be6637c3f9ff81cfc9e1e7619d3fa5e8b1327640bc5b9c53"
+        }
+      },
+      {
+        "misuse": "unknown_sample_fallback_dropped",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "unknown-sample fallback changed",
+        "actual_source_four_state": {
+          "vectors": null,
+          "expected_rejection": true,
+          "exit_code": 1,
+          "fixture_sha256": "ef2b2a00953c199c93a59e13c13dcdd26347e8a8ef043d3a3357fb8ee72b4873",
+          "run_log_sha256": "815e84678a0e775294049aa80f98a04db7bb4366399eca5590fb9f8c9030de54"
+        }
+      },
+      {
+        "misuse": "forced_legacy_enable",
+        "source_bound_oracle_rejected": true,
+        "diagnostic": "native-only enable binding drift",
+        "actual_module_runtime_rejected": {
+          "exit_code": 1,
+          "diagnostic": "event configuration cofactor requires native request-driven effects",
+          "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/event-config-proof/forced_legacy_enable-module/verification.json",
+          "run_log_sha256": "f5b7d438f10514b6c3b8273230790979c1e064b9313a1c29ba76c8813af6db22"
+        }
+      }
+    ],
+    "effect_slot_proofs": [
+      {
+        "configuration_broadcast_all_combinational_states": "unsat",
+        "reachability_assumptions": [],
+        "event_qualification": "arbitrary, actual assignments all dispatch-qualified"
+      },
+      {
+        "mutant": "lifecycle_veto_removed",
+        "different_actual_broadcast": "sat",
+        "counterexample": "[core_expression_ready = True,\n event_qualification = True,\n allocated = 0,\n mix_busy = False,\n rst_ni = True,\n mode_pending = True,\n TIMING_OPTIMIZED = False,\n rate_commit_i = True,\n native_clear = False,\n history_clear_i = False,\n failed = False,\n pending = False,\n mode_ready = True,\n sample_ce_i = False,\n fx_config_ready = True,\n load_busy = False,\n pipeline_quiet = True,\n a = 120,\n event_valid = True,\n usb_lifecycle = True,\n releasing = False,\n busy = False,\n vec_busy = False,\n kind = 2,\n fx_fault = False]"
+      },
+      {
+        "mutant": "fault_veto_removed",
+        "different_actual_broadcast": "sat",
+        "counterexample": "[rst_ni = True,\n event_valid = True,\n mix_busy = False,\n TIMING_OPTIMIZED = False,\n pending = False,\n native_clear = False,\n allocated = 0,\n history_clear_i = False,\n rate_commit_i = True,\n sample_ce_i = False,\n a = 120,\n releasing = False,\n load_busy = False,\n core_expression_ready = True,\n mode_pending = True,\n fx_config_ready = True,\n usb_lifecycle = False,\n pipeline_quiet = True,\n busy = False,\n vec_busy = False,\n event_qualification = True,\n kind = 2,\n failed = True,\n mode_ready = True,\n fx_fault = False]"
+      },
+      {
+        "mutant": "quiet_veto_removed",
+        "different_actual_broadcast": "sat",
+        "counterexample": "[a = 120,\n mix_busy = False,\n kind = 2,\n rate_commit_i = True,\n pending = False,\n native_clear = False,\n TIMING_OPTIMIZED = False,\n history_clear_i = False,\n sample_ce_i = False,\n pipeline_quiet = False,\n event_valid = True,\n releasing = False,\n load_busy = False,\n rst_ni = True,\n event_qualification = True,\n fx_config_ready = True,\n usb_lifecycle = False,\n core_expression_ready = True,\n mode_pending = True,\n busy = False,\n mode_ready = True,\n allocated = 0,\n vec_busy = False,\n failed = False,\n fx_fault = False]"
+      },
+      {
+        "mutant": "busy_veto_removed",
+        "different_actual_broadcast": "sat",
+        "counterexample": "[kind = 2,\n mix_busy = False,\n mode_ready = True,\n sample_ce_i = False,\n TIMING_OPTIMIZED = False,\n pending = False,\n rate_commit_i = True,\n native_clear = False,\n history_clear_i = False,\n event_qualification = True,\n mode_pending = True,\n allocated = 0,\n load_busy = False,\n pipeline_quiet = True,\n fx_config_ready = True,\n a = 120,\n usb_lifecycle = False,\n releasing = False,\n core_expression_ready = True,\n rst_ni = True,\n busy = True,\n vec_busy = False,\n failed = False,\n event_valid = True,\n fx_fault = False]"
+      },
+      {
+        "runtime_effects": false,
+        "all_combinational_states": "unsat",
+        "reachability_assumptions": []
+      },
+      {
+        "runtime_effects": true,
+        "all_combinational_states": "unsat",
+        "reachability_assumptions": []
+      },
+      {
+        "mutant": "slot_barrier_removed",
+        "different_actual_core_ce": "sat",
+        "counterexample": "[effect_state = 0,\n REQUEST_DRIVEN_RENDER = False,\n effect_history_ready = True,\n effect_config_ready = True,\n barrier_busy = True,\n rate_commit_i = False,\n native_clear = False,\n effect_fault = False,\n failed = False,\n history_clear_i = False,\n core_sample_ready = True,\n vec_joined = False,\n rst_ni = True,\n vec_ready = True,\n usb_lifecycle = False,\n synth_joined = False,\n fx_config_ready = True,\n history_ready_o = True,\n pipeline_quiet = True,\n panic_accept = False,\n runtime_busy = False,\n pending = True,\n RUNTIME_RATE_ENABLE = True,\n sample_ce_i = False,\n runtime_quiescent = False,\n legacy_cancel_tail = 63]"
+      },
+      {
+        "mutant": "top_fault_veto_removed",
+        "different_actual_core_ce": "sat",
+        "counterexample": "[core_sample_ready = True,\n fx_config_ready = True,\n barrier_busy = False,\n rate_commit_i = False,\n native_clear = False,\n history_clear_i = False,\n effect_state = 0,\n effect_fault = True,\n failed = False,\n vec_joined = False,\n REQUEST_DRIVEN_RENDER = False,\n rst_ni = True,\n synth_joined = False,\n usb_lifecycle = False,\n effect_config_ready = True,\n history_ready_o = True,\n effect_history_ready = True,\n pipeline_quiet = True,\n runtime_busy = False,\n panic_accept = False,\n pending = True,\n vec_ready = True,\n RUNTIME_RATE_ENABLE = True,\n runtime_quiescent = False,\n legacy_cancel_tail = 63,\n sample_ce_i = False]"
+      },
+      {
+        "mutant": "top_clear_veto_removed",
+        "different_actual_core_ce": "sat",
+        "counterexample": "[effect_state = 0,\n REQUEST_DRIVEN_RENDER = False,\n barrier_busy = False,\n rate_commit_i = False,\n core_sample_ready = True,\n pipeline_quiet = True,\n history_clear_i = False,\n effect_fault = False,\n failed = False,\n pending = True,\n native_clear = True,\n vec_joined = False,\n effect_history_ready = True,\n rst_ni = True,\n usb_lifecycle = False,\n synth_joined = False,\n vec_ready = True,\n history_ready_o = True,\n effect_config_ready = True,\n fx_config_ready = True,\n panic_accept = False,\n runtime_busy = False,\n RUNTIME_RATE_ENABLE = True,\n runtime_quiescent = False,\n legacy_cancel_tail = 63,\n sample_ce_i = False]"
+      },
+      {
+        "mutant": "top_configuration_veto_removed",
+        "different_actual_core_ce": "sat",
+        "counterexample": "[rst_ni = True,\n effect_config_ready = True,\n barrier_busy = False,\n rate_commit_i = True,\n native_clear = False,\n effect_fault = False,\n failed = False,\n history_clear_i = False,\n vec_joined = False,\n history_ready_o = True,\n core_sample_ready = True,\n pending = True,\n effect_history_ready = True,\n REQUEST_DRIVEN_RENDER = False,\n vec_ready = True,\n synth_joined = False,\n effect_state = 0,\n fx_config_ready = True,\n usb_lifecycle = False,\n pipeline_quiet = True,\n panic_accept = False,\n runtime_busy = False,\n RUNTIME_RATE_ENABLE = True,\n runtime_quiescent = False,\n legacy_cancel_tail = 63,\n sample_ce_i = False]"
+      }
+    ],
+    "effect_configuration_four_state": {
+      "scope": "actual source procedural cone, finite four-state vectors; no cycle/physical timing claim",
+      "vectors": 81920,
+      "seven_inputs_all_four_value_combinations": 16384,
+      "seeded_additional_vectors": 65536,
+      "fixture_sha256": "4cc9a45a06cc4044b652f25c148855559a0970012c249501ca902d7c24459017",
+      "compile_log_sha256": "1636b917dbd162e83779f0d9b78fd187111d3ad81389644ca510252be6ed08e5",
+      "run_log_sha256": "d496663de978e6486146a6508cb6281f088b278ef8d98f32a97445a638158ff3"
+    }
+  },
+  "evidence": {
+    "proof": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/proof/verification.json",
+      "sha256": "e3d2867fe86040d8d063d4d8e1a9abb68bb17c8683f247cf729393a990161028"
+    },
+    "full-m-runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/full-m-runtime/verification.json",
+      "sha256": "aea00d79efae1328476773bbb7dd1d74b95cfdecd1b42d7e8780e9db5f632261"
+    },
+    "full-w-legacy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/full-w-legacy/verification.json",
+      "sha256": "f189ef2a2fcc7bcf9032b75adc24f83b8da4acfd29aaadcb4db7f664686f6175"
+    },
+    "event-config-proof": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/event-config-proof/verification.json",
+      "sha256": "475ed2a73267babb2de624ed8e7ce9904024440d44871d610f7487e8e10988ca"
+    },
+    "effect-slot-proof": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-core-ce-maintained-v2/effect-slot-proof/verification.json",
+      "sha256": "8d5381b1e0a7a815966ac12552c8aacbe0df7a5412ae2f0cb8dbb401d76959d3"
+    }
+  },
+  "reproduction": {
+    "runtime": "Python3 with z3-solver; Icarus and Verilator. On this host verified with existing /Users/sphenicidition/miniforge3/bin/python3; worktree login /usr/bin/python3 has no z3. No environment changed.",
+    "proof": "python3 -B sim/audio/prove_sample_admission_cofactor.py --output <new-output>/proof",
+    "M": "python3 -B sim/audio/run_runtime_render_service.py --project <explicit-prepared-Prj1> --output <new-output>/M --sample-admission-miter",
+    "W_legacy": "python3 -B sim/audio/run_event_config_contract.py --project <explicit-prepared-Prj1> --output <new-output>/W --sample-admission-miter",
+    "old_event": "python3 -B sim/audio/prove_event_config_cofactor.py --project <exact-M13-Prj1> --output <new-output>/event --negative-modules",
+    "old_effect": "python3 -B sim/audio/prove_effect_slot_admission.py --output <new-output>/effect"
+  },
+  "validation_scope": "Actual maintained source equation proof and finite four-state simulation plus complete real DSP/native-DDR-model service sequential miters. Historical prepared M15 supplies unchanged support modules, not the current event source. Public/selected private boundary temporal simulation is not a whole-module formal proof.",
+  "remaining_gates": [
+    "Root updates selected profile locks and runs accepted input-boundary regression.",
+    "Fresh candidate source/configuration identity, prepare, synthesis and actual live mapping inspection.",
+    "Routed timing, resources, full board audio/HDMI and separate SRAM/deployment acceptance."
+  ],
+  "build_prepare": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "resource_saving_claimed": false,
+  "timing_gain_claimed": false
+}

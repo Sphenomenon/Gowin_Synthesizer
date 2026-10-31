@@ -86,6 +86,9 @@ def compare_preserved(event,reference):
     # Reference is the exact event module actually consumed by M13. This is
     # deliberately broader than the new fence proof: real broadcast/state and
     # audio CE must remain byte-for-byte the same equations/procedural body.
+    if 'begin: native_sample_admission' in event:
+        from prove_sample_admission_cofactor import reference_view
+        event=reference_view(event)
     for name in ('core_ce','panic_accept','engine_clear','render_idle_o','parameter_commit'):
         assert equation(event,name)==equation(reference,name),'preserved '+name+' changed'
     pattern=r'begin: runtime_configuration\n(.*?)end else begin: fixed_configuration'
@@ -154,6 +157,9 @@ def main():
     sp=ROOT/'rtl/audio/workstation_audio_render_service.sv';ep=ROOT/'rtl/audio/gw138k_event_workstation.sv';ref=args.project.resolve()/'src/ae350/gw138k_event_workstation.sv'
     assert sha(ref)=='5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1','M13 reference identity drift'
     inputs=[sp,ep,ref,Path(__file__).resolve(),Path(__file__).with_name('prove_effect_slot_admission.py')]
+    if 'begin: native_sample_admission' in ep.read_text():
+        import prove_sample_admission_cofactor as admission
+        inputs.extend([Path(admission.__file__).resolve(),admission.REFERENCE])
     before={str(p):sha(p) for p in inputs};service=sp.read_text();event=ep.read_text()
     record=dict(schema=1,passed=False,input_sha256=before,scope='unrestricted binary actual service/event equations plus finite actual-source Icarus four-state checks; full module negatives are separate',hardware_accepted=False,physical_timing_verified=False,resource_saving_claimed=False)
     try:

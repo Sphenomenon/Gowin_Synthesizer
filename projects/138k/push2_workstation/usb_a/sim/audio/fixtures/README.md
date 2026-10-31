@@ -29,3 +29,23 @@ both rates. The complete Chorus test also compares all 12 public outputs and
 pipeline/history state at both clock edges, alongside the separate physical
 time/PCM oracle. Runners pin the original bytes and rename only the module in
 temporary outputs. It is simulation/proof-only, never a production input.
+
+`gw138k_event_workstation_before_sample_admission.sv` is the exact complete
+event workstation consumed by M14/M15 before native sample admission factoring,
+SHA256 `fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09`.
+`prove_sample_admission_cofactor.py` reverses only the approved combinational
+block to these immutable bytes and checks all sequential assignments. It proves
+the actual Boolean equations for synth/no-synth, compiles the actual event and
+sample-admission equations for four-state checks, and retains destructive fault,
+lifecycle and unknown-control cases. It requires Python with `z3-solver`, plus
+Icarus. This is a combinational proof and finite simulation, not whole-module
+formal equivalence.
+
+The existing `run_runtime_render_service.py` and `run_event_config_contract.py`
+accept `--sample-admission-miter` to compare the complete M and W/legacy service
+against this fixture, using the unchanged, byte-pinned render service. These
+modes preserve all public and listed private boundaries. An explicit prepared
+`--project` still supplies historical engine/IP/memory support; it does not
+select the old event source. Old event/effect cofactor proofs first verify the
+exact inverse above and then retain their earlier fixture and priority checks.
+Neither the fixture nor the inverse is used to generate production RTL.

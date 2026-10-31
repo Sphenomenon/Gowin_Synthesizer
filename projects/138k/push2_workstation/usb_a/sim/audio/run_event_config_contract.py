@@ -51,11 +51,19 @@ def wrapper(service):
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--project',type=Path,required=True);ap.add_argument('--output',type=Path,required=True)
     ap.add_argument('--variant',type=Path,help='New external test-only directory containing both complete service/event mutant sources; never edits the production tree')
+    ap.add_argument('--sample-admission-miter',action='store_true',
+                    help='Use immutable pre-sample-admission source and its exact inverse gate instead of the M13 reference')
     args=ap.parse_args()
     project=args.project.resolve();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     tb=Path(__file__).with_name('tb_event_config_service_contract.sv')
     sources=runtime_sources(project,tb);refs=[]
     service=ROOT/'rtl/audio/workstation_audio_render_service.sv'
+    references=REFERENCES;sample_contract=None;source_gate_inputs=[]
+    if args.sample_admission_miter:
+        import prove_sample_admission_cofactor as admission
+        sample_contract=admission.source_contract()
+        references=admission.SAMPLE_ADMISSION_REFERENCES
+        source_gate_inputs=[Path(admission.__file__).resolve()]
     if args.variant:
         variant=args.variant.resolve()
         assert not variant.is_relative_to(ROOT),'mutant source must be outside production inputs'
@@ -63,17 +71,19 @@ def main():
                  ('gw138k_event_workstation.sv','workstation_audio_render_service.sv')}
         assert all(p.is_file()for p in changes.values()),'complete mutant source pair missing'
         sources=[changes.get(p,p)for p in sources];service=changes[service]
-    for relative,module,expected in REFERENCES:
-        source=project/relative;assert sha(source)==expected,'exact consumed M13 reference drift: '+relative
+    for relative,module,expected in references:
+        source=project/relative;assert sha(source)==expected,'exact service/event reference drift: '+str(relative)
         text=source.read_text()
-        for _,name,_ in REFERENCES:text=re.sub(r'\b'+name+r'\b',name+'_before_event_config',text)
+        for _,name,_ in references:text=re.sub(r'\b'+name+r'\b',name+'_before_event_config',text)
         target=out/(module+'_before_event_config.sv');target.write_text(text);sources.append(target);refs.append(source)
-    target=out/'event_config_contract_miter.sv';target.write_text(wrapper(service.read_text()));sources.append(target)
+    target=out/'event_config_contract_miter.sv';miter=wrapper(service.read_text())
+    if args.sample_admission_miter:miter=miter.replace('M13/current','pre-sample/current')
+    target.write_text(miter);sources.append(target)
     memory_reference=ROOT/'sim/audio/tb_workstation_runtime_effects.sv';text=memory_reference.read_text();anchor='\nmodule tb_workstation_runtime_effects;';assert text.count(anchor)==1
     target=out/'ordered_posted_ddr_model.sv';target.write_text(text[:text.index(anchor)]);sources.append(target)
-    inputs=list(dict.fromkeys(sources+refs+[Path(__file__).resolve(),memory_reference,ROOT/'sim/audio/run_runtime_controlled.py',ROOT/'rtl/audio/runtime_spatial_room_preset.svh']))
+    inputs=list(dict.fromkeys(sources+refs+source_gate_inputs+[Path(__file__).resolve(),memory_reference,ROOT/'sim/audio/run_runtime_controlled.py',ROOT/'rtl/audio/runtime_spatial_room_preset.svh']))
     inputs+=sorted((project/'sim/data').rglob('*.mem'))+sorted((project/'sim/matlab/output').rglob('*.mem'))
-    hashes={str(p):sha(p)for p in inputs};result=dict(schema=1,stage='actual_M13_current_service_event_W_and_default_disabled_legacy_contract',passed=False,test_only_mutant_source_directory=str(args.variant.resolve())if args.variant else None,input_sha256=hashes,common_boundaries=list(COMMON),native_boundaries=list(NATIVE),hardware_tested=False,physical_timing_verified=False)
+    hashes={str(p):sha(p)for p in inputs};result=dict(schema=1,stage=('pre_sample_admission_current_service_event_W_and_default_disabled_legacy_contract'if args.sample_admission_miter else'actual_M13_current_service_event_W_and_default_disabled_legacy_contract'),passed=False,test_only_mutant_source_directory=str(args.variant.resolve())if args.variant else None,input_sha256=hashes,common_boundaries=list(COMMON),native_boundaries=list(NATIVE),sample_admission_source_contract=sample_contract,hardware_tested=False,physical_timing_verified=False)
     try:
         cmd=['verilator','--binary','--timing','-j','4','-Wno-fatal','--top-module','tb_event_config_service_contract','--Mdir',str(out/'obj'),'-I'+str(ROOT),'-I'+str(project),*map(str,sources)];result['compile_argv']=cmd
         with(out/'compile.log').open('w')as log:subprocess.run(cmd,cwd=project,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=300)

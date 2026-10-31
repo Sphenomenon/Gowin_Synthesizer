@@ -335,10 +335,30 @@ module gw138k_event_workstation #(
   // both configuration request inputs. Use stored effect-slot state here so
   // core_ce does not re-enter the complete configuration admission cone.
   // All other effect consumers retain the full fx_ready handshake.
-  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready &&
+  // Native request-driven rendering and dispatch reserve disjoint edges.
+  // For known render-eligible controls, dispatch and mode_valid are zero;
+  // runtime_quiescent already contains the oscillator's stored ready state.
+  // Keep current event/config acceptance out of this same-cycle sample CE.
+  // Unknown controls retain the complete original four-state expression.
+  generate if(REQUEST_DRIVEN_RENDER && RUNTIME_RATE_ENABLE && RUNTIME_EFFECTS_ENABLE)begin: native_sample_admission
+    always_comb begin
+      case({pending,sample_ce_i,runtime_config_busy})
+        3'b100,3'b010,3'b110: core_ce=vec_ready && fx_sample_slot_ready &&
+              !synth_joined && !vec_joined && !usb_lifecycle && !native_clear &&
+              !runtime_config_block && !runtime_fault && runtime_quiescent;
+        3'b000,3'b001,3'b011,3'b101,3'b111: core_ce=1'b0;
+        default: core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready &&
       (RUNTIME_EFFECTS_ENABLE ? fx_sample_slot_ready : fx_ready) &&
       !synth_joined && !vec_joined && !panic_accept && !native_clear && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
       (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
+      endcase
+    end
+  end else begin: original_sample_admission
+    assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready &&
+      (RUNTIME_EFFECTS_ENABLE ? fx_sample_slot_ready : fx_ready) &&
+      !synth_joined && !vec_joined && !panic_accept && !native_clear && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
+      (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
+  end endgenerate
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_configuration
     logic busy,is_config,pending_rate,committed_rate,failed;
     logic applied,history_done;
