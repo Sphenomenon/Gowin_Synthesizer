@@ -12,6 +12,7 @@ struct budget_pcm_slot budget_pcm[4];
 uint8_t budget_packet[A138_CLASSIC_ACL_BYTES];
 volatile uint32_t budget_operation,budget_link_epoch,budget_generation,budget_rate;
 volatile uint32_t budget_input_bytes,budget_status,budget_decode_status,budget_slot;
+volatile uint32_t budget_now_ms,budget_delay_tenths_ms;
 
 void a138_combined_budget_init(void) {
     a138_classic_init(&budget_classic);
@@ -21,6 +22,9 @@ void a138_combined_budget_init(void) {
 void a138_combined_budget_step(void) {
     uint32_t link=budget_link_epoch,generation=budget_generation;
     uint16_t bytes=(uint16_t)(budget_input_bytes % (sizeof budget_packet+1u));
+    /* Model a caller-owned monotonic clock input, never a measured delay.
+     * The real owner must invoke tick before other methods each service pass. */
+    budget_status=a138_classic_tick(&budget_classic,link,generation,budget_now_ms);
     switch(budget_operation) {
     case 1: budget_status=a138_classic_begin(&budget_classic,link,generation,1,276);break;
     case 2: budget_status=a138_classic_event(&budget_classic,link,generation,budget_packet,bytes);break;
@@ -34,6 +38,7 @@ void a138_combined_budget_step(void) {
     case 5: budget_status=a138_classic_audio_ready(&budget_classic,link,generation,budget_rate,1);break;
     case 6: budget_status=a138_classic_cancel(&budget_classic,link,generation);break;
     case 7: budget_decode_status=a138_sbc_cancel(&budget_decoder,budget_decoder.last_epoch);break;
+    case 8: budget_status=a138_classic_delay_update(&budget_classic,link,generation,budget_delay_tenths_ms);break;
     default: break;
     }
     if(a138_classic_frame_pop(&budget_classic,&budget_frame)==A138_CLASSIC_OK) {

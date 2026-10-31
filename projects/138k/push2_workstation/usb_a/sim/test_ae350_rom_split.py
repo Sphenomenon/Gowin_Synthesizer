@@ -56,12 +56,16 @@ class SplitTest(unittest.TestCase):
         self.assertGreater(r['rv32m_instructions'],0)
         self.assertLessEqual(r['maximum_lsb_error'],6)
         self.assertFalse(r['cache_enabled'])
+        self.assertTrue(r['delay_reporting']['first_accept'])
+        self.assertTrue(r['delay_reporting']['exact_deadline_fenced'])
+        self.assertTrue(r['delay_reporting']['late_accept_fenced'])
+        self.assertFalse(r['delay_reporting']['physical_delay_measured'])
 
     def test_actual_elf_and_capacity_reject_old_or_unsupported_size_and_tampering(self):
         capacity=self.record['capacity']
         self.assertGreater(capacity['binary_bytes'],65536)
         self.assertGreater(capacity['ilm_usable_remaining_bytes'],16000)
-        self.assertEqual(capacity['static_ram_span_bytes'],8448)
+        self.assertEqual(capacity['static_ram_span_bytes'],8480)
         self.assertEqual(capacity['stack_capacity_bytes'],16384)
         for size in (16384,65536,98304):
             with self.assertRaisesRegex(ValueError,'explicit 128'):
@@ -141,16 +145,61 @@ end endmodule'''
 
     def test_actual_long_calls_and_all_indirect_sites_are_closed(self):
         stack=self.graph['stack']
-        self.assertEqual(stack['conservative_peak_bytes'],1792)
-        self.assertEqual(len(stack['reachable_functions']),112)
-        self.assertEqual(len(stack['resolved_direct_long_calls']),35)
+        self.assertEqual(stack['conservative_peak_bytes'],1808)
+        self.assertEqual(len(stack['reachable_functions']),115)
+        self.assertEqual(len(stack['resolved_direct_long_calls']),38)
         self.assertEqual(self.graph['reviewed_reachable_JALR_sites'],77)
         self.assertEqual(len(self.tables),4)
-        with self.assertRaises(ValueError):self.callgraph(capacity=1791)
+        self.assertEqual(self.graph['linked_translation_units'],25)
+        self.assertEqual(self.graph['budget_adapter_bytes'],7852)
+        self.assertEqual(self.graph['rv32_abi_witness']['abi_classic'],2876)
+        self.assertEqual(self.graph['rv32_objects']['budget_classic']['bytes'],2876)
+        self.assertEqual(self.graph['rv32_abi_witness']['abi_pcm_slot'],528)
+        self.assertEqual(self.graph['rv32_objects']['budget_pcm']['bytes'],4*528)
+        self.assertTrue(self.graph['unlinked_witness_not_in_image'])
+        for name in ('a138_classic_tick','a138_classic_delay_update'):
+            self.assertIn(name,stack['reachable_functions'])
+            self.assertTrue(any(c['target']==name for c in stack['resolved_direct_long_calls']))
+        with self.assertRaises(ValueError):self.callgraph(capacity=1807)
         bad=copy.deepcopy(self.review);bad['sites']=bad['sites'][:-1]
         with self.assertRaises(ValueError):self.callgraph(review=bad)
         bad=copy.deepcopy(self.review);bad['disassembly_sha256']='0'*64
         with self.assertRaises(ValueError):self.callgraph(review=bad)
+
+    def test_actual_compiled_missing_new_hooks_and_wrong_abi_witness_are_rejected(self):
+        prefix=next(r['argv'][0] for r in self.record['commands'] if r['name']=='link').removesuffix('-gcc')
+        changes={
+            'missing-tick':('sim/fixtures/ae350_combined_budget_adapter.c',
+                'budget_status=a138_classic_tick(&budget_classic,link,generation,budget_now_ms);',
+                'budget_status=A138_CLASSIC_OK;'),
+            'missing-delay-update':('sim/fixtures/ae350_combined_budget_adapter.c',
+                'budget_status=a138_classic_delay_update(&budget_classic,link,generation,budget_delay_tenths_ms);',
+                'budget_status=A138_CLASSIC_OK;'),
+            'wrong-abi-witness':('sim/fixtures/ae350_budget_abi_witness.c',
+                'abi_classic[sizeof(struct a138_classic_service)]',
+                'abi_classic[sizeof(struct a138_classic_service)-4]')}
+        receipts=[]
+        for tag,(name,old,new) in changes.items():
+            with self.subTest(tag=tag):
+                source=self.directory/(tag+'-source');source.mkdir()
+                for name_input in self.record['input_sha256']:
+                    dest=source/name_input;dest.parent.mkdir(parents=True,exist_ok=True)
+                    shutil.copyfile(ROOT/name_input,dest)
+                path=source/name;text=path.read_text();self.assertEqual(text.count(old),1)
+                path.write_text(text.replace(old,new))
+                out=self.directory/(tag+'-build')
+                record=build(out,prefix,root=source)
+                self.assertEqual(record['link_returncode'],0)
+                symbols=symbol_values((out/'firmware.nm').read_text())
+                for hook in ('a138_classic_tick','a138_classic_delay_update'):
+                    self.assertIn(hook,symbols)  # Exported code alone is insufficient.
+                with self.assertRaises(AssertionError) as error:analyze(out,source)
+                expected='a138_classic_tick' if tag=='missing-tick' else 'a138_classic_delay_update' if tag=='missing-delay-update' else 'classic'
+                self.assertIn(expected,str(error.exception))
+                receipts.append(dict(tag=tag,actual_compile_and_link=True,link_returncode=0,
+                    audit_rejected=True,reason=str(error.exception),
+                    elf_sha256=hashlib.sha256((out/'firmware.elf').read_bytes()).hexdigest()))
+        (self.out/'negative_budget_verification.json').write_text(json.dumps(receipts,indent=2)+'\n')
 
     def test_long_call_instruction_words_and_compiler_graph_must_agree(self):
         long_calls=direct_long_calls(self.dis)
@@ -168,6 +217,29 @@ end endmodule'''
         self.assertEqual(len(matching),1)
         graph.write_text('\n'.join(l for l in lines if l not in matching)+'\n')
         with self.assertRaisesRegex(ValueError,'long call escapes'):self.callgraph(output=work)
+
+    def test_real_callgraph_and_equal_cost_witness_are_hash_seed_independent(self):
+        script='''import json,sys
+from pathlib import Path
+root,out=map(Path,sys.argv[1:])
+sys.path.insert(0,str(root))
+from tools.ae350_local_memory import call_chain_report
+graph=json.loads((out/'callgraph_verification.json').read_text())
+review=json.loads((out/'combined_indirect_review.json').read_text())
+result=call_chain_report(out,graph['compiler_stack_frames'],(out/'firmware.dis').read_text(),16384,
+    reviewed_indirect_calls=review,input_sha256=review['input_sha256'])
+print(json.dumps(result,sort_keys=True,separators=(',',':')))
+'''
+        results=[]
+        for seed in ('0','1','17','random'):
+            env=dict(os.environ,PYTHONHASHSEED=seed)
+            value=subprocess.check_output([sys.executable,'-c',script,str(ROOT),str(self.out)],env=env,text=True)
+            results.append(value)
+        self.assertTrue(all(value==results[0] for value in results))
+        self.assertEqual(json.loads(results[0]),self.graph['stack'])
+        (self.out/'hash_seed_verification.json').write_text(json.dumps(dict(seeds=['0','1','17','random'],
+            actual_complete_callgraph_identical=True,conservative_peak_bytes=1808,
+            result_sha256=hashlib.sha256(results[0].encode()).hexdigest()),indent=2)+'\n')
 
     def test_real_link_rejects_old_capacity_missing_decoder_and_overflows(self):
         original=next(row['argv'] for row in self.record['commands'] if row['name']=='link')

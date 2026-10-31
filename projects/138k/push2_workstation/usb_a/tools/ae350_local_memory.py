@@ -270,7 +270,9 @@ def call_chain_report(output, frames, disassembly, capacity, *, reviewed_indirec
         children = [visit(child) for child in edges.get(node, ())]
         visiting.remove(node)
         seen.add(node)
-        tail_bytes, chain = max(children, default=(0, []), key=lambda x: x[0])
+        # Equal-cost paths must not inherit set iteration order/hash seeds.
+        # Keep the conservative maximum and select one stable witness chain.
+        tail_bytes, chain = max(children, default=(0, []), key=lambda x: (x[0], tuple(x[1])))
         return frame['bytes'] + tail_bytes, [nodes[node], *chain]
 
     bound, longest = visit(roots[0])

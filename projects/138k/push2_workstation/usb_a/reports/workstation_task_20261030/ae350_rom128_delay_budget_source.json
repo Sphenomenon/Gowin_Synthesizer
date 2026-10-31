@@ -1,0 +1,439 @@
+{
+  "schema": 1,
+  "identity": "ae350-rom128-delay-budget-v1",
+  "scope": "unselected forced-live complete split-image budget and machine-code model; no transport/hardware closure",
+  "base_commit": "1ff14c3b701f9a251635da7fffc7a2a702902991",
+  "delay_author_commit": "3c90448f14a38e8453e3c794de39b22b3d9a5272",
+  "delay_local_dependency_commit": "7b2ef75502a46f24c57e7db67cbd6f034dc6dad4",
+  "capacity": {
+    "rom_capacity_bytes": 131072,
+    "binary_bytes": 83488,
+    "payload_bytes": 65136,
+    "padding_hole_bytes": 18352,
+    "upper_rom_code_bytes": 17952,
+    "cold_code_unallocated_bytes": 47584,
+    "hot_load_bank_bytes": 47184,
+    "hot_load_unallocated_bytes": 18352,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 46576,
+    "ilm_reserved_final_word_bytes": 4,
+    "ilm_usable_remaining_bytes": 18956,
+    "dlm_capacity_bytes": 65536,
+    "static_ram_span_bytes": 8480,
+    "ram_reserved_prefix_bytes": 256,
+    "stack_capacity_bytes": 16384,
+    "unallocated_dlm_bytes": 40416,
+    "heap_bytes": 0,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684357580,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684401136,
+      "__data_load_start": 2147530816,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__data_image_end": 2147530832,
+      "__rom_text_start": 2147549184,
+      "__rom_text_end": 2147567136,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686460448,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686460448,
+      "__heap_end": 2686460448,
+      "__image_end": 2147567136,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984,
+      "a138_classic_init": 2147561632,
+      "a138_classic_acl": 2147562248,
+      "ui_render_rows": 2147566884,
+      "a138_sbc_decode": 2684380456,
+      "OI_CODEC_SBC_DecodeFrame": 2684387900,
+      "a138_ble_business_firmware_init": 2684379904,
+      "a138_ble_business_firmware_pump": 2684380028
+    },
+    "elf_image_validation": {
+      "binary_reconstructed": true,
+      "sections": {
+        ".boot": {
+          "address": 2147483648,
+          "bytes": 592,
+          "sha256": "57477d24da72b569f7e73a41a009805539693e6d457536e000b2b67c429ab00f"
+        },
+        ".rom_text": {
+          "address": 2147549184,
+          "bytes": 17952,
+          "sha256": "1647b1166b72f5618947bd5fb5225b0da33a8a0a1ef334a4124d27b43100aad4"
+        },
+        ".text": {
+          "address": 2684354560,
+          "bytes": 44592,
+          "sha256": "3277c7aaa21376b9084a72e887a3b39deb5fe14a19ce459215be604360dd4356"
+        },
+        ".rodata": {
+          "address": 2684399152,
+          "bytes": 1984,
+          "sha256": "960f9c9551b56b1def12cbad503dff425d636058d31d90519bf96622c764705a"
+        },
+        ".data": {
+          "address": 2686451968,
+          "bytes": 16,
+          "sha256": "25d670162b3b3fe95ebc111a408f2db97a75068feb4aa70b56df9e9c82ba1946"
+        },
+        ".bss": {
+          "address": 2686451984,
+          "bytes": 8464,
+          "sha256": null
+        }
+      },
+      "segments": [
+        {
+          "run_address": 2147483648,
+          "load_address": 2147483648,
+          "file_bytes": 592,
+          "memory_bytes": 592,
+          "flags": 5
+        },
+        {
+          "run_address": 2684354560,
+          "load_address": 2147484240,
+          "file_bytes": 46576,
+          "memory_bytes": 46576,
+          "flags": 5
+        },
+        {
+          "run_address": 2686451968,
+          "load_address": 2147530816,
+          "file_bytes": 16,
+          "memory_bytes": 8480,
+          "flags": 6
+        },
+        {
+          "run_address": 2147549184,
+          "load_address": 2147549184,
+          "file_bytes": 17952,
+          "memory_bytes": 17952,
+          "flags": 5
+        }
+      ]
+    },
+    "selected_in_production": false,
+    "hardware_acceptance": false
+  },
+  "linked_translation_units": 25,
+  "unlinked_abi_witness": "ae350_budget_abi_witness.o",
+  "rv32_abi_witness": {
+    "abi_u32": 4,
+    "abi_frame": 252,
+    "abi_packet": 280,
+    "abi_tx": 296,
+    "abi_pcm_slot": 528,
+    "abi_decoder": 1996,
+    "abi_pcm": 2112,
+    "abi_classic": 2876
+  },
+  "rv32_objects": {
+    "budget_decode_status": {
+      "address": 2686455192,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_delay_tenths_ms": {
+      "address": 2686455196,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_generation": {
+      "address": 2686454592,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_input_bytes": {
+      "address": 2686454596,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_link_epoch": {
+      "address": 2686454588,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_now_ms": {
+      "address": 2686454600,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_operation": {
+      "address": 2686454608,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_rate": {
+      "address": 2686455188,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_slot": {
+      "address": 2686455452,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_status": {
+      "address": 2686454604,
+      "bytes": 4,
+      "kind": "B"
+    },
+    "budget_frame": {
+      "address": 2686455200,
+      "bytes": 252,
+      "kind": "B"
+    },
+    "budget_packet": {
+      "address": 2686454612,
+      "bytes": 280,
+      "kind": "B"
+    },
+    "budget_tx": {
+      "address": 2686454892,
+      "bytes": 296,
+      "kind": "B"
+    },
+    "budget_decoder": {
+      "address": 2686452592,
+      "bytes": 1996,
+      "kind": "B"
+    },
+    "budget_pcm": {
+      "address": 2686455456,
+      "bytes": 2112,
+      "kind": "B"
+    },
+    "budget_classic": {
+      "address": 2686457568,
+      "bytes": 2876,
+      "kind": "B"
+    }
+  },
+  "adapter_bytes": 7852,
+  "required_live_roots": [
+    "a138_combined_budget_init",
+    "a138_combined_budget_step",
+    "a138_classic_init",
+    "a138_classic_begin",
+    "a138_classic_cancel",
+    "a138_classic_event",
+    "a138_classic_acl",
+    "a138_classic_tick",
+    "a138_classic_delay_update",
+    "a138_classic_tx_peek",
+    "a138_classic_tx_result",
+    "a138_classic_audio_ready",
+    "a138_classic_frame_pop",
+    "a138_sbc_init",
+    "a138_sbc_begin",
+    "a138_sbc_cancel",
+    "a138_sbc_decode",
+    "OI_CODEC_SBC_DecodeFrame",
+    "OI_CODEC_SBC_DecoderReset",
+    "OI_SBC_ComputeBitAllocation",
+    "OI_SBC_ReadSamplesJoint4",
+    "OI_SBC_ReadSamplesJoint8",
+    "OI_SBC_SynthFrame_4SB",
+    "OI_SBC_SynthFrame_80",
+    "a138_ble_business_firmware_init",
+    "a138_ble_business_firmware_pump"
+  ],
+  "reachable_functions": 115,
+  "resolved_direct_long_calls": 38,
+  "reviewed_indirect_calls": 77,
+  "conservative_stack_bytes": 1808,
+  "observed_model_subset_stack_bytes": 336,
+  "delay_machine_code_verification": {
+    "first_report_hex": "05007000000d8c1234",
+    "second_report_hex": "05007000100d8c1235",
+    "first_accept": true,
+    "changed_value_after_accept": true,
+    "outstanding_update_busy": true,
+    "deadline_ms": 1200,
+    "exact_deadline_fenced": true,
+    "late_accept_fenced": true,
+    "independent_tick_max_gap_ms": 100,
+    "physical_delay_measured": false
+  },
+  "sbc_vectors": 11,
+  "sbc_scalar_samples": 3712,
+  "maximum_lsb_error": 5,
+  "rv32m_instructions": 60312,
+  "image_sha256": {
+    "firmware.elf": "6c4b8bfe19ab3ca51caa6863d46e7ea9168381eb3667668c8515c254e446f3da",
+    "firmware.bin": "053be0565c6bb923be9ebab2285e2f24ba3093d8cc93523acdd5ed17b756501c",
+    "boot.mem": "4eb21507d0685b4aba95c5a0d3670ded1e879db1aa4a1c8a8e84463a3b943a86"
+  },
+  "independent_rebuild_match": true,
+  "regression": {
+    "schema": 1,
+    "passed": true,
+    "suites": {
+      "split": {
+        "tests": 12,
+        "log_sha256": "112838b306de9e48da6e224c2b93a88babf3dd64e87208ea7ac9a3df54d8a909"
+      },
+      "local_memory": {
+        "tests": 12,
+        "log_sha256": "a979ce7318e09176d4fb2c4e10c19014348346249b0fae52e1e43d68c81695e1"
+      },
+      "boot_storage": {
+        "tests": 4,
+        "log_sha256": "18912ef9ccbc8eff402ea07c26b3d0ab0a3c2b3d95a116d0127287e3cca7b88f"
+      },
+      "callback": {
+        "tests": 4,
+        "log_sha256": "5cdb1ccf937806a93637e2e5619a31e094f2c80e9049755d73b047d07204dd81"
+      },
+      "production_selection": {
+        "tests": 17,
+        "log_sha256": "121a0a304853e53dbdd240f269ea5dbb1179ca5e2f8f066ce9bcc9a04c7e0dd3"
+      }
+    },
+    "distinct_tests": 49,
+    "negative_budget": [
+      {
+        "tag": "missing-tick",
+        "actual_compile_and_link": true,
+        "link_returncode": 0,
+        "audit_rejected": true,
+        "reason": "{'a138_classic_tick'}",
+        "elf_sha256": "c005fc7b371802edd60a8e6d5fbdeb8bcd189cef0ffe96d990336e33ecbd471d"
+      },
+      {
+        "tag": "missing-delay-update",
+        "actual_compile_and_link": true,
+        "link_returncode": 0,
+        "audit_rejected": true,
+        "reason": "{'a138_classic_delay_update'}",
+        "elf_sha256": "b6fbb10482bd115219e62d8eaeb3b11b6fcf6f753804d8c1d3eb490351554bf7"
+      },
+      {
+        "tag": "wrong-abi-witness",
+        "actual_compile_and_link": true,
+        "link_returncode": 0,
+        "audit_rejected": true,
+        "reason": "classic",
+        "elf_sha256": "6c4b8bfe19ab3ca51caa6863d46e7ea9168381eb3667668c8515c254e446f3da"
+      }
+    ],
+    "hash_seeds": {
+      "seeds": [
+        "0",
+        "1",
+        "17",
+        "random"
+      ],
+      "actual_complete_callgraph_identical": true,
+      "conservative_peak_bytes": 1808,
+      "result_sha256": "965c2d072b84ea1a6694cb67e2512b75aceb47a407b7830e594fc4be06904d19"
+    },
+    "image_sha256": {
+      "firmware.elf": "6c4b8bfe19ab3ca51caa6863d46e7ea9168381eb3667668c8515c254e446f3da",
+      "firmware.bin": "053be0565c6bb923be9ebab2285e2f24ba3093d8cc93523acdd5ed17b756501c",
+      "boot.mem": "4eb21507d0685b4aba95c5a0d3670ded1e879db1aa4a1c8a8e84463a3b943a86"
+    },
+    "independent_rebuild_match": true
+  },
+  "hash_seed_tie_break": "maximum (stack bytes, lexicographic chain tuple); all edges and costs retained",
+  "input_sha256": {
+    "firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
+    "firmware/ae350/ui_main.c": "dcbbb89209eaa43ca4cf7a2eb1ac7dcb04853f03c73b2c46263bb5c1b4cb4573",
+    "firmware/ae350/ui_render.c": "4e5fbd9a358f5e32ea9587b18675b169d5fc37f97df6e53c47660a985832f7cd",
+    "firmware/ae350/ui_runtime.c": "55d5e3e007b1b623efeb17743916bd16145500f5b46d2976917911ea8958bf97",
+    "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+    "firmware/ae350/audio_services.h": "d16e5d7eddbf337f15e119aeee8c7c958f36cf4d58bd479506f05ac3a4e75430",
+    "firmware/ae350/firmware_checks.h": "6e36150cb6b77bc51f515fed4b707ff63d876beb28e031b57a2bce2ff2e4910b",
+    "firmware/ae350/ui_model.h": "444e9e0c201ff2826af48e2b8165fb256434b88ebe7bcb62d6f0ec4e536b8ce5",
+    "firmware/ae350/ui_render.h": "72dcc31cf9457ad9d6a7e2f250e9715bf6b0168fdd7830d9f0b9547cbc38ae67",
+    "firmware/ae350/audio_clock_service.h": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551",
+    "firmware/ae350/boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+    "firmware/ae350/provenance.json": "3c828231327ff20d89597d9c1d320810403a15f57eb3788ec3c34e954e3c1458",
+    "firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+    "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "firmware/ae350/ble_business_owner.c": "a2403e8691d70b990ab2e5b97f045f2a7d3abc0d5bd8fc82108e365009a426a7",
+    "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "firmware/ae350/ble_business_owner.h": "c4c87ae7bb23f3d27871dfc5c00fd2e9141f94459135826259bb7ad7858d2f87",
+    "firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
+    "firmware/ae350/boot_ilm_dlm.ld": "214011f97811e6e359b068b3d5c758e2297bead1a6acdd31538c9d3f6caa58dc",
+    "firmware/ae350/classic_service.c": "528bebd91596e05f7ac227e84e7940456fcb4b66b692bb1a792b387fd9b3d921",
+    "firmware/ae350/classic_service.h": "af14f6ffe3949fe9bf8f5ad92b7c32b3ee4e850c22dc4b838e02c9001c6245e8",
+    "firmware/ae350/sbc_decoder_service.c": "54c9c6d671cd2050c6aba4158037fa17cc6c870887919b3b28fd681dbace2d0d",
+    "firmware/ae350/sbc_decoder_service.h": "90bb312346c9976e9a1ca30221ca2dd637887592ebeb3c7e1b638c67ecfeea8a",
+    "tools/prepare_ae350_sbc.py": "430571e1c36696b220283c17fea88c249175f01a0b14b4af1606ce574d512def",
+    "firmware/ae350/third_party/sbc_oi/upstream_manifest.json": "4d41d75700a76dc92cb60f2e35191ffb0d8bf970b2a0a18338fc789f28ea71fe",
+    "firmware/ae350/third_party/sbc_oi/LICENSE.Apache-2.0": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "firmware/ae350/third_party/sbc_oi/a138_sbc_arithmetic.h": "8ecdf3a6be3f52f87ef30af8f9dc05a134cc162e32c2e462bc89888c3ad17422",
+    "firmware/ae350/third_party/sbc_oi/README.md": "944e3b7fd5e30c403014020a43eaae37df41899e5f336f369bc2f7bf772ccf94",
+    "firmware/ae350/third_party/sbc_oi/upstream/LICENSE": "fcfd08d120e2558dded978b780df4404a221b94372f7d2aa407b7ada7c54ff07",
+    "firmware/ae350/third_party/sbc_oi/upstream/README.md": "fc4a3e0140f3ef139b2c71711497ab30ef8e48c171984988f34b4f9cf58aaca0",
+    "firmware/ae350/third_party/sbc_oi/upstream/SCR.txt": "438c8687d8ba0a0a5e79db8d0740fdf066c01761d5d1e02ac15fde3e4e118e86",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_time.h": "34d8191ffb70ba0d1037d2a20ec9090caf699bca069ce1654dbddc6907ad49e9",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bitstream.h": "4791457695031c423cb0efb816c8f11ce3ce6415f2b383eb77f9abae968da7a2",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_osinterface.h": "5c3d463ca1943ab801cb3617e8366559adda7ec2219e93680e9b5b81d5b41d87",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc.h": "5df696eca911afd3a094e99831f2b235f364b5c19157e7c65df1243373f5358f",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_status.h": "5121db37b90e42a7ab4a092b0dbdac894019a02e01961ca4df515b0cd1542075",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_codec_sbc_private.h": "a8ba08775b5b31692fd96f906f9714b6aa569b71e16dee84a7fbcfd4c21491df",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_cpu_dep.h": "51f0999baa4561a894ce6f8b85074b88b9286946d1e509344c201230ef0686a0",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_utils.h": "57d01d2df48d159d25fb04b54e62fc318d4e1ccebca8d0af00dd4d250133af92",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_assert.h": "37e3e1e920dc49461774d940275f806d95e4b0e6d6e9b948cfc527133f14c41c",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_stddefs.h": "511e00ed895ae5bf87ad2f6bddbf474afc9e36e7bf64b71a75e5d1500d2e5049",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_string.h": "c4f0e6192f53f718bdb24bb68977c95097332148ce2eb639c49c13c7a9ea3ef6",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_bt_spec.h": "66ed61ed85aee8eb3f64bef738e6f77813ec6cb9cec997173ed57b7cfa045ac0",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_modules.h": "994bb8580a306e3c4e5f958ceed8e19f6ad623957f6bdd6d6eff23188a398d18",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/include/oi_common.h": "34e69e3dcdbe106de0c5ff96c02b448f231659fb81e77968b260e7b3fc22a126",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/oi_codec_version.c": "9ba9653eb145853dc8d937a164a25808478dd59a8b5747ba7cc9cdd7a1cae716",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitstream-decode.c": "3336d994518fe97c2d240612747800b2bf8423fa4d15c483b02ed3129d32090e",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-dct8.c": "1aa444502c50a62a66475e860637044043166a8e55108c20d25cc17feb784073",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing.c": "da2f951e4b0722ebec4a0b948e2942e6fdda9f8dcba0e09907060efea3202384",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-sbc.c": "fd44f3d8ce667df2c7c39aa0fd1c5ca597c5f0ad953d4ccf63ff5a7d6a493aca",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-private.c": "60d456fddd3839b7aa7f883213205d1be396c94690c4ebeaf8bb7f8784978c8a",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc-sbc.c": "38ff6d676669f61c283273a8403727b9ecf44411628c41cbbd2fe243881ed52e",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-8-generated.c": "236d897cbce62cb62c76cfd8fe5b3300b303a49be95fab6eb8b2ba681ac86be8",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/dequant.c": "3bdd22415b311138891b6cf651dc952c3c8cdda13dd62580114a5d193e149e47",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/decoder-oina.c": "58b8467da96333d79592478fb9e7bef57400c75ba9aead14cff9258079fe4fb5",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/alloc.c": "86b2b5e653d8c85cda23a9eeb8b37f2bfcbf01e7784c3ec071f63eeb1a2df6ca",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/synthesis-sbc.c": "82bb804881385d1ca10ac15e5ac76cdaef7efc68495dab430b78745538dadb16",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/framing-sbc.c": "f5efa3367155338e3c8088b23c93b6977a0dc6c51377a9c6cb705c408c839ef5",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/bitalloc.c": "6b918bedb1ad766039fe4c87c8091a3578540481bc3f72c0e8a893430cc9ab4a",
+    "firmware/ae350/third_party/sbc_oi/upstream/decoder/srce/readsamplesjoint.inc": "47ea8500e8191e43e47c00f1a1c2a2febb6839252b27e3f5410aacdcd3a6170a",
+    "firmware/ae350/boot_ilm_dlm_rom128_split.ld": "a1a3715273be191751dbd0cb6276b52ea1c9b017506fd880252b2724de656146",
+    "sim/fixtures/ae350_combined_budget_adapter.c": "88a19838deb83813120fa639d281e0b97a5404b0780ca31d5c873964d1fbfa2e",
+    "sim/fixtures/ae350_budget_abi_witness.c": "48a5b5793b582a732a831c603f5406a3466a8a5cbe9c07f87381cafb8aa24054",
+    "sim/fixtures/ae350_sbc_reference.json": "68beafb6eb44cb59562fb3856e29946d107f5aad955414b7df109735495a8917",
+    "sim/ae350_rv32_startup.py": "fe3770b5022dadc918e9b7fb3e5eae12ef8d3a11e77464e1dc7ca076d7ff7878",
+    "sim/ae350_probe_rv32.py": "05f12a07d6521b1e20e0fa0ddb04c1c9ebd0046816124cc589e35f688ea221e0",
+    "sim/ae350_split_rv32.py": "1fcdada3331b99a52c6a24580cdf24abd13901912f42c7d80017687bf85fee5b",
+    "sim/ae350_rom_split_checks.py": "e5b935cb7f503f6c6aa0e77ced0061e767b8ff12199d09678643c765ac880a87",
+    "sim/test_ae350_rom_split.py": "08a19852d9015a32b3e17fd39d155868e74667dea82edda3a9515356b8a93bd2",
+    "tools/ae350_local_memory.py": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b",
+    "tools/ae350_rom_split.py": "f90f807327b0613a1b4a5fbb8a6536edc80e09e68099405a405ec8fdabb34fe8",
+    "tools/ae350_rom_split_audit.py": "11ca9ab7b11b2e974c0f0615fe2b428e5b824a0e71181dedf4a857de4e6149be",
+    "tools/experiment_ae350_rom_split.py": "bf9cb062e1586c9be85f07675aa9099a596d188c2bfe415ad2dadd44b68928ea",
+    "tools/stage_ae350_firmware.py": "dd6152ec121a17eef8a06042d0595806aa23ef7437b109d7859abf42ebdab28c",
+    "tools/stage_usb_firmware.py": "3aeb1f4e791b5a256fec71d181a18d91b367d0e1583030d504bc7cc8e104c8cb",
+    "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+    "tools/ae350_ble_business_indirect_review.json": "984660e286eca1dc2c01f384bd2211b5056caf6f6aa30927bd74696da9b3ebfa"
+  },
+  "cache_enabled": false,
+  "ILM_DLM_geometry_changed": false,
+  "selected_in_production": false,
+  "synthesis_performed": false,
+  "hardware_operated": false,
+  "runtime_transport_closed": false
+}

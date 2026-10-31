@@ -85,6 +85,7 @@ def analyze(output,root):
     stack=call_chain_report(out,frames,dis,16384,reviewed_indirect_calls=review,input_sha256=inputs)
     required=['a138_combined_budget_init','a138_combined_budget_step','a138_classic_init',
         'a138_classic_begin','a138_classic_cancel','a138_classic_event','a138_classic_acl',
+        'a138_classic_tick','a138_classic_delay_update',
         'a138_classic_tx_peek','a138_classic_tx_result','a138_classic_audio_ready',
         'a138_classic_frame_pop','a138_sbc_init','a138_sbc_begin','a138_sbc_cancel','a138_sbc_decode',
         'OI_CODEC_SBC_DecodeFrame','OI_CODEC_SBC_DecoderReset','OI_SBC_ComputeBitAllocation',
@@ -98,17 +99,31 @@ def analyze(output,root):
         a=line.split()
         if len(a)==4 and a[3].startswith('budget_'):
             objects[a[3]]=dict(address=int(a[0],16),bytes=int(a[1],16),kind=a[2])
-    assert objects['budget_classic']['bytes']==2848
-    assert objects['budget_decoder']['bytes']==1996
-    assert objects['budget_frame']['bytes']==252 and objects['budget_tx']['bytes']==296
-    assert objects['budget_packet']['bytes']==280 and objects['budget_pcm']['bytes']==2112
-    assert objects['budget_pcm']['bytes']//4==528
-    assert sum(x['bytes'] for x in objects.values())==7816
+    # Compare the actual linked objects with a separately compiled, unlinked
+    # C sizeof witness from the same public headers and RV32 compiler.
+    witness={}
+    for line in (out/'abi-witness-size.log').read_text().splitlines():
+        row=line.split()
+        if len(row)==4:witness[row[3]]=int(row[1],16)
+    assert not re.search(r'\babi_\w+\s*$', (out/'firmware.nm').read_text(), re.M), 'ABI witness leaked into image'
+    buffers=('classic','decoder','frame','tx','packet','pcm')
+    controls=('operation','link_epoch','generation','rate','input_bytes','status',
+              'decode_status','slot','now_ms','delay_tenths_ms')
+    assert set(objects)=={'budget_'+n for n in (*buffers,*controls)}
+    assert set(witness)=={'abi_'+n for n in (*buffers,'pcm_slot','u32')}
+    for name in buffers:
+        assert objects['budget_'+name]['bytes']==witness['abi_'+name],name
+    for name in controls:
+        assert objects['budget_'+name]['bytes']==witness['abi_u32'],name
+    assert objects['budget_pcm']['bytes']==4*witness['abi_pcm_slot']
+    assert d['linked_translation_units']==25 and len(d['compiled_sources'])==25
+    assert d['unlinked_abi_witness']=='ae350_budget_abi_witness.o'
     result=dict(schema=1,verified=True,scope='retained ROM128 split executable and conservative service callgraph only',
         capacity=d['capacity'],stack=stack,required_live_roots=required,rv32_objects=objects,
         linked_undefined_symbols=0,all_nonreturn_JALR_sites=len(all_sites),reviewed_reachable_JALR_sites=len(sites),
         compiler_stack_frames=frames,original_service_callback_sites=len(legacy['sites']),
         budget_adapter_bytes=sum(x['bytes'] for x in objects.values()),
+        rv32_abi_witness=witness,linked_translation_units=25,unlinked_witness_not_in_image=True,
         source_identity=hashlib.sha256(json.dumps(inputs,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
         input_sha256=inputs,elf_sha256=sha(out/'firmware.elf'),binary_sha256=sha(out/'firmware.bin'),
         cache_policy='unchanged cache-off loader; no cache enable instructions added',

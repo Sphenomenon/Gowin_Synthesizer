@@ -54,6 +54,68 @@ def run_model_checks(output, root):
     # observed region sequence, not only linked addresses or source intent.
     regions = [t['region'] for t in cpu.region_transitions]
     assert any(regions[i:i+3] == ['ROM_COLD','ILM','ROM_COLD'] for i in range(len(regions)-2))
+    # Execute the newly linked Delay Reporting code from the upper ROM. The
+    # oracle is wire bytes/results, without depending on C structure offsets.
+    def pdu(cid, payload, fragment=7):
+        data = struct.pack('<HH', len(payload), cid) + payload
+        for offset in range(0, len(data), fragment):
+            part = data[offset:offset+fragment]
+            packet = struct.pack('<HH', 0x1023 if offset else 0x2023, len(part)) + part
+            write_bytes(cpu, s['budget_packet'], packet)
+            assert call('a138_classic_acl', s['budget_classic'], 1, 9,
+                        s['budget_packet'], len(packet)) == 0
+    def take_one():
+        data = bytearray()
+        while not data or len(data) < int.from_bytes(data[:2], 'little')+4:
+            assert call('a138_classic_tx_peek', s['budget_classic'], tx) == 0
+            token, count = cpu.read(tx+8), cpu.read(tx+12, 2)
+            part = read_bytes(cpu, tx+14, count)
+            assert count >= 5 and part[:2] == struct.pack('<H', 0x1023 if data else 0x2023)
+            assert int.from_bytes(part[2:4], 'little') == count-4
+            data.extend(part[4:])
+            assert call('a138_classic_tx_result', s['budget_classic'], 1, 9, token, 0) == 0
+        assert len(data) == int.from_bytes(data[:2], 'little')+4
+        return bytes(data)
+    call('a138_classic_init', s['budget_classic'])
+    assert call('a138_classic_begin', s['budget_classic'], 1, 9, 0x23, 276) == 0
+    pdu(1, struct.pack('<BBHHH', 2, 50, 4, 25, 0x70))
+    connected = take_one()
+    assert len(connected) == 28 and connected[4:6] == bytes([3,50])
+    assert connected[8:12] == struct.pack('<HH', 0x41, 0x70)
+    config_id = connected[17]
+    pdu(1, struct.pack('<BBHHHBBH', 4, 51, 8, 0x41, 0, 1, 2, 672))
+    configured = take_one()
+    assert len(configured) == 14 and configured[4:6] == bytes([5,51])
+    pdu(1, struct.pack('<BBHHHH', 5, config_id, 6, 0x41, 0, 0))
+    assert call('a138_classic_tx_peek', s['budget_classic'], tx) == 8
+    assert call('a138_classic_tick', s['budget_classic'], 1, 9, 100) == 0
+    assert call('a138_classic_delay_update', s['budget_classic'], 1, 9, 0x1234) == 0
+    config = bytes([4,0x8c,1,0,7,6,0,0,0x21,0x15,2,53,8,0])
+    pdu(0x41, bytes([0x20,3])+config)
+    assert take_one() == struct.pack('<HHBB', 2, 0x70, 0x22, 3)
+    first_report = take_one()
+    assert first_report == struct.pack('<HH', 5, 0x70)+bytes([0,13,0x8c,0x12,0x34])
+    assert call('a138_classic_delay_update', s['budget_classic'], 1, 9, 2) == 4
+    pdu(0x41, bytes([2,13]))  # First report's actual transaction label0 Accept.
+    assert call('a138_classic_tx_peek', s['budget_classic'], tx) == 8
+    assert call('a138_classic_tick', s['budget_classic'], 1, 9, 200) == 0
+    assert call('a138_classic_delay_update', s['budget_classic'], 1, 9, 0x1235) == 0
+    second_report = take_one()
+    assert second_report == struct.pack('<HH', 5, 0x70)+bytes([0x10,13,0x8c,0x12,0x35])
+    # Model the independent owner calling every100ms, including the exact
+    # second report deadline. A late success cannot defeat the timeout fence.
+    for now in range(300, 1200, 100):
+        assert call('a138_classic_tick', s['budget_classic'], 1, 9, now) == 0
+    assert call('a138_classic_tick', s['budget_classic'], 1, 9, 1199) == 0
+    assert call('a138_classic_tick', s['budget_classic'], 1, 9, 1200) == 7
+    late = struct.pack('<HHHHBB', 0x2023, 6, 2, 0x41, 0x12, 13)
+    write_bytes(cpu, s['budget_packet'], late)
+    assert call('a138_classic_acl', s['budget_classic'], 1, 9, s['budget_packet'], len(late)) == 7
+    delay = dict(first_report_hex=first_report.hex(), second_report_hex=second_report.hex(),
+                 first_accept=True, changed_value_after_accept=True,
+                 outstanding_update_busy=True, deadline_ms=1200,
+                 exact_deadline_fenced=True, late_accept_fenced=True,
+                 independent_tick_max_gap_ms=100, physical_delay_measured=False)
     vectors = []
     cases = json.loads((root/'sim/fixtures/ae350_sbc_reference.json').read_text())['cases']
     for epoch, case in enumerate(cases, 1):
@@ -95,7 +157,7 @@ def run_model_checks(output, root):
             frames=2, scalar_samples=2*samples, maximum_lsb_error=max(errors),
             instructions=cpu.steps-start, pcm_sha256=hashlib.sha256(pcm).hexdigest()))
     receipt = dict(schema=1, passed=True, startup_instructions=startup_steps,
-        actual_cold_protocol_response_hex=response.hex(), calls=calls,
+        actual_cold_protocol_response_hex=response.hex(), delay_reporting=delay, calls=calls,
         upper_rom_fetches=cpu.upper_rom_fetches, region_transitions=cpu.region_transitions,
         rv32m_instructions=cpu.m_instructions, vectors=vectors,
         scalar_samples=sum(v['scalar_samples'] for v in vectors),

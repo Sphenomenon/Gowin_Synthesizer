@@ -31,8 +31,10 @@ def build(output,prefix=None,root=ROOT):
     shutil.copyfile(root/'sim/fixtures/ae350_combined_budget_adapter.c',out/'combined_budget_adapter.c')
     for name in ['firmware/ae350/boot_ilm_dlm_rom128_split.ld',
             'sim/fixtures/ae350_combined_budget_adapter.c',
+            'sim/fixtures/ae350_budget_abi_witness.c',
             'sim/fixtures/ae350_sbc_reference.json', 'sim/ae350_rv32_startup.py',
             'sim/ae350_probe_rv32.py', 'sim/ae350_split_rv32.py', 'sim/ae350_rom_split_checks.py',
+            'sim/test_ae350_rom_split.py',
             'tools/ae350_local_memory.py', 'tools/ae350_rom_split.py',
             'tools/ae350_rom_split_audit.py', 'tools/experiment_ae350_rom_split.py',
             'tools/stage_ae350_firmware.py', 'tools/stage_usb_firmware.py',
@@ -72,6 +74,10 @@ def build(output,prefix=None,root=ROOT):
         target=out/(path.stem+'.o');assert target not in objects
         run([prefix+'-gcc',*flags,'-c',path,'-o',target],'compile-'+path.stem)
         objects.append(target)
+    shutil.copyfile(root/'sim/fixtures/ae350_budget_abi_witness.c',out/'ae350_budget_abi_witness.c')
+    run([prefix+'-gcc',*flags,'-c',out/'ae350_budget_abi_witness.c','-o',out/'ae350_budget_abi_witness.o'],
+        'compile-unlinked-abi-witness')
+    run([prefix+'-nm','-S','--size-sort',out/'ae350_budget_abi_witness.o'],'abi-witness-size')
     common=[prefix+'-gcc','-march=rv32im_zicsr_zifencei','-mabi=ilp32','-msmall-data-limit=0',
         '-nostdlib','-nostartfiles','-Wl,--build-id=none,--defsym=__boot_rom_bytes=131072,-Map=firmware.map,-T,boot_ilm_dlm_rom128_split.ld',
         *objects,'-lgcc','-o','firmware.elf']
@@ -79,6 +85,7 @@ def build(output,prefix=None,root=ROOT):
     record=dict(schema=1,scope='isolated ROM128 split executable placement experiment; not production/runtime closure',
         input_sha256=inputs,overlay=overlay,commands=commands,compiled_sources=[str(p.relative_to(out)) for p in sources],
         no_gc_sections=True,no_LTO=True,selected_in_production=False,hardware_operated=False,cache_enabled=False,
+        linked_translation_units=len(sources),unlinked_abi_witness='ae350_budget_abi_witness.o',
         link_returncode=linked.returncode,tool_sha256={str(Path(prefix+'-'+x)):sha(prefix+'-'+x) for x in ['gcc','objcopy','size','nm','objdump']})
     if linked.returncode==0:
         run([prefix+'-objcopy','-O','binary','firmware.elf','firmware.bin'],'objcopy')
