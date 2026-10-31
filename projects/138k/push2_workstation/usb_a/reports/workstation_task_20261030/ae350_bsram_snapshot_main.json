@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "scope": "main source integration and actual synthesis structure of explicit bsram4 diagnostic probe; no physical acceptance",
+  "source_commits": [
+    "079e92f",
+    "6f36177",
+    "3c2148e",
+    "72959b1"
+  ],
+  "author_source_commits": [
+    "2690a6c",
+    "8a30f5a",
+    "b3b4877",
+    "e421443"
+  ],
+  "profile_lock_change": "Only build.py CLI mode hash refreshed in all eight profiles",
+  "source_snapshots": 22,
+  "new_main_prepare": {
+    "manifest_sha256": "f0705ce43e14d9cf00072d3c4e42d4b50aba64678a6085c274eed35f4a5f7e76",
+    "verified_inputs": 44,
+    "compiled_sources": 9,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "main_prepare_UserCode": "C21031D1",
+  "physical_D0_unchanged": true,
+  "actual_VG": {
+    "CF": {
+      "registered_bits": 704,
+      "clock": "clk_50m",
+      "snapshot_words": 64,
+      "gao_mode": "bsram4",
+      "physical_timing_verified": false,
+      "external_uart_reception_verified": false,
+      "snapshot_ram": {
+        "native_sdp_lanes": 8,
+        "lane_bits": 16,
+        "read_bandwidth_bits_per_cycle": 128,
+        "held_pclk_bits": 1858,
+        "held_clock": "ram_clk",
+        "reference_registers": 1292,
+        "reference_register_limit": 1600,
+        "cache_bits": {
+          "prefetch": 384,
+          "prepared_page0": 512,
+          "cache_data": 32
+        },
+        "ram_read_bits_reaching_gao": 128,
+        "redundant_snapshot_ff_names": [],
+        "held_bits_reaching_ram": 1858,
+        "ram_read_bits_reaching_uart": 128,
+        "physical_bsram_count_verified": false,
+        "physical_timing_verified": false
+      }
+    },
+    "D0": {
+      "registered_bits": 704,
+      "clock": "clk_50m",
+      "snapshot_words": 64,
+      "gao_mode": "bsram4",
+      "physical_timing_verified": false,
+      "external_uart_reception_verified": false,
+      "snapshot_ram": {
+        "native_sdp_lanes": 8,
+        "lane_bits": 16,
+        "read_bandwidth_bits_per_cycle": 128,
+        "held_pclk_bits": 1858,
+        "held_clock": "ram_clk",
+        "reference_registers": 1292,
+        "reference_register_limit": 1600,
+        "cache_bits": {
+          "prefetch": 384,
+          "prepared_page0": 512,
+          "cache_data": 32
+        },
+        "ram_read_bits_reaching_gao": 128,
+        "redundant_snapshot_ff_names": [],
+        "held_bits_reaching_ram": 1858,
+        "ram_read_bits_reaching_uart": 128,
+        "physical_bsram_count_verified": false,
+        "physical_timing_verified": false
+      }
+    }
+  },
+  "actual_VG_mutants_reverified": 10,
+  "tests": {
+    "rtl": 9,
+    "audit": 3,
+    "accepted": 17,
+    "banked": 9,
+    "probe": 9,
+    "fullgao": 5
+  },
+  "classic_candidate": "custom138k-workstation-classic-runtime-v1-647217d6dfc7b7b9",
+  "classic_staged": 636,
+  "classic_enabled": 283,
+  "classic_staged_byte_identical": true,
+  "physical_timing_verified": false,
+  "hardware_accepted": false,
+  "hardware_operated": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "limitations": [
+    "D1 is prepare only and is not queued for physical implementation.",
+    "D0 physical implementation is separately running immutable b3b4877 inputs; later main helper/audit changes are not retroactively compiled into it.",
+    "CF synthesis passed but SDC TA2003 failed before placement. D0 corrects only exact RAM endpoint spelling and identity while preserving 20ns/hold budgets.",
+    "Actual VG proves synchronous native RAM and connectivity, not physical BSRAM accounting, routed CDC/STA or UART/GAO reception."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/bsram-snapshot-main-parent-v1",
+  "seal_sha256": "6406f1566d010c218acfa9816b031e5d0f055e3de6c28bb070f9d9aa0a7c127c",
+  "external_files": 1176
+}
