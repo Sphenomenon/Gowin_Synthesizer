@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "maintained_HCI_identity_expression_source_verification",
+  "baseline": {
+    "candidate": "W10",
+    "build_id": "D2103116",
+    "physical_bsram": 293,
+    "clk50_reported_paths": 100,
+    "clk50_reported_negative_paths": 100,
+    "complete_violation_count_claimed": false,
+    "worst_path": {
+      "raw_path_number": 1394,
+      "raw_tr_lines": [
+        135505,
+        135643
+      ],
+      "from": "u_bluetooth/u_core/owner/decoder/handle_o_8_s0/Q",
+      "to": "u_bluetooth/u_core/owner/host_rx/lease_handles_lease_handles_0_5_s3/WRE",
+      "clock": "clk_50m",
+      "relation_ns": 20.0,
+      "slack_ns": -3.205,
+      "data_delay_ns": 23.098,
+      "cell_ns": 7.437,
+      "route_ns": 15.355,
+      "clock_to_q_ns": 0.306,
+      "logic_levels": 23
+    },
+    "tr": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10-physical-v1/impl/pnr/custom_138k_integration.tr",
+      "sha256": "d04eefa565cdb451e14e8de41387d4855b2ae7e7a10e1715b612ab122e6ec17e"
+    },
+    "vo": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10-physical-v1/impl/pnr/custom_138k_integration.vo",
+      "sha256": "b50c1b2d64788858b1f8abb2cca8c28a0e6de66aa6f0f9978a1728e45c184d7e"
+    },
+    "mapped_chain": [
+      "native known handle bit8 through bit11 ALU_MODE=3 comparison carry",
+      "priority selected close_generation[3] LUT4 INIT=16hACAA",
+      "host RX selected 32-bit generation identity ALU_MODE=3 carry",
+      "host RX/native owner fault and readiness guards",
+      "lease RAM WRE"
+    ],
+    "generation_array_alias_not_overclaimed": true
+  },
+  "source_inputs": {
+    "host_rx_owner": {
+      "maintenance_path": "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv",
+      "modified_sha256": "a4b556159a286ddeb6368d7fe749011664950ad8d78269885194afe69f63384d",
+      "frozen_W10_consumed_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv",
+      "original_sha256": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105",
+      "comparison_fixture_path": "projects/138k/push2_workstation/usb_a/sim/fixtures/workstation_hci_host_rx_owner_before_identity_compare.sv",
+      "comparison_fixture_sha256": "82ff377a3516d3be912cb98eedf5ef904d3720a69aedf673644bc63ede6a9105"
+    },
+    "native_transport": {
+      "maintenance_path": "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv",
+      "modified_sha256": "0015cc57c12186a2b06945356adb5ff8ba30968c7403c143b8d7141a3aa5a93c",
+      "frozen_W10_consumed_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv",
+      "original_sha256": "a151aa426f4880dbcbf85239688ec910e8f43a2c2fb240e52161e166f029a10a",
+      "comparison_fixture_path": "projects/138k/push2_workstation/usb_a/sim/fixtures/workstation_hci_native_transport_before_identity_compare.sv",
+      "comparison_fixture_sha256": "a151aa426f4880dbcbf85239688ec910e8f43a2c2fb240e52161e166f029a10a"
+    },
+    "flow_owner": {
+      "unchanged_path": "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv",
+      "sha256": "51fb7a96487b4aa27fdf9fce38901c6ee3a5403ce29292bac51ab3c7901fa2c8"
+    },
+    "event_decoder": {
+      "unchanged_path": "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_event_decoder.sv",
+      "sha256": "f0b25d9f41d789d322728c5d9b8fa3887130d48711a21e56249dba77cf546d45"
+    }
+  },
+  "verification_tools_sha256": {
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_identity_compare.py": "8d2e936c5019c0f62d0825c764f5c260033d3bf342ae12c2ba1c4baa8620c1ba",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_host_rx_owner.py": "2659f69d771f4fc03d7427c49fe922647ea66a98128b45f172129aeacbf78d70"
+  },
+  "change_scope": {
+    "equality": "a == b to !(|(a ^ b))",
+    "inequality": "a != b to (|(a ^ b))",
+    "widths": [
+      12,
+      16,
+      32
+    ],
+    "new_registers_or_cycles": 0,
+    "priority_order_changed": false,
+    "state_updates_changed": false,
+    "credit_accounting_changed": false,
+    "flow_owner_changed": false,
+    "event_decoder_changed": false,
+    "all_other_source_bytes_checked": true
+  },
+  "whole_module_comparison": {
+    "reference": "exact frozen W10 consumed bytes",
+    "cycle_sampler": "every posedge plus 2ns, four-state case inequality",
+    "modules": {
+      "host_rx_owner": {
+        "outputs": 33,
+        "states": 39,
+        "summaries": [
+          "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822",
+          "IDENTITY TWIN cycles=17674 outputs=33 states=39"
+        ]
+      },
+      "native_transport": {
+        "outputs": 33,
+        "states": 2716,
+        "summaries": [
+          "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+          "IDENTITY TWIN cycles=6545 outputs=33 states=2716"
+        ]
+      }
+    },
+    "relations": {
+      "12": {
+        "result": "UNSAT",
+        "free_bits": 24
+      },
+      "16": {
+        "result": "UNSAT",
+        "free_bits": 32
+      },
+      "32": {
+        "result": "UNSAT",
+        "free_bits": 64
+      }
+    },
+    "z3_version": "5.1.0",
+    "negative_controls": {
+      "ignored_bit_12": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_12": 1,
+          "identity_b_12": 0
+        }
+      },
+      "ignored_bit_16": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_16": 1,
+          "identity_b_16": 0
+        }
+      },
+      "ignored_bit_32": {
+        "rejected": true,
+        "counterexample": {
+          "identity_a_32": 1,
+          "identity_b_32": 0
+        }
+      },
+      "whole_host_rx_owner": {
+        "rejected": true,
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-identity-whole-compare-v3/host_rx_owner_mutant/bench.sv:354: IDENTITY TWIN dut.release_slot cycle=9"
+      },
+      "whole_native_transport": {
+        "rejected": true,
+        "failure": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/hci-identity-whole-compare-v3/native_transport_mutant/bench.sv:508: IDENTITY TWIN dut.close_generation cycle=377"
+      }
+    },
+    "input_bytes_stable_during_run": true,
+    "universal_relation_scope": "binary full width operand pairs; whole-module state comparison uses existing business stimulus, not universal reachability"
+  },
+  "existing_regressions": {
+    "host_rx": {
+      "summary": "PASS checks=160228 scenarios=12 random_steps=10000 received=3146 returned=2822",
+      "business_mutants_rejected": 13,
+      "invalid_parameters_rejected": 8,
+      "strict_lint": "passed_Wall_no_waivers",
+      "prior_shared_owner": {
+        "flow_checks": 116780,
+        "event_checks": 9174,
+        "mutants": 11
+      }
+    },
+    "native": {
+      "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+      "business_mutants_rejected": 11,
+      "lint": {
+        "passed": true,
+        "exceptions": [
+          "unused child diagnostic outputs",
+          "explicit unused output pins"
+        ],
+        "width_latch_multidriver_timing_warnings_suppressed": false
+      },
+      "uart": {
+        "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+        "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+        "patch_bytes": 253,
+        "physical_uart": true,
+        "physical_board": false
+      }
+    }
+  },
+  "evidence": {
+    "whole_modules": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-identity-whole-compare-v3/verification.json",
+      "sha256": "4e74845ef73ee1aeab2ddb4dc6177f2ed8f977b34fe8435e58ff6d3225bb3d7f"
+    },
+    "host_rx_regression": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-identity-host-rx-v1/verification.json",
+      "sha256": "5445e85d945a2f7fbb5dd5c7f632fea4859f6536514c45f83a60c069a6b0f077"
+    },
+    "native_uart_regression": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hci-identity-native-v1/verification.json",
+      "sha256": "de96f0bce3324c152e76272336112fa7440c8bf85a1178ce7e256f9a9225b12a"
+    },
+    "physical_four_reports": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-physical-audits-v1/clk50-four-reports.json",
+      "sha256": "740edced8b7829cbee55484628b4a4cf38e525d2bc2a01b3c142bd31f3b2dd76"
+    },
+    "physical_selected_cells": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-hci-clk50-path-cells-v1.json",
+      "sha256": "3ebb74504a7173a6d38228b401b28411940ce85761bdf29dfc17344c7d83a9cd"
+    }
+  },
+  "physical_gain_measured": false,
+  "synthesis_run_for_modified_source": false,
+  "pnr_run_for_modified_source": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "frozen_W10_modified": false,
+  "rollback": "Restore the two maintenance RTL files from the matching versioned before_identity_compare fixtures; rebuild under a new candidate identity.",
+  "next_physical_requirement": "Prepare a new W-DEMO identity consuming these maintained bytes, then measure full synthesis and routed timing/resources without changed clocks or timing exceptions."
+}

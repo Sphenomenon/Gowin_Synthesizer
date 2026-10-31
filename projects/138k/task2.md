@@ -260,6 +260,8 @@ W10的[USB实际CEA共享组合证明](push2_workstation/usb_a/reports/DUAL138K_
 
 M12b／W10的[完整默认物理实现](push2_workstation/usb_a/reports/DUAL138K_M12B_W10_DEFAULT_PHYSICAL_20261031.md)均已完成：M12b `D2103118`物理BSRAM235／DSP120，setup3,340／−1.656ns、hold4／−3.457ns；W10 `D2103116`物理BSRAM293／DSP67.5，setup5,750／−5.583ns、hold2／−3.652ns。全部588／645封存输入及物理输入／输出复验，W10原生VG／VO及PLL子门通过；整机仍不可部署。已保持原3.500ns及完整VG／SDC派生各自far变体，另测结果。W录音发布至地址和HCI身份比较、M音频配置和TF DMA为下一轮真实路径修复对象，不预记收益。用户确认只有模拟器，真实手机A2DP／BLE／D模式和下载验收稍后；未上板，不改变T2-D1／D2状态。
 
+针对W10实际50MHz长链的[HCI身份比较修正](push2_workstation/usb_a/reports/DUAL138K_HCI_IDENTITY_20261101.md)已完成：两维护模块使用完整12／16／32bit XOR归约，周期、优先级及信用owner不变。host RX／native旧版对照17,674／6,545周期，后者包括2,608个包RAM元素；全域关系与5新破坏负控、原13＋11业务负控及UART8E1／H5通过。固定W10输入不改，下一候选重新综合／P&R测收益，尚未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

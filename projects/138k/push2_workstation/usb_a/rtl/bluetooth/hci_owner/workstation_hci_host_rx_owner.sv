@@ -85,26 +85,28 @@ module workstation_hci_host_rx_owner #(
         assign outstanding_o[16*at+:16]=outstanding[at];
         assign pending_returns_o[16*at+:16]=pending[at];
     end
+    // Keep identity tests as bitwise trees, including the late disconnect
+    // generation, rather than a serial equality carry chain after selection.
     always @* begin
         rx_owner=-1;free_slot=-1;free_count=0;release_slot=-1;release_owner=-1;
         disconnect_slot=-1;return_candidate=-1;owner_drift=0;invariant_bad=0;total_outstanding=0;
         for(integer at=0;at<RX_SLOTS;at=at+1)begin
             if(!leased[at])begin free_count=free_count+1;if(free_slot==-1)free_slot=at;end
-            if(leased[at]&&tokens[at]==release_lease_i)release_slot=at;
+            if(leased[at]&&!(|(tokens[at]^release_lease_i)))release_slot=at;
         end
         for(integer at=0;at<HANDLE_SLOTS;at=at+1)begin
-            if(known_active_i[at]&&{4'd0,known_handles_i[12*at+:12]}==rx_handle_i)rx_owner=at;
-            if(disconnect_valid_i&&handles[at]==disconnect_handle_i&&
-                generations[at]==disconnect_generation_i)disconnect_slot=at;
-            if(release_slot!=-1&&handles[at]==lease_handles[release_slot]&&
-                generations[at]==lease_generations[release_slot])release_owner=at;
+            if(known_active_i[at]&&!(|({4'd0,known_handles_i[12*at+:12]}^rx_handle_i)))rx_owner=at;
+            if(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
+                !(|(generations[at]^disconnect_generation_i)))disconnect_slot=at;
+            if(release_slot!=-1&&!(|(handles[at]^lease_handles[release_slot]))&&
+                !(|(generations[at]^lease_generations[release_slot])))release_owner=at;
             if(pending[at]!=0&&return_candidate==-1)return_candidate=at;
             total_outstanding=total_outstanding+{16'd0,outstanding[at]};
             if(pending[at]>outstanding[at])invariant_bad=1;
-            if(outstanding[at]!=0&&(!known_active_i[at]||handles[at]!=known_handles_i[12*at+:12]||
-                generations[at]!=known_generations_i[32*at+:32])&&
-                !(disconnect_valid_i&&handles[at]==disconnect_handle_i&&
-                    generations[at]==disconnect_generation_i))owner_drift=1;
+            if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
+                (|(generations[at]^known_generations_i[32*at+:32])))&&
+                !(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
+                    !(|(generations[at]^disconnect_generation_i))))owner_drift=1;
         end
         if({16'd0,controller_budget_o}+total_outstanding!={16'd0,CAPACITY})invariant_bad=1;
     end
@@ -180,10 +182,10 @@ module workstation_hci_host_rx_owner #(
                         outstanding[disconnect_slot]<=0;pending[disconnect_slot]<=0;
                     end
                     for(index=0;index<RX_SLOTS;index=index+1)begin
-                        if(leased[index]&&lease_handles[index]==disconnect_handle_i&&
-                            lease_generations[index]==disconnect_generation_i)retired[index]<=1;
+                        if(leased[index]&&!(|(lease_handles[index]^disconnect_handle_i))&&
+                            !(|(lease_generations[index]^disconnect_generation_i)))retired[index]<=1;
                     end
-                    if(offered&&offer_handle==disconnect_handle_i&&offer_generation==disconnect_generation_i)
+                    if(offered&&!(|(offer_handle^disconnect_handle_i))&&!(|(offer_generation^disconnect_generation_i)))
                         offered<=0;
                 end else if(rx_take_i)begin
                     controller_budget_o<=controller_budget_o-1'b1;

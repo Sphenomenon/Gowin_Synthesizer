@@ -220,6 +220,8 @@ module workstation_hci_native_transport #(
     end
 
     assign tx_handle={tx_header[1][3:0],tx_header[0]};
+    // Preserve the existing last-match priority while mapping handle tests
+    // as bitwise reductions before the selected generation fans out.
     always @* begin
         br_slot=-1;tx_handle_slot=-1;close_slot=-1;
         current_br_generation=0;current_br_handle=0;close_generation=0;
@@ -227,8 +229,8 @@ module workstation_hci_native_transport #(
             if(known_active[at] && !known_le[at])begin
                 br_slot=at;current_br_generation=known_generations[32*at+:32];current_br_handle=known_handles[12*at+:12];
             end
-            if(known_active[at] && known_handles[12*at+:12]==tx_handle)tx_handle_slot=at;
-            if(known_active[at] && known_handles[12*at+:12]==decoder_handle)begin
+            if(known_active[at] && !(|(known_handles[12*at+:12]^tx_handle)))tx_handle_slot=at;
+            if(known_active[at] && !(|(known_handles[12*at+:12]^decoder_handle)))begin
                 close_slot=at;close_generation=known_generations[32*at+:32];
             end
         end
@@ -626,7 +628,7 @@ module workstation_hci_native_transport #(
                     else begin
                         packet_handle<=rx_wire_handle[11:0];packet_le<=0;
                         for(integer at=0;at<2;at=at+1)
-                            if(known_active[at] && known_handles[12*at+:12]==rx_wire_handle[11:0])packet_le<=known_le[at];
+                            if(known_active[at] && !(|(known_handles[12*at+:12]^rx_wire_handle[11:0])))packet_le<=known_le[at];
                         rx_state<=R_ACL_ADMIT;
                     end
                 end
