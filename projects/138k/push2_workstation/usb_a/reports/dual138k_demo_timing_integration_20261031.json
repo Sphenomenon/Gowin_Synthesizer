@@ -1,0 +1,90 @@
+{
+  "stage": "demo_build_and_strict_audit_integration",
+  "explicit_scope": "Only existing M/W DEMO roles; historical non-DEMO generation unchanged",
+  "sources": {
+    "tools/workstation_custom_board.py": "1b2d906c09b00dd2397a0fc60323d7eb34b5e226588a5888eeb5c116866f8319",
+    "tools/workstation_demo_audit.py": "bfb7efcb9348c84b664b90fcc160b1e2632248bf5f25ff509baf7930203b0476",
+    "tools/workstation_runtime_cdc.py": "95a9839f143f806005ace2d9c3d78452da43df36c7de5a7237254f58422a86b8",
+    "tools/workstation_performance_reset.py": "870356b522f009984b967b23d5205567a525a72c94398d6e64d3afdf6d390c13",
+    "sim/test_workstation_performance_reset.py": "f5d2716538a68a662aec87752448dc9129ec96adebf0e12786e4db416ce1be9e",
+    "tools/workstation_native_protocol_audit.py": "f172533280f6322b2236f403d1ddcd1e430b5cbf057f6a94099a54bd73120296",
+    "tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc"
+  },
+  "evidence": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-next-demo-timing-vg-v1.json",
+      "sha256": "b474b80a0e9824d428ad25ae606a7877a67defe1ad45e59d519193692d79be10"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-next-demo-timing-vo-v1.json",
+      "sha256": "8fb7a8cc79d7d144947ef1699586aca0e06320a2ef148b002a08a3c30265344a"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-performance-vg-tests-v2.log",
+      "sha256": "72500ed84d68ebdc6ffa109e93c05eb8c3c66bc11277d4d357c6a50ec88bc45a"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-performance-vo-tests-v2.log",
+      "sha256": "70af5132e5cc4e95ed0b8bfc1e6965f049e0855fc10e6152a3d3d8094bd0aae4"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-performance-vg-negative-v2.json",
+      "sha256": "7f605f41bf68f70da25ff1b721d4f3009327108104824a0047ffbe5e63cba28e"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w8-performance-vo-negative-v2.json",
+      "sha256": "eb8be18119b8bcea5fe9928c3cfa0161bd307205c07d8c31c29471b5622863c1"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/demo-timing-custom-board-v2.log",
+      "sha256": "7b169362e438dfebde88e727567fd091f45053f2b2bec091fdb335de5c7cc3db"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m10b-w9b-prepare-seal-v1.json",
+      "sha256": "2d0481f34700f01a9cb62d00b53bff6bba6b8e50d4525bf5fdb64f199cd23e0c"
+    }
+  ],
+  "tests_per_actual_mapping": 12,
+  "actual_structure_tests_per_mapping": 10,
+  "selection_tests_per_mapping": 2,
+  "netlist_mutants_per_mapping": 8,
+  "protected_functional_clear_count": 685,
+  "clock_reports": {
+    "directions": [
+      "clk_50m->clk_50m",
+      "all->clk_50m"
+    ],
+    "kinds": [
+      "setup",
+      "hold"
+    ],
+    "max_paths_each": 100,
+    "max_common_paths": 1
+  },
+  "performance_release": {
+    "role": "W",
+    "incoming_clear_pins": 6,
+    "source_Q_pins": 2,
+    "later_D_bounds": 4,
+    "max_delay_ns": 2.0
+  },
+  "old_M9_W8_immutable_prepare_reverified": true,
+  "new_full_prepare_completed": true,
+  "new_synthesis_completed": false,
+  "SDC_installed_in_M9_or_W8": false,
+  "new_routed_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "new_synthesis_started": true,
+  "source_lock_entries": 821,
+  "custom_board_tests_passed": 9,
+  "actual_stage_helper_copy_verified": true,
+  "initial_environment_test_failure": "Default compiler/Gowin/model discovery failed; rerun with task xPack and explicit Gowin paths passed all 9",
+  "initial_prepare_rejection": "Both initial prepares rejected recognition SDC output-seal ordering; independent M10b/W9b compose timing before recognition and pass full prepare/verify",
+  "review_fixes": [
+    "Explicit helper dependency installed before SDC composition",
+    "Leading spaces/tabs cannot hide functional CLEAR false paths",
+    "External parser/complete_closure and runtime dependencies individually hash-sealed"
+  ]
+}

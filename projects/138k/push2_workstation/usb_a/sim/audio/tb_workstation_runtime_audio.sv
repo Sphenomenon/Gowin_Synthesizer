@@ -253,7 +253,7 @@ module tb_workstation_runtime_audio #(
             wait(raw_good==3);@(negedge control_clk);recover=1;tick();recover=0;wait_ready();
         end
     endtask
-    integer before_nonzero,before_epoch,before_errors;
+    integer before_nonzero,before_epoch,before_errors,physical_cancel_boundaries=0;
     bit startup_only;
     initial begin
         startup_only=$test$plusargs("STARTUP_ONLY");
@@ -284,6 +284,32 @@ module tb_workstation_runtime_audio #(
                 frames(8);
             end
             send(2,120,0);send(2,90,0);send(1,60,127);frames(192);
+            // Actual router/serializer boundaries, followed by a real command
+            // queued on the delayed clear edge. The existing bit-level I2S
+            // scoreboard and frame cadence checks run through every case.
+            for(integer test_rate=0;test_rate<2;test_rate=test_rate+1)begin
+                if(rate!=1'(test_rate))switch_rate(1'(test_rate));
+                for(integer boundary=1;boundary<=3;boundary=boundary+1)begin
+                    for(integer mode_followup=0;mode_followup<2;mode_followup=mode_followup+1)begin
+                        wait(dut.final_pcm.state==2'(boundary));
+                        @(negedge compute_clk);event_data={4'd15,7'd0,7'd0};event_valid=1;
+                        @(posedge compute_clk);if(!dut.service.panic_accept)$fatal(1,"physical boundary missed public cancellation");
+                        @(negedge compute_clk);
+                        if(!dut.service.cancel_delivery_pending || dut.service_ready ||
+                           dut.service.workstation.dispatch || dut.service.workstation.core_ce)
+                            $fatal(1,"physical clear edge admitted work");
+                        event_data=mode_followup!=0 ? {4'd2,7'd80,7'd1}:{4'd1,7'd60,7'd127};
+                        do @(posedge compute_clk);while(!event_ready);
+                        @(negedge compute_clk);event_valid=0;
+                        if(mode_followup!=0)begin wait(mode==1);send(1,60,127);end
+                        before_nonzero=nonzero;frames(192);
+                        if(!held[60] || active==0 || muted || nonzero<=before_nonzero || underruns!=0)
+                            $fatal(1,"physical boundary lost first legal command/audio");
+                        physical_cancel_boundaries=physical_cancel_boundaries+1;
+                    end
+                end
+            end
+            if(rate)switch_rate(0);
             // External policy rejects without touching the transaction/epoch.
             before_epoch=epoch;permit=0;@(negedge control_clk);request44=1;request=1;tick();request=0;
             if(!policy_rejected || accepted || busy || epoch!=before_epoch)$fatal(1,"policy rejection modified stream");
@@ -327,7 +353,9 @@ module tb_workstation_runtime_audio #(
             $fatal(1,"integration coverage missing/budget");
         if(!startup_only && (wet48!=7 || wet44!=7 || fdn_seen!=3 || loader_overlap_slots==0 || pressure_events!=768 || pressure_noteoffs!=26))
             $fatal(1,"wet/loader/event coverage wet48=%b wet44=%b fdn=%b loader=%0d",wet48,wet44,fdn_seen,loader_overlap_slots);
+        if(!startup_only && physical_cancel_boundaries!=12)$fatal(1,"physical cancellation boundary coverage missing");
         $display("PASS runtime_audio: checked=%0d good=%0d errors=%0d nonzero=%0d first_slots=%0d config_acks=%0d applies=%0d faults=%0d mid_frame_switches=%0d max_render_clocks=%0d max_slot_clocks=%0d max_config_clocks=%0d writes=%0d fences=%0d analysis_drops=%0d record_drops=%0d startup_frames=%0d epoch=%0d loader_overlap_slots=%0d pressure_events=%0d pressure_noteoffs=%0d wet48=%0d wet44=%0d fdn_seen=%0d",checked,good,error_frames,nonzero,first_slots,config_acks,applies,faults,mid_frame_switches,max_render_clocks,max_slot_clocks,max_config_clocks,writes,fences,analysis_drops,record_drops,STARTUP_FRAMES,epoch,loader_overlap_slots,pressure_events,pressure_noteoffs,wet48,wet44,fdn_seen);
+        $display("PASS physical_cancel_delivery: boundary_cases=%0d",physical_cancel_boundaries);
         $finish;
     end
     initial begin #1000000000;$fatal(1,"runtime composition watchdog");end

@@ -226,6 +226,10 @@ M9 `aa7abf5c6454a377`／W8 `d1109d2f36e8e171`已分别完成全量综合及完�
 
 M9实测setup6,772、最差−3.643ns，唯一DDR hold−3.506ns，recovery／removal已正；W8 setup8,325、最差−9.674ns，hold2、recovery仍失败，物理BSRAM293／340。M9最差TF晚到增量现改为高位独立预计算及低6位选择，[独立算术／旧版逐拍及完整TF回归](push2_workstation/usb_a/reports/DUAL138K_TF_SMALL_DELTA_20261031.md)通过，无新增周期；实际物理收益待新候选。下一步继续修复M的PANIC高扇出、W的PCM owner资格链及窄复位约束，并独立测量新DDR布局变体，不把旧候选失败或局部修复转授声画通过。
 
+W真实performance三拍释放的[窄约束与50MHz专项报告已接入DEMO构建](push2_workstation/usb_a/reports/DUAL138K_DEMO_TIMING_INTEGRATION_20261031.md)：仅W的六个release CLEAR采用已证明的来源例外，四条后级D仍为2ns；M/W增加四条专项report命令。W8实际VG/VO各12项及8个网表负控通过，没有追改旧候选。M9／W8独立far布局`D2103109`／`D2103110`保持同VG/SDC，实测DDR hold+0.755／+0.633ns，完整STA仍失败，四份真实物理结果及局部门禁见[本轮物理证据](push2_workstation/usb_a/reports/DUAL138K_M9_W8_PHYSICAL_20261031.md)。
+
+M的[PANIC交付保留窗／render握手／等价增益](push2_workstation/usb_a/reports/DUAL138K_AUDIO_CANCEL_DELIVERY_20261031.md)通过48,691请求全完成、48,645帧独立效果比较及22,532帧真实I2S整链；W的[描述符及许可组合修复](push2_workstation/usb_a/reports/DUAL138K_PCM_DESCRIPTOR_GATE_20261031.md)通过完整owner旧版对照、115,011向量／4负控、长测与1,454帧runtime，交叉审查无阻塞。新M10b `370f528922c4fcb5`／W9b `01aa047a4d25aaf1`均已从各821项来源锁完整prepare并双重校验，实际消费上述维护RTL／时序补充，分别587／644封存输入；已启动两套全量综合。首次prepare的recognition封口顺序拒绝保留，新输出已修正并通过，未预记新的综合／物理收益，仍未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

@@ -126,6 +126,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
     if demo_role is not None:
+        from tools.workstation_performance_reset import DEMO_TIMING_TOOL
+        profile_dependencies += (DEMO_TIMING_TOOL,)
         from tools.workstation_usb_fifo_reset import POLICY as FIFO_RESET_POLICY
         if profile['configuration'].get('usb_fifo_reset_policy') != FIFO_RESET_POLICY:
             raise ValueError('new DEMO prepare requires explicit USB FIFO local-reset policy')
@@ -317,6 +319,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if business_telemetry_alias_selected:
         from tools.workstation_cpu_business import telemetry_reset_constraints
         selected_sdc,business_telemetry_reset=telemetry_reset_constraints(selected_sdc)
+    demo_runtime_timing = None
+    if demo_role is not None:
+        from tools.workstation_performance_reset import select_demo_timing
+        selected_sdc, demo_runtime_timing = select_demo_timing(stage, selected_sdc, demo_role)
     if runtime:
         from tools.workstation_recognition_policy import adapt_constraints
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
@@ -400,6 +406,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['business_cpu_telemetry_reset_cdc']=business_telemetry_reset
     if demo_fifo_reset is not None:
         metadata['demo_usb_fifo_write_reset'] = demo_fifo_reset
+    if demo_runtime_timing is not None:
+        metadata['demo_runtime_timing'] = demo_runtime_timing
     if not local_panel_enabled:
         metadata['local_panel'] = panel
     if workstation_profile is not None:

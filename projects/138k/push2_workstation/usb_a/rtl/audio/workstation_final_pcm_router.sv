@@ -54,12 +54,15 @@ module workstation_final_pcm_router (
     wire accepted=request_i && request_ready_o;
     wire [16:0] rate_step_product=17'd40960+{9'd0,gain_remainder};
     wire [8:0] gain_step=request_44k1_i ? 9'(rate_step_product/17'd147):9'd256;
-    wire [15:0] target_gain=mute_i ? 16'd0:master_volume_i;
     wire [16:0] gain_upper={1'b0,applied_gain}+{8'd0,gain_step};
     wire [16:0] gain_lower={1'b0,applied_gain}-{8'd0,gain_step};
-    wire [15:0] next_gain=target_gain==0 ? 16'd0:
-        {1'b0,target_gain}>gain_upper ? gain_upper[15:0]:
-        !gain_lower[16] && {1'b0,target_gain}<gain_lower ? gain_lower[15:0]:target_gain;
+    // Mute is an immediate zero at the slot snapshot, independent of the
+    // volume slew. Keep it out of the compare/subtract cone to the DSP gain
+    // input; this is the same priority as the former target_gain==0 case.
+    wire [15:0] slewed_gain=master_volume_i==0 ? 16'd0:
+        {1'b0,master_volume_i}>gain_upper ? gain_upper[15:0]:
+        !gain_lower[16] && {1'b0,master_volume_i}<gain_lower ? gain_lower[15:0]:master_volume_i;
+    wire [15:0] next_gain=mute_i ? 16'd0:slewed_gain;
     wire cancelled=held_epoch!=active_epoch_i || held_rate!=active_44k1_i ||
         held_cancel!=cancel_epoch_i || (held_tf && held_tf_generation!=expected_tf_generation_i);
     assign request_ready_o=rst_ni && state==IDLE;
@@ -113,7 +116,7 @@ module workstation_final_pcm_router (
                     held_rate<=request_44k1_i;held_epoch<=request_epoch_i;held_sequence<=request_sequence_i;
                     held_cancel<=cancel_epoch_i;held_tf<=choose_tf;held_tf_generation<=expected_tf_generation_i;
                     applied_gain<=next_gain;held_gain<=next_gain;
-                    if(request_44k1_i && target_gain!=0)gain_remainder<=8'(rate_step_product%17'd147);
+                    if(request_44k1_i && !mute_i && master_volume_i!=0)gain_remainder<=8'(rate_step_product%17'd147);
                     selected_left<=0;selected_right<=0;selected_clipped<=0;held_errors<=0;
                     state<=MULTIPLY;
                     if(!current_request)begin
@@ -127,13 +130,21 @@ module workstation_final_pcm_router (
                     end else if(!render_ready_i)held_errors<=RENDER_BUSY;
                     else begin render_request_o<=1;render_44k1_o<=request_44k1_i;state<=WAIT_RENDER;end
                 end
-                WAIT_RENDER: if(render_done_i)begin
-                    if(render_error_i)begin selected_left<=0;selected_right<=0;held_errors<=held_errors|SOURCE_ERROR;end
-                    else begin
-                        selected_left<=quantized_left[15:0];selected_right<=quantized_right[15:0];
-                        selected_clipped<=quantized_left[16] || quantized_right[16];
+                WAIT_RENDER: begin
+                    // The request is registered after the slot snapshots
+                    // ready. A cancellation reservation may revoke ready on
+                    // that next edge; retain valid until the real handshake.
+                    // Normal ready admission still emits one request cycle.
+                    if(render_request_o && !render_ready_i)render_request_o<=1;
+                    if(render_done_i)begin
+                        render_request_o<=0;
+                        if(render_error_i)begin selected_left<=0;selected_right<=0;held_errors<=held_errors|SOURCE_ERROR;end
+                        else begin
+                            selected_left<=quantized_left[15:0];selected_right<=quantized_right[15:0];
+                            selected_clipped<=quantized_left[16] || quantized_right[16];
+                        end
+                        state<=MULTIPLY;
                     end
-                    state<=MULTIPLY;
                 end
                 MULTIPLY: begin
                     product_left<=selected_left*$signed({1'b0,held_gain});

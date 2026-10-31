@@ -49,6 +49,7 @@ module tb_workstation_runtime_render_service;
   integer vector_dispatch_cycles=0,vector_accepted_events=0,vector_release_cases=0;
   integer epoch_equality_checks=0,epoch_advances=0,epoch_wraps=0,epoch_match_returns=0;
   integer simultaneous_request_panic=0,epoch_wrap_cases=0;
+  integer cancel_delivery_edges=0,cancel_boundary_cases=0,cancel_followups=0;
   real pitch_error_hz;
   reg trace_on=1,allow_fault=0,old_rate=0;
   string trace_path;
@@ -80,6 +81,24 @@ module tb_workstation_runtime_render_service;
       $fatal(1,"registered epoch proof differs from original next-state cancellation formula");
     if(!old_match && expected_epoch==expected_snapshot)epoch_match_returns=epoch_match_returns+1;
     epoch_equality_checks=epoch_equality_checks+2;
+  end
+  always @(posedge clk)if(rst_n)begin: cancel_delivery_contract
+    reg cancelled_now;
+    cancelled_now=dut.panic_accept;
+    if(dut.cancel_delivery_pending)begin
+      cancel_delivery_edges=cancel_delivery_edges+1;
+      if(ready || dut.accepted || dut.workstation.dispatch || dut.workstation.mode_valid ||
+         dut.workstation.core_ce || dut.workstation.render_idle_o ||
+         dut.workstation.rate_ready_o || dut.workstation.history_ready_o)
+        $fatal(1,"delayed native clear admitted new work");
+    end
+    if(dut.workstation.runtime_engines.engines.oscillator.panic_i!==dut.cancel_delivery_pending ||
+       dut.workstation.runtime_engines.engines.vector_engine.panic_i!==dut.cancel_delivery_pending ||
+       dut.workstation.runtime_effects.effects.clear_i!==dut.cancel_delivery_pending)
+      $fatal(1,"native cancellation consumers disagree");
+    #1;
+    if(dut.cancel_delivery_pending!==cancelled_now)
+      $fatal(1,"native clear delivery is not exactly one registered edge");
   end
   always @(posedge clk)if(rst_n)begin
     // Prove the local timing factorization against the real vector engine,
@@ -149,6 +168,26 @@ module tb_workstation_runtime_render_service;
       @(negedge clk);event_data={4'(kind),7'(address),7'(value)};event_valid=1;
       do @(posedge clk);while(!event_ready);
       @(negedge clk);event_valid=0;repeat(3)@(negedge clk);
+    end
+  endtask
+  // Use the real lifecycle bypass, then queue an ordinary command on the
+  // immediately following clear edge. The ingress may accept it, but the
+  // engine/parameter dispatcher must retain it until clear has completed.
+  task automatic panic_then_followup(input integer delay_edges,input bit mode_change);
+    begin
+      event_valid=1;event_data={4'd15,7'd0,7'd0};
+      @(negedge clk);event_valid=0;
+      repeat(delay_edges)@(negedge clk);
+      event_valid=1;event_data=mode_change ? {4'd2,7'd80,7'd1}:{4'd1,7'd60,7'd100};
+      do @(posedge clk);while(!event_ready);
+      @(negedge clk);event_valid=0;
+      if(mode_change)begin
+        wait(dut.mode_o==1 && !dut.workstation.mode_pending);
+        send(1,60,100);
+      end
+      wait(held[60]);idle();
+      if(active==0 || muted)$fatal(1,"first legal post-PANIC event was erased by delayed clear");
+      cancel_followups=cancel_followups+1;
     end
   endtask
   task automatic idle;
@@ -247,6 +286,52 @@ module tb_workstation_runtime_render_service;
       $fatal(1,"missing real vector dispatch coverage");
     send(2,120,0);idle();send(2,90,0);send(2,80,0);wait(dut.mode_o==0);send(1,69,100);render(1,0);
     trace_on=0;
+    // Real frame admission and completion boundaries at both rates. The
+    // offsets are consecutive compute edges around each boundary; the
+    // source holds a request through the new one-edge ready reservation.
+    for(integer rate_index=0;rate_index<2;rate_index=rate_index+1)begin
+      configure(1'(rate_index),0);
+      for(integer offset=-1;offset<=1;offset=offset+1)begin
+        idle();send(1,69,100);idle();
+        @(negedge clk);rate=1'(rate_index);
+        if(offset<0)begin
+          event_valid=1;event_data={4'd15,7'd0,7'd0};
+          @(negedge clk);event_valid=0;request=1;
+          if(ready)$fatal(1,"post-PANIC request did not observe clear reservation");
+          do @(posedge clk);while(!ready);
+          @(negedge clk);request=0;
+        end else begin
+          request=1;
+          if(offset==0)begin event_valid=1;event_data={4'd15,7'd0,7'd0};end
+          @(posedge clk);if(!ready)$fatal(1,"boundary fixture missed real frame acceptance");
+          @(negedge clk);request=0;
+          if(offset==0)event_valid=0;
+          else begin
+            event_valid=1;event_data={4'd15,7'd0,7'd0};
+            @(negedge clk);event_valid=0;
+          end
+        end
+        wait(responses==requests);idle();cancel_boundary_cases=cancel_boundary_cases+1;
+        send(1,60,100);render(1'(rate_index),9000+offset);
+        if(!held[60] || active==0)$fatal(1,"request-boundary cancel lost next note");
+        idle();send(1,69,100);offer(1'(rate_index));
+        // FINISH is one edge before core valid and two before service
+        // response. Exercise the edge before response, response, and after.
+        wait(dut.workstation.runtime_effects.effects.state==6);
+        @(negedge clk);repeat(offset+1)@(negedge clk);
+        event_valid=1;event_data={4'd15,7'd0,7'd0};
+        @(negedge clk);event_valid=0;
+        wait(responses==requests);idle();cancel_boundary_cases=cancel_boundary_cases+1;
+        send(1,60,100);render(1'(rate_index),9100+offset);
+      end
+      for(integer delay_edges=0;delay_edges<3;delay_edges=delay_edges+1)begin
+        for(integer command_kind=0;command_kind<2;command_kind=command_kind+1)begin
+          idle();send(2,120,0);idle();send(2,80,0);wait(dut.mode_o==0);
+          @(negedge clk);panic_then_followup(delay_edges,1'(command_kind));
+          render(1'(rate_index),9200+delay_edges*2+command_kind);
+        end
+      end
+    end
     // Keep one real accepted request snapshot while lifecycle cancellations
     // traverse all 1024 epoch identities. The old equality becomes true again;
     // a sticky cancellation bit would silently change this historical meaning.
@@ -312,9 +397,11 @@ module tb_workstation_runtime_render_service;
     if(posted_writes==0 || ordered_fences==0)$fatal(1,"missing real DDR transactions");
     @(negedge clk);rst_n=0;mrst_n=0;repeat(8)@(negedge clk);rst_n=1;mrst_n=1;
     repeat(100)@(negedge clk);allow_fault=0;old_rate=0;idle();if(applied_rate || fault)$fatal(1,"coordinated reset recovery failed");
-    if(epoch_wrap_cases!=1 || epoch_wraps==0 || epoch_match_returns==0 || simultaneous_request_panic==0)
+    if(epoch_wrap_cases!=1 || epoch_wraps==0 || epoch_match_returns==0 || simultaneous_request_panic==0 ||
+       cancel_delivery_edges==0 || cancel_boundary_cases!=12 || cancel_followups!=12)
       $fatal(1,"missing real cancellation epoch boundary coverage");
     $display("PASS runtime_render_service: requests=%0d responses=%0d modeled_frames=%0d configs=%0d histories=%0d cancels=%0d wet48=%0d wet44=%0d pitch_checks=%0d max_latency=%0d max_steady_latency=%0d max_auto_config_latency=%0d max_loader_latency=%0d posted_writes=%0d ordered_fences=%0d vector_dispatch_cycles=%0d vector_accepted_events=%0d vector_release_cases=%0d epoch_equality_checks=%0d epoch_advances=%0d epoch_wraps=%0d epoch_match_returns=%0d simultaneous_request_panic=%0d epoch_wrap_cases=%0d",requests,responses,frames,configs,histories,cancels,wet48,wet44,pitch_checks,max_latency,max_steady_latency,max_auto_config_latency,max_loader_latency,posted_writes,ordered_fences,vector_dispatch_cycles,vector_accepted_events,vector_release_cases,epoch_equality_checks,epoch_advances,epoch_wraps,epoch_match_returns,simultaneous_request_panic,epoch_wrap_cases);
+    $display("PASS cancel_delivery: registered_clear_edges=%0d boundary_cases=%0d first_legal_note_mode_followups=%0d",cancel_delivery_edges,cancel_boundary_cases,cancel_followups);
     $fclose(trace_file);$finish;
   end
   initial begin #2000000000;$fatal(1,"test timeout");end

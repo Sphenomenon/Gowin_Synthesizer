@@ -5,12 +5,48 @@ from pathlib import Path
 import json
 import os
 import sys
+import tempfile
 import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from tools.workstation_performance_reset import audit,netlist,proposed_constraints,validate_sdc,SCOPE
 from tools.workstation_runtime_pcm_cdc import Graph
+from tools.workstation_performance_reset import (
+    DEMO_TIMING_TOOL, demo_clock_reports, select_demo_timing, verify_demo_timing,
+)
+
+
+class DemoBuildSelection(unittest.TestCase):
+    def test_role_specific_selection_is_sealed_and_cannot_omit_lines(self):
+        with tempfile.TemporaryDirectory(prefix='demo-runtime-timing-') as directory:
+            stage=Path(directory);tool=stage/DEMO_TIMING_TOOL;tool.parent.mkdir()
+            tool.write_bytes((ROOT/DEMO_TIMING_TOOL).read_bytes())
+            for role in ('M','W'):
+                sdc,evidence=select_demo_timing(stage,'# retained upstream\n',role)
+                self.assertTrue(verify_demo_timing(stage,sdc,role,evidence)['installed_lines_verified'])
+                self.assertEqual('source_release' in sdc,role=='W')
+                self.assertEqual(sdc.count('report_timing'),4)
+                for line in evidence['added_lines']:
+                    for changed in (sdc.replace(line+'\n','',1),sdc+line+'\n'):
+                        with self.subTest(role=role,line=line),self.assertRaisesRegex(ValueError,'absent or duplicated'):
+                            verify_demo_timing(stage,changed,role,evidence)
+                with self.assertRaisesRegex(ValueError,'lack sealed selection'):
+                    verify_demo_timing(stage,sdc,role,None)
+                with self.assertRaisesRegex(ValueError,'already installed'):
+                    select_demo_timing(stage,sdc,role)
+                with self.assertRaisesRegex(ValueError,'selection metadata changed'):
+                    verify_demo_timing(stage,sdc,role,dict(evidence,role='X'))
+            tool.write_text('changed helper\n')
+            with self.assertRaisesRegex(ValueError,'source identity changed'):
+                verify_demo_timing(stage,sdc,role,evidence)
+
+    def test_legacy_and_exact_report_whitelist(self):
+        from tools.workstation_runtime_cdc import NATIVE_PERIPHERAL_SDC, PERIPHERAL_SDC
+        self.assertEqual(verify_demo_timing(ROOT,'# original\n','W',None)['mode'],
+                         'sealed_legacy_without_demo_timing_additions')
+        self.assertTrue(all(line in NATIVE_PERIPHERAL_SDC and line not in PERIPHERAL_SDC
+                            for line in demo_clock_reports().splitlines()))
 
 
 class ActualRelease(unittest.TestCase):
@@ -95,8 +131,9 @@ class ActualRelease(unittest.TestCase):
                 validate_sdc(sdc.replace(line+'\n','',1),self.n,r)
         for pin in (r['chains'][0]['stages'][1]+'/D',self.reg('held_data',0)+'/CLEAR'):
             for option in ('',' -hold'):
-                with self.subTest(cut=pin,option=option),self.assertRaisesRegex(ValueError,'later data or functional'):
-                    validate_sdc(sdc+f'set_false_path{option} -to [get_pins {{{pin}}}]\n',self.n,r)
+                for prefix in ('', ' ', '\t'):
+                    with self.subTest(cut=pin,option=option,prefix=prefix),self.assertRaisesRegex(ValueError,'later data or functional'):
+                        validate_sdc(sdc+f'{prefix}set_false_path{option} -to [get_pins {{{pin}}}]\n',self.n,r)
 
 
 if __name__=='__main__':unittest.main()

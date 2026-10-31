@@ -50,6 +50,8 @@
 
 完整配置仅负责 DSP 配置与历史，不负责 epoch、clock/PLL、桥、最终 PCM owner 或 serializer 的启停。它们的独立握手仍由外层组合负责。
 
+完整 native 分支的 PANIC／lifecycle 在接受边沿立即更新原有 epoch、held／deferred 和 frame／join 取消状态；engine／effect 清零通过同域寄存器在下一边沿送达。`cancel_delivery_pending_o` 是这一拍的只读交付状态，其间禁止 engine sample、事件 dispatch、mode commit、配置接受和 service 新 render 接受；已进入 session／FIFO 的普通命令保留，随后按原队列处理。`render_ready_o` 因此增加一个计算周期的取消保留窗，调用者必须遵守 valid／ready；已接受请求仍恰好完成一次。清零不门控串行时钟、不暂停采样计划。默认 legacy 分支不启用这一交付寄存器。
+
 ## 验证入口与范围
 
 ```sh

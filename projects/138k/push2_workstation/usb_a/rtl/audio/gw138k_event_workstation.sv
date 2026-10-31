@@ -28,6 +28,7 @@ module gw138k_event_workstation #(
     // Internal request services may cache epoch equality without a second counter.
     output wire panic_accept_o,
     output wire panic_muted_o,
+    output wire cancel_delivery_pending_o,
     // Read-only render admission status; PANIC clears frame_inflight before
     // the legacy oscillator's unreset ROM/valid pipelines have drained.
     output wire render_idle_o,
@@ -88,6 +89,7 @@ module gw138k_event_workstation #(
   logic [17:0] event_data;
   logic fifo_event_valid,fifo_event_ready;
   logic core_ce; // Declare before cue_player: Gowin otherwise creates an implicit net.
+  wire native_clear,engine_clear;
   wire cue_valid,cue_ready,cue_running,cue_done,cue_error;
   wire [17:0] cue_event;
   wire [31:0] cue_late,cue_time;
@@ -256,15 +258,30 @@ module gw138k_event_workstation #(
       .d_crush_o(d_crush),.d_drive_o(d_drive),.d_delay_send_o(d_delay_send),
       .rejected_o(control_rejected)
   );
-  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block;
+  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block && !native_clear;
   assign full = scope_enable ? &vec_active : &allocated;
-  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !runtime_config_block && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
+  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !runtime_config_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
   // CC120 uses the control-event dispatch condition directly. It never needs
   // engine event_ready; keeping that dependency out of cancellation also
   // avoids a PANIC/configuration/sample-ready combinational cycle.
   wire panic_accept=usb_lifecycle ||
       (event_valid && !releasing && dispatch && kind==2 && a==120);
   assign panic_accept_o=panic_accept;
+  // Epoch/held-note/frame cancellation still commits on panic_accept. The
+  // large native engine/effect clear tree starts from a local register one
+  // cycle later, rather than from config/event admission's combinational
+  // cone. Reserve that edge: queued events, modes and samples wait and cannot
+  // be accepted then erased by the delayed clear. No serial clock is gated.
+  generate if(RUNTIME_EFFECTS_ENABLE)begin: native_cancel_delivery
+    logic pending_clear;
+    always_ff @(posedge clk_i or negedge rst_ni)
+      if(!rst_ni)pending_clear<=0;else pending_clear<=panic_accept;
+    assign native_clear=pending_clear;
+  end else begin: immediate_cancel_delivery
+    assign native_clear=1'b0;
+  end endgenerate
+  assign engine_clear=RUNTIME_EFFECTS_ENABLE ? native_clear:panic_accept;
+  assign cancel_delivery_pending_o=native_clear;
   // Legacy partial loading can start on the cancellation edge: 32 issues,
   // three generator-valid stages, one timbre-ROM stage, plus edge margin.
   // The render tail is shorter: five sine, three mix, six quantizer stages.
@@ -283,14 +300,14 @@ module gw138k_event_workstation #(
   // Normal envelope/quantizer tails remain covered by frame_inflight through
   // the joined effects completion; cancellation uses the explicit tail fence.
   assign render_idle_o=rst_ni && (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0) &&
-      !pending && !frame_inflight && !synth_joined && !vec_joined &&
+      !native_clear && !pending && !frame_inflight && !synth_joined && !vec_joined &&
       // Runtime readiness also vetoes this cycle's configuration accept.
       // Idle observes stored work/history instead, so a held config request
       // cannot feed through effect admission and back to its drain fence.
       !load_busy && !mix_busy && vec_ready && (RUNTIME_EFFECTS_ENABLE ? fx_quiet : fx_ready) &&
       !synth_valid_o && !vec_valid && !sample_valid_o && !runtime_config_busy && !runtime_fault;
   assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
-      !synth_joined && !vec_joined && !panic_accept && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
+      !synth_joined && !vec_joined && !panic_accept && !native_clear && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
       (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_configuration
     logic busy,is_config,pending_rate,committed_rate,failed;
@@ -299,7 +316,7 @@ module gw138k_event_workstation #(
     // while configuration drains, but no started frame may be reconfigured.
     wire pipeline_quiet=runtime_quiescent && fx_quiet && !load_busy && !mix_busy &&
         vec_ready && !synth_joined && !vec_joined && !synth_valid_o && !vec_valid &&
-        !sample_valid_o && (!frame_inflight || pending);
+        !sample_valid_o && !native_clear && (!frame_inflight || pending);
     wire config_accept=rate_commit_i && rate_ready_o;
     wire history_accept=history_clear_i && history_ready_o;
     assign runtime_config_busy=busy;
@@ -408,7 +425,7 @@ module gw138k_event_workstation #(
     assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? 2'd3 : 2'd2;
   end else if(RUNTIME_RATE_ENABLE) begin: runtime_engines
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
-      .clk_i,.rst_ni,.panic_i(panic_accept),.sample_ce_i(core_ce),
+      .clk_i,.rst_ni,.panic_i(engine_clear),.sample_ce_i(core_ce),
       .rate_commit_i(engine_rate_commit),.rate_44100_i,
       .rate_ready_o(runtime_rate_ready),.applied_rate_44100_o(engine_rate),
       .quiescent_o(runtime_quiescent),
@@ -487,7 +504,7 @@ module gw138k_event_workstation #(
   end
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
     workstation_runtime_stereo_effects #(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
-      .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
+      .clk_i,.rst_ni,.clear_i(engine_clear),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
       .synth_gain_i(EXTERNAL_MASTER_VOLUME ? expression_gain : synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),

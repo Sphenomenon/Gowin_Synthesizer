@@ -77,12 +77,12 @@ module workstation_audio_render_service #(
     wire panic_accept;
     wire [9:0] next_cancel_epoch=panic_epoch_o+10'd1;
     reg signed [31:0] held_pcm_left,held_pcm_right;
-    wire core_idle,core_valid,delivery_valid;
+    wire core_idle,core_valid,delivery_valid,cancel_delivery_pending;
     wire signed [31:0] core_left,core_right,delivery_left,delivery_right;
     wire accepted=render_request_i && render_ready_o;
     // Ready promises this one request slot. Register the sample immediately:
     // the existing workstation pending bit gives it priority over new events.
-    assign render_ready_o=rst_ni && !active && (!RUNTIME_EFFECTS_ENABLE ||
+    assign render_ready_o=rst_ni && !active && !cancel_delivery_pending && (!RUNTIME_EFFECTS_ENABLE ||
         (!external_busy && !core_rate_busy && !core_fault && !config_valid_i && !history_clear_i));
     assign render_busy_o=active || (RUNTIME_EFFECTS_ENABLE && (external_busy || core_rate_busy));
     assign sample_ce_o=accepted && (RUNTIME_EFFECTS_ENABLE || !render_44k1_i);
@@ -119,7 +119,7 @@ module workstation_audio_render_service #(
         .sample_valid_o(core_valid),.left_o(core_left),.right_o(core_right),
         .synth_valid_o(),.synth_o(),
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,
-        .panic_epoch_o,.panic_accept_o(panic_accept),.panic_muted_o,.render_idle_o(core_idle),
+        .panic_epoch_o,.panic_accept_o(panic_accept),.panic_muted_o,.cancel_delivery_pending_o(cancel_delivery_pending),.render_idle_o(core_idle),
         .rate_commit_i(core_config),.rate_44100_i(requested_rate),
         .rate_ready_o(core_rate_ready),.applied_rate_44100_o(core_rate),
         .rate_applied_o(core_rate_applied),.rate_busy_o(core_rate_busy),.rate_fault_o(core_fault),

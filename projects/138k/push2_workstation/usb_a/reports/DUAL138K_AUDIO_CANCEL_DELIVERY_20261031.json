@@ -1,0 +1,215 @@
+{
+  "schema": 1,
+  "offline_verification_passed": true,
+  "hardware_tested": false,
+  "physical_timing_verified": false,
+  "new_candidate_prepared": false,
+  "release_ready": false,
+  "scope": "M9 routed timing diagnosis and maintained native cancellation/gain correction; source handoff for the next explicit candidate",
+  "reference_candidate": {
+    "identity": "custom138k-workstation-m-demo-v1-aa7abf5c6454a377",
+    "usercode": "D2103107",
+    "prepared_project": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/workstation/Prj1",
+    "physical_project": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9-physical-v1",
+    "timing_report_sha256": "0a4bee80e5cfae8eb6f7e4b5733bd8e7d98a3ee94ff77942889e20eb0115f18e",
+    "total_setup_violated_endpoints": 6772,
+    "reported_setup_paths": 2000,
+    "reported_path_groups": {
+      "config_to_public_panic_admission_fanout": {
+        "reported_paths": 1708,
+        "worst_slack_ns": -3.625
+      },
+      "vector_event_or_data": {
+        "reported_paths": 141,
+        "worst_slack_ns": -3.494
+      },
+      "other": {
+        "reported_paths": 53,
+        "worst_slack_ns": -3.218
+      },
+      "TF_DMA": {
+        "reported_paths": 51,
+        "worst_slack_ns": -3.643
+      },
+      "final_PCM_gain": {
+        "reported_paths": 47,
+        "worst_slack_ns": -3.618
+      }
+    },
+    "grouping_limit": "Only the global max_paths=2000 table is classified; these are not counts of every failing endpoint."
+  },
+  "previous_consumed_inputs": {
+    "rtl/audio/gw138k_event_workstation.sv": {
+      "prepared_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/workstation/Prj1/src/ae350/gw138k_event_workstation.sv",
+      "sha256": "1357ed198223734c10fafe7bbf0155d784ee35050db742c65df36c0526820706",
+      "enabled_in_actual_gprj": true
+    },
+    "rtl/audio/workstation_audio_render_service.sv": {
+      "prepared_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/workstation/Prj1/rtl/audio/workstation_audio_render_service.sv",
+      "sha256": "4ed2b2bb66581071647cb632778b96a33f75a0630aaea6224d1b0aa3faded974",
+      "enabled_in_actual_gprj": true
+    },
+    "rtl/audio/workstation_final_pcm_router.sv": {
+      "prepared_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v9/workstation/Prj1/rtl/audio/workstation_final_pcm_router.sv",
+      "sha256": "246b8ca0d838e2843139f637663bd9ab16b1cbc57922365327e5de4226ac87ab",
+      "enabled_in_actual_gprj": true
+    }
+  },
+  "current_source_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "238d1274e1ad5d724632607374f08a8f03a8fe9d4df26c69613f7dbb26de2646",
+    "rtl/audio/workstation_audio_render_service.sv": "148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968",
+    "rtl/audio/workstation_final_pcm_router.sv": "087a0e7a0323ae9e58c3479768145135d20d6765cfeb2e4343abaf075fa92e97",
+    "sim/audio/prove_final_pcm_gain.py": "6a2c1ef1c83e65880b6d0cb3418bf488741f4fac56380ef7f1e9a2ef518fe202",
+    "sim/audio/tb_workstation_runtime_render_service.sv": "dee3092663485871fcc021da3949066395274ee59c12fa1cf74bb387f185debc",
+    "sim/audio/tb_workstation_runtime_audio.sv": "d15ff6aad8872140e968beedaa53684f473798b0131c54a0fa0da765284d309f",
+    "sim/audio/tb_workstation_final_pcm_router.sv": "f924c84de90f6c4e6d92e342c4e126b15b62aad498a11c480366f1329449c11b",
+    "rtl/audio/AUDIO_RENDER_SERVICE.md": "cdbcc288738ab09986c7fec0918e6b4df5460d5373f3839e3c500159584aa78e",
+    "rtl/audio/FINAL_PCM_ROUTING.md": "905f5049796616c767f76d20a17472f70733e28dbcabf7c7f35122a4b3e7949b"
+  },
+  "behavior": {
+    "public_panic": "Existing epoch, held/deferred and frame/join cancellation still commits on the accepted edge.",
+    "native_clear": "Engine/effect clear delivered exactly one compute edge later; event/mode/sample/config admission and service render ready remain closed on that delivery edge.",
+    "legacy": "The added delivery bit is constant zero unless RUNTIME_EFFECTS_ENABLE=1; the default prepared source comparison passed.",
+    "render_valid": "Registered render valid remains asserted if ready closes after slot acceptance, then drops on the real handshake; normal ready path remains one cycle.",
+    "gain": "Mute is factored after unsigned slew; all 42 free input bits prove identical gain and remainder next-state.",
+    "equivalence_limit": "Native event/ready cycles deliberately gain one reserved compute edge after cancellation; this is not a claim of all-output cycle equivalence.",
+    "serial_schedule": "No serial clock/sample gate added; actual bridge/I2S/fanout cadence and bit-level PCM checks remain active."
+  },
+  "evidence": {
+    "runtime_service": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/service/verification.json",
+      "sha256": "1e864e8a9cc11bc5e87e95cb21136dfd5e51c41f76c9829cf882a720d4f33771",
+      "passed": true,
+      "metrics": {
+        "requests": 48691,
+        "responses": 48691,
+        "modeled_frames": 48645,
+        "configs": 21,
+        "histories": 324,
+        "cancels": 11,
+        "wet48": 17185293,
+        "wet44": 18098972,
+        "pitch_checks": 49784608,
+        "max_latency": 1620,
+        "max_steady_latency": 1168,
+        "max_auto_config_latency": 1620,
+        "max_loader_latency": 1204,
+        "posted_writes": 12160,
+        "ordered_fences": 326,
+        "vector_dispatch_cycles": 2056,
+        "vector_accepted_events": 10,
+        "vector_release_cases": 2,
+        "epoch_equality_checks": 115929946,
+        "epoch_advances": 1074,
+        "epoch_wraps": 1,
+        "epoch_match_returns": 36,
+        "simultaneous_request_panic": 3,
+        "epoch_wrap_cases": 1
+      },
+      "inputs_unchanged_during_run": true
+    },
+    "default_legacy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/default-legacy/verification.json",
+      "sha256": "e1aef93c18085dc36c77a02f98d6b07b2d207f9051308be5d207199e02b998d1",
+      "passed": true,
+      "metrics": {
+        "normal_cases": 960,
+        "warm_frames": 4096,
+        "warm_orders": 6,
+        "cc_cases": 64,
+        "lifecycle_cases": 64,
+        "load_cancel_cases": 205,
+        "requests": 8650,
+        "responses": 8650,
+        "max_latency_compute_cycles": 1183,
+        "unsafe_unfenced_idle_cycles": 3351,
+        "max_observed_tail_age": 33,
+        "cancel_zeros": 438,
+        "drained_results": 276,
+        "unsupported": 1,
+        "rejected": 1,
+        "wet_returns": 7395,
+        "wet_seen": 7,
+        "fdn_seen": 1,
+        "pressure_events": 4096
+      },
+      "inputs_unchanged_during_run": true
+    },
+    "final_pcm": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/final-pcm-v2/verification.json",
+      "sha256": "4f404f752a1c8770e7381b79421ecb73f305fc4044e94fb05647d8eb14935b08",
+      "passed": true,
+      "inputs_unchanged_during_run": true
+    },
+    "physical_I2S": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/serial-v3/verification.json",
+      "sha256": "d7cf2c4f3f8f436306ff5f30eb400bc467658a3f04119ead653ab36d829ceaef",
+      "passed": true,
+      "metrics": {
+        "checked": 22532,
+        "good": 22518,
+        "errors": 14,
+        "nonzero": 22361,
+        "first_slots": 15,
+        "config_acks": 16,
+        "applies": 14,
+        "faults": 5,
+        "mid_frame_switches": 10,
+        "max_render_clocks": 1204,
+        "max_slot_clocks": 1229,
+        "max_config_clocks": 454,
+        "writes": 5620,
+        "fences": 35,
+        "analysis_drops": 7515,
+        "record_drops": 13512,
+        "startup_frames": 3,
+        "epoch": 15,
+        "loader_overlap_slots": 6,
+        "pressure_events": 768,
+        "pressure_noteoffs": 26,
+        "wet48": 7,
+        "wet44": 7,
+        "fdn_seen": 3,
+        "boundary_cases": 12
+      },
+      "inputs_unchanged_during_run": true
+    },
+    "gain_all_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/gain-proof-v3.json",
+      "sha256": "2ec3796c0b6e193ff376ca93fa88b3a406fe68cb3f9e6d1861234eeb8925e5db",
+      "passed": true
+    },
+    "cancel_mutations": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/cancel-mutations.json",
+      "sha256": "d49f800f99e0c81892098cef210f8163eb517f81959b09bcf2bbac20bf5c495e",
+      "passed": true
+    },
+    "old_final_pcm_negative": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/audio-control-pipeline-v1/old-final-pcm-negative.json",
+      "sha256": "40ac9d82bd4b1c9d511c1e3c6b8aff5126779885313e95b77d53c0609fa56852",
+      "passed": true
+    }
+  },
+  "independent_effects_pcm_comparisons": {
+    "48000": 24323,
+    "44100": 24322
+  },
+  "cancellation_coverage": {
+    "registered_clear_edges": 1074,
+    "service_boundary_cases": 12,
+    "first_legal_note_mode_followups": 12,
+    "physical_router_I2S_boundaries": 12,
+    "source_hash_seals": true
+  },
+  "retained_failed_or_superseded": {
+    "serial_v1": "Intentionally stopped after the renderer valid/ready correction changed its source; retained as superseded.",
+    "serial_v2": "240-second wall timeout; no passing claim and no established cause inferred from that timeout.",
+    "serial_diagnostic": "Observation-only fixture copy recorded startup/source timestamps; intentionally stopped after the original binary completed 12/12 cases at 611ms in serial-v3. Partial log retained; not acceptance evidence."
+  },
+  "remaining": [
+    "Fresh prepare/source locks and complete synthesis/P&R are owned by the parent task. No physical resource or slack benefit is preclaimed.",
+    "The reported vector event/data paths and remaining TF paths require their own actual post-change timing reports.",
+    "No board SRAM/Flash operation, physical DAC/HDMI or dual-board acceptance is provided by this change."
+  ],
+  "rollback": "Revert only the three maintained RTL changes and accompanying contract/tests, restoring the exact previous consumed hashes above; historical M9 prepared/P&R evidence is unchanged."
+}

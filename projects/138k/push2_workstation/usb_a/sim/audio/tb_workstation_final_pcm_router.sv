@@ -114,6 +114,19 @@ module tb_workstation_final_pcm_router;
         scope=1;offer();scope=0;volume=0;render_done=1;render_left=32'h40000000;render_right=-32'sh40000000;
         @(negedge clk);render_done=0;finish(0,{16'h4000,16'hc000},0);tf_case();
         volume=32768;mute=1;tf_case();if(pcm)$fatal(1,"mute not exact zero");mute=0;
+        // Ready is sampled before the registered render request is visible.
+        // If it closes on that next edge, valid must remain until accepted.
+        scope=1;offer();render_ready=0;
+        repeat(4)begin
+            @(negedge clk);
+            if(!render_request || valid || ready)$fatal(1,"registered request lost across render backpressure");
+        end
+        render_ready=1;@(negedge clk);
+        if(render_request)$fatal(1,"accepted render request was repeated");
+        render_left=32'h40000000;render_right=-32'sh40000000;render_done=1;
+        @(negedge clk);render_done=0;
+        finish(0,{scaled(quant(render_left),model_gain),scaled(quant(render_right),model_gain)},0);
+        scope=0;
         consumed_before=tf_consumed;tf_rate=48000;offer();finish(8'h04,0,1);
         if(tf_consumed!=consumed_before)$fatal(1,"different-rate TF was consumed");
         tf_rate=44100;generation=0;offer();finish(8'h08,0,1);

@@ -39,6 +39,9 @@ AUDIT_SOURCES = (
     'tools/workstation_ae350_rtc.py', 'tools/workstation_board_peripherals.py',
     'tools/workstation_memory.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_usb_fifo_reset.py', 'tools/workstation_runtime_pcm_cdc.py',
+    'tools/workstation_performance_reset.py',
+    'tools/workstation_native_protocol_audit.py', 'tools/workstation_recording_phase1_cdc.py',
+    'tools/workstation_runtime_profile.py', 'tools/workstation_runtime_cdc.py',
 )
 COMMON_FEATURES = {
     'usb_host': 'u_native_usb/host', 'usb_cpu': 'u_native_usb/host/cpu',
@@ -135,6 +138,9 @@ def verify_prepared(output, metadata):
     from tools.workstation_usb_fifo_reset import verify_demo_selection
     verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
         selected_inputs, expected_configuration=spec['configuration'])
+    from tools.workstation_performance_reset import verify_demo_timing
+    verify_demo_timing(stage, (stage / 'constraints/custom_138k.sdc').read_text(), role,
+        metadata.get('demo_runtime_timing'))
     providers = {entry['provider'] for entry in __import__(
         'tools.workstation_profile', fromlist=['PROFILE_REGISTRY']).PROFILE_REGISTRY.values()}
     require([p for p in selected_inputs if p in providers] == [provider], 'selected top provider changed')
@@ -521,6 +527,13 @@ def audit(root, output, metadata):
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist)
+    performance_release = None
+    if metadata.get('demo_runtime_timing') is not None and role == 'W':
+        from tools.workstation_performance_reset import audit as audit_performance, validate_sdc as validate_performance
+        from tools.workstation_performance_reset import netlist as performance_netlist
+        performance_n = performance_netlist(vg_text, mapping='synthesis')
+        performance_release = audit_performance(performance_n, mapping='synthesis')
+        performance_release['installed_sdc'] = validate_performance(sdc, performance_n, performance_release)
     from tools.workstation_demo_policy import POLICY
     recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
         if role == 'W' and retirement['policy'] == POLICY else None)
@@ -546,6 +559,7 @@ def audit(root, output, metadata):
         explicit_clock_audit=clocks, ae350_core_clock_placement=clock_placement, ae350_rtc=rtc,
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,
         demo_usb_fifo_write_reset_audit=fifo_write_reset,
+        demo_performance_release_audit=performance_release,
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,
         recording_diagnostic_retirement_audit=recording_diagnostics,

@@ -33,6 +33,8 @@ Q1.31 转 PCM16 使用旧 PT 的 round-to-nearest、半格远离零，正满幅�
 
 render 分支只向已有 service 发一次请求，并等其一次响应。service 接收后继续负责 PANIC、旧流水排空与单次完成；本组件不复位引擎或停止采样调度。忙时新 slot 拒绝计数，不覆盖旧身份。render 未返回时组件保留旧请求；外层的物理 deadline／超时故障处理不能通过清除此状态伪造排空。
 
+`render_request_o` 是 registered valid。slot 接受时先快照 service ready，下一拍若因取消保留窗而 ready 关闭，router 继续保持 valid，直到实际 `render_request_o && render_ready_i` 握手后撤销；正常 ready 路径仍为单拍请求。取消仍由原 slot 的 cancel epoch 在最终完成前检查，不能把保留请求重新分配给另一 slot。
+
 TF 输入必须是**同一计算域中原子的 `{valid, PCM L/R, actual sample rate, transport generation, error}`**。只有选中 TF、输出身份当前、实际采样率完全相等且 TF generation 当前时才允许消费；静音仍消费当前样本以推进正常时间线。无 PCM 则本 slot 显式零／error，不重放上一对。异率、旧 TF generation 或旧输出身份不消费 PCM；上层可拒绝文件播放，或先封存录音、停发请求、排空、清旧 TF FIFO、完成受控时钟／DSP 切换，再以新代次重试。此组件不作 ASRC、保持或抽取。
 
 现有 `tf_workstation_audio_bridge` 的 `pcm_active`／单独同步的 rate 还没有上述原子身份合同。因此实际 WAV decoder 的 coherent-clock 验证是独立接入点，不能直接把现有异步 TF 桥端口接上并宣称完成。跨域还需在 TF owner 补完整事务／generation／ready、受控 clear 和物理 CDC 证明。

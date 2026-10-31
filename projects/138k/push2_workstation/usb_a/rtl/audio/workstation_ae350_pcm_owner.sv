@@ -74,10 +74,12 @@ module workstation_ae350_pcm_owner #(
         cache_address<=address0;cache_valid<=pair_available;
     end
     wire cache_current=cache_valid && cache_address==address0 && pair_available;
-    wire key_matches=staged_controller==active_controller && staged_generation==active_generation &&
-        staged_stream==active_stream && staged_rate==active_rate && staged_physical==active_physical;
-    wire live_matches=session_live_i && controller_epoch_i==active_controller && transport_generation_i==active_generation;
-    wire physical_matches=context_ready_i && active_physical==physical_epoch_i &&
+    // Express equality as an XOR mismatch reduction in the real-time PCM
+    // permission path; actual mapping/timing needs a new synthesis and P&R.
+    wire key_matches=!(|(staged_controller^active_controller)) && !(|(staged_generation^active_generation)) &&
+        !(|(staged_stream^active_stream)) && !(|(staged_rate^active_rate)) && !(|(staged_physical^active_physical));
+    wire live_matches=session_live_i && !(|(controller_epoch_i^active_controller)) && !(|(transport_generation_i^active_generation));
+    wire physical_matches=context_ready_i && !(|(active_physical^physical_epoch_i)) &&
         active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i;
     wire usable=armed && !failed && live_matches && physical_matches && cpu_ready_i && !tf_busy_i;
     wire prefilled=usable && queued>=10'(PREFILL_FRAMES) && cache_current;
@@ -90,7 +92,15 @@ module workstation_ae350_pcm_owner #(
     // The RAM window has its own complete validation rule. A descriptor's
     // unrelated variable frame mask must not enter the PCM RAM write enable.
     wire accepted_window_write=window_write && full_write && armed && key_matches && !owned[write_slot];
-    wire [127:0] required_mask=~128'd0 >> (128-staged_frames);
+    // The original 32-bit subtract/128-bit shift is exactly a prefix mask for
+    // frame counts 1..128 and zero for every other 32-bit value. Constant bit
+    // thresholds express that rule without a subtract or barrel shifter.
+    wire descriptor_frames_valid=staged_frames>=32'd1 && staged_frames<=32'd128;
+    wire [127:0] required_mask;
+    for(genvar frame_bit=0;frame_bit<128;frame_bit=frame_bit+1)begin:g_required_mask
+        assign required_mask[frame_bit]=descriptor_frames_valid && staged_frames[7:0]>8'(frame_bit);
+    end
+    wire descriptor_missing_frames=|(~written[tail_slot]&required_mask);
     wire new_stream=staged_stream!=0 && (!retired_key_valid ||
         staged_controller!=last_controller || staged_generation!=last_generation || staged_stream>last_stream);
     wire staging_live=session_live_i && staged_controller==controller_epoch_i && staged_generation==transport_generation_i &&
@@ -146,8 +156,8 @@ module workstation_ae350_pcm_owner #(
                 case(command_data_i)
                     1:command_error=armed || selected || history_state!=H_IDLE || !staging_live || !new_stream || &cancel_epoch_o;
                     2:command_error=!usable || !key_matches || staged_slot!= {30'd0,tail_slot} || owned[tail_slot] ||
-                        staged_frames<1 || staged_frames>128 || staged_sequence!=expected_sequence || &expected_sequence ||
-                        (written[tail_slot]&required_mask)!=required_mask;
+                        !descriptor_frames_valid || staged_sequence!=expected_sequence || &expected_sequence ||
+                        descriptor_missing_frames;
                     3:command_error=!key_matches || !prefilled || history_state!=H_IDLE || selected || &cancel_epoch_o;
                     4:command_error=!key_matches || history_state!=H_IDLE || &cancel_epoch_o;
                     5:command_error=!key_matches || history_state==H_FAULT || &cancel_epoch_o;

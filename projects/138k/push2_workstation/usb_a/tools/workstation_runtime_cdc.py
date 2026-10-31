@@ -96,6 +96,10 @@ NATIVE_PERIPHERAL_SDC = (
     *(f'report_timing -{kind} -from_clock [get_clocks {{cpu_core100}}] '
       '-to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1'
       for kind in ('setup', 'hold')),
+    *(f'report_timing -{kind} {origin}-to_clock [get_clocks {{clk_50m}}] '
+      '-max_paths 100 -max_common_paths 1'
+      for origin in ('-from_clock [get_clocks {clk_50m}] ', '')
+      for kind in ('setup', 'hold')),
 )
 AUDIT_SOURCES = tuple(dict.fromkeys((*CLOCK_AUDIT_SOURCES,
     'tools/workstation_runtime_cdc.py', 'tools/workstation_runtime_profile.py',

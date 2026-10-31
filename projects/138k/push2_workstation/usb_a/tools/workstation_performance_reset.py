@@ -48,6 +48,58 @@ def proposed_constraints():
     return '\n'.join(lines) + '\n'
 
 
+DEMO_TIMING_POLICY = 'independent-demo-runtime-timing-v1'
+DEMO_TIMING_TOOL = 'tools/workstation_performance_reset.py'
+
+
+def demo_clock_reports():
+    # Global worst-path limits can otherwise hide the much shorter 50 MHz
+    # failures behind thousands of audio-domain paths. These only report.
+    return '\n'.join(
+        f'report_timing -{kind} {origin}-to_clock [get_clocks {{clk_50m}}] '
+        '-max_paths 100 -max_common_paths 1'
+        for origin in ('-from_clock [get_clocks {clk_50m}] ', '')
+        for kind in ('setup', 'hold')) + '\n'
+
+
+def demo_timing_lines(role):
+    require(role in ('M', 'W'), 'unknown DEMO timing role')
+    return ((proposed_constraints() if role == 'W' else '') + demo_clock_reports()).splitlines()
+
+
+def select_demo_timing(stage, sdc, role):
+    """Explicit DEMO-only additions; historical and accepted profiles stay out."""
+    lines = demo_timing_lines(role)
+    require(all(line not in sdc.splitlines() for line in lines), 'DEMO timing lines already installed')
+    source = Path(stage) / DEMO_TIMING_TOOL
+    result = sdc + ('' if not sdc or sdc.endswith('\n') else '\n') + '\n'.join(lines) + '\n'
+    return result, dict(policy=DEMO_TIMING_POLICY, role=role, source=DEMO_TIMING_TOOL,
+        source_sha256=digest(source), added_lines=lines,
+        performance_release_selected=role == 'W', clock_or_business_exceptions_added=False,
+        synchronizer_clear_exception_count=6 if role == 'W' else 0,
+        routed_timing_verified=False)
+
+
+def verify_demo_timing(stage, sdc, role, evidence):
+    lines = demo_timing_lines(role)
+    if evidence is None:
+        require(all(line not in sdc.splitlines() for line in lines),
+                'DEMO timing additions lack sealed selection evidence')
+        return dict(mode='sealed_legacy_without_demo_timing_additions')
+    require(evidence.get('source') == DEMO_TIMING_TOOL, 'DEMO timing source changed')
+    require(evidence.get('source_sha256') == digest(Path(stage) / DEMO_TIMING_TOOL),
+            'DEMO timing sealed source identity changed')
+    expected = dict(policy=DEMO_TIMING_POLICY, role=role, source=DEMO_TIMING_TOOL,
+        source_sha256=evidence['source_sha256'], added_lines=lines,
+        performance_release_selected=role == 'W', clock_or_business_exceptions_added=False,
+        synchronizer_clear_exception_count=6 if role == 'W' else 0,
+        routed_timing_verified=False)
+    require(evidence == expected, 'DEMO timing selection metadata changed')
+    require(all(sdc.splitlines().count(line) == 1 for line in lines),
+            'DEMO timing selected line absent or duplicated')
+    return dict(evidence, installed_lines_verified=True)
+
+
 def audit(n, *, mapping):
     g = Graph(n)
     sources = [g.register('u_reset', 'started'), g.register('u_audio_clock', 'audio_reset_pipe', 3)]
@@ -133,7 +185,8 @@ def validate_sdc(sdc, n, result):
             require(selected == {expected}, 'release data bound query inventory changed')
     protected = result['protected_later_data_and_functional_clear_pins']
     unrelated_payload_exceptions = []
-    for line in sdc.splitlines():
+    for raw in sdc.splitlines():
+        line = raw.strip()
         if not line.startswith('set_false_path'):
             continue
         for kind, body in re.findall(r'-to\s+\[(get_pins|get_regs)\s+\{([^}]+)\}\]', line):
