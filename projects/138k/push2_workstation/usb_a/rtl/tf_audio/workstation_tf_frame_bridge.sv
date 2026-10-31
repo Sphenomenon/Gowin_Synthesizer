@@ -8,7 +8,8 @@
 // barrier. Stream changes never reset either side of the payload FIFO.
 module workstation_tf_frame_bridge #(
     parameter integer FIFO_ADDRESS_BITS=4,
-    parameter [31:0] INITIAL_GENERATION=32'd0
+    parameter [31:0] INITIAL_GENERATION=32'd0,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire rst_ni,source_clk_i,compute_clk_i,
     // Source-domain pulses/held controls. Each high invalidate edge is one
@@ -35,7 +36,8 @@ module workstation_tf_frame_bridge #(
     output reg [31:0] expected_generation_o,
     output reg expected_generation_valid_o,generation_change_o,
     output wire media_quiescent_o,
-    output reg [31:0] stale_discard_count_o,quiesce_discard_count_o
+    output reg [31:0] stale_discard_count_o,quiesce_discard_count_o,
+    input wire common_reset_ni
 );
     initial begin
         if(FIFO_ADDRESS_BITS<2 || FIFO_ADDRESS_BITS>8)
@@ -59,12 +61,27 @@ module workstation_tf_frame_bridge #(
         increment=&value ? value : value+1'b1;
     endfunction
     localparam [31:0] INITIAL_GRAY=(INITIAL_GENERATION>>1)^INITIAL_GENERATION;
+    // The monotonic startup grant crosses as data. Only the common
+    // assertion reaches async reset pins; every release bit uses local data.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_source;
+    always @(posedge source_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_source<=0;else startup_source<={startup_source[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_compute;
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_compute<=0;else startup_compute<={startup_compute[0],rst_ni};
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] source_release,compute_release;
-    always @(posedge source_clk_i or negedge rst_ni)
-        if(!rst_ni)source_release<=0;else source_release<={source_release[1:0],1'b1};
-    always @(posedge compute_clk_i or negedge rst_ni)
-        if(!rst_ni)compute_release<=0;else compute_release<={compute_release[1:0],1'b1};
+    always @(posedge source_clk_i or negedge common_reset_n)
+        if(!common_reset_n)source_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_source[1])source_release<=0;
+        else source_release<={source_release[1:0],1'b1};
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)compute_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_compute[1])compute_release<=0;
+        else compute_release<={compute_release[1:0],1'b1};
     wire source_reset_n=source_release[2],compute_reset_n=compute_release[2];
+    wire source_state_reset_n=SEPARATE_COMMON_RESET ? source_reset_n:rst_ni;
+    wire compute_state_reset_n=SEPARATE_COMMON_RESET ? compute_reset_n:rst_ni;
     reg [31:0] source_generation_gray,ack_binary,ack_gray;
     reg source_seen_edge,quiet_published;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [31:0] generation_meta,generation_sync,ack_meta,ack_sync;
@@ -73,8 +90,8 @@ module workstation_tf_frame_bridge #(
     wire unsupported=source_sample_rate_i!=20'd48000 && source_sample_rate_i!=20'd44100;
     // Count invalidations from the first edge after COMMON reset, including
     // local FIFO release. No first-clear identity can be lost to reset skew.
-    always @(posedge source_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge source_clk_i or negedge source_state_reset_n)begin
+        if(!source_state_reset_n)begin
             source_generation_o<=INITIAL_GENERATION;source_generation_gray<=INITIAL_GRAY;
             source_seen_edge<=0;
             ack_meta<=INITIAL_GRAY;ack_sync<=INITIAL_GRAY;expected_valid_sync<=0;quiet_sync<=0;quiesce_return_sync<=0;
@@ -121,16 +138,18 @@ module workstation_tf_frame_bridge #(
     assign tf_valid_o=compute_reset_n && held_valid && expected_generation_valid_o &&
         !cancel_pending && !quiesce_sync[1] && tf_generation_o==expected_generation_o;
     assign {tf_generation_o,tf_sample_rate_o,tf_error_o,tf_left_o,tf_right_o}=held_packet;
-    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
-        (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire));
+    // A consumed packet frees this local slot on the next compute edge.
+    // Do not feed the final router's rate/epoch/ready cone back into the
+    // 85-bit payload capture enable through same-edge replacement.
+    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending && !held_valid;
     assign media_quiescent_o=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
         quiesce_sync[1] && quiet_settle==5 && !read_valid && !held_valid;
 
     // Both Gray buses change by at most one count per producing edge. Physical
     // integration MUST bound bit skew/max delay to the producing period; the
     // continuous nominal76.8MHz compute domain must keep up with decoder50.
-    always @(posedge compute_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge compute_clk_i or negedge compute_state_reset_n)begin
+        if(!compute_state_reset_n)begin
             generation_meta<=INITIAL_GRAY;generation_sync<=INITIAL_GRAY;source_alive_sync<=0;quiesce_sync<=0;
             expected_generation_o<=INITIAL_GENERATION;expected_generation_valid_o<=0;generation_change_o<=0;
             ack_binary<=INITIAL_GENERATION;ack_gray<=INITIAL_GRAY;

@@ -17,12 +17,13 @@ static void guards(void) {
     for(unsigned i=0;i<GUARD;i++)require(actual_store[i]==0xdeadbeefu && actual[WORDS+i]==0xdeadbeefu,"page guard overwritten");
 }
 static void compare(void) {
-    require(!memcmp(expected,actual,sizeof(expected)),"historical pixel oracle differs");guards();comparisons++;
+    require(!memcmp(expected,actual,sizeof(expected)),"full render pixel oracle differs");guards();comparisons++;
 }
 static void seed(ui_model *m,unsigned k) {
     ui_init(m);m->mode=k%3;m->sound=k%5;m->route=k%4;m->gate=k&1;
     m->sw=(k*73u)&255u;m->voices=(k*7u)%33u;
     m->pc_faults=k%4==0?0:k%4==1?1:k%4==2?1024:512;
+    m->volume=(k*2593u)%32769u;m->effect_order=(k&1u)?0x12:0x24;m->clock_actual=(k%3==0)?0:(2u|(k&1u));
 }
 static void sliced_render(const ui_model *m,unsigned touch,unsigned stride) {
     for(unsigned y=0;y<UI_FRAME_ROWS;y+=stride){ui_render_rows(actual,m,touch,y,stride);slices++;guards();}
@@ -37,10 +38,10 @@ int main(void) {
         reference_ui_render(expected,&m,k&1);ui_render(actual,&m,k&1);compare();
         for(unsigned i=0;i<WORDS;i++)actual[i]=0x76543210u;
         sliced_render(&m,k&1,k%3==0?2:k%3==1?7:31);compare();
-        reference_ui_patch(expected,&m,&next,k&1,(k+1)&1);
+        reference_ui_render(expected,&next,(k+1)&1);
         sliced_patch(&m,&next,k&1,(k+1)&1,k%2?2:17);compare();
         ui_patch(actual,&next,&m,(k+1)&1,k&1);
-        reference_ui_patch(expected,&next,&m,(k+1)&1,k&1);compare();
+        reference_ui_render(expected,&m,k&1);compare();
     }
     /* Keep every word outside the requested physical rows intact, including
      * odd row/glyph boundaries, bottom clamping and unsigned overflow inputs. */
@@ -52,7 +53,7 @@ int main(void) {
         unsigned end=first<UI_FRAME_ROWS?first+(count>UI_FRAME_ROWS-first?UI_FRAME_ROWS-first:count):0;
         for(unsigned patch=0;patch<2;patch++) {
             reference_ui_render(before,&m,1);memcpy(actual,before,sizeof(before));
-            if(patch){memcpy(expected,before,sizeof(expected));reference_ui_patch(expected,&m,&n,1,0);ui_patch_rows(actual,&m,&n,1,0,first,count);}
+            if(patch){memcpy(expected,before,sizeof(expected));reference_ui_render(expected,&n,0);ui_patch_rows(actual,&m,&n,1,0,first,count);}
             else{reference_ui_render(expected,&n,0);ui_render_rows(actual,&n,0,first,count);}
             slices++;
             for(unsigned i=0;i<WORDS;i++) {

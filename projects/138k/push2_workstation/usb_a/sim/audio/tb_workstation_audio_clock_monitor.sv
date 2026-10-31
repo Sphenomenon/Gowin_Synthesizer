@@ -10,12 +10,12 @@ module tb_workstation_audio_clock_monitor;
     wire good48,good44,present48,present44,low48,low44;
     wire [31:0] edges48,edges44;
     workstation_audio_clock_monitor mon48 (
-        .clk_i(clk),.rst_ni(rst_n),.source_clk_i(reference48),.restart_i(restart48),.expect_44k1_i(1'b0),
+        .common_reset_ni(1'b1),.clk_i(clk),.rst_ni(rst_n),.source_clk_i(reference48),.restart_i(restart48),.expect_44k1_i(1'b0),
         .qualified_o(good48),.clock_present_o(present48),.stopped_low_o(low48),
         .window_valid_o(),.window_good_o(),.window_edges_o(edges48)
     );
     workstation_audio_clock_monitor mon44 (
-        .clk_i(clk),.rst_ni(rst_n),.source_clk_i(reference44),.restart_i(1'b0),.expect_44k1_i(1'b1),
+        .common_reset_ni(1'b1),.clk_i(clk),.rst_ni(rst_n),.source_clk_i(reference44),.restart_i(1'b0),.expect_44k1_i(1'b1),
         .qualified_o(good44),.clock_present_o(present44),.stopped_low_o(low44),
         .window_valid_o(),.window_good_o(),.window_edges_o(edges44)
     );

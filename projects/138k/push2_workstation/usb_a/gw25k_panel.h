@@ -100,9 +100,25 @@ static void gw_decimal(char *p,unsigned n,unsigned digits) {
  * mode, effective FX mask and the 8-bit bend-table index. It does not report
  * the raw Program number, raw 14-bit bend or independent FX master state. */
 static void gw_format_scene(void) {
+#ifndef WORKSTATION_WORKER_DEMO
     static const char tones[6][8]={"FLUTE  ","STRINGS","BRASS  ","MARIMBA","PIANO  ","UNKNOWN"};
+#endif
     static const char routes[4][7]={"STEREO","LEFT  ","RIGHT ","MUTED "};
     const uint32_t *s=gw.scene;
+#ifdef WORKSTATION_WORKER_DEMO
+    /* Values are committed audio-owner feedback, never a Host shadow of the
+     * touch requests. W reuses options[20:0] for its three D depths. */
+    gw_copy(gw.line1,"D STREAM  GAIN 000  OUT ",sizeof "D STREAM  GAIN 000  OUT ");
+    gw_decimal(gw.line1+15,(s[0]>>16)>=32768u?127u:(s[0]>>24),3);
+    gw_copy(gw.line1+24,routes[(s[0]>>5)&3u],7);
+    gw_copy(gw.line2,"CRUSH 000 DRIVE 000 SEND 000",sizeof "CRUSH 000 DRIVE 000 SEND 000");
+    gw_decimal(gw.line2+6,s[1]&127u,3);
+    gw_decimal(gw.line2+16,(s[1]>>7)&127u,3);
+    gw_decimal(gw.line2+25,(s[1]>>14)&127u,3);
+    gw_copy(gw.line3,"FX DCR 000  TOUCH A-C HOLD",sizeof "FX DCR 000  TOUCH A-C HOLD");
+    gw.line3[7]=(s[0]&1u)?'1':'0';gw.line3[8]=(s[0]&2u)?'1':'0';gw.line3[9]=(s[0]&4u)?'1':'0';
+    gw_copy(gw.line4,"D-F CHAIN G MASTER H CLEAR",sizeof "D-F CHAIN G MASTER H CLEAR");
+#else
     unsigned profile=(s[0]>>7)&7u,mode=(s[0]>>3)&3u;
     gw_copy(gw.line1,"NOTE 000  VEL 000  GAIN 000  TONE ",sizeof "NOTE 000  VEL 000  GAIN 000  TONE ");
     gw_decimal(gw.line1+5,s[4]&127u,3);gw_decimal(gw.line1+14,(s[4]>>7)&127u,3);
@@ -120,12 +136,17 @@ static void gw_format_scene(void) {
     gw_copy(gw.line4,"GLIDE 000  SUSTAIN OFF",sizeof "GLIDE 000  SUSTAIN OFF");
     gw_decimal(gw.line4+6,(s[1]>>11)&127u,3);
     gw_copy(gw.line4+19,(s[1]&8u)?"ON ":"OFF",3);
+#endif
 }
 static uint16_t gw_pixel(unsigned x,unsigned y) {
     const uint32_t *s=gw.scene;
     uint16_t color=y<21?0x18e3:0x0841;
     if(y==21 || y==100)color=0x2b8d;
+#ifdef WORKSTATION_WORKER_DEMO
+    if(gw_text(x,y,8,4,"GOWIN D STREAM",2))return 0x7ffb;
+#else
     if(gw_text(x,y,8,4,"GOWIN SYNTH",2))return 0x7ffb;
+#endif
     if(gw_text(x,y,302,7,"USB MIDI / PL",1))return 0xbdf7;
     if(gw_text(x,y,8,30,gw.line1,1))return 0xffff;
     if(gw_text(x,y,8,44,gw.line2,1))return 0xbdf7;

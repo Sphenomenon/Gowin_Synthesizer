@@ -131,12 +131,14 @@ LEGACY_BLE_RELEASE_RESET = (
 LEGACY_BLE_SDC_SHA256 = '0876e0c5d565ddcc44b1a995535ff990144b45c6d43da11f6bd238ff75ee7826'
 
 
-def bluetooth_constraints(sdc):
+def bluetooth_constraints(sdc, *, raw_common_reset=False):
     """Keep BLE payload/UART constraints; replace one reviewed reset query.
 
     The runtime's BLE release registers share the reviewed source aliases in
     runtime_cdc_bundle. This adapter does not select or filter any other CDC.
     """
+    if type(raw_common_reset) is not bool:
+        raise ValueError('runtime BLE raw common reset selection must be boolean')
     lines = sdc.splitlines(keepends=True)
     removed = LEGACY_BLE_RELEASE_RESET + '\n'
     if lines.count(removed) != 1:
@@ -145,16 +147,21 @@ def bluetooth_constraints(sdc):
     if before != LEGACY_BLE_SDC_SHA256:
         raise ValueError('runtime BLE SDC input identity changed')
     selected = ''.join(line for line in lines if line != removed)
-    selectors = [pattern(scope, stem, 'CLEAR', True)
-                 for _, scope, stem, _, _ in BLE_RELEASE_ALIASES]
+    selectors = ([pattern('u_ble_pcm_cdc', stem, 'CLEAR', True)
+                  for stem in ('source_release', 'destination_release')]
+                 if raw_common_reset else
+                 [pattern(scope, stem, 'CLEAR', True)
+                  for _, scope, stem, _, _ in BLE_RELEASE_ALIASES])
     replacement = 'set_false_path -to ' + query(' '.join(selectors))
     return dict(sdc=selected, evidence=dict(
-        policy='native_runtime_ble_release_alias_v1',
+        policy='native_runtime_ble_own_release_v1' if raw_common_reset else 'native_runtime_ble_release_alias_v1',
         input_sha256=before, selected_sha256=hashlib.sha256(selected.encode()).hexdigest(),
         omitted=[dict(constraint=LEGACY_BLE_RELEASE_RESET,
             removed_selectors=['u_ble_pcm_cdc/source_release*/CLEAR',
                                'u_ble_pcm_cdc/destination_release*/CLEAR'],
-            reason='native runtime uses reviewed shared release aliases; the legacy names are absent in the sealed runtime VG')],
+            reason=('raw-common native runtime keeps actual BLE release pins with exact synthesis suffix selectors'
+                    if raw_common_reset else
+                    'native runtime uses reviewed shared release aliases; the legacy names are absent in the sealed runtime VG'))],
         replacement=dict(owner='runtime_cdc_bundle', constraint=replacement, selectors=selectors),
         tool_query_resolution_verified=False, physical_cdc_accepted=False))
 
@@ -229,12 +236,12 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True):
             probe['pins'].get('clk_12m288') != 'K18'):
         raise ValueError('reviewed dual-audio reference pins changed')
     shared = shared_constraints(shared_crossings['sdc'])
-    runtime_cdc = runtime_cdc_bundle(root)
+    runtime_cdc = runtime_cdc_bundle(root, raw_common_reset=True)
     runtime_pcm_cdc = runtime_pcm_cdc_bundle(root)
     owner_reset = usb2_owner_reset_bundle(root)
     chorus_source = chorus_source_bundle(root)
     delay_fifo_storage = delay_storage_source_bundle(root)
-    bluetooth = bluetooth_constraints(BLUETOOTH_SDC)
+    bluetooth = bluetooth_constraints(BLUETOOTH_SDC, raw_common_reset=True)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
     selected = 'u_managed/runtime/clocks/selector/CLKOUT'

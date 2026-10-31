@@ -38,7 +38,7 @@ module tb_workstation_audio_clock_i2s;
         .STOP_LOW_CYCLES(8),.COUNTER_BITS(12)
         // Keep the actual production 40 ms per-phase switch timeout.
     ) domain (
-        .clk_50m_i(clk50),.rst_ni(rst_n),.reference_48_i(ref48),.reference_44_i(ref44),
+        .common_reset_ni(1'b1),.clk_50m_i(clk50),.rst_ni(rst_n),.reference_48_i(ref48),.reference_44_i(ref44),
         .request_i(request),.request_44k1_i(target44),.recover_i(recover),
         .frame_quiescent_i(quiet_sync[1] && idle_sync[1]),
         .prefill_ready_i(prefill_sync[1]),.output_running_i(running_sync[1]),

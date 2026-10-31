@@ -13,6 +13,12 @@ static void fail(uint32_t reason) {
 }
 static void audio_checks(void) {
     uint32_t state[9];
+#ifdef A138_SINGLE_BLE_RECORDING
+    /* W has no short recorder, cue player, or note engine. Its continuous D
+     * path is exercised through real media; startup never injects test notes. */
+    if(!a138_probe(AUDIO_BASE))fail(0xBAD00001);
+    a138_snapshot(AUDIO_BASE,state);
+#else
     a138_record frame;
     const a138_cue cues[2]={{4,0x55},{16,0}};
     if(!a138_probe(AUDIO_BASE) || !(a138_read(AUDIO_BASE,A138_CAPABILITIES)&8u)) fail(0xBAD00001);
@@ -48,6 +54,7 @@ static void audio_checks(void) {
     a138_snapshot(AUDIO_BASE,state);begin=state[1];
     while(state[0] && (uint32_t)(state[1]-begin)<48000u) a138_snapshot(AUDIO_BASE,state);
     if(state[0]) fail(0xBAD00008);
+#endif
 }
 
 static void ddr_checks(void) {

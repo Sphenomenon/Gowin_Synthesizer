@@ -20,6 +20,14 @@ typedef struct {
     uint32_t last_ack_offset,last_ack_crc,extended_limit;
     uint8_t open,pending,last_ack_valid,mode,flags;
 } a138_ble_transfer;
+#ifdef A138_SINGLE_BLE_RECORDING
+/* A receipt is a request result, never an independent recording object. */
+typedef struct {
+    uint32_t token,opcode,phase,status,operation_id,object_id;
+    uint32_t frames,committed,crc;
+} a138_ble_local_record_result;
+enum { A138_LOCAL_NONE=0,A138_LOCAL_QUEUED=1,A138_LOCAL_WAIT=2,A138_LOCAL_DONE=3 };
+#endif
 typedef struct {
     a138_business_bus mailbox;
     a138_record_bus data;
@@ -34,6 +42,11 @@ typedef struct {
     uint32_t phase,opened,bound,fault,completion_phase,completion_status,completion_length;
     uint8_t active_read,active_replay;
     uint8_t completion_payload[64];
+#ifdef A138_SINGLE_BLE_RECORDING
+    a138_ble_local_record_result local_record;
+    uint32_t local_limit;
+    uint8_t local_pending,active_local;
+#endif
 #ifdef A138_BLE_BUSINESS_DIAGNOSTICS
     /* Observation only; never used to decide command/task/transfer behavior. */
     uint32_t diagnostic_claimed,diagnostic_completed;
@@ -47,6 +60,20 @@ typedef struct {
  * lost task memory and therefore keeps the existing hardware reset fence. */
 void a138_ble_business_init(a138_ble_business_owner *,a138_business_bus,a138_record_bus);
 void a138_ble_business_pump(a138_ble_business_owner *);
+#ifdef A138_SINGLE_BLE_RECORDING
+/* Bounded single-caller CPU/UI proxy for the SAME BLE object/CRC/task owner.
+ * Only START(20), STOP(21), CLEAR(23) are accepted. START has a frame limit;
+ * STOP/CLEAR bind the actual current object at dispatch. Return1 means queued,
+ * not applied. Poll returns DONE only after actual first frame (START), native
+ * DDR READY (STOP), or actual raw CLEAR; the saved token is never auto-retried.
+ * Local commands serialize with BLE primitives and share monotonic IDs. The
+ * CPU observer-reset fence remains in force. No GATT connection is required. */
+int a138_ble_record_local_submit(a138_ble_business_owner *,uint32_t opcode,uint32_t limit);
+int a138_ble_record_local_poll(const a138_ble_business_owner *,a138_ble_local_record_result *);
+int a138_ble_record_firmware_submit(uint32_t opcode,uint32_t limit);
+int a138_ble_record_firmware_poll(a138_ble_local_record_result *);
+int a138_ble_record_firmware_facts(a138_record_data_facts *);
+#endif
 void a138_ble_business_firmware_init(void);
 void a138_ble_business_firmware_pump(void);
 #endif

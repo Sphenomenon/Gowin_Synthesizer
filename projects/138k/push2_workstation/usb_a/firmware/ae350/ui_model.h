@@ -4,6 +4,8 @@
 typedef struct {
  unsigned mode,sound,route,gate,sw,note,keyboard,old_down,panic_epoch,panic_latched;
  uint32_t held[4];unsigned voices,pc_faults;
+ /* Read-only observations. Requests still pass through the control owner. */
+ unsigned volume,effect_order,clock_actual,d_depths[3];
 } ui_model;
 enum { UI_CHANGED=1,UI_ANALYSIS=2 };
 static const unsigned ui_notes[15]={60,62,64,65,67,69,71,72,74,76,77,79,81,83,84};
@@ -19,8 +21,17 @@ static inline int ui_hit(unsigned x,unsigned y) {
  for(unsigned i=0;i<15;i++)if(x<ui_white_x(i+1))return (int)ui_notes[i];
  return -1;
 }
-static inline void ui_init(ui_model*m) {*m=(ui_model){.note=60};}
+static inline void ui_init(ui_model*m) {*m=(ui_model){.note=60,.effect_order=0x24
+#ifdef A138_SINGLE_BLE_RECORDING
+ ,.mode=3
+#endif
+ };}
 static inline unsigned ui_touch(ui_model*m,unsigned x,unsigned y,unsigned down) {
+#ifdef A138_SINGLE_BLE_RECORDING
+ /* W's 25K is the control surface. HDMI consumes the committed D snapshot;
+  * the retired local synth keyboard/mode controls cannot create requests. */
+ (void)x;(void)y;m->old_down=!!down;return 0;
+#else
  unsigned result=0;int hit=ui_hit(x,y);
  if(m->panic_latched) {m->old_down=!!down;if(!down)m->panic_latched=0;return 0;}
  if(down&&hit>=0) {
@@ -36,6 +47,7 @@ static inline unsigned ui_touch(ui_model*m,unsigned x,unsigned y,unsigned down) 
   }
  }
  m->old_down=!!down;return result;
+#endif
 }
 static inline unsigned ui_panic(ui_model*m,unsigned epoch) {
  if(m->panic_epoch==epoch)return 0;

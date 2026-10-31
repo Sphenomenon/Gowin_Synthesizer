@@ -2,7 +2,8 @@
 // USB runs at 48 MHz; sample processing remains in the 76.8 MHz audio domain.
 module push2_usb_a_control #(
     parameter integer STOP_CLOCK_QUEUE_FENCE=0,
-    parameter bit CNN_FOLLOW_ENABLE=1'b1
+    parameter bit CNN_FOLLOW_ENABLE=1'b1,
+    parameter bit WORKER_DEMO=1'b0
 )(
     input wire clk,reset_n,audio_clk,audio_reset_n,
     output wire audio_lifecycle,audio_cancel,
@@ -91,7 +92,11 @@ module push2_usb_a_control #(
         // A further six edges empty the read buffer and settle pointer/consume
         // feedback before the existing two-USB-edge write release. Normal
         // events stay fenced; lifecycle cancellation remains independent.
-        assign queue_flushing=queue_fifo_reset || !drain_release[5];
+        // The USB request may assert asynchronous reset pins, but it must
+        // not bypass a local release flop into audio FIFO read/data control.
+        // queue_release asserts without an audio edge and releases only on
+        // real audio edges, including when PANIC arrives with audio stopped.
+        assign queue_flushing=!queue_release[5] || !drain_release[5];
         assign queue_read_ready=drain_release[5] && !queue_fifo_reset;
     end else begin: legacy_queue_release
         assign queue_fifo_reset=input_reset;
@@ -102,7 +107,7 @@ module push2_usb_a_control #(
         if(input_reset) queue_write_release<=0;
         else queue_write_release<={queue_write_release[0],queue_read_ready};
     wire queue_write_ready=queue_write_release[1];
-    assign push_connected=connected && !generic_midi;
+    assign push_connected=connected && !generic_midi && !WORKER_DEMO;
     reg [31:0] received,frames,out_errors,in_diagnostics;
     wire raw_ready,valid,map_ready;wire [3:0] kind,cable,channel;wire [6:0] a,b;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] event_release;
@@ -137,11 +142,21 @@ module push2_usb_a_control #(
                          !input_reset && connected && generic_midi) :
         pixel_read ? pixel_loaded : 1'b1);
     wire accepted=select && ready;
+`ifndef WORKSTATION_DEMO_D_ONLY
     push2_midi_rx midi(.clk(clk),.rst(input_reset),
         .usb_valid(raw_store && !raw_panic && !input_reset && queue_write_ready && push_warmup==0 && push_connected),.usb_ready(raw_ready),.usb_event(wdata),
         .event_valid(valid),.event_ready(map_ready),.event_kind(kind),.event_cable(cable),
         .event_channel(channel),.event_data1(a),.event_data2(b),.event_pitch(),
         .events_received(),.packets_ignored());
+`else
+    assign raw_ready=1'b0;
+    assign valid=1'b0;
+    assign kind=4'd0;
+    assign cable=4'd0;
+    assign channel=4'd0;
+    assign a=7'd0;
+    assign b=7'd0;
+`endif
     wire [63:0] held;wire [6:0] note,velocity;wire [31:0] mapped,ignored;
     wire guide_toggle,guide_mode,guide_target_valid;
     wire guide_prev,guide_next,guide_select;
@@ -167,22 +182,27 @@ module push2_usb_a_control #(
     // A recovered TF transport stall rescans and briefly invalidates the
     // playlist; the hold keeps the menu on the practice screen for that
     // window, and only a list that stays invalid clears the selection.
+`ifndef WORKSTATION_DEMO_D_ONLY
     push2_playlist_hold #(.HOLD_CYCLES(29'd480_000_000)) u_playlist_hold(
         .clk(clk),.reset_n(reset_n),
         .word_valid(playlist_valid && playlist_ready),.word(playlist_word),
         .track_count(guide_track_count));
+`else
+    assign guide_track_count=5'd0;
+`endif
     wire [6:0] guide_target_note;
     wire [63:0] guide_mask;
     wire [15:0] guide_score_count,guide_cursor;
     wire [15:0] guide_wrong_count;
     reg analysis_done_meta,analysis_done_sync;
-    generate if(CNN_FOLLOW_ENABLE)begin: cnn_analysis_status
+    generate if(CNN_FOLLOW_ENABLE && !WORKER_DEMO)begin: cnn_analysis_status
         always @(posedge clk or negedge reset_n)
             if(!reset_n)begin analysis_done_meta<=0;analysis_done_sync<=0;end
             else begin analysis_done_meta<=analysis_done;analysis_done_sync<=analysis_done_meta;end
     end else begin: no_cnn_analysis_status
         assign analysis_done_sync=1'b0;
     end endgenerate
+`ifndef WORKSTATION_DEMO_D_ONLY
     push2_controls #(.INITIAL_VOLUME(127)) controls(.clk(clk),.rst(input_reset),.connected(connected),
         .valid(valid && !generic_midi),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
         .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
@@ -191,9 +211,23 @@ module push2_usb_a_control #(
         .guide_next_o(push_guide_next),.guide_select_o(push_guide_select),
         .event_valid(mapped_valid),.event_ready(mapped_ready),.event_data(mapped_event),
         .held(held),.last_note(note),.last_velocity(velocity),.mapped(mapped),.ignored(ignored));
+`else
+    assign held=64'd0;
+    assign note=7'd0;
+    assign velocity=7'd0;
+    assign mapped=32'd0;
+    assign ignored=32'd0;
+    assign map_ready=1'b0;
+    assign mapped_valid=1'b0;
+    assign mapped_event=18'd0;
+    assign push_guide_toggle=1'b0;
+    assign push_guide_prev=1'b0;
+    assign push_guide_next=1'b0;
+    assign push_guide_select=1'b0;
+`endif
     reg [18:0] score_flush_count;
     wire score_flushing=score_flush_count!=0;
-    generate if(CNN_FOLLOW_ENABLE)begin: cnn_follow
+    generate if(CNN_FOLLOW_ENABLE && !WORKER_DEMO)begin: cnn_follow
     push2_song_menu u_song_menu(.clk(clk),.rst(!reset_n),
         .toggle(guide_toggle),.mode(guide_mode),
         .prev(guide_prev),.next(guide_next),.select_key(guide_select),
@@ -309,6 +343,9 @@ module push2_usb_a_control #(
     wire packet_valid;wire [9:0] packet_length;wire [7:0] packet_data;
     wire [31:0] commands;reg [8:0] packet_index;
     wire packet_ack=accepted && write && address==8'h44 && wdata==1;
+    reg [17:0] pixel_index;
+    wire [15:0] pixel;
+`ifndef WORKSTATION_DEMO_D_ONLY
     push2_lights lights(.clk(clk),.rst(!reset_n || !push_connected),.held(actual_held),.control(control),
         .score_mask(service_state_q[31:0]),.score_running(service_state_q[32]),.record_enabled(service_state_q[33]),
         .guide_mode(guide_mode),.guide_mask(guide_mask),
@@ -317,9 +354,7 @@ module push2_usb_a_control #(
         .cmd_valid(cv),.cmd_ready(cr),.cmd_kind(ck),.cmd_index(ci),.cmd_value(cval),.cmd_cable(4'd0),
         .packet_valid(packet_valid),.packet_length(packet_length),.packet_index(packet_index),
         .packet_data(packet_data),.packet_acked(packet_ack),.commands_acked(commands),.commands_rejected());
-    reg [17:0] pixel_index;
     wire frame_capture=accepted && write && address==8'h08;
-    wire [15:0] pixel;
     push2_surface_pixels #(.PIPELINED(1)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
@@ -334,6 +369,18 @@ module push2_usb_a_control #(
         // Keep the rendered bytes identical when a packet is regenerated
         // after NAK, just as the other UI fields are held for the whole frame.
         .display_meta_valid(display_meta_seen && frame_capture));
+`else
+    assign cv=1'b0;
+    assign cr=1'b0;
+    assign ck=2'd0;
+    assign ci=7'd0;
+    assign cval=8'd0;
+    assign packet_valid=1'b0;
+    assign packet_length=10'd0;
+    assign packet_data=8'd0;
+    assign commands=32'd0;
+    assign pixel=16'd0;
+`endif
     // Read response is captured by the SoC in the accepting bus cycle.
     always @* begin
         rdata=0;

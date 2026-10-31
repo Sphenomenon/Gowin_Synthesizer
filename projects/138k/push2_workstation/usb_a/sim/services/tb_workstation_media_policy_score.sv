@@ -36,7 +36,7 @@ module tb_workstation_media_policy_score;
         // The final zero-time cue has reached its execution edge. A planned
         // stop still produces cancellation and never a spurious successful done.
         start=1;clocks(1);start=0;
-        wait(dut.score.state==3);@(negedge clk);stop=1;clocks(1);cancelled_result();stop=0;
+        wait(dut.local_score.score.state==3);@(negedge clk);stop=1;clocks(1);cancelled_result();stop=0;
         // Resident cues survive cancellation and can complete after an explicit
         // restart. Neither the held-note/parameter owner nor cue RAM is reset.
         start=1;clocks(1);start=0;clocks(10);

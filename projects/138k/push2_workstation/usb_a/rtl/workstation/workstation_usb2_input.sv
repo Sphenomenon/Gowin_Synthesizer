@@ -6,6 +6,7 @@ module workstation_usb2_input #(
     parameter integer FEEDBACK_AUDIO_DOMAIN = 0,
     parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
     parameter bit CNN_FOLLOW_ENABLE = 1'b1,
+    parameter bit WORKER_DEMO = 1'b0,
     parameter integer AUDIO_OWNER_RESET_SYNC = 0
 )(
     input wire clk_cpu, clk_ref, clk_ulpi, clk_audio, reset_n, audio_reset_n,
@@ -72,7 +73,7 @@ module workstation_usb2_input #(
         .transaction_reset_n_o(transaction_reset_n_o), .phy_ready_o(phy_ready_o), .failed_o(failed_o),
         .high_speed_o(high_speed_o), .traffic_enable_o(traffic_enable_o), .sof_count_o(sof_count_o)
     );
-    workstation_usb2_service_adapter services (
+    workstation_usb2_service_adapter #(.WORKER_DEMO(WORKER_DEMO)) services (
         .clk_cpu(clk_cpu), .reset_n(cpu_reset_n), .session_valid_i(session_release_q[1]),
         .owner_connected_i(telemetry_o[1]), .service_valid_i(service_valid), .service_write_i(service_write),
         .service_address_i(service_address), .service_write_data_i(service_write_data), .service_mask_i(service_mask),
@@ -98,7 +99,7 @@ module workstation_usb2_input #(
     wire feedback_clk = FEEDBACK_AUDIO_DOMAIN != 0 ? clk_audio : clk_ref;
     wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? owner_audio_reset_n : feedback_release_q[1];
     push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
-                         .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE)) input_owner (
+                         .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE),.WORKER_DEMO(WORKER_DEMO)) input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(owner_audio_reset_n),
         .feedback_clk(feedback_clk), .feedback_reset_n(feedback_reset_n), .performance_words(performance_words_i),
         .display_meta_data(display_meta_data_i), .display_meta_valid(display_meta_valid_i),

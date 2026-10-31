@@ -11,6 +11,7 @@
 // stream under/overflow remains observable and legacy clear can reset it.
 module workstation_runtime_delay_effect_ddr #(
     parameter integer DELAY_BITS=14,
+    parameter bit D_DELAY_SEND_ENABLE=0,
     parameter integer ECHO_SAMPLES=9600,
     parameter integer FIFO_ADDRESS_BITS=9,
     parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,
@@ -18,6 +19,7 @@ module workstation_runtime_delay_effect_ddr #(
 ) (
     input logic clk_i,rst_ni,clear_i,valid_i,enabled_i,
     input logic signed [31:0] left_i,right_i,
+    input logic [6:0] delay_send_i,
     output logic ready_o,valid_o,active_o,
     output logic signed [31:0] left_o,right_o,
     output logic clip_o,
@@ -177,13 +179,19 @@ module workstation_runtime_delay_effect_ddr #(
       if(use_pop) begin read_l<=rd_head[31:0];read_r<=rd_head[63:32];end
       else begin read_l<=32'sd0;read_r<=32'sd0;end
     end
+    // State3 consumes only the products written by the preceding state2.
+    // Control reset/clear invalidates that state, not these private DSP values.
+    if(!local_history_clear && state==2) begin
+      product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});
+      product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});
+    end
   end
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       frames<=0;state<=0;gain<=0;valid_o<=0;clip_o<=0;
       input_l<=0;input_r<=0;feedback_l<=0;feedback_r<=0;
-      product_l<=0;product_r<=0;feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;
+      feedback_wide_l<=0;feedback_wide_r<=0;mixed_l<=0;mixed_r<=0;left_o<=0;right_o<=0;
     end else begin
       valid_o<=0;clip_o<=0;
       if(local_history_clear) begin
@@ -191,12 +199,11 @@ module workstation_runtime_delay_effect_ddr #(
       end else case(state)
         0:if(valid_i && ready_o) begin
           input_l<=left_i;input_r<=right_i;
-          gain<=wet_slew(gain,enabled_i?16'd8192:16'd0,gain_delta);state<=1;
+          gain<=wet_slew(gain,enabled_i ?
+              (D_DELAY_SEND_ENABLE ? (delay_send_i==127 ? 16'd8192 : {3'd0,delay_send_i,6'd0}) : 16'd8192) : 16'd0,gain_delta);state<=1;
         end
         1:state<=2;
         2:begin
-          product_l<=$signed(frames>=echo_samples?read_l:32'sd0)*$signed({1'b0,gain});
-          product_r<=$signed(frames>=echo_samples?read_r:32'sd0)*$signed({1'b0,gain});
           feedback_wide_l<=$signed(input_l)+rshift($signed(frames>=echo_samples?read_l:32'sd0),1);
           feedback_wide_r<=$signed(input_r)+rshift($signed(frames>=echo_samples?read_r:32'sd0),1);state<=3;
         end

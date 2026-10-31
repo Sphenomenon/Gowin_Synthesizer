@@ -20,7 +20,10 @@ def selection(configuration):
         and configuration.get('ae350_pcm_policy')=='ae350_decoded_pcm_source_v1')
     runtime=(joint and (capacity,configuration.get('ae350_firmware_policy'))in
         ((131072,'ae350_classic_runtime_failclosed_v1'),(98304,'ae350_classic_runtime_rom96_failclosed_v1')))
-    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not runtime:
+    worker=(joint and capacity==131072 and configuration.get('demo_role')=='W' and
+        configuration.get('ae350_firmware_policy')=='ae350_worker_session_classic_runtime_v1' and
+        configuration.get('recording_owner_policy')=='single_ble_ddr_object_v1')
+    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not (runtime or worker):
         raise ValueError('unsupported workstation AE350 memory/storage composition')
     return dict(memory_profile=memory, boot_rom_bytes=capacity)
 

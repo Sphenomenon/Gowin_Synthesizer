@@ -69,7 +69,7 @@ module tb_workstation_observation_consumers;
         clocks(3);rst_n=1;clocks(3);changed=1;sample(0);changed=0;
         // Enable coincident with the first accepted frame: no release bubble.
         rec_enable=1;valid=1;left=32'sh12340000;right=-32'sh12340000;
-        base_sequence=dut.recorder.sequence_number;
+        base_sequence=dut.local_recorder.recorder.sequence_number;
         clocks(1);valid=0;rec_enable=0;clocks(3);
         if(!rec_valid || packet!={32'(base_sequence),32'sh12340000,-32'sh12340000})
             $fatal(1,"stop-first firmware flow lost initial physical frame");
@@ -119,8 +119,8 @@ module tb_workstation_observation_consumers;
         if(running || !score_failed || done)$fatal(1,"switch/start boundary admitted score");
         switch_score_start_checks=switch_score_start_checks+1;
         switch_busy=0;score_start=1;clocks(1);score_start=0;
-        wait(dut.score.state==3);@(negedge clk);
-        if(!running || dut.score.cue[63:32]>score_frame)$fatal(1,"final score cue boundary was not armed");
+        wait(dut.local_score.score.state==3);@(negedge clk);
+        if(!running || dut.local_score.score.cue[63:32]>score_frame)$fatal(1,"final score cue boundary was not armed");
         switch_busy=1;clocks(1);
         if(running || !score_failed || done || leds!=0)$fatal(1,"switch/final cue boundary published success");
         switch_score_completion_checks=switch_score_completion_checks+1;

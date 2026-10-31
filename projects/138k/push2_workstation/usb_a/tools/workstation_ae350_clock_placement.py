@@ -118,7 +118,7 @@ def check_named_ports(text):
     # formal names before its dictionaries could collapse an ambiguous binding.
     text = re.sub(r'/\*.*?\*/|//[^\n]*', '', text, flags=re.S)
     require(not re.search(r'\bassign\b', text), 'continuous assignments are outside the direct routed clock proof')
-    pattern = r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)^[ \t]*\);'
+    pattern = r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)\);'
     for module in re.finditer(r'^module\s+' + IDENTIFIER + r'\s*\((.*?)\)\s*;(.*?)^endmodule\b', text, re.M | re.S):
         header, body = module[1], module[2]
         ports = [name.strip().removeprefix('\\') for name in header.split(',')] if header.strip() else []

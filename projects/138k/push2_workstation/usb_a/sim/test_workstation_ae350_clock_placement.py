@@ -115,6 +115,13 @@ class DedicatedClock(unittest.TestCase):
             with self.subTest(vo=vo), self.assertRaises(ValueError):
                 audit_routed(CONSTRAINT, REPORT, vo)
 
+    def test_compact_routed_ram_closing_keeps_full_driver_inventory(self):
+        ram = 'RAM16SDP4 memory (\n .CLK(bus_clk), .DO({q}));\n'
+        self.assertTrue(audit_routed(CONSTRAINT, REPORT, fixture(extra=ram))['direct_unique_driver_verified'])
+        hidden = cell('LUT2', 'after_ram', [('F', 'core_clk'), ('I0', 'GND')])
+        with self.assertRaisesRegex(ValueError, 'unreviewed driver/consumer'):
+            audit_routed(CONSTRAINT, REPORT, fixture(extra=ram+hidden))
+
     def test_synthesis_split_module_header_and_escaped_formal_are_fully_parsed(self):
         vo = ('module '+TOP+' ()\n;\nwire core_clk;\n'+
               cell('PLL', INSTANCE, [('CLKOUT1','core_clk')])+

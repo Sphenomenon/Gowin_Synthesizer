@@ -188,6 +188,43 @@ struct Harness {
         if(trace){std::printf("BLOCK ");for(auto b:block)std::printf("%02x",b);std::printf("\n");}
         dut.transfer_consume=1;cycle();dut.transfer_consume=0;cycle(2);return block;
     }
+#ifdef A138_SINGLE_BLE_RECORDING
+    void run_local_recording() {
+        trace=false;dut.enable=0;dut.pcm_run=0;cycle(64);for(int k=0;k<8;k++)pump();
+        check(owner.bound && !owner.fault && !owner.opened,"sole owner binds without GATT session");
+        check(a138_ble_record_local_submit(&owner,0x20,0)==1,"CPU START queues same owner");
+        check(a138_ble_record_local_submit(&owner,0x20,0)==0,"CPU cannot overwrite queued request");
+        a138_ble_local_record_result r{};
+        for(int k=0;k<12;k++){pump();cycle(64);}
+        check(a138_ble_record_local_poll(&owner,&r) && r.phase==A138_LOCAL_WAIT && !dut.frames,"CPU START cannot apply before a real complete frame");
+        dut.pcm_run=1;
+        until([&]{return a138_ble_record_local_poll(&owner,&r) && r.phase==A138_LOCAL_DONE;},"CPU START actual first-frame result");
+        check(r.status==0 && r.object_id==1 && r.operation_id==1 && dut.frames>0,"CPU START applies after actual complete PCM");
+        until([&]{return dut.frames>=8;},"CPU object captures without GATT");dut.pcm_run=0;cycle(12);pump();
+        check(a138_ble_record_local_submit(&owner,0x21,0)==1,"CPU STOP queues same object");
+        until([&]{return a138_ble_record_local_poll(&owner,&r) && r.token==2 && r.phase==A138_LOCAL_DONE;},"CPU STOP native committed READY");
+        check(r.status==0 && r.object_id==1 && dut.record_state==4 && r.frames==r.committed,"CPU STOP cannot succeed before native drain");
+        uint32_t frames=r.frames,record_crc=r.crc;
+        dut.enable=1;cycle(64);std::vector<uint8_t> p;put(p,1);command(1,p);cycle(4096);
+        p.clear();put(p,0);auto info=command(0x22,p);
+        check(info[1]==0 && word(info,24)==1 && info[28]==4 && word(info,36)==frames && word(info,48)==record_crc,"BLE GET sees CPU-created exact object and CRC");
+        p=object();put(p,0);auto opened=command(0x30,p);check(opened[1]==0,"BLE opens CPU-created object");
+        auto read=command(0x31,read_payload(1,0,frames*4));check(read[1]==0,"BLE downloads CPU-created object");
+        auto block=transfer_block();std::vector<uint8_t> pcm(block.begin()+44,block.end()-4);
+        check(pcm.size()==frames*4 && crc(pcm)==record_crc,"shared DDR bytes match actual recording CRC");
+        p.clear();put(p,1);command(0x34,p);
+        dut.enable=0;cycle(64);pump();
+        check(a138_ble_record_local_submit(&owner,0x23,0)==1,"CPU CLEAR queues shared immutable object");
+        until([&]{return a138_ble_record_local_poll(&owner,&r) && r.token==3 && r.phase==A138_LOCAL_DONE;},"CPU actual raw CLEAR");
+        check(r.status==0 && r.object_id==1 && r.frames==frames && r.crc==record_crc && dut.object_id==0 && dut.record_state==0,"CPU CLEAR retires actual BLE object with immutable result");
+        check(owner.object_counter==1 && owner.operation_counter==2 && owner.command_sequence==4,"CPU and BLE share exact ID/descriptor counters");
+        check(a138_ble_record_local_submit(&owner,0x20,1)==1,"next CPU object queues after CLEAR");
+        dut.pcm_run=1;
+        until([&]{return dut.record_state==4;},"next actual object seals capacity");pump();
+        check(dut.object_id==2 && owner.object_counter==2,"CPU replacement keeps monotonic BLE object identity");
+        std::printf("PASS sole CPU/BLE recording object: %u checks\n",checks);
+    }
+#endif
     void run_download() {
         std::vector<uint8_t> p;put(p,1);command(1,p);cycle(4096);
 #ifndef GOLDEN
@@ -408,6 +445,9 @@ struct Harness {
 };
 int main(int argc,char **argv){Verilated::commandArgs(argc,argv);Harness h;h.run();Harness download;download.run_download();
 #ifndef GOLDEN
+#ifdef A138_SINGLE_BLE_RECORDING
+Harness local;local.run_local_recording();
+#endif
 Harness cut;cut.run_read_disconnect();Harness edges;edges.run_edges();Harness uncertain;uncertain.run_uncertain();Harness completion;completion.run_uncertain_completion();Harness torn;torn.run_torn_completion();Harness empty;empty.run_zero_frame();
 for(unsigned phase=2;phase<=5;phase++){Harness crcphase;crcphase.run_crc_phase(phase);}
 #endif

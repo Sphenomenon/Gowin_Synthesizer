@@ -6,6 +6,8 @@
 module workstation_audio_render_service #(
     parameter bit RUNTIME_RATE_ENABLE=0,
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
+    parameter bit SYNTH_ENGINES_ENABLE=1,
+    parameter bit D_ONLY_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -44,6 +46,7 @@ module workstation_audio_render_service #(
     output wire [1:0] route_o,
     output wire [2:0] profile_o,effect_mask_o,
     output wire [5:0] effect_order_o,
+    output wire [31:0] effect_state_o,
     output wire panel_event_valid_o,
     output wire [6:0] panel_command_o,
     output wire [31:0] scope_status_o,tf_scope_control_o,
@@ -100,6 +103,7 @@ module workstation_audio_render_service #(
     gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000),.TIMING_OPTIMIZED(1),
         .EXTERNAL_MASTER_VOLUME(1),.REQUEST_DRIVEN_RENDER(1),
         .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE),.RUNTIME_EFFECTS_ENABLE(RUNTIME_EFFECTS_ENABLE),
+        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
         .DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) workstation(
         .clk_i,.rst_ni,.midi_byte_valid_i,.midi_byte_i,.pc_byte_valid_i,.pc_byte_i,
         .cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,
@@ -118,7 +122,7 @@ module workstation_audio_render_service #(
         .active_mask_o,.active_voice_count_o,.mode_o,.pitch_q20_o,
         .deadline_miss_o,.midi_overflow_o,.note_drop_o,.clip_o,
         .synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,
-        .effect_mask_o,.effect_order_o,.panel_event_valid_o,.panel_command_o,
+        .effect_mask_o,.effect_order_o,.effect_state_o,.panel_event_valid_o,.panel_command_o,
         .scope_status_o,.tf_scope_control_o,
         .delay_mem_clk_i,.delay_mem_rst_ni,.delay_dwr_valid_o,.delay_dwr_data_o,
         .delay_dwr_pop_i,.delay_drd_push_i,.delay_drd_data_i,.delay_drd_ready_o);

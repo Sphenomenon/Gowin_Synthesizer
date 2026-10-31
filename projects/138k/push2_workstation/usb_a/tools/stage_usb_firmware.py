@@ -27,10 +27,13 @@ def verify_usb2_cpu_vendor(root):
     return vendor
 
 
-def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstation=False, allow_high_speed=True):
+def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstation=False, allow_high_speed=True,
+                           worker_demo=False):
     root, output, entry = map(Path, (root, output, entry))
     if not workstation and not allow_high_speed:
         raise ValueError('full-speed-only policy requires workstation firmware')
+    if worker_demo and not workstation:
+        raise ValueError('worker demo policy requires workstation firmware')
     vendor = verify_usb2_cpu_vendor(root)
     prefix = compiler_prefix(riscv_prefix)
     sources = [vendor / 'firmware/start.S', entry,
@@ -61,6 +64,8 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstati
                              '-I', str(vendor / 'firmware/usb')] if workstation else []
             if not allow_high_speed:
                 profile_flags += ['-DWORKSTATION_USB2_FORCE_FS']
+            if worker_demo:
+                profile_flags += ['-DWORKSTATION_WORKER_DEMO=1']
             warning_flags = ['-Wall'] if vendor in source.parents else ['-Wall', '-Wextra', '-Werror']
             subprocess.run([prefix + '-gcc', *common, '-std=c11', '-O2' if workstation else '-Os', '-ffreestanding',
                             '-ffunction-sections', '-fdata-sections', *warning_flags,
@@ -88,6 +93,7 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstati
     return dict(isa='rv32i', abi='ilp32', compiler_prefix=prefix, compiler_version=compiler_version,
                 firmware_profile='workstation' if workstation else 'probe',
                 high_speed_allowed=bool(allow_high_speed),
+                worker_demo=bool(worker_demo),
                 entry=str(entry.relative_to(root)), input_sha256=identities,
                 firmware_bytes=len(binary), static_ram_bytes=used, static_ram_end=end, stack_margin_bytes=65536-end,
                 elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'), rom_sha256=sha(rom),

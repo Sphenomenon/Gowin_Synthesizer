@@ -4,7 +4,7 @@
 #include <string.h>
 
 enum { P_NONE,P_ACCEPT,P_BASIC,P_HOST,P_AUTH,P_ENCRYPT,P_SIZE,P_STORE,P_SECURE };
-enum { C_LOCAL_FEATURES=1,C_SSP,C_LOCAL_HOST,C_SCAN,C_ACCEPT,C_REJECT,
+enum { C_LOCAL_FEATURES=1,C_SSP,C_LOCAL_HOST,C_CLASS,C_SCAN,C_ACCEPT,C_REJECT,
     C_BASIC,C_HOST,C_AUTH,C_ENCRYPT,C_SIZE,C_KEY,C_KEY_NEG,C_IO,C_IO_NEG,
     C_CONFIRM,C_CONFIRM_NEG,C_PIN_NEG,C_PASSKEY_NEG,C_OOB_NEG,C_DISCONNECT };
 enum { F_PROTOCOL=1,F_TIMEOUT,F_UNCERTAIN,F_STORAGE,F_POLICY,F_CLOCK,F_CAPACITY };
@@ -23,6 +23,7 @@ static enum a138_security_result identity(struct a138_security *s,uint32_t e) {
 }
 static void revoke(struct a138_security *s) {
     s->secure=0;
+    if(s->session_only)wipe(s->bond.key,sizeof s->bond.key);
     if(s->active)(void)a138_classic_security(s->classic,s->generation,s->generation,0);
 }
 static enum a138_security_result fence(struct a138_security *s,uint8_t why) {
@@ -37,10 +38,12 @@ static void close_link(struct a138_security *s,uint8_t why) {
         s->closing=1;s->close_cause=why;s->close_reason=why==0x13u?0x13u:0x05u;s->store_started_ms=s->clock_ms;
     }
 }
+#ifndef A138_SINGLE_BLE_RECORDING
 static int valid_bond(const struct a138_bond *b,const uint8_t *peer) {
     return b->version==1u&&b->revision!=0u&&same(b->peer,peer)&&
         (b->type==4u||b->type==5u)&&b->minimum_size>=7u&&b->minimum_size<=16u;
 }
+#endif
 static int enqueue(struct a138_security *s,uint8_t kind,uint16_t opcode,const uint8_t *p,uint8_t n) {
     struct a138_security_command *c;
     if(s->count==A138_SECURITY_QUEUE||s->next_token==UINT32_MAX||n>22u){fence(s,F_CAPACITY);return 0;}
@@ -67,10 +70,23 @@ static enum a138_security_result queue_handle(struct a138_security *s,uint8_t ki
 void a138_security_init(struct a138_security *s){if(s)memset(s,0,sizeof *s);}
 enum a138_security_result a138_security_start(struct a138_security *s,uint32_t e,uint16_t limit,
         struct a138_classic_service *classic,const struct a138_bond_store *store) {
+#ifdef A138_SINGLE_BLE_RECORDING
+    (void)s;(void)e;(void)limit;(void)classic;(void)store;
+    return A138_SECURITY_ARGUMENT; /* W has no persistent-key backend. */
+#else
     if(!s||!e||!classic||!store||!store->load||!store->replace_atomic||!store->delete_atomic||limit<4u||limit>276u)
         return A138_SECURITY_ARGUMENT;
     if(s->started)return A138_SECURITY_STALE;
     s->started=1;s->epoch=e;s->tx_limit=limit;s->classic=classic;s->store=*store;return A138_SECURITY_OK;
+#endif
+}
+enum a138_security_result a138_security_start_session(struct a138_security *s,uint32_t e,uint16_t limit,
+        struct a138_classic_service *classic) {
+    if(!s||!e||!classic||limit<4u||limit>276u)return A138_SECURITY_ARGUMENT;
+    if(s->started)return A138_SECURITY_STALE;
+    memset(&s->store,0,sizeof s->store);
+    s->session_only=1;s->started=1;s->epoch=e;s->tx_limit=limit;s->classic=classic;
+    return A138_SECURITY_OK;
 }
 enum a138_security_result a138_security_tick(struct a138_security *s,uint32_t e,uint32_t now) {
     enum a138_security_result r=identity(s,e);if(r!=A138_SECURITY_OK)return r;
@@ -90,11 +106,15 @@ enum a138_security_result a138_security_tick(struct a138_security *s,uint32_t e,
     return s->fenced?A138_SECURITY_FENCED:A138_SECURITY_OK;
 }
 enum a138_security_result a138_security_pump(struct a138_security *s) {
-    uint8_t p[9];enum a138_bond_result br;
+    uint8_t p[9];
+#ifndef A138_SINGLE_BLE_RECORDING
+    enum a138_bond_result br;
+#endif
     if(!s||!s->started)return A138_SECURITY_ARGUMENT;
     if(s->fenced)return A138_SECURITY_FENCED;
     if(!s->clock_valid)return A138_SECURITY_BUSY;
     retire(s);
+#ifndef A138_SINGLE_BLE_RECORDING
     if(s->forget_pending){
         if(s->forget_revision==0u){
             struct a138_bond b;memset(&b,0,sizeof b);
@@ -120,6 +140,9 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
         if(br!=A138_BOND_OK)return fence(s,F_STORAGE);
         s->delete_pending=0;wipe(&s->bond,sizeof s->bond);return A138_SECURITY_OK;
     }
+#else
+    if(!s->session_only||s->forget_pending||s->delete_pending)return fence(s,F_POLICY);
+#endif
     if(s->closing){
         if(s->active&&!s->disconnect_queued&&s->count==0u&&
            (!s->classic->security_violation||s->classic->tx_bytes==0u||
@@ -130,7 +153,7 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
     }
     if(s->count)return A138_SECURITY_OK;
     if(s->io_pending&&s->remote_basic&&s->remote_host){
-        memcpy(p,s->peer,6);p[6]=3;p[7]=0;p[8]=4;s->io_pending=0;
+        memcpy(p,s->peer,6);p[6]=3;p[7]=0;p[8]=s->session_only?0:4;s->io_pending=0;
         enqueue(s,C_IO,0x042b,p,9);return s->fenced?A138_SECURITY_FENCED:A138_SECURITY_OK;
     }
     if(!s->ready){
@@ -138,7 +161,13 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
         case 0:enqueue(s,C_LOCAL_FEATURES,0x1003,0,0);break;
         case 1:p[0]=1;enqueue(s,C_SSP,0x0c56,p,1);break;
         case 2:p[0]=1;enqueue(s,C_LOCAL_HOST,0x1004,p,1);break;
-        case 3:p[0]=2;enqueue(s,C_SCAN,0x0c1a,p,1);break; /* page scan only */
+        case 3:
+            if(s->session_only){p[0]=0x14;p[1]=0x04;p[2]=0x24;enqueue(s,C_CLASS,0x0c24,p,3);}
+            else {p[0]=2;enqueue(s,C_SCAN,0x0c1a,p,1);} /* durable default: page scan only */
+            break;
+        case 4:
+            if(!s->session_only)return fence(s,F_PROTOCOL);
+            p[0]=3;enqueue(s,C_SCAN,0x0c1a,p,1);break;
         default:return fence(s,F_PROTOCOL);
         }
         return s->fenced?A138_SECURITY_FENCED:A138_SECURITY_OK;
@@ -167,7 +196,15 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
         if(s->key_size){s->phase=P_STORE;s->store_started_ms=s->clock_ms;}
         break;
     case P_STORE:
-        if(s->new_key){
+        if(s->session_only){
+            /* Encryption and its actual negotiated key size have completed.
+             * Retain only the current link's minimum-size fact for refresh;
+             * no revision or durable-key record is manufactured. */
+            s->bond.minimum_size=s->key_size;s->bond.revision=0;
+            wipe(s->bond.key,sizeof s->bond.key);s->new_key=0;
+        }
+#ifndef A138_SINGLE_BLE_RECORDING
+        else if(s->new_key){
             struct a138_bond b=s->bond;
             if(b.revision==UINT32_MAX){wipe(&b,sizeof b);return fence(s,F_STORAGE);}
             b.version=1;b.minimum_size=s->key_size;++b.revision;
@@ -179,6 +216,7 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
             if(br!=A138_BOND_OK){wipe(&b,sizeof b);return fence(s,F_STORAGE);}
             s->bond=b;wipe(&b,sizeof b);s->new_key=0;
         }
+#endif
         if(a138_classic_security(s->classic,s->generation,s->generation,1)!=A138_CLASSIC_OK)return fence(s,F_PROTOCOL);
         s->secure=1;s->phase=P_SECURE;break;
     default:break;
@@ -257,10 +295,11 @@ enum a138_security_result a138_security_response(struct a138_security *s,uint32_
     case C_LOCAL_HOST:
         if(n!=16u||p[6]!=1u||p[7]<1u||!(p[8]&1u)||(p[8]&8u))return fence(s,F_POLICY);
         ++s->local_step;break;
+    case C_CLASS:if(n!=6u||!s->session_only)return fence(s,F_PROTOCOL);++s->local_step;break;
     case C_SCAN:if(n!=6u)return fence(s,F_PROTOCOL);s->ready=1;break;
     case C_SIZE:
         if(n!=9u||le(p+6)!=s->handle||p[8]<7u||p[8]>16u||
-           (s->bond.revision&&p[8]<s->bond.minimum_size)){close_link(s,0x05);break;}
+           ((s->bond.revision||s->session_only)&&p[8]<s->bond.minimum_size)){close_link(s,0x05);break;}
         s->key_size=p[8];break;
     case C_KEY:case C_KEY_NEG:case C_IO:case C_IO_NEG:case C_CONFIRM:case C_CONFIRM_NEG:
     case C_PIN_NEG:case C_PASSKEY_NEG:case C_OOB_NEG:
@@ -281,7 +320,10 @@ static int peer_event(unsigned code) {
 }
 enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e,uint32_t g,uint8_t available,
         const uint8_t *p,uint16_t n) {
-    enum a138_security_result r=identity(s,e);uint8_t code,b[22];enum a138_bond_result br;
+    enum a138_security_result r=identity(s,e);uint8_t code,b[22];
+#ifndef A138_SINGLE_BLE_RECORDING
+    enum a138_bond_result br;
+#endif
     if(r!=A138_SECURITY_OK)return r;
     if(!p||n<2u||n!=(uint16_t)(p[1]+2u))return fence(s,F_PROTOCOL);
     code=p[0];
@@ -351,18 +393,27 @@ enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e
                 address_reply(s,C_KEY_NEG,0x040c,peer);return A138_SECURITY_OK;}
             s->peer_auth_started=1;
             if(s->key_loaded){close_link(s,0x05);address_reply(s,C_KEY_NEG,0x040c,peer);return A138_SECURITY_OK;}
-            s->key_loaded=1;br=s->store.load(s->store.context,peer,&s->bond);
+            s->key_loaded=1;
+            if(s->session_only){
+                wipe(&s->bond,sizeof s->bond);memcpy(s->bond.peer,peer,6);
+                address_reply(s,C_KEY_NEG,0x040c,peer);return A138_SECURITY_OK;
+            }
+#ifndef A138_SINGLE_BLE_RECORDING
+            br=s->store.load(s->store.context,peer,&s->bond);
             if(br==A138_BOND_OK&&valid_bond(&s->bond,peer)){
                 memcpy(b,peer,6);memcpy(b+6,s->bond.key,16);s->key_used=1;enqueue(s,C_KEY,0x040b,b,22);wipe(b,sizeof b);
             }else{
                 if(br!=A138_BOND_MISSING){close_link(s,0x05);s->failure=F_STORAGE;}
                 wipe(&s->bond,sizeof s->bond);memcpy(s->bond.peer,peer,6);address_reply(s,C_KEY_NEG,0x040c,peer);
             }
+#else
+            return fence(s,F_POLICY);
+#endif
         }else if(code==0x31u){
             if((s->phase!=P_BASIC&&s->phase!=P_HOST&&s->phase!=P_AUTH)||s->closing||!s->key_loaded||s->io_pending){
                 memcpy(b,peer,6);b[6]=0x18;enqueue(s,C_IO_NEG,0x0434,b,7);close_link(s,0x18);
             }else if(!s->remote_basic||!s->remote_host){s->io_pending=1;s->io_started_ms=s->clock_ms;}
-            else{memcpy(b,peer,6);b[6]=3;b[7]=0;b[8]=4;enqueue(s,C_IO,0x042b,b,9);}
+            else{memcpy(b,peer,6);b[6]=3;b[7]=0;b[8]=s->session_only?0:4;enqueue(s,C_IO,0x042b,b,9);}
         }else if(code==0x32u){
             if(p[8]>4u||p[9]>3u||p[10]>5u||(p[10]&1u)){close_link(s,0x18);return A138_SECURITY_OK;}
             s->remote_io_seen=1;s->remote_auth=p[10];
@@ -432,6 +483,10 @@ enum a138_classic_result a138_security_classic_acl(struct a138_security *s,uint3
 enum a138_security_result a138_security_forget(struct a138_security *s,uint32_t e,const uint8_t peer[6]) {
     enum a138_security_result r=identity(s,e);if(r!=A138_SECURITY_OK)return r;
     if(!peer||!good_peer(peer))return A138_SECURITY_ARGUMENT;
+    if(s->session_only){
+        if(s->active&&same(peer,s->peer))close_link(s,0x13);
+        return A138_SECURITY_OK;
+    }
     if(s->forget_pending||s->delete_pending||s->new_key)return A138_SECURITY_BUSY;
     s->forget_pending=1;s->forget_revision=0;memcpy(s->forget_peer,peer,6);s->store_started_ms=s->clock_ms;
     if(s->active&&same(peer,s->peer))close_link(s,0x13);

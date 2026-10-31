@@ -11,7 +11,7 @@ MUTANTS=(
  ('auth-status-is-success','security','case C_SIZE:\n        if(n!=9u','case C_AUTH:s->auth_done=1;break;\n    case C_SIZE:\n        if(n!=9u'),
  ('encryption-status-is-success','security','case C_SIZE:\n        if(n!=9u','case C_ENCRYPT:s->encrypted=1;break;\n    case C_SIZE:\n        if(n!=9u'),
  ('short-key-allowed','security','p[8]<7u||p[8]>16u','p[8]>16u'),
- ('negotiated-size-downgrade','security','(s->bond.revision&&p[8]<s->bond.minimum_size)','0'),
+ ('negotiated-size-downgrade','security','((s->bond.revision||s->session_only)&&p[8]<s->bond.minimum_size)','0'),
  ('persist-failure-ignored','security','if(br!=A138_BOND_OK){wipe(&b,sizeof b);return fence(s,F_STORAGE);}','if(0){wipe(&b,sizeof b);return fence(s,F_STORAGE);}'),
  ('persist-busy-is-success','security','if(br==A138_BOND_BUSY){wipe(&b,sizeof b);','if(0){wipe(&b,sizeof b);'),
  ('stale-generation-event-accepted','security','else if(g!=s->generation)return stale(s);','else if(0)return stale(s);'),
@@ -31,6 +31,10 @@ MUTANTS=(
  ('inactive-acl-reopens-close','security','if(!s->active||e!=s->epoch||g!=s->generation)return A138_CLASSIC_STALE;','if(e!=s->epoch||g!=s->generation)return A138_CLASSIC_STALE;'),
  ('inactive-close-resurrected','security','if(!s->active)return;\n    revoke(s);','revoke(s);'),
  ('avdtp-gate-removed','classic','if(!s->security_ready){result=3;s->security_violation=1;}','if(0){result=3;s->security_violation=1;}'),
+ ('session-io-bonds','security','b[8]=s->session_only?0:4;','b[8]=4;'),
+ ('session-deferred-io-bonds','security','p[8]=s->session_only?0:4;','p[8]=4;'),
+ ('session-key-retained','security','wipe(s->bond.key,sizeof s->bond.key);s->new_key=0;','s->new_key=0;'),
+ ('session-observer-key-retained','security','if(s->session_only)wipe(s->bond.key,sizeof s->bond.key);','if(0)wipe(s->bond.key,sizeof s->bond.key);'),
 )
 
 def main():
@@ -53,6 +57,14 @@ def main():
   match=re.search(r'classic security source-stage: (\d+) checks passed',r.stdout)
   if not match:raise RuntimeError('missing actual fixture success')
   baseline[tag]=dict(checks=int(match[1]),valid_envelope_fuzz_cases=4000,summary=r.stdout.strip())
+ session_only_baseline={}
+ for tag,flags in(('native',[]),('sanitized',['-fsanitize=address,undefined','-fno-omit-frame-pointer'])):
+  name='worker-session-'+tag
+  run([*common,*flags,'-DA138_SINGLE_BLE_RECORDING','-Wno-unused-function',security,classic,fixture,'-o',out/name],name+'-compile')
+  r=run([out/name],name+'-run')
+  if 'runtime error:'in r.stderr or 'Sanitizer'in r.stderr:raise RuntimeError('session sanitizer finding')
+  match=re.search(r'classic security source-stage: (\d+) checks passed',r.stdout);assert match
+  session_only_baseline[tag]=dict(checks=int(match[1]),summary=r.stdout.strip(),persistent_store_calls=0)
  texts=dict(security=security.read_text(),classic=classic.read_text());mutants={}
  for name,which,old,new in MUTANTS:
   text=texts[which]
@@ -101,7 +113,7 @@ def main():
   if sha(u/n)!=h:raise RuntimeError('source drift during verification: '+n)
  report=dict(schema='ae350-classic-security-source-stage-v1',selected_in_production=False,native_transport_wired=False,hardware_tested=False,
   physical_key_backend_implemented=False,flash_written=False,phone_interoperability_verified=False,security_policy='SSP Mode4 Level2; NoInputNoOutput; GeneralBonding; no MITM/SC/legacy pairing',
-  inputs=inputs,tools=prior['tools'],baseline=baseline,mutants=mutants,masked_controls=controls,security_rv32_budget=budget,classic_rv32_budget=prior['rv32_budget'],
+  inputs=inputs,tools=prior['tools'],baseline=baseline,session_only_baseline=session_only_baseline,mutants=mutants,masked_controls=controls,security_rv32_budget=budget,classic_rv32_budget=prior['rv32_budget'],
   delay=prior['baseline'],prior_classic=prior['prior_wire'],prior_mutants=prior['prior_mutants'],delay_mutants=len(prior['mutants']),sbc_reference_cases=prior['prior_decoder_cases'],commands=commands)
  report['outputs']={str(f.relative_to(out)):sha(f)for f in sorted(out.rglob('*'))if f.is_file()}
  (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n')

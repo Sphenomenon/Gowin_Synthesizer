@@ -258,3 +258,155 @@ prepipeline oracle 均通过：每表约 443216 周期、23012 个系数、680 �
 未改生产源。PIPELINED_RATE 0／1 lint 通过；accepted 来源十七项、业务
 九项通过，九个现有 profile 仅刷新两个已消费源码哈希。该源码将进入
 下一独立候选，E8 冻结输入保持，资源收益待完整综合。
+
+
+E8 place1／route0 完整 P&R 成功，744.215 秒、输入／工具身份保持；物理
+CLS 61298/69120、BSRAM 301/340、DSP 120/298、Logic 93808、FF 59477。
+但最终 STA 未通过：21187 setup、297 hold 端点违规，最差 −13.127 ns；
+最小 pulse-width slack 0.587 ns。两组异步 PRESET／CLEAR max-delay
+未产生 TR data paths。没有执行 SRAM，FS SHA256 为
+`407991e861711b753ddd16736ff16a818cd254a04570c4502beaaabe35515ff4`，
+只作为失败候选保留。PLL 首次检查缺 GOWIN_SIMLIB，补环境后 DDR／视频／
+shared PLL 无报错，但 AE350 专用 CLKOUT1 缺实际位置行，routed RAM
+紧凑结尾又超出现有 parser 支持，仍未计整机 PLL 通过。
+
+主要实际长路径为 published_valid→recording owner fault／仲裁反馈→
+store pack_data（18 logic levels／−13.127 ns）、显示 drop Gray 解码→
+差异检测→producer analysis（−11.958 ns）、USB settle_wait→core_ce／
+配置广播→reverb scratch CE（−11.130 ns）。跨域 PANIC 读控制与共同复位
+释放另有实际违规，按所属 owner 修正，不放宽时钟或扩大 false path。
+
+下一同功能候选 `c435701f9890c806`（源码 `01291b5`）完整综合通过：
+333.587 秒、614 项输入保持、无 AG，实际 prepare 业务十二项通过；
+VG `7f8c298f68f7970775c2e16725b19c45a9706ecb75c534c17b3ecd8d53d153a0`。
+三个 oscillator 系数 divider 均退出，完整总量如下：
+
+| 综合资源 | E9（c435701f） | 相对 E8 | 相对迁移前 011fdc9c |
+|---|---:|---:|---:|
+| Logic | 99566 | +6245 | +4943 |
+| LUT | 76621 | +1689 | +654 |
+| ALU | 21187 | +4412 | +4385 |
+| Register | 58283 | −1194 | −2295 |
+| DSP | 74 | −6 | −9 |
+| RAM16 | 293 | +24 | −16 |
+| 等效 BSRAM | 247 | −3 | +2 |
+
+工具对多个未改模块的 LUT／ALU／RAM 映射同时变化，因此 FF 的减少
+不能代替整机 Logic／物理 CLS 收益。`C21031E9` 已开始 place1／route0
+P&R，输入冻结；当前源码修复进入后续新候选，未回写 E8／E9。
+
+### E9 结果与整机时序修复
+
+E9 P&R 已失败：877.073 秒、404 条未布通网络，输入和工具身份保持；
+物理 CLS 61540/69120、BSRAM 295/340、DSP 114/298、FF 58283。
+没有最终 STA 或位流，未操作 SRAM／Flash。由于该优化的整机 Logic
+增加 6245、物理 CLS 增加 242，后续恢复 E8 的 oscillator 系数实现及
+对应既有回归；矢量系数 ROM、CPU 业务 owner 和退出旧 RTL 的选择保留。
+
+新同功能候选 `29fbb2beed56f9f6` 沿用 business profile，合入四类实际
+长路径修复：BLE DDR 按固定 lane 分拍打包，显示直接比较同步 Gray，
+混响 scratch 脱离广播取消使能，USB 取消及启动许可改由本地域同步。
+正常取消、立即静音、故障隔离、持音及已提交参数语义保持。新增同步
+链仅约束实际异步首级 D，保留级间 2 ns 上限及同域功能时序；DDR
+指定 hold 路径最小延迟由 0.8 提高至 1.8 ns，没有放宽时钟或 STA 门限。
+
+既有混响 6 项／效果链 9 项及新旧逐拍对照、DDR 打包命令对照、显示
+回归通过；最终内存集成 975405 checks／10034 I2S 帧、TF 两种复位
+模式及 STOP／CLEAR 通过。父级 actual prepare 业务 12 项、accepted
+来源 17 项、固件 10 项通过。编译显式使用原 xPack GCC 15.2.0，ILM
+固件仍为 30144 B，无新增 Cache／BSRAM 扩容或 A2DP／SBC 成本。
+完整综合已经启动，随后继续 P&R；资源和 SRAM 结果据实补充。
+
+本次全量综合通过：303.931 秒、614 项输入保持、无 AG 诊断；VG
+`cded88080b05aae294370767dc42110192c4ccf1842d5e8621523944fc1b4594`。
+整机 Logic 93029、LUT 74879、ALU 16536、FF 59214、DSP 80、综合
+BSRAM 250、RAM16 269；相对迁移前为 −1594 Logic／−1088 LUT／−266
+ALU／−1364 FF／+5 BSRAM，全部接口和 CPU 存储成本均在总量中。
+本轮沿用 `C21031EA` 新物理身份，place1／route0，不继承 E8 的时序。
+
+EA 在布局前被 SDC 第 64 行的旧 release 别名空查询拒绝，10.020 秒；
+未生成物理资源／STA／位流。实际网表确认两别名已退休；下一物理子候选
+`C21031EB` 复用同一 VG，仅删除该空 query 并增加九个实际首级 DFFRE
+同步 RESET 数据输入约束，其他 SDC 不变，已进入 place1／route0 P&R。
+该子候选未新增 BLE 六个真实 release CLEAR 的例外，保留默认 STA 检查。
+维护生成器则显式选择实际 BLE 六个 CLEAR，保留历史分支；两者区别已登记。
+
+原版 PCM 门禁适配新增明确 common-reset 分支后通过，229 位载荷及
+原已安装约束保持，20 个启动／复位 FF 的有效 next-Q 通过；旧复位分支
+仍严格检查。定向 PCM 7 项、完整 clock 5 项、CDC 生成策略 5 项通过。
+这些属于必要离线检查，未代替完整 routed CDC／PLL／STA 或实板接受。
+JTAG 线缆为 8257，但 2.5／1 MHz 两次读码均为 FFFFFFFF，退出 3；
+已请用户核对主板电源／连接，P&R 独立继续。本轮仍未写 SRAM 或 Flash。
+
+### EC 完整物理结果及连接恢复
+
+`C21031EB` 的 place1／route0 在 730.861 秒后因 1018 条未布通退出，
+未生成最终 STA／位流。`C21031EC` 使用同一 VG，精确替换六个实际
+CLEAR，并保留九个异步首级同步 RESET 数据输入约束，place4／route0
+完整 P&R 在 679.083 秒后成功，输入及工具身份均保持。
+物理 CLS 62937/69120、BSRAM 301/340、DSP 120/298、FF 59214，
+位流 SHA256 `94f724da71e9352a7ff69dada534c0e82996e3a7c37137906bab351afb40938b`。
+完整 STA 仍失败：20456 setup／388 hold 端点，最差 setup −18.370 ns、
+hold −1.846 ns、recovery −2.203 ns；最小 pulse-width 余量 +0.580 ns。
+失败位流未写入 SRAM。原输入、工具及输出身份保留在
+`business-timing-fixes-integrated-physical-C21031EC-v1`。
+
+实际阻塞包括内存就绪许可绕过 compute 同步、CPU 录音后端动态打包的
+26 ns 反馈、TF 帧缓存长 CE 路径，以及动态 busy PRESET／scratch reset。
+下一同功能候选修正这些 owning RTL；物理配置另明确安排参考时钟资源及
+DDR 捕获区域，不降低时钟、不改变 vendor 或冻结输入。
+2026-10-31 16:20:54，用户重新接入主板后，独立 JTAG operation 0 成功读到
+`0001081B`／`C11028E5`／`00022020`；连接阻塞已解除，未写 Flash。
+
+### 本地数据路径修复与 ED
+
+同功能整机 `86a8b97414136345` 完整综合通过，304.747 秒，614 项输入
+保持，无 AG 组合环诊断；VG 为
+`aadd3e3d12d6db223bbb9e93cea5c943fcb3eb1bdb10355ee8faf0fce848c44d`。
+CPU 录音按固定 lane 延后一拍写入、仅发布有效尾帧；最终增益使用并行
+上下界；TF 帧槽不再同拍替换，源端开始工作前等待原子控制快照 ACK。
+音频数据许可只消费 compute 本地同步，DAC 紧急 SMUTE 保持；Chorus／
+Delay 已在有效状态前重写的乘法暂存不再承接全局 reset。
+
+| 综合资源 | 本次 | 相对迁移前 011fdc9c |
+|---|---:|---:|
+| Logic | 93,056 | −1,567 |
+| LUT | 74,928 | −1,039 |
+| ALU | 16,514 | −288 |
+| Register | 59,443 | −1,135 |
+| RAM16 | 269 | −40 |
+| 综合 BSRAM | 250 | +5 |
+
+此为含 CPU 存储、邮箱、队列及总线的整机总量，不能将所有收益归于业务
+迁移；A2DP／SBC 未选入。物理 CLS／BSRAM 另以 P&R 实测为准。
+PCM 后端 44 场景及严格 lint、最终 PCM 1292 请求／响应和 370 实际源帧、
+TF bridge／service／STOP-CLEAR 回归、Chorus 6 项、Delay 13 场景、完整
+效果链 9 场景通过。实际内存集成通过 975409 checks／10034 I2S 帧，
+覆盖 compute 停钟时立即 SMUTE／隔离 DDR 及恢复后本地许可撤销。
+
+ED 复用此冻结网表，place4／route0；物理 CST 只追加 50 MHz 主时钟、
+44.1 kHz 参考专用时钟选择及 DDR capture 区域，保持 1.800 ns min-delay
+和全部名义时钟／时序门限。此输入尚含 controlled 的两组动态 busy
+PRESET；其握手替换及配置失败后迟到 ACK 隔离进入下一源码候选，不回写 ED。
+
+ED 在 0.666 秒被 CT1154 拒绝：GW5AST-138C 不支持 BUFS，未进入布局。
+依据该器件 SUG1018 §2.7，EE 仅追加 clk50 BUFG 与 DDR capture 区域，
+保留 raw44 自动分配；实际 CST 已被工具接受并进入 place4／route0 P&R。
+EE CST SHA256 `ec410ca4775890066a03158646eea3e5f0c14dad18689b3fbc8184ab90f4bf56`，
+实际新 SDC 未改，不使用 EC 的旧 override。
+
+下一整机 `e29fbebe1e44c8de` 已由原入口准备并排队完整综合，配置与 v2
+相同，staged 仅 SDC、runtime_audio、runtime_controlled 三项变化。
+media-policy1 用现有停止成功 ACK 和持续 hold 授权真实变率／恢复，
+两组 busy 改为普通数据同步；仅首级 D 除外、级间保持 2 ns，未豁免
+reset／PRESET。policy0 保留原即时抑制。CFG_ACK 的失败锁定阻止迟到
+匹配 ACK 返回 IDLE，消除去除 integration_fault 组合反馈后的恢复漏洞。
+
+最终内存集成 975415 checks／10034 I2S 帧通过，确证 echo 已恢复匹配
+后迟到 ACK 也不能复活配置。真实媒体联合回归通过 TF／DDR／WAV／
+DCS／I2S、CPU observer reset、超时后迟到 cleanup；focused 130410
+同步检查、legacy 1078 物理帧及 13 相位 frame-zero 抢跑回归通过。
+七个负控均被捕获，包括撤销 hold 后残留授权。timing 8 项、当前 actual
+prepare 业务 12 项、profile 来源 7 项和 accepted 来源 17 项通过；通用
+profile 的实际 prepare 用例只适用于默认 revision5，未作为 business4
+接受依据。此阶段未写 SRAM／Flash，等待新综合及完整物理结果。

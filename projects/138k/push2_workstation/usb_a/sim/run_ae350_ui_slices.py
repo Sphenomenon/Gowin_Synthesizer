@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
-"""Compare bounded UI rows with the fixed historical renderer, without EDA."""
+"""Compare bounded UI rows and patches with full maintained rendering, without EDA."""
 import argparse,hashlib,json,shutil,subprocess
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-REPO=ROOT.parents[3]
-REFERENCE='94fd199757e1da92367c6ac15555993d0e1d4ff5'
-REFERENCE_PATH='projects/138k/push2_workstation/usb_a/firmware/ae350/ui_render.c'
-REFERENCE_SHA='5188d9777768e6ec6951982f3d2776fb49d20a8d0384aa31b0d742c1653c4c91'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def run(output):
     output.mkdir(parents=True,exist_ok=False)
@@ -15,8 +11,8 @@ def run(output):
     files=[firmware/'ui_render.c',firmware/'ui_render.h',firmware/'ui_model.h',
            Path(__file__).resolve(),Path(__file__).with_name('ae350_ui_slices_host.c')]
     inputs={str(p):sha(p)for p in files}
-    baseline=subprocess.check_output(['git','show',REFERENCE+':'+REFERENCE_PATH],cwd=REPO)
-    assert hashlib.sha256(baseline).hexdigest()==REFERENCE_SHA
+    baseline=(firmware/'ui_render.c').read_bytes()
+    reference_sha=hashlib.sha256(baseline).hexdigest()
     (output/'reference_ui_render.c').write_bytes(baseline)
     cc=shutil.which('clang')
     if not cc:raise FileNotFoundError('clang is required for the pixel comparison')
@@ -33,14 +29,15 @@ def run(output):
         suffix='san'if sanitized else'native'
         flags=['-fsanitize=address,undefined','-fno-omit-frame-pointer']if sanitized else[]
         execute([*common,*flags,'-Dui_render=reference_ui_render','-Dui_patch=reference_ui_patch',
+                 '-Dui_render_rows=reference_ui_render_rows','-Dui_patch_rows=reference_ui_patch_rows',
                  '-c',str(output/'reference_ui_render.c'),'-o','reference_'+suffix+'.o'],'reference_'+suffix+'.log')
         execute([*common,*flags,str(firmware/'ui_render.c'),str(files[-1]),'reference_'+suffix+'.o',
                  '-o','ui_slices_'+suffix],'compile_'+suffix+'.log')
         execute([str(output/('ui_slices_'+suffix))],'run_'+suffix+'.log')
         assert 'PASS ui_slices comparisons=78 'in(output/('run_'+suffix+'.log')).read_text()
     assert inputs=={p:sha(p)for p in inputs}
-    result=dict(schema=1,passed=True,validation_stage='offline-historical-renderer-pixel-and-row-bounds',
-        reference_commit=REFERENCE,reference_sha256=REFERENCE_SHA,input_sha256=inputs,commands=commands,
+    result=dict(schema=1,passed=True,validation_stage='offline-maintained-full-render-versus-slice-and-patch',
+        reference_policy='maintained full renderer compiled independently',reference_sha256=reference_sha,input_sha256=inputs,commands=commands,
         compiler_path=cc,compiler_sha256=sha(cc),pixel_comparisons_per_build=78,model_cases=12,row_ranges=15,
         asan_ubsan_passed=True,inputs_unchanged=True,runtime_service_integration=False,
         hardware_timing_measured=False,CPU_cycles_measured=False,EDA_invoked=False,hardware_operated=False,

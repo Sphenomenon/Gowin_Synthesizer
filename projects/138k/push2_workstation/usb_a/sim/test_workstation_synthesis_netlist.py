@@ -34,6 +34,25 @@ endmodule
 
 
 class SourceNetlist(unittest.TestCase):
+    def test_routed_ram_compact_closing_does_not_consume_the_next_instance(self):
+        source = r'''module top (clk);
+input clk;
+RAM16SDP4 \frames/memory_0  (
+ .CLK(clk),
+ .DO({\pcm [3:0]}));
+RAM16SDP4 \frames/memory_1  (
+ .CLK(clk),
+ .DO({\pcm [7:4]}));
+  DFFCE following (
+ .CLK(clk), .Q(held)
+);
+endmodule
+'''
+        netlist = SynthesisNetlist(source, 'top')
+        self.assertEqual(set(netlist.cells), {'frames/memory_0', 'frames/memory_1', 'following'})
+        self.assertEqual(netlist.cells['frames/memory_0']['ports']['DO'], r'{\pcm [3:0]}')
+        self.assertEqual(netlist.pin('frames/memory_1', 'CLK'), 'clk')
+
     def test_escaped_instance_parameters_allow_the_required_separator_space(self):
         source = r'''module top (clk);
 input clk;

@@ -134,6 +134,12 @@ module gw138k_push_workstation_top #(
     wire tf_explicit_restart,tf_file_cancel;
 `endif
     wire [3:0] tf_scope_track;
+`ifdef WORKSTATION_DEMO_NO_TF
+    assign tf_control_valid=0,tf_scope_control_50=0,tf_mode_50=0,tf_run_50=0;
+    assign tf_scope_track=0,tf_scope_restart=0,tf_scope_cancel=0,tf_scope_error=0;
+    assign tf_explicit_restart=0,tf_file_cancel=0;
+    wire tf_run_audio=1'b0;
+`else
     reg [4:0] tf_control_divider;
     always @(posedge audio_clk or negedge audio_reset_n)
         if(!audio_reset_n) tf_control_divider<=0;else tf_control_divider<=tf_control_divider+1'b1;
@@ -154,6 +160,7 @@ module gw138k_push_workstation_top #(
     always @(posedge audio_clk or negedge audio_reset_n)
         if(!audio_reset_n) begin tf_run_meta<=0;tf_run_audio<=0;end
         else begin tf_run_meta<=tf_run_50;tf_run_audio<=tf_run_meta;end
+`endif
     wire final_sample_valid;
     wire [127:0] final_snapshot;
     wire [31:0] synth_dac_reference,synth_dac_voices,synth_dac_health;
@@ -174,6 +181,10 @@ module gw138k_push_workstation_top #(
     wire music_analysis_restart,music_analysis_enable,music_analysis_hold;
     wire playback_restart,score_accept;
     wire [3:0] playback_track;
+`ifdef WORKSTATION_DEMO_NO_TF
+    assign music_analysis_enable=0,music_analysis_restart=0,music_analysis_hold=0;
+    assign playback_restart=0,playback_track=0,score_accept=0;
+`else
     workstation_playback_service
 `ifdef WORKSTATION_RUNTIME_NATIVE
         #(.RECOGNITION_ENABLE(RECOGNITION_ENABLED))
@@ -188,6 +199,7 @@ module gw138k_push_workstation_top #(
         .analysis_hold_o(music_analysis_hold),.reader_restart_o(playback_restart),
         .reader_track_o(playback_track),.score_accept_o(score_accept)
     );
+`endif
 `ifdef WORKSTATION_CUSTOM_138K
     wire native_usb_uart;
     assign debug_uart_tx=BLUETOOTH_DIAGNOSTIC_UART ? ble_debug_uart : USB2_DIAGNOSTIC_UART ? native_usb_uart :
@@ -266,14 +278,20 @@ module gw138k_push_workstation_top #(
     // Backend loss quarantines both directions until common reset. It never
     // clears held notes, committed parameters or the stream epoch in place.
     workstation_runtime_memory_guard u_runtime_memory_guard(
-        .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+        .reset_ni(button1_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
         .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),
         .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),
         .mute_o(memory_guard_mute),.channel_open_o(runtime_channel_open),.clock_alive_o(),.fault_code_o(memory_guard_code));
     wire compute_output_safe_n=reset_n && audio_reset_n && !memory_guard_mute;
+    // Raw safety still asserts DAC SMUTE immediately. Compute-domain gain
+    // policy consumes only the synchronized local permission, in both directions.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] output_safe_sync;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
-    always @(posedge audio_clk or negedge compute_output_safe_n)
-        if(!compute_output_safe_n)output_safe_compute<=0;
+    always @(posedge audio_clk or negedge button1_n)
+        if(!button1_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};
+    always @(posedge audio_clk or negedge button1_n)
+        if(!button1_n)output_safe_compute<=0;
+        else if(!output_safe_sync[1])output_safe_compute<=0;
         else output_safe_compute<={output_safe_compute[1:0],1'b1};
     wire tf_packet_active,tf_packet_busy,tf_packet_valid,tf_packet_error,tf_packet_ready;
     wire signed [15:0] tf_packet_left,tf_packet_right;
@@ -410,6 +428,17 @@ module gw138k_push_workstation_top #(
         .read_response_i(recording_subclient_response[1]),.read_data_i(client_rdata),
         .transport_fault_i(recording_mux_fault),.native_protocol_fault_o(recording_bridge_protocol_fault[1]));
 `endif
+`ifdef WORKSTATION_SINGLE_BLE_RECORDING
+    // The BLE business owner is the sole object owner. The retired R00 APB
+    // window rejects access; CPU commands use its maintained C service.
+    assign recording_bus_ready=1'b1,recording_bus_error=recording_select;
+    assign recording_bus_data=32'h0;
+    assign recording_seal_ready=1'b1,recording_seal_done=1'b0;
+    assign recording_seal_failed=1'b0,recording_seal_failure=4'd0;
+    assign recording_subclient_valid[0]=1'b0,recording_subclient_write[0]=1'b0;
+    assign recording_cpu_address=29'd0,recording_cpu_data=256'd0,recording_cpu_mask=32'd0;
+    assign recording_bridge_protocol_fault[0]=1'b0;
+`else
     workstation_recording_runtime u_recording(
 `ifdef WORKSTATION_BLE_RAW_DDR
         .reset_ni(recording_memory_reset_n),.source_clk_i(dac_mclk),.memory_clk_i(memory_clk),
@@ -442,6 +471,7 @@ module gw138k_push_workstation_top #(
         .object_state_o(),.object_failure_o(),
         .object_frames_o(),.committed_frames_o(),.capture_o());
 `endif
+`endif
     // CPU reset clears command bookkeeping. The independently latched backend
     // fault and runtime identity survive it and remain visible to the service.
     gw138k_apb_cdc u_clock_control(
@@ -470,9 +500,16 @@ module gw138k_push_workstation_top #(
         .media_stop_hold_o(clock_media_hold),.media_stop_ready_i(clock_media_ready),
         .media_stop_done_i(clock_media_done),.media_stop_failed_i(clock_media_failed),
         .media_stop_failure_code_i(clock_media_failure));
-    workstation_media_preparation #(.ENABLE_BLE(1)
+    workstation_media_preparation #(
+`ifdef WORKSTATION_NO_BLUETOOTH
+        .ENABLE_BLE(0)
+`else
+        .ENABLE_BLE(1)
+`endif
 `ifdef WORKSTATION_RECORDING_DDR
+`ifndef WORKSTATION_SINGLE_BLE_RECORDING
         ,.ENABLE_RECORDING(1)
+`endif
 `endif
     ) u_media_preparation(
         .clk_i(clk_50m),.reset_ni(runtime_reset_n),.request_i(clock_media_request),.hold_i(clock_media_hold),
@@ -486,6 +523,9 @@ module gw138k_push_workstation_top #(
         ,.recording_request_o(recording_seal_request),.recording_hold_o(recording_seal_hold),
         .recording_ready_i(recording_seal_ready),.recording_done_i(recording_seal_done),
         .recording_failed_i(recording_seal_failed),.recording_failure_code_i(recording_seal_failure),.recording_failure_code_o()
+`else
+        ,.recording_request_o(),.recording_hold_o(),.recording_ready_i(1'b1),
+        .recording_done_i(1'b0),.recording_failed_i(1'b0),.recording_failure_code_i(4'd0),.recording_failure_code_o()
 `endif
     );
 `endif
@@ -551,6 +591,9 @@ module gw138k_push_workstation_top #(
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
+`ifdef WORKSTATION_DEMO_D_ONLY
+        ,.WORKER_DEMO(1'b1)
+`endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
         ,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)
 `endif
@@ -591,8 +634,18 @@ module gw138k_push_workstation_top #(
 `endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire [15:0] master_volume;
-    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED)) u_managed(
-        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
+    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)
+`ifdef WORKSTATION_DEMO_D_ONLY
+        ,.SYNTH_ENGINES_ENABLE(0),.D_ONLY_ENABLE(1)
+`endif
+`ifdef WORKSTATION_DEMO_NO_LOCAL_RECORD
+        ,.LOCAL_RECORD_ENABLE(0)
+`endif
+`ifdef WORKSTATION_DEMO_NO_LOCAL_SCORE
+        ,.LOCAL_SCORE_ENABLE(0)
+`endif
+    ) u_managed(
+        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
         .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
         .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
         .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),
@@ -681,7 +734,12 @@ module gw138k_push_workstation_top #(
     wire signed [31:0] output_mid={output_mid_pcm,15'd0};
     wire [7:0] memory_flags;
     wire [127:0] video_diagnostics;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(
+        .usb_cdc_assert_ni(button1_n),
+`else
     gw138k_push_performance_uart u_runtime(
+`endif
         .push_words(224'd0),.performance_feedback(push_snapshot),
         .usb_clk(usb_clk),.usb_reset_n(usb_reset_n),.usb_words(usb_words),
         .performance_words(performance_words),
@@ -754,9 +812,20 @@ module gw138k_push_workstation_top #(
     wire [19:0] tf_sample_rate;wire [31:0] tf_file_size;wire tf_card_lost;wire [10:0] tf_hotplug_debug;
 `endif
     wire tf_sample_ce,tf_hp_bck,tf_hp_ws,tf_hp_din,tf_pa_en;
-`ifdef WORKSTATION_RUNTIME_NATIVE
-    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1)) u_tf_audio(
-        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
+`ifdef WORKSTATION_DEMO_NO_TF
+    assign sd_cs_n=1'b1,sd_sck=1'b0,sd_mosi=1'b0;
+    assign analysis_pcm_valid=0,analysis_pcm_end=0,analysis_pcm_left=0,analysis_pcm_right=0,analysis_sample_rate=0;
+    assign tf_track_count=0,playlist_scan_done=0,tf_card_lost=0,tf_hotplug_debug=0,playlist_name_data=0;
+    assign tf_format_ready=0,tf_unsupported=0,tf_ddr_error=0,tf_file_size=0,tf_sample_rate=0;
+    assign audio_ddr_req=0,audio_ddr_write=0,audio_ddr_address=0,audio_ddr_data=0;
+    assign tf_busy50=0,tf_runtime_failed=0,tf_runtime_failure=0,tf_media_quiet50=1;
+    assign tf_packet_active=0,tf_packet_busy=0,tf_packet_valid=0,tf_packet_error=0;
+    assign tf_packet_left=0,tf_packet_right=0,tf_packet_rate=0,tf_packet_generation=0,tf_expected_generation=0;
+    assign tf_media_quiet=1,tf_stop_done=tf_stop_request,tf_stop_failed=0,tf_stop_failure=0,tf_stop_pending=0;
+    assign tf_source_active=0;
+`elsif WORKSTATION_RUNTIME_NATIVE
+    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(
+        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
         .memory_clk_i(memory_clk),.memory_reset_ni(memory_reset_n),
         .memory_ready_i(memory_calibrated && memory_reset_n),
         .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),
@@ -821,6 +890,9 @@ module gw138k_push_workstation_top #(
     wire music_result_valid;
     wire [6:0] music_result_note;
     wire [15:0] music_result_frame;
+`ifdef WORKSTATION_DEMO_NO_TF
+    wire tf_format_sync50=1'b0,tf_source_sync50=1'b0;
+`else
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg tf_format_meta50,tf_format_sync50;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg tf_source_meta50,tf_source_sync50;
     always @(posedge clk_50m or negedge reset_n) begin
@@ -831,6 +903,7 @@ module gw138k_push_workstation_top #(
             tf_source_meta50<=tf_source_active;tf_source_sync50<=tf_source_meta50;
         end
     end
+`endif
 `ifdef WORKSTATION_CUSTOM_138K
     wire model_flash_cs_n,model_flash_clk,model_flash_mosi;
     basic_pitch_flash_io_guard u_model_flash_guard(
@@ -946,6 +1019,11 @@ module gw138k_push_workstation_top #(
     assign ble_frame_clock=dac_mclk,ble_frame_valid=physical_frame_valid;
     assign ble_frame_pcm=physical_frame_pcm,ble_frame_sequence=physical_frame_sequence;
 `endif
+`ifdef WORKSTATION_NO_BLUETOOTH
+    assign ble_uart_tx_o=1'bz,ble_bt_dis_n=1'b0,ble_wl_dis_n=1'b0;
+    assign ble_debug_uart=1'b1;
+    assign ble_seal_ready=1'b1,ble_seal_done=1'b0,ble_seal_failed=1'b0,ble_seal_failure=4'd0;
+`else
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire ble_frame44,ble_frame_error;
     wire [31:0] ble_frame_epoch;
@@ -966,7 +1044,11 @@ module gw138k_push_workstation_top #(
     wire [767:0] ble_status;
 `ifdef WORKSTATION_RUNTIME_NATIVE
 `ifdef WORKSTATION_BLE_RAW_DDR
-    workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) u_bluetooth (
+    workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)
+`ifdef WORKSTATION_SINGLE_BLE_RECORDING
+        ,.SINGLE_BLE_RECORDING(1),.SESSION_ONLY_PAIRING(1)
+`endif
+    ) u_bluetooth (
 `else
     workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1)) u_bluetooth (
 `endif
@@ -1025,6 +1107,7 @@ module gw138k_push_workstation_top #(
     end else begin: no_bluetooth_diagnostics
         assign ble_debug_uart=1'b1;
     end endgenerate
+`endif
 `endif
     ddr_address_map_guard u_ddr_address_map_guard();
     ddr3_platform u_memory (

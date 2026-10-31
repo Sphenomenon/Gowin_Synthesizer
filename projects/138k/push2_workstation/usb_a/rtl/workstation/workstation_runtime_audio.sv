@@ -11,7 +11,10 @@ module workstation_runtime_audio #(
     parameter integer DMA_TIMEOUT_CYCLES=1048576,
     parameter bit RESERVE_ZERO_EPOCH=0,
     parameter bit ENABLE_AE350_PCM=0,
-    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
+    parameter bit SYNTH_ENGINES_ENABLE=1,
+    parameter bit D_ONLY_ENABLE=0,
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire rst_ni, clk_50m_i, compute_clk_i, memory_clk_i,
     input wire reference_48_i, reference_44_i,
@@ -60,6 +63,7 @@ module workstation_runtime_audio #(
     output wire [1:0] route_o,
     output wire [2:0] profile_o,effect_mask_o,
     output wire [5:0] effect_order_o,
+    output wire [31:0] effect_state_o,
     output wire panel_event_valid_o,
     output wire [6:0] panel_command_o,
     // Atomic same-compute-clock TF packet; asynchronous file transport is external.
@@ -84,15 +88,34 @@ module workstation_runtime_audio #(
     output wire stream_change_o, sequence_gap_o, analysis_gap_o, record_fault_o,
     output wire [31:0] analysis_drop_count_o, record_drop_count_o,
     output wire [31:0] underrun_count_o, source_error_count_o,
-    output wire [31:0] bridge_request_drop_count_o, bridge_return_discard_count_o
+    output wire [31:0] bridge_request_drop_count_o, bridge_return_discard_count_o,
+    input wire common_reset_ni
 );
+    // The monotonic startup grant crosses as data. Only the common
+    // assertion reaches async reset pins; every release bit uses local data.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_control;
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)startup_control<=0;else startup_control<={startup_control[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_compute;
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_compute<=0;else startup_compute<={startup_compute[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_memory;
+    always @(posedge memory_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_memory<=0;else startup_memory<={startup_memory[0],rst_ni};
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] control_release,compute_release,memory_release;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if(!rst_ni)control_release<=0;else control_release<={control_release[1:0],1'b1};
-    always @(posedge compute_clk_i or negedge rst_ni)
-        if(!rst_ni)compute_release<=0;else compute_release<={compute_release[1:0],1'b1};
-    always @(posedge memory_clk_i or negedge rst_ni)
-        if(!rst_ni)memory_release<=0;else memory_release<={memory_release[1:0],1'b1};
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)control_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_control[1])control_release<=0;
+        else control_release<={control_release[1:0],1'b1};
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)compute_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_compute[1])compute_release<=0;
+        else compute_release<={compute_release[1:0],1'b1};
+    always @(posedge memory_clk_i or negedge common_reset_n)
+        if(!common_reset_n)memory_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_memory[1])memory_release<=0;
+        else memory_release<={memory_release[1:0],1'b1};
     wire control_reset_n=control_release[2],compute_reset_n=compute_release[2],memory_reset_n=memory_release[2];
     wire selected_clock,audio_reset_n,clock_ready,clock_fault,clock_applied,clock_failed;
     wire clock_active_valid,dac_mute,staged_rate,serial_quiet,serial_prefill,serial_running;
@@ -135,9 +158,9 @@ module workstation_runtime_audio #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),.TOLERANCE_PPM(TOLERANCE_PPM),
         .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),
         .COUNTER_BITS(COUNTER_BITS),.SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),
-        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH)
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) clocks(
-        .clk_50m_i,.rst_ni,.reference_48_i,.reference_44_i,
+        .clk_50m_i,.rst_ni,.common_reset_ni(common_reset_n),.reference_48_i,.reference_44_i,
         .request_i(request_i && switch_permit_i && !dsp_fault_o),.request_44k1_i,.recover_i,
         .frame_quiescent_i(quiet_sync[1] && media_quiescent_i && !dsp_fault_o),
         .prefill_ready_i(prefill_sync[1] && context_ready_o && !dsp_fault_o),
@@ -170,7 +193,11 @@ module workstation_runtime_audio #(
     reg [2:0] config_state;
     reg pending_rate,compute_rate,compute_context_valid;
     reg [31:0] pending_epoch,compute_epoch;
-    wire config_valid=config_state==CFG_ACCEPT && !compute_fault;
+    // integration_fault is set only in CFG_ACK or an invalid state; neither
+    // can return to CFG_ACCEPT. Keep actual service/PCM fault vetoes here
+    // without feeding that unreachable integration-fault condition through
+    // the service's acceptance/ready path and back into this state register.
+    wire config_valid=config_state==CFG_ACCEPT && !service_fault && !pcm_hard_fault;
     always @(posedge compute_clk_i or negedge compute_reset_n)begin
         if(!compute_reset_n)begin
             context_sync<=0;context_ack<=0;config_state<=CFG_IDLE;
@@ -185,7 +212,7 @@ module workstation_runtime_audio #(
                 end
                 CFG_DRAIN:if(router_quiet && service_quiet && !bridge_busy)config_state<=CFG_ACCEPT;
                 CFG_ACCEPT:if(config_ready)config_state<=CFG_ACK;
-                CFG_ACK:if(config_applied)begin
+                CFG_ACK:if(config_applied && !integration_fault)begin
                     if(service_rate!=pending_rate)integration_fault<=1;
                     else begin
                         compute_rate<=pending_rate;compute_epoch<=pending_epoch;compute_context_valid<=1;
@@ -202,17 +229,17 @@ module workstation_runtime_audio #(
         wire session_live;
         wire [31:0] session_epoch,session_generation;
         workstation_ae350_pcm_session session(
-            .reset_ni(rst_ni),.clk_i(compute_clk_i),.source_ready_i(hci_session_ready_i),
+            .reset_ni(SEPARATE_COMMON_RESET ? compute_reset_n:rst_ni),.clk_i(compute_clk_i),.source_ready_i(hci_session_ready_i),
             .source_epoch_i(hci_controller_epoch_i),.source_generation_i(hci_transport_generation_i),
             .live_o(session_live),.epoch_o(session_epoch),.generation_o(session_generation));
         reg switch_inhibit_50;
         (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] switch_inhibit_compute;
-        always @(posedge clk_50m_i or negedge rst_ni)
-            if(!rst_ni)switch_inhibit_50<=1;else switch_inhibit_50<=busy_o || quiesce_o;
-        always @(posedge compute_clk_i or posedge switch_inhibit_50 or negedge rst_ni)
-            if(!rst_ni || switch_inhibit_50)switch_inhibit_compute<=3;
+        always @(posedge clk_50m_i or negedge control_reset_n)
+            if(!control_reset_n)switch_inhibit_50<=1;else switch_inhibit_50<=busy_o || quiesce_o;
+        always @(posedge compute_clk_i or posedge switch_inhibit_50 or negedge compute_reset_n)
+            if(!compute_reset_n || switch_inhibit_50)switch_inhibit_compute<=3;
             else switch_inhibit_compute<={switch_inhibit_compute[0],1'b0};
-        workstation_ae350_pcm_owner owner(
+        workstation_ae350_pcm_owner #(.SUSTAINED_VERIFIED(D_ONLY_ENABLE)) owner(
             .clk_i(compute_clk_i),.reset_ni(compute_reset_n),.cpu_ready_i(pcm_cpu_ready_i),
             .command_valid_i(pcm_command_valid_i),.command_write_i(pcm_command_write_i),
             .command_address_i(pcm_command_address_i),.command_data_i(pcm_command_data_i),
@@ -230,11 +257,23 @@ module workstation_runtime_audio #(
         assign pcm_command_ready_o=1'b1;assign pcm_response_data_o=0;assign pcm_response_error_o=1'b1;
         assign pcm_history_request=1'b0;assign pcm_serial_hold=1'b0;assign pcm_cancel_epoch=0;assign pcm_hard_fault=1'b0;
     end endgenerate
+    // The monotonic startup grant crosses as data. Only the common
+    // assertion reaches async reset pins; every release bit uses local data.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_serial;
+    always @(posedge selected_clock or negedge common_reset_n)
+        if(!common_reset_n)startup_serial<=0;else startup_serial<={startup_serial[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] serial_common_release;
+    always @(posedge selected_clock or negedge common_reset_n)
+        if(!common_reset_n)serial_common_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_serial[1])serial_common_release<=0;
+        else serial_common_release<={serial_common_release[1:0],1'b1};
+    wire serial_common_reset_n=serial_common_release[2];
+
     // A held source revoke drops pending serial payloads. Assertion is immediate;
     // release crosses two selected-clock flops and the serializer's frame guard.
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] pcm_hold_serial;
-    always @(posedge selected_clock or posedge pcm_serial_hold or negedge rst_ni)
-        if(!rst_ni || pcm_serial_hold)pcm_hold_serial<=3;
+    always @(posedge selected_clock or posedge pcm_serial_hold or negedge serial_common_reset_n)
+        if(!serial_common_reset_n || pcm_serial_hold)pcm_hold_serial<=3;
         else pcm_hold_serial<={pcm_hold_serial[0],1'b0};
 
     // Local serializer reset is only asserted by the clock transaction/fault.
@@ -270,7 +309,7 @@ module workstation_runtime_audio #(
     wire bridge_request,bridge_rate;
     wire [31:0] bridge_epoch,bridge_sequence;
     workstation_pcm_frame_bridge bridge(
-        .reset_ni(rst_ni),.serial_clk_i(selected_clock),.compute_clk_i,
+        .reset_ni(common_reset_n),.serial_clk_i(selected_clock),.compute_clk_i,
         .serial_reset_ni(serial_reset_n),.serial_quiet_i(serial_quiet),.quiesce_i(quiesce_o),
         .request_i(serial_request),.request_44k1_i(serial_request_rate),
         .request_epoch_i(serial_request_epoch),.request_sequence_i(serial_request_sequence),.request_ready_o(),
@@ -298,7 +337,8 @@ module workstation_runtime_audio #(
         .stale_source_count_o(),.cancelled_frame_count_o(),.unexpected_render_count_o(),.clipped_frame_count_o());
     wire dwr_valid,dwr_pop,drd_push,drd_ready,audio_heartbeat,memory_heartbeat,dma_fault;
     wire [64:0] dwr_data,drd_data;
-    workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1)) service(
+    workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1),
+        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE)) service(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),
         .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(pcm_history_request),
         .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(pcm_history_ready),.history_done_o(pcm_history_done),
@@ -311,7 +351,7 @@ module workstation_runtime_audio #(
         .pc_byte_valid_i,.pc_byte_i,.cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,.pcm_left_i(input_left),.pcm_right_i(input_right),
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,.panic_epoch_o,.panic_muted_o,
         .active_mask_o,.active_voice_count_o,.mode_o,.pitch_q20_o,.deadline_miss_o,.midi_overflow_o,.note_drop_o,
-        .clip_o,.synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,.effect_mask_o,.effect_order_o,
+        .clip_o,.synth_gain_o,.pcm_gain_o,.master_volume_o,.route_o,.profile_o,.effect_mask_o,.effect_order_o,.effect_state_o,
         .panel_event_valid_o,.panel_command_o,.scope_status_o,.tf_scope_control_o,.delivery_duplicate_count_o(),
         .delay_mem_clk_i(memory_clk_i),.delay_mem_rst_ni(memory_reset_n),.delay_dwr_valid_o(dwr_valid),.delay_dwr_data_o(dwr_data),
         .delay_dwr_pop_i(dwr_pop),.delay_drd_push_i(drd_push),.delay_drd_data_i(drd_data),.delay_drd_ready_o(drd_ready));
@@ -337,7 +377,7 @@ module workstation_runtime_audio #(
     assign pdn_no=serializer_pdn && !dsp_fault_o;
     assign smute_o=serializer_mute || dac_mute || dsp_fault_o;
     workstation_pcm_frame_fanout taps(
-        .clk_i(selected_clock),.rst_ni,.frame_valid_i(frame_valid_o),.frame_error_i(physical_error),
+        .clk_i(selected_clock),.rst_ni(SEPARATE_COMMON_RESET ? serial_common_reset_n:rst_ni),.frame_valid_i(frame_valid_o),.frame_error_i(physical_error),
         .frame_44k1_i(physical_rate),.frame_epoch_i(physical_epoch),.frame_sequence_i(physical_sequence),.frame_pcm_i(physical_pcm),
         .analysis_enable_i,.analysis_ready_i,.record_enable_i,.record_ready_i,.analysis_valid_o,.record_valid_o,
         .frame_error_o,.frame_44k1_o,.frame_epoch_o,.frame_sequence_o,.frame_pcm_o,

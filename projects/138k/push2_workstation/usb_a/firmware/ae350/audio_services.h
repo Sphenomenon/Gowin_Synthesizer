@@ -40,7 +40,11 @@ static inline void a138_write(uintptr_t base, uint32_t offset, uint32_t value) {
 static inline int a138_probe(uintptr_t base) {
     return a138_read(base,A138_ID)==UINT32_C(0x41313338) &&
            a138_read(base,A138_VERSION)==UINT32_C(0x00010000) &&
+#ifdef A138_SINGLE_BLE_RECORDING
+           (a138_read(base,A138_CAPABILITIES)&7u)==1u;
+#else
            (a138_read(base,A138_CAPABILITIES)&7u)==7u;
+#endif
 }
 static inline void a138_snapshot(uintptr_t base, uint32_t state[9]) {
     a138_write(base,A138_SNAPSHOT,1);

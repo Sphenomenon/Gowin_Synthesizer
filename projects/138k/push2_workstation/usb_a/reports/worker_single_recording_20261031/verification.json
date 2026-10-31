@@ -1,0 +1,166 @@
+{
+  "passed": true,
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.sv": "409b8b080de99a8141aa766dc9e213fad68cf2029f121c4cbbcf62bed9b8b20c",
+    "/private/tmp/dual138k-recording-v4/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/ble_protocol_command.v": "39fb3ed0c9056679f51d993becb4e2b4c955dd6d3d2915b406b608fb50dc90c8",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "0ac9f44f22c239ddfc37f90234661922fb2817052914ebe3872c8a9e595433b7",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "7484fb737ac9dde6c1cb4d0fa6534ae3d56ea221e57556ad3188b67d5b13b5d3",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_business_mailbox.sv": "61b3ad5f9976294fd28ad8506ecb254d7e69e4409dd8c780c0af94404623632a",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": "e3c346a5c41a6729af3792eb24f36e6c7008fbbd9d4c6575741b697bc4d0b909",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c": "320e16f5bc8b6afe147cf625ed6366aedb71b20e145b04580e636ee755f1510b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.cpp": "54da9e746f4d6812a6df3b703e28d95df4d136dd0e0c0c0a38e39a9b8be741a9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py": "7278509f31bd6d0bc847ad71285d4385613f69420847919dd2e1f99dea87f74b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.h": "d3397ea1e217dba332f13d40693eeed3d4bfda809af157e764ad4ed7d7cba853",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/audio_services.h": "d84a0450f5aab3a24bc323e86401566da87e3a46cc681860d2f0b902c1ff74ff",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": "96657cafcecd3cf5c078649eedc986b5ca91f9f38c173a3d56324bb2ed0ec29a"
+  },
+  "inputs_unchanged": true,
+  "mutations": {
+    "allow_full_task_slot": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "succeed_before_first_frame": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "skip_object_identity": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "remove_uncertain_deadline": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "remove_uncertain_completion_deadline": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "retire_torn_observation": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "ignore_ack_crc": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "ignore_combined_crc": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "commit_combined_before_range": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "ignore_confirmed_offset": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "remove_transfer_timeout": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "replay_mutates_cursor": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "skip_replay_object_identity": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "ignore_extended_limit": {
+      "rejected": true,
+      "returncode": 1
+    },
+    "commit_unstarted_read": {
+      "rejected": true,
+      "returncode": 1
+    }
+  },
+  "golden_wire_equal": true,
+  "compared_messages": 136,
+  "behavioral_checks": 1765,
+  "check_groups": [
+    {
+      "name": "real C/APB/parser/raw-DDR owner",
+      "checks": 342
+    },
+    {
+      "name": "real download policy and replay vectors",
+      "checks": 840
+    },
+    {
+      "name": "sole CPU/BLE recording object",
+      "checks": 64
+    },
+    {
+      "name": "read primitive disconnect admission",
+      "checks": 47
+    },
+    {
+      "name": "additional real C boundaries",
+      "checks": 316
+    },
+    {
+      "name": "uncommitted uncertain descriptor",
+      "checks": 13
+    },
+    {
+      "name": "uncommitted uncertain completion",
+      "checks": 15
+    },
+    {
+      "name": "actual APB torn COMPLETE observation",
+      "checks": 15
+    },
+    {
+      "name": "zero-frame START/seal",
+      "checks": 33
+    },
+    {
+      "name": "CRC phase 2",
+      "checks": 20
+    },
+    {
+      "name": "CRC phase 3",
+      "checks": 20
+    },
+    {
+      "name": "CRC phase 4",
+      "checks": 20
+    },
+    {
+      "name": "CRC phase 5",
+      "checks": 20
+    }
+  ],
+  "clock_fixture": {
+    "timeprecision_ps": 1,
+    "cpp_step_ps": 1000,
+    "control_period_ns": 20,
+    "memory_period_ns": 14,
+    "historical_first_batch_control_period_ps": 20,
+    "historical_first_batch_memory_period_ns": 14,
+    "reconnect_hello_input_elapsed_ms": 65536,
+    "wire_bytes_normalized": false
+  },
+  "single_recording_proxy": true,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "profile_selected": false,
+  "schema": "worker-unique-cpu-ble-recording-source-v1",
+  "full_local_evidence": "/tmp/dual138k-recording-v4/verification.json",
+  "full_local_evidence_sha256": "0ae56dc75e62ec1e4069c242efdf761736b343f8ea319eacb07f52f542bbf494",
+  "command": "python3 projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py --single-recording --output <new-directory>",
+  "scope": "subsystem C/APB/parser/CRC/native DDR simulation; not full demo image or hardware acceptance"
+}

@@ -14,7 +14,12 @@
 #endif
 static struct usb_device dev;
 static uint8_t rxbuf[512];
+#ifndef WORKSTATION_WORKER_DEMO
 static unsigned toggles[3],frames,out_errors;
+#else
+/* W-DEMO retains the same Host and PL transport, with no Push surface code. */
+static uint16_t worker_keys;
+#endif
 // P138 has one 32-bit USB IN diagnostic word.  Keep four independent,
 // saturating byte counters so a long idle NAK stream cannot wrap into a
 // misleading zero: [31:24] disconnects, [23:16] NAKs,
@@ -38,6 +43,7 @@ static void bump_in_diagnostic(uint8_t *counter) {
         publish_in_diagnostics();
     }
 }
+#ifndef WORKSTATION_WORKER_DEMO
 struct screen_state {
     uint32_t control,options,held_lo,held_hi,note_velocity;
 };
@@ -45,11 +51,16 @@ static struct screen_state displayed_state;
 static int displayed_state_valid;
 static uint32_t last_frame_complete;
 #define SCREEN_KEEPALIVE_MS 1000u
+#endif
 static void disconnect(void) {
     connected=0;
     mode=DEVICE_NONE;
     gw25k_reset();
+#ifndef WORKSTATION_WORKER_DEMO
     displayed_state_valid=0;
+#else
+    worker_keys=0;
+#endif
     // Existing RTL releases held notes and resets LED/display initialization.
     // Audio, HDMI, DDR and AE350 continue running throughout reconnection.
     MMIO(0x00)=0;
@@ -126,11 +137,13 @@ static int find_midi_in(void) {
     return 1;
 }
 static void forward_midi(const uint8_t *p) {
+#ifndef WORKSTATION_WORKER_DEMO
     if(mode==DEVICE_PUSH) {
         MMIO(0x04)=(uint32_t)p[0]|((uint32_t)p[1]<<8)|
                    ((uint32_t)p[2]<<16)|((uint32_t)p[3]<<24);
         return;
     }
+#endif
     // Generic channel messages go straight to the workstation {kind,a,b}
     // queue. Preserve 0..127 notes/velocity and merge channels/cables into its
     // existing single instrument; no Push pad range, force curve or CC remap.
@@ -146,6 +159,31 @@ static void forward_midi(const uint8_t *p) {
         case 14:kind=4;break;
         default:return; // channel pressure, SysEx/realtime: no core mapping
     }
+#ifdef WORKSTATION_WORKER_DEMO
+    /* The adapter is a fixed D context, using the unchanged GW25K MIDI wire
+     * messages. Only this image maps touch keys to existing parameter CCs.
+     * Momentary controls retain real press/release, and duplicate NoteOn does
+     * not append/toggle an effect twice. Parameter state stays in audio RTL. */
+    if(mode!=DEVICE_GW25K)return;
+    if(kind==0 || kind==1) {
+        if(a<48 || a>63)return;
+        unsigned key=a-48,bit=1u<<key,down=kind==1;
+        if(down==!!(worker_keys&bit))return;
+        if(down)worker_keys|=(uint16_t)bit;else worker_keys&=(uint16_t)~bit;
+        kind=2;
+        if(key<3){a=20+key;b=down?100:0;}
+        else {
+            if(!down)return;
+            if(key<6){a=87;b=key-3;}
+            else if(key==6){a=88;b=127;}
+            else if(key==7){a=81;b=0;}
+            else if(key<15){a=81;b=key-7;}
+            else {a=7;b=127;}
+        }
+    } else if(kind!=2 || (a!=7 && a!=11 && a!=20 && a!=21 && a!=22 &&
+                         a!=81 && a!=82 && a!=84 && a!=85 && a!=86 &&
+                         a!=87 && a!=88 && a!=120 && a!=123))return;
+#endif
     MMIO(0x54)=(kind<<14)|(a<<7)|b;
 }
 static void poll_midi(void) {
@@ -188,6 +226,7 @@ static void poll_midi(void) {
     }
     for(int i=0;i+3<n;i+=4)forward_midi(rxbuf+i);
 }
+#ifndef WORKSTATION_WORKER_DEMO
 // screen_packet < 0 uses the ordinary byte buffer for headers and MIDI.
 static int send_packet(unsigned ep,uint8_t *data,unsigned n,int screen_packet) {
     if(mode!=DEVICE_PUSH)return 0;
@@ -300,6 +339,7 @@ static int frame(void) {
     last_frame_complete=usbhw_timer_now();
     MMIO(0x30)=++frames;return 1;
 }
+#endif
 #include "gw25k_panel.h"
 
 static void connect(void) {
@@ -314,23 +354,35 @@ static void connect(void) {
     if(!usb_configure_device(&dev,1)){delay(250);return;}
     // Observed Push 2 FS fallback: PID 9999, zero advertised interfaces,
     // working EP1 OUT display and EP2 IN/OUT MIDI. Do not reject this quirk.
+#ifndef WORKSTATION_WORKER_DEMO
     if(dev.vid==0x2982 && (dev.pid==0x9999 || dev.pid==0x1967)) {
         mode=DEVICE_PUSH;midi_in_ep=2;midi_in_size=sizeof rxbuf;
     } else {
+#else
+    {
+#endif
         if(!find_midi_in()){delay(250);return;}
         mode=DEVICE_MIDI;
         if(dev.vid==0xfb9a && dev.pid==0xfb9b && midi_out_ep && panel_out_ep && panel_in_ep &&
            midi_out_ep!=panel_out_ep && midi_in_ep!=panel_in_ep && midi_out_size>=4)
             mode=DEVICE_GW25K;
     }
+#ifdef WORKSTATION_WORKER_DEMO
+    /* Unsupported surfaces are rejected after standard enumeration. No Push
+     * private commands, display traffic or fake instrument controls remain. */
+    if(mode!=DEVICE_GW25K){mode=DEVICE_NONE;delay(250);return;}
+#else
     toggles[1]=toggles[2]=0;
+#endif
     in_pid=PID_DATA0;
     last_in_reply=usbhw_timer_now();connected=1;
     if(mode==DEVICE_GW25K)gw25k_reset();
     MMIO(0x00)=mode==DEVICE_PUSH?1:mode==DEVICE_GW25K?7:3; // bits 0 connected, 1 generic MIDI, 2 GW25K qualifier
     // Let the existing RTL scheduler send Live/brightness/strip setup first.
+#ifndef WORKSTATION_WORKER_DEMO
     if(mode==DEVICE_PUSH)
         for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}
+#endif
 }
 int main(void) {
     reg_uart_clkdiv=417;
@@ -347,6 +399,7 @@ int main(void) {
         // responsive during that transfer.
         poll_midi();
         if(mode==DEVICE_GW25K){gw25k_service();delay(1);continue;}
+#ifndef WORKSTATION_WORKER_DEMO
         if(mode!=DEVICE_PUSH){delay(1);continue;}
         lights();
         // Push blanks its display after two seconds without a complete frame.
@@ -361,5 +414,8 @@ int main(void) {
                 for(unsigned i=0;i<100 && connected;i++){poll_midi();lights();delay(1);}
             }
         } else delay(1);
+#else
+        disconnect();
+#endif
     }
 }

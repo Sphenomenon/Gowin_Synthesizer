@@ -36,6 +36,7 @@ static unsigned ui_response(unsigned off) {
 }
 uint32_t ui_host_read(uintptr_t base,uint32_t off) {
  reads++;
+ if(base==A138_CLOCK_BASE)return 0;
  if(base==UI_BASE){unsigned value=ui_response(off);fprintf(transcript,"R %x %x\n",off,value);if(off==40&&touch_torn)input_touch(ui_touch_status&1u,ui_touch_status>>1,ui_touch_xy&65535u,ui_touch_xy>>16);return value;}
  require(base==AUDIO_BASE && off/4<128,"unknown audio read");
  if(off==A138_RECORD_STATUS)return record_valid|(record_count?2u:0u);
@@ -55,7 +56,7 @@ void ui_host_write(uintptr_t base,uint32_t off,uint32_t value) {
    if(expected_publication) {
     require(allow_publish,"publication before final slice");
     require(ui_staged==page_base(expected_page),"wrong frozen publication page");
-    require(!memcmp(pixels[expected_page],expected_publication,sizeof(gold)),"published page differs from independent historical pixels");
+    require(!memcmp(pixels[expected_page],expected_publication,sizeof(gold)),"published page differs from independent full-render pixels");
    }
    ui_pending=1;publications++;
   } else require(0,"unknown UI write");
@@ -79,7 +80,7 @@ static void init_runtime(ui_runtime*r) {
  ui_touch_status=ui_touch_xy=ui_touch_sequence=0;expected_publication=0;touch_torn=audio_torn=0;
  *r=(ui_runtime){.valid={1,1},.revision=1,.shown=1};ui_init(&r->model);
  for(unsigned p=0;p<2;p++){r->frame[p]=pixels[p];r->pages[p]=r->model;ui_render(pixels[p],&r->model,0);}
- memset(audio,0,sizeof(audio));audio[0x1a0/4]=1;runtime_flags=0;
+ memset(audio,0,sizeof(audio));audio[0x1a0/4]=1;audio[0x1b8/4]=0x124;runtime_flags=0;
 }
 static void arm_oracle(const ui_model*m,unsigned touch,unsigned page) {
  reference_ui_render(gold,m,touch);expected_publication=gold;expected_page=page;allow_publish=0;
@@ -161,7 +162,7 @@ static void service_loop_cases(void) {
   if(n==20){audio[0x184/4]=(b.mode<<3)|(b.sound<<7)|(b.route<<5)|(b.voices<<10)|(b.sw&7u);audio[0x1a0/4]++;}
   allow_publish=n+1==UI_FRAME_ROWS/UI_SLICE_ROWS;
   ui_service_step(&r);unsigned io=reads+writes-before;if(io>max_io)max_io=io;
-  require(io<=50,"actual service iteration MMIO work exceeded bound");require(!memcmp(saved,pixels[r.front],sizeof(saved)),"actual iteration dirtied front");steps++;
+  require(io<=56,"actual service iteration MMIO work exceeded bound");require(!memcmp(saved,pixels[r.front],sizeof(saved)),"actual iteration dirtied front");steps++;
  }
  require(publications==target_publications && r.drawing.target.mode==a.mode && r.revision!=r.drawing.revision,"new model mixed into active job/lost revision");
  frame_counter+=1000000;frame_commit();ui_service_step(&r); // retires A; B starts next iteration

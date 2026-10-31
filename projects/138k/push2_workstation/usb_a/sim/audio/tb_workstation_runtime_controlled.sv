@@ -48,7 +48,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
     workstation_runtime_controlled #(.WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
         .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(4),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)) dut(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.midi_rx_i(midi_rx),.pc_uart_rx_i(pc_rx),
         .usb_event_valid(usb_valid),.usb_lifecycle,.usb_cancel,.usb_event_data(usb_data),.usb_event_ready(usb_ready),
         .pclk,.preset_n,.psel,.penable,.pwrite,.paddr,.pwdata,.pstrb,.pready,.pslverr,.prdata,.performance_words_o(performance),
@@ -352,7 +352,9 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         // Change multiple effect bits and order fields at each physical rate.
         // They must arrive with the same frame tuple, never through naked 2FFs.
         event_cpu(2,81,1);event_cpu(2,84,2);event_cpu(2,85,0);frames(4);
+        read_reg('h1b8);if(value!=32'h122)$fatal(1,"48k effect feedback does not reach real parameter owner");
         event_cpu(2,81,0);event_cpu(2,86,1);frames(4);
+        read_reg('h1b8);if(value!=32'h114)$fatal(1,"48k second effect feedback");
         write_reg('h1a8,32'h10203040);write_reg('h1ac,32'h50607080);write_reg('h1b0,32'h12345678);write_reg('h1b4,32'h87654321);
         if(performance[415:384]!=32'h50607080 || performance[319:288]!=32'h10203040)$fatal(1,"snapshot performance field placement");
         before_held=held;before_applied=integer'(applied_events);
@@ -361,6 +363,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         if(held!==before_held || applied_events!=32'(before_applied) || control_state!=before_control ||
            control_pitch!=before_pitch || options!=before_options)$fatal(1,"preset reset leaked into DSP");
         read_reg('h1a8);if(value!=0)$fatal(1,"services not reset independently");
+        read_reg('h1b8);if(value!=32'h114)$fatal(1,"CPU reset changed committed effect feedback");
         // Both original UART baud rates carry real MIDI bytes into same owner.
         uart_byte(0,8'h90,0);uart_byte(0,8'd61,0);uart_byte(0,8'd100,0);frames(4);
         if(!held[61])$fatal(1,"31250 MIDI UART/byte CDC failed");
@@ -415,7 +418,9 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         if(!rec_failed || rec_code!=5 || dut.record_valid)$fatal(1,"44.1 legacy packet accepted without context");
         write_reg('h080,0);
         event_cpu(2,81,1);event_cpu(2,84,1);event_cpu(2,85,2);frames(4);
-        event_cpu(2,81,0);event_cpu(2,86,0);frames(4);frames(692);
+        read_reg('h1b8);if(value!=32'h129)$fatal(1,"44k1 effect feedback does not reach real parameter owner");
+        event_cpu(2,81,0);event_cpu(2,86,0);frames(4);
+        read_reg('h1b8);if(value!=32'h104)$fatal(1,"44k1 second effect feedback");frames(692);
         // Actual physical source error terminates score and discards FFT context.
         write_reg('h114,1);wait(running);tf_active=1;tf_rate=44100;tf_error=1;frames(4);
         if(running || !score_failed || fft_discards==0 || done)$fatal(1,"physical error not propagated to consumers");

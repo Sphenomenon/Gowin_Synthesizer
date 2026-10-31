@@ -1,4 +1,7 @@
 #include "ble_business_owner.h"
+#ifdef A138_SINGLE_BLE_RECORDING
+#define dispatch worker_record_dispatch
+#endif
 enum {IDLE=0,ENGINE=1,PUBLISH=2,OBSERVE=3,INSPECT=4};
 enum {BUSY=0x82,BAD_ARG=0x81,BAD_STATE=0x83,NOT_FOUND=0x88,RANGE=0x89,BAD_TRANSFER=0x8d};
 static uint32_t word(const uint8_t *p) {
@@ -35,6 +38,15 @@ static int has_object(const a138_ble_business_owner *o) {
 static void reply(a138_ble_business_owner *o,unsigned status,unsigned length) {
     o->completion_status=status;o->completion_length=length;
     o->completion_phase=status&128u ? A138_BM_FAILED:A138_BM_APPLIED;
+#ifdef A138_SINGLE_BLE_RECORDING
+    if(o->active_local) {
+        a138_ble_local_record_result *r=&o->local_record;
+        r->status=status;r->operation_id=o->pending_operation;
+        r->object_id=o->pending_object ? o->pending_object:r->object_id;
+        r->phase=status==1 ? A138_LOCAL_WAIT:A138_LOCAL_DONE;
+        o->active_local=0;o->phase=IDLE;return;
+    }
+#endif
     o->phase=PUBLISH;
 }
 static void reject(a138_ble_business_owner *o,unsigned status) {
@@ -80,6 +92,10 @@ static void start_engine(a138_ble_business_owner *o) {
     c.opcode=o->active_read ? 0x31:o->request.opcode;
     c.length=o->active_read ? 12:o->request.length;c.nonce=o->request.nonce;
     if(o->active_read)c.flags=(o->transfer.flags&7u)|(read_lossless(o->request.opcode)?8u:0u)|(read_second(o->request.opcode)?16u:0u);
+#ifdef A138_SINGLE_BLE_RECORDING
+    /* Private physical descriptor flag; never set for external BLE requests. */
+    if(o->active_local)c.flags=16u;
+#endif
     copy(c.payload,o->request.payload,16);
     o->submission_ms=o->facts.time_ms;
     int result=a138_record_data_submit(&o->data,&c);
@@ -219,6 +235,56 @@ static void engine_result(a138_ble_business_owner *o,const a138_record_data_resu
 void a138_ble_business_init(a138_ble_business_owner *o,a138_business_bus mailbox,a138_record_bus data) {
     zero(o,sizeof *o);o->mailbox=mailbox;o->data=data;
 }
+#ifdef A138_SINGLE_BLE_RECORDING
+int a138_ble_record_local_submit(a138_ble_business_owner *o,uint32_t opcode,uint32_t limit) {
+    if(!o || !o->bound || o->fault || o->phase!=IDLE || o->local_pending ||
+       o->local_record.phase==A138_LOCAL_WAIT || o->local_record.token==UINT32_MAX ||
+       (opcode!=0x20 && opcode!=0x21 && opcode!=0x23) ||
+       (opcode==0x20 ? limit>16384u:limit!=0))return 0;
+    uint32_t token=o->local_record.token+1u;
+    o->local_record=(a138_ble_local_record_result){.token=token,.opcode=opcode,
+        .phase=A138_LOCAL_QUEUED,.status=1};
+    o->local_limit=limit;o->local_pending=1;return 1;
+}
+int a138_ble_record_local_poll(const a138_ble_business_owner *o,a138_ble_local_record_result *out) {
+    if(!o || !out || !o->local_record.token)return 0;
+    *out=o->local_record;
+    if(out->phase!=A138_LOCAL_DONE && o->facts.object_id==out->object_id) {
+        out->frames=o->facts.frames;out->committed=o->facts.committed;
+        out->crc=(o->facts.state&255u)==4 ? o->facts.crc:0;
+    }
+    return 1;
+}
+static void local_record_update(a138_ble_business_owner *o) {
+    a138_ble_local_record_result *r=&o->local_record;
+    if(r->phase!=A138_LOCAL_WAIT || !r->operation_id)return;
+    const a138_ble_task *t=&o->tasks[(r->operation_id-1u)&7u];
+    if(t->valid && t->id==r->operation_id && t->state!=1) {
+        r->phase=A138_LOCAL_DONE;r->status=t->state==2 ? 0:t->error;
+        if(o->facts.object_id==r->object_id) {
+            r->frames=o->facts.frames;r->committed=o->facts.committed;
+            r->crc=(o->facts.state&255u)==4 ? o->facts.crc:0;
+        }
+    }
+}
+static void local_record_dispatch(a138_ble_business_owner *o) {
+    a138_ble_local_record_result *r=&o->local_record;
+    zero(&o->request,sizeof o->request);o->request.key=o->context;
+    o->request.request_id=r->token;o->request.opcode=r->opcode;
+    o->request.nonce=o->context.boot_id^((uint64_t)r->token<<32)^UINT64_C(0x4c4f43414c524543);
+    if(!o->request.nonce)o->request.nonce=1;
+    if(r->opcode==0x20) {
+        o->request.length=8;put(o->request.payload,1);put(o->request.payload+4,o->local_limit);
+    } else {
+        o->request.length=12;put(o->request.payload,(uint32_t)o->context.boot_id);
+        put(o->request.payload+4,(uint32_t)(o->context.boot_id>>32));
+        put(o->request.payload+8,o->facts.object_id);
+    }
+    r->object_id=o->facts.object_id;r->frames=o->facts.frames;
+    r->committed=o->facts.committed;r->crc=(o->facts.state&255u)==4 ? o->facts.crc:0;
+    o->active_local=1;o->local_pending=0;dispatch(o);
+}
+#endif
 void a138_ble_business_pump(a138_ble_business_owner *o) {
     if(!o || o->fault)return;
     a138_business_key context={0};
@@ -233,8 +299,14 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
         o->context=context;o->bound=1;
     } else if(context.boot_id!=o->context.boot_id || context.owner!=o->context.owner) {o->fault=A138_OWNER_CONTEXT_CHANGED;return;}
     update_tasks(o);
+#ifdef A138_SINGLE_BLE_RECORDING
+    local_record_update(o);
+#endif
     if(o->transfer.open && (context.session!=o->transfer.session ||
        (uint32_t)(o->facts.time_ms-o->transfer.time_ms)>=30000u))expire_transfer(&o->transfer);
+#ifdef A138_SINGLE_BLE_RECORDING
+    if(o->local_pending && o->phase==IDLE) {local_record_dispatch(o);return;}
+#endif
     if(o->phase==INSPECT) {
         if(context.session!=o->request.key.session) {o->phase=IDLE;return;}
         int status=a138_record_data_request_facts(&o->data,&o->request_facts);
@@ -279,6 +351,11 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
             o->fault=A138_OWNER_COMPLETE_UNOBSERVED;
         return;
     }
+#ifdef A138_SINGLE_BLE_RECORDING
+    /* Boot context exists before a GATT session. Local REC remains available;
+     * do not attempt OPEN with session zero and poison the sole owner. */
+    if(!context.session)return;
+#endif
     if(!o->opened || context.session!=o->context.session) {
         int result=a138_business_open(&o->mailbox,&context);
         if(result==A138_BM_OK) {o->context=context;o->opened=1;}
@@ -342,6 +419,18 @@ static void business_diagnostic_step(void) {
     }
     business_diagnostic(page,value);
     if(++diagnostic_page==30u)diagnostic_page=0;
+}
+#endif
+#ifdef A138_SINGLE_BLE_RECORDING
+int a138_ble_record_firmware_submit(uint32_t opcode,uint32_t limit) {
+    return a138_ble_record_local_submit(&firmware_owner,opcode,limit);
+}
+int a138_ble_record_firmware_facts(a138_record_data_facts *facts) {
+    if(!facts || !firmware_owner.bound || firmware_owner.fault)return 0;
+    *facts=firmware_owner.facts;return 1;
+}
+int a138_ble_record_firmware_poll(a138_ble_local_record_result *result) {
+    return a138_ble_record_local_poll(&firmware_owner,result);
 }
 #endif
 void a138_ble_business_firmware_init(void) {

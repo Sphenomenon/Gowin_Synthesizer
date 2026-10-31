@@ -20,7 +20,7 @@ module tb_workstation_display_observation_health;
         .reset_n(rst_n),.source_clk(compute_clk),.destination_clk(clk50),.source_valid(display_valid),
         .source_data(203'h123456789abcdef),.drop_count(display_drop),.destination_valid(display_received),.destination_data());
     workstation_display_observation_health health(
-        .reset_ni(rst_n),.compute_clk_i(compute_clk),.clk_50m_i(clk50),
+        .control_reset_ni(1'b1),.compute_reset_ni(1'b1),.reset_ni(rst_n),.compute_clk_i(compute_clk),.clk_50m_i(clk50),
         .physical_observation_drop_i(physical_drop),.display_mailbox_drop_i(display_drop),.fault_50_o(fault));
     integer physical_cases=0,display_cases=0,resets=0;
     task clocks50(input integer n);begin repeat(n)@(negedge clk50);end endtask

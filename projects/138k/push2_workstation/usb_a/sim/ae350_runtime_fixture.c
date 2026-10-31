@@ -101,8 +101,17 @@ static void startup(void) {
     uint8_t f[10]={0};pending(0x1003);f[6]=8;f[7]=128;response(0x1003,0,f,8);
     pending(0x0c56);response(0x0c56,1,0,0);
     pending(0x1004);memset(f,0,sizeof f);f[0]=f[1]=f[2]=1;response(0x1004,0,f,10);
-    pending(0x0c1a);CHECK(m.tx[3]==2);response(0x0c1a,1,0,0);
-    CHECK(r.security.ready&&r.started&&!r.security.secure&&r.transport.next_token==4);
+    if(r.session_only){pending(0x0c24);CHECK(m.tx[3]==0x14&&m.tx[4]==4&&m.tx[5]==0x24);response(0x0c24,1,0,0);}
+    pending(0x0c1a);CHECK(m.tx[3]==(r.session_only?3:2));response(0x0c1a,1,0,0);
+    CHECK(r.security.ready&&r.started&&!r.security.secure&&r.transport.next_token==(r.session_only?5u:4u));
+}
+static void test_session_startup(void){
+    reset(0,1);struct a138_runtime_media output={0,poll_media,submit_media,cancel_media};
+    a138_classic_runtime_init_session(&r,bus(),0);
+    for(unsigned i=0;i<20;i++)step();CHECK(!r.enabled&&!r.started&&!m.token);
+    a138_classic_runtime_init_session(&r,bus(),&output);
+    CHECK(r.enabled&&r.session_only&&!r.store.load&&!r.store.replace_atomic&&!r.store.delete_atomic);
+    startup();CHECK(r.security.session_only&&!r.security.store.load&&!r.security.secure);
 }
 static void test_missing_backend_and_identity(void) {
     reset(0,0);for(unsigned i=0;i<100u;i++)step();CHECK(r.transport.ready&&!r.started&&!r.enabled&&!m.count&&!m.token);
@@ -170,7 +179,7 @@ int main(int argc,char **argv) {
     unsigned mode=(frame[1]>>2)&3u,sub=frame[1]&1u?8u:4u,blocks=4u+4u*((frame[1]>>4)&3u);
     unsigned bits=blocks*frame[2]*(mode<2u?(mode?2u:1u):1u)+(mode==3u?sub:0u);
     bytes=4u+sub*(mode?2u:1u)/2u+(bits+7u)/8u;
-    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();
+    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();test_session_startup();
     FILE *pcm=fopen(argv[2],"wb");CHECK(pcm);test_actual_decoder_and_media(frame,bytes,pcm);CHECK(fclose(pcm)==0);
     printf("classic runtime: %u checks passed; native RTL, durable store, phone and physical media absent\n",checks);return 0;
 }

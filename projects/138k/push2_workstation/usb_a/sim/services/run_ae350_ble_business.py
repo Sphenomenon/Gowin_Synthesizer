@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,hashlib,json,subprocess,sys,re,shlex
 ROOT=Path(__file__).resolve().parents[2]
-def run(output,diagnostics=False):
+def run(output,diagnostics=False,single_recording=False):
     output=output.resolve();output.mkdir(parents=True,exist_ok=False)
     sys.path.insert(0,str(ROOT))
     from tools.workstation_baselines import load_baseline
@@ -32,11 +32,13 @@ def run(output,diagnostics=False):
         return result.stdout
     include=ROOT/'firmware/ae350'
     diagnostic_flags=['-DA138_BLE_BUSINESS_DIAGNOSTICS']if diagnostics else[]
+    if single_recording:diagnostic_flags+=['-DA138_SINGLE_BLE_RECORDING']
+    rtl_flags=['+define+WORKSTATION_SINGLE_BLE_RECORDING'] if single_recording else []
     for p in cfiles:
         target=output/(p.stem+'.o');objects.append(target)
         execute(['cc','-std=c11','-O2','-DA138_BLE_BUSINESS',*diagnostic_flags,'-Wall','-Wextra','-Werror','-I'+str(include),'-c',str(p),'-o',str(target)],p.stem)
     execute(['verilator','--cc','--exe','--build','--timing','-Wno-fatal','--top-module','ae350_ble_business_cosim',
-        '--Mdir',str(output/'obj'),'-CFLAGS',' '.join(['-I'+str(include),*diagnostic_flags]),'-LDFLAGS',' '.join(map(str,objects)),
+        *rtl_flags,'--Mdir',str(output/'obj'),'-CFLAGS',' '.join(['-I'+str(include),*diagnostic_flags]),'-LDFLAGS',' '.join(map(str,objects)),
         *map(str,files),str(cpp)],'compile')
     result=execute([str(output/'obj/Vae350_ble_business_cosim')],'run',60)
     # Reuse the compiled real RTL model, replacing only one maintained C
@@ -101,7 +103,7 @@ def run(output,diagnostics=False):
     comparison=wire(result)==wire(golden)
     check_groups=[dict(name=m.group(1),checks=int(m.group(2))) for line in result.splitlines()
         if (m:=re.fullmatch(r'PASS (.*): (\d+) checks(?:;.*)?',line))]
-    if len(check_groups)!=12:raise RuntimeError('behavioral check summary drift')
+    if len(check_groups)!=(13 if single_recording else 12):raise RuntimeError('behavioral check summary drift')
     after={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in tracked}
     evidence=dict(schema=1,passed=before==after and 'PASS real C/APB/parser/raw-DDR owner:' in result and comparison,
         input_sha256=before,inputs_unchanged=before==after,commands=commands,stdout=result,mutations=mutation_results,
@@ -111,11 +113,12 @@ def run(output,diagnostics=False):
             historical_first_batch_control_period_ps=20,historical_first_batch_memory_period_ns=14,
             reconnect_hello_input_elapsed_ms=65536,wire_bytes_normalized=False),
         golden_input_sha256={n:hashlib.sha256(data).hexdigest() for n,data in original_inputs.items()},
-        business_diagnostics_compiled=diagnostics,synthesis=False,pnr=False,hardware_tested=False,profile_selected=False)
+        business_diagnostics_compiled=diagnostics,single_recording_proxy=single_recording,synthesis=False,pnr=False,hardware_tested=False,profile_selected=False)
     (output/'verification.json').write_text(json.dumps(evidence,indent=2)+'\n')
     print(json.dumps(dict(passed=evidence['passed'],compared_messages=evidence['compared_messages'],golden_wire_equal=comparison,evidence=str(output/'verification.json'))))
     if not evidence['passed']:raise RuntimeError('C business source drift, execution or golden-wire comparison failed')
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',required=True,type=Path)
     parser.add_argument('--diagnostics',action='store_true',help='compile the selected business diagnostic counters in both C and C++')
-    args=parser.parse_args();run(args.output,args.diagnostics)
+    parser.add_argument('--single-recording',action='store_true',help='test W CPU/BLE unique-object proxy including disconnected local control')
+    args=parser.parse_args();run(args.output,args.diagnostics,args.single_recording)

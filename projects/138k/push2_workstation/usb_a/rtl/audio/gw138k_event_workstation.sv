@@ -10,6 +10,8 @@ module gw138k_event_workstation #(
     parameter bit REQUEST_DRIVEN_RENDER=0,
     parameter bit RUNTIME_RATE_ENABLE=0,
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
+    parameter bit SYNTH_ENGINES_ENABLE=1,
+    parameter bit D_ONLY_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -56,6 +58,7 @@ module gw138k_event_workstation #(
     output wire [2:0] profile_o,
     output wire [2:0] effect_mask_o,
     output logic [5:0] effect_order_o,
+    output wire [31:0] effect_state_o,
     output logic panel_event_valid_o,
     output wire [31:0] scope_status_o,tf_scope_control_o,
     output logic [6:0] panel_command_o,
@@ -72,6 +75,8 @@ module gw138k_event_workstation #(
     if(SAMPLE_RATE_HZ!=48000) $fatal(1,"scope integration requires exact 48 kHz");
     if(RUNTIME_EFFECTS_ENABLE && !RUNTIME_RATE_ENABLE)
       $fatal(1,"runtime effects require runtime engines");
+    if(D_ONLY_ENABLE && (SYNTH_ENGINES_ENABLE || !RUNTIME_EFFECTS_ENABLE))
+      $fatal(1,"D-only requires native effects and no instrument engines");
   end
   logic [1:0] effect_count;
   logic [2:0] effect_selected;
@@ -89,12 +94,17 @@ module gw138k_event_workstation #(
   wire arbiter_cpu_ready;
   wire cue_start=event_valid && event_ready && kind==2 && a==96 && b==127 && !tf_scope_control_o[12] && (scope_enable || legacy_active_mask==0);
   wire cue_stop=usb_lifecycle || (event_valid && event_ready && kind==2 && ((a==96 && b==0) || a==120 || a==123));
+  generate if(SYNTH_ENGINES_ENABLE)begin: instrument_cue
   scope_control_player cue_player(
       .clk_i,.rst_ni,.sample_ce_i(core_ce),.start_i(cue_start),.stop_i(cue_stop),
       .speed_q8_i(cue_speed==127 ? 10'd512 : {cue_speed,2'b00}),
       .event_valid_o(cue_valid),.event_ready_i(cue_ready),.event_o(cue_event),
       .running_o(cue_running),.done_o(cue_done),.config_error_o(cue_error),
       .late_events_o(cue_late),.time_samples_o(cue_time));
+  end else begin: no_instrument_cue
+    assign cue_valid=0;assign cue_event=0;assign cue_running=0;assign cue_done=0;
+    assign cue_error=0;assign cue_late=0;assign cue_time=0;
+  end endgenerate
   logic [17:0] fifo_event_data;
   wire [3:0] kind = event_data[17:14];
   wire [6:0] a = event_data[13:7];
@@ -160,7 +170,7 @@ module gw138k_event_workstation #(
   logic dispatch, full;
   wire control_rejected;
   wire parameter_commit=event_valid && (TIMING_OPTIMIZED ? (dispatch && !releasing) : event_ready);
-  workstation_session session (
+  workstation_session #(.D_ONLY_ENABLE(D_ONLY_ENABLE)) session (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .cpu_valid_i(cpu_event_valid_i),
@@ -184,7 +194,8 @@ module gw138k_event_workstation #(
       .initializing_o(attach_initializing),
       .initialization_step_o(attach_step)
   );
-  workstation_parameters parameters (
+  wire [6:0] d_crush,d_drive,d_delay_send;
+  workstation_parameters #(.D_ONLY_ENABLE(D_ONLY_ENABLE)) parameters (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .commit_i(parameter_commit),
@@ -206,7 +217,7 @@ module gw138k_event_workstation #(
       .route_o(route_o),
       .profile_o(profile),
       .effect_selected_o(effect_selected),
-      .effect_master_o(effect_master),
+      .effect_master_o(effect_master),.effect_state_o(effect_state_o),
       .effect_count_o(effect_count),
       .effect_mask_o(effect_mask_o),
       .effect_order_o(effect_order_o),
@@ -233,6 +244,7 @@ module gw138k_event_workstation #(
       .scope_offset_x_o(scope_offset_x),
       .scope_offset_y_o(scope_offset_y),
       .cue_speed_o(cue_speed),
+      .d_crush_o(d_crush),.d_drive_o(d_drive),.d_delay_send_o(d_delay_send),
       .rejected_o(control_rejected)
   );
   assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block;
@@ -362,7 +374,26 @@ module gw138k_event_workstation #(
   midi_stream_decoder decoder(.clk_i,.rst_ni,.byte_valid_i(midi_byte_valid_i),
       .byte_i(midi_byte_i),.event_valid_o(decoder_valid),.event_ready_i(decoder_ready),
       .event_o(decoder_data),.overflow_count_o(midi_overflow_o));
-  generate if(RUNTIME_RATE_ENABLE) begin: runtime_engines
+  generate if(!SYNTH_ENGINES_ENABLE)begin: external_media_only
+    // The real PCM source still traverses the complete effects and final
+    // serializer. This empty engine handshake owns no voice or sample RAM.
+    logic rendered,applied_rate;
+    always_ff @(posedge clk_i or negedge rst_ni)begin
+      if(!rst_ni)begin rendered<=0;applied_rate<=0;end
+      else begin rendered<=core_ce && !panic_accept;
+        if(engine_rate_commit)applied_rate<=rate_44100_i;
+      end
+    end
+    assign runtime_quiescent=!rendered;assign runtime_rate_ready=!rendered;assign engine_rate=applied_rate;
+    assign core_sample_ready=1;assign core_event_ready=1;assign core_expression_ready=1;
+    assign vec_event_ready=1;assign vec_ready=1;assign vec_busy=0;
+    assign synth_valid_o=rendered;assign synth_o=0;assign vec_valid=rendered;
+    assign vec_left=0;assign vec_right=0;assign vec_active=0;assign vec_count=0;assign vec_rejected=0;
+    assign vec_config_error=0;assign vec_frequency_error=0;assign vec_clip=0;
+    assign allocated=0;assign legacy_active_mask=0;assign legacy_active_count=0;
+    assign load_busy=0;assign mix_busy=0;assign issued=0;assign pitch_q20_o=22'd1048576;
+    assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? 2'd3 : 2'd2;
+  end else if(RUNTIME_RATE_ENABLE) begin: runtime_engines
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
       .clk_i,.rst_ni,.panic_i(panic_accept),.sample_ce_i(core_ce),
       .rate_commit_i(engine_rate_commit),.rate_44100_i,
@@ -442,11 +473,12 @@ module gw138k_event_workstation #(
     end
   end
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
-    workstation_runtime_stereo_effects #(.VECTOR_ENABLE(1),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+    workstation_runtime_stereo_effects #(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
       .clk_i,.rst_ni,.clear_i(panic_accept),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
       .synth_gain_i(EXTERNAL_MASTER_VOLUME ? expression_gain : synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
+      .delay_send_i(d_delay_send),
       .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
       .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
@@ -473,6 +505,21 @@ module gw138k_event_workstation #(
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
       .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o));
   end endgenerate
+  // Same saturating drive/bit-reduction arithmetic as sampler_fx, operating
+  // on the real decoder PCM. Control values are committed only in parameters.
+  function automatic signed [31:0] d_process(input signed [31:0] x,input [6:0] crush,drive);
+    reg signed [63:0] amplified;
+    reg signed [31:0] clipped;
+    integer shift;
+    begin
+      amplified=($signed(x)*$signed({1'b0,12'(128+int'(drive)*8)}))>>>7;
+      if(amplified>64'sd2147483647)clipped=32'sh7fffffff;
+      else if(amplified< -64'sd2147483648)clipped=32'sh80000000;
+      else clipped=amplified[31:0];
+      shift=crush==0 ? 0 : 16+int'(crush)*12/127;
+      d_process=($signed(clipped)>>>shift)<<<shift;
+    end
+  endfunction
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
       applied_events_o<=0;pending<=0;frame_inflight<=0;deadline_miss_o<=0;note_drop_o<=0;
@@ -495,7 +542,10 @@ module gw138k_event_workstation #(
           if(frame_inflight || pending) deadline_miss_o<=deadline_miss_o+1;
           frame_inflight<=1;
         end
-        if(core_ce) begin pending<=0; held_pcm_l<=pcm_left_i; held_pcm_r<=pcm_right_i; end
+        if(core_ce) begin pending<=0;
+          held_pcm_l<=D_ONLY_ENABLE ? d_process(pcm_left_i,d_crush,d_drive) : pcm_left_i;
+          held_pcm_r<=D_ONLY_ENABLE ? d_process(pcm_right_i,d_crush,d_drive) : pcm_right_i;
+        end
         if(effects_valid && !fx_ready) deadline_miss_o<=deadline_miss_o+1;
       end
       if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_event_ready : core_event_ready))) begin
@@ -505,7 +555,7 @@ module gw138k_event_workstation #(
       end
       if(usb_lifecycle) begin
         held<=0;deferred<=0;releasing<=0;release_index<=0;deferred_current<=0;
-        panic_epoch_o<=panic_epoch_o+1'b1;panic_muted<=1;
+        panic_epoch_o<=panic_epoch_o+1'b1;panic_muted<=D_ONLY_ENABLE ? 1'b0 : 1'b1;
       end
       if(event_valid && event_ready) begin
         applied_events_o<=applied_events_o+1'b1;

@@ -4,7 +4,8 @@
 module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem",
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
     parameter CACHE_METADATA_RAM_STYLE="block_ram", parameter EXTERNAL_SEAL_PROTOCOL=0,
-    parameter EXTERNAL_RAW_STORE=0, parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0) (
+    parameter EXTERNAL_RAW_STORE=0,
+    parameter SINGLE_BLE_RECORDING=0, parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0) (
     input wire business_owner_reset_ni,business_command_valid_i,business_command_write_i,
     input wire [11:0] business_command_address_i,
     input wire [31:0] business_command_data_i,
@@ -252,6 +253,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .completion_read_valid_i(cpu_read_valid),.completion_read_ready_o(cpu_read_ready),
         .completion_read_address_i(cpu_read_address),.completion_data_valid_o(cpu_data_valid),
         .completion_data_o(cpu_data_byte));
+    wire physical_recording_enable=recording_enable || SINGLE_BLE_RECORDING;
     workstation_ble_record_data_service cpu_data(
         .clk_i(clk),.rst_ni(resetn),.owner_reset_ni(business_owner_reset_ni),
         .command_valid_i(business_command_valid_i && data_select),.command_write_i(business_command_write_i),
@@ -265,7 +267,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .transfer_valid_i(transfer_valid),
         .request_admitted_i(cpu_admitted),.request_replay_i(recording_replay),.request_object_i(replay_object_id),
         .request_ticket_i(cpu_key_ticket),.request_owner_i(cpu_key_owner),.request_session_i(cpu_key_session),.request_boot_i(cpu_key_boot),
-        .enabled_i(recording_enable),.subscribed_i(transfer_subscribed),.engine_idle_i(data_engine_idle),
+        .enabled_i(physical_recording_enable),.subscribed_i(transfer_subscribed),.engine_idle_i(data_engine_idle),
         .att_value_limit_i(att_value_limit),.elapsed_ms_i(elapsed_ms),.engine_time_ms_i(data_command_ms),
         .engine_block_crc_i(data_block_crc),.engine_block_crc_valid_i(data_block_crc_valid),.engine_read_accepted_i(data_read_accepted),
         .engine_start_o(data_engine_start),.engine_opcode_o(data_engine_opcode),.engine_flags_o(data_engine_flags),
@@ -275,8 +277,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .engine_done_i(engine_done),.engine_status_i(engine_status),
         .engine_length_i(engine_result_length),.engine_result_i(data_engine_result),
         .observer_fault_o(data_observer_fault));
-    workstation_ble_record_data_engine #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
-        .clk(clk),.resetn(resetn),.enable(recording_enable),.connected(enable),
+    workstation_ble_record_data_engine #(.ALLOW_LOCAL_RECORDING(SINGLE_BLE_RECORDING),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
+        .clk(clk),.resetn(resetn),.enable(physical_recording_enable),.connected(enable),
         .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
         .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
         .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),

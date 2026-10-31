@@ -124,6 +124,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     business_telemetry_alias_selected=business_selected and profile['name']==CPU_BUSINESS_NAME
     hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
+    demo_role=specification(profile['name']).get('demo_role') if runtime else None
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
     expanded_boot = ae350_memory['boot_rom_bytes'] != 16384
@@ -156,6 +157,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     panel = local_panel_bundle(local_panel_enabled)
     if not local_panel_enabled:
         native_sources = tuple(source for source in native_sources if source not in panel['retired_sources'])
+    if demo_role=='W':
+        native_sources=tuple('rtl/workstation/workstation_worker_usb.sv' if source=='rtl/push2_usb_a_control.sv' else source for source in native_sources)
+        profile_dependencies += ('rtl/push2_usb_a_control.sv',
+                                 'rtl/workstation/workstation_profile_classic_runtime_v1.sv')
+    if demo_role is not None:
+        profile_dependencies += ('tools/workstation_demo_policy.py',)
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -183,7 +190,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-            business_owner=business_selected,classic_runtime=classic_selected, **ae350_memory)
+            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W', **ae350_memory)
     native_timing = adapt_timing(stage)
     (stage / 'scripts/build.tcl').write_text(
         'error "This native-board integration stage is synthesis-only; P&R and deployment are not authorized or validated."\n')
@@ -253,7 +260,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board shared support selection drift: ' + relative)
         support[relative] = sha(stage / relative)
     firmware = stage_usb2_cpu_firmware(root, stage / 'native_usb_firmware', root / 'firmware.c', riscv_prefix,
-                                       workstation=True, allow_high_speed=allow_high_speed)
+                                       workstation=True, allow_high_speed=allow_high_speed,worker_demo=demo_role=='W')
     shutil.copyfile(stage / 'native_usb_firmware/usb2_cpu.hex', stage / 'usb2_cpu.hex')
     bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout,
                                   relative_rom_paths=runtime)
@@ -288,7 +295,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_runtime_profile import constraints
         runtime_constraints = constraints(root, shared_crossings, local_panel_enabled=local_panel_enabled)
         combined_cst += runtime_constraints['extra_cst']
-        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints() + MODEL_FLASH_SDC
+        selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True) + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
     if classic_selected:
@@ -302,6 +309,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_recognition_policy import adapt_constraints
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
         recognition['constraints'] = recognition_constraints
+    demo_constraints = None
+    if demo_role is not None:
+        from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
+        selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
@@ -414,9 +425,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import attach as attach_profile
         metadata['ae350_firmware'] = ae350_firmware
+        if demo_constraints is not None:
+            metadata['demo_constraint_retirement'] = demo_constraints
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'])
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None)
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata

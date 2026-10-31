@@ -8,6 +8,7 @@ module workstation_ble_record_data_engine #(
     parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter integer SEAL_TIMEOUT_CYCLES=64,
     parameter EXTERNAL_RAW_STORE=0,
+    parameter ALLOW_LOCAL_RECORDING=0,
     parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0
 )(
     input wire clk, resetn, enable, connected, transfer_subscribed,
@@ -103,6 +104,11 @@ module workstation_ble_record_data_engine #(
     wire external_capture_hold=(EXTERNAL_SEAL_PROTOCOL && (seal_request_i || seal_pending_o)) ||
         (EXTERNAL_RAW_STORE && (raw_closing || raw_clear_sent || raw_fault_i));
     wire recording_active=record_state==1 || record_state==2 || record_state==3;
+    // Trusted CPU descriptor only. Bit4 retains its existing Rice meaning for
+    // READ; no external opcode, wire flag, or second capture owner is added.
+    wire local_record_command=ALLOW_LOCAL_RECORDING && command_flags_i==5'b10000 &&
+        (opcode==8'h20 || opcode==8'h21 || opcode==8'h23);
+    wire command_link_ready=connected || local_record_command;
     wire seal_commit=EXTERNAL_SEAL_PROTOCOL && seal_pending_o &&
         recording_active && capture_state==0 && recording_id==seal_recording_id_o;
     wire seal_source_lost=seal_requires_source && (!enable || (EXTERNAL_PCM && (!source_ready_i || source_fault_i)));
@@ -133,7 +139,7 @@ module workstation_ble_record_data_engine #(
     wire raw_cache_live=raw_cache_owned && raw_cache_valid_i && !raw_fault_i;
     assign raw_seal_admission=!raw_clear_sent && !raw_closing && state!=C_RAW_START && state!=C_RAW_CLEAR &&
         !raw_channel_fault_i && (recording_active || (record_state==0 ? raw_start_ready_i : raw_drained_i));
-    assign raw_start_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_START && connected && enable && !external_mutation_hold;
+    assign raw_start_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_START && command_link_ready && enable && !external_mutation_hold;
     assign raw_clear_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_CLEAR && !raw_clear_sent;
     assign raw_capture_valid_o=EXTERNAL_RAW_STORE && resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
         capture_state==0 && !stop_pending && !external_capture_hold && recording_active;
@@ -324,7 +330,7 @@ module workstation_ble_record_data_engine #(
             else sample_phase<=sample_phase+32'd48000;
             if(transfer_consume) transfer_valid<=0;
             if(command_start)begin block_crc_valid_o<=0;read_accepted_o<=0;end
-            if(!connected || !enable) begin
+            if(!command_link_ready || !enable) begin
                 transfer_valid<=0;
                 transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
                 if(state!=C_IDLE && (!EXTERNAL_RAW_STORE || state!=C_RAW_CLEAR))reject(8'h83);
@@ -382,8 +388,8 @@ module workstation_ble_record_data_engine #(
                 if(EXTERNAL_RAW_STORE)begin raw_closing<=1;record_state<=3;end
                 else begin record_state<=4;stop_pending<=0;end
             end
-            if(connected && enable) case(state)
-                C_IDLE: if(connected && command_start) begin
+            if(command_link_ready && enable) case(state)
+                C_IDLE: if(command_link_ready && command_start) begin
                     command_status<=0; result_payload<=0;command_time_ms_o<=elapsed_ms;
                     block_crc_valid_o<=0;
                     case(opcode)

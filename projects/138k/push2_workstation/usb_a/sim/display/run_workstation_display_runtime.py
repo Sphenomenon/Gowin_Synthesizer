@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.workstation_runtime_counter import selected_source, selection_evidence
+from tools.workstation_runtime_counter import NATIVE, selected_source, selection_evidence
 from tools import workstation_hdmi_provenance as hdmi_provenance
 
 
@@ -27,6 +27,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--native-counter', action='store_true',
+                        help='Explicitly test the maintained native counter with validated prepared support')
     parser.add_argument('--hdmi-adaptation', choices=[hdmi_provenance.OWNER8_POLICY],
                         help='Explicit checked provenance bridge; default retains the original checksum gate')
     args = parser.parse_args()
@@ -46,7 +48,9 @@ def main():
         'workstation_display_runtime.sv', 'feedback_capture.v', 'output_audio_analysis.v')]
     common += [project / ('src/video/' + name) for name in (
         'output_audio_capture.v', 'audio_analysis_rom.v', 'feedback_wave_align.v')]
-    common += [project / 'src/migration/gw138k_stream_cdc.sv', selected_source(project)]
+    prepared_counter = selected_source(project)
+    counter = ROOT / NATIVE if args.native_counter else prepared_counter
+    common += [project / 'src/migration/gw138k_stream_cdc.sv', counter]
     runtime_sources = common + [runtime_tb]
     simlib = Path(os.environ.get('GOWIN_GW5A_SIMLIB', '/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v'))
     excluded = {'hdmi_display.v', 'feedback_capture.v', 'output_audio_analysis.v', 'feedback_renderer.v',
@@ -65,13 +69,14 @@ def main():
     inputs = list(dict.fromkeys(runtime_sources + hdmi_sources +
         (owner8_sources + [ROOT / name for name in hdmi_provenance.OWNER8_SOURCES] +
          [adaptation_path, project / 'Prj1.gprj', project / hdmi_provenance.SOURCE] if args.hdmi_adaptation else []) +
-        [ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'tools/workstation_hdmi_provenance.py', native_hdmi, provenance_path,
+        [prepared_counter, ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'tools/workstation_hdmi_provenance.py', native_hdmi, provenance_path,
         ROOT / 'rtl/workstation/RUNTIME_DISPLAY.md', a07_path, Path(__file__).resolve(),
         project / 'src/memory/ddr_address_map.vh', profile_path, project.parents[1] / 'integration_inputs.json']))
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
         counter_source=selection_evidence(project),
+        counter_compilation=dict(source=str(counter), sha256=digest(counter), explicit_native_override=args.native_counter),
         identity='native-runtime-display-offline-v1-' + source_identity[:16], source_set_sha256=source_identity,
         input_sha256=hashes, configuration=dict(explicit_macro='WORKSTATION_RUNTIME_NATIVE', default_enabled=False,
             metadata_minor=1, frame_tuple_bits=204, source_hz=50000000, memory_hz=100000000,
@@ -179,14 +184,15 @@ def main():
             raise ValueError('New runtime display warning or combinational loop')
         log = run('runtime_run', [str(output / 'obj/Vtb_workstation_display_runtime')])
         print(log, end='')
-        match = re.search(r'PASS workstation_display_runtime: publications=(\d+) commits=(\d+) tuple_checks=(\d+) waveform=(\d+) xy=(\d+) fft_columns=(\d+) cdc_drops=(\d+) tail_cancel=1 reader_cancel=1 idle_cache_lease=1', log)
-        if not match or int(match[1]) < 6 or int(match[3]) < 10000 or list(map(int, match.groups()[3:6])) != [1024, 131072, 1024] or int(match[7]) < 1:
+        match = re.search(r'PASS workstation_display_runtime: publications=(\d+) commits=(\d+) tuple_checks=(\d+) waveform=(\d+) xy=(\d+) fft_columns=(\d+) cdc_drops=(\d+) tail_cancel=1 reader_cancel=1 idle_cache_lease=1 gray_drop_cycle_checks=(\d+) drop_revocations=(\d+) drop_completion_races=(\d+)', log)
+        if not match or int(match[1]) < 6 or int(match[3]) < 10000 or list(map(int, match.groups()[3:6])) != [1024, 131072, 1024] or int(match[7]) < 1 or int(match[8]) < 10000 or int(match[9]) < 1 or int(match[10]) != 1:
             raise ValueError('Incomplete runtime display context/CDC/raster coverage')
         result['metrics'] = dict(zip(('publications', 'commits', 'atomic_tuples', 'waveform_samples', 'xy_pixels',
-                                     'fft_columns', 'cdc_drops'), map(int, match.groups())))
+                                     'fft_columns', 'cdc_drops', 'gray_drop_cycle_checks', 'drop_revocations', 'drop_completion_races'), map(int, match.groups())))
         result['checks'] = ['initial_image_required', 'actual_48_and_44_fft_wave_xy', '204bit_tuple_atomicity',
             'raster_idle_cache_lease', 'pending_old_epoch_cancel', 'stalled_commit_tail_cancel',
-            'partial_reader_cancel', 'same_epoch_final_cdc_drop_cancel', 'error_frame_cancel',
+            'partial_reader_cancel', 'same_epoch_final_cdc_drop_cancel', 'cycle_exact_gray_drop_revocation',
+            'drop_coincident_with_reader_publication_cancel', 'error_frame_cancel',
             'epoch_zero_reject', 'default_tokens_equal', 'reverse_exact_parent_bytes', 'full_hdmi_elaboration_both_modes',
             'live_hdmi_provider_not_shadowed', 'native_render_without_local_fft', 'single_fft_owner_both_modes',
             'both_analysis_dashboards_enabled', 'runtime_reader_two_cache_banks']

@@ -15,7 +15,8 @@ from tools.prepare_ae350_sbc import prepare
 from tools.ae350_rom_split import split_memory_report
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
-def build(output,prefix=None,root=ROOT,*,runtime_owner=False):
+def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
+    if worker_demo and not runtime_owner:raise ValueError('worker demo requires actual runtime owner')
     out=Path(output).resolve()
     if out.exists():raise ValueError('experiment output must not exist')
     out.mkdir(parents=True)
@@ -46,11 +47,14 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False):
             'tools/workstation_baselines.py', 'tools/ae350_ble_business_indirect_review.json']:
         inputs[name]=sha(root/name)
     if runtime_owner:inputs['tools/ae350_classic_runtime_audit.py']=sha(root/'tools/ae350_classic_runtime_audit.py')
+    if worker_demo:inputs['tools/ae350_worker_recording_indirect_review.json']=sha(root/'tools/ae350_worker_recording_indirect_review.json')
     shutil.copyfile(source/'boot_ilm_dlm_rom128_split.ld',out/'boot_ilm_dlm_rom128_split.ld')
     main=out/'ui_main.c'
     if runtime_owner:
         overlay=dict(source='firmware/ae350/ui_main.c',source_sha256=inputs['firmware/ae350/ui_main.c'],
-            output_sha256=sha(main),changes=[],policy='No source text overlay: versioned A138_CLASSIC_RUNTIME composition calls the actual cooperative owner; durable bond and physical media backends absent, BR/EDR fail-closed.')
+            output_sha256=sha(main),changes=[],policy=(
+                'No source text overlay: explicit worker selects actual session-only Classic and unique CPU/BLE recording owner; physical radio/audio acceptance remains separate.' if worker_demo else
+                'No source text overlay: versioned A138_CLASSIC_RUNTIME composition calls the actual cooperative owner; durable bond and physical media backends absent, BR/EDR fail-closed.'))
     else:
         before=main.read_text();old='void services_main(void) {'
         new='void a138_combined_budget_init(void);\nvoid a138_combined_budget_step(void);\n'+old+'\n    a138_combined_budget_init();'
@@ -71,6 +75,7 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False):
         '-DA138_ILM64K_DLM64K','-DA138_BLE_BUSINESS','-I'+str(out),'-I'+str(out/'adapted/decoder/include'),
         '-I'+str(out/'adapted/decoder/srce')]
     if runtime_owner:flags += ['-DA138_CLASSIC_RUNTIME']
+    if worker_demo:flags += ['-DA138_SINGLE_BLE_RECORDING']
     def run(argv,name,check=True):
         p=subprocess.run(list(map(str,argv)),cwd=out,text=True,capture_output=True)
         (out/(name+'.log')).write_text(p.stdout+p.stderr)
@@ -97,12 +102,17 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False):
     record=dict(schema=1,scope='isolated ROM128 split executable placement experiment; not production/runtime closure',
         input_sha256=inputs,overlay=overlay,commands=commands,compiled_sources=[str(p.relative_to(out)) for p in sources],
         no_gc_sections=True,no_LTO=True,selected_in_production=False,hardware_operated=False,cache_enabled=False,
+        worker_demo=worker_demo,single_recording_owner=worker_demo,
         linked_translation_units=len(sources),unlinked_abi_witness='ae350_budget_abi_witness.o',
         link_returncode=linked.returncode,tool_sha256={str(Path(prefix+'-'+x)):sha(prefix+'-'+x) for x in ['gcc','objcopy','size','nm','objdump']})
     if runtime_owner:
         record.update(scope='actual versioned cooperative CPU root, explicitly fail-closed without durable bond and physical media backends; isolated ROM128 link, not native/phone/hardware acceptance',
             runtime_owner=True,source_text_overlay=False,persistent_bond_backend=False,physical_media_backend=False,
             callback_call_chain_audit=False,decode_cycles_measured=False,native_transport_integrated=False)
+    if worker_demo:
+        record.update(scope='actual W session-only Classic/PCM and unique CPU/BLE recording root; no durable bond claim, no radio/audio/hardware acceptance',
+            session_only_pairing=True,GeneralBonding_enabled=False,br_edr_runtime_enabled_in_source=True,
+            source_media_backend_bound=True,local_recording_proxy=True)
     if linked.returncode==0:
         run([prefix+'-objcopy','-O','binary','firmware.elf','firmware.bin'],'objcopy')
         size=run([prefix+'-size','firmware.elf'],'size').stdout
@@ -128,8 +138,9 @@ def main():
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--riscv-prefix')
     p.add_argument('--runtime-owner',action='store_true',help='link the actual versioned fail-closed CPU root; no budget text overlay')
+    p.add_argument('--worker-demo',action='store_true',help='opt in to the unique CPU/BLE recording object and retire unavailable local engines')
     a=p.parse_args()
-    r=build(a.output,a.riscv_prefix,runtime_owner=a.runtime_owner)
+    r=build(a.output,a.riscv_prefix,runtime_owner=a.runtime_owner,worker_demo=a.worker_demo)
     if r['link_returncode']:
         raise ValueError('explicit ROM128 link failed; immutable diagnostics in '+str(a.output/'link.log'))
     if a.runtime_owner:
@@ -140,7 +151,7 @@ def main():
         (a.output/'verification.json').write_text(json.dumps(r,indent=2)+'\n')
         print(json.dumps({k:v for k,v in r['capacity'].items() if k not in ('symbols','elf_image_validation')},indent=2))
         print(json.dumps(dict(conservative_stack_bytes=graph['stack']['conservative_peak_bytes'],reviewed_JALR_sites=graph['reviewed_JALR_sites']),indent=2))
-        print('Actual cooperative runtime linked; native/backend/cycles/hardware acceptance remain incomplete.')
+        print('Actual worker session-only Classic and unique recording roots linked; radio/audio/cycles/hardware acceptance remain incomplete.'if a.worker_demo else 'Actual cooperative runtime linked; native/backend/cycles/hardware acceptance remain incomplete.')
         return
     from tools.ae350_rom_split_audit import analyze,verify_tables
     sys.path.insert(0,str(ROOT/'sim'))

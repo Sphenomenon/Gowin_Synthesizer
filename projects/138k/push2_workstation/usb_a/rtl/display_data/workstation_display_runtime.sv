@@ -53,11 +53,12 @@ module workstation_display_runtime (
         .drop_count(observation_drop_o),.destination_valid(tuple_valid),
         .destination_data({tuple_trusted,tuple_rate,tuple_epoch,tuple_sequence,tuple_error,
             tuple_pcm,tuple_reference,tuple_voices,tuple_status,tuple_mask,tuple_order}));
-    wire [31:0] destination_drop;
+    wire [31:0] destination_drop,destination_drop_gray;
     gw138k_counter_cdc drops(
         .reset_n(common_reset_n),.source_clk(source_clk_i),.destination_clk(clk_i),
-        .source_count(observation_drop_o),.destination_count(destination_drop));
-    reg [31:0] previous_drop;
+        .source_count(observation_drop_o),.destination_count(destination_drop),
+        .destination_gray(destination_drop_gray));
+    reg [31:0] previous_drop_gray;
     reg drop_wrap_fault;
     // The reused mailbox counter wraps. Reaching its maximum permanently
     // revokes this observation path until common reset, before wrap can hide
@@ -70,8 +71,16 @@ module workstation_display_runtime (
         if(!common_reset_n)trusted_sync<=0;
         else trusted_sync<={trusted_sync[0],observation_trusted_i && !drop_wrap_fault};
     always @(posedge clk_i or negedge common_reset_n)
-        if(!common_reset_n)previous_drop<=0;else previous_drop<=destination_drop;
-    wire observation_loss=destination_drop!=previous_drop;
+        if(!common_reset_n)previous_drop_gray<=0;else previous_drop_gray<=destination_drop_gray;
+    // Gray is bijective, so change detection has the same cycle and wrap
+    // behavior without putting the binary decode on immediate revocation.
+    // Keep the small reductions explicit to avoid an ALU carry comparator.
+    (* syn_keep=1 *) wire [7:0] drop_changed_groups;
+    for(genvar group_index=0;group_index<8;group_index=group_index+1)begin:drop_change
+        assign drop_changed_groups[group_index]=
+            |(destination_drop_gray[group_index*4+:4]^previous_drop_gray[group_index*4+:4]);
+    end
+    wire observation_loss=|drop_changed_groups;
     wire trusted=trusted_sync[1] && (!tuple_valid || tuple_trusted);
     reg [31:0] reference_q,voices_q,status_q;
     reg [2:0] mask_q;

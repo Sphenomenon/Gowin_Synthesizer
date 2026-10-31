@@ -211,3 +211,42 @@ IDs, CLAIM/COMPLETE counts, object/operation/transfer counters, physical
 accepted/applied sequences and confirmed/pending offsets against the actual
 BLE replies and downloaded PCM CRC. Source selection must also prove that the
 retired `ble_recording.v` is absent. No data path is replaced by these metrics.
+
+## W-DEMO: one recording object for CPU and BLE
+
+The explicit W source composition sets `SINGLE_BLE_RECORDING=1` on the native
+Bluetooth wrapper, core, GATT endpoint and command owner. This is an explicit
+parameter chain with default zero; independently compiled files do not depend
+on a macro leaking out of the top-level provider. The physical engine receives
+`ALLOW_LOCAL_RECORDING=1`. CPU firmware opts in with
+`A138_SINGLE_BLE_RECORDING`; other configurations retain their prior behavior.
+
+`a138_ble_record_firmware_submit(opcode, limit)` and its poll/facts functions
+are bounded UI/CPU proxies into the existing static BLE business owner. They
+accept START `0x20`, STOP `0x21` and CLEAR `0x23`; they do not instantiate R00,
+allocate another PCM buffer or introduce an external BLE opcode. START uses
+that owner's monotonic object/task/descriptor counters. STOP and CLEAR bind
+the actual current object at dispatch. A queued receipt is not application:
+START succeeds only after a complete first PCM frame, STOP after actual native
+DDR READY, and CLEAR after raw completion. Terminal receipts retain their
+object, frame counts and CRC. Requests cannot overwrite an active local
+receipt, and a sealed object is never silently cleared to begin a new take.
+
+The trusted internal descriptor uses flag4 only for these three mutation
+opcodes so local operation can run before GATT connects. READ keeps flag4's
+existing second-order Rice meaning and still requires the actual link. BLE
+request dispatch never sets the private mutation flag. Radio disconnection
+retires the transfer lease; source/DDR faults still determine recording
+integrity, and CPU reset retains the existing sticky observer fence. Local
+and BLE operations serialize through the same primitive slot and the same
+object; a BLE download reads the bytes and CRC of a CPU-created recording.
+
+W startup neither injects notes nor accesses the retired local 96-bit recorder
+or cue player. Its existing REC request token submits START/STOP to this owner;
+explicit CLEAR uses the same API. This first source implementation retains the
+existing format1 48-kHz, stereo PCM16, 16,384-frame (65,536-byte) DDR capacity;
+it does not claim long recording, dual-rate recording or hardware acceptance.
+The `--single-recording` mode of `sim/services/run_ae350_ble_business.py`
+checks disconnected CPU capture/seal/clear and BLE download against actual
+APB, parser, physical CRC engine and raw DDR storage, while retaining all
+external golden-wire vectors and failure controls.

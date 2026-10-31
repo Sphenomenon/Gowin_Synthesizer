@@ -1,14 +1,14 @@
 `timescale 1ns/1ps
 // Enabled real native runtime + true TF stop/DDR/WAV/transport. Only SD/FAT
 // bytes and an ordered DDR endpoint are fixtures. No fake core/TF done pulse.
-module tb_workstation_media_runtime_integration;
+module tb_workstation_media_runtime_integration #(parameter bit BUSY_FENCE_ONLY=0);
     reg control_clk=0,compute_clk=0,memory_clk=0,pclk=0,reference48=0,reference44=0,rst_n=0,preset_n=0;
-    reg reference44_run=1;
+    reg reference44_run=1,reference48_run=1,compute_run=1;
     always #10 control_clk=~control_clk;
-    always #6.510417 compute_clk=~compute_clk;
+    always #6.510417 if(compute_run)compute_clk=~compute_clk;
     always #5 memory_clk=~memory_clk;
     always #17 pclk=~pclk;
-    initial begin #3.7;forever #40.690104 reference48=~reference48;end
+    initial begin #3.7;forever #40.690104 if(reference48_run)reference48=~reference48;end
     initial begin #17.2;forever #29.525699 if(reference44_run)reference44=~reference44;end
     wire midi_rx=1,pc_rx=1,usb_valid=0,usb_lifecycle=0,usb_cancel=0;
     wire [17:0] usb_data=0;wire usb_ready;
@@ -17,6 +17,7 @@ module tb_workstation_media_runtime_integration;
     wire pready=bus_ready[paddr[12]],pslverr=bus_error[paddr[12]];wire [31:0] prdata=bus_data[paddr[12]];
     wire [447:0] performance;
     wire request,request44,recover;reg permit=1;
+    reg direct_request=0,direct_target=0,direct_recover=0;
     wire tf_active,tf_busy,tf_error,tf_valid,tf_ready,tf_quiet50,tf_quiet,tf_busy50;
     wire signed [15:0] tf_left,tf_right;wire [19:0] tf_rate;
     wire [31:0] tf_generation,tf_expected,tf_source_generation,tf_source_accepted;
@@ -38,11 +39,12 @@ module tb_workstation_media_runtime_integration;
     workstation_runtime_controlled #(.WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
         .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(6),
         .RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) dut(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.midi_rx_i(midi_rx),.pc_uart_rx_i(pc_rx),
         .usb_event_valid(usb_valid),.usb_lifecycle,.usb_cancel,.usb_event_data(usb_data),.usb_event_ready(usb_ready),
         .pclk,.preset_n,.psel(psel && !paddr[12]),.penable,.pwrite,.paddr(paddr[11:0]),.pwdata,.pstrb,.pready(bus_ready[0]),.pslverr(bus_error[0]),.prdata(bus_data[0]),.performance_words_o(performance),
-        .request_i(request),.request_44k1_i(request44),.switch_permit_i(permit),.recover_i(1'b0),.media_quiescent_i(tf_quiet50),
+        .request_i(request || direct_request),.request_44k1_i(direct_request ? direct_target:request44),
+        .switch_permit_i(permit),.recover_i(recover || direct_recover),.media_quiescent_i(tf_quiet50),
         .request_ready_o(ready),.busy_o(busy),.fault_o(fault),.accepted_o(accepted),.applied_o(applied),
         .rejected_o(core_rejected),.failed_o(core_failed),.policy_rejected_o(policy_rejected),.reject_code_o(reject_code),.fault_code_o(fault_code),.clock_select_o(),
         .switch_block_reason_o(block_reason),.active_44k1_o(rate),.active_valid_o(active_valid),.stream_epoch_o(epoch),
@@ -98,7 +100,7 @@ module tb_workstation_media_runtime_integration;
     wire tf_failed;wire [3:0] tf_failure;
     workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(12000),.EXTERNAL_STOP_PROTOCOL(1),
         .HOTPLUG_TIMEOUT_CYCLES(28'd200000),.HOTPLUG_STALL_TIMEOUT_CYCLES(28'd300000)) tf(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .memory_reset_ni(rst_n),.memory_ready_i(rst_n),.mode_i(1'b1),.run_i(tf_run),.restart_i(tf_restart),
         .cancel_i(1'b0),.reader_restart_i(1'b0),.transport_error_i(transport_error),.track_index_i(track),
         .runtime_valid_i(active_valid),.runtime_44k1_i(rate),.runtime_fault_i(fault||dsp_fault),.runtime_busy_i(busy),.runtime_epoch_i(epoch),
@@ -209,7 +211,7 @@ module tb_workstation_media_runtime_integration;
         if(tf_stop_request)stops=stops+1;
         if(tf_stop_done)tf_done_count=tf_done_count+1;
         if(tf_stop_failed)tf_failed_count=tf_failed_count+1;
-        if(fault||dsp_fault||display_observation_fault||observation_drops!=0)$fatal(1,"native runtime health failure fault=%b dsp=%b",fault,dsp_fault);
+        if((fault&&!BUSY_FENCE_ONLY)||dsp_fault||display_observation_fault||observation_drops!=0)$fatal(1,"native runtime health failure fault=%b dsp=%b",fault,dsp_fault);
     end
     task clocks(input integer n);begin repeat(n)@(negedge control_clk);end endtask
     task frames(input integer n);integer target;begin target=observed_frames+n;wait(observed_frames>=target);@(negedge compute_clk);end endtask
@@ -248,9 +250,87 @@ module tb_workstation_media_runtime_integration;
         repeat(cycles)begin clocks(1);if(request||busy)$fatal(1,"clock advanced during final TF ACK hold");mailbox_checks=mailbox_checks+1;end
         release tf.ack_sync;ack_stall=0;
     end endtask
+    integer busy_fence_checks=0,busy_sync_checks=0;
+    reg [1:0] expected_switch_status;
+    reg [2:0] expected_media_status;
+    always @(posedge compute_clk)begin
+        expected_switch_status={dut.switch_busy_compute[0],dut.switch_busy_50};
+        #0.001;
+        if(BUSY_FENCE_ONLY && dut.reset_compute_n)begin
+            if(dut.switch_busy_compute!==expected_switch_status)$fatal(1,"prepared switch status skipped data synchronizer");
+            busy_sync_checks=busy_sync_checks+1;
+        end
+    end
+    always @(posedge control_clk)begin
+        expected_media_status={dut.media_busy_50[1:0],dut.media_busy_compute};
+        #0.001;
+        if(BUSY_FENCE_ONLY && dut.reset_50_n)begin
+            if(dut.media_busy_50!==expected_media_status)$fatal(1,"prepared media status skipped data synchronizer");
+            busy_sync_checks=busy_sync_checks+1;
+        end
+    end
+    task check_unprepared_request;reg [31:0] saved_epoch;begin
+        saved_epoch=epoch;@(negedge control_clk);direct_request=1;direct_target=!rate;
+        @(posedge control_clk);#0.001;
+        if(!policy_rejected||accepted||busy||epoch!=saved_epoch)$fatal(1,"unprepared clock request escaped media fence");
+        @(negedge control_clk);direct_request=0;clocks(2);busy_fence_checks=busy_fence_checks+1;
+    end endtask
+    task busy_fence_regression;reg [31:0] saved_epoch;integer saved_requests;begin
+        // Idle readiness is usable before preparation, but it is never a
+        // substitute for the actual stop ACK on a changing request.
+        if(!ready||dut.media_prepared)$fatal(1,"unprepared idle readiness changed");
+        check_unprepared_request();
+        // Same-rate no-op keeps its old epoch and does not start media stop.
+        saved_epoch=epoch;saved_requests=requests;wr(13'h1008,0,0);ticket=value;result_code(1);
+        if(epoch!=saved_epoch||requests!=saved_requests+1||stops!=0)$fatal(1,"same-rate no-op required media preparation");
+        busy_fence_checks=busy_fence_checks+1;
+        // A real active REC seals normally and a real active score cancels.
+        wr(13'h0100,0,0);wr(13'h0104,1000000,0);wr(13'h0108,32'ha5,0);wr(13'h010c,1,0);wr(13'h0110,1,0);wr(13'h0114,1,0);
+        wr(13'h0080,1,0);frames(3);saved_epoch=epoch;
+        fork
+            begin wr(13'h1008,1,0);ticket=value;end
+            begin
+                wait(dut.local_stop_hold);wait(busy);
+                wr(13'h0114,1,1);wr(13'h0080,1,1);
+            end
+        join
+        result_code(1);frames(3);
+        if(!rate||epoch!=saved_epoch+1||rec_enabled||running||rec_failed||!dut.consumers.score_cancelled_o||
+            !dut.consumers.record_object_status_o[1])$fatal(1,"prepared switch lost normal seal/cancellation");
+        wait(media_ready);if(dut.media_prepared)$fatal(1,"released hold retained old preparation");
+        busy_fence_checks=busy_fence_checks+1;
+        bus(0,13'h00ac,0,0,object_frames);
+        for(integer i=0;i<integer'(object_frames);i=i+1)begin wr(13'h0088,1,0);wr(13'h0098,1,0);end
+        check_unprepared_request();
+        // A stopped compute owner cannot ACK a new stop or issue its clock
+        // request. Resume before the unchanged real-time DSP deadline.
+        saved_epoch=epoch;saved_requests=requests;
+        fork
+            begin wr(13'h1008,0,0);ticket=value;end
+            begin wait(media_request);@(negedge compute_clk);compute_run=0;
+                repeat(30)begin clocks(1);if(media_done||request||busy||dut.media_prepared)$fatal(1,"stopped compute authorized switch");end
+                compute_run=1;
+            end
+        join
+        result_code(1);frames(3);wait(media_ready);
+        if(rate||epoch!=saved_epoch+1||requests!=saved_requests+1)$fatal(1,"resumed compute lost prepared switch");
+        busy_fence_checks=busy_fence_checks+1;
+        // Recovery is subject to the same proof even though the original
+        // clock owner's recover input bypasses ordinary switch_permit.
+        reference48_run=0;wait(fault&&!busy);saved_epoch=epoch;
+        @(negedge control_clk);direct_recover=1;
+        @(posedge control_clk);#0.001;
+        if(!policy_rejected||dut.prepared_recover||busy||epoch!=saved_epoch)$fatal(1,"unprepared recovery escaped media fence");
+        @(negedge control_clk);direct_recover=0;reference48_run=1;wait(qualified[0]);
+        wr(13'h1008,2,0);ticket=value;result_code(1);frames(3);wait(media_ready);
+        if(fault||epoch!=saved_epoch+1||dut.media_prepared)$fatal(1,"prepared recovery failed or retained proof");
+        busy_fence_checks=busy_fence_checks+1;
+        $display("PASS media_runtime_busy_fence: checks=%0d data_sync_checks=%0d core_requests=%0d physical=%0d observed=%0d",busy_fence_checks,busy_sync_checks,requests,physical_frames,observed_frames);$finish;
+    end endtask
     initial begin
         for(integer e=0;e<8;e=e+1)for(integer s=0;s<2048;s=s+1)begin physical_seen[e][s]=0;router_seen[e][s]=0;end
         clocks(5);rst_n=1;preset_n=1;wait(ready);frames(8);
+        if(BUSY_FENCE_ONLY)busy_fence_regression();
         event_cpu(2,7,100);event_cpu(1,60,127);frames(8);
         if(!held[60]||active==0)$fatal(1,"single native owner did not receive APB note");
         held_before=held;state_before=control_state;pitch_before=control_pitch;options_before=options;
@@ -289,6 +369,7 @@ module tb_workstation_media_runtime_integration;
         @(negedge pclk);paddr=13'h1008;pwdata=1;pwrite=1;psel=1;penable=0;
         @(negedge pclk);penable=1;wait(dut.local_stop_request);@(negedge compute_clk);preset_n=0;psel=0;penable=0;
         clocks(8);preset_n=1;wait(media_ready);frames(3);live_state();
+        if(dut.media_prepared_50)$fatal(1,"abandoned media stop retained preparation");
         if(requests!=2||epoch!=epoch_before||rate||rec_enabled||!dut.consumers.record_object_status_o[1])$fatal(1,"CPUreset revived joint command");
         bus(0,13'h00ac,0,0,object_frames);for(integer i=0;i<integer'(object_frames);i=i+1)begin wr(13'h0088,1,0);wr(13'h0098,1,0);end
         checks=checks+1;
@@ -305,6 +386,8 @@ module tb_workstation_media_runtime_integration;
             begin wait(tf_stop_request);stall_final_ack(12500);end
         join
         result_code(9);rd(13'h1068,0);wait(media_ready);frames(4);live_state();
+        if(dut.media_prepared_50)$fatal(1,"abandoned media stop retained preparation");
+        check_unprepared_request();
         if(requests!=2||epoch!=epoch_before||tf_stop_failure!=8)$fatal(1,"timeout/late cleanup switched core or lost TF failure");checks=checks+1;
         wr(13'h1008,0,0);ticket=value;result_code(1);live_state();
         if(requests!=3||tf_packets<10||tf_physical_frames<5||mailbox_checks<12700||drain_checks!=30)$fatal(1,"joint coverage incomplete");

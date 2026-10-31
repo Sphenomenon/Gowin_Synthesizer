@@ -15,6 +15,7 @@ module bt_verilog_core #(
     parameter NOTIFY_MS=500,
     parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter EXTERNAL_RAW_STORE=0,
+    parameter SINGLE_BLE_RECORDING=0,
     parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0
 ) (
     input wire business_owner_reset_ni,business_command_valid_i,business_command_write_i,
@@ -146,7 +147,7 @@ module bt_verilog_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
-    bt_gatt #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
+    bt_gatt #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.SINGLE_BLE_RECORDING(SINGLE_BLE_RECORDING),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
         .business_owner_reset_ni(business_owner_reset_ni),
         .business_command_valid_i(business_command_valid_i),
         .business_command_write_i(business_command_write_i),

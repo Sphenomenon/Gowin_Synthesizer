@@ -7,7 +7,8 @@
 /* Experimental actual cooperative CPU root. This composes the existing
  * owners; it does not own committed parameters, physical audio scheduling,
  * controller credits, UART/H5 or persistent storage. The firmware binding
- * intentionally has no durable bond/media backend and remains fail-closed.
+ * default binding has no durable bond backend and remains fail-closed. W-DEMO
+ * explicitly selects session-only SSP and the maintained physical media owner.
  */
 enum { A138_RUNTIME_NO_FAULT,A138_RUNTIME_TRANSPORT_FAULT,
     A138_RUNTIME_SECURITY_FAULT,A138_RUNTIME_RESPONSE_FAULT,
@@ -46,10 +47,15 @@ struct a138_classic_runtime {
     uint32_t passes,rx_packets,rx_dropped,pcm_blocks,rx_wait_started,pcm_started;
     uint32_t observed_generation,observed_stream;
     uint8_t enabled,started,fault,fence_sent,accepted_notified,done_notified;
-    uint8_t rx_waiting,pcm_pending,media_bound;
+    uint8_t rx_waiting,pcm_pending,media_bound,session_only;
 };
 void a138_classic_runtime_init(struct a138_classic_runtime *,struct a138_hci_bus,
     const struct a138_bond_store *,const struct a138_runtime_media *);
+/* W-DEMO only: explicit nonpersistent SSP policy, requiring a real complete
+ * downstream media adapter. The default constructor still requires a durable
+ * store and never silently falls back to volatile pairing. */
+void a138_classic_runtime_init_session(struct a138_classic_runtime *,struct a138_hci_bus,
+    const struct a138_runtime_media *);
 /* One fixed transport slice, one RX dispatch, one security pump and at most
  * one SBC frame decode per pass. Tick is always before service observations.
  * Each downstream callback and bus access must itself be bounded. */

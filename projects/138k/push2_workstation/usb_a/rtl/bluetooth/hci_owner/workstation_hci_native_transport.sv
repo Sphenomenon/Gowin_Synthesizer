@@ -1,6 +1,7 @@
 // The native physical HCI owner. One H5/UART, one credit ledger and one
 // irreversible private TX slot serve initializer, bootstrap, BLE and AE350.
 module workstation_hci_native_transport #(
+    parameter bit SESSION_ONLY_PAIRING=0,
     parameter integer CLK_HZ=50000000,
     parameter integer BOOTSTRAP_TIMEOUT_CYCLES=CLK_HZ,
     parameter integer COMMAND_TIMEOUT_CYCLES=CLK_HZ*2
@@ -64,7 +65,9 @@ module workstation_hci_native_transport #(
     reg [8:0] tx_length,tx_index;
     reg tx_read_wait,turn_cpu;
     reg [1:0] grant_age;
-    reg [7:0] tx_header [0:4];
+    // Six bytes cover the complete reviewed Write Class of Device command.
+    // Longer accepted commands still use the existing full transmit buffer.
+    reg [7:0] tx_header [0:5];
     reg [31:0] tx_generation,tx_token,pending_token;
     reg [11:0] disconnect_handle;
         reg disconnect_issued;
@@ -284,20 +287,22 @@ module workstation_hci_native_transport #(
             16'h040b,16'h040c,16'h040e,16'h0411,16'h0413,16'h041b,16'h041c,
             16'h042b,16'h042c,16'h042d,16'h042f,16'h0433,16'h0434,16'h1408:
                 cpu_opcode_allowed=1;
+            16'h0c24:cpu_opcode_allowed=SESSION_ONLY_PAIRING;
             default:cpu_opcode_allowed=0;
         endcase
     endfunction
-    function automatic cpu_command_shape(input [15:0] opcode);
+    function automatic cpu_command_shape(input [15:0] opcode,input [8:0] length,input [7:0] byte3,byte4,byte5);
         case(opcode)
-            16'h1003:cpu_command_shape=tx_length==3;
-            16'h1004,16'h0c56:cpu_command_shape=tx_length==4 && tx_header[3]==1;
-            16'h0c1a:cpu_command_shape=tx_length==4 && tx_header[3]==2;
-            16'h0406,16'h0413,16'h041c:cpu_command_shape=tx_length==6;
-            16'h0411,16'h041b,16'h1408:cpu_command_shape=tx_length==5;
-            16'h0409,16'h040a,16'h0434:cpu_command_shape=tx_length==10;
-            16'h040b:cpu_command_shape=tx_length==25;
-            16'h042b:cpu_command_shape=tx_length==12;
-            16'h040c,16'h040e,16'h042c,16'h042d,16'h042f,16'h0433:cpu_command_shape=tx_length==9;
+            16'h1003:cpu_command_shape=length==3;
+            16'h1004,16'h0c56:cpu_command_shape=length==4 && byte3==1;
+            16'h0c1a:cpu_command_shape=length==4 && (byte3==2 || (SESSION_ONLY_PAIRING && byte3==3));
+            16'h0c24:cpu_command_shape=SESSION_ONLY_PAIRING && length==6 && byte3==8'h14 && byte4==8'h04 && byte5==8'h24;
+            16'h0406,16'h0413,16'h041c:cpu_command_shape=length==6;
+            16'h0411,16'h041b,16'h1408:cpu_command_shape=length==5;
+            16'h0409,16'h040a,16'h0434:cpu_command_shape=length==10;
+            16'h040b:cpu_command_shape=length==25;
+            16'h042b:cpu_command_shape=length==12;
+            16'h040c,16'h040e,16'h042c,16'h042d,16'h042f,16'h0433:cpu_command_shape=length==9;
             default:cpu_command_shape=0;
         endcase
     endfunction
@@ -313,7 +318,7 @@ module workstation_hci_native_transport #(
         tx_header[1][7:6]==0 && tx_header[1][5:4]!=3 && tx_handle_slot!=-1);
     assign cpu_context=epoch!=0 && initialized_i && host_flow_ready_o &&
         cpu_tx_epoch==epoch && tx_generation==current_br_generation &&
-        (tx_type==1 ? tx_length<=25 && cpu_opcode_allowed(selected_opcode) && cpu_command_shape(selected_opcode) &&
+        (tx_type==1 ? tx_length<=25 && cpu_opcode_allowed(selected_opcode) && cpu_command_shape(selected_opcode,tx_length,tx_header[3],tx_header[4],tx_header[5]) &&
             (!cpu_handle_command(selected_opcode) || (br_slot!=-1 && {tx_header[4],tx_header[3]}=={4'd0,current_br_handle})) :
             tx_handle_slot!=-1 && !known_le[tx_handle_slot] && tx_generation!=0);
     (* ram_style="block" *) reg [7:0] private_tx_ram [0:279];
@@ -499,7 +504,7 @@ module workstation_hci_native_transport #(
             disconnect_issued<=0;command_age<=0;disconnect_age<=0;local_fault<=0;
             classic_fenced<=0;link_seen<=0;boot_started<=0;cpu_tx_reject_reason<=0;
             event_command_token<=0;event_owner<=0;br_accept_pending<=0;
-            for(index=0;index<5;index=index+1)tx_header[index]<=0;
+            for(index=0;index<6;index=index+1)tx_header[index]<=0;
         end else begin
             if(link_up_i)link_seen<=1;
             if(boot_start)boot_started<=1;
@@ -546,7 +551,7 @@ module workstation_hci_native_transport #(
                 end
                 T_COPY:if(tx_read_wait)tx_read_wait<=0;else begin
                     tx_read_wait<=1;
-                    if(tx_index<5)tx_header[tx_index[2:0]]<=producer_data;
+                    if(tx_index<6)tx_header[tx_index[2:0]]<=producer_data;
                     if(tx_index+1'b1==tx_length)tx_state<=T_CHECK;
                     else if(tx_index==279)local_fault<=1;
                     else tx_index<=tx_index+1'b1;

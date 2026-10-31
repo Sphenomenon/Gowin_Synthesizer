@@ -1,11 +1,15 @@
 /* AE350 UI uses uncached DDR and explicit ownership of two 4 MiB pages.
  * Physical touch is not fitted; the same input model is exercised by self-test.
- * REC is a bounded PCM snapshot, not continuous file recording. */
+ * M keeps its bounded PCM snapshot; W uses the sole CPU/BLE DDR object. */
 #include "firmware_checks.h"
 #include "ui_render.h"
+#include "audio_clock_service.h"
 #ifdef A138_CLASSIC_RUNTIME
 #include "classic_runtime.h"
 #elif defined(A138_BLE_BUSINESS)
+#include "ble_business_owner.h"
+#endif
+#ifdef A138_SINGLE_BLE_RECORDING
 #include "ble_business_owner.h"
 #endif
 static void background_init(void) {
@@ -24,7 +28,9 @@ static void background_step(void) {
 }
 #define UI_BASE UINT32_C(0xf8020000)
 static unsigned heartbeat,runtime_flags;
+#ifndef A138_SINGLE_BLE_RECORDING
 static volatile a138_record captured[4];
+#endif
 static void beat(void) { diagnostic[2]=++heartbeat; }
 static void idle_audio(void) {
     uint32_t s[9];a138_snapshot(AUDIO_BASE,s);
@@ -90,6 +96,17 @@ static void control_panic(ui_control_job*j) {
 static int control_step(ui_control_job*j) {
  if(!j->active)return 1;
  const ui_model*old=j->initial?0:&j->base;const ui_model*m=&j->target;
+#ifdef A138_SINGLE_BLE_RECORDING
+ /* W's UI requests only existing effect/volume parameters. D media is the
+  * actual source; no unavailable program, voice, note, or cue command exists. */
+ unsigned changed=old?(old->sw^m->sw):255;
+ if(changed&7u)event(2,81,m->sw&7u);
+ if(changed&8u)event(2,1,(m->sw&8u)?80:0);
+ if(changed&16u)event(2,5,(m->sw&16u)?64:0);
+ if(!old){event(2,7,100);event(2,11,127);}
+ if((changed&m->sw)&32u)event(2,83,127);
+ j->active=0;return 1;
+#else
  unsigned mode_changed=!old||old->mode!=m->mode;
  if((mode_changed || j->releasing) && j->releasing!=2) {
   uint32_t state[9];
@@ -113,12 +130,36 @@ static int control_step(ui_control_job*j) {
  if(retrigger&&m->gate)event(1,m->note,100);
  if((changed&m->sw)&32u)event(2,83,127);
  j->active=0;return 1;
+#endif
 }
+#ifndef A138_SINGLE_BLE_RECORDING
 static unsigned snap_completed;
+#endif
+#ifndef A138_SINGLE_BLE_RECORDING
 static void capture_request(ui_capture_job*j,unsigned token) {
  if(token!=j->seen){j->seen=token;j->pending=1;j->pending_token=token;}
 }
+#endif
 static void capture_step(ui_capture_job*j) {
+#ifdef A138_SINGLE_BLE_RECORDING
+ /* The existing REC request token now controls the sole downloadable object.
+  * It cannot clear or overwrite a sealed object; explicit CLEAR uses the same
+  * owner API. No retired short-recorder MMIO or PCM snapshot is accessed. */
+ a138_record_data_facts f;
+ if(!j->state) {
+  if(!j->pending || !a138_ble_record_firmware_facts(&f))return;
+  unsigned state=f.state&255u;
+  if(state==1)return; /* first complete frame has not applied START yet */
+  if(state!=0 && state!=2){j->pending=0;j->error=1;return;}
+  if(!a138_ble_record_firmware_submit(state==0 ? 0x20u:0x21u,0))return;
+  j->token=j->pending_token;j->pending=0;j->state=1;
+ } else {
+  a138_ble_local_record_result r;
+  if(a138_ble_record_firmware_poll(&r) && r.phase==A138_LOCAL_DONE) {
+   j->error=r.status!=0;j->state=0;
+  }
+ }
+#else
  a138_record r;
  if(!j->state) {
   if(!j->pending)return;
@@ -146,6 +187,7 @@ static void capture_step(ui_capture_job*j) {
  snap_completed=(snap_completed+1u)&65535u;
  a138_write(AUDIO_BASE,0x1a8,(snap_completed<<16)|(j->count<<8)|((j->error||!j->count)?128u:64u)|j->token);
  j->state=0;
+#endif
 }
 static int draw_begin(ui_draw_job*j,unsigned front,const ui_model*pages,const unsigned*page_touch,
  const unsigned*valid,const ui_model*m,unsigned touch,unsigned revision) {
@@ -176,16 +218,36 @@ static int draw_step(ui_draw_job*j,volatile uint32_t*const*frame,ui_model*pages,
  }
  return 0;
 }
+static unsigned read_clock_model(ui_model*m) {
+ // ACTUAL latches SNAPSHOT_EPOCH in the sole physical clock service. Two
+ // equal observations reject a rate/epoch transition without guessing from
+ // an SBC/TF source format. An invalid/transitioning clock is shown as such.
+ unsigned actual=a138_read(A138_CLOCK_BASE,A138_CLK_ACTUAL);
+ unsigned epoch=a138_read(A138_CLOCK_BASE,A138_CLK_SNAPSHOT_EPOCH);
+ unsigned again=a138_read(A138_CLOCK_BASE,A138_CLK_ACTUAL);
+ unsigned end=a138_read(A138_CLOCK_BASE,A138_CLK_SNAPSHOT_EPOCH);
+ if(actual!=again || epoch!=end)actual=0;
+ unsigned changed=m->clock_actual!=actual;m->clock_actual=actual;return changed;
+}
 static int read_model(ui_model*m) {
  unsigned sequence=a138_read(AUDIO_BASE,0x1a0),state=a138_read(AUDIO_BASE,0x184),pitch=a138_read(AUDIO_BASE,0x188),options=a138_read(AUDIO_BASE,0x18c);
+ unsigned effect=a138_read(AUDIO_BASE,0x1b8);
  uint32_t held[4];for(unsigned k=0;k<4;k++)held[k]=a138_read(AUDIO_BASE,0x190+k*4);
  // PANIC epoch is one atomic register fact. Other model fields still require
  // a coherent snapshot, but a torn snapshot must not hide an observed PANIC.
  unsigned changed=ui_panic(m,pitch>>22);
+ changed|=read_clock_model(m);
  if(sequence!=a138_read(AUDIO_BASE,0x1a0))return (int)changed;
  unsigned faults=a138_read(AUDIO_BASE,0x1a4)|runtime_flags;
+#ifdef A138_SINGLE_BLE_RECORDING
+ unsigned sw=state&7u;
+ for(unsigned k=0;k<3;k++) {unsigned depth=(options>>(k*7u))&127u;changed|=m->d_depths[k]!=depth;m->d_depths[k]=depth;}
+#else
  unsigned snap=a138_read(AUDIO_BASE,0x1a8);
  unsigned sw=((snap&64u)&&((snap&63u)==(options>>26))?32u:0)|(state&7u)|((options&3u)<<3)|((options&4u)<<4)|(((state>>5)&3u)==3?128u:0);
+#endif
+ changed|=m->volume!=(state>>16)||m->effect_order!=(effect&63u);
+ m->volume=state>>16;m->effect_order=effect&63u;
  changed|=(m->pc_faults!=faults)||m->mode!=((state>>3)&3u)||m->sound!=((state>>7)&7u)||m->route!=((state>>5)&3u)||m->sw!=sw||m->voices!=((state>>10)&63u);
  m->pc_faults=faults;m->mode=(state>>3)&3u;m->sound=(state>>7)&7u;m->route=(state>>5)&3u;m->sw=sw;m->voices=(state>>10)&63u;
  for(unsigned k=0;k<4;k++){changed|=m->held[k]!=held[k];m->held[k]=held[k];}
@@ -194,7 +256,10 @@ static int read_model(ui_model*m) {
 static void ui_service_step(ui_runtime*r) {
         idle_audio();
         background_step();
-        capture_request(&r->capture,a138_read(AUDIO_BASE,0x18c)>>26);capture_step(&r->capture);
+#ifndef A138_SINGLE_BLE_RECORDING
+        capture_request(&r->capture,a138_read(AUDIO_BASE,0x18c)>>26);
+#endif
+        capture_step(&r->capture);
         diagnostic[5]=0x55490000u|((ur(12)&255u)<<8)|((ur(4)&7u)<<4)|3u;
         unsigned panic=r->model.panic_epoch,changed=(unsigned)read_model(&r->model);
         if(r->model.panic_epoch!=panic){control_panic(&r->control);draw_cancel(&r->drawing,r->valid);}
@@ -215,6 +280,11 @@ static void ui_service_step(ui_runtime*r) {
         if(draw_step(&r->drawing,r->frame,r->pages,r->page_touch,r->valid,&r->front,&r->shown)<0)fail(0xbad03001);
 }
 static void model_check(void) {
+#ifdef A138_SINGLE_BLE_RECORDING
+ ui_model t;ui_init(&t);
+ ui_touch(&t,40,50,1);ui_touch(&t,ui_white_x(3)+25,526,1);
+ if(t.mode!=3 || t.gate || t.keyboard || t.sound)fail(0xbad03100);
+#else
  ui_model t;ui_init(&t);if(ui_request(&t)!=0x3c000000u)fail(0xbad03100);
  ui_touch(&t,40,50,1);ui_touch(&t,0,0,0);if(t.mode!=1)fail(0xbad03101);
  ui_touch(&t,260,50,1);ui_touch(&t,0,0,0);if(t.sound!=1)fail(0xbad03102);
@@ -222,17 +292,20 @@ static void model_check(void) {
  ui_touch(&t,0,0,0);if(t.gate)fail(0xbad03104);
  for(unsigned k=1;k<15;k++)if(ui_notes[k]-ui_notes[k-1]==2){ui_touch(&t,ui_white_x(k),480,1);if(t.note!=ui_notes[k]-1)fail(0xbad03105);}
  ui_touch(&t,0,0,1);if(t.gate)fail(0xbad03106);
+#endif
 }
 void services_main(void) {
     diagnostic[1]=0x55494259; // UIBY: self-test/drawing, not yet PASS
     ddr_checks();audio_checks();model_check();
     // Reload a visible LED-only guide after the short service self-test.  It
     // remains stopped until Push Play (CC85) and never creates note/PCM data.
+#ifndef A138_SINGLE_BLE_RECORDING
     static const a138_cue guide[9]={{0,0x0000000f},{24000,0x000000f0},
         {48000,0x00000f00},{72000,0x0000f000},{96000,0x000f0000},
         {120000,0x00f00000},{144000,0x0f000000},{168000,0xf0000000},
         {192000,0}};
     if(!a138_score_load(AUDIO_BASE,guide,9))fail(0xbad03107);
+#endif
     if(ur(0)!=0x55493338u || (ur(4)&7u) || ur(32)) fail(0xbad03200);
     ui_runtime runtime={.valid={1,1},.revision=1,.shown=1,
         .frame={(volatile uint32_t *)0x10000000u,(volatile uint32_t *)0x10400000u}};
@@ -245,6 +318,7 @@ void services_main(void) {
         background_step();
         if(control_step(&runtime.control)<0)fail(0xbad03002);
     }
+    (void)read_model(&runtime.model);
     for(unsigned p=0;p<2;p++) {
         runtime.pages[p]=runtime.model;
         for(unsigned row=0;row<UI_FRAME_ROWS;row+=UI_SLICE_ROWS) {

@@ -1,5 +1,35 @@
 # GW25K PL 屏幕与 MIDI 引导
 
+## W-DEMO 固定 D 上下文
+
+双 138K 分支的 W-DEMO 使用显式 `WORKSTATION_WORKER_DEMO` 固件配置和
+`workstation_worker_usb.sv` 输入 provider。它保留同一 Host、HS／FS 协商、
+标准枚举、25K MIDI 与 PL local-v1 传输，退出 Push 映射、屏幕、灯光和曲谱专属
+逻辑；非 25K 设备明确拒绝。M-DEMO 和既有默认配置仍沿用后文的演奏映射。
+以下映射只在 W 固定 D 上下文生效，使用 25K 已有 NoteOn／Off，不增加线规、
+菜单或长按。当前以默认移调零、MIDI 48–63 为键位范围。
+
+| 触摸键／MIDI | W 主机提交的已有参数命令 |
+|---|---|
+| A–C／48–50 | 按住分别 CC20／21／22=100，释放=0：BitCrush／Drive／Delay Send |
+| D–F／51–53 | 按下分别 CC87=0／1／2，向完整链加入 Delay／Chorus／Reverb |
+| G／54 | 按下 CC88=127，切换完整效果链总开关 |
+| H／55 | 按下 CC81=0，清空完整效果链选择 |
+| I–O／56–62 | 按下 CC81=1–7，直接选择三项效果的对应位掩码 |
+| P／63 | 按下 CC7=127，恢复主音量 |
+
+重复 NoteOn 不重复追加／翻转，普通按键释放不再翻转。编码器1已有 CC7 和
+编码器2短按 CC88 保留；W 不转发 A/B/C、音色或矢量选择请求。参数仍由音频域
+`workstation_parameters` 唯一提交，USB 只做输入去重。PL 页面显示 D STREAM、
+实际增益／输出声道、实际三项 D 深度和生效的完整链掩码；深度直接读取已提交
+`control_options` 的 `[6:0]`／`[13:7]`／`[20:14]`，不以触摸请求回显冒充应用。
+
+`sim/test_workstation_worker_usb.py` 覆盖上述生产固件、完整 PL 帧、真实事件
+FIFO／CDC、断开旧输入作废和已退休 MMIO 拒绝。离线通过不代表实物触摸、
+手机蓝牙、DAC、HDMI 或热插拔已经验收，最终证据按 `task2.md` 候选记录。
+
+## 既有通用／M 演奏配置
+
 138K 的 USB-A Host 现可连接 GW25K MIDI 键盘：接收键盘演奏、输出428×142横屏乐器/跟奏画面，并经标准MIDI回传点亮引导灯。Push 2 专用路径和普通 USB-MIDI 输入保留。此变更是离线软件候选，未烧录、未进行板间实测；现有 `LATEST_WORKSTATION.json` 的板上版本记录保持原样。
 
 将138K J18 USB-A接GW25K的USB2数据口。GW25K需要包含PL local-v1的固件；2026-10-17构建候选为 `0x00003BE9`，该候选此前按要求尚未烧录。`0x00005A52`旧键盘镜像不能用于PL屏控验收。

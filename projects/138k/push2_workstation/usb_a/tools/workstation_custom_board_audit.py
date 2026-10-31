@@ -315,6 +315,12 @@ def audit(output):
     output = Path(output).resolve()
     manifest = output / 'integration_inputs.json'
     metadata = json.loads(manifest.read_text())
+    # DEMO profiles have explicit retained/retired owners and native runtime
+    # clocks. Never interpret them as a legacy A26 complete-workstation image.
+    from tools.workstation_demo_audit import PROFILES as DEMO_PROFILES
+    if metadata.get('workstation_profile', {}).get('name') in DEMO_PROFILES:
+        from tools.workstation_demo_audit import audit as audit_demo
+        return audit_demo(ROOT, output, metadata)
     if (metadata.get('identity') not in ('custom138k-native-integration-20261022-a2',
                                        'custom138k-native-integration-20261022-a3',
                                        'custom138k-native-integration-20261022-a4',

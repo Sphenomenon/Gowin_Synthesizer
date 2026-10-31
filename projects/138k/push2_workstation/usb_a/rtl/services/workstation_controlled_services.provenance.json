@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "scope": "Native controlled services with default-compatible opt-in recording seal/metadata and planned score cancellation; frozen baseline bytes unchanged",
+  "scope": "Native controlled services with default-compatible opt-in recording seal/metadata and planned score cancellation; frozen baseline bytes unchanged; explicit DEMO retirement parameters reject local REC/cue and remove their wait conditions; additive read-only EFFECT_STATE at 0x1b8 observes committed order/count/master without changing existing fields",
   "source": "rtl/services/workstation_controlled_services.sv",
   "module": "gw138k_controlled_services",
-  "source_sha256": "f42e7b1aa5b5a753fe88a7f56ab286be4148a854cf2906f137714c4984ea0124",
-  "source_bytes": 23581,
+  "source_sha256": "d305e341dc12a05f2252991af7f31f94be2735ca53a6251974c227d6c9a31ce2",
+  "source_bytes": 24686,
   "parent_baseline": {
     "name": "resource_rework_route0",
     "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
@@ -93,6 +93,58 @@
     {
       "before": "            if(write_allow_11)begin begin loaded<=loaded+1'b1; previous_time<=cue_time; end end\n            if(write_allow_13)begin done_sticky<=0; end\n            if(write_allow_15)begin begin loaded<=0; previous_time<=0; score_length<=0; done_sticky<=0; end end\n        end\n    end\nendmodule\n",
       "after": "            if(write_allow_11)begin begin loaded<=loaded+1'b1; previous_time<=cue_time; end end\n            if(write_allow_13)begin done_sticky<=0; end\n            if(write_allow_15)begin begin loaded<=0; previous_time<=0; score_length<=0; done_sticky<=0; end end\n            // The media owner wins over an already-in-flight enable command.\n            // No output mask creates a parallel recording enable authority.\n            if(media_request)record_enable<=0;\n            if(media_request)done_sticky<=0;\n        end\n    end\n    // A POP transfers packet ownership into this snapshot. CPU reset cannot\n    // silently discard an already POPped, not-yet-RELEASEd packet in policy\n    // mode. Only board/storage reset clears it; the 96-bit ABI is unchanged.\n    always_ff @(posedge clk or negedge record_storage_reset_n)begin\n        if(!record_storage_reset_n)begin record_snapshot_valid<=0;record_snapshot<=0;end\n        else if(reset_n)begin\n            if(write_allow_6)begin record_snapshot<=record_packet;record_snapshot_valid<=1;end\n            if(write_allow_7)record_snapshot_valid<=0;\n        end\n    end\nendmodule\n"
+    },
+    {
+      "before": "// Audio-domain register services for the existing recorder and score player.\n// This module does not schedule samples, write DDR or synthesize note events.\nmodule gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (\n    input wire clk, reset_n, command_valid, command_write,\n    input wire [11:0] command_address,\n",
+      "after": "// Audio-domain register services for the existing recorder and score player.\n// This module does not schedule samples, write DDR or synthesize note events.\nmodule gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0,\n    parameter bit LOCAL_RECORD_ENABLE=1,parameter bit LOCAL_SCORE_ENABLE=1) (\n    input wire clk, reset_n, command_valid, command_write,\n    input wire [11:0] command_address,\n"
+    },
+    {
+      "before": "        (!media_hold && record_start_ready_i && !record_snapshot_valid);\n    wire record_storage_reset_n=ENABLE_MEDIA_POLICY ? record_storage_reset_ni : reset_n;\n    assign record_seal_request_o=media_request;\n    assign panel_event_ready=1'b1;\n    wire panel_score_toggle=panel_event_valid && panel_command==0;\n    wire panel_record_toggle=panel_event_valid && panel_command==1;\n    reg [15:0] write_select_q;\n    always @(posedge clk or negedge reset_n)begin\n",
+      "after": "        (!media_hold && record_start_ready_i && !record_snapshot_valid);\n    wire record_storage_reset_n=ENABLE_MEDIA_POLICY ? record_storage_reset_ni : reset_n;\n    assign record_seal_request_o=LOCAL_RECORD_ENABLE && media_request;\n    assign panel_event_ready=1'b1;\n    wire panel_score_toggle=LOCAL_SCORE_ENABLE && panel_event_valid && panel_command==0;\n    wire panel_record_toggle=LOCAL_RECORD_ENABLE && panel_event_valid && panel_command==1;\n    reg [15:0] write_select_q;\n    always @(posedge clk or negedge reset_n)begin\n"
+    },
+    {
+      "before": "    wire write_allow_3=command_valid && command_strobes==4'hf && write_select_q[3] && (1'b1);\n    wire write_allow_4=command_valid && command_strobes==4'hf && write_select_q[4] && (command_data==1);\n    wire write_allow_5=command_valid && command_strobes==4'hf && write_select_q[5] && (command_data<=1 && (!command_data[0] || (!media_hold && (record_enable || record_start_permit))));\n    wire write_allow_6=command_valid && command_strobes==4'hf && write_select_q[6] && (command_data==1 && record_valid && !record_snapshot_valid);\n    wire write_allow_7=command_valid && command_strobes==4'hf && write_select_q[7] && (command_data==1 && record_snapshot_valid);\n    wire write_allow_8=command_valid && command_strobes==4'hf && write_select_q[8] && (command_data<=255 && !score_running);\n    wire write_allow_9=command_valid && command_strobes==4'hf && write_select_q[9] && (!score_running);\n    wire write_allow_10=command_valid && command_strobes==4'hf && write_select_q[10] && (!score_running);\n    wire write_allow_11=command_valid && command_strobes==4'hf && write_select_q[11] && (command_data==1 && !score_running && loaded!=256 && {1'b0,score_address}==loaded && (loaded==0 || cue_time>=previous_time));\n    wire write_allow_12=command_valid && command_strobes==4'hf && write_select_q[12] && (command_data!=0 && command_data<=256 && !score_running);\n    wire write_allow_13=command_valid && command_strobes==4'hf && write_select_q[13] && (command_data==1 && !score_running && !media_hold && score_length!=0 && score_length<=loaded);\n    wire write_allow_14=command_valid && command_strobes==4'hf && write_select_q[14] && (command_data==1);\n    wire write_allow_15=command_valid && command_strobes==4'hf && write_select_q[15] && (command_data==1 && !score_running);\n    wire event_address=command_address==12'h180;\n    assign cpu_event_valid=command_valid && command_write && event_address && !(command_strobes!=4'hf || command_data[31:18]!=0 || command_data[17:14]>6 || (command_data[17:14]==1 && command_data[6:0]==0) || (command_data[17:14]==6 && command_data[13:7]>1));\n",
+      "after": "    wire write_allow_3=command_valid && command_strobes==4'hf && write_select_q[3] && (1'b1);\n    wire write_allow_4=command_valid && command_strobes==4'hf && write_select_q[4] && (command_data==1);\n    wire write_allow_5=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[5] && (command_data<=1 && (!command_data[0] || (!media_hold && (record_enable || record_start_permit))));\n    wire write_allow_6=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[6] && (command_data==1 && record_valid && !record_snapshot_valid);\n    wire write_allow_7=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[7] && (command_data==1 && record_snapshot_valid);\n    wire write_allow_8=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[8] && (command_data<=255 && !score_running);\n    wire write_allow_9=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[9] && (!score_running);\n    wire write_allow_10=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[10] && (!score_running);\n    wire write_allow_11=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[11] && (command_data==1 && !score_running && loaded!=256 && {1'b0,score_address}==loaded && (loaded==0 || cue_time>=previous_time));\n    wire write_allow_12=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[12] && (command_data!=0 && command_data<=256 && !score_running);\n    wire write_allow_13=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[13] && (command_data==1 && !score_running && !media_hold && score_length!=0 && score_length<=loaded);\n    wire write_allow_14=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[14] && (command_data==1);\n    wire write_allow_15=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[15] && (command_data==1 && !score_running);\n    wire event_address=command_address==12'h180;\n    assign cpu_event_valid=command_valid && command_write && event_address && !(command_strobes!=4'hf || command_data[31:18]!=0 || command_data[17:14]>6 || (command_data[17:14]==1 && command_data[6:0]==0) || (command_data[17:14]==6 && command_data[13:7]>1));\n"
+    },
+    {
+      "before": "    assign score_start=write_allow_13 ||\n        (panel_score_toggle && !media_hold && !score_running && score_length!=0 && score_length<=loaded);\n    assign score_stop=write_allow_14 ||\n        (panel_score_toggle && score_running) || media_hold;\n    assign score_data={cue_time,cue_mask};\n    reg [47:0] read_select_q;\n",
+      "after": "    assign score_start=write_allow_13 ||\n        (panel_score_toggle && !media_hold && !score_running && score_length!=0 && score_length<=loaded);\n    assign score_stop=LOCAL_SCORE_ENABLE && (write_allow_14 ||\n        (panel_score_toggle && score_running) || media_hold);\n    assign score_data={cue_time,cue_mask};\n    reg [47:0] read_select_q;\n"
+    },
+    {
+      "before": "        ({32{read_select_q[13]}} & 32'h41313338) |\n        ({32{read_select_q[14]}} & 32'h00010000) |\n        ({32{read_select_q[15]}} & (32'd63 | (32'(ENABLE_MEDIA_POLICY)<<6))) |\n        ({32{read_select_q[16]}} & {31'd0,snapshot_valid}) |\n        ({32{read_select_q[17]}} & (snapshot_valid ? snapshot[0] : 32'd0)) |\n",
+      "after": "        ({32{read_select_q[13]}} & 32'h41313338) |\n        ({32{read_select_q[14]}} & 32'h00010000) |\n        ({32{read_select_q[15]}} & ((32'd57 | (32'(LOCAL_RECORD_ENABLE)<<1) | (32'(LOCAL_SCORE_ENABLE)<<2)) | (32'(ENABLE_MEDIA_POLICY)<<6))) |\n        ({32{read_select_q[16]}} & {31'd0,snapshot_valid}) |\n        ({32{read_select_q[17]}} & (snapshot_valid ? snapshot[0] : 32'd0)) |\n"
+    },
+    {
+      "before": "        ({32{read_select_q[45]}} & record_seal_count_i) |\n        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i});\n    assign response_data=decoded_read_data;\n    integer i;\n    logic [31:0] unused_read_data;\n    always_comb begin\n        unused_read_data=0; response_error=0;\n        if(!aligned || (command_write && command_strobes!=4'hf)) response_error=1;\n        else if(command_write) begin\n            case(command_address)\n",
+      "after": "        ({32{read_select_q[45]}} & record_seal_count_i) |\n        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i});\n    wire retired_record=!LOCAL_RECORD_ENABLE && command_address>=12'h080 && command_address<=12'h0b4;\n    wire retired_score=!LOCAL_SCORE_ENABLE && command_address>=12'h100 && command_address<=12'h130;\n    assign response_data=(retired_record || retired_score) ? 32'd0 : decoded_read_data;\n    integer i;\n    logic [31:0] unused_read_data;\n    always_comb begin\n        unused_read_data=0; response_error=0;\n        if(!aligned || retired_record || retired_score || (command_write && command_strobes!=4'hf)) response_error=1;\n        else if(command_write) begin\n            case(command_address)\n"
+    },
+    {
+      "before": "                ID: unused_read_data=32'h41313338; // \"A138\"\n                VERSION: unused_read_data=32'h00010000;\n                CAPABILITIES: unused_read_data=63 | (32'(ENABLE_MEDIA_POLICY)<<6); // additive media metadata\n                SNAP_VALID: unused_read_data={31'd0,snapshot_valid};\n                12'h020,12'h024,12'h028,12'h02c,12'h030,12'h034,12'h038,12'h03c,12'h040:\n",
+      "after": "                ID: unused_read_data=32'h41313338; // \"A138\"\n                VERSION: unused_read_data=32'h00010000;\n                CAPABILITIES: unused_read_data=57 | (32'(LOCAL_RECORD_ENABLE)<<1) | (32'(LOCAL_SCORE_ENABLE)<<2) | (32'(ENABLE_MEDIA_POLICY)<<6); // additive media metadata\n                SNAP_VALID: unused_read_data={31'd0,snapshot_valid};\n                12'h020,12'h024,12'h028,12'h02c,12'h030,12'h034,12'h038,12'h03c,12'h040:\n"
+    },
+    {
+      "before": "            media_stop_done_o<=0;media_stop_failed_o<=0;\n            if(media_request)begin\n                local_stop_pending<=1;seal_acknowledged<=0;seal_failed<=0;\n            end\n            if(local_stop_pending && (record_seal_done_i || record_seal_failed_i))begin\n",
+      "after": "            media_stop_done_o<=0;media_stop_failed_o<=0;\n            if(media_request)begin\n                local_stop_pending<=1;seal_acknowledged<=!LOCAL_RECORD_ENABLE;seal_failed<=0;\n            end\n            if(local_stop_pending && (record_seal_done_i || record_seal_failed_i))begin\n"
+    },
+    {
+      "before": "            // The media owner wins over an already-in-flight enable command.\n            // No output mask creates a parallel recording enable authority.\n            if(media_request)record_enable<=0;\n            if(media_request)done_sticky<=0;\n        end\n",
+      "after": "            // The media owner wins over an already-in-flight enable command.\n            // No output mask creates a parallel recording enable authority.\n            if(media_request || !LOCAL_RECORD_ENABLE)record_enable<=0;\n            if(media_request)done_sticky<=0;\n        end\n"
+    },
+    {
+      "before": "    input wire [127:0] held_notes,",
+      "after": "    input wire [127:0] held_notes,\n    input wire [31:0] effect_state_i, // 0x1b8 only; old ABI reads never consume this port"
+    },
+    {
+      "before": "            read_select_q[47]<=1'b0;",
+      "after": "            read_select_q[47]<=!command_write && command_address==12'h1b8;"
+    },
+    {
+      "before": "        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i});",
+      "after": "        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i}) |\n        ({32{read_select_q[47]}} & effect_state_i);"
+    },
+    {
+      "before": "                12'h1b4: unused_read_data=snap_right;",
+      "after": "                12'h1b4: unused_read_data=snap_right;\n                12'h1b8: unused_read_data=effect_state_i;"
     }
   ],
   "selection": {
@@ -107,7 +159,8 @@
     "cpu_event": "Existing 18-bit event; only a legal CPU event write can backpressure the mailbox",
     "record": "One authoritative REC_ENABLE; existing 96-bit packets and POP/RELEASE; opt-in seal preserves FIFO/snapshot across CPU-only reset and publishes object id, recorded 48000Hz format, source epoch, exact accepted count and explicit failures",
     "score": "Resident 256-cue player; policy hold fences starts; planned stop has cancellation status and suppresses same-edge successful completion",
-    "parameters": "Only forwards events and observes committed state; does not own common parameters"
+    "parameters": "Only forwards events and observes committed state; does not own common parameters",
+    "effect_state": "Read-only 0x1b8: bit8 master, bits7:6 appended count, bits5:0 ordered stage IDs. Direct compute-domain observation; existing 0x1a0 sequence brackets coherent UI reads. No new parameter owner."
   },
   "limits": "Legacy bounded recorder remains 48kHz only. This phase adds no DDR long recording, BLE recording/download, dual-rate capture, new MIDI CC, synthesis, P&R or hardware acceptance.",
   "reverse_changes_reproduce_timing_prepared_bytes": true,

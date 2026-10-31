@@ -38,7 +38,7 @@ module tb_workstation_media_runtime_ble;
     workstation_runtime_controlled #(.WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
         .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(6),
         .RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) dut(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.midi_rx_i(midi_rx),.pc_uart_rx_i(pc_rx),
         .usb_event_valid(usb_valid),.usb_lifecycle,.usb_cancel,.usb_event_data(usb_data),.usb_event_ready(usb_ready),
         .pclk,.preset_n,.psel(psel && !paddr[12]),.penable,.pwrite,.paddr(paddr[11:0]),.pwdata,.pstrb,.pready(bus_ready[0]),.pslverr(bus_error[0]),.prdata(bus_data[0]),.performance_words_o(performance),
@@ -198,7 +198,7 @@ module tb_workstation_media_runtime_ble;
     wire tf_failed;wire [3:0] tf_failure;
     workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(12000),.EXTERNAL_STOP_PROTOCOL(1),
         .HOTPLUG_TIMEOUT_CYCLES(28'd200000),.HOTPLUG_STALL_TIMEOUT_CYCLES(28'd300000)) tf(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .memory_reset_ni(rst_n),.memory_ready_i(rst_n),.mode_i(1'b1),.run_i(tf_run),.restart_i(tf_restart),
         .cancel_i(1'b0),.reader_restart_i(1'b0),.transport_error_i(transport_error),.track_index_i(track),
         .runtime_valid_i(active_valid),.runtime_44k1_i(rate),.runtime_fault_i(fault||dsp_fault),.runtime_busy_i(busy),.runtime_epoch_i(epoch),

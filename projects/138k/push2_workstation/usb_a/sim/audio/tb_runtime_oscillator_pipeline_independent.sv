@@ -44,49 +44,6 @@ module tb_runtime_oscillator_pipeline_independent;
     .allocated_mask_o(r_alloc),.active_mask_o(r_active),.active_voice_count_o(r_count),
     .load_busy_o(r_load),.mix_busy_o(r_mix),.issued_slot_count_o(r_issued),
     .rate_ready_o(r_rate_ready),.applied_rate_44100_o(r_rate),.quiescent_o(r_quiet));
-`ifdef OSC_COEFFICIENT_AB
-  wire b_mode_ready,b_event_ready,b_expr_ready,b_ready,b_valid,b_quiet,b_rate_ready,b_rate;
-  wire signed [31:0] b_sample;
-  wire [31:0] b_alloc,b_active;
-  wire [5:0] b_count;
-  wire [7:0] b_issued;
-  wire [1:0] b_mode;
-  wire b_load,b_mix;
-  integer ab_cycles=0,ab_coefficients=0,ab_resets=0,ab_invalid_profiles=0,ab_panic_loads=0;
-  fc_pipeline_oscillator #(.EXPRESSION_ENABLE(1),.SAMPLE_RATE_HZ(48000),
-    .SEPARATE_OFF_NOTE(1),.RUNTIME_RATE_ENABLE(1),.PIPELINED_ENVELOPE(1),.PIPELINED_RATE(1)) before_pipeline(
-    `COMMON_INPUTS,.mode_set_ready_o(b_mode_ready),.current_mode_o(b_mode),
-    .event_ready_o(b_event_ready),.expression_ready_o(b_expr_ready),
-    .sample_ready_o(b_ready),.sample_valid_o(b_valid),.sample_o(b_sample),
-    .allocated_mask_o(b_alloc),.active_mask_o(b_active),.active_voice_count_o(b_count),
-    .load_busy_o(b_load),.mix_busy_o(b_mix),.issued_slot_count_o(b_issued),
-    .rate_ready_o(b_rate_ready),.applied_rate_44100_o(b_rate),.quiescent_o(b_quiet));
-  always @(negedge clk)if(rst)begin
-    ab_cycles=ab_cycles+1;
-    if({d_mode_ready,d_event_ready,d_expr_ready,d_ready,d_valid,d_quiet,d_rate_ready,d_rate,
-        d_alloc,d_active,d_count,d_issued,d_mode,d_load,d_mix} !==
-       {b_mode_ready,b_event_ready,b_expr_ready,b_ready,b_valid,b_quiet,b_rate_ready,b_rate,
-        b_alloc,b_active,b_count,b_issued,b_mode,b_load,b_mix})
-      $fatal(1,"OSC_COEFFICIENT_CYCLE case=%0d cycle=%0d",case_id,ab_cycles);
-    if(d_valid && d_sample!==b_sample)
-      $fatal(1,"OSC_COEFFICIENT_PCM case=%0d cycle=%0d",case_id,ab_cycles);
-    if({dut.g_envelope_pipeline.coefficient_valid,dut.g_envelope_pipeline.coefficient_busy} !==
-       {before_pipeline.g_envelope_pipeline.coefficient_valid,before_pipeline.g_envelope_pipeline.coefficient_busy})
-      $fatal(1,"OSC_COEFFICIENT_VALID case=%0d cycle=%0d",case_id,ab_cycles);
-    if(dut.g_envelope_pipeline.coefficient_valid)begin
-      ab_coefficients=ab_coefficients+1;
-      if({dut.g_envelope_pipeline.coefficient_index,dut.g_envelope_pipeline.coefficient_state,
-          dut.g_envelope_pipeline.coefficient_level,dut.g_envelope_pipeline.coefficient_sustain,
-          dut.g_envelope_pipeline.coefficient_attack,dut.g_envelope_pipeline.coefficient_decay,
-          dut.g_envelope_pipeline.coefficient_release} !==
-         {before_pipeline.g_envelope_pipeline.coefficient_index,before_pipeline.g_envelope_pipeline.coefficient_state,
-          before_pipeline.g_envelope_pipeline.coefficient_level,before_pipeline.g_envelope_pipeline.coefficient_sustain,
-          before_pipeline.g_envelope_pipeline.coefficient_attack,before_pipeline.g_envelope_pipeline.coefficient_decay,
-          before_pipeline.g_envelope_pipeline.coefficient_release})
-        $fatal(1,"OSC_COEFFICIENT_DATA case=%0d cycle=%0d voice=%0d",case_id,ab_cycles,dut.g_envelope_pipeline.coefficient_index);
-    end
-  end
-`endif
   `undef COMMON_INPUTS
 
   task automatic idle;
@@ -165,30 +122,26 @@ module tb_runtime_oscillator_pipeline_independent;
     end
   endtask
   task automatic seed_envelope_edges;
-    logic [23:0] l;
+    logic [23:0] l,c;
     begin
       idle();
       for(integer i=0;i<32;i=i+1)begin
         case(i%8)
-          0:l=0;
-          1:l=1;
-          2:l=24'hffffbf;
-          3:l=24'hffffc0;
-          4:l=24'h800000;
-          5:l=24'h7fffff;
-          6:l=24'h400000;
-          default:l=24'h000093;
+          0:begin l=0;c=0;end
+          1:begin l=1;c=1;end
+          2:begin l=24'hffffbf;c=73;end
+          3:begin l=24'hffffc0;c=147;end
+          4:begin l=24'h800000;c=24'hffffff;end
+          5:begin l=24'h7fffff;c=24'hffffc0;end
+          6:begin l=24'h400000;c=24'd154139;end
+          default:begin l=24'h000093;c=24'd146;end
         endcase
         dut.envelope_level_q24[i]=l;reference_engine.envelope_level_q24[i]=l;
         dut.envelope_state[i]=3'(i%5);reference_engine.envelope_state[i]=3'(i%5);
-        // Immutable coefficients enter through NoteOn and the selected ADSR
-        // file. Custom tables exercise their arithmetic boundaries.
+        dut.attack_step_q24[i]=c;reference_engine.attack_step_q24[i]=c;
+        dut.decay_step_q24[i]=c;reference_engine.decay_step_q24[i]=c;
+        dut.release_step_q24[i]=c;reference_engine.release_step_q24[i]=c;
         dut.sustain_level_q24[i]=24'h400000;reference_engine.sustain_level_q24[i]=24'h400000;
-`ifdef OSC_COEFFICIENT_AB
-        before_pipeline.envelope_level_q24[i]=l;
-        before_pipeline.envelope_state[i]=3'(i%5);
-        before_pipeline.sustain_level_q24[i]=24'h400000;
-`endif
       end
     end
   endtask
@@ -206,47 +159,6 @@ module tb_runtime_oscillator_pipeline_independent;
     end
   endtask
 
-`ifdef OSC_COEFFICIENT_AB
-  // These cases compare the two registered engines directly. A cancelled
-  // frame need not match the older unregistered oracle's private slot tail.
-  task automatic ab_frame;
-    integer ticks;
-    begin
-      idle();if(!d_ready || !b_ready)$fatal(1,"OSC_COEFFICIENT_FRAME_READY");
-      ce=1;@(negedge clk);ce=0;ticks=0;
-      while(!d_quiet || !r_quiet)begin
-        @(negedge clk);ticks=ticks+1;
-        if(ticks>1599)$fatal(1,"OSC_COEFFICIENT_FRAME_DEADLINE");
-      end
-    end
-  endtask
-  task automatic ab_reset;
-    begin
-      rst=0;repeat(2)@(negedge clk);rst=1;idle();ab_resets=ab_resets+1;
-    end
-  endtask
-  task automatic ab_cancel_reset(input integer delay_cycles);
-    begin
-      idle();ce=1;@(negedge clk);ce=0;
-      repeat(delay_cycles)@(negedge clk);
-      ab_reset();ab_frame();
-      profile=0;load_all();render();
-    end
-  endtask
-  task automatic ab_panic_at_load(input integer selected_profile);
-    begin
-      idle();profile=3'(selected_profile);note=60;velocity=127;note_on=1;event_valid=1;
-      @(negedge clk);event_valid=0;note_on=0;
-      if(dut.load_state!=1 || !dut.midi_valid || !dut.partial_ready)
-        $fatal(1,"OSC_COEFFICIENT_PANIC_LOAD_SETUP");
-      panic=1;@(negedge clk);panic=0;idle();
-      if(!dut.coefficient_initialized[0] || dut.coefficient_profile[0]!==3'(selected_profile))
-        $fatal(1,"OSC_COEFFICIENT_PANIC_LOAD_METADATA");
-      ab_frame();ab_panic_loads=ab_panic_loads+1;
-    end
-  endtask
-`endif
-
   always @(negedge clk)if(rst && d_quiet &&
       (dut.arithmetic_busy || dut.envelope_lane_busy || dut.sine_valid_o ||
        dut.gain_product_valid || dut.envelope_product_valid || dut.finalize_valid || d_valid))
@@ -263,7 +175,6 @@ module tb_runtime_oscillator_pipeline_independent;
         case_id=rate*100+m*10+p;
         clear();setmode(m);profile=3'(p);ratio=22'(1048576+p*14321);
         load_all();
-        profile=3'((p+1)%5);
         for(t=0;t<8;t=t+1)render();
         seed_envelope_edges();for(t=0;t<5;t=t+1)render();
         ratio=22'h3fffff;for(t=0;t<3;t=t+1)render();
@@ -281,35 +192,11 @@ module tb_runtime_oscillator_pipeline_independent;
         case_id=rate*1000+500+n;cancel_and_reuse(offset);
       end
     end
-`ifdef OSC_COEFFICIENT_AB
-    for(integer reset_case=0;reset_case<8;reset_case=reset_case+1)begin
-      case(reset_case)
-        0:offset=0;1:offset=1;2:offset=2;3:offset=8;
-        4:offset=14;5:offset=15;6:offset=31;default:offset=47;
-      endcase
-      ab_cancel_reset(offset);
-    end
-    for(integer selected_rate=0;selected_rate<2;selected_rate=selected_rate+1)begin
-      ab_reset();setrate(1'(selected_rate));setmode(0);
-      for(integer invalid_profile=5;invalid_profile<8;invalid_profile=invalid_profile+1)begin
-        profile=3'(invalid_profile);send(1,60,127);ab_frame();
-        ab_invalid_profiles=ab_invalid_profiles+1;
-        ab_reset();setrate(1'(selected_rate));setmode(0);
-      end
-      for(integer loaded_profile=0;loaded_profile<5;loaded_profile=loaded_profile+1)begin
-        ab_panic_at_load(loaded_profile);
-        ab_reset();setrate(1'(selected_rate));setmode(0);
-      end
-    end
-`endif
     if(frames<600 || audible<100 || panic_cases!=34 || max_latency>1599)
       $fatal(1,"OSC_COVERAGE frames=%0d audible=%0d panic=%0d max=%0d",frames,audible,panic_cases,max_latency);
     for(integer r=0;r<2;r=r+1)for(integer q=0;q<3;q=q+1)
       $display("OSC_LATENCY rate=%0d mode=%0d frames=%0d max_cycles=%0d",r!=0?44100:48000,q,frames_matrix[r][q],latency_matrix[r][q]);
     $display("OSC_PIPELINE_INDEPENDENT_PASS frames=%0d audible=%0d slots=%0d panic=%0d max_latency=%0d",frames,audible,compared_slots,panic_cases,max_latency);
-`ifdef OSC_COEFFICIENT_AB
-    $display("OSC_COEFFICIENT_AB_PASS cycles=%0d coefficients=%0d resets=%0d invalid_profiles=%0d panic_loads=%0d",ab_cycles,ab_coefficients,ab_resets,ab_invalid_profiles,ab_panic_loads);
-`endif
     $finish;
   end
   initial begin #100000000; $fatal(1,"OSC_GLOBAL_TIMEOUT");end

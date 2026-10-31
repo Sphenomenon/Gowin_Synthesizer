@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 // Audio-domain register services for the existing recorder and score player.
 // This module does not schedule samples, write DDR or synthesize note events.
-module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
+module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0,
+    parameter bit LOCAL_RECORD_ENABLE=1,parameter bit LOCAL_SCORE_ENABLE=1) (
     input wire clk, reset_n, command_valid, command_write,
     input wire [11:0] command_address,
     input wire [31:0] command_data,
@@ -15,6 +16,7 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
     input wire panel_event_valid,input wire [6:0] panel_command,output wire panel_event_ready,
     input wire [31:0] control_state,control_pitch,control_options,applied_events,pc_health,
     input wire [127:0] held_notes,
+    input wire [31:0] effect_state_i, // 0x1b8 only; old ABI reads never consume this port
     input wire sample_valid,
     input wire [31:0] active_mask, deadline_miss, midi_overflow, note_drop,
     input wire [31:0] underrun_count, midi_cdc_drop, observation_drop, record_drop,
@@ -62,10 +64,10 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
     wire record_start_permit=!ENABLE_MEDIA_POLICY ||
         (!media_hold && record_start_ready_i && !record_snapshot_valid);
     wire record_storage_reset_n=ENABLE_MEDIA_POLICY ? record_storage_reset_ni : reset_n;
-    assign record_seal_request_o=media_request;
+    assign record_seal_request_o=LOCAL_RECORD_ENABLE && media_request;
     assign panel_event_ready=1'b1;
-    wire panel_score_toggle=panel_event_valid && panel_command==0;
-    wire panel_record_toggle=panel_event_valid && panel_command==1;
+    wire panel_score_toggle=LOCAL_SCORE_ENABLE && panel_event_valid && panel_command==0;
+    wire panel_record_toggle=LOCAL_RECORD_ENABLE && panel_event_valid && panel_command==1;
     reg [15:0] write_select_q;
     always @(posedge clk or negedge reset_n)begin
         if(!reset_n)write_select_q<=0;
@@ -93,17 +95,17 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
     wire write_allow_2=command_valid && command_strobes==4'hf && write_select_q[2] && (1'b1);
     wire write_allow_3=command_valid && command_strobes==4'hf && write_select_q[3] && (1'b1);
     wire write_allow_4=command_valid && command_strobes==4'hf && write_select_q[4] && (command_data==1);
-    wire write_allow_5=command_valid && command_strobes==4'hf && write_select_q[5] && (command_data<=1 && (!command_data[0] || (!media_hold && (record_enable || record_start_permit))));
-    wire write_allow_6=command_valid && command_strobes==4'hf && write_select_q[6] && (command_data==1 && record_valid && !record_snapshot_valid);
-    wire write_allow_7=command_valid && command_strobes==4'hf && write_select_q[7] && (command_data==1 && record_snapshot_valid);
-    wire write_allow_8=command_valid && command_strobes==4'hf && write_select_q[8] && (command_data<=255 && !score_running);
-    wire write_allow_9=command_valid && command_strobes==4'hf && write_select_q[9] && (!score_running);
-    wire write_allow_10=command_valid && command_strobes==4'hf && write_select_q[10] && (!score_running);
-    wire write_allow_11=command_valid && command_strobes==4'hf && write_select_q[11] && (command_data==1 && !score_running && loaded!=256 && {1'b0,score_address}==loaded && (loaded==0 || cue_time>=previous_time));
-    wire write_allow_12=command_valid && command_strobes==4'hf && write_select_q[12] && (command_data!=0 && command_data<=256 && !score_running);
-    wire write_allow_13=command_valid && command_strobes==4'hf && write_select_q[13] && (command_data==1 && !score_running && !media_hold && score_length!=0 && score_length<=loaded);
-    wire write_allow_14=command_valid && command_strobes==4'hf && write_select_q[14] && (command_data==1);
-    wire write_allow_15=command_valid && command_strobes==4'hf && write_select_q[15] && (command_data==1 && !score_running);
+    wire write_allow_5=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[5] && (command_data<=1 && (!command_data[0] || (!media_hold && (record_enable || record_start_permit))));
+    wire write_allow_6=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[6] && (command_data==1 && record_valid && !record_snapshot_valid);
+    wire write_allow_7=LOCAL_RECORD_ENABLE && command_valid && command_strobes==4'hf && write_select_q[7] && (command_data==1 && record_snapshot_valid);
+    wire write_allow_8=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[8] && (command_data<=255 && !score_running);
+    wire write_allow_9=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[9] && (!score_running);
+    wire write_allow_10=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[10] && (!score_running);
+    wire write_allow_11=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[11] && (command_data==1 && !score_running && loaded!=256 && {1'b0,score_address}==loaded && (loaded==0 || cue_time>=previous_time));
+    wire write_allow_12=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[12] && (command_data!=0 && command_data<=256 && !score_running);
+    wire write_allow_13=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[13] && (command_data==1 && !score_running && !media_hold && score_length!=0 && score_length<=loaded);
+    wire write_allow_14=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[14] && (command_data==1);
+    wire write_allow_15=LOCAL_SCORE_ENABLE && command_valid && command_strobes==4'hf && write_select_q[15] && (command_data==1 && !score_running);
     wire event_address=command_address==12'h180;
     assign cpu_event_valid=command_valid && command_write && event_address && !(command_strobes!=4'hf || command_data[31:18]!=0 || command_data[17:14]>6 || (command_data[17:14]==1 && command_data[6:0]==0) || (command_data[17:14]==6 && command_data[13:7]>1));
     assign cpu_event=command_data[17:0];
@@ -117,8 +119,8 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
     assign score_write=write_allow_11;
     assign score_start=write_allow_13 ||
         (panel_score_toggle && !media_hold && !score_running && score_length!=0 && score_length<=loaded);
-    assign score_stop=write_allow_14 ||
-        (panel_score_toggle && score_running) || media_hold;
+    assign score_stop=LOCAL_SCORE_ENABLE && (write_allow_14 ||
+        (panel_score_toggle && score_running) || media_hold);
     assign score_data={cue_time,cue_mask};
     reg [47:0] read_select_q;
     always @(posedge clk or negedge reset_n)begin
@@ -171,7 +173,7 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
             read_select_q[44]<=ENABLE_MEDIA_POLICY && !command_write && command_address==REC_SEAL_STATUS;
             read_select_q[45]<=ENABLE_MEDIA_POLICY && !command_write && command_address==REC_SEAL_COUNT;
             read_select_q[46]<=ENABLE_MEDIA_POLICY && !command_write && command_address==SCORE_STOP_RESULT;
-            read_select_q[47]<=1'b0;
+            read_select_q[47]<=!command_write && command_address==12'h1b8;
         end
     end
     wire [31:0] decoded_read_data=
@@ -190,7 +192,7 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
         ({32{read_select_q[12]}} & snap_right) |
         ({32{read_select_q[13]}} & 32'h41313338) |
         ({32{read_select_q[14]}} & 32'h00010000) |
-        ({32{read_select_q[15]}} & (32'd63 | (32'(ENABLE_MEDIA_POLICY)<<6))) |
+        ({32{read_select_q[15]}} & ((32'd57 | (32'(LOCAL_RECORD_ENABLE)<<1) | (32'(LOCAL_SCORE_ENABLE)<<2)) | (32'(ENABLE_MEDIA_POLICY)<<6))) |
         ({32{read_select_q[16]}} & {31'd0,snapshot_valid}) |
         ({32{read_select_q[17]}} & (snapshot_valid ? snapshot[0] : 32'd0)) |
         ({32{read_select_q[18]}} & (snapshot_valid ? snapshot[1] : 32'd0)) |
@@ -221,13 +223,16 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
         ({32{read_select_q[43]}} & record_object_frames_i) |
         ({32{read_select_q[44]}} & {29'd0,record_seal_status_i}) |
         ({32{read_select_q[45]}} & record_seal_count_i) |
-        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i});
-    assign response_data=decoded_read_data;
+        ({32{read_select_q[46]}} & {30'd0,score_failed_i,score_cancelled_i}) |
+        ({32{read_select_q[47]}} & effect_state_i);
+    wire retired_record=!LOCAL_RECORD_ENABLE && command_address>=12'h080 && command_address<=12'h0b4;
+    wire retired_score=!LOCAL_SCORE_ENABLE && command_address>=12'h100 && command_address<=12'h130;
+    assign response_data=(retired_record || retired_score) ? 32'd0 : decoded_read_data;
     integer i;
     logic [31:0] unused_read_data;
     always_comb begin
         unused_read_data=0; response_error=0;
-        if(!aligned || (command_write && command_strobes!=4'hf)) response_error=1;
+        if(!aligned || retired_record || retired_score || (command_write && command_strobes!=4'hf)) response_error=1;
         else if(command_write) begin
             case(command_address)
                 12'h180: response_error=command_data[31:18]!=0 || command_data[17:14]>6 ||
@@ -264,9 +269,10 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
                 12'h1ac: unused_read_data=snap_sequence;
                 12'h1b0: unused_read_data=snap_left;
                 12'h1b4: unused_read_data=snap_right;
+                12'h1b8: unused_read_data=effect_state_i;
                 ID: unused_read_data=32'h41313338; // "A138"
                 VERSION: unused_read_data=32'h00010000;
-                CAPABILITIES: unused_read_data=63 | (32'(ENABLE_MEDIA_POLICY)<<6); // additive media metadata
+                CAPABILITIES: unused_read_data=57 | (32'(LOCAL_RECORD_ENABLE)<<1) | (32'(LOCAL_SCORE_ENABLE)<<2) | (32'(ENABLE_MEDIA_POLICY)<<6); // additive media metadata
                 SNAP_VALID: unused_read_data={31'd0,snapshot_valid};
                 12'h020,12'h024,12'h028,12'h02c,12'h030,12'h034,12'h038,12'h03c,12'h040:
                     begin
@@ -309,7 +315,7 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
         end else begin
             media_stop_done_o<=0;media_stop_failed_o<=0;
             if(media_request)begin
-                local_stop_pending<=1;seal_acknowledged<=0;seal_failed<=0;
+                local_stop_pending<=1;seal_acknowledged<=!LOCAL_RECORD_ENABLE;seal_failed<=0;
             end
             if(local_stop_pending && (record_seal_done_i || record_seal_failed_i))begin
                 seal_acknowledged<=1;seal_failed<=record_seal_failed_i;
@@ -345,7 +351,7 @@ module gw138k_controlled_services #(parameter bit ENABLE_MEDIA_POLICY=0) (
             if(write_allow_15)begin begin loaded<=0; previous_time<=0; score_length<=0; done_sticky<=0; end end
             // The media owner wins over an already-in-flight enable command.
             // No output mask creates a parallel recording enable authority.
-            if(media_request)record_enable<=0;
+            if(media_request || !LOCAL_RECORD_ENABLE)record_enable<=0;
             if(media_request)done_sticky<=0;
         end
     end

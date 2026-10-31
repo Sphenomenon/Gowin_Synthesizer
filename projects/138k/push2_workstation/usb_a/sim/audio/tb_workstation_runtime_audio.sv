@@ -42,7 +42,7 @@ module tb_workstation_runtime_audio #(
         .COUNTER_BITS(32),.SWITCH_TIMEOUT_CYCLES(2000000),.PDN_HOLD_FRAMES(PDN_FRAMES),.STARTUP_MUTE_FRAMES(STARTUP_FRAMES),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)
     ) dut(
-        .rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.request_i(request),.request_44k1_i(request44),
         .switch_permit_i(permit),.recover_i(recover),.media_quiescent_i(media_quiet),.request_ready_o(ready),.busy_o(busy),
         .fault_o(fault),.accepted_o(accepted),.applied_o(applied),.rejected_o(rejected),.failed_o(failed),

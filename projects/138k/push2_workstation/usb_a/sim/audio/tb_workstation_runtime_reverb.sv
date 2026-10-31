@@ -12,6 +12,24 @@ module tb_workstation_runtime_reverb;
       .rate_44100_i(rate_44),.history_clear_i(history_clear),.config_ready_o(config_ready),
       .config_applied_o(config_applied),.history_ready_o(history_ready),.history_done_o(history_done),
       .quiescent_o(quiet),.applied_rate_44100_o(rate));
+`ifdef RUNTIME_REVERB_SCRATCH_REFERENCE
+  // The comparison build supplies the unchanged native pre-split module.
+  wire old_ready,old_valid,old_active,old_clip,old_config_ready,old_config_applied;
+  wire old_history_ready,old_history_done,old_quiet,old_rate;
+  wire signed [31:0] old_left,old_right;
+  scratch_reference_spatial_reverb u_scratch_reference(
+      .clk_i(clk),.rst_ni(rst_n),.clear_i(clear_i),.valid_i(valid_i),.enabled_i(enabled_i),
+      .left_i(left_i),.right_i(right_i),.ready_o(old_ready),.valid_o(old_valid),.active_o(old_active),
+      .left_o(old_left),.right_o(old_right),.clip_o(old_clip),.config_valid_i(config_valid),
+      .rate_44100_i(rate_44),.history_clear_i(history_clear),.config_ready_o(old_config_ready),
+      .config_applied_o(old_config_applied),.history_ready_o(old_history_ready),.history_done_o(old_history_done),
+      .quiescent_o(old_quiet),.applied_rate_44100_o(old_rate));
+  always @(negedge clk)if(rst_n &&
+      {ready,valid_o,active,clip,config_ready,config_applied,history_ready,history_done,quiet,rate,left_o,right_o} !==
+      {old_ready,old_valid,old_active,old_clip,old_config_ready,old_config_applied,
+       old_history_ready,old_history_done,old_quiet,old_rate,old_left,old_right})
+    $fatal(1,"native Reverb scratch split changed an output or control cycle");
+`endif
   wire ref_ready,ref_valid,ref_active,ref_clip;
   wire signed [31:0] ref_l,ref_r;
   serial_spatial_reverb u_ref(

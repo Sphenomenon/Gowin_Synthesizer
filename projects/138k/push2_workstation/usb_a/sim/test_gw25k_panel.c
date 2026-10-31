@@ -490,7 +490,59 @@ static void audio_feedback_test(const char *path){
     fclose(f);assert(rows==12);
     printf("PASS production Host consumes 12 real RTL feedback captures: committed mode, release-tail voices, four audio routes, glide, sustain, reconnect defaults; no input echo\n");
 }
+#ifdef WORKSTATION_WORKER_DEMO
+static void worker_midi(unsigned key,unsigned down,unsigned cc,unsigned value,unsigned emit){
+    uint8_t p[4]={down?9:8,down?0x90:0x80,(uint8_t)(48+key),down?100:0};
+    unsigned before=generic_writes;forward_midi(p);
+    assert(generic_writes==before+emit);
+    if(emit)assert(regs[0x54/4]==((2u<<14)|(cc<<7)|value));
+}
+static void worker_demo_tests(void){
+    initialize();inject_midi=0;
+    for(unsigned key=0;key<16;key++){
+        unsigned cc,value;
+        if(key<3){cc=20+key;value=100;}
+        else if(key<6){cc=87;value=key-3;}
+        else if(key==6){cc=88;value=127;}
+        else if(key==7){cc=81;value=0;}
+        else if(key<15){cc=81;value=key-7;}
+        else {cc=7;value=127;}
+        worker_midi(key,1,cc,value,1);
+        worker_midi(key,1,0,0,0); /* repeated DATA/NoteOn cannot toggle twice */
+        worker_midi(key,0,cc,0,key<3);
+        worker_midi(key,0,0,0,0);
+    }
+    unsigned before=generic_writes;
+    const uint8_t program[]={12,0xc0,73,0},mode_cc[]={11,0xb0,89,1},outside[]={9,0x90,47,100};
+    forward_midi(program);forward_midi(mode_cc);forward_midi(outside);assert(generic_writes==before);
+    const uint8_t volume[]={11,0xb0,7,73};forward_midi(volume);
+    assert(regs[0x54/4]==((2u<<14)|(7u<<7)|73u));
+    /* Press state is interaction bookkeeping only: no UI echo before actual
+     * audio feedback. A late commit changes the following complete PL frame. */
+    regs[0x10/4]=0x80000000u|(3u<<3)|5u;
+    regs[0x14/4]=17u|(64u<<7)|(101u<<14);
+    wait_frame(1);wait_quiet();
+    assert(!strcmp(gw.line1,"D STREAM  GAIN 127  OUT STEREO"));
+    assert(!strcmp(gw.line2,"CRUSH 017 DRIVE 064 SEND 101"));
+    assert(!strcmp(gw.line3,"FX DCR 101  TOUCH A-C HOLD"));
+    worker_midi(0,1,20,100,1);
+    unsigned frames_before=complete_frames;wait_quiet();assert(complete_frames==frames_before);
+    assert(!strcmp(gw.line2,"CRUSH 017 DRIVE 064 SEND 101"));
+    regs[0x14/4]=100u|(64u<<7)|(101u<<14);
+    wait_frame(frames_before+1);wait_quiet();
+    assert(!strcmp(gw.line2,"CRUSH 100 DRIVE 064 SEND 101"));
+    disconnect();assert(!worker_keys);connect();worker_midi(0,1,20,100,1);
+    fixture();fixture_vid=0x2982;fixture_pid=0x1967;connect();
+    assert(!connected && mode==DEVICE_NONE && !regs[0]);
+    fixture();fixture_vid=1;connect();assert(!connected && mode==DEVICE_NONE);
+    assert(!score_reads && !note_on_count && !note_off_count && !cc123_count);
+    printf("PASS W-DEMO USB: 16 touch mappings, momentary release, duplicate suppression, generic control filtering, real committed D feedback, full PL frames, reconnect reset and Push rejection\n");
+}
+#endif
 int main(int argc,char **argv){
+#ifdef WORKSTATION_WORKER_DEMO
+    if(argc==1){worker_demo_tests();return 0;}
+#endif
     if(argc==3 && !strcmp(argv[1],"--render")){render_scene(argv[2]);return 0;}
     if(argc==3 && !strcmp(argv[1],"--audio-feedback")){audio_feedback_test(argv[2]);return 0;}
     if(argc==2 && !strcmp(argv[1],"--rtl")){

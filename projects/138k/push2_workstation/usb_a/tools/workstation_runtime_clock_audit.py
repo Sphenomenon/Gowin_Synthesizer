@@ -149,7 +149,7 @@ def audit_runtime_clocks(root, stage, netlist_text):
     for name, source in (('reference_48_monitor', 'clk_12m288'),
                          ('reference_44_monitor', 'clk_16m9344'), ('selected_monitor', selected)):
         prefix = 'u_managed/runtime/clocks/' + name + '/'
-        source_regs = sorted(p for p in registers if p.startswith(prefix + 'source_'))
+        source_regs = sorted(p for p in registers if p.startswith((prefix + 'source_', prefix + 'startup_source_')))
         control_regs = sorted(p for p in registers if p.startswith(prefix) and p not in source_regs)
         require(source_regs and control_regs and
                 all(n.pin(p, 'CLK') == source for p in source_regs) and

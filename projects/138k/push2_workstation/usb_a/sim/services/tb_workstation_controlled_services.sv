@@ -18,6 +18,7 @@ module tb_workstation_controlled_services;
         .command_strobes,.response_data,.response_error);
     reg event_ready=1,panel_event_valid=0;
     reg [6:0] panel_command=0;
+    reg [31:0] effect_state=32'h124;
     reg sample_run=0;
     reg [2:0] sample_divider=0;
     always @(posedge clk or negedge reset_n)
@@ -35,7 +36,7 @@ module tb_workstation_controlled_services;
         .command_ready,.response_data,.response_error,.cpu_event_valid,.cpu_event,
         .cpu_event_ready(event_ready),.panel_event_valid,.panel_command,.panel_event_ready,
         .control_state(32'h12345678),.control_pitch(32'hcafef00d),
-        .control_options(32'h89abcdef),.applied_events(32'd73),.pc_health(32'd5),
+        .effect_state_i(effect_state),.control_options(32'h89abcdef),.applied_events(32'd73),.pc_health(32'd5),
         .held_notes(128'h11112222_33334444_55556666_77778888),.sample_valid,
         .active_mask(32'h55aa),.deadline_miss(32'd2),.midi_overflow(32'd3),
         .note_drop(32'd4),.underrun_count(32'd5),.midi_cdc_drop(32'd6),
@@ -154,6 +155,11 @@ module tb_workstation_controlled_services;
         write_reg(12'h1b0,32'h87654321,0);write_reg(12'h1b4,32'haabbccdd,0);
         read_reg(12'h1a8,32'hdeadbeef,0);read_reg(12'h1ac,32'h12345678,0);
         read_reg(12'h1b0,32'h87654321,0);read_reg(12'h1b4,32'haabbccdd,0);
+        // Additive read-only effect feedback must never alter the old fields.
+        read_reg(12'h1b8,32'h124,0);write_reg(12'h1b8,0,1);
+        effect_state=32'h1d2;read_reg(12'h1b8,32'h1d2,0);
+        read_reg(12'h184,32'h12345678,0);read_reg(12'h188,32'hcafef00d,0);
+        read_reg(12'h18c,32'h89abcdef,0);
         // Upload all 256 actual cue-RAM entries, with sequential/monotonic guards.
         write_reg(12'h120,1,0);write_reg(12'h114,1,1);
         for(integer cue=0;cue<256;cue=cue+1)begin

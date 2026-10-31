@@ -2,9 +2,11 @@
 #define A138_CLASSIC_SECURITY_H
 #include "classic_service.h"
 
-/* EXPERIMENTAL, unselected. SSP Security Mode 4 / Level 2 only: actual
+/* SSP Security Mode 4 / Level 2 only: actual
  * NoInputNoOutput, no OOB, General Bonding, no MITM and no Secure Connections
- * claim. No controller reset, ACL credits, UART, Flash driver or product UI.
+ * claim. The default start requires the external durable store. The explicit
+ * W-DEMO start_session below requests NoBonding and retains no durable key.
+ * No controller reset, ACL credits, UART, Flash driver or product UI.
  * The caller starts only after the single PL HCI owner's host-flow bootstrap,
  * with all old command owners retired, scan disabled and no BR/EDR link.
  * All callbacks must be bounded and nonblocking. Tick before every service
@@ -61,7 +63,7 @@ struct a138_security {
     uint32_t io_started_ms;
     uint8_t secure,closing,disconnect_queued,delete_pending,forget_pending,forget_peer[6];
     uint32_t forget_revision;
-    uint8_t close_reason,close_cause,failure;
+    uint8_t close_reason,close_cause,failure,session_only;
     uint32_t stale_events,negative_replies;
 };
 
@@ -73,6 +75,14 @@ void a138_security_init(struct a138_security *s);
  */
 enum a138_security_result a138_security_start(struct a138_security *s,uint32_t epoch,
     uint16_t tx_limit,struct a138_classic_service *classic,const struct a138_bond_store *store);
+/* Explicit SRAM/demo policy: SSP JustWorks / NoBonding, with inquiry+page scan.
+ * No persistent-store callbacks are installed or called. Every new ACL link
+ * pairs again; the controller's current encryption is still checked through
+ * AuthenticationComplete, EncryptionChange and ReadEncryptionKeySize. Host
+ * key bytes are erased after that gate, on disconnect, and on observer fence.
+ * This does not claim MITM protection or a durable/reboot-surviving pairing. */
+enum a138_security_result a138_security_start_session(struct a138_security *s,uint32_t epoch,
+    uint16_t tx_limit,struct a138_classic_service *classic);
 enum a138_security_result a138_security_tick(struct a138_security *s,uint32_t epoch,uint32_t now_ms);
 enum a138_security_result a138_security_pump(struct a138_security *s);
 /* Stable front bytes through actual transport retirement and matching result.

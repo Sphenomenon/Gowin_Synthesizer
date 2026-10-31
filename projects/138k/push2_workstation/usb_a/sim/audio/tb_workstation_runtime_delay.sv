@@ -38,7 +38,7 @@ module tb_workstation_runtime_delay;
 
   workstation_runtime_delay_effect_ddr #(
       .TRANSACTION_TIMEOUT_CYCLES(2048),.PEER_TIMEOUT_CYCLES(512)) u_audio(
-      .clk_i(aclk),.rst_ni(arst_n),.clear_i(clear_i),.valid_i(valid_i),.enabled_i(enabled_i),
+      .clk_i(aclk),.rst_ni(arst_n),.clear_i(clear_i),.valid_i(valid_i),.enabled_i(enabled_i),.delay_send_i(7'd127),
       .left_i(left_i),.right_i(right_i),.ready_o(ready),.valid_o(valid_o),
       .active_o(active),.left_o(left_o),.right_o(right_o),.clip_o(clip),
       .mem_clk_i(mclk),.mem_rst_ni(mrst_n),.dwr_valid_o(dwr_valid),.dwr_data_o(dwr_data),

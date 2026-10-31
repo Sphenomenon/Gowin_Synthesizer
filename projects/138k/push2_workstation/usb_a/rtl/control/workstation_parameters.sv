@@ -3,7 +3,7 @@
 `define AUDIO_BEND_MEM_FILE "sim/data/audio_chain/pitch_bend_q20.mem"
 `endif
 
-module workstation_parameters (
+module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
     input wire clk_i, rst_ni, commit_i, lifecycle_i, mode_applied_i,
     input wire [3:0] kind_i,
     input wire [6:0] address_i, value_i,
@@ -28,6 +28,7 @@ module workstation_parameters (
     output logic [7:0] bend_index_o,
     output logic sustain_o,
     output wire [31:0] options_o, tf_control_o,
+    output wire [31:0] effect_state_o,
     output logic panel_event_valid_o,
     output logic [6:0] panel_command_o,
     output logic scope_enable_o, scope_muted_o, scope_error_o,
@@ -35,6 +36,7 @@ module workstation_parameters (
     output logic [6:0] scope_shape_o, scope_morph_o, scope_scale_o, scope_rotation_o,
     output logic [6:0] scope_cal_x_o, scope_cal_y_o, scope_offset_x_o, scope_offset_y_o,
     output logic [6:0] cue_speed_o,
+    output logic [6:0] d_crush_o,d_drive_o,d_delay_send_o,
     output logic rejected_o
 );
     logic [21:0] bend_rom [0:255];
@@ -49,8 +51,12 @@ module workstation_parameters (
 
     initial $readmemh(`AUDIO_BEND_MEM_FILE, bend_rom);
     assign synth_gain_o = volume_product[30:15];
-    assign effect_mask_o = effect_master_o ? effect_selected_o : 3'b000;
-    assign options_o = {snapshot_request, bend_index_o, glide_cc_o, vibrato_depth_o,
+    // Read-only CPU observation of the sole committed effect parameters.
+    assign effect_state_o = {23'd0,effect_master_o,effect_count_o,effect_order_o};
+    assign effect_mask_o = effect_master_o ? (effect_selected_o |
+        (D_ONLY_ENABLE && d_delay_send_o!=0 ? 3'b001 : 3'b000)) : 3'b000;
+    assign options_o = D_ONLY_ENABLE ? {11'd0,d_delay_send_o,d_drive_o,d_crush_o} :
+        {snapshot_request, bend_index_o, glide_cc_o, vibrato_depth_o,
         sustain_o, target_ratio_o != 22'd1048576, glide_step_o != 0, vibrato_depth_o != 0};
 
     scope_tf_control tf_controls (
@@ -63,7 +69,8 @@ module workstation_parameters (
         rejected_o = 0;
         if (commit_i && kind_i == 2) begin
             case (address_i)
-                90: rejected_o = !scope_transition_allowed;
+                80,89: rejected_o = D_ONLY_ENABLE;
+                90: rejected_o = D_ONLY_ENABLE || !scope_transition_allowed;
                 91: rejected_o = value_i >= 8;
                 95: rejected_o = value_i != 0 && value_i != 64 && value_i != 127;
                 96: rejected_o = (value_i != 0 && value_i != 127) ||
@@ -83,7 +90,8 @@ module workstation_parameters (
             mode_pending_o <= 0;
             volume_o <= 32768;
             expression_gain_o <= 32768;
-            pcm_gain_o <= 0;
+            pcm_gain_o <= D_ONLY_ENABLE ? 32768 : 0;
+            d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;
             route_o <= 0;
             target_ratio_o <= 1048576;
             glide_step_o <= 0;
@@ -117,6 +125,7 @@ module workstation_parameters (
             if (lifecycle_i) begin
                 mode_pending_o <= 0;
                 sustain_o <= 0;
+                if(D_ONLY_ENABLE)begin d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;end
             end
             if (rejected_o) scope_error_o <= 1;
             if (commit_i) begin
@@ -130,8 +139,11 @@ module workstation_parameters (
                         7: volume_o <= value_i == 127 ? 16'd32768 : {value_i, 8'd0};
                         11: expression_gain_o <= value_i == 127 ? 16'd32768 : {value_i, 8'd0};
                         16: pcm_gain_o <= value_i == 127 ? 16'd32768 : {value_i, 8'd0};
+                        20: if(D_ONLY_ENABLE)d_crush_o<=value_i;
+                        21: if(D_ONLY_ENABLE)d_drive_o<=value_i;
+                        22: if(D_ONLY_ENABLE)d_delay_send_o<=value_i;
                         64: sustain_o <= value_i >= 64;
-                        80: if (value_i < 3) begin
+                        80: if (!D_ONLY_ENABLE && value_i < 3) begin
                             requested_mode_o <= value_i[1:0];
                             mode_pending_o <= 1;
                         end
@@ -170,13 +182,13 @@ module workstation_parameters (
                             end
                         end
                         88: effect_master_o <= ~effect_master_o;
-                        89: if (value_i < 2) begin
+                        89: if (!D_ONLY_ENABLE && value_i < 2) begin
                             requested_mode_o <= value_i[0] ?
                                 (mode_cycle_base == 2 ? 0 : mode_cycle_base + 1'b1) :
                                 (mode_cycle_base == 0 ? 2 : mode_cycle_base - 1'b1);
                             mode_pending_o <= 1;
                         end
-                        90: if (scope_transition_allowed) begin
+                        90: if (!D_ONLY_ENABLE && scope_transition_allowed) begin
                             scope_enable_o <= scope_target;
                             scope_muted_o <= 0;
                             if (scope_target) begin effect_selected_o <= 0; effect_master_o <= 1; end
@@ -199,7 +211,9 @@ module workstation_parameters (
                             effect_selected_o <= 0;
                             effect_master_o <= 1;
                         end
-                        120, 123: sustain_o <= 0;
+                        120, 123: begin sustain_o <= 0;
+                            if(D_ONLY_ENABLE)begin d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;end
+                        end
                         default: begin end
                     endcase
                     3: begin

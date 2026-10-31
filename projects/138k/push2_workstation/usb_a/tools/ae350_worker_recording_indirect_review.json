@@ -1,0 +1,331 @@
+{
+  "schema": "worker-demo-recording-callbacks-v1",
+  "scope": "Explicit opt-in worker CPU/UI proxy; no second recorder. The original BLE business owner is byte-identical after removing A138_SINGLE_BLE_RECORDING conditional blocks. Exact ordered callback instructions are separately reviewed for the pinned GCC 16 and xPack GCC 15.2 compiler binaries; register allocation differs, source points-to ownership does not.",
+  "input_sha256": {
+    "firmware/ae350/ble_business_owner.c": "320e16f5bc8b6afe147cf625ed6366aedb71b20e145b04580e636ee755f1510b",
+    "firmware/ae350/ble_business_owner.h": "d3397ea1e217dba332f13d40693eeed3d4bfda809af157e764ad4ed7d7cba853",
+    "firmware/ae350/classic_runtime.c": "11ec8dbfcf4ac0fe7b59d19bc39bab35107161033add8099ccb845acaba03b32",
+    "firmware/ae350/classic_runtime.h": "a01ca3aba63accb6112a81230934877b0e3eed277e34fc1abf6c2fced34ee364",
+    "firmware/ae350/classic_security.c": "83731776b626697d87c67a9f6a13985d4cb5a6ad9d220f4bb4005347c1865b9c",
+    "firmware/ae350/classic_security.h": "735361b456f4844e6236e387c7f00be947d46074a8d93b950eeaec556e3a0240"
+  },
+  "prior_machine_sites": {
+    "a138_record_data_probe": [
+      "000700e7",
+      "000700e7"
+    ],
+    "a138_record_data_poll": [
+      "000680e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7"
+    ],
+    "a138_record_data_request_facts": [
+      "000680e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7",
+      "000700e7"
+    ],
+    "a138_record_data_submit": [
+      "000780e7",
+      "000780e7",
+      "000780e7"
+    ],
+    "a138_record_data_result_read": [
+      "000700e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000700e7",
+      "000780e7"
+    ],
+    "read_key": [
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7"
+    ],
+    "stage_key": [
+      "000780e7"
+    ],
+    "a138_business_probe": [
+      "000700e7",
+      "000700e7"
+    ],
+    "a138_business_context": [
+      "000680e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7"
+    ],
+    "a138_business_read_request": [
+      "000680e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000700e7",
+      "000780e7",
+      "000780e7"
+    ],
+    "a138_business_open": [
+      "000700e7"
+    ],
+    "a138_business_claim": [
+      "000680e7"
+    ],
+    "a138_business_complete": [
+      "000780e7",
+      "000780e7",
+      "000780e7",
+      "000780e7"
+    ],
+    "a138_business_observe": [
+      "000680e7",
+      "000700e7",
+      "000700e7",
+      "000680e7",
+      "000680e7",
+      "000680e7",
+      "000680e7",
+      "000680e7"
+    ]
+  },
+  "machine_reviews": [
+    {
+      "toolchain": "homebrew-gcc16",
+      "compiler_sha256": "38435e3c6da930b24b014c763e904839bc4069aaa14773cbe9bf57dd741ba792",
+      "prior_machine_sites": {
+        "a138_record_data_probe": [
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_poll": [
+          "000680e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_request_facts": [
+          "000680e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_submit": [
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_record_data_result_read": [
+          "000700e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000700e7",
+          "000780e7"
+        ],
+        "read_key": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "stage_key": [
+          "000780e7"
+        ],
+        "a138_business_probe": [
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_business_context": [
+          "000680e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_read_request": [
+          "000680e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000700e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_open": [
+          "000700e7"
+        ],
+        "a138_business_claim": [
+          "000680e7"
+        ],
+        "a138_business_complete": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_observe": [
+          "000680e7",
+          "000700e7",
+          "000700e7",
+          "000680e7",
+          "000680e7",
+          "000680e7",
+          "000680e7",
+          "000680e7"
+        ]
+      }
+    },
+    {
+      "toolchain": "xpack-gcc15.2.0",
+      "compiler_sha256": "d21f58713e7f2f9a9ef9de8762b2c2d1995cd4cdeda724d5fe4834f3af4737b2",
+      "prior_machine_sites": {
+        "a138_record_data_probe": [
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_poll": [
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_request_facts": [
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_record_data_submit": [
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_record_data_result_read": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000700e7",
+          "000780e7"
+        ],
+        "read_key": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "stage_key": [
+          "000780e7"
+        ],
+        "a138_business_probe": [
+          "000700e7",
+          "000700e7"
+        ],
+        "a138_business_context": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_read_request": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000700e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_open": [
+          "000700e7"
+        ],
+        "a138_business_claim": [
+          "000680e7"
+        ],
+        "a138_business_complete": [
+          "000780e7",
+          "000780e7",
+          "000780e7",
+          "000780e7"
+        ],
+        "a138_business_observe": [
+          "000680e7",
+          "000700e7",
+          "000700e7",
+          "000680e7",
+          "000680e7",
+          "000680e7",
+          "000680e7",
+          "000680e7"
+        ]
+      }
+    }
+  ]
+}

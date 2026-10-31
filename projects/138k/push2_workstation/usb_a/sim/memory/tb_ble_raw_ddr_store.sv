@@ -72,6 +72,9 @@ module tb_ble_raw_ddr_store #(parameter integer FIFO_BITS=8,MEM_HALF=7);
                 if(model_delay>0)model_delay<=model_delay-1;
             end
             if(native_pulse)begin
+`ifdef BLE_STORE_NATIVE_TRACE
+                $display("BLE_STORE_NATIVE write=%0d address=%h mask=%h data=%h",model_write,model_address,model_mask,model_data);
+`endif
                 model_slot<=0;
                 if(model_write)begin
                     for(b=0;b<32;b=b+1)if(!model_mask[b])memory[(model_address-BASE)>>3][b*8+:8]<=model_data[b*8+:8];

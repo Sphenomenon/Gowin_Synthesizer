@@ -61,6 +61,22 @@ module tb_workstation_display_runtime;
         else slot=((integer'(a)-integer'(LEGACY_META_WORD))>>3);
     endfunction
     integer publications=0,commits=0,tuple_checks=0,checked_wave=0,checked_xy=0,checked_columns=0;
+    integer drop_cycle_checks=0,drop_revocations=0,drop_completion_races=0;
+    reg [31:0] previous_binary_drop=0;
+    // Retain the former binary implementation only as a cycle-exact oracle.
+    // Every loss must revoke public state before the next destination edge.
+    always @(posedge clk or negedge rst_n)
+        if(!rst_n)previous_binary_drop<=0;else previous_binary_drop<=dut.destination_drop;
+    always @(negedge clk)if(rst_n)begin
+        if(dut.observation_loss!==(dut.destination_drop!=previous_binary_drop))
+            $fatal(1,"Gray drop detection added a publication aperture");
+        drop_cycle_checks=drop_cycle_checks+1;
+        if(dut.observation_loss)begin
+            drop_revocations=drop_revocations+1;
+            if(current_image || allowed || summary || dut.source_ready || dut.export_start)
+                $fatal(1,"drop failed same-cycle publication/export revocation");
+        end
+    end
     integer export_phase=-1,loaded_phase=-1;
     reg stalled=0;
     reg [28:0] held_address;
@@ -138,6 +154,7 @@ module tb_workstation_display_runtime;
         end
     endtask
     integer before_publications,before_commits;
+    reg [31:0] completion_drop_binary,completion_drop_gray;
     initial begin
         for(integer i=0;i<16384;i=i+1)memory[i]=0;
         clocks(4);rst_n=1;clocks(30);if(allowed || current_image)$fatal(1,"raster admitted without first validated image");
@@ -168,6 +185,20 @@ module tb_workstation_display_runtime;
         wait(rdone);clocks(5);
         if(publications!=before_publications || current_image || allowed)$fatal(1,"reader pending stale image published");
         @(negedge source_clk);trusted=1;wait(summary);clocks(3);
+        // Deliver a synchronized counter change on the exact edge that would
+        // publish a completed reader image. This destination-side fixture
+        // isolates the publication race; real mailbox overflow follows below.
+        wait(!rdone);wait(rdone);@(negedge clk);pause_frames=1;
+        if(!dut.loading || !dut.export_current)$fatal(1,"drop/publication race not armed");
+        before_publications=publications;
+        completion_drop_binary=dut.destination_drop+1'b1;
+        completion_drop_gray=completion_drop_binary^(completion_drop_binary>>1);
+        force dut.drops.sync_value=completion_drop_gray;
+        clocks(2);
+        if(publications!=before_publications || dut.publish || current_image || allowed || dut.pending)
+            $fatal(1,"drop coincident with reader completion published stale image");
+        release dut.drops.sync_value;pause_frames=0;drop_completion_races=drop_completion_races+1;
+        wait(summary);clocks(3);
         // Force mailbox overflow without changing the owner epoch. A final
         // drop is observed through its counter even without a later packet.
         before_publications=publications;@(negedge source_clk);burst=1;
@@ -181,9 +212,10 @@ module tb_workstation_display_runtime;
         wait(summary);clocks(3);
         before_publications=publications;@(negedge source_clk);epoch=0;
         clocks(1000);if(current_image || allowed || publications!=before_publications)$fatal(1,"zero epoch reached raster");
-        if(checked_wave!=1024 || checked_xy!=131072 || checked_columns!=1024 || publications<6 || tuple_checks<10000)
+        if(checked_wave!=1024 || checked_xy!=131072 || checked_columns!=1024 || publications<6 || tuple_checks<10000 ||
+           drop_cycle_checks<10000 || drop_revocations<1 || drop_completion_races!=1)
             $fatal(1,"runtime composition coverage");
-        $display("PASS workstation_display_runtime: publications=%0d commits=%0d tuple_checks=%0d waveform=%0d xy=%0d fft_columns=%0d cdc_drops=%0d tail_cancel=1 reader_cancel=1 idle_cache_lease=1",publications,commits,tuple_checks,checked_wave,checked_xy,checked_columns,drops);
+        $display("PASS workstation_display_runtime: publications=%0d commits=%0d tuple_checks=%0d waveform=%0d xy=%0d fft_columns=%0d cdc_drops=%0d tail_cancel=1 reader_cancel=1 idle_cache_lease=1 gray_drop_cycle_checks=%0d drop_revocations=%0d drop_completion_races=%0d",publications,commits,tuple_checks,checked_wave,checked_xy,checked_columns,drops,drop_cycle_checks,drop_revocations,drop_completion_races);
         $finish;
     end
     initial begin #200000000;$fatal(1,"runtime display watchdog publications=%0d writer=%0d reader=%0d",publications,dut.writer.state,dut.reader.state);end

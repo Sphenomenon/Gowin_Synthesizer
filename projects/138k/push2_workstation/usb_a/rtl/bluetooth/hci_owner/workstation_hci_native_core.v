@@ -16,6 +16,8 @@ module workstation_hci_native_core #(
     parameter NOTIFY_MS=500,
     parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter EXTERNAL_RAW_STORE=0,
+    parameter SINGLE_BLE_RECORDING=0,
+    parameter SESSION_ONLY_PAIRING=0,
     parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0
 ) (
     input wire business_owner_reset_ni,business_command_valid_i,business_command_write_i,
@@ -141,7 +143,7 @@ module workstation_hci_native_core #(
         .h5_rx_valid(bridge_rx_valid),.h5_rx_type(bridge_rx_type),.h5_rx_length(bridge_rx_length),
         .h5_rx_addr(bridge_rx_addr),.h5_rx_data(bridge_rx_data),.h5_rx_consume(bridge_rx_consume)
     );
-    workstation_hci_native_transport #(.CLK_HZ(CLK_HZ)) owner (
+    workstation_hci_native_transport #(.CLK_HZ(CLK_HZ),.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING)) owner (
         .clk_i(clk),.reset_ni(sub_resetn),.enable_i(start_ready && outputs_active),.observer_reset_ni(business_owner_reset_ni),
         .link_up_i(link_up),.physical_fault_i(init_failed),.boot_id_i(boot_id),
         .initializer_handoff_i(hci_handoff),.initialized_i(initialized),.host_flow_ready_o(host_flow_ready),
@@ -192,7 +194,7 @@ module workstation_hci_native_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
-    bt_gatt #(.SHARED_HCI_OWNER(1),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
+    bt_gatt #(.SHARED_HCI_OWNER(1),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.SINGLE_BLE_RECORDING(SINGLE_BLE_RECORDING),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
         .business_owner_reset_ni(business_owner_reset_ni),
         .business_command_valid_i(business_command_valid_i && !hci_select),
         .business_command_write_i(business_command_write_i),

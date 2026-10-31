@@ -13,6 +13,7 @@ module bt_gatt #(
     parameter integer NOTIFY_MS = 500,
     parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter EXTERNAL_RAW_STORE=0,
+    parameter SINGLE_BLE_RECORDING=0,
     parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0
 ) (
     input wire business_owner_reset_ni,business_command_valid_i,business_command_write_i,
@@ -238,7 +239,7 @@ module bt_gatt #(
     wire business_session;
     integer business_handle, business_decl, business_value, uuid_index;
     reg uuid_match;
-    ble_protocol_command #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
+    ble_protocol_command #(.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.SINGLE_BLE_RECORDING(SINGLE_BLE_RECORDING),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
         .business_owner_reset_ni(business_owner_reset_ni),
         .business_command_valid_i(business_command_valid_i),
         .business_command_write_i(business_command_write_i),

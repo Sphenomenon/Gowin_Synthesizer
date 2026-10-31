@@ -3,6 +3,7 @@ from pathlib import Path
 import copy,hashlib,json,re,struct,subprocess,shutil
 from tools.ae350_local_memory import call_chain_report
 POLICY='ae350_classic_runtime_failclosed_v1'
+WORKER_POLICY='ae350_worker_session_classic_runtime_v1'
 PROVIDER='rtl/workstation/workstation_profile_classic_runtime_v1.sv'
 ROM96_POLICY='ae350_classic_runtime_rom96_failclosed_v1'
 ROM96_PROVIDER='rtl/workstation/workstation_profile_classic_runtime_rom96_v1.sv'
@@ -121,9 +122,14 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output,physical_rom_bytes=131072):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
+    if selected_provider is not None:
+        if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
+            raise ValueError("unreviewed Classic demo compilation provider")
+        provider=selected_provider
+        policy=WORKER_POLICY
     installed=shutil.which('iverilog')
     if not installed:raise ValueError('Classic runtime actual preprocessing requires iverilog')
     tool=Path(installed).resolve();enabled,hdl=_selected_hdl(stage)
@@ -136,11 +142,16 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072):
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
-    verify_selection(root,stage,output,record,physical_rom_bytes)
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider)
     return record
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
+    if selected_provider is not None:
+        if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
+            raise ValueError("unreviewed Classic demo compilation provider")
+        provider=selected_provider
+        policy=WORKER_POLICY
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -169,12 +180,15 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072):
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None,physical_rom_bytes=131072):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False):
     from tools.experiment_ae350_rom_split import build as link
     from tools.ae350_classic_runtime_audit import analyze
     root,evidence=Path(root),Path(evidence)
     policy,_=composition(physical_rom_bytes)
-    linked=link(evidence,prefix,root,runtime_owner=True)
+    if worker_demo:
+        if physical_rom_bytes!=131072:raise ValueError('W DEMO selects the reviewed ROM128 composition')
+        policy=WORKER_POLICY
+    linked=link(evidence,prefix,root,runtime_owner=True,worker_demo=worker_demo)
     if linked['link_returncode']:raise ValueError('Classic runtime actual ROM128 link failed')
     graph=analyze(evidence,root)
     physical=None
@@ -190,9 +204,9 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072):
     linked.update(callback_call_chain_audit=True,runtime_callgraph_report_sha256=sha(evidence/'runtime_callgraph_verification.json'))
     (evidence/'verification.json').write_text(json.dumps(linked,indent=2)+'\n')
     record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,
-        runtime_policy=policy,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
+        runtime_policy=policy,worker_demo=worker_demo,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
         binary_sha256=sha(evidence/'firmware.bin'),call_chain_stack=graph['stack'],
-        tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
+        reviewed_JALR_sites=graph['reviewed_JALR_sites'],tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
         cold_boot=dict(image_capacity_bytes=physical_rom_bytes,image_storage='explicit_'+str(physical_rom_bytes//1024)+'k_pl_boot_rom_split',
             cache_policy='reject_enabled_i_or_d_cache_on_entry'),
         GeneralBonding_enabled=False,PCM_sustained_verified=False,measured_delay_valid=False)
@@ -203,6 +217,9 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072):
 def verify_build(root,evidence,record,physical_rom_bytes=131072):
     root,evidence=Path(root),Path(evidence)
     policy,_=composition(physical_rom_bytes)
+    if record.get('worker_demo',False):
+        if physical_rom_bytes!=131072:raise ValueError('W DEMO physical ROM changed')
+        policy=WORKER_POLICY
     if record.get('runtime_policy')!=policy or not record.get('runtime_owner') or record.get('source_text_overlay')is not False:
         raise ValueError('Classic runtime actual source root omitted')
     linked=json.loads((evidence/'verification.json').read_text())
@@ -234,7 +251,7 @@ def verify_build(root,evidence,record,physical_rom_bytes=131072):
         if sha(path)!=h:raise ValueError('Classic runtime adapted source drift: '+name)
     stack=call_chain_report(evidence,graph['compiler_stack_frames'],(evidence/'firmware.dis').read_text(),16384,
         reviewed_indirect_calls=review,input_sha256=graph['input_sha256'])
-    if stack!=record['call_chain_stack']or stack!=graph['stack']or graph['reviewed_JALR_sites']!=171:
+    if stack!=record['call_chain_stack']or stack!=graph['stack']or graph['reviewed_JALR_sites']!=record['reviewed_JALR_sites']:
         raise ValueError('Classic runtime complete actual callback chain changed')
     if any(record[x]for x in ['GeneralBonding_enabled','PCM_sustained_verified','measured_delay_valid']):
         raise ValueError('Classic runtime acceptance fabricated')

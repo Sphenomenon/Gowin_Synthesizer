@@ -101,12 +101,12 @@
     "ble_business_owner.c": {
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c",
-      "sha256": "71661e3f0f11a668966e5b9cdabd8a4599e6990d1e299c91cd1310cb4273792a"
+      "sha256": "320e16f5bc8b6afe147cf625ed6366aedb71b20e145b04580e636ee755f1510b"
     },
     "ble_business_owner.h": {
       "kind": "maintained_first_party",
       "source": "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.h",
-      "sha256": "213364d4f27635c8391c81eeea9dd244381513c22e3b2c0bc2018750aad5014f"
+      "sha256": "d3397ea1e217dba332f13d40693eeed3d4bfda809af157e764ad4ed7d7cba853"
     }
   }
 }

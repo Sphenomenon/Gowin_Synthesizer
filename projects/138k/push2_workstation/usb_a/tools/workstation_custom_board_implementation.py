@@ -366,6 +366,17 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_b
                          metadata['staged_input_sha256']['constraints/custom_138k.sdc']),
         'parent_integration_inputs.json': (manifest, audit['integration_inputs_sha256']),
     }
+    if audit.get('demo_role') in ('M', 'W'):
+        if (audit.get('validation_stage') != 'demo_full_profile_synthesis_only' or
+                audit.get('visible_sdc_selector_audit', {}).get('all_visible_selector_members_resolved') is not True or
+                audit.get('constraint_retirement_audit', {}).get('every_retired_selector_proven_absent') is not True or
+                audit.get('features', {}).get('role_retirement_verified') is not True):
+            raise ValueError('DEMO retained/retired source and selector gates are incomplete')
+        selected = metadata.get('workstation_profile', {})
+        if selected.get('candidate_identity') != audit.get('candidate_identity'):
+            raise ValueError('DEMO physical parent candidate identity changed')
+        inputs['parent_workstation_profile.json'] = (
+            source / selected['artifact'], selected['artifact_sha256'])
     if ulpi_bypass_lvcmos33:
         pinout_identity = metadata.get('pinout_sha256')
         if not isinstance(pinout_identity, str) or not re.fullmatch(r'[0-9a-f]{64}', pinout_identity):
@@ -398,6 +409,8 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_b
         source_policy=('audited_native_synthesis_netlist_with_explicit_ULPI_IO_type_only_and_unchanged_SDC'
                        if ulpi_adaptation else 'audited_native_synthesis_netlist_with_unchanged_CST_and_SDC'),
         parent_candidate=str(source), parent_identity=audit['identity'],
+        **({'parent_candidate_identity': audit['candidate_identity'], 'demo_role': audit['demo_role']}
+           if audit.get('demo_role') in ('M', 'W') else {}),
         preparer_sha256=sha(Path(__file__)), user_code='0x' + user_code.upper(),
         top_module=TOP, device=DEVICE, electrical_blocked=audit['electrical_blocked'],
         electrical_risk_explicitly_acknowledged=True,

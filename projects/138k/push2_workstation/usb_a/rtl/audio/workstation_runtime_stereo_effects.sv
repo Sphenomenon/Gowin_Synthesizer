@@ -5,6 +5,7 @@
 // Caller retains final serial schedule through controlled zero while closed.
 module workstation_runtime_stereo_effects #(
     parameter integer VECTOR_ENABLE=0,
+    parameter bit D_DELAY_SEND_ENABLE=0,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600,
     parameter integer CHORUS_BASE=480,
@@ -21,6 +22,7 @@ module workstation_runtime_stereo_effects #(
     input logic [15:0] synth_gain_i,pcm_gain_i,
     input logic [2:0] effect_mask_i,
     input logic [5:0] effect_order_i,
+    input logic [6:0] delay_send_i,
     output logic ready_o,valid_o,
     output logic signed [31:0] left_o,right_o,
     output logic clip_o,
@@ -129,10 +131,11 @@ module workstation_runtime_stereo_effects #(
 
   defparam delay_stage.u_write_fifo.RAM_STYLE="block_ram";
   defparam delay_stage.u_read_fifo.RAM_STYLE="block_ram";
-  workstation_runtime_delay_effect_ddr #(.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),
+  workstation_runtime_delay_effect_ddr #(.D_DELAY_SEND_ENABLE(D_DELAY_SEND_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES),
       .FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),.TRANSACTION_TIMEOUT_CYCLES(TRANSACTION_TIMEOUT_CYCLES),
       .PEER_TIMEOUT_CYCLES(PEER_TIMEOUT_CYCLES)) delay_stage(
-      .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==0),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
+      .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==0),.enabled_i(work_enabled),
+      .delay_send_i(delay_send_i),.left_i(work_l),.right_i(work_r),
       .ready_o(delay_ready),.valid_o(delay_valid),.active_o(delay_active),.left_o(delay_l),.right_o(delay_r),.clip_o(delay_clip),
       .mem_clk_i,.mem_rst_ni,
       .dwr_valid_o,.dwr_data_o,.dwr_pop_i,

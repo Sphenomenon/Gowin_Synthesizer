@@ -54,7 +54,26 @@ CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabl
     ae350_memory_profile='ilm64k_dlm64k',ae350_boot_rom_bytes=65536)
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
+M_DEMO_NAME='custom138k-workstation-m-demo-v1'
+W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 PROFILE_REGISTRY = {
+    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
+            local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
+            bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
+        provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
+        local_panel_enabled=False,demo_role='M',
+        integration_identity='custom138k-native-m-demo-base-revision1'),
+    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=1,
+        configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
+            ae350_firmware_policy='ae350_worker_session_classic_runtime_v1',ae350_boot_rom_bytes=131072,
+            ae350_pcm_policy='ae350_decoded_pcm_source_v1',demo_role='W',
+            synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
+            recording_owner_policy='single_ble_ddr_object_v1',usb_adapter_policy='worker_25k_v1'),
+        provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
+        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,demo_role='W',
+        integration_identity='custom138k-native-w-demo-d-only-revision1'),
     CLASSIC_ROM96_NAME:dict(config=CLASSIC_ROM96_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_classic_runtime_rom96_failclosed_v1',ae350_boot_rom_bytes=98304,
@@ -180,7 +199,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -195,7 +214,7 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
         if not recording_api or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072):
             raise ValueError('Classic runtime requires explicit local64/ROM96-or-ROM128/business composition')
         from tools.workstation_classic_runtime import build as build_runtime
-        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes);policy=build['runtime_policy']
+        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo);policy=build['runtime_policy']
     else:
         build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
             memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
@@ -283,10 +302,21 @@ def _artifact(root, output, metadata, profile):
     # Metadata cannot promote an omitted live path or erase its replacement.
     from tools.workstation_bluetooth import SDC as bluetooth_sdc
     from tools.workstation_runtime_profile import bluetooth_constraints
-    bluetooth = bluetooth_constraints(bluetooth_sdc)
+    from tools.workstation_runtime_cdc import prepared_ble_reset_policy
+    bluetooth = bluetooth_constraints(bluetooth_sdc,
+        raw_common_reset=prepared_ble_reset_policy(stage)['raw_common_reset'])
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
-    staged_sdc = (stage / 'constraints/custom_138k.sdc').read_text().splitlines()
+    installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    # Check the original complete bundles as well as the exact role-specific
+    # retirement. Mixed queries retain every surviving endpoint in the output.
+    if spec.get('demo_role') is not None:
+        from tools.workstation_demo_policy import verify_constraints as verify_demo_constraints
+        original_sdc = verify_demo_constraints(installed_sdc,
+            metadata.get('demo_constraint_retirement'), spec['demo_role'])
+    else:
+        original_sdc = installed_sdc
+    staged_sdc = original_sdc.splitlines()
     if profile['name']==CPU_BUSINESS_NAME:
         from tools.workstation_cpu_business import verify_telemetry_reset_constraints
         verify_telemetry_reset_constraints((stage / 'constraints/custom_138k.sdc').read_text(),
@@ -329,7 +359,7 @@ def _artifact(root, output, metadata, profile):
     constraint_evidence = recognition.pop('constraints', None)
     if recognition != recognition_metadata(profile):
         raise ValueError('workstation recognition capability selection changed')
-    verify_adaptation((stage / 'constraints/custom_138k.sdc').read_text(),
+    verify_adaptation(original_sdc,
                       constraint_evidence or {}, spec['recognition_enabled'])
     if metadata.get('runtime_audio', {}).get('top_provider') != spec['provider']:
         raise ValueError('workstation recognition compilation provider changed')
@@ -474,7 +504,7 @@ def _artifact(root, output, metadata, profile):
     ae350 = _ae350_evidence(root, output, metadata, profile)
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
-        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'])
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None)
     elif 'classic_runtime'in metadata:
         raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']

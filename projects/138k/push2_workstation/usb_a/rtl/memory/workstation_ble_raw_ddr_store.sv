@@ -284,6 +284,10 @@ module workstation_ble_raw_ddr_store #(
     reg memory_channel_fault;
     reg [3:0] memory_failure;
     reg [255:0] pack_data;
+    reg pack_word_valid;
+    reg [2:0] pack_word_index;
+    reg [31:0] pack_word_data;
+    wire [255:0] packed_payload;
     reg [3:0] pack_frames,published_frames;
     reg [28:0] write_address;
     reg published_valid,read_outstanding;
@@ -307,7 +311,7 @@ module workstation_ble_raw_ddr_store #(
     wire [31:0] response_generation=read_outstanding ? read_generation : published_generation;
     wire [10:0] response_word=read_outstanding ? read_word : published_word;
     wire memory_fault_now=bridge_fault || command_expired || read_expired || response_bad;
-    wire memory_quiescent=!published_valid && !read_outstanding && !return_pending;
+    wire memory_quiescent=!published_valid && !read_outstanding && !return_pending && !pack_word_valid;
     wire memory_drained_now=memory_closed && !memory_active && !memory_clear_pending &&
         !memory_fetch_active && !fifo_read_valid && pack_frames==0 && memory_quiescent && !memory_channel_fault;
     wire [69:0] status_current={memory_generation,memory_committed,memory_drained_now,memory_channel_fault,memory_failure};
@@ -320,6 +324,25 @@ module workstation_ble_raw_ddr_store #(
     wire [32:0] memory_fetch_end={1'b0,command_offset}+{19'd0,command_length};
     wire [8:0] memory_fetch_beats=9'(({10'd0,command_offset[4:0]}+{1'b0,command_length}+15'd31)>>5);
 
+    // Retire one previously admitted FIFO word through a fixed lane enable.
+    // Native fault/acceptance feedback terminates at the one-bit valid strobe;
+    // it never controls a256-bit variable-part-select or whole-pack clear.
+    // Old words remain private until their lane is overwritten. Publishing
+    // explicitly zeros inactive lanes, preserving every DDR command field.
+    always @(posedge memory_clk_i or negedge memory_reset_n)begin
+        if(!memory_reset_n)begin pack_word_index<=0;pack_word_data<=0;end
+        else begin
+            pack_word_index<=pack_frames[2:0];pack_word_data<=fifo_read_data[31:0];
+        end
+    end
+    generate for(genvar lane=0;lane<8;lane=lane+1)begin:g_pack_lane
+        always @(posedge memory_clk_i or negedge memory_reset_n)
+            if(!memory_reset_n)pack_data[lane*32+:32]<=0;
+            else if(pack_word_valid && pack_word_index==3'(lane))
+                pack_data[lane*32+:32]<=pack_word_data;
+        assign packed_payload[lane*32+:32]=pack_frames>4'(lane) ? pack_data[lane*32+:32] : 32'd0;
+    end endgenerate
+
     always @(posedge memory_clk_i or negedge memory_reset_n)begin
         if(!memory_reset_n)begin
             command_req_meta<=0;command_req_sync<=0;command_ack<=0;cancel_meta<=0;cancel_sync<=0;cancel_seen<=0;
@@ -329,7 +352,8 @@ module workstation_ble_raw_ddr_store #(
             completion_generation<=0;completion_committed<=0;completion_kind<=0;completion_code<=0;
             memory_generation<=0;memory_next_index<=0;memory_committed<=0;fifo_consumed<=0;memory_clear_target<=0;
             memory_active<=0;memory_closed<=1;memory_empty<=1;memory_clear_pending<=0;memory_command_active<=0;
-            memory_channel_fault<=0;memory_failure<=0;pack_data<=0;pack_frames<=0;published_frames<=0;
+            memory_channel_fault<=0;memory_failure<=0;pack_frames<=0;published_frames<=0;
+            pack_word_valid<=0;
             write_address<=BASE_APP;published_valid<=0;read_outstanding<=0;published_generation<=0;read_generation<=0;
             published_word<=0;read_word<=0;command_wait<=0;read_wait<=0;
             memory_fetch_active<=0;memory_fetch_cancel<=0;fetch_beats_total<=0;fetch_beats_issued<=0;fetch_address<=0;
@@ -339,6 +363,7 @@ module workstation_ble_raw_ddr_store #(
             cancel_meta<=cancel_toggle;cancel_sync<=cancel_meta;
             status_ack_meta<=status_ack;status_ack_sync<=status_ack_meta;
             return_ack_meta<=return_ack;return_ack_sync<=return_ack_meta;
+            pack_word_valid<=0;
             if(status_req==status_ack_sync && status_payload!=status_current)begin
                 status_payload<=status_current;status_req<=~status_req;
             end
@@ -380,18 +405,18 @@ module workstation_ble_raw_ddr_store #(
                     end else if(fifo_read_data[64])begin
                         memory_active<=0;memory_closed<=1;
                     end else begin
-                        pack_data[pack_frames*32+:32]<=fifo_read_data[31:0];
+                        pack_word_valid<=1;
                         pack_frames<=pack_frames+1'b1;memory_next_index<=memory_next_index+1'b1;
                     end
                 end
             end
-            if(!published_valid && !memory_channel_fault && !memory_fault_now &&
+            if(!published_valid && !pack_word_valid && !memory_channel_fault && !memory_fault_now &&
                !memory_command_start && !memory_clear_pending)begin
                 if(pack_frames==8 || (memory_closed && pack_frames!=0 && !fifo_read_valid))begin
                     published_valid<=1;ddr_write_o<=1;ddr_address_o<=write_address;
-                    ddr_data_o<=pack_data;ddr_mask_o<=32'hffffffff<<(pack_frames*4);
+                    ddr_data_o<=packed_payload;ddr_mask_o<=32'hffffffff<<(pack_frames*4);
                     published_frames<=pack_frames;published_generation<=memory_generation;
-                    pack_frames<=0;pack_data<=0;
+                    pack_frames<=0;
                 end else if(memory_fetch_active && !memory_fetch_cancel && !cancel_now &&
                     !read_outstanding && !return_pending && fetch_beats_issued<fetch_beats_total)begin
                     published_valid<=1;ddr_write_o<=0;ddr_address_o<=fetch_address;
@@ -431,7 +456,7 @@ module workstation_ble_raw_ddr_store #(
                         end else begin
                             memory_generation<=command_generation;memory_command_active<=1;memory_clear_pending<=1;
                             memory_clear_target<=command_event_target;memory_active<=0;memory_closed<=1;memory_empty<=0;
-                            pack_frames<=0;pack_data<=0;
+                            pack_frames<=0;
                         end
                     end
                     CMD_FETCH:begin

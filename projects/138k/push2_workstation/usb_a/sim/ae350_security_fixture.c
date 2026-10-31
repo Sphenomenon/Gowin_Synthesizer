@@ -41,8 +41,15 @@ static void reset(unsigned known){
     if(known){durable.version=1;durable.revision=7;memcpy(durable.peer,peer,6);
         memset(durable.key,0x5a,16);durable.type=4;durable.minimum_size=16;}
     a138_classic_init(&classic);a138_security_init(&sec);
+#ifndef A138_SINGLE_BLE_RECORDING
     CHECK(a138_security_start(&sec,77,276,&classic,&store)==A138_SECURITY_OK);
     CHECK(a138_security_start(&sec,77,276,&classic,&store)==A138_SECURITY_STALE);
+#else
+    (void)store;
+    CHECK(a138_security_start(&sec,77,276,&classic,&store)==A138_SECURITY_ARGUMENT);
+    CHECK(a138_security_start_session(&sec,77,276,&classic)==A138_SECURITY_OK);
+    CHECK(a138_security_start_session(&sec,77,276,&classic)==A138_SECURITY_STALE);
+#endif
     CHECK(a138_security_pump(&sec)==A138_SECURITY_BUSY);
     CHECK(a138_security_tick(&sec,78,now)==A138_SECURITY_STALE);
     CHECK(a138_security_tick(&sec,77,now)==A138_SECURITY_OK);
@@ -79,7 +86,8 @@ static void startup(void){
     pump();c=take(0x1003);f[6]=8;f[7]=128;respond(c,0,0,f,8);CHECK(!sec.ready);
     pump();command(0x0c56,0,0,0);CHECK(!sec.ready);
     pump();memset(f,0,sizeof f);f[0]=1;f[1]=1;f[2]=1;command(0x1004,0,f,10);CHECK(!sec.ready);
-    pump();c=take(0x0c1a);CHECK(c.data[3]==2);respond(c,0,0,0,0);CHECK(sec.ready&&!sec.active&&!sec.secure);
+    if(sec.session_only){pump();c=take(0x0c24);CHECK(c.bytes==6&&c.data[3]==0x14&&c.data[4]==4&&c.data[5]==0x24);respond(c,0,0,0,0);}
+    pump();c=take(0x0c1a);CHECK(c.data[3]==(sec.session_only?3:2));respond(c,0,0,0,0);CHECK(sec.ready&&!sec.active&&!sec.secure);
 }
 static enum a138_security_result event(const uint8_t *p,unsigned n){return a138_security_event(&sec,77,generation,1,p,(uint16_t)n);}
 static void peer_event(unsigned code,const uint8_t *extra,unsigned n){
@@ -102,8 +110,8 @@ static void remote_features(void){
 }
 static void pairing_exchange(void){
     uint8_t io[3]={1,0,4},numeric[4]={0x40,0xe2,1,0};struct a138_security_command c;
-    peer_event(0x17,0,0);command(0x040c,0,peer,6);CHECK(loads==1&&!sec.key_used);
-    peer_event(0x31,0,0);c=take(0x042b);CHECK(c.data[9]==3&&c.data[10]==0&&c.data[11]==4);respond(c,0,0,peer,6);
+    peer_event(0x17,0,0);command(0x040c,0,peer,6);CHECK(loads==(sec.session_only?0u:1u)&&!sec.key_used);
+    peer_event(0x31,0,0);c=take(0x042b);CHECK(c.data[9]==3&&c.data[10]==0&&c.data[11]==(sec.session_only?0:4));respond(c,0,0,peer,6);
     peer_event(0x32,io,3);peer_event(0x33,numeric,4);command(0x042c,0,peer,6);
 }
 static void pair_key(void){
@@ -314,9 +322,48 @@ static void test_peer_initiated_security_interleave(void){
     peer_event(0x17,0,0);command(0x040c,0,peer,6);peer_event(0x31,0,0);CHECK(sec.io_pending);
     advance(1000);CHECK(sec.closing&&!sec.io_pending);command(0x0434,0,peer,6);CHECK(!sec.secure);
 }
+static void reset_session(void){
+    reset(0);
+#ifndef A138_SINGLE_BLE_RECORDING
+    a138_classic_init(&classic);a138_security_init(&sec);
+    CHECK(a138_security_start_session(&sec,77,276,&classic)==A138_SECURITY_OK);
+    CHECK(a138_security_tick(&sec,77,now)==A138_SECURITY_OK);
+#endif
+    CHECK(sec.session_only&&!sec.store.load&&!sec.store.replace_atomic&&!sec.store.delete_atomic);
+}
+static void erased_key(void){for(unsigned i=0;i<16;i++)CHECK(sec.bond.key[i]==0);}
+static void test_session_only(void){
+    reset_session();startup();connect();remote_features();pair_key();
+    CHECK(!loads&&!replaces&&!deletes&&!sec.secure&&!classic.security_ready);
+    authenticated();CHECK(!sec.secure);encrypt_and_size(16);pump();
+    CHECK(sec.secure&&classic.security_ready&&!sec.new_key&&!present&&!sec.bond.revision);
+    CHECK(sec.bond.minimum_size==16&&!loads&&!replaces&&!deletes);erased_key();
+    CHECK(connect_psm(25)==0);disconnect();erased_key();CHECK(!sec.bond.minimum_size);
+    ++generation;connect();remote_features();pair_key();authenticated();encrypt_and_size(16);pump();
+    CHECK(sec.secure&&!loads&&!replaces&&!deletes);erased_key();
+    CHECK(a138_security_forget(&sec,77,peer)==A138_SECURITY_OK&&sec.closing&&!sec.secure);
+    CHECK(!sec.forget_pending&&!sec.delete_pending&&!loads&&!replaces&&!deletes);erased_key();
+    reset_session();startup();connect();remote_features();pair_key();authenticated();encrypt_and_size(6);
+    CHECK(sec.closing&&!sec.secure&&!classic.security_ready&&!loads&&!replaces&&!deletes);erased_key();
+    reset_session();startup();connect();remote_features();pair_key();
+    a138_security_observer_reset(&sec);CHECK(sec.fenced&&!sec.secure);erased_key();
+    CHECK(!loads&&!replaces&&!deletes);
+    /* Phone-initiated SSP may precede our explicit remote-feature result.
+     * The deferred reply must use the same NoBonding policy. */
+    reset_session();startup();connect();pump();command(0x041b,1,0,0);
+    peer_event(0x17,0,0);command(0x040c,0,peer,6);peer_event(0x31,0,0);CHECK(sec.io_pending);
+    uint8_t io[3]={1,0,0},basic[13]={11,11,0,0x23,0},host[15]={0x23,13,0,0x23,0,1,1,1};
+    peer_event(0x32,io,3);basic[11]=8;basic[12]=128;CHECK(event(basic,13)==A138_SECURITY_OK);
+    pump();pump();command(0x041c,1,0,0);CHECK(event(host,15)==A138_SECURITY_OK);pump();
+    struct a138_security_command reply=take(0x042b);CHECK(reply.data[11]==0);respond(reply,0,0,peer,6);
+    CHECK(!loads&&!replaces&&!deletes&&!sec.secure);
+}
 int main(void){
+#ifndef A138_SINGLE_BLE_RECORDING
     test_real_gate_and_bonding();test_early_access_and_async_failures();test_store_failures_and_revocation();
     test_identity_duplicates_and_bad_inputs();test_transport_deadlines_and_reset();test_policy_negative_matrix();
     test_peer_initiated_security_interleave();test_valid_envelope_fuzz();
+#endif
+    test_session_only();
     printf("classic security source-stage: %u checks passed\n",checks);return 0;
 }

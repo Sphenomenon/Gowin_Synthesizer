@@ -1,4 +1,4 @@
-module workstation_usb2_service_adapter (
+module workstation_usb2_service_adapter #(parameter bit WORKER_DEMO=1'b0)(
     input wire clk_cpu, reset_n, session_valid_i, owner_connected_i,
     input wire service_valid_i, service_write_i,
     input wire [7:0] service_address_i,
@@ -28,6 +28,10 @@ module workstation_usb2_service_adapter (
     wire rejected = illegal_q || stale_request;
 
     function automatic valid_read(input [7:0] address);
+        if(WORKER_DEMO)case(address)
+            8'h00,8'h10,8'h14,8'h18,8'h1c,8'h20,8'h24,8'h38,8'h3c,8'h58: valid_read=1;
+            default: valid_read=0;
+        endcase else
         case (address)
             8'h00, 8'h10, 8'h14, 8'h18, 8'h1c, 8'h20, 8'h24, 8'h2c,
             8'h30, 8'h34, 8'h38, 8'h3c, 8'h40, 8'h4c, 8'h58, 8'h5c,
@@ -37,6 +41,10 @@ module workstation_usb2_service_adapter (
     endfunction
 
     function automatic valid_write(input [7:0] address);
+        if(WORKER_DEMO)case(address)
+            8'h00,8'h54,8'h58: valid_write=1;
+            default: valid_write=0;
+        endcase else
         case (address)
             8'h00, 8'h04, 8'h08, 8'h28, 8'h30, 8'h34, 8'h44, 8'h48,
             8'h54, 8'h58: valid_write = 1;
@@ -70,6 +78,8 @@ module workstation_usb2_service_adapter (
                     data_q <= service_write_data_i;
                     session_lost_q <= !session_valid_i;
                     illegal_q <= service_address_i[1:0] != 0 ||
+                                 (WORKER_DEMO && service_write_i && service_address_i==8'h00 &&
+                                  service_write_data_i!=0 && service_write_data_i!=7) ||
                                  (service_write_i ? service_mask_i != 15 || !valid_write(service_address_i) :
                                                     !valid_read(service_address_i));
                     state_q <= REQUEST;

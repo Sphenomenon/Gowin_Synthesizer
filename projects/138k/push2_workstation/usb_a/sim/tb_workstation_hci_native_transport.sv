@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 // Actual native owner, bootstrap, decoder, ledgers, packet RAMs and BLE bridge.
 // The external H5 fixture retains the real registered read/two-clock copy ABI.
-module tb_workstation_hci_native_transport;
+module tb_workstation_hci_native_transport #(parameter bit SESSION_ONLY_PAIRING=0,SESSION_CONTRACT_ONLY=0);
     reg clk=0,resetn=0,observer_reset=1,initialized=0;
     reg [63:0] boot_id=64'h8877665544332211;
     always #5 clk=~clk;
@@ -46,7 +46,7 @@ module tb_workstation_hci_native_transport;
     wire [31:0] bus_read;
     integer checks=0,logical_done=0;
     always @(posedge clk)if(app_tx_done)logical_done=logical_done+1;
-    workstation_hci_native_transport #(.CLK_HZ(1000),.BOOTSTRAP_TIMEOUT_CYCLES(2000),.COMMAND_TIMEOUT_CYCLES(20000)) dut (
+    workstation_hci_native_transport #(.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING),.CLK_HZ(1000),.BOOTSTRAP_TIMEOUT_CYCLES(2000),.COMMAND_TIMEOUT_CYCLES(20000)) dut (
         .clk_i(clk),.reset_ni(resetn),.enable_i(1'b1),.observer_reset_ni(observer_reset),
         .link_up_i(1'b1),.physical_fault_i(1'b0),.boot_id_i(boot_id),
         .initializer_handoff_i(1'b1),.initialized_i(initialized),.host_flow_ready_o(boot_ready),
@@ -208,6 +208,75 @@ module tb_workstation_hci_native_transport;
         reg [2239:0] bytes;
         begin bytes=0;bytes[7:0]='h13;bytes[15:8]=5;bytes[23:16]=1;bytes[39:24]={4'd0,handle};bytes[55:40]=amount;send_packet(4,7,bytes);cycles(200);end
     endtask
+    integer session_cases=0,session_accepts=0,session_rejects=0;
+    task automatic session_command(input integer length,input [2239:0] bytes,input bit accept);
+        integer before_commands,waited;
+        reg [31:0] token;
+        begin
+            token=32'(100+session_cases);before_commands=commands;
+            check(dut.command_credits==1 && !dut.command_pending && !fault,"session pre-command credit");
+            submit(1,length,0,token,bytes);waited=0;
+            while(!(dut.cpu.tx_state==5 || (dut.cpu.tx_state==4 && dut.cpu.response_done)) && waited<1000)begin
+                cycles(1);waited=waited+1;
+            end
+            check(waited<1000 && !fault,"session command bounded completion");
+            read_reg('h22c,value);
+            if(accept)begin
+                if(!(value[3:0]==4 && value[10:8]==7 && commands==before_commands+1))
+                    $display("session case=%0d opcode=%04x state=%08x commands=%0d/%0d generation=%0d reject=%0d epoch=%08x/%08x generation=%0d/%0d type=%0d length=%0d header=%02x %02x %02x %02x schema=%b context=%b shape=%b initialized=%b boot=%b",session_cases,bytes[15:0],value,commands,before_commands,dut.current_br_generation,dut.cpu.reject_reason,dut.cpu_tx_epoch,dut.epoch,dut.tx_generation,dut.current_br_generation,dut.tx_type,dut.tx_length,dut.tx_header[0],dut.tx_header[1],dut.tx_header[2],dut.tx_header[3],dut.tx_schema,dut.cpu_context,dut.cpu_command_shape(dut.selected_opcode,dut.tx_length,dut.tx_header[3],dut.tx_header[4],dut.tx_header[5]),initialized,boot_ready);
+                check(value[3:0]==4 && value[10:8]==7 && commands==before_commands+1,"exact W/default command reaches physical H5 once");
+                check(model_length==length,"physical command length");
+                for(integer at=0;at<length;at=at+1)check(sent[at]===bytes[at*8+:8],"exact physical command bytes");
+                waited=0;
+                while(dut.cpu.count==0 && waited<1000)begin cycles(1);waited=waited+1;end
+                check(waited<1000,"raw response publication remains bounded independently of command completion");
+                read_reg('h258,value);check(value==token,"response token retained for session policy");
+                release_head();session_accepts=session_accepts+1;
+            end else begin
+                check(value[3:0]==5 && value[10:8]==0 && commands==before_commands,"invalid session command never takes physical slot");
+                check(dut.cpu.reject_reason==4 && dut.cpu.count==0,"invalid command has schema rejection and no raw response");
+                session_rejects=session_rejects+1;
+            end
+            check(dut.command_credits==1 && !dut.command_pending,"validation cannot mint or lose command credit");
+            write_reg('h230,token);cycles(5);session_cases=session_cases+1;
+        end
+    endtask
+    task automatic session_contract;
+        reg [2239:0] bytes,exact;
+        begin
+            exact=0;exact[15:0]=16'h0c24;exact[23:16]=3;
+            exact[31:24]=8'h14;exact[39:32]=8'h04;exact[47:40]=8'h24;
+            session_command(6,exact,SESSION_ONLY_PAIRING);
+            for(integer byte_index=3;byte_index<6;byte_index=byte_index+1)
+                for(integer candidate=0;candidate<256;candidate=candidate+1)
+                    if(8'(candidate)!=exact[8*byte_index+:8])begin
+                        bytes=exact;bytes[8*byte_index+:8]=8'(candidate);session_command(6,bytes,0);
+                    end
+            for(integer length=3;length<=8;length=length+1)if(length!=6)begin
+                bytes=exact;bytes[23:16]=8'(length-3);session_command(length,bytes,0);
+            end
+            for(integer declared=0;declared<=6;declared=declared+1)if(declared!=3)begin
+                bytes=exact;bytes[23:16]=8'(declared);session_command(6,bytes,0);
+            end
+            for(integer scan=0;scan<256;scan=scan+1)begin
+                bytes=0;bytes[15:0]=16'h0c1a;bytes[23:16]=1;bytes[31:24]=8'(scan);
+                session_command(4,bytes,scan==2 || (SESSION_ONLY_PAIRING && scan==3));
+            end
+            for(integer length=3;length<=6;length=length+1)if(length!=4)begin
+                bytes=0;bytes[15:0]=16'h0c1a;bytes[23:16]=8'(length-3);bytes[31:24]=3;
+                session_command(length,bytes,0);
+            end
+            // Existing SSP/GeneralBonding prerequisites stay constrained, and
+            // CPU cannot take controller reset/initializer ownership.
+            for(integer value=0;value<256;value=value+1)begin
+                bytes=0;bytes[15:0]=16'h0c56;bytes[23:16]=1;bytes[31:24]=8'(value);
+                session_command(4,bytes,value==1);
+            end
+            bytes=0;bytes[15:0]=16'h0c03;session_command(3,bytes,0);
+            $display("PASS native session policy=%0d cases=%0d accepted=%0d rejected=%0d checks=%0d physical_bytes=1 command_credit=1",SESSION_ONLY_PAIRING,session_cases,session_accepts,session_rejects,checks);
+            $finish;
+        end
+    endtask
     initial begin: exercise
         reg [2239:0] bytes;
         integer before_le,before_br,before_returns;
@@ -215,6 +284,7 @@ module tb_workstation_hci_native_transport;
         check(boot_commands==4 && !fault,"real four-command host bootstrap");
         read_reg('h200,value);check(value==32'h48434931,"native MMIO ID");
         read_reg('h204,value);check(value==32'h01040114,"exact ABI geometry");
+        if(SESSION_CONTRACT_ONLY)session_contract();
         connection(1,16);check(dut.known_active==1 && !fault,"LE authoritative generation");
         // The bridge's app receives copied LE event; consume that whole packet.
         cycles(5);

@@ -33,6 +33,12 @@ void a138_classic_runtime_init(struct a138_classic_runtime *r,struct a138_hci_bu
     }
     if(media&&media->poll&&media->submit&&media->cancel)r->media=*media;
 }
+__attribute__((noinline))
+void a138_classic_runtime_init_session(struct a138_classic_runtime *r,struct a138_hci_bus bus,
+        const struct a138_runtime_media *media) {
+    a138_classic_runtime_init(r,bus,0,media);
+    if(r&&r->media.poll&&r->media.submit&&r->media.cancel){r->session_only=1;r->enabled=1;}
+}
 static void notify_tx(struct a138_classic_runtime *r) {
     struct a138_hci_transport *t=&r->transport;
     enum a138_security_result sr=A138_SECURITY_OK;
@@ -161,8 +167,10 @@ static void runtime_pass(struct a138_classic_runtime *r,uint8_t allow_decode) {
     if(r->transport.fault){fail_runtime(r,A138_RUNTIME_TRANSPORT_FAULT);return;}
     if(!r->transport.ready)return;
     if(r->enabled&&!r->started) {
-        if(a138_security_start(&r->security,r->transport.epoch,r->transport.br_limit,
-            &r->classic,&r->store)!=A138_SECURITY_OK){fail_runtime(r,A138_RUNTIME_SECURITY_FAULT);return;}
+        enum a138_security_result started=r->session_only?
+            a138_security_start_session(&r->security,r->transport.epoch,r->transport.br_limit,&r->classic):
+            a138_security_start(&r->security,r->transport.epoch,r->transport.br_limit,&r->classic,&r->store);
+        if(started!=A138_SECURITY_OK){fail_runtime(r,A138_RUNTIME_SECURITY_FAULT);return;}
         r->started=1;
     }
     if(r->started) {
@@ -183,14 +191,14 @@ static void runtime_pass(struct a138_classic_runtime *r,uint8_t allow_decode) {
     }
 }
 void a138_classic_runtime_step(struct a138_classic_runtime *r) {runtime_pass(r,1);}
-/* This is the actual firmware root. No RAM key store or fabricated audio/delay
- * fact is supplied. The explicit experimental build can inspect transport and
- * continue the existing BLE/UI services; BR/EDR remains disabled until actual
- * persistent storage and the physical media owner are bound in source. */
+/* Actual firmware root. W-DEMO explicitly uses NoBonding/session-only SSP;
+ * other profiles retain the disabled durable-backend gate. Neither policy
+ * fabricates physical audio, clock-recovery or presentation-delay facts. */
 static struct a138_classic_runtime firmware_runtime;
 static struct a138_pcm_media firmware_media;
 /* These are unavailable-backend callbacks, not RAM persistence. They install a
  * bounded fail-closed target closure, while enabled remains explicitly zero. */
+#ifndef A138_SINGLE_BLE_RECORDING
 static enum a138_bond_result unavailable_load(void *p,const uint8_t peer[6],struct a138_bond *out) {
     (void)p;(void)peer;(void)out;return A138_BOND_ERROR;
 }
@@ -200,12 +208,19 @@ static enum a138_bond_result unavailable_replace(void *p,const struct a138_bond 
 static enum a138_bond_result unavailable_delete(void *p,const uint8_t peer[6],uint32_t revision) {
     (void)p;(void)peer;(void)revision;return A138_BOND_ERROR;
 }
+#endif
 void a138_classic_runtime_firmware_init(void) {
+#ifndef A138_SINGLE_BLE_RECORDING
     struct a138_bond_store unavailable={0,unavailable_load,unavailable_replace,unavailable_delete};
+#endif
     a138_pcm_media_init(&firmware_media,a138_hci_mmio_bus(A138_PCM_BASE),a138_clock_mmio_bus(A138_CLOCK_BASE));
     struct a138_runtime_media media=a138_pcm_media_callbacks(&firmware_media);
+#ifdef A138_SINGLE_BLE_RECORDING
+    a138_classic_runtime_init_session(&firmware_runtime,a138_hci_mmio_bus(A138_HCI_BASE),&media);
+#else
     a138_classic_runtime_init(&firmware_runtime,a138_hci_mmio_bus(A138_HCI_BASE),&unavailable,&media);
     firmware_runtime.enabled=0; /* No durable backend has been implemented. */
+#endif
     a138_ble_business_firmware_init();
 }
 void a138_classic_runtime_firmware_pump(void) {

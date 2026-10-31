@@ -5,7 +5,8 @@
 module gw138k_counter_cdc (
     input wire reset_n,source_clk,destination_clk,
     input wire [31:0] source_count,
-    output reg [31:0] destination_count
+    output reg [31:0] destination_count,
+    output wire [31:0] destination_gray
 );
     (* syn_preserve=1,syn_keep=1 *) reg [31:0] gray;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [31:0] meta,sync_value;
@@ -20,6 +21,9 @@ module gw138k_counter_cdc (
     always @(posedge destination_clk or negedge destination_reset_n)
         if(!destination_reset_n) begin meta<=0;sync_value<=0;end
         else begin meta<=gray;sync_value<=meta;end
+    // Read-only synchronized representation for consumers that only detect
+    // change. It shares the count's exact CDC boundary and clock latency.
+    assign destination_gray=sync_value;
     // Inclusive suffix XOR by parallel prefix: after span k, each bit covers
     // the next 2*k Gray bits. Five combinational levels cover all32 bits.
     wire [31:0] prefix1=sync_value^(sync_value>>1);

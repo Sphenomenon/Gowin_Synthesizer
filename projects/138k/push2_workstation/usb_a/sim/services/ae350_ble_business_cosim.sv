@@ -63,7 +63,11 @@ else begin
  phase<=tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
  if(ms_divider==49999)begin ms_divider<=0;ms_count<=ms_count+1'b1;end else ms_divider<=ms_divider+1'b1;
 end
-ble_protocol_command #(.EXTERNAL_PCM(1),.CAPACITY_FRAMES(16384),.EXTERNAL_SEAL_PROTOCOL(1),
+ble_protocol_command #(
+`ifdef WORKSTATION_SINGLE_BLE_RECORDING
+ .SINGLE_BLE_RECORDING(1),
+`endif
+ .EXTERNAL_PCM(1),.CAPACITY_FRAMES(16384),.EXTERNAL_SEAL_PROTOCOL(1),
  .EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) endpoint(
  .clk(clk),.resetn(resetn),.enable(enable),
  .business_owner_reset_ni(command_reset),.business_command_valid_i(command_valid),

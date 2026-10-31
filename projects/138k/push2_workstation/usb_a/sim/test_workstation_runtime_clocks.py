@@ -240,6 +240,10 @@ class ActualRuntimeClocks(unittest.TestCase):
             ('pixel_divider', 'u_video/u_clock/g_hardware.u_pll/u_pixel_div', dict(parameter='DIV_MODE', value='"4"'), 'pixel divider waveform'),
             ('extra_DCS', SELECTOR, dict(append='\nDCS extra_dcs (\n.CLKOUT(unused),.CLKIN0(GND),.CLKIN1(GND),.CLKIN2(GND),.CLKIN3(GND),.CLKSEL({GND,GND,GND,GND}),.SELFORCE(GND)\n);'), 'single DCS inventory'),
         ]
+        startup = 'u_managed/runtime/clocks/reference_48_monitor/startup_source_0_s0'
+        if startup in self.netlist.cells:
+            variants.append(('source_startup_clock', startup, dict(port='CLK', value='wrong_clock'),
+                             'monitor source/control clock'))
         for label, path, change, message in variants:
             self.reject(label, self.change_cell(path, **change), message)
         self.reject('DDR_PLL_wrong_instance', self.text.replace('u_pll_0', 'u_pll_changed'),
