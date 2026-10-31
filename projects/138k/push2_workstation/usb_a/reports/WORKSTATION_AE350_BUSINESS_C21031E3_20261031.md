@@ -207,3 +207,36 @@ ADSR 表在 Verilator／Icarus 的新旧逐拍比较均通过，每表 217152 �
 accepted 来源十七项、业务九项及 profile 七项通过（外部输入相关
 十五项跳过）。尚无本次全量资源结果；ROM 初始化的 Gowin 综合及真实
 净收益由紧接着的完整候选确认，不把理论除法器规模记作收益。
+
+
+同功能完整候选 `5eac85f00fa54c84`（源码 `8582380`）全量综合通过，
+328.149 秒、退出 0、614 项输入保持、无 AG 诊断；configuration 与 E7
+逐项相同。Gowin 成功提取派生 ROM，三个 `g_rate_pipeline` 系数 divider
+已退出网表，phase divider 保留。VG SHA256：
+`53bde60e7fe8545dfa397df595ea1d3bafc4ea5b8a3f70ea342769cdcf11efea`。
+
+| 综合资源 | E8（5eac85f0） | 相对 E7 | 相对迁移前 011fdc9c |
+|---|---:|---:|---:|
+| Logic | 93321 | −1657 | −1302 |
+| LUT | 74932 | −1660 | −1035 |
+| ALU | 16775 | +3 | −27 |
+| Register | 59477 | −1829 | −1101 |
+| DSP | 80 | −4 | −3 |
+| RAM16 | 269 | 0 | −40 |
+| 等效 BSRAM | 250 | 0 | +5 |
+
+整机总量包含新增 CPU 存储／邮箱／队列／总线及拷贝逻辑，未扣漏接口
+成本；新增 A2DP／SBC 未选中。相对迁移前的下降是业务替换与后续原生
+RTL 优化的合计，不能单独归因于 CPU 卸载。矢量引擎本体由 2849 FF／
+3922 LUT／26 DSP 降至 2438 FF／3821 LUT／23 DSP，原三个 divider
+另有 1415 FF／1238 LUT，均为独占映射；其和不替代整机总量。
+actual prepare 业务十二项通过。`C21031E8` 已开始 place1／route0 完整
+P&R，未改变时钟／例外／冻结 E7 输入；最终物理 CLS／BSRAM／时序和
+SRAM 仍待本次实际结果。
+
+E8 的原版 PCM 229-bit／paired-nextq-v2 已安装约束检查、六级实际 reset
+release（455 CPU＋175 business 消费者）通过；同一实际 VG 中 19 个
+ROM LUT3 的 INIT 对五个有效 profile 均与 staged ADSR 文件计算一致，
+160 个系数状态 D pin 逐项匹配，确认初始化没有被综合成错误常量。
+以上均为必要正向门禁，614 项输入前后保持；完整 routed CDC／STA／PLL
+仍待本次 P&R，不以这些局部通过替代整机验收。
