@@ -24,6 +24,9 @@ module gw138k_event_workstation #(
     output logic [31:0] applied_events_o,
     output wire [31:0] pc_overflow_o,control_options_o,
     output logic [9:0] panic_epoch_o,
+    // This is the exact cancellation edge that advances the sole epoch owner.
+    // Internal request services may cache epoch equality without a second counter.
+    output wire panic_accept_o,
     output wire panic_muted_o,
     // Read-only render admission status; PANIC clears frame_inflight before
     // the legacy oscillator's unreset ROM/valid pipelines have drained.
@@ -261,6 +264,7 @@ module gw138k_event_workstation #(
   // avoids a PANIC/configuration/sample-ready combinational cycle.
   wire panic_accept=usb_lifecycle ||
       (event_valid && !releasing && dispatch && kind==2 && a==120);
+  assign panic_accept_o=panic_accept;
   // Legacy partial loading can start on the cancellation edge: 32 issues,
   // three generator-valid stages, one timbre-ROM stage, plus edge margin.
   // The render tail is shorter: five sine, three mix, six quantizer stages.

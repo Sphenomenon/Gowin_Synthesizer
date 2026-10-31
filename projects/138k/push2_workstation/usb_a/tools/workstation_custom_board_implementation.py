@@ -29,6 +29,8 @@ DDR_MINIMUM = f'set_min_delay 0.800 -from [get_pins {{{DDR_LAUNCH}/Q}}] -to [get
 DDR_STRICT_MINIMUM = DDR_MINIMUM.replace('0.800', '3.500', 1)
 DDR_LAUNCH_REGION = 'R[70:80]C[150:170]'
 DDR_LAUNCH_CONSTRAINT = f'INS_LOC "{DDR_LAUNCH}" {DDR_LAUNCH_REGION};'
+DDR_FAR_CAPTURE_REGION = 'R[2:10]C[2:20]'
+DDR_FAR_LAUNCH_REGION = 'R[104:110]C[175:181]'
 # DQS hard sites may use border row111; ordinary logic ends at row110.
 DDR_DQS_HOLD_REGIONS = tuple(f'R[{104-10*lane}:{min(110,118-10*lane)}]C[2:30]' for lane in range(4))
 
@@ -171,15 +173,20 @@ def ddr_capture_region_constraints(payload, sdc, routed_netlist, *, strict_minim
         new_route_verified=False, new_hold_slack_ns=None)
 
 
-def ddr_launch_capture_region_constraints(payload, sdc, routed_netlist):
+def ddr_launch_capture_region_constraints(payload, sdc, routed_netlist, *, far_regions=False):
     """Place both observed ends while preserving the current 3.500ns policy."""
     if DDR_LAUNCH in payload.decode('utf-8'):
         raise ValueError('DDR launch target already appears in the parent CST')
     adapted, evidence = ddr_capture_region_constraints(
         payload, sdc, routed_netlist, strict_minimum=True)
-    adapted += (DDR_LAUNCH_CONSTRAINT + '\n').encode()
-    evidence.update(launch_instance=DDR_LAUNCH, launch_region=DDR_LAUNCH_REGION,
-                    launch_constraint=DDR_LAUNCH_CONSTRAINT,
+    capture_region = DDR_FAR_CAPTURE_REGION if far_regions else DDR_CAPTURE_REGION
+    launch_region = DDR_FAR_LAUNCH_REGION if far_regions else DDR_LAUNCH_REGION
+    capture_constraint = f'INS_LOC "{DDR_CAPTURE}" {capture_region};'
+    launch_constraint = f'INS_LOC "{DDR_LAUNCH}" {launch_region};'
+    adapted = payload + ('\n' + capture_constraint + '\n' + launch_constraint + '\n').encode()
+    evidence.update(region=capture_region, constraint=capture_constraint,
+                    launch_instance=DDR_LAUNCH, launch_region=launch_region,
+                    launch_constraint=launch_constraint, far_regions=far_regions,
                     after_sha256=digest(adapted),
                     exact_appended_bytes_hex=adapted[len(payload):].hex())
     return adapted, evidence
@@ -243,12 +250,13 @@ def ddr_dqs_hold_region_constraints(payload, sdc, routed_netlist, *, lut_only=Fa
 def derive_ddr_capture_region(source, output, user_code, parent_evidence,
                               expected_parent_evidence_sha256, acknowledge_electrical_risk=False,
                               *, dqs_hold_regions=False, dqs_hold_lut_only=False,
-                              launch_capture_regions=False):
+                              launch_capture_regions=False, launch_capture_far_regions=False):
     """Prepare only a hash-locked physical child; never audit mutable current RTL."""
     if dqs_hold_regions and dqs_hold_lut_only:
         raise ValueError('DQS HOLD FF/LUT and LUT-only modes are mutually exclusive')
     dqs_regions = dqs_hold_regions or dqs_hold_lut_only
-    if dqs_regions and launch_capture_regions:
+    if ((dqs_regions and (launch_capture_regions or launch_capture_far_regions)) or
+            (launch_capture_regions and launch_capture_far_regions)):
         raise ValueError('DQS HOLD and launch/capture placement modes are mutually exclusive')
     source, output, parent_evidence = (Path(path).resolve() for path in (source, output, parent_evidence))
     script = implementation_script(user_code)
@@ -320,8 +328,9 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         raise ValueError('parent route VO needs original hash-bound physical evidence')
     arguments = ((source / 'physical.cst').read_bytes(), (source / 'physical.sdc').read_bytes(),
                  (source / routed_name).read_text())
-    if launch_capture_regions:
-        adapted, placement = ddr_launch_capture_region_constraints(*arguments)
+    if launch_capture_regions or launch_capture_far_regions:
+        adapted, placement = ddr_launch_capture_region_constraints(
+            *arguments, far_regions=launch_capture_far_regions)
     elif dqs_regions:
         adapted, placement = ddr_dqs_hold_region_constraints(*arguments, lut_only=dqs_hold_lut_only)
     else:
@@ -358,7 +367,9 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         identity='custom138k-native-physical-' + user_code.upper(), user_code='0x' + user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_variant_prepared_no_EDA',
-        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_regions_CST_append'
+        source_policy=('hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_far_regions_CST_append'
+                       if launch_capture_far_regions else
+                       'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_launch_capture_regions_CST_append'
                        if launch_capture_regions else
                        'hash_locked_previous_physical_VG_and_SDC_with_only_explicit_DDR_DQS_HOLD_LUT_only_regions_CST_append'
                        if dqs_hold_lut_only else
@@ -382,7 +393,8 @@ def derive_ddr_capture_region(source, output, user_code, parent_evidence,
         physical_gates_passed=False, timing_closed=False, deployment_allowed=False, release_ready=False,
         hardware_tested=False, board_programming_authorized=False, bitstream_sha256=None,
         sram_programmed=False, flash_programmed=False)
-    result['ddr_launch_capture_regions_adaptation' if launch_capture_regions else
+    result['ddr_launch_capture_far_regions_adaptation' if launch_capture_far_regions else
+           'ddr_launch_capture_regions_adaptation' if launch_capture_regions else
            'ddr_dqs_hold_regions_adaptation' if dqs_regions else 'ddr_capture_region_adaptation'] = placement
     (output / 'physical_inputs.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
@@ -494,6 +506,8 @@ def main():
                           help='Constrain only the four reviewed HOLD LUTs; leave config registers free')
     dqs_mode.add_argument('--ddr-launch-capture-regions', action='store_true',
                           help='Place both observed initialization ends; requires unchanged 3.500ns minimum')
+    dqs_mode.add_argument('--ddr-launch-capture-far-regions', action='store_true',
+                          help='Use the explicit opposite-corner initialization regions; keeps 3.500ns minimum')
     parser.add_argument('--expected-parent-evidence-sha256',
                         help='Required explicit identity when deriving the DDR capture-region experiment')
     args = parser.parse_args()
@@ -506,9 +520,11 @@ def main():
                                           args.acknowledge_electrical_risk,
                                           dqs_hold_regions=args.ddr_dqs_hold_regions,
                                           dqs_hold_lut_only=args.ddr_dqs_hold_lut_only,
-                                          launch_capture_regions=args.ddr_launch_capture_regions)
+                                          launch_capture_regions=args.ddr_launch_capture_regions,
+                                          launch_capture_far_regions=args.ddr_launch_capture_far_regions)
     else:
-        if args.ddr_dqs_hold_regions or args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions:
+        if (args.ddr_dqs_hold_regions or args.ddr_dqs_hold_lut_only or
+                args.ddr_launch_capture_regions or args.ddr_launch_capture_far_regions):
             parser.error('DQS HOLD placement modes require an explicit floorplan parent evidence')
         if args.expected_parent_evidence_sha256:
             parser.error('--expected-parent-evidence-sha256 requires the explicit DDR derivation')

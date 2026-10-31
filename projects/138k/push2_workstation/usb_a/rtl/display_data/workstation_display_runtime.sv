@@ -114,13 +114,18 @@ module workstation_display_runtime (
     wire [1:0] read_kind;
     wire [15:0] read_address;
     wire [31:0] read_data;
-    reg pending,loading,have_image,publish,load_request,export_live;
+    reg pending,loading,have_image,publish,load_request,export_live,export_request;
     reg [31:0] export_rate,export_epoch,export_generation,image_generation;
     wire unavailable;
     wire export_current=source_valid && export_rate==source_rate && export_epoch==source_epoch &&
         export_generation==source_generation;
-    wire export_start=enabled_i && source_ready && writer_initialized_o && !writer_busy_o &&
-        !reader_busy_o && !pending && !loading;
+    // Qualify an export request before feeding the producer's own acceptance
+    // gate. The producer still rechecks its live context on acceptance, and
+    // the writer validates the actual snapshot before publication. A context
+    // break after qualification may start a rejected private export; it never
+    // publishes an old cache. This removes the producer->runtime admission->
+    // producer release-frame round trip from the analysis RAM/control enables.
+    wire export_start=enabled_i && export_request;
     // Context qualification ends at this request register. A context break
     // on its acceptance edge may start one obsolete private-cache read; the
     // current-image path revokes immediately and completion must still pass
@@ -175,10 +180,12 @@ module workstation_display_runtime (
     assign summary_publish_o=enabled_i && publish && current_image_o;
     always @(posedge clk_i or negedge memory_reset_n)begin
         if(!memory_reset_n)begin
-            pending<=0;loading<=0;have_image<=0;publish<=0;load_request<=0;export_live<=0;
+            pending<=0;loading<=0;have_image<=0;publish<=0;load_request<=0;export_live<=0;export_request<=0;
             export_rate<=0;export_epoch<=0;export_generation<=0;image_generation<=0;
         end else begin
             publish<=0;
+            export_request<=enabled_i && source_ready && writer_initialized_o && !writer_busy_o &&
+                !reader_busy_o && !pending && !loading && !export_request;
             load_request<=enabled_i && pending && export_live && export_current &&
                 !loading && !reader_busy_o;
             if(export_start)begin
@@ -199,7 +206,7 @@ module workstation_display_runtime (
             // if the real writer/reader later drains after re-enable. Their
             // existing outstanding DDR handshake remains under its owner.
             if(!enabled_i)begin
-                pending<=0;loading<=0;load_request<=0;have_image<=0;
+                pending<=0;loading<=0;load_request<=0;have_image<=0;export_request<=0;
             end
         end
     end

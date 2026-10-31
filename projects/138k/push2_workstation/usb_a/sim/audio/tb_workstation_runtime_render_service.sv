@@ -47,9 +47,40 @@ module tb_workstation_runtime_render_service;
   integer pending_count=0,posted_writes=0,ordered_fences=0;
   integer max_steady_latency=0,max_auto_config_latency=0,max_loader_latency=0;
   integer vector_dispatch_cycles=0,vector_accepted_events=0,vector_release_cases=0;
+  integer epoch_equality_checks=0,epoch_advances=0,epoch_wraps=0,epoch_match_returns=0;
+  integer simultaneous_request_panic=0,epoch_wrap_cases=0;
   real pitch_error_hz;
   reg trace_on=1,allow_fault=0,old_rate=0;
   string trace_path;
+  // Independent old-state oracle. Check both sides of every real clock edge,
+  // including inactive slots, not only PCM responses that happened to cancel.
+  always @(posedge clk)if(rst_n)begin: epoch_equivalence
+    reg [9:0] expected_epoch,expected_snapshot;
+    reg old_match,advance;
+    old_match=epoch==dut.request_cancel_epoch;
+    advance=dut.workstation.usb_lifecycle ||
+        (dut.workstation.event_valid && dut.workstation.event_ready &&
+         dut.workstation.kind==2 && dut.workstation.a==120);
+    if(dut.panic_accept!==advance || dut.request_epoch_match!==old_match ||
+       dut.cancelled!==(epoch!=dut.request_cancel_epoch ||
+                       (muted && !dut.request_muted)))
+      $fatal(1,"registered epoch proof differs from original cancellation formula before edge");
+    expected_epoch=epoch+10'(advance);
+    expected_snapshot=dut.accepted ? epoch : dut.request_cancel_epoch;
+    if(advance)begin
+      epoch_advances=epoch_advances+1;
+      if(epoch==10'h3ff)epoch_wraps=epoch_wraps+1;
+    end
+    if(advance && dut.accepted)simultaneous_request_panic=simultaneous_request_panic+1;
+    #1;
+    if(epoch!==expected_epoch || dut.request_cancel_epoch!==expected_snapshot ||
+       dut.request_epoch_match!==(expected_epoch==expected_snapshot) ||
+       dut.cancelled!==(epoch!=dut.request_cancel_epoch ||
+                       (muted && !dut.request_muted)))
+      $fatal(1,"registered epoch proof differs from original next-state cancellation formula");
+    if(!old_match && expected_epoch==expected_snapshot)epoch_match_returns=epoch_match_returns+1;
+    epoch_equality_checks=epoch_equality_checks+2;
+  end
   always @(posedge clk)if(rst_n)begin
     // Prove the local timing factorization against the real vector engine,
     // including pending samples, rate barriers and release-sweep traffic.
@@ -216,6 +247,27 @@ module tb_workstation_runtime_render_service;
       $fatal(1,"missing real vector dispatch coverage");
     send(2,120,0);idle();send(2,90,0);send(2,80,0);wait(dut.mode_o==0);send(1,69,100);render(1,0);
     trace_on=0;
+    // Keep one real accepted request snapshot while lifecycle cancellations
+    // traverse all 1024 epoch identities. The old equality becomes true again;
+    // a sticky cancellation bit would silently change this historical meaning.
+    send(2,120,0);idle();offer(1);wait(done);idle();
+    begin: full_epoch_turn
+      reg [9:0] snapshot;
+      snapshot=epoch;
+      if(dut.request_cancel_epoch!=snapshot || !dut.request_epoch_match)
+        $fatal(1,"wrap test did not capture a real request snapshot");
+      for(integer n=0;n<1024;n=n+1)send(15,0,0);
+      if(epoch!=snapshot || dut.request_cancel_epoch!=snapshot || !dut.request_epoch_match)
+        $fatal(1,"1024 real lifecycle cancellations did not restore old epoch equality");
+      epoch_wrap_cases=epoch_wrap_cases+1;idle();
+    end
+    // Unlike dispatched CC120, the real USB lifecycle bypass can coincide
+    // with sample admission. Snapshot sees the old epoch and must mismatch on
+    // the very first post-edge cycle, with one explicit cancellation response.
+    wait(ready);@(negedge clk);request=1;rate=1;event_valid=1;event_data={4'd15,7'd0,7'd0};
+    @(posedge clk);if(!ready || !dut.panic_accept)$fatal(1,"missing true accepted/PANIC overlap");
+    @(negedge clk);request=0;event_valid=0;
+    wait(responses==requests);if(!error)$fatal(1,"same-edge lifecycle failed to cancel new snapshot");idle();
     // An already-muted accepted slot is a deterministic good zero, even if a
     // later NoteOn unmutes the workstation while that slot is rendering.
     send(2,120,0);idle();offer(1);wait(dut.workstation.frame_inflight && !dut.workstation.pending);send(1,60,100);
@@ -260,7 +312,9 @@ module tb_workstation_runtime_render_service;
     if(posted_writes==0 || ordered_fences==0)$fatal(1,"missing real DDR transactions");
     @(negedge clk);rst_n=0;mrst_n=0;repeat(8)@(negedge clk);rst_n=1;mrst_n=1;
     repeat(100)@(negedge clk);allow_fault=0;old_rate=0;idle();if(applied_rate || fault)$fatal(1,"coordinated reset recovery failed");
-    $display("PASS runtime_render_service: requests=%0d responses=%0d modeled_frames=%0d configs=%0d histories=%0d cancels=%0d wet48=%0d wet44=%0d pitch_checks=%0d max_latency=%0d max_steady_latency=%0d max_auto_config_latency=%0d max_loader_latency=%0d posted_writes=%0d ordered_fences=%0d vector_dispatch_cycles=%0d vector_accepted_events=%0d vector_release_cases=%0d",requests,responses,frames,configs,histories,cancels,wet48,wet44,pitch_checks,max_latency,max_steady_latency,max_auto_config_latency,max_loader_latency,posted_writes,ordered_fences,vector_dispatch_cycles,vector_accepted_events,vector_release_cases);
+    if(epoch_wrap_cases!=1 || epoch_wraps==0 || epoch_match_returns==0 || simultaneous_request_panic==0)
+      $fatal(1,"missing real cancellation epoch boundary coverage");
+    $display("PASS runtime_render_service: requests=%0d responses=%0d modeled_frames=%0d configs=%0d histories=%0d cancels=%0d wet48=%0d wet44=%0d pitch_checks=%0d max_latency=%0d max_steady_latency=%0d max_auto_config_latency=%0d max_loader_latency=%0d posted_writes=%0d ordered_fences=%0d vector_dispatch_cycles=%0d vector_accepted_events=%0d vector_release_cases=%0d epoch_equality_checks=%0d epoch_advances=%0d epoch_wraps=%0d epoch_match_returns=%0d simultaneous_request_panic=%0d epoch_wrap_cases=%0d",requests,responses,frames,configs,histories,cancels,wet48,wet44,pitch_checks,max_latency,max_steady_latency,max_auto_config_latency,max_loader_latency,posted_writes,ordered_fences,vector_dispatch_cycles,vector_accepted_events,vector_release_cases,epoch_equality_checks,epoch_advances,epoch_wraps,epoch_match_returns,simultaneous_request_panic,epoch_wrap_cases);
     $fclose(trace_file);$finish;
   end
   initial begin #2000000000;$fatal(1,"test timeout");end

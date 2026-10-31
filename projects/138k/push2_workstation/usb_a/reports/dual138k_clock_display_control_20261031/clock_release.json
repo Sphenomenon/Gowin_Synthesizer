@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv": "be488070d2fc9da40951bbcd785d75439415dc998c854ead0cc7c1f9a4d4c6d5",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_audio_clock_monitor_pre_m9.sv": "1d073cbf98ff683603f36ae521fcc5f62bfc6920526ff442e184c02466519d15",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_clock_monitor_release.sv": "f4c003b87df4bc2db1cab4da5be4d8d01cacb5ae071d4493f1b9569ec04420f6",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_clock_monitor_release.py": "ccb91eefc752e11e9d991bc5cf2297d629c7f8c97c74f5ca154f5c5f70332db8",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_domain.py": "27f9cbf43721573ed7139adc8d5504ecceaca620c9aa6292348e64eccb3320f4",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_domain.sv": "033442908a7458d127745efdd23acb19a3941324afb899a35d363c894820c45f",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_sample_rate_switch.sv": "5b550ace18c8830f5675d633f77f325030206e7d1caf6c019bf6ad58b5f2c9be",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_domain.sv": "c25321f937dfc94b699d91f5383ee65ffc578c38a4a3c30032d2f9912cd80e05",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_audio_clock_monitor.sv": "12fda80e8941b2bb772da4c54828384cb0b831626d5edd859fd24e39b23914b2"
+  },
+  "hardware_tested": false,
+  "routed_timing_verified": false,
+  "deployment_allowed": false,
+  "commands": {
+    "compile": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "tb_clock_monitor_release",
+      "-o",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/equivalence.vvp",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_clock_monitor.sv",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/reference_monitor.sv",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_clock_monitor_release.sv"
+    ],
+    "equivalence": [
+      "vvp",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/equivalence.vvp"
+    ],
+    "negative_compile": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "tb_clock_monitor_release",
+      "-o",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/rising_edge.vvp",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_audio_clock_monitor_pre_m9.sv",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/reference_monitor.sv",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_clock_monitor_release.sv"
+    ],
+    "negative_original_release": [
+      "vvp",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/clock-opposite-release-v2/rising_edge.vvp"
+    ],
+    "complete_domain": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_audio_clock_domain.py"
+    ]
+  },
+  "equivalence_metrics": [
+    "PASS clock_monitor_release: separate=0 checks=308253 releases=3 wraps=19",
+    "PASS clock_monitor_release: separate=1 checks=308253 releases=4 wraps=19",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_clock_monitor_release.sv:77: $finish called at 6165060000 (1ps)"
+  ],
+  "original_rising_edge_margin_negative_rejected": true,
+  "inputs_unchanged": true
+}

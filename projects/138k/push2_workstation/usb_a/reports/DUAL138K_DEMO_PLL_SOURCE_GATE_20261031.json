@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "scope": "Maintained explicit DEMO PLL/startup subgate; no full STA/CDC/reset/electrical or board acceptance",
+  "sources": {
+    "tools/workstation_physical_pll_audit.py": "e7dd9fa13563404bcddc2b53c44fbfea57daf0f63ba5877e35b0ada4c41aedb3",
+    "tools/workstation_serializer_startup_audit.py": "e344e9187d862e7fbe036ceb956a6c3ce09ec06ce16413adbcb8b4f2e2c5b2bf",
+    "sim/test_workstation_physical_pll_audit.py": "6688efed54190a5d63f0aa935e37aeb598d6506adebc32b73a6d8390c32c9f8d",
+    "sim/test_workstation_serializer_startup_audit.py": "7a5b9d29b419bf91b9139d729e1bd673acc868daa3d27b1bcbf5880c5695d3a1"
+  },
+  "environment": {
+    "GOWIN_SIMLIB": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a"
+  },
+  "original_failure": {
+    "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m7-full-pll-audit-v2.json",
+    "artifact_sha256": "2595ec69c24fed6c785fa569d26819f2e0c3130fe257bb9f46524d0b3c3d0196",
+    "errors": [
+      "stopped-clock reset VO/SDF audit failed: reset exception includes unaudited endpoints: ['u_managed/startup_compute_0_s0/RESET']",
+      "Selected PLL inventory changed: missing=['u_lcd/u_pll/PLL_inst'] extra=[]"
+    ],
+    "historical_evidence_changed": false
+  },
+  "candidates": [
+    {
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m7-full-pll-audit-v6.json",
+      "artifact_sha256": "b95c971f285107e0b40a78080a66a4bb6ed2dbb3e13fdeb6f3bf3f00ae16ae88",
+      "physical_identity": "custom138k-native-physical-D2103103",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-0067ea90a6354485",
+      "profile_selection": {
+        "policy": "sealed_immutable_demo_profile_source",
+        "candidate_identity": "custom138k-workstation-m-demo-v1-0067ea90a6354485",
+        "demo_role": "M",
+        "prepared_profile_sha256": "7a3d9c691fc672121312d58151a5dab9ea0f9698028000e39952c7b19c485546",
+        "vg_sha256": "4e77d5b5ae1fe7e591ad9824dfa4c7f8c5962fabf3b5ccf833ad75ae9a980cd6",
+        "synthesis_evidence_scope": "hash_bound_Gowin_emitted_log_not_driver_stdout",
+        "synthesis_log_sha256": "f50fd43651a4b88373b3799a9b130f12dacbc7b715041345d9c160e5a2e90268",
+        "parent_synthesis_audit_sha256": "afc57085ca57e40640e9ffc9a4f406c90fa27b55b4f31a2f0c0e2e3948f62311",
+        "local_panel_enabled": false,
+        "acceptance_inherited": false
+      },
+      "expected_pll_count": 6,
+      "expected_shared_tuple_count": 3,
+      "shared_tuple_maximum_ns": 5.712,
+      "shared_tuple_budget_ns": 10.0,
+      "video_pll_maximum_ns": 9.491,
+      "video_pll_budget_ns": 10.0,
+      "serializer_reset_settle_recovery_maximum_ns": 5.044,
+      "ddr_reset_settle_recovery_maximum_ns": 7.263,
+      "stopped_clock_reset_budget_ns": 40.0,
+      "stopped_clock_window_ns": 80.0,
+      "synchronous_grant_count": 9,
+      "synchronous_grant_stage_maximum_ns": 0.904,
+      "synchronous_grant_stage_budget_ns": 2.0,
+      "negative_checks": {},
+      "source_proofs_reexecuted": true,
+      "physical_inputs_unchanged": true,
+      "routed_inputs_unchanged": true,
+      "audit_dependencies_unchanged": true,
+      "pll_gate_passed": true,
+      "full_physical_acceptance": false,
+      "hardware_tested": false
+    },
+    {
+      "artifact": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m8-full-pll-audit-v3.json",
+      "artifact_sha256": "ddb98124cefab92dc54aaf853afb78735b16a62d522a2588adf073f98d77312a",
+      "physical_identity": "custom138k-native-physical-D2103105",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-f11f1756db68044a",
+      "profile_selection": {
+        "policy": "sealed_immutable_demo_profile_source",
+        "candidate_identity": "custom138k-workstation-m-demo-v1-f11f1756db68044a",
+        "demo_role": "M",
+        "prepared_profile_sha256": "1b7a6085665b62fead04d97150152e30987207364d31c7e55606e0a73d46e1b4",
+        "vg_sha256": "2420981cfc95c12c94b48c900cdd85eef806141110cf793b47bb3370a7c8b68f",
+        "synthesis_evidence_scope": "hash_bound_Gowin_emitted_log_not_driver_stdout",
+        "synthesis_log_sha256": "fcc8bbe6008c2c643469a8eb79b09d475e373ba2582a11b1144f07ce43d5c4c1",
+        "parent_synthesis_audit_sha256": "ec354ec9eb7637056be34fc3f9d95ccbd59b7b2ac2afdea6ee3f32d91dd4afdf",
+        "local_panel_enabled": false,
+        "acceptance_inherited": false
+      },
+      "expected_pll_count": 6,
+      "expected_shared_tuple_count": 3,
+      "shared_tuple_maximum_ns": 5.456,
+      "shared_tuple_budget_ns": 10.0,
+      "video_pll_maximum_ns": 9.296,
+      "video_pll_budget_ns": 10.0,
+      "serializer_reset_settle_recovery_maximum_ns": 5.093999999999999,
+      "ddr_reset_settle_recovery_maximum_ns": 6.856999999999999,
+      "stopped_clock_reset_budget_ns": 40.0,
+      "stopped_clock_window_ns": 80.0,
+      "synchronous_grant_count": 9,
+      "synchronous_grant_stage_maximum_ns": 1.091,
+      "synchronous_grant_stage_budget_ns": 2.0,
+      "negative_checks": {
+        "u_video/u_dvi/clock_lane/serializer/D0": [
+          "stopped-clock reset VO/SDF audit failed: TMDS clock D0 differs from the audited 10'b0000011111 clock word"
+        ],
+        "u_video/u_dvi/clock_lane/differential/I": [
+          "stopped-clock reset VO/SDF audit failed: u_video/u_dvi/clock_lane/serializer: serializer no longer directly drives its audited TMDS differential ports"
+        ],
+        "u_usb_pll/PLL_inst/RESET": [
+          "('PLL control constant changed', 'u_usb_pll/PLL_inst/RESET')"
+        ],
+        "AE350/requested_site": [
+          "AE350 dedicated core clock: exactly one u_cpu_pll/PLL_inst assignment to PLL_R[0] is required"
+        ],
+        "AE350/actual_site": [
+          "AE350 dedicated core clock: actual routed CPU PLL is not uniquely at PLL_R[0]"
+        ],
+        "AE350/RTC_minimum_period": [
+          "AE350 independent RTC: exact conservative RTC clock declaration is required"
+        ],
+        "AE350/RTC_direct_connection": [
+          "AE350 independent RTC: RTC_CLK is not directly driven by the kept RTC Q"
+        ]
+      },
+      "source_proofs_reexecuted": true,
+      "physical_inputs_unchanged": true,
+      "routed_inputs_unchanged": true,
+      "audit_dependencies_unchanged": true,
+      "pll_gate_passed": true,
+      "full_physical_acceptance": false,
+      "hardware_tested": false
+    }
+  ],
+  "tests": {
+    "source_binding": {
+      "tests": 26,
+      "passed": 25,
+      "skipped": 1,
+      "skip_reason": "two runtime-driver process seals unavailable; explicit DEMO candidate substitution has a separate passing test",
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/demo-pll-source-tests-v3.log",
+      "log_sha256": "5f7f6c30dcee6b4a8da0107f00983b2562043012875b317d388e4ef1219c7997",
+      "resealed_invalid_M_W_spec_subcases": 8
+    },
+    "synchronous_grant": {
+      "tests": 9,
+      "passed": 9,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/demo-serializer-tests-v2.log",
+      "log_sha256": "44437238c95af89b31f2ef99b952c0ef7658fe4d16c6797c69bd74d159289df8"
+    },
+    "demo_audit_regression": {
+      "tests": 15,
+      "passed": 15,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/demo-pll-prepared-regression-v1.log",
+      "log_sha256": "9fc652a196457d4ff9b3a9b3d2f85a4d04bbc6bc99761301c9be2b7d148a4d0e"
+    },
+    "actual_M8_destructive_PLL_checks": 7,
+    "M8_native_routed_suite": {
+      "tests": 28,
+      "passed": 28,
+      "skipped": 0,
+      "report": "DUAL138K_NATIVE_CONTROL_CDC_20261031.json"
+    }
+  },
+  "W_routed_PLL_gate_tested": false,
+  "legacy_seven_PLL_policy_preserved": true,
+  "runtime_driver_seal_policy_preserved": true,
+  "thresholds_relaxed": false,
+  "clocks_or_exceptions_changed": false,
+  "RTL_changed": false,
+  "physical_inputs_modified": false,
+  "constraints_complete": false,
+  "physical_CDC_accepted": false,
+  "STA_accepted": false,
+  "full_reset_accepted": false,
+  "electrical_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false,
+  "remaining": [
+    "W actual routed candidate PLL/startup gate",
+    "Complete routed STA/CDC/reset closure",
+    "Real sound/video and parameter consistency",
+    "Board and deployment acceptance"
+  ]
+}

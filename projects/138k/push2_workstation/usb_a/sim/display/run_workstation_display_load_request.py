@@ -40,7 +40,7 @@ def main():
             result['negative_controls'].append(dict(case=label,rejected=True,exit_code=r.returncode,error=text.strip()))
         else:
             if r.returncode:raise ValueError(text)
-            match=re.search(r'PASS display_load_request: cases=(\d+) checks=(\d+) loads=(\d+) reads=(\d+) summaries=(\d+) registered_latency=1 context_races=4 stale_drain=1 disable_cancel=3 raster_gates=2 fault_retains_image=1 unsolicited_done_rejected=1',text)
+            match=re.search(r'PASS display_load_request: cases=(\d+) checks=(\d+) loads=(\d+) reads=(\d+) summaries=(\d+) registered_latency=1 context_races=4 stale_drain=1 disable_cancel=3 raster_gates=2 fault_retains_image=1 unsolicited_done_rejected=1 export_request_latency=1 export_abort=1 export_disable=1',text)
             if not match:raise ValueError('missing load-boundary coverage: '+text)
             result['metrics']=dict(zip(('cases','checks','loads','reads','summaries'),map(int,match.groups())))
             print(text,end='')
@@ -48,6 +48,8 @@ def main():
         run('positive',owner)
         text=owner.read_text()
         variants=[
+            ('bypass_export_request_register','wire export_start=enabled_i && export_request;',
+             'wire export_start=enabled_i && source_ready && writer_initialized_o && !writer_busy_o && !reader_busy_o && !pending && !loading;'),
             ('bypass_request_register','wire load_start=load_request && enabled_i && export_live && !loading &&','wire load_start=enabled_i && pending && export_current && !loading &&'),
             ('legacy_unguarded_completion','if(loading && enabled_i && export_live && !reader_fault_o && reader_valid_o && export_current &&','if(!reader_fault_o && reader_valid_o && export_current &&'),
             ('disabled_export_revives','end else if(!enabled_i || !export_current)export_live<=0;','end else if(!export_current)export_live<=0;'),

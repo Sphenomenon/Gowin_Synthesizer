@@ -80,3 +80,11 @@ M v7实际P&R已全部布通并生成位流，退出0，所有准备输入hash�
 唯一hold为DDR初始化→wloadn；slack−3.647 ns含已导入的精确`set_min_delay3.500`要求，数据延迟0.386 ns／skew−0.485 ns，仍是失败门禁，不能与旧1.800 ns约束下数值直接当作物理退化量。PR1014仍警告clk50和12.288MHz参考可能使用普通布线。完整测量／输入与输出hash见[M v7物理证据](dual138k_m_demo_v7_physical_20261031.json)，未下载SRAM或写Flash。
 
 新M v7实际VG与VO、实际安装physical.sdc的4个原生邮箱／98位注册RAM／丢帧健康局部结构闭包通过，详见[原生CDC验证](DUAL138K_NATIVE_CDC_20261031.md)。这是明确局部范围，完整CDC、PLL和routed时序仍未通过。后续继续按实际剩余路径修复，不以新增例外掩盖同步逻辑。
+
+## M v8完整物理结果
+
+M v8 `f11f1756db68044a`的`D2103105`已完成完整P&R和位流生成，exit0；输入清单逐项hash、位流头UserCode均复核。物理Logic65,592、FF46,859、CLS49,879／69,120、BSRAM235／340、DSP120／298。setup违例3,042，最差−1.729 ns；audio Fmax67.851 MHz，低于76.8 MHz。最差同步音频路径为panic epoch→service取消资格→效果RAM CE，−1.717 ns；DDR同域TF read长度反馈−1.667 ns，clk50同域epoch→WAV parser CE−1.637 ns。
+
+工具hold摘要为36个违例端点，须细分为1条DDR data hold（−3.413 ns，保留3.500 ns min-delay）及35条reference48 removal（最差−0.274 ns），另有13条USB FIFO写端复位recovery（最差−0.445 ns）。不能将36误记为只有1条hold，也不能将removal混成普通data hold。全部源／输出hash和真实路径见[M8物理测量](dual138k_m_demo_v8_physical_20261031.json)。FS SHA256 `b162c9063e912b81c164d04a86bc1bf593736260faac67646887128795bec66b`。
+
+M8六PLL及serializer的真实来源／同步RESET结构门禁已经通过，见[DEMO PLL门禁](DUAL138K_DEMO_PLL_SOURCE_GATE_20261031.md)，不覆盖仍失败的STA或尚未完成的完整CDC。后续[取消epoch因子化](DUAL138K_EPOCH_MATCH_20261031.md)、[时钟释放／显示请求修复](DUAL138K_CLOCK_DISPLAY_CONTROL_20261031.md)为离线验证通过阶段，不能倒填M8的物理结果。DDR远端布局变体另见[DDR报告](DUAL138K_DDR_HOLD_20261031.md)。所有新位流仍未下载SRAM或写Flash，T2-D1／D2不结项。

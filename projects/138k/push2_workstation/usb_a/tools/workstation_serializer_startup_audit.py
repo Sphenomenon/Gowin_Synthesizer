@@ -25,7 +25,81 @@ def logic_driver(cells, parameters, output_net, kind, inputs, scope, init=None):
     return name
 
 
-def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native'):
+def inspect_grant_reset_inputs(netlist, sdc, role):
+    """Prove synchronous RESET inputs are first-stage CDC data, not OSER resets.
+
+    DFFRE RESET is a clocked data input in the vendor model. Only the exact
+    maintained mixed/asynchronous grant receivers may use its entry exception.
+    The whole first-stage Q fanout must be the normally timed second-stage D.
+    """
+    from pathlib import Path
+    import sys
+    root = Path(__file__).resolve().parents[1]
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from tools.workstation_custom_timing import RUNTIME_GRANT_RESET_INPUTS, RUNTIME_GRANT_CHAINS
+    from tools.workstation_native_protocol_audit import protocol_netlist
+    from tools.workstation_runtime_pcm_cdc import Graph
+    from tools.workstation_synthesis_netlist import IDENTIFIER
+    assert role in ('M', 'W'), 'grant RESET proof requires an explicit DEMO role'
+    assert sdc is not None, 'grant RESET proof requires the installed SDC'
+    n = protocol_netlist(netlist, mapping='routed')
+    g = Graph(n)
+    domains = {'audio_76m8': 'audio_clk', 'ddr_ui100': 'memory_clk',
+               'selected48/selected44': 'dac_mclk_d', 'usb_48m': 'usb_clk'}
+    destinations = {prefix: domain for prefix, source, domain in RUNTIME_GRANT_CHAINS}
+    prefixes = [prefix for prefix in RUNTIME_GRANT_RESET_INPUTS
+                if role == 'M' or not prefix.startswith('u_tf_audio/')]
+    result, protected = [], set()
+    for prefix in prefixes:
+        receivers = [[p for p in g.regs if re.fullmatch(re.escape(prefix) + f'_{bit}_s' + r'\d+', p)]
+                     for bit in (0, 1)]
+        assert all(len(found) == 1 for found in receivers), 'grant receiver inventory changed: ' + prefix
+        first, second = (found[0] for found in receivers)
+        for receiver in (first, second):
+            body = re.findall(r'^\s*' + IDENTIFIER + r'\s+(?:\\)?' + re.escape(receiver) +
+                              r'\s+\((.*?)\);', netlist, re.M | re.S)
+            assert len(body) == 1, 'grant lexical receiver inventory changed: ' + receiver
+            ports = re.findall(r'\.(\w+)\s*\(\s*([^()]*?)\s*\)', body[0])
+            assert len(ports) == len(dict(ports)) and dict(ports) == n.cells[receiver]['ports'] and \
+                not re.sub(r'\.(\w+)\s*\(\s*([^()]*?)\s*\)', '', body[0]).strip(' \t\r\n,'), \
+                'grant duplicate or unparsed port: ' + receiver
+        a, b = n.cells[first], n.cells[second]
+        expected_clock = domains[destinations[prefix]]
+        assert a['kind'] == 'DFFRE' and b['kind'] == 'DFFCE', 'grant receiver primitive changed: ' + prefix
+        assert all(n.pin(p, 'CLK') == expected_clock and n.pin(p, 'CE') in g.high and
+                   n.cells[p]['parameters'].get('INIT') == "1'b0" for p in (first, second)), \
+            'grant receiver clock/enable/initialization changed: ' + prefix
+        assert n.pin(second, 'CLEAR') in g.low and n.pin(second, 'D') == n.pin(first, 'Q'), \
+            'grant second stage bypass/reset changed: ' + prefix
+        q = n.pin(first, 'Q')
+        assert g.drivers[q] == [(first, 'Q')] and q not in g.high | g.low, \
+            'grant first-stage output has a competing driver: ' + prefix
+        assert q.lstrip('\\').split('[')[0].strip() not in n.directions['workstation_custom_138k_top'], \
+            'grant first-stage output is exported: ' + prefix
+        assert g.fan[n.pin(first, 'Q')] == [(second, 'D', 'ff')], 'grant first-stage functional fanout: ' + prefix
+        required = (f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]',
+                    f'set_false_path -to [get_pins {{{prefix}_0_s*/RESET}}]',
+                    f'set_max_delay 2.000 -from [get_pins {{{prefix}_0_s*/Q}}] -to [get_pins {{{prefix}_1_s*/D}}]')
+        assert all(sdc.splitlines().count(line) == 1 for line in required), \
+            'grant entry/2ns later-stage constraint missing, duplicated or changed: ' + prefix
+        protected.update(second + '/' + pin for pin in b['ports'] if pin != 'Q')
+        result.append(dict(first=first, second=second, clock=expected_clock,
+            reset_input=first + '/RESET', reset_selector=prefix + '_0_s*/RESET',
+            first_stage_fanout_only_second_D=True, synchronous_data_input=True,
+            stopped_clock_reset=False, later_stage_bound_ns=2.0))
+    for line in sdc.splitlines():
+        if not line.lstrip().startswith('set_false_path '):
+            continue
+        for kind, body in re.findall(r'-to\s+\[(get_pins|get_regs)\s+\{([^}]+)\}\]', line):
+            assert not any(fnmatchcase(pin if kind == 'get_pins' else pin.rsplit('/', 1)[0], selector)
+                           for selector in body.split() for pin in protected), \
+                'grant exception reaches a later stage: ' + line
+    return result
+
+
+def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native',
+                               startup_grant_role=None):
     if not __debug__:
         return ["startup audit requires normal Python execution; -O disables validation assertions"], {}
     def unescape(value):
@@ -313,6 +387,17 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                                      "negative_edge_clock_inverter": inverted_ui_name,
                                      "dll_step_capture": {"enable_equation": "!ddr_init_st_rrr && ddr_init_st_rr && dll_lock",
                                                           "budget_ns": 40.0, "paths": step_paths}})
+        grant_inputs = []
+        if startup_grant_role is not None:
+            grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role)
+            for row in grant_inputs:
+                first, second = row['first'], row['second']
+                setup_values = re.findall(r"\(SETUPHOLD \((?:pos|neg)edge D\) \(posedge CLK\) \(([^)]+)\)", sdf_cells[second])
+                assert len(setup_values) == 2, 'grant second-stage D setup checks missing: ' + second
+                setup = max(max(numbers(value)) for value in setup_values) * unit
+                total = arc(first, 'CLK', 'Q') + routed[(first + '/Q', second + '/D')] + setup
+                assert total <= 2.0, f'{second}/D: grant CLK-Q+route+setup {total:.3f}ns exceeds 2ns budget'
+                row['routed_clock_to_q_route_setup_ns'] = total
         reset_constraints = None
         if sdc is not None:
             audited = {path["endpoint"] for path in paths + divider_audit["paths"]}
@@ -338,6 +423,12 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                         continue
                     pins = {pin for pin in all_reset_pins if fnmatchcase(pin, pattern)}
                     assert pins, f"initialization reset exception matches no routed pins: {pattern}"
+                    grants = [row for row in grant_inputs if row['reset_input'] in pins]
+                    if grants:
+                        assert len(grants) == 1 and pattern == grants[0]['reset_selector'] and \
+                            pins == {grants[0]['reset_input']}, 'grant RESET exception is not exact: ' + pattern
+                        groups.append({'selector': pattern, 'endpoints': 1, 'proof': 'synchronous_grant_CDC_entry'})
+                        continue
                     extra = pins - audited
                     assert not extra, f"reset exception includes unaudited endpoints: {sorted(extra)}"
                     selected.update(pins)
@@ -354,7 +445,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                                          "low_unit_intervals": 5, "high_unit_intervals": 5,
                                          "differential_ports": list(expected_lanes[clock_serializer])},
                     "pixel_divider": divider_audit, "ddr_phy": ddr_distribution, 'resolved_logic': resolved_logic,
-                    "sdc_reset_exception_coverage": reset_constraints}
+                    "sdc_reset_exception_coverage": reset_constraints,
+                    "synchronous_grant_reset_inputs": grant_inputs}
     except (AssertionError, KeyError, ValueError) as error:
         return [f"stopped-clock reset VO/SDF audit failed: {error}"], {}
 

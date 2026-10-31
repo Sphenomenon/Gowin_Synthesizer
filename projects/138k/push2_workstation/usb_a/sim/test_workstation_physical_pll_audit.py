@@ -15,7 +15,7 @@ from workstation_physical_pll_audit import (physical_snapshot, sha, verify_uncha
     pll_inventory, shared_clock_plls, source_context, audit_workspace, audit_output_path)
 from workstation_runtime_clock_audit import PLL_PATHS, verify_synthesis_identity
 from workstation_profile import (R00_NO_LOCAL_PANEL_NAME, LOCAL_BOOT64_NAME,
-                                 CPU_BUSINESS_NAME, specification, identity_digest)
+                                 CPU_BUSINESS_NAME, M_DEMO_NAME, W_DEMO_NAME, specification, identity_digest)
 
 
 class InputBindingTests(unittest.TestCase):
@@ -319,6 +319,38 @@ class SourceSelectionTests(unittest.TestCase):
         self.assertEqual(expected.read_text(), 'sealed previous evidence\n')
 
 
+class DemoSpecificationTests(unittest.TestCase):
+    def test_resealed_wrong_demo_configuration_never_selects_reduced_inventory(self):
+        from tools.workstation_demo_audit import PROFILES
+        for name in (M_DEMO_NAME, W_DEMO_NAME):
+            spec = specification(name)
+            role, identity, unused = PROFILES[name]
+            for field in ('revision', 'profile_source', 'configuration', 'role'):
+                with self.subTest(profile=name, mutation=field), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    source, physical = root / 'source', root / 'physical'
+                    source.mkdir(); physical.mkdir()
+                    profile = dict(profile=name, revision=spec['revision'], profile_source=spec['config'],
+                                   configuration=copy.deepcopy(spec['configuration']))
+                    if field == 'revision': profile['revision'] += 1
+                    elif field == 'profile_source': profile['profile_source'] = 'other.json'
+                    elif field == 'configuration': profile['configuration']['local_panel_policy'] = 'enabled'
+                    else: profile['configuration']['demo_role'] = 'W' if role == 'M' else 'M'
+                    (source / 'workstation_profile.json').write_text(json.dumps(profile))
+                    parent = dict(identity=identity, workstation_profile=dict(name=name,
+                        artifact='workstation_profile.json', artifact_sha256=sha(source / 'workstation_profile.json')))
+                    (source / 'integration_inputs.json').write_text(json.dumps(parent))
+                    for target, original in (('parent_workstation_profile.json', 'workstation_profile.json'),
+                                             ('parent_integration_inputs.json', 'integration_inputs.json')):
+                        (physical / target).write_bytes((source / original).read_bytes())
+                    for filename in ('parent_synthesis_audit.json', 'custom_138k_integration.vg', 'physical.sdc'):
+                        (physical / filename).write_text('{}')
+                    inputs = dict(parent_candidate=str(source), demo_role=role,
+                                  input_sha256={p.name: sha(p) for p in physical.iterdir()})
+                    with self.assertRaisesRegex(ValueError, 'role/configuration identity changed'):
+                        source_context(physical, inputs, {})
+
+
 class ActualCandidates(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -333,7 +365,7 @@ class ActualCandidates(unittest.TestCase):
             with self.subTest(physical=physical):
                 inputs, snapshot = physical_snapshot(physical)
                 stage, parent, panel, selection = source_context(physical, inputs, snapshot)
-                if 'source' not in inputs:
+                if selection['policy'] == 'legacy_default_LCD_required':
                     # Legacy routed VO has the same exact primitive hierarchy.
                     text = (physical / 'impl/pnr/custom_138k_integration.vo').read_text()
                     cells = {m[2].lstrip('\\'): (m[1], {}) for m in re.finditer(
@@ -348,6 +380,38 @@ class ActualCandidates(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Selected PLL inventory changed'):
                     pll_inventory(cells, local_panel_enabled=not panel)
                 verify_unchanged(snapshot)
+
+    def test_explicit_demo_role_and_original_candidate_cannot_be_substituted(self):
+        records = [(path, physical_snapshot(path)[0]) for path in self.paths]
+        demos = [(path, value) for path, value in records if value.get('demo_role') in ('M', 'W')]
+        if not demos: self.skipTest('select an explicit DEMO physical candidate')
+        for physical, inputs in demos:
+            original_stage, parent, panel, selection = source_context(physical, inputs, {})
+            self.assertEqual(selection['policy'], 'sealed_immutable_demo_profile_source')
+            self.assertFalse(panel)
+            self.assertEqual(selection['synthesis_evidence_scope'], 'hash_bound_Gowin_emitted_log_not_driver_stdout')
+            for field, value in (('demo_role', 'W' if inputs['demo_role'] == 'M' else 'M'),
+                                 ('parent_candidate_identity', 'substituted-candidate'),
+                                 ('parent_identity', 'substituted-parent')):
+                broken = copy.deepcopy(inputs)
+                broken[field] = value
+                with self.subTest(physical=physical, field=field), self.assertRaisesRegex(ValueError, 'source linkage'):
+                    source_context(physical, broken, {})
+            for name in ('custom_138k_integration.vg', 'physical.sdc'):
+                broken = copy.deepcopy(inputs)
+                broken['input_sha256'][name] = '0' * 64
+                with self.subTest(physical=physical, input=name), self.assertRaisesRegex(ValueError, 'physical/synthesis input differs'):
+                    source_context(physical, broken, {})
+            broken = copy.deepcopy(inputs)
+            del broken['input_sha256']['parent_workstation_profile.json']
+            with self.assertRaisesRegex(ValueError, 'metadata is not sealed'):
+                source_context(physical, broken, {})
+            for other, replacement in demos:
+                if other == physical: continue
+                broken = copy.deepcopy(inputs)
+                broken['parent_candidate'] = replacement['parent_candidate']
+                with self.subTest(physical=physical, replacement=other), self.assertRaisesRegex(ValueError, 'copied metadata differs'):
+                    source_context(physical, broken, {})
 
     def test_distinct_no_panel_candidates_cannot_substitute_source_identity(self):
         records = [(path, physical_snapshot(path)[0]) for path in self.paths]

@@ -73,6 +73,9 @@ module workstation_audio_render_service #(
     wire core_config=external_config || automatic_config;
     wire requested_rate=external_config ? config_rate_44100_i : accepted ? render_44k1_i : held_rate;
     reg [9:0] request_cancel_epoch;
+    reg request_epoch_match;
+    wire panic_accept;
+    wire [9:0] next_cancel_epoch=panic_epoch_o+10'd1;
     reg signed [31:0] held_pcm_left,held_pcm_right;
     wire core_idle,core_valid,delivery_valid;
     wire signed [31:0] core_left,core_right,delivery_left,delivery_right;
@@ -93,7 +96,10 @@ module workstation_audio_render_service #(
     // A new native request accepted in intentional PANIC mute is a good
     // deterministic zero. It keeps that identity even if NoteOn unmutes while
     // rendering; only a later cancellation epoch can cancel the transaction.
-    wire cancelled=panic_epoch_o!=request_cancel_epoch ||
+    // Cache the exact epoch equality, not a sticky cancellation flag. Equality
+    // may return after 1024 cancellations; the sole counter stays in workstation.
+    // The comparison now feeds this register, not rate admission / effect clear.
+    wire cancelled=!request_epoch_match ||
         (panic_muted_o && (!RUNTIME_EFFECTS_ENABLE || !request_muted));
 
     function automatic [31:0] increment(input [31:0] value);
@@ -113,7 +119,7 @@ module workstation_audio_render_service #(
         .sample_valid_o(core_valid),.left_o(core_left),.right_o(core_right),
         .synth_valid_o(),.synth_o(),
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,
-        .panic_epoch_o,.panic_muted_o,.render_idle_o(core_idle),
+        .panic_epoch_o,.panic_accept_o(panic_accept),.panic_muted_o,.render_idle_o(core_idle),
         .rate_commit_i(core_config),.rate_44100_i(requested_rate),
         .rate_ready_o(core_rate_ready),.applied_rate_44100_o(core_rate),
         .rate_applied_o(core_rate_applied),.rate_busy_o(core_rate_busy),.rate_fault_o(core_fault),
@@ -140,12 +146,19 @@ module workstation_audio_render_service #(
     always @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni) begin
             active<=0;response_sent<=0;request_cancel_epoch<=0;held_rate<=0;external_busy<=0;request_muted<=0;
+            request_epoch_match<=1;
             held_pcm_left<=0;held_pcm_right<=0;
             render_done_o<=0;render_error_o<=0;render_left_o<=0;render_right_o<=0;
             rejected_request_count_o<=0;unsupported_rate_count_o<=0;
             cancelled_response_count_o<=0;drained_result_count_o<=0;
         end else begin
             render_done_o<=0;
+            // Snapshot and epoch both observe the pre-edge value. A coincident
+            // accepted request / PANIC therefore mismatches immediately after
+            // this edge; otherwise compare the modulo-1024 next epoch only on
+            // the actual increment edge, including while the service is idle.
+            if(accepted)request_epoch_match<=!panic_accept;
+            else if(panic_accept)request_epoch_match<=next_cancel_epoch==request_cancel_epoch;
             if(RUNTIME_EFFECTS_ENABLE)begin
                 if((external_config && core_rate_ready) || (external_history && core_history_ready))external_busy<=1;
                 else if(core_history_done && !core_rate_busy)external_busy<=0;

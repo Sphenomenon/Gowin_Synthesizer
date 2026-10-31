@@ -101,6 +101,27 @@ module tb_workstation_display_load_request;
         force dut.metadata={32'h44495350,32'd0,32'd0,32'd0,32'd0,32'd10,32'd0,32'd0};
         force dut.read_data=32'h00110011;
         for(integer i=0;i<16384;i=i+1)memory[i]=0;
+        // Export qualification crosses a register before the producer's own
+        // acceptance gate. Revoking that qualified context may start a private
+        // writer, which must reject its snapshot and never load or publish it.
+        reset_case();wait(initialized && !wbusy);@(negedge clk);source_ready=1;#1;
+        check(!dut.export_start && !wbusy,"export qualification bypassed its request register");
+        @(posedge clk);#1;
+        check(dut.export_start && !wbusy,"export request latency is not exactly one cycle");
+        @(negedge clk);context_valid=0;source_ready=0;
+        wait(wdone);clocks(3);
+        check(exports==1 && loads==0 && summaries==0 && !current_image,
+            "revoked qualified export reached a public cache");
+
+        // Disable between qualification and writer acceptance cancels the
+        // request immediately; re-enable must not revive that old start.
+        reset_case();wait(initialized && !wbusy);@(negedge clk);source_ready=1;
+        wait(dut.export_start);@(negedge clk);enabled=0;source_ready=0;#1;
+        check(!dut.export_start && !wbusy,"disabled qualified export started its writer");
+        clocks(2);enabled=1;clocks(3);
+        check(exports==0 && loads==0 && !dut.export_request && !dut.export_live,
+            "disabled qualified export revived after re-enable");
+
         reset_case();source_ready=1;
         wait(dut.pending);#1;
         check(!dut.load_start && !rbusy,"qualification bypassed the request register");
@@ -170,8 +191,8 @@ module tb_workstation_display_load_request;
         check(!summary && !allowed,"summary was not revoked immediately by disable");
         clocks(2);enabled=1;clocks(2);
         check(!current_image && !allowed,"disabled image eligibility survived re-enable");
-        check(cases==12 && total_loads>=10 && total_reads>1000,"load race coverage incomplete");
-        $display("PASS display_load_request: cases=%0d checks=%0d loads=%0d reads=%0d summaries=%0d registered_latency=1 context_races=4 stale_drain=1 disable_cancel=3 raster_gates=2 fault_retains_image=1 unsolicited_done_rejected=1",cases,checks,total_loads,total_reads,total_summaries);
+        check(cases==14 && total_loads>=10 && total_reads>1000,"load race coverage incomplete");
+        $display("PASS display_load_request: cases=%0d checks=%0d loads=%0d reads=%0d summaries=%0d registered_latency=1 context_races=4 stale_drain=1 disable_cancel=3 raster_gates=2 fault_retains_image=1 unsolicited_done_rejected=1 export_request_latency=1 export_abort=1 export_disable=1",cases,checks,total_loads,total_reads,total_summaries);
         $finish;
     end
     initial begin #200000000;$fatal(1,"load request watchdog case=%0d writer=%0d reader=%0d pending=%0b live=%0b ready=%0b",cases,dut.writer.state,dut.reader.state,dut.pending,dut.export_live,source_ready);end

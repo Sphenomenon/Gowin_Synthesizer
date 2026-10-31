@@ -58,12 +58,21 @@ module workstation_audio_clock_monitor #(
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_source;
     always @(posedge source_clk_i or negedge common_reset_n)
         if(!common_reset_n)startup_source<=0;else startup_source<={startup_source[0],rst_ni};
-    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] source_reset_pre;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] source_reset_pre;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg source_reset_n;
     always @(posedge source_clk_i or negedge common_reset_n)
-        if (!common_reset_n) begin source_reset_pre<=0; source_reset_n<=0; end
-        else if(SEPARATE_COMMON_RESET && !startup_source[1])begin source_reset_pre<=0;source_reset_n<=0;end
-        else begin source_reset_pre<={source_reset_pre[0],1'b1}; source_reset_n<=source_reset_pre[1]; end
+        if (!common_reset_n) source_reset_pre<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_source[1])source_reset_pre<=0;
+        else source_reset_pre<={source_reset_pre[1:0],1'b1};
+    // Release half a source cycle before the counters' first active edge.
+    // The third pre stage keeps that first counting edge identical to the
+    // previous three-rising-edge release. Common assertion remains immediate
+    // with a stopped source. Opposite-edge release gives the real reset tree
+    // a half-cycle removal/recovery margin, including raw references whose
+    // monitor clock route has more skew than the selected DAC clock tree.
+    always @(negedge source_clk_i or negedge common_reset_n)
+        if (!common_reset_n) source_reset_n<=0;
+        else source_reset_n<=source_reset_pre[2];
     reg [COUNTER_BITS-1:0] source_binary;
     (* syn_preserve=1 *) reg [COUNTER_BITS-1:0] source_gray;
     wire [COUNTER_BITS-1:0] source_next=source_binary+1'b1;

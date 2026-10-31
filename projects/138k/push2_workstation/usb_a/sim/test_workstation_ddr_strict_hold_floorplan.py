@@ -90,6 +90,40 @@ class StrictHoldFloorplan(unittest.TestCase):
             self.prepare(dqs_hold_regions=True)
         self.assertFalse(self.output.exists())
 
+    def test_far_mode_is_explicit_preserves_strict_policy_and_old_regions(self):
+        self.strict_parent(True)
+        before = (self.source / 'physical.sdc').read_bytes()
+        result = physical.derive_ddr_capture_region(self.source, self.output, 'D2103106',
+            self.evidence_path, self.evidence_sha, True, launch_capture_far_regions=True)
+        expected = ('\n' + f'INS_LOC "{physical.DDR_CAPTURE}" R[2:10]C[2:20];\n' +
+                    f'INS_LOC "{physical.DDR_LAUNCH}" R[104:110]C[175:181];\n')
+        self.assertEqual((self.output / 'physical.cst').read_bytes(), self.cst + expected.encode())
+        self.assertEqual((self.output / 'physical.sdc').read_bytes(), before)
+        self.assertEqual((self.source / 'physical.cst').read_bytes(), self.cst)
+        proof = result['ddr_launch_capture_far_regions_adaptation']
+        self.assertEqual(proof['minimum_delay_ns'], 3.5)
+        self.assertTrue(proof['far_regions'])
+        self.assertFalse(proof['new_route_verified'])
+        old, _ = physical.ddr_launch_capture_region_constraints(self.cst, before, routed_fixture())
+        self.assertIn(physical.DDR_CAPTURE_CONSTRAINT.encode(), old)
+        self.assertIn(physical.DDR_LAUNCH_CONSTRAINT.encode(), old)
+        self.assertFalse(result['deployment_allowed'])
+        self.mock_audit.assert_not_called()
+
+    def test_far_mode_rejects_old_minimum_bad_topology_and_mixed_regions(self):
+        with self.assertRaisesRegex(ValueError, 'unique exact 3.500'):
+            physical.ddr_launch_capture_region_constraints(self.cst,
+                physical.DDR_MINIMUM.encode(), routed_fixture(), far_regions=True)
+        with self.assertRaisesRegex(ValueError, 'data/reset/enable'):
+            physical.ddr_launch_capture_region_constraints(self.cst,
+                physical.DDR_STRICT_MINIMUM.encode(), routed_fixture().replace('.D(init_r)', '.D(init)'),
+                far_regions=True)
+        with self.assertRaisesRegex(ValueError, 'mutually exclusive'):
+            physical.derive_ddr_capture_region(self.source, self.output, 'D2103106',
+                self.evidence_path, self.evidence_sha, True,
+                launch_capture_regions=True, launch_capture_far_regions=True)
+        self.assertFalse(self.output.exists())
+
 
 if __name__ == '__main__':
     unittest.main()
