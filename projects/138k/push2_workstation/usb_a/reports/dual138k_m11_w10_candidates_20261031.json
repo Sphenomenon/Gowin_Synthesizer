@@ -1,0 +1,1142 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "stage": "full_candidate_synthesis_and_M_default_physical_measurement",
+  "candidates": {
+    "M": {
+      "candidate_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-b5f6da2e64a82b66",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "bluetooth_policy": "retired_for_independent_m_demo_v1",
+        "recording_policy": "disabled_m_demo_v1"
+      },
+      "source_lock": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+        "sha256": "4dd03dffb06d8c3fb4bf19585daee8c9154f525481ecfd56c0733f5b9c2b97ce"
+      },
+      "source_lock_entries": 822,
+      "staged_inputs_reverified": 588,
+      "enabled_HDL_inputs": 261,
+      "configuration_artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/workstation_profile.json",
+        "sha256": "024a9310956952d7c8a1a73140d703a9a2af7c56ceef9a1d3301fbbf778127d9"
+      },
+      "integration_manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/integration_inputs.json",
+        "sha256": "78494976808af7edae980dfc3f4f7273e28c162f9b51f17035fa4ac3a829d6be"
+      },
+      "synthesis_exit_code": 0,
+      "synthesis_log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/synthesis.log",
+        "sha256": "347a3fd3c4f3dcf78ed58623099c86c2ab2740fd88b27be3818ab92f0ad53c65"
+      },
+      "netlist": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "15115fd5beaf5d1ea4c383da795436639dec401fc2bf2d5b78f3e2f6779e0227"
+      },
+      "resources_xml": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+        "sha256": "05c1651ba481f767da8434b74186aa6f19ae1b5b07bd0ca20c0a151129709286"
+      },
+      "synthesis_resources": {
+        "Register": 46931,
+        "Lut": 51393,
+        "Alu": 12890,
+        "Bsram": 195,
+        "Ssram": 141,
+        "MULTALU27X18": 34,
+        "MULT12X12": 4,
+        "MULT27X36": 42
+      },
+      "synthesis_LUT_plus_ALU": 64283,
+      "strict_synthesis_gate_passed": true,
+      "strict_synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-physical-v1/parent_synthesis_audit.json",
+        "sha256": "9530f05c733dafd3458d161747bccb1bbdf6919aa9e1187c90b090a994b3576e"
+      },
+      "physical_measurement": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-physical-measurement-v1.json",
+        "sha256": "1e89f9768278d6f3e0755e75dfd81e0870ae0c2405411b0c0e7d6ddd48c8fa05"
+      },
+      "measured_physical": {
+        "schema": 1,
+        "stage": "full_physical_implementation_measurement",
+        "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-physical-v1",
+        "role": "M",
+        "candidate_identity": "custom138k-workstation-m-demo-v1-b5f6da2e64a82b66",
+        "user_code": "D2103115",
+        "tool": "Gowin V1.9.12",
+        "process_exit_code": 0,
+        "pnr_completed": true,
+        "bitstream_generated": true,
+        "source_policy": "audited_native_synthesis_netlist_with_explicit_ULPI_IO_type_only_and_unchanged_SDC",
+        "resource_usage": {
+          "Logic": {
+            "used": 65562,
+            "capacity": 138240
+          },
+          "Register": {
+            "used": 46931,
+            "capacity": 139095
+          },
+          "CLS": {
+            "used": 49901,
+            "capacity": 69120
+          },
+          "BSRAM": {
+            "used": 235,
+            "capacity": 340
+          },
+          "DSP": {
+            "used": 120,
+            "capacity": 298
+          },
+          "LUT": 51274,
+          "ALU": 13442,
+          "ROM16": 0,
+          "SSRAM": 141
+        },
+        "timing": {
+          "setup_violated_endpoints": 5619,
+          "hold_violated_endpoints": 1,
+          "global_worst_ns": {
+            "setup": -3.762,
+            "hold": -3.556,
+            "recovery": 3.349,
+            "removal": 0.275
+          },
+          "frequencies": {
+            "clk_50m": {
+              "required_mhz": 50.0,
+              "actual_mhz": 48.154
+            },
+            "ulpi_60m": {
+              "required_mhz": 60.0,
+              "actual_mhz": 84.788
+            },
+            "dac_ref12m288": {
+              "required_mhz": 12.288,
+              "actual_mhz": 145.916
+            },
+            "dac_ref16m9344": {
+              "required_mhz": 16.934,
+              "actual_mhz": 149.287
+            },
+            "audio_76m8": {
+              "required_mhz": 76.8,
+              "actual_mhz": 59.585
+            },
+            "usb_48m": {
+              "required_mhz": 48.0,
+              "actual_mhz": 64.139
+            },
+            "ddr_mem400": {
+              "required_mhz": 400.0,
+              "actual_mhz": 2338.897
+            },
+            "ddr_ui100": {
+              "required_mhz": 100.0,
+              "actual_mhz": 172.013
+            },
+            "video_pixel148": {
+              "required_mhz": 148.5,
+              "actual_mhz": 177.746
+            },
+            "cpu_ram50": {
+              "required_mhz": 50.0,
+              "actual_mhz": 106.547
+            },
+            "cpu_core100": {
+              "required_mhz": 100.0,
+              "actual_mhz": 1377.41
+            },
+            "selected48": {
+              "required_mhz": 12.288,
+              "actual_mhz": 117.889
+            },
+            "selected44": {
+              "required_mhz": 16.934,
+              "actual_mhz": 117.889
+            }
+          },
+          "checks": {
+            "clk_50m": {
+              "setup": {
+                "tns_ns": -3.222,
+                "endpoints": 11
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "ulpi_60m": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "dac_ref12m288": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "dac_ref16m9344": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "audio_76m8": {
+              "setup": {
+                "tns_ns": -6456.676,
+                "endpoints": 5025
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "usb_48m": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "ddr_mem400": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "ddr_ui100": {
+              "setup": {
+                "tns_ns": -390.106,
+                "endpoints": 522
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "video_ref49": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "video_serial742": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "video_pixel148": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "cpu_ram50": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "cpu_core100": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "cpu_rtc_bound": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "selected48": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            },
+            "selected44": {
+              "setup": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              },
+              "hold": {
+                "tns_ns": 0.0,
+                "endpoints": 0
+              }
+            }
+          },
+          "top_negative_paths": {
+            "setup": [
+              {
+                "kind": "setup",
+                "slack_ns": -3.762,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[15]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.056,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.758,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[18]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.086,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.755,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[20]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.062,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.753,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[5]_2_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.008,
+                "data_delay_ns": 16.517,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.753,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[5]_3_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.008,
+                "data_delay_ns": 16.517,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.753,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_11_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.029,
+                "data_delay_ns": 16.496,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.753,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_14_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.029,
+                "data_delay_ns": 16.496,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.751,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[22]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.15,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.746,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[28]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.043,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.742,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[25]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.043,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.735,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[26]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.057,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.732,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[16]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.064,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.728,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[6]_2_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.013,
+                "data_delay_ns": 16.486,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.728,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[6]_8_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.013,
+                "data_delay_ns": 16.486,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.728,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[6]_10_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.013,
+                "data_delay_ns": 16.486,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.723,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[34]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.047,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.709,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[23]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.153,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.707,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[19]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.071,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.703,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[32]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.15,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.702,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_18_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.033,
+                "data_delay_ns": 16.441,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.698,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_4_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.021,
+                "data_delay_ns": 16.449,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.695,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[25]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 15.989,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.693,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[0]_31_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.008,
+                "data_delay_ns": 16.457,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.689,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[7]_4_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.015,
+                "data_delay_ns": 16.445,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.687,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[16]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.011,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.681,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[33]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 15.983,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[4]_22_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.054,
+                "data_delay_ns": 16.392,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[4]_26_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.054,
+                "data_delay_ns": 16.392,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[4]_27_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.054,
+                "data_delay_ns": 16.392,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[4]_28_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.054,
+                "data_delay_ns": 16.392,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_28_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.021,
+                "data_delay_ns": 16.424,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.674,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[6]_30_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.021,
+                "data_delay_ns": 16.424,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.661,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[19]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.018,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.658,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/base_step[0]_0_s65/RESET",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.047,
+                "data_delay_ns": 16.334,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.655,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[27]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 15.978,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.65,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[29]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.088,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.645,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[17]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 16.088,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.638,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n21025_s/B[26]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.081,
+                "data_delay_ns": 15.953,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.636,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[0]_6_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.023,
+                "data_delay_ns": 16.385,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.636,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[0]_21_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.023,
+                "data_delay_ns": 16.385,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.629,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[0]_5_s1/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.015,
+                "data_delay_ns": 16.385,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.623,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[35]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.074,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.615,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[21]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 15.953,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.609,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[13]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 15.913,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.6,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[5]_31_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.008,
+                "data_delay_ns": 16.364,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.596,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[29]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.041,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.594,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[5]_4_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.015,
+                "data_delay_ns": 16.35,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.594,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[5]_5_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.015,
+                "data_delay_ns": 16.35,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.591,
+                "source": "u_managed/runtime/compute_release_2_s0/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/n20973_s/B[17]",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.074,
+                "data_delay_ns": 16.042,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              },
+              {
+                "kind": "setup",
+                "slack_ns": -3.59,
+                "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/underflow_sticky_s1/Q",
+                "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/phase[7]_26_s0/CE",
+                "source_clock": "audio_76m8:[R]",
+                "destination_clock": "audio_76m8:[R]",
+                "relation_ns": 13.021,
+                "skew_ns": 0.021,
+                "data_delay_ns": 16.34,
+                "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+              }
+            ],
+            "hold": [
+              {
+                "kind": "hold",
+                "slack_ns": -3.556,
+                "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+                "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+                "source_clock": "ddr_ui100:[R]",
+                "destination_clock": "clk_50m:[R]",
+                "relation_ns": 3.5,
+                "skew_ns": -0.489,
+                "data_delay_ns": 0.481,
+                "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+              }
+            ],
+            "recovery": [],
+            "removal": []
+          }
+        },
+        "exact_DDR_hold": {
+          "slack_ns": -3.556,
+          "arrival_ns": 1.886,
+          "required_ns": 5.442,
+          "relationship_ns": 3.5,
+          "clock_skew_report_ns": 0.489,
+          "launch_location": "R90C8[1][A]",
+          "capture_location": "R90C5[1][A]"
+        },
+        "source_and_output_sha256": {
+          "custom_138k_integration.vg": "15115fd5beaf5d1ea4c383da795436639dec401fc2bf2d5b78f3e2f6779e0227",
+          "impl/pnr/custom_138k_integration.fs": "d0defbe390bb586be0082933568713517cf4dbe462293c1546f9907092fa91ae",
+          "impl/pnr/custom_138k_integration.rpt.txt": "70795ff697ec24e6a4fd6a606d0d573e8166149de86313f9a2a0a85f8e78f9e9",
+          "impl/pnr/custom_138k_integration.tr": "8cc7b6938f31cc73bd3d0ad0213c3ba7977f7d638e7b301ec7e09af47187f459",
+          "impl/pnr/custom_138k_integration.vo": "08f8dcbb588e1fee47f75df943bdb63ddf16eccb6f379d7ef71eadc74aa8c85f",
+          "parent_integration_inputs.json": "78494976808af7edae980dfc3f4f7273e28c162f9b51f17035fa4ac3a829d6be",
+          "parent_pinout.json": "7167100c4c828da3deeb151ffa7957a2c62111fd111baa028388b84a5a9f4571",
+          "parent_synthesis_audit.json": "9530f05c733dafd3458d161747bccb1bbdf6919aa9e1187c90b090a994b3576e",
+          "parent_workstation_profile.json": "024a9310956952d7c8a1a73140d703a9a2af7c56ceef9a1d3301fbbf778127d9",
+          "physical.cst": "3410fdce9ae4525e5667d75697db6a7f782f3c1fc2540e671fe1af97c8c2d6cb",
+          "physical.sdc": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c",
+          "physical_inputs.json": "06c8c1bd8a17b517bd88331ed5b8d2f7e55dd25056647be57d07aad0ef1395a4",
+          "pnr.log": "83dae5791645f2f257cf1e0fbbc4abc021fe351771a2e60fec87fc883775cea4",
+          "run.tcl": "ed16ad22a1697997c9deae7c11f8b0bec2fab81cc3554f02546aadbdaae6179d"
+        },
+        "measurement_script_sha256": "fbfc1c24e4ce9b41fdb8b30d8e18e51f06053585f25d4590cae3aa2197feed18",
+        "timing_auditor_sha256": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+        "physical_input_inventory_reverified_after_pnr": true,
+        "timing_closed": false,
+        "physical_CDC_accepted": false,
+        "hardware_tested": false,
+        "SRAM_deployed": false,
+        "Flash_deployed": false,
+        "release_ready": false,
+        "rollback": "No programming; previous board image unchanged.",
+        "warnings": [
+          "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50m_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+        ]
+      },
+      "clk50_reports": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-clk50-v1.json",
+        "sha256": "533423c144e7d3787232d0402965bacaed5d720591ad8824a2e8048de1b0c688"
+      },
+      "native_synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-native-protocol-synthesis-20261031-v1/audit.json",
+        "sha256": "0d44c767b237394f8e990c95e52308e37950bf306f85cce6da3ae881e0907b80"
+      },
+      "native_routed_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-routed-protocol-audits-20261031-v1/native_protocol.json",
+        "sha256": "74e04587a7db55536582d1d64d9103d1d0a0c748035f6dec46cdce618f57b9b8"
+      },
+      "boundary_routed_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-routed-protocol-audits-20261031-v1/demo_boundary.json",
+        "sha256": "2dfacd6cb3f02ac22ab0d305a79988490d4dabce495e1fc7fe62a7f0b1831067"
+      },
+      "pll_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-routed-protocol-audits-20261031-v1/pll_explicit_simlib.json",
+        "sha256": "7bdeca1b653988e2a6bd58de95c75b5939d50b2d6395236aec006c3e66c4b897"
+      }
+    },
+    "W": {
+      "candidate_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1dddd2e83ad1cfd",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "ae350_worker_session_classic_runtime_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 131072,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "ae350_pcm_policy": "ae350_decoded_pcm_source_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_demo_v1",
+        "recording_owner_policy": "single_ble_ddr_object_v1",
+        "usb_adapter_policy": "worker_25k_v1"
+      },
+      "source_lock": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+        "sha256": "beceaa7547a2ea071fe36150a5566bba7d60e31445de6f99012206cc3f17b5cd"
+      },
+      "source_lock_entries": 822,
+      "staged_inputs_reverified": 645,
+      "enabled_HDL_inputs": 284,
+      "configuration_artifact": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation_profile.json",
+        "sha256": "97be2fb3d17733e9479570d206be2b785791f445ed58f81277b39ec1838e1383"
+      },
+      "integration_manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/integration_inputs.json",
+        "sha256": "3276f359b0c7be9180804537c767cc7205818ed9d2dce8e9a2ab71e2ce86e6a7"
+      },
+      "synthesis_exit_code": 0,
+      "synthesis_log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/synthesis.log",
+        "sha256": "80a7ee29f21ca39bb3d57e03bb23fc0093915b375647bdee01368678cf132863"
+      },
+      "netlist": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "cb72a1b61b32a0dfd85e8bf67559de70ed08ae2de22baf6953afbea8de1114e9"
+      },
+      "resources_xml": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v10/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+        "sha256": "8d0069190d1a4ca1fcd7db9f57d543598e904ab039614c65140d60db9d88e05b"
+      },
+      "synthesis_resources": {
+        "Register": 45073,
+        "Lut": 60993,
+        "Alu": 20321,
+        "Bsram": 257,
+        "Ssram": 310,
+        "MULTALU27X18": 9,
+        "MULT12X12": 1,
+        "MULT27X36": 29
+      },
+      "synthesis_LUT_plus_ALU": 81314,
+      "strict_synthesis_gate_passed": false,
+      "strict_failure_log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w10-synthesis-audit-v1/strict-gate.log",
+        "sha256": "7ed4b3d672477212404ec3644bc12bc0da0a4697a89c2ddc7b57c42c879fdf0f"
+      },
+      "strict_failure": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py\", line 323, in audit\n    return audit_demo(ROOT, output, metadata)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py\", line 527, in audit\n    actual_synthesis=audit_fifo_reset(PcmNetlist(vg_text, TOP)))\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_usb_fifo_reset.py\", line 228, in audit_synthesis\n    admission = g.equivalent(contract, [grant, q], lambda x: bool(x[1]) or x[0] == 0, cuts=inputs)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py\", line 375, in equivalent\n    require(predicate([self.value(x, a) for x in nets]), 'Boolean contract changed: ' + label)\n  File \"/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_pcm_cdc.py\", line 104, in require\n    raise ValueError('runtime PCM CDC audit: ' + message)\nValueError: runtime PCM CDC audit: Boolean contract changed: actual packet memory cannot write before local release\n",
+      "physical_prepared": false,
+      "PNR_started": false,
+      "physical_user_code": null
+    }
+  },
+  "validation": {
+    "current_sources_tests": 17,
+    "demo_audit_tests": 15,
+    "all_passed": true
+  },
+  "PLL_first_environment_failure": {
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-pll-v1.log",
+      "sha256": "ba5248b14ee41d1464a9ca77f3b02d180eb28a149e36a8cd5f42d87bf53b5e87"
+    },
+    "reason": "Official Gowin models were not discoverable in subprocess environment; explicit installed GOWIN_SIMLIB in new external workspace passed. Original failure retained."
+  },
+  "far_first_prepare_rejection": {
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v11-physical-far-prepare-v1.log",
+      "sha256": "3309a86774ba64e0a07cd11db1547b352dfea4730b722af629bddac01774afd0"
+    },
+    "reason": "Command omitted existing explicit electrical-risk acknowledgement; rejected before derivation. Retry uses authorized acknowledgement with a separate log."
+  },
+  "acceptance": {
+    "M_timing_closed": false,
+    "W_strict_synthesis_gate_passed": false,
+    "whole_CDC_accepted": false,
+    "hardware_tested": false,
+    "SRAM_deployed": false,
+    "Flash_deployed": false,
+    "release_ready": false
+  },
+  "remaining": [
+    "Resolve W exact USB CEA proof without altering sealed candidate bytes or relaxing functional admission.",
+    "Factor M measured audio launch and TF context path; rerun complete candidates.",
+    "Preserve 3.500ns DDR hold and measure any derived placement with new identity.",
+    "Complete real DAC/HDMI, phone A2DP/D/BLE and recording-download acceptance."
+  ],
+  "rollback": "No programming performed in this task; protected single-board worktree and deployed board state were not modified."
+}

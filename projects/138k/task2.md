@@ -246,6 +246,8 @@ W的[D精确组合运算改写](push2_workstation/usb_a/reports/dual138k_d_proce
 
 两份DEMO新增[两处接收边界的四条精确约束](push2_workstation/usb_a/reports/DUAL138K_DEMO_BOUNDARY_CDC_20261031.md)，独立元数据固定helper身份；M10b／W9b实际VG／VO各6项测试及60负例通过，完整角色清单保留后级2ns及13个功能写指针的recovery／removal。旧两份与新M11／W10的prepare复验通过，17项来源与15项DEMO回归通过；未豁免同步reference48 hold。新M11／W10均全量综合完成，M11严格门通过并以`D2103115`启动完整P&R；W10严格门在USB packet RAM写许可布尔证明拒绝，失败日志保留，尚未进入物理实现，正在核对实际映射，未放宽门禁或上板。
 
+M11／W10的[新候选来源与完整测量](push2_workstation/usb_a/reports/DUAL138K_M11_W10_CANDIDATES_20261031.md)已固定各822项锁、完整配置及588／645封存输入。M11 `D2103115`默认P&R已完成：物理CLS49,901、BSRAM235、DSP120，setup5,619／−3.762ns、hold1／−3.556ns，仍不可部署；recovery+3.349ns，原生VG／VO、边界VO和PLL子门通过。50MHz真实TF路径另有11条负报告路径，最差−0.766ns；正在分别修复音频配置资格重汇合及TF恢复长链。W10全量综合LUT＋ALU81,314／FF45,073／BSRAM equivalent257，严格门失败仍保持，未P&R或上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
