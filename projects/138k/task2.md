@@ -292,6 +292,8 @@ W11真实录音长链的[START宽初始化许可因子化](push2_workstation/usb
 
 参考monitor单行区域试验`D2110105`的[完整物理结果](push2_workstation/usb_a/reports/dual138k_reference_monitor_regions_physical_20261101.md)已封存：setup7,024／−5.878ns、hold18／−0.487ns，未闭合。44.1k参考hold清零，但48k增至18；同排目标FF仍有1.110ns fabric clock偏斜。保持父VG／SDC及DDR3.500ns（实测+0.679ns），完整VO／边界／PLL子门和前后hash通过；该区域不作为W12默认，不预记收益，未上板。
 
+W12 `13266a0d74cad8e8`已从两份更新后的822项锁完成[prepare／全量综合及严格门](push2_workstation/usb_a/reports/DUAL138K_W12_PREPARE_SYNTHESIS_20261101.md)：951来源快照、645封存／284启用输入复验，实际消费PCM／HCI分组、raw START及M13共享audio。综合FF45,092／LUT55,357／ALU14,093／BSRAM equivalent257，完整strict通过；来源17／DEMO审计15／策略7回归通过，旧非DEMO profile漂移失败如实保留。实际分组网表与新`D2110106`物理实现另验，不继承D105区域、时序或硬件接受，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
