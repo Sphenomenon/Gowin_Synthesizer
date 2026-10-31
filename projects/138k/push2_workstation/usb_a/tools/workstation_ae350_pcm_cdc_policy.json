@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "policy": "ae350-pcm-cdc-boundaries-v1",
+  "source_revision": "e0688427d517632cc61eae16300efa15500eb0e0",
+  "source_sha256": {
+    "rtl/audio/workstation_ae350_pcm_owner.sv": "765e05213e6de5df1c729ef9b43ac2a40025fdaf90ebc060080079855d31dfb8",
+    "rtl/audio/workstation_ae350_pcm_session.sv": "e3f484857d767b2f12f700badaf7f5e40409a0568ec0d26d1015ccf735d7b5bb",
+    "rtl/audio/workstation_i2s_serializer.sv": "9a46866c4395e067fab7f433f71ca9c7711482993d4f9de75fc37282748f0612",
+    "rtl/audio/workstation_pcm_frame_bridge.sv": "58752fad08b2476ad59b5427cceaad2894b208291a9b510d0b003475c4f5160e",
+    "rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
+    "rtl/workstation/workstation_runtime_audio.sv": "c470d8dfc314a785778e166a6c717d03dd385e845f8bce5e1f06c54efcb07a0d",
+    "rtl/workstation/workstation_runtime_controlled.sv": "62527c308e3699a76e6bec3553531f4b49c72a964b6ccf6f984caccde218790d",
+    "rtl/workstation/gw138k_push_workstation_top.v": "ba87c7be7e1379dcdcb4d157625628a254645c608b089d00ba2491a941b4a213",
+    "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "01c72a3b365e711e2425d552dec2eaaa5863292ca38295a27bb35a0c666f6d8e",
+    "rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "8240975d4f1e119c86b7f5a0dd743f6db96dc67caa688c9992413a5a68e223e5",
+    "rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "3df4ce98983befedff74089b204bd38088649c81a5559a1cdcb87ed3c5cc44b3",
+    "rtl/bluetooth/hci_owner/workstation_hci_bluetooth.sv": "991be5ff27114acd682c2eb569e8bec0bfadd259c337f7f2fefbd01287dfec7b",
+    "rtl/bluetooth/hci_owner/workstation_hci_initializer.v": "0141ad4c497de8190b22193cb9bbe7d7002757935379b2fce462bc53677619f1",
+    "tools/workstation_classic_runtime.py": "f22e819e3ef26703116aac55b18e9c71efe79a4aab41e299e31eb7cf56ac79a0",
+    "tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3"
+  },
+  "prepared_APB_source": "src/migration/gw138k_apb_cdc.sv",
+  "prepared_APB_sha256": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+  "payload_max_delay_ns": 10,
+  "synchronizer_max_delay_ns": 2,
+  "physical_acceptance": false
+}

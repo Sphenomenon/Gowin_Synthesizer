@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "stage": "ae350_pcm_cdc_source_prepare_and_behavior",
+  "date": "2026-10-31",
+  "source_revision": "e0688427d517632cc61eae16300efa15500eb0e0",
+  "candidate_identity": "custom138k-workstation-classic-runtime-v1-3961efe8f7b81db7",
+  "evidence": {
+    "prepare-review-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-pcm-cdc-audit-v1/prepare-review-v2.json",
+      "sha256": "25edb12e6eee277aac9e6fedd432851d885df296cdb31f6e39652844a1c7bf34"
+    },
+    "hci-session-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-pcm-cdc-audit-v1/hci-session-v1/verification.json",
+      "sha256": "c3f6126a90ced97c95f5710772dbda38cf535e22d874e56deb787ed101881597"
+    },
+    "apb-reset-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-pcm-cdc-audit-v1/apb-reset-v1/verification.json",
+      "sha256": "dfb58fc17378abaa20b180d95b4d167b98bd9a6f21beda8a603945a58aa692c6"
+    }
+  },
+  "gates": {
+    "reviewed_source_files": 15,
+    "prepared_APB_sha256": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "strict_auditor_unittest_cases": 4,
+    "synthetic_APB_FF_count": 181,
+    "synthetic_APB_payload_bits": 82,
+    "synthetic_graph_mutants": 10,
+    "source_drift_mutants": 2,
+    "SDC_mutants": 14,
+    "actual_HCI_clock_phases": 3,
+    "actual_HCI_native_checks_per_phase": 269,
+    "actual_HCI_session_captures_per_phase": 3,
+    "actual_HCI_session_revokes_per_phase": 3,
+    "actual_HCI_behavior_mutants": 4,
+    "actual_prepared_APB_checks": 54,
+    "actual_prepared_APB_accepted_commands": 6,
+    "actual_APB_behavior_mutants": 4,
+    "prior_serializer_boundary_tests": 2
+  },
+  "actual_synthesized_endpoints_verified": false,
+  "actual_SDC_query_resolution_verified": false,
+  "actual_CLEAR_PRESET_resolution_verified": false,
+  "physical_recovery_removal_verified": false,
+  "routed_propagation_verified": false,
+  "physical_CDC_accepted": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false,
+  "remaining": [
+    "bind actual joint full-workstation VG and strict process identity",
+    "actual HCI mux sources and complete endpoint inventory",
+    "actual selected-clock hold and switch-inhibit async PRESET/CLEAR topology",
+    "actual PCM storage and all RAM clock/write/read ownership",
+    "resolve every SDC query to actual pins including PRESET, capture D/CE and synchronization stages",
+    "routed setup/hold, bounded propagation, recovery/removal and hardware acceptance"
+  ]
+}
