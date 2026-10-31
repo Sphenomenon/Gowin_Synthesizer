@@ -9,3 +9,14 @@ name gives function SHA256 `11247717c12f218bd37fe96d399cc6a6e1ae6b7aa6228388bd3c
 `prove_d_process.py` checks that identity before testing. The fixture supplies
 the independent old-SV reference for full-function arithmetic, real core_ce
 snapshot, and D APB/CDC/I2S tests. It is never a production build input.
+
+`core_ce_before_effect_slot.svh` contains the exact complete `core_ce`
+assignment consumed by M11 from `gw138k_event_workstation.sv` SHA256
+`5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2`.
+With its original two leading spaces and no trailing newline the assignment
+SHA256 is `07e61423d09114dbb2ca3a19d0fc2084c35457a366f66890f6b7573e61a0046b`.
+`prove_effect_slot_admission.py` checks that identity and extracts the actual
+maintained Boolean equations, including the native/legacy `engine_clear`
+selection. It proves that only the redundant effects admission terms are
+factored out of `core_ce`; complete external `ready_o` remains unchanged.
+The fixture is simulation/proof-only and is never a production build input.

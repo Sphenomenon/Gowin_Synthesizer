@@ -24,6 +24,9 @@ module workstation_runtime_stereo_effects #(
     input logic [5:0] effect_order_i,
     input logic [6:0] delay_send_i,
     output logic ready_o,valid_o,
+    // Stored slot state only. The owning sample scheduler must separately
+    // veto fault, clear and accepted configuration/history transactions.
+    output wire sample_slot_ready_o,
     output logic signed [31:0] left_o,right_o,
     output logic clip_o,
     // P10 delay DDR ring bridge (memory-domain side, see delay_ddr_dma)
@@ -93,6 +96,7 @@ module workstation_runtime_stereo_effects #(
   assign quiescent_o=state==IDLE && !valid_o && !barrier_busy && (&stage_quiet) && !clear_i && !fault_o;
   assign config_ready_o=quiescent_o && (&stage_config_ready) && !valid_i;
   assign history_ready_o=quiescent_o && (&stage_history_ready) && !valid_i && !config_valid_i;
+  assign sample_slot_ready_o=state==IDLE && !barrier_busy;
   assign ready_o=state==IDLE && !barrier_busy && !fault_o && !clear_i && !config_accept && !history_accept;
   always_ff @(posedge clk_i or negedge rst_ni)begin
     if(!rst_ni)begin

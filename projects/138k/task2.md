@@ -250,6 +250,8 @@ M11／W10的[新候选来源与完整测量](push2_workstation/usb_a/reports/DUA
 
 M11的新[far物理测量](push2_workstation/usb_a/reports/DUAL138K_M11_FAR_PHYSICAL_20261031.md) `D2103117`完整P&R完成：保持VG／SDC及3.500ns DDR要求，目标hold+0.706ns，整机hold0／+0.123ns、recovery+2.190ns、removal+0.278ns；setup仍3,331／−2.343ns，不可部署。六PLL与边界VO子门通过；far额外原生CLI因并行TF维护源码pin变化而拒绝，未冒记通过。原输入和失败日志保留，未上板。
 
+按M11真实路径完成[音频启动许可的组合分解](push2_workstation/usb_a/reports/dual138k_effect_slot_admission_20261031.md)：效果模块提供只读存储空槽位，仅core_ce复用，完整外部ready及即时fault／clear／配置否决保留，不加流水或改变取参周期。全域native／legacy等价证明与4变异通过；115,929,947次边沿比较全部50公共输出和真实core_ce相等，48,691请求完整完成、48,645帧独立效果比较及双率正式I2S回归通过。生产源已冻结进入下一候选，未预记物理收益。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

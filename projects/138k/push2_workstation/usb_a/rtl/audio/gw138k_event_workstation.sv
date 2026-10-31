@@ -151,6 +151,7 @@ module gw138k_event_workstation #(
   logic [7:0] issued;
   logic [31:0] held_pcm_l, held_pcm_r;
   logic fx_ready;
+  wire fx_sample_slot_ready;
   logic scope_enable,scope_muted,scope_control_error;
   logic [2:0] scope_morph_shape;
   logic [6:0] scope_shape,scope_morph,scope_scale,scope_rotation;
@@ -306,7 +307,12 @@ module gw138k_event_workstation #(
       // cannot feed through effect admission and back to its drain fence.
       !load_busy && !mix_busy && vec_ready && (RUNTIME_EFFECTS_ENABLE ? fx_quiet : fx_ready) &&
       !synth_valid_o && !vec_valid && !sample_valid_o && !runtime_config_busy && !runtime_fault;
-  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready && fx_ready &&
+  // The outer runtime fences below already exclude effect fault/clear and
+  // both configuration request inputs. Use stored effect-slot state here so
+  // core_ce does not re-enter the complete configuration admission cone.
+  // All other effect consumers retain the full fx_ready handshake.
+  assign core_ce=(pending || sample_ce_i) && core_sample_ready && vec_ready &&
+      (RUNTIME_EFFECTS_ENABLE ? fx_sample_slot_ready : fx_ready) &&
       !synth_joined && !vec_joined && !panic_accept && !native_clear && !runtime_config_block && !runtime_config_busy && !runtime_fault &&
       (!REQUEST_DRIVEN_RENDER || (RUNTIME_RATE_ENABLE ? runtime_quiescent : legacy_cancel_tail==0));
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_configuration
@@ -509,7 +515,7 @@ module gw138k_event_workstation #(
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),
       .synth_gain_i(EXTERNAL_MASTER_VOLUME ? expression_gain : synth_gain_o),.pcm_gain_i(pcm_gain_o),.effect_mask_i(effect_mask_o),.effect_order_i(effect_order_o),
       .delay_send_i(d_delay_send),
-      .ready_o(fx_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
+      .ready_o(fx_ready),.sample_slot_ready_o(fx_sample_slot_ready),.valid_o(sample_valid_o),.left_o(effect_left),.right_o(effect_right),.clip_o(fx_clip),
       .mem_clk_i(delay_mem_clk_i),.mem_rst_ni(delay_mem_rst_ni),
       .dwr_valid_o(delay_dwr_valid_o),.dwr_data_o(delay_dwr_data_o),.dwr_pop_i(delay_dwr_pop_i),
       .drd_push_i(delay_drd_push_i),.drd_data_i(delay_drd_data_i),.drd_ready_o(delay_drd_ready_o),

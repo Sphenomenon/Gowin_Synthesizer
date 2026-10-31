@@ -21,6 +21,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--effect-slot-miter', action='store_true',
+                        help='Compare every public service output and core_ce to exact consumed M11 modules every half cycle')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -54,8 +56,62 @@ def main():
     memory.write_text(memory_text[:memory_text.index(anchor)])
     tb = Path(__file__).with_name('tb_workstation_runtime_render_service.sv')
     sources += [memory, tb]
+    miter_inputs = []
+    if args.effect_slot_miter:
+        references = [
+            (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',
+             '5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2'),
+            (project / 'rtl/audio/workstation_runtime_stereo_effects.sv', 'workstation_runtime_stereo_effects',
+             '7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826'),
+            (project / 'rtl/audio/workstation_audio_render_service.sv', 'workstation_audio_render_service',
+             '148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968')]
+        for path, name, expected in references:
+            if expected is not None and digest(path) != expected:
+                raise ValueError('Exact consumed M11 reference drift: ' + str(path))
+            text = path.read_text()
+            for _, module, _ in references:
+                text = re.sub(r'\b' + module + r'\b', module + '_before_effect_slot', text)
+            if name == 'workstation_runtime_stereo_effects':
+                # Verilator conflates the two identically named hierarchical
+                # defparam targets in this dual-service miter. Rename only the
+                # reference instance and its two targets; keep both exact
+                # RAM_STYLE values and all behavioral expressions unchanged.
+                if len(re.findall(r'\bdelay_stage\b', text)) != 3:
+                    raise ValueError('Reference delay-stage hierarchy drift')
+                text = re.sub(r'\bdelay_stage\b', 'reference_delay_stage', text)
+            target = output / (name + '_before_effect_slot.sv')
+            target.write_text(text)
+            sources.append(target);miter_inputs.append(path)
+        service = (ROOT / 'rtl/audio/workstation_audio_render_service.sv').read_text()
+        header = re.search(r'module workstation_audio_render_service\b.*?\n\);', service, re.S)[0]
+        parameters = re.findall(r'parameter (?:bit|integer) (\w+)=', header)
+        declarations = re.findall(r'\b(input|output)\s+(?:wire|reg)\s+(signed\s+)?(\[[^\]]+\]\s+)?(.*?)(?=\binput\b|\boutput\b|\)\s*;)', header, re.S)
+        ports = [(direction, (signed or '') + (width or ''), name.strip())
+                 for direction, signed, width, names in declarations
+                 for name in names.rstrip().rstrip(',').split(',')]
+        if len(ports) != 72 or any(not re.fullmatch(r'\w+', name) for _, _, name in ports):
+            raise ValueError('Exact service miter port inventory drift: ' + str(len(ports)))
+        actual_ports = ','.join('.' + name + '(' + name + ')' for _, _, name in ports)
+        reference_ports = ','.join('.' + name + '(' + ('reference_' if direction == 'output' else '') + name + ')'
+                                   for direction, _, name in ports)
+        propagated = '#(' + ','.join('.' + name + '(' + name + ')' for name in parameters) + ')'
+        outputs = [name for direction, _, name in ports if direction == 'output']
+        wrapper = header.replace('module workstation_audio_render_service', 'module effect_slot_service_miter').replace('output reg', 'output wire')
+        wrapper += '\n' + '\n'.join('wire ' + width + 'reference_' + name + ';'
+                                    for direction, width, name in ports if direction == 'output')
+        wrapper += '\nworkstation_audio_render_service ' + propagated + ' actual(' + actual_ports + ');\n'
+        wrapper += 'workstation_audio_render_service_before_effect_slot ' + propagated + ' reference(' + reference_ports + ');\n'
+        wrapper += 'integer comparisons=0;\nalways @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
+        wrapper += 'if({' + ','.join(outputs) + '} !== {' + ','.join('reference_' + name for name in outputs) + '})$fatal(1,"actual old/new full service public output differs");\n'
+        wrapper += 'if(actual.workstation.core_ce!==reference.workstation.core_ce)$fatal(1,"actual old/new core_ce sampling edge differs");comparisons=comparisons+1;end\n'
+        wrapper += 'final $display("EFFECT_SLOT_MITER comparisons=%0d public_outputs=' + str(len(outputs)) + '",comparisons);\nendmodule\n'
+        target = output / 'effect_slot_service_miter.sv';target.write_text(wrapper);sources.append(target)
+        adapted = output / tb.name
+        text = tb.read_text().replace('workstation_audio_render_service #(', 'effect_slot_service_miter #(').replace('dut.', 'dut.actual.')
+        if text == tb.read_text():raise ValueError('Actual service miter fixture anchor drift')
+        adapted.write_text(text);sources[sources.index(tb)] = adapted;miter_inputs.append(tb)
     banks_path = ROOT / 'rtl/audio/runtime_spatial_room_preset.json'
-    inputs = [*sources, memory_reference, Path(__file__).resolve(), banks_path,
+    inputs = [*sources, *miter_inputs, memory_reference, Path(__file__).resolve(), banks_path,
               ROOT / 'sim/test_workstation_runtime_effects.py', ROOT / 'sim/test_workstation_runtime_reverb.py',
               ROOT / 'rtl/audio/runtime_spatial_room_preset.svh']
     inputs += sorted((project / 'sim/data').rglob('*.mem'))
@@ -63,7 +119,7 @@ def main():
     hashes = {str(path): digest(path) for path in inputs}
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False,
                   scope='Opt-in full native dual-rate render service; real 200ms delay ring and ordered posted DDR model',
-                  project=str(project), input_sha256=hashes,
+                  project=str(project), input_sha256=hashes, effect_slot_miter=args.effect_slot_miter,
                   memory_model='Exact leading module extracted from committed effects TB; writes execute after command acceptance, fence ACK follows ordered read response')
     try:
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',

@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "stage": "M11_core_ce_effect_slot_combinational_factorization",
+  "scope": "Only factor redundant native effects admission from existing core_ce; no clock cycle, PCM/parameter acceptance, fault veto or cancellation changes",
+  "production_sources": {
+    "rtl/audio/gw138k_event_workstation.sv": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+      "sha256": "87d9497ec7e228453aa8e29a96d6f79e693696b324e09a69aaece3dcece19809"
+    },
+    "rtl/audio/workstation_runtime_stereo_effects.sv": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv",
+      "sha256": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50"
+    }
+  },
+  "old_reference": {
+    "candidate_identity": "custom138k-workstation-m-demo-v1-b5f6da2e64a82b66",
+    "physical_user_code": "D2103115",
+    "event_workstation_sha256": "5771d9d60e2e150c27a72e9ad1bf031c7d1faf952bf474d8791237171cb886a2",
+    "stereo_effects_sha256": "7bd9a9f547f82bb30f9f015610f9ac448c1ae374fe87366e1d37d52f2093b826",
+    "render_service_sha256": "148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968",
+    "full_old_core_ce_sha256": "07e61423d09114dbb2ca3a19d0fc2084c35457a366f66890f6b7573e61a0046b",
+    "measured_setup_ns": -3.762,
+    "measured_setup_violated_endpoints": 5619,
+    "measured_hold_ns": -3.556,
+    "measured_path": "compute_release_2_s0/Q -> core_ce admission cone -> vector_engine DSP B; nearby underflow_sticky path -3.753 ns",
+    "evidence": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/dual138k_m11_w10_candidates_20261031.json",
+      "sha256": "e88aad459e5f388e183748c5f531ef14fb56457f725712755595affc7d856602"
+    }
+  },
+  "behavior": {
+    "external_complete_ready_preserved": true,
+    "all_other_fx_ready_consumers_preserved": true,
+    "instantaneous_fault_veto_preserved": true,
+    "actual_engine_clear": "RUNTIME_EFFECTS_ENABLE ? native_clear:panic_accept",
+    "new_sample_cycles": 0,
+    "parameter_sampling_moved": false,
+    "pcm_sampling_moved": false,
+    "reason": "Outer not-busy and not-config-block eliminate both request inputs, outer runtime_fault excludes effect fault, and actual native engine_clear is native_clear; only stored IDLE/not-barrier state remains inside core_ce. Legacy still selects original fx_ready."
+  },
+  "boolean_proof": {
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/boolean-v3/verification.json",
+      "sha256": "973897e4ef68417e1a7d4c01969558d81bc25a62f6849706e7b4aa3f64f8f88b"
+    },
+    "all_combinational_states": true,
+    "native_unsat": true,
+    "legacy_unsat": true,
+    "reachability_assumptions": [],
+    "mutations_rejected_by_actual_core_ce_difference": [
+      "slot_barrier_removed",
+      "top_fault_veto_removed",
+      "top_clear_veto_removed",
+      "top_configuration_veto_removed"
+    ]
+  },
+  "actual_old_new_full_service": {
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/full-service-miter-v3/verification.json",
+      "sha256": "f931df4cf84c196cad97113245e519930b80775230c1e484edf4893e13a47e84"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/full-service-miter-v3/run.log",
+      "sha256": "533cef5326f663b825e4235b9f56cf4c55bac118c7e9fe737f0e5087ff354c10"
+    },
+    "passed": true,
+    "half_cycle_comparisons": 115929947,
+    "public_outputs_compared": 50,
+    "internal_core_ce_compared": true,
+    "metrics": {
+      "requests": 48691,
+      "responses": 48691,
+      "modeled_frames": 48645,
+      "configs": 21,
+      "histories": 324,
+      "cancels": 11,
+      "wet48": 17185293,
+      "wet44": 18098972,
+      "pitch_checks": 49784608,
+      "max_latency": 1620,
+      "max_steady_latency": 1168,
+      "max_auto_config_latency": 1620,
+      "max_loader_latency": 1204,
+      "posted_writes": 12160,
+      "ordered_fences": 326,
+      "vector_dispatch_cycles": 2056,
+      "vector_accepted_events": 10,
+      "vector_release_cases": 2,
+      "epoch_equality_checks": 115929946,
+      "epoch_advances": 1074,
+      "epoch_wraps": 1,
+      "epoch_match_returns": 36,
+      "simultaneous_request_panic": 3,
+      "epoch_wrap_cases": 1
+    },
+    "independent_fixed_point_compared_frames": {
+      "48000": 24323,
+      "44100": 24322
+    },
+    "inputs_unchanged_during_run": true,
+    "reference_adaptation": "Only three module names and reference effects delay_stage instance/its two unchanged RAM_STYLE defparam targets are renamed in generated test copies; shared DDR model sees identical inputs, and every DDR output is included among all 50 comparisons."
+  },
+  "d_only_apb_cdc_effects_i2s": {
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/d-only-i2s/result.json",
+      "sha256": "c9d4d27abd95d530fd06f9f3c237e5a508dc58da7851827fa49052942dba3f1c"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/d-only-i2s/run.log",
+      "sha256": "257792061c9e29db1fcd2db7655d61a2be62d78835d15fbf66ec46ccef6f4c76"
+    },
+    "passed": true,
+    "physical_frames": 1918,
+    "core_ce_snapshots": 1913,
+    "display_snapshots": 1917,
+    "panic_cases": 12,
+    "inflight_panics": 10,
+    "per_rate_dry_frames": 143,
+    "per_rate_drive_frames": 32,
+    "per_rate_crush_frames": 32,
+    "per_rate_wet_frames": 547
+  },
+  "generic_apb_cdc_effects_i2s": {
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/generic-i2s/result.json",
+      "sha256": "8adb025bb6ea132d433dd786d47988cb39f360d4fcddc0e9e670cdc489f99c03"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/generic-i2s/run.log",
+      "sha256": "496c9efc3afb279a9a3f803fd7613d342ef922c44d33cee57ac36e4857d57de2"
+    },
+    "passed": true,
+    "physical_frames": 1454,
+    "good_frames": 1436,
+    "explicit_error_frames": 18,
+    "direct_pcm_frames": 119,
+    "half_volume_frames": 37,
+    "history_clears": 9,
+    "wet_products": 446
+  },
+  "retained_earlier_attempts": [
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/boolean",
+      "failure": "Proof extraction initially matched native and fixed configuration assignments; test extraction corrected."
+    },
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/boolean-v2",
+      "failure": "Proof grammar initially lacked typed legacy equality constant; test parser corrected."
+    },
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/full-service-miter",
+      "failure": "Miter port inventory expected 83 rather than actual 72; test inventory corrected."
+    },
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/full-service-miter-v2",
+      "compile_log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m11-effect-slot-admission-v1/full-service-miter-v2/compile.log",
+        "sha256": "eea64637000c937bef17e78aa6b4c26e224cb3a37faaec9602caf131c1b046f7"
+      },
+      "failure": "Verilator conflated identically named hierarchical defparam targets in two module types; only reference instance hierarchy renamed, both RAM_STYLE values preserved."
+    }
+  ],
+  "acceptance": {
+    "source_and_offline_verification_passed": true,
+    "new_candidate_synthesis_verified": false,
+    "new_candidate_PNR_verified": false,
+    "new_candidate_physical_CDC_accepted": false,
+    "new_candidate_resource_saving_claimed": false,
+    "new_candidate_timing_improvement_claimed": false,
+    "hardware_tested": false,
+    "SRAM_deployed": false,
+    "Flash_deployed": false,
+    "release_ready": false
+  },
+  "rollback": "Restore original complete core_ce assignment and remove the read-only effects slot port/connection. Rebuild with a new candidate identity; no hardware was altered by this source stage."
+}
