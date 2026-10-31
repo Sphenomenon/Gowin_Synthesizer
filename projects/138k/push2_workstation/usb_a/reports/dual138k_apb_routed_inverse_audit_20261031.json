@@ -1,0 +1,266 @@
+{
+  "schema": 1,
+  "validation_stage": "external_native_apb_routed_inverse_and_split_launch_mapping_audit_v4",
+  "maintained_source_sha256": {
+    "tools/workstation_native_protocol_audit.py": "49af05fd28776d3cae3ce64cb610df18462780325d4d91c5365e702e8d559658",
+    "sim/test_workstation_native_protocol.py": "cdf50bde15de1f691415b6632ffe4eafc658afe5c3c97d7d25cb6bc3b0ba061f"
+  },
+  "prior_v3_evidence_sha256": "18eeb3d98ef1dfee593b01e17e1ed00e327dff3700ae253db7de283bec18b05c",
+  "prior_v3_evidence_preserved": true,
+  "rows": [
+    {
+      "label": "W9b",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+      "integration_inputs_sha256": "1521f16189119ad062d56bea5638b02a6e73d45887f6cdbdbac5b84e5b129837",
+      "prepared_inputs_reverified": 644,
+      "mapping": "synthesis",
+      "netlist_sha256": "990302b2e222ef67b3c1cf6d0df555c0a02a55b281776e3ef44cc1c7d358ea1f",
+      "installed_sdc_sha256": "2db4589f552d3d4bdc8f88a3aeb46bc5f7c78dfe6a2f11b69a7f036904d9a432",
+      "request_proof": {
+        "request_launch_mapping": "invert_feedback_with_exact_idle_launch_ce",
+        "request_launch_free_leaves": [
+          "penable",
+          "request_held_48_9_1600"
+        ],
+        "request_inverse_mapping": "INV",
+        "request_next_state_boolean_assignments": 64,
+        "request_payload_bits": 49,
+        "request_payload_common_capture_ce_clock_reset": true,
+        "request_payload_bit_mapping_exact": true,
+        "request_local_capture_on_third_request_stage": true,
+        "request_local_capture_common_ce_clock_reset": true,
+        "request_launch_only_idle": true
+      },
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 54,
+        "passed": 41,
+        "skipped": 13,
+        "elapsed_seconds": 351.191,
+        "exit_code": 0,
+        "mutation_count": 36,
+        "all_mutants_rejected": true
+      },
+      "cli_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4.json",
+      "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4-tests.log",
+      "mutations_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4-mutations.json"
+    },
+    {
+      "label": "W9b",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-01aa047a4d25aaf1",
+      "integration_inputs_sha256": "1521f16189119ad062d56bea5638b02a6e73d45887f6cdbdbac5b84e5b129837",
+      "prepared_inputs_reverified": 644,
+      "mapping": "routed",
+      "netlist_sha256": "1e02364a2682980746aae97bfa7206b27dfef353e5475edb1e64fa3b6e8c091e",
+      "installed_sdc_sha256": "2db4589f552d3d4bdc8f88a3aeb46bc5f7c78dfe6a2f11b69a7f036904d9a432",
+      "request_proof": {
+        "request_launch_mapping": "invert_feedback_with_exact_idle_launch_ce",
+        "request_launch_free_leaves": [
+          "penable",
+          "request_held_48_9_1600"
+        ],
+        "request_inverse_mapping": "LUT1_exact_2h1",
+        "request_next_state_boolean_assignments": 64,
+        "request_payload_bits": 49,
+        "request_payload_common_capture_ce_clock_reset": true,
+        "request_payload_bit_mapping_exact": true,
+        "request_local_capture_on_third_request_stage": true,
+        "request_local_capture_common_ce_clock_reset": true,
+        "request_launch_only_idle": true
+      },
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 54,
+        "passed": 43,
+        "skipped": 11,
+        "elapsed_seconds": 323.732,
+        "exit_code": 0,
+        "mutation_count": 38,
+        "all_mutants_rejected": true
+      },
+      "cli_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4.json",
+      "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4-tests.log",
+      "mutations_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4-mutations.json"
+    },
+    {
+      "label": "W8",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v8",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-d1109d2f36e8e171",
+      "integration_inputs_sha256": "44e9e0de5be65d6fc9efc023ed8eb7edc62c79f8f9bcd9781a23637b6bcd96fc",
+      "prepared_inputs_reverified": 643,
+      "mapping": "synthesis",
+      "netlist_sha256": "f50efd53ba976a644a9128b537dfda4e3424508da7534020aec7c7d84f89178c",
+      "installed_sdc_sha256": "720eb6a3a63a699bd64d98e873b7b98a4f04971239946e9cc4306155857a36e7",
+      "request_proof": {
+        "request_launch_mapping": "unconditional_toggle_xor_lut4",
+        "request_launch_free_leaves": [
+          "u_managed/control_cdc/request_held_48_7"
+        ],
+        "request_inverse_mapping": null,
+        "request_next_state_boolean_assignments": 32,
+        "request_payload_bits": 49,
+        "request_payload_common_capture_ce_clock_reset": true,
+        "request_payload_bit_mapping_exact": true,
+        "request_local_capture_on_third_request_stage": true,
+        "request_local_capture_common_ce_clock_reset": true,
+        "request_launch_only_idle": true
+      },
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 54,
+        "passed": 39,
+        "skipped": 15,
+        "elapsed_seconds": 343.452,
+        "exit_code": 0,
+        "mutation_count": 34,
+        "all_mutants_rejected": true
+      },
+      "cli_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4.json",
+      "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4-tests.log",
+      "mutations_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4-mutations.json"
+    },
+    {
+      "label": "M10b",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-370f528922c4fcb5",
+      "integration_inputs_sha256": "d36d1a120200a914cc67d137ca9523942dfae332d36b326533e1ebe5e7b67e83",
+      "prepared_inputs_reverified": 587,
+      "mapping": "synthesis",
+      "netlist_sha256": "60b346962d8e467716c7ce664159932d948c823118daa964d7d1539921dcf229",
+      "installed_sdc_sha256": "057b3150dff447704eb4311d82b4184b0c879ae2ec8c819936e2b6ff815e3c7d",
+      "request_proof": {
+        "request_launch_mapping": "unconditional_toggle_xor_lut4_split_launch_and2",
+        "request_launch_free_leaves": [
+          "penable",
+          "n8172_25"
+        ],
+        "request_inverse_mapping": null,
+        "request_next_state_boolean_assignments": 64,
+        "request_payload_bits": 49,
+        "request_payload_common_capture_ce_clock_reset": true,
+        "request_payload_bit_mapping_exact": true,
+        "request_local_capture_on_third_request_stage": true,
+        "request_local_capture_common_ce_clock_reset": true,
+        "request_launch_only_idle": true
+      },
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 54,
+        "passed": 50,
+        "skipped": 4,
+        "elapsed_seconds": 368.162,
+        "exit_code": 0,
+        "mutation_count": 45,
+        "all_mutants_rejected": true
+      },
+      "cli_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-m10b-vg-v4.json",
+      "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-tests-v2.log",
+      "mutations_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-mutations-v2.json"
+    },
+    {
+      "label": "M10b",
+      "candidate": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-370f528922c4fcb5",
+      "integration_inputs_sha256": "d36d1a120200a914cc67d137ca9523942dfae332d36b326533e1ebe5e7b67e83",
+      "prepared_inputs_reverified": 587,
+      "mapping": "routed",
+      "netlist_sha256": "aac27852489ac943d9d2729a3eb28267d7af2553b86b7789d70a26f06a1f9232",
+      "installed_sdc_sha256": "057b3150dff447704eb4311d82b4184b0c879ae2ec8c819936e2b6ff815e3c7d",
+      "request_proof": {
+        "request_launch_mapping": "unconditional_toggle_xor_lut4_split_launch_and2",
+        "request_launch_free_leaves": [
+          "penable",
+          "n8172_25"
+        ],
+        "request_inverse_mapping": null,
+        "request_next_state_boolean_assignments": 64,
+        "request_payload_bits": 49,
+        "request_payload_common_capture_ce_clock_reset": true,
+        "request_payload_bit_mapping_exact": true,
+        "request_local_capture_on_third_request_stage": true,
+        "request_local_capture_common_ce_clock_reset": true,
+        "request_launch_only_idle": true
+      },
+      "request_toggle_consumer_count": 37,
+      "tests": {
+        "total": 54,
+        "passed": 51,
+        "skipped": 3,
+        "elapsed_seconds": 338.524,
+        "exit_code": 0,
+        "mutation_count": 46,
+        "all_mutants_rejected": true
+      },
+      "cli_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-m10b-vo-v4.json",
+      "test_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-tests-v2.log",
+      "mutations_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-mutations-v2.json"
+    }
+  ],
+  "far_child_baseline": {
+    "user_code": "D2103114",
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-far-audits-v1/native-vo-v4.json",
+    "sha256": "82c02c43eeedb46ead29846ac248e17a64532521d5f55f2619477e673a2e60c7",
+    "netlist_sha256": "90f29eef078c181cfc1b5c1068d6427a3cf3cf51c084ce68341faa2129d05877",
+    "installed_sdc_sha256": "2db4589f552d3d4bdc8f88a3aeb46bc5f7c78dfe6a2f11b69a7f036904d9a432",
+    "full_negative_controls_repeated": false,
+    "baseline_pass": true
+  },
+  "preserved_failures": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v3.log",
+      "sha256": "cacd9dad25b7e6e2fa0ef02e1632b39ae4aac53b48e21f52f9f09bcabeed12df",
+      "reason": "W9 routed inverter is exact LUT1 rather than INV primitive"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-tests-v1.log",
+      "sha256": "becabaf349ff649945458432e2b478bdf29de70fa49c3bf897d2d98a92ebc7f3",
+      "reason": "M10 combined launch and split capture leaves were not unified"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-tests-v1.log",
+      "sha256": "e8c7ca3ea1db749292c6e1b31d5f0c9eea2dd4e2f84f7f21bb0520e19dbc40d6",
+      "reason": "M10 combined launch and split capture leaves were not unified"
+    }
+  ],
+  "exact_additional_mappings": [
+    "unique LUT1 F driver with INIT 2h1 and I0=request Q",
+    "unique LUT2 F driver with INIT 4h8 and exact pair of independent capture launch leaves"
+  ],
+  "added_negative_controls": [
+    "routed inverse LUT1 INIT 2h2",
+    "split launch AND LUT2 INIT 4hE"
+  ],
+  "proof_scope": "exact effective next-Q and original APB request/state/ACK equations; all 49 source and destination payload bits with CE/clock/reset, per-bit mapping, consumer closure, third-request-stage destination capture, and exact local installed SDC selectors",
+  "candidate_compilation_inputs_changed": false,
+  "candidate_rtl_or_sdc_changed": false,
+  "resynthesis_performed": false,
+  "source_policy": "external maintained auditor v4; preserved original candidate gate and staged auditor identities",
+  "physical_cdc_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "evidence_file_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4.json": "bf1f5699873801ac123b38ed79c7696592fe602753addb3b4004edfb23e7de5a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4-tests.log": "b219084f472806f47fed46326ce0f01b07f39aba03704c10c30d1912a5fb7b2b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vg-v4-mutations.json": "9b8e961aac2f783ec1b3184d54cb09eb17caf41f652ebbc9d85bc7da47c85b7e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4.json": "01f02e474b82ca950d2da36db86412d166eb347889438406e7ee6df427676d7c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4-tests.log": "6d72f31386483011dabaf383450d81b1a16ce5a981dd7555ed624f4d7937606d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v4-mutations.json": "da7f40db9743eb25908d5ec66a15aeee752159cad1300dc5364b8d8d47739f18",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4.json": "35771dbe26c38b73db6fd49e1b136ab4cb4551359248e95aad333bff9e5253f5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4-tests.log": "e7a2be1963e8a2cc546244163c3ba79ccef3139a47074842525c22e1e9108785",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-w8-reference-v4-mutations.json": "aaf581ccb7574b6855e1b3777511c45c30282db309d07d8db8036a629d54305e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-m10b-vg-v4.json": "89b33d0c8492d02a1fd020dd6bf84609335a4fbea4e39fbf4b2c796f0b26ca28",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-tests-v2.log": "76131e91ee5d5df2938aeb66c7b5570ff7f948680a3f84b8fed09f0876c3b021",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-mutations-v2.json": "b90ff0f0215dd40040cfe99d3b5d62b50251ec146b77b728acfcde7e43eeb77c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-m10b-vo-v4.json": "d7b9c0bc94a2e3afe67ebe4cec8ff895f1d83d827f32c5aae0422380130dcb9c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-tests-v2.log": "db83528b44e5b90f835a1579e4c530463287726b309f34620d724569c848d2bb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-mutations-v2.json": "1a665ee9c0cfcbc8b688d3f06e79df243701484315638d29e927c1178a2107c5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-audits-v1/native-vo-v3.log": "cacd9dad25b7e6e2fa0ef02e1632b39ae4aac53b48e21f52f9f09bcabeed12df",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vg-tests-v1.log": "becabaf349ff649945458432e2b478bdf29de70fa49c3bf897d2d98a92ebc7f3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-native-vo-tests-v1.log": "e8c7ca3ea1db749292c6e1b31d5f0c9eea2dd4e2f84f7f21bb0520e19dbc40d6",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v9b-physical-far-audits-v1/native-vo-v4.json": "82c02c43eeedb46ead29846ac248e17a64532521d5f55f2619477e673a2e60c7"
+  }
+}

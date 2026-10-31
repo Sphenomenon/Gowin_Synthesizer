@@ -500,6 +500,7 @@ def audit_timing_boundaries(n, g, *, profile):
             'APB request local capture must wait for third request stage')
     require(n.cells[request]['kind'] == 'DFFCE' and clock(request) == 'ram_clk',
             'APB request toggle clock/primitive changed')
+    inverse_mapping = None
     if n.cells[toggle_gate]['kind'] == 'LUT4' and output == 'F':
         inputs = [n.pin(toggle_gate, 'I' + str(i)) for i in range(4)]
         require({state0, state1, req}.issubset(inputs) and len(set(inputs)) == 4,
@@ -507,12 +508,45 @@ def audit_timing_boundaries(n, g, *, profile):
         launch_inputs = [x for x in inputs if x not in (state0, state1, req)]
         unconditional(request, 'ram_clk')
         launch_mapping = 'unconditional_toggle_xor_lut4'
+        launch_drivers = g.drivers[request_ce]
+        require(len(launch_drivers) == 1, 'APB request payload CE driver ambiguous')
+        launch_gate, launch_output = launch_drivers[0]
+        launch_kind = n.cells[launch_gate]['kind']
+        require(launch_output == 'F' and launch_kind in ('LUT3', 'LUT4'),
+                'APB request payload CE structure changed')
+        capture_inputs = [n.pin(launch_gate, 'I' + str(i)) for i in range(int(launch_kind[3:]))]
+        if launch_kind == 'LUT3':
+            require(set(capture_inputs) == {state0, state1, *launch_inputs},
+                    'APB request payload CE shared launch input changed')
+        else:
+            # M10b duplicates psel&&penable into a LUT2 feeding the toggle
+            # LUT4, while payload CE retains the two leaves separately.
+            # Prove that exact AND rather than abstracting its output in one
+            # cone and accidentally expanding it in the other.
+            require({state0, state1}.issubset(capture_inputs) and len(set(capture_inputs)) == 4,
+                    'APB split launch CE input inventory changed')
+            combined = launch_inputs[0]
+            launch_inputs = [x for x in capture_inputs if x not in (state0, state1)]
+            require(not set(launch_inputs) & ({req, ack_settled} | g.high | g.low),
+                    'APB split launch leaves must be independent')
+            combined_drivers = g.drivers[combined]
+            require(len(combined_drivers) == 1, 'APB split launch AND driver ambiguous')
+            combined_gate, combined_output = combined_drivers[0]
+            require(n.cells[combined_gate]['kind'] == 'LUT2' and combined_output == 'F' and
+                    n.cells[combined_gate]['parameters'].get('INIT') == "4'h8" and
+                    {n.pin(combined_gate, 'I0'), n.pin(combined_gate, 'I1')} == set(launch_inputs),
+                    'APB split launch AND function changed')
+            launch_mapping = 'unconditional_toggle_xor_lut4_split_launch_and2'
     else:
         # W9b maps exactly the same request update into the DFFCE enable:
         # D=~Q, CE=IDLE && psel && penable. Both launch leaves stay free;
         # neither a candidate signal name nor its sampled value is assumed.
-        require(n.cells[toggle_gate]['kind'] == 'INV' and output == 'O' and
-                n.pin(toggle_gate, 'I') == req, 'APB request toggle feedback must invert Q')
+        inverse_mapping = ('INV' if n.cells[toggle_gate]['kind'] == 'INV' and output == 'O' and
+                           n.pin(toggle_gate, 'I') == req else
+                           'LUT1_exact_2h1' if n.cells[toggle_gate]['kind'] == 'LUT1' and output == 'F' and
+                           n.cells[toggle_gate]['parameters'].get('INIT') == "2'h1" and
+                           n.pin(toggle_gate, 'I0') == req else None)
+        require(inverse_mapping is not None, 'APB request toggle feedback must invert Q')
         require(n.pin(request, 'CE') == request_ce, 'APB request toggle CE differs from payload capture')
         enable_drivers = g.drivers[request_ce]
         require(len(enable_drivers) == 1, 'APB request launch CE driver ambiguous')
@@ -566,6 +600,7 @@ def audit_timing_boundaries(n, g, *, profile):
         publication_local_boolean_leaf_count=len(leaves),
         publication_unrestricted_service_ready_leaves=sorted(external_ready),
         request_launch_mapping=launch_mapping, request_launch_free_leaves=launch_inputs,
+        request_inverse_mapping=inverse_mapping,
         request_next_state_boolean_assignments=1 << len(bd.inputs), request_payload_bits=49,
         request_payload_common_capture_ce_clock_reset=True, request_toggle_consumer_closure=request_closure,
         request_payload_bit_mapping_exact=True, request_payload_consumer_closure=request_payload_closure,

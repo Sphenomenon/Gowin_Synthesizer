@@ -356,7 +356,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
         g = Graph(self.n)
         target = self.reg(APB, 'request_toggle')
         gate = g.drivers[self.n.pin(target, 'D')][0][0]
-        if self.n.cells[gate]['kind'] == 'INV':
+        if self.n.cells[gate]['kind'] in ('INV', 'LUT1'):
             gate = g.drivers[self.n.pin(target, 'CE')][0][0]
             self.reject('APB CE relaunch while waiting', gate, 'parameters', 'INIT',
                         "16'hFFFF", 'request payload can launch outside IDLE')
@@ -368,10 +368,35 @@ class ActualTimingBoundaries(ActualNativeFixture):
         g = Graph(self.n)
         target = self.reg(APB, 'request_toggle')
         gate = g.drivers[self.n.pin(target, 'D')][0][0]
-        if self.n.cells[gate]['kind'] != 'INV':
+        if self.n.cells[gate]['kind'] not in ('INV', 'LUT1'):
             self.skipTest('reviewed CE-factored request mapping not present')
-        self.reject('APB wrong inverse feedback', gate, 'ports', 'I',
+        pin = 'I' if self.n.cells[gate]['kind'] == 'INV' else 'I0'
+        self.reject('APB wrong inverse feedback', gate, 'ports', pin,
                     self.bind(gate, self.reg(APB, 'ack_settled')), 'toggle feedback must invert Q')
+
+    def test_apb_routed_inverse_lut_truth_table_is_exact(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_toggle')
+        gate = g.drivers[self.n.pin(target, 'D')][0][0]
+        if self.n.cells[gate]['kind'] != 'LUT1':
+            self.skipTest('reviewed routed LUT1 inverse mapping not present')
+        self.reject('APB routed inverse LUT truth changed', gate, 'parameters', 'INIT',
+                    "2'h2", 'toggle feedback must invert Q')
+
+    def test_apb_split_launch_combined_and_is_exact(self):
+        g = Graph(self.n)
+        target = self.reg(APB, 'request_toggle')
+        toggle = g.drivers[self.n.pin(target, 'D')][0][0]
+        held = self.reg(APB, 'request_held_0')
+        capture = g.drivers[self.n.pin(held, 'CE')][0][0]
+        if self.n.cells[toggle]['kind'] != 'LUT4' or self.n.cells[capture]['kind'] != 'LUT4':
+            self.skipTest('reviewed split launch AND mapping not present')
+        state = {self.n.pin(self.reg(APB, stem), 'Q') for stem in ('state_0', 'state_1', 'request_toggle')}
+        combined = next(self.n.pin(toggle, 'I' + str(i)) for i in range(4)
+                        if self.n.pin(toggle, 'I' + str(i)) not in state)
+        gate = g.drivers[combined][0][0]
+        self.reject('APB split launch AND truth changed', gate, 'parameters', 'INIT',
+                    "4'hE", 'split launch AND function changed')
 
     def test_apb_all_request_payload_bits_share_capture_ce(self):
         self.reject('APB one request bit bypasses capture', self.reg(APB, 'request_held_48'),
@@ -415,7 +440,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
         g = Graph(self.n)
         target = self.reg(APB, 'request_toggle')
         gate = g.drivers[self.n.pin(target, 'D')][0][0]
-        if self.n.cells[gate]['kind'] != 'INV':
+        if self.n.cells[gate]['kind'] not in ('INV', 'LUT1'):
             self.skipTest('reviewed CE-factored request mapping not present')
         self.reject('APB toggle CE bypasses payload', target, 'ports', 'CE',
                     "1'b1", 'toggle CE differs from payload capture')
