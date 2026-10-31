@@ -308,6 +308,8 @@ M14 `D2110108`已完成[默认完整物理审计](push2_workstation/usb_a/report
 
 W13已完成[全量综合与严格门](push2_workstation/usb_a/reports/DUAL138K_W13_SYNTHESIS_20261101.md)：FF45,092／LUT55,249／ALU14,135／BSRAM equivalent257，实际VG native54项（40通过／14跳过）及35负控、边界7／61通过。951原始来源、645staged及1365冻结审计输入复验，默认physical prepare重新完整审计并与CLI深等价，`D211010A`已启动全量P&R；实际PCM／raw映射目标另审，不预记物理收益，未上板。
 
+M14 `D2110109`已完成[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M14_FAR_PHYSICAL_20261101.md)：同VG／完整SDC／DDR3.500ns，原DDR hold+0.620ns，全局hold0／+0.135ns；setup却回退至4,251／−2.526ns。物理BSRAM235／DSP119／CLS50,303，实际VO54项（51通过／3跳过）及46负控、边界7／61、官方六PLL及7负控通过，32物理文件、1207冻结审计及588staged输入稳定。仍未闭合、未上板，后续M15独立验证，不转授本位流接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
