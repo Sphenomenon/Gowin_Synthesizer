@@ -28,7 +28,7 @@ class SynthesisNetlist:
                 if label in instances:
                     raise ValueError('native duplicate instance: ' + label)
                 ports = {port.removeprefix('\\'): net.strip() for port, net in
-                         re.findall(r'\.(' + IDENTIFIER + r')\(\s*([^()]*?)\s*\)', instance[3])}
+                         re.findall(r'\.(' + IDENTIFIER + r')\s*\(\s*([^()]*?)\s*\)', instance[3])}
                 instances[label] = dict(kind=kind, ports=ports, parameters=parameters.get(label, {}))
             self.modules[name] = instances
             self.directions[name] = {net.removeprefix('\\'): direction for direction, net in re.findall(

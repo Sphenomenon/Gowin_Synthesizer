@@ -10,6 +10,7 @@ from tools.stage_usb_firmware import sha
 from tools.workstation_synthesis_netlist import SynthesisNetlist
 from tools.workstation_baselines import load_baseline
 from tools.audit_clk50_timing import TimingTables
+from tools.workstation_ae350_rtc import CLOCK_ENTRY as RTC_CLOCK_ENTRY, SDC as RTC_SDC, audit_netlist as audit_rtc
 
 
 PLAN_SOURCE = 'boards/custom_138k/clocks.json'
@@ -90,8 +91,10 @@ def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
         raise ValueError('native local-panel selection must be boolean')
     source = Path(root) / PLAN_SOURCE
     plan = json.loads(source.read_text())
-    if plan.get('schema') != 1 or plan.get('identity') != 'custom138k-native-clocks-20261025-v4':
+    if plan.get('schema') != 1 or plan.get('identity') != 'custom138k-native-clocks-20261031-v5':
         raise ValueError('native clock plan identity changed')
+    if plan.get('fabric_generated') != [RTC_CLOCK_ENTRY]:
+        raise ValueError('native independent RTC timing-bound inventory changed')
     entries = [*plan['primary'], *plan['generated']]
     if (len(entries) != len(EXPECTED_HZ) or {entry['name']: entry['frequency_hz'] for entry in entries} != EXPECTED_HZ or
             len({entry.get('pin', entry.get('port')) for entry in entries}) != len(entries)):
@@ -137,6 +140,7 @@ def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
         query = f"[get_pins {{{entry['pin']}}}]"
         lines.append(f"create_generated_clock -name {entry['name']} -source {parent['query']} -master_clock {entry['source']} {transform} {query}")
         clocks[entry['name']] = dict(query=query, **entry)
+    lines.append(RTC_SDC.rstrip('\n'))
     return dict(source=PLAN_SOURCE, source_sha256=sha(source), plan=plan, sdc='\n'.join(lines) + '\n')
 
 
@@ -221,6 +225,8 @@ def audit_clocks(root, stage, netlist_text, extra_sdc='', hdmi_mode='1080p60', l
         if actual != entry['frequency_hz']:
             raise ValueError('native PLL/divider frequency does not match SDC: ' + entry['name'])
         clocks[entry['name']] = dict(net=canonical(scope, cell['ports'][pin]), frequency_hz=int(actual), verified=True)
+    rtc = audit_rtc(netlist_text)
+    clocks[RTC_CLOCK_ENTRY['name']] = dict(**RTC_CLOCK_ENTRY, connectivity=rtc, verified=True)
     return dict(plan_source=bundle['source'], plan_sha256=bundle['source_sha256'], clocks=clocks,
                 deferred_opaque_ip_targets=deferred, source_netlist_verified=not deferred,
                 routed_timing_verified=False, constraints_complete=False)

@@ -21,16 +21,20 @@ from tools.workstation_baselines import load_baseline
 
 
 class ProfileSources(unittest.TestCase):
-    def test_fresh_native_profiles_lock_dedicated_core_clock_and_business_revision3(self):
+    def test_fresh_native_profiles_lock_dedicated_core_clock_rtc_and_business_revision4(self):
         prefix = 'projects/138k/push2_workstation/usb_a/'
         dependencies = ('boards/custom_138k/ae350.cst',
                         'tools/workstation_ae350_clock_placement.py',
                         'tools/workstation_physical_pll_audit.py',
                         'sim/test_workstation_ae350_clock_placement.py',
-                        'sim/test_workstation_physical_pll_audit.py')
+                        'sim/test_workstation_physical_pll_audit.py',
+                        'rtl/clock/workstation_ae350_rtc.sv',
+                        'tools/workstation_ae350_rtc.py',
+                        'sim/test_workstation_ae350_rtc.py',
+                        'sim/test_ae350_local_probe.py')
         revisions = {profile.NAME: 5, profile.NO_CNN_NAME: 1, profile.R00_NAME: 1,
                      profile.R00_NO_LOCAL_PANEL_NAME: 2, profile.LOCAL_BOOT64_NAME: 1,
-                     profile.CPU_BUSINESS_NAME: 3}
+                     profile.CPU_BUSINESS_NAME: 4}
         for name, revision in revisions.items():
             with self.subTest(name=name):
                 selected = profile.load(ROOT, name)
@@ -38,8 +42,10 @@ class ProfileSources(unittest.TestCase):
                 self.assertTrue(all(prefix + path in selected['source_sha256'] for path in dependencies))
                 if name == profile.CPU_BUSINESS_NAME:
                     self.assertEqual(selected['configuration']['ae350_core_clock_policy'], 'pll_r0_clkout1_v1')
+                    self.assertEqual(selected['configuration']['ae350_rtc_policy'], 'reference50_fractional32768_bound1524_v1')
                 else:
                     self.assertNotIn('ae350_core_clock_policy', selected['configuration'])
+                    self.assertNotIn('ae350_rtc_policy', selected['configuration'])
         original = Path.read_text
         business = json.loads((ROOT / profile.CPU_BUSINESS_CONFIG).read_text())
         for field, value in (('revision', 2), ('policy', None), ('policy', 'unconstrained')):

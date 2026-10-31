@@ -174,19 +174,19 @@ class ActualRuntimeClocks(unittest.TestCase):
     def test_actual_source_topology_and_flags(self):
         result = run_audit(ROOT, self.stage, self.process)
         if result['local_panel_enabled']:
-            self.assertEqual(len(result['base_13_clock_audit']['clocks']), 13)
-            self.assertEqual(result['base_clock_audit'], result['base_13_clock_audit'])
+            self.assertEqual(len(result['base_clock_audit']['clocks']), 14)
+            self.assertNotIn('base_13_clock_audit', result)
             self.assertEqual({k: len(v) for k, v in result['visible_clock_primitives'].items()},
                              dict(PLL=7, CLKDIV=1, DCS=1))
-            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 16)
+            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 17)
             self.assertIn('lcd_pixel31m5', result['base_clock_audit']['clocks'])
             self.assertTrue(result['local_panel']['hierarchy_present'])
         else:
             self.assertNotIn('base_13_clock_audit', result)
-            self.assertEqual(len(result['base_clock_audit']['clocks']), 12)
+            self.assertEqual(len(result['base_clock_audit']['clocks']), 13)
             self.assertEqual({k: len(v) for k, v in result['visible_clock_primitives'].items()},
                              dict(PLL=6, CLKDIV=1, DCS=1))
-            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 15)
+            self.assertEqual(result['declaration_scope']['clock_declarations_checked'], 16)
             self.assertNotIn('lcd_pixel31m5', result['base_clock_audit']['clocks'])
             self.assertNotIn('u_lcd/u_pll/PLL_inst', result['visible_clock_primitives']['PLL'])
             self.assertFalse(result['local_panel']['hierarchy_present'])

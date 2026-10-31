@@ -115,6 +115,24 @@ class DedicatedClock(unittest.TestCase):
             with self.subTest(vo=vo), self.assertRaises(ValueError):
                 audit_routed(CONSTRAINT, REPORT, vo)
 
+    def test_synthesis_split_module_header_and_escaped_formal_are_fully_parsed(self):
+        vo = ('module '+TOP+' ()\n;\nwire core_clk;\n'+
+              cell('PLL', INSTANCE, [('CLKOUT1','core_clk')])+
+              cell('child_clock', 'child', [('\\core.clock ','core_clk')])+'endmodule\n'+
+              'module child_clock (\\core.clock )\n;\ninput \\core.clock ;\n'+
+              cell('AE350_SOC', 'hard_macro', [('CORE_CLK','\\core.clock ')])+'endmodule\n')
+        result = audit_routed(CONSTRAINT, REPORT, vo)
+        self.assertEqual(result['direct_core_clock_endpoints'],
+                         ['child/hard_macro/CORE_CLK', INSTANCE+'/CLKOUT1'])
+        extra = cell('LUT2', 'hidden_driver', [('F','\\core.clock '),('I0','GND')])
+        broken = vo.rsplit('endmodule',1)[0]+extra+'endmodule\n'
+        with self.assertRaisesRegex(ValueError,'unreviewed driver/consumer'):
+            audit_routed(CONSTRAINT, REPORT, broken)
+        for bad in (vo.replace('.\\core.clock (core_clk)', '.\\core.clock ((core_clk))'),
+                    vo.replace('.\\core.clock (core_clk)', '.\\core.clock (core_clk),\n .\\core.clock (core_clk)')):
+            with self.subTest(vo=bad), self.assertRaises(ValueError):
+                audit_routed(CONSTRAINT, REPORT, bad)
+
     def test_scalar_scope_and_escaped_slash_are_distinct(self):
         vo = ('module '+TOP+' ();\nwire \\child/x ;\nwire bus_clk;\n'+
               cell('PLL', INSTANCE, [('CLKOUT0','bus_clk'),('CLKOUT1','\\child/x ')])+

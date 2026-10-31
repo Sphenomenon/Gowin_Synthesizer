@@ -46,6 +46,8 @@ AUDIT_SOURCES = (
     'tools/workstation_baselines.py', 'tools/audit_clk50_timing.py',
     'boards/custom_138k/clocks.json', 'sim/test_workstation_runtime_clocks.py',
     'tools/workstation_profile.py', 'tools/workstation_board_peripherals.py',
+    'tools/workstation_ae350_rtc.py', 'tools/workstation_ae350_clock_placement.py',
+    'rtl/clock/workstation_ae350_rtc.sv',
 )
 
 
@@ -85,7 +87,7 @@ def prepared_local_panel_enabled(stage):
 def audit_runtime_clocks(root, stage, netlist_text):
     """Check static clock declarations/connectivity, leaving physical gates false.
 
-    The old 13-clock declaration prefix is checked by the maintained auditor.
+    The selected base-clock declaration prefix includes the conservative RTC bound.
     Passing the actual remaining SDC as extra_sdc only establishes prefix
     identity; it does not audit all exceptions or Tcl object resolution.
     """
@@ -173,10 +175,10 @@ def audit_runtime_clocks(root, stage, netlist_text):
                     'I2S output is not a direct selected-clock serializer register: ' + port)
             outputs[port] = dict(buffer=p, input_net=net, register=drivers[0], clock=selected)
     return dict(schema=1, scope='static_source_netlist_clock_and_DCS_topology',
-        base_clock_audit=base, **({'base_13_clock_audit': base} if local_panel_enabled else {}),
+        base_clock_audit=base,
         local_panel_enabled=local_panel_enabled, local_panel=panel, visible_clock_primitives=primitives,
-        declaration_scope=dict(old_clock_prefix_count=len(bundle['plan']['primary']) + len(bundle['plan']['generated']), runtime_reference_count=1,
-            selected_mode_count=2, clock_declarations_checked=len(bundle['plan']['primary']) + len(bundle['plan']['generated']) + 3, sdc_sha256=digest(sdc.encode()),
+        declaration_scope=dict(base_clock_prefix_count=len(bundle['plan']['primary']) + len(bundle['plan']['generated']) + len(bundle['plan']['fabric_generated']), runtime_reference_count=1,
+            selected_mode_count=2, clock_declarations_checked=len(bundle['plan']['primary']) + len(bundle['plan']['generated']) + len(bundle['plan']['fabric_generated']) + 3, sdc_sha256=digest(sdc.encode()),
             suffix_sha256=digest(extra.encode()), selected_mode_exclusions=list(MODE_EXCLUSIONS),
             remaining_suffix_lines_not_audited=len(extra_lines) - 5,
             gowin_sta_command_resolution_verified=False,

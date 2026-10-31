@@ -197,6 +197,9 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual((stage / 'constraints/custom_138k.cst').read_text(), combined)
             self.assertEqual(combined.count('INS_LOC "u_cpu_pll/PLL_inst" PLL_R[0];'), 1)
             self.assertFalse(metadata['ae350_core_clock_placement']['placement_verified'])
+            self.assertEqual(metadata['ae350_rtc']['policy'], 'reference50_fractional32768_bound1524_v1')
+            self.assertFalse(metadata['ae350_rtc']['synthesis_connectivity_verified'])
+            self.assertFalse(metadata['ae350_rtc']['hardware_tested'])
             self.assertEqual((stage / 'constraints/custom_138k.display.cst').read_bytes(),
                              (ROOT / integration.DISPLAY_CST).read_bytes())
             self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261027-a26')
@@ -268,8 +271,11 @@ class NativeBoard(unittest.TestCase):
             for instance in ('workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)) u_native_usb', 'gw138k_usb_controlled_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed',
                              'ddr3_platform u_memory', 'hdmi_display u_video', "basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music",
                              'delay_ddr_dma #', 'workstation_output_router u_output_router',
+                             'workstation_ae350_rtc u_rtc',
                              'workstation_fpc_audio u_fpc_audio', 'workstation_bluetooth u_bluetooth', 'workstation_lcd u_lcd'):
                 self.assertEqual(re.sub(r'\s+', '', text).count(re.sub(r'\s+', '', instance)), 1, instance)
+            self.assertIn('.RTC_CLK(rtc_clk)', text)
+            self.assertNotIn('.RTC_CLK(clk_50m)', text)
             header = re.search(r'module\s+workstation_custom_138k_top\s*#\(.*?\)\s*\((.*?)\);', text, re.S)[1]
             parts = re.split(r'\b(input|output|inout)\b', header)
             ports = set()

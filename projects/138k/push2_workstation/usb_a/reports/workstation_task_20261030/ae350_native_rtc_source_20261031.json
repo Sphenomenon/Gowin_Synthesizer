@@ -1,0 +1,938 @@
+{
+  "schema": 1,
+  "scope": "native AE350 independent RTC source and prepared closure only",
+  "source_parent": "3cce72e3004812a0e981be535a28418bd0a76a28",
+  "branch": "codex/native-ae350-rtc",
+  "policy": "reference50_fractional32768_bound1524_v1",
+  "maintained_rtc_source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+  "rtc_helper_sha256": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099",
+  "named_port_checker_sha256": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a",
+  "netlist_reader_sha256": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445",
+  "clock_plan_sha256": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f",
+  "default_preprocessed_token_sha256": "ec71aeb68d53a11eb7975b4e643be673f30301565f10f671f8b822e6d2674f69",
+  "profiles": {
+    "custom138k-workstation-ae350-business-v1": {
+      "revision_before": 3,
+      "revision_after": 4,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536,
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536,
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1"
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 456,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "19fa35b8572319de0b28338c26e3419aea80a81c3c2f81c1acd05c9a489be336"
+    },
+    "custom138k-workstation-no-cnn-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1"
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 420,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "ea1331f9d64e54122f04b8d08bf52a4ec099b2cf73458014e9bd2c4950bb9464"
+    },
+    "custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 438,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "4a907171878b04debe7a2f0a14280ab6420bed46dbca5af2f9a4b080073b960c"
+    },
+    "custom138k-workstation-r00-no-local-panel-v1": {
+      "revision_before": 2,
+      "revision_after": 2,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_v1"
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 433,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "3d3b2b7a37491973acd6a9dc957e19444e19966e001b8799ff15dad78cb7c39c"
+    },
+    "custom138k-workstation-r00-v1": {
+      "revision_before": 1,
+      "revision_after": 1,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1"
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 420,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "ee1f372ac30327769418adc05d2e95f1a52fde7efc89013ef845a68d628a8cfc"
+    },
+    "custom138k-workstation-v1": {
+      "revision_before": 5,
+      "revision_after": 5,
+      "configuration_before": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "configuration_after": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      },
+      "source_sets_unchanged": true,
+      "references_unchanged": true,
+      "source_sha256_count": 420,
+      "changed_source_locks": {
+        "projects/138k/push2_workstation/usb_a/boards/custom_138k/clocks.json": {
+          "before": "9fc4ee7b39e45a23bf45f3533d3fcb0e61dbbd4e781dd8447f0196d690497113",
+          "after": "3f3ed948af8cd09dce1de88683d43895c660ae074f332f907990c0685790906f"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263",
+          "after": "f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_clock_placement.py": {
+          "before": "b610ded45e2fa164f3dde63bf32c3d4dfc774ddda404c6af58a1593882b8de99",
+          "after": "169e61275d1428c6dcfc591e7a38b2cf6d1969a2990cae6c13276fa344bc5fbd"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_profile.py": {
+          "before": "52b891fd188d87c30d839f36678fa20da157af9af2261c3789767f1bb32a9aac",
+          "after": "21e7c12400bcb8483b1f373adc90ef401055d3dc3cffd6864953220a5e2812c7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": {
+          "before": "91406aea69b47f415062900e29fd0f3345cf688da89d65aa3c88240e920979b7",
+          "after": "a15e558d523396ec07268980ec472fc78c840aa74d9f1b0976a95ecabb7eb56a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "83a718333c06993d7bc5f054c0fa93cad2b3c12c4c153cca66fb862a6a477e40",
+          "after": "165902efc07e8f3932adc338874ab6b3ebd431d6af27642bf362e35f6eac8450"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": {
+          "before": "8415453aa7b90025305659c1adbe63698fb8238760459e49e815cfa9fda7f134",
+          "after": "94ef9f4273bea9e6b4c4ee48a457847d6b29fc4cc0ed82d5763b20160a059a67"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": {
+          "before": "1400a5915fa5139dc9b826835140d4c9b2333a2a57893cba4eb543c70ee061d1",
+          "after": "caad94df6d50a18c0c546ae6ae56115ffa2680b46ac3e96c9edfe4d08e4cb2ce"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "cd4bd6b591311b3c461d9b314ef91a3ab98f17bc68fc23630966b46983962c23",
+          "after": "9721d71cda85dc292aa97ef62851084c7cb021e0ccbebea1d2d4fbc65fb6c347"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "f6716d9a5413d90a092075da7fea37ef92d23b82d53e9d9a9ee61705460c9220",
+          "after": "9b51b9815382bcc6cbbf3b98e53a40ff8ebbe3cefb3d8ee24776e085d0e2be38"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "fb37005a68f07ad3064e9b0385bd06680adc942d91d72f4e8b4ba45cba298049",
+          "after": "3fdf33cf53031e2eadab6f1d1b5169d1ac1cee17d722a7b0af42dbf4e44f6bc8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": {
+          "before": "168ff5bd38d6fc6c5981c4bf8e0f366c5fe4ed4d80d7e85b255bd4c375ba2dcd",
+          "after": "ccf6cd9d006c97a0ab0178ac1946a45c31db69380d8aff6308c0ef85271352cf"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": {
+          "before": "3082232b870ea668525d1a15b5eee4b18666004e1876ee52194b9a70782abe89",
+          "after": "f21919b907ef6a5feeb1d8e4384b064a795beb760958861433defb3e8a99e445"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_custom_board.py": {
+          "before": "99cb821a83fb73f0c5c2e6520aebfd329cdba5f7e75e8dbf7be12004fb072754",
+          "after": "18c78266612d2852cb8333fe7c9c545bb9a44f0efa5fa17004a83509b2dedf1a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": {
+          "before": null,
+          "after": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": {
+          "before": null,
+          "after": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": {
+          "before": null,
+          "after": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+        }
+      },
+      "profile_sha256": "d2989d2c5b31da169eb6cf2a0a9025dacb12cac728eeed4db64a7b4b07ceb91d"
+    }
+  },
+  "prepares": {
+    "business": {
+      "output": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-prepare",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-901ed4db39f2e36c",
+      "revision": 4,
+      "staged_inputs": 614,
+      "enabled_inputs": 272,
+      "source_snapshot_inputs": 843,
+      "artifact_sha256": "c7f5112486194a5da1c6e44efe8c93879e4ef4409968ba0321b6a82cb300409e",
+      "integration_metadata_sha256": "30b889d2faa4e2ea91c140a0012fafbd4f74447360d7616490ddcadb84f03ab6",
+      "rtc": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "source": "rtl/clock/workstation_ae350_rtc.sv",
+        "source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+        "source_reference_hz": 50000000,
+        "reset": "system_reset_n",
+        "independent_of_cpu_apb_memory_ready": true,
+        "half_period_reference_cycles": [
+          762,
+          763
+        ],
+        "constraint": "create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] -divide_by 1524 [get_pins {u_rtc/rtc_tick_s1/Q}]",
+        "clock_name": "cpu_rtc_bound",
+        "clock_pin": "u_rtc/rtc_tick_s1/Q",
+        "sta_divide_by": 1524,
+        "sta_minimum_period_ns": 30480,
+        "average_frequency_hz": 32768,
+        "average_is_not_sta_frequency": true,
+        "source_binding_verified": true,
+        "synthesis_connectivity_verified": false,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      },
+      "compilation_units": 269,
+      "module_count": 301,
+      "package_count": 2,
+      "rtc_compilation_owner": "rtl/clock/workstation_ae350_rtc.sv"
+    },
+    "default": {
+      "output": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-prepare",
+      "candidate_identity": "custom138k-workstation-v1-398f3be95d03c424",
+      "revision": 5,
+      "staged_inputs": 581,
+      "enabled_inputs": 261,
+      "source_snapshot_inputs": 828,
+      "artifact_sha256": "3e231691155ebea6540d9af5598d27be230ab84d7f1c9ffd62ebae39577dd00d",
+      "integration_metadata_sha256": "8b8a7f3a4a9fb08ab49b1d7b9e32d394588b625924725e93e943cb1478b42e75",
+      "rtc": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "source": "rtl/clock/workstation_ae350_rtc.sv",
+        "source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+        "source_reference_hz": 50000000,
+        "reset": "system_reset_n",
+        "independent_of_cpu_apb_memory_ready": true,
+        "half_period_reference_cycles": [
+          762,
+          763
+        ],
+        "constraint": "create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] -divide_by 1524 [get_pins {u_rtc/rtc_tick_s1/Q}]",
+        "clock_name": "cpu_rtc_bound",
+        "clock_pin": "u_rtc/rtc_tick_s1/Q",
+        "sta_divide_by": 1524,
+        "sta_minimum_period_ns": 30480,
+        "average_frequency_hz": 32768,
+        "average_is_not_sta_frequency": true,
+        "source_binding_verified": true,
+        "synthesis_connectivity_verified": false,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      },
+      "compilation_units": 258,
+      "module_count": 290,
+      "package_count": 2,
+      "rtc_compilation_owner": "rtl/clock/workstation_ae350_rtc.sv"
+    }
+  },
+  "checks": {
+    "accepted_sources.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/accepted_sources.log",
+      "sha256": "181a9286e7194271c150164e91a20935e6f709de9ddc47412dd1c421e1f683fa"
+    },
+    "business-prepare-process.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-prepare-process.json",
+      "sha256": "3a41616b6617c3c3a986c40e54eb529501016af7897e377456e4163751c7f56a"
+    },
+    "business-prepare.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-prepare.log",
+      "sha256": "6b876df6b9a2e2cc163ab1fb87bcdc35edcd536cdbb9a8ed1c13f33f3d28ed36"
+    },
+    "business-prepared-checks.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-prepared-checks.json",
+      "sha256": "2a044392f315fc0d0edc0d35c4c4dfe987cd12ad71937362fd44488b901f559a"
+    },
+    "business-prepared-checks.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-prepared-checks.log",
+      "sha256": "e79fafc655c005645550997ac6bf9e585cb332d21e36e77b8a67fb0e4923e0f2"
+    },
+    "business-runtime-source-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/business-runtime-source-audit.json",
+      "sha256": "b1335e2d5d77f281cc9ffc9501816d8bbcb417b93b7c3dab4f9a056f10d44f8f"
+    },
+    "default-prepare-process.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-prepare-process.json",
+      "sha256": "c40252175059ab702c702d492ce29d64d95241b1715b402ed2778310916e6375"
+    },
+    "default-prepare.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-prepare.log",
+      "sha256": "d59a87f689bf069c59ad02bfb0d94e1ccdf5d9f1de644aac553da4cd5db89dd6"
+    },
+    "default-prepared-checks.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-prepared-checks.json",
+      "sha256": "2d428f9da2cc4e132688844569e5961e3164971d94ea2106fa0cc22975f15a64"
+    },
+    "default-prepared-checks.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-prepared-checks.log",
+      "sha256": "560fdf6319f9d7053ed2cce104380a064552134eb133ed001514ae7c8abdf392"
+    },
+    "default-runtime-source-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/default-runtime-source-audit.json",
+      "sha256": "43fff0b85491903a7dbe228083977838eb58ab37d61588fe4faa3c1cc5d953a0"
+    },
+    "fixed-c10-rtc-and-pll.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/fixed-c10-rtc-and-pll.json",
+      "sha256": "04b685335ca1f76e416942cc5321cf510addbc6d925123e493f8de842231c9a0"
+    },
+    "fixed-old-workstation-vg-parser.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/fixed-old-workstation-vg-parser.json",
+      "sha256": "538c9498fd2c3637f95c1ff2f12974a02135e80a435ae5f3dff379fd4aa1a1c0"
+    },
+    "generic_prepare.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/generic_prepare.log",
+      "sha256": "14883770ec910a3dd9ee4d4740e03e1d7ac0335e247568260f6267d5951d1453"
+    },
+    "rtc-one-second-waveform.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/rtc-one-second-waveform.json",
+      "sha256": "e00329a603ce0e0163f3a238b45c37aa5b84734e5282c8a72a78eee53ec88f54"
+    },
+    "rtc-one-second-waveform.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/rtc-one-second-waveform.log",
+      "sha256": "b1d911222182108480a99dc40b6362824fefa0faf7e03bf797fcbe279db19065"
+    },
+    "run_prepare.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/run_prepare.py",
+      "sha256": "b6a70e4d84e35e576e4b159e03ae3c75ac5c485ec03c5e341a411fe56e309d19"
+    },
+    "run_prepared_checks.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/run_prepared_checks.py",
+      "sha256": "a7b365c2f0f1d9ae1e1874d17613ad3c52487b874c14de89494e9047333f8f7b"
+    },
+    "run_source_checks.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/run_source_checks.py",
+      "sha256": "a2ae9bfea35e24bf0027547f5e17177c6de7fc8a95c6d883ed935f5fba048e95"
+    },
+    "source_checks.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/source_checks.json",
+      "sha256": "91845fb028d68a818ef531c443bf1584839515d9b8f1fdd000eb058d6cc23eb2"
+    },
+    "source_units.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v3/source_units.log",
+      "sha256": "42a5eff47c59649c082c3657a53c853738d7ddf4e40ca967728da93dab09e80c"
+    }
+  },
+  "initial_prepare_failure": {
+    "error": "Maintained non-runtime storage policy reference changed",
+    "logs": {
+      "business": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v1/business-prepare.log",
+        "sha256": "f9b64fcf30b25ba2c9cb64b82b41a72146bcf3f33696b4b9a874a1eac399f7b8"
+      },
+      "default": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-checks-v1/default-prepare.log",
+        "sha256": "f9b64fcf30b25ba2c9cb64b82b41a72146bcf3f33696b4b9a874a1eac399f7b8"
+      }
+    },
+    "repair": "Only maintained REFERENCE_SHA256 refreshed to the native RTC composition; frozen effects provenance and adaptation are unchanged"
+  },
+  "independent_review": {
+    "agent": "ae350_source",
+    "read_only": true,
+    "findings_repaired": [
+      "SDC overrides in semicolon/conditional forms and remove_clock now rejected",
+      "Actual source VG split module header and escaped formal spaces parsed with complete residue checks"
+    ],
+    "actual_old_vg_cells": 156652,
+    "remaining_blockers": []
+  },
+  "full_synthesis_executed": false,
+  "full_physical_gate_executed": false,
+  "hardware_operated": false,
+  "accepted_inputs_changed": false,
+  "thresholds_relaxed": false,
+  "next_step": "Integrate, refresh concurrent source locks, prepare with a new merged identity, then run actual complete-workstation synthesis and physical/hardware gates. RTC full timing and measured frequency/jitter are not accepted here.",
+  "test_summary": {
+    "successful_test_methods": 126,
+    "opt_in_skips": 5,
+    "source_units": {
+      "run": 80,
+      "passed": 75,
+      "skipped": 5
+    },
+    "accepted_sources": 17,
+    "generic_prepare": 5,
+    "business_prepared": 11,
+    "default_prepared": 17,
+    "rtc_one_second_waveform": 1
+  }
+}

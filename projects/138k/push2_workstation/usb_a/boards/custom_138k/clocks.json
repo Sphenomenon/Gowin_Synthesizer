@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "identity": "custom138k-native-clocks-20261025-v4",
+  "identity": "custom138k-native-clocks-20261031-v5",
   "primary": [
     {"name": "clk_50m", "port": "clk_50m", "frequency_hz": 50000000},
     {"name": "ulpi_60m", "port": "usb2_ulpi_clk", "frequency_hz": 60000000},
@@ -17,5 +17,8 @@
     {"name": "video_pixel148", "source": "video_serial742", "pin": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT", "frequency_hz": 148500000, "edges": [1, 7, 11]},
     {"name": "cpu_ram50", "source": "clk_50m", "pin": "u_cpu_pll/PLL_inst/CLKOUT0", "frequency_hz": 50000000},
     {"name": "cpu_core100", "source": "clk_50m", "pin": "u_cpu_pll/PLL_inst/CLKOUT1", "frequency_hz": 100000000}
+  ],
+  "fabric_generated": [
+    {"name": "cpu_rtc_bound", "source": "clk_50m", "pin": "u_rtc/rtc_tick_s1/Q", "average_frequency_hz": 32768, "minimum_half_period_reference_cycles": 762, "maximum_half_period_reference_cycles": 763, "sta_divide_by": 1524, "sta_minimum_period_ns": 30480, "policy": "reference50_fractional32768_bound1524_v1"}
   ]
 }

@@ -80,6 +80,7 @@ class NativeClocks(unittest.TestCase):
         bundle = clock_bundle(ROOT)
         self.assertEqual(len(bundle['plan']['primary']), 3)
         self.assertEqual(len(bundle['plan']['generated']), 10)
+        self.assertEqual(len(bundle['plan']['fabric_generated']), 1)
         self.assertNotIn('set_false_path', bundle['sdc'])
         self.assertNotIn('set_clock_groups', bundle['sdc'])
         prefix = '''
@@ -92,7 +93,7 @@ proc create_generated_clock {args} {global clocks; lappend clocks [list generate
         result = subprocess.run(['tclsh'], input=prefix + bundle['sdc'] + '\nputs [llength $clocks]\n',
                                 text=True, capture_output=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(result.stdout.strip(), '13')
+        self.assertEqual(result.stdout.strip(), '14')
         pixel = next(line for line in bundle['sdc'].splitlines() if '-name video_pixel148 ' in line)
         self.assertIn('-edges {1 7 11}', pixel)
         self.assertNotIn('-divide_by', pixel)

@@ -44,15 +44,16 @@ CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabl
     recording_policy=R00_POLICY,local_panel_policy='disabled_local_lcd_touch_v1',
     ble_recording_storage_policy='native_raw_ddr_ae350_business_v2',business_owner_policy='ae350_ble_business_owner_v2',
     ae350_core_clock_policy='pll_r0_clkout1_v1',
+    ae350_rtc_policy='reference50_fractional32768_bound1524_v1',
     ae350_memory_profile='ilm64k_dlm64k',ae350_boot_rom_bytes=65536)
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 PROFILE_REGISTRY = {
-    CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=3,configuration=CPU_BUSINESS_CONFIGURATION,
+    CPU_BUSINESS_NAME:dict(config=CPU_BUSINESS_CONFIG,revision=4,configuration=CPU_BUSINESS_CONFIGURATION,
         provider='rtl/workstation/workstation_profile_ae350_business_v1.sv',recognition_enabled=False,
         recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
         business_owner_enabled=True,
-        integration_identity='custom138k-native-ae350-business-revision3'),
+        integration_identity='custom138k-native-ae350-business-revision4'),
     LOCAL_BOOT64_NAME: dict(config=LOCAL_BOOT64_CONFIG, revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             recording_policy=R00_POLICY, local_panel_policy='disabled_local_lcd_touch_v1',
@@ -228,6 +229,8 @@ def _artifact(root, output, metadata, profile):
     stage = output / 'workstation/Prj1'
     from tools.workstation_ae350_clock_placement import verify_prepared as verify_ae350_clock
     ae350_clock_placement = verify_ae350_clock(root, stage, metadata.get('ae350_core_clock_placement'))
+    from tools.workstation_ae350_rtc import verify_prepared as verify_ae350_rtc
+    ae350_rtc = verify_ae350_rtc(root, stage, metadata.get('ae350_rtc'))
     if metadata.get('identity') != spec['integration_identity']:
         raise ValueError('workstation profile integration identity changed')
     providers = {row['provider'] for row in PROFILE_REGISTRY.values()}
@@ -465,7 +468,7 @@ def _artifact(root, output, metadata, profile):
                 ae350_firmware=ae350,
                 scan_window=metadata['scan_window'],
                 runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
-                ae350_core_clock_placement=ae350_clock_placement,
+                ae350_core_clock_placement=ae350_clock_placement, ae350_rtc=ae350_rtc,
                 **({'recording':metadata['recording']} if spec.get('recording_enabled',False) else {}),
                 **({'ble_recording_storage':metadata['ble_recording_storage']} if ble_raw_selected else {}),
                 generated_data_inputs={**ble_inputs, 'firmware/boot.mem': dict(origin='maintained_ae350_firmware',

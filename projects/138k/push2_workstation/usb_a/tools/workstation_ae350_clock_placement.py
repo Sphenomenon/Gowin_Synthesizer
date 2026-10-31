@@ -119,7 +119,7 @@ def check_named_ports(text):
     text = re.sub(r'/\*.*?\*/|//[^\n]*', '', text, flags=re.S)
     require(not re.search(r'\bassign\b', text), 'continuous assignments are outside the direct routed clock proof')
     pattern = r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)^[ \t]*\);'
-    for module in re.finditer(r'^module\s+' + IDENTIFIER + r'\s*\((.*?)\);(.*?)^endmodule\b', text, re.M | re.S):
+    for module in re.finditer(r'^module\s+' + IDENTIFIER + r'\s*\((.*?)\)\s*;(.*?)^endmodule\b', text, re.M | re.S):
         header, body = module[1], module[2]
         ports = [name.strip().removeprefix('\\') for name in header.split(',')] if header.strip() else []
         require(all(re.fullmatch(IDENTIFIER, name.strip()) for name in header.split(',')) if ports else True,
@@ -130,7 +130,7 @@ def check_named_ports(text):
                 set(ports) == {name.removeprefix('\\') for name in declarations},
                 'module port declarations are not completely parsed')
         for match in re.finditer(pattern, body, re.M | re.S):
-            binding = r'\.(' + IDENTIFIER + r')\(\s*([^()]*?)\s*\)'
+            binding = r'\.(' + IDENTIFIER + r')\s*\(\s*([^()]*?)\s*\)'
             require(re.fullmatch(r'[\s,]*', re.sub(binding, '', match[3])) is not None,
                     'unsupported or omitted named port binding on ' + match[2])
             names = [name.removeprefix('\\') for name, unused in re.findall(binding, match[3])]

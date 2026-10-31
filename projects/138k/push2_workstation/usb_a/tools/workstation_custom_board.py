@@ -39,6 +39,7 @@ FPC_AUDIO_SDC = (
 NATIVE_SOURCES = (*SOC_SOURCE_PATHS, *NATIVE_INPUT_SOURCES,
                   'rtl/workstation/workstation_custom_138k_top.sv',
                   'rtl/audio/workstation_fpc_audio.sv',
+                  'rtl/clock/workstation_ae350_rtc.sv',
                   'rtl/display_data/workstation_lcd.sv',
                   'rtl/bluetooth/workstation_bluetooth.sv',
                   'rtl/bluetooth/gw138k_ble_status_uart.v',
@@ -283,6 +284,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
+    from tools.workstation_ae350_rtc import prepared as prepare_ae350_rtc
+    ae350_rtc = prepare_ae350_rtc(root, stage)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
@@ -332,7 +335,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     synthesis_allowed=True, place_route_allowed=False, io_electrical_complete=False,
                     timing_constraints_complete=False, hardware_tested=False,
                     clock_plan_source=clocks['source'], clock_plan_sha256=clocks['source_sha256'],
-                    ae350_core_clock_placement=ae350_clock_placement,
+                    ae350_core_clock_placement=ae350_clock_placement, ae350_rtc=ae350_rtc,
                     usb2_cdc_plan_source=crossings['source'], usb2_cdc_plan_sha256=crossings['source_sha256'],
                     input_cdc_plan_source=input_crossings['source'], input_cdc_plan_sha256=input_crossings['source_sha256'],
                     shared_cdc_adaptation={key: value for key, value in shared_crossings.items() if key != 'sdc'},

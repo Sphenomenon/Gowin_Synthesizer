@@ -13,7 +13,9 @@ ADAPTATION_SHA256 = '5590b0082117f53247f5d30236d5547ac2f358ee66e7b874c3ce6199ec1
 FIFO = 'rtl/music/music_async_fifo.sv'
 FIFO_SHA256 = 'e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792'
 REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
-REFERENCE_SHA256 = '02410307cd1b7aecf6c345dad590e1a22e4eddf90ef3c895e4b1c34c92b0c263'
+# The reviewed native-only RTC composition changes this maintained reference;
+# original effects provenance/adaptation bytes and both FIFO selectors stay locked.
+REFERENCE_SHA256 = 'f5f94091d268ec81df803b3036baebe3ffe494e79f51ae8daf4b7f52867d4476'
 PREPARED_SOURCE = 'rtl/audio/stereo_effects.sv'
 
 

@@ -1063,6 +1063,10 @@ module gw138k_push_workstation_top #(
     );
     wire core_clk,bus_clk,pll_locked;
     wire system_reset_n=reset_n;
+`ifdef WORKSTATION_CUSTOM_138K
+    wire rtc_clk;
+    workstation_ae350_rtc u_rtc(.clk_50m(clk_50m),.reset_n(system_reset_n),.rtc_clk(rtc_clk));
+`endif
     gw138k_cpu_pll_cell u_cpu_pll(.clkin(clk_50m),.init_clk(clk_50m),.reset(!system_reset_n),
         .enable0(1'b1),.lock(pll_locked),.clkout0(bus_clk),.clkout1(core_clk));
     reg [16:0] lock_count=0;
@@ -1149,6 +1153,11 @@ module gw138k_push_workstation_top #(
         .APB_PPROT(),.APB_PSTRB(pstrb),.APB_PCLK(pclk),.APB_PRSTN(preset_n),
         .TCK_IN(1'b0),.TMS_IN(1'b1),.TRST_IN(1'b1),.TDI_IN(1'b0),.TDO_OUT(),.TDO_OE(),
         .CORE0_WFI_MODE(),.RTC_WAKEUP(),
-        .CORE_CLK(core_clk),.DDR_CLK(bus_clk),.AHB_CLK(bus_clk),.APB_CLK(bus_clk),.RTC_CLK(clk_50m),
+        .CORE_CLK(core_clk),.DDR_CLK(bus_clk),.AHB_CLK(bus_clk),.APB_CLK(bus_clk),
+`ifdef WORKSTATION_CUSTOM_138K
+        .RTC_CLK(rtc_clk),
+`else
+        .RTC_CLK(clk_50m),
+`endif
         .POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));
 endmodule

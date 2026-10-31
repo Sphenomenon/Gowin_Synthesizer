@@ -19,6 +19,7 @@ from tools.workstation_custom_usb2_cdc import PLAN_SOURCE as CDC_PLAN_SOURCE, cd
 from tools.workstation_custom_input_cdc import PLAN_SOURCE as INPUT_CDC_PLAN_SOURCE, input_cdc_bundle, audit_input_fifo
 from tools.workstation_synthesis_netlist import SynthesisNetlist
 from tools.workstation_ae350_clock_placement import verify_prepared as verify_ae350_clock, SOURCE as AE350_CLOCK_CST
+from tools.workstation_ae350_rtc import verify_prepared as verify_ae350_rtc, SOURCE as RTC_SOURCE
 from tools.workstation_custom_timing import INPUTS as TIMING_INPUTS, constraints as timing_constraints, audit_resets as audit_usb_resets
 from tools.workstation_custom_flash import CST as MODEL_FLASH_CST, SDC as MODEL_FLASH_SDC, reviewed_cst as reviewed_flash_cst
 from tools.workstation_video_mode import IDENTITY_720, LOCKED_INPUTS as VIDEO_INPUTS, RENDERER, PROFILES_720, MODES
@@ -354,6 +355,7 @@ def audit(output):
             raise ValueError('native synthesis is not board acceptance: ' + flag)
     stage = output / 'workstation/Prj1'
     ae350_clock_placement = verify_ae350_clock(ROOT, stage, metadata.get('ae350_core_clock_placement'))
+    ae350_rtc = verify_ae350_rtc(ROOT, stage, metadata.get('ae350_rtc'))
     hdmi_mode = metadata.get('hdmi', {}).get('mode', '1080p60')
     if hdmi_mode not in MODES:
         raise ValueError('unsupported native HDMI mode')
@@ -434,6 +436,7 @@ def audit(output):
         if (metadata.get('input_cdc_plan_source') != INPUT_CDC_PLAN_SOURCE or
                 metadata.get('input_cdc_plan_sha256') != sha(ROOT / INPUT_CDC_PLAN_SOURCE)):
             raise ValueError('native input FIFO CDC plan identity changed')
+    required_snapshot.update((RTC_SOURCE, 'tools/workstation_ae350_rtc.py'))
     if not required_snapshot.issubset(metadata['source_snapshot_sha256']):
         raise ValueError('native source snapshot lost required provenance')
     check_files(ROOT, metadata['source_snapshot_sha256'], 'source snapshot')
@@ -599,7 +602,7 @@ def audit(output):
                 verified_rom_words=rom_words, rom_sha256=metadata['firmware']['rom_sha256'],
                 high_speed_allowed=metadata['high_speed_allowed'],
                 explicit_clock_audit=clocks,
-                ae350_core_clock_placement=ae350_clock_placement,
+                ae350_core_clock_placement=ae350_clock_placement, ae350_rtc=ae350_rtc,
                 native_receiver_audit=receivers,
                 shared_cdc_audit=shared_crossings,
                 bridge_reset_audit=resets,

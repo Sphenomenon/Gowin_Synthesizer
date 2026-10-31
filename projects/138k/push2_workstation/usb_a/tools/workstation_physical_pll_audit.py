@@ -16,6 +16,9 @@ import sys
 sys.dont_write_bytecode = True
 from workstation_serializer_startup_audit import inspect_serializer_startup
 from workstation_ae350_clock_placement import audit_routed as audit_ae350_clock
+from workstation_ae350_rtc import (verify_prepared as verify_ae350_rtc, audit_netlist as audit_rtc,
+                                  validate_constraints as validate_rtc_constraints,
+                                  SOURCE as RTC_SOURCE, SHARED_TOP as RTC_TOP)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -173,6 +176,17 @@ def source_context(physical, inputs, snapshot):
         local_panel_enabled=local_panel_enabled, acceptance_inherited=False)
 
 
+def rtc_gate(root, stage, parent, sdc, vo, *, sealed_source):
+    """Fresh sealed native sources require RTC proof; old evidence stays labelled."""
+    if not sealed_source and 'ae350_rtc' not in parent:
+        return dict(scope='historical_inputs_without_native_rtc', gate_applied=False,
+                    hardware_tested=False, physical_timing_verified=False)
+    evidence = verify_ae350_rtc(root, stage, parent.get('ae350_rtc'))
+    return dict(gate_applied=True, prepared=evidence,
+                constraint=validate_rtc_constraints(sdc), connectivity=audit_rtc(vo),
+                sta_verified=False, physical_timing_verified=False, hardware_tested=False)
+
+
 def checked_link(target, source):
     if target.exists() or target.is_symlink():
         if target.resolve() != source.resolve():
@@ -211,6 +225,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
     inputs, snapshot = physical_snapshot(physical, (
         Path(__file__), Path(__file__).with_name('workstation_serializer_startup_audit.py'),
         Path(__file__).with_name('workstation_ae350_clock_placement.py'),
+        Path(__file__).with_name('workstation_ae350_rtc.py'), ROOT / RTC_SOURCE, ROOT / RTC_TOP,
         reference, physical / 'physical.cst', base.with_suffix('.sdf'), base.with_suffix('.vo'), base.with_suffix('.tr')))
     stage, parent, local_panel_enabled, selection = source_context(physical, inputs, snapshot)
     if workspace is not None and output is not None:
@@ -268,7 +283,12 @@ def audit(physical, self_test=False, workspace=None, output=None):
         core_clock = audit_ae350_clock(cst, timing_report, vo)
     except (ValueError, KeyError) as error:
         core_errors.append(str(error))
-    errors = ddr_errors + config_errors + startup_errors + video_errors + shared_errors + core_errors
+    rtc, rtc_errors = {}, []
+    try:
+        rtc = rtc_gate(ROOT, stage, parent, sdc, vo, sealed_source='synthesis' in inputs.get('source', {}))
+    except (ValueError, KeyError, OSError) as error:
+        rtc_errors.append(str(error))
+    errors = ddr_errors + config_errors + startup_errors + video_errors + shared_errors + core_errors + rtc_errors
     negatives = {}
     if self_test:
         if errors:
@@ -300,6 +320,19 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 negatives[name] = [str(error)]
             else:
                 raise ValueError('Dedicated core PLL negative mutation did not fail: ' + name)
+        if rtc.get('gate_applied'):
+            broken_vo, count = re.subn(r'(\.RTC_CLK\()([^)]*)(\))', r'\g<1>clk_50m\g<3>', vo)
+            if count != 1 or broken_vo == vo:
+                raise ValueError('RTC direct connection negative mutation target is not unique')
+            for name, broken_sdc, broken in (
+                    ('AE350/RTC_minimum_period', sdc.replace('-divide_by 1524 ', '-divide_by 1526 '), vo),
+                    ('AE350/RTC_direct_connection', sdc, broken_vo)):
+                try:
+                    rtc_gate(ROOT, stage, parent, broken_sdc, broken, sealed_source=True)
+                except ValueError as error:
+                    negatives[name] = [str(error)]
+                else:
+                    raise ValueError('Independent RTC negative mutation did not fail: ' + name)
     evidence = {str(path): digest for path, digest in snapshot.items()}
     evidence.update({str(path): sha(path) for path in outputs.glob('*.json')})
     verify_unchanged(snapshot)
@@ -308,6 +341,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 pll_gate_passed=not errors, errors=errors, ddr_source=ddr, ddr_configuration=config,
                 serializer_startup=startup, video_pll=video, shared_clock_plls=shared,
                 ae350_dedicated_core_clock=core_clock, ae350_dedicated_core_clock_errors=core_errors,
+                ae350_rtc=rtc, ae350_rtc_errors=rtc_errors,
                 profile_selection=selection, expected_pll_count=7 if local_panel_enabled else 6,
                 expected_shared_tuple_count=4 if local_panel_enabled else 3,
                 audit_workspace=str(view),
