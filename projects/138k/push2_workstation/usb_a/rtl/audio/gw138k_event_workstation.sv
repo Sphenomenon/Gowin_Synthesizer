@@ -10,6 +10,7 @@ module gw138k_event_workstation #(
     parameter bit REQUEST_DRIVEN_RENDER=0,
     parameter bit RUNTIME_RATE_ENABLE=0,
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
+    parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
     parameter integer DELAY_BITS=14,
@@ -35,6 +36,10 @@ module gw138k_event_workstation #(
     // Complete runtime rate changes are an explicit opt-in transaction.
     // The public rate commits only after engines and all effects acknowledge.
     input logic rate_commit_i, rate_44100_i,
+    // Internal request-service cofactor, selected explicitly below. When
+    // sample_ce_i is zero this must equal rate_commit_i; it omits only a
+    // configuration request caused by accepting this cycle's new sample.
+    input logic event_rate_commit_i,
     output wire rate_ready_o, applied_rate_44100_o,
     output wire rate_applied_o,rate_busy_o,rate_fault_o,
     input logic history_clear_i,
@@ -79,6 +84,8 @@ module gw138k_event_workstation #(
     if(SAMPLE_RATE_HZ!=48000) $fatal(1,"scope integration requires exact 48 kHz");
     if(RUNTIME_EFFECTS_ENABLE && !RUNTIME_RATE_ENABLE)
       $fatal(1,"runtime effects require runtime engines");
+    if(EVENT_CONFIG_COFACTOR_ENABLE && (!RUNTIME_EFFECTS_ENABLE || !REQUEST_DRIVEN_RENDER))
+      $fatal(1,"event configuration cofactor requires native request-driven effects");
     if(D_ONLY_ENABLE && (SYNTH_ENGINES_ENABLE || !RUNTIME_EFFECTS_ENABLE))
       $fatal(1,"D-only requires native effects and no instrument engines");
   end
@@ -142,6 +149,7 @@ module gw138k_event_workstation #(
   logic core_sample_ready, load_busy, mix_busy;
   wire runtime_quiescent, runtime_rate_ready,engine_rate;
   wire runtime_config_block,runtime_config_busy,runtime_fault;
+  (* syn_keep=1 *) logic event_config_block;
   wire engine_rate_commit;
   wire fx_config_ready,fx_config_applied,fx_history_ready,fx_history_done,fx_quiet,fx_fault,fx_rate;
   logic pending, frame_inflight;
@@ -259,9 +267,25 @@ module gw138k_event_workstation #(
       .d_crush_o(d_crush),.d_drive_o(d_drive),.d_delay_send_o(d_delay_send),
       .rejected_o(control_rejected)
   );
-  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !runtime_config_block && !native_clear;
+  // A known sample edge excludes both event and mode admission. At zero,
+  // the service cofactor equals the complete rate request; at one its value
+  // is unobservable here. Unknown sample controls retain the original full
+  // fence and four-state behavior. Core rendering and the real broadcast
+  // continue to consume runtime_config_block, never this event-only fence.
+  generate if(EVENT_CONFIG_COFACTOR_ENABLE)begin: sample_event_config_fence
+    always_comb begin
+      case(sample_ce_i)
+        1'b0,1'b1: event_config_block=!runtime_config_busy &&
+            (event_rate_commit_i || history_clear_i);
+        default: event_config_block=runtime_config_block;
+      endcase
+    end
+  end else begin: full_event_config_fence
+    assign event_config_block=runtime_config_block;
+  end endgenerate
+  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !event_config_block && !native_clear;
   assign full = scope_enable ? &vec_active : &allocated;
-  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !runtime_config_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
+  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !event_config_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
   // CC120 uses the control-event dispatch condition directly. It never needs
   // engine event_ready; keeping that dependency out of cancellation also
   // avoids a PANIC/configuration/sample-ready combinational cycle.

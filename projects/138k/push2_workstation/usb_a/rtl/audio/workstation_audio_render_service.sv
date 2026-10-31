@@ -67,10 +67,19 @@ module workstation_audio_render_service #(
     // boundary reserves the commit edge before it evaluates engine ready.
     wire external_config=RUNTIME_EFFECTS_ENABLE && config_valid_i && external_free;
     wire external_history=RUNTIME_EFFECTS_ENABLE && history_clear_i && external_free && !config_valid_i;
+    wire active_automatic_config=active && !response_sent && !cancelled &&
+        held_rate!=core_rate && !core_rate_busy;
     wire automatic_config=RUNTIME_EFFECTS_ENABLE &&
         ((accepted && render_44k1_i!=core_rate) ||
-         (active && !response_sent && !cancelled && held_rate!=core_rate && !core_rate_busy));
+         active_automatic_config);
     wire core_config=external_config || automatic_config;
+    // Native sample_ce is accepted. Event/mode admission already excludes
+    // that edge, so its configuration fence needs only the external and
+    // existing-active requests. Preserve this local boundary: feeding the
+    // new accepted request back through automatic configuration lengthens
+    // the same-cycle sample/event arbitration into every engine event CE.
+    (* syn_keep=1 *) wire event_config_request=external_config ||
+        (RUNTIME_EFFECTS_ENABLE && active_automatic_config);
     wire requested_rate=external_config ? config_rate_44100_i : accepted ? render_44k1_i : held_rate;
     reg [9:0] request_cancel_epoch;
     reg request_epoch_match;
@@ -109,6 +118,7 @@ module workstation_audio_render_service #(
     gw138k_event_workstation #(.SAMPLE_RATE_HZ(48000),.TIMING_OPTIMIZED(1),
         .EXTERNAL_MASTER_VOLUME(1),.REQUEST_DRIVEN_RENDER(1),
         .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE),.RUNTIME_EFFECTS_ENABLE(RUNTIME_EFFECTS_ENABLE),
+        .EVENT_CONFIG_COFACTOR_ENABLE(RUNTIME_EFFECTS_ENABLE),
         .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
         .DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) workstation(
         .clk_i,.rst_ni,.midi_byte_valid_i,.midi_byte_i,.pc_byte_valid_i,.pc_byte_i,
@@ -121,6 +131,7 @@ module workstation_audio_render_service #(
         .held_notes_o,.applied_events_o,.pc_overflow_o,.control_options_o,
         .panic_epoch_o,.panic_accept_o(panic_accept),.panic_muted_o,.cancel_delivery_pending_o(cancel_delivery_pending),.render_idle_o(core_idle),
         .rate_commit_i(core_config),.rate_44100_i(requested_rate),
+        .event_rate_commit_i(event_config_request),
         .rate_ready_o(core_rate_ready),.applied_rate_44100_o(core_rate),
         .rate_applied_o(core_rate_applied),.rate_busy_o(core_rate_busy),.rate_fault_o(core_fault),
         .history_clear_i(external_history),.history_ready_o(core_history_ready),.history_done_o(core_history_done),

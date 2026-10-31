@@ -294,6 +294,8 @@ W11真实录音长链的[START宽初始化许可因子化](push2_workstation/usb
 
 W12 `13266a0d74cad8e8`已从两份更新后的822项锁完成[prepare／全量综合及严格门](push2_workstation/usb_a/reports/DUAL138K_W12_PREPARE_SYNTHESIS_20261101.md)：951来源快照、645封存／284启用输入复验，实际消费PCM／HCI分组、raw START及M13共享audio。综合FF45,092／LUT55,357／ALU14,093／BSRAM equivalent257，完整strict通过；来源17／DEMO审计15／策略7回归通过，旧非DEMO profile漂移失败如实保留。实际分组网表与新`D2110106`物理实现另验，不继承D105区域、时序或硬件接受，未上板。
 
+M13实际音频控制长链的[事件配置私有cofactor](push2_workstation/usb_a/reports/DUAL138K_EVENT_CONFIG_COFACTOR_20261101.md)及TF读许可／容量的[并行比较分组](push2_workstation/usb_a/reports/dual138k_tf_threshold_groups_20261101.md)已实施并通过完整旧新整模块、正式I2S RTL、全域／四态与负对照验证，实际采样、广播及取消周期保持。两份822来源锁各仅更新四项来源；M14 `0e7a7f996619ed83`已完成[完整来源冻结与prepare](push2_workstation/usb_a/reports/DUAL138K_M14_PREPARE_20261101.md)，875来源快照／588封存／261启用输入逐项核验实际消费新两audio和TF RTL，已开始全量综合。分组是否实际保留、routed资源／时序及硬件另验，不预记收益；基础M仍不含CNN，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

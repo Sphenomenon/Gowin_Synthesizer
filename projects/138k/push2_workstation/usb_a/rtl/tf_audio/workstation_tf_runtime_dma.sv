@@ -98,13 +98,34 @@ module workstation_tf_runtime_dma #(
     wire ring_can_commit = pending_fits_ring(committed_used, pending_bytes);
     wire write_selected = mem_ready && !runtime_hold_i && write_pending && ring_can_commit;
 
-    wire read_has_full_beat = (available_bytes >= 32'd32);
+    // Bound the shared full-beat/chunk zero test. These are combinational
+    // groups only; admission and the sample/DDR schedules keep their cycle.
+    wire available_full_group_0 /* synthesis syn_keep=1 */;
+    wire available_full_group_1 /* synthesis syn_keep=1 */;
+    wire available_full_group_2 /* synthesis syn_keep=1 */;
+    wire available_full_group_3 /* synthesis syn_keep=1 */;
+    wire available_full_binary /* synthesis syn_keep=1 */;
+    assign available_full_group_0 = |available_bytes[11:5];
+    assign available_full_group_1 = |available_bytes[18:12];
+    assign available_full_group_2 = |available_bytes[25:19];
+    assign available_full_group_3 = |available_bytes[31:26];
+    assign available_full_binary = available_full_group_0 || available_full_group_1 ||
+                                   available_full_group_2 || available_full_group_3;
+    reg read_has_full_beat /* synthesis syn_keep=1 */;
+    always @* begin
+        // A relational comparison is X-pessimistic even when a known high
+        // one could decide a reduction. Preserve that four-state contract.
+        case (^available_bytes)
+            1'b0, 1'b1: read_has_full_beat = available_full_binary;
+            default: read_has_full_beat = (available_bytes >= 32'd32);
+        endcase
+    end
     wire read_has_partial_beat = eof_finalized && (available_bytes != 0);
     wire read_request = mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&
                         !write_selected && !read_pending && !read_buf_valid &&
                         !fifo_out_full && (read_has_full_beat || read_has_partial_beat);
     wire read_accept = read_request && app_rdy;
-    wire [5:0] read_chunk_bytes = (eof_finalized && available_bytes < 32'd32) ?
+    wire [5:0] read_chunk_bytes = (eof_finalized && !read_has_full_beat) ?
                                   available_bytes[5:0] : 6'd32;
     wire write_accept = write_selected && app_rdy && app_wrdy;
     wire read_response = app_rvalid && (read_pending || read_accept);
@@ -191,12 +212,24 @@ module workstation_tf_runtime_dma #(
         input [5:0] pending;
         reg [6:0] low_sum;
         reg [25:0] upper_plus;
-        reg upper_less, upper_equal, incremented_less, incremented_equal;
+        reg upper_less, incremented_less, incremented_equal;
+        reg upper_equal /* synthesis syn_keep=1 */;
+        reg upper_equal_0 /* synthesis syn_keep=1 */;
+        reg upper_equal_1 /* synthesis syn_keep=1 */;
+        reg upper_equal_2 /* synthesis syn_keep=1 */;
+        reg upper_equal_3 /* synthesis syn_keep=1 */;
         begin
             low_sum = {1'b0, occupancy[5:0]} + {1'b0, pending};
             upper_plus = occupancy[31:6] + 26'd1;
             upper_less = occupancy[31:6] < AUDIO_TOTAL_BYTES[31:6];
-            upper_equal = occupancy[31:6] == AUDIO_TOTAL_BYTES[31:6];
+            // This same-cycle equality also feeds the full-ring admission
+            // cofactor. Keep balanced groups instead of a shared serial
+            // zero chain; grouping == preserves mismatch-dominant X/Z logic.
+            upper_equal_0 = occupancy[11:6] == AUDIO_TOTAL_BYTES[11:6];
+            upper_equal_1 = occupancy[18:12] == AUDIO_TOTAL_BYTES[18:12];
+            upper_equal_2 = occupancy[25:19] == AUDIO_TOTAL_BYTES[25:19];
+            upper_equal_3 = occupancy[31:26] == AUDIO_TOTAL_BYTES[31:26];
+            upper_equal = upper_equal_0 && upper_equal_1 && upper_equal_2 && upper_equal_3;
             incremented_less = upper_plus < AUDIO_TOTAL_BYTES[31:6];
             incremented_equal = upper_plus == AUDIO_TOTAL_BYTES[31:6];
             pending_fits_ring = low_sum[6] ?

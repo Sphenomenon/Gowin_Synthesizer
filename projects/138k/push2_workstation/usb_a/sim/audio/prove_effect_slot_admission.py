@@ -17,7 +17,7 @@ def equation(text,name):return one(text,r'\b(?:assign|wire)\s+'+re.escape(name)+
 class BooleanSV:
     """Only the boolean/equality/conditional grammar used by these equations."""
     def __init__(self,text,values):
-        self.tokens=re.findall(r'&&|\|\||==|[!()?:]|[A-Za-z_]\w*|\d+',text)
+        self.tokens=re.findall(r'&&|\|\||==|!=|[!()?:]|[A-Za-z_]\w*|\d+',text)
         if ''.join(self.tokens)!=re.sub(r'\s+','',text):raise ValueError('unsupported SV expression '+text)
         self.i=0;self.values=values
     def take(self,value):
@@ -29,10 +29,11 @@ class BooleanSV:
             result=self.conditional();assert self.take(')');return result
         name=self.tokens[self.i];self.i+=1
         value=z3.BoolVal(name=='1') if name in ('0','1') else self.values[name] if name in self.values else z3.Bool(name)
-        if self.take('=='):
+        equality=self.take('==');inequality=False if equality else self.take('!=')
+        if equality or inequality:
             other=self.tokens[self.i];self.i+=1
-            rhs=z3.BitVecVal(int(other),value.size()) if other.isdecimal() else self.values[other]
-            value=value==rhs
+            rhs=(z3.BitVecVal(int(other),value.size()) if z3.is_bv(value) else z3.BoolVal(other=='1')) if other.isdecimal() else self.values.get(other,z3.Bool(other))
+            value=value!=rhs if inequality else value==rhs
         return value
     def conjunction(self):
         value=self.atom()
@@ -74,6 +75,10 @@ def prove_configuration(text,native,expression):
     env={'allocated':z3.BitVec('allocated',32),'kind':z3.BitVec('kind',4),'a':z3.BitVec('a',7)}
     for name in ('runtime_config_busy','runtime_config_block','runtime_fault'):
         env[name]=parse(equation(native,name),env)
+    # The private service fence may differ only on a sample edge, where the
+    # actual event/mode equations force admission low. main() first proves
+    # this relation from the actual maintained service wires and port binding.
+    env['event_config_block']=z3.If(z3.Bool('sample_ce_i'),z3.Bool('private_event_fence_on_sample'),env['runtime_config_block'])
     for name in ('mode_valid','dispatch','panic_accept'):
         env[name]=parse(equation(text,name),env)
     env['core_event_valid']=z3.And(env['dispatch'],z3.Bool('event_qualification'))
@@ -100,16 +105,18 @@ def four_state_configuration(text,native,out):
     declarations='logic '+','.join(names.split())+';\n'
     declarations+='logic [3:0] kind;logic [6:0] a,b,release_index;logic [31:0] allocated;logic [12:0] tf_scope_control_o;\n'
     declarations+='logic mode_valid,dispatch,panic_accept,runtime_config_block,runtime_config_busy,runtime_fault,rate_ready_o,config_accept;\n'
+    declarations+='logic event_config_block,event_rate_commit_i;\n'
     declarations+='logic core_event_valid,core_expression_valid,core_note_on,event_ready;logic [6:0] core_note,core_velocity,core_expression_note,core_expression_value;\n'
     assigns=''.join('assign '+name+'='+equation(native if name in ('runtime_config_block','runtime_config_busy','runtime_fault','rate_ready_o') else text,name)+';\n'
                     for name in ('runtime_config_block','runtime_config_busy','runtime_fault','mode_valid','dispatch','panic_accept','rate_ready_o'))
     random_assign=''.join(name+'=random4();\n' for name in names.split())
-    generated=('module tb;\n'+declarations+assigns+control+case+'''
+    event_case=one(text,r'begin: sample_event_config_fence\s*(.*?)\s*end else begin: full_event_config_fence')
+    generated=('module tb;\n'+declarations+assigns+event_case+'\n'+control+case+'''
 integer checks=0;integer k,j;reg [31:0] rng=32'h7ad1395b;
 function automatic [1:0] random_code();begin rng=(rng>>1)^((rng&1)?32'h80200003:0);random_code=rng[1:0];end endfunction
 function automatic random4();begin case(random_code()) 0:random4=0;1:random4=1;2:random4=1'bx;3:random4=1'bz;endcase end endfunction
 function automatic digit4(input integer value);begin case(value&3) 0:digit4=0;1:digit4=1;2:digit4=1'bx;3:digit4=1'bz;endcase end endfunction
-task automatic check;begin #1;if(config_accept !== (rate_commit_i && rate_ready_o))$fatal(1,"broadcast four-state mismatch vector=%0d",checks);checks=checks+1;end endtask
+task automatic check;begin event_rate_commit_i=(sample_ce_i===1'b0)?rate_commit_i:random4();#1;if(config_accept !== (rate_commit_i && rate_ready_o))$fatal(1,"broadcast four-state mismatch vector=%0d",checks);checks=checks+1;end endtask
 initial begin
 '''+random_assign+'''
 kind=2;a=120;b=0;release_index=0;allocated=0;tf_scope_control_o=0;
@@ -148,6 +155,11 @@ def main():
     paths=[top,fx,fixture,Path(__file__).resolve()];before={str(p):sha(p) for p in paths}
     old=fixture.read_text().strip();assert hashlib.sha256(('  '+old).encode()).hexdigest()==OLD_SHA
     text=top.read_text();effect=fx.read_text()
+    from prove_event_config_cofactor import binary_proof
+    service=ROOT/'rtl/audio/workstation_audio_render_service.sv'
+    private_proof=Path(__file__).with_name('prove_event_config_cofactor.py')
+    paths.extend([service,private_proof]);before.update({str(p):sha(p)for p in (service,private_proof)})
+    private_contract=binary_proof(service.read_text(),text)
     native=one(text,r'begin: runtime_configuration\n(.*?)end else begin: fixed_configuration')
     expr={k:equation(text,k) for k in ['core_ce','engine_clear']}
     expr.update({k:equation(native,k) for k in ['runtime_config_busy','runtime_config_block','runtime_fault']})
@@ -192,7 +204,7 @@ def main():
     four_state=four_state_configuration(text,native,out)
     assert before=={str(p):sha(p) for p in paths},'source drift'
     record={'passed':True,'scope':'actual SV boolean equations, all combinational states and both runtime/legacy selection; no clock-cycle or sampling changes',
-        'input_sha256':before,'old_core_ce_sha256':OLD_SHA,'equations':expr,'proofs':rows,'configuration_four_state':four_state,'z3_version':z3.get_full_version(),
+        'input_sha256':before,'old_core_ce_sha256':OLD_SHA,'equations':expr,'proofs':rows,'private_service_contract':private_contract,'configuration_four_state':four_state,'z3_version':z3.get_full_version(),
         'hardware_accepted':False,'physical_timing_verified':False,'resource_saving_claimed':False}
     (out/'verification.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(rows,indent=2))
 if __name__=='__main__':main()

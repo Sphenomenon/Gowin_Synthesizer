@@ -1,0 +1,394 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "TF_threshold_capacity_kept_groups_source_verified",
+  "sources_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_threshold_groups.py": "30764038e3338a40fe07af61ec2316f3bf24ee70ddffb8ee3307edb8083194af",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv": "5130bbc758d138ca289f11260ed6525e91852716e79782a637d926388f7800ce",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_occupancy_equivalence.py": "b2f8aadac758e32dd6111e183d6f88aceea95fc6c99445aa8abcb0ad2189289f",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv": "fafa99d04dd26cbbc73b331b38640e66d4d3e36f5fdc8c6c1f1226542cff3b26",
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_storage.provenance.json": "d77d6e7792a19c6cb09b2e6bd1b0829a3d114d1d2fe88bc1b3818664964f1139"
+  },
+  "before_source_sha256": "cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273",
+  "source_equals_reviewed_cache_candidate": true,
+  "source_scope": {
+    "new_sequential_registers": 0,
+    "new_cycles": 0,
+    "full_groups_bits": [
+      "11:5",
+      "18:12",
+      "25:19",
+      "31:26"
+    ],
+    "capacity_current_upper_equal_groups_bits": [
+      "11:6",
+      "18:12",
+      "25:19",
+      "31:26"
+    ],
+    "group_equality_four_state": "Known mismatch dominates unknown groups exactly as original vector ==.",
+    "full_predicate_four_state": "Known-only reduction grouping; any X/Z input uses original >=32 relational expression.",
+    "chunk_guard": "Original <32 equals complement of guarded >=32 for all four-state inputs.",
+    "add_occupancy_delta_unchanged": true,
+    "advance_ring_unchanged": true,
+    "bank_projection_and_all_sequential_implementation_bytes_unchanged": true,
+    "capacity_less_incremented_upper_and_low_sum_rules_unchanged": true,
+    "pending_fits_ring_changed_only_current_upper_equality_grouping": true,
+    "event_service_raw_store_profile_helper_edited": false
+  },
+  "prior_physical": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1",
+    "path_number": 37,
+    "from": "u_tf_audio/path/g_runtime_dma.u_dma/available_bytes_6_s0/Q",
+    "to": "u_tf_audio/path/g_runtime_dma.u_dma/accepted_used_23_s0/D",
+    "clock": "ddr_ui100",
+    "period_ns": 10.0,
+    "slack_ns": -2.825,
+    "data_ns": 12.794,
+    "levels": 16,
+    "cell_ns": 6.097,
+    "route_ns": 6.391,
+    "c2q_ns": 0.306,
+    "launch_clock_route_ns": 2.948,
+    "capture_clock_route_ns": 2.968,
+    "clock_skew_ns": 0.02,
+    "actual_cone": "available[6:16] serial zero chain shared by full/chunk and capacity upper-equality; parent audio_ddr_write tests 17:26 and capacity bits 27:31; ready/response feedback then occupancy alternative mux.",
+    "complete_cone_comparison": {
+      "comb_cells_each": 130,
+      "ordered_input_edges_each": 462,
+      "boundaries_each": 149,
+      "unresolved_inputs": 0,
+      "type_parameter_differences": 0,
+      "raw_GND_boundary_instance_changes": 21,
+      "ordered_edge_differences_after_constant_normalization": 0,
+      "opaque_boundary": "Encrypted DDR memory_calibrated output identified from real complete module binding. No encrypted-core formal-equivalence claim."
+    },
+    "input_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1/custom_138k_integration.vg": "6de983e51eae0ff70bb348036da3a9c505478c1e926168b6eb0eb7ec4ef84d1d",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1/impl/pnr/custom_138k_integration.vo": "9b535003837dd2d5982a79024acf301bb47a3c7e71011c57e4d269dfa7d7d259",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1/impl/pnr/custom_138k_integration.tr": "aa65d73c4357592689fcfca83257b53be5da0e4693dd8a0f2726fdc1efeb3123",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1/physical.sdc": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v13-physical-far-v1/parent_integration_inputs.json": "048a1cb711dad627073d30fc182eeb447035cc54fbbad39dab53e7bc4edca0d5"
+    },
+    "rca_files_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/input_sha256.json": "4d53509d462c1005e30ad1bbaedd659a5238a9a1193061cfca7d88e1b3d9dfcb",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vg-complete-D-cone.json": "0cf0cdfc8ebe21407c37146ca01171e1458cb7defb4ad48d65ba09a193dcc4b6",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vg-complete-D-edges.json": "fca8f5191905d12af6b07c711a578b4d9ee87a1dfb301cadd83a40593bab9aac",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vg-path-cells.json": "300acde69f51fdfc77e312c635ff7f8983dede461875a31c3fff10ced7f98a26",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vg-vo-complete-D-connectivity.json": "a5083b418725d83a33798f8c2e3c6839c9d01502e28784e22e336bda453e00c2",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vo-complete-D-cone.json": "5ab52ad975be39b44b47aab8d9873e47229978c55c134b2ae71ea5c1fddbc984",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vo-complete-D-edges.json": "03c1ff43d2f5e7d71115dc73636a59fe26ed500ce4c7e9047ce3558034ee9f5f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/vo-path-cells.json": "1811c5105cf870b3c0889fb70dde867fcc79d8de94d2c095f37b53f26233c2ba",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-rca-v1/actual-path37.txt": "3b599b0615092e5da946bdefbcdafb45dccdf5e54f018c28887dfd9f6fe4882b"
+    }
+  },
+  "validation": {
+    "occupancy": {
+      "passed": true,
+      "symbolic": {
+        "results": {
+          "response_size_when_valid": "UNSAT",
+          "available_next": "UNSAT",
+          "accepted_next": "UNSAT"
+        },
+        "free_bits": 89,
+        "z3_version": "5.1.0",
+        "unreachable_state_assumptions": false,
+        "arbitrary_four_state_proof": false
+      },
+      "runs": [
+        {
+          "label": "scaled",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nPASS DMA occupancy: bank=64 checks=400008 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5 delta_checks=442368 commit_checks=245760\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:217: $finish called at 2016506000 (1ps)",
+          "negative_control": false
+        },
+        {
+          "label": "hardware_capacity",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nPASS DMA occupancy: bank=67108864 checks=400008 simultaneous=34 partial=772 holds=24848 restarts=405 zero=1087 overflow=5 delta_checks=442368 commit_checks=245760\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:217: $finish called at 2016506000 (1ps)",
+          "negative_control": false
+        },
+        {
+          "label": "drop_input_count",
+          "exit_code": 1,
+          "passed": true,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=0 control=256\n       Time: 258000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+          "negative_control": true
+        },
+        {
+          "label": "unsigned_delta",
+          "exit_code": 1,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:158: small-delta arithmetic differs base=00000000 delta=40\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+          "negative_control": true
+        },
+        {
+          "label": "lost_upper_carry",
+          "exit_code": 1,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:158: small-delta arithmetic differs base=00000001 delta=3f\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+          "negative_control": true
+        },
+        {
+          "label": "simultaneous_write_lost",
+          "exit_code": 1,
+          "passed": true,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=1 control=85\n       Time: 1111000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+          "negative_control": true
+        },
+        {
+          "label": "capacity_lost_carry",
+          "exit_code": 1,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:182: pending capacity arithmetic differs base=ffffffc1 pending=63\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+          "negative_control": true
+        },
+        {
+          "label": "capacity_equal_rejected",
+          "exit_code": 1,
+          "passed": true,
+          "output": "PASS parallel occupancy four-state checks=32768 vectors=16384\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:182: pending capacity arithmetic differs base=00000041 pending=63\n       Time: 16400000  Scope: tb_tf_dma_occupancy_equivalence",
+          "negative_control": true
+        },
+        {
+          "label": "zero_delta_pessimism_lost",
+          "exit_code": 1,
+          "passed": true,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=2 control=0\n       Time: 2050000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+          "negative_control": true
+        },
+        {
+          "label": "unknown_admission_fallback_lost",
+          "exit_code": 1,
+          "passed": true,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv:129: parallel occupancy selection differs pattern=1 control=24\n       Time: 1050000  Scope: tb_tf_dma_occupancy_equivalence.check_parallel_four_state",
+          "negative_control": true
+        },
+        {
+          "label": "ring_stall0_zero0",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/occupancy/ring_stall0_zero0.sv:311: $finish called at 26285000 (1ps)",
+          "independent_ring_oracle": true
+        },
+        {
+          "label": "ring_stall0_zero1",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/occupancy/ring_stall0_zero1.sv:310: $finish called at 26065000 (1ps)",
+          "independent_ring_oracle": true
+        },
+        {
+          "label": "ring_stall1_zero0",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/occupancy/ring_stall1_zero0.sv:327: $finish called at 27075000 (1ps)",
+          "independent_ring_oracle": true
+        },
+        {
+          "label": "ring_stall1_zero1",
+          "exit_code": 0,
+          "passed": true,
+          "output": "PASS tb_tf_audio_ddr_dma: streaming ring, >128MiB scaled recycle, bank crossing, restart, address alignment\n/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/occupancy/ring_stall1_zero1.sv:326: $finish called at 26845000 (1ps)",
+          "independent_ring_oracle": true
+        }
+      ]
+    },
+    "threshold": {
+      "passed": true,
+      "symbolic": {
+        "results": {
+          "capacity26_equality_groups_four_state": "UNSAT",
+          "full32_groups_with_relational_unknown_fallback": "UNSAT",
+          "chunk_less32_equals_not_guarded_full": "UNSAT"
+        },
+        "z3_version": "5.1.0",
+        "capacity_free_bits": 78,
+        "threshold_free_bits": 64,
+        "scope": "Expression algebra, not formal SystemVerilog elaboration",
+        "reachability_assumptions": false
+      },
+      "positive_vectors_per_capacity": 208960,
+      "positive_checks_per_capacity": 835840,
+      "runs": [
+        {
+          "label": "scaled",
+          "bank_bytes": 64,
+          "passed": true,
+          "negative_control": false,
+          "exit_code": 0,
+          "output": "PASS threshold capacity four-state: bank=64 checks=835840 vectors=208960\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:65: $finish called at 208960000 (1ps)"
+        },
+        {
+          "label": "hardware_capacity",
+          "bank_bytes": 67108864,
+          "passed": true,
+          "negative_control": false,
+          "exit_code": 0,
+          "output": "PASS threshold capacity four-state: bank=67108864 checks=835840 vectors=208960\n/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:65: $finish called at 208960000 (1ps)"
+        },
+        {
+          "label": "full_unknown_fallback_lost",
+          "bank_bytes": 67108864,
+          "passed": true,
+          "negative_control": true,
+          "exit_code": 1,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:32: threshold full differs value=0000000X got=0 expected=x\n       Time: 8257000  Scope: tb_tf_dma_threshold_groups.check"
+        },
+        {
+          "label": "full_bit31_lost",
+          "bank_bytes": 67108864,
+          "passed": true,
+          "negative_control": true,
+          "exit_code": 1,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:32: threshold full differs value=80000000 got=0 expected=1\n       Time: 75649000  Scope: tb_tf_dma_threshold_groups.check"
+        },
+        {
+          "label": "capacity_group2_lost",
+          "bank_bytes": 67108864,
+          "passed": true,
+          "negative_control": true,
+          "exit_code": 1,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:38: threshold capacity differs value=080X0000 pending=000000 got=1 expected=x\n       Time: 51393000  Scope: tb_tf_dma_threshold_groups.check"
+        },
+        {
+          "label": "chunk_guard_lost",
+          "bank_bytes": 67108864,
+          "passed": true,
+          "negative_control": true,
+          "exit_code": 1,
+          "output": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_threshold_groups.sv:36: threshold chunk differs value=0000000X eof=1 got=00000x expected=x0000x\n       Time: 8258000  Scope: tb_tf_dma_threshold_groups.check"
+        }
+      ]
+    },
+    "runtime_clear": {
+      "passed": true,
+      "nominal": {
+        "passed": true,
+        "metrics": {
+          "buffered": 0,
+          "cases": 23,
+          "delivered": 677,
+          "pause_zero_frames": 6,
+          "analysis_frames": 128,
+          "ddr_writes": 270,
+          "ddr_reads": 234,
+          "failures": 11,
+          "invalidates": 59,
+          "stopped_source": 2,
+          "stale": 8,
+          "discarded": 57,
+          "read_drain_wait_cycles": 124,
+          "queued_accepts": 0,
+          "downstream_stalls": 245,
+          "scope_compares": 58437,
+          "scope_explicit": 3,
+          "scope_auto": 1,
+          "quiet_source_checks": 117133,
+          "quiet_source_changes": 92,
+          "queued_drain_tests": 0,
+          "adjacent_drain_tests": 1,
+          "cancel_drain_tests": 1
+        },
+        "buffered_metrics": {
+          "buffered": 1,
+          "cases": 23,
+          "delivered": 677,
+          "pause_zero_frames": 6,
+          "analysis_frames": 128,
+          "ddr_writes": 270,
+          "ddr_reads": 234,
+          "failures": 11,
+          "invalidates": 58,
+          "stopped_source": 2,
+          "stale": 8,
+          "discarded": 58,
+          "read_drain_wait_cycles": 146,
+          "queued_accepts": 504,
+          "downstream_stalls": 5655,
+          "scope_compares": 60104,
+          "scope_explicit": 3,
+          "scope_auto": 1,
+          "quiet_source_checks": 120466,
+          "quiet_source_changes": 92,
+          "queued_drain_tests": 2,
+          "adjacent_drain_tests": 1,
+          "cancel_drain_tests": 1
+        },
+        "default_path_exact_reconstruction": true,
+        "default_scope_exact_reconstruction": true
+      },
+      "metrics_0": {
+        "buffered": 0,
+        "cases": 6,
+        "paused_high": 2,
+        "paused_low": 3,
+        "ack_changes": 60,
+        "nonunit_zero": 28,
+        "first_capture": 9,
+        "first_playback": 9,
+        "token_changes": 15,
+        "analysis_restarts": 1,
+        "delivered": 198
+      },
+      "metrics_1": {
+        "buffered": 1,
+        "cases": 6,
+        "paused_high": 2,
+        "paused_low": 3,
+        "ack_changes": 60,
+        "nonunit_zero": 29,
+        "first_capture": 9,
+        "first_playback": 9,
+        "token_changes": 15,
+        "analysis_restarts": 1,
+        "delivered": 198
+      },
+      "ack_bypass_negative": {
+        "rejected": true,
+        "returncode": 1,
+        "mutant_sha256": "03d77cd9c5cd81d054861f0ecbe16598a9c947fc888d8963b34559ccc963f983",
+        "run_log_sha256": "5882c2920ac5ebd75b4b8cbe350a6c2ff9c5911175138af4ba99f8975047cd42",
+        "run_log": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_workstation_tf_runtime_clear.sv:37: source pointer nonunit jump escaped clear isolation\n       Time: 10970000  Scope: tb_workstation_tf_runtime_clear\n"
+      }
+    },
+    "proof_files_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/occupancy/verification.json": "a7410007bd4d3f04bf012fde4d49b5bc2d250d63efb60b2279651ab88890490e",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/threshold/verification.json": "f5d7f6612a4100f4101d10b630b64926e4b2cbc8a7ab107fa39c037445a74820",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/runtime-clear/verification.json": "e2248066cc00cceab3cf6e3cbffd630fc9c357b3e3d5a551c17ce6b9afadbdc5",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/runtime-clear/nominal/verification.json": "2611c34b01f37eddba4fe50a320a8970f1c1f5cd765dbef22d30eb0f086e96de",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/pre_threshold.sv": "cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m13far-tf-path37-proposal-v1/proposal.patch": "e40b44d6c6de2ce1ccd95c3755d382719d53c48545a46ee8abcc770b200fe18d"
+    },
+    "all_production_verification_inputs_stable": true
+  },
+  "proof_seal": {
+    "sha256": "2fbbc287aa3af08bfb66662cb8acdf4160d04964ee599e15a9f9fd51356ff314",
+    "file": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/proof-seal.json",
+    "file_sha256": "2658c8773e15efa0939563626cea4ea76553c7e92adbc00afcde0e7e9191fb9a"
+  },
+  "source_pin_audit": {
+    "independent_DMA_source_SHA_pin_found": false,
+    "maintenance_sources_hashed_directly_by_runtime_bundle": true,
+    "existing_profile_drift_checks_compare_enabled_input_SHA_to_actual_source": true,
+    "only_current_parent_SHA_pins": "M/W role profile source-lock entries; intentionally left for root candidate refresh. Historical profiles and origin hashes preserved.",
+    "role_profile_locks_modified": false
+  },
+  "acceptance": {
+    "source_verification_passed": true,
+    "new_synthesis_performed": false,
+    "kept_groups_observed_in_actual_VG": false,
+    "new_routed_timing_verified": false,
+    "resource_gain_claimed": false,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_written": false,
+    "release_ready": false
+  },
+  "next_stage": "Inspect actual next VG for four full groups, full result and function-local upper equality groups/final. If function-local syn_keep is not honored, report a separate module-level proposal; no other arithmetic edit is authorized. Then check complete routed setup/hold/CDC/PLL and real board evidence independently.",
+  "rollback": "Revert the reviewed threshold/grouping diff to exact DMA SHA cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273 and retain original role candidate inputs/physical records. No accepted/frozen baseline bytes changed."
+}

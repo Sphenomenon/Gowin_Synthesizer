@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "M14_frozen_source_regression_and_complete_prepare",
+  "passed": true,
+  "candidate_identity": "custom138k-workstation-m-demo-v1-0e7a7f996619ed83",
+  "prepare_seal": {
+    "candidate_identity": "custom138k-workstation-m-demo-v1-0e7a7f996619ed83",
+    "candidate_input_sha256": "0e7a7f996619ed83ecdda6855b9ccaa54189c2b38ed5c0790c5b3fe895eef1ae",
+    "profile_sha256": "54b149436d84d19b30af72a54d40c80150c817b69862f502b84b4d04677c9963",
+    "profile_artifact_sha256": "b450b4fb58b59358ea4f9b212f432fa77ac576c2f4e0a6ea813ccd7710332729",
+    "integration_inputs_sha256": "9bab7f4300868ed32fc61f9b140552d63d47e7f296e86eee15ba71d34f1007b2",
+    "role": "M",
+    "staged_files": 588,
+    "enabled_inputs": 261,
+    "source_snapshot_entries": 875,
+    "locked_source_files": 822,
+    "consumed_sources": {
+      "rtl/audio/gw138k_event_workstation.sv": {
+        "sha256": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09",
+        "destination": "src/ae350/gw138k_event_workstation.sv",
+        "enabled": true,
+        "staged_sha256": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09"
+      },
+      "rtl/audio/workstation_audio_render_service.sv": {
+        "sha256": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0",
+        "destination": "rtl/audio/workstation_audio_render_service.sv",
+        "enabled": true,
+        "staged_sha256": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0"
+      },
+      "rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+        "sha256": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1",
+        "destination": "rtl/tf_audio/workstation_tf_runtime_dma.sv",
+        "enabled": true,
+        "staged_sha256": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1"
+      }
+    },
+    "verified_immutable_closure": true,
+    "successful_compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf"
+  },
+  "source_lock_updates": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": {
+      "sha256": "54b149436d84d19b30af72a54d40c80150c817b69862f502b84b4d04677c9963",
+      "changed_source_hashes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1",
+          "after": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968",
+          "after": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "before": "cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273",
+          "after": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py": {
+          "before": "edd43192d4c4bdf68d6d327e44bce8d7ec0a662312d2a28c9dc19e8824b899ba",
+          "after": "1abfa4ab31e517bffd27c500ef801574fda6408f4a0f43444472e59626301ea4"
+        }
+      },
+      "configuration_and_source_inventory_unchanged": true
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": {
+      "sha256": "7aae1f919abdde24376b358763dd89e543cb28c17fb9699681e604227b42f066",
+      "changed_source_hashes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1",
+          "after": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968",
+          "after": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "before": "cad2a4ede5e8b545fa829b10baf782851dc848091c681f0bd2406f7e241e6273",
+          "after": "cc2db83be37cdb297d5cf4ef631c978802a0325e61f0b14991a814efa6f0eff1"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py": {
+          "before": "edd43192d4c4bdf68d6d327e44bce8d7ec0a662312d2a28c9dc19e8824b899ba",
+          "after": "1abfa4ab31e517bffd27c500ef801574fda6408f4a0f43444472e59626301ea4"
+        }
+      },
+      "configuration_and_source_inventory_unchanged": true
+    }
+  },
+  "regressions": {
+    "source_boundary": {
+      "tests": 17,
+      "passed": true,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m14-current-sources-v1.log",
+      "sha256": "1a5addc67b51c2a66072fe8444affdcf96cfa0860156902b7c56a7a4b9c208bb"
+    },
+    "demo_auditor": {
+      "tests": 15,
+      "passed": true,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m14-demo-audit-v1.log",
+      "sha256": "806f01f047c8ec9a9c18ca86883baa0158190fbc78ef7598b22902e1f44741d1"
+    },
+    "demo_role_policy": {
+      "tests": 7,
+      "passed": true,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m14-demo-policy-v1.log",
+      "sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae"
+    }
+  },
+  "source_verification_reports": {
+    "reports/DUAL138K_EVENT_CONFIG_COFACTOR_20261101.json": {
+      "sha256": "7862fb54d678b95fda9d3850511618a57b4b01fb5bf836414ae71c5a8bda9506"
+    },
+    "reports/dual138k_tf_threshold_groups_20261101.json": {
+      "sha256": "929ccf1e6ca00cc89880a07bd7b8c891b3438e2126eab18bc298157c6d7d7e53"
+    }
+  },
+  "tf_proof_files_reverified": 26,
+  "all_live_snapshot_sources_and_staged_inputs_reverified": true,
+  "source_snapshot_count": 875,
+  "staged_input_count": 588,
+  "enabled_input_count": 261,
+  "reference_M13_service_event_unchanged": true,
+  "resource_saving_claimed": false,
+  "synthesis_stage": "started_separately_not_yet_accepted",
+  "physical_user_codes_reserved": [
+    "D2110108",
+    "D2110109"
+  ],
+  "physical_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "role_limits": [
+    "M14 base still excludes CNN",
+    "Both full HDMI/effects/DAC and M instrument/TF/Push/25K preserved",
+    "W12 immutable closure is independent of these new source locks"
+  ],
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v14/integration_inputs.json": "9bab7f4300868ed32fc61f9b140552d63d47e7f296e86eee15ba71d34f1007b2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v14/workstation_profile.json": "b450b4fb58b59358ea4f9b212f432fa77ac576c2f4e0a6ea813ccd7710332729",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v14/prepare_source_seal.json": "676bb0b0dcf390ab38f54c59d0162fda86c2d5f9692f092a0d64a45f7aaf9be7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m14-prepare-v1.log": "20f94af4656c1112049d5f9c289872fbc05d67a98777b15ba329b8f20d2b6d02",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-cofactor-sealed-evidence-v1.json": "c52456e31fc517b472c8c2bca33cd96f51809976b2bcd2cb6d56a80ba194ea9b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-threshold-groups-production-proof-v1/proof-seal.json": "2658c8773e15efa0939563626cea4ea76553c7e92adbc00afcde0e7e9191fb9a"
+  }
+}

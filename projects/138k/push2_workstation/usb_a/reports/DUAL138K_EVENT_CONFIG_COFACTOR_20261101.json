@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "stage": "M14_candidate_event_configuration_private_cofactor_offline_validation",
+  "passed": true,
+  "production_pin_changes": {
+    "rtl/audio/gw138k_event_workstation.sv": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09",
+    "rtl/audio/workstation_audio_render_service.sv": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0"
+  },
+  "production_tool_pin_changes": [],
+  "changed_source_and_test_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "fad0203c4322b54271ef6f413a7523478cfa5101609f5b2f72e280ae3894bf09",
+    "rtl/audio/workstation_audio_render_service.sv": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0",
+    "sim/audio/run_runtime_render_service.py": "1abfa4ab31e517bffd27c500ef801574fda6408f4a0f43444472e59626301ea4",
+    "sim/audio/run_event_config_contract.py": "5463ca2893a3a7b4225f56f0d5dd174f9e6b46538835016c52951f02ab133e31",
+    "sim/audio/tb_event_config_service_contract.sv": "d645ebac8f1d0cc279c962d8b1d6a6fa8c37634efa53dbe4af1b67082d07d13f",
+    "sim/audio/prove_event_config_cofactor.py": "ee93dd9064135228e294de565f4c9bde4dc7b263d59f72afcd45e8c78f6be990",
+    "sim/audio/prove_effect_slot_admission.py": "c5dac843ea8781631cc7067a1e3d34c39a25cc7eb00600d896e6ed9cd079fd14"
+  },
+  "exact_M13_reference_sha256": {
+    "src/ae350/gw138k_event_workstation.sv": "5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1",
+    "rtl/audio/workstation_audio_render_service.sv": "148f0fb7b8976099d26bbf71025105c0d0df6f3b5e06ea90f1f75cdae0e46968"
+  },
+  "verification": {
+    "event-config-cofactor-full-m13-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-cofactor-full-m13-v1/verification.json",
+      "sha256": "39eb40957cf009027fdcb840f5ec32a828146a6378aa0f42a3b751f9dcf61104",
+      "passed": true
+    },
+    "event-config-cofactor-controlled-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-cofactor-controlled-v1/verification.json",
+      "sha256": "f8633433b04109cebf71704bd3d22fbdf9ec081ed24878c6b9110783e52c02ec",
+      "passed": true
+    },
+    "event-config-contract-cases-v2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-contract-cases-v2/verification.json",
+      "sha256": "8229fba31ab58eb0c6a7e3f6a3d4a327dbe93c3ccb811f8e28b65f32301fdf30",
+      "passed": true
+    },
+    "event-config-private-proof-final-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-private-proof-final-v1/verification.json",
+      "sha256": "31c3ee775c06854e87bc36e9cedaef849f12a8c299790944d65386338e3aa213",
+      "passed": true
+    },
+    "event-config-effect-slot-proof-final-v1": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-effect-slot-proof-final-v1/verification.json",
+      "sha256": "981c8fa1a8a9a72b12b2e342a5a75327994c03e0ee3dfe0808bf92a15b9320c8",
+      "passed": true
+    }
+  },
+  "regression_logs": {
+    "event-config-current-sources-final-v1.log": "1a5addc67b51c2a66072fe8444affdcf96cfa0860156902b7c56a7a4b9c208bb",
+    "event-config-demo-audit-final-v1.log": "0b25b87cdaf7c9018e588e07a12cb645e1f465cee2bc7bfbc81d62d0985a72ed"
+  },
+  "preserved_failure_attempts": [
+    "event-config-private-proof-v1",
+    "event-config-private-proof-v2",
+    "event-config-private-proof-v3",
+    "event-config-effect-slot-proof-precheck-v1",
+    "event-config-effect-slot-proof-v2"
+  ],
+  "hardware_accepted": false,
+  "physical_timing_verified": false,
+  "resource_saving_claimed": false,
+  "scope_limits": [
+    "No FPGA bitstream was implemented or programmed by this stage. M14 must measure synthesized and routed impact independently.",
+    "Long miter and controlled/I2S regressions bind their exact recorded source inputs; subsequent unrelated parent TF changes require their own validation.",
+    "Four-state checks are finite Icarus checks; binary proofs quantify all combinational service/event inputs without reachable-state assumptions.",
+    "Unknown-sample fallback negative checks the chosen internal fence preservation contract; its public event outputs can remain equivalent under the service relation."
+  ],
+  "evidence_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/event-config-cofactor-sealed-evidence-v1.json",
+    "sha256": "c52456e31fc517b472c8c2bca33cd96f51809976b2bcd2cb6d56a80ba194ea9b"
+  }
+}
