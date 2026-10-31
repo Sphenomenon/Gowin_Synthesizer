@@ -27,6 +27,7 @@ static void silence(struct a138_classic_service *s) {
 static enum a138_classic_result fence(struct a138_classic_service *s) {
     silence(s); s->fenced=1; s->tx_bytes=0; s->rx_bytes=0;
     s->rx_complete=0; s->offered=0; s->avdtp_active=0;
+    s->delay_selected=0; s->delay_phase=A138_CLASSIC_DELAY_NONE; s->tx_is_delay=0;
     return A138_CLASSIC_FENCED;
 }
 static enum a138_classic_result identity(struct a138_classic_service *s, uint32_t e, uint32_t g) {
@@ -53,6 +54,7 @@ enum a138_classic_result a138_classic_cancel(struct a138_classic_service *s,uint
     if (r!=A138_CLASSIC_OK && r!=A138_CLASSIC_FENCED) return r;
     silence(s); s->active=0; s->rx_bytes=0; s->rx_complete=0;
     s->tx_bytes=0; s->offered=0; s->avdtp_active=0; s->ready=0;
+    s->delay_selected=0; s->delay_phase=A138_CLASSIC_DELAY_NONE; s->tx_is_delay=0;
     return A138_CLASSIC_OK;
 }
 enum a138_classic_result a138_classic_event(struct a138_classic_service *s,
@@ -68,6 +70,7 @@ enum a138_classic_result a138_classic_event(struct a138_classic_service *s,
 }
 static int start_tx(struct a138_classic_service *s,uint16_t cid) {
     if (s->tx_bytes) return 0;
+    s->tx_is_delay=0;
     s->tx_bytes=4; s->tx_offset=0; putle(s->tx+2,cid); return 1;
 }
 static int append(struct a138_classic_service *s,const uint8_t *p,uint16_t n) {
@@ -92,8 +95,25 @@ static int channel_open(const struct a138_classic_service *s,unsigned i) {
 static void drop_channel(struct a138_classic_service *s,unsigned i) {
     memset(&s->channel[i],0,sizeof s->channel[i]);
     if (i) { silence(s); s->ready=0; s->avdtp_active=0; }
-    if (i==1u) { s->state=A138_CLASSIC_IDLE; memset(&s->channel[2],0,sizeof s->channel[2]); }
+    if (i==1u) {
+        s->state=A138_CLASSIC_IDLE; memset(&s->channel[2],0,sizeof s->channel[2]);
+        s->delay_selected=0; s->delay_phase=A138_CLASSIC_DELAY_NONE; s->remote_seid=0;
+    }
     if (i==2u && s->state>A138_CLASSIC_CONFIGURED) s->state=A138_CLASSIC_CONFIGURED;
+}
+static enum a138_classic_result delay_fail(struct a138_classic_service *s,uint8_t reason) {
+    s->delay_failure=reason; return fence(s);
+}
+static enum a138_classic_result delay_schedule(struct a138_classic_service *s) {
+    uint8_t p[5];
+    if (!s->delay_selected || s->delay_phase!=A138_CLASSIC_DELAY_QUEUED || s->tx_bytes)
+        return A138_CLASSIC_OK;
+    if (s->delay_labels_used>=16u) return delay_fail(s,A138_CLASSIC_DELAY_LABEL_EXHAUSTED);
+    s->delay_label=(uint8_t)(s->delay_labels_used++<<4);
+    p[0]=s->delay_label; p[1]=13; p[2]=s->remote_seid; putbe(p+3,s->delay_value);
+    if (!start_tx(s,s->channel[1].remote_cid) || !append(s,p,sizeof p)) return fence(s);
+    s->tx_is_delay=1; s->delay_phase=A138_CLASSIC_DELAY_TX; s->delay_started_ms=s->clock_ms;
+    return A138_CLASSIC_OK;
 }
 static enum a138_classic_result signaling(struct a138_classic_service *s,const uint8_t *p,uint16_t n) {
     uint16_t off=0;
@@ -383,8 +403,12 @@ static enum a138_classic_result avdtp_command(struct a138_classic_service *s,uin
         if (signal==4u && state==A138_CLASSIC_IDLE) { error=0x14; break; }
         memcpy(out,caps,sizeof caps); bytes=sizeof caps;
         if (signal==4u) memcpy(out+6,s->codec,4);
+        /* DelayReporting is not a basic GetCapabilities service. */
+        if (signal==12u || (signal==4u && s->delay_selected)) {
+            out[bytes++]=8; out[bytes++]=0;
+        }
         break;
-    case 3: { /* SetConfiguration; only transport + bounded SBC are offered. */
+    case 3: { /* SetConfiguration: transport, bounded SBC, optional peer delay. */
         uint16_t off=2; uint8_t seen=0; struct a138_classic_format format;
         if (n<2u) { error=0x11; break; }
         if (p[0]!=SEP || !p[1] || (p[1]&3u) || p[1]>0xf8u) { error=0x12; break; }
@@ -401,25 +425,34 @@ static enum a138_classic_result avdtp_command(struct a138_classic_service *s,uin
                     error=0x29; break;
                 }
                 memcpy(s->pending_codec,p+off+4,4); seen|=2;
+            } else if (cat==8u) {
+                if (len || (seen&4u)) { error=0x18; break; }
+                if (!s->clock_valid || !s->delay_valid) { error=0x31; break; }
+                seen|=4;
             } else { error=0x17; break; }
             off=(uint16_t)(off+2u+len);
         }
-        if (!error && seen!=3u) { category=(uint8_t)(seen&1u ? 7 : 1); error=0x1a; }
-        if (!error) { s->pending_config=1; s->pending_state=A138_CLASSIC_CONFIGURED; }
+        if (!error && (seen&3u)!=3u) { category=(uint8_t)(seen&1u ? 7 : 1); error=0x1a; }
+        if (!error) {
+            s->pending_config=1; s->pending_state=A138_CLASSIC_CONFIGURED;
+            s->pending_delay_selected=(seen&4u)!=0; s->pending_remote_seid=p[1];
+        }
         break;
     }
     case 6: case 7: case 8: case 9: case 10:
         if (n!=1u) { error=0x11; break; }
         if (p[0]!=SEP) { error=0x12; break; }
-        if (signal==6u && state==A138_CLASSIC_CONFIGURED && !s->channel[2].allocated) s->pending_state=A138_CLASSIC_OPEN;
-        else if (signal==7u && state==A138_CLASSIC_OPEN && channel_open(s,2) && s->ready) s->pending_state=A138_CLASSIC_STREAMING;
+        if (signal==6u && state==A138_CLASSIC_CONFIGURED && !s->channel[2].allocated &&
+            (!s->delay_selected || s->delay_sent)) s->pending_state=A138_CLASSIC_OPEN;
+        else if (signal==7u && state==A138_CLASSIC_OPEN && channel_open(s,2) && s->ready &&
+                 (!s->delay_selected || s->delay_phase==A138_CLASSIC_DELAY_COMPLETE)) s->pending_state=A138_CLASSIC_STREAMING;
         else if (signal==9u && state==A138_CLASSIC_STREAMING) s->pending_state=A138_CLASSIC_OPEN;
         else if (signal==8u && (state==A138_CLASSIC_OPEN || state==A138_CLASSIC_STREAMING)) s->pending_state=A138_CLASSIC_IDLE;
         else if (signal==10u) s->pending_state=A138_CLASSIC_IDLE;
         else error=0x31;
         break;
     case 5: error=0x29; category=7; break; /* Reconfigure not offered. */
-    case 11: case 13: error=0x19; break; /* SecurityControl/DelayReport not offered. */
+    case 11: case 13: error=0x19; break; /* SNK initiates DelayReport; no SRC role. */
     default: avdtp_reply(s,label,signal,1,out,0); return A138_CLASSIC_OK;
     }
     if (error) {
@@ -430,23 +463,40 @@ static enum a138_classic_result avdtp_command(struct a138_classic_service *s,uin
     } else avdtp_reply(s,label,signal,2,out,bytes);
     return s->fenced ? A138_CLASSIC_FENCED : A138_CLASSIC_OK;
 }
+static enum a138_classic_result avdtp_message(struct a138_classic_service *s,uint8_t label,
+        uint8_t signal,uint8_t message_type,const uint8_t *p,uint16_t n) {
+    if (!message_type) return avdtp_command(s,label,signal,p,n);
+    if (s->delay_phase!=A138_CLASSIC_DELAY_WAIT || label!=s->delay_label)
+        return A138_CLASSIC_MALFORMED;
+    if (signal!=13u) return delay_fail(s,A138_CLASSIC_DELAY_BAD_RESPONSE);
+    if (message_type==1u || message_type==3u) {
+        if ((message_type==1u && n) || (message_type==3u && n!=1u))
+            return delay_fail(s,A138_CLASSIC_DELAY_BAD_RESPONSE);
+        return delay_fail(s,A138_CLASSIC_DELAY_REJECTED);
+    }
+    if (message_type!=2u || n) return delay_fail(s,A138_CLASSIC_DELAY_BAD_RESPONSE);
+    s->delay_reported_value=s->delay_value; s->delay_phase=A138_CLASSIC_DELAY_COMPLETE;
+    return A138_CLASSIC_OK;
+}
 static enum a138_classic_result avdtp(struct a138_classic_service *s,const uint8_t *p,uint16_t n) {
-    uint8_t type,label,signal; uint16_t skip;
+    uint8_t type,label,signal,message_type; uint16_t skip;
     if (!n) return A138_CLASSIC_MALFORMED;
     type=(p[0]>>2)&3u; label=p[0]&0xf0u;
-    if (p[0]&3u) return A138_CLASSIC_MALFORMED; /* Acceptor-only stage. */
+    message_type=p[0]&3u;
     if (!type) {
         s->avdtp_active=0;
         if (n<2u || (p[1]&0xc0u)) return A138_CLASSIC_MALFORMED;
-        return avdtp_command(s,label,p[1],p+2,(uint16_t)(n-2));
+        return avdtp_message(s,label,p[1],message_type,p+2,(uint16_t)(n-2));
     }
     if (type==1u) {
         s->avdtp_active=0;
         if (n<3u || p[1]<2u || (p[2]&0xc0u)) return A138_CLASSIC_MALFORMED;
         s->avdtp_label=label; s->avdtp_signal=p[2]; s->avdtp_packets=p[1]; s->avdtp_seen=1;
+        s->avdtp_message_type=message_type;
         s->avdtp_bytes=0; s->avdtp_active=1; skip=3;
     } else {
-        if (!s->avdtp_active || s->avdtp_label!=label) return A138_CLASSIC_MALFORMED;
+        if (!s->avdtp_active || s->avdtp_label!=label || s->avdtp_message_type!=message_type)
+            return A138_CLASSIC_MALFORMED;
         ++s->avdtp_seen; skip=1;
         if ((type==3u)!=(s->avdtp_seen==s->avdtp_packets)) { s->avdtp_active=0; return A138_CLASSIC_MALFORMED; }
     }
@@ -454,7 +504,7 @@ static enum a138_classic_result avdtp(struct a138_classic_service *s,const uint8
     memcpy(s->avdtp+s->avdtp_bytes,p+skip,n-skip); s->avdtp_bytes=(uint16_t)(s->avdtp_bytes+n-skip);
     if (type!=3u) return A138_CLASSIC_OK;
     signal=s->avdtp_signal; s->avdtp_active=0;
-    return avdtp_command(s,label,signal,s->avdtp,s->avdtp_bytes);
+    return avdtp_message(s,label,signal,message_type,s->avdtp,s->avdtp_bytes);
 }
 static uint16_t sbc_bytes(const struct a138_classic_service *s,const uint8_t *p,uint16_t n) {
     const struct a138_classic_format *f=&s->format;
@@ -607,17 +657,50 @@ enum a138_classic_result a138_classic_tx_result(struct a138_classic_service *s,u
     s->tx_offset=(uint16_t)(s->tx_offset+s->tx_offered); s->offered=0;
     if (s->tx_offset<s->tx_bytes) return A138_CLASSIC_OK;
     s->tx_bytes=0; s->tx_offset=0;
+    if (s->tx_is_delay) {
+        s->tx_is_delay=0; s->delay_sent=1;
+        s->delay_phase=A138_CLASSIC_DELAY_WAIT; s->delay_started_ms=s->clock_ms;
+        return dispatch(s);
+    }
     if (s->pending_config) {
         memcpy(s->codec,s->pending_codec,4); codec_format(s->codec,&s->format);
         s->pending_config=0; s->ready=0;
+        s->delay_selected=s->pending_delay_selected; s->remote_seid=s->pending_remote_seid;
+        s->delay_sent=0; s->delay_failure=0;
+        s->delay_phase=s->delay_selected ? A138_CLASSIC_DELAY_QUEUED : A138_CLASSIC_DELAY_NONE;
     }
     next=s->pending_state; s->pending_state=NO_STATE;
     if (next!=NO_STATE) {
         silence(s); s->state=next;
-        if (next==A138_CLASSIC_IDLE) s->ready=0;
+        if (next==A138_CLASSIC_IDLE) {
+            s->ready=0; s->delay_selected=0; s->delay_phase=A138_CLASSIC_DELAY_NONE; s->remote_seid=0;
+        }
     }
     if (s->fenced) return A138_CLASSIC_FENCED;
+    r=delay_schedule(s); if (r!=A138_CLASSIC_OK) return r;
     return dispatch(s);
+}
+enum a138_classic_result a138_classic_tick(struct a138_classic_service *s,uint32_t e,uint32_t g,
+        uint32_t now) {
+    enum a138_classic_result r=identity(s,e,g); if (r!=A138_CLASSIC_OK) return r;
+    if (s->clock_valid && (uint32_t)(now-s->clock_ms)>=0x80000000u)
+        return delay_fail(s,A138_CLASSIC_DELAY_CLOCK_REGRESSED);
+    s->clock_ms=now; s->clock_valid=1;
+    if ((s->delay_phase==A138_CLASSIC_DELAY_TX || s->delay_phase==A138_CLASSIC_DELAY_WAIT) &&
+        (uint32_t)(now-s->delay_started_ms)>=A138_CLASSIC_DELAY_TIMEOUT_MS)
+        return delay_fail(s,A138_CLASSIC_DELAY_TIMEOUT);
+    return A138_CLASSIC_OK;
+}
+enum a138_classic_result a138_classic_delay_update(struct a138_classic_service *s,uint32_t e,uint32_t g,
+        uint32_t delay) {
+    enum a138_classic_result r=identity(s,e,g); if (r!=A138_CLASSIC_OK) return r;
+    if (delay>UINT16_MAX) return A138_CLASSIC_ARGUMENT;
+    if (s->delay_valid && s->delay_value==delay) return A138_CLASSIC_OK;
+    if (s->delay_selected && (s->tx_bytes || s->rx_complete || s->delay_phase!=A138_CLASSIC_DELAY_COMPLETE))
+        return A138_CLASSIC_BUSY;
+    s->delay_value=(uint16_t)delay; s->delay_valid=1;
+    if (s->delay_selected) s->delay_phase=A138_CLASSIC_DELAY_QUEUED;
+    return delay_schedule(s);
 }
 enum a138_classic_result a138_classic_audio_ready(struct a138_classic_service *s,uint32_t e,uint32_t g,
         uint32_t rate,uint8_t ready) {

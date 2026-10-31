@@ -2,14 +2,25 @@
 #define A138_CLASSIC_SERVICE_H
 #include <stdint.h>
 
-/* Unselected EXPERIMENTAL source-stage; mandatory A2DP1.4 SNK Delay
- * Reporting, connection/security policy and production integration are absent.
+/* Unselected EXPERIMENTAL source-stage; connection/security policy, actual
+ * end-to-end delay measurement/drift control and production wiring are absent.
  * No Bluetooth profile compliance or phone interoperability claim.
  * One cooperative CPU owner, no heap or MMIO. */
 #define A138_CLASSIC_ACL_BYTES 280u
 #define A138_CLASSIC_MTU 672u
 #define A138_CLASSIC_FRAME_BYTES 224u
 #define A138_CLASSIC_FRAMES 4u
+#define A138_CLASSIC_DELAY_TIMEOUT_MS 1000u
+
+enum a138_classic_delay_phase {
+    A138_CLASSIC_DELAY_NONE, A138_CLASSIC_DELAY_QUEUED,
+    A138_CLASSIC_DELAY_TX, A138_CLASSIC_DELAY_WAIT, A138_CLASSIC_DELAY_COMPLETE
+};
+enum a138_classic_delay_failure {
+    A138_CLASSIC_DELAY_NO_FAILURE, A138_CLASSIC_DELAY_TIMEOUT,
+    A138_CLASSIC_DELAY_REJECTED, A138_CLASSIC_DELAY_BAD_RESPONSE,
+    A138_CLASSIC_DELAY_LABEL_EXHAUSTED, A138_CLASSIC_DELAY_CLOCK_REGRESSED
+};
 
 enum a138_classic_result {
     A138_CLASSIC_OK, A138_CLASSIC_ARGUMENT, A138_CLASSIC_STALE,
@@ -52,6 +63,11 @@ struct a138_classic_service {
     uint8_t avdtp_active, avdtp_label, avdtp_signal, avdtp_packets, avdtp_seen;
     uint8_t fragment_remaining;
     uint8_t fragment_active, codec[4], pending_codec[4], pending_config;
+    uint32_t clock_ms, delay_started_ms;
+    uint16_t delay_value, delay_reported_value;
+    uint8_t clock_valid, delay_valid, delay_selected, pending_delay_selected;
+    uint8_t remote_seid, pending_remote_seid, delay_phase, delay_sent;
+    uint8_t delay_label, delay_labels_used, delay_failure, tx_is_delay, avdtp_message_type;
     struct a138_classic_format format;
     struct a138_classic_channel channel[3]; /* SDP, AVDTP signal, media */
     uint8_t rx[A138_CLASSIC_MTU + 4u];
@@ -98,6 +114,24 @@ enum a138_classic_result a138_classic_tx_result(struct a138_classic_service *s,
  * Revocation immediately clears queued audio and leaves OPEN. */
 enum a138_classic_result a138_classic_audio_ready(struct a138_classic_service *s,
     uint32_t link_epoch, uint32_t generation, uint32_t rate_hz, uint8_t ready);
+/* Required independent monotonic millisecond service clock. Call before other
+ * methods for this service pass, at least every100ms; never wait on HCI/CPU RX.
+ * uint32 wrap is allowed; backward/jumps >=2^31ms fence. At deadline timeout
+ * wins over any subsequently delivered response. 1000ms is within GAVDP1.3's
+ * proposed 0.5..3s signaling timer range. TX offer and peer response each bound.
+ */
+enum a138_classic_result a138_classic_tick(struct a138_classic_service *s,
+    uint32_t link_epoch, uint32_t generation, uint32_t now_ms);
+/* Stable real SNK delay in0.1ms, from baseband media receipt to presentation,
+ * not instantaneous FIFO fill. No measurement is invented by this component.
+ * Clock + first value must exist before a DelayReporting configuration succeeds.
+ * During an outstanding report/TX, BUSY consumes no changed value. The physical
+ * owner must keep actual delay within +/-30ms of its reported operating range
+ * and compensate drift; cancel if it cannot. A changed stable value queues a
+ * fresh report. At most16 labels per link, never wrap to accept an old reply.
+ */
+enum a138_classic_result a138_classic_delay_update(struct a138_classic_service *s,
+    uint32_t link_epoch, uint32_t generation, uint32_t delay_tenths_ms);
 enum a138_classic_result a138_classic_frame_pop(struct a138_classic_service *s,
     struct a138_classic_frame *frame);
 #endif

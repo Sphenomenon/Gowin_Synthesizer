@@ -3,7 +3,9 @@
 This component is an **unselected B04 source-stage**. It is not a complete or
 conforming A2DP 1.4 Sink, a selected workstation input, phone interoperability,
 ROM-fit or C04 timing acceptance, or hardware deployment. Its SDP record is an
-experimental record targeting A2DP 1.4: mandatory Sink Delay Reporting is missing.
+experimental record targeting A2DP 1.4. Delay Reporting wire transactions are
+implemented below, but physical latency measurement/drift control, connection
+security and native integration remain incomplete.
 Do not expose this record in a production image as a qualified standard Sink.
 
 `classic_service.c/.h` implements a single BR/EDR Basic-mode connection with SDP,
@@ -41,7 +43,9 @@ never pass it to the new one. The adapter owns the finite wait deadline and may
 cancel/drop the classic session if it cannot retain a packet. It must allow PL
 to retire/return each host-RX lease and keep BLE progressing. Holding classic
 backpressure forever, suppressing host-credit returns, or stalling the audio
-sample schedule is forbidden. No deadline or host-credit API is implemented here.
+sample schedule is forbidden. Only Delay Reporting has an internal cooperative
+millisecond deadline; general L2CAP/transport-retention deadlines and host-credit
+returns remain external.
 
 `tx_peek()` returns immutable original HCI ACL bytes and a token. Submit these to
 the sole owner. `tx_result(ACCEPTED)` advances only the accepted fragment. A
@@ -83,11 +87,75 @@ all old descriptors before reinitializing CPU objects.
   The token is query validation, not authentication. No dynamic record database.
 - AVDTP supports Discover/GetCapabilities/GetAllCapabilities/SetConfiguration/
   GetConfiguration/Open/Start/Suspend/Close/Abort for one SEP. Signaling fragments
-  use at most128 bytes. Reconfigure, SecurityControl and DelayReport are rejected;
-  optional reporting/recovery/multiplexing/content protection are not advertised.
-  **Mandatory A2DP1.4 Sink Delay Reporting is unimplemented.** Close/Abort clear
-  audio and await the peer's media-channel disconnection; a local disconnect
-  initiator, response timers and a full connection recovery policy are absent.
+  use at most128 bytes. Reconfigure and SecurityControl are rejected; optional
+  reporting/recovery/multiplexing/content protection are not advertised. The SNK
+  initiates DelayReport; an incoming SRC-role DelayReport command is rejected.
+  Close/Abort clear audio and await the peer's media-channel disconnection; a
+  local disconnect initiator, general connection timers/recovery remain absent.
+
+## Delay Reporting boundary
+
+A2DP1.4 section5.1.1.2 requires the Sink initiator role for Delay Reporting even
+when general stream setup uses the acceptor role. GetAllCapabilities advertises
+category08/LOSC00; the older basic GetCapabilities response omits it. A valid
+SetConfiguration may select it only after `tick()` initializes the external clock
+and `delay_update()` supplies a real stable delay. The original remote INT SEID
+is saved only when the final configuration response fragment is accepted. During
+the subsequent Delay Reporting role reversal it becomes the addressed remote
+ACP SEID. GetConfiguration returns the committed delay-selection capability.
+A source that does not select this optional SRC capability retains the preceding
+non-delay wire behavior; no report is invented for an unnegotiated service.
+
+After successful configuration acceptance, the five-byte AVDTP DelayReport is
+queued before dispatching a waiting Open: command header/label, signal0x0d,
+remote SEID in bits7:2, then delay MSB and LSB in0.1ms units. The source accepts
+Open only after the entire report has been accepted by the sole HCI owner.
+**The owner must preserve accepted per-link packet order and own stable bytes
+through actual H5 retirement.** This allows the report to precede the Open
+response on the wire; CPU acceptance alone does not prove actual transmission.
+Start additionally waits for the matching peer Accept plus the original physical
+rate-ready grant. Incoming commands can use the same numeric label in the
+opposite direction; they do not complete the locally initiated transaction.
+
+`tick(epoch,generation,now_ms)` is a required independent monotonic millisecond
+service clock, called before other methods in each pass and at least every100ms.
+One1000ms send-phase deadline includes zero-credit/partial-fragment/rejected-TX
+stalls; a new1000ms peer-response deadline starts only after the last physical
+fragment is accepted. These are local timeouts within GAVDP1.3's proposed
+0.5–3.0s range. Tick at a deadline fences before a subsequently delivered success.
+uint32 clock wrap is supported; a backward/ambiguous jump of at least2^31ms
+fences. A stopped caller clock is not detected by C code: real scheduling and an
+external watchdog remain integration requirements. Other connection timeouts
+have not been added by this stage.
+
+Only matching signaling-channel responses with the active label and signal0x0d
+can complete the report. Accept requires no parameters; correctly formed Reject
+or GeneralReject fences, and malformed matching responses fence with a separate
+diagnostic. Unrelated/duplicate responses consume as MALFORMED without completing
+the transaction. Bounded signaling reassembly also supports fragmented responses,
+requiring message type/label consistency. Error, timeout, uncertain physical TX,
+cancel/disconnection and signal-channel retirement discard local work; they never
+refund/replay HCI credits or issue a competing controller Reset. The connection
+policy owner must actually disconnect/recover a fenced link.
+
+A changed `delay_update()` value queues another immutable report. BUSY consumes
+no changed value while a report or other control TX is pending; overflow above
+65535 units is rejected, not truncated. The object uses at most16 transaction
+labels per link and never reuses one within that link; this conservative local
+bound prevents a delayed duplicate from matching a wrapped label. Exhaustion
+explicitly fences and requires a new real link epoch. It is an experimental
+resource policy, not a limit asserted by the Bluetooth specification. Abort and
+reconfiguration on the same link do not reset the used-label history.
+
+Delay Reporting does **not** measure its own value. GAVDP1.3 sections3.1.8.2–.3
+measure from media baseband receipt to actual user presentation, allow at most
++/-30ms reported error (recommend+/-15ms), and require drift compensation between
+reports. The physical audio owner must supply a stable operating-range estimate
+covering controller/HCI buffering, decoding and rendering, not instantaneous
+jitter-FIFO fill; it must keep actual latency within that bound while an update
+waits, or cancel. No constant-zero model, real latency measurement, clock-drift
+solution, or physical accuracy acceptance is provided here. Continuous audio
+still cannot wait for this background signaling transaction.
 
 ## Audio boundary
 
@@ -131,10 +199,11 @@ work; switching between44.1/48kHz alone does not solve long-term drift.
 Run from the repository root, with a new external output directory:
 
 ```sh
-python3 projects/138k/push2_workstation/usb_a/sim/run_ae350_classic_service.py --output /absolute/new/output
+python3 -B projects/138k/push2_workstation/usb_a/sim/run_ae350_delay_reporting.py --output /absolute/new/output
 ```
 
-The runner compiles actual C natively and with ASan/UBSan; tests wire bytes,
+The runner includes the complete preceding Classic/SBC runner, then compiles
+actual Delay Reporting C natively and with ASan/UBSan; tests wire bytes,
 structural truncations/overflow, deterministic valid-envelope SDP/AVDTP fuzz,
 identity/token/cancellation behavior, slow/full queues and actual SBC reference
 PCM. Sanitizer fixtures poison unused RX buffer tails so stale-byte reads beyond

@@ -37,9 +37,27 @@
       "sha256": "cb1c8e5e5c2a345c39b9529e28b7ac7ad960f761cc70cb115e62bca914a90dd6",
       "captured_file_mtime_utc": "2026-10-30T22:51:54.661623+00:00",
       "note": "Official wrapper contains complete embedded profile. Direct embedded-source request later returned403; not used as successful retrieval."
+    },
+    "avdtp13": {
+      "url": "https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=260860",
+      "actual_url": "https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=260860",
+      "bytes": 1815694,
+      "sha256": "3419b8af519120c246ae4ceb42eeacb125c06c8c93289e209913a5a033bcf3fc",
+      "retrieved_utc": "2026-10-31T00:01:44.353558+00:00",
+      "magic": "%PDF-"
+    },
+    "gavdp13": {
+      "url": "https://www.bluetooth.org/docman/handlers/downloaddoc.ashx?doc_id=260865",
+      "actual_url": "https://www.bluetooth.org/docman/handlers/downloaddoc.ashx?doc_id=260865",
+      "status": 200,
+      "bytes": 713156,
+      "sha256": "148be562676c8d85bd5e3908840cbbb44541b02cccef6454514c631a95398880",
+      "retrieved_utc": "2026-10-31T00:20:37.762948+00:00",
+      "magic": "%PDF-"
     }
   },
   "excluded_reference": "BTstack restrictive personal/noncommercial license; no code or HCI owner copied",
   "existing_decoder": "Existing sbc_decoder_service and pinned Android/OI Apache decoder; runner verifies adapted source hashes and actual reference PCM",
-  "limitations": "Not A2DP1.4 conformance: mandatory Sink Delay Reporting and full connection/security/recovery/transport integration absent"
+  "limitations": "Not A2DP1.4 conformance: full connection/security/recovery/transport integration, real SNK latency measurement and +/-30ms/drift acceptance absent",
+  "delay_report_source_policy": "First-party SNK initiator via existing immutable HCI ACL token API; category08/00, remote SEID, BE16 units0.1ms; cooperative1000ms phases; sixteen no-reuse labels/link local bound; actual latency/drift external"
 }
