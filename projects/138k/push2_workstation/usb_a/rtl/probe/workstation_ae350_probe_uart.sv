@@ -13,6 +13,9 @@ module workstation_ae350_probe_uart #(
     input wire [3:0] platform_flags,
     output reg tx=1,
     output reg [511:0] status_50mhz=0,
+    // Full published transport bank and its sequence, all in clk_50m.
+    output reg [2079:0] full_snapshot_50mhz=0,
+    output reg snapshot_published_50mhz=0,
     output wire [6:0] transport_health_50mhz
 );
     reg request=0,ack=0;
@@ -20,11 +23,14 @@ module workstation_ae350_probe_uart #(
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg ack_meta=0,ack_sync=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [3:0] flags_meta=0,flags_sync=0;
     reg [2047:0] held_words=0;
-    always @(posedge pclk or negedge preset_n) begin
-        if(!preset_n) begin request_meta<=0;request_sync<=0;ack<=0;held_words<=0;end
+    // A local APB reset must not forge an acknowledgement by resetting its
+    // toggle, or change the held bus while the destination is copying it.
+    // Only the common transport reset resets both handshake endpoints.
+    always @(posedge pclk or negedge reset_n) begin
+        if(!reset_n) begin request_meta<=0;request_sync<=0;ack<=0;held_words<=0;end
         else begin
             request_meta<=request;request_sync<=request_meta;
-            if(request_sync!=ack) begin held_words<=source_words;ack<=request_sync;end
+            if(preset_n && request_sync!=ack) begin held_words<=source_words;ack<=request_sync;end
         end
     end
     reg [2047:0] words=0;
@@ -66,6 +72,7 @@ module workstation_ae350_probe_uart #(
             words<=0;next_sequence<=0;frame_sequence<=0;period<=0;wait_count<=0;
             state<=0;settle<=0;byte_index<=0;crc<=32'hffffffff;
             shift<=10'h3ff;bits_left<=0;baud_count<=0;tx<=1;status_50mhz<=0;
+            full_snapshot_50mhz<=0;snapshot_published_50mhz<=0;
         end else begin
             ack_meta<=ack;ack_sync<=ack_meta;flags_meta<=platform_flags;flags_sync<=flags_meta;
             if(bits_left!=0) begin
@@ -91,6 +98,7 @@ module workstation_ae350_probe_uart #(
                   else begin words<=held_words;words[61*32+:32]<={28'd0,flags_sync};state<=3;end
                 3:begin
                     frame_sequence<=next_sequence;next_sequence<=next_sequence+1'b1;
+                    full_snapshot_50mhz<={next_sequence,words};snapshot_published_50mhz<=1;
                     byte_index<=0;crc<=32'hffffffff;state<=4;
                     status_50mhz<={words[35*32+:32],words[34*32+:32],words[32*32+:32],
                         words[20*32+:32],words[19*32+:32],words[18*32+:32],words[17*32+:32],words[16*32+:32],

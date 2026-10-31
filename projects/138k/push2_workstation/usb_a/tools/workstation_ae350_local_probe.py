@@ -36,6 +36,27 @@ RTC_CLOCK_PIN='u_rtc/rtc_tick_s1/Q'
 RTC_CLOCK_SDC=('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
                '-divide_by 1524 [get_pins {'+RTC_CLOCK_PIN+'}]')
 
+def audit_gao_synthesis(netlist_text):
+    """Require every declared GAO bit to survive as a 50MHz register.
+
+    Source/prepare checks cannot establish this. Root calls this on the new
+    actual synthesis netlist before accepting a new physical capture identity.
+    """
+    n=SynthesisNetlist(netlist_text,TOP)
+    bits={}
+    for name,cell in n.cells.items():
+        if not cell['kind'].startswith('DFF'):continue
+        match=re.fullmatch(r'status_50mhz\[(\d+)\]',n.pin(name,'Q'))
+        if match:
+            bit=int(match[1])
+            if bit in bits or n.pin(name,'CLK')!='clk_50m':
+                raise ValueError('GAO bit has duplicate ownership or wrong clock')
+            bits[bit]=name
+    if set(bits)!=set(range(2208)):
+        raise ValueError('complete 2208-bit GAO register bank not present in actual netlist')
+    return dict(registered_bits=2208,clock='clk_50m',snapshot_words=64,
+        physical_timing_verified=False,external_uart_reception_verified=False)
+
 def audit_rtc_synthesis(netlist_text):
     n=SynthesisNetlist(netlist_text,TOP)
     instance=RTC_CLOCK_PIN.rpartition('/')[0]
@@ -164,7 +185,7 @@ def gao(user_code):
     document.find('GAO_ID').text=format(int(user_code[-4:],16),'016b')
     signals=core.find('SignalList');signals.clear()
     bus=ET.SubElement(signals,'Bus',capture_enable='true',name='status_50mhz')
-    for bit in reversed(range(544)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
+    for bit in reversed(range(2208)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
     core.find('Triggers/Trigger/SignalList/Signal').text='status_50mhz[0]'
     # Match the working B7 schema: expressions belong to the acquisition core.
     expressions=document.find('Expressions');document.remove(expressions);core.append(expressions)
@@ -196,6 +217,8 @@ def audit_prepare(output):
     if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
     if (output/'probe.sdc').read_text().splitlines().count(RTC_CLOCK_SDC)!=1:
         raise ValueError('probe RTC timing target or minimum period changed')
+    if (output/'probe.gao').read_text()!=gao(record['user_code'][2:]):
+        raise ValueError('probe complete diagnostic GAO schema changed')
     cst=(output/'probe.cst').read_text()
     audit_cpu_pll_constraint(cst)
     if parse_locations(cst)!=record['port_locations']:
@@ -272,6 +295,9 @@ def prepare(root,netlists,output,user_code,prefix=None):
             phase_error_bound_reference_cycles=1,measurement_timebase=False),
         uart=dict(baud_divisor=434,reference_hz=50000000,baud=50000000/434,format='8N1',frame_bytes=280,
             header='A138LM01',word_count=64,crc='reflected CRC32/ISO-HDLC over first276bytes, final xor, LE tail'),
+        gao=dict(schema='A1386401',capture_bits=2208,word_count=64,storage_depth=128,
+            snapshot='same clk_50m published bank and sequence as UART; word61 bit4 marks timeout',
+            io='registered RTL output-drive level and modulo2^30 edge count; no pad or external receiver readback'),
         port_locations=expected,electrical_check=plan['electrical_check'],
         dac_safety=dict(pins=SAFE_DAC_PINS,reference_sha256=dac_references,
             levels=dict(ak_smute=1,ak_pdn=0,ak_mclk=0,ak_bick=0,ak_lrck=0,ak_sdata=0),

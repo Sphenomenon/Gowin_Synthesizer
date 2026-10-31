@@ -87,20 +87,34 @@ module workstation_ae350_local_memory_probe_top(
         assign source_words[w*32+:32]=diagnostic[w];
     end endgenerate
     wire [511:0] uart_status_50mhz;
+    wire [2079:0] full_snapshot_50mhz;
+    wire snapshot_published_50mhz;
     wire [6:0] transport_health_50mhz;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] rom_health_sync=0,upper_health_sync=0;
     always @(posedge clk_50m or negedge system_reset_n)
         if(!system_reset_n)begin rom_health_sync<=0;upper_health_sync<=0;end
         else begin rom_health_sync<={rom_health_sync[0],rom_seen};upper_health_sync<={upper_health_sync[0],upper_seen};end
     // Preserve real top-level registers for GAO; an unused wire alias is swept.
-    (* syn_keep=1,syn_preserve=1 *) reg [543:0] status_50mhz;
+    // A live digital output-drive observation, not pad/USB-UART reception.
+    reg last_tx=1;
+    reg [29:0] tx_edges=0;
+    always @(posedge clk_50m or negedge system_reset_n)
+        if(!system_reset_n) begin last_tx<=1;tx_edges<=0;end
+        else begin
+            last_tx<=debug_uart_tx;
+            if(last_tx!=debug_uart_tx)tx_edges<=tx_edges+1'b1;
+        end
+    (* syn_keep=1,syn_preserve=1 *) reg [2207:0] status_50mhz;
     always @(posedge clk_50m or negedge system_reset_n)
         if(!system_reset_n)status_50mhz<=0;
         else status_50mhz<={power_on,lock_count[4:0],rom_health_sync[1],upper_health_sync[1],
-            lock_qualified,system_reset_n,transport_health_50mhz,uart_status_50mhz};
+            lock_qualified,system_reset_n,transport_health_50mhz,
+            tx_edges,snapshot_published_50mhz,debug_uart_tx,
+            32'ha1386401,`AE350_PROBE_USER_CODE,full_snapshot_50mhz};
     workstation_ae350_probe_uart #(.USER_CODE(`AE350_PROBE_USER_CODE)) u_uart(
         .clk_50m(clk_50m),.reset_n(system_reset_n),.pclk(pclk),.preset_n(preset_n),
         .source_words(source_words),.platform_flags({preset_n,cpu_reset_n,lock_qualified,pll_locked}),
+        .full_snapshot_50mhz(full_snapshot_50mhz),.snapshot_published_50mhz(snapshot_published_50mhz),
         .tx(debug_uart_tx),.status_50mhz(uart_status_50mhz),.transport_health_50mhz(transport_health_50mhz));
     RiscV_AE350_SOC_Top u_cpu(
         .ROM_HRDATA(rom_data),.ROM_HREADY(1'b1),.ROM_HRESP(1'b0),.ROM_HADDR(rom_address),

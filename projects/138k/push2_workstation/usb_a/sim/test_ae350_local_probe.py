@@ -59,7 +59,7 @@ class ProbeTest(unittest.TestCase):
         self.assertEqual(core.find('Expressions/Expression').text,'M0|!M0')
         self.assertEqual(document.find('GAO_ID').text,'0011000111000111')
         self.assertEqual([n.text for n in core.findall('SignalList/Bus/Signal')],
-            [f'status_50mhz[{bit}]' for bit in reversed(range(544))])
+            [f'status_50mhz[{bit}]' for bit in reversed(range(2208))])
 
     def test_actual_probe_executes_crc_patterns_and_counter_difference(self):
         cpu=self.cpu();self.assertEqual(cpu.run_probe(),'probe_pass')
@@ -129,7 +129,16 @@ workstation_ae350_local_memory_probe_top dut(.clk_50m(clk),.debug_uart_tx(),
 .ak_pdn(pdn),.ak_mclk(mclk),.ak_bick(bick),.ak_lrck(lrck),.ak_sdata(data),.ak_smute(smute));
 integer i;initial begin for(i=0;i<32;i=i+1)begin #21;
 if({smute,pdn,mclk,bick,lrck,data}!==6'b100000)$fatal(1,"DAC safety levels changed");
-end $display("PASS probe top frozen wrapper ports and permanent DAC safety");$finish;end endmodule''')
+end
+force dut.power_on=16'hffff;
+force dut.u_uart.full_snapshot_50mhz=2080'h10203040000003f0000003e0000003d0000003c0000003b0000003a000000390000003800000037000000360000003500000034000000330000003200000031000000300000002f0000002e0000002d0000002c0000002b0000002a000000290000002800000027000000260000002500000024000000230000002200000021000000200000001f0000001e0000001d0000001c0000001b0000001a000000190000001800000017000000160000001500000014000000130000001200000011000000100000000f0000000e0000000d0000000c0000000b0000000a00000009000000080000000700000006000000050000000400000003000000020000000100000000;
+force dut.u_uart.snapshot_published_50mhz=1'b1;
+#41;
+if($bits(dut.status_50mhz)!=2208)$fatal(1,"full GAO width");
+if(dut.status_50mhz[2143:2112]!==32'ha1386401 || dut.status_50mhz[2111:2080]!==32'hC21031C6 ||
+ dut.status_50mhz[2079:2048]!==32'h01020304 || dut.status_50mhz[2145]!==1'b1)$fatal(1,"full GAO metadata mapping");
+for(i=0;i<64;i=i+1)if(dut.status_50mhz[i*32+:32]!==i)$fatal(1,"full GAO word ordering");
+$display("PASS probe top frozen wrapper ports, permanent DAC safety and full GAO fields");$finish;end endmodule''')
             result=subprocess.run(['iverilog','-g2012','-I.','-s','tb','-o','sim','tb.sv','cpu_stub.v','pll_stub.v',
                 str(ROOT/'rtl/probe/workstation_ae350_local_memory_probe_top.sv'),
                 str(ROOT/'rtl/probe/workstation_ae350_probe_uart.sv'),
