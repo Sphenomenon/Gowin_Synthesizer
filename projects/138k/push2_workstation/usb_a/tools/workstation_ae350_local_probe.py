@@ -262,6 +262,12 @@ def audit_prepare(output):
     if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
     if (output/'probe.sdc').read_text().splitlines().count(RTC_CLOCK_SDC)!=1:
         raise ValueError('probe RTC timing target or minimum period changed')
+    if gao_mode=='bsram4':
+        sdc=(output/'probe.sdc').read_text().splitlines()
+        for command in ('set_max_delay 20.000','set_false_path -hold'):
+            required=command+' -from [get_regs {u_uart/held_words*}] -to [get_pins {u_uart/lanes*/ram/ram/DI*}]'
+            if sdc.count(required)!=1:raise ValueError('BSRAM held-to-native-RAM CDC constraint changed')
+        if any('u_uart/words*' in line for line in sdc):raise ValueError('BSRAM mode retained obsolete CDC endpoint')
     if (output/'probe.gao').read_text()!=gao(record['user_code'][2:],gao_mode):
         raise ValueError('probe complete diagnostic GAO schema changed')
     identity="`define AE350_PROBE_USER_CODE 32'h"+record['user_code'][2:].upper()+'\n'

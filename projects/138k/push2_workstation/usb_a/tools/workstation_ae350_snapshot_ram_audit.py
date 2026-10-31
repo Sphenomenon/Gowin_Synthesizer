@@ -53,7 +53,8 @@ def audit(n):
         if len(set(wa[4:9]))!=5 or len(set(ra[4:9]))!=5 or any(x in zero|one for x in (*wa[4:9],*ra[4:9])):
             raise ValueError('snapshot RAM bank/group address lost')
         addr=(tuple(wa),tuple(ra));ctrl=tuple(n.pin(name,p) for p in ('CEA','CEB','OCE'))
-        if ctrl[0] in zero|one or ctrl[1] in zero:raise ValueError('snapshot RAM write/read enable lost')
+        if ctrl[0] in zero|one or ctrl[1] in zero or ctrl[2] not in one:
+            raise ValueError('snapshot RAM write/read/output enable lost')
         if addresses is not None and (addr!=addresses or ctrl!=controls):raise ValueError('snapshot RAM lanes do not share one address/control owner')
         addresses,controls=addr,ctrl
         di,do=expand(name,'DI',32),expand(name,'DO',32)

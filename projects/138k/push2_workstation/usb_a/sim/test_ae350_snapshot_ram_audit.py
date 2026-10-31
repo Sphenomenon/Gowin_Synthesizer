@@ -31,7 +31,7 @@ class RamAudit(unittest.TestCase):
   self.assertEqual(r['snapshot_ram']['held_pclk_bits'],1858)
   mutants=[text.replace('BIT_WIDTH_0=16','BIT_WIDTH_0=32',1),text.replace("READ_MODE=1'b0","READ_MODE=1'b1",1),
     text.replace('.CLKA(clk_50m)','.CLKA(pclk)',1),text.replace("4'b0011","4'b0001",1),
-    text.replace(".CEB(re)",".CEB(GND)",1),text.replace(".RESET(GND)",".RESET(VCC)",1),
+    text.replace(".CEB(re)",".CEB(GND)",1),text.replace(".OCE(VCC)",".OCE(GND)",1),text.replace(".RESET(GND)",".RESET(VCC)",1),
     text.replace('ra[4:0]',"5'b00000",1),text.replace('dq[31:16]','dq[15:0]',1),
     text.replace('.D(payload[0])','.D(zero)').replace('.D(payload[128])','.D(zero)').replace('.D(payload[256])','.D(zero)'),
     text.replace('.Q(held_words[0])','.Q(missing)',1),text.replace('.Q(prefetch[0])','.Q(missing)',1),
