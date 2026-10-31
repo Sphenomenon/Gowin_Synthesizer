@@ -56,20 +56,15 @@ module workstation_runtime_chorus_effect #(
     end
   endfunction
   function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
-    logic [24:0] triangle_times441;
-    logic [27:0] rounded_numerator44;
-    logic [11:0] scaled_high44;
+    logic [34:0] rounded_phase44;
     logic [17:0] triangle_times3;
     begin
-      // Exact fixed-baseline arithmetic; no register or sample latency added.
-      //44.1k: cancel32 from the original nearest-rounded rational, then
-      //floor(N/(5*65536)) == floor(floor(N/65536)/5) for nonnegative N.
-      //N<=173571655 fits28 bits; only its high12 bits reach the divide by5.
+      // Exact over all 16-bit triangles: preserve every nearest-rounded tap
+      // while replacing the serial divide by5 with one affine product/shift.
+      // The complete product and sum fit35 unsigned bits; sampling is unchanged.
       if(rate44)begin
-        triangle_times441=25'(triangle_value)*25'd441;
-        rounded_numerator44=28'd144670720+{3'd0,triangle_times441};
-        scaled_high44=rounded_numerator44[27:16];
-        rate_delay=16'(scaled_high44/12'd5);
+        rounded_phase44=35'(triangle_value)*35'd361267+35'd134225920;
+        rate_delay=16'd441+16'(rounded_phase44>>28);
       end else begin
         //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.
         triangle_times3=18'(triangle_value)*18'd3;

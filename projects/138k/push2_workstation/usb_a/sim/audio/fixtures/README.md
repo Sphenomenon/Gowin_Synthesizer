@@ -20,3 +20,12 @@ maintained Boolean equations, including the native/legacy `engine_clear`
 selection. It proves that only the redundant effects admission terms are
 factored out of `core_ce`; complete external `ready_o` remains unchanged.
 The fixture is simulation/proof-only and is never a production build input.
+
+`chorus_before_affine44.sv` is the exact complete M12 maintained Chorus before
+the 44.1 kHz affine delay replacement, SHA256
+`a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900`.
+The exhaustive delay runner calls its original function for every triangle at
+both rates. The complete Chorus test also compares all 12 public outputs and
+pipeline/history state at both clock edges, alongside the separate physical
+time/PCM oracle. Runners pin the original bytes and rename only the module in
+temporary outputs. It is simulation/proof-only, never a production input.

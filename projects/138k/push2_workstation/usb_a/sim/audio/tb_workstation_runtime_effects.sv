@@ -70,7 +70,7 @@ module tb_workstation_runtime_effects;
       .clk_i(aclk),.rst_ni(arst_n),.clear_i(clear_i),.valid_i(valid_i),.synth_i,
       .pcm_left_i(pcm_l),.pcm_right_i(pcm_r),.vector_left_i(vector_l),.vector_right_i(vector_r),
       .synth_gain_i(synth_gain),.pcm_gain_i(pcm_gain),.effect_mask_i(mask),.effect_order_i(order),.delay_send_i(7'd127),
-      .ready_o(ready),.valid_o(valid_o),.left_o(left_o),.right_o(right_o),.clip_o(clip),
+      .ready_o(ready),.sample_slot_ready_o(),.valid_o(valid_o),.left_o(left_o),.right_o(right_o),.clip_o(clip),
       .mem_clk_i(mclk),.mem_rst_ni(mrst_n),.dwr_valid_o(dwr_valid),.dwr_data_o(dwr_data),
       .dwr_pop_i(dwr_pop),.drd_push_i(drd_push),.drd_data_i(drd_data),.drd_ready_o(drd_ready),
       .config_valid_i(config_valid),.rate_44100_i(rate44),.history_clear_i(history_clear),

@@ -1,0 +1,145 @@
+{
+  "arithmetic": {
+    "added_clock_latency": 0,
+    "branch48000_unchanged": true,
+    "max_product_sum": 23809858765,
+    "new": "441+floor((361267*t+134225920)/268435456)",
+    "old": "floor((144670720+441*t)/327680)",
+    "product_sum_bits": 35,
+    "state0_sampling_unchanged": true,
+    "triangle_bits": 16
+  },
+  "before_source_sha256": "a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900",
+  "complete_chorus": {
+    "clear_in_all_five_FSM_states": true,
+    "compile_warnings": {
+      "TIMESCALEMOD": 2,
+      "WIDTHEXPAND": 12,
+      "WIDTHTRUNC": 3
+    },
+    "frames_per_continuous_rate": 60000,
+    "half_cycle_comparisons": 3026811,
+    "held_configuration_backpressure": true,
+    "independent_physical_time_PCM_oracle": true,
+    "internal_pipeline_and_history_state_compared": true,
+    "public_outputs": 12,
+    "scenarios": 5,
+    "switch_history_frames": 6000,
+    "unittest_count": 8,
+    "warning_explanation": "Exact old M12 fixture adds its existing4 product/mix extensions and1CHORUS_BASE truncation; no new affine arithmetic warnings.",
+    "whole_M12_reference": true
+  },
+  "complete_effects": {
+    "all_order_masks_and_maintenance": true,
+    "compile_warnings": {
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 55,
+      "WIDTHTRUNC": 16
+    },
+    "initial_failure": "Previously added sample_slot_ready_o missing on the maintained effects TB instance; explicitly connected unused output without relaxing warning checks, rerun passed.",
+    "long_scenario_frames": [
+      36288,
+      24288,
+      44512
+    ],
+    "long_scenario_frames_total": 105088,
+    "max_latency_cycles": 105,
+    "panic_fences_and_clock_stop_failure": true,
+    "unittest_count": 16
+  },
+  "date": "2026-11-01",
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-20261101-v1/complete_chorus.log": "1c4d40022c7b12cd91508d2111d0ed1b1bfaefcdb8ba7fd1b11b246599a3b6eb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-20261101-v1/complete_effects.log": "bf96d62add85f031ed4bf1d0ee39b2dc48a799d351a2cdd115ae5aa6525ae353",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-20261101-v1/effects_initial_missingpin.log": "e39ae3645e643645d70f1487e3c0fb7f0708330f0db2704d7981a1b16e7dc034",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-20261101-v1/exhaustive-final/verification.json": "01a17709333340a8d8a55e902d52d0bcd49d2afb1900e768f9e49d0a721df76f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-20261101-v1/smt/verification.json": "a91c047b956714a6f926db1fbce8648a286c6de4d6cbfdd78d6da5bd6bd494aa"
+  },
+  "exhaustive_actual_rtl": {
+    "checks": 131072,
+    "compared_to_exact_M12_and_original_native_and_independent_physical_time": true,
+    "provenance_negatives_rejected": 8,
+    "rates_hz": [
+      48000,
+      44100
+    ],
+    "source_mutants_rejected": 4,
+    "triangle_values_per_rate": 65536
+  },
+  "passed": true,
+  "problem": "M12b far routed path traverses actual Chorus triangle times441 then divide-by5 before read address; replace only its exact44.1k combinational arithmetic.",
+  "provenance": {
+    "byte_roundtrip_verified": true,
+    "current_to_exact_M12_to_original_chain": true,
+    "drift_missing_duplicate_anchor_wrong_parent_rejected": true,
+    "lineage_tests_passed": 2,
+    "original_manifests_unchanged": true,
+    "policy": "narrow_exact_rate_delay_v1"
+  },
+  "rollback": "Revert this isolated source/provenance/test stage to exact a2e093 M12 Chorus; existing prepared W11 and M12b candidates are immutable and unaffected.",
+  "schema": 1,
+  "smt": {
+    "checks": [
+      {
+        "name": "all_16bit_44100_actual_old_new",
+        "result": "unsat"
+      },
+      {
+        "name": "35bit_product_and_sum_cannot_overflow",
+        "result": "unsat"
+      },
+      {
+        "name": "all_16bit_48000_unchanged_exact_rule",
+        "result": "unsat"
+      },
+      {
+        "mutant_result": 479,
+        "name": "wrong_coefficient",
+        "old_result": 480,
+        "result": "sat",
+        "triangle": 28607
+      },
+      {
+        "mutant_result": 505,
+        "name": "wrong_bias",
+        "old_result": 506,
+        "result": "sat",
+        "triangle": 47926
+      },
+      {
+        "mutant_result": 455,
+        "name": "truncated_assignment",
+        "old_result": 519,
+        "result": "sat",
+        "triangle": 57687
+      }
+    ],
+    "modeled_actual_SV_widths": true,
+    "strict_actual_function_extraction": true
+  },
+  "source_sha256": {
+    "rtl/audio/workstation_runtime_chorus_effect.sv": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+    "sim/audio/fixtures/README.md": "d6028412ca60bb1fdb9273e6817adda4303c298ec6123ffa7785c116275c8811",
+    "sim/audio/fixtures/chorus_before_affine44.sv": "a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900",
+    "sim/audio/prove_chorus_affine44.py": "66e48a803d91fb24c31695fd75fdb0dc46af7624e4407c5fd1e3d96ac3e02475",
+    "sim/audio/run_runtime_chorus_delay.py": "262ec938b2ade2b32e98a93ecd009d4ea000e06f5aa7ac1dceeb901a20998cab",
+    "sim/audio/tb_workstation_runtime_chorus.sv": "6ff68172687223f21aa2456aa14ab2b543e55e14cd49546bb0039bc86023cd87",
+    "sim/audio/tb_workstation_runtime_chorus_delay.sv": "19a26291b8bc420f231cb7b21845c06492da0827b16b361ac5dac075be143bee",
+    "sim/audio/tb_workstation_runtime_effects.sv": "5c7fb85775b9d5b365428c6c2f578fa37587aea4d034b57c5b105f2a21e3ec58",
+    "sim/test_workstation_runtime_chorus.py": "689ed3a86924f96aaae64cd443b9dea057783c08ac6cf79fe92c27c0df799252",
+    "sim/test_workstation_runtime_effects.py": "14d9c667df11f411369b6610ae2001e83441e96f8d7bbacd4b608c45f8cd870b",
+    "tools/workstation_chorus_provenance.py": "d27fb401157c4b936400d06a677a054f0d35ba4797aba3598e2f046165304dd7"
+  },
+  "stage": "offline_exact_chorus_affine44_source",
+  "validation_limits": {
+    "Flash_deployed": false,
+    "SRAM_deployed": false,
+    "bitstream_sha256": null,
+    "hardware_tested": false,
+    "not_release_acceptance": true,
+    "physical_timing_verified": false,
+    "place_route_complete": false,
+    "resource_saving_claimed": false,
+    "synthesis_complete": false
+  }
+}

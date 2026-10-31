@@ -65,6 +65,53 @@ def sha(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+CHORUS_AFFINE44_SOURCE_SHA256 = '28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c'
+CHORUS_AFFINE44_PARENT_SHA256 = 'a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900'
+CHORUS_AFFINE44_BEFORE = '''  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
+    logic [24:0] triangle_times441;
+    logic [27:0] rounded_numerator44;
+    logic [11:0] scaled_high44;
+    logic [17:0] triangle_times3;
+    begin
+      // Exact fixed-baseline arithmetic; no register or sample latency added.
+      //44.1k: cancel32 from the original nearest-rounded rational, then
+      //floor(N/(5*65536)) == floor(floor(N/65536)/5) for nonnegative N.
+      //N<=173571655 fits28 bits; only its high12 bits reach the divide by5.
+      if(rate44)begin
+        triangle_times441=25'(triangle_value)*25'd441;
+        rounded_numerator44=28'd144670720+{3'd0,triangle_times441};
+        scaled_high44=rounded_numerator44[27:16];
+        rate_delay=16'(scaled_high44/12'd5);
+'''
+CHORUS_AFFINE44_AFTER = '''  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
+    logic [34:0] rounded_phase44;
+    logic [17:0] triangle_times3;
+    begin
+      // Exact over all 16-bit triangles: preserve every nearest-rounded tap
+      // while replacing the serial divide by5 with one affine product/shift.
+      // The complete product and sum fit35 unsigned bits; sampling is unchanged.
+      if(rate44)begin
+        rounded_phase44=35'(triangle_value)*35'd361267+35'd134225920;
+        rate_delay=16'd441+16'(rounded_phase44>>28);
+'''
+
+
+def restore_affine44(source):
+    """Restore exact M12 Chorus bytes before its unchanged original chain."""
+    if sha(source) != CHORUS_AFFINE44_SOURCE_SHA256:
+        return source  # The original native/scratch identity gates still apply.
+    current = source.decode()
+    if current.count(CHORUS_AFFINE44_AFTER) != 1:
+        raise ValueError('Chorus affine44 reverse anchor drift')
+    current = current.replace(CHORUS_AFFINE44_AFTER, CHORUS_AFFINE44_BEFORE)
+    if sha(current.encode()) != CHORUS_AFFINE44_PARENT_SHA256:
+        raise ValueError('Chorus affine44 parent identity changed')
+    if (current.count(CHORUS_AFFINE44_BEFORE) != 1 or
+            current.replace(CHORUS_AFFINE44_BEFORE, CHORUS_AFFINE44_AFTER).encode() != source):
+        raise ValueError('Chorus affine44 round trip changed bytes')
+    return current.encode()
+
+
 def restore_scratch_products(source):
     """Normalize only the reviewed no-reset products to their exact parent."""
     if sha(source) != CHORUS_SCRATCH_SOURCE_SHA256:
@@ -93,6 +140,8 @@ def restore_native(source, provenance, policy=STRICT_POLICY, adaptation=None):
     if sha(provenance) != PROVENANCE_SHA256:
         raise ValueError('Original Chorus provenance bytes changed')
     original = json.loads(provenance)
+    if policy == NARROW_POLICY:
+        source = restore_affine44(source)
     if policy == NARROW_POLICY and sha(source) == CHORUS_SCRATCH_SOURCE_SHA256:
         source = restore_scratch_products(source)
     current = source.decode()
@@ -134,7 +183,9 @@ def verify(source, provenance, policy=STRICT_POLICY, adaptation=None):
         original_native_sha256=info['native_sha256'], original_provenance_sha256=sha(provenance),
         adaptation_sha256=sha(adaptation) if adaptation is not None else None,
         exact_prepared_sha256=sha(current.encode()), original_provenance_unchanged=True,
-        scratch_products_without_reset=sha(source) == CHORUS_SCRATCH_SOURCE_SHA256,
+        affine44_delay_equivalence=sha(source) == CHORUS_AFFINE44_SOURCE_SHA256,
+        affine44_parent_sha256=CHORUS_AFFINE44_PARENT_SHA256,
+        scratch_products_without_reset=sha(restore_affine44(source)) == CHORUS_SCRATCH_SOURCE_SHA256,
         scratch_parent_sha256=CHORUS_SCRATCH_PARENT_SHA256,
         added_clock_latency=0, physical_timing_verified=False, hardware_acceptance_inherited=False)
 

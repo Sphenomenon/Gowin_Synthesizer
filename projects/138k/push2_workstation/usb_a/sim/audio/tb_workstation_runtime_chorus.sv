@@ -13,6 +13,37 @@ module tb_workstation_runtime_chorus;
       .rate_44100_i(rate_44),.history_clear_i(history_clear),.config_ready_o(config_ready),
       .config_applied_o(config_applied),.history_ready_o(history_ready),.history_done_o(history_done),
       .quiescent_o(quiet),.applied_rate_44100_o(rate));
+  wire old_ready,old_valid,old_active,old_clip,old_config_ready,old_config_applied;
+  wire old_history_ready,old_history_done,old_quiet,old_rate;
+  wire signed [31:0] old_left,old_right;
+  workstation_before_affine44_chorus_effect u_before_affine44(
+      .clk_i(clk),.rst_ni(rst_n),.clear_i(clear_i),.valid_i(valid_i),.enabled_i(enabled_i),
+      .left_i(left_i),.right_i(right_i),.ready_o(old_ready),.valid_o(old_valid),.active_o(old_active),
+      .left_o(old_left),.right_o(old_right),.clip_o(old_clip),.config_valid_i(config_valid),
+      .rate_44100_i(rate_44),.history_clear_i(history_clear),.config_ready_o(old_config_ready),
+      .config_applied_o(old_config_applied),.history_ready_o(old_history_ready),.history_done_o(old_history_done),
+      .quiescent_o(old_quiet),.applied_rate_44100_o(old_rate));
+  integer exact_half_cycles=0;
+  // The exact whole M12 module receives every input, including reset/cancel.
+  // Check both edges after NBA settling, including held PCM when valid is low.
+  always @(clk)begin
+    #1;
+    if({ready,valid_o,active,left_o,right_o,clip,config_ready,config_applied,
+        history_ready,history_done,quiet,rate} !==
+       {old_ready,old_valid,old_active,old_left,old_right,old_clip,old_config_ready,old_config_applied,
+        old_history_ready,old_history_done,old_quiet,old_rate})
+      $fatal(1,"M12/new public output mismatch");
+    if({u_dut.pointer,u_dut.read_address,u_dut.frames,u_dut.state,u_dut.gain,u_dut.lfo,
+        u_dut.chorus_delay,u_dut.gain_remainder,u_dut.lfo_remainder,u_dut.input_l,u_dut.input_r,
+        u_dut.read_l,u_dut.read_r,u_dut.product_l,u_dut.product_r,u_dut.mixed_l,u_dut.mixed_r} !==
+       {u_before_affine44.pointer,u_before_affine44.read_address,u_before_affine44.frames,
+        u_before_affine44.state,u_before_affine44.gain,u_before_affine44.lfo,
+        u_before_affine44.chorus_delay,u_before_affine44.gain_remainder,u_before_affine44.lfo_remainder,
+        u_before_affine44.input_l,u_before_affine44.input_r,u_before_affine44.read_l,u_before_affine44.read_r,
+        u_before_affine44.product_l,u_before_affine44.product_r,u_before_affine44.mixed_l,u_before_affine44.mixed_r})
+      $fatal(1,"M12/new complete Chorus state mismatch");
+    exact_half_cycles=exact_half_cycles+1;
+  end
   wire ref_ready,ref_valid,ref_active,ref_clip;
   wire signed [31:0] ref_l,ref_r;
   serial_chorus_effect u_ref(
@@ -202,6 +233,7 @@ module tb_workstation_runtime_chorus;
       end
       default:$fatal(1,"unknown scenario");
     endcase
+    $display("PASS exact M12/new complete Chorus half-cycle comparisons=%0d public_outputs=12",exact_half_cycles);
     $finish;
   end
   initial begin #100000000;$fatal(1,"Chorus verification watchdog");end

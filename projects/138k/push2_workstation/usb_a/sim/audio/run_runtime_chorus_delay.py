@@ -21,7 +21,8 @@ def run(root,output):
     root,output=Path(root),Path(output)
     output.mkdir(parents=True,exist_ok=False)
     files=[root/p for p in (SOURCE,PROVENANCE,ADAPTATION,'tools/workstation_chorus_provenance.py',
-           'tools/workstation_baselines.py','baselines/index.json','sim/audio/tb_workstation_runtime_chorus_delay.sv','sim/audio/run_runtime_chorus_delay.py')]
+           'tools/workstation_baselines.py','baselines/index.json','sim/audio/tb_workstation_runtime_chorus_delay.sv','sim/audio/run_runtime_chorus_delay.py',
+           'sim/audio/fixtures/chorus_before_affine44.sv')]
     baseline=load_baseline(root,'resource_rework_route0')
     math_payload=baseline.read_bytes('legacy/rtl/audio/audio_math_pkg.sv')
     if sha(math_payload)!='f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d':
@@ -36,6 +37,11 @@ def run(root,output):
     if previous.count(old_name)!=1:raise ValueError('previous actual module name drift')
     reference=output/'previous_native_chorus.sv'
     reference.write_text(previous.replace(old_name,'module workstation_previous_chorus_effect #('))
+    before_affine=(root/'sim/audio/fixtures/chorus_before_affine44.sv').read_bytes()
+    if sha(before_affine)!='a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900':
+        raise ValueError('exact complete M12 Chorus reference drift')
+    before_affine_path=output/'before_affine44_chorus.sv'
+    before_affine_path.write_text(before_affine.decode().replace(old_name,'module workstation_before_affine44_chorus_effect #('))
     negatives=[]
     def reject(label,fn):
         try:fn()
@@ -48,7 +54,8 @@ def run(root,output):
     reject('original manifest bytes changed',lambda:verify(source,provenance+b'\n',NARROW_POLICY,adaptation))
     reject('adaptation manifest bytes changed',lambda:verify(source,provenance,NARROW_POLICY,adaptation+b'\n'))
     reject('current native bytes changed',lambda:verify(source+b'\n',provenance,NARROW_POLICY,adaptation))
-    prior=source.replace(b"28'd144670720",b"28'd144605184")
+    affine44=b'rounded_phase44' in source
+    prior=source.replace(b"35'd134225920",b"35'd134217728") if affine44 else source.replace(b"28'd144670720",b"28'd144605184")
     reject('changed anchor cannot borrow accepted adaptation',lambda:verify(prior,provenance,NARROW_POLICY,adaptation))
     builds=[]
     def compile_run(label,current,expect_pass):
@@ -56,7 +63,7 @@ def run(root,output):
         native=work/'current.sv';native.write_bytes(current)
         binary=work/'simulation.vvp'
         argv=['iverilog','-g2012','-Wall','-s','tb_workstation_runtime_chorus_delay','-o',str(binary),
-              str(math_path),str(reference),str(native),str(root/'sim/audio/tb_workstation_runtime_chorus_delay.sv')]
+              str(math_path),str(reference),str(before_affine_path),str(native),str(root/'sim/audio/tb_workstation_runtime_chorus_delay.sv')]
         c=subprocess.run(argv,capture_output=True,text=True,timeout=60)
         (work/'compile.log').write_text(c.stdout+c.stderr)
         if c.returncode:raise ValueError('actual RTL compile failed '+label+': '+c.stdout+c.stderr)
@@ -77,7 +84,11 @@ def run(root,output):
         builds.append(row)
         print(r.stdout.strip(),flush=True)
     compile_run('actual',source,True)
-    mutations=[('wrong44rounding',b"28'd144670720",b"28'd144605184"),
+    mutations=[('wrong44coefficient',b"35'd361267",b"35'd361266"),
+               ('wrong44rounding',b"35'd134225920",b"35'd134217728"),
+               ('truncated44product',b"logic [34:0] rounded_phase44;",b"logic [33:0] rounded_phase44;"),
+               ('wrong48shift',b'triangle_times3>>11',b'triangle_times3>>10')] if affine44 else [
+               ('wrong44rounding',b"28'd144670720",b"28'd144605184"),
                ('truncated44product',b"logic [24:0] triangle_times441;",b"logic [23:0] triangle_times441;"),
                ('wrong44divisor',b'scaled_high44/12\'d5',b'scaled_high44/12\'d4'),
                ('wrong48shift',b'triangle_times3>>11',b'triangle_times3>>10')]
@@ -89,6 +100,7 @@ def run(root,output):
         checks=131072,rates_hz=[48000,44100],triangle_values_per_rate=65536,
         actual_current_module_function_called=True,actual_previous_native_module_function_called=True,
         previous_native_restored_sha256=sha(previous.encode()),reference_rename_only_sha256=sha(reference.read_bytes()),
+        exact_complete_M12_reference_sha256=sha(before_affine),
         independent64bit_physical_time_reference=True,provenance=evidence,
         provenance_negative_controls=negatives,actual_RTL_runs=builds,input_sha256=hashes,
         no_added_clock_latency=True,physical_timing_verified=False,hardware_tested=False,deployment_allowed=False)

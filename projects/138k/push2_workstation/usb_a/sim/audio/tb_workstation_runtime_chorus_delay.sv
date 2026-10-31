@@ -12,8 +12,14 @@ module tb_workstation_runtime_chorus_delay;
       .left_o(),.right_o(),.clip_o(),.config_valid_i(1'b0),.rate_44100_i(1'b0),
       .history_clear_i(1'b0),.config_ready_o(),.config_applied_o(),.history_ready_o(),
       .history_done_o(),.quiescent_o(),.applied_rate_44100_o());
+  workstation_before_affine44_chorus_effect u_before_affine44(
+      .clk_i(1'b0),.rst_ni(1'b0),.clear_i(1'b0),.valid_i(1'b0),.enabled_i(1'b0),
+      .left_i(32'sd0),.right_i(32'sd0),.ready_o(),.valid_o(),.active_o(),
+      .left_o(),.right_o(),.clip_o(),.config_valid_i(1'b0),.rate_44100_i(1'b0),
+      .history_clear_i(1'b0),.config_ready_o(),.config_applied_o(),.history_ready_o(),
+      .history_done_o(),.quiescent_o(),.applied_rate_44100_o());
   integer rate_index,triangle_index,checks=0,min_tap,max_tap;
-  logic [15:0] current_tap,previous_tap;
+  logic [15:0] current_tap,previous_tap,before_affine44_tap;
   logic [31:0] checksum=0;
   longint unsigned physical_q16,expected;
   initial begin
@@ -24,10 +30,11 @@ module tb_workstation_runtime_chorus_delay;
         // native module is restored byte-exactly, with only its module name changed.
         current_tap=u_current.rate_delay(16'(triangle_index),1'(rate_index));
         previous_tap=u_previous.rate_delay(16'(triangle_index),1'(rate_index));
+        before_affine44_tap=u_before_affine44.rate_delay(16'(triangle_index),1'(rate_index));
         // Independent physical-time rational in64 bits; no narrowed formula.
         physical_q16=64'd480*65536+64'(triangle_index)*96;
         expected=rate_index ? (physical_q16*44100+64'd1572864000)/(64'd48000*65536) : physical_q16/65536;
-        if(current_tap!==previous_tap || current_tap!==16'(expected))
+        if(current_tap!==previous_tap || current_tap!==before_affine44_tap || current_tap!==16'(expected))
           $fatal(1,"Chorus delay mismatch rate=%0d triangle=%0d current=%0d previous=%0d physical=%0d",
                  rate_index,triangle_index,current_tap,previous_tap,expected);
         if(current_tap<min_tap)min_tap=32'(current_tap);

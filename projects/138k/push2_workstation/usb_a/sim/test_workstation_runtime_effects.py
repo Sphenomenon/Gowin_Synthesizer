@@ -259,7 +259,7 @@ class DelayStorageProvenance(unittest.TestCase):
         with self.assertRaises(ValueError):
             m.restore_delay_native(current, provenance + b'\n')
         source = (ROOT / chorus.SOURCE).read_bytes()
-        narrowed = chorus.restore_scratch_products(source)
+        narrowed = chorus.restore_scratch_products(chorus.restore_affine44(source))
         self.assertEqual(digest(narrowed), json.loads((ROOT / chorus.ADAPTATION).read_bytes())['current_source_sha256'])
         with self.assertRaises(ValueError):
             chorus.restore_scratch_products(source + b'\n')
