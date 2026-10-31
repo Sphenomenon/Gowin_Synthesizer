@@ -330,6 +330,8 @@ W13 `D211010B` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL13
 
 完整显示的[waveform smooth CSA维护阶段](push2_workstation/usb_a/reports/DUAL138K_WAVEFORM_SMOOTH_CSA_20261101.md)已完成：仅替换原平滑函数，无新增状态／周期，保留原33bit舍入溢出。独立二态及X/Z known-mask证明、三个算术破坏负控、两个INPUT_REGISTERED配置各1,067,717实际函数探针／44,000完整capture时钟和六个实际source负控通过；metadata minor0／minor1与真实wave／FFT／XY、owner8 display runtime及三种完整HDMI elaboration通过。205份最终证据逐项重验；M15缺owner8库存的失败尝试原样保留、使用实际含该输入的W13 support后通过。两锁尚未刷新，旧冻结输入不变，未预记资源／时序收益或实板声画验收。
 
+M15 `D211010D` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M15_FAR_PHYSICAL_20261101.md)已封存：同VG／完整SDC／DDR3.500ns，原DDR hold+.619ns、全局hold0／+.143ns；setup仍3,081／−1.774ns，recovery+.686／removal+.281ns。物理BSRAM235／DSP119／CLS50,221，实际VO54项（51通过／3跳过）及46负控、边界7／61和官方六PLL／7负控均通过。32物理文件、588staged／1365冻结输入和685PLL依赖复验；chorus、oscillator准入及TF容量仍有真实长链，下一来源候选独立验证，不继承接受，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
