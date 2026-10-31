@@ -52,10 +52,17 @@ def main():
             raise ValueError('negative-control anchor drift')
         mutant.write_text(source.read_text().replace(changed, "wire [6:0] accepted_delta = 7'd0 -"))
         unsigned = out / 'unsigned_delta.sv'
-        changed = '{{25{committed_delta[6]}}, committed_delta}'
+        changed = 'upper = low_sum[6] ? occupancy[31:6] : upper_minus;'
         if source.read_text().count(changed) != 1:
             raise ValueError('signed-delta negative-control anchor drift')
-        unsigned.write_text(source.read_text().replace(changed, "{25'd0, committed_delta}"))
+        unsigned.write_text(source.read_text().replace(changed,
+            'upper = low_sum[6] ? upper_plus : occupancy[31:6];'))
+        carry = out / 'lost_carry.sv'
+        changed = 'upper = low_sum[6] ? upper_plus : occupancy[31:6];'
+        if source.read_text().count(changed) != 1:
+            raise ValueError('small-delta carry negative-control anchor drift')
+        carry.write_text(source.read_text().replace(changed,
+            'upper = occupancy[31:6];'))
         simultaneous = out / 'simultaneous.sv'
         changed = "{1'b0, (write_accept ? pending_bytes : 6'd0)}"
         if source.read_text().count(changed) != 1:
@@ -66,6 +73,7 @@ def main():
                                              ('hardware_capacity', source, 67108864, False),
                                              ('drop_input_count', mutant, 64, True),
                                              ('unsigned_delta', unsigned, 64, True),
+                                             ('lost_upper_carry', carry, 64, True),
                                              ('simultaneous_write_lost', simultaneous, 64, True)]:
             binary = out / (label + '.vvp')
             command = ['iverilog', '-g2012', '-I', str(out), '-s', 'tb_tf_dma_occupancy_equivalence',
@@ -78,7 +86,8 @@ def main():
             log = run.stdout + run.stderr
             (out / (label + '.log')).write_text(log)
             if negative:
-                accepted = run.returncode != 0 and 'occupancy invariant differs' in log
+                accepted = run.returncode != 0 and (
+                    'occupancy invariant differs' in log or 'small-delta arithmetic differs' in log)
             else:
                 accepted = run.returncode == 0 and 'PASS DMA occupancy:' in log
             result['runs'].append(dict(label=label, command=command, exit_code=run.returncode,

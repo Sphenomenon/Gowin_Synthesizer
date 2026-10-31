@@ -17,7 +17,9 @@
       "changes": [
         "unique runtime module name",
         "hold closes request/emit/refill and only retires accepted old response",
-        "token-bound restart ACK after private-state zero qualification"
+        "token-bound restart ACK after private-state zero qualification",
+        "same-edge modulo-32-bit committed and accepted occupancy state",
+        "six-bit low delta addition selects independently precomputed upper carry/borrow alternatives"
       ]
     }
   }

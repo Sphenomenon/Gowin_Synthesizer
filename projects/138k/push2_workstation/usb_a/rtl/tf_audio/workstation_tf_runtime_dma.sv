@@ -130,6 +130,27 @@ module workstation_tf_runtime_dma #(
                                     AUDIO_BANK1_NATIVE_BASE +
                                     ((read_ring_offset - AUDIO_BANK_BYTES) >> 2);
 
+    // A response/admission decision is late, but its signed delta is only
+    // seven bits. Compute the upper +/-1 alternatives from the current
+    // occupancy alone; the late delta selects them after a six-bit sum.
+    // Preserve modulo-2^32 arithmetic, including borrow and wrap at zero.
+    function [31:0] add_occupancy_delta;
+        input [31:0] occupancy;
+        input [6:0] delta;
+        reg [6:0] low_sum;
+        reg [25:0] upper, upper_plus, upper_minus;
+        begin
+            low_sum = {1'b0, occupancy[5:0]} + {1'b0, delta[5:0]};
+            upper_plus = occupancy[31:6] + 26'd1;
+            upper_minus = occupancy[31:6] - 26'd1;
+            if (delta[6])
+                upper = low_sum[6] ? occupancy[31:6] : upper_minus;
+            else
+                upper = low_sum[6] ? upper_plus : occupancy[31:6];
+            add_occupancy_delta = {upper, low_sum[5:0]};
+        end
+    endfunction
+
     function [31:0] advance_ring;
         input [31:0] offset;
         begin
@@ -319,8 +340,8 @@ module workstation_tf_runtime_dma #(
                     write_buf <= 256'd0;
                 end
             end else begin
-                available_bytes <= available_bytes + {{25{committed_delta[6]}}, committed_delta};
-                accepted_used <= accepted_used + {{25{accepted_delta[6]}}, accepted_delta};
+                available_bytes <= add_occupancy_delta(available_bytes, committed_delta);
+                accepted_used <= add_occupancy_delta(accepted_used, accepted_delta);
                 // Input is throttled by ring occupancy as well as the
                 // asynchronous FIFO.  This is the key no-overwrite rule.
                 if (!write_pending && !in_read_wait && !fifo_in_empty &&

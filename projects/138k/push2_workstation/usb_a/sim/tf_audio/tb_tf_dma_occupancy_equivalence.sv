@@ -79,9 +79,31 @@ module tb_tf_dma_occupancy_equivalence;
         if(dut.restart_event)restarts=restarts+1;
         if(dut.read_accept && app_rvalid)zero_response=zero_response+1;
     end
-    integer i,k;
+    integer i,k,upper_case,low_case,delta_case,delta_checks=0;
+    reg [25:0] test_upper;
+    reg [31:0] test_occupancy;
+    reg [6:0] test_delta;
+    reg [32:0] oracle_sum;
     initial begin
         #1;compare();
+        // Independent full-width signed-add oracle. Exhaust every low-six
+        // input and every signed-seven delta, using each upper carry-chain
+        // boundary in both polarities plus zero/all-ones wrap boundaries.
+        for(upper_case=0;upper_case<54;upper_case=upper_case+1)begin
+            if(upper_case==0)test_upper=0;
+            else if(upper_case==1)test_upper=26'h3ffffff;
+            else if(upper_case<28)test_upper=26'd1<<(upper_case-2);
+            else test_upper=~(26'd1<<(upper_case-28));
+            for(low_case=0;low_case<64;low_case=low_case+1)
+                for(delta_case=0;delta_case<128;delta_case=delta_case+1)begin
+                    test_occupancy={test_upper,6'(low_case)};
+                    test_delta=7'(delta_case);
+                    oracle_sum={1'b0,test_occupancy}+{{26{test_delta[6]}},test_delta};
+                    if(dut.add_occupancy_delta(test_occupancy,test_delta)!==oracle_sum[31:0])
+                        $fatal(1,"small-delta arithmetic differs base=%h delta=%h",test_occupancy,test_delta);
+                    delta_checks=delta_checks+1;
+                end
+        end
         repeat(4)@(negedge clk);
         rst_n=1;
         // Seed a consistent reachable counter relation near the 32-bit file
@@ -111,8 +133,8 @@ module tb_tf_dma_occupancy_equivalence;
         if(simultaneous<10 || partial<10 || holds<1000 || restarts<100 || zero_response<100)
             $fatal(1,"coverage insufficient simultaneous=%0d partial=%0d hold=%0d restart=%0d zero=%0d",
                    simultaneous,partial,holds,restarts,zero_response);
-        $display("PASS DMA occupancy: bank=%0d checks=%0d simultaneous=%0d partial=%0d holds=%0d restarts=%0d zero=%0d overflow=%0d",
-                 BANK_BYTES,checks,simultaneous,partial,holds,restarts,zero_response,overflow_checks);
+        $display("PASS DMA occupancy: bank=%0d checks=%0d simultaneous=%0d partial=%0d holds=%0d restarts=%0d zero=%0d overflow=%0d delta_checks=%0d",
+                 BANK_BYTES,checks,simultaneous,partial,holds,restarts,zero_response,overflow_checks,delta_checks);
         $finish;
     end
 endmodule
