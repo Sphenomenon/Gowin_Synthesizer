@@ -84,7 +84,16 @@ def run(root,output):
         builds.append(row)
         print(r.stdout.strip(),flush=True)
     compile_run('actual',source,True)
-    mutations=[('wrong44coefficient',b"35'd361267",b"35'd361266"),
+    if b'rounded_phase44=s7+c7;' in source:
+        bias_block=(b"        s7=s6^c6^35'd134225920;\n"
+                    b"        c7=((s6&c6)|(s6&35'd134225920)|(c6&35'd134225920))<<1;")
+        mutations=[('missing44operand',b's0=t^(t<<1)^(t<<4);',b's0=(t<<1)^(t<<4);'),
+                   ('wrong44rounding',bias_block,bias_block.replace(b'134225920',b'134217728')),
+                   ('truncated44product',b'logic [34:0] t,rounded_phase44;',b'logic [33:0] t,rounded_phase44;'),
+                   ('lost44finalcarry',b'rounded_phase44=s7+c7;',b'rounded_phase44=s7;'),
+                   ('wrong48shift',b'triangle_times3>>11',b'triangle_times3>>10')]
+    else:
+        mutations=[('wrong44coefficient',b"35'd361267",b"35'd361266"),
                ('wrong44rounding',b"35'd134225920",b"35'd134217728"),
                ('truncated44product',b"logic [34:0] rounded_phase44;",b"logic [33:0] rounded_phase44;"),
                ('wrong48shift',b'triangle_times3>>11',b'triangle_times3>>10')] if affine44 else [

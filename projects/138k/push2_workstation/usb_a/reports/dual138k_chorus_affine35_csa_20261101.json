@@ -1,0 +1,487 @@
+{
+  "schema": 1,
+  "stage": "maintained_chorus_affine35_csa_source_implementation",
+  "passed": true,
+  "source_implementation": true,
+  "source_sha256": {
+    "rtl/audio/workstation_runtime_chorus_effect.sv": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+    "tools/workstation_chorus_provenance.py": "d11ebe021c35761ba0351c52602731b56728b9b3749631fb6634b42eae364a7f",
+    "sim/audio/fixtures/chorus_before_affine35_csa.sv": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+    "sim/audio/run_chorus_affine35_csa.py": "499bc40b2116eccc8212ef12ae7d9088e3128738b2d8f1035daf7838b5b118ea",
+    "sim/audio/prove_chorus_affine44.py": "55bc7e359006f5bb9014b6c9dbbae2f74693bbe32b90a49736be0afd0cfbccd9",
+    "sim/audio/run_runtime_chorus_delay.py": "874de0195861b8b55387b84151ad55ab041d8aee5705def841d0adc7759cdf77",
+    "sim/test_workstation_runtime_chorus.py": "9a0bb0d81aeb26708980c25a3fea61a8c6022ffc9539c050b5bb53a20f8eecda"
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine44-csa-root-review-v1.json",
+    "sha256": "989420fad0fb7bdceae9571cefe32796831d2ce170d2bf1ca73d7553834e9c5a",
+    "acceptable_for_maintained_adoption": true
+  },
+  "approved_complete_source_sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+  "exact_complete_parent_fixture_sha256": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+  "new_independent_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-v2/verification.json",
+    "sha256": "901a0ca60353759dd11200cd9e1a0c32b5b52db90463c14e8d6397298024d595",
+    "exit_code": 0,
+    "source_identity": {
+      "source": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_chorus_effect.sv",
+      "source_sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+      "fixture": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/chorus_before_affine35_csa.sv",
+      "fixture_sha256": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+      "outside_function_identical": true,
+      "old_function_sha256": "305af3e1e9024a690f1da61cd432375f2ba72ad689eee3bb2e2032fb1ed48189",
+      "new_function_sha256": "1f0675e98817a8e67d022977c4f6a3ca54add40caf64215f2614bb562b970899"
+    },
+    "proofs": {
+      "arbitrary_three35_csa": {
+        "result": "unsat",
+        "arbitrary_bits": 105,
+        "modular_width": 35
+      },
+      "all16_binary": {
+        "result": "unsat",
+        "seconds": 0.16251529101282358
+      },
+      "missing_shift_term": {
+        "result": "sat",
+        "seconds": 0.06361766601912677,
+        "triangle": 65016
+      },
+      "bad_bias": {
+        "result": "sat",
+        "seconds": 0.12980287498794496,
+        "triangle": 47926
+      },
+      "lost_final_carry": {
+        "result": "sat",
+        "seconds": 0.009883583057671785,
+        "triangle": 61438
+      },
+      "four_state_operator_argument": {
+        "unknown_triangle": "Any X/Z follows unshifted s0/s3/s5/s6/s7 XOR path to final arithmetic; final35bit result allX as original multiplication.",
+        "unknown_rate": "Procedural if(rate44) untouched; X/Z selects unchanged48k branch.",
+        "frontend_formal_proof": false
+      }
+    },
+    "actual_complete_module_simulation": {
+      "actual": {
+        "returncode": 0,
+        "seconds": 2.2830605839844793,
+        "summary": "PASS chorus probes=278664 half_clocks=100008 outputs=9398 writes=9399 configs=320 histories=300 clears=7 complete_bank_words=2048\n/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-v2/tb.sv:68: $finish called at 500042000 (1ps)\n",
+        "source_sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+        "log_sha256": "cfab9c5dd3a699edfb84c2ad70a4eba61af2f89659923af653ee397f6d13d9e8"
+      },
+      "missing_shift_term": {
+        "returncode": 1,
+        "seconds": 0.18453412503004074,
+        "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-v2/tb.sv:20: TAP_MISMATCH triangle=272f rate=1 new=01c7 ref=01c6\n       Time: 0  Scope: tb.probe\n",
+        "source_sha256": "7a9bbc1200140d10c0e1fe4e2971c62d8f951f7ec426e9153bd409e821bc1f24",
+        "log_sha256": "52acd7ccdde599379cc79100f726b368e972bf721912a43a0fe985ad22498581"
+      },
+      "bad_bias": {
+        "returncode": 1,
+        "seconds": 0.855466416105628,
+        "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-v2/tb.sv:20: TAP_MISMATCH triangle=bb36 rate=1 new=01f9 ref=01fa\n       Time: 0  Scope: tb.probe\n",
+        "source_sha256": "a810552de2cd58b9eac55bf23d6d2842fa3a47e1ddcd2f9dd24bcaffcfa92fbb",
+        "log_sha256": "31031e4839b4a605e87eca9e88497762dbc8bf94f85e07793f4f58b5043e0825"
+      },
+      "lost_final_carry": {
+        "returncode": 1,
+        "seconds": 0.016067540971562266,
+        "summary": "FATAL: /Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-v2/tb.sv:20: TAP_MISMATCH triangle=0174 rate=1 new=01b9 ref=01ba\n       Time: 0  Scope: tb.probe\n",
+        "source_sha256": "ebd75db2915492cdfbb69b7fd4dc1659731b474fc086cbc3aa785bdce2ae7f6b",
+        "log_sha256": "089879006746e4215f83d7aedc9635b01e2c5018fbb5b1c643713aa80ae26aee"
+      }
+    },
+    "math_pkg_sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d"
+  },
+  "historical_affine_lineage_proof": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-affine-lineage-v2/verification.json",
+    "sha256": "4def155a64d21d9e879ce0a0167bb3a8f5c61b21e2536f881437b1cd94532e4c",
+    "exit_code": 0,
+    "csa_inverse_checked": true,
+    "normalized_affine_source_sha256": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+    "scope": "Original affine proof after exact CSA inverse; current CSA arithmetic and actual-source proof are separate run_chorus_affine35_csa.py checks.",
+    "checks": [
+      {
+        "name": "all_16bit_44100_actual_old_new",
+        "result": "unsat"
+      },
+      {
+        "name": "35bit_product_and_sum_cannot_overflow",
+        "result": "unsat"
+      },
+      {
+        "name": "all_16bit_48000_unchanged_exact_rule",
+        "result": "unsat"
+      },
+      {
+        "mutant_result": 479,
+        "name": "wrong_coefficient",
+        "old_result": 480,
+        "result": "sat",
+        "triangle": 28607
+      },
+      {
+        "mutant_result": 505,
+        "name": "wrong_bias",
+        "old_result": 506,
+        "result": "sat",
+        "triangle": 47926
+      },
+      {
+        "mutant_result": 455,
+        "name": "truncated_assignment",
+        "old_result": 519,
+        "result": "sat",
+        "triangle": 57687
+      }
+    ]
+  },
+  "existing_actual_exhaustive": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/verification.json",
+    "sha256": "31eaaf5a23165663d526022fbe3175a504802a6ee80625041b367cebce71ce69",
+    "exit_code": 0,
+    "checks": 131072,
+    "provenance": {
+      "adaptation_sha256": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+      "added_clock_latency": 0,
+      "affine35_csa_equivalence": true,
+      "affine35_csa_parent_sha256": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+      "affine44_delay_equivalence": true,
+      "affine44_parent_sha256": "a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900",
+      "current_source_sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+      "exact_prepared_sha256": "2801a8f9ec570f992bc0e88d9ab6d457c4e17085da810ccf6d9fbaca2b3a5f84",
+      "hardware_acceptance_inherited": false,
+      "original_native_sha256": "8a6fa6ea9158cc983c9d48cc9e92f01da2e10950214d3d2bb2cb7bb0b67b4cf4",
+      "original_provenance_sha256": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+      "original_provenance_unchanged": true,
+      "physical_timing_verified": false,
+      "policy": "narrow_exact_rate_delay_v1",
+      "scratch_parent_sha256": "f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176",
+      "scratch_products_without_reset": true,
+      "source": "rtl/audio/workstation_runtime_chorus_effect.sv"
+    },
+    "provenance_negative_controls": [
+      {
+        "error": "Native Chorus provenance checksum changed",
+        "name": "strict original policy rejects changed native",
+        "rejected": true
+      },
+      {
+        "error": "Chorus adaptation needs explicit policy",
+        "name": "adaptation requires explicit policy",
+        "rejected": true
+      },
+      {
+        "error": "Unknown Chorus provenance policy",
+        "name": "unknown policy",
+        "rejected": true
+      },
+      {
+        "error": "Chorus narrowing adaptation changed or missing",
+        "name": "missing adaptation",
+        "rejected": true
+      },
+      {
+        "error": "Original Chorus provenance bytes changed",
+        "name": "original manifest bytes changed",
+        "rejected": true
+      },
+      {
+        "error": "Chorus narrowing adaptation changed or missing",
+        "name": "adaptation manifest bytes changed",
+        "rejected": true
+      },
+      {
+        "error": "Chorus narrowing source identity changed",
+        "name": "current native bytes changed",
+        "rejected": true
+      },
+      {
+        "error": "Chorus narrowing source identity changed",
+        "name": "changed anchor cannot borrow accepted adaptation",
+        "rejected": true
+      }
+    ],
+    "actual_RTL_runs": [
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/actual/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/actual/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": true,
+        "inherited_package_timescale_warning_only": true,
+        "name": "actual",
+        "owned_warning_count": 0,
+        "passed": true,
+        "rejected": false,
+        "returncode": 0,
+        "run_log_sha256": "703bcc5503772c9a3f11bc70266047ce1a7fcb638b51d238d29aeb86d43d84eb",
+        "source_sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5"
+      },
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/missing44operand/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/missing44operand/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": false,
+        "inherited_package_timescale_warning_only": true,
+        "name": "missing44operand",
+        "owned_warning_count": 0,
+        "passed": false,
+        "rejected": true,
+        "returncode": 1,
+        "run_log_sha256": "5abc18bbe71e89025094d2c1772bedea1a579ee004e29d85f77e7456d30a31c4",
+        "source_sha256": "7a9bbc1200140d10c0e1fe4e2971c62d8f951f7ec426e9153bd409e821bc1f24"
+      },
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/wrong44rounding/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/wrong44rounding/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": false,
+        "inherited_package_timescale_warning_only": true,
+        "name": "wrong44rounding",
+        "owned_warning_count": 0,
+        "passed": false,
+        "rejected": true,
+        "returncode": 1,
+        "run_log_sha256": "6004c07cf1898215415f18f27a70a9750b7eadba40f2f54d5ea2fed80c393f57",
+        "source_sha256": "a810552de2cd58b9eac55bf23d6d2842fa3a47e1ddcd2f9dd24bcaffcfa92fbb"
+      },
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/truncated44product/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/truncated44product/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": false,
+        "inherited_package_timescale_warning_only": true,
+        "name": "truncated44product",
+        "owned_warning_count": 0,
+        "passed": false,
+        "rejected": true,
+        "returncode": 1,
+        "run_log_sha256": "b8bd02b34725b192a0fee1a1fcdd327cb95fde63407658d93a55ba0168c8a63e",
+        "source_sha256": "05ded9ee4d8b2f37e3994080fca22a73b989f1bda5764cdc928c1e5c642a3468"
+      },
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/lost44finalcarry/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/lost44finalcarry/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": false,
+        "inherited_package_timescale_warning_only": true,
+        "name": "lost44finalcarry",
+        "owned_warning_count": 0,
+        "passed": false,
+        "rejected": true,
+        "returncode": 1,
+        "run_log_sha256": "c8bea37d09a111eb78089f799b5d4d059c27cdcb9417ec30b6d6895cc973782a",
+        "source_sha256": "ebd75db2915492cdfbb69b7fd4dc1659731b474fc086cbc3aa785bdce2ae7f6b"
+      },
+      {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-Wall",
+          "-s",
+          "tb_workstation_runtime_chorus_delay",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/wrong48shift/simulation.vvp",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/audio_math_pkg.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/previous_native_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/before_affine44_chorus.sv",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-exhaustive-v1/wrong48shift/current.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_chorus_delay.sv"
+        ],
+        "compile_log_sha256": "475ae77ded640b1dd56004f8234e1bc41ab59c31c9853046784ffedb1d6555fd",
+        "expected_pass": false,
+        "inherited_package_timescale_warning_only": true,
+        "name": "wrong48shift",
+        "owned_warning_count": 0,
+        "passed": false,
+        "rejected": true,
+        "returncode": 1,
+        "run_log_sha256": "66239175c68a205f1001a5179c34ba28dc9da5dfc788c5c0f33bb5738cea3b4e",
+        "source_sha256": "5f01b4dce9ca1c2a1505c96f5390c79f169d2ccc051fed11aa803ecd74bcf2df"
+      }
+    ]
+  },
+  "existing_complete_regressions": {
+    "chorus": {
+      "command": [
+        "python3",
+        "sim/test_workstation_runtime_chorus.py",
+        "-v"
+      ],
+      "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+      "returncode": 0,
+      "seconds": 3.538362458,
+      "log_sha256": "5608877c9af8cba0b0d1f9fcb162af60da02afd1f550389760a7ae2024dea3bb",
+      "runner_sha256": "158db802476a2bd59ba07f1a20101379e3d34039fd1606464592341f1064ee0d",
+      "test_count": 10,
+      "pass_markers": [
+        "PASS runtime Chorus44.1 fixed point frames=60000 lfo_wraps=1 delay=441..529 clips=3384",
+        "PASS exact M12/new complete Chorus half-cycle comparisons=1440035 public_outputs=12",
+        "PASS runtime Chorus48k per-cycle frames=60000 clips=3391",
+        "PASS exact M12/new complete Chorus half-cycle comparisons=1440033 public_outputs=12",
+        "PASS exhaustive Chorus triangle delay_error_samples= 0.49998168945313637 lfo147frame_total= 55840",
+        "PASS runtime Chorus configuration backpressure and history priority",
+        "PASS exact M12/new complete Chorus half-cycle comparisons=49 public_outputs=12",
+        "PASS runtime Chorus legacy clear aborts five FSM states and retains LFO phase",
+        "PASS exact M12/new complete Chorus half-cycle comparisons=2635 public_outputs=12",
+        "PASS runtime Chorus switches/history preserve phase gain fractions frames=6000",
+        "PASS exact M12/new complete Chorus half-cycle comparisons=144059 public_outputs=12"
+      ],
+      "source_sha256": {
+        "rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+        "rtl/audio/workstation_runtime_chorus_effect.sv": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+        "sim/audio/fixtures/chorus_before_affine44.sv": "a2e09369634b35628920c3198b0020a51a0d4154fe690a2faf93465f8ff57900",
+        "sim/audio/tb_workstation_runtime_chorus.sv": "6ff68172687223f21aa2456aa14ab2b543e55e14cd49546bb0039bc86023cd87",
+        "sim/test_workstation_runtime_chorus.py": "9a0bb0d81aeb26708980c25a3fea61a8c6022ffc9539c050b5bb53a20f8eecda",
+        "tools/workstation_chorus_provenance.py": "d11ebe021c35761ba0351c52602731b56728b9b3749631fb6634b42eae364a7f"
+      },
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-existing-regressions-v1/chorus-run.json",
+      "run_sha256": "ed3861c18bfb74641ba22938fb7b143c7616827d2885130c1a67ff2cbc12a478"
+    },
+    "effects": {
+      "command": [
+        "python3",
+        "sim/test_workstation_runtime_effects.py",
+        "-v"
+      ],
+      "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+      "returncode": 0,
+      "seconds": 14.529911042,
+      "log_sha256": "48603632abb4a370b40a7a9443a35568727defc5064f0ef0a90e4c2602db3eeb",
+      "runner_sha256": "158db802476a2bd59ba07f1a20101379e3d34039fd1606464592341f1064ee0d",
+      "test_count": 16,
+      "pass_markers": [
+        "PASS runtime full effects scenario=1 frames=24288 reference48=0 clips=2341 max_latency=105 maintenance=2757,3505,3742",
+        "PASS runtime full effects scenario=0 frames=36288 reference48=36288 clips=3503 max_latency=105 maintenance=2687,3455,3712",
+        "PASS runtime effects audio-clock stop sticky failure after resume",
+        "PASS runtime full effects scenario=2 frames=44512 reference48=0 clips=4837 max_latency=105 maintenance=448,448,448",
+        "PASS runtime effects legacy clear cancels9 chain/stage boundaries preserves prepared gain edge",
+        "PASS runtime effects memory-clock stop controlled zero no done",
+        "PASS runtime effects missing/late fence remains sticky failed",
+        "PASS runtime effects PANIC collision scenario=4 completes matching new rate fences=2",
+        "PASS runtime effects PANIC collision scenario=3 completes matching new rate fences=1"
+      ],
+      "source_sha256": {
+        "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json": "4b52679ff2c129ddd02d1e1e404408251d44dd4f35dbd32d0493f6aed0fe2b83",
+        "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+        "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json": "e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b7da51ce66bf01016886",
+        "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+        "rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+        "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+        "rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+        "rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+        "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+        "rtl/audio/workstation_runtime_chorus_effect.sv": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+        "rtl/audio/workstation_runtime_spatial_reverb.pipeline.json": "fa5d015a145ba4b89ece7b8662eb3e2d7e7fc1c811131ec7a173fab19b415328",
+        "rtl/audio/workstation_runtime_spatial_reverb.provenance.json": "3ca4cbf55bb0dea90f67f08388fee5fd2460532ed8a64cc7f64a9d3b8bf01a52",
+        "rtl/audio/workstation_runtime_spatial_reverb.sv": "3e5e46d80f19d46347dc25dc6493a5f7290c8056846a9a17ced70673e3def846",
+        "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json": "5590b0082117f53247f5d30236d5547ac2f358ee66e7b874c3ce6199ec13fe51",
+        "rtl/audio/workstation_runtime_stereo_effects.provenance.json": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+        "rtl/audio/workstation_runtime_stereo_effects.sv": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50",
+        "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "rtl/workstation/gw138k_push_workstation_top.v": "d3bfd734fd0a4fe87b4641f0fb3e1a81ab4b61d9ab7b149a66fc05d09abc052b",
+        "sim/audio/tb_workstation_runtime_effects.sv": "5c7fb85775b9d5b365428c6c2f578fa37587aea4d034b57c5b105f2a21e3ec58",
+        "sim/test_workstation_runtime_effects.py": "14d9c667df11f411369b6610ae2001e83441e96f8d7bbacd4b608c45f8cd870b",
+        "sim/test_workstation_runtime_reverb.py": "ae7f046891bce06056162ba9770db02b4c420924eefa851d80565f54bbbf667b",
+        "tools/workstation_chorus_provenance.py": "d11ebe021c35761ba0351c52602731b56728b9b3749631fb6634b42eae364a7f",
+        "tools/workstation_delay_storage_provenance.py": "c80aeb2c64176c67ff2c3ca123de013363e068736bce0416314a25904833982f",
+        "tools/workstation_reverb_provenance.py": "42ed59e654d63706dfda75f64ef9490ec3be9b4b013382d66821556e51a2fe7b"
+      },
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-existing-regressions-v1/effects-run.json",
+      "run_sha256": "b3629c63a8cc3e97291e0fed0013893a0f066248eaaa6a04bbebfb97589aa4b6"
+    }
+  },
+  "input_snapshot": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-input-snapshot-v1/snapshot.json",
+    "sha256": "fc722f5763790e18deee2a97c7951d7ab2c659243e41a86e4749f156f6c40c30",
+    "input_versions": 40,
+    "unique_objects": 38,
+    "all_bytes_reverified": true,
+    "original_verification_json_modified": false,
+    "two_earlier_successful_runner_versions_recovered_by_exact_checked_inverse": true
+  },
+  "frozen_m15_w13_chorus_inputs_unchanged": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v15/workstation/Prj1/rtl/audio/workstation_runtime_chorus_effect.sv": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13/workstation/Prj1/rtl/audio/workstation_runtime_chorus_effect.sv": "28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c"
+  },
+  "final_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/chorus-affine35-csa-maintained-sealed-v1.json",
+  "attempt_history": "All maintained verification runs passed. v2 adds explicit dependency inventory/final dependency guards to the new runner and distinguishes normalized affine proof fields from actual CSA function fields. v1 successful outputs remain unchanged; their two earlier runner bytes are preserved in the content-addressed snapshot. Earlier cache-only v1/v2 failures remain in their separate sealed proposal evidence.",
+  "routed_timing_verified": false,
+  "resource_improvement_measured": false,
+  "synthesis_performed": false,
+  "hardware_tested": false,
+  "profile_locks_changed": false,
+  "task2_changed_by_subtask": false,
+  "commit_push_by_subtask": false,
+  "board_operation_by_subtask": false,
+  "limits": [
+    "Only the complete rate_delay combinational function changes in production RTL; no additional state, cycle, interface or arithmetic subsystem change.",
+    "Binary SMT is an independently hand-translated source-hash-bound function model and generic modular CSA theorem; four-state argument follows IEEE operators and is exercised with actual modules. No HDL frontend or full temporal formal claim.",
+    "The historical affine proof explicitly normalizes via checked CSA inverse; independent maintained runner verifies the actual new function separately.",
+    "Existing complete chorus/effects oracles, old fixtures, baseline/vendor bytes, warning expectations and physical clocks were not relaxed.",
+    "The source implementation has no measured mapping, resource, timing or hardware improvement. New candidate source identities and accepted-source checks remain root-owned."
+  ]
+}

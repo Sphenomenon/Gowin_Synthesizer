@@ -56,14 +56,31 @@ module workstation_runtime_chorus_effect #(
     end
   endfunction
   function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
-    logic [34:0] rounded_phase44;
+    logic [34:0] t,rounded_phase44;
+    logic [34:0] s0,c0,s1,c1,s2,c2,s3,c3,s4,c4,s5,c5,s6,c6,s7,c7;
     logic [17:0] triangle_times3;
     begin
-      // Exact over all 16-bit triangles: preserve every nearest-rounded tap
-      // while replacing the serial divide by5 with one affine product/shift.
-      // The complete product and sum fit35 unsigned bits; sampling is unchanged.
+      // Exact 35-bit affine product; five balanced CSA levels and one final
+      // carry-propagating addition. No state, latency or tap rounding changes.
       if(rate44)begin
-        rounded_phase44=35'(triangle_value)*35'd361267+35'd134225920;
+        t={19'd0,triangle_value};
+        s0=t^(t<<1)^(t<<4);
+        c0=((t&(t<<1))|(t&(t<<4))|((t<<1)&(t<<4)))<<1;
+        s1=(t<<5)^(t<<8)^(t<<9);
+        c1=(((t<<5)&(t<<8))|((t<<5)&(t<<9))|((t<<8)&(t<<9)))<<1;
+        s2=(t<<15)^(t<<16)^(t<<18);
+        c2=(((t<<15)&(t<<16))|((t<<15)&(t<<18))|((t<<16)&(t<<18)))<<1;
+        s3=s0^c0^s1;
+        c3=((s0&c0)|(s0&s1)|(c0&s1))<<1;
+        s4=c1^s2^c2;
+        c4=((c1&s2)|(c1&c2)|(s2&c2))<<1;
+        s5=s3^c3^s4;
+        c5=((s3&c3)|(s3&s4)|(c3&s4))<<1;
+        s6=s5^c5^c4;
+        c6=((s5&c5)|(s5&c4)|(c5&c4))<<1;
+        s7=s6^c6^35'd134225920;
+        c7=((s6&c6)|(s6&35'd134225920)|(c6&35'd134225920))<<1;
+        rounded_phase44=s7+c7;
         rate_delay=16'd441+16'(rounded_phase44>>28);
       end else begin
         //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.

@@ -336,6 +336,8 @@ M15 `D211010D` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL13
 
 W的[raw CLEAR完成许可维护阶段](push2_workstation/usb_a/reports/DUAL138K_RAW_CLEAR_CASE_20261101.md)已完成：实际源码`39ae3b91…290b`仅新增组合许可并替换原CLEAR guard，全部NBA位置／右值／顺序及原fault／超时保留。二态UNSAT、16,384四态guard、16,777,216实际fault组合、661,577完整twin边沿、36定向／4096任意四态及4负控通过；旧W11／W12 START门以严格CLEAR逆变换继续全通过，未改旧fixture或16项helper。原raw、BLE完整对象／协议／27负控、authority及来源17项回归通过，唯一生产raw pin同步。54实际输入、331证据和48个内容hash快照blob重验；两锁待统一刷新，CLEAR实际映射／资源／routed收益另验，far最差fetch_address CE不在本赋值块内，未上板。
 
+Chorus的[35bit CSA维护阶段](push2_workstation/usb_a/reports/DUAL138K_CHORUS_AFFINE35_CSA_20261101.md)已完成：仅组合rate_delay函数改为五层CSA和一次末级加法，48k分支、状态／周期／取参及四态传播保持。全16bit实际函数／独立SMT、278,664四态探针与完整双实例通过；原实际延迟131,072穷举、chorus10项／effects16项及全部来源／算术负控通过。150份最终证据和40输入版本／38内容对象由主线程逐项重验。两份DEMO来源锁待统一刷新，M15／W13冻结旧源码不变；下一候选另测实际映射、资源与routed时序，本阶段无板卡操作或收益预记。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

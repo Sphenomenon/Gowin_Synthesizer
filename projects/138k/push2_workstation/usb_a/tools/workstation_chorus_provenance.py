@@ -96,8 +96,81 @@ CHORUS_AFFINE44_AFTER = '''  function automatic [15:0] rate_delay(input [15:0] t
 '''
 
 
+
+CHORUS_AFFINE35_CSA_SOURCE_SHA256 = '1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5'
+CHORUS_AFFINE35_CSA_PARENT_SHA256 = '28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c'
+CHORUS_AFFINE35_CSA_BEFORE = '''  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
+    logic [34:0] rounded_phase44;
+    logic [17:0] triangle_times3;
+    begin
+      // Exact over all 16-bit triangles: preserve every nearest-rounded tap
+      // while replacing the serial divide by5 with one affine product/shift.
+      // The complete product and sum fit35 unsigned bits; sampling is unchanged.
+      if(rate44)begin
+        rounded_phase44=35'(triangle_value)*35'd361267+35'd134225920;
+        rate_delay=16'd441+16'(rounded_phase44>>28);
+      end else begin
+        //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.
+        triangle_times3=18'(triangle_value)*18'd3;
+        rate_delay=16'd480+16'(triangle_times3>>11);
+      end
+    end
+  endfunction'''
+CHORUS_AFFINE35_CSA_AFTER = '''  function automatic [15:0] rate_delay(input [15:0] triangle_value,input logic rate44);
+    logic [34:0] t,rounded_phase44;
+    logic [34:0] s0,c0,s1,c1,s2,c2,s3,c3,s4,c4,s5,c5,s6,c6,s7,c7;
+    logic [17:0] triangle_times3;
+    begin
+      // Exact 35-bit affine product; five balanced CSA levels and one final
+      // carry-propagating addition. No state, latency or tap rounding changes.
+      if(rate44)begin
+        t={19'd0,triangle_value};
+        s0=t^(t<<1)^(t<<4);
+        c0=((t&(t<<1))|(t&(t<<4))|((t<<1)&(t<<4)))<<1;
+        s1=(t<<5)^(t<<8)^(t<<9);
+        c1=(((t<<5)&(t<<8))|((t<<5)&(t<<9))|((t<<8)&(t<<9)))<<1;
+        s2=(t<<15)^(t<<16)^(t<<18);
+        c2=(((t<<15)&(t<<16))|((t<<15)&(t<<18))|((t<<16)&(t<<18)))<<1;
+        s3=s0^c0^s1;
+        c3=((s0&c0)|(s0&s1)|(c0&s1))<<1;
+        s4=c1^s2^c2;
+        c4=((c1&s2)|(c1&c2)|(s2&c2))<<1;
+        s5=s3^c3^s4;
+        c5=((s3&c3)|(s3&s4)|(c3&s4))<<1;
+        s6=s5^c5^c4;
+        c6=((s5&c5)|(s5&c4)|(c5&c4))<<1;
+        s7=s6^c6^35'd134225920;
+        c7=((s6&c6)|(s6&35'd134225920)|(c6&35'd134225920))<<1;
+        rounded_phase44=s7+c7;
+        rate_delay=16'd441+16'(rounded_phase44>>28);
+      end else begin
+        //48k: floor(96*t/65536) == floor(3*t/2048), preserving every tap.
+        triangle_times3=18'(triangle_value)*18'd3;
+        rate_delay=16'd480+16'(triangle_times3>>11);
+      end
+    end
+  endfunction'''
+
+
+def restore_affine35_csa(source):
+    """Verify only the approved function inverse before the original chain."""
+    if sha(source) != CHORUS_AFFINE35_CSA_SOURCE_SHA256:
+        return source  # Existing parent identity gates remain authoritative.
+    current = source.decode()
+    if current.count(CHORUS_AFFINE35_CSA_AFTER) != 1:
+        raise ValueError('Chorus affine35 CSA reverse anchor drift')
+    restored = current.replace(CHORUS_AFFINE35_CSA_AFTER, CHORUS_AFFINE35_CSA_BEFORE)
+    if sha(restored.encode()) != CHORUS_AFFINE35_CSA_PARENT_SHA256:
+        raise ValueError('Chorus affine35 CSA parent identity changed')
+    if (restored.count(CHORUS_AFFINE35_CSA_BEFORE) != 1 or
+            restored.replace(CHORUS_AFFINE35_CSA_BEFORE, CHORUS_AFFINE35_CSA_AFTER).encode() != source):
+        raise ValueError('Chorus affine35 CSA round trip changed bytes')
+    return restored.encode()
+
+
 def restore_affine44(source):
     """Restore exact M12 Chorus bytes before its unchanged original chain."""
+    source = restore_affine35_csa(source)
     if sha(source) != CHORUS_AFFINE44_SOURCE_SHA256:
         return source  # The original native/scratch identity gates still apply.
     current = source.decode()
@@ -183,7 +256,9 @@ def verify(source, provenance, policy=STRICT_POLICY, adaptation=None):
         original_native_sha256=info['native_sha256'], original_provenance_sha256=sha(provenance),
         adaptation_sha256=sha(adaptation) if adaptation is not None else None,
         exact_prepared_sha256=sha(current.encode()), original_provenance_unchanged=True,
-        affine44_delay_equivalence=sha(source) == CHORUS_AFFINE44_SOURCE_SHA256,
+        affine35_csa_equivalence=sha(source) == CHORUS_AFFINE35_CSA_SOURCE_SHA256,
+        affine35_csa_parent_sha256=CHORUS_AFFINE35_CSA_PARENT_SHA256,
+        affine44_delay_equivalence=sha(restore_affine35_csa(source)) == CHORUS_AFFINE44_SOURCE_SHA256,
         affine44_parent_sha256=CHORUS_AFFINE44_PARENT_SHA256,
         scratch_products_without_reset=sha(restore_affine44(source)) == CHORUS_SCRATCH_SOURCE_SHA256,
         scratch_parent_sha256=CHORUS_SCRATCH_PARENT_SHA256,

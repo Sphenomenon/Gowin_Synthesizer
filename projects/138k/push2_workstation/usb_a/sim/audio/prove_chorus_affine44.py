@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
-"""Prove the exact actual-source 16-bit Chorus delay arithmetic with Z3."""
+"""Verify current lineage and original affine arithmetic with Z3.
+
+The maintained CSA function is checked by run_chorus_affine35_csa.py. This
+earlier affine proof retains its exact grammar after the checked CSA inverse.
+"""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 import re
+import sys
 
 import z3
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.workstation_chorus_provenance import restore_affine35_csa
 CURRENT = 'rtl/audio/workstation_runtime_chorus_effect.sv'
 BEFORE = 'sim/audio/fixtures/chorus_before_affine44.sv'
 CURRENT_SHA = '28ef32d47d55a0d44eef8ec23fa3437cdbef647d4ca0b023f98cb184bd8ce50c'
@@ -49,11 +56,13 @@ def extract(current, before):
 
 def run(output):
     output.mkdir(parents=True, exist_ok=False)
-    files = [ROOT / CURRENT, ROOT / BEFORE, Path(__file__).resolve()]
+    files = [ROOT / CURRENT, ROOT / BEFORE, Path(__file__).resolve(),
+             ROOT / 'tools/workstation_chorus_provenance.py']
     hashes = {str(p): sha(p.read_bytes()) for p in files}
-    if hashes[str(files[0])] != CURRENT_SHA or hashes[str(files[1])] != BEFORE_SHA:
+    normalized = restore_affine35_csa(files[0].read_bytes())
+    if sha(normalized) != CURRENT_SHA or hashes[str(files[1])] != BEFORE_SHA:
         raise ValueError('reviewed actual source identity drift')
-    new_function, old_function = function(files[0].read_bytes()), function(files[1].read_bytes())
+    new_function, old_function = function(normalized), function(files[1].read_bytes())
     new, old = extract(new_function, old_function)
     triangle = z3.BitVec('triangle', 16)
     old_product = z3.ZeroExt(9, triangle) * z3.BitVecVal(old['coefficient'], 25)
@@ -108,7 +117,11 @@ def run(output):
     if any(sha(Path(p).read_bytes()) != value for p, value in hashes.items()):
         raise ValueError('proof input changed during verification')
     report = dict(schema=1, passed=True, z3_version=z3.get_version_string(), input_sha256=hashes,
-                  exact_current_function_sha256=sha(new_function.encode()),
+                  normalized_affine_source_sha256=sha(normalized),
+                  csa_inverse_checked=hashes[str(files[0])] != sha(normalized),
+                  scope='Original affine proof after exact CSA inverse; current CSA arithmetic and actual-source proof are separate run_chorus_affine35_csa.py checks.',
+                  exact_normalized_affine_function_sha256=sha(new_function.encode()),
+                  exact_actual_current_function_sha256=sha(function(files[0].read_bytes()).encode()),
                   exact_old_function_sha256=sha(old_function.encode()), extracted_current=new,
                   extracted_old=old, checks=checks, triangle_domain_bits=16,
                   modeled_actual_SV_assignment_widths=True, added_registers=0,

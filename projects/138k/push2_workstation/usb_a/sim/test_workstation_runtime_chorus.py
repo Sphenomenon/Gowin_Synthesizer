@@ -24,6 +24,7 @@ def digest(data):
 class ChorusAffineLineageTest(unittest.TestCase):
     def setUp(self):
         self.source = (ROOT / chorus.SOURCE).read_bytes()
+        self.affine = chorus.restore_affine35_csa(self.source)
         self.parent = (ROOT / 'sim/audio/fixtures/chorus_before_affine44.sv').read_bytes()
         self.provenance = (ROOT / chorus.PROVENANCE).read_bytes()
         self.adaptation = (ROOT / chorus.ADAPTATION).read_bytes()
@@ -33,20 +34,21 @@ class ChorusAffineLineageTest(unittest.TestCase):
         self.assertEqual(parent, self.parent)
         self.assertEqual(digest(parent), chorus.CHORUS_AFFINE44_PARENT_SHA256)
         self.assertEqual(parent.decode().replace(chorus.CHORUS_AFFINE44_BEFORE,
-                                               chorus.CHORUS_AFFINE44_AFTER).encode(), self.source)
+                                               chorus.CHORUS_AFFINE44_AFTER).encode(), self.affine)
         original = chorus.verify(parent, self.provenance, NARROW_POLICY, self.adaptation)[0]
         prepared, evidence = chorus.verify(self.source, self.provenance, NARROW_POLICY, self.adaptation)
         self.assertEqual(prepared, original)
         self.assertTrue(evidence['affine44_delay_equivalence'])
+        self.assertTrue(evidence['affine35_csa_equivalence'])
         self.assertTrue(evidence['scratch_products_without_reset'])
         self.assertEqual(digest(self.provenance), chorus.PROVENANCE_SHA256)
         self.assertEqual(digest(self.adaptation), chorus.ADAPTATION_SHA256)
 
     def test_identity_anchor_and_parent_negatives(self):
         after = chorus.CHORUS_AFFINE44_AFTER.encode()
-        mutations = [self.source + b'\n', self.source.replace(after, b''),
-                     self.source.replace(after, after + after),
-                     self.source.replace(b"35'd361267", b"35'd361266")]
+        mutations = [self.affine + b'\n', self.affine.replace(after, b''),
+                     self.affine.replace(after, after + after),
+                     self.affine.replace(b"35'd361267", b"35'd361266")]
         for mutant in mutations:
             with self.subTest(identity=digest(mutant)), self.assertRaises(ValueError):
                 chorus.verify(mutant, self.provenance, NARROW_POLICY, self.adaptation)
@@ -57,6 +59,28 @@ class ChorusAffineLineageTest(unittest.TestCase):
                 chorus.restore_affine44(mutant)
         with mock.patch.object(chorus, 'CHORUS_AFFINE44_PARENT_SHA256', '0'*64), self.assertRaises(ValueError):
             chorus.restore_affine44(self.source)
+
+    def test_csa_exact_complete_parent_and_roundtrip(self):
+        fixture = (ROOT / 'sim/audio/fixtures/chorus_before_affine35_csa.sv').read_bytes()
+        self.assertEqual(self.affine, fixture)
+        self.assertEqual(digest(fixture), chorus.CHORUS_AFFINE35_CSA_PARENT_SHA256)
+        self.assertEqual(fixture.decode().replace(chorus.CHORUS_AFFINE35_CSA_BEFORE,
+                                                 chorus.CHORUS_AFFINE35_CSA_AFTER).encode(), self.source)
+
+    def test_csa_identity_anchor_and_parent_fail_closed(self):
+        after = chorus.CHORUS_AFFINE35_CSA_AFTER.encode()
+        mutations = [self.source + b'\n', self.source.replace(after, b''),
+                     self.source.replace(after, after + after),
+                     self.source.replace(b's0=t^(t<<1)^(t<<4);', b's0=(t<<1)^(t<<4);'),
+                     self.source.replace(b'rounded_phase44=s7+c7;', b'rounded_phase44=s7;')]
+        for mutant in mutations:
+            with self.subTest(identity=digest(mutant)), self.assertRaises(ValueError):
+                chorus.verify(mutant, self.provenance, NARROW_POLICY, self.adaptation)
+            with self.subTest(rebased=digest(mutant)), mock.patch.object(
+                    chorus, 'CHORUS_AFFINE35_CSA_SOURCE_SHA256', digest(mutant)), self.assertRaises(ValueError):
+                chorus.restore_affine35_csa(mutant)
+        with mock.patch.object(chorus, 'CHORUS_AFFINE35_CSA_PARENT_SHA256', '0'*64), self.assertRaises(ValueError):
+            chorus.restore_affine35_csa(self.source)
 
 
 class RuntimeChorusTest(unittest.TestCase):
