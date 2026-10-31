@@ -107,11 +107,21 @@ module workstation_ble_record_data_service (
             8'hd8:response_data_o=request_session_i;
             8'hdc:response_data_o=request_boot_i[31:0];
             8'he0:response_data_o=request_boot_i[63:32];
-            default:begin
-                if(command_address_i>=8'h90 && command_address_i<=8'hbc)
-                    response_data_o=result_payload[(command_address_i-8'h90)*8+:32];
-                else response_error_o=1;
-            end
+            // The MMIO ABI only selects aligned whole words. Keep the shared
+            // address decode explicit instead of a wide variable bit slice.
+            8'h90:response_data_o=result_payload[0+:32];
+            8'h94:response_data_o=result_payload[32+:32];
+            8'h98:response_data_o=result_payload[64+:32];
+            8'h9c:response_data_o=result_payload[96+:32];
+            8'ha0:response_data_o=result_payload[128+:32];
+            8'ha4:response_data_o=result_payload[160+:32];
+            8'ha8:response_data_o=result_payload[192+:32];
+            8'hac:response_data_o=result_payload[224+:32];
+            8'hb0:response_data_o=result_payload[256+:32];
+            8'hb4:response_data_o=result_payload[288+:32];
+            8'hb8:response_data_o=result_payload[320+:32];
+            8'hbc:response_data_o=result_payload[352+:32];
+            default:response_error_o=1;
         endcase
     end
     always @(posedge clk_i or negedge rst_ni)begin
@@ -139,7 +149,10 @@ module workstation_ble_record_data_service (
                 8'h68:staged_request<=command_data_i;
                 8'h6c:staged_nonce[31:0]<=command_data_i;
                 8'h70:staged_nonce[63:32]<=command_data_i;
-                8'h74,8'h78,8'h7c,8'h80:staged_payload[(command_address_i-8'h74)*8+:32]<=command_data_i;
+                8'h74:staged_payload[0+:32]<=command_data_i;
+                8'h78:staged_payload[32+:32]<=command_data_i;
+                8'h7c:staged_payload[64+:32]<=command_data_i;
+                8'h80:staged_payload[96+:32]<=command_data_i;
                 default:begin end
             endcase
             if(submit)begin

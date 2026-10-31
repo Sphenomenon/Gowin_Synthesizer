@@ -28,6 +28,18 @@ class BusinessTelemetryReset(unittest.TestCase):
                           (after,dict(evidence,shared_release_register_count=5))):
             with self.subTest(sdc=sdc),self.assertRaisesRegex(ValueError,'installation changed|evidence changed'):
                 selection.verify_telemetry_reset_constraints(sdc,proof)
+class PhysicalPayloadWords(unittest.TestCase):
+    def test_all_payload_words_and_invalid_lanes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            executable=Path(directory)/'words.vvp'
+            built=subprocess.run(['iverilog','-g2012','-s','tb_ble_record_data_words','-o',str(executable),
+                str(ROOT/'sim/services/tb_ble_record_data_words.sv'),
+                str(ROOT/'rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv')],
+                text=True,capture_output=True,timeout=30)
+            self.assertEqual(built.returncode,0,built.stdout+built.stderr)
+            result=subprocess.run(['vvp',str(executable)],text=True,capture_output=True,timeout=30)
+            self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+            self.assertIn('PASS physical payload word ABI:',result.stdout)
 class BusinessSources(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
