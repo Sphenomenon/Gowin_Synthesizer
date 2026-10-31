@@ -749,7 +749,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/clock/workstation_ae350_rtc.sv": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
     "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "5021ae734bd8e5cf63e0a65d4e10340f29a509385ea6442283cd94faad6c4099",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_ae350_rtc.py": "0a9517e29c33e12bb116a8372472fb151576939786a950f5fb736f999eb6af7f",
-    "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": "4960ed2e25b8c3cfbca3cde7af064927ae6eea9dfff6b5031c04dfbc117dfb84"
+    "projects/138k/push2_workstation/usb_a/sim/test_ae350_local_probe.py": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be"
   },
   "revision": 2
 }

@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "scope": "root merged native RTC source closure, actual fresh prepare and offline regressions",
+  "source_commit": "914fda7",
+  "author_commit": "7d82699e1b317505dfad5574620eeeeda3c16035",
+  "author_parent": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-delivery-v1",
+  "author_seal_sha256": "154201800833e83ad7eca2077326c6e326c541cc27259af4ef7b73044ebbad4d",
+  "prepares": {
+    "business": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-main-v3/business-prepare",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-0981b403bb531b2b",
+      "artifact_sha256": "45aa904a81641342287686c9cb949c50affbc7c65a0f6f6448c88e69ea41f9a3",
+      "staged_inputs": 614,
+      "enabled_inputs": 272,
+      "rtc": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "source": "rtl/clock/workstation_ae350_rtc.sv",
+        "source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+        "source_reference_hz": 50000000,
+        "reset": "system_reset_n",
+        "independent_of_cpu_apb_memory_ready": true,
+        "half_period_reference_cycles": [
+          762,
+          763
+        ],
+        "constraint": "create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] -divide_by 1524 [get_pins {u_rtc/rtc_tick_s1/Q}]",
+        "clock_name": "cpu_rtc_bound",
+        "clock_pin": "u_rtc/rtc_tick_s1/Q",
+        "sta_divide_by": 1524,
+        "sta_minimum_period_ns": 30480,
+        "average_frequency_hz": 32768,
+        "average_is_not_sta_frequency": true,
+        "source_binding_verified": true,
+        "synthesis_connectivity_verified": false,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      },
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "native_owner8_pcm_ddr_r00_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "native_raw_ddr_ae350_business_v2",
+        "business_owner_policy": "ae350_ble_business_owner_v2",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 65536,
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1"
+      }
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-main-v3/default-prepare",
+      "candidate_identity": "custom138k-workstation-v1-36edc57605b9a09f",
+      "artifact_sha256": "aef2d7dcb8dbcb67329273c90e686acc27645bdd90e5dc420d8c8eab71d7217b",
+      "staged_inputs": 581,
+      "enabled_inputs": 261,
+      "rtc": {
+        "policy": "reference50_fractional32768_bound1524_v1",
+        "source": "rtl/clock/workstation_ae350_rtc.sv",
+        "source_sha256": "59fbe21b3a6627245c9edb38484e9ae9955f615e9dba445a21e22ff66a22f536",
+        "source_reference_hz": 50000000,
+        "reset": "system_reset_n",
+        "independent_of_cpu_apb_memory_ready": true,
+        "half_period_reference_cycles": [
+          762,
+          763
+        ],
+        "constraint": "create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] -divide_by 1524 [get_pins {u_rtc/rtc_tick_s1/Q}]",
+        "clock_name": "cpu_rtc_bound",
+        "clock_pin": "u_rtc/rtc_tick_s1/Q",
+        "sta_divide_by": 1524,
+        "sta_minimum_period_ns": 30480,
+        "average_frequency_hz": 32768,
+        "average_is_not_sta_frequency": true,
+        "source_binding_verified": true,
+        "synthesis_connectivity_verified": false,
+        "sta_verified": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      },
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1"
+      }
+    }
+  },
+  "profiles": {
+    "workstation_profile_v1.json": {
+      "sha256": "290d21d1c7114969bc18263578f7b9089744172ac365094bd7a7fcefc2f1d869",
+      "revision": 5,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    },
+    "workstation_profile_ae350_business_v1.json": {
+      "sha256": "0a004d7126b2864e71f1133703b414ccc001b860c628f09de97175f819a4bfd8",
+      "revision": 4,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    },
+    "workstation_profile_r00_no_local_panel_v1.json": {
+      "sha256": "46f648929b8c601327d09d82bdf80cbb852c54b7bad92e3e0fc50f93619df887",
+      "revision": 2,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    },
+    "workstation_profile_no_cnn_v1.json": {
+      "sha256": "fb16357ec35fd0c684b0d824f59b6dd2bebf5c5e38f171480cb5d2b7123ea9b1",
+      "revision": 1,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    },
+    "workstation_profile_r00_v1.json": {
+      "sha256": "4322407c861f13184616a03e3472482d4b30e128564901b7ff054ea05d7419c2",
+      "revision": 1,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    },
+    "workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json": {
+      "sha256": "3820197a9f90e0817cf0a56730104de47c59325bba2a158565b235b21ef37105",
+      "revision": 1,
+      "local_probe_test_sha256": "08790e0f85e9a87789b4f5ceb9c72d399233d4a2da05e389b1fb123ee8aca1be",
+      "local_memory_helper_sha256": "cfd7481f854afd8fe431b467be3471e03cab1092d5f198d0f72f7a9476a71e0b"
+    }
+  },
+  "merged_lock_refresh": "sim/test_ae350_local_probe.py from actual committed full64 GAO source 1ff14c3; prior helper merge retained",
+  "source_snapshot_files": 462,
+  "successful_tests": 126,
+  "optin_skips": 5,
+  "root_checks": {
+    "source_units.log": {
+      "run": 80,
+      "skipped": 5,
+      "sha256": "d4d37f49e99b21dc67cf14eebb2cc52b006088d951ffcaaeeb0c9d8608d57bdc"
+    },
+    "accepted_sources.log": {
+      "run": 17,
+      "skipped": 0,
+      "sha256": "5f923907032928100743855c0ed0f9bcb86872b71e128a831a1c7fca69a3c0bc"
+    },
+    "generic_prepare.log": {
+      "run": 5,
+      "skipped": 0,
+      "sha256": "b5f23980e9df3e512ba605b0ec1433de889b554399a3a6540449678273cdfde6"
+    },
+    "business-prepared-checks.log": {
+      "run": 11,
+      "skipped": 0,
+      "sha256": "500c396bdb06f1a8a80abe4436403b38e58e3ec5df85ad86e05d86c8c5e9a22c"
+    },
+    "default-prepared-checks.log": {
+      "run": 17,
+      "skipped": 0,
+      "sha256": "085ec9be676995ab099b6639fe82fb2f9873c62792e8449d9f01895be893da7b"
+    }
+  },
+  "rtc_waveform_test_sha256": "a42bb771cdb83138a1cd1be1bc83d02608818f8af1315ae0676ac1dd5e51fe9c",
+  "default_legacy_token_preserved": true,
+  "actual_C10_positive_and_old_full_VG_negative": true,
+  "initial_drift_failure_retained": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-main-v1",
+  "new_full_synthesis": false,
+  "new_place_route": false,
+  "hardware_operated": false,
+  "hardware_acceptance": false,
+  "limitations": [
+    "Actual new full-system VG/VO/STA and RTC hardware measurement remain pending",
+    "Historical C10 and old VG are fixed subgate/syntax evidence only",
+    "ROM128/cache/phone integration are separate work",
+    "No accepted input or frozen baseline changed"
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-ae350-rtc-main-parent-v1",
+  "seal_sha256": "8a74bee1445696783bd61c0dba36c48caa2644632fb144d8294124ba6e826d6d",
+  "external_files": 1374
+}
