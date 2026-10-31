@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "stage": "maintained_source_late_admission_offline_verified",
+  "passed": true,
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "5be6f263083122794b82f2e9d8069fae96a6d044b4cb02c024d92c58b4de2810",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": "3f2889e9616839aa4657416fa9164e5e4f79502560f8e9b0b9b32f9985a55987",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_occupancy_equivalence.py": "2cd28ee8cd6749de8f4e642173a16f92fac73da96b466615278d88ca3c96ef88",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv": "287faa5663e3608eac3edf463b0dfd24bb63edd5ad87eaa4c00f9ad5cc27f11b",
+    "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_context_pre_decode.sv": "d4f7f9dea281f7eda8861757793ec023953c2d0e2937e11034c7a665cfde8de4",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_context_decode.py": "4906abff9b65768be87063804cc85008eebee88c0a2123c9915b3902ee1f9db1",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_context_decode.sv": "4799afc58851b233638fe97ed0604e8a5bb416eaaea558d43bc0307b00a9a7f0"
+  },
+  "evidence": {
+    "occupancy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-commit-v1/verification.json",
+      "sha256": "8576db33f10e0e9eebc084a82d55e79f49fd56bad6b2b391e287fe27a48519a9"
+    },
+    "symbolic_arithmetic": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-symbolic-v1.json",
+      "sha256": "03d2c40be97585e6cfb684abc093f1547cc39fe390068f917dcc90cd41850459"
+    },
+    "tf_runtime": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-runtime-v1/verification.json",
+      "sha256": "e932b2530c8a0220f37bfcfcaf7dc4201aa5a93d0c50b85a6f15e34d8a947126"
+    },
+    "tf_clear": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-capacity-clear-v1/verification.json",
+      "sha256": "646583c0b27d9f35d2057996492a15d9b8a229e3eabf9d21cf5ea314ba6843c3"
+    },
+    "context_induction": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-context-decode-v1/verification.json",
+      "sha256": "a9a6131e9adbbbb23f316f7b27bf9fbe5c1ce5bd0e802e061734317bc43e645b"
+    },
+    "audio_original_timeout": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-context-audio-v1/verification.json",
+      "sha256": "3554261fbbf5a37f6bacae9a035cf5b1b3185fea1d15364dab97fdb04b2030cf"
+    },
+    "audio_completed": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/runtime-context-audio-v2/verification.json",
+      "sha256": "25be07fb45e54ae41a6c2d7757ab0acc0bb09daca9e9060873ffe4f634677e6a"
+    },
+    "current_sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/late-admission-current-sources-v1.log",
+      "sha256": "bbcb0c1624470ce005f79c07a8c9854dafec0b349e41fb714614e0735c420ac3"
+    },
+    "demo_policy_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/late-admission-demo-audit-v1.log",
+      "sha256": "a2dc3c137a58e07b1fd7b3c8f9e51920dcf77b1e278bedb9dc1292f27cdb7160"
+    },
+    "m10_physical": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-physical-measurement-v1.json",
+      "sha256": "23e0561025a0ac9af9af71e3d3aa2796b3b0ed28c9f7dede5c930a6bcba0f424"
+    },
+    "m10_far_physical": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v10b-physical-hold-measurement-v1.json",
+      "sha256": "e47fcf7a5990f3911b2e53902cdb394bafe7483e99992fdd4c5574506fc57605"
+    }
+  },
+  "tf": {
+    "full_old_state_output_comparisons_per_capacity": 400007,
+    "capacities_bank_bytes": [
+      64,
+      67108864
+    ],
+    "capacity_vectors_per_capacity": 245760,
+    "small_delta_vectors_per_capacity": 442368,
+    "actual_RTL_negative_controls": 6,
+    "independent_ring_oracles": 4,
+    "symbolic_arithmetic_free_bits": 70,
+    "symbolic_result": "unsat",
+    "full_runtime_scenarios_per_buffer_configuration": 23,
+    "full_runtime_frames_per_buffer_configuration": 677,
+    "clear_scenarios_per_buffer_configuration": 6
+  },
+  "context": {
+    "actual_FSM_states": 8,
+    "free_scalar_controls": 65536,
+    "inductive_transitions": 524288,
+    "comparisons": 1048578,
+    "actual_RTL_negative_controls": 3,
+    "acceptance_edge_changed": false,
+    "reviewed_independently": true
+  },
+  "audio": {
+    "checked": 22532,
+    "good": 22518,
+    "errors": 14,
+    "nonzero": 22361,
+    "first_slots": 15,
+    "config_acks": 16,
+    "applies": 14,
+    "faults": 5,
+    "mid_frame_switches": 10,
+    "max_render_clocks": 1204,
+    "max_slot_clocks": 1229,
+    "max_config_clocks": 454,
+    "writes": 5620,
+    "fences": 35,
+    "analysis_drops": 7515,
+    "record_drops": 13512,
+    "startup_frames": 3,
+    "epoch": 15,
+    "loader_overlap_slots": 6,
+    "pressure_events": 768,
+    "pressure_noteoffs": 26,
+    "wet48": 7,
+    "wet44": 7,
+    "fdn_seen": 3,
+    "boundary_cases": 12
+  },
+  "limits": [
+    "Functional DDR model and simulated I2S; not analog DAC or HDMI acceptance",
+    "Runtime audio fixture uses 3 startup frames, not production 1028-frame startup",
+    "Original 240-second wall timeout retained; identical binary/input seal completed in 171.671 seconds under a 600-second limit",
+    "New source not yet synthesized or placed/routed; next independent candidate must seal these bytes"
+  ],
+  "physical_gain_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false
+}

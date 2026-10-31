@@ -69,12 +69,28 @@ def main():
             raise ValueError('simultaneous negative-control anchor drift')
         simultaneous.write_text(source.read_text().replace(changed,
             "{1'b0, ((write_accept && !read_response) ? pending_bytes : 6'd0)}"))
+        commit_carry = out / 'commit_carry.sv'
+        changed = 'upper_plus = occupancy[31:6] + 26\'d1;'
+        if source.read_text().count(changed) != 2:
+            raise ValueError('capacity carry negative-control anchor drift')
+        # Only change the capacity predicate, leaving occupancy arithmetic intact.
+        prefix, capacity = source.read_text().split('    function pending_fits_ring;', 1)
+        commit_carry.write_text(prefix + '    function pending_fits_ring;' +
+                               capacity.replace(changed, 'upper_plus = occupancy[31:6];', 1))
+        commit_equal = out / 'commit_equal.sv'
+        changed = 'low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0]'
+        if source.read_text().count(changed) != 2:
+            raise ValueError('capacity equality negative-control anchor drift')
+        commit_equal.write_text(source.read_text().replace(changed,
+            'low_sum[5:0] < AUDIO_TOTAL_BYTES[5:0]'))
         for label, path, bank, negative in [('scaled', source, 64, False),
                                              ('hardware_capacity', source, 67108864, False),
                                              ('drop_input_count', mutant, 64, True),
                                              ('unsigned_delta', unsigned, 64, True),
                                              ('lost_upper_carry', carry, 64, True),
-                                             ('simultaneous_write_lost', simultaneous, 64, True)]:
+                                             ('simultaneous_write_lost', simultaneous, 64, True),
+                                             ('capacity_lost_carry', commit_carry, 64, True),
+                                             ('capacity_equal_rejected', commit_equal, 64, True)]:
             binary = out / (label + '.vvp')
             command = ['iverilog', '-g2012', '-I', str(out), '-s', 'tb_tf_dma_occupancy_equivalence',
                        '-Ptb_tf_dma_occupancy_equivalence.BANK_BYTES=' + str(bank),
@@ -87,7 +103,8 @@ def main():
             (out / (label + '.log')).write_text(log)
             if negative:
                 accepted = run.returncode != 0 and (
-                    'occupancy invariant differs' in log or 'small-delta arithmetic differs' in log)
+                    'occupancy invariant differs' in log or 'small-delta arithmetic differs' in log or
+                    'pending capacity arithmetic differs' in log)
             else:
                 accepted = run.returncode == 0 and 'PASS DMA occupancy:' in log
             result['runs'].append(dict(label=label, command=command, exit_code=run.returncode,

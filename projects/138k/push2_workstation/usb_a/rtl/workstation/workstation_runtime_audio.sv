@@ -191,16 +191,21 @@ module workstation_runtime_audio #(
     end
     localparam [2:0] CFG_IDLE=0,CFG_SETTLE=1,CFG_DRAIN=2,CFG_ACCEPT=3,CFG_ACK=4;
     reg [2:0] config_state;
+    // Register the ACCEPT predicate on the very same FSM transition. Its
+    // value is always config_state==CFG_ACCEPT; no admission edge is added.
+    // This keeps the state decode out of the high-fanout DSP request cone.
+    (* syn_preserve=1 *) reg config_accept_pending;
     reg pending_rate,compute_rate,compute_context_valid;
     reg [31:0] pending_epoch,compute_epoch;
     // integration_fault is set only in CFG_ACK or an invalid state; neither
     // can return to CFG_ACCEPT. Keep actual service/PCM fault vetoes here
     // without feeding that unreachable integration-fault condition through
     // the service's acceptance/ready path and back into this state register.
-    wire config_valid=config_state==CFG_ACCEPT && !service_fault && !pcm_hard_fault;
+    wire config_valid=config_accept_pending && !service_fault && !pcm_hard_fault;
     always @(posedge compute_clk_i or negedge compute_reset_n)begin
         if(!compute_reset_n)begin
             context_sync<=0;context_ack<=0;config_state<=CFG_IDLE;
+            config_accept_pending<=0;
             pending_rate<=0;pending_epoch<=0;compute_rate<=0;compute_epoch<=0;
             compute_context_valid<=0;integration_fault<=0;
         end else begin
@@ -210,8 +215,12 @@ module workstation_runtime_audio #(
                 CFG_SETTLE:begin
                     {pending_rate,pending_epoch}<=context_payload;config_state<=CFG_DRAIN;
                 end
-                CFG_DRAIN:if(router_quiet && service_quiet && !bridge_busy)config_state<=CFG_ACCEPT;
-                CFG_ACCEPT:if(config_ready)config_state<=CFG_ACK;
+                CFG_DRAIN:if(router_quiet && service_quiet && !bridge_busy)begin
+                    config_state<=CFG_ACCEPT;config_accept_pending<=1;
+                end
+                CFG_ACCEPT:if(config_ready)begin
+                    config_state<=CFG_ACK;config_accept_pending<=0;
+                end
                 CFG_ACK:if(config_applied && !integration_fault)begin
                     if(service_rate!=pending_rate)integration_fault<=1;
                     else begin

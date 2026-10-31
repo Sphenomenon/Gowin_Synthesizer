@@ -94,9 +94,8 @@ module workstation_tf_runtime_dma #(
     wire capture_finished = (capture_sync != capture_seen);
     wire restart_event = (restart_sync != restart_seen);
     wire [31:0] committed_used = available_bytes;
-    wire [31:0] pending_used = committed_used + {26'd0, pending_bytes};
     wire ring_has_room_for_input = accepted_used < AUDIO_TOTAL_BYTES;
-    wire ring_can_commit = pending_used <= AUDIO_TOTAL_BYTES;
+    wire ring_can_commit = pending_fits_ring(committed_used, pending_bytes);
     wire write_selected = mem_ready && !runtime_hold_i && write_pending && ring_can_commit;
 
     wire read_has_full_beat = (available_bytes >= 32'd32);
@@ -148,6 +147,29 @@ module workstation_tf_runtime_dma #(
             else
                 upper = low_sum[6] ? upper_plus : occupancy[31:6];
             add_occupancy_delta = {upper, low_sum[5:0]};
+        end
+    endfunction
+
+    // Decide the modulo-32-bit sum against the capacity without sending the
+    // late pending count through a full-width carry chain. The two upper
+    // comparisons depend only on the current occupancy; a six-bit sum then
+    // selects between them. This also preserves the old wrap-at-2^32 case.
+    function pending_fits_ring;
+        input [31:0] occupancy;
+        input [5:0] pending;
+        reg [6:0] low_sum;
+        reg [25:0] upper_plus;
+        reg upper_less, upper_equal, incremented_less, incremented_equal;
+        begin
+            low_sum = {1'b0, occupancy[5:0]} + {1'b0, pending};
+            upper_plus = occupancy[31:6] + 26'd1;
+            upper_less = occupancy[31:6] < AUDIO_TOTAL_BYTES[31:6];
+            upper_equal = occupancy[31:6] == AUDIO_TOTAL_BYTES[31:6];
+            incremented_less = upper_plus < AUDIO_TOTAL_BYTES[31:6];
+            incremented_equal = upper_plus == AUDIO_TOTAL_BYTES[31:6];
+            pending_fits_ring = low_sum[6] ?
+                (incremented_less || (incremented_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0])) :
+                (upper_less || (upper_equal && low_sum[5:0] <= AUDIO_TOTAL_BYTES[5:0]));
         end
     endfunction
 
