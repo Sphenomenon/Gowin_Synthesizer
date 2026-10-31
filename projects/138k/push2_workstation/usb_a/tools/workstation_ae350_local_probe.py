@@ -36,7 +36,22 @@ RTC_CLOCK_PIN='u_rtc/rtc_tick_s1/Q'
 RTC_CLOCK_SDC=('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
                '-divide_by 1524 [get_pins {'+RTC_CLOCK_PIN+'}]')
 
-def audit_gao_synthesis(netlist_text):
+def native_sources(gao_mode):
+    if gao_mode not in ('full64','banked4'):raise ValueError('unknown probe GAO mode')
+    return NATIVE+(('rtl/probe/workstation_ae350_probe_gao_banks.sv',) if gao_mode=='banked4' else ())
+
+def gao_record(gao_mode):
+    native_sources(gao_mode)
+    result=dict(schema='A1386401',capture_bits=2208,word_count=64,storage_depth=128,
+        snapshot='same clk_50m published bank and sequence as UART; word61 bit4 marks timeout',
+        io='registered RTL output-drive level and modulo2^30 edge count; no pad or external receiver readback')
+    if gao_mode=='banked4':
+        result.update(mode='banked4',schema='A1386402',capture_bits=704,pages=4,page_words=16,page_cycles=4,
+            snapshot='four fixed pages of one frozen UART snapshot; only a new sequence replaces it at page3-to0',
+            io='frozen with the new UART sequence at a sweep boundary; no pad or external receiver readback')
+    return result
+
+def audit_gao_synthesis(netlist_text,gao_mode='full64'):
     """Require every declared GAO bit to survive as a 50MHz register.
 
     Source/prepare checks cannot establish this. Root calls this on the new
@@ -52,9 +67,10 @@ def audit_gao_synthesis(netlist_text):
             if bit in bits or n.pin(name,'CLK')!='clk_50m':
                 raise ValueError('GAO bit has duplicate ownership or wrong clock')
             bits[bit]=name
-    if set(bits)!=set(range(2208)):
-        raise ValueError('complete 2208-bit GAO register bank not present in actual netlist')
-    return dict(registered_bits=2208,clock='clk_50m',snapshot_words=64,
+    width=gao_record(gao_mode)['capture_bits']
+    if set(bits)!=set(range(width)):
+        raise ValueError(f'complete {width}-bit GAO register bank not present in actual netlist')
+    return dict(registered_bits=width,clock='clk_50m',snapshot_words=64,gao_mode=gao_mode,
         physical_timing_verified=False,external_uart_reception_verified=False)
 
 def audit_rtc_synthesis(netlist_text):
@@ -179,13 +195,13 @@ def constraints(root):
     lines += [f'report_timing -{kind} -max_paths 2000 -max_common_paths 1' for kind in ('setup','hold','recovery','removal')]
     return '\n'.join(lines)+'\n'
 
-def gao(user_code):
+def gao(user_code,gao_mode='full64'):
     document=ET.fromstring(base_gao(user_code));core=document.find('AoCore');core.set('module_name',TOP)
     core.set('storage_depth','128');core.set('capture_amount','128')
     document.find('GAO_ID').text=format(int(user_code[-4:],16),'016b')
     signals=core.find('SignalList');signals.clear()
     bus=ET.SubElement(signals,'Bus',capture_enable='true',name='status_50mhz')
-    for bit in reversed(range(2208)):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
+    for bit in reversed(range(gao_record(gao_mode)['capture_bits'])):ET.SubElement(bus,'Signal').text=f'status_50mhz[{bit}]'
     core.find('Triggers/Trigger/SignalList/Signal').text='status_50mhz[0]'
     # Match the working B7 schema: expressions belong to the acquisition core.
     expressions=document.find('Expressions');document.remove(expressions);core.append(expressions)
@@ -199,11 +215,14 @@ def audit_prepare(output):
     routed timing, JTAG identity, or hardware acceptance.
     """
     output=Path(output).resolve();record=json.loads((output/'inputs.json').read_text())
+    gao_mode=record['gao'].get('mode','full64')
+    native=native_sources(gao_mode)
+    if record['gao']!=gao_record(gao_mode):raise ValueError('probe GAO contract changed')
     for name,expected in record['input_sha256'].items():
         path=(output/name).resolve()
         if not path.is_relative_to(output) or not path.is_file() or sha(path)!=expected:
             raise ValueError('prepared probe input drift: '+name)
-    selected=[name for name in LOCKED if not name.endswith('riscv_ae350_config.v')]+list(NATIVE)
+    selected=[name for name in LOCKED if not name.endswith('riscv_ae350_config.v')]+list(native)
     if record['source_paths']!=selected:raise ValueError('prepared probe compiled closure changed')
     tcl=(output/'run.tcl').read_text()
     if re.findall(r'add_file -type verilog \[file join \$root ([^\]]+)\]',tcl)!=selected:
@@ -217,8 +236,11 @@ def audit_prepare(output):
     if names!=['clk_50m','cpu_ram50','cpu_core100','cpu_rtc_bound']:raise ValueError('probe SDC clock inventory changed')
     if (output/'probe.sdc').read_text().splitlines().count(RTC_CLOCK_SDC)!=1:
         raise ValueError('probe RTC timing target or minimum period changed')
-    if (output/'probe.gao').read_text()!=gao(record['user_code'][2:]):
+    if (output/'probe.gao').read_text()!=gao(record['user_code'][2:],gao_mode):
         raise ValueError('probe complete diagnostic GAO schema changed')
+    identity="`define AE350_PROBE_USER_CODE 32'h"+record['user_code'][2:].upper()+'\n'
+    if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
+    if (output/'probe_identity.vh').read_text()!=identity:raise ValueError('probe identity or explicit GAO mode changed')
     cst=(output/'probe.cst').read_text()
     audit_cpu_pll_constraint(cst)
     if parse_locations(cst)!=record['port_locations']:
@@ -238,14 +260,15 @@ def audit_prepare(output):
         compiled_sources=len(selected),rom_bytes=65536,cold_binary_bytes=len(raw),
         synthesis_verified=False,physical_timing_verified=False,hardware_verified=False)
 
-def prepare(root,netlists,output,user_code,prefix=None):
+def prepare(root,netlists,output,user_code,prefix=None,gao_mode='full64'):
     root,output=Path(root).resolve(),Path(output).resolve()
     if not re.fullmatch('[0-9a-fA-F]{8}',user_code or ''):raise ValueError('probe requires an explicit new eight-hex UserCode')
     if output.exists():raise FileExistsError(str(output))
+    native=native_sources(gao_mode)
     baseline=load_baseline(root,'resource_rework_route0')
     # Read and check every selected frozen input before creating a candidate.
     locked={name:baseline.read_bytes(name) for name in LOCKED}
-    for relative in NATIVE:
+    for relative in native:
         if not (root/relative).is_file():raise FileNotFoundError(relative)
     output.mkdir(parents=True)
     _,plan=prepare_pinout(root,netlists,output/'pinout')
@@ -258,14 +281,16 @@ def prepare(root,netlists,output,user_code,prefix=None):
     expected.update(SAFE_DAC_PINS)
     if parse_locations(cst)!=expected:raise ValueError('probe pin selection changed')
     (output/'probe.cst').write_text(cst);(output/'probe.sdc').write_text(constraints(root))
-    (output/'probe.gao').write_text(gao(user_code.upper()))
-    (output/'probe_identity.vh').write_text("`define AE350_PROBE_USER_CODE 32'h"+user_code.upper()+'\n')
+    (output/'probe.gao').write_text(gao(user_code.upper(),gao_mode))
+    identity="`define AE350_PROBE_USER_CODE 32'h"+user_code.upper()+'\n'
+    if gao_mode=='banked4':identity+='`define AE350_PROBE_BANKED_GAO\n'
+    (output/'probe_identity.vh').write_text(identity)
     selected=[]
     for name,data in locked.items():
         target=output/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
         if sha(target)!=baseline.descriptor['files'][name]['sha256']:raise ValueError('locked probe copy changed: '+name)
         if name.endswith(('.v','.sv')) and not name.endswith('riscv_ae350_config.v'):selected.append(name)
-    for relative in NATIVE:
+    for relative in native:
         target=output/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/relative,target)
         if sha(target)!=sha(root/relative):raise ValueError('probe source copy changed')
         selected.append(relative)
@@ -285,7 +310,7 @@ def prepare(root,netlists,output,user_code,prefix=None):
     record=dict(schema=1,identity='custom138k-ae350-local-memory-probe-'+user_code.upper(),user_code='0x'+user_code.upper(),
         top_module=TOP,source_policy='minimal locked hard-IP/config/PLL plus maintained boot64 and unchanged formal loader',
         parent_baseline=baseline.evidence(),source_paths=selected,locked_sha256={k:baseline.descriptor['files'][k]['sha256'] for k in LOCKED},
-        native_sha256={name:sha(root/name) for name in NATIVE},tool_sha256=sha(Path(__file__)),firmware=fw,
+        native_sha256={name:sha(root/name) for name in native},tool_sha256=sha(Path(__file__)),firmware=fw,
         clocks_hz=dict(core=100000000,bus=50000000,reference=50000000),
         core_clock_requirement=dict(instance=CPU_PLL_INSTANCE,site=CPU_PLL_SITE,output='CLKOUT1',
             reference='MUG1031 v1.3.1 section 7.3, PDF page 56 / printed page 48'),
@@ -295,9 +320,7 @@ def prepare(root,netlists,output,user_code,prefix=None):
             phase_error_bound_reference_cycles=1,measurement_timebase=False),
         uart=dict(baud_divisor=434,reference_hz=50000000,baud=50000000/434,format='8N1',frame_bytes=280,
             header='A138LM01',word_count=64,crc='reflected CRC32/ISO-HDLC over first276bytes, final xor, LE tail'),
-        gao=dict(schema='A1386401',capture_bits=2208,word_count=64,storage_depth=128,
-            snapshot='same clk_50m published bank and sequence as UART; word61 bit4 marks timeout',
-            io='registered RTL output-drive level and modulo2^30 edge count; no pad or external receiver readback'),
+        gao=gao_record(gao_mode),
         port_locations=expected,electrical_check=plan['electrical_check'],
         dac_safety=dict(pins=SAFE_DAC_PINS,reference_sha256=dac_references,
             levels=dict(ak_smute=1,ak_pdn=0,ak_mclk=0,ak_bick=0,ak_lrck=0,ak_sdata=0),

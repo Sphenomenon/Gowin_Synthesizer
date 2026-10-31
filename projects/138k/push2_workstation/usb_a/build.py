@@ -73,24 +73,26 @@ def main():
     ap.add_argument('--riscv-prefix',help='GNU bare-metal RISC-V prefix before -gcc; also GW138K_RISCV_PREFIX')
     ap.add_argument('--ae350-local-memory-probe',action='store_true',help='Prepare only a minimal same-hard-IP ILM/DLM/boot64 diagnostic')
     ap.add_argument('--ae350-probe-output',type=Path,help='New output directory for the explicit AE350 local-memory probe')
+    ap.add_argument('--ae350-probe-gao',choices=('full64','banked4'),help='Explicit GAO transport for the standalone AE350 probe; default full64')
     args=ap.parse_args()
     if args.ae350_local_memory_probe:
-        allowed={'ae350_local_memory_probe','ae350_probe_output','prepare_only','netlist_dir','user_code','riscv_prefix','tf_audio_kind'}
+        allowed={'ae350_local_memory_probe','ae350_probe_output','ae350_probe_gao','prepare_only','netlist_dir','user_code','riscv_prefix','tf_audio_kind'}
         if (args.tf_audio_kind!='wav' or not args.prepare_only or args.ae350_probe_output is None or
                 args.netlist_dir is None or args.user_code is None or
                 any(value for key,value in vars(args).items() if key not in allowed)):
             ap.error('--ae350-local-memory-probe requires --prepare-only, --ae350-probe-output, --netlist-dir, new --user-code; cannot mix profiles')
         from tools.workstation_ae350_local_probe import prepare as prepare_ae350_probe
         try:
-            output,metadata=prepare_ae350_probe(ROOT,args.netlist_dir,args.ae350_probe_output,args.user_code,args.riscv_prefix)
+            output,metadata=prepare_ae350_probe(ROOT,args.netlist_dir,args.ae350_probe_output,args.user_code,args.riscv_prefix,
+                gao_mode=args.ae350_probe_gao or 'full64')
             print(output,flush=True)
             print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
                                  sources=len(metadata['source_paths']),full_workstation=False)),flush=True)
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         return
-    if args.ae350_probe_output is not None:
-        ap.error('--ae350-probe-output requires --ae350-local-memory-probe')
+    if args.ae350_probe_output is not None or args.ae350_probe_gao is not None:
+        ap.error('--ae350-probe-output/--ae350-probe-gao require --ae350-local-memory-probe')
     if args.workstation_profile is not None and not args.prepare_custom_board:
         ap.error('--workstation-profile requires --prepare-custom-board')
     if args.usb1_identify:
