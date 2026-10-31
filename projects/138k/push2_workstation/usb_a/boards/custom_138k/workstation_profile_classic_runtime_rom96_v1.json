@@ -593,7 +593,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_final_pcm_router.sv": "ff2c8612ec9f5ae32f4fb753d1b0cc671a91699ab3a7f55e819d56ce29573d6e",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_fpc_audio.sv": "53adaec050a44e9704e9b66c991ae22a76a2b7ea751824bb6ce8d0bc4a65793c",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
-    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "9a46866c4395e067fab7f433f71ca9c7711482993d4f9de75fc37282748f0612",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_i2s_serializer.sv": "2dddf6b11928e546bfbdb8cc2f1d3a969269533d893a4a940ad6ea2a7844f774",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv": "e2b66fff9088d7684eb3516928eef619f18437d7d44b400e85a29438f6348aff",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_output_router.sv": "1f07d2ed632970d46d4e38284c2ceecdf760148e5a94dcd86cc683026f6a7ee9",
     "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_pcm_ddr_backend.sv": "b5668b4514ee59b672e6ac40b598ee76ddc5d14101ae1ac15c36d9bd66d9be5f",

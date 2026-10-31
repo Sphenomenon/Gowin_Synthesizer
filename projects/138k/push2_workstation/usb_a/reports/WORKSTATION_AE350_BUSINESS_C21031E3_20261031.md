@@ -53,3 +53,13 @@ C／APB／实际 RTL／DDR 协同仿真通过 1701 checks、136 条消息与旧�
 及 `business-gatt-integrated-physical-C21031E3-v1`。本批未操作板卡、未写
 Flash；板上仍为回退身份 `C11028E5`。只有必要物理门禁通过后执行已授权
 SRAM 验证；失败时重载已有 Flash 并独立读回原身份，不改 Flash 内容。
+
+### serializer 最小源码修正
+
+PCM 反例定位到禁用 SOURCE_HOLD 时仍保留两个 guard FF 的反馈。
+维护源码现已显式消除禁用 guard，并将 `requested` 收敛为唯一逐拍赋值，
+未修改 checker 或扩大 CDC 例外。原／新 RTL 在 ENABLE、sample error、
+双率的八种组合下共 400 万配对周期全部输出／内部状态一致；启用 hold
+两项、默认双率 I2S、actual prepare 十一项、accepted 十七项通过。
+新候选 `42cdecbb2e9b8c7d` 沿用同一 profile／功能，等待 E3 结束后完整综合。
+E3 所有输入保持不变；本修正没有继承其综合／物理结果。

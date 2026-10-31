@@ -61,7 +61,7 @@ module workstation_i2s_serializer #(
     wire incoming = sample_valid_i && sample_ready_o;
     wire source_hold=SOURCE_HOLD_ENABLE && source_hold_i;
     reg [1:0] source_guard;
-    wire source_blocked=source_hold || source_guard!=0;
+    wire source_blocked=SOURCE_HOLD_ENABLE && (source_hold || source_guard!=0);
     wire incoming_match = incoming && !source_blocked && requested &&
         sample_44k1_i == mode_44k1 && sample_epoch_i == epoch &&
         sample_sequence_i == wanted_sequence;
@@ -105,21 +105,22 @@ module workstation_i2s_serializer #(
         end else begin
             request_o <= 0;
             frame_valid_o <= 0;
-            if(source_hold)source_guard<=2;
+            // Disabled sources contribute no guard state or reply dependency.
+            requested <= !quiesce_i && !source_blocked;
+            if(!SOURCE_HOLD_ENABLE)source_guard<=0;
+            else if(source_hold)source_guard<=2;
             else if(frame_boundary && source_guard!=0)source_guard<=source_guard-1'b1;
             if (quiesce_i) begin
                 // The current serial frame continues until its final bit.
                 have_next <= 0;
-                requested <= 0;
                 output_running_o <= 0;
             end else begin
                 serial_quiescent_o <= 0;
                 if (!requested && !source_blocked) begin
-                    requested <= 1;
                     request_o <= 1;
                     request_sequence_o <= wanted_sequence;
                 end
-                if(source_blocked)begin have_next<=0;requested<=0;output_running_o<=0;end
+                if(source_blocked)begin have_next<=0;output_running_o<=0;end
                 if (incoming) begin
                     if (incoming_match) begin
                         have_next <= 1; next_pcm <= sample_pcm_i;
@@ -170,7 +171,6 @@ module workstation_i2s_serializer #(
                                 source_error_count_o <= saturating_increment(source_error_count_o);
                             have_next <= 0;
                             wanted_sequence <= wanted_sequence + 1'b1;
-                            requested <= !source_blocked;
                             request_o <= !source_blocked;
                             request_sequence_o <= wanted_sequence + 1'b1;
                         end else begin
