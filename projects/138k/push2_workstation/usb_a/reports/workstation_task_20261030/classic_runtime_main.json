@@ -1,0 +1,240 @@
+{
+  "schema": 1,
+  "scope": "main integration of actual cooperative Classic/SBC firmware, native HCI, PCM and ROM128; source and offline stage only",
+  "main_source_commit": "ed1441d",
+  "imported_source_commits": [
+    "85bee64",
+    "36ec218",
+    "93a8639",
+    "ed1441d"
+  ],
+  "profiles": {
+    "prepare": {
+      "profile": "custom138k-workstation-classic-runtime-v1",
+      "candidate_identity": "custom138k-workstation-classic-runtime-v1-3855490f159913c6",
+      "profile_sha256": "94bf5afc7e9426dfb125a66be7d435e31244caa44a7c959658ef3b670c573a02",
+      "staged": 636,
+      "enabled": 283
+    },
+    "legacy-hci-prepare": {
+      "profile": "custom138k-workstation-hci-owner-v1",
+      "candidate_identity": "custom138k-workstation-hci-owner-v1-0755fc0c376408b8",
+      "profile_sha256": "8b8c2fbbed2f71451fdf0e8a90ef8de72b57a16e348b53fff738c80e9331f11a",
+      "staged": 627,
+      "enabled": 281
+    },
+    "legacy-business-prepare": {
+      "profile": "custom138k-workstation-ae350-business-v1",
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-422ec8c8f42513fb",
+      "profile_sha256": "dae79d27722b366132e601b613f664b1e2db7f3611bf29327119e45928681c28",
+      "staged": 614,
+      "enabled": 272
+    },
+    "default-prepare": {
+      "profile": "custom138k-workstation-v1",
+      "candidate_identity": "custom138k-workstation-v1-9318c94899286ff9",
+      "profile_sha256": "d8c4049101b3eb8ebdad37cde453b10b027ce8fd5e997232639fba136a792935",
+      "staged": 581,
+      "enabled": 261
+    }
+  },
+  "source_snapshots": 1041,
+  "all_profile_locks": 8,
+  "complete_joint_source_snapshot": 920,
+  "enabled_preprocessed_hdl": 280,
+  "firmware_capacity": {
+    "rom_capacity_bytes": 131072,
+    "binary_bytes": 94752,
+    "payload_bytes": 84752,
+    "padding_hole_bytes": 10000,
+    "upper_rom_code_bytes": 29216,
+    "cold_code_unallocated_bytes": 36320,
+    "hot_load_bank_bytes": 55536,
+    "hot_load_unallocated_bytes": 10000,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 54928,
+    "ilm_reserved_final_word_bytes": 4,
+    "ilm_usable_remaining_bytes": 10604,
+    "dlm_capacity_bytes": 65536,
+    "static_ram_span_bytes": 7616,
+    "ram_reserved_prefix_bytes": 256,
+    "stack_capacity_bytes": 16384,
+    "unallocated_dlm_bytes": 41280,
+    "heap_bytes": 0,
+    "symbols": {
+      "_start": 2147483648,
+      "local_memory_entry": 2684354560,
+      "local_trap": 2147484200,
+      "local_halt": 2147484196,
+      "local_fail": 2147484180,
+      "services_main": 2684357580,
+      "local_copy_ilm": 2147483984,
+      "local_copy_data": 2147484044,
+      "local_clear_bss": 2147484092,
+      "local_enter_ilm": 2147484176,
+      "__ilm_load_start": 2147484240,
+      "__ilm_start": 2684354560,
+      "__ilm_end": 2684409488,
+      "__data_load_start": 2147539168,
+      "__data_start": 2686451968,
+      "__data_end": 2686451984,
+      "__data_image_end": 2147539184,
+      "__rom_text_start": 2147549184,
+      "__rom_text_end": 2147578400,
+      "__bss_start": 2686451984,
+      "__bss_end": 2686459584,
+      "__stack_bottom": 2686500864,
+      "__stack_top": 2686517248,
+      "__heap_start": 2686459584,
+      "__heap_end": 2686459584,
+      "__image_end": 2147578400,
+      "local_data_probe": 2686451968,
+      "local_bss_probe": 2686451984,
+      "a138_classic_init": 2147561652,
+      "a138_classic_acl": 2147562556,
+      "ui_render_rows": 2147578156,
+      "a138_sbc_decode": 2684380508,
+      "OI_CODEC_SBC_DecodeFrame": 2684396244,
+      "a138_ble_business_firmware_init": 2684379956,
+      "a138_ble_business_firmware_pump": 2684380080
+    },
+    "elf_image_validation": {
+      "binary_reconstructed": true,
+      "sections": {
+        ".boot": {
+          "address": 2147483648,
+          "bytes": 592,
+          "sha256": "67e4fbf91a7eba29f76c1390d51b5ccd8ec039f73b6842997f77bd49c72878c3"
+        },
+        ".rom_text": {
+          "address": 2147549184,
+          "bytes": 29216,
+          "sha256": "2c2246a40f1acf9a897a78c3f394de4d7d2a354d86a2f8c9e6ce2d17f133aeb1"
+        },
+        ".text": {
+          "address": 2684354560,
+          "bytes": 52944,
+          "sha256": "c2ae4e5db954856cdcf30b9458408ddd0412764df851f997360b178032f3aa94"
+        },
+        ".rodata": {
+          "address": 2684407504,
+          "bytes": 1984,
+          "sha256": "17b9cbdb9671c36c641c26e41c49a7a2b6e419753c0368b1b8900069a508ac2e"
+        },
+        ".data": {
+          "address": 2686451968,
+          "bytes": 16,
+          "sha256": "25d670162b3b3fe95ebc111a408f2db97a75068feb4aa70b56df9e9c82ba1946"
+        },
+        ".bss": {
+          "address": 2686451984,
+          "bytes": 7600,
+          "sha256": null
+        }
+      },
+      "segments": [
+        {
+          "run_address": 2147483648,
+          "load_address": 2147483648,
+          "file_bytes": 592,
+          "memory_bytes": 592,
+          "flags": 5
+        },
+        {
+          "run_address": 2684354560,
+          "load_address": 2147484240,
+          "file_bytes": 54928,
+          "memory_bytes": 54928,
+          "flags": 5
+        },
+        {
+          "run_address": 2686451968,
+          "load_address": 2147539168,
+          "file_bytes": 16,
+          "memory_bytes": 7616,
+          "flags": 6
+        },
+        {
+          "run_address": 2147549184,
+          "load_address": 2147549184,
+          "file_bytes": 29216,
+          "memory_bytes": 29216,
+          "flags": 5
+        }
+      ]
+    },
+    "selected_in_production": false,
+    "hardware_acceptance": false
+  },
+  "firmware_identity": {
+    "elf_sha256": "92eca5d392a472cdc2f570c039cc36f8c84001f7c0f6670568f5ee7aaf0fed11",
+    "binary_sha256": "43e87f191099597e5357fa156f5f41b2deffcc1ccb1f851a84752b38a10478e0",
+    "rom_sha256": "535f56aa0efe6dd9862ebfaf1c6881448d01e7dc3070f5ef8164b954734af65e"
+  },
+  "reviewed_JALR_sites": 171,
+  "conservative_stack_bytes": 1904,
+  "tests": {
+    "accepted": 17,
+    "joint": 12,
+    "business": 8,
+    "default": 22,
+    "default_skipped": 1,
+    "firmware": 10
+  },
+  "root_PCM_metrics": {
+    "checks": 1763672,
+    "scheduler_events": 16005780,
+    "reads": 711,
+    "writes": 3395,
+    "window": 3089,
+    "frames": 1644,
+    "direct": 181,
+    "half": 37,
+    "mono": 150,
+    "history": 8,
+    "chorus": 360,
+    "complete_blocks": 24,
+    "complete_words": 3072,
+    "max_APB_wait": 7,
+    "native": 0
+  },
+  "root_PCM_inputs_unchanged": true,
+  "author_seals_reverified": true,
+  "legacy_complete_disassembly_sha256": "4b75454ea9517d560d1c0efef744d5d974965e5060bcffe77ae60318620d8f1c",
+  "default_staged_delta": {
+    "staged_count": 581,
+    "changed": [
+      "rtl/workstation/workstation_runtime_controlled.sv",
+      "rtl/workstation/gw138k_push_workstation_top.v",
+      "src/push2/gw138k_push_workstation_top.v",
+      "rtl/workstation/workstation_runtime_audio.sv",
+      "rtl/audio/workstation_i2s_serializer.sv",
+      "tools/workstation_delay_storage_provenance.py"
+    ],
+    "before_identity": "custom138k-workstation-v1-294a2bc845a1db6c",
+    "after_identity": "custom138k-workstation-v1-9318c94899286ff9"
+  },
+  "cache_enabled": false,
+  "GeneralBonding_enabled": false,
+  "firmware_runtime_enabled": false,
+  "PCM_sustained_verified": false,
+  "measured_total_delay_valid": false,
+  "synthesis": false,
+  "pnr": false,
+  "physical_CDC_verified": false,
+  "CPU_cycles_measured": false,
+  "phone_interoperability": false,
+  "hardware_operated": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "limitations": [
+    "Root reran real C/APB/DSP/I2S baseline; three mutants remain bound to the reverified independent delivery, not rerun here.",
+    "Default staged inputs have six explicit guarded integration/provenance changes; default tests pass but byte identity to the preceding default stage is not claimed.",
+    "Original unconfigured business-source run skipped three prepared tests; final business-tests-v2 reruns all eight with a real business prepare.",
+    "Earlier verifier invocations used a nonexistent independent verifier name and generated one root-created verify_delivery pycache; failed logs retained and final correct verifiers pass without changing sealed evidence.",
+    "ILM/DLM use is proven by source/link/prepare only; cache/PMA, deadlines, sustained PCM, durable bonds, full CDC/STA and board acceptance remain open."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/classic-runtime-main-parent-v1",
+  "seal_sha256": "24915a186207d1289829edde5368f446f2b7068234bf861aeb3dc1332750ed89",
+  "external_files": 2920
+}
