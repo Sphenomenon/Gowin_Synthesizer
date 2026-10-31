@@ -180,6 +180,19 @@ class ActualBoundaries(unittest.TestCase):
     def test_actual_clock_CE_reset_sticky_bypass_and_extra_consumers(self):
         self.rows.extend(actual_mutations(self.n, self.mapping, self.text))
 
+    def test_complete_queue_role_binding_independent_of_DMA_mapping(self):
+        result = audit(self.n, mapping=self.mapping)
+        selected = self.expected_role or result["inventory_role"]
+        checked = audit(self.n, mapping=self.mapping, expected_role=selected)
+        self.assertEqual(checked["inventory_role"], selected)
+        self.assertIn(checked["fault_inventory_endpoints"], (663, 664))
+        wrong = "M" if selected == "W" else "W"
+        with self.assertRaisesRegex(ValueError, "complete queue inventory does not match selected DEMO role"):
+            audit(self.n, mapping=self.mapping, expected_role=wrong)
+        self.rows.append(dict(case="opposite selected DEMO role", selected=wrong,
+            actual_queue_role=selected, fault_inventory_endpoints=checked["fault_inventory_endpoints"],
+            rejected=True))
+
     def test_extra_top_output_and_weaker_additional_bound_rejected(self):
         g = Graph(self.n)
         for scope, stem in ((D, "peer_fault"), (E, "dma_fault_meta")):

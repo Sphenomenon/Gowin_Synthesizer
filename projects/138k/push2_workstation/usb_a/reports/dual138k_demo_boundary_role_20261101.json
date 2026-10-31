@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "DEMO_boundary_mapping_role_decoupling",
+  "passed": true,
+  "candidate_identity": "custom138k-workstation-w-demo-v1-bafd43c180d52b1c",
+  "integration_inputs_sha256": "97f544dc8c3c28c437b63ef2564ce74ab7535b2b5ebc9fc3f2027b83f1702523",
+  "staged_inputs": 645,
+  "enabled_inputs": 284,
+  "netlist_sha256": "4288ba15b267eee1a8d29c358c0a625b10061c3cfe2896e24be2048de8f016b2",
+  "synthesis_log_sha256": "d991bac7f6aee48167f35fa795f127428d9bce3e157880e57b9b7b1e6f4e2c03",
+  "source_sha256": {
+    "tools/workstation_demo_boundary_cdc.py": "4b67362ba4299ffea6e4d859b54a9e720be92cfbbb454c1a2732d4ca60efbdc6",
+    "tools/workstation_demo_audit.py": "fb8907d10dc502c08cde8303b51675bb8c79b019f63104c93b7e77ee7fb5ede3",
+    "sim/test_workstation_demo_boundary_cdc.py": "d1c272dbf2b3bb47ade03ba1cd36d3e1dfd75535a68b1c89864030a95d6b84c7"
+  },
+  "evidence": {
+    "original_failed_gate": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v1/strict-gate.log",
+      "sha256": "3e0dc5b7db29bb136c0415d7d9fbdcefbe272d49e538b512ac1f92b6224a70be"
+    },
+    "original_failed_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v1/run-seal.json",
+      "sha256": "5f5f210dbbf4ed1cefe2984a40b2023b099f3bc3ab0992b43543643b50f0e41c"
+    },
+    "read_only_RCA": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-boundary-role-readonly-v1/review.json",
+      "sha256": "5a075c16385691b8b775a30bdf32a734245f89809aba3b0a990ebf4d36014956"
+    },
+    "source_log_copy": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v1/synthesis-log-copy-seal.json",
+      "sha256": "74798bb8ead21da197a31e4ede6a2cc93de13106e41500d0828c12fe8fd5a7ef"
+    },
+    "regression": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-boundary-role-regression-v1/verification.json",
+      "sha256": "93c27d2bac64bd93ffb931cfc6e4a1805e724fe72424d7b1f573376d99970936"
+    },
+    "unchanged_boundaries": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-boundary-role-regression-v1/unchanged-boundaries.json",
+      "sha256": "3954f88691af17121f65fdf430f630970789f0163cba8a98521b9849093bc349"
+    },
+    "strict_gate": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v2/strict-gate.json",
+      "sha256": "c86669a82e21f9b47454122ede736b5f464c86335b1584fcb775e60a7bba235c"
+    },
+    "strict_gate_run_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v2/run-seal.json",
+      "sha256": "b85f56aa6e6aa0ac4444208186f849bd3eb0c20fd8f7269bf5750439f875194c"
+    }
+  },
+  "failure_cause": "DMA mapped fault closure was incorrectly used to select business role; W11 uses the existing663-FF fault mapping and existing139-FF W queue inventory.",
+  "strict_original_rejection": "runtime PCM CDC audit: exact register missing/duplicate: u_native_usb/input_owner/settled_sync_0",
+  "complete_fault_inventory_options_preserved": [
+    663,
+    664
+  ],
+  "complete_queue_inventory_options_preserved": {
+    "W": 139,
+    "M": 140
+  },
+  "sealed_role_binding_added": true,
+  "regression_results": [
+    {
+      "case": "W11",
+      "argv": [
+        "python3",
+        "-B",
+        "sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "exit_code": 0,
+      "log_sha256": "393634986c5fe67ab8f52bc5064eea2dceec25dc19a9cfd254b4b5d6a178d92d",
+      "evidence_sha256": "e184c04b0678489dd6d995df72c65ca3dbb657749257ac98643dbc79227a519c",
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "mutants": 61,
+      "all_rejected": true,
+      "candidate_inputs_unchanged": true
+    },
+    {
+      "case": "W10",
+      "argv": [
+        "python3",
+        "-B",
+        "sim/test_workstation_demo_boundary_cdc.py",
+        "ActualBoundaries.test_actual_fault_and_fifo_source_and_all_consumer_inventories",
+        "ActualBoundaries.test_complete_queue_role_binding_independent_of_DMA_mapping"
+      ],
+      "exit_code": 0,
+      "log_sha256": "ef21e802a2d3fdf7197ef18bdfd8b4dbfa6cd48591e98d6beb922bed847ea430",
+      "evidence_sha256": "99b8414488181621ed9c2741b184d074a8d9ede34c3af0c56c8ea6abda8ee276",
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 664,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "mutants": 1,
+      "all_rejected": true,
+      "candidate_inputs_unchanged": true
+    },
+    {
+      "case": "M12b",
+      "argv": [
+        "python3",
+        "-B",
+        "sim/test_workstation_demo_boundary_cdc.py",
+        "ActualBoundaries.test_actual_fault_and_fifo_source_and_all_consumer_inventories",
+        "ActualBoundaries.test_complete_queue_role_binding_independent_of_DMA_mapping"
+      ],
+      "exit_code": 0,
+      "log_sha256": "a457ab6b1ed60d8586d22d8682a385da53d76a288675e9c5896b9bedd69c71f2",
+      "evidence_sha256": "f188753eaf71aa663de6a6a268d9731e7f5030c34d8af9d7f5706598297e8e4d",
+      "baseline": {
+        "passed": true,
+        "inventory_role": "M",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 140,
+        "queue_ram_consumers": 2
+      },
+      "mutants": 1,
+      "all_rejected": true,
+      "candidate_inputs_unchanged": true
+    }
+  ],
+  "netlist_parser_four_SDC_commands_and_entire_validate_sdc_byte_equal_to_prior": true,
+  "candidate_RTL_SDC_VG_or_manifest_changed": false,
+  "clocks_or_exceptions_relaxed": false,
+  "new_PNR_result_claimed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "W11_synthesis_resources": {
+    "Register": 45091,
+    "Lut": 54836,
+    "Alu": 14096,
+    "Bsram": 257,
+    "Ssram": 298,
+    "MULTALU27X18": 9,
+    "MULT12X12": 1,
+    "MULT27X36": 29
+  },
+  "W11_synthesis_bsram_equivalent": 257,
+  "W11_synthesis_warning_count": 128,
+  "W11_physical_stage": {
+    "UserCode": "D2110101",
+    "status_at_checkpoint": "full P&R running, no result yet",
+    "physical_resource_or_timing_gain_claimed": false,
+    "hardware_tested": false
+  }
+}

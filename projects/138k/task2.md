@@ -272,6 +272,8 @@ M12b实际TF占用路径的[晚许可并行运算](push2_workstation/usb_a/repor
 
 M12b far实际chorus长链的[44.1k精确组合替换](push2_workstation/usb_a/reports/dual138k_chorus_affine44_20261101.md)已完成：双率全部131,072实际函数输入、完整旧新模块3,026,811半周期对照、8项chorus和16项完整效果链回归通过。仅44.1k tap运算改为精确乘加／移位，48k、取样周期及效果行为保持；原来源链可逐字节逆向还原。新源等待M新候选物理测量，W11封存输入不变，无资源收益或硬件通过声明。
 
+W11全量综合与[严格角色门禁修复](push2_workstation/usb_a/reports/DUAL138K_DEMO_BOUNDARY_ROLE_20261101.md)已通过：FF45,091、LUT54,836、ALU14,096、BSRAM equivalent257。首次门禁把663端点DMA映射误判为M，失败保留；现将DMA完整映射和USB完整queue角色分开，原两份完整清单及全部pin／clock／SDC检查不放宽，61负控拒绝，旧W10／M12b兼容复验通过。W11新严格门全通过，默认 `D2110101` 完整P&R正在运行，物理资源／时序未测得，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

@@ -537,7 +537,7 @@ def audit(root, output, metadata):
         from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
         from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
         boundary_n = boundary_netlist(vg_text, mapping='synthesis')
-        demo_boundary_cdc = audit_boundary(boundary_n, mapping='synthesis')
+        demo_boundary_cdc = audit_boundary(boundary_n, mapping='synthesis', expected_role=role)
         require(demo_boundary_cdc.get('inventory_role') == role,
                 'DEMO boundary consumer inventory does not match selected role')
         demo_boundary_cdc['installed_sdc'] = validate_boundary(sdc, boundary_n, demo_boundary_cdc)
