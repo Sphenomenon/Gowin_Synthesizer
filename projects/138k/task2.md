@@ -312,6 +312,8 @@ M14 `D2110109`已完成[far完整物理对照](push2_workstation/usb_a/reports/D
 
 TF容量比较已按[精确维护源阶段](push2_workstation/usb_a/reports/dual138k_tf_capacity_module_groups_20261101.md)移至五个模块级kept标量，同一函数原bit0准入、任意两入参和modulo oracle保持；完整occupancy14runs／threshold8runs及native runtime、全部负控通过。两份来源锁各仅更新该DMA一项，M15 `cf9d6319a310d6fe`完成[来源准备](push2_workstation/usb_a/reports/DUAL138K_M15_PREPARE_20261101.md)：875原始来源、588staged／261启用及1365审计输入复验，已启动全量综合。M14分组部分失败保持，新五节点的实际live fanin及物理收益仍须另验，未上板。
 
+W13 `D211010A`的[默认完整物理测量](push2_workstation/usb_a/reports/DUAL138K_W13_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS52,540，setup6,829／−5.765ns、hold3／−3.537ns，recovery+2.468／removal+.281ns。native实际VO54项（41通过／13跳过）及36负控、边界7／61、官方六PLL及7负控通过，30物理文件、645staged与1365冻结审计输入稳定。最差转至raw memory_next_index CE，未将局部映射变化冒充全局收益；同VG／SDC／DDR3.500ns的`D211010B`far已启动P&R，仍未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
