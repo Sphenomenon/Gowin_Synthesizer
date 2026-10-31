@@ -1,0 +1,311 @@
+{
+  "schema": 1,
+  "stage": "W11_default_and_far_full_physical_evidence",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-bafd43c180d52b1c",
+  "candidate_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11/integration_inputs.json",
+    "sha256": "97f544dc8c3c28c437b63ef2564ce74ab7535b2b5ebc9fc3f2027b83f1702523"
+  },
+  "profile_artifact": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11/workstation_profile.json",
+    "sha256": "156837d00ea51374c0e0a1708fc583af10cadb8f35594edf528be0492dc5b4b0"
+  },
+  "source_policy": "explicit_native_board_on_resource_timing",
+  "staged_inputs": 645,
+  "enabled_inputs": 284,
+  "candidate_inputs_reverified": true,
+  "synthesis_log_copy": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v1/synthesis-log-copy-seal.json",
+    "sha256": "74798bb8ead21da197a31e4ede6a2cc93de13106e41500d0828c12fe8fd5a7ef"
+  },
+  "strict_gate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v2/strict-gate.json",
+    "sha256": "c86669a82e21f9b47454122ede736b5f464c86335b1584fcb775e60a7bba235c"
+  },
+  "strict_run_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v2/run-seal.json",
+    "sha256": "b85f56aa6e6aa0ac4444208186f849bd3eb0c20fd8f7269bf5750439f875194c"
+  },
+  "preserved_failed_gate": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-synthesis-audit-v1/strict-gate.log",
+    "sha256": "3e0dc5b7db29bb136c0415d7d9fbdcefbe272d49e538b512ac1f92b6224a70be"
+  },
+  "physical": {
+    "default": {
+      "user_code": "0xD2110101",
+      "manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-v1/physical_inputs.json",
+        "sha256": "e131ad0c5502a205f3439a7f61995abcad189d993ecaac224be00455bd8b5861"
+      },
+      "pnr_runner": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-pnr-run-v1.json",
+        "sha256": "16e90ad001ad24684bab1e4c8a272830a00ce9d6dc450ecf9705f71491e99c84"
+      },
+      "exit_code": 0,
+      "elapsed_seconds": 511.29374912500003,
+      "all_input_and_measured_output_hashes_reverified": true,
+      "measurement": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/physical-measurement.json",
+        "sha256": "75f8724b61a60fbf889a4af15cd0f65df8722c55652b0287d550d9170e8cf243"
+      },
+      "resources": {
+        "Logic": {
+          "used": 71157,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 45091,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 52251,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 293,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 67.5,
+          "capacity": 298
+        },
+        "LUT": 54725,
+        "ALU": 14644,
+        "ROM16": 0,
+        "SSRAM": 298
+      },
+      "timing_summary": {
+        "setup_violated_endpoints": 6423,
+        "hold_violated_endpoints": 2,
+        "global_worst_ns": {
+          "setup": -5.018,
+          "hold": -3.675,
+          "recovery": 1.8,
+          "removal": 0.303
+        }
+      },
+      "exact_DDR_hold": {
+        "slack_ns": -3.675,
+        "arrival_ns": 1.755,
+        "required_ns": 5.43,
+        "relationship_ns": 3.5,
+        "clock_skew_report_ns": 0.478,
+        "launch_location": "R85C151[2][A]",
+        "capture_location": "R85C151[1][A]"
+      },
+      "clk50_four_reports": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/clk50-four-reports.json",
+        "sha256": "fcd3632e1833bb9b1c91524503db3586e771a791832c920c888fd7c38cea4efe"
+      },
+      "route_audits_run_seal": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/route-audits-run-seal.json",
+        "sha256": "33f27c4deaf28ea82ecb4a2c5e6b342e64b9f5f9a1166f632f23cba3c698b6cc"
+      },
+      "native_CLI": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vo-audit.json",
+        "sha256": "fe320a5530a06e2450a2e6c4c7ded33fa6a9bc6a6a29c81ec4cbc4b11a158c6f"
+      },
+      "native_and_boundary_tests": {
+        "native-vo-regression.log": {
+          "tests": 54,
+          "skipped": 13,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vo-regression.log",
+          "sha256": "7ea975f16cdfdb483af62f4e6352e6c9012ac9761b3f54b379c85e0a56cfa9b5"
+        },
+        "boundary-vo-regression.log": {
+          "tests": 7,
+          "skipped": 0,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/boundary-vo-regression.log",
+          "sha256": "d973a314faed67d93fdcb724ac4ee6c60fd775eeabc44e0e5b2a92850fdf3d4e"
+        }
+      },
+      "actual_mutant_evidence": {
+        "native-vo-mutations.json": {
+          "mutations": 36,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vo-mutations.json",
+          "sha256": "f27ca639bb8a7217868f9671363fa1da77570792e585fc1e24a1f974b32882f8"
+        },
+        "boundary-vo-mutations.json": {
+          "mutations": 61,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/boundary-vo-mutations.json",
+          "sha256": "e28567930dcf18def963a5c3c2f135e05ced5997f00d201e35b1d1a1f7dc79d3"
+        }
+      },
+      "PLL": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/pll-audit.json",
+        "sha256": "f1699daf8606c482e1fedd8e77f266ae0d2c4d15f11e8294ce65f3fcea899217"
+      },
+      "FS": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "2cd14d6de414d864fbe497348ff2b2a92546626fc440b49f6222412fe0ac8342"
+      },
+      "VG_sha256": "4288ba15b267eee1a8d29c358c0a625b10061c3cfe2896e24be2048de8f016b2",
+      "SDC_sha256": "fa6bfc049f6a1f4910d8c4391f04457534ef67deeb5eccb5d4f38aaaef704f65",
+      "timing_closed": false,
+      "board_unchanged": true
+    },
+    "far": {
+      "user_code": "0xD2110102",
+      "manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-far-v1/physical_inputs.json",
+        "sha256": "62b64531f673da544140fad74c085e3739a40e6b421c8124d7eb9ef682186015"
+      },
+      "pnr_runner": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-pnr-run-v1.json",
+        "sha256": "ffbd680db032277f47fc537e4368aa24c5079d567d875188571bd55bb432b905"
+      },
+      "exit_code": 0,
+      "elapsed_seconds": 571.669003125,
+      "all_input_and_measured_output_hashes_reverified": true,
+      "measurement": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/physical-measurement.json",
+        "sha256": "50ff4b8d913cc224e038db7682cd1a15d4b26e92ca4f509dc79b42b203160510"
+      },
+      "resources": {
+        "Logic": {
+          "used": 71156,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 45091,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 52215,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 293,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 67.5,
+          "capacity": 298
+        },
+        "LUT": 54725,
+        "ALU": 14643,
+        "ROM16": 0,
+        "SSRAM": 298
+      },
+      "timing_summary": {
+        "setup_violated_endpoints": 6394,
+        "hold_violated_endpoints": 11,
+        "global_worst_ns": {
+          "setup": -4.648,
+          "hold": -0.585,
+          "recovery": 2.786,
+          "removal": 0.281
+        }
+      },
+      "exact_DDR_hold": {
+        "slack_ns": 0.673,
+        "arrival_ns": 6.087,
+        "required_ns": 5.414,
+        "relationship_ns": 3.5,
+        "clock_skew_report_ns": 0.47,
+        "launch_location": "R104C175[0][A]",
+        "capture_location": "R2C2[0][A]",
+        "launch_within_requested_region": true,
+        "capture_within_requested_region": true
+      },
+      "clk50_four_reports": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/clk50-four-reports.json",
+        "sha256": "04ed464a69e003484aa5bb3c379c6ee0d95796a5820ae24fc0079d1a76c84609"
+      },
+      "route_audits_run_seal": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/route-audits-run-seal.json",
+        "sha256": "a8e498a0d492766e15caec693f64f35311b495a1ce0437de0bb62a525d0b7f8a"
+      },
+      "native_CLI": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/native-vo-audit.json",
+        "sha256": "a8fc1afb2abe8b8711aa0f82fcb56d51301e17b1f502d2c4b1d7581a325853f2"
+      },
+      "native_and_boundary_tests": {
+        "native-vo-regression.log": {
+          "tests": 54,
+          "skipped": 13,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/native-vo-regression.log",
+          "sha256": "589ee7bdb5c5c64442f7bbc03fc39b6f3e8797bb0768359ddd906503aa095efc"
+        },
+        "boundary-vo-regression.log": {
+          "tests": 7,
+          "skipped": 0,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/boundary-vo-regression.log",
+          "sha256": "50877de3922e871807abe177813c4818f7cd676333ec91fd16b397811bd12b3d"
+        }
+      },
+      "actual_mutant_evidence": {
+        "native-vo-mutations.json": {
+          "mutations": 36,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/native-vo-mutations.json",
+          "sha256": "f27ca639bb8a7217868f9671363fa1da77570792e585fc1e24a1f974b32882f8"
+        },
+        "boundary-vo-mutations.json": {
+          "mutations": 61,
+          "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/boundary-vo-mutations.json",
+          "sha256": "0061fdac19fb3e5fd67830f382d0758215a7f989f57bbee4ecd18f250e8e9301"
+        }
+      },
+      "PLL": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-far-physical-audits-v1/pll-audit.json",
+        "sha256": "77fa793d876ae06a19282aead1dcf40ad3c9b01a6750d5c88d66dfd56fe9da8a"
+      },
+      "FS": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v11-physical-far-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "61ed0b30ea61214dad99dcb06004ccf3898333feeea1cac48e6ef21b0a95ad88"
+      },
+      "VG_sha256": "4288ba15b267eee1a8d29c358c0a625b10061c3cfe2896e24be2048de8f016b2",
+      "SDC_sha256": "fa6bfc049f6a1f4910d8c4391f04457534ef67deeb5eccb5d4f38aaaef704f65",
+      "timing_closed": false,
+      "board_unchanged": true
+    }
+  },
+  "read_only_recording_RCA": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-recording-ce-readonly-v1/review-v2.json",
+    "sha256": "2b8c085b650676abb098c01378f287902ab0b7fd458a88406881af513da0aa9b"
+  },
+  "source_RTL_changed_by_physical_work": false,
+  "SDC_changed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "dual_board_concurrent_acceptance": false,
+  "timing_closed": false,
+  "release_ready": false,
+  "native_VG": {
+    "native-vg-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vg-audit.json",
+      "sha256": "788a8d30e9bc44fcfccf51d5b7bc76d5efd9e48a5a4ab81478cc0801f1e85441"
+    },
+    "native-vg-regression.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vg-regression.log",
+      "sha256": "d138c03d4880422d6483c20c4188e45af3b38cfc9515291576e07cb1d2f5fe06"
+    },
+    "native-vg-mutations.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vg-mutations.json",
+      "sha256": "0c97645235a8d2e4fa8cee0bff5140845738772586197e14c27c6704aa941189"
+    },
+    "native-vg-run-seal.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-physical-audits-v1/native-vg-run-seal.json",
+      "sha256": "27c8bcd9e06d8d6ccef50cb538c2b10d69922402bf2d29db063dde5eaa9c7fb5"
+    }
+  },
+  "aggregate_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-complete-physical-evidence-v1.json",
+    "sha256": "fc09d53cdc514e9db4bd16e485075c714f98f9bf3fc4ca226a93e61ae7c7ff0f"
+  },
+  "additional_read_only_evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hardware-inventory-20261101-readonly-v1/verification.json": "9a25bb41c67f253f176b707e44f169e50389c4f9bd41a99a4640009611333556",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w11-reference-hold-readonly-v1/review.json": "7c38325c3a3a44ecd7f688952aef80ad198cfc41b690493dcc85a77ea3ab902f"
+  },
+  "hardware_connection_scope": {
+    "effective_FPGA_count": 1,
+    "effective_device_ID": "0001081B",
+    "effective_UserCode": "C11028E5",
+    "second_FTDI_interface_all_F_is_not_second_board": true,
+    "external_HDMI_capture_present": false,
+    "external_line_audio_input_present": false,
+    "phone_available": "emulator only; real A2DP/BLE acceptance deferred by user",
+    "programming_performed": false
+  }
+}

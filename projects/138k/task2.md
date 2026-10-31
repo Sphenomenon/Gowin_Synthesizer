@@ -278,6 +278,8 @@ M实际配置广播长链的[局部组合简化](push2_workstation/usb_a/reports
 
 M13综合与完整strict来源／功能／角色／CDC门已通过；三个旧TF网表负控因综合LUT名变化而报错，已[改为真实消费者唯一绑定](push2_workstation/usb_a/reports/DUAL138K_NATIVE_MUTANT_BINDINGS_20261101.md)，原审计oracle不变。M13／M12b／W10／W11各54项回归及全部实际负控通过，旧失败保留；不改变封存编译输入。M13 `D2110103`默认P&R已完成，完整物理证据正在封存，仍不能作为硬件接受。
 
+W11的[默认／far完整物理证据](push2_workstation/usb_a/reports/DUAL138K_W11_PHYSICAL_20261101.md)已封存：`D2110101`物理CLS52,251／BSRAM293／DSP67.5，setup6,423／−5.018ns、hold2／−3.675ns；`D2110102` setup6,394／−4.648ns、hold11／−0.585ns，原DDR3.500ns路径余量+0.673ns。两次实际VO、完整边界和官方PLL子门独立通过，整机时序仍失败。余下参考时钟同域hold未豁免；PCM／HCI分组比较及录音START局部修复正按实际路径推进W12。只读JTAG仍为单块 `C11028E5`，无外部HDMI／线路音频采集，未烧录，未将模拟器或单板计为无线／双板验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
