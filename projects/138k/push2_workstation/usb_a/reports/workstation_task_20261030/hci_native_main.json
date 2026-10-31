@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "scope": "main source integration of explicit shared HCI plus preserved metadata BSRAM and RTC guards",
+  "author_commit": "0d154b3ef9b5c1940fe17b82a97840d9f38d346f",
+  "main_source_commits": [
+    "c820005",
+    "a1026bf",
+    "b4cb7f6"
+  ],
+  "source_snapshots": 486,
+  "native_checks": 268,
+  "native_mutants": 11,
+  "uart": {
+    "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+    "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+    "patch_bytes": 253,
+    "physical_uart": true,
+    "physical_board": false
+  },
+  "business_checks": 1701,
+  "business_mutants": 15,
+  "wire_block_messages": 136,
+  "accepted_source_tests": 17,
+  "main_business_source_tests": 8,
+  "default_profile_tests": 22,
+  "default_profile_skipped": 1,
+  "prepare_guards": 6,
+  "profiles": {
+    "hci-prepare-v2": {
+      "candidate_identity": "custom138k-workstation-hci-owner-v1-313aea7bea71ecef",
+      "profile_sha256": "2f63a229ff326ddb1f6a5a7e3c1a1ad38bc189d592713b99d02fad07a2c3d6a9",
+      "staged": 627,
+      "enabled": 281
+    },
+    "business-prepare-v2": {
+      "candidate_identity": "custom138k-workstation-ae350-business-v1-81e2d489abd2cf31",
+      "profile_sha256": "1a61625d24de8a13ba2afcbc4e2de82ab8a06b313ad8b7b1ba87e854307b88d1",
+      "staged": 614,
+      "enabled": 272
+    },
+    "default-prepare-v2": {
+      "candidate_identity": "custom138k-workstation-v1-294a2bc845a1db6c",
+      "profile_sha256": "c2dc74f848b6c326ba1e0bfa7cceb809c9b8747fef49f3468eb0e27e61facaa3",
+      "staged": 581,
+      "enabled": 261
+    }
+  },
+  "staged_delta": {
+    "default": {
+      "before": "custom138k-workstation-v1-4e5dfeea3cc39ed2",
+      "after": "custom138k-workstation-v1-294a2bc845a1db6c",
+      "staged": 581,
+      "enabled": 261,
+      "added": [],
+      "removed": [],
+      "changed": {}
+    },
+    "business": {
+      "before": "custom138k-workstation-ae350-business-v1-1a806f236eaef843",
+      "after": "custom138k-workstation-ae350-business-v1-81e2d489abd2cf31",
+      "staged": 614,
+      "enabled": 272,
+      "added": [],
+      "removed": [],
+      "changed": {
+        "tools/workstation_cpu_business.py": {
+          "before": "76d927b5cdd31cff705f8fa3486f5f508710ca64d216dd4bf0f1acaef8bbd75f",
+          "after": "03d966186bdc6b5fe42181d7a4b1a6cf83cd9034a6c440f33900a2e2869d50dc"
+        },
+        "native_usb_firmware/build.log": {
+          "before": "a408bb53c217386da6f687121c4d6f4bf324a32adf467aba173aa51100813259",
+          "after": "90c2c9c99094db6663be5b0a7c1c79fa3bfeadbf0db07f1eda28f32e9213eeca"
+        },
+        "native_bluetooth/bt_gatt.v": {
+          "before": "36953b99c65c3e8d786a53b731429a916539d9fd1723620daecf5fcb2a76d0fe",
+          "after": "32c6768092a402ada255e633153a1f970d1dec362e15472311031c43ce64f18d"
+        },
+        "rtl/bluetooth/cpu_owner/bt_gatt.v": {
+          "before": "36953b99c65c3e8d786a53b731429a916539d9fd1723620daecf5fcb2a76d0fe",
+          "after": "32c6768092a402ada255e633153a1f970d1dec362e15472311031c43ce64f18d"
+        }
+      }
+    },
+    "hci_include_fix": {
+      "before": "custom138k-workstation-hci-owner-v1-247a7d8554a134e7",
+      "after": "custom138k-workstation-hci-owner-v1-313aea7bea71ecef",
+      "staged": 627,
+      "enabled": 281,
+      "added": [
+        "rtl/workstation/workstation_profile_ae350_business_v1.sv"
+      ],
+      "removed": [],
+      "changed": {
+        "tools/workstation_cpu_business.py": {
+          "before": "3923778925bb537239c20fb418d81bf9208c8f6a625736a938cb430fd413e623",
+          "after": "03d966186bdc6b5fe42181d7a4b1a6cf83cd9034a6c440f33900a2e2869d50dc"
+        }
+      }
+    }
+  },
+  "include_fix": {
+    "original_prepare_missing_business_provider": true,
+    "old_candidate_rejected_by_actual_preprocessor": true,
+    "final_candidate_preprocessing_passed": true,
+    "enabled_verilog_sources": 278,
+    "relative_include": true
+  },
+  "old_default_compiled_inputs_unchanged": true,
+  "default_staged_inputs_unchanged": true,
+  "earlier_clone_build_log_drift": "Superseded clone default-v1 had only USB build.log drift; final main prepare-v2 is byte-identical to the fixed 581-file default baseline.",
+  "synthesis": false,
+  "pnr": false,
+  "physical_cls_verified": false,
+  "full_cdc_verified": false,
+  "routed_timing_verified": false,
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limitations": [
+    "Preprocessing proves literal include closure, not full synthesis or feature/physical acceptance.",
+    "UART/H5 checks use 253 test patch bytes, not real board or complete controller patch throughput.",
+    "CPU Classic/SBC/PCM runtime is not selected in this HCI transport profile.",
+    "Ordinary prior primitive tests remain at their sealed author identities; root reran the modified native transport and legacy business.",
+    "New RAM actual mapping, resource cost, CPU deadlines, phone interoperability and sustained audio remain pending."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/native-hci-main-parent-v1",
+  "seal_sha256": "9f03a4eb4413db9f7be49458bdee5e2e0fb40b0bdd14d411f3f5f28ac5788b9b",
+  "external_files": 5650
+}
