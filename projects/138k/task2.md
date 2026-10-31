@@ -244,6 +244,8 @@ W的[HCI池长度比较修正](push2_workstation/usb_a/reports/DUAL138K_HCI_POOL
 
 W的[D精确组合运算改写](push2_workstation/usb_a/reports/dual138k_d_process_exact_20261031.md)通过3项全域证明、444,064组实际旧／新函数与独立整数比较及4个破坏负控；2294个完整效果帧保留原PCM／参数采样时刻。新增正式APB／CDC／I2S测试定位并修复[I2S源切换保护窗口](push2_workstation/usb_a/reports/dual138k_i2s_source_hold_20261031.md)：连续零值error槽计入明确source_error，真正缺样仍计underrun，保护期running／prefill不冒脉冲。双率逐bit测试及新旧数值整链均通过，1918个物理模型完成帧、1917个显示快照、12次PANIC一致；通用runtime与默认1028帧启动测试通过。此为离线正式链路验证，仍不等于真实蓝牙／HDMI像素／DAC或硬件验收。
 
+两份DEMO新增[两处接收边界的四条精确约束](push2_workstation/usb_a/reports/DUAL138K_DEMO_BOUNDARY_CDC_20261031.md)，独立元数据固定helper身份；M10b／W9b实际VG／VO各6项测试及60负例通过，完整角色清单保留后级2ns及13个功能写指针的recovery／removal。旧两份与新M11／W10的prepare复验通过，17项来源与15项DEMO回归通过；未豁免同步reference48 hold。新M11／W10均全量综合完成，M11严格门通过并以`D2103115`启动完整P&R；W10严格门在USB packet RAM写许可布尔证明拒绝，失败日志保留，尚未进入物理实现，正在核对实际映射，未放宽门禁或上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

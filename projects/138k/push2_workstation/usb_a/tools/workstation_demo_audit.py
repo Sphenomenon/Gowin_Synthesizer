@@ -40,6 +40,7 @@ AUDIT_SOURCES = (
     'tools/workstation_memory.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_usb_fifo_reset.py', 'tools/workstation_runtime_pcm_cdc.py',
     'tools/workstation_performance_reset.py',
+    'tools/workstation_demo_boundary_cdc.py',
     'tools/workstation_native_protocol_audit.py', 'tools/workstation_recording_phase1_cdc.py',
     'tools/workstation_runtime_profile.py', 'tools/workstation_runtime_cdc.py',
 )
@@ -141,6 +142,9 @@ def verify_prepared(output, metadata):
     from tools.workstation_performance_reset import verify_demo_timing
     verify_demo_timing(stage, (stage / 'constraints/custom_138k.sdc').read_text(), role,
         metadata.get('demo_runtime_timing'))
+    from tools.workstation_demo_boundary_cdc import verify_demo_boundary
+    verify_demo_boundary(stage, (stage / 'constraints/custom_138k.sdc').read_text(), role,
+        metadata.get('demo_boundary_cdc'))
     providers = {entry['provider'] for entry in __import__(
         'tools.workstation_profile', fromlist=['PROFILE_REGISTRY']).PROFILE_REGISTRY.values()}
     require([p for p in selected_inputs if p in providers] == [provider], 'selected top provider changed')
@@ -528,6 +532,15 @@ def audit(root, output, metadata):
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist)
     performance_release = None
+    demo_boundary_cdc = None
+    if metadata.get('demo_boundary_cdc') is not None:
+        from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
+        from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
+        boundary_n = boundary_netlist(vg_text, mapping='synthesis')
+        demo_boundary_cdc = audit_boundary(boundary_n, mapping='synthesis')
+        require(demo_boundary_cdc.get('inventory_role') == role,
+                'DEMO boundary consumer inventory does not match selected role')
+        demo_boundary_cdc['installed_sdc'] = validate_boundary(sdc, boundary_n, demo_boundary_cdc)
     if metadata.get('demo_runtime_timing') is not None and role == 'W':
         from tools.workstation_performance_reset import audit as audit_performance, validate_sdc as validate_performance
         from tools.workstation_performance_reset import netlist as performance_netlist
@@ -560,6 +573,7 @@ def audit(root, output, metadata):
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,
         demo_usb_fifo_write_reset_audit=fifo_write_reset,
         demo_performance_release_audit=performance_release,
+        demo_boundary_cdc_audit=demo_boundary_cdc,
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,
         recording_diagnostic_retirement_audit=recording_diagnostics,
