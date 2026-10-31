@@ -298,6 +298,8 @@ M13实际音频控制长链的[事件配置私有cofactor](push2_workstation/usb
 
 W12的[实际分组与默认完整物理审计](push2_workstation/usb_a/reports/DUAL138K_W12_AUDIT_20261101.md)已封存：16个PCM／HCI分组经真实primitive函数证明全部UNSAT，实际32位串行比较未跨分组重建；raw仅确认122FF／5CE实际映射，不冒称额外完整网表等价。`D2110106`物理BSRAM293／DSP66.5，setup6,428／−4.350ns、hold5／−3.239ns，recovery／removal已正；实际VO／边界及六PLL子门独立通过，整机时序仍失败。保持原VG／完整SDC／DDR3.500ns，仅追加两条DDR远区约束的`D2110107`已启动全量P&R，未预填结果、未上板。
 
+M14已完成[全量综合和严格门](push2_workstation/usb_a/reports/DUAL138K_M14_SYNTHESIS_20261101.md)：综合FF46,932／LUT52,153／ALU12,875／BSRAM equivalent195，native实际VG54项（50通过／4跳过）及45负控、边界7项及61负控通过。实际TF full四组与final函数已保留，但函数内容量只有最低组保留，[完整实际锥审查](push2_workstation/usb_a/reports/dual138k_m14_tf_groups_vg_20261101.md)明确分组目标部分失败，不冒称物理收益。1207工具／源码／测试输入冻结复验，`D2110108`重新严格审计后已启动完整P&R，硬件与CNN仍未验收。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
