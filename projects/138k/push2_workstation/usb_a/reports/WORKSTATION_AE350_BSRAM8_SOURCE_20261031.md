@@ -63,3 +63,11 @@ strict complete-file inventory/hash verification. Generated files stay outside
 Git. Root owns new actual synthesis/resource/CDC/PLL/routed timing validation,
 JTAG identity and any explicitly authorized deployment/rollback. The cache/PMA
 probe is a separate subsequent physical experiment.
+
+## Main integration
+
+Main `fcbd008` imports the explicit bsram8 mode. The root independently verified the complete 317-file author delivery and reran nine narrow RTL, six decoder, two audit-fixture, 17 accepted-source, nine legacy bsram4 and three legacy RAM-audit tests; all passed. The root refreshed only the changed `build.py` source hash in nine workstation profiles, and all nine source locks pass. No workstation source selection changed.
+
+Fresh main prepare `C21031D6` has 46 inputs / nine compiled sources and manifest SHA256 recorded in the [main machine record](workstation_task_20261030/ae350_bsram8_main.json). Its ELF, BIN and ROM bytes each match frozen D0 exactly. D6 is prepare only. Separately, the actual D4 runner uses the immutable author prepare-v3 and the shared EDA lock; its future result must be recorded under D4, with fresh actual-netlist, routed timing and hardware evidence.
+
+Immutable main evidence is `/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-bsram8-main-parent-v1`, with 27 source snapshots and 372 external records. Seal SHA256: `005928abaf91e5ac7e2c7d426a72006322dc325c4b1b4a72344abf229b86c70e`. Its `verify.py` rechecks these identities; no actual synthesis, physical or hardware acceptance is claimed by this source stage.

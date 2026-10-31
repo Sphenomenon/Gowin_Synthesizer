@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "scope": "main explicit 448-bit bsram8 source and offline validation; D4 separately queued physical run",
+  "author_commit": "2987a106df594dd38bd03e1bdd251614c9d962e8",
+  "main_source_commit": "fcbd008",
+  "identity": "custom138k-ae350-local-memory-probe-C21031D6",
+  "prepare": {
+    "manifest_sha256": "8621a3c7db17a0c15b8b2a05fae76a1b2fcf195bb35af8185aeef3718161c4ef",
+    "verified_inputs": 46,
+    "compiled_sources": 9,
+    "rom_bytes": 65536,
+    "cold_binary_bytes": 36368,
+    "synthesis_verified": false,
+    "physical_timing_verified": false,
+    "hardware_verified": false
+  },
+  "source_snapshots": 27,
+  "all_profile_locks": 9,
+  "lock_adaptation": "Only changed build.py CLI source hash refreshed across nine profiles",
+  "capture_bits": 448,
+  "pages": 8,
+  "words_per_page": 8,
+  "canonical_diagnostic_words": 64,
+  "cycles_per_page": 4,
+  "sweep_cycles": 32,
+  "firmware_byte_identical_to_D0": true,
+  "tests": {
+    "narrow_RTL": 9,
+    "decoder": 6,
+    "audit_fixture": 2,
+    "accepted": 17,
+    "legacy_bsram4": 9,
+    "legacy_bsram4_audit": 3
+  },
+  "author_delivery_reverified_files": 317,
+  "D4_immutable_prepare": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-bsram8-D4-prepare-v3",
+  "D4_input_sha256": "e9716f07e4510771834bdd12fcd38a2c1ac29be6fbaf304a605e366237fab34f",
+  "D6_prepare_only": true,
+  "actual_synthesis_verified": false,
+  "physical_timing_verified": false,
+  "hardware_operated": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "limitations": [
+    "D6 is a root source prepare only; no physical run or hardware acceptance claimed.",
+    "D4 actual physical run uses the immutable author source and its own identity, separate from main helper/profile metadata updates.",
+    "Offline fixtures and mutants do not prove actual inferred RAM connectivity or routed held-data setup/hold.",
+    "All 64 words and UART access remain present; this is a transport-width reduction, not diagnostic removal."
+  ],
+  "parent_evidence": "/Users/sphenicidition/.cache/gw138k-task-20261030/ae350-bsram8-main-parent-v1",
+  "seal_sha256": "005928abaf91e5ac7e2c7d426a72006322dc325c4b1b4a72344abf229b86c70e",
+  "external_files": 372
+}
