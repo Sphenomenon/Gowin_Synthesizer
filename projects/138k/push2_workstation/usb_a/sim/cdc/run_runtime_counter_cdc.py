@@ -31,6 +31,11 @@ def prove(legacy, native):
     An unchanged sequential token prefix lifts comb equality to arbitrary
     shared clock/reset schedules. No metastability/propagation claim follows.
     """
+    gray_port = ',\n    output wire [31:0] destination_gray'
+    gray_alias = 'assign destination_gray=sync_value;'
+    if native.count(gray_port) != 1 or native.count(gray_alias) != 1:
+        raise ValueError('read-only synchronized Gray output changed')
+    native = native.replace(gray_port, '').replace(gray_alias, '')
     if tokens(legacy.split('integer i;')[0]) != tokens(native.split('wire [31:0] prefix1')[0]):
         raise ValueError('registered source/synchronizer/reset boundary changed')
     legacy_tail = legacy[legacy.index('integer i;'):]
@@ -58,6 +63,9 @@ def prove(legacy, native):
         expected_rows[i] = expected_rows[i + 1] ^ (1 << i)
     if rows.get('prefix16') != expected_rows:
         raise ValueError('all-input GF2 equivalence failed')
+    roundtrip = [expected_rows[i] ^ (expected_rows[i + 1] if i < 31 else 0) for i in range(32)]
+    if roundtrip != [1 << i for i in range(32)]:
+        raise ValueError('Gray decode is not bijective')
     if any(set(t.values()) != {1} for t in terms['prefix16']):
         raise ValueError('duplicated terms invalidate four-state reassociation')
     if len(stages) != 5 or max(depths['prefix16']) != 5:
@@ -65,6 +73,7 @@ def prove(legacy, native):
     return dict(method='exact_RTL_symbolic_GF2_basis_matrix', input_bits=32, output_bits=32,
                 universal_binary_input_count=4294967296, equal_output_rows=32,
                 each_suffix_variable_appears_exactly_once=True, sequential_boundary_tokens_equal=True,
+                synchronized_gray_read_only_alias=True, gray_change_detection_all_binary_pairs_equivalent=True,
                 destination_clock_latency_added=0, legacy_max_xor_depth=31, native_max_xor_depth=5,
                 physical_mapping_or_timing_verified=False)
 
@@ -85,7 +94,8 @@ def main():
     for name, old, new in [('missing_high_span', 'prefix8>>16', 'prefix8>>8'),
                            ('source_binary', 'gray<=source_count^(source_count>>1)', 'gray<=source_count'),
                            ('sync_stage_bypass', 'sync_value<=meta', 'sync_value<=gray'),
-                           ('added_latency', 'always @* begin', 'always @(posedge destination_clk) begin')]:
+                           ('added_latency', 'always @* begin', 'always @(posedge destination_clk) begin'),
+                           ('gray_output_bypass', 'assign destination_gray=sync_value;', 'assign destination_gray=meta;')]:
         assert native.count(old) == 1
         try:
             prove(legacy, native.replace(old, new))

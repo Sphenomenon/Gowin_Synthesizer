@@ -12,14 +12,16 @@ module workstation_audio_clock_monitor #(
     parameter integer STABLE_WINDOWS=4,
     parameter integer LOSS_TIMEOUT_CYCLES=500,
     parameter integer STOP_LOW_CYCLES=16,
-    parameter integer COUNTER_BITS=32
+    parameter integer COUNTER_BITS=32,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire clk_i, rst_ni, source_clk_i,
     input wire restart_i, expect_44k1_i,
     output reg qualified_o, clock_present_o,
     output wire stopped_low_o,
     output reg window_valid_o, window_good_o,
-    output reg [COUNTER_BITS-1:0] window_edges_o
+    output reg [COUNTER_BITS-1:0] window_edges_o,
+    input wire common_reset_ni
 );
     localparam integer WINDOW_BITS=$clog2(WINDOW_CYCLES+1);
     localparam integer AGE_BITS=$clog2(LOSS_TIMEOUT_CYCLES+1);
@@ -52,10 +54,15 @@ module workstation_audio_clock_monitor #(
     // Global assertion works with a stopped source. Its return only releases
     // these measurement registers after three local edges; failure decisions
     // remain in clk_i and never wait for this release handshake.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_source;
+    always @(posedge source_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_source<=0;else startup_source<={startup_source[0],rst_ni};
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] source_reset_pre;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg source_reset_n;
-    always @(posedge source_clk_i or negedge rst_ni)
-        if (!rst_ni) begin source_reset_pre<=0; source_reset_n<=0; end
+    always @(posedge source_clk_i or negedge common_reset_n)
+        if (!common_reset_n) begin source_reset_pre<=0; source_reset_n<=0; end
+        else if(SEPARATE_COMMON_RESET && !startup_source[1])begin source_reset_pre<=0;source_reset_n<=0;end
         else begin source_reset_pre<={source_reset_pre[0],1'b1}; source_reset_n<=source_reset_pre[1]; end
     reg [COUNTER_BITS-1:0] source_binary;
     (* syn_preserve=1 *) reg [COUNTER_BITS-1:0] source_gray;

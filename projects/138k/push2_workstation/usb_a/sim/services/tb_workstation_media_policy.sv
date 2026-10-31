@@ -73,7 +73,7 @@ module tb_workstation_media_policy;
         .quiesce_o(),.dac_mute_o(),.stream_flush_o(),.audio_reset_no(),.clock_monitor_restart_o(),.clock_select_o(),
         .active_44k1_o(rate44),.active_valid_o(active_valid),.stream_epoch_o(epoch),.staged_44k1_o(),.staged_epoch_o());
     workstation_runtime_media_stop_bridge #(.ENABLE(1)) media(
-        .reset_ni(board_n),.clk_50m_i(clk50),.compute_clk_i(compute),.owner_reset_ni(rec_reset),
+        .control_reset_ni(1'b1),.compute_reset_ni(1'b1),.reset_ni(board_n),.clk_50m_i(clk50),.compute_clk_i(compute),.owner_reset_ni(rec_reset),
         .request_i(media_request),.hold_i(media_hold),.local_request_o(local_request),.local_hold_o(local_hold),
         .local_done_i(local_done),.local_failed_i(local_failed),.tf_stop_request_o(tf_request),
         .tf_stop_pending_i(tf_pending),.tf_stop_done_i(tf_done),.tf_stop_failed_i(tf_failed),.tf_stop_failure_code_i(tf_code),

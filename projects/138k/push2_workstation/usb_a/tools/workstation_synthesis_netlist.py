@@ -10,7 +10,7 @@ class SynthesisNetlist:
     def __init__(self, text, top):
         self.modules, self.frames, self.cells, self.buffers, self.ranges = {}, {}, {}, {}, {}
         self.scopes, self.directions = {}, {}
-        pattern = re.compile(r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)^[ \t]*\);',
+        pattern = re.compile(r'^[ \t]*(' + IDENTIFIER + r')[ \t]+(' + IDENTIFIER + r')[ \t]*\((.*?)\);',
                              re.M | re.S)
         for match in re.finditer(r'^module\s+(' + IDENTIFIER + r')\s*\((.*?)^endmodule\b', text, re.M | re.S):
             name = match[1].removeprefix('\\')

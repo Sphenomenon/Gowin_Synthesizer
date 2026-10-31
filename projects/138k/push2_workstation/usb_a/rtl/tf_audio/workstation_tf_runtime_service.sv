@@ -9,7 +9,8 @@ module workstation_tf_runtime_service #(
     parameter integer QUIET_TIMEOUT_CYCLES=2000000,
     parameter [27:0] HOTPLUG_TIMEOUT_CYCLES=28'd200000000,
     parameter [27:0] HOTPLUG_STALL_TIMEOUT_CYCLES=28'd250000000,
-    parameter integer EXTERNAL_STOP_PROTOCOL=0
+    parameter integer EXTERNAL_STOP_PROTOCOL=0,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,memory_reset_ni,memory_ready_i,
     // restart_i is an explicit user TF restart, never a card-return retry.
@@ -54,8 +55,37 @@ module workstation_tf_runtime_service #(
     // Optional 50-MHz stop transaction; explicitly enabled by the new owner.
     input wire stop_request_i,
     output reg stop_pending_o,stop_done_o,stop_failed_o,
-    output reg [3:0] stop_failure_code_o
+    output reg [3:0] stop_failure_code_o,
+    input wire common_reset_ni
 );
+    // The monotonic startup grant crosses as data. Only the common
+    // assertion reaches async reset pins; every release bit uses local data.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_source;
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)startup_source<=0;else startup_source<={startup_source[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_compute;
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_compute<=0;else startup_compute<={startup_compute[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_memory;
+    always @(posedge memory_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_memory<=0;else startup_memory<={startup_memory[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] source_release,compute_release,memory_release;
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)source_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_source[1])source_release<=0;
+        else source_release<={source_release[1:0],1'b1};
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)compute_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_compute[1])compute_release<=0;
+        else compute_release<={compute_release[1:0],1'b1};
+    always @(posedge memory_clk_i or negedge common_reset_n)
+        if(!common_reset_n)memory_release<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_memory[1])memory_release<=0;
+        else memory_release<={memory_release[1:0],1'b1};
+    wire source_reset_n=SEPARATE_COMMON_RESET ? source_release[2]:rst_ni;
+    wire compute_reset_n=SEPARATE_COMMON_RESET ? compute_release[2]:rst_ni;
+    wire local_memory_reset_n=SEPARATE_COMMON_RESET ? memory_release[2]:rst_ni;
     localparam [2:0] IDLE=0,QUIESCE=1,WAIT_FORMAT=2,PLAY=3,RESTART_SETTLE=4;
     localparam [3:0] RATE=1,FORMAT=2,DDR=3,CARD=4,CONTEXT=5,EPOCH=6,
         TRANSPORT=7,QUIET_TIMEOUT=8;
@@ -116,8 +146,8 @@ module workstation_tf_runtime_service #(
     // cancel on this edge even if source_clk stops immediately afterward.
     // Current-state sampling conservatively adds one source edge on release.
     (* syn_preserve=1 *) reg source_quiesce;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if(!rst_ni)source_quiesce<=1;
+    always @(posedge clk_50m_i or negedge source_reset_n)
+        if(!source_reset_n)source_quiesce<=1;
         else source_quiesce<=state==IDLE || state==QUIESCE || state==RESTART_SETTLE || invalidate;
     wire playback_accept=state==PLAY && mode_i && run_i && !invalidate && !stop_latched;
     wire path_pcm_valid,path_pcm_ready,path_pcm_end;
@@ -134,8 +164,8 @@ module workstation_tf_runtime_service #(
         increment=&value ? value:value+1'b1;
     endfunction
     initial if(QUIET_TIMEOUT_CYCLES<8)$fatal(1,"TF quiet timeout too short");
-    always @(posedge clk_50m_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge clk_50m_i or negedge source_reset_n)begin
+        if(!source_reset_n)begin
             state<=IDLE;restart_playback<=0;memory_ready_sync<=0;
             path_track<=0;path_clear_toggle<=0;pending_clear<=0;
             memory_open_sync<=0;
@@ -210,8 +240,8 @@ module workstation_tf_runtime_service #(
     // includes ACK of the final inactive/busy=0 payload, not only busy falling.
     assign stop_cleanup_complete=state==IDLE && !busy_50_o && source_quiet && path_clear_done &&
         memory_open_sync[1] && !control_pending_o;
-    always @(posedge clk_50m_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge clk_50m_i or negedge source_reset_n)begin
+        if(!source_reset_n)begin
             stop_request_q<=0;stop_latched<=0;stop_transaction_failed<=0;stop_wait<=0;
             stop_pending_o<=0;stop_done_o<=0;stop_failed_o<=0;stop_failure_code_o<=0;
         end else begin
@@ -243,7 +273,7 @@ module workstation_tf_runtime_service #(
     tf_audio_ddr_path #(.FILE_EXT(FILE_EXT),.AUDIO_KIND(AUDIO_KIND),.CAPTURE_ON_ANALYSIS(1),
         .HOTPLUG_TIMEOUT_CYCLES(HOTPLUG_TIMEOUT_CYCLES),
         .HOTPLUG_STALL_TIMEOUT_CYCLES(HOTPLUG_STALL_TIMEOUT_CYCLES),.NATIVE_RESTART_HOLD(1),.NATIVE_RUNTIME_PROTOCOL(1)) path(
-        .clk_50m(clk_50m_i),.reset_n(rst_ni),.restart(path_restart),.track_index(path_track),
+        .clk_50m(clk_50m_i),.reset_n(source_reset_n),.restart(path_restart),.track_index(path_track),
         .capture_enable_i(!stop_latched && !stop_begin && ((state==IDLE && !mode_i && analysis_enable_i) ||
             ((state==WAIT_FORMAT || state==PLAY) && mode_i && run_i && !new_failure))),
         .memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),.memory_ready(memory_ready_i),
@@ -267,15 +297,15 @@ module workstation_tf_runtime_service #(
     // new file's first beat. Stop acceptance, drain the one outstanding read,
     // return a quiet ACK, then pulse the unchanged path's restart.
     reg memory_stop;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if(!rst_ni)memory_stop<=0;
+    always @(posedge clk_50m_i or negedge source_reset_n)
+        if(!source_reset_n)memory_stop<=0;
         else if(invalidate)memory_stop<=1;
         else if(state==RESTART_SETTLE && path_clear_done)memory_stop<=0;
         else if(state==QUIESCE && source_quiet && memory_quiet_50 && path_clear_done && !pending_clear &&
             !(pending_start && mode_i) && !(pending_reader_restart && !mode_i))memory_stop<=0;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_gate_sync;
-    always @(posedge memory_clk_i or negedge rst_ni)
-        if(!rst_ni)memory_gate_sync<=0;else memory_gate_sync<={memory_gate_sync[0],memory_stop};
+    always @(posedge memory_clk_i or negedge local_memory_reset_n)
+        if(!local_memory_reset_n)memory_gate_sync<=0;else memory_gate_sync<={memory_gate_sync[0],memory_stop};
     assign memory_gate=memory_gate_sync[1];
     reg memory_read_pending;
     always @(posedge memory_clk_i or negedge memory_reset_ni)
@@ -289,12 +319,12 @@ module workstation_tf_runtime_service #(
     // The extra memory edge is conservative: acceptance closes before this
     // ACK, and the last ordered response clears pending one edge before it.
     reg memory_quiet;
-    always @(posedge memory_clk_i or negedge rst_ni)
-        if(!rst_ni)memory_quiet<=0;
+    always @(posedge memory_clk_i or negedge local_memory_reset_n)
+        if(!local_memory_reset_n)memory_quiet<=0;
         else memory_quiet<=memory_gate && !memory_read_pending;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_quiet_sync;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if(!rst_ni)memory_quiet_sync<=0;else memory_quiet_sync<={memory_quiet_sync[0],memory_quiet};
+    always @(posedge clk_50m_i or negedge source_reset_n)
+        if(!source_reset_n)memory_quiet_sync<=0;else memory_quiet_sync<={memory_quiet_sync[0],memory_quiet};
     assign memory_quiet_50=memory_quiet_sync[1];
     assign ddr_valid_o=path_ddr_valid && !memory_gate;
     assign ddr_write_o=ddr_valid_o && path_write && path_end && path_command==0;
@@ -302,8 +332,8 @@ module workstation_tf_runtime_service #(
     wire [19:0] bridge_rate;
     wire signed [15:0] bridge_left,bridge_right;
     wire [31:0] bridge_generation;
-    workstation_tf_frame_bridge #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(
-        .rst_ni,.source_clk_i(clk_50m_i),.compute_clk_i,.invalidate_i(invalidate),.source_quiesce_i(source_quiesce),
+    workstation_tf_frame_bridge #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)) frames(
+        .common_reset_ni(common_reset_n),.rst_ni,.source_clk_i(clk_50m_i),.compute_clk_i,.invalidate_i(invalidate),.source_quiesce_i(source_quiesce),
         .source_valid_i(path_pcm_valid && playback_accept),.source_error_i(1'b0),
         .source_sample_rate_i(file_sample_rate_o),.source_left_i(path_left),.source_right_i(path_right),
         .source_ready_o(bridge_source_ready),.source_generation_o,.source_generation_pending_o(generation_pending),
@@ -321,8 +351,8 @@ module workstation_tf_runtime_service #(
     reg [CTRL_BITS-1:0] held_control,compute_control;
     reg control_request,control_ack,control_capture;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] request_sync,ack_sync;
-    always @(posedge clk_50m_i or negedge rst_ni)begin
-        if(!rst_ni)begin held_control<=0;control_request<=0;ack_sync<=0;end
+    always @(posedge clk_50m_i or negedge source_reset_n)begin
+        if(!source_reset_n)begin held_control<=0;control_request<=0;ack_sync<=0;end
         else begin
             ack_sync<={ack_sync[0],control_ack};
             if(ack_sync[1]==control_request && held_control!=desired_control)begin
@@ -330,8 +360,8 @@ module workstation_tf_runtime_service #(
             end
         end
     end
-    always @(posedge compute_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin request_sync<=0;control_ack<=0;control_capture<=0;compute_control<=0;end
+    always @(posedge compute_clk_i or negedge compute_reset_n)begin
+        if(!compute_reset_n)begin request_sync<=0;control_ack<=0;control_capture<=0;compute_control<=0;end
         else begin
             request_sync<={request_sync[0],control_request};
             control_capture<=request_sync[1]!=control_ack;
@@ -351,8 +381,8 @@ module workstation_tf_runtime_service #(
     assign tf_generation_o=compute_control[1] ? bridge_generation:expected_generation_o;
     assign bridge_ready=tf_ready_i && control_active && compute_control[1];
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] busy_release;
-    always @(posedge compute_clk_i or negedge rst_ni or posedge busy_50_o)
-        if(!rst_ni || busy_50_o)busy_release<=3'b111;
+    always @(posedge compute_clk_i or negedge compute_reset_n or posedge busy_50_o)
+        if(!compute_reset_n || busy_50_o)busy_release<=3'b111;
         else busy_release<={busy_release[1:0],1'b0};
     assign tf_busy_o=busy_release[2] || compute_control[0];
     assign media_quiescent_50_o=source_quiet && !busy_50_o;

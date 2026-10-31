@@ -11,6 +11,7 @@ INPUTS = {
     'legacy/rtl/audio/sine_interp.sv': '1085c7ebba307faa6ea7d10d99c6111a253d1f383e13fefef81c595a7d8b2b61',
     'src/storage/tf_audio_ddr_dma.v': 'd37ff20c676049fe8cc53adfb7db43e30553f3824e62e57c58493a1042649e3b',
     'legacy/rtl/audio/unified_oscillator_engine.sv': '2bf573382c5c93212a196de483703ff5edc5cd4f1d67983841c28f64bc851423',
+    'src/push2/gw138k_push_performance_uart.sv': '877bb5e0d22ee03fb8c6dc35eb15f09695bbddbc5375935e8e8bed168f74f41f',
 }
 HOST = 'u_native_usb/host/usb'
 SUPERVISOR = HOST + '/controller/phy/physical_link/supervisor'
@@ -39,6 +40,29 @@ LEVEL_CHAINS = [
     *((HOST + '/failure_meta_q_' + str(bit), HOST + '/failure_sync_q_' + str(bit), 'ulpi_60m')
       for bit in range(5)),
 ]
+# Native runtime only. Each two-flop chain receives a held startup/safety
+# level; an asynchronous input is excepted only at bit 0. Same-50-MHz inputs
+# remain normally timed. Both selected-clock modes use the same local chain.
+# (exact synthesis stem, source domain(s), consuming domain)
+RUNTIME_GRANT_CHAINS = (
+    ('u_managed/startup_control', 'clk_50m', 'clk_50m'),
+    ('u_managed/startup_compute', 'clk_50m', 'audio_76m8'),
+    ('u_managed/runtime/startup_control', 'clk_50m', 'clk_50m'),
+    ('u_managed/runtime/startup_compute', 'clk_50m', 'audio_76m8'),
+    ('u_managed/runtime/startup_memory', 'clk_50m', 'ddr_ui100'),
+    ('u_managed/runtime/startup_serial', 'clk_50m', 'selected48/selected44'),
+    ('u_managed/runtime/clocks/startup_control', 'clk_50m', 'clk_50m'),
+    ('u_managed/runtime/clocks/reference_48_monitor/startup_source', 'clk_50m', 'dac_ref12m288'),
+    ('u_managed/runtime/clocks/reference_44_monitor/startup_source', 'clk_50m', 'dac_ref16m9344'),
+    ('u_managed/runtime/clocks/selected_monitor/startup_source', 'clk_50m', 'selected48/selected44'),
+    ('u_tf_audio/startup_source', 'clk_50m', 'clk_50m'),
+    ('u_tf_audio/startup_compute', 'clk_50m', 'audio_76m8'),
+    ('u_tf_audio/startup_memory', 'clk_50m', 'ddr_ui100'),
+    ('u_tf_audio/frames/startup_source', 'clk_50m', 'clk_50m'),
+    ('u_tf_audio/frames/startup_compute', 'clk_50m', 'audio_76m8'),
+    ('output_safe_sync', 'clk_50m+audio_76m8', 'audio_76m8'),
+    ('u_runtime/g_usb_cdc_reset.usb_ready', 'clk_50m+usb_48m', 'usb_48m'),
+)
 
 
 def once(text, original, replacement):
@@ -136,7 +160,46 @@ def voice_controls(text):
     return once(text, declarations, declarations + prefix)
 
 
-TRANSFORMS = dict(zip(INPUTS, (audio_pll, sine_address, byte_increment, voice_controls)))
+def telemetry_usb_reset(text):
+    text = once(text, '    parameter integer CPU_SNAPSHOT_BITS=16\n',
+                '    parameter integer CPU_SNAPSHOT_BITS=16,\n    parameter integer USB_CDC_SEPARATE_RESET=0\n')
+    text = once(text, '    output wire serial_out\n',
+                '    output wire serial_out,\n    input wire usb_cdc_assert_ni\n')
+    text = once(text, '''    reg [15:0] usb_divider;
+    always @(posedge usb_clk or negedge usb_reset_n)
+        if(!usb_reset_n)usb_divider<=0;else usb_divider<=usb_divider+1'b1;
+''', '''    reg [15:0] usb_divider;
+    wire usb_cdc_reset_n,usb_divider_reset_n,usb_snapshot_ready;
+    generate if(USB_CDC_SEPARATE_RESET)begin:g_usb_cdc_reset
+        // Assertion is common/raw; readiness crosses only as a USB-domain
+        // level. No reference-domain release drives a mailbox async clear.
+        (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] usb_ready;
+        always @(posedge usb_clk or negedge usb_cdc_assert_ni)
+            if(!usb_cdc_assert_ni)usb_ready<=0;
+            else usb_ready<={usb_ready[0],reset_n && usb_reset_n};
+        assign usb_cdc_reset_n=usb_cdc_assert_ni;
+        assign usb_divider_reset_n=usb_cdc_assert_ni;
+        assign usb_snapshot_ready=usb_ready[1];
+    end else begin:g_usb_cdc_legacy_reset
+        assign usb_cdc_reset_n=reset_n && usb_reset_n;
+        assign usb_divider_reset_n=usb_reset_n;
+        assign usb_snapshot_ready=1'b1;
+    end endgenerate
+    always @(posedge usb_clk or negedge usb_divider_reset_n)
+        if(!usb_divider_reset_n)usb_divider<=0;
+        else if(!usb_snapshot_ready)usb_divider<=0;
+        else usb_divider<=usb_divider+1'b1;
+''')
+    return once(text, '''    gw138k_stream_cdc #(.WIDTH(224)) u_usb_cdc(
+        .reset_n(reset_n && usb_reset_n),.source_clk(usb_clk),.destination_clk(clk_50m),
+        .source_valid(&usb_divider),.source_data(usb_words),.drop_count(),
+''', '''    gw138k_stream_cdc #(.WIDTH(224)) u_usb_cdc(
+        .reset_n(usb_cdc_reset_n),.source_clk(usb_clk),.destination_clk(clk_50m),
+        .source_valid(usb_snapshot_ready && (&usb_divider)),.source_data(usb_words),.drop_count(),
+''')
+
+
+TRANSFORMS = dict(zip(INPUTS, (audio_pll, sine_address, byte_increment, voice_controls, telemetry_usb_reset)))
 
 
 def apply(stage):
@@ -153,7 +216,9 @@ def apply(stage):
     return evidence
 
 
-def constraints():
+def constraints(*, runtime_reset=False):
+    if type(runtime_reset) is not bool:
+        raise ValueError('native runtime reset selection must be boolean')
     lines = []
     for prefix in RESET_CHAINS:
         lines.append(f'set_false_path -to [get_pins {{{prefix}_*/CLEAR}}]')
@@ -165,10 +230,23 @@ def constraints():
     for first, second, _ in LEVEL_CHAINS:
         lines.append(f'set_false_path -to [get_pins {{{first}_s*/D}}]')
         lines.append(f'set_max_delay 2.000 -from [get_pins {{{first}_s*/Q}}] -to [get_pins {{{second}_s*/D}}]')
+    if runtime_reset:
+        for prefix, source, destination in RUNTIME_GRANT_CHAINS:
+            if source != destination:
+                lines.append(f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]')
+            lines.append(f'set_max_delay 2.000 -from [get_pins {{{prefix}_0_s*/Q}}] '
+                         f'-to [get_pins {{{prefix}_1_s*/D}}]')
     phy = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top'
-    lines.append(f'set_min_delay 0.800 -from [get_pins {{{phy}/ddr_init_internal_r_s0/Q}}] -to [get_pins {{{phy}/wloadn_3_s0/D}}]')
+    # E8's routed hold path misses by0.759ns with the original0.800ns floor.
+    # Ask the router for more delay; retain the actual setup/hold checks.
+    lines.append(f'set_min_delay 1.800 -from [get_pins {{{phy}/ddr_init_internal_r_s0/Q}}] -to [get_pins {{{phy}/wloadn_3_s0/D}}]')
     for kind in ('setup', 'hold', 'recovery', 'removal'):
         lines.append(f'report_timing -{kind} -max_paths 2000 -max_common_paths 1')
+    # The global worst paths can omit every noncritical hard-CPU clock path.
+    # Report the real routed CLKOUT1 tree as well as requesting its CST site.
+    for kind in ('setup', 'hold'):
+        lines.append(f'report_timing -{kind} -from_clock [get_clocks {{cpu_core100}}] '
+                     '-to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1')
     return '\n'.join(lines) + '\n'
 
 

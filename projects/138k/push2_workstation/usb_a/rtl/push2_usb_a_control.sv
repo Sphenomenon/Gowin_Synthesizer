@@ -91,7 +91,11 @@ module push2_usb_a_control #(
         // A further six edges empty the read buffer and settle pointer/consume
         // feedback before the existing two-USB-edge write release. Normal
         // events stay fenced; lifecycle cancellation remains independent.
-        assign queue_flushing=queue_fifo_reset || !drain_release[5];
+        // The USB request may assert asynchronous reset pins, but it must
+        // not bypass a local release flop into audio FIFO read/data control.
+        // queue_release asserts without an audio edge and releases only on
+        // real audio edges, including when PANIC arrives with audio stopped.
+        assign queue_flushing=!queue_release[5] || !drain_release[5];
         assign queue_read_ready=drain_release[5] && !queue_fifo_reset;
     end else begin: legacy_queue_release
         assign queue_fifo_reset=input_reset;

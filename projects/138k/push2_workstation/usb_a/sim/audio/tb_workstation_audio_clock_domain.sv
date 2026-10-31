@@ -27,7 +27,7 @@ module tb_workstation_audio_clock_domain;
         .WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
         .STOP_LOW_CYCLES(8),.COUNTER_BITS(12),.SWITCH_TIMEOUT_CYCLES(4000)
     ) dut (
-        .clk_50m_i(clk),.rst_ni(rst_n),.reference_48_i(reference48),.reference_44_i(reference44),
+        .common_reset_ni(1'b1),.clk_50m_i(clk),.rst_ni(rst_n),.reference_48_i(reference48),.reference_44_i(reference44),
         .request_i(request),.request_44k1_i(request44),.recover_i(recover),
         .frame_quiescent_i(idle),.prefill_ready_i(prefill && audio_reset_n),
         .output_running_i(output_running && audio_reset_n),

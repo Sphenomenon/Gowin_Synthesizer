@@ -130,6 +130,33 @@ endmodule
             self.assertIn('PASS native parallel increments', simulation.stdout)
             print(simulation.stdout.strip())
 
+    def test_telemetry_usb_reset_keeps_default_and_other_observers(self):
+        baseline = load_baseline(ROOT, 'resource_rework_route0')
+        original = self.original_sources()['src/push2/gw138k_push_performance_uart.sv'].decode()
+        adapted = timing.telemetry_usb_reset(original)
+        with self.assertRaisesRegex(ValueError, 'anchor drifted'):
+            timing.telemetry_usb_reset(original.replace('.source_valid(&usb_divider)', '.source_valid(1\'b0)'))
+        with tempfile.TemporaryDirectory(prefix='native-telemetry-usb-reset-') as directory:
+            stage = Path(directory)
+            reference, candidate = stage / 'reference.sv', stage / 'candidate.sv'
+            reference.write_text(original.replace('module gw138k_push_performance_uart #(', 'module telemetry_reference #('))
+            candidate.write_text(adapted)
+            support = []
+            for name in ('src/migration/gw138k_stream_cdc.sv', 'src/control/uart_tx.v'):
+                path = stage / Path(name).name
+                path.write_bytes(baseline.read_bytes(name))
+                support.append(path)
+            fixture = ROOT / 'sim/cdc/tb_native_telemetry_usb_reset.sv'
+            executable = stage / 'simulation'
+            compilation = subprocess.run(['iverilog', '-g2012', '-s', 'tb_native_telemetry_usb_reset',
+                '-o', str(executable), *map(str, [reference, candidate, *support, fixture])],
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(compilation.returncode, 0, compilation.stderr)
+            simulation = subprocess.run(['vvp', str(executable)], capture_output=True, text=True, timeout=60)
+            self.assertEqual(simulation.returncode, 0, simulation.stdout + simulation.stderr)
+            self.assertIn('default_equal=1 local_grant=2 stopped_release=1 raw_flush=1 fresh_restart=1 uart_cpu_audio_preserved=1', simulation.stdout)
+            print(simulation.stdout.strip())
+
     def test_exceptions_only_terminate_at_audited_receiver_entries(self):
         constraints = timing.constraints()
         exceptions = [line for line in constraints.splitlines() if line.startswith('set_false_path')]
@@ -138,8 +165,44 @@ endmodule
             self.assertRegex(line, r'^set_false_path -to \[get_pins \{u_native_usb/')
             self.assertTrue(line.endswith('/CLEAR}]') or line.endswith('/D}]'))
         self.assertNotIn('set_clock_groups', constraints)
-        self.assertNotIn('get_clocks', constraints)
-        self.assertIn('set_min_delay 0.800 -from [get_pins', constraints)
+        exceptions = '\n'.join(line for line in constraints.splitlines() if line.startswith('set_'))
+        self.assertNotIn('get_clocks', exceptions)
+        self.assertEqual(sum('-from_clock [get_clocks {cpu_core100}]' in line
+                             for line in constraints.splitlines() if line.startswith('report_timing ')), 2)
+        self.assertIn('set_min_delay 1.800 -from [get_pins', constraints)
+        runtime = timing.constraints(runtime_reset=True)
+        added = set(runtime.splitlines()) - set(constraints.splitlines())
+        asynchronous = {
+            'u_managed/startup_compute',
+            'u_managed/runtime/startup_compute', 'u_managed/runtime/startup_memory',
+            'u_managed/runtime/startup_serial',
+            'u_managed/runtime/clocks/reference_48_monitor/startup_source',
+            'u_managed/runtime/clocks/reference_44_monitor/startup_source',
+            'u_managed/runtime/clocks/selected_monitor/startup_source',
+            'u_tf_audio/startup_compute', 'u_tf_audio/startup_memory',
+            'u_tf_audio/frames/startup_compute', 'output_safe_sync',
+            'u_runtime/g_usb_cdc_reset.usb_ready',
+        }
+        synchronous = {
+            'u_managed/startup_control', 'u_managed/runtime/startup_control',
+            'u_managed/runtime/clocks/startup_control', 'u_tf_audio/startup_source',
+            'u_tf_audio/frames/startup_source',
+        }
+        self.assertEqual({stem for stem, _, _ in timing.RUNTIME_GRANT_CHAINS}, asynchronous | synchronous)
+        self.assertEqual({stem for stem, source, destination in timing.RUNTIME_GRANT_CHAINS
+                          if source != destination}, asynchronous)
+        expected = {f'set_false_path -to [get_pins {{{stem}_0_s*/D}}]' for stem in asynchronous}
+        expected.update(f'set_max_delay 2.000 -from [get_pins {{{stem}_0_s*/Q}}] '
+                        f'-to [get_pins {{{stem}_1_s*/D}}]' for stem in asynchronous | synchronous)
+        self.assertEqual(added, expected)
+        self.assertEqual(len(added), 29)
+        # Existing raw assertion/CLEAR policy is unchanged. No functional,
+        # second-stage, clock-wide or broad prefix exception is added.
+        self.assertEqual([line for line in runtime.splitlines() if '/CLEAR' in line],
+                         [line for line in constraints.splitlines() if '/CLEAR' in line])
+        self.assertTrue(set(constraints.splitlines()).issubset(runtime.splitlines()))
+        with self.assertRaisesRegex(ValueError, 'selection must be boolean'):
+            timing.constraints(runtime_reset=1)
 
     def test_parallel_voice_control_preserves_allocation_and_gain_cycles(self):
         original = self.original_sources()['legacy/rtl/audio/unified_oscillator_engine.sv'].decode()

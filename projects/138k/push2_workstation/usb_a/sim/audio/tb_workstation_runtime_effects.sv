@@ -77,6 +77,30 @@ module tb_workstation_runtime_effects;
       .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(history_ready),
       .history_done_o(history_done),.quiescent_o(quiet),.fault_o(fault),.applied_rate_44100_o(rate),
       .applied_transaction_o(transaction),.peer_heartbeat_i(memory_hb),.delay_dma_fault_i(dma_fault),.heartbeat_o(audio_hb));
+`ifdef RUNTIME_REVERB_SCRATCH_REFERENCE
+  // Exercise old/new Reverb with the actual chain's sample/config producer.
+  wire old_ready,old_valid,old_active,old_clip,old_config_ready,old_config_applied;
+  wire old_history_ready,old_history_done,old_quiet,old_rate;
+  wire signed [31:0] old_left,old_right;
+  scratch_reference_spatial_reverb u_scratch_reference(
+      .clk_i(aclk),.rst_ni(arst_n),.clear_i(clear_i),
+      .valid_i(u_dut.state==4 && u_dut.work_id==2),.enabled_i(u_dut.work_enabled),
+      .left_i(u_dut.work_l),.right_i(u_dut.work_r),
+      .ready_o(old_ready),.valid_o(old_valid),.active_o(old_active),
+      .left_o(old_left),.right_o(old_right),.clip_o(old_clip),
+      .config_valid_i(u_dut.config_accept),.rate_44100_i(rate44),.history_clear_i(u_dut.history_accept),
+      .config_ready_o(old_config_ready),.config_applied_o(old_config_applied),
+      .history_ready_o(old_history_ready),.history_done_o(old_history_done),
+      .quiescent_o(old_quiet),.applied_rate_44100_o(old_rate));
+  always @(negedge aclk)if(arst_n &&
+      {u_dut.reverb_ready,u_dut.reverb_valid,u_dut.reverb_active,u_dut.reverb_clip,
+       u_dut.reverb_stage.config_ready_o,u_dut.reverb_stage.config_applied_o,
+       u_dut.reverb_stage.history_ready_o,u_dut.reverb_stage.history_done_o,
+       u_dut.reverb_stage.quiescent_o,u_dut.reverb_stage.applied_rate_44100_o,u_dut.reverb_l,u_dut.reverb_r} !==
+      {old_ready,old_valid,old_active,old_clip,old_config_ready,old_config_applied,
+       old_history_ready,old_history_done,old_quiet,old_rate,old_left,old_right})
+    $fatal(1,"real effects producer exposed Reverb scratch cancellation/state divergence");
+`endif
   workstation_runtime_delay_ddr_dma #(.TRANSACTION_TIMEOUT_CYCLES(2048),.PEER_TIMEOUT_CYCLES(512)) u_dma(
       .clk_i(mclk),.rst_ni(mrst_n),.dwr_valid_i(dwr_valid),.dwr_data_i(dwr_data),.dwr_pop_o(dwr_pop),
       .drd_push_o(drd_push),.drd_data_o(drd_data),.drd_ready_i(drd_ready),.ddr_req_o(ddr_req),

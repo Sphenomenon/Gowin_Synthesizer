@@ -25,6 +25,7 @@ module usb_stop_clock_fence_case #(parameter integer FENCE=0)(
     reg [9:0] panic_epoch=0;
     integer attaches=0,detaches=0,panics=0,barriers=0,default_events=0,normal_events=0,note_events=0,stores=0;
     integer stale_events=0,fresh_events=0,blocked_checks=0,hold_stop_checks=0,drain_stop_checks=0,pointer_checks=0;
+    integer cancel_assert_checks=0;
     integer expected_fresh_note=70;reg track_boundary=0,first_fresh_write=0;
     wire [31:0] model_control={volume,6'd1,3'd0,2'd0,2'd2,3'd0};
     wire [447:0] performance={32'h43545231,32'd0,32'd0,32'd0,32'd0,
@@ -87,6 +88,15 @@ module usb_stop_clock_fence_case #(parameter integer FENCE=0)(
                 end
             end
         end
+    end
+    // A stopped clock cannot defer isolation of a canceled FIFO generation.
+    // Allow asynchronous flop propagation, without allowing an audio edge.
+    always @(posedge owner.input_reset)if(reset_n && FENCE!=0)begin
+        #0.001;
+        if(!owner.queue_flushing || owner.queue_read_ready || owner.queue_write_ready ||
+           (audio_valid && !lifecycle))
+            $fatal(1,"cancellation waited for audio clock before fencing queued data");
+        cancel_assert_checks=cancel_assert_checks+1;
     end
     task usb_cycles(input integer count);begin repeat(count)@(negedge clk_usb);end endtask
     task access(input bit wr,input [7:0] target,input [31:0] data,output reg [31:0] value);
@@ -161,7 +171,7 @@ module usb_stop_clock_fence_case #(parameter integer FENCE=0)(
         if(FENCE!=0 && volume!=32768)$fatal(1,"stale pre-detach volume replay");
         generic_event(2,7,53);wait(volume==13568);
         consume=0;generic_event(1,71,80);wait(owner.queued_valid);
-        @(negedge compute_clk);compute_run=0;
+        @(posedge compute_clk);#0.001;compute_run=0;
         generic_event(2,120,0);usb_cycles(8);consume=1;
         fresh_after_boundary(72);
         if(attaches!=2 || detaches!=1 || panics!=1 || default_events!=26)$fatal(1,"stopped PANIC invented attach/defaults");
@@ -176,7 +186,8 @@ module usb_stop_clock_fence_case #(parameter integer FENCE=0)(
         if(attaches!=3 || detaches!=2 || panics!=1 || default_events!=39 || barriers!=4)
             $fatal(1,"repeated stopped boundaries changed existing lifecycle coalescing");
         if(FENCE!=0)begin
-            if(pointer_checks!=3 || hold_stop_checks!=3 || drain_stop_checks!=3 || fresh_events!=3 || stale_events!=0)
+            if(pointer_checks!=3 || hold_stop_checks!=3 || drain_stop_checks!=3 || fresh_events!=3 || stale_events!=0 ||
+               cancel_assert_checks<4)
                 $fatal(1,"incomplete opt-in fencing coverage");
         end else if(stale_events==0)$fatal(1,"legacy negative control did not reproduce old RAM replay");
         $display("USB_STOP_CLOCK_FENCE enabled=%0d attaches=%0d barriers=%0d detaches=%0d panics=%0d defaults=%0d stale=%0d fresh=%0d blocked=%0d hold_stops=%0d drain_stops=%0d pointer_checks=%0d stores=%0d",FENCE,attaches,barriers,detaches,panics,default_events,stale_events,fresh_events,blocked_checks,hold_stop_checks,drain_stop_checks,pointer_checks,stores);

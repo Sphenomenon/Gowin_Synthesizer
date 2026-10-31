@@ -3,10 +3,10 @@
 // permanent transaction gates and asynchronous mute assertion composition.
 module tb_workstation_runtime_memory_integration;
     reg control_clk=0,compute_clk=0,memory_clk=0,pclk=0,reference48=0,reference44=0;
-    reg common_reset_n=0,preset_n=0,memory_run=1;
+    reg common_reset_n=0,preset_n=0,memory_run=1,compute_run=1;
     reg backend_reset_n=1,backend_ready=0,compute_qualified=1;
     always #10 control_clk=!control_clk;
-    always #6.510417 compute_clk=!compute_clk;
+    always #6.510417 if(compute_run)compute_clk=!compute_clk;
     initial begin #2; forever begin #5; if(memory_run)memory_clk=!memory_clk;end end
     always #17 pclk=!pclk;
     initial begin #3.7;forever #40.690104 reference48=!reference48;end
@@ -20,9 +20,13 @@ module tb_workstation_runtime_memory_integration;
         .started_o(guard_started),.fault_o(guard_fault),.start_ready_o(guard_ready),
         .mute_o(guard_mute),.channel_open_o(channel_open),.clock_alive_o(),.fault_code_o(guard_code));
     wire compute_output_safe_n=common_reset_n && compute_qualified && !guard_mute;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] output_safe_sync;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
-    always @(posedge compute_clk or negedge compute_output_safe_n)
-        if(!compute_output_safe_n)output_safe_compute<=0;
+    always @(posedge compute_clk or negedge common_reset_n)
+        if(!common_reset_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};
+    always @(posedge compute_clk or negedge common_reset_n)
+        if(!common_reset_n)output_safe_compute<=0;
+        else if(!output_safe_sync[1])output_safe_compute<=0;
         else output_safe_compute<={output_safe_compute[1:0],1'b1};
     reg midi_rx=1,pc_rx=1,usb_valid=0,usb_lifecycle=0,usb_cancel=0;
     reg [17:0] usb_data=0;
@@ -67,8 +71,8 @@ module tb_workstation_runtime_memory_integration;
     wire backend_request_ready;
     workstation_runtime_controlled #(.WINDOW_CYCLES(500),.STABLE_WINDOWS(3),.LOSS_TIMEOUT_CYCLES(25),
         .STOP_LOW_CYCLES(8),.STARTUP_MUTE_FRAMES(3),.PDN_HOLD_FRAMES(1),.RECORD_ADDRESS_BITS(4),
-        .RESERVE_ZERO_EPOCH(1)) dut(
-        .rst_ni(runtime_reset_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .RESERVE_ZERO_EPOCH(1),.SEPARATE_COMMON_RESET(1)) dut(
+        .common_reset_ni(common_reset_n),.rst_ni(runtime_reset_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .reference_48_i(reference48),.reference_44_i(reference44),.midi_rx_i(midi_rx),.pc_uart_rx_i(pc_rx),
         .usb_event_valid(usb_valid),.usb_lifecycle,.usb_cancel,.usb_event_data(usb_data),.usb_event_ready(usb_ready),
         .pclk,.preset_n,.psel,.penable,.pwrite,.paddr,.pwdata,.pstrb,.pready,.pslverr,.prdata,.performance_words_o(performance),
@@ -77,11 +81,9 @@ module tb_workstation_runtime_memory_integration;
         .rejected_o(),.failed_o(),.policy_rejected_o(policy_rejected),.reject_code_o(),.fault_code_o(),.clock_select_o(),
         .switch_block_reason_o(block_reason),.active_44k1_o(rate),.active_valid_o(active_valid),.stream_epoch_o(epoch),
         .source_qualified_o(),.quiesce_o(),.stream_flush_o(),.dsp_fault_o(),.context_ready_o(),
-        .pcm_cpu_ready_i(1'b1),.pcm_command_valid_i(1'b0),.pcm_command_write_i(1'b0),
-        .pcm_command_address_i(12'd0),.pcm_command_data_i(32'd0),.pcm_command_strobes_i(4'd0),
-        .pcm_command_ready_o(),.pcm_response_error_o(),.pcm_response_data_o(),
-        .hci_session_ready_i(1'b0),.hci_controller_epoch_i(32'd0),.hci_transport_generation_i(32'd0),.pcm_tf_busy_i(1'b0),
-        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!output_safe_compute[2]),
+        .pcm_psel_i(1'b0),.pcm_pready_o(),.pcm_pslverr_o(),.pcm_prdata_o(),
+        .hci_session_ready_i(1'b0),.hci_controller_epoch_i(32'd0),.hci_transport_generation_i(32'd0),
+        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!compute_output_safe_n || !output_safe_compute[2]),
         .tf_active_i(tf_active),.tf_busy_i(tf_busy),.tf_valid_i(1'b1),.tf_error_i(tf_error),
         .tf_left_i(16'sd25000),.tf_right_i(-16'sd17000),.tf_sample_rate_i(tf_rate),
         .tf_generation_i(32'd1),.expected_tf_generation_i(32'd1),.tf_ready_o(),
@@ -212,11 +214,17 @@ module tb_workstation_runtime_memory_integration;
     endtask
     task automatic boot;
         begin
-            inspect_fault_frames=0;common_reset_n=0;preset_n=0;backend_reset_n=1;
+            inspect_fault_frames=0;compute_run=0;#1.7;common_reset_n=0;preset_n=0;backend_reset_n=1;
+            #0.1;check(!dut.reset_compute_n && !dut.runtime.compute_reset_n && !dut.runtime.bridge.compute_reset_n,
+                "off-edge common assertion resets stopped compute owners immediately");
             backend_ready=0;compute_qualified=1;memory_run=1;release_reads=1;request=0;recover=0;
             control_cycles(10);common_reset_n=1;control_cycles(40);
             check(!guard_started && !runtime_reset_n && !guard_fault,"actual runtime waits for first backend qualification");
-            backend_ready=1;preset_n=1;
+            backend_ready=1;preset_n=1;wait(guard_ready);
+            check(!dut.reset_compute_n && !dut.runtime.compute_reset_n,"startup grant cannot release stopped compute owners");
+            compute_run=1;repeat(4)@(posedge compute_clk);#0.1;
+            check(!dut.reset_compute_n && !dut.runtime.compute_reset_n,"all release bits wait for local grant synchronization and three release edges");
+            @(posedge compute_clk);#0.1;check(dut.reset_compute_n && dut.runtime.compute_reset_n,"fifth local edge releases startup owners");
             wait(guard_ready && ready && active_valid);frames(8);
             check(held==0 && epoch==1,"complete common reset establishes fresh nonzero stream identity");
             event_cpu(2,7,91);event_cpu(2,11,73);event_cpu(1,60,127);frames(192);

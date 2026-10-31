@@ -11,7 +11,7 @@ module tb_workstation_media_hold_fence;
     workstation_media_hold_probe dut(
 `else
     workstation_runtime_media_stop_bridge #(.ENABLE(1)) dut(
-`endif
+.control_reset_ni(1'b1),.compute_reset_ni(1'b1),`endif
         .reset_ni(reset_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.owner_reset_ni(owner_n),
         .request_i(request),.hold_i(hold),.local_request_o(local_request),.local_hold_o(local_hold),
         .local_done_i(local_done),.local_failed_i(local_failed),.tf_stop_request_o(tf_request),
@@ -19,7 +19,7 @@ module tb_workstation_media_hold_fence;
         .tf_stop_failure_code_i(tf_code),.media_quiet_i(quiet),.ready_o(ready),.done_o(done),.failed_o(failed),.failure_code_o(failure));
     wire off_local_hold,off_ready,off_done,off_failed,off_local_request,off_tf_request;
     workstation_runtime_media_stop_bridge #(.ENABLE(0)) off(
-        .reset_ni(reset_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.owner_reset_ni(owner_n),
+        .control_reset_ni(1'b1),.compute_reset_ni(1'b1),.reset_ni(reset_n),.clk_50m_i(control_clk),.compute_clk_i(compute_clk),.owner_reset_ni(owner_n),
         .request_i(request),.hold_i(hold),.local_request_o(off_local_request),.local_hold_o(off_local_hold),
         .local_done_i(local_done),.local_failed_i(local_failed),.tf_stop_request_o(off_tf_request),
         .tf_stop_pending_i(tf_pending),.tf_stop_done_i(tf_done),.tf_stop_failed_i(tf_failed),

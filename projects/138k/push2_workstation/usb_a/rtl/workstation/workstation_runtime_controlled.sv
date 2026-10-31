@@ -12,7 +12,8 @@ module workstation_runtime_controlled #(
     parameter bit RESERVE_ZERO_EPOCH=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
     parameter bit ENABLE_MEDIA_POLICY=0,
-    parameter bit ENABLE_AE350_PCM=0
+    parameter bit ENABLE_AE350_PCM=0,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,
     input wire reference_48_i,reference_44_i,midi_rx_i,pc_uart_rx_i,
@@ -97,13 +98,27 @@ module workstation_runtime_controlled #(
     output wire [3:0] media_stop_failure_code_o,
     output wire tf_stop_request_o,
     input wire tf_stop_pending_i,tf_stop_done_i,tf_stop_failed_i,
-    input wire [3:0] tf_stop_failure_code_i
+    input wire [3:0] tf_stop_failure_code_i,
+    input wire common_reset_ni
 );
+    // The monotonic startup grant crosses as data. Only the common
+    // assertion reaches async reset pins; every release bit uses local data.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_control;
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)startup_control<=0;else startup_control<={startup_control[0],rst_ni};
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_compute;
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)startup_compute<=0;else startup_compute<={startup_compute[0],rst_ni};
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] reset_50_pipe,reset_compute_pipe;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if(!rst_ni)reset_50_pipe<=0;else reset_50_pipe<={reset_50_pipe[1:0],1'b1};
-    always @(posedge compute_clk_i or negedge rst_ni)
-        if(!rst_ni)reset_compute_pipe<=0;else reset_compute_pipe<={reset_compute_pipe[1:0],1'b1};
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)reset_50_pipe<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_control[1])reset_50_pipe<=0;
+        else reset_50_pipe<={reset_50_pipe[1:0],1'b1};
+    always @(posedge compute_clk_i or negedge common_reset_n)
+        if(!common_reset_n)reset_compute_pipe<=0;
+        else if(SEPARATE_COMMON_RESET && !startup_compute[1])reset_compute_pipe<=0;
+        else reset_compute_pipe<={reset_compute_pipe[1:0],1'b1};
     wire reset_50_n=reset_50_pipe[2],reset_compute_n=reset_compute_pipe[2];
     wire midi_valid_50,midi_valid_compute,pc_valid_50,pc_valid_compute,pc_frame_error;
     wire [7:0] midi_byte_50,midi_byte_compute,pc_byte_50,pc_byte_compute;
@@ -115,15 +130,15 @@ module workstation_runtime_controlled #(
         .clk_i(clk_50m_i),.rst_ni(reset_50_n),.rx_i(pc_uart_rx_i),
         .valid_o(pc_valid_50),.data_o(pc_byte_50),.framing_error_o(pc_frame_error));
     gw138k_stream_cdc #(.WIDTH(8)) midi_bytes(
-        .reset_n(rst_ni),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
+        .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_valid(midi_valid_50),.source_data(midi_byte_50),.drop_count(midi_cdc_drop_o),
         .destination_valid(midi_valid_compute),.destination_data(midi_byte_compute));
     gw138k_stream_cdc #(.WIDTH(8)) pc_bytes(
-        .reset_n(rst_ni),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
+        .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_valid(pc_valid_50),.source_data(pc_byte_50),.drop_count(pc_drop),
         .destination_valid(pc_valid_compute),.destination_data(pc_byte_compute));
     gw138k_counter_cdc midi_drops(
-        .reset_n(rst_ni),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
+        .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_count(midi_cdc_drop_o),.destination_count(midi_drop_compute));
     reg pc_framing_sticky;
     // A binary drop counter can change several bits on a carry. Register its
@@ -139,23 +154,23 @@ module workstation_runtime_controlled #(
         else begin pc_health_meta<={pc_drop_seen_50,pc_framing_sticky};pc_health_sync<=pc_health_meta;end
     assign pc_health_o={29'd0,pc_overflow!=0,pc_health_sync};
 
-    wire command_reset_n,command_valid,command_ready,command_write,response_error;
+    wire command_reset_n,command_valid,command_ready,service_command_ready,command_write,response_error;
     wire [11:0] command_address;
     wire [31:0] command_data,response_data;
     wire [3:0] command_strobes;
     // Pinned APB CDC captures held payload then gives service predecode a cycle.
     gw138k_apb_cdc control_cdc(
-        .reset_n(rst_ni && preset_n),.pclk,.audio_clk(compute_clk_i),
+        .reset_n(common_reset_n && preset_n),.pclk,.audio_clk(compute_clk_i),
         .psel,.penable,.pwrite,.paddr,.pwdata,.pstrb,.pready,.pslverr,.prdata,
         .command_reset_n,.command_valid,.command_ready,.command_write,.command_address,
         .command_data,.command_strobes,.response_data,.response_error);
-    wire pcm_owner_reset,pcm_command_valid,pcm_command_ready,pcm_command_write,pcm_response_error;
+    wire pcm_owner_reset,pcm_command_valid,pcm_command_ready,pcm_command_ready_local,pcm_command_write,pcm_response_error;
     wire [11:0] pcm_command_address;
     wire [31:0] pcm_command_data,pcm_response_data;
     wire [3:0] pcm_command_strobes;
     generate if(ENABLE_AE350_PCM)begin: pcm_apb
         gw138k_apb_cdc commands(
-            .reset_n(rst_ni && preset_n),.pclk,.audio_clk(compute_clk_i),
+            .reset_n(common_reset_n && preset_n),.pclk,.audio_clk(compute_clk_i),
             .psel(pcm_psel_i),.penable,.pwrite,.paddr,.pwdata,.pstrb,
             .pready(pcm_pready_o),.pslverr(pcm_pslverr_o),.prdata(pcm_prdata_o),
             .command_reset_n(pcm_owner_reset),.command_valid(pcm_command_valid),.command_ready(pcm_command_ready),
@@ -184,9 +199,14 @@ module workstation_runtime_controlled #(
     // Original 448-bit performance layout is byte-for-byte unchanged.
     assign performance_words_o={32'h43545231,snap_sequence,snap_right,snap_left,snap_status,
         control_pitch_o,control_options_o,held_notes_o,pc_health_o,control_state_o,applied_events_o};
+    wire service_reset_n=command_reset_n && (!SEPARATE_COMMON_RESET || reset_compute_n);
+    // A mailbox may release before a stopped compute owner. Retain any APB
+    // command until that owner is ready, rather than acknowledging it in reset.
+    assign command_ready=(!SEPARATE_COMMON_RESET || reset_compute_n) && service_command_ready;
+    assign pcm_command_ready=(!SEPARATE_COMMON_RESET || reset_compute_n) && pcm_command_ready_local;
     gw138k_controlled_services #(.ENABLE_MEDIA_POLICY(ENABLE_MEDIA_POLICY)) services(
-        .clk(compute_clk_i),.reset_n(command_reset_n),.command_valid,.command_write,.command_address,
-        .command_data,.command_strobes,.command_ready,.response_data,.response_error,
+        .clk(compute_clk_i),.reset_n(service_reset_n),.command_valid,.command_write,.command_address,
+        .command_data,.command_strobes,.command_ready(service_command_ready),.response_data,.response_error,
         .cpu_event_valid,.cpu_event,.cpu_event_ready,.panel_event_valid,.panel_command,.panel_event_ready,
         .control_state(control_state_o),.control_pitch(control_pitch_o),.control_options(control_options_o),
         .applied_events(applied_events_o),.pc_health(pc_health_o),.held_notes(held_notes_o),
@@ -225,8 +245,8 @@ module workstation_runtime_controlled #(
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)reasons_compute<=0;
         else reasons_compute<={tf_active_i || tf_busy_i,score_running_o,record_enabled_o};
-    always @(posedge clk_50m_i or posedge media_busy_compute or negedge rst_ni)
-        if(!rst_ni)media_busy_50<=3'b111;
+    always @(posedge clk_50m_i or posedge media_busy_compute or negedge reset_50_n)
+        if(!reset_50_n)media_busy_50<=3'b111;
         else if(media_busy_compute)media_busy_50<=3'b111;
         else media_busy_50<={media_busy_50[1:0],1'b0};
     always @(posedge clk_50m_i or negedge reset_50_n)
@@ -234,8 +254,9 @@ module workstation_runtime_controlled #(
         else begin reasons_meta<=reasons_compute;reasons_sync<=reasons_meta;end
     assign switch_block_reason_o={reasons_sync,!switch_permit_i};
     wire qualified_permit=switch_permit_i && !media_busy_50[2];
-    workstation_runtime_media_stop_bridge #(.ENABLE(ENABLE_MEDIA_POLICY)) media_stop(
-        .reset_ni(rst_ni),.clk_50m_i,.compute_clk_i,.owner_reset_ni(command_reset_n),
+    workstation_runtime_media_stop_bridge #(.ENABLE(ENABLE_MEDIA_POLICY),.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) media_stop(
+        .reset_ni(common_reset_n),.control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n),
+        .clk_50m_i,.compute_clk_i,.owner_reset_ni(service_reset_n),
         .request_i(media_stop_request_i),.hold_i(media_stop_hold_i),
         .local_request_o(local_stop_request),.local_hold_o(local_stop_hold),
         .local_done_i(local_stop_done),.local_failed_i(local_stop_failed),
@@ -255,9 +276,9 @@ module workstation_runtime_controlled #(
         .LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),.STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),
         .SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),
         .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
-        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM)
+        .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) runtime(
-        .rst_ni,.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
+        .rst_ni,.common_reset_ni(common_reset_n),.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i,.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i,.media_quiescent_i,
         .request_ready_o,.busy_o,.fault_o,.accepted_o,.applied_o,.rejected_o,.failed_o,.policy_rejected_o,
         .reject_code_o,.fault_code_o,.clock_select_o,.active_44k1_o,.active_valid_o,.stream_epoch_o,
@@ -268,7 +289,7 @@ module workstation_runtime_controlled #(
         .pcm_left_i,.pcm_right_i,.output_mute_i,
         .pcm_cpu_ready_i(pcm_owner_reset),.pcm_command_valid_i(pcm_command_valid),.pcm_command_write_i(pcm_command_write),
         .pcm_command_address_i(pcm_command_address),.pcm_command_data_i(pcm_command_data),.pcm_command_strobes_i(pcm_command_strobes),
-        .pcm_command_ready_o(pcm_command_ready),.pcm_response_error_o(pcm_response_error),.pcm_response_data_o(pcm_response_data),
+        .pcm_command_ready_o(pcm_command_ready_local),.pcm_response_error_o(pcm_response_error),.pcm_response_data_o(pcm_response_data),
         .hci_session_ready_i,.hci_controller_epoch_i,.hci_transport_generation_i,.pcm_tf_busy_i(tf_active_i || tf_busy_i),.held_notes_o,.panic_epoch_o(panic_epoch),.panic_muted_o(),
         .active_mask_o,.scope_status_o,.tf_scope_control_o,.applied_events_o,.control_options_o,
         .active_voice_count_o(voices),.mode_o(mode),.master_volume_o,.pitch_q20_o(pitch),
@@ -290,7 +311,7 @@ module workstation_runtime_controlled #(
     wire observed_valid,observed_rate,observed_error,observed_change,observed_gap,observation_loss;
     wire [31:0] observed_epoch,observed_sequence,observed_pcm,observation_source_drop;
     workstation_pcm_observation_bridge observation(
-        .reset_ni(rst_ni),.source_clk_i(mclk_o),.destination_clk_i(compute_clk_i),
+        .reset_ni(common_reset_n),.source_clk_i(mclk_o),.destination_clk_i(compute_clk_i),
         .frame_valid_i(frame_valid_o),.frame_44k1_i(frame_44k1_o),.frame_error_i(frame_error_o),
         .frame_epoch_i(frame_epoch_o),.frame_sequence_i(frame_sequence_o),.frame_pcm_i(frame_pcm_o),
         .source_drop_count_o(observation_source_drop),.destination_drop_count_o(observation_drop_o),
@@ -320,7 +341,7 @@ module workstation_runtime_controlled #(
     wire health_valid;
     wire [31:0] health_epoch,source_errors_compute,health_drop;
     gw138k_stream_cdc #(.WIDTH(96)) health_snapshot(
-        .reset_n(rst_ni),.source_clk(mclk_o),.destination_clk(compute_clk_i),
+        .reset_n(common_reset_n),.source_clk(mclk_o),.destination_clk(compute_clk_i),
         .source_valid(frame_valid_o),.source_data({frame_epoch_o,underrun_count_o,source_errors}),
         .drop_count(health_drop),.destination_valid(health_valid),
         .destination_data({health_epoch,underrun_compute,source_errors_compute}));
@@ -350,7 +371,7 @@ module workstation_runtime_controlled #(
     wire [31:0] display_drop;
     wire [31:0] core_faults=deadline_miss_o+midi_overflow_o+note_drop_o;
     gw138k_stream_cdc #(.WIDTH(203)) display(
-        .reset_n(rst_ni),.source_clk(compute_clk_i),.destination_clk(clk_50m_i),
+        .reset_n(common_reset_n),.source_clk(compute_clk_i),.destination_clk(clk_50m_i),
         .source_valid(observed_valid),
         .source_data({observed_rate,observed_epoch,observed_sequence,observed_error,
             observed_pcm,revision,8'd0,active_mask_o,underrun_compute[15:0],core_faults[15:0],
@@ -358,8 +379,8 @@ module workstation_runtime_controlled #(
         .drop_count(display_drop),.destination_valid(display_valid_o),
         .destination_data({display_44k1_o,display_epoch_o,display_sequence_o,display_error_o,
             display_pcm_o,display_reference_o,display_voices_o,display_status_o,effect_mask_o,effect_order_o}));
-    workstation_display_observation_health display_observation_health(
-        .reset_ni(rst_ni),.compute_clk_i(compute_clk_i),.clk_50m_i(clk_50m_i),
+    workstation_display_observation_health #(.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) display_observation_health(
+        .control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n),.reset_ni(common_reset_n),.compute_clk_i(compute_clk_i),.clk_50m_i(clk_50m_i),
         .physical_observation_drop_i(observation_drop_o),.display_mailbox_drop_i(display_drop),
         .fault_50_o(display_observation_fault_o));
 endmodule
@@ -367,23 +388,26 @@ endmodule
 // The physical count has ALREADY crossed from selected MCLK into compute and
 // may jump by several drops. Never Gray-encode that decoded count a second time.
 // Each source becomes one sticky bit, independently synchronized to 50MHz.
-module workstation_display_observation_health (
+module workstation_display_observation_health #(parameter bit SEPARATE_DOMAIN_RESETS=0) (
     input wire reset_ni,compute_clk_i,clk_50m_i,
     input wire [31:0] physical_observation_drop_i,display_mailbox_drop_i,
-    output reg fault_50_o
+    output reg fault_50_o,
+    input wire control_reset_ni,compute_reset_ni
 );
+    wire local_control_reset_n=SEPARATE_DOMAIN_RESETS ? control_reset_ni:reset_ni;
+    wire local_compute_reset_n=SEPARATE_DOMAIN_RESETS ? compute_reset_ni:reset_ni;
     wire [1:0] nonzero={display_mailbox_drop_i!=0,physical_observation_drop_i!=0};
     reg [1:0] source_sticky;
-    always @(posedge compute_clk_i or negedge reset_ni)
-        if(!reset_ni)source_sticky<=0;else source_sticky<=source_sticky | nonzero;
+    always @(posedge compute_clk_i or negedge local_compute_reset_n)
+        if(!local_compute_reset_n)source_sticky<=0;else source_sticky<=source_sticky | nonzero;
     // On the edge of the first drop, the producer counter changes after this
     // observer's sampling edge. If compute stops right there, current nonzero
     // still raises the held level without needing another compute edge. Once
     // source_sticky is set, later counter wrap cannot lower that level.
     wire [1:0] loss_level=source_sticky | nonzero;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] loss_meta,loss_sync;
-    always @(posedge clk_50m_i or negedge reset_ni)begin
-        if(!reset_ni)begin loss_meta<=0;loss_sync<=0;fault_50_o<=0;end
+    always @(posedge clk_50m_i or negedge local_control_reset_n)begin
+        if(!local_control_reset_n)begin loss_meta<=0;loss_sync<=0;fault_50_o<=0;end
         else begin
             loss_meta<=loss_level;loss_sync<=loss_meta;
             if(|loss_sync)fault_50_o<=1;
@@ -394,7 +418,7 @@ endmodule
 // Readiness/CDC composition only. REC_ENABLE and cue stop remain owned by the
 // compute services, TF stop/drain remains owned by the TF service. A request is
 // a four-phase held transaction, never an asynchronous one-cycle pulse crossing.
-module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
+module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0,SEPARATE_DOMAIN_RESETS=0) (
     input wire reset_ni,clk_50m_i,compute_clk_i,owner_reset_ni,
     input wire request_i,hold_i,
     output reg local_request_o,
@@ -406,8 +430,11 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
     input wire media_quiet_i,
     output wire ready_o,
     output reg done_o,failed_o,
-    output reg [3:0] failure_code_o
+    output reg [3:0] failure_code_o,
+    input wire control_reset_ni,compute_reset_ni
 );
+    wire local_control_reset_n=SEPARATE_DOMAIN_RESETS ? control_reset_ni:reset_ni;
+    wire local_compute_reset_n=SEPARATE_DOMAIN_RESETS ? compute_reset_ni:reset_ni;
     localparam [1:0] IDLE=0,LOCAL=1,TF=2,QUIET=3;
     reg [1:0] state;
     reg hold_50,request_toggle,acknowledge_seen,local_failure;
@@ -422,12 +449,12 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
     // Both safety conditions asynchronously assert the same preset value.
     // A single async preset maps to real FFs; mixed async clear/preset made
     // the Gowin mapper infer combinational feedback for these two bits.
-    wire hold_assert=!reset_ni || hold_50;
+    wire hold_assert=!local_compute_reset_n || hold_50;
     always @(posedge compute_clk_i or posedge hold_assert)
         if(hold_assert)hold_compute<=2'b11;
         else hold_compute<={hold_compute[0],1'b0};
-    always @(posedge compute_clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin
+    always @(posedge compute_clk_i or negedge local_compute_reset_n)begin
+        if(!local_compute_reset_n)begin
             request_compute<=0;request_seen<=0;compute_pending<=0;compute_sent<=0;
             acknowledge_toggle<=0;compute_failure<=0;local_request_o<=0;
         end else begin
@@ -450,16 +477,16 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0) (
     // Failure payload is held until the next transaction. The acknowledge
     // gets an extra destination settle edge after its two-flop synchronizer;
     // parallel per-bit sampling alone would not correlate the result.
-    always @(posedge clk_50m_i or negedge reset_ni)begin
-        if(!reset_ni)begin
+    always @(posedge clk_50m_i or negedge local_control_reset_n)begin
+        if(!local_control_reset_n)begin
             acknowledge_50<=0;failed_50<=0;
         end else begin
             acknowledge_50<={acknowledge_50[1:0],acknowledge_toggle};
             failed_50<={failed_50[0],compute_failure};
         end
     end
-    always @(posedge clk_50m_i or negedge reset_ni)begin
-        if(!reset_ni)begin
+    always @(posedge clk_50m_i or negedge local_control_reset_n)begin
+        if(!local_control_reset_n)begin
             state<=IDLE;hold_50<=0;request_toggle<=0;acknowledge_seen<=0;local_failure<=0;
             tf_stop_request_o<=0;done_o<=0;failed_o<=0;failure_code_o<=0;
         end else begin

@@ -16,7 +16,7 @@ REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 # The reviewed native RTC/PCM, ROM and business observation composition changes
 # this maintained reference. Original effects provenance/adaptation bytes and
 # both non-runtime FIFO selectors remain locked; no effects lineage is rebased.
-REFERENCE_SHA256 = '7363bbbf880172da570f98491bec951c948c1ec3cdad76315f77920dbf0095e6'
+REFERENCE_SHA256 = 'b9dcb9d0b80e074f7f469fa887b9c25888a154776b86a2f1af1351fd6599444a'
 PREPARED_SOURCE = 'rtl/audio/stereo_effects.sv'
 
 

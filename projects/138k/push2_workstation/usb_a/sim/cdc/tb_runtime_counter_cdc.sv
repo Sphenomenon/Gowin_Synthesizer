@@ -2,11 +2,15 @@
 module tb_runtime_counter_cdc;
     reg reset_n=0,source_clk=0,destination_clk=0,source_run=1,destination_run=1;
     reg [31:0] source_count=0;
-    wire [31:0] old_count,new_count;
+    wire [31:0] old_count,new_count,new_gray;
+    reg [31:0] previous_count=0,previous_gray=0;
     real source_half=3.7,destination_half=5.1,source_phase=0.2,destination_phase=1.3;
     integer checks=0,final_deliveries=0,stopped_resets=0;
     legacy_counter_cdc reference(.reset_n(reset_n),.source_clk(source_clk),.destination_clk(destination_clk),.source_count(source_count),.destination_count(old_count));
-    gw138k_counter_cdc candidate(.reset_n(reset_n),.source_clk(source_clk),.destination_clk(destination_clk),.source_count(source_count),.destination_count(new_count));
+    gw138k_counter_cdc candidate(.reset_n(reset_n),.source_clk(source_clk),.destination_clk(destination_clk),.source_count(source_count),.destination_count(new_count),.destination_gray(new_gray));
+    always @(posedge destination_clk or negedge reset_n)
+        if(!reset_n)begin previous_count<=0;previous_gray<=0;end
+        else begin previous_count<=new_count;previous_gray<=new_gray;end
     initial begin
         if($value$plusargs("SOURCE_HALF=%f",source_half))begin end
         if($value$plusargs("SOURCE_PHASE=%f",source_phase))begin end
@@ -21,7 +25,10 @@ module tb_runtime_counter_cdc;
         begin
             if(new_count!==old_count || candidate.gray!==reference.gray || candidate.meta!==reference.meta ||
                candidate.sync_value!==reference.sync_value || candidate.source_release!==reference.source_release ||
-               candidate.destination_release!==reference.destination_release)$fatal(1,"counter state/output/latency mismatch");
+               candidate.destination_release!==reference.destination_release ||
+               new_gray!==candidate.sync_value)$fatal(1,"counter state/output/latency mismatch");
+            if(!$isunknown({new_count,new_gray,previous_count,previous_gray}) &&
+               ((new_count!=previous_count)!==(new_gray!=previous_gray)))$fatal(1,"Gray change detection cycle mismatch");
             checks=checks+1;
         end
     endtask

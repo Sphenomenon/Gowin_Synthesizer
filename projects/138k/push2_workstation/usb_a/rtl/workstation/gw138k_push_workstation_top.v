@@ -266,14 +266,19 @@ module gw138k_push_workstation_top #(
     // Backend loss quarantines both directions until common reset. It never
     // clears held notes, committed parameters or the stream epoch in place.
     workstation_runtime_memory_guard u_runtime_memory_guard(
-        .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+        .reset_ni(button1_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
         .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),
         .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),
         .mute_o(memory_guard_mute),.channel_open_o(runtime_channel_open),.clock_alive_o(),.fault_code_o(memory_guard_code));
     wire compute_output_safe_n=reset_n && audio_reset_n && !memory_guard_mute;
+    // Safety still gates the output immediately; release crosses as local data.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] output_safe_sync;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
-    always @(posedge audio_clk or negedge compute_output_safe_n)
-        if(!compute_output_safe_n)output_safe_compute<=0;
+    always @(posedge audio_clk or negedge button1_n)
+        if(!button1_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};
+    always @(posedge audio_clk or negedge button1_n)
+        if(!button1_n)output_safe_compute<=0;
+        else if(!output_safe_sync[1])output_safe_compute<=0;
         else output_safe_compute<={output_safe_compute[1:0],1'b1};
     wire tf_packet_active,tf_packet_busy,tf_packet_valid,tf_packet_error,tf_packet_ready;
     wire signed [15:0] tf_packet_left,tf_packet_right;
@@ -591,8 +596,8 @@ module gw138k_push_workstation_top #(
 `endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire [15:0] master_volume;
-    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED)) u_managed(
-        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
+    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)) u_managed(
+        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
         .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
         .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
         .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),
@@ -609,7 +614,7 @@ module gw138k_push_workstation_top #(
         .active_44k1_o(rate44),.active_valid_o(rate_valid),.stream_epoch_o(rate_epoch),
         .source_qualified_o(rate_qualified),.quiesce_o(rate_quiesce),.stream_flush_o(rate_flush),
         .dsp_fault_o(rate_dsp_fault),.context_ready_o(rate_context_ready),
-        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!output_safe_compute[2]),
+        .pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(!compute_output_safe_n || !output_safe_compute[2]),
         .pcm_psel_i(pcm_select),.pcm_pready_o(pcm_bus_ready),.pcm_pslverr_o(pcm_bus_error),.pcm_prdata_o(pcm_bus_data),
         .hci_session_ready_i(hci_pcm_session_ready),.hci_controller_epoch_i(hci_pcm_controller_epoch),
         .hci_transport_generation_i(hci_pcm_transport_generation),
@@ -681,7 +686,12 @@ module gw138k_push_workstation_top #(
     wire signed [31:0] output_mid={output_mid_pcm,15'd0};
     wire [7:0] memory_flags;
     wire [127:0] video_diagnostics;
+`ifdef WORKSTATION_RUNTIME_NATIVE
+    gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(
+        .usb_cdc_assert_ni(button1_n),
+`else
     gw138k_push_performance_uart u_runtime(
+`endif
         .push_words(224'd0),.performance_feedback(push_snapshot),
         .usb_clk(usb_clk),.usb_reset_n(usb_reset_n),.usb_words(usb_words),
         .performance_words(performance_words),
@@ -755,8 +765,8 @@ module gw138k_push_workstation_top #(
 `endif
     wire tf_sample_ce,tf_hp_bck,tf_hp_ws,tf_hp_din,tf_pa_en;
 `ifdef WORKSTATION_RUNTIME_NATIVE
-    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1)) u_tf_audio(
-        .rst_ni(runtime_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
+    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(
+        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
         .memory_clk_i(memory_clk),.memory_reset_ni(memory_reset_n),
         .memory_ready_i(memory_calibrated && memory_reset_n),
         .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),

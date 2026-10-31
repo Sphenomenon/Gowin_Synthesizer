@@ -50,8 +50,8 @@ module tf_sd_file_reader #(parameter [23:0] EXT="WAV",parameter integer SPI_CLK_
 endmodule
 
 module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=0,RUN_SCENARIOS=1,EXTERNAL_STOP_PROTOCOL=0,
-    OVERALL_TIMEOUT_NS=3000000);
-    reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,memory_run=1,rst_n=0;
+    OVERALL_TIMEOUT_NS=3000000,SEPARATE_COMMON_RESET=0);
+    reg source_clk=0,compute_clk=0,memory_clk=0,source_run=1,compute_run=1,memory_run=1,rst_n=0,common_reset_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
     always begin #6.510416667;if(compute_run)compute_clk=~compute_clk;end
     always #5 if(memory_run)memory_clk=~memory_clk;
@@ -106,9 +106,9 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
         if(scope_restart && !scope_explicit_restart)scope_auto_count=scope_auto_count+1;
     end
     reg tf_ready=0;
-    workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(1000),.EXTERNAL_STOP_PROTOCOL(EXTERNAL_STOP_PROTOCOL),
+    workstation_tf_runtime_service #(.FIFO_ADDRESS_BITS(3),.QUIET_TIMEOUT_CYCLES(1000),.EXTERNAL_STOP_PROTOCOL(EXTERNAL_STOP_PROTOCOL),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET),
         .HOTPLUG_TIMEOUT_CYCLES(28'd40),.HOTPLUG_STALL_TIMEOUT_CYCLES(28'd70)) dut(
-        .rst_ni(rst_n),.clk_50m_i(source_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
+        .common_reset_ni(common_reset_n),.rst_ni(rst_n),.clk_50m_i(source_clk),.compute_clk_i(compute_clk),.memory_clk_i(memory_clk),
         .memory_reset_ni(rst_n),.memory_ready_i(1'b1),.mode_i(use_scope ? scope_mode:mode),.run_i(use_scope ? scope_run:run),
         .restart_i(use_scope ? scope_explicit_restart:restart),.cancel_i(use_scope ? scope_file_cancel:cancel),
         .reader_restart_i(reader_restart),.transport_error_i(use_scope ? scope_error:transport_error),
@@ -373,7 +373,17 @@ module tb_workstation_tf_runtime_service #(parameter integer USE_COMMAND_BUFFER=
     integer accepted_before,frames_before;
     reg [31:0] generation_before;
     initial begin if(RUN_SCENARIOS)begin
-        repeat(6)@(negedge source_clk);rst_n=1;repeat(30)@(negedge source_clk);
+        repeat(6)@(negedge source_clk);
+        if(SEPARATE_COMMON_RESET)begin
+            common_reset_n=1;compute_run=0;repeat(4)@(negedge source_clk);rst_n=1;repeat(8)@(negedge source_clk);
+            if(dut.compute_reset_n || dut.frames.compute_reset_n || dut.compute_control!==0)
+                $fatal(1,"TF startup released a stopped compute owner");
+            compute_run=1;repeat(4)@(posedge compute_clk);#0.1;
+            if(dut.compute_reset_n || dut.frames.compute_reset_n)$fatal(1,"TF startup release skipped local grant/release stages");
+            @(posedge compute_clk);#0.1;
+            if(!dut.compute_reset_n || !dut.frames.compute_reset_n)$fatal(1,"TF startup owner failed fifth-edge release");
+        end else begin common_reset_n=1;rst_n=1;end
+        repeat(30)@(negedge source_clk);
         begin_file(0);await_frames(10);
         @(negedge source_clk);run=0;wait(paused);repeat(5)@(negedge compute_clk);
         accepted_before=accepted;frames_before=session_index;generation_before=source_generation;

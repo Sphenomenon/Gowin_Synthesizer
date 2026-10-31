@@ -115,18 +115,62 @@ module workstation_runtime_spatial_reverb (
         end
     end
     assign active_o=enabled_i || gain!=0;
+    // These registers are private to one frame. Configuration/history are
+    // accepted only in state 0; PANIC may finish a speculative scratch write
+    // on its cancellation edge, while the control block immediately returns
+    // to state 0, suppresses output and clears the delay history. Every next
+    // frame overwrites sums (3), h/tail mix (4), products/loop gain (5),
+    // feedback (6), line write (7), wet products (8) and mix (9) before use.
+    // Keep this wide datapath's enables local to its registered state.
+    always_ff @(posedge clk_i or negedge rst_ni)begin
+        if(!rst_ni)begin
+            early_product<=0;wet_product_l<=0;wet_product_r<=0;mixed_l<=0;mixed_r<=0;
+            sum01<=0;diff01<=0;sum23<=0;diff23<=0;
+            tail_sum01<=0;tail_diff01<=0;tail_sum23<=0;tail_diff23<=0;tail_mix_l<=0;tail_mix_r<=0;
+            for(integer lane=0;lane<4;lane=lane+1)begin
+                line_write[lane]<=0;h[lane]<=0;loop_gain[lane]<=0;feedback[lane]<=0;
+            end
+        end else case(state)
+            3:if(tap==0)begin
+                tail_sum01<=$signed({tail[0][31],tail[0]})+$signed({tail[1][31],tail[1]});
+                tail_diff01<=$signed({tail[0][31],tail[0]})-$signed({tail[1][31],tail[1]});
+                tail_sum23<=$signed({tail[2][31],tail[2]})+$signed({tail[3][31],tail[3]});
+                tail_diff23<=$signed({tail[2][31],tail[2]})-$signed({tail[3][31],tail[3]});
+                sum01<=$signed({damping[0][31],damping[0]})+$signed({damping[1][31],damping[1]});
+                diff01<=$signed({damping[0][31],damping[0]})-$signed({damping[1][31],damping[1]});
+                sum23<=$signed({damping[2][31],damping[2]})+$signed({damping[3][31],damping[3]});
+                diff23<=$signed({damping[2][31],damping[2]})-$signed({damping[3][31],damping[3]});
+            end
+            4:if(tap==0)begin
+                tail_mix_l<=32'((ts0-ts2)>>>2);tail_mix_r<=32'((ts1+ts3)>>>2);
+                h[0]<=(p0+p2)>>>1;h[1]<=(p1+p3)>>>1;
+                h[2]<=(p0-p2)>>>1;h[3]<=(p1-p3)>>>1;
+            end
+            5:if(early_valid)begin
+                if(tap==0)for(integer lane=0;lane<4;lane=lane+1)loop_gain[lane]<=h[lane]-(h[lane]>>>3);
+                early_product<=(frames>=runtime_room_early_delay(applied_rate_44100_o,tap) ? $signed(early_data) : 32'sd0)*$signed({1'b0,runtime_room_early_gain(applied_rate_44100_o,tap)});
+            end
+            6:if(tap==0)for(integer lane=0;lane<4;lane=lane+1)feedback[lane]<=(mono>>>3)+loop_gain[lane];
+            7:for(integer lane=0;lane<4;lane=lane+1)line_write[lane]<=sat31(feedback[lane]);
+            8:begin
+                wet_product_l<=$signed(wet_l)*$signed({1'b0,gain});
+                wet_product_r<=$signed(wet_r)*$signed({1'b0,gain});
+            end
+            9:begin
+                mixed_l<=$signed({{32{dry_l[31]}},dry_l})+($signed(wet_product_l)>>>15);
+                mixed_r<=$signed({{32{dry_r[31]}},dry_r})+($signed(wet_product_r)>>>15);
+            end
+            default:begin end
+        endcase
+    end
     integer i;
     always_ff @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni) begin
             state<=0;tap<=0;frames<=0;gain<=0;early_pointer<=0;early_address<=0;
-            dry_l<=0;dry_r<=0;early_l<=0;early_r<=0;early_product<=0;
-            wet_product_l<=0;wet_product_r<=0;mixed_l<=0;mixed_r<=0;
+            dry_l<=0;dry_r<=0;early_l<=0;early_r<=0;
             left_o<=0;right_o<=0;valid_o<=0;clip_o<=0;internal_clip<=0;
-            sum01<=0;diff01<=0;sum23<=0;diff23<=0;
-            tail_sum01<=0;tail_diff01<=0;tail_sum23<=0;tail_diff23<=0;tail_mix_l<=0;tail_mix_r<=0;
             for(i=0;i<4;i=i+1) begin
-                pointer[i]<=0;tail[i]<=0;damping[i]<=0;line_write[i]<=0;
-                h[i]<=0;loop_gain[i]<=0;feedback[i]<=0;
+                pointer[i]<=0;tail[i]<=0;damping[i]<=0;
             end
         end else begin
             valid_o<=0;clip_o<=0;
@@ -153,50 +197,29 @@ module workstation_runtime_spatial_reverb (
                 // reads. Every operation keeps the original signed precision.
                 3:begin
                     early_address<=early_pointer-11'(runtime_room_early_delay(applied_rate_44100_o,tap));state<=4;
-                    if(tap==0)begin
-                        tail_sum01<=$signed({tail[0][31],tail[0]})+$signed({tail[1][31],tail[1]});
-                        tail_diff01<=$signed({tail[0][31],tail[0]})-$signed({tail[1][31],tail[1]});
-                        tail_sum23<=$signed({tail[2][31],tail[2]})+$signed({tail[3][31],tail[3]});
-                        tail_diff23<=$signed({tail[2][31],tail[2]})-$signed({tail[3][31],tail[3]});
-                        sum01<=$signed({damping[0][31],damping[0]})+$signed({damping[1][31],damping[1]});
-                        diff01<=$signed({damping[0][31],damping[0]})-$signed({damping[1][31],damping[1]});
-                        sum23<=$signed({damping[2][31],damping[2]})+$signed({damping[3][31],damping[3]});
-                        diff23<=$signed({damping[2][31],damping[2]})-$signed({damping[3][31],damping[3]});
-                    end
                 end
                 4:begin
-                    if(tap==0)begin
-                        tail_mix_l<=32'((ts0-ts2)>>>2);tail_mix_r<=32'((ts1+ts3)>>>2);
-                        h[0]<=(p0+p2)>>>1;h[1]<=(p1+p3)>>>1;
-                        h[2]<=(p0-p2)>>>1;h[3]<=(p1-p3)>>>1;
-                    end
                     state<=5;
                 end
                 5:if(early_valid)begin
-                    if(tap==0)for(i=0;i<4;i=i+1)loop_gain[i]<=h[i]-(h[i]>>>3);
-                    early_product<=(frames>=runtime_room_early_delay(applied_rate_44100_o,tap) ? $signed(early_data) : 32'sd0)*$signed({1'b0,runtime_room_early_gain(applied_rate_44100_o,tap)});
                     state<=6;
                 end
                 6:begin
-                    if(tap==0)for(i=0;i<4;i=i+1)feedback[i]<=(mono>>>3)+loop_gain[i];
                     if(tap[0]) early_r<=early_r+($signed(early_product)>>>15);
                     else early_l<=early_l+($signed(early_product)>>>15);
                     if(tap==11) state<=7;else begin tap<=tap+1'b1;state<=3;end
                 end
                 7:begin
                     for(i=0;i<4;i=i+1) begin
-                        line_write[i]<=sat31(feedback[i]);
                         if(feedback[i]>64'sd2147483647 || feedback[i]< -64'sd2147483648) internal_clip<=1;
                     end
                     state<=8;
                 end
                 8:begin
-                    wet_product_l<=$signed(wet_l)*$signed({1'b0,gain});
-                    wet_product_r<=$signed(wet_r)*$signed({1'b0,gain});state<=9;
+                    state<=9;
                 end
                 9:begin
-                    mixed_l<=$signed({{32{dry_l[31]}},dry_l})+($signed(wet_product_l)>>>15);
-                    mixed_r<=$signed({{32{dry_r[31]}},dry_r})+($signed(wet_product_r)>>>15);state<=10;
+                    state<=10;
                 end
                 10:begin
                     left_o<=sat31(mixed_l);right_o<=sat31(mixed_r);valid_o<=1;

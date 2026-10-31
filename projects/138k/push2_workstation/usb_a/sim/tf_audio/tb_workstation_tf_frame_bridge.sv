@@ -36,7 +36,7 @@ module tb_workstation_tf_frame_bridge #(
     wire [7:0] router_error_bits;
     wire consumer_ready=use_router ? router_tf_ready : tf_ready;
     workstation_tf_frame_bridge #(.FIFO_ADDRESS_BITS(2),.INITIAL_GENERATION(START_GENERATION)) dut(
-        .rst_ni(rst_n),.source_clk_i(source_clk),.compute_clk_i(compute_clk),
+        .common_reset_ni(1'b1),.rst_ni(rst_n),.source_clk_i(source_clk),.compute_clk_i(compute_clk),
         .invalidate_i(invalidate),.source_quiesce_i(quiesce),
         .source_valid_i(source_valid),.source_error_i(source_error),
         .source_sample_rate_i(source_rate),.source_left_i(source_left),.source_right_i(source_right),

@@ -121,6 +121,20 @@ def run(output):
         buffered_log=(output/'buffered_run.log').read_text()
         if 'PASS tf_runtime_service:' not in buffered_log:raise ValueError('Missing buffered marker')
         result['buffered_metrics']={key:int(value) for key,value in re.findall(r'(\w+)=(\d+)',buffered_log)}
+        split_results={}
+        for buffered in (0,1):
+            name='split'+str(buffered)
+            command=['iverilog','-g2012','-Wall','-I',str(output),'-s','tb_workstation_tf_runtime_service',
+                     '-Ptb_workstation_tf_runtime_service.SEPARATE_COMMON_RESET=1',
+                     '-Ptb_workstation_tf_runtime_service.USE_COMMAND_BUFFER='+str(buffered),
+                     '-o',str(output/(name+'.vvp')),*map(str,sources)]
+            for stage,argv in ((name+'_compile',command),(name+'_run',['vvp',str(output/(name+'.vvp'))])):
+                process=subprocess.run(argv,cwd=output,text=True,capture_output=True,timeout=90)
+                split_log=process.stdout+process.stderr;(output/(stage+'.log')).write_text(split_log)
+                if process.returncode:raise RuntimeError(stage+' failed:\n'+split_log[-6000:])
+            if 'PASS tf_runtime_service:' not in split_log:raise ValueError('Missing split reset marker')
+            split_results[str(buffered)]={key:int(value) for key,value in re.findall(r'(\w+)=(\d+)',split_log)}
+        result['split_common_reset_metrics']=split_results
         command=['iverilog','-g2012','-Wall','-I',str(output),'-s','tb_tf_path_default_reference',
                  '-o',str(output/'default_reference.vvp'),*map(str,reference_sources)]
         result['default_reference_compile_argv']=command
@@ -135,8 +149,8 @@ def run(output):
         # Keep the historical failure reproducible without touching maintained
         # RTL: removing the source flop must be detected by the real-path TB.
         quiet_register=('    reg memory_quiet;\n'
-            '    always @(posedge memory_clk_i or negedge rst_ni)\n'
-            '        if(!rst_ni)memory_quiet<=0;\n'
+            '    always @(posedge memory_clk_i or negedge local_memory_reset_n)\n'
+            '        if(!local_memory_reset_n)memory_quiet<=0;\n'
             '        else memory_quiet<=memory_gate && !memory_read_pending;\n')
         service=sources[0].read_text()
         if service.count(quiet_register)!=1:raise ValueError('Registered quiet negative-control anchor drift')

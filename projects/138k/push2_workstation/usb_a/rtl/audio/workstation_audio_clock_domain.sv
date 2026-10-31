@@ -10,7 +10,8 @@ module workstation_audio_clock_domain #(
     parameter integer COUNTER_BITS=32,
     parameter integer SWITCH_TIMEOUT_CYCLES=2000000,
     parameter bit RESERVE_ZERO_EPOCH=0,
-    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0
+    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
+    parameter bit SEPARATE_COMMON_RESET=0
 ) (
     input wire clk_50m_i, rst_ni, reference_48_i, reference_44_i,
     input wire request_i, request_44k1_i, recover_i,
@@ -25,23 +26,29 @@ module workstation_audio_clock_domain #(
     output wire [31:0] stream_epoch_o,staged_epoch_o,
     output wire [1:0] source_qualified_o,source_present_o,
     output wire selected_qualified_o,selected_stopped_low_o,
-    output wire [COUNTER_BITS-1:0] measured_48_o,measured_44_o,measured_selected_o
+    output wire [COUNTER_BITS-1:0] measured_48_o,measured_44_o,measured_selected_o,
+    input wire common_reset_ni
 );
     // The public reset may assert asynchronously. All 50 MHz control consumers
     // release together after three always-on edges; source monitors additionally
     // release their own measurement counters in each raw source domain.
+    wire common_reset_n=SEPARATE_COMMON_RESET ? common_reset_ni:rst_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] startup_control;
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if(!common_reset_n)startup_control<=0;else startup_control<={startup_control[0],rst_ni};
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] control_reset_pre;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg control_reset_n;
-    always @(posedge clk_50m_i or negedge rst_ni)
-        if (!rst_ni) begin control_reset_pre<=0; control_reset_n<=0; end
+    always @(posedge clk_50m_i or negedge common_reset_n)
+        if (!common_reset_n) begin control_reset_pre<=0; control_reset_n<=0; end
+        else if(SEPARATE_COMMON_RESET && !startup_control[1])begin control_reset_pre<=0;control_reset_n<=0;end
         else begin control_reset_pre<={control_reset_pre[0],1'b1}; control_reset_n<=control_reset_pre[1]; end
     wire monitor_restart,requested_audio_reset_n;
     workstation_audio_clock_monitor #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),
         .TOLERANCE_PPM(TOLERANCE_PPM),.LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),
-        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS)
+        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) reference_48_monitor (
-        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.source_clk_i(reference_48_i),
+        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.common_reset_ni(common_reset_n),.source_clk_i(reference_48_i),
         .restart_i(1'b0),.expect_44k1_i(1'b0),.qualified_o(source_qualified_o[0]),
         .clock_present_o(source_present_o[0]),.stopped_low_o(),
         .window_valid_o(),.window_good_o(),.window_edges_o(measured_48_o)
@@ -49,9 +56,9 @@ module workstation_audio_clock_domain #(
     workstation_audio_clock_monitor #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),
         .TOLERANCE_PPM(TOLERANCE_PPM),.LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),
-        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS)
+        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) reference_44_monitor (
-        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.source_clk_i(reference_44_i),
+        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.common_reset_ni(common_reset_n),.source_clk_i(reference_44_i),
         .restart_i(1'b0),.expect_44k1_i(1'b1),.qualified_o(source_qualified_o[1]),
         .clock_present_o(source_present_o[1]),.stopped_low_o(),
         .window_valid_o(),.window_good_o(),.window_edges_o(measured_44_o)
@@ -63,9 +70,9 @@ module workstation_audio_clock_domain #(
     workstation_audio_clock_monitor #(
         .WINDOW_CYCLES(WINDOW_CYCLES),.STABLE_WINDOWS(STABLE_WINDOWS),
         .TOLERANCE_PPM(TOLERANCE_PPM),.LOSS_TIMEOUT_CYCLES(LOSS_TIMEOUT_CYCLES),
-        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS)
+        .STOP_LOW_CYCLES(STOP_LOW_CYCLES),.COUNTER_BITS(COUNTER_BITS),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET)
     ) selected_monitor (
-        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.source_clk_i(selected_clock_o),
+        .clk_i(clk_50m_i),.rst_ni(control_reset_n),.common_reset_ni(common_reset_n),.source_clk_i(selected_clock_o),
         .restart_i(monitor_restart),.expect_44k1_i(clock_select_o[1]),
         .qualified_o(selected_qualified_o),.clock_present_o(),.stopped_low_o(selected_stopped_low_o),
         .window_valid_o(),.window_good_o(),.window_edges_o(measured_selected_o)
@@ -86,7 +93,7 @@ module workstation_audio_clock_domain #(
     );
     // Assertion is independent of the stopped clock; release requires three
     // genuine selected-clock edges after monitor and transaction qualification.
-    wire audio_safe_n=rst_ni && requested_audio_reset_n && selected_qualified_o;
+    wire audio_safe_n=common_reset_n && requested_audio_reset_n && selected_qualified_o;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] reset_release;
     always @(posedge selected_clock_o or negedge audio_safe_n)
         if (!audio_safe_n) reset_release<=0;
