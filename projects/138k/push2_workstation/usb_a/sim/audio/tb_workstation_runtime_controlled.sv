@@ -38,6 +38,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
     wire display_valid;
     wire display_rate,display_error,display_observation_fault;
     wire [31:0] display_pcm,display_epoch,display_sequence;
+    wire [127:0] display_parameters;
     wire [2:0] display_effect_mask;
     wire [5:0] display_effect_order;
     wire ddr_req,ddr_write;
@@ -78,6 +79,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         .fft_valid_o(fft_valid),.fft_bin_o(fft_bin),.fft_real_o(fft_real),.fft_imag_o(fft_imag),.fft_frame_o(),
         .fft_discard_count_o(fft_discards),.fft_44k1_o(fft_rate),.fft_context_valid_o(fft_context),.fft_epoch_o(fft_epoch),
         .display_valid_o(display_valid),.display_pcm_o(display_pcm),.display_reference_o(),.display_voices_o(),.display_status_o(),
+        .display_parameters_o(display_parameters),
         .display_44k1_o(display_rate),.display_error_o(display_error),.display_epoch_o(display_epoch),.display_sequence_o(display_sequence),
         .effect_mask_o(display_effect_mask),.effect_order_o(display_effect_order),.display_observation_fault_o(display_observation_fault),
         .media_stop_request_i(1'b0),.media_stop_hold_i(1'b0),.media_stop_ready_o(),.media_stop_done_o(),.media_stop_failed_o(),
@@ -109,6 +111,7 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
     reg [31:0] physical_pcm[0:3][0:8191];
     reg physical_error[0:3][0:8191],physical_seen[0:3][0:8191],physical_rate[0:3][0:8191];
     reg [8:0] observed_effect_pair[0:3][0:8191];
+    reg [127:0] observed_parameters[0:3][0:8191];
     reg observed_effect_seen[0:3][0:8191];
     reg [31:0] decoded=0,last_decoded=0;
     integer physical_position=0,physical_frames=0,observed_frames=0,nonzero=0,display_frames=0;
@@ -217,6 +220,8 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
         // controls on this edge, before any new parameter commit takes effect.
         if(dut.observed_valid)begin
             observed_effect_pair[dut.observed_epoch][dut.observed_sequence]={dut.effect_mask_compute,dut.effect_order_compute};
+            observed_parameters[dut.observed_epoch][dut.observed_sequence]=
+                {dut.scope_status_o,control_state,control_pitch,options};
             observed_effect_seen[dut.observed_epoch][dut.observed_sequence]=1;
         end
         if(dut.events.g1_valid && dut.events.g1_ready)usb_events=usb_events+1;
@@ -231,6 +236,8 @@ module tb_workstation_runtime_controlled #(parameter bit RESERVE_ZERO_EPOCH=0,IN
             if(!observed_effect_seen[display_epoch][display_sequence] ||
                {display_effect_mask,display_effect_order}!==observed_effect_pair[display_epoch][display_sequence])
                 $fatal(1,"display effect pair torn or detached from physical frame");
+            if(display_parameters!==observed_parameters[display_epoch][display_sequence])
+                $fatal(1,"display committed parameters torn or detached from physical frame");
             display_effect_tuple_checks=display_effect_tuple_checks+1;
             if(display_rate)begin
                 if({display_effect_mask,display_effect_order}!=last_effect44)display_effect_changes44=display_effect_changes44+1;

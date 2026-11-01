@@ -3,6 +3,7 @@
 module push2_usb_a_control #(
     parameter integer STOP_CLOCK_QUEUE_FENCE=0,
     parameter bit CNN_FOLLOW_ENABLE=1'b1,
+    parameter bit MEDIA_CONTROLS_ENABLE=1'b1,
     parameter bit WORKER_DEMO=1'b0
 )(
     input wire clk,reset_n,audio_clk,audio_reset_n,
@@ -203,7 +204,7 @@ module push2_usb_a_control #(
         assign analysis_done_sync=1'b0;
     end endgenerate
 `ifndef WORKSTATION_DEMO_D_ONLY
-    push2_controls #(.INITIAL_VOLUME(127)) controls(.clk(clk),.rst(input_reset),.connected(connected),
+    push2_controls #(.INITIAL_VOLUME(127),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) controls(.clk(clk),.rst(input_reset),.connected(connected),
         .valid(valid && !generic_midi),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
         .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
         .guide_enabled_i(CNN_FOLLOW_ENABLE),.guide_mode_i(guide_mode),
@@ -346,7 +347,7 @@ module push2_usb_a_control #(
     reg [17:0] pixel_index;
     wire [15:0] pixel;
 `ifndef WORKSTATION_DEMO_D_ONLY
-    push2_lights lights(.clk(clk),.rst(!reset_n || !push_connected),.held(actual_held),.control(control),
+    push2_lights #(.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) lights(.clk(clk),.rst(!reset_n || !push_connected),.held(actual_held),.control(control),
         .score_mask(service_state_q[31:0]),.score_running(service_state_q[32]),.record_enabled(service_state_q[33]),
         .guide_mode(guide_mode),.guide_mask(guide_mask),
         .valid(cv),.ready(cr),.kind(ck),.index(ci),.value(cval));
@@ -355,7 +356,7 @@ module push2_usb_a_control #(
         .packet_valid(packet_valid),.packet_length(packet_length),.packet_index(packet_index),
         .packet_data(packet_data),.packet_acked(packet_ack),.commands_acked(commands),.commands_rejected());
     wire frame_capture=accepted && write && address==8'h08;
-    push2_surface_pixels #(.PIPELINED(1)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
+    push2_surface_pixels #(.PIPELINED(1),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
         .note(note),.velocity(velocity),.display_meta(display_meta_q),

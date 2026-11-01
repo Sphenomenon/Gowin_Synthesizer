@@ -14,7 +14,8 @@ module feedback_renderer #(
     parameter integer SCALE_THREE_HALVES = 0,
     // Shared snapshots can render analysis without instantiating a local FFT.
     // Inherit the historical selection unless a composition opts in explicitly.
-    parameter integer RENDER_ANALYSIS = ENABLE_ANALYSIS
+    parameter integer RENDER_ANALYSIS = ENABLE_ANALYSIS,
+    parameter integer HMI_D_ONLY = 0
 ) (
     input wire clk,
     input wire rst_n,
@@ -35,6 +36,7 @@ module feedback_renderer #(
     input wire [31:0] trigger_reference,
     input wire [31:0] active_voices,
     input wire [31:0] status_data,
+    input wire [128:0] applied_parameters,
     input wire [2:0] effect_mask,
     input wire [5:0] effect_order,
     input wire [31:0] memory_status,
@@ -77,6 +79,7 @@ module feedback_renderer #(
     reg exporting;
     assign shared_start=SHARED_EXPORT && start && frame_ready;
     reg [31:0] frame_memory_status, frame_underruns, frame_framecount;
+    reg [128:0] frame_applied_parameters;
     reg [2:0] frame_effect_mask;
     reg [5:0] frame_effect_order;
     reg [31:0] previous_wave_data;
@@ -176,12 +179,12 @@ module feedback_renderer #(
     wire [2:0] render_effect_mask=use_shared_render ? shared_render_meta[194:192] : frame_effect_mask;
     wire [5:0] render_effect_order=use_shared_render ? shared_render_meta[200:195] : frame_effect_order;
     wire render_waveform_held=use_shared_render ? 1'b0 : waveform_held;
-    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS)) u_even (
+    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS),.HMI_D_ONLY(HMI_D_ONLY)) u_even (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),
         .peak_data(render_peak), .active_voices(render_voices), .status_data(render_status), .effect_mask(render_effect_mask), .effect_order(render_effect_order),
-        .waveform_held(render_waveform_held),
+        .applied_parameters(frame_applied_parameters),.waveform_held(render_waveform_held),
         .spectrum_left(render_spectrum_left),.spectrum_right(render_spectrum_right),.image_hit(render_image_hit),
         .peak_left(render_peak_left),.peak_right(render_peak_right),.image_gain(render_image_gain),
         .analysis_sequence(render_analysis_sequence),.analysis_skipped(render_analysis_skipped),
@@ -189,12 +192,12 @@ module feedback_renderer #(
         .memory_status(render_memory_status), .underruns(frame_underruns),
         .framecount(frame_framecount), .pixel_data(pixel_data[31:0])
     );
-    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS)) u_odd (
+    feedback_dashboard #(.ENABLE_ANALYSIS(RENDER_ANALYSIS),.HMI_D_ONLY(HMI_D_ONLY)) u_odd (
         .clk(clk), .reset_n(rst_n), .enable(pipeline_enable),
         .frame_start(advance && issue_x==0 && issue_y==0),
         .pixel_x(read_x+11'd1), .pixel_y(read_y), .wave_sample(render_wave_data), .wave_previous(previous_wave_data),
         .peak_data(render_peak), .active_voices(render_voices), .status_data(render_status), .effect_mask(render_effect_mask), .effect_order(render_effect_order),
-        .waveform_held(render_waveform_held),
+        .applied_parameters(frame_applied_parameters),.waveform_held(render_waveform_held),
         .spectrum_left(render_spectrum_left),.spectrum_right(render_spectrum_right),.image_hit(render_image_hit),
         .peak_left(render_peak_left),.peak_right(render_peak_right),.image_gain(render_image_gain),
         .analysis_sequence(render_analysis_sequence),.analysis_skipped(render_analysis_skipped),
@@ -208,6 +211,7 @@ module feedback_renderer #(
             issue_x <= 0; issue_y <= 0; read_x <= 0; read_y <= 0;
             a_x <= 0; a_y <= 0; b_x <= 0; b_y <= 0; c_x <= 0; c_y <= 0; output_x <= 0; output_y <= 0;
             frame_memory_status <= 0; frame_underruns <= 0; frame_framecount <= 0; frame_effect_mask <= 0; frame_effect_order <= 6'b10_01_00;
+            frame_applied_parameters <= 0;
             previous_wave_data <= 0;
             aligned_ready <= 0;
         end else begin
@@ -219,6 +223,7 @@ module feedback_renderer #(
                 exporting <= SHARED_EXPORT!=0;
                 busy <= 1; valid_pipe <= 0; last_pipe <= 0; all_issued <= 0;
                 issue_x <= 0; issue_y <= 0;
+                frame_applied_parameters <= applied_parameters;
                 frame_memory_status <= memory_status;
                 frame_underruns <= underruns;
                 frame_framecount <= frame_count;

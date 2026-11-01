@@ -16,6 +16,7 @@ module hdmi_display #(
     input wire signed [31:0] sample_data,
     input wire sample_valid,
     input wire [31:0] output_pcm,
+    input wire [127:0] applied_parameters_i,
     input wire [31:0] trigger_reference,
     input wire [31:0] active_voices, status_data,
     input wire [2:0] effect_mask,
@@ -72,6 +73,11 @@ module hdmi_display #(
     output wire tmds_clk_p,tmds_clk_n,
     output wire [2:0] tmds_data_p,tmds_data_n
 );
+`ifdef WORKSTATION_DEMO_D_ONLY
+    localparam bit HMI_D_ONLY_ENABLED=1'b1;
+`else
+    localparam bit HMI_D_ONLY_ENABLED=1'b0;
+`endif
     wire pixel_clk,serial_clk,pixel_reset_n,video_source_reset_n,video_locked,serializer_reset_n,serializer_reset;
     video_clock_1080p u_clock (
         .clk_50m(clk_50m),.reset_n(reset_n),.pixel_clk(pixel_clk),.serial_clk(serial_clk),
@@ -97,6 +103,18 @@ module hdmi_display #(
     always @(posedge pixel_clk or negedge shared_release)
         if(!shared_release) pixel_reset_pipe<=0; else pixel_reset_pipe<={pixel_reset_pipe[1:0],1'b1};
     wire ui_rst_n=ui_reset_pipe[2];
+    wire [128:0] applied_parameters_memory;
+    // Read-only state travels with a real PCM observation. Neither mailbox
+    // acceptance nor renderer activity can stall the audio sample schedule.
+    gw138k_stream_cdc #(.WIDTH(129)) u_applied_parameters_cdc(
+        .reset_n(shared_release),.source_clk(clk_50m),.destination_clk(memory_clk),
+        .source_valid(sample_valid),
+`ifdef WORKSTATION_RUNTIME_NATIVE
+        .source_data({frame_44k1_i,applied_parameters_i}),
+`else
+        .source_data({1'b0,applied_parameters_i}),
+`endif
+        .drop_count(),.destination_valid(),.destination_data(applied_parameters_memory));
     wire bist_req,bist_ready,bist_write,bist_done,bist_failed;
     wire bist_response,scan_response,arbiter_fault;
     wire [28:0] bist_addr,bist_first_error;
@@ -198,14 +216,15 @@ module hdmi_display #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
     // The maintained raster reads only a coherent current local cache. Its
     // legacy wave capture provides pacing; the native producer owns analysis.
-    feedback_renderer #(.ENABLE_ANALYSIS(0),.RENDER_ANALYSIS(1),.SHARED_EXPORT(0),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+    feedback_renderer #(.ENABLE_ANALYSIS(0),.RENDER_ANALYSIS(1),.SHARED_EXPORT(0),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15),.HMI_D_ONLY(HMI_D_ONLY_ENABLED)) u_renderer (
 `else
-    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15)) u_renderer (
+    feedback_renderer #(.ENABLE_ANALYSIS(1),.SHARED_EXPORT(1),.SHARED_RENDER(1),.SHARED_WAVE_ZERO_BITS(15),.HMI_D_ONLY(HMI_D_ONLY_ENABLED)) u_renderer (
 `endif
         .clk(memory_clk),.rst_n(ui_rst_n),.start(renderer_start),.frame_ready(renderer_ready),
         .busy(renderer_busy),.frame_done(renderer_done),.pixel_valid(pixel_valid),
         .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.shared_export_meta(shared_export_meta),.source_clk(clk_50m),
         .source_reset_n(source_reset_pipe[2]),.sample_data(sample_data),.sample_valid(sample_valid),
+        .applied_parameters(applied_parameters_memory),
         .output_pcm(output_pcm),
         .trigger_reference(trigger_reference),
         .active_voices(active_voices),.status_data(status_data),.effect_mask(effect_mask),.effect_order(effect_order),.memory_status(memory_status),

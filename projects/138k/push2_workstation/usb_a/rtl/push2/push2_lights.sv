@@ -1,4 +1,4 @@
-module push2_lights(input wire clk,rst,input wire [63:0] held,input wire [31:0] control,
+module push2_lights #(parameter bit MEDIA_CONTROLS_ENABLE=1'b1)(input wire clk,rst,input wire [63:0] held,input wire [31:0] control,
     input wire [31:0] score_mask,input wire score_running,record_enabled,
     input wire guide_mode,input wire [63:0] guide_mask,
     output reg valid,input wire ready,output reg [1:0] kind,
@@ -31,8 +31,8 @@ module push2_lights(input wire clk,rst,input wire [63:0] held,input wire [31:0] 
         else if(scan<79)color=control[6:5]==scan-75?15:1;
         else if(scan==79)color=3;
         else if(scan==80)color=(|control[2:0]) ? 126 : 1;
-        else if(scan==81)color=score_running?126:1;
-        else if(scan==82)color=record_enabled?5:1;
+        else if(scan==81)color=MEDIA_CONTROLS_ENABLE ? (score_running?126:1) : 0;
+        else if(scan==82)color=MEDIA_CONTROLS_ENABLE ? (record_enabled?5:1) : 0;
         else color=3;
     end
     always @(posedge clk or posedge rst)begin

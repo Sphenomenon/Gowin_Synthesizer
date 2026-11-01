@@ -62,6 +62,7 @@ PROFILE_REGISTRY = {
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
+            tf_policy='disabled_first_m_core_demo_v1',
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',

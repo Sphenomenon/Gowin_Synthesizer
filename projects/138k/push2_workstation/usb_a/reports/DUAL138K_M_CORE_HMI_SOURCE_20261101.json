@@ -1,0 +1,131 @@
+{
+  "stage": "source_RTL_verification",
+  "evidence": {
+    "m-core-tf-retirement-v1": {
+      "passed": true,
+      "scope": "actual parameter/default comparison and absent TF stop boundary",
+      "variants": [
+        {
+          "variant": "baseline",
+          "argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_m_core_tf_retirement",
+            "-DAUDIO_BEND_MEM_FILE=\"/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/pitch_bend_q20.mem\"",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/baseline.vvp",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/rtl/control/workstation_parameters.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/rtl/audio/scope_vec/scope_tf_control.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/sim/audio/tb_workstation_m_core_tf_retirement.sv"
+          ],
+          "exit_code": 0,
+          "expected_result_verified": true,
+          "log_sha256": "aad984c06c60d9e91967f70279d065c99b8e4ffa03285c142575ca1a2e8e9888"
+        },
+        {
+          "variant": "missing_tf_enter_guard",
+          "argv": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_workstation_m_core_tf_retirement",
+            "-DAUDIO_BEND_MEM_FILE=\"/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/pitch_bend_q20.mem\"",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/missing_tf_enter_guard.vvp",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/mutant_parameters.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/rtl/audio/scope_vec/scope_tf_control.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/rtl/workstation/workstation_runtime_controlled.sv",
+            "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/source-snapshot/sim/audio/tb_workstation_m_core_tf_retirement.sv"
+          ],
+          "exit_code": 1,
+          "expected_result_verified": true,
+          "log_sha256": "e452922b1a79533a76db0af0352700cb37a3644749724e7dbb222f81503e70ad"
+        }
+      ],
+      "hardware_tested": false,
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-tf-retirement-v1/verification.json",
+      "sha256": "8516099ad71085964621fbd84ca98cb239bf0d0fbc925babc894533825e18cb2"
+    },
+    "m-core-hmi-runtime-controlled-v1": {
+      "passed": true,
+      "scope": "Real APB/services, UART 31250/115200 with stopped-consumer drop carry, fair lifecycle merge, native DSP/DMA/official DCS/I2S, physical PCM CDC and recorder/FFT/256cue consumers; registered control/reason sources and REC/score switch boundaries",
+      "metrics": {
+        "physical_frames": 1078,
+        "observed_frames": 1078,
+        "observed48": 361,
+        "observed44": 717,
+        "nonzero": 977,
+        "display_frames": 1077,
+        "fft_bins": 384,
+        "fft48": 128,
+        "fft44": 256,
+        "fft_nonzero": 382,
+        "apb": 1082,
+        "usb": 33,
+        "cpu": 28,
+        "policies": 3,
+        "writes": 267,
+        "reads": 4,
+        "fft_discards": 6,
+        "switches": 2,
+        "health_reset_checks": 1,
+        "display_observation_fault_checks": 1,
+        "display_effect_tuple_checks": 1077,
+        "display_effect_changes48": 4,
+        "display_effect_changes44": 3,
+        "source_50_checks": 1219374,
+        "source_compute_checks": 1851077,
+        "switch_source_changes": 5,
+        "reason_source_changes": 16,
+        "switch_launch_delay_checks": 2,
+        "pc_drop_carry_checks": 1,
+        "tf_reason_handoffs": 1,
+        "score_switch_rejects": 1,
+        "switch_async_assert_checks": 2,
+        "switch_release_checks": 1818138
+      },
+      "consumer_metrics": {
+        "checks": 14,
+        "failures": 9,
+        "fft_bins": 128,
+        "fft_discards": 15,
+        "cues": 257,
+        "switch_score_start_checks": 1,
+        "switch_score_completion_checks": 1
+      },
+      "new_composition_and_fixture_warning_count": 0,
+      "hardware_tested": false,
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-hmi-runtime-controlled-v1/verification.json",
+      "sha256": "76d2ddf18bf35631c73576445c50bf63852e6aacc20c0e4f8f7583d3f24dabf3"
+    },
+    "hmi-dashboard-v5": {
+      "passed": true,
+      "scope": "Actual dashboard RTL, applied state projection and enabled stalls; simulated stimulus only",
+      "hardware_tested": false,
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-dashboard-v5/verification.json",
+      "sha256": "6f9b5a9ea67ae0ba0099bafb39e8254cd8cae940352c055b14eda63990eabe3f"
+    },
+    "contest-branding-rtl-verification-v1": {
+      "passed": true,
+      "hardware_tested": false,
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/contest-branding-rtl-verification-v1/verification.json",
+      "sha256": "ee16c3eb5841b5d03ad59eaa995dc96f34c0427d958ccefe3296740a3767cdd2"
+    },
+    "m_core_push_entries": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-core-push-entries-v1/verification.json",
+      "sha256": "83c9a0b7d9f33018944ecf035284ff0cefb8a303ef8b62a5a5bb0a957681d553"
+    },
+    "independent_ui_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-independent-source-review-v1/review.json",
+      "sha256": "79a47a26e7739a2836681b0f0fc757bc57495c61f3c167f0a1ae714bd1bf59af"
+    }
+  },
+  "synthesis_completed": false,
+  "physical_acceptance": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "scope": "First M core omits TF/CNN; complete synthesis/physical/hardware evidence belongs to the new candidate.",
+  "display_parameter_scope": "Frame-frozen live committed-owner projection; not sample-identical with the older validated analysis cache."
+}

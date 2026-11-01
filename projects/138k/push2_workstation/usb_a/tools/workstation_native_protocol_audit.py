@@ -26,7 +26,7 @@ POLICY = 'native-demo-mailbox-structure-v3'
 RAM_SCOPE = 'u_managed/observation/frames/'
 RAM_STEM = 'g_small_head.memory_g_small_head.memory_0_'
 STREAM_SHA256 = '90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376'
-PROFILES = ('m-demo-base', 'w-demo-d')
+PROFILES = ('m-demo-base', 'm-demo-core', 'w-demo-d')
 DELAY = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage'
 DMA = 'u_managed/runtime/delay_dma'
 APB = 'u_managed/control_cdc'
@@ -52,7 +52,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')
     g = Graph(n)
     domains = dict(control='clk_50m', compute='audio_clk', memory='memory_clk', selected='dac_mclk_d')
-    ordinary = 73 if profile == 'm-demo-base' else 41
+    ordinary = 41 if profile == 'w-demo-d' else 73
     display_bits = (*range(ordinary), *range(105, 203))
     specifications = (
         ('u_managed/pc_bytes', tuple(range(8)), 8, 'control', 'compute'),
@@ -226,7 +226,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
         proofs.append(chain('u_tf_audio', 'memory_quiet', 'memory_quiet_sync_0', 'memory_quiet_sync_1',
                             'memory', 'control'))
     else:
-        require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'W retained retired TF owner')
+        require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled profile retained TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)
     timing = audit_timing_boundaries(n, g, profile=profile)
     return dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),

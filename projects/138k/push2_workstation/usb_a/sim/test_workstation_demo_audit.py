@@ -151,6 +151,25 @@ class RoleFeatures(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'retired hierarchy'):
             audit.audit_features('M', dict(self.rows, u_bluetooth=dict(Bsram=32)), SimpleNamespace(cells={}))
 
+    def test_M_core_requires_full_instrument_and_rejects_deferred_TF_anywhere(self):
+        rows = {p: row for p, row in self.rows.items() if p not in
+                (audit.M_FEATURES['tf'], audit.M_FEATURES['tf_decoder'])}
+        self.assertTrue(audit.audit_features('M', rows, SimpleNamespace(cells={}),
+                                            tf_enabled=False)['role_retirement_verified'])
+        for hierarchy in ('u_tf_audio', 'u_tf_control_cdc', 'u_playback_service',
+                          'u_audio_command_buffer', 'u_playlist_bridge',
+                          audit.WS + '/parameters/tf_controls'):
+            with self.subTest(hierarchy=hierarchy), self.assertRaisesRegex(ValueError, 'retired hierarchy'):
+                audit.audit_features('M', dict(rows, **{hierarchy: dict(Bsram=1)}),
+                                     SimpleNamespace(cells={}), tf_enabled=False)
+        for kind in ('workstation_tf_runtime_service', 'tf_audio_ddr_path',
+                     'workstation_tf_direct_native_v1', 'workstation_tf_direct_ingress_v1'):
+            with self.subTest(kind=kind), self.assertRaisesRegex(ValueError, 'deferred TF'):
+                audit.audit_features('M', rows, SimpleNamespace(cells={'renamed': dict(kind=kind)}),
+                                     tf_enabled=False)
+        with self.assertRaisesRegex(ValueError, 'retained features missing'):
+            audit.audit_features('M', rows, SimpleNamespace(cells={}))
+
     def test_W_has_one_real_PCM_recording_object_and_no_local_recorder(self):
         rows = {p: self.rows[p] for p in audit.COMMON_FEATURES.values()}
         cells = {str(i): dict(kind=kind) for i, kind in enumerate((

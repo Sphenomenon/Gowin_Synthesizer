@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "contest_full_name": "全国大学生嵌入式芯片与系统设计竞赛",
+  "year": 2026,
+  "track": "FPGA创新设计赛道",
+  "company": "高云半导体",
+  "official_chain": [
+    {
+      "url": "https://www.socchina.net/",
+      "evidence": "contest.html function toPage(3) pro points directly to http://fpgachina.cn"
+    },
+    {
+      "url": "http://fpgachina.cn/header.html",
+      "evidence": "logo-area img src images/logo.png; alt FPGA 创新设计赛道"
+    },
+    {
+      "url": "http://fpgachina.cn/jssm-content.html",
+      "evidence": "public anonymous GET /cms/about/3"
+    },
+    {
+      "url": "http://fpgachina.cn/home-content.html",
+      "evidence": "public anonymous GET /cms/banner/list with type=1; appPic used by official homepage"
+    }
+  ],
+  "artwork": {
+    "requested_url": "http://fpgachina.cn/images/logo.png",
+    "final_url": "http://fpgachina.cn/images/logo.png",
+    "status": 200,
+    "content_type": "image/png",
+    "retrieved_utc": "2026-11-01T09:30:40.182466+00:00",
+    "sha256": "aed6092164c0e0ef9eaf68931066147abc6e5466bbaaa6b46de60d2f15fe92ad",
+    "local_file": "/Users/sphenicidition/.cache/gw138k-dual-20261031/contest-branding-v1/fpga-logo.png",
+    "repository_original": "rtl/display_data/assets/contest_fpga_logo_original.png",
+    "design_text": "10TH / 2017-2026 / FPGA创新设计竞赛 / 国赛十周年",
+    "transformation": "Alpha composite on white, nearest four-entry palette only. No resizing, cropping or alteration of the official design."
+  },
+  "official_principle": {
+    "text": "创意发挥、规范设计、突破自我、快乐竞赛",
+    "exact_quote": "竞赛以“创意发挥、规范设计、突破自我、快乐竞赛”为原则。",
+    "source_page": "http://fpgachina.cn/jssm-content.html",
+    "public_api": "http://www.fpgachina.cn/rest/pc/cms/about/3",
+    "api_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/contest-branding-v1/fpga-public-about.json",
+    "api_sha256": "8400f07f1a998f57eadd60ae803c74c9ab7a892a93327cc17495c4d4ccbf47c7",
+    "page_updated_at": "2026-08-27 16:58:55",
+    "classification": "official competition principle, usable verbatim as a supporting line; no separately named slogan verified",
+    "text_evidence": "/Users/sphenicidition/.cache/gw138k-dual-20261031/contest-branding-v1/fpga-public-about-text.txt"
+  },
+  "edition": {
+    "embedded_application_site": "第九届（2026）",
+    "fpga_current_artwork": "10TH / 2017-2026 / 国赛十周年",
+    "exact_fpga_ordinal_in_local_guide": false,
+    "recommendation": "Do not copy application-track ordinal into FPGA artwork; display year and track, preserve downloaded official anniversary mark as artwork if used."
+  },
+  "artwork_rights": {
+    "fpga_footer_quote": "Copyright © 2026 FPGA 创新设计赛道 版权所有",
+    "general_footer_quote": "Copyright © 2018 南京集成电路产业服务中心有限公司版权所有 All Rights Reserved",
+    "explicit_open_license_found": false,
+    "explicit_reuse_permission_found": false,
+    "scope": "Downloaded from official public pages for project contest identification. No open-source or unrestricted-use license is asserted.",
+    "source_files": [
+      "fpga-footer.html",
+      "application-home.html"
+    ]
+  },
+  "font": {
+    "requested_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+    "final_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf",
+    "status": 200,
+    "retrieved_utc": "2026-11-01T09:38:41.818479+00:00",
+    "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+    "name": "Noto Sans SC",
+    "variation_axis_weight": 500,
+    "license": "SIL Open Font License 1.1",
+    "license_source": {
+      "requested_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt",
+      "final_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanssc/OFL.txt",
+      "status": 200,
+      "retrieved_utc": "2026-11-01T09:38:37.816367+00:00",
+      "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+    },
+    "repository_notice": "rtl/display_data/assets/contest_brand_font_OFL.txt",
+    "font_binary_committed": false
+  },
+  "research_evidence": {
+    "seal_sha256": "a46a503ce42c2ff3189c1125ee186c457faaa4d7c8b682eedf3bfb5bf82c6289",
+    "findings_sha256": "f6d98eda57892ab6d3694f2d86ec74d0917977182b014ddcd375e9c4acd55fe6"
+  },
+  "notes": [
+    "The official phrase is called a competition principle, not independently verified as a named slogan.",
+    "The artwork says tenth anniversary; this is not a claim that this is the tenth embedded-contest edition.",
+    "Font regeneration requires the pinned upstream font; compilation needs only the versioned ROMs and header."
+  ]
+}

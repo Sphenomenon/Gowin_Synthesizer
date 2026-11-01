@@ -127,6 +127,10 @@ module gw138k_push_workstation_top #(
     wire [223:0] usb_words;
 `endif
     wire [31:0] output_pcm,output_reference,active_voices,display_status;
+    wire [127:0] display_parameters;
+`ifndef WORKSTATION_RUNTIME_NATIVE
+    assign display_parameters=128'd0;
+`endif
     wire synth_hp_bck,synth_hp_ws,synth_hp_din,synth_pa_en,synth_sample_ce;
     wire [31:0] scope_status_audio,tf_scope_control_audio,tf_scope_control_50;
     wire tf_control_valid,tf_mode_50,tf_run_50,tf_scope_restart,tf_scope_cancel,tf_scope_error;
@@ -549,12 +553,16 @@ module gw138k_push_workstation_top #(
     wire [3:0] song_cmd_index;
     wire [4:0] tf_track_count;
 `endif
+`ifdef WORKSTATION_DEMO_NO_TF
+    assign playlist_name_addr=0,playlist_usb_valid=0,playlist_usb_word=0;
+`else
     tf_playlist_bridge u_playlist_bridge(
         .clk_50m(clk_50m),.reset_n(reset_n),.usb_clk(usb_clk),.usb_reset_n(usb_reset_n),
         .scan_done(playlist_scan_done),.track_count(tf_track_count),
         .name_addr(playlist_name_addr),.name_data(playlist_name_data),
         .playlist_valid(playlist_usb_valid),.playlist_ready(playlist_usb_ready),
         .playlist_word(playlist_usb_word));
+`endif
 `ifdef WORKSTATION_NO_CNN
     wire [6:0] music_score_note,score_usb_note;
     assign song_cmd_valid=1'b0;
@@ -591,6 +599,9 @@ module gw138k_push_workstation_top #(
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
+`ifdef WORKSTATION_DEMO_NO_TF
+        ,.MEDIA_CONTROLS_ENABLE(1'b0)
+`endif
 `ifdef WORKSTATION_DEMO_D_ONLY
         ,.WORKER_DEMO(1'b1)
 `endif
@@ -635,6 +646,9 @@ module gw138k_push_workstation_top #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire [15:0] master_volume;
     workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)
+`ifdef WORKSTATION_DEMO_NO_TF
+        ,.TF_CONTROL_ENABLE(0)
+`endif
 `ifdef WORKSTATION_DEMO_D_ONLY
         ,.SYNTH_ENGINES_ENABLE(0),.D_ONLY_ENABLE(1)
 `endif
@@ -687,6 +701,7 @@ module gw138k_push_workstation_top #(
         .fft_valid_o(),.fft_bin_o(),.fft_real_o(),.fft_imag_o(),.fft_frame_o(),.fft_discard_count_o(),
         .fft_44k1_o(),.fft_context_valid_o(),.fft_epoch_o(),
         .display_valid_o(output_sample_valid),.display_pcm_o(output_pcm),.display_reference_o(output_reference),
+        .display_parameters_o(display_parameters),
         .display_voices_o(active_voices),.display_status_o(display_status),.display_44k1_o(display_frame44),
         .display_error_o(display_frame_error),.display_epoch_o(display_frame_epoch),.display_sequence_o(display_frame_sequence),
         .effect_mask_o(effect_mask),.effect_order_o(effect_order),
@@ -786,6 +801,10 @@ module gw138k_push_workstation_top #(
         .ddr_ready_i(delay_ddr_ready),.ddr_response_i(delay_ddr_response),.ddr_read_data_i(client_rdata),
         .debug_status_o(delay_ddr_debug));
 `endif
+`ifdef WORKSTATION_DEMO_NO_TF
+    assign audio_ddr_ready=0,audio_queued_req=0,audio_queued_write=0;
+    assign audio_queued_address=0,audio_queued_data=0;
+`else
     tf_audio_ddr_command_buffer u_audio_command_buffer(
         .clk(memory_clk),.rst_n(memory_reset_n),
 `ifdef WORKSTATION_RUNTIME_NATIVE
@@ -800,6 +819,7 @@ module gw138k_push_workstation_top #(
         .out_data(audio_queued_data),.out_ready(audio_queued_ready && runtime_channel_open));
 `else
         .out_data(audio_queued_data),.out_ready(audio_queued_ready));
+`endif
 `endif
     wire signed [31:0] tf_pcm_left,tf_pcm_right;
     wire analysis_pcm_valid,analysis_pcm_end;
@@ -821,7 +841,7 @@ module gw138k_push_workstation_top #(
     assign tf_busy50=0,tf_runtime_failed=0,tf_runtime_failure=0,tf_media_quiet50=1;
     assign tf_packet_active=0,tf_packet_busy=0,tf_packet_valid=0,tf_packet_error=0;
     assign tf_packet_left=0,tf_packet_right=0,tf_packet_rate=0,tf_packet_generation=0,tf_expected_generation=0;
-    assign tf_media_quiet=1,tf_stop_done=tf_stop_request,tf_stop_failed=0,tf_stop_failure=0,tf_stop_pending=0;
+    assign tf_media_quiet=1,tf_stop_done=0,tf_stop_failed=0,tf_stop_failure=0,tf_stop_pending=0;
     assign tf_source_active=0;
 `elsif WORKSTATION_RUNTIME_NATIVE
     workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(
@@ -1165,6 +1185,7 @@ module gw138k_push_workstation_top #(
         .app_wrdy(app_wrdy),.app_rdata(app_rdata),.client_rdata(client_rdata),.app_rvalid(app_rvalid),.memory_flags(memory_flags),
         .push_display_summary(display_summary),.push_display_summary_valid(display_summary_valid),
         .sample_data(output_mid), .sample_valid(output_sample_valid),.output_pcm(output_pcm),
+        .applied_parameters_i(display_parameters),
         .trigger_reference(output_reference),
         .active_voices(active_voices), .status_data(display_status), .effect_mask(effect_mask), .effect_order(effect_order),
         .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n),

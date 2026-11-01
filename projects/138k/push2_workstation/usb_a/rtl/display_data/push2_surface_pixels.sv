@@ -1,5 +1,5 @@
 // 960x160 performance panel; snapshot at each frame boundary, no DDR wait.
-module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1)(input wire clk,rst,frame_ready,output wire frame_start,
+module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1, parameter bit MEDIA_CONTROLS_ENABLE=1'b1)(input wire clk,rst,frame_ready,output wire frame_start,
     input wire [9:0] x,input wire [7:0] y,output wire pixel_valid,
     output wire [15:0] pixel,input wire [31:0] control,options,
     input wire [63:0] held,input wire [6:0] note,velocity,
@@ -259,6 +259,7 @@ module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1)(input wire
                 3:text=" MODE <   ";default:text=" MODE >   ";endcase
             row=(y-26)/2;draw=1;
             active=tile==0?score_on:tile==1?record_on:tile==2?(|cs[2:0]):1'b1;
+            if(!MEDIA_CONTROLS_ENABLE && tile<2)begin text="          ";draw=0;active=0;end
         end else if(y>=134 && y<148)begin
             text=bottom_label(tile);row=(y-134)/2;draw=1;
             active=tile<3?(display_meta_seen?display_effect_mask[tile]:cs[tile]):tile<7?cs[6:5]==tile-3:1;

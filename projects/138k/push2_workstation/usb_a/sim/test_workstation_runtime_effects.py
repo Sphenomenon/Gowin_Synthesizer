@@ -172,35 +172,98 @@ class DelayStorageProvenance(unittest.TestCase):
         for key in ('physical_ram_mapping_verified','physical_timing_verified','hardware_acceptance_inherited','accepted_baseline_storage_selection_inherited'):
             self.assertFalse(bundle[key],key)
 
+    def test_release_policy_restores_previous_source_and_rejects_drift(self):
+        from unittest import mock
+        m=self.storage
+        self.assertEqual(digest(self.source),m.EFFECT_RELEASE_SOURCE_SHA256)
+        parent=m.restore_effect_release_policy(self.source)
+        self.assertEqual(digest(parent),m.EFFECT_RELEASE_PARENT_SHA256)
+        self.assertEqual(m.EFFECT_RELEASE_PARENT_SHA256,m.EFFECT_SLOT_SOURCE_SHA256)
+        reconstructed=parent.decode()
+        for before,after in m.EFFECT_RELEASE_EDITS:
+            self.assertEqual(reconstructed.count(before),1)
+            reconstructed=reconstructed.replace(before,after)
+        self.assertEqual(reconstructed.encode(),self.source)
+        self.assertEqual(m.restore_effect_release_policy(parent),parent)
+        self.assertEqual(m.verify(self.source,self.provenance,STORAGE_POLICY,self.adaptation)[0],
+                         m.verify(parent,self.provenance,STORAGE_POLICY,self.adaptation)[0])
+        # Only the parameter and SELECT predicate changed. Inactive stages still
+        # execute the exact prior maintenance body and every NBA/state is kept.
+        self.assertEqual(len(m.EFFECT_RELEASE_EDITS),2)
+        self.assertIn('parameter bit RELEASE_TAILS_ENABLE=1',self.source.decode())
+        for before,after in m.EFFECT_RELEASE_EDITS:
+            mutants=[self.source.replace(after.encode(),before.encode()),
+                     self.source.replace(after.encode(),after.encode()*2),
+                     self.source+b'// unrelated drift\n']
+            for mutant in mutants:
+                with self.subTest(identity=digest(mutant)),self.assertRaises(ValueError):
+                    m.verify(mutant,self.provenance,STORAGE_POLICY,self.adaptation)
+                with mock.patch.object(m,'EFFECT_RELEASE_SOURCE_SHA256',digest(mutant)),self.assertRaises(ValueError):
+                    m.restore_effect_release_policy(mutant)
+        with mock.patch.object(m,'EFFECT_RELEASE_PARENT_SHA256','0'*64),self.assertRaises(ValueError):
+            m.restore_effect_release_policy(self.source)
+
+    def test_release_predicate_default_four_state_and_d_momentary(self):
+        # Execute SystemVerilog four-state operators, including X/Z selected id,
+        # mask, active and processed. Default 1 must be bit-exact to old SELECT;
+        # D's explicit 0 is exactly the committed-mask predicate.
+        text="""module release_predicate;
+          reg [1:0] selected_id;reg [2:0] frame_mask,processed;
+          reg selected_active;reg [3:0] values;integer a,b,c,d;
+          wire old_select=selected_id<3&&(frame_mask[selected_id]||selected_active)&&!processed[selected_id];
+          wire default_select=selected_id<3&&(frame_mask[selected_id]||(1'b1&&selected_active))&&!processed[selected_id];
+          wire d_select=selected_id<3&&(frame_mask[selected_id]||(1'b0&&selected_active))&&!processed[selected_id];
+          wire mask_select=selected_id<3&&frame_mask[selected_id]&&!processed[selected_id];
+          initial begin
+            values=4'bzx10;
+            for(a=0;a<16;a=a+1)for(b=0;b<64;b=b+1)for(c=0;c<64;c=c+1)for(d=0;d<4;d=d+1)begin
+              selected_id={values[(a>>2)&3],values[a&3]};
+              frame_mask={values[(b>>4)&3],values[(b>>2)&3],values[b&3]};
+              processed={values[(c>>4)&3],values[(c>>2)&3],values[c&3]};
+              selected_active=values[d];#1;
+              if(old_select!==default_select||d_select!==mask_select)$fatal(1,"release predicate");
+            end
+            $display("PASS release_predicate four_state_cases=262144");
+          end
+        endmodule
+        """
+        with tempfile.TemporaryDirectory(prefix='effect-release-') as directory:
+            path=Path(directory);(path/'tb.sv').write_text(text)
+            subprocess.run(['iverilog','-g2012','-s','release_predicate','-o',str(path/'sim'),str(path/'tb.sv')],check=True,capture_output=True)
+            result=subprocess.run(['vvp',str(path/'sim')],check=True,capture_output=True,text=True)
+            self.assertIn('PASS release_predicate four_state_cases=262144',result.stdout)
+
     def test_sample_slot_restores_exact_previous_d_source(self):
         m=self.storage
-        self.assertEqual(digest(self.source),m.EFFECT_SLOT_SOURCE_SHA256)
-        parent=m.restore_effect_sample_slot(self.source)
+        source=m.restore_effect_release_policy(self.source)
+        self.assertEqual(digest(source),m.EFFECT_SLOT_SOURCE_SHA256)
+        parent=m.restore_effect_sample_slot(source)
         self.assertEqual(digest(parent),m.EFFECT_SLOT_PARENT_SHA256)
         self.assertEqual(m.EFFECT_SLOT_PARENT_SHA256,m.D_CONTROL_ADAPTATIONS[m.SOURCE]['source_sha256'])
         reconstructed=parent.decode()
         for before,after in m.EFFECT_SLOT_EDITS:
             self.assertEqual(reconstructed.count(before),1)
             reconstructed=reconstructed.replace(before,after)
-        self.assertEqual(reconstructed.encode(),self.source)
+        self.assertEqual(reconstructed.encode(),source)
         self.assertEqual(m.restore_effect_sample_slot(parent),parent)
-        self.assertEqual(m.verify(self.source,self.provenance,STORAGE_POLICY,self.adaptation)[0],
+        self.assertEqual(m.verify(source,self.provenance,STORAGE_POLICY,self.adaptation)[0],
                          m.verify(parent,self.provenance,STORAGE_POLICY,self.adaptation)[0])
 
     def test_sample_slot_changed_bytes_and_broken_reverse_anchors_rejected(self):
         from unittest import mock
         m=self.storage
+        source=m.restore_effect_release_policy(self.source)
         assign=b'  assign sample_slot_ready_o=state==IDLE && !barrier_busy;\n'
         mutations=[
-            self.source.replace(b'Stored slot state only.',b'Stored slot state drift.'),
-            self.source.replace(assign,b'  assign sample_slot_ready_o=state==IDLE;\n'),
-            self.source.replace(assign,b''),
-            self.source.replace(assign,assign+assign),
-            self.source.replace(b'output wire sample_slot_ready_o,',b'output wire changed_slot_ready_o,'),
-            self.source+b'// unreviewed unrelated change\n',
+            source.replace(b'Stored slot state only.',b'Stored slot state drift.'),
+            source.replace(assign,b'  assign sample_slot_ready_o=state==IDLE;\n'),
+            source.replace(assign,b''),
+            source.replace(assign,assign+assign),
+            source.replace(b'output wire sample_slot_ready_o,',b'output wire changed_slot_ready_o,'),
+            source+b'// unreviewed unrelated change\n',
         ]
         for mutant in mutations:
-            self.assertNotEqual(mutant,self.source)
+            self.assertNotEqual(mutant,source)
             with self.subTest(identity=digest(mutant)),self.assertRaises(ValueError):
                 m.verify(mutant,self.provenance,STORAGE_POLICY,self.adaptation)
         # Even if an input hash were mistakenly rebased, missing/duplicate
@@ -210,7 +273,7 @@ class DelayStorageProvenance(unittest.TestCase):
                     m,'EFFECT_SLOT_SOURCE_SHA256',digest(mutant)),self.assertRaises(ValueError):
                 m.restore_effect_sample_slot(mutant)
         with mock.patch.object(m,'EFFECT_SLOT_PARENT_SHA256','0'*64),self.assertRaises(ValueError):
-            m.restore_effect_sample_slot(self.source)
+            m.restore_effect_sample_slot(source)
 
     def test_old_policy_and_changed_original_provenance_rejected(self):
         m=self.storage

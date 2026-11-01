@@ -1,0 +1,34 @@
+{
+  "stage": "source_RTL_verification",
+  "source_handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-touch-momentary-maintained-v1/source-handoff-v1/handoff.json",
+    "sha256": "5f07ce59c481657a0500e2004f22f3fef66eaadc04b28e467fd8fba0940b32f8"
+  },
+  "runtime": {
+    "checkpoints": 110,
+    "wet": 45,
+    "dry": 65,
+    "frames": 2380,
+    "USB_events": 266,
+    "lifecycle": 9,
+    "rate44_checkpoints": 4
+  },
+  "default_full_effects": {
+    "tests_passed": 18,
+    "provenance_tests": 9,
+    "four_state_vectors": 262144,
+    "log_sha256": "a483746c64aab4f60e1eff28c0a81d10529ad17a0efc2ee3f0671a4ecadc46ee"
+  },
+  "preserved": [
+    "M/default effect tails",
+    "Original immutable stereo manifests",
+    "D full DSP and actual committed feedback"
+  ],
+  "hardware_tested": false,
+  "physical_timing_tested": false,
+  "final_handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-touch-momentary-maintained-v1/final-handoff-v2/handoff.json",
+    "sha256": "36ada021390b850012302f908c6de0e1c17e9156ff2c6048e2ca7b25c49339d9"
+  },
+  "root_rechecked_final_handoff_bindings": 60
+}

@@ -192,8 +192,9 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist):
-    features = dict(COMMON_FEATURES, **(M_FEATURES if role == 'M' else {}))
+def audit_features(role, rows, netlist, *, tf_enabled=True):
+    selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
+    features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
     require(not any(p not in rows for p in features.values()),
             'retained features missing: ' + ', '.join(k for k, p in features.items() if p not in rows))
     require(rows['u_native_usb/host']['Bsram'] >= 38 and
@@ -204,6 +205,14 @@ def audit_features(role, rows, netlist):
     retired = ['u_music', 'u_recording', 'u_lcd', 'u_usb_host', 'u_push']
     if role == 'M':
         retired += ['u_bluetooth', 'u_ble_pcm_cdc']
+        if not tf_enabled:
+            retired += ['u_tf_audio', 'u_tf_control_cdc', 'u_tf_scope_transport',
+                        'u_playback_service', 'u_audio_command_buffer', 'u_playlist_bridge',
+                        WS + '/parameters/tf_controls']
+            kinds = {c['kind'] for c in netlist.cells.values()}
+            for forbidden in ('workstation_tf_runtime_service', 'tf_audio_ddr_path',
+                              'workstation_tf_direct_native_v1', 'workstation_tf_direct_ingress_v1'):
+                require(forbidden not in kinds, 'M deferred TF implementation remains: ' + forbidden)
         require(rows[M_FEATURES['vector']]['Bsram'] >= 8 and rows[M_FEATURES['oscillator']]['Bsram'] >= 8,
                 'M vector geometry or oscillator storage swept')
     else:
@@ -506,7 +515,8 @@ def audit(root, output, metadata):
     vg_text = vg.read_text()
     netlist = SynthesisNetlist(vg_text, TOP)
     totals, rows = hierarchy_counts(ET.parse(report).getroot())
-    features = audit_features(role, rows, netlist)
+    features = audit_features(role, rows, netlist,
+        tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1')
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -561,9 +571,9 @@ def audit(root, output, metadata):
         performance_n = performance_netlist(vg_text, mapping='synthesis')
         performance_release = audit_performance(performance_n, mapping='synthesis')
         performance_release['installed_sdc'] = validate_performance(sdc, performance_n, performance_release)
-    from tools.workstation_demo_policy import POLICY
+    from tools.workstation_demo_policy import POLICY, V3_POLICY
     recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
-        if role == 'W' and retirement['policy'] == POLICY else None)
+        if role == 'W' and retirement['policy'] in (V3_POLICY, POLICY) else None)
     selectors = audit_sdc_selectors(sdc, netlist)
     rom_words = check_rom(stage, vg_text, metadata['firmware']['rom_sha256'])
     # Rehash the frozen closure after all source/netlist checks.

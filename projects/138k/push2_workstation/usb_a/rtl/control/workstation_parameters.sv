@@ -3,7 +3,10 @@
 `define AUDIO_BEND_MEM_FILE "sim/data/audio_chain/pitch_bend_q20.mem"
 `endif
 
-module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
+module workstation_parameters #(
+    parameter bit D_ONLY_ENABLE=0,
+    parameter bit TF_CONTROL_ENABLE=1
+) (
     input wire clk_i, rst_ni, commit_i, lifecycle_i, mode_applied_i,
     input wire [3:0] kind_i,
     input wire [6:0] address_i, value_i,
@@ -59,10 +62,12 @@ module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
         {snapshot_request, bend_index_o, glide_cc_o, vibrato_depth_o,
         sustain_o, target_ratio_o != 22'd1048576, glide_step_o != 0, vibrato_depth_o != 0};
 
+    wire [31:0] tf_control_state;
+    assign tf_control_o = TF_CONTROL_ENABLE ? tf_control_state : 32'd0;
     scope_tf_control tf_controls (
-        .clk_i, .rst_ni, .event_valid_i(lifecycle_i || (commit_i && kind_i == 2)),
+        .clk_i, .rst_ni, .event_valid_i(TF_CONTROL_ENABLE && (lifecycle_i || (commit_i && kind_i == 2))),
         .cc_i(lifecycle_i ? 7'd120 : address_i), .value_i(lifecycle_i ? 7'd0 : value_i),
-        .live_enable_i(scope_enable_o), .voices_idle_i(voices_idle), .control_o(tf_control_o)
+        .live_enable_i(scope_enable_o), .voices_idle_i(voices_idle), .control_o(tf_control_state)
     );
 
     always_comb begin
@@ -78,6 +83,10 @@ module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
                     (!scope_enable_o && legacy_active_i != 0)));
                 97: rejected_o = value_i >= 8 && value_i != 127;
                 103: rejected_o = value_i == 0;
+                // Session defaults include CC104=0. It remains an idempotent
+                // off command; absent TF start/run/selection never succeeds.
+                104: rejected_o = !TF_CONTROL_ENABLE && value_i != 0;
+                105,106,108: rejected_o = !TF_CONTROL_ENABLE;
                 default: rejected_o = 0;
             endcase
         end
@@ -125,7 +134,11 @@ module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
             if (lifecycle_i) begin
                 mode_pending_o <= 0;
                 sustain_o <= 0;
-                if(D_ONLY_ENABLE)begin d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;end
+                if(D_ONLY_ENABLE)begin
+                    d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;
+                    effect_selected_o<=0;effect_count_o<=0;
+                    effect_order_o<=6'b10_01_00;effect_master_o<=1;
+                end
             end
             if (rejected_o) scope_error_o <= 1;
             if (commit_i) begin
@@ -204,7 +217,7 @@ module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
                         100: scope_cal_y_o <= value_i;
                         101: scope_offset_y_o <= value_i;
                         103: if (value_i != 0) cue_speed_o <= value_i;
-                        104: if ((value_i == 64 || value_i == 127) &&
+                        104: if (TF_CONTROL_ENABLE && (value_i == 64 || value_i == 127) &&
                             (tf_control_o[12] || voices_idle)) begin
                             scope_enable_o <= 0;
                             scope_muted_o <= 0;
@@ -212,7 +225,11 @@ module workstation_parameters #(parameter bit D_ONLY_ENABLE=0) (
                             effect_master_o <= 1;
                         end
                         120, 123: begin sustain_o <= 0;
-                            if(D_ONLY_ENABLE)begin d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;end
+                            if(D_ONLY_ENABLE)begin
+                                d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;
+                                effect_selected_o<=0;effect_count_o<=0;
+                                effect_order_o<=6'b10_01_00;effect_master_o<=1;
+                            end
                         end
                         default: begin end
                     endcase

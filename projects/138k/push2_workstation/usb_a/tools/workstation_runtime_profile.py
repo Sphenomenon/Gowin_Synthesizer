@@ -60,10 +60,23 @@ SOURCES = (
     'rtl/display_data/feedback_capture.v',
     'rtl/display_data/output_audio_analysis.v',
     'rtl/display_data/feedback_renderer.v',
+    'rtl/display_data/feedback_dashboard.v',
+    'rtl/display_data/workstation_contest_brand.sv',
     'rtl/audio/scope_vec/scope_tf_transport.sv',
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'rtl/workstation/RUNTIME_DISPLAY.md',
+    'rtl/display_data/feedback_dashboard.provenance.json',
+    'rtl/display_data/assets/contest_brand_layout.svh',
+    'rtl/display_data/assets/contest_brand_logo_pairs.memh',
+    'rtl/display_data/assets/contest_brand_glyphs.memh',
+    'rtl/display_data/assets/contest_fpga_logo_original.png',
+    'rtl/display_data/assets/contest_brand_sources.json',
+    'rtl/display_data/assets/contest_brand_font_OFL.txt',
+    'rtl/display_data/assets/contest_brand_layout.json',
+    'rtl/display_data/assets/CONTEST_BRAND.md',
+    'tools/generate_workstation_contest_brand.py',
     'rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md',
     'rtl/memory/RUNTIME_MEMORY_GUARD_CONTRACT.md',
     'probes/audio_clock_i2s/probe.json',
@@ -105,6 +118,7 @@ REPLACEMENTS = {
     'src/video/feedback_capture.v': 'rtl/display_data/feedback_capture.v',
     'src/video/output_audio_analysis.v': 'rtl/display_data/output_audio_analysis.v',
     'src/video/feedback_renderer.v': 'rtl/display_data/feedback_renderer.v',
+    'src/video/feedback_dashboard.v': 'rtl/display_data/feedback_dashboard.v',
     'rtl/audio/scope_vec/scope_tf_transport.sv': 'rtl/audio/scope_vec/scope_tf_transport.sv',
 }
 # Relocation preserves the disabled parent's original bytes. The checked
@@ -252,7 +266,8 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
 
     # The stream adapter holds its word until the two-stage ACK returns;
     # req_meta -> req_sync -> req_settled precedes the capture/ACK edge.
-    for scope, budget in (('u_managed/display', 20.0), ('u_managed/health_snapshot', 13.020)):
+    for scope, budget in (('u_managed/display', 20.0), ('u_managed/health_snapshot', 13.020),
+                          ('u_video/u_applied_parameters_cdc', 20.0)):
         held(scope + '/held_data_*_s*/Q', scope + '/destination_data_*_s*/D', budget)
         receiver(scope, 'req_meta', 'req_sync')
         receiver(scope, 'ack_meta', 'ack_sync')

@@ -135,7 +135,7 @@ class ActualNativeProtocol(ActualNativeFixture):
         self.assertEqual(result['mailbox_count'], 4)
         display = next(x for x in result['mailboxes'] if x['scope'] == 'u_managed/display')
         self.assertEqual(display['registered_ram_bits'], 98)
-        self.assertEqual(display['held_ff_bits'], 73 if self.profile == 'm-demo-base' else 41)
+        self.assertEqual(display['held_ff_bits'], 41 if self.profile == 'w-demo-d' else 73)
         self.assertFalse(result['physical_cdc_accepted'])
         pins = {p + '/' + port for p, c in self.n.cells.items()
                 if p.startswith((RAM_SCOPE, 'u_managed/display/')) for port in c['ports']}
@@ -608,7 +608,7 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
         if physical is None:
             self.skipTest('actual physical parent identity required for entry source slice')
         source = Path(json.loads((physical/'physical_inputs.json').read_text())['parent_candidate'])/'workstation/Prj1'
-        role = 'M' if self.profile == 'm-demo-base' else 'W'
+        role = 'W' if self.profile == 'w-demo-d' else 'M'
         with tempfile.TemporaryDirectory(prefix='selected-demo-held-entry-') as directory:
             stage = Path(directory)
             for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',

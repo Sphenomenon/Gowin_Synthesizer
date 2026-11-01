@@ -18,7 +18,7 @@ static uint8_t rxbuf[512];
 static unsigned toggles[3],frames,out_errors;
 #else
 /* W-DEMO retains the same Host and PL transport, with no Push surface code. */
-static uint16_t worker_keys;
+static uint16_t worker_keys,worker_blocked_keys;
 #endif
 // P138 has one 32-bit USB IN diagnostic word.  Keep four independent,
 // saturating byte counters so a long idle NAK stream cannot wrap into a
@@ -59,7 +59,7 @@ static void disconnect(void) {
 #ifndef WORKSTATION_WORKER_DEMO
     displayed_state_valid=0;
 #else
-    worker_keys=0;
+    worker_keys=0;worker_blocked_keys=0;
 #endif
     // Existing RTL releases held notes and resets LED/display initialization.
     // Audio, HDMI, DDR and AE350 continue running throughout reconnection.
@@ -136,6 +136,19 @@ static int find_midi_in(void) {
     midi_in_ep=ep;midi_in_size=size;
     return 1;
 }
+#ifdef WORKSTATION_WORKER_DEMO
+static void worker_commit_touch(void) {
+    /* This is held-input composition, not an applied-parameter cache. H
+     * temporarily requests dry; releasing it restores only still-held keys. */
+    unsigned keys=(worker_keys&(1u<<7))?0:worker_keys,mask=0;
+    for(unsigned key=3;key<6;key++)if(keys&(1u<<key))mask|=1u<<(key-3);
+    if(keys&(1u<<6))mask=7;
+    for(unsigned key=8;key<15;key++)if(keys&(1u<<key))mask|=key-7;
+    for(unsigned key=0;key<3;key++)
+        MMIO(0x54)=(2u<<14)|((20u+key)<<7)|((keys&(1u<<key))?100u:0u);
+    MMIO(0x54)=(2u<<14)|(81u<<7)|mask;
+}
+#endif
 static void forward_midi(const uint8_t *p) {
 #ifndef WORKSTATION_WORKER_DEMO
     if(mode==DEVICE_PUSH) {
@@ -162,27 +175,30 @@ static void forward_midi(const uint8_t *p) {
 #ifdef WORKSTATION_WORKER_DEMO
     /* The adapter is a fixed D context, using the unchanged GW25K MIDI wire
      * messages. Only this image maps touch keys to existing parameter CCs.
-     * Momentary controls retain real press/release, and duplicate NoteOn does
-     * not append/toggle an effect twice. Parameter state stays in audio RTL. */
+     * Every effect key is momentary; duplicate NoteOn/Off emits nothing.
+     * Parameter state stays in audio RTL. */
     if(mode!=DEVICE_GW25K)return;
     if(kind==0 || kind==1) {
         if(a<48 || a>63)return;
         unsigned key=a-48,bit=1u<<key,down=kind==1;
+        if(worker_blocked_keys&bit) {
+            if(!down)worker_blocked_keys&=(uint16_t)~bit;
+            return;
+        }
         if(down==!!(worker_keys&bit))return;
         if(down)worker_keys|=(uint16_t)bit;else worker_keys&=(uint16_t)~bit;
-        kind=2;
-        if(key<3){a=20+key;b=down?100:0;}
-        else {
-            if(!down)return;
-            if(key<6){a=87;b=key-3;}
-            else if(key==6){a=88;b=127;}
-            else if(key==7){a=81;b=0;}
-            else if(key<15){a=81;b=key-7;}
-            else {a=7;b=127;}
-        }
+        if(key!=15){worker_commit_touch();return;}
+        if(!down)return;
+        kind=2;a=7;b=127; // P is the existing main-volume action.
     } else if(kind!=2 || (a!=7 && a!=11 && a!=20 && a!=21 && a!=22 &&
                          a!=81 && a!=82 && a!=84 && a!=85 && a!=86 &&
                          a!=87 && a!=88 && a!=120 && a!=123))return;
+    if(kind==2 && (a==120 || a==123)) {
+        worker_blocked_keys|=worker_keys;worker_keys=0;
+        // W has no note engine. Both panel clear commands use its existing
+        // urgent lifecycle path, which resumes D without requiring NoteOn.
+        a=120;
+    }
 #endif
     MMIO(0x54)=(kind<<14)|(a<<7)|b;
 }

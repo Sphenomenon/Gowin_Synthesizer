@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "source_policy": "maintained_native_hmi_v1",
+  "parent_dashboard_sha256": "0271e9a6897eaff4308a4b01380429672e67d669ab422e31e1190ed7a0278c6b",
+  "parent_candidate": "m-demo-base-v20",
+  "parent_input": "src/video/feedback_dashboard.v",
+  "changes": [
+    "Light industrial HMI palette and compact applied-parameter table",
+    "Official contest logo and official stated competition principle",
+    "Read-only applied parameter frame snapshot; no parameter authority or command UI added"
+  ],
+  "preserved": [
+    "1920x1080 geometry",
+    "Four enabled raster stages and stop behavior",
+    "Waveform/XY/stereo spectrum calculations and data sources",
+    "Existing effect mask/order and final physical PCM observation"
+  ],
+  "physical_acceptance": "not measured for changed inputs",
+  "source_of_brand": "rtl/display_data/assets/contest_brand_sources.json"
+}

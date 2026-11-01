@@ -1,6 +1,6 @@
 // Push-specific mapping into the existing workstation {kind,a,b} events.
 // Rendering and LED readiness never enter this path.
-module push2_controls #(parameter integer INITIAL_VOLUME=100)(
+module push2_controls #(parameter integer INITIAL_VOLUME=100, parameter bit MEDIA_CONTROLS_ENABLE=1'b1)(
     input wire clk,rst,connected,
     input wire valid,output wire ready,input wire [3:0] kind,cable,channel,
     input wire [6:0] a,b,
@@ -117,7 +117,13 @@ module push2_controls #(parameter integer INITIAL_VOLUME=100)(
                     end else begin
                         buttons[a]<=b!=0;
                         if(b!=0 && !buttons[a]) begin
-                            if(a==85 && guide_enabled_i) begin guide_toggle_o<=1;mapped<=mapped+1'b1;end
+                            // The first instrument-only image has no TF,
+                            // score or local recorder backend. Retire these
+                            // physical entries before they reach the queue.
+                            if(!MEDIA_CONTROLS_ENABLE &&
+                               (a==44 || a==45 || a==51 || a==85 || a==86 || a==87 || a==88))
+                                ignored<=ignored+1'b1;
+                            else if(a==85 && guide_enabled_i) begin guide_toggle_o<=1;mapped<=mapped+1'b1;end
                             else if(guide_mode_i && a==44) begin guide_prev_o<=1;mapped<=mapped+1'b1;end
                             else if(guide_mode_i && a==45) begin guide_next_o<=1;mapped<=mapped+1'b1;end
                             else if(guide_mode_i && a==48) begin guide_select_o<=1;mapped<=mapped+1'b1;end

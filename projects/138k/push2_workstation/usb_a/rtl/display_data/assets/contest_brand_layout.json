@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "title": "全国大学生嵌入式芯片与系统设计竞赛'2026 FPGA创新设计赛道 · 高云半导体",
+  "principle": "创意发挥、规范设计、突破自我、快乐竞赛",
+  "principle_source_designation": "竞赛原则",
+  "font": {
+    "name": "Noto Sans SC",
+    "size_px": 24,
+    "weight_axis": 500,
+    "baseline_px": 21,
+    "threshold": 128,
+    "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da"
+  },
+  "logo": {
+    "original_sha256": "aed6092164c0e0ef9eaf68931066147abc6e5466bbaaa6b46de60d2f15fe92ad",
+    "x": 64,
+    "y": 24,
+    "width": 283,
+    "height": 80,
+    "bits_per_pixel": 2,
+    "pixels_per_word": 2,
+    "words_per_row": 142,
+    "word_count": 11360,
+    "even_pixel_bits": "1:0",
+    "odd_pixel_bits": "3:2",
+    "palette_rgb": [
+      [
+        255,
+        255,
+        255
+      ],
+      [
+        25,
+        74,
+        139
+      ],
+      [
+        40,
+        115,
+        174
+      ],
+      [
+        48,
+        171,
+        221
+      ]
+    ]
+  },
+  "text": {
+    "x": 400,
+    "title_y": 24,
+    "principle_y": 64,
+    "cell_width": 24,
+    "cell_height": 24,
+    "glyph_count": 47,
+    "row_word_count": 1128,
+    "row_word_width": 24,
+    "leftmost_pixel_bit": 23,
+    "ink_rgb": [
+      44,
+      52,
+      63
+    ],
+    "characters": [
+      " ",
+      "全",
+      "国",
+      "大",
+      "学",
+      "生",
+      "嵌",
+      "入",
+      "式",
+      "芯",
+      "片",
+      "与",
+      "系",
+      "统",
+      "设",
+      "计",
+      "竞",
+      "赛",
+      "'",
+      "2",
+      "0",
+      "6",
+      "F",
+      "P",
+      "G",
+      "A",
+      "创",
+      "新",
+      "道",
+      "·",
+      "高",
+      "云",
+      "半",
+      "导",
+      "体",
+      "意",
+      "发",
+      "挥",
+      "、",
+      "规",
+      "范",
+      "突",
+      "破",
+      "自",
+      "我",
+      "快",
+      "乐"
+    ]
+  }
+}

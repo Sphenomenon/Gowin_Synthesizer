@@ -8,7 +8,25 @@
 
 static volatile uint32_t regs[64];
 static unsigned generic_writes,score_reads;
+#ifdef WORKSTATION_WORKER_DEMO
+static uint32_t worker_capture[4096];
+static unsigned worker_capture_count,worker_capture_pending,worker_capture_enabled;
+static FILE *worker_trace;
+static unsigned worker_defer_checkpoint;
+static void worker_capture_flush(void){
+    if(worker_capture_pending){
+        assert(worker_capture_count<sizeof worker_capture/sizeof worker_capture[0]);
+        uint32_t value=regs[0x54/4];worker_capture[worker_capture_count++]=value;
+        if(worker_trace)fprintf(worker_trace,"0 54 %x 0 0 0 0\n",value);
+        worker_capture_pending=0;
+    }
+}
+#endif
 static volatile uint32_t *reg_at(unsigned off) {
+#ifdef WORKSTATION_WORKER_DEMO
+    worker_capture_flush();
+    if(worker_capture_enabled && off==0x54)worker_capture_pending=1;
+#endif
     assert(off < sizeof regs && !(off & 3));
     if(off==0x54) generic_writes++;
     if(off>=0x60 && off<=0x6c) score_reads++;
@@ -491,27 +509,74 @@ static void audio_feedback_test(const char *path){
     printf("PASS production Host consumes 12 real RTL feedback captures: committed mode, release-tail voices, four audio routes, glide, sustain, reconnect defaults; no input echo\n");
 }
 #ifdef WORKSTATION_WORKER_DEMO
-static void worker_midi(unsigned key,unsigned down,unsigned cc,unsigned value,unsigned emit){
+static void worker_state(unsigned crush,unsigned drive,unsigned send,unsigned mask){
+    if(worker_trace && !worker_defer_checkpoint)fprintf(worker_trace,"1 0 0 %x %x %x %x\n",crush,drive,send,mask);
+}
+static void worker_connection(void){
+    if(worker_trace)fprintf(worker_trace,"0 0 %x 0 0 0 0\n",regs[0]);
+    worker_state(0,0,0,0);
+}
+static void worker_midi(unsigned key,unsigned down,unsigned crush,unsigned drive,unsigned send,unsigned mask,unsigned emit){
     uint8_t p[4]={down?9:8,down?0x90:0x80,(uint8_t)(48+key),down?100:0};
-    unsigned before=generic_writes;forward_midi(p);
-    assert(generic_writes==before+emit);
-    if(emit)assert(regs[0x54/4]==((2u<<14)|(cc<<7)|value));
+    unsigned before=generic_writes,captured=worker_capture_count;forward_midi(p);worker_capture_flush();
+    assert(generic_writes==before+emit && worker_capture_count==captured+emit);
+    if(emit==4){
+        const unsigned cc[]={20,21,22,81},value[]={crush,drive,send,mask};
+        for(unsigned i=0;i<4;i++)assert(worker_capture[captured+i]==((2u<<14)|(cc[i]<<7)|value[i]));
+    }else if(emit==1)assert(key==15 && down && worker_capture[captured]==((2u<<14)|(7u<<7)|127u));
+    else assert(!emit);
+    worker_state(crush,drive,send,mask);
+}
+static void worker_panic(unsigned cc){
+    const uint8_t p[]={11,0xb0,(uint8_t)cc,0};unsigned before=generic_writes;
+    forward_midi(p);worker_capture_flush();assert(generic_writes==before+1);
+    assert(regs[0x54/4]==((2u<<14)|(120u<<7)) && !worker_keys);
+    worker_state(0,0,0,0);
 }
 static void worker_demo_tests(void){
-    initialize();inject_midi=0;
+    static const unsigned pad_mask[]={0,0,0,1,2,4,7,0,1,2,3,4,5,6,7,0};
+    initialize();inject_midi=0;worker_capture_enabled=1;worker_connection();
     for(unsigned key=0;key<16;key++){
-        unsigned cc,value;
-        if(key<3){cc=20+key;value=100;}
-        else if(key<6){cc=87;value=key-3;}
-        else if(key==6){cc=88;value=127;}
-        else if(key==7){cc=81;value=0;}
-        else if(key<15){cc=81;value=key-7;}
-        else {cc=7;value=127;}
-        worker_midi(key,1,cc,value,1);
-        worker_midi(key,1,0,0,0); /* repeated DATA/NoteOn cannot toggle twice */
-        worker_midi(key,0,cc,0,key<3);
-        worker_midi(key,0,0,0,0);
+        unsigned c=key==0?100:0,d=key==1?100:0,s=key==2?100:0;
+        worker_midi(key,1,c,d,s,pad_mask[key],key==15?1:4);
+        worker_midi(key,1,c,d,s,pad_mask[key],0);
+        worker_midi(key,0,0,0,0,0,key==15?0:4);
+        worker_midi(key,0,0,0,0,0,0);
     }
+    /* Independent explicit overlapping masks: releasing a contributor cannot
+     * remove the same effect requested by another still-held key. */
+    worker_midi(3,1,0,0,0,1,4);worker_midi(4,1,0,0,0,3,4);
+    worker_midi(8,1,0,0,0,3,4);worker_midi(3,0,0,0,0,3,4);
+    worker_midi(4,0,0,0,0,1,4);worker_midi(8,0,0,0,0,0,4);
+    worker_midi(0,1,100,0,0,0,4);worker_midi(1,1,100,100,0,0,4);
+    worker_midi(2,1,100,100,100,0,4);worker_midi(6,1,100,100,100,7,4);
+    worker_midi(7,1,0,0,0,0,4);worker_midi(0,0,0,0,0,0,4);
+    worker_midi(9,1,0,0,0,0,4);worker_midi(7,0,0,100,100,7,4);
+    worker_midi(6,0,0,100,100,2,4);worker_midi(9,0,0,100,100,0,4);
+    worker_midi(1,0,0,0,100,0,4);worker_midi(2,0,0,0,0,0,4);
+    /* Velocity-zero NoteOn is also a release on the unchanged MIDI wire. */
+    worker_midi(5,1,0,0,0,4,4);
+    const uint8_t zero_on[]={9,0x90,53,0};unsigned zero_before=generic_writes;
+    forward_midi(zero_on);worker_capture_flush();assert(generic_writes==zero_before+4);
+    assert(regs[0x54/4]==((2u<<14)|(81u<<7)));worker_state(0,0,0,0);
+    for(unsigned cc=120;cc<=123;cc+=3){
+        worker_midi(0,1,100,0,0,0,4);worker_midi(6,1,100,0,0,7,4);
+        worker_panic(cc);assert(worker_blocked_keys==((1u<<0)|(1u<<6)));
+        worker_midi(0,1,0,0,0,0,0); // a held retransmission cannot undo PANIC
+        worker_midi(4,1,0,0,0,2,4);
+        worker_midi(0,0,0,0,0,2,0);worker_midi(6,0,0,0,0,2,0);
+        worker_midi(4,0,0,0,0,0,4);assert(!worker_blocked_keys);
+    }
+    worker_defer_checkpoint=1;
+    worker_midi(0,1,100,0,0,0,4);worker_midi(14,1,100,0,0,7,4);
+    disconnect();worker_defer_checkpoint=0;worker_connection();assert(!worker_keys && !worker_blocked_keys);
+    connect();worker_connection();worker_midi(14,0,0,0,0,0,0);
+    worker_midi(0,1,100,0,0,0,4);worker_midi(0,0,0,0,0,0,4);
+    if(worker_trace)fprintf(worker_trace,"2 0 1 0 0 0 0\n");
+    worker_midi(1,1,0,100,0,0,4);worker_midi(1,0,0,0,0,0,4);
+    worker_midi(14,1,0,0,0,7,4);worker_midi(14,0,0,0,0,0,4);
+    if(worker_trace)fprintf(worker_trace,"2 0 0 0 0 0 0\n");
+    worker_capture_enabled=0;
     unsigned before=generic_writes;
     const uint8_t program[]={12,0xc0,73,0},mode_cc[]={11,0xb0,89,1},outside[]={9,0x90,47,100};
     forward_midi(program);forward_midi(mode_cc);forward_midi(outside);assert(generic_writes==before);
@@ -525,23 +590,29 @@ static void worker_demo_tests(void){
     assert(!strcmp(gw.line1,"D STREAM  GAIN 127  OUT STEREO"));
     assert(!strcmp(gw.line2,"CRUSH 017 DRIVE 064 SEND 101"));
     assert(!strcmp(gw.line3,"FX DCR 101  TOUCH A-C HOLD"));
-    worker_midi(0,1,20,100,1);
+    worker_capture_enabled=1;FILE *saved_trace=worker_trace;worker_trace=NULL;
+    worker_midi(0,1,100,0,0,0,4);worker_capture_enabled=0;worker_trace=saved_trace;
     unsigned frames_before=complete_frames;wait_quiet();assert(complete_frames==frames_before);
     assert(!strcmp(gw.line2,"CRUSH 017 DRIVE 064 SEND 101"));
     regs[0x14/4]=100u|(64u<<7)|(101u<<14);
     wait_frame(frames_before+1);wait_quiet();
     assert(!strcmp(gw.line2,"CRUSH 100 DRIVE 064 SEND 101"));
-    disconnect();assert(!worker_keys);connect();worker_midi(0,1,20,100,1);
+    disconnect();assert(!worker_keys && !worker_blocked_keys);connect();
     fixture();fixture_vid=0x2982;fixture_pid=0x1967;connect();
     assert(!connected && mode==DEVICE_NONE && !regs[0]);
     fixture();fixture_vid=1;connect();assert(!connected && mode==DEVICE_NONE);
     assert(!score_reads && !note_on_count && !note_off_count && !cc123_count);
-    printf("PASS W-DEMO USB: 16 touch mappings, momentary release, duplicate suppression, generic control filtering, real committed D feedback, full PL frames, reconnect reset and Push rejection\n");
+    printf("PASS W-DEMO USB: 16 touch mappings, all momentary effects, overlapping masks/dry restore, duplicate and zero-velocity release, PANIC held-key fence, reconnect, committed feedback and PL frames\n");
 }
 #endif
 int main(int argc,char **argv){
 #ifdef WORKSTATION_WORKER_DEMO
-    if(argc==1){worker_demo_tests();return 0;}
+    if(argc==1 || (argc==3 && !strcmp(argv[1],"--worker-touch-trace"))){
+        if(argc==3){worker_trace=fopen(argv[2],"w");assert(worker_trace);}
+        worker_demo_tests();
+        if(worker_trace)assert(!fclose(worker_trace));
+        return 0;
+    }
 #endif
     if(argc==3 && !strcmp(argv[1],"--render")){render_scene(argv[2]);return 0;}
     if(argc==3 && !strcmp(argv[1],"--audio-feedback")){audio_feedback_test(argv[2]);return 0;}

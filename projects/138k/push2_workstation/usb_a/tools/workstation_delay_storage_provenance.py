@@ -16,7 +16,7 @@ REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 # The reviewed native RTC/PCM, ROM and business observation composition changes
 # this maintained reference. Original effects provenance/adaptation bytes and
 # both non-runtime FIFO selectors remain locked; no effects lineage is rebased.
-REFERENCE_SHA256 = 'd3bfd734fd0a4fe87b4641f0fb3e1a81ab4b61d9ab7b149a66fc05d09abc052b'
+REFERENCE_SHA256 = 'ce0955b642db5d6e6cd710a160d5458caba16e5be14a82f84fdfc5008f3b221a'
 PREPARED_SOURCE = 'rtl/audio/stereo_effects.sv'
 
 # Current scratch data is written in state2 before every state3 consumer.
@@ -66,6 +66,35 @@ DELAY_SCRATCH_PROVENANCE_SHA256 = 'e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b
 
 def sha(payload):
     return hashlib.sha256(payload).hexdigest()
+
+
+# W momentary effects stop mixing a released stage immediately. The default
+# retains the existing M tail selection; maintenance/history logic is unchanged.
+# Reverse only the two reviewed bytes before the unchanged slot/D/storage chain.
+EFFECT_RELEASE_SOURCE_SHA256 = '99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46fc0a311bdcdc2c9'
+EFFECT_RELEASE_PARENT_SHA256 = 'e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50'
+EFFECT_RELEASE_EDITS = (('    parameter bit D_DELAY_SEND_ENABLE=0,\n', '    parameter bit D_DELAY_SEND_ENABLE=0,\n    parameter bit RELEASE_TAILS_ENABLE=1,\n'), ('selected_id<3&&(frame_mask[selected_id]||selected_active)&&!processed[selected_id]', 'selected_id<3&&(frame_mask[selected_id]||(RELEASE_TAILS_ENABLE&&selected_active))&&!processed[selected_id]'))
+
+
+def restore_effect_release_policy(source):
+    """Reverse only the hash-bound opt-in D release policy and check round trip."""
+    if sha(source) != EFFECT_RELEASE_SOURCE_SHA256:
+        return source
+    current = source.decode()
+    for before, after in reversed(EFFECT_RELEASE_EDITS):
+        if current.count(after) != 1:
+            raise ValueError('Effects release policy reverse anchor drift')
+        current = current.replace(after, before)
+    restored = current.encode()
+    if sha(restored) != EFFECT_RELEASE_PARENT_SHA256:
+        raise ValueError('Effects release policy parent identity changed')
+    for before, after in EFFECT_RELEASE_EDITS:
+        if current.count(before) != 1:
+            raise ValueError('Effects release policy forward anchor drift')
+        current = current.replace(before, after)
+    if current.encode() != source:
+        raise ValueError('Effects release policy round trip changed bytes')
+    return restored
 
 
 # Read-only stored-slot observation added after the reviewed D-control source.
@@ -296,6 +325,7 @@ def restore_native(source, provenance, policy=STRICT_POLICY, adaptation=None):
     if sha(provenance) != PROVENANCE_SHA256:
         raise ValueError('Original effects provenance bytes changed')
     original = json.loads(provenance)
+    source = restore_effect_release_policy(source)
     source = restore_effect_sample_slot(source)
     source = restore_demo_d_controls(source, SOURCE)
     current = source.decode()
@@ -374,7 +404,11 @@ def source_bundle(root):
     delay_source = (root / DELAY_SCRATCH_SOURCE).read_bytes()
     delay_provenance = (root / DELAY_SCRATCH_PROVENANCE).read_bytes()
     delay_parent = restore_delay_native(delay_source, delay_provenance)
-    evidence.update(delay_scratch_reset=dict(source=DELAY_SCRATCH_SOURCE,
+    evidence.update(effect_release_policy=dict(current_source_sha256=sha(source),
+        parent_source_sha256=EFFECT_RELEASE_PARENT_SHA256, default_release_tails_enable=1,
+        d_only_release_tails_enable=0, exact_inverse_round_trip_verified=True,
+        maintenance_history_and_nba_unchanged=True),
+        delay_scratch_reset=dict(source=DELAY_SCRATCH_SOURCE,
         current_source_sha256=sha(delay_source), original_native_sha256=sha(delay_parent),
         original_provenance_sha256=sha(delay_provenance),
         scratch_products_without_reset=sha(restore_demo_d_controls(delay_source, DELAY_SCRATCH_SOURCE)) == DELAY_SCRATCH_SOURCE_SHA256),

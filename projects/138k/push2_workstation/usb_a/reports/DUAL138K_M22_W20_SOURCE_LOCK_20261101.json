@@ -1,0 +1,268 @@
+{
+  "stage": "source_lock_only",
+  "evidence": {
+    "m": {
+      "changed": {
+        "projects/138k/push2_workstation/usb_a/firmware.c": {
+          "before": "29080e10baaa232a25dfaa87f333c1f8164acba1eb725b1cd4828e7ae8ba21e8",
+          "after": "b84d9e0c0191963d851f964ef6e674671ed68e00cd1b373d6efba4cd62ea54cf"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "7e5c0e3b8870d339f998ce3c6287fbc0c4d9e19e5e5e49365a7a6762f3a7e9aa",
+          "after": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv": {
+          "before": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+          "after": "ce64961c58dcd372d911e7ef840858a77001a3bd71932228748b7c8047314ce8"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "6a2108214f5e252cf89a245960e4928fee40440f3b8f2e66e8ca1a9ae95401d9",
+          "after": "2f6bc96771ea2e3c567c536b0efc73cb21c9577aae1c95c3bd380b6c84581a3b"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": {
+          "before": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50",
+          "after": "99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46fc0a311bdcdc2c9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/control/workstation_parameters.sv": {
+          "before": "06fbc08f162bf205520f3d41384c1c5a39e6fc746841773725d26f97edc5be51",
+          "after": "47437fb03ad79e55cb3836df73ec0b66772bab8f2d315be366cb02964a0468a2"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v": {
+          "before": "caaa8425d72dcce65a36efbc9bfebace43a289fa22ed674fbdf3403c90f5923b",
+          "after": "ae0bb155c76521ec4b87a2e70ac9d77e63a0e544cbf1c15307cec9ed7c2025cb"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": {
+          "before": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+          "after": "f3dbbb64bf56c1ae1185903c0e463a2053f74eae61699420092cd2e6b7626585"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv": {
+          "before": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+          "after": "8fe74813499b6309d45609edad4478aba8acac703bb292e7eea85c72f21cec16"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": {
+          "before": "d9df2048b318f4de744d56adad01aab1c888f9265a923dc535def85a5fecc313",
+          "after": "00e928dc2a25776c6e19588bafa698c2048e599c750e95f6fb74d697369dbaa2"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "d3bfd734fd0a4fe87b4641f0fb3e1a81ab4b61d9ab7b149a66fc05d09abc052b",
+          "after": "ce0955b642db5d6e6cd710a160d5458caba16e5be14a82f84fdfc5008f3b221a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": {
+          "before": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+          "after": "8c2251113929ee71bedaf081ef6b4ab3cec4385e48039e4017fa541efb1cf86e"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_m_demo.sv": {
+          "before": "c23acd534b6479a79c852387c11d6b1ea5c424f034a22a5de4fed942904e6e4d",
+          "after": "74d82e73ba7cf12978110b50f6f46a0ed8085edb84d67a680daff3c8935310fd"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": {
+          "before": "3b6bc255af5d652a6badd8d78b01a2fb02de89892999e39b9a46a71ee2532569",
+          "after": "c511ae8b695c5a46c57d76646b53ec2d71b4ca4cb41544e1e25b0a7d73b27709"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": {
+          "before": "70db34344a24bab3270e3c91d7a2a553590c4e0b4432f744252db23e23cfb87a",
+          "after": "79f793f6c5de8a8fa81ba558945a9f3d2632e1ba6029bba85676c3f552de8fe1"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": {
+          "before": "2de3d53c4c60a3d6c478209162be86d4e1aa9ee2c687ece91143c2a50371e483",
+          "after": "7405c8d969b9b86d8d6038420c6bb8b5cd69e0dd3a2195127e3e635ed013f5a5"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py": {
+          "before": "14d9c667df11f411369b6610ae2001e83441e96f8d7bbacd4b608c45f8cd870b",
+          "after": "ce004017ad85404bd3786dc59f1c333831a033d26e40a44be7b9f35829fb9f74"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "e66581f1a557dbc1e70f09f84b6b469a7bd942eaec8f634346357cd28298afd2",
+          "after": "f0b901c23f42da9bd4042825f6ef9107b5bdf9c4354da98bb666bdb695b81253"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "c80aeb2c64176c67ff2c3ca123de013363e068736bce0416314a25904833982f",
+          "after": "3dd5b67b8c778c88d7d9ef54a5162f91b6fb561d65e438a02dc7a721f5dd379b"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "8f817ea18c59298c85a12d437261a655aaf0e4cd91391257008a56404775f563",
+          "after": "2baf5731983aa196e78b7d90f5d4475aab232fbb7bd790b2269875ccf8b75953"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_policy.py": {
+          "before": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33",
+          "after": "b380932da93a8fea4189275366863bb97520e4986540c2730060eea8d788d354"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": {
+          "before": "77441305d4f44977a747be53b0844abf6305d9422b87b30ec7ab520133d44f85",
+          "after": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "e71ea8ba5bcab4aac227f8b988f68dc1b6a9c05631795165a63fceb95576cce8",
+          "after": "46c9c4fd380168b8112f38ac2ee281088a44e71997deb3fe8232cd4bcfa127a6"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "8529ba858ab041bf6e422bcda861d62d68e376c8e6d47fd8848bf384ca29aca2",
+          "after": "8819d1ae8b44e00e708fe24a007ef4f62de6f07b9219ddc6c663586b59cafa66"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+          "before": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b",
+          "after": "c66a2f0b0645d97d5ee7affc8350d5a07fa76579b528ee1de39466f8a7fc7a45"
+        }
+      },
+      "added": {
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/CONTEST_BRAND.md": "31feae274405ad4a3c5caa3dfbba3c8748181e4c0d794370979326bf2da15f24",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_font_OFL.txt": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_glyphs.memh": "31138a27ebe3a7a6d2c38764dfdc10b5eeec76f70f5ef8e3be65533ce21c5a76",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.json": "975e2ffebcdbd1b38f5df2a942c21918bbe943ef5e3caf1937b18f25771ae1de",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.svh": "9ee2b9e381b023f564875215e8f3a500c12b73bf806812ecc637bed4c3131b83",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_logo_pairs.memh": "4e64cb94e0f214be518d620b50ab48a069168ae1ebaca4d0981516413fcbb112",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_sources.json": "deb7d2269a524f73b85f5625f7495208a8ae7e7357c754dc33899c83d83dec22",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_fpga_logo_original.png": "aed6092164c0e0ef9eaf68931066147abc6e5466bbaaa6b46de60d2f15fe92ad",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.provenance.json": "2238c7d1620d2a5cac9a65efe87d85eb80742f2933e46dbd2af27d352d1da74e",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "0bb2cd75046e3a0f43c8a63d0522c076fd018696088adf01bac858c32bf981b3",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_contest_brand.sv": "f5d330b625ea5bc545d1e6c3b9e844a7cc23ba2c4e0b6549e035cffd47d18275",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/RUNTIME_DISPLAY.md": "e3d86499d6812f27ffb021d5b66bbe162fa3d34d36e1751c2f33285e54846ad2",
+        "projects/138k/push2_workstation/usb_a/sim/architecture/run_m_core_push_entries.py": "ae90dad17f3a6d8dd546a88670c69f10676b9e59db0bfa968ff5c22e8c039567",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_m_core_tf_retirement.py": "dcc5df0baea13ef6391cd63e2bae196fcc50dd60f1b13b2e018954ed4fc52031",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_worker_touch_runtime.py": "e5498cb1102a446df0597cb8af54041db91b2440314cb6fd6f5ea76d4caf7327",
+        "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_m_core_tf_retirement.sv": "eaea5a0e65fbd263227ff66db8f10bfb749609b8fabe0d0e986d192f2d6efb8e",
+        "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_worker_touch_runtime.sv": "d66f04e5b65b3c7291a44e90c3f0769c4c10e3af81e350af5acbacf58cafad7f",
+        "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_dashboard.py": "883b96c784ea7cc4b3e88944821e9c00d320c6e0b48e3ea76ad67630e46b3519",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_m_core_push_entries.sv": "8ea7d9ecf85d1224826ae08d12e4df2d22caad9996af3ff0529e31bbd48cf835",
+        "projects/138k/push2_workstation/usb_a/tools/generate_workstation_contest_brand.py": "3a859648dfa695f1ad29379baf6c183caf1f71e5a87020c329f38ab145b59d76"
+      },
+      "source_count": 845,
+      "profile_sha256": "278dc6fc2123f3b81a8e6a5fd945653a7154d99bc573bffcc65c2fd5d8995411"
+    },
+    "w": {
+      "changed": {
+        "projects/138k/push2_workstation/usb_a/firmware.c": {
+          "before": "29080e10baaa232a25dfaa87f333c1f8164acba1eb725b1cd4828e7ae8ba21e8",
+          "after": "b84d9e0c0191963d851f964ef6e674671ed68e00cd1b373d6efba4cd62ea54cf"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "7e5c0e3b8870d339f998ce3c6287fbc0c4d9e19e5e5e49365a7a6762f3a7e9aa",
+          "after": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/push2_controls.sv": {
+          "before": "5e0676363c1d24767c7c43fa5bde75e781a4f78bad012702fa21cdd3620b5b0b",
+          "after": "ce64961c58dcd372d911e7ef840858a77001a3bd71932228748b7c8047314ce8"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "6a2108214f5e252cf89a245960e4928fee40440f3b8f2e66e8ca1a9ae95401d9",
+          "after": "2f6bc96771ea2e3c567c536b0efc73cb21c9577aae1c95c3bd380b6c84581a3b"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_stereo_effects.sv": {
+          "before": "e93558569813b97ca10caf31a44496e6dc232e752434a9f94bbd64fb7fe71c50",
+          "after": "99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46fc0a311bdcdc2c9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/control/workstation_parameters.sv": {
+          "before": "06fbc08f162bf205520f3d41384c1c5a39e6fc746841773725d26f97edc5be51",
+          "after": "47437fb03ad79e55cb3836df73ec0b66772bab8f2d315be366cb02964a0468a2"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v": {
+          "before": "caaa8425d72dcce65a36efbc9bfebace43a289fa22ed674fbdf3403c90f5923b",
+          "after": "ae0bb155c76521ec4b87a2e70ac9d77e63a0e544cbf1c15307cec9ed7c2025cb"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/push2_surface_pixels.sv": {
+          "before": "f76d02ed4c9e38c144a063b45e0fe03bb969518af9d2f78b75e320e638f52480",
+          "after": "f3dbbb64bf56c1ae1185903c0e463a2053f74eae61699420092cd2e6b7626585"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/push2/push2_lights.sv": {
+          "before": "7d720789ccdbcfe66f7c4fdf2d5a3b8116cb12130f034a4a5bd586030c43bfbf",
+          "after": "8fe74813499b6309d45609edad4478aba8acac703bb292e7eea85c72f21cec16"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": {
+          "before": "d9df2048b318f4de744d56adad01aab1c888f9265a923dc535def85a5fecc313",
+          "after": "00e928dc2a25776c6e19588bafa698c2048e599c750e95f6fb74d697369dbaa2"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": {
+          "before": "d3bfd734fd0a4fe87b4641f0fb3e1a81ab4b61d9ab7b149a66fc05d09abc052b",
+          "after": "ce0955b642db5d6e6cd710a160d5458caba16e5be14a82f84fdfc5008f3b221a"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": {
+          "before": "724f23fdbd9f97f1fb16c79f0876eff7e5c317365d737adfc9392b924a515fc4",
+          "after": "8c2251113929ee71bedaf081ef6b4ab3cec4385e48039e4017fa541efb1cf86e"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_m_demo.sv": {
+          "before": "c23acd534b6479a79c852387c11d6b1ea5c424f034a22a5de4fed942904e6e4d",
+          "after": "74d82e73ba7cf12978110b50f6f46a0ed8085edb84d67a680daff3c8935310fd"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": {
+          "before": "3b6bc255af5d652a6badd8d78b01a2fb02de89892999e39b9a46a71ee2532569",
+          "after": "c511ae8b695c5a46c57d76646b53ec2d71b4ca4cb41544e1e25b0a7d73b27709"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": {
+          "before": "70db34344a24bab3270e3c91d7a2a553590c4e0b4432f744252db23e23cfb87a",
+          "after": "79f793f6c5de8a8fa81ba558945a9f3d2632e1ba6029bba85676c3f552de8fe1"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": {
+          "before": "2de3d53c4c60a3d6c478209162be86d4e1aa9ee2c687ece91143c2a50371e483",
+          "after": "7405c8d969b9b86d8d6038420c6bb8b5cd69e0dd3a2195127e3e635ed013f5a5"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_effects.py": {
+          "before": "14d9c667df11f411369b6610ae2001e83441e96f8d7bbacd4b608c45f8cd870b",
+          "after": "ce004017ad85404bd3786dc59f1c333831a033d26e40a44be7b9f35829fb9f74"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "e66581f1a557dbc1e70f09f84b6b469a7bd942eaec8f634346357cd28298afd2",
+          "after": "f0b901c23f42da9bd4042825f6ef9107b5bdf9c4354da98bb666bdb695b81253"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": {
+          "before": "c80aeb2c64176c67ff2c3ca123de013363e068736bce0416314a25904833982f",
+          "after": "3dd5b67b8c778c88d7d9ef54a5162f91b6fb561d65e438a02dc7a721f5dd379b"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "8f817ea18c59298c85a12d437261a655aaf0e4cd91391257008a56404775f563",
+          "after": "2baf5731983aa196e78b7d90f5d4475aab232fbb7bd790b2269875ccf8b75953"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_policy.py": {
+          "before": "415d474ae8690dc21a08be78d0fdb5a544a674f42093703e9a510ff349cdba33",
+          "after": "b380932da93a8fea4189275366863bb97520e4986540c2730060eea8d788d354"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": {
+          "before": "77441305d4f44977a747be53b0844abf6305d9422b87b30ec7ab520133d44f85",
+          "after": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "e71ea8ba5bcab4aac227f8b988f68dc1b6a9c05631795165a63fceb95576cce8",
+          "after": "46c9c4fd380168b8112f38ac2ee281088a44e71997deb3fe8232cd4bcfa127a6"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+          "before": "8529ba858ab041bf6e422bcda861d62d68e376c8e6d47fd8848bf384ca29aca2",
+          "after": "8819d1ae8b44e00e708fe24a007ef4f62de6f07b9219ddc6c663586b59cafa66"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+          "before": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b",
+          "after": "c66a2f0b0645d97d5ee7affc8350d5a07fa76579b528ee1de39466f8a7fc7a45"
+        }
+      },
+      "added": {
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/CONTEST_BRAND.md": "31feae274405ad4a3c5caa3dfbba3c8748181e4c0d794370979326bf2da15f24",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_font_OFL.txt": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_glyphs.memh": "31138a27ebe3a7a6d2c38764dfdc10b5eeec76f70f5ef8e3be65533ce21c5a76",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.json": "975e2ffebcdbd1b38f5df2a942c21918bbe943ef5e3caf1937b18f25771ae1de",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.svh": "9ee2b9e381b023f564875215e8f3a500c12b73bf806812ecc637bed4c3131b83",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_logo_pairs.memh": "4e64cb94e0f214be518d620b50ab48a069168ae1ebaca4d0981516413fcbb112",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_sources.json": "deb7d2269a524f73b85f5625f7495208a8ae7e7357c754dc33899c83d83dec22",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_fpga_logo_original.png": "aed6092164c0e0ef9eaf68931066147abc6e5466bbaaa6b46de60d2f15fe92ad",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.provenance.json": "2238c7d1620d2a5cac9a65efe87d85eb80742f2933e46dbd2af27d352d1da74e",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "0bb2cd75046e3a0f43c8a63d0522c076fd018696088adf01bac858c32bf981b3",
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_contest_brand.sv": "f5d330b625ea5bc545d1e6c3b9e844a7cc23ba2c4e0b6549e035cffd47d18275",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/RUNTIME_DISPLAY.md": "e3d86499d6812f27ffb021d5b66bbe162fa3d34d36e1751c2f33285e54846ad2",
+        "projects/138k/push2_workstation/usb_a/sim/architecture/run_m_core_push_entries.py": "ae90dad17f3a6d8dd546a88670c69f10676b9e59db0bfa968ff5c22e8c039567",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_m_core_tf_retirement.py": "dcc5df0baea13ef6391cd63e2bae196fcc50dd60f1b13b2e018954ed4fc52031",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_worker_touch_runtime.py": "e5498cb1102a446df0597cb8af54041db91b2440314cb6fd6f5ea76d4caf7327",
+        "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_m_core_tf_retirement.sv": "eaea5a0e65fbd263227ff66db8f10bfb749609b8fabe0d0e986d192f2d6efb8e",
+        "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_worker_touch_runtime.sv": "d66f04e5b65b3c7291a44e90c3f0769c4c10e3af81e350af5acbacf58cafad7f",
+        "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_dashboard.py": "883b96c784ea7cc4b3e88944821e9c00d320c6e0b48e3ea76ad67630e46b3519",
+        "projects/138k/push2_workstation/usb_a/sim/usb2/tb_workstation_m_core_push_entries.sv": "8ea7d9ecf85d1224826ae08d12e4df2d22caad9996af3ff0529e31bbd48cf835",
+        "projects/138k/push2_workstation/usb_a/tools/generate_workstation_contest_brand.py": "3a859648dfa695f1ad29379baf6c183caf1f71e5a87020c329f38ab145b59d76"
+      },
+      "source_count": 846,
+      "profile_sha256": "c941634fe4571f7a0df8b3e76d931c2c14c6e26a0377e0a08d3aea6258691aa4"
+    }
+  },
+  "checks": {
+    "current_workstation_sources": 17,
+    "demo_audit": 17,
+    "demo_policy": 8,
+    "both_profiles_checked": true
+  },
+  "hardware_tested": false
+}

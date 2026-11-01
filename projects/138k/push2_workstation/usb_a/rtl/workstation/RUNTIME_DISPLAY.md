@@ -1,12 +1,18 @@
 # Explicit native runtime display composition
 
-Only `WORKSTATION_RUNTIME_NATIVE` selects this path in `workstation_hdmi_display.sv`. `workstation_profile_hdmi.sv` does not define that macro. With it absent, preprocessed HDL tokens equal the previous native HDMI composition; all original HDMI timing, scanout, arbiter, BIST and reset relationships remain. The provenance's exact reverse edits reproduce the original parent bytes.
+`WORKSTATION_RUNTIME_NATIVE` selects the minor1 analysis/cache path in `workstation_hdmi_display.sv`. `workstation_profile_hdmi.sv` does not define that macro. The 2026-11-01 maintained HMI adds a shared light dashboard and read-only applied-parameter projection to this provider; earlier byte-reversal/default-equality evidence below belongs to its original source identity and is not transferred to changed inputs. HDMI timing, scanout, arbiter, BIST and reset ownership remain with the existing components.
 
 ## Top boundary
 
 The existing `sample_valid`, `output_pcm`, `trigger_reference`, `active_voices` and `status_data` inputs are the same atomic completed-frame display tuple in `clk_50m`. Runtime-only inputs are `frame_44k1_i`, `frame_error_i`, `frame_epoch_i[31:0]`, `frame_sequence_i[31:0]` and `observation_trusted_i`. The owner must explicitly use nonzero epochs; epoch zero is rejected, never mapped. Trust must revoke on owner switch/quiesce/fault and on any upstream observation loss that cannot be detected by a later sequence gap.
 
 `display_observation_drop_o[31:0]` is the 50MHz source-side count of the new display CDC's dropped tuples. `ddr_client_reset_no` and `ddr_client_ready_o` are memory-domain observations: respectively `ui_rst_n` and `ui_rst_n && memory_calibrated && bist_done && !bist_failed`. They do not change reset behavior. The platform owns its fail-stop guard after a DDR/video client reset or readiness loss. Video-PLL reset still resets the current DDR clients; true reset-domain separation is a separate integration stage, with accepted transactions and common epoch fencing still requiring validation.
+
+## Applied parameter view
+
+The audio owner adds `{scope_status,control_state,control_pitch,control_options}` as a 128-bit prefix to its existing display observation mailbox; the low 203-bit layout remains intact. `applied_parameters_i[127:0]` is therefore already captured with a real observation in `clk_50m`. A separate 129-bit held mailbox adds the actual rate bit and crosses to memory clock without any audio ready/backpressure input. `feedback_renderer` freezes it once at accepted raster start. This is a stable projection of live committed owner state during the raster, not a claim that it was captured at the same instant as the older validated waveform/FFT/XY cache. The existing minor1 DDR/PL payload is unchanged. Requested/pending modes and health counters are never used as parameter truth.
+
+The maintained `feedback_dashboard.v` and `workstation_contest_brand.sv` replace the frozen dashboard exactly once through `workstation_runtime_profile.py`. Brand ROM/layout inputs and their source notices are explicit copied dependencies. All brand pipeline registers hold with the raster enable. `HMI_D_ONLY` selects only the interpretation of the existing parameter projection and is appended to the renderer parameter list; it does not select or control audio behavior. New mailbox payload/handshake endpoint inventories require actual synthesized/routed audit before physical acceptance. Offline pixel and owner-observation tests do not establish that gate.
 
 ## Atomic observation and scheduling
 

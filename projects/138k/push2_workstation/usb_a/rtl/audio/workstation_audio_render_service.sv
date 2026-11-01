@@ -8,6 +8,7 @@ module workstation_audio_render_service #(
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
+    parameter bit TF_CONTROL_ENABLE=1,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -123,6 +124,7 @@ module workstation_audio_render_service #(
         .RUNTIME_RATE_ENABLE(RUNTIME_RATE_ENABLE),.RUNTIME_EFFECTS_ENABLE(RUNTIME_EFFECTS_ENABLE),
         .EVENT_CONFIG_COFACTOR_ENABLE(RUNTIME_EFFECTS_ENABLE),
         .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
+        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),
         .DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) workstation(
         .clk_i,.rst_ni,.midi_byte_valid_i,.midi_byte_i,.pc_byte_valid_i,.pc_byte_i,
         .cpu_event_valid_i,.cpu_event_i,.cpu_event_ready_o,

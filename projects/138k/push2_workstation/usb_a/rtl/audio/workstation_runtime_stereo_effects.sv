@@ -6,6 +6,7 @@
 module workstation_runtime_stereo_effects #(
     parameter integer VECTOR_ENABLE=0,
     parameter bit D_DELAY_SEND_ENABLE=0,
+    parameter bit RELEASE_TAILS_ENABLE=1,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600,
     parameter integer CHORUS_BASE=480,
@@ -197,7 +198,7 @@ module workstation_runtime_stereo_effects #(
         SELECT:begin
           if(!maintenance) begin
             if(slot_index==3) begin maintenance<=1;maintenance_id<=0;end
-            else if(selected_id<3&&(frame_mask[selected_id]||selected_active)&&!processed[selected_id]) begin
+            else if(selected_id<3&&(frame_mask[selected_id]||(RELEASE_TAILS_ENABLE&&selected_active))&&!processed[selected_id]) begin
               work_id<=selected_id;work_l<=chain_l;work_r<=chain_r;work_apply<=1;
               work_enabled<=frame_mask[selected_id];state<=SEND;
             end else slot_index<=slot_index+1'b1;

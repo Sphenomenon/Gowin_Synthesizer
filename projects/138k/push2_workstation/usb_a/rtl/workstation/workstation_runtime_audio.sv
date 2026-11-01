@@ -13,6 +13,7 @@ module workstation_runtime_audio #(
     parameter bit ENABLE_AE350_PCM=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
+    parameter bit TF_CONTROL_ENABLE=1,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
     parameter bit SEPARATE_COMMON_RESET=0
 ) (
@@ -347,7 +348,8 @@ module workstation_runtime_audio #(
     wire dwr_valid,dwr_pop,drd_push,drd_ready,audio_heartbeat,memory_heartbeat,dma_fault;
     wire [64:0] dwr_data,drd_data;
     workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1),
-        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE)) service(
+        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
+        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)) service(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),
         .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(pcm_history_request),
         .config_ready_o(config_ready),.config_accepted_o(config_accepted),.config_applied_o(config_applied),.history_ready_o(pcm_history_ready),.history_done_o(pcm_history_done),

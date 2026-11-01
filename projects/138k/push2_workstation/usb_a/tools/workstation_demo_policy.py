@@ -8,7 +8,8 @@ import re
 
 LEGACY_POLICY = 'independent_demo_retired_endpoints_v1'
 PREVIOUS_POLICY = 'independent_demo_endpoint_adaptation_v2'
-POLICY = 'independent_demo_endpoint_adaptation_v3'
+V3_POLICY = 'independent_demo_endpoint_adaptation_v3'
+POLICY = 'independent_demo_endpoint_adaptation_v4'
 LOCAL_RETIRED = ('u_recording/', 'u_service_push_cdc/',
                  'u_managed/media_stop/compute_failure_s',
                  'u_managed/media_stop/failed_50_0_s')
@@ -25,8 +26,11 @@ PREVIOUS_RETIRED = dict(LEGACY_RETIRED, W=LEGACY_RETIRED['W'] + (
 ))
 UNUSED_RECORDING_DIAGNOSTICS = ('recording_ble_store/failure_code_o_',
                                 'recording_ble_store/start_done_o_s')
-RETIRED = dict(PREVIOUS_RETIRED,
+V3_RETIRED = dict(PREVIOUS_RETIRED,
                W=PREVIOUS_RETIRED['W'] + UNUSED_RECORDING_DIAGNOSTICS)
+TF_RETIRED = ('u_tf_audio/', 'u_tf_control_cdc/', 'u_audio_command_buffer/',
+              'u_playlist_bridge/', 'tf_format_meta50', 'tf_source_meta50')
+RETIRED = dict(V3_RETIRED, M=V3_RETIRED['M'] + TF_RETIRED)
 # Gowin preserves these generate scopes using a dot.  Rebind the exact known
 # scopes; no wildcard, timing budget, clock or query kind changes here.
 W_SCOPE_BINDINGS = (
@@ -50,8 +54,9 @@ def adapt_constraints(sdc, role):
     return _adapt(sdc, role, legacy=False)
 
 
-def _adapt(sdc, role, *, legacy, previous=False):
-    retired = LEGACY_RETIRED if legacy else PREVIOUS_RETIRED if previous else RETIRED
+def _adapt(sdc, role, *, legacy, previous=False, v3=False):
+    retired = (LEGACY_RETIRED if legacy else PREVIOUS_RETIRED if previous else
+               V3_RETIRED if v3 else RETIRED)
     if role not in retired:
         raise ValueError('unknown independent DEMO role')
     prefixes = retired[role]
@@ -92,7 +97,7 @@ def _adapt(sdc, role, *, legacy, previous=False):
         else:
             selected.append(line)
     result = '\n'.join(selected) + ('\n' if selected else '')
-    return result, dict(policy=LEGACY_POLICY if legacy else PREVIOUS_POLICY if previous else POLICY,
+    return result, dict(policy=LEGACY_POLICY if legacy else PREVIOUS_POLICY if previous else V3_POLICY if v3 else POLICY,
         role=role, retired_prefixes=list(prefixes),
         input_sha256=digest(sdc), output_sha256=digest(result), changes=changes,
         clocks_or_live_exceptions_relaxed=False,
@@ -116,10 +121,10 @@ def verify_constraints(sdc, evidence, role):
             lines[index] = change['original']
     original = '\n'.join(lines) + ('\n' if lines else '')
     policy = evidence.get('policy')
-    if policy not in (LEGACY_POLICY, PREVIOUS_POLICY, POLICY):
+    if policy not in (LEGACY_POLICY, PREVIOUS_POLICY, V3_POLICY, POLICY):
         raise ValueError('unknown DEMO endpoint policy')
     selected, expected = _adapt(original, role, legacy=policy == LEGACY_POLICY,
-                              previous=policy == PREVIOUS_POLICY)
+                              previous=policy == PREVIOUS_POLICY, v3=policy == V3_POLICY)
     if selected != sdc or evidence != expected:
         raise ValueError('DEMO retirement no longer matches the exact source policy')
     return original

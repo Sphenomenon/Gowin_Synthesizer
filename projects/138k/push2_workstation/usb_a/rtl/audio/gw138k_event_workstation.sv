@@ -13,6 +13,7 @@ module gw138k_event_workstation #(
     parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
+    parameter bit TF_CONTROL_ENABLE=1,
     parameter integer DELAY_BITS=14,
     parameter integer ECHO_SAMPLES=9600
 ) (
@@ -217,7 +218,7 @@ module gw138k_event_workstation #(
       .initialization_step_o(attach_step)
   );
   wire [6:0] d_crush,d_drive,d_delay_send;
-  workstation_parameters #(.D_ONLY_ENABLE(D_ONLY_ENABLE)) parameters (
+  workstation_parameters #(.D_ONLY_ENABLE(D_ONLY_ENABLE),.TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)) parameters (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .commit_i(parameter_commit),
@@ -577,7 +578,7 @@ module gw138k_event_workstation #(
     end
   end
   generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
-    workstation_runtime_stereo_effects #(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
+    workstation_runtime_stereo_effects #(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.RELEASE_TAILS_ENABLE(!D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
       .clk_i,.rst_ni,.clear_i(engine_clear),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),
       .pcm_left_i($signed(held_pcm_l)),.pcm_right_i($signed(held_pcm_r)),

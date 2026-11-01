@@ -203,7 +203,12 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
             'DEMO PC source common-reset selection changed')
     from tools.workstation_native_protocol_audit import (
         audit_native_protocol, audit_demo_held_boundaries, validate_native_protocol_sdc)
-    result = audit_native_protocol(n, profile='m-demo-base' if role == 'M' else 'w-demo-d', mapping=mapping)
+    profile = 'm-demo-base' if role == 'M' else 'w-demo-d'
+    if role == 'M':
+        provider = Path(stage) / 'rtl/workstation/workstation_profile_m_demo.sv'
+        if '`define WORKSTATION_DEMO_NO_TF' in provider.read_text().splitlines():
+            profile = 'm-demo-core'
+    result = audit_native_protocol(n, profile=profile, mapping=mapping)
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
         demo_held_handshakes=demo_held_handshake_constraints())

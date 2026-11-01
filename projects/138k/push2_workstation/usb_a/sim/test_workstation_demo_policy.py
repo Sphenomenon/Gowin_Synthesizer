@@ -10,7 +10,7 @@ from tools.workstation_demo_policy import adapt_constraints, verify_constraints,
 
 
 class DemoConstraintPolicy(unittest.TestCase):
-    def test_m_keeps_tf_and_usb_in_mixed_queries(self):
+    def test_m_core_retires_tf_and_keeps_usb_in_mixed_queries(self):
         source = ('create_clock -name clk_50m -period 20 [get_ports {clk_50m}]\n'
             'set_false_path -to [get_pins {u_bluetooth/uart/meta/D u_native_usb/input_owner/meta/D}]\n'
             'set_max_delay 10 -from [get_regs {u_ble_pcm_cdc/held_data*}] '
@@ -18,9 +18,24 @@ class DemoConstraintPolicy(unittest.TestCase):
             'set_max_delay 13.020 -to [get_pins {u_tf_audio/frames/meta/D}]\n')
         selected, evidence = adapt_constraints(source, 'M')
         self.assertIn('[get_pins {u_native_usb/input_owner/meta/D}]', selected)
-        self.assertIn('13.020 -to [get_pins {u_tf_audio/frames/meta/D}]', selected)
+        self.assertNotIn('u_tf_audio/', selected)
         self.assertNotIn('u_bluetooth/', selected)
         self.assertNotIn('u_ble_pcm_cdc/', selected)
+        self.assertEqual(source, verify_constraints(selected, evidence, 'M'))
+        old, old_evidence = _adapt(source, 'M', legacy=False, v3=True)
+        self.assertIn('13.020 -to [get_pins {u_tf_audio/frames/meta/D}]', old)
+        self.assertEqual(source, verify_constraints(old, old_evidence, 'M'))
+
+    def test_m_tf_retirement_keeps_complete_effect_display_and_output_constraints(self):
+        retired = ('u_tf_audio/frames/meta/D', 'u_tf_control_cdc/req_meta/D',
+                   'u_audio_command_buffer/pending/D', 'u_playlist_bridge/fifo/meta/D',
+                   'tf_format_meta50_s/D', 'tf_source_meta50_s/D')
+        live = ('u_native_usb/input_owner/meta/D', 'u_video/u_runtime_display/meta/D',
+                'u_managed/runtime/service/workstation/runtime_effects.effects/meta/D',
+                'u_managed/runtime/serializer/meta/D')
+        source = 'set_max_delay 13.020 -to [get_pins {' + ' '.join((*retired, *live)) + '}]\n'
+        selected, evidence = adapt_constraints(source, 'M')
+        self.assertEqual(selected, 'set_max_delay 13.020 -to [get_pins {' + ' '.join(live) + '}]\n')
         self.assertEqual(source, verify_constraints(selected, evidence, 'M'))
 
     def test_w_keeps_ble_effects_and_clock_limits(self):

@@ -16,6 +16,7 @@ module workstation_runtime_controlled #(
     parameter bit SEPARATE_COMMON_RESET=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
+    parameter bit TF_CONTROL_ENABLE=1,
     parameter bit LOCAL_RECORD_ENABLE=1,
     parameter bit LOCAL_SCORE_ENABLE=1
 ) (
@@ -90,6 +91,7 @@ module workstation_runtime_controlled #(
     // observation. All fields, including effects, are valid only with valid.
     output wire display_valid_o,
     output wire [31:0] display_pcm_o,display_reference_o,display_voices_o,display_status_o,
+    output wire [127:0] display_parameters_o,
     output wire display_44k1_o,display_error_o,
     output wire [31:0] display_epoch_o,display_sequence_o,
     output wire [2:0] effect_mask_o,
@@ -267,7 +269,8 @@ module workstation_runtime_controlled #(
         else begin reasons_meta<=reasons_compute;reasons_sync<=reasons_meta;end
     assign switch_block_reason_o={reasons_sync,!switch_permit_i};
     wire qualified_permit=switch_permit_i && !media_busy_50[2];
-    workstation_runtime_media_stop_bridge #(.ENABLE(ENABLE_MEDIA_POLICY),.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) media_stop(
+    workstation_runtime_media_stop_bridge #(.ENABLE(ENABLE_MEDIA_POLICY),.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET),
+        .TF_ENABLE(TF_CONTROL_ENABLE)) media_stop(
         .reset_ni(common_reset_n),.control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n),
         .clk_50m_i,.compute_clk_i,.owner_reset_ni(service_reset_n),
         .request_i(media_stop_request_i),.hold_i(media_stop_hold_i),
@@ -316,7 +319,8 @@ module workstation_runtime_controlled #(
         .SWITCH_TIMEOUT_CYCLES(SWITCH_TIMEOUT_CYCLES),.PDN_HOLD_FRAMES(PDN_HOLD_FRAMES),
         .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET),
-        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE)
+        .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
+        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)
     ) runtime(
         .rst_ni,.common_reset_ni(common_reset_n),.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i(prepared_request),.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i(prepared_recover),.media_quiescent_i,
@@ -417,14 +421,15 @@ module workstation_runtime_controlled #(
         else if(midi_valid_compute || pc_valid_compute || (merged_valid && merged_ready))revision<=revision+1'b1;
     wire [31:0] display_drop;
     wire [31:0] core_faults=deadline_miss_o+midi_overflow_o+note_drop_o;
-    gw138k_stream_cdc #(.WIDTH(203)) display(
+    gw138k_stream_cdc #(.WIDTH(331)) display(
         .reset_n(common_reset_n),.source_clk(compute_clk_i),.destination_clk(clk_50m_i),
         .source_valid(observed_valid),
-        .source_data({observed_rate,observed_epoch,observed_sequence,observed_error,
+        .source_data({scope_status_o,control_state_o,control_pitch_o,control_options_o,
+            observed_rate,observed_epoch,observed_sequence,observed_error,
             observed_pcm,revision,8'd0,active_mask_o,underrun_compute[15:0],core_faults[15:0],
             effect_mask_compute,effect_order_compute}),
         .drop_count(display_drop),.destination_valid(display_valid_o),
-        .destination_data({display_44k1_o,display_epoch_o,display_sequence_o,display_error_o,
+        .destination_data({display_parameters_o,display_44k1_o,display_epoch_o,display_sequence_o,display_error_o,
             display_pcm_o,display_reference_o,display_voices_o,display_status_o,effect_mask_o,effect_order_o}));
     workstation_display_observation_health #(.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) display_observation_health(
         .control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n),.reset_ni(common_reset_n),.compute_clk_i(compute_clk_i),.clk_50m_i(clk_50m_i),
@@ -465,7 +470,9 @@ endmodule
 // Readiness/CDC composition only. REC_ENABLE and cue stop remain owned by the
 // compute services, TF stop/drain remains owned by the TF service. A request is
 // a four-phase held transaction, never an asynchronous one-cycle pulse crossing.
-module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0,SEPARATE_DOMAIN_RESETS=0) (
+module workstation_runtime_media_stop_bridge #(
+    parameter bit ENABLE=0,SEPARATE_DOMAIN_RESETS=0,TF_ENABLE=1
+) (
     input wire reset_ni,clk_50m_i,compute_clk_i,owner_reset_ni,
     input wire request_i,hold_i,
     output reg local_request_o,
@@ -490,7 +497,8 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0,SEPARATE_D
     (* ASYNC_REG="TRUE" *) reg [1:0] failed_50;
     reg request_seen,compute_pending,compute_sent,acknowledge_toggle,compute_failure;
     assign local_hold_o=ENABLE && hold_compute[1];
-    assign ready_o=ENABLE && state==IDLE && !hold_50 && !tf_stop_pending_i;
+    wire tf_pending=TF_ENABLE && tf_stop_pending_i;
+    assign ready_o=ENABLE && state==IDLE && !hold_50 && !tf_pending;
     // Assertion fences new starts immediately. Release waits for two compute
     // edges and is allowed only after the actual backend transaction ends.
     // Both safety conditions asynchronously assert the same preset value.
@@ -538,15 +546,17 @@ module workstation_runtime_media_stop_bridge #(parameter bit ENABLE=0,SEPARATE_D
             tf_stop_request_o<=0;done_o<=0;failed_o<=0;failure_code_o<=0;
         end else begin
             tf_stop_request_o<=0;done_o<=0;failed_o<=0;
-            if(state==IDLE && !hold_i && (!ENABLE || !tf_stop_pending_i))hold_50<=0;
+            if(state==IDLE && !hold_i && (!ENABLE || !tf_pending))hold_50<=0;
             if(ENABLE)case(state)
                 IDLE:if(request_i && ready_o)begin
                     hold_50<=1;request_toggle<=!request_toggle;state<=LOCAL;local_failure<=0;failure_code_o<=0;
                 end
                 LOCAL:if(acknowledge_50[2]!=acknowledge_seen)begin
                     acknowledge_seen<=acknowledge_50[2];local_failure<=failed_50[1];
-                    // Even a failed recording is actually stopped before TF.
-                    tf_stop_request_o<=1;state<=TF;
+                    // A disabled TF owner has no stop transaction to wait for.
+                    // Existing owners still require their real drain result.
+                    if(TF_ENABLE)begin tf_stop_request_o<=1;state<=TF;end
+                    else state<=QUIET;
                 end
                 TF:if(tf_stop_failed_i)begin
                     failure_code_o<=tf_stop_failure_code_i;failed_o<=1;state<=IDLE;
