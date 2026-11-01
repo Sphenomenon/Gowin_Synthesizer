@@ -31,6 +31,18 @@ M24当前已退出CNN、TF、录音和蓝牙。因此迁走这四项只能避免
 
 第一步先实施实际混响计算/历史存储的M→W源码拆分，接口见[迁移契约](push2_workstation/usb_a/rtl/audio/REMOTE_REVERB_PARTITION_CONTRACT.md)：M保留有界本地截止时间及原始dry回退，W运行维护的真实双率空间混响。用同源、同工具、同动态输入的完整效果链LOCAL/M及W子系统综合，核对M中混响RAM/DSP确实退出。此阶段不选定生产LCD PCM配方，不上板，不宣称整机时序闭合。链路实测不能满足截止时间时，该实时往返方案不得启用；继续用异步分析/CNN/录音迁移减压，再评估增加有界流水预延迟或其他效果划分。
 
+此拆分已完成[同条件Gowin V1.9.12实际子系统综合](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)，来源`06c55d8a98c277b7ba64fc3854b92ce335d09195`，清单SHA256为`5b7e0c9533d495b003faba50e832b5e06e4fc8b53789aafacadf6c6c6af0a097`：
+
+| 实际综合原语/实例 | LOCAL完整效果链 | M完整链＋远端代理 | W真实混响子系统 |
+|---|---:|---:|---:|
+| 本地真实混响实例 | 1 | 0 | 1 |
+| SDPB | 24 | 4 | 20 |
+| SDPX9B | 8 | 8 | 0 |
+| MULT27X36 | 28 | 9 | 19 |
+| MULTALU27X18 | 1 | 1 | 0 |
+
+M相对LOCAL确实减少20个SDPB、19个MULT27X36，混响运算与历史存储出现在W网表；另有ALU−1815、DFFCE−2412，不能直接折算成整机CLS/物理BSRAM收益。三个对象仅为动态内部接口子系统，没有引脚分配、整机P&R或位流（均`null`）；不能烧录，也没有实测控制到声音/LCD延迟。完整M/W profile仍待原生包装层传播、链路测量后注册，不刷新task2的旧来源锁来冒充兼容。
+
 ## 4. 分工与数据权威
 
 | 子系统 | M：本地演奏、提交和最终输出 | W：实际计算和本地存储 |
@@ -98,7 +110,7 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 |---|---|
 | T3-01 分支/原文/分工/预算 | 已完成，见[来源/硬件边界核对](push2_workstation/usb_a/reports/DUAL138K_TASK3_PLAN_20261101.json)；硬件吞吐均待测。原始规划备份在`~/.cache/gw138k-task3-20261101/task3-original-ignored.md` |
 | T3-02a 第一计算迁移源码 | 已完成[源码/仿真证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SOURCE_20261101.json)：M真实链退出本地混响的显式分支，W真实混响/历史RAM；端点15,076帧、18故障场景，整链37,312帧、全部效果顺序/mask/双率及3次有尾音普通屏障通过，整链最大538计算时钟。默认19项、来源17项、候选清单11项通过；生产DEMO宏关闭且原层次不变 |
-| T3-02b 同条件资源差值 | 接续进行：从02a固定提交准备LOCAL/M/W子系统，真实综合检查M退出的RAM/DSP。仅子系统综合；整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
+| T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 不依赖T3-03先推进本地候选：保留32声部/普通矢量；恢复真实选曲/直读/末帧；整机P&R及DAC/HDMI/控制延迟分别验证 |
 | T3-05 W CNN/分析/长录音 | 源码、模型、BSRAM/DDR预算及single-object适配，可与03/04并行；真实综合后以LCD额度接M，不能等完整M恢复后才开始 |

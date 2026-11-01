@@ -1,0 +1,496 @@
+{
+  "schema": "dual138k-task3-reverb-synthesis-v1",
+  "date": "2026-11-01",
+  "stage": "matched_actual_subsystem_synthesis_only",
+  "source_commit": "06c55d8a98c277b7ba64fc3854b92ce335d09195",
+  "candidate_identity": "dual138k-task3-reverb-synthesis-5b7e0c9533d495b0",
+  "experiment_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/reverb-partition-synthesis-v2",
+  "manifest_path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/reverb-partition-synthesis-v2/manifest.json",
+  "manifest_sha256": "5b7e0c9533d495b003faba50e832b5e06e4fc8b53789aafacadf6c6c6af0a097",
+  "synthesis_path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/reverb-partition-synthesis-v2/synthesis.json",
+  "synthesis_sha256": "b308716ee2a771978ae9e3153ac32c3bc6395f16aaa9d94b7df33c107743c6ee",
+  "manifest": {
+    "schema": 1,
+    "stage": "prepared_subsystem_experiment",
+    "source_root": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+    "source_commit": "06c55d8a98c277b7ba64fc3854b92ce335d09195",
+    "source_files": {
+      "legacy/rtl/audio/audio_math_pkg.sv": {
+        "origin": "locked_baseline",
+        "sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "bytes": 1263
+      },
+      "rtl/memory/workstation_sdp.sv": {
+        "origin": "locked_baseline",
+        "sha256": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "bytes": 2441
+      },
+      "rtl/memory/workstation_sdp_banked.sv": {
+        "origin": "locked_baseline",
+        "sha256": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "bytes": 2982
+      },
+      "rtl/audio/workstation_runtime_stereo_effects.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13",
+        "bytes": 16769
+      },
+      "rtl/audio/workstation_runtime_chorus_effect.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+        "bytes": 6793
+      },
+      "rtl/audio/workstation_runtime_spatial_reverb.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "3e5e46d80f19d46347dc25dc6493a5f7290c8056846a9a17ced70673e3def846",
+        "bytes": 13854
+      },
+      "rtl/audio/runtime_spatial_room_preset.svh": {
+        "origin": "maintained_rtl",
+        "sha256": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+        "bytes": 2756
+      },
+      "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+        "bytes": 11405
+      },
+      "rtl/music/music_async_fifo.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+        "bytes": 4439
+      },
+      "rtl/audio/workstation_remote_reverb_m.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "c4b240512360c0fb376aebf97c41ca4b30dbf52d1f43231ef81b9d1e22fe511d",
+        "bytes": 7949
+      },
+      "rtl/audio/workstation_remote_reverb_w.sv": {
+        "origin": "maintained_rtl",
+        "sha256": "a4489681aa8cbcd347e6b161726e163fc68a0184df53be4c35bbd302dc0df677",
+        "bytes": 6171
+      }
+    },
+    "tools_sha256": {
+      "tools/workstation_reverb_partition.py": "dde97579b547df1ba2526803e21f1631fb83d30892ee9fa58474548549489aaa",
+      "tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8"
+    },
+    "baseline": {
+      "name": "resource_rework_route0",
+      "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+      "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+      "origin": {
+        "build": "results/resource_rework_final_route0_20261020_041042",
+        "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+        "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+      },
+      "source_files": 437,
+      "excluded_files": 180
+    },
+    "configuration": {
+      "device": "GW5AST-LV138PG484AC2/I1",
+      "device_version": "C",
+      "synthesis_tool": "gowinsynthesis",
+      "verilog_std": "sysv2017",
+      "compute_clock_hz": 76800000,
+      "compute_period_ns": "13.020833333",
+      "remote_deadline_cycles": 512,
+      "worker_timeout_cycles": 256,
+      "vector_enable": 1,
+      "d_delay_send_enable": 1,
+      "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+    },
+    "cases": {
+      "local": {
+        "top": "reverb_partition_chain_top",
+        "compiled_sources": [
+          "legacy/rtl/audio/audio_math_pkg.sv",
+          "rtl/memory/workstation_sdp.sv",
+          "rtl/memory/workstation_sdp_banked.sv",
+          "rtl/audio/workstation_runtime_chorus_effect.sv",
+          "rtl/audio/workstation_runtime_spatial_reverb.sv",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv",
+          "rtl/music/music_async_fifo.sv",
+          "rtl/audio/workstation_remote_reverb_m.sv"
+        ],
+        "generated_compiler_sources": [
+          "chain_provider.sv",
+          "binding.sv"
+        ],
+        "transitive_sources": [
+          "rtl/audio/workstation_runtime_stereo_effects.sv"
+        ],
+        "generated_sha256": {
+          "binding.sv": "144df773100dcd25149c04b160ec0238b729d031d3addc3b9f052830c38810c7",
+          "run.tcl": "18e3bfd0041abfb03d6b974efa7853469559f2c0f9b14d42e9f22ae6509641c4",
+          "experiment.sdc": "751317f596662aa4dc69b83791b72852d76fca6ce67ca40a0f00e0c6f405d7f2",
+          "chain_provider.sv": "d69a57e78cc75946304b7523cfdedd827a9a6319f3462a3808b00c4d7397bc41"
+        }
+      },
+      "m_remote": {
+        "top": "reverb_partition_chain_top",
+        "compiled_sources": [
+          "legacy/rtl/audio/audio_math_pkg.sv",
+          "rtl/memory/workstation_sdp.sv",
+          "rtl/memory/workstation_sdp_banked.sv",
+          "rtl/audio/workstation_runtime_chorus_effect.sv",
+          "rtl/audio/workstation_runtime_spatial_reverb.sv",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv",
+          "rtl/music/music_async_fifo.sv",
+          "rtl/audio/workstation_remote_reverb_m.sv"
+        ],
+        "generated_compiler_sources": [
+          "chain_provider.sv",
+          "binding.sv"
+        ],
+        "transitive_sources": [
+          "rtl/audio/workstation_runtime_stereo_effects.sv"
+        ],
+        "generated_sha256": {
+          "binding.sv": "3a85082162d39bce5350641c16396f06f1da18ef7a50b06ed247ea431f86ebcd",
+          "run.tcl": "ceea180ead8ee8919af3b6695fe7c957ef4e3d478c7b526160afa43e1d6d0a2b",
+          "experiment.sdc": "751317f596662aa4dc69b83791b72852d76fca6ce67ca40a0f00e0c6f405d7f2",
+          "chain_provider.sv": "d69a57e78cc75946304b7523cfdedd827a9a6319f3462a3808b00c4d7397bc41"
+        }
+      },
+      "w_reverb": {
+        "top": "reverb_partition_worker_top",
+        "compiled_sources": [
+          "legacy/rtl/audio/audio_math_pkg.sv",
+          "rtl/memory/workstation_sdp.sv",
+          "rtl/memory/workstation_sdp_banked.sv",
+          "rtl/audio/workstation_runtime_spatial_reverb.sv",
+          "rtl/audio/workstation_remote_reverb_w.sv"
+        ],
+        "generated_compiler_sources": [
+          "binding.sv"
+        ],
+        "transitive_sources": [],
+        "generated_sha256": {
+          "binding.sv": "999d046de7d62c421c010c2a155c0c20df450ecca4d972db4e348bf53be4ea60",
+          "run.tcl": "fc5c528e6f23d4014e6c7e67d0db8983dfea50bb29b4c471ec46ab5e810b1820",
+          "experiment.sdc": "d500b35a08f6d244a84b6b321c3ca134cedf59cc36772c02af089bc13970524d"
+        }
+      }
+    },
+    "source_policy": "explicit_maintained_effects_and_locked_support_only",
+    "PNR": false,
+    "bitstream_generated": false,
+    "hardware_tested": false,
+    "synthesis_resources_are_not_routed_physical_resources": true,
+    "integration_exit": "select reviewed RTL through existing workstation profiles; replace with whole-system evidence"
+  },
+  "synthesis": {
+    "schema": 1,
+    "stage": "actual_subsystem_synthesis_only",
+    "passed": true,
+    "manifest_sha256": "5b7e0c9533d495b003faba50e832b5e06e4fc8b53789aafacadf6c6c6af0a097",
+    "tool": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+    "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "configuration": {
+      "device": "GW5AST-LV138PG484AC2/I1",
+      "device_version": "C",
+      "synthesis_tool": "gowinsynthesis",
+      "verilog_std": "sysv2017",
+      "compute_clock_hz": 76800000,
+      "compute_period_ns": "13.020833333",
+      "remote_deadline_cycles": 512,
+      "worker_timeout_cycles": 256,
+      "vector_enable": 1,
+      "d_delay_send_enable": 1,
+      "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+    },
+    "cases": {
+      "local": {
+        "returncode": 0,
+        "tool_version": "V1.9.12",
+        "VG_sha256": "8fc93067a2d23fb34ee08e0215681c2753c3e1f1c15cd3c2d2ea22d02e4a5c10",
+        "log_sha256": "e2b2fd5e1f1ef1f1ae9bae414438e563a2cee041792690b79256796856900ff6",
+        "resources": {
+          "leaf_primitive_instances": {
+            "ALU": 2785,
+            "DFFCE": 4392,
+            "DFFPE": 16,
+            "DFFRE": 260,
+            "GND": 32,
+            "GSR": 1,
+            "IBUF": 286,
+            "INV": 9,
+            "LUT2": 538,
+            "LUT3": 2020,
+            "LUT4": 1958,
+            "MULT27X36": 28,
+            "MULTALU27X18": 1,
+            "MUX2_LUT5": 64,
+            "OBUF": 404,
+            "SDPB": 24,
+            "SDPX9B": 8,
+            "VCC": 32
+          },
+          "recursive_leaf_instances": 12858,
+          "reverb_instances": [
+            "dut/local_reverb.reverb_stage"
+          ],
+          "reverb_leaf_primitive_instances": {
+            "ALU": 2070,
+            "DFFCE": 2881,
+            "GND": 26,
+            "LUT2": 283,
+            "LUT3": 1158,
+            "LUT4": 660,
+            "MULT27X36": 19,
+            "MUX2_LUT5": 64,
+            "SDPB": 20,
+            "VCC": 26
+          },
+          "bsram_primitive_instances": {
+            "SDPB": 24,
+            "SDPX9B": 8
+          },
+          "resource_scope": "emitted_synthesis_primitive_instances_not_routed_physical_BSRAM"
+        },
+        "artifacts_sha256": {
+          "binding.sv": "144df773100dcd25149c04b160ec0238b729d031d3addc3b9f052830c38810c7",
+          "chain_provider.sv": "d69a57e78cc75946304b7523cfdedd827a9a6319f3462a3808b00c4d7397bc41",
+          "experiment.sdc": "751317f596662aa4dc69b83791b72852d76fca6ce67ca40a0f00e0c6f405d7f2",
+          "impl/gwsynthesis/partition.log": "6f6d2c6d3f8ca5b4d028f4ed0dc145466daf2565ef139c5c0ec605b19c4ac496",
+          "impl/gwsynthesis/partition.prj": "2d2495e785acb9465fa5fe824ab216c89b4f705bb1f6a76497dc5646be60c710",
+          "impl/gwsynthesis/partition.vg": "8fc93067a2d23fb34ee08e0215681c2753c3e1f1c15cd3c2d2ea22d02e4a5c10",
+          "impl/gwsynthesis/partition_syn.rpt.html": "24880912b8e9d150e6ca019917b6a480b31e4e3c1a4c26bbc4938753936bf688",
+          "impl/gwsynthesis/partition_syn_resource.html": "e0d2e567eb87b4a8c7f3531283322832984a3b3ea6e97fb5aeb205866a8a312d",
+          "impl/gwsynthesis/partition_syn_rsc.xml": "dc5f88667e05bdef5def7a3ce2be1bd1bf88955968a6bda242f897cb7cdaad92",
+          "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+          "run.tcl": "18e3bfd0041abfb03d6b974efa7853469559f2c0f9b14d42e9f22ae6509641c4",
+          "synthesis.log": "e2b2fd5e1f1ef1f1ae9bae414438e563a2cee041792690b79256796856900ff6"
+        }
+      },
+      "m_remote": {
+        "returncode": 0,
+        "tool_version": "V1.9.12",
+        "VG_sha256": "89cd203641d83ebc732067d52851566ac3f4d1f883323ec031f03596119c2a82",
+        "log_sha256": "79b1de3891007973b3b60a9bb26c97586183b8beedaa5771cfc27c6144bbaabf",
+        "resources": {
+          "leaf_primitive_instances": {
+            "ALU": 970,
+            "DFFCE": 1980,
+            "DFFPE": 19,
+            "DFFRE": 260,
+            "GND": 7,
+            "GSR": 1,
+            "IBUF": 485,
+            "INV": 12,
+            "LUT2": 272,
+            "LUT3": 1085,
+            "LUT4": 1423,
+            "MULT27X36": 9,
+            "MULTALU27X18": 1,
+            "OBUF": 404,
+            "SDPB": 4,
+            "SDPX9B": 8,
+            "VCC": 7
+          },
+          "recursive_leaf_instances": 6947,
+          "reverb_instances": [],
+          "reverb_leaf_primitive_instances": {},
+          "bsram_primitive_instances": {
+            "SDPB": 4,
+            "SDPX9B": 8
+          },
+          "resource_scope": "emitted_synthesis_primitive_instances_not_routed_physical_BSRAM"
+        },
+        "artifacts_sha256": {
+          "binding.sv": "3a85082162d39bce5350641c16396f06f1da18ef7a50b06ed247ea431f86ebcd",
+          "chain_provider.sv": "d69a57e78cc75946304b7523cfdedd827a9a6319f3462a3808b00c4d7397bc41",
+          "experiment.sdc": "751317f596662aa4dc69b83791b72852d76fca6ce67ca40a0f00e0c6f405d7f2",
+          "impl/gwsynthesis/partition.log": "8fa7dfd4b7a7088b9e1dd9e9cf1cfb9190aa53192564ee4ac3920a111c088f39",
+          "impl/gwsynthesis/partition.prj": "eb46062a67d97db279385cdc6e24f1d0b2f7f454852d375694fef33e028433c1",
+          "impl/gwsynthesis/partition.vg": "89cd203641d83ebc732067d52851566ac3f4d1f883323ec031f03596119c2a82",
+          "impl/gwsynthesis/partition_syn.rpt.html": "7b9695c7b5f8268a785aa01496da07540f85bc32cca83e25e6676e2833adef89",
+          "impl/gwsynthesis/partition_syn_resource.html": "18772071e8b2084372ab8a4c0b5e58e406a47abf19528b92238801af18735d20",
+          "impl/gwsynthesis/partition_syn_rsc.xml": "5204524a07ab29ea77bc84992d2a8b8a60bcc7acc995d130e3c0edad28bafce7",
+          "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+          "run.tcl": "ceea180ead8ee8919af3b6695fe7c957ef4e3d478c7b526160afa43e1d6d0a2b",
+          "synthesis.log": "79b1de3891007973b3b60a9bb26c97586183b8beedaa5771cfc27c6144bbaabf"
+        }
+      },
+      "w_reverb": {
+        "returncode": 0,
+        "tool_version": "V1.9.12",
+        "VG_sha256": "322bb56ce6c713d68eb9b8fb202439f1124ca4c57adb1ffb110164ca1d0d6404",
+        "log_sha256": "f86704d59dc0d776347bde8d7a7fb753f61885b83275fa4ac797aa70488df802",
+        "resources": {
+          "leaf_primitive_instances": {
+            "ALU": 2480,
+            "DFFCE": 3221,
+            "GND": 28,
+            "GSR": 1,
+            "IBUF": 200,
+            "INV": 4,
+            "LUT2": 372,
+            "LUT3": 1096,
+            "LUT4": 827,
+            "MULT27X36": 19,
+            "MUX2_LUT5": 64,
+            "OBUF": 230,
+            "SDPB": 20,
+            "VCC": 28
+          },
+          "recursive_leaf_instances": 8590,
+          "reverb_instances": [
+            "dut/reverb"
+          ],
+          "reverb_leaf_primitive_instances": {
+            "ALU": 2068,
+            "DFFCE": 2883,
+            "GND": 26,
+            "LUT2": 364,
+            "LUT3": 1017,
+            "LUT4": 737,
+            "MULT27X36": 19,
+            "MUX2_LUT5": 64,
+            "SDPB": 20,
+            "VCC": 26
+          },
+          "bsram_primitive_instances": {
+            "SDPB": 20
+          },
+          "resource_scope": "emitted_synthesis_primitive_instances_not_routed_physical_BSRAM"
+        },
+        "artifacts_sha256": {
+          "binding.sv": "999d046de7d62c421c010c2a155c0c20df450ecca4d972db4e348bf53be4ea60",
+          "experiment.sdc": "d500b35a08f6d244a84b6b321c3ca134cedf59cc36772c02af089bc13970524d",
+          "impl/gwsynthesis/partition.log": "0304942b1916bab2ae43a257ef3515226416a97c3b195f2ad23dc280122ce526",
+          "impl/gwsynthesis/partition.prj": "3022094d18229f1e4cd85a3df20e84fd711a9e4a16e621d687cb516885c60c8e",
+          "impl/gwsynthesis/partition.vg": "322bb56ce6c713d68eb9b8fb202439f1124ca4c57adb1ffb110164ca1d0d6404",
+          "impl/gwsynthesis/partition_syn.rpt.html": "f51815f26995dd1df754ac0ec3cbd630f1a4b271f6af6cf0b6b23919a5cd22df",
+          "impl/gwsynthesis/partition_syn_resource.html": "11ff81efbf15af9ad324a56c46a85ca36ea6dce1140e6746682966cde3080ce6",
+          "impl/gwsynthesis/partition_syn_rsc.xml": "a2b2724b3e87668e73f9712682075ef7274c65c8bd37f7116d7561d6c36e359d",
+          "impl/gwsynthesis/project.ini": "9c521f8324f4b4359e616a6b17695877dd4906ebacd63c7093cecaed2374278a",
+          "run.tcl": "fc5c528e6f23d4014e6c7e67d0db8983dfea50bb29b4c471ec46ab5e810b1820",
+          "synthesis.log": "f86704d59dc0d776347bde8d7a7fb753f61885b83275fa4ac797aa70488df802"
+        }
+      }
+    },
+    "m_remote_minus_local_primitive_instances": {
+      "ALU": -1815,
+      "DFFCE": -2412,
+      "DFFPE": 3,
+      "DFFRE": 0,
+      "GND": -25,
+      "GSR": 0,
+      "IBUF": 199,
+      "INV": 3,
+      "LUT2": -266,
+      "LUT3": -935,
+      "LUT4": -535,
+      "MULT27X36": -19,
+      "MULTALU27X18": 0,
+      "MUX2_LUT5": -64,
+      "OBUF": 0,
+      "SDPB": -20,
+      "SDPX9B": 0,
+      "VCC": -25
+    },
+    "PNR": false,
+    "timing_accepted": false,
+    "physical_BSRAM_count": null,
+    "hardware_tested": false,
+    "bitstream_generated": false,
+    "production_profile_selected": false,
+    "limitations": "Dynamic subsystem ports prevent fixed-input pruning; no whole-workstation resource, timing, LCD or hardware acceptance."
+  },
+  "comparison_assertions": {
+    "local_real_reverb_instances": 1,
+    "M_real_reverb_instances": 0,
+    "W_real_reverb_instances": 1,
+    "M_SDPB_delta": -20,
+    "M_MULT27X36_delta": -19,
+    "claimed_physical_BSRAM_delta": null,
+    "complete_workstation_resource_delta": null
+  },
+  "roles": {
+    "local": {
+      "source_commit": "06c55d8a98c277b7ba64fc3854b92ce335d09195",
+      "configuration": {
+        "device": "GW5AST-LV138PG484AC2/I1",
+        "device_version": "C",
+        "synthesis_tool": "gowinsynthesis",
+        "verilog_std": "sysv2017",
+        "compute_clock_hz": 76800000,
+        "compute_period_ns": "13.020833333",
+        "remote_deadline_cycles": 512,
+        "worker_timeout_cycles": 256,
+        "vector_enable": 1,
+        "d_delay_send_enable": 1,
+        "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+      },
+      "VG_sha256": "8fc93067a2d23fb34ee08e0215681c2753c3e1f1c15cd3c2d2ea22d02e4a5c10",
+      "bitstream": null,
+      "user_code": null,
+      "physical_resources": null,
+      "routed_timing": null,
+      "hardware_latency": null
+    },
+    "m_remote": {
+      "source_commit": "06c55d8a98c277b7ba64fc3854b92ce335d09195",
+      "configuration": {
+        "device": "GW5AST-LV138PG484AC2/I1",
+        "device_version": "C",
+        "synthesis_tool": "gowinsynthesis",
+        "verilog_std": "sysv2017",
+        "compute_clock_hz": 76800000,
+        "compute_period_ns": "13.020833333",
+        "remote_deadline_cycles": 512,
+        "worker_timeout_cycles": 256,
+        "vector_enable": 1,
+        "d_delay_send_enable": 1,
+        "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+      },
+      "VG_sha256": "89cd203641d83ebc732067d52851566ac3f4d1f883323ec031f03596119c2a82",
+      "bitstream": null,
+      "user_code": null,
+      "physical_resources": null,
+      "routed_timing": null,
+      "hardware_latency": null
+    },
+    "w_reverb": {
+      "source_commit": "06c55d8a98c277b7ba64fc3854b92ce335d09195",
+      "configuration": {
+        "device": "GW5AST-LV138PG484AC2/I1",
+        "device_version": "C",
+        "synthesis_tool": "gowinsynthesis",
+        "verilog_std": "sysv2017",
+        "compute_clock_hz": 76800000,
+        "compute_period_ns": "13.020833333",
+        "remote_deadline_cycles": 512,
+        "worker_timeout_cycles": 256,
+        "vector_enable": 1,
+        "d_delay_send_enable": 1,
+        "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+      },
+      "VG_sha256": "322bb56ce6c713d68eb9b8fb202439f1124ca4c57adb1ffb110164ca1d0d6404",
+      "bitstream": null,
+      "user_code": null,
+      "physical_resources": null,
+      "routed_timing": null,
+      "hardware_latency": null
+    }
+  },
+  "tool_adapter_fix": {
+    "failed_first_experiment": "/Users/sphenicidition/.cache/gw138k-task3-20261101/reverb-partition-synthesis-v1",
+    "failed_log_sha256": "9d9aa4703c9081980d944fdb3a24d4d8170679ed1ab986ba29e51334011712f9",
+    "reason": "Installed Gowin has no -verilog_define option; replaced with strictly checked define/include compilation provider",
+    "failed_candidate_unchanged": true,
+    "tool_manifest_tests_after_fix": 12
+  },
+  "limits": [
+    "Source-stage dynamic interfaces are internal seams, not a physical pin assignment",
+    "Synthesis primitive counts are not routed physical BSRAM or whole-M savings",
+    "No full M/W native profile propagation selected",
+    "No LCD throughput/RTT/CRC/CDC measurement",
+    "No complete P&R, PLL/CDC or hardware timing acceptance",
+    "No bitstream generated; no SRAM or Flash operation"
+  ],
+  "rollback": "Do not define WORKSTATION_REMOTE_REVERB_PARTITION; original task2 checkout/candidates remain separate and no DEMO profile lock was refreshed"
+}
