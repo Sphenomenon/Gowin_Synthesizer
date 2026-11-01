@@ -186,6 +186,8 @@ M浅色工控HMI继续在维护`feedback_dashboard.v`及品牌资产实现，白
 
 W的[连续PCM Pitch正式维护接入](push2_workstation/usb_a/reports/DUAL138K_STREAM_PITCH_INTEGRATION_20261101.json)已完成离线阶段：仅D_ONLY实例，实际PCM→Pitch→原crush／drive→完整FX；沿用唯一参数owner及原session／rate／native取消广播，25K G按住结合滑条启效、释放回中，H临时dry并只恢复仍按G，O保留D／C／R，反馈取真实committed index。实际C→MMIO→FIFO／CDC→D／DDR→反馈28716帧／559事件／378检查点／9生命周期／256滑条及完整D29312帧通过，149clock最大服务间隔；两实际输出／history负控拒绝。M／legacy完整服务88191／88223半拍逐位相等，两种非W固件完整预处理相同；组合负控先在legacy失败，另补native-M-only实际输出负控拒绝。主线程重验274文件，336重复输入引用对应123唯一路径／111内容对象，4owner严格inverse等于提交前HEAD；后续runtime_profile变化按原封存object核对，不替换旧测试输入。粒状旁带、峰值偏理想约5.4Hz及pitch-up无抗混叠保持，实际新W revision3／GPRJ／全量综合／P&R与真手机／DAC仍待验，不将retirement独立M FFT fixture说成W保留显示。
 
+M24 `D2110132`的[完整定向物理结果](push2_workstation/usb_a/reports/DUAL138K_M24_DIRECTED_PHYSICAL_20261101.json)已封存：全量P&R551.683秒退出0，物理BSRAM246／DSP116／CLS46554／FF43124／LUT47943／ALU11940／SSRAM99；setup135／最差−.215ns、hold10／最差−.144ns，recovery+2.100／removal+.275ns，DDR原3.500ns保持且指定hold+.631ns。最差glyph地址，audio rate→vector envelope与delay underflow→oscillator expression CE仍负，完整STA失败。原冻结v3审计失败保留，独立v4 native59项45过／14具名skip／61负控、六PLL／7负控，以及boundary7／69、performance17／8通过；HMI通用guard的skip不冒记执行，另补实际routed60live／8常0／61unused、16组合frameCE及8破坏控制全拒，物理CDC接受仍为false。全部物理输入／产物及审计证据逐项重hash，详见报告seal；未上板，M25新身份另测，不修改旧132或预记修复收益。
+
 ## 6. 分阶段任务与退出条件
 
 **当前状态解释：** 以下按日期保留的W完整HDMI／录音证据属于此前候选；不代表本轮仍需交付这些能力，也不证明最新无显示／无录音配置已通过。当前执行与验收以第5.1—5.4节最新范围为准。
