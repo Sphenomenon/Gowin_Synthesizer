@@ -344,6 +344,8 @@ TF的[响应选路cofactor维护阶段](push2_workstation/usb_a/reports/DUAL138K
 
 M16 `D2110110` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M16_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50,976，setup529／−1.222ns、hold1／−3.445ns，recovery+.523／removal+.281ns，仍未闭合。四条clk50实测+2.282／+.181／+.860／−3.445ns；最差为已有握手payload的跨域路径，相关窄CDC正核对，同域残余负路径保持。实际VO54项（50通过／4跳过）及45负控、边界7／61、官方六PLL／7负控通过；30物理文件及2937份证据逐项重验，含1374冻结工具／588staged／875prepare来源。同VG／完整SDC／DDR3.500ns的`D2110111` far已启动P&R，未预记结果，未上板。
 
+W14的[DMA fault精确D／CE映射审计修复](push2_workstation/usb_a/reports/DUAL138K_W14_BOUNDARY_WPTR_MAPPING_20261101.md)已完成：三fault各663端点只有wptr0由D移到CE，完整10个真实FF输入／实际LUT的reset-inclusive next-Q等价，不假设状态可达；新增功能门拒绝保留closure却删故障veto的负控。旧／新八套完整回归通过，其中三套新7项／69负控；原helpers／SDC保持，86实际输入／53内容blob／96证据由主线程逐项重验，M16 VG／VO独立正控通过。原W14 v1失败不改，另立v2完整1374冻结审计输入（仅新helper）后同一VG strict／physical prepare通过；v3仅更新新test，未混入新TF。`D211010E`已完成全量P&R、六组物理审计进行中，资源／STA另记，不预填物理或硬件接受，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

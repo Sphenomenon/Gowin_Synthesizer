@@ -1,0 +1,744 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "exact third DMA fault-consumer mapping plus all-domain wptr LSB next-Q semantic gate",
+  "maintained_sources_sha256": {
+    "tools/workstation_demo_boundary_cdc.py": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
+    "sim/test_workstation_demo_boundary_cdc.py": "37b90d68c32faa6b2424b5af6616cc076a07778d206ab09a52f2aeb745f0c82e"
+  },
+  "DMA_source_sha256": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+  "actual_normalized_consumer_diff": {
+    "watchdog_fault": {
+      "removed": {
+        "u_managed/runtime/delay_dma/wptr_0/D": "memory_clk"
+      },
+      "added": {
+        "u_managed/runtime/delay_dma/wptr_0/CE": "memory_clk"
+      },
+      "domain_changed": {}
+    },
+    "protocol_fault": {
+      "removed": {
+        "u_managed/runtime/delay_dma/wptr_0/D": "memory_clk"
+      },
+      "added": {
+        "u_managed/runtime/delay_dma/wptr_0/CE": "memory_clk"
+      },
+      "domain_changed": {}
+    },
+    "peer_fault": {
+      "removed": {
+        "u_managed/runtime/delay_dma/wptr_0/D": "memory_clk"
+      },
+      "added": {
+        "u_managed/runtime/delay_dma/wptr_0/CE": "memory_clk"
+      },
+      "domain_changed": {}
+    }
+  },
+  "full_binary_actual_nextQ": {
+    "schema": 1,
+    "passed": true,
+    "scope": "all binary paired source-register assignments; actual complete LUT truth tables; no state/data/fault reachability assumptions",
+    "actual_cells": {
+      "13": {
+        "register": "u_managed/runtime/delay_dma/wptr_0_s3",
+        "cell": {
+          "kind": "DFFCE",
+          "ports": {
+            "Q": "wptr[0]",
+            "D": "n2425_10",
+            "CLK": "memory_clk",
+            "CLEAR": "n184_6",
+            "CE": "VCC"
+          },
+          "parameters": {
+            "INIT": "1'b0"
+          }
+        },
+        "pins": {
+          "D": "u_managed/runtime/delay_dma/n2425_10",
+          "CE": "u_managed/runtime/delay_dma/VCC",
+          "CLEAR": "u_managed/runtime/n184_6",
+          "Q": "u_managed/runtime/delay_dma/wptr[0]",
+          "CLK": "memory_clk"
+        },
+        "D_BDD": 43,
+        "CE_BDD": 1,
+        "CLEAR_BDD": 44,
+        "normal_nextQ_BDD": 43,
+        "reset_nextQ_BDD": 59
+      },
+      "14": {
+        "register": "u_managed/runtime/delay_dma/wptr_0_s0",
+        "cell": {
+          "kind": "DFFCE",
+          "ports": {
+            "Q": "wptr[0]",
+            "D": "n2425_7",
+            "CLK": "memory_clk",
+            "CLEAR": "n184_6",
+            "CE": "wptr_31_11"
+          },
+          "parameters": {}
+        },
+        "pins": {
+          "D": "u_managed/runtime/delay_dma/n2425_7",
+          "CE": "u_managed/runtime/delay_dma/wptr_31_11",
+          "CLEAR": "u_managed/runtime/n184_6",
+          "Q": "u_managed/runtime/delay_dma/wptr[0]",
+          "CLK": "memory_clk"
+        },
+        "D_BDD": 31,
+        "CE_BDD": 29,
+        "CLEAR_BDD": 44,
+        "normal_nextQ_BDD": 43,
+        "reset_nextQ_BDD": 59
+      }
+    },
+    "paired_leaf_registers": [
+      "u_managed/runtime/delay_dma/peer_fault/Q",
+      "u_managed/runtime/delay_dma/protocol_fault/Q",
+      "u_managed/runtime/delay_dma/state_0/Q",
+      "u_managed/runtime/delay_dma/state_1/Q",
+      "u_managed/runtime/delay_dma/state_2/Q",
+      "u_managed/runtime/delay_dma/state_3/Q",
+      "u_managed/runtime/delay_dma/watchdog_fault/Q",
+      "u_managed/runtime/delay_dma/wptr_0/Q",
+      "u_managed/runtime/memory_release_2/Q",
+      "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/u_read_fifo/g_large_head.full_q/Q"
+    ],
+    "leaf_net_mapping": {
+      "13": {
+        "u_managed/runtime/delay_dma/state_3/Q": "state_1412[3]",
+        "u_managed/runtime/delay_dma/watchdog_fault/Q": "u_managed/runtime/delay_dma/watchdog_fault",
+        "u_managed/runtime/delay_dma/wptr_0/Q": "u_managed/runtime/delay_dma/wptr[0]",
+        "u_managed/runtime/delay_dma/peer_fault/Q": "u_managed/runtime/delay_dma/peer_fault",
+        "u_managed/runtime/delay_dma/state_2/Q": "state_1412[2]",
+        "u_managed/runtime/delay_dma/protocol_fault/Q": "u_managed/runtime/delay_dma/protocol_fault",
+        "u_managed/runtime/delay_dma/state_1/Q": "state_1412[1]",
+        "u_managed/runtime/delay_dma/state_0/Q": "state_1412[0]",
+        "u_managed/runtime/memory_release_2/Q": "u_managed/runtime/memory_release[2]",
+        "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/u_read_fifo/g_large_head.full_q/Q": "u_managed/runtime/\\g_large_head.full_q"
+      },
+      "14": {
+        "u_managed/runtime/delay_dma/watchdog_fault/Q": "u_managed/runtime/delay_dma/watchdog_fault",
+        "u_managed/runtime/delay_dma/wptr_0/Q": "u_managed/runtime/delay_dma/wptr[0]",
+        "u_managed/runtime/delay_dma/peer_fault/Q": "u_managed/runtime/delay_dma/peer_fault",
+        "u_managed/runtime/delay_dma/state_1/Q": "state_1420[1]",
+        "u_managed/runtime/delay_dma/state_2/Q": "state_1420[2]",
+        "u_managed/runtime/delay_dma/state_3/Q": "state_1420[3]",
+        "u_managed/runtime/delay_dma/protocol_fault/Q": "u_managed/runtime/delay_dma/protocol_fault",
+        "u_managed/runtime/delay_dma/state_0/Q": "state_1420[0]",
+        "u_managed/runtime/memory_release_2/Q": "u_managed/runtime/memory_release[2]",
+        "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/u_read_fifo/g_large_head.full_q/Q": "u_managed/runtime/\\g_large_head.full_q"
+      }
+    },
+    "nextQ_identical": true,
+    "BDD_node_count": 73,
+    "synthesis_or_hardware_claimed": false,
+    "input_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/custom_138k_integration.vg": "3c7866321188f7b36dc601c36f6b572b04ee5c5f7786f434a10a1b0d2bb4a787",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v14/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "36576c86a2c2c6d42830bb2c75af5441143ca288ca93397b17923de03fee2141",
+      "/private/tmp/dual138k-w14-wptr-nextq-v1.py": "ed9aa84a940de7d44328a23ac36a2e68d1f46a4293d6c99c8eb9333e4e875467"
+    }
+  },
+  "original_unchanged_helpers": [
+    "require",
+    "digest",
+    "proposed_constraints",
+    "select_demo_boundary",
+    "verify_demo_boundary",
+    "closure_eq",
+    "netlist",
+    "validate_sdc"
+  ],
+  "SDC_PROPOSAL_AST_identical": true,
+  "regressions": {
+    "original_W13_VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-v1/original_W13_VG.json",
+      "sha256": "3008709a6d2d122a76f897549a2362aca5268e2252605a61e310e6009e6075cd",
+      "test_count": 7,
+      "negative_controls": 61,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "original_W13_VO": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-v1/original_W13_VO.json",
+      "sha256": "b2c575655f3dbd0b459430f5793cd9a6c42cb6b0de03a38da955e7f9c2c7dae8",
+      "test_count": 7,
+      "negative_controls": 61,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 8,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W13_VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-v1/proposed_W13_VG.json",
+      "sha256": "47c7ed59e5212f6736cf22e5c5e9a0a00219fd1a764c4a0be3b40d1ce266ab28",
+      "test_count": 7,
+      "negative_controls": 61,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W13_VO": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-v1/proposed_W13_VO.json",
+      "sha256": "4d6bdb528cc2ba077350d5afdad4e1913b676d5e9557ba1f788be7635c548585",
+      "test_count": 7,
+      "negative_controls": 61,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 8,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W14_VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-v1/proposed_W14_VG.json",
+      "sha256": "79c8727c66af281e1ad34e4d6e246601453206b95004e4986ed64661025d749a",
+      "test_count": 7,
+      "negative_controls": 61,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W13_VG_nextq": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-nextq-controls-v1/proposed_W13_VG_nextq.json",
+      "sha256": "9745392734367e8a04601604eaba24584212c38a5573b643adad61f46e490335",
+      "test_count": 7,
+      "negative_controls": 69,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W13_VO_nextq": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-nextq-controls-v1/proposed_W13_VO_nextq.json",
+      "sha256": "f14fc4e214a9f3ae44457dd302f11e7799cd440a5111e6bc4cc2393bd1c7c438",
+      "test_count": 7,
+      "negative_controls": 69,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 8,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    },
+    "proposed_W14_VG_nextq": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/regressions-nextq-controls-v1/proposed_W14_VG_nextq.json",
+      "sha256": "37da0c17ec573fd7f387cb866c0ad107f9dec1d5a2aec2ce0d1be82a898fcbca",
+      "test_count": 7,
+      "negative_controls": 69,
+      "baseline": {
+        "passed": true,
+        "inventory_role": "W",
+        "fault_ff_consumers": 663,
+        "fault_ram_consumers": 4,
+        "queue_ff_consumers": 139,
+        "queue_ram_consumers": 2
+      },
+      "original_netlist_unchanged": true
+    }
+  },
+  "new_strong_controls": [
+    {
+      "name": "wptr0 actual D/CE interchange",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "fault_closure_preserved": false
+    },
+    {
+      "name": "wptr0 functional reset always asserted",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB complete input support drift",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "wptr0 INIT changed",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB clock/INIT",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "wptr0 actual D LUT complemented",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "wptr0 watchdog_fault effective veto removed",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "wptr0 protocol_fault effective veto removed",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "wptr0 peer_fault effective veto removed",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "fault_closure_preserved": true
+    },
+    {
+      "name": "unreviewed state1 D/CE interchange",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault watchdog_fault all FF consumers drift",
+      "fault_closure_preserved": false
+    }
+  ],
+  "independent_controls": {
+    "schema": 1,
+    "passed": true,
+    "actual_VG_controls": [
+      {
+        "version": "13",
+        "name": "actual wptr0 D/CE interchanged",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift"
+      },
+      {
+        "version": "14",
+        "name": "actual wptr0 D/CE interchanged",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift"
+      },
+      {
+        "version": "14",
+        "name": "wptr0 functional reset removed",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB complete input support drift"
+      },
+      {
+        "version": "14",
+        "name": "wptr0 INIT changed",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB clock/INIT"
+      },
+      {
+        "version": "14",
+        "name": "actual wptr0 D LUT complemented retaining all ports",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift"
+      },
+      {
+        "version": "14",
+        "name": "actual wptr0 CE LUT complemented retaining all ports",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift"
+      },
+      {
+        "version": "14",
+        "name": "unreviewed other state D/CE interchange",
+        "rejected": true,
+        "error": "DEMO boundary CDC audit: fault watchdog_fault all FF consumers drift"
+      }
+    ],
+    "exhaustive_truth": {
+      "13": {
+        "vectors": 1024,
+        "all_actual_nextQ_match_source_equation": true,
+        "truth_sha256": "87b8b4d7a4e7496ab7945bae0e2e19fdf2c9bd773ee1024be1980bce0367b87c",
+        "marker_fault_guards": {
+          "watchdog_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0",
+          "protocol_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0",
+          "peer_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0"
+        }
+      },
+      "14": {
+        "vectors": 1024,
+        "all_actual_nextQ_match_source_equation": true,
+        "truth_sha256": "87b8b4d7a4e7496ab7945bae0e2e19fdf2c9bd773ee1024be1980bce0367b87c",
+        "marker_fault_guards": {
+          "watchdog_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0",
+          "protocol_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0",
+          "peer_fault": "asserted fault holds Q while otherwise-accepted marker reset would set0"
+        }
+      }
+    },
+    "input_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/custom_138k_integration.vg": "3c7866321188f7b36dc601c36f6b572b04ee5c5f7786f434a10a1b0d2bb4a787",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v14/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "36576c86a2c2c6d42830bb2c75af5441143ca288ca93397b17923de03fee2141",
+      "/private/tmp/dual138k-w14-boundary-new-controls-v3.py": "def61f28b5614a75b7c224133cd1758a58811a1152a3ced0b8ff01596054e9d5",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/tools/workstation_demo_boundary_cdc.py": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8"
+    },
+    "all_object_mutations_restored": true,
+    "all_actual_netlist_bytes_unchanged": true,
+    "no_extra_D_CE_mapping_accepted": true
+  },
+  "commands": [
+    {
+      "name": "original_W13_VG",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v1/source-tools/sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/custom_138k_integration.vg",
+      "mapping": "synthesis",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v1/source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "871dd6a0fe65c8433dd4d7368cc312de8ecc830a2fe2117a8fcdffd535b15d2a"
+    },
+    {
+      "name": "original_W13_VO",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v1/source-tools/sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/impl/pnr/custom_138k_integration.vo",
+      "mapping": "routed",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v1/source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "83515973b03dc3e294021ddf136f3fe17011f404b6c983aaa76d142fc23577b5"
+    },
+    {
+      "name": "proposed_W13_VG",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/custom_138k_integration.vg",
+      "mapping": "synthesis",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e89be56c3ae3cb24b71a6c82177cb41b5418cb0e92dc8d5a2d6235131a9cfc39"
+    },
+    {
+      "name": "proposed_W13_VO",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/impl/pnr/custom_138k_integration.vo",
+      "mapping": "routed",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "f96fdb9657afad59e580f4b1e8da7d03590ca676e385cb24620ac01927fe3e13"
+    },
+    {
+      "name": "proposed_W14_VG",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v14/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "mapping": "synthesis",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "9743441df872cee1469b2ad519e9c7a65d73e50197e809530518644ff0d4690d"
+    },
+    {
+      "name": "proposed_W13_VG_nextq",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc_with_nextq_controls.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/custom_138k_integration.vg",
+      "mapping": "synthesis",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "11f7bb6622661bcc57cca1d258a114c80d0160fd8d7830a8ffa852e4a28e5e2b"
+    },
+    {
+      "name": "proposed_W13_VO_nextq",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc_with_nextq_controls.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v13-physical-far-v1/impl/pnr/custom_138k_integration.vo",
+      "mapping": "routed",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "46f0cfb26f830b8220f103b99a41318dafe45a66bc0e7d684c39fb2fba8ebf38"
+    },
+    {
+      "name": "proposed_W14_VG_nextq",
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools/sim/test_workstation_demo_boundary_cdc_with_nextq_controls.py"
+      ],
+      "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v14/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "mapping": "synthesis",
+      "toolroot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/proposed-source-tools",
+      "returncode": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "2adf113b79cfe1abbef20cbaea0b80f2ae4e9c4e7e2a7d37900f18a603760a61"
+    }
+  ],
+  "input_snapshot_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/final-evidence-v2/input-snapshot.json",
+  "input_snapshot_sha256": "733488bf7ac7e1bac2282e52d41e1b7379170018888640c72debed6a517c8b42",
+  "input_count": 86,
+  "unique_input_blob_count": 53,
+  "source_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-boundary-fault-consumer-review-v1/final-evidence-v2/source-seal.json",
+  "source_seal_sha256": "4fa2958aac7b8ae1b75db07110e0ca40ff17d817b65e4bc469941af328697897",
+  "sealed_evidence_files": 96,
+  "old_W14_failed_audits_preserved": true,
+  "failed_control_scaffolding": [
+    "new-controls-v1-failure.json",
+    "new-controls-v2-failure.json"
+  ],
+  "candidate_staged_sources_locks_and_frozen_audits_unchanged": true,
+  "source_implementation": true,
+  "RTL_changed": false,
+  "new_synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "limitations": "Mapped two-state next-Q function over all10 paired source FF assignments, not full sequential formal or four-state mapped-cell proof. Structural CDC acceptance and prior physical failures remain separate; no SDC loosening or hardware acceptance.",
+  "independent_M16_positive": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m16-nextq-w14v3-boundary-review-v1.json",
+    "sha256": "9d29ed5d3cb8a6d67121300f07822fab0bd220ff1c8ebc554d768d77379851c4",
+    "actual_VG_VO_and_auditor_hashes_reverified": true,
+    "review": {
+      "schema": 1,
+      "stage": "M16_actual_VG_VO_with_W14_v3_frozen_nextQ_auditor",
+      "captured_utc": "2026-11-01T04:31:04.283157+00:00",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-5f5ba9978313e96b",
+      "auditor_source": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools/tools/workstation_demo_boundary_cdc.py",
+      "auditor_sha256": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
+      "external_tool_snapshot_seal_sha256": "51aaf18182e5b66f5602aaa61a2f2bb2baa8664f03b81e5cc19b57f57935e064",
+      "results": [
+        {
+          "mapping": "synthesis",
+          "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+          "netlist_sha256": "4044a2595197d6993dd6c81684af7b63f5af441f5ac3b71edf4cb8fa2f4e468a",
+          "SDC_sha256": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c",
+          "inventory_role": "M",
+          "fault_inventory_endpoints": 663,
+          "fault_source_endpoint_counts": {
+            "watchdog_fault": 663,
+            "protocol_fault": 663,
+            "peer_fault": 663
+          },
+          "source_fault_closures_exact": true,
+          "queue_source_endpoint_count": 140,
+          "queue_opaque_endpoint_count": 2,
+          "wptr_lsb_nextq": {
+            "register": "u_managed/runtime/delay_dma/wptr_0_s3",
+            "named_input_count": 10,
+            "all_binary_assignments": true,
+            "no_state_data_fault_reachability_assumptions": true,
+            "reset_zero_pack_toggle_marker_fault_veto": true
+          },
+          "represented_binary_assignments": 1024,
+          "selected_SDC_verified": true,
+          "SDC_validation": {
+            "exact_four_commands": true,
+            "query_resolution": {
+              "u_managed/runtime/delay_dma/watchdog_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/watchdog_fault_s0/Q"
+              ],
+              "u_managed/runtime/delay_dma/protocol_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/protocol_fault_s0/Q"
+              ],
+              "u_managed/runtime/delay_dma/peer_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/peer_fault_s0/Q"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s*/D": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s0/D"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s*/Q": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s0/Q"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s*/D": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s0/D"
+              ],
+              "u_native_usb/input_owner/queue_release_5_s*/Q": [
+                "u_native_usb/input_owner/queue_release_5_s0/Q"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/CLEAR": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0/CLEAR"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/CLEAR": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0/CLEAR"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/Q": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0/Q"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/D": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0/D"
+              ]
+            },
+            "fault_first_data_source_count": 3,
+            "fault_first_data_target_count": 1,
+            "queue_async_clear_source_count": 1,
+            "queue_async_clear_target_count": 2,
+            "later_data_max_delay_ns": 2.0,
+            "protected_later_and_functional_pins": 687,
+            "functional_recovery_removal_exceptions_absent": true,
+            "unrelated_explicit_source_closure_excludes_protected_pins": [],
+            "whole_boundary_clock_exceptions_absent": true,
+            "physical_cdc_accepted": false
+          },
+          "routed_lexical_audit": null,
+          "functional_pointer_recovery_removal_waived": false
+        },
+        {
+          "mapping": "routed",
+          "netlist": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16-physical-v1/impl/pnr/custom_138k_integration.vo",
+          "netlist_sha256": "3e4776e93f373677814b13033320c58b674bf81c4ec5e8ee4b72f396b26afd39",
+          "SDC_sha256": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c",
+          "inventory_role": "M",
+          "fault_inventory_endpoints": 663,
+          "fault_source_endpoint_counts": {
+            "watchdog_fault": 663,
+            "protocol_fault": 663,
+            "peer_fault": 663
+          },
+          "source_fault_closures_exact": true,
+          "queue_source_endpoint_count": 140,
+          "queue_opaque_endpoint_count": 2,
+          "wptr_lsb_nextq": {
+            "register": "u_managed/runtime/delay_dma/wptr_0_s3",
+            "named_input_count": 10,
+            "all_binary_assignments": true,
+            "no_state_data_fault_reachability_assumptions": true,
+            "reset_zero_pack_toggle_marker_fault_veto": true
+          },
+          "represented_binary_assignments": 1024,
+          "selected_SDC_verified": true,
+          "SDC_validation": {
+            "exact_four_commands": true,
+            "query_resolution": {
+              "u_managed/runtime/delay_dma/watchdog_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/watchdog_fault_s0/Q"
+              ],
+              "u_managed/runtime/delay_dma/protocol_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/protocol_fault_s0/Q"
+              ],
+              "u_managed/runtime/delay_dma/peer_fault_s*/Q": [
+                "u_managed/runtime/delay_dma/peer_fault_s0/Q"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s*/D": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s0/D"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s*/Q": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s0/Q"
+              ],
+              "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s*/D": [
+                "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s0/D"
+              ],
+              "u_native_usb/input_owner/queue_release_5_s*/Q": [
+                "u_native_usb/input_owner/queue_release_5_s0/Q"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/CLEAR": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0/CLEAR"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/CLEAR": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0/CLEAR"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/Q": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s0/Q"
+              ],
+              "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/D": [
+                "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s0/D"
+              ]
+            },
+            "fault_first_data_source_count": 3,
+            "fault_first_data_target_count": 1,
+            "queue_async_clear_source_count": 1,
+            "queue_async_clear_target_count": 2,
+            "later_data_max_delay_ns": 2.0,
+            "protected_later_and_functional_pins": 691,
+            "functional_recovery_removal_exceptions_absent": true,
+            "unrelated_explicit_source_closure_excludes_protected_pins": [],
+            "whole_boundary_clock_exceptions_absent": true,
+            "physical_cdc_accepted": false
+          },
+          "routed_lexical_audit": {
+            "whole_flat_vo_strict": true,
+            "primitive_count": 116237,
+            "named_port_count": 558976,
+            "original_bytes_rewritten": false,
+            "shared_parser_modified": false
+          },
+          "functional_pointer_recovery_removal_waived": false
+        }
+      ],
+      "all_inputs_reverified_before_and_after": true,
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools/tools/workstation_demo_boundary_cdc.py": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools/tools/workstation_runtime_pcm_cdc.py": "17b4f759376436b7a35c8ede112dcd9ae1d7cefa8878ea3bbe23c62fbf354fca",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools/tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-audits-v3/source-tools-seal.json": "51aaf18182e5b66f5602aaa61a2f2bb2baa8664f03b81e5cc19b57f57935e064",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16/integration_inputs.json": "89234251d1cc44dce00350340d57e37db749910320adba4e5f79e4a71382c63c",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16-physical-v1/physical_inputs.json": "e3fc6eb06cfe82170ea66004f2e29f8734363a7ad62bd0fccca26a9478371662",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/audit-m16-nextq-with-w14v3-v1.py": "e4cdd8a67e1d6cec123a294a77b73fe3808ccf4c30ee91eef4c97123fb7bb92d",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4044a2595197d6993dd6c81684af7b63f5af441f5ac3b71edf4cb8fa2f4e468a",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16/workstation/Prj1/constraints/custom_138k.sdc": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16-physical-v1/impl/pnr/custom_138k_integration.vo": "3e4776e93f373677814b13033320c58b674bf81c4ec5e8ee4b72f396b26afd39",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v16-physical-v1/physical.sdc": "6fa398b1bf7418d052e6cdc0c98c90512d506cc75931fa952b974f7b7db1562c"
+      },
+      "whole_native_regression_rerun": false,
+      "boundary_mutants_rerun": false,
+      "snapshot_or_production_modified": false,
+      "EDA_started": false,
+      "hardware_tested": false,
+      "acceptance": "Positive compatibility check for the exact maintained next-Q equation and complete CDC inventories; no new candidate identity, timing acceptance or board acceptance."
+    }
+  }
+}

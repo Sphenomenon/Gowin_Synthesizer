@@ -105,6 +105,40 @@ def netlist(text, *, mapping="synthesis"):
         named_port_count=count, original_bytes_rewritten=False, shared_parser_modified=False)
     return n
 
+def verify_wptr_lsb_nextq(n, g):
+    """Prove the reviewed DMA LSB function across exact D/CE mappings."""
+    p = g.register(D, 'wptr', 0)
+    cell = n.cells[p]
+    require(cell['kind'] == 'DFFCE' and set(cell['ports']) == {'D', 'Q', 'CLK', 'CE', 'CLEAR'},
+            'fault wptr LSB register shape')
+    require(n.pin(p, 'CLK') == 'memory_clk' and cell['parameters'].get('INIT', "1'b0") == "1'b0",
+            'fault wptr LSB clock/INIT')
+    state = [n.pin(g.register(D, 'state', bit), 'Q') for bit in range(4)]
+    faults = [n.pin(g.register(D, stem), 'Q') for stem in FAULTS]
+    q = n.pin(p, 'Q')
+    release = n.pin(g.register(A, 'memory_release', 2), 'Q')
+    full = n.pin(g.register(RF, 'g_large_head.full_q'), 'Q')
+    inputs = state + faults + [q, release, full]
+    require(len(set(inputs)) == 10, 'fault wptr LSB exact named inputs')
+    support = set().union(*(g.support(n.pin(p, pin)) for pin in ('D', 'CE', 'CLEAR')), {q})
+    require(support == set(inputs), 'fault wptr LSB complete input support drift')
+    bd = BooleanDiagram(sorted(inputs))
+    value = bd.inputs
+    is_state = lambda number: bd.all([value[x] if number & (1 << bit) else bd.invert(value[x])
+                                     for bit, x in enumerate(state)])
+    fault = bd.either(bd.either(value[faults[0]], value[faults[1]]), value[faults[2]])
+    marker_commit = bd.all([is_state(6), bd.invert(value[full]), bd.invert(fault)])
+    normal_expected = bd.choose(is_state(7), bd.invert(value[q]),
+                                bd.choose(marker_commit, 0, value[q]))
+    normal_actual = bd.choose(bd.net(g, n.pin(p, 'CE')), bd.net(g, n.pin(p, 'D')), value[q])
+    expected = bd.choose(bd.invert(value[release]), 0, normal_expected)
+    actual = bd.choose(bd.net(g, n.pin(p, 'CLEAR')), 0, normal_actual)
+    require(actual == expected, 'fault wptr LSB D/CE/CLEAR next-Q equation drift')
+    return dict(register=p, named_input_count=10, all_binary_assignments=True,
+                no_state_data_fault_reachability_assumptions=True,
+                reset_zero_pack_toggle_marker_fault_veto=True)
+
+
 def audit(n, *, mapping="synthesis", expected_role=None):
  require(mapping in ("synthesis", "routed"), "unknown explicit mapping")
  require(expected_role in (None, "M", "W"), "unknown selected DEMO role")
@@ -143,8 +177,13 @@ def audit(n, *, mapping="synthesis", expected_role=None):
  m_fault_ends=dict(fault_ends)
  m_fault_ends[reg(D,'wptr',0)+'/D']='memory_clk'
  exp_add(m_fault_ends,D,'state',(1,2),'D','memory_clk')
+ mixed_fault_ends=dict(m_fault_ends)
+ del mixed_fault_ends[reg(D,'wptr',0)+'/D']
+ mixed_fault_ends[reg(D,'wptr',0)+'/CE']='memory_clk'
  if source_closures[FAULTS[0]]['ff_endpoints']==dict(sorted(m_fault_ends.items())):
   fault_inventory=663;fault_ends=m_fault_ends
+ elif source_closures[FAULTS[0]]['ff_endpoints']==dict(sorted(mixed_fault_ends.items())):
+  fault_inventory=663;fault_ends=mixed_fault_ends
  else:
   fault_inventory=664
   fault_ends[reg(D,'wptr',0)+'/CE']='memory_clk'
@@ -159,6 +198,7 @@ def audit(n, *, mapping="synthesis", expected_role=None):
     fault_prims[p+'/CEA']={'kind':'SDPX9B','clock_pins':{'CLKA':'memory_clk','CLKB':'audio_clk'}}
  for stem,c in source_closures.items():
   closure_eq(c,fault_ends,fault_prims,'fault '+stem)
+ wptr_lsb_nextq=verify_wptr_lsb_nextq(n,g)
  first=complete_closure(n,g,[meta]);closure_eq(first,{sync+'/D':'audio_clk'}, {},'fault first receiver')
  require(first['combinational_cells']==0,'fault first receiver combinational consumer')
  # Exact source six-edge chain and all four reset-condition producers.
@@ -206,7 +246,7 @@ def audit(n, *, mapping="synthesis", expected_role=None):
  for p in pointers:ff(p,'usb_clk',clear=local)
  bd=BooleanDiagram([last]);require(g.support(local)=={last} and bd.net(g,local)==bd.invert(bd.inputs[last]),'only final USB release may reset real write pointers')
  require(sorted(g.fan[local])==sorted((p,'CLEAR','ff') for p in pointers),'functional write reset owns exactly 13 pointer CLEARs')
- return dict(policy=POLICY, mapping=mapping, inventory_role=inventory_role, fault_inventory_endpoints=fault_inventory, source_fault_registers=fault_regs,fault_source_closures=source_closures,fault_first_stage_closure=first,
+ return dict(policy=POLICY, mapping=mapping, inventory_role=inventory_role, fault_inventory_endpoints=fault_inventory, source_fault_registers=fault_regs,fault_source_closures=source_closures,fault_first_stage_closure=first,fault_wptr_lsb_nextq=wptr_lsb_nextq,
   source_sticky_D_constant_1=True,source_faults_memory_domain=True,source_OR_exact_all_three=True,
   fault_receiver_reset_source=compute_release+'/Q',fault_source_reset_source=mem_release+'/Q',
   queue_source_chain=chain,queue_source_closure=queue_closure,queue_reset_support=[p+'/Q' for p in producer]+[chain[5]+'/Q'],

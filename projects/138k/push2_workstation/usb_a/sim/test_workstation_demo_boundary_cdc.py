@@ -17,7 +17,7 @@ if str(ROOT) not in sys.path:
 from tools.workstation_runtime_pcm_cdc import Graph, TOP
 from tools.workstation_demo_boundary_cdc import (POLICY, TOOL, AUDIT_SOURCES, PROPOSAL, D, E, U, F, R,
     FAULTS, audit, netlist, proposed_constraints, select_demo_boundary,
-    verify_demo_boundary, validate_sdc)
+    verify_demo_boundary, validate_sdc, verify_wptr_lsb_nextq, complete_closure)
 
 def actual_mutations(n, mapping, text):
  result_audit=audit(n,mapping=mapping)
@@ -31,6 +31,75 @@ def actual_mutations(n, mapping, text):
   finally:
    if had:target[key]=old
    else:del target[key]
+ # Verify the exact mapped LSB function, including mutants whose complete
+ # fault closure still matches a reviewed mapping or remains byte-identical.
+ wptr=reg(D,'wptr',0)
+ def guarded(name,p,updates,expected,param=False,preserve_fault_closure=False):
+  target=n.cells[p]['parameters' if param else 'ports'];saved=copy.deepcopy(target)
+  target.update(updates)
+  try:
+   if preserve_fault_closure:
+    mutated_graph=Graph(n)
+    for stem in FAULTS:
+     actual=complete_closure(n,mutated_graph,[mutated_graph.register(D,stem)])
+     original=result_audit['fault_source_closures'][stem]
+     for field in ('ff_endpoints','primitive_endpoints','top_output_endpoints'):
+      if actual[field]!=original[field]:raise RuntimeError('functional mutant altered closure '+name)
+   try:audit(n,mapping=mapping)
+   except ValueError as e:
+    if expected not in str(e):raise RuntimeError('wrong specific function rejection '+name+': '+str(e))
+    result.append(dict(name=name,kind='parsed_actual_netlist_function_mutant',rejected=True,
+      reason=str(e),fault_closure_preserved=preserve_fault_closure))
+   else:raise RuntimeError('function mutant accepted '+name)
+  finally:target.clear();target.update(saved)
+ ports=n.cells[wptr]['ports']
+ guarded('wptr0 actual D/CE interchange',wptr,{'D':ports['CE'],'CE':ports['D']},'next-Q equation drift')
+ guarded('wptr0 functional reset always asserted',wptr,
+  {'CLEAR':n.cells[reg(D,'watchdog_fault')]['ports']['D']},'fault wptr LSB',preserve_fault_closure=True)
+ guarded('wptr0 INIT changed',wptr,{'INIT':"1'b1"},'clock/INIT',param=True,preserve_fault_closure=True)
+ gate=g.drivers[n.pin(wptr,'D')][0][0];literal=n.cells[gate]['parameters']['INIT']
+ encoded=re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)",literal)
+ if encoded is None:raise RuntimeError('actual wptr D LUT INIT encoding')
+ flipped=str(int(encoded[1]))+"'h"+format(((1<<int(encoded[1]))-1)^int(encoded[2],16),'x')
+ guarded('wptr0 actual D LUT complemented',gate,{'INIT':flipped},'next-Q equation drift',True,True)
+ # Remove each source's effective veto in an actual LUT while retaining all
+ # named ports and therefore the complete structural consumer inventories.
+ todo=[n.pin(wptr,pin) for pin in ('D','CE')];seen=set();gates=[]
+ while todo:
+  net=todo.pop()
+  if net in seen or net in g.high|g.low:continue
+  seen.add(net);drivers=g.drivers[net]
+  if len(drivers)!=1:raise RuntimeError('actual wptr driver ambiguity')
+  cell_path,output=drivers[0]
+  if cell_path in g.regs:continue
+  kind=n.cells[cell_path]['kind']
+  pins=['I'] if kind=='INV' else ['I'+str(i) for i in range(int(kind[3:]))]
+  inputs=[n.pin(cell_path,pin) for pin in pins];todo.extend(inputs)
+  if kind!='INV':gates.append((cell_path,inputs))
+ for stem in FAULTS:
+  source=n.pin(reg(D,stem),'Q');selected=None
+  for cell_path,inputs in gates:
+   if source not in inputs:continue
+   params=n.cells[cell_path]['parameters'];original=params['INIT']
+   encoded=re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)",original)
+   if encoded is None:raise RuntimeError('actual fault veto LUT INIT encoding')
+   bit=inputs.index(source);truth=int(encoded[2],16)
+   cofactor=sum(((truth>>(vector&~(1<<bit)))&1)<<vector for vector in range(1<<len(inputs)))
+   changed=str(int(encoded[1]))+"'h"+format(cofactor,'x')
+   if changed==original:continue
+   params['INIT']=changed
+   try:
+    try:verify_wptr_lsb_nextq(n,Graph(n))
+    except ValueError as e:
+     if 'next-Q equation drift' not in str(e):raise
+     selected=(cell_path,changed)
+   finally:params['INIT']=original
+   if selected:break
+  if selected is None:raise RuntimeError('no effective actual fault-veto LUT for '+stem)
+  guarded('wptr0 '+stem+' effective veto removed',selected[0],{'INIT':selected[1]},
+   'next-Q equation drift',True,True)
+ p=reg(D,'state',1);ports=n.cells[p]['ports']
+ guarded('unreviewed state1 D/CE interchange',p,{'D':ports['CE'],'CE':ports['D']},'all FF consumers drift')
  for stem in FAULTS:
   change(stem+' wrong clock',reg(D,stem),'CLK',n.cells[reg(E,'dma_fault_meta')]['ports']['CLK'])
   change(stem+' no longer sticky',reg(D,stem),'D',n.cells[reg(D,stem)]['ports']['CLEAR'])
