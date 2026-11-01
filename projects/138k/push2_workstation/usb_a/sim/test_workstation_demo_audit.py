@@ -182,6 +182,25 @@ class RoleFeatures(unittest.TestCase):
             with self.subTest(kind=kind), self.assertRaises(ValueError):
                 audit.audit_features('W', rows, SimpleNamespace(cells=changed))
 
+    def test_audio_only_W_keeps_all_memory_features_before_and_after_midi_retirement(self):
+        rows = {p: self.rows[p] for name, p in audit.COMMON_FEATURES.items() if not name.startswith('hdmi')}
+        memory = {'u_audio_memory', 'u_audio_memory/u_bist', 'u_audio_memory/u_arbiter'}
+        rows.update({p: dict(Bsram=1) for p in memory})
+        cells = {'pcm': dict(kind='workstation_ae350_pcm_owner'),
+                 'hci': dict(kind='workstation_hci_native_transport')}
+        for retired in (False, True):
+            result = audit.audit_features('W', rows, SimpleNamespace(cells=cells),
+                worker_audio_only=True, synth_midi_retired=retired)
+            self.assertTrue(memory <= {entry['instance'] for entry in result['retained'].values()})
+            for missing in memory:
+                with self.subTest(retired=retired, missing=missing), self.assertRaisesRegex(ValueError, 'retained features missing'):
+                    audit.audit_features('W', {p: row for p, row in rows.items() if p != missing},
+                        SimpleNamespace(cells=cells), worker_audio_only=True, synth_midi_retired=retired)
+        for scope in ('u_managed/midi_uart', 'u_managed/midi_bytes', 'u_managed/midi_drops'):
+            with self.subTest(scope=scope), self.assertRaisesRegex(ValueError, 'retired hierarchy'):
+                audit.audit_features('W', dict(rows, **{scope: dict(Bsram=0)}), SimpleNamespace(cells=cells),
+                    worker_audio_only=True, synth_midi_retired=True)
+
     def test_all_32_voice_states_must_reach_synthesis(self):
         cells = {}
         for stem, width in (('sample_envelope_q18', 18), ('envelope_state', 3), ('expression_gain_q8', 8)):

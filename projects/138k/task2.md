@@ -547,3 +547,6 @@ W22／D2110134 的[完整P&R与实际VO审计](push2_workstation/usb_a/reports/D
 
 
 W22的[独立定向布局D2110135](push2_workstation/usb_a/reports/DUAL138K_W22_DIRECTED_PHYSICAL_20261101.json)已完成：同134完整VG与新实际VO witness，CST仅追加130条精确INS_LOC（DDR2＋reference128），完整原CST与SDC／DDR3.500ns保持；229.091s／exit0，12输入与33产物重新核验。实测BSRAM218／DSP59／CLS32576／LUT30740／ALU11653／SSRAM187；setup1／−2.572ns、hold2／−1.004ns，recovery+1.089／removal+.278ns。指定DDR hold由−4.357变为−.181ns，仍不通过；launch／capture确在请求区域，不以局部改善授予放行。主线程独立核41证据及128完整FF连接／参数、全部130追加字节；新135实际VO子门未跑，不继承134通过。未上板，原134冻结输入不改；下一W使用新源码与新身份退出无用MIDI链。
+
+
+W的[普通合成MIDI遗留链退出](push2_workstation/usb_a/reports/DUAL138K_W_SYNTH_MIDI_RETIREMENT_20261101.json)已落实际维护源码：显式W revision4／`disabled_unused_synth_uart_v1`通过专用wrapper退出midi_uart／midi_bytes／midi_drops三实例、零绑字节／valid／drop／framing；PC UART、真实USB25K与CPU-session／PANIC独立路径保留，默认M预处理文本／实例层次一致。实际W134 VO确认UART valid恒0、payload/valid已sweep而空握手及drop诊断仍在；142bit唯一参数反馈专项通过。仅移除两条已退休Gray约束，旧W1/2/3合同及三memory特征严格保持，39独立负控拒绝。实际Wwrapper经生产C／MMIO／USB FIFO／CDC／生命周期／唯一参数／完整D与DDR／反馈通过28716帧、559事件、378点与9生命周期，来源17／demo18／audio-only5入口通过；主线程重验1201文件和88执行输入、11项源前后快照及严格patch逆向。两profile只提升M5／W8既有来源项，M显示两owner未提交改动与其旧HEAD锁保留。新prepare待M显示单独验证／刷新锁，未预记新VG、资源／时序或硬件收益；M22继续留板。

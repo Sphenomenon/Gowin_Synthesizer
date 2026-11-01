@@ -62,6 +62,7 @@ RETIRED_SELECTORS = (
     'u_bluetooth/u_core/acl_bridge/',
 )
 RETIRED_CLOCKS = ('video_ref49', 'video_serial742', 'video_pixel148')
+SYNTH_MIDI_SELECTORS = ('u_managed/midi_uart/', 'u_managed/midi_bytes/', 'u_managed/midi_drops/')
 RETIRED_SEQUENCE_CE = tuple(
     f'u_managed/runtime/serializer/current_sequence_{bit}_s*/CE' for bit in range(32))
 REBIND = (('u_video/u_bist/', 'u_audio_memory/u_bist/'),
@@ -117,8 +118,11 @@ def select_sources(stage, files):
         rtl_text_generation=False, physical_retirement_verified=False)
 
 
-def constraints(text):
+def constraints(text, *, retire_synth_midi=False):
     """Remove absent endpoints and preserve every surviving query member."""
+    if type(retire_synth_midi) is not bool:
+        raise ValueError('W synth MIDI retirement selection must be explicit boolean')
+    retired_selectors = RETIRED_SELECTORS + (SYNTH_MIDI_SELECTORS if retire_synth_midi else ())
     selected, changes = [], []
     for index, line in enumerate(text.splitlines()):
         removed, rebound, empty = [], [], []
@@ -130,7 +134,7 @@ def constraints(text):
                     if member.startswith(old):
                         member = new + member[len(old):]
                         break
-                if (member.startswith(RETIRED_SELECTORS) or
+                if (member.startswith(retired_selectors) or
                         (match[1] == 'get_pins' and member in RETIRED_SEQUENCE_CE) or
                         (match[1] == 'get_clocks' and member in RETIRED_CLOCKS)):
                     removed.append(original)
@@ -153,7 +157,8 @@ def constraints(text):
     return result, dict(policy=POLICY, original_sha256=hashlib.sha256(text.encode()).hexdigest(),
         selected_sha256=hashlib.sha256(result.encode()).hexdigest(), changes=changes,
         added_memory_lines=MEMORY_SDC.splitlines(), clocks_or_budgets_relaxed=False,
-        netlist_retirement_required=True, physical_cdc_accepted=False)
+        netlist_retirement_required=True, physical_cdc_accepted=False,
+        **(dict(synth_midi_retired=True) if retire_synth_midi else {}))
 
 
 def restore_constraints(selected, evidence):
@@ -168,7 +173,7 @@ def restore_constraints(selected, evidence):
                 raise ValueError('W audio-only timing inverse drift')
             result[change['selected_line_index']] = change['original']
     original = '\n'.join(result) + '\n'
-    checked, expected = constraints(original)
+    checked, expected = constraints(original, retire_synth_midi=evidence.get('synth_midi_retired', False))
     if checked != selected or expected != evidence:
         raise ValueError('W audio-only timing selection or complete evidence changed')
     return original

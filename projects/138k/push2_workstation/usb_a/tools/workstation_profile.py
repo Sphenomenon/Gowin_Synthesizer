@@ -67,7 +67,7 @@ PROFILE_REGISTRY = {
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
         integration_identity='custom138k-native-m-demo-base-revision1'),
-    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=3,
+    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=4,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
             hdmi_mode='disabled_worker_audio_only',display_policy='disabled_worker_audio_only_v1',
@@ -80,12 +80,13 @@ PROFILE_REGISTRY = {
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
             recording_owner_policy='disabled_worker_audio_only_v1',usb_adapter_policy='worker_25k_v1',
-            w_stream_pitch_policy='continuous_pcm_dual_head_v1'),
+            w_stream_pitch_policy='continuous_pcm_dual_head_v1',
+            w_midi_input_policy='disabled_unused_synth_uart_v1'),
         provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
         recording_enabled=False,local_panel_enabled=False,ble_recording_storage_enabled=False,
         business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,demo_role='W',
-        worker_audio_only=True,worker_stream_pitch=True,
-        integration_identity='custom138k-native-w-audio-only-pitch-revision3'),
+        worker_audio_only=True,worker_stream_pitch=True,worker_synth_midi_retired=True,
+        integration_identity='custom138k-native-w-audio-only-pitch-no-midi-revision4'),
     CLASSIC_ROM96_NAME:dict(config=CLASSIC_ROM96_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_classic_runtime_rom96_failclosed_v1',ae350_boot_rom_bytes=98304,
@@ -151,6 +152,11 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') in (2, 3):
+        configuration = dict(spec['configuration'])
+        configuration.pop('w_midi_input_policy')
+        spec = dict(spec, revision=3, worker_synth_midi_retired=False, configuration=configuration,
+                    integration_identity='custom138k-native-w-audio-only-pitch-revision3')
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 2:
         configuration = dict(spec['configuration'])
         configuration.pop('w_stream_pitch_policy')
@@ -160,6 +166,7 @@ def prepared_specification(prepared):
         # Revision 1 had a real display and one BLE recording owner. Its
         # immutable candidates continue to be audited against that contract.
         spec = dict(spec, revision=1, worker_audio_only=False, worker_stream_pitch=False,
+            worker_synth_midi_retired=False,
             recording_enabled=True, ble_recording_storage_enabled=True,
             integration_identity='custom138k-native-w-demo-d-only-revision1',
             configuration=dict(CPU_BUSINESS_CONFIGURATION,
@@ -356,6 +363,8 @@ def _artifact(root, output, metadata, profile):
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints
+        if metadata['worker_audio_only']['constraints'].get('synth_midi_retired',False) is not spec.get('worker_synth_midi_retired',False):
+            raise ValueError('workstation profile W synth MIDI retirement selection changed')
         installed_sdc=restore_constraints(installed_sdc,metadata['worker_audio_only']['constraints'])
     # Check the original complete bundles as well as the exact role-specific
     # retirement. Mixed queries retain every surviving endpoint in the output.

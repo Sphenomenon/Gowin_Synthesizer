@@ -197,7 +197,8 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, stream_pitch_enabled=False):
+def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, stream_pitch_enabled=False,
+                   synth_midi_retired=False):
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
     features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
     if worker_audio_only:
@@ -205,6 +206,8 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
         features = {k: p for k, p in features.items() if not k.startswith('hdmi')}
         features.update(audio_memory='u_audio_memory', audio_memory_bist='u_audio_memory/u_bist',
                         audio_memory_queues='u_audio_memory/u_arbiter')
+    if synth_midi_retired:
+        require(role == 'W' and worker_audio_only, 'synth MIDI retirement requires explicit audio-only W')
     pitch_scope = WS + '/streaming_pcm_pitch.pitch'
     if stream_pitch_enabled:
         require(role == 'W' and worker_audio_only, 'streaming Pitch requires explicit audio-only W')
@@ -260,6 +263,8 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
             retired += ['u_video', 'u_ui_control', 'u_ui_services', 'u_cpu_ddr', 'u_ble_pcm_cdc',
                         'u_managed/display', 'u_managed/display_observation_health',
                         'u_bluetooth/u_core/application', 'u_bluetooth/u_core/acl_bridge']
+            if synth_midi_retired:
+                retired += ['u_managed/midi_uart', 'u_managed/midi_bytes', 'u_managed/midi_drops']
             for forbidden in ('workstation_ble_record_data_engine', 'workstation_ble_raw_ddr_store',
                               'workstation_recording_top', 'bt_gatt', 'bt_acl_bridge',
                               'gw138k_ui_services', 'gw138k_ui_workstation_top', 'gw138k_ahb_ddr',
@@ -273,6 +278,7 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
                 retired_prefixes=retired, role_retirement_verified=True,
                 worker_audio_only=worker_audio_only,
                 stream_pitch_enabled=stream_pitch_enabled,
+                **(dict(synth_midi_retired=True) if synth_midi_retired else {}),
                 synthesis_storage_only=True, hardware_functionality_verified=False)
 
 
@@ -619,7 +625,8 @@ def audit(root, output, metadata):
     features = audit_features(role, rows, netlist,
         tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
         worker_audio_only=worker_audio_only,
-        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1')
+        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1',
+        synth_midi_retired=profile['configuration'].get('w_midi_input_policy') == 'disabled_unused_synth_uart_v1')
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']

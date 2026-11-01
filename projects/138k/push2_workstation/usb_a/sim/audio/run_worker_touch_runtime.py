@@ -21,6 +21,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--project', type=Path, required=True)
     ap.add_argument('--output', type=Path, required=True)
+    ap.add_argument('--worker-audio-only', action='store_true',
+                    help='Compile the actual W wrapper with display and unused synth MIDI retired')
     a = ap.parse_args()
     project, output = a.project.resolve(), a.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
@@ -43,6 +45,12 @@ def main():
             assert payload == (project/'src/migration/gw138k_stream_cdc.sv').read_bytes()
     selected += [ROOT/'rtl/workstation/workstation_worker_usb.sv',
                  ROOT/'rtl/workstation/workstation_usb2_service_adapter.sv']
+    wrapper_dependencies = []
+    if a.worker_audio_only:
+        wrapper_dependencies = [ROOT/'rtl/workstation/workstation_runtime_controlled.sv',
+                                ROOT/'rtl/audio/workstation_observation_consumers.sv']
+        selected = [path for path in selected if path not in wrapper_dependencies]
+        selected.append(ROOT/'rtl/workstation/workstation_worker_runtime_controlled.sv')
     memory_reference = ROOT/'sim/audio/tb_workstation_runtime_effects.sv'
     memory_text = memory_reference.read_text()
     anchor = '\nmodule tb_workstation_runtime_effects;'
@@ -51,7 +59,7 @@ def main():
     memory.write_text(memory_text.split(anchor)[0])
     selected.append(memory)
     vendor = ROOT/'vendor/usb_host_fs_8fc3/firmware'
-    inputs = list(dict.fromkeys(selected + [Path(__file__).resolve(), memory_reference,
+    inputs = list(dict.fromkeys(selected + wrapper_dependencies + [Path(__file__).resolve(), memory_reference,
         ROOT/'sim/audio/run_runtime_controlled.py', ROOT/'tools/workstation_usb2_input.py',
         ROOT/'firmware.c', ROOT/'gw25k_panel.h', ROOT/'sim/test_gw25k_panel.c',
         ROOT/'rtl/push2_usb_a_control.sv', ROOT/'sim/audio/fixtures/d_process_before_exact_mask.svh']))
@@ -60,6 +68,7 @@ def main():
     inputs += sorted((project/'rtl/audio/scope_vec/data').glob('*.mem'))
     hashes = {str(path): sha(path) for path in inputs}
     report = dict(passed=False, hardware_tested=False, synthesis_tested=False,
+        worker_audio_only_wrapper=a.worker_audio_only,
         scope='production C MIDI -> captured actual MMIO writes -> service adapter -> real USB FIFO/CDC/lifecycle -> sole D parameters -> native D/full effects/ordered DDR -> coherent committed feedback',
         limits='Ideal RTL clocks and functional DDR model; no radio, hardware I2S/HDMI, physical CDC or board acceptance',
         prepared_reference=str(project), input_sha256=hashes, stages=[])

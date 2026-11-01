@@ -1,0 +1,246 @@
+{
+  "schema": "dual138k_W_unused_synth_MIDI_retirement_20261101_v1",
+  "stage": "Explicit Wrevision4 retires unused ordinary synth MIDI UART/mailbox/drop path; trueWwrapper USB25K/CPU-session/D end-to-end and defaultM preservation validated",
+  "utc": "2026-11-01T15:25:43.185871+00:00",
+  "handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/handoff-v2.json",
+  "handoff_sha256": "eb9a39b6e48f56e84c9eee16d527963a2b8a25bdf5187bd47cacd7a4db4c9d14",
+  "owned_source_files": {
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": {
+      "before_sha256": "49d54798d2240874d4b6528fac1f298794e61a31558ad02097188235f768bcb0",
+      "after_sha256": "c7e88ff19f1fb5b62e9181393e2468f1d5b601e83d5c8fa503c8cb39f13b93ad",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/rtl/workstation/workstation_runtime_controlled.sv",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/rtl/workstation/workstation_runtime_controlled.sv"
+    },
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_worker_runtime_controlled.sv": {
+      "before_sha256": "40fa5c3201823063a4498a838d7af67b04ee84c7c6b28d4d834c4c63a6526d56",
+      "after_sha256": "0cb0bf3aea926b2016c744822028a2f1834060316c078acb953cd24b31498fcf",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/rtl/workstation/workstation_worker_runtime_controlled.sv",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/rtl/workstation/workstation_worker_runtime_controlled.sv"
+    },
+    "projects/138k/push2_workstation/usb_a/tools/workstation_worker_audio_only.py": {
+      "before_sha256": "31375e9907c004b6d4336db2e5e7850ebfe8f25d5656824e7284623a7973cb2e",
+      "after_sha256": "e4c7d19ae13ae9ebcc2bf29afd5b61492ca738d57ffcbb94522a11dc3dfdd622",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/tools/workstation_worker_audio_only.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/tools/workstation_worker_audio_only.py"
+    },
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+      "before_sha256": "27931104d6f060ecf179a817db36bb7062e9beb408b8a737c9a3d209dd7b737e",
+      "after_sha256": "5c8696991f00b611764d0a2d8bf3af5ca3ef0d429c133c8c27f0083250357610",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/tools/workstation_custom_board.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/tools/workstation_custom_board.py"
+    },
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+      "before_sha256": "ee6d377eecbf602f4152b0e2e4871993ffe9688a2adbfef3ca819f5bd89003ad",
+      "after_sha256": "1709d7891f7b4c13ff334af8c7df2420e15429088f23ab805e4138b4854ff512",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/tools/workstation_profile.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/tools/workstation_profile.py"
+    },
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+      "before_sha256": "e213747a7f422e078793cf4f2bd4491d60e7dfaa9a22f61e055136f2519d9e43",
+      "after_sha256": "59bdc8c4c53b678bc02cebc22f34cf42788d267205f4636bb4f4d544bd506856",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/tools/workstation_demo_audit.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/tools/workstation_demo_audit.py"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_worker_audio_only.py": {
+      "before_sha256": "d0fc1784a1cb7efb42579efce5b680fe3e9d52447d213a63626c439127e53e70",
+      "after_sha256": "58a0daeca762cd62def93c2a722f33847765d4d77e20b3a6770c8776e9e29f19",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/sim/test_workstation_worker_audio_only.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/sim/test_workstation_worker_audio_only.py"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_demo_audit.py": {
+      "before_sha256": "78bc1351e6f8f5c6a7201e52d394ca3f4f66bc0fb3a3d3b7fb96bbd71252ace5",
+      "after_sha256": "b2dae6a169b0947d8adbe6946360ca7ac24a614b1e37aaf4e5e82e046c6f9cd4",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/sim/test_workstation_demo_audit.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/sim/test_workstation_demo_audit.py"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_worker_touch_runtime.py": {
+      "before_sha256": "e5498cb1102a446df0597cb8af54041db91b2440314cb6fd6f5ea76d4caf7327",
+      "after_sha256": "4b8434e12ae939d16cd4915890276c0b46c631826ea0c63f99b2657471c0cd57",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/sim/audio/run_worker_touch_runtime.py",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/sim/audio/run_worker_touch_runtime.py"
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": {
+      "before_sha256": "7a8dd50b9a532beda1375efe69f11356d82f588b40efac14e05a390680c2c0cf",
+      "after_sha256": "d9e86e24e16c754193514ce33e43347de6ddf67c31cd5b3b9da6c3d99a889c35",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/boards/custom_138k/workstation_profile_m_demo_v1.json"
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": {
+      "before_sha256": "dbc4b1316e0662a005fa95743df74ef80eb260a21b46ab54e20d92fca05de998",
+      "after_sha256": "5e8c548581b7d719aad5da35aad26520e47d41ad401fa6c46e8f4d2da41658d0",
+      "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/source/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "before_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-midi-retirement-source-handoff-v1/before/boards/custom_138k/workstation_profile_w_demo_v1.json"
+    }
+  },
+  "configuration": {
+    "W_revision": 4,
+    "W_policy": "disabled_unused_synth_uart_v1",
+    "integration_identity": "custom138k-native-w-audio-only-pitch-no-midi-revision4",
+    "oldW_revisions_1_2_3_preserved": true,
+    "defaultM_configuration_unchanged": true
+  },
+  "behavior": {
+    "retired_W_instances": [
+      "midi_uart",
+      "midi_bytes",
+      "midi_drops"
+    ],
+    "new_runtime_RTL_generation": false,
+    "shared_defaultM_instance_text_preserved": true,
+    "defaultM_preprocessed_token_bytes_identical": true,
+    "zero_ties": [
+      "midi_valid_50",
+      "midi_byte_50",
+      "uart_error_o",
+      "midi_valid_compute",
+      "midi_byte_compute",
+      "midi_cdc_drop_o",
+      "midi_drop_compute"
+    ],
+    "USB25K_CPU_events_session_PANIC_PCUART": "independent paths retained",
+    "retired_MIDI_decoder_residual": "Not explicitly removed in this source stage; prior W134 had unused decoder FIFO residual. No resource benefit preclaimed",
+    "new_constraints": "Only two retired MIDI Gray constraint lines removed after explicitflag; no newfalsepath or relaxedbudget; exactinverse required",
+    "oldW_helper_default_constraints_and_evidence_unchanged": true
+  },
+  "validation": {
+    "audio_only_tests": 5,
+    "includes_actual_memory": "64BIST+256D transactions withstall/read ordering/failurequarantine",
+    "includes_defaultM_preprocessor": "existing fixture compares615907b1 default modules exactly after whitespace removal",
+    "demo_audit_tests": 18,
+    "source_tests": 17,
+    "W_wrapper_touch": {
+      "passed": true,
+      "frames": 28716,
+      "USB_events": 559,
+      "checkpoints": 378,
+      "lifecycle": 9,
+      "scope": "production C MIDI -> captured actual MMIO writes -> service adapter -> real USB FIFO/CDC/lifecycle -> sole D parameters -> native D/full effects/ordered DDR -> coherent committed feedback",
+      "production_C_trace_rows": 943,
+      "input_count": 88
+    },
+    "failures_retained": {
+      "audio_only_v1": "new test initially omitted realruntimeGray bundle; assertion0instead2; fixed fixture source, v2passes",
+      "temporary_audit_features_indentation": "root identified memoryfeatures nesting error before stage; fixed and18testregression now covers eachmemoryfeature forbothflags"
+    },
+    "independent_oldW_features_and_config_review": {
+      "passed": true,
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-midi-retirement-independent-review-v1/review.json",
+      "sha256": "b79262e7e9a20a120dd6240b2fef24221afe102a30f8bf2a4524a32c5019104e",
+      "mutants_rejected": 39,
+      "old_W131_W134_feature_results": "complete dictionary exactly equal tofe3f70cc",
+      "old_W_revision_configs_1_2_3": "sameexcept newinternalFalse strategy bit; legacyUSBmissingkey forms accepted",
+      "old_default_constraints_and_evidence": "byteidentical",
+      "old_constraint_restore": "byteidentical",
+      "default_M_preprocessor": "token byteidentical",
+      "W_macro_scope": "no leak;3retiredMIDIinstances;PCUSBservicesruntime preserved"
+    }
+  },
+  "independent_review": {
+    "actual_W131_W134_old_feature_results_equal_before": true,
+    "old_helper_default_constraints_and_evidence_and_inverse_equal": true,
+    "old_W_revisions_1_2_3_preserved": true,
+    "mutants_rejected": 39,
+    "default_M_macrooff_preprocessed_tokens_equal": true,
+    "worker_macros_do_not_leak": true
+  },
+  "actual_W134_retirement_and_feedback_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w134-actual-vo-midi-feedback-review-v1/review.json",
+    "sha256": "bfa80304283eaf3e8ddf9dc8c661b405885312034ad98ef4f926d28f367b69db",
+    "MIDI_source_UART_valid_D_GND_CE_VCC_INIT0": true,
+    "payload_8_not_claimed": true,
+    "ordinary_MIDI_payload_and_valid_swept": true,
+    "live_diagnostic_and_empty_handshake_only": true,
+    "USB25K_and_CPU_session_and_PANIC_independent": true,
+    "sole_parameter_owner_feedback_142_actual_VO_passed": true
+  },
+  "source_locks": {
+    "m": {
+      "source_count": 866,
+      "changed_lock_entries": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_worker_touch_runtime.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py"
+      ],
+      "configuration_unchanged": true,
+      "unrelated_two_display_locks_match_HEAD": true
+    },
+    "w": {
+      "source_count": 1113,
+      "changed_lock_entries": [
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv",
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_worker_runtime_controlled.sv",
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_worker_touch_runtime.py",
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_worker_audio_only.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_worker_audio_only.py"
+      ],
+      "configuration_unchanged": false,
+      "unrelated_two_display_locks_match_HEAD": true
+    }
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-w24-source-review-v5.json",
+    "sha256": "999d7b3eb25fb3b3af07957d8a797ee5a4b6232a4011374908b9362036aade8d",
+    "verified_file_count": 1201,
+    "all11_before_files_equal_git_HEAD": true,
+    "all_after_sources_equal_reviewed_snapshots": true,
+    "owned_reverse_patch_check": true,
+    "all88_touch_inputs_verified": true,
+    "unrelated_M_display_two_dirty_owners_and_old_HEAD_locks_preserved": true
+  },
+  "evidence": {
+    "w134-actual-vo-midi-feedback-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w134-actual-vo-midi-feedback-review-v1/review.json",
+      "sha256": "bfa80304283eaf3e8ddf9dc8c661b405885312034ad98ef4f926d28f367b69db"
+    },
+    "w24-audio-only-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-audio-only-tests-v1.log",
+      "sha256": "40f3f03566f2e363907b5c3562a97704e1305487829068a4d4f88bdb37837177"
+    },
+    "w24-audio-only-tests-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-audio-only-tests-v2.log",
+      "sha256": "5e194958df5c5752b73494ccb112056106076cc03989fa53fddfb4b9e0f1a661"
+    },
+    "w24-demo-audit-tests-v3.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-demo-audit-tests-v3.log",
+      "sha256": "42d89e396a0fa478ac50c75ef947494d6df6ae510bf07fe2bb9558a8e73b406f"
+    },
+    "w24-source-tests-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-source-tests-v1.log",
+      "sha256": "be42d4eec906c14b492ec33305571428933ac107c1c4393553437db59062c053"
+    },
+    "w24-worker-wrapper-touch-v1/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-worker-wrapper-touch-v1/verification.json",
+      "sha256": "8cdcb52f9c04c885b29c975647e539a327cbb7f4fa69379143157eeb23a3d318"
+    },
+    "w24-maintenance-lock-refresh-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-maintenance-lock-refresh-v1.json",
+      "sha256": "1e6d81a9b5ba9000e142a984a90c01d8b0c84150218cfa295997f849f3f58d4c"
+    },
+    "w24-maintenance-lock-refresh-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w24-maintenance-lock-refresh-v2.json",
+      "sha256": "3768656930c0e0ff56065c307d5a062b2c0c9d7e9868cfe5dbb24f274ddd2d4e"
+    },
+    "w23-midi-retirement-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-midi-retirement-independent-review-v1/review.json",
+      "sha256": "b79262e7e9a20a120dd6240b2fef24221afe102a30f8bf2a4524a32c5019104e"
+    }
+  },
+  "new_candidate_prepared": false,
+  "new_synthesis_performed": false,
+  "new_physical_verified": false,
+  "new_resource_benefit_claimed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "remaining": [
+    "New full synthesis/actual VG must prove three retired instances absent.",
+    "New full P&R/STA/CDC/PLL and actual USB25K/phone/DAC acceptance remain required.",
+    "Two unrelated M display owners await their own validation and lock update before new working-tree prepare."
+  ],
+  "rollback": "ExplicitW macro/config only; Mdefault output unchanged; retain allW134/135 frozen candidates andM22 board trial."
+}

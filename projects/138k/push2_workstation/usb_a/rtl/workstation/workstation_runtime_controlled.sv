@@ -129,23 +129,37 @@ module workstation_runtime_controlled #(
     wire midi_valid_50,midi_valid_compute,pc_valid_50,pc_valid_compute,pc_frame_error;
     wire [7:0] midi_byte_50,midi_byte_compute,pc_byte_50,pc_byte_compute;
     wire [31:0] pc_drop,pc_overflow,midi_drop_compute;
+`ifdef WORKSTATION_RUNTIME_NO_SYNTH_MIDI
+    // W has no ordinary MIDI synthesizer input. USB/25K and CPU/session
+    // events keep their independent path below; no idle UART CDC remains.
+    assign midi_valid_50=1'b0,midi_byte_50=8'b0,uart_error_o=1'b0;
+`else
     uart_rx #(.CLOCK_HZ(50000000),.BAUD(31250)) midi_uart(
         .clk_i(clk_50m_i),.rst_ni(reset_50_n),.rx_i(midi_rx_i),
         .valid_o(midi_valid_50),.data_o(midi_byte_50),.framing_error_o(uart_error_o));
+`endif
     uart_rx #(.CLOCK_HZ(50000000),.BAUD(115200)) pc_uart(
         .clk_i(clk_50m_i),.rst_ni(reset_50_n),.rx_i(pc_uart_rx_i),
         .valid_o(pc_valid_50),.data_o(pc_byte_50),.framing_error_o(pc_frame_error));
+`ifdef WORKSTATION_RUNTIME_NO_SYNTH_MIDI
+    assign midi_valid_compute=1'b0,midi_byte_compute=8'b0,midi_cdc_drop_o=32'b0;
+`else
     gw138k_stream_cdc #(.WIDTH(8)) midi_bytes(
         .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_valid(midi_valid_50),.source_data(midi_byte_50),.drop_count(midi_cdc_drop_o),
         .destination_valid(midi_valid_compute),.destination_data(midi_byte_compute));
+`endif
     gw138k_stream_cdc #(.WIDTH(8)) pc_bytes(
         .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_valid(pc_valid_50),.source_data(pc_byte_50),.drop_count(pc_drop),
         .destination_valid(pc_valid_compute),.destination_data(pc_byte_compute));
+`ifdef WORKSTATION_RUNTIME_NO_SYNTH_MIDI
+    assign midi_drop_compute=32'b0;
+`else
     gw138k_counter_cdc midi_drops(
         .reset_n(common_reset_n),.source_clk(clk_50m_i),.destination_clk(compute_clk_i),
         .source_count(midi_cdc_drop_o),.destination_count(midi_drop_compute),.destination_gray());
+`endif
     reg pc_framing_sticky;
     // A binary drop counter can change several bits on a carry. Register its
     // diagnostic reduction before crossing; do not synchronize a LUT decode.

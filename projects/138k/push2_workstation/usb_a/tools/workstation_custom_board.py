@@ -359,7 +359,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     audio_constraints=None
     if audio_only:
         from tools.workstation_worker_audio_only import constraints as audio_sdc,cst as audio_cst
-        selected_sdc,audio_constraints=audio_sdc(selected_sdc)
+        selected_sdc,audio_constraints=audio_sdc(selected_sdc,
+            retire_synth_midi=specification(profile['name']).get('worker_synth_midi_retired',False))
         combined_cst=audio_cst(combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)

@@ -78,6 +78,26 @@ class WorkerAudioOnly(unittest.TestCase):
                     outputs.append(b''.join(result.stdout.split()))
                 self.assertEqual(outputs[0], outputs[1], relative)
 
+    def test_unused_synth_midi_retirement_keeps_live_control_constraints(self):
+        from tools.workstation_runtime_profile import protocol_constraints
+        from tools.workstation_runtime_cdc import runtime_cdc_bundle
+        original = runtime_cdc_bundle(ROOT, raw_common_reset=True)['sdc'] + protocol_constraints()
+        prior, old_evidence = constraints(original)
+        selected, evidence = constraints(original, retire_synth_midi=True)
+        removed = [line for line in prior.splitlines() if line not in selected.splitlines()]
+        self.assertEqual(len(removed), 2)
+        self.assertTrue(all('u_managed/midi_drops/' in line for line in removed))
+        self.assertEqual([line for line in selected.splitlines() if line not in prior.splitlines()], [])
+        self.assertEqual(restore_constraints(selected, evidence), original)
+        self.assertEqual(restore_constraints(prior, old_evidence), original)
+        self.assertNotIn('synth_midi_retired', old_evidence)
+        self.assertTrue(evidence['synth_midi_retired'])
+        for broken in (dict(evidence, synth_midi_retired=False), dict(evidence, synth_midi_retired=1)):
+            with self.assertRaises(ValueError):
+                restore_constraints(selected, broken)
+        self.assertIn('u_managed/pc_bytes/', selected)
+        self.assertIn('u_native_usb/', selected)
+
     def test_real_bist_delay_native_memory_and_failure_quarantine(self):
         with tempfile.TemporaryDirectory(prefix='w21-memory-') as directory:
             work = Path(directory)
