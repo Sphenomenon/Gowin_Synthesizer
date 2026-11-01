@@ -29,6 +29,7 @@ def evidence():
         target='inverse_actual_committed_rate', busy_policy='consume_reject_never_queue',
         fault_policy='reject_push_existing_apb_recover', stale_generation='reject',
         clock_owner='u_clock_service', display='frame_frozen_actual_status_final_scanout',
+        overlay_reset='existing_video_pixel_release_v1',
         sdc_sha256=hashlib.sha256(constraints().encode()).hexdigest(),
         physical_cdc_verified=False, hardware_tested=False)
 

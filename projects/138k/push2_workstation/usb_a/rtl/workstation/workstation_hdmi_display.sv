@@ -399,7 +399,7 @@ module hdmi_display #(
     wire [23:0] rate_status_rgb;
     wire rate_status_hit;
     workstation_audio_rate_overlay u_rate_status(
-        .reset_ni(reset_n && pixel_reset_n),.control_clk_i(clk_50m),.pixel_clk_i(pixel_clk),
+        .reset_ni(reset_n && pixel_reset_n),.pixel_reset_ni(pixel_reset_n),.control_clk_i(clk_50m),.pixel_clk_i(pixel_clk),
         .actual_status_i(audio_clock_status_i),.frame_start_i(frame_start),
         .x_i(x[10:0]),.y_i(y),.hit_o(rate_status_hit),.rgb_o(rate_status_rgb));
     wire [23:0] display_rgb=rate_status_hit ? rate_status_rgb : rgb;
@@ -437,7 +437,7 @@ module workstation_xy_panic_observation(
 endmodule
 
 module workstation_audio_rate_overlay(
-    input wire reset_ni,control_clk_i,pixel_clk_i,
+    input wire reset_ni,pixel_reset_ni,control_clk_i,pixel_clk_i, // Existing video pixel release owns consumer CLEAR.
     input wire [3:0] actual_status_i,
     input wire frame_start_i,
     input wire [10:0] x_i,y_i,
@@ -452,8 +452,8 @@ module workstation_audio_rate_overlay(
         .reset_n(reset_ni),.source_clk(control_clk_i),.destination_clk(pixel_clk_i),
         .source_valid(1'b1),.source_data(actual_status_i),.drop_count(),
         .destination_valid(status_valid),.destination_data(pixel_status));
-    always @(posedge pixel_clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin status_seen<=0;frame_status<=0;end
+    always @(posedge pixel_clk_i or negedge pixel_reset_ni)begin
+        if(!pixel_reset_ni)begin status_seen<=0;frame_status<=0;end
         else begin
             if(status_valid)status_seen<=1;
             if(frame_start_i && status_seen)frame_status<=pixel_status;
@@ -486,8 +486,8 @@ module workstation_audio_rate_overlay(
             3:ink=glyph_row[1];4:ink=glyph_row[0];default:ink=0;
         endcase
     end
-    always @(posedge pixel_clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin glyph<=0;column<=0;row<=0;area_q<=0;text_q<=0;hit_o<=0;rgb_o<=0;end
+    always @(posedge pixel_clk_i or negedge pixel_reset_ni)begin
+        if(!pixel_reset_ni)begin glyph<=0;column<=0;row<=0;area_q<=0;text_q<=0;hit_o<=0;rgb_o<=0;end
         else begin
             glyph<=decoded_glyph;column<=relative_x[3:1];row<=y_i[3:1];
             area_q<=area;text_q<=text_row;hit_o<=area_q;

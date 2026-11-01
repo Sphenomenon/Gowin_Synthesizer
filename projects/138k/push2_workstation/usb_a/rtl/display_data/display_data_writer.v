@@ -62,14 +62,29 @@ module display_data_writer #(
     wire [31:0] generation=frame_sequence<<1;
     wire supported_source=(source_sample_rate_i==32'd48000 ||
         (METADATA_MINOR==1 && source_sample_rate_i==32'd44100));
-    wire wave_matches=waveform_context_valid_i && waveform_sample_rate_i==source_sample_rate_i &&
-        waveform_epoch_i==source_epoch_i && waveform_generation_i==source_generation_i;
-    wire analysis_matches=analysis_context_valid_i && analysis_sample_rate_i==source_sample_rate_i &&
-        analysis_epoch_i==source_epoch_i && analysis_generation_i==source_generation_i;
+    // Parallel small XOR reductions keep snapshot validation out of a wide
+    // carry comparator. This is the same four-state predicate and acceptance
+    // edge: a source break still revokes a private export immediately.
+    (* syn_keep=1 *) wire [7:0] wave_difference,analysis_difference,source_difference;
+    for(genvar identity_group=0;identity_group<8;identity_group=identity_group+1)begin:context_identity
+        assign wave_difference[identity_group]=
+            |(waveform_sample_rate_i[identity_group*4+:4]^source_sample_rate_i[identity_group*4+:4]) |
+            |(waveform_epoch_i[identity_group*4+:4]^source_epoch_i[identity_group*4+:4]) |
+            |(waveform_generation_i[identity_group*4+:4]^source_generation_i[identity_group*4+:4]);
+        assign analysis_difference[identity_group]=
+            |(analysis_sample_rate_i[identity_group*4+:4]^source_sample_rate_i[identity_group*4+:4]) |
+            |(analysis_epoch_i[identity_group*4+:4]^source_epoch_i[identity_group*4+:4]) |
+            |(analysis_generation_i[identity_group*4+:4]^source_generation_i[identity_group*4+:4]);
+        assign source_difference[identity_group]=
+            |(source_sample_rate_i[identity_group*4+:4]^sample_rate_q[identity_group*4+:4]) |
+            |(source_epoch_i[identity_group*4+:4]^epoch_q[identity_group*4+:4]) |
+            |(source_generation_i[identity_group*4+:4]^context_generation_q[identity_group*4+:4]);
+    end
+    wire wave_matches=waveform_context_valid_i && !(|wave_difference);
+    wire analysis_matches=analysis_context_valid_i && !(|analysis_difference);
     wire snapshot_context_ok=!CONTEXT_ENABLED || (source_context_valid_i && source_epoch_i!=0 &&
         supported_source && wave_matches && (!analysis_valid || analysis_matches));
-    wire changed_context=CONTEXT_ENABLED && (!source_context_valid_i || source_sample_rate_i!=sample_rate_q ||
-        source_epoch_i!=epoch_q || source_generation_i!=context_generation_q);
+    wire changed_context=CONTEXT_ENABLED && (!source_context_valid_i || |source_difference);
     // Once all RAM elements have been read, the captured packet is immutable.
     // A context change before that point cancels publication. An advertised
     // stalled DDR beat is drained without changing/withdrawing its payload.

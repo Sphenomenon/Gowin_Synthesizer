@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "stage": "M26_1_minimal_routed_path_repairs_maintained_source_and_offline_validation",
+  "source_policy": "Maintained RTL and existing explicit M/W configurations; frozen D2110138 and W139/W140 inputs unchanged",
+  "changes": {
+    "overlay": "Business FF reset now reuses existing video pixel release; mailbox common reset and internal domain releases unchanged, zero new reset/clock state.",
+    "XY": "Register abs dx/dy, then prepare initial signed Bresenham error one display-local cycle later. Prepare cycle writes neither image nor raw history, never steps raster; no audio feedback.",
+    "writer": "Parallel 4-bit XOR reductions replace wide identity comparisons; same four-state acceptance/revocation predicate, no new state or schedule change."
+  },
+  "regressions": {
+    "overlay": {
+      "pixels": 215597,
+      "release_checks": 1138,
+      "asynchronous_assertions": 2,
+      "independent_common_reset_pulses": 4,
+      "frame_freeze_checks": 728,
+      "negative_controls": 5,
+      "macro_off_preprocessed_bytes_equal": true,
+      "macro_off_bytes": 18756,
+      "SDC_unchanged": true
+    },
+    "XY": {
+      "leaf_frames": 11,
+      "leaf_pixels": 720896,
+      "leaf_points": 6248,
+      "maximum_segment_wait_cycles": 257,
+      "full_analysis_frames": 7,
+      "full_analysis_default_off_cycle_checks": 5082314,
+      "full_analysis_pixels": 786432,
+      "stereo_FFT_columns": 6144,
+      "stopped_reads": 192,
+      "skipped_samples": 2048,
+      "negative_controls": 7,
+      "Icarus_and_Verilator": true
+    },
+    "writer": {
+      "exact_source_extracted_predicate_checks": 106528,
+      "minor0_and_minor1": true,
+      "unknown_XZ": true,
+      "omitted_epoch_bit_negative_control_rejected": true,
+      "legacy_compared_cycles": 615641,
+      "legacy_beats": 1098,
+      "minor1": {
+        "full_cache_checks": 14,
+        "writes": 2904,
+        "commits": 6,
+        "reads": 3712,
+        "rejected": 5,
+        "aborted": 3,
+        "first_publish_reads": 6
+      },
+      "real_analysis": {
+        "published": 3,
+        "wave_samples": 1536,
+        "xy_pixels": 196608,
+        "fft_columns": 1536,
+        "discarded_contexts": 4,
+        "early_rejected": 1
+      },
+      "final_context_drain_negative_control_passed": true
+    },
+    "source_entry_tests": 17,
+    "demo_audit_tests": 18,
+    "both_profile_source_checks_passed": true
+  },
+  "old_D2110138_semantic_audits": {
+    "Push_three_mailboxes_bits": 69,
+    "actual_VG_negative_controls": 292,
+    "actual_VO_negative_controls": 41,
+    "disabled_contract_negative_controls": 6,
+    "PANIC_actual_10bit_source_and_complete_trust": true,
+    "history4_and_image8_RAM_write_semantics": true,
+    "XY_VG_negative_controls": 20,
+    "VO_concat_order_negative_controls": 2,
+    "does_not_supersede_STA_rejection": true
+  },
+  "source_locks": {
+    "m": {
+      "profile": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "profile_sha256": "68f371c4711ef5d98b1fad7dbf1a783d43a14124a0f3347318430b16577f434c",
+      "source_count": 890,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_push_rate_control.py": {
+          "before": "ecaa03b9966f604c1b5b0daa2f9c7f0375b54151521e8f6802cba0477bdb816f",
+          "after": "ff0f0245b9a2ad831d9919bd3e283940e0b1985ae986576fefde9f886f96b65c"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": {
+          "before": "45f487f655472c2914b03b08afc9fa3bc08194867215c3d0a12155d7d825fd2c",
+          "after": "a9a542c84a84daab3c042118fba38b22ae949885d8bae808ead52a0fbea784e9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_xy_trace.sv": {
+          "before": "d51297ba9b7d4c96f87e72f9e2b956abc5c76d2f50399c1a97fbfcc54ade721d",
+          "after": "be3a8ba1cc84b4efe7776049ef642f4cdbb7a14b6fda4d7ab3b19c631384718a"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_audio_rate_overlay.sv": {
+          "before": "921be91a7d1e4f70cee34cc768ac4b4919b521b1407ce782e0319d27559215d1",
+          "after": "69090be805e9387ad5911f4cfb1ca15a6f15c3c6c748a8a7c93d0ecc855fa52b"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_trace.sv": {
+          "before": "98e18a90cf1f45e62282d26337695a0444079a8357df39fbd1d18e5b14e39974",
+          "after": "6aad9edb620b888ac20da3e4b59c8a3a7690d0b18fc3e41ec27bd26158716360"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": {
+          "before": "16266b2827c632e838db4ad5262fd13513dc76a507d75c54f694a7d4e8cfd034",
+          "after": "553634f90927c5cfb49a59282511805963a5ce9fe1a819cd537f946602487291"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/run_audio_rate_reset.py": {
+          "before": null,
+          "after": "caec46ced58d3d2cc901436a044018e7786c4530a374f45036cb6b03e9950d2e"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_audio_rate_reset.sv": {
+          "before": null,
+          "after": "4cd5ff301c14d119b66ba35a972f3dc8440d40b0510cb24af772c1dbd016746c"
+        }
+      }
+    },
+    "w": {
+      "profile": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "profile_sha256": "a1271081205ee18c2403988c1c447d7b696ee4ea96ff5d1682e146d56237fcb3",
+      "source_count": 1137,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_push_rate_control.py": {
+          "before": "ecaa03b9966f604c1b5b0daa2f9c7f0375b54151521e8f6802cba0477bdb816f",
+          "after": "ff0f0245b9a2ad831d9919bd3e283940e0b1985ae986576fefde9f886f96b65c"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": {
+          "before": "45f487f655472c2914b03b08afc9fa3bc08194867215c3d0a12155d7d825fd2c",
+          "after": "a9a542c84a84daab3c042118fba38b22ae949885d8bae808ead52a0fbea784e9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_xy_trace.sv": {
+          "before": "d51297ba9b7d4c96f87e72f9e2b956abc5c76d2f50399c1a97fbfcc54ade721d",
+          "after": "be3a8ba1cc84b4efe7776049ef642f4cdbb7a14b6fda4d7ab3b19c631384718a"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_audio_rate_overlay.sv": {
+          "before": "921be91a7d1e4f70cee34cc768ac4b4919b521b1407ce782e0319d27559215d1",
+          "after": "69090be805e9387ad5911f4cfb1ca15a6f15c3c6c748a8a7c93d0ecc855fa52b"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_trace.sv": {
+          "before": "98e18a90cf1f45e62282d26337695a0444079a8357df39fbd1d18e5b14e39974",
+          "after": "6aad9edb620b888ac20da3e4b59c8a3a7690d0b18fc3e41ec27bd26158716360"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": {
+          "before": "16266b2827c632e838db4ad5262fd13513dc76a507d75c54f694a7d4e8cfd034",
+          "after": "553634f90927c5cfb49a59282511805963a5ce9fe1a819cd537f946602487291"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/run_audio_rate_reset.py": {
+          "before": null,
+          "after": "caec46ced58d3d2cc901436a044018e7786c4530a374f45036cb6b03e9950d2e"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_audio_rate_reset.sv": {
+          "before": null,
+          "after": "4cd5ff301c14d119b66ba35a972f3dc8440d40b0510cb24af772c1dbd016746c"
+        }
+      }
+    }
+  },
+  "root_independently_rehashed_files": 3391,
+  "handoff_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-cdc-handoff-v1/handoff.json": "e0ce29093c1d547c3875f8b19b49a599e2cb48c57e1bfc9baf7e08a363bbf54a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-panic-handoff-v1.json": "828d698da8d75a1366911b93a48f2e22015a5e1112820a47fd87b0ffc8e4b287",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-overlay-pixel-reset-source-v1/handoff.json": "b4f63af903910d0e8e307e43ad29fadab5330f1db8fb662b9683740f7dcc9929",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-trace-pipeline-handoff-v1.json": "572331ce6405ae4c5b1b2094becc61c3e34b469a9fba7bafaf28975e66bff5a9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-writer-balance-v1/verification.json": "ca1153d1406236e6c0d03f0168793d66d007a13190ae5068edd30edb8423e814",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-writer-metadata-regression-v1/verification.json": "cd91eb16d198254faac04ce621a3747633ce33513132709150fa961fd3ca2c62",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-source-lock-refresh-v1.json": "2d22a4b3829cc0fb1544109df2939dbf3e3ed21a84a7c0e84fdf613f747f9228"
+  },
+  "verification_inventory_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-root-source-evidence-sha256-v1.json": "1ace7022daab7a39af19568985638bd6688ecb371ad5a3e1a6a274566ab1b4e0"
+  },
+  "remaining": [
+    "Fresh complete prepare/synthesis/PnR and actual new topology gates",
+    "Original audio/display setup routing and 48k reference-monitor hold paths still need actual new measurement",
+    "SRAM and physical HDMI/Push/25K/DAC acceptance"
+  ],
+  "timing_closed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "rollback": "No board operations. M26 D2110137 retained. No Flash writes."
+}

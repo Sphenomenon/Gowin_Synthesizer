@@ -24,7 +24,7 @@ module workstation_xy_trace (
     reg [15:0] clear_address;
     reg history[0:65535];
     reg history_q;
-    reg have_previous;
+    reg have_previous,prepare_line;
     reg [7:0] previous_x,previous_y,line_x,line_y,target_x,target_y,line_steps;
     reg [8:0] line_dx,line_dy;
     reg step_right,step_down;
@@ -43,7 +43,7 @@ module workstation_xy_trace (
     assign frame_ready_o=frame_active && state==POINT;
     assign point_ready_o=frame_ready_o;
     assign idle_o=frame_ready_o;
-    assign write_enable_o=frame_active && (state==CLEAR_WRITE || state==DRAW);
+    assign write_enable_o=frame_active && (state==CLEAR_WRITE || (state==DRAW && !prepare_line));
     assign write_address_o=state==DRAW ? {line_y,line_x} : clear_address;
     assign write_pixel_o=state==DRAW || (keep_history && history_q);
     // Registered read, one mutually exclusive write port. Clear first copies
@@ -52,15 +52,15 @@ module workstation_xy_trace (
     always @(posedge clk)begin
         if(frame_active && state==CLEAR_READ)history_q<=history[clear_address];
         if(frame_active && state==CLEAR_WRITE)history[clear_address]<=0;
-        else if(frame_active && state==DRAW)history[{line_y,line_x}]<=1;
+        else if(frame_active && state==DRAW && !prepare_line)history[{line_y,line_x}]<=1;
     end
     always @(posedge clk or negedge reset_n)begin
         if(!reset_n)begin
             state<=POINT;frame_active<=0;history_valid<=0;keep_history<=0;history_gain<=0;clear_address<=0;
-            have_previous<=0;previous_x<=0;previous_y<=0;line_x<=0;line_y<=0;target_x<=0;target_y<=0;
+            have_previous<=0;prepare_line<=0;previous_x<=0;previous_y<=0;line_x<=0;line_y<=0;target_x<=0;target_y<=0;
             line_dx<=0;line_dy<=0;step_right<=0;step_down<=0;line_error<=0;line_steps<=0;
         end else if(frame_start_i)begin
-            state<=CLEAR_READ;frame_active<=1;clear_address<=0;have_previous<=0;
+            state<=CLEAR_READ;frame_active<=1;clear_address<=0;have_previous<=0;prepare_line<=0;
             // A gain change changes the meaning of each coordinate. Retire
             // old coordinates instead of retaining a falsely scaled trail.
             keep_history<=history_valid && history_gain==gain_i;
@@ -79,7 +79,10 @@ module workstation_xy_trace (
                     target_x<=point_x_i;target_y<=point_y_i;
                     line_dx<=have_previous ? input_dx:9'd0;
                     line_dy<=have_previous ? input_dy:9'd0;
-                    line_error<=have_previous ? $signed({1'b0,input_dx})-$signed({1'b0,input_dy}):10'sd0;
+                    // Register both absolute deltas before their subtraction.
+                    // Display-local work takes one extra cycle per segment;
+                    // no PCM schedule or ready signal depends on this writer.
+                    prepare_line<=1;
                     step_right<=point_x_i>=previous_x;step_down<=point_y_i>=previous_y;
                     previous_x<=point_x_i;previous_y<=point_y_i;have_previous<=1;line_steps<=0;state<=DRAW;
                 end
@@ -88,7 +91,10 @@ module workstation_xy_trace (
                 // An 8-bit raster segment contains at most 256 pixels. The
                 // explicit cap guarantees display work stays bounded even
                 // under a future faulty producer. No PCM ready/backpressure.
-                if((line_x==target_x && line_y==target_y) || line_steps==8'hff)state<=POINT;
+                if(prepare_line)begin
+                    line_error<=$signed({1'b0,line_dx})-$signed({1'b0,line_dy});
+                    prepare_line<=0;
+                end else if((line_x==target_x && line_y==target_y) || line_steps==8'hff)state<=POINT;
                 else begin
                     if(advance_x)line_x<=step_right ? line_x+1'b1:line_x-1'b1;
                     if(advance_y)line_y<=step_down ? line_y+1'b1:line_y-1'b1;

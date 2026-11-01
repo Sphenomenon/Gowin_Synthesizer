@@ -6,7 +6,7 @@ module tb_workstation_audio_rate_overlay;
     reg [3:0] status=4'b0010;
     reg [10:0] x=0,y=0;
     wire hit;wire [23:0] rgb;
-    workstation_audio_rate_overlay dut(.reset_ni(rst_n),.control_clk_i(control),.pixel_clk_i(clk),
+    workstation_audio_rate_overlay dut(.reset_ni(rst_n),.pixel_reset_ni(rst_n),.control_clk_i(control),.pixel_clk_i(clk),
         .actual_status_i(status),.frame_start_i(start),.x_i(x),.y_i(y),.hit_o(hit),.rgb_o(rgb));
     reg [3:0] expected_status=0;
     reg [255:0] line;

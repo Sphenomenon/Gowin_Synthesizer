@@ -13,7 +13,11 @@ module tb_workstation_xy_trace #(
         .write_enable_o(write_enable),.write_address_o(write_address),.write_pixel_o(write_pixel));
     reg [19:0]meta[0:FRAMES-1];reg[16:0]points[0:POINTS-1];reg expected[0:FRAMES*65536-1];
     reg bitmap[0:65535];
-    integer writes=0,clears=0,draws=0,compared=0,point_count=0,max_wait=0;
+    integer writes=0,clears=0,draws=0,compared=0,point_count=0,max_wait=0,prepares=0,prepare_resets=0;
+    always @(posedge clk)if(reset_n && dut.prepare_line)begin
+        if(write_enable)$fatal(1,"preparing segment wrote an uninitialized pixel");
+        prepares++;
+    end
     always @(posedge clk)if(reset_n && write_enable)begin
         bitmap[write_address]=write_pixel;writes++;
         if(dut.state==1)clears++;else draws++;
@@ -34,6 +38,12 @@ module tb_workstation_xy_trace #(
         tick(3);reset_n=1;tick(2);
         for(integer f=0;f<FRAMES;f++)begin
             if(meta[f][19])begin
+                // Cancel the newly inserted error-preparation cycle itself.
+                // No prepared line may leak into the next same-gain context.
+                gain=meta[f][18:16];frame_start=1;tick(1);frame_start=0;
+                wait(frame_ready);tick(1);send_point({1'b1,8'd4,8'd5});
+                if(!dut.prepare_line || write_enable)$fatal(1,"fixture missed preparation stage");
+                reset_n=0;prepare_resets++;tick(3);reset_n=1;tick(2);
                 // Interrupt an actual drawing operation, then start a fresh
                 // same-gain context. Prior RAM contents remain physically
                 // present and must be rejected by the owner's valid lifetime.
@@ -52,8 +62,8 @@ module tb_workstation_xy_trace #(
                 compared++;
             end
         end
-        if(offset!=POINTS || clears<FRAMES*65536 || draws==0)$fatal(1,"fixture omitted inputs/clear/draw");
-        $display("PASS xy_trace frames=%0d accepted_points=%0d compared_pixels=%0d actual_writes=%0d raw_clear_writes=%0d line_pixel_writes=%0d maximum_segment_wait=%0d",FRAMES,point_count,compared,writes,clears,draws,max_wait);
+        if(offset!=POINTS || clears<FRAMES*65536 || draws==0 || prepares==0 || prepare_resets==0)$fatal(1,"fixture omitted inputs/clear/draw/prepare cancellation");
+        $display("PASS xy_trace frames=%0d accepted_points=%0d compared_pixels=%0d actual_writes=%0d raw_clear_writes=%0d line_pixel_writes=%0d maximum_segment_wait=%0d preparation_cycles=%0d preparation_resets=%0d",FRAMES,point_count,compared,writes,clears,draws,max_wait,prepares,prepare_resets);
         $finish;
     end
     initial begin #100000000;$fatal(1,"XY trace watchdog");end
