@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact pitch reciprocal proof, actual RTL domain sweep and negative controls."""
+"""Exact pitch partition proof, actual RTL domain sweep and negative controls."""
 import hashlib
 from pathlib import Path
 import subprocess
@@ -34,7 +34,16 @@ class PitchExact147(unittest.TestCase):
         self.assertEqual((160 * 65535 + 146) // 147, 71331)
         self.assertLess(71331, 1 << 17)
         self.assertGreater(71331, (1 << 16) - 1)
-        print('PROOF interval=0..852210 inputs=65536x256 scale=67108864 multiplier=456523 excess=17 max_error_numerator=14487570')
+        # New hardware sums the independent quotient/remainder of four
+        # nibble-weighted terms. Every table entry is constant at elaboration;
+        # q*147+r reconstructs13*s, with a ten-bit final remainder sum.
+        tables = [[divmod(13*(16**digit)*value,147) for value in range(16)]
+                  for digit in range(4)]
+        self.assertLess(sum(max(r for q,r in table) for table in tables)+255, 6*147)
+        for step in range(65536):
+            parts = [tables[d][(step>>(4*d))&15] for d in range(4)]
+            self.assertEqual(sum(q for q,r in parts)*147+sum(r for q,r in parts),13*step)
+        print('PROOF interval=0..852210 inputs=65536x256 partition=4x4 max_trial_carry=5')
 
     def simulate(self, source, quick=False):
         with tempfile.TemporaryDirectory(prefix='pitch-exact147-') as directory:
@@ -63,8 +72,9 @@ class PitchExact147(unittest.TestCase):
     def test_negative_controls_compile_then_fail_actual_rtl(self):
         source = RTL.read_text()
         cases = (
-            ('reciprocal_down', "19'd456523", "19'd456522", 'DOMAIN'),
-            ('reciprocal_up', "19'd456523", "19'd456524", 'DOMAIN'),
+            ('digit_quotient', "13'((1*WEIGHT)/147)", "13'((1*WEIGHT)/147+1)", 'DOMAIN'),
+            ('digit_remainder', "8'((1*WEIGHT)%147)", "8'((1*WEIGHT)%147+1)", 'DOMAIN'),
+            ('trial_divisor', "11'(carry*147)", "11'(carry*148)", 'DOMAIN'),
             ('quotient_truncated', "{1'b0,glide_step_q20_i} + {4'd0,glide_extra_step}",
              "17'(16'({1'b0,glide_step_q20_i} + {4'd0,glide_extra_step}))", 'DOMAIN'),
             ('reset_bias_removed', "glide_remainder <= 8'd73;", "glide_remainder <= 8'd0;", 'RESET'),

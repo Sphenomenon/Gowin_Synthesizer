@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "stage": "maintained_glide_partition_exact_module_verified",
+  "passed": true,
+  "trigger": "M20 actual routed pitch n23 multiple serial DSP/ALU path; worst -1.170ns default and -1.348ns far",
+  "source_sha256": {
+    "rtl/audio/workstation_rate_pitch_expression.sv": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9",
+    "sim/test_pitch_div147_exact.py": "fc3b50c69d2ad132c4d6bb4686a10319fb70bad0c651f6f7d83a4ea8e236ac29",
+    "sim/audio/run_pitch_glide_partition.py": "dc464a1398110f9042e8628504950e1879459c091d4a82a1a3379886cafb5986",
+    "sim/audio/tb_pitch_glide_partition.sv": "afc956b47eb6ab5aa04adb95aa63386e026d4768996ae2ef4a5aa3fb698a81c5",
+    "sim/audio/fixtures/workstation_rate_pitch_expression_before_glide_partition.sv": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef"
+  },
+  "parent_sha256": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef",
+  "change": "Split13*s+r into four constant nibble quotient/remainder terms and bounded parallel trial subtractions; retain integer API and every clocked source byte",
+  "added_clock_cycles": 0,
+  "numerical_proof": {
+    "all_step_values": 65536,
+    "all_old_remainders": 256,
+    "maximum_sum_of_digit_remainders_and_old_remainder": 818,
+    "maximum_trial_carry": 5,
+    "intermediate_trial_width": 11,
+    "extra_quotient_width": 13,
+    "full_glide_step_width": 17
+  },
+  "actual_full_module": {
+    "combinational_cases": 16777220,
+    "transactions": 40017,
+    "integer_negative_controls": 7,
+    "four_state_cases": 294912,
+    "half_edges": 160000,
+    "four_state_and_source_negative_controls": 3,
+    "independent_model_clocks": 280925,
+    "independent_model_samples": 95714,
+    "locked48k_reference_clocks": 16000,
+    "runtime_behavior_negative_controls": 2
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-partition-maintained-domain-v1.log": "c486a5d5357f83fc807395ba6f6dea2b86765871e4a196438c336c1426694d16",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-partition-maintained-time-v1.log": "022c5e793a5d980c0ef674c6a40126dc2ced4c05e57998435d046ce387d93533",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-partition-maintained-four-v1.log": "b2a8944c1a2f187ee8c3fd491b0512842390d4666a075a0e199bcbf1c0cc7b28"
+  },
+  "four_state_verification_sha256": "d8c3d8d9221c1080afc950e087144973e066b124b945415a695284108c1021e5",
+  "independent_reviews": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-nibble-independent-review-v1.json",
+      "sha256": "b34f53dbac4e4f2ae7725b14b08f9e2807c529031103d8a568eaa5126ad8729c"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-independent-review-v1/review.md",
+      "sha256": "134787fc91fabfb1c0f9fdf8728041db3c25b0a4930cb0f663d41f519d70e320"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-pitch-independent-review-v1/seal.json",
+      "sha256": "3f72189fffc68d4b6289b06a3f939fe8ca264309adb5660dfbe5d6bb8e0893c5"
+    }
+  ],
+  "physical_timing_measured": false,
+  "physical_resource_gain_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false
+}

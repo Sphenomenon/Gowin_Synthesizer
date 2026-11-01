@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "stage": "maintained_NoteOff_balanced_prefix_source_verified",
+  "passed": true,
+  "owned_files_sha256": {
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+    "rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+    "tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec",
+    "tools/workstation_oscillator_expression_provenance.py": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8",
+    "tools/workstation_runtime_profile.py": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b",
+    "sim/audio/run_release_selection_equivalence.py": "79dfb22f34a3fe28a0f5666b26d9797061e0bff14cb0776fb72fda76a2642ecb"
+  },
+  "immutable_files_sha256": {
+    "rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+    "rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674"
+  },
+  "source_inputs_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_release_selection_equivalence.py": "79dfb22f34a3fe28a0f5666b26d9797061e0bff14cb0776fb72fda76a2642ecb",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.provenance.json": "92d3657f9e16f576181f6894b174fae956ba5ee98b9622e3b485c5c141a1f3c9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json": "58742728c967dc752fa3279dfb9cc13e74b94c6c1e865e7921cd25f26a814674",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_oscillator_expression_equivalence.sv": "62b7918247e9f6d79410644dcb7ad450a5717f0362828d3deaa0fb0ce0f6a7aa",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/prove_effect_slot_admission.py": "8c66f9da10fbeb965519aceb2cd2ea4c2187ca32b8e4b944f335f0eba72ca9ce",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv": "baf45bdf6374bdaf96bd20cd15269653103130bf803e36e588c81e904f966bf9"
+  },
+  "binary_selector_proof": {
+    "status": "unsat",
+    "arbitrary_match_bits": 32,
+    "selector_outputs": 32,
+    "assumptions": [],
+    "counterexample": null
+  },
+  "actual_source_four_state": {
+    "exit_code": 0,
+    "checks": 50434,
+    "actual_source_cones": true,
+    "fixture_sha256": "ee4e2b8e1163917dc5f381759f28e1d1646220d4293ef2293e962dc874fcfa8c"
+  },
+  "whole_oscillator": {
+    "whole_0": {
+      "exit_code": 0,
+      "separate_off_note": 0,
+      "metrics": {
+        "frames": 6612,
+        "audible": 6456,
+        "slots": 6770688,
+        "panic": 34,
+        "max_latency": 1061,
+        "expression_updates": 4980,
+        "duplicate_releases": 960,
+        "half_edges": 6134628
+      },
+      "source_sha256": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+      "tb_sha256": "f612eceafaf252deb41fbc84792b99a1c59b800af75cb6a38709e4bb01d21e53",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_oscillator_expression_equivalence",
+        "--Mdir",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_0/obj",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_0/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_0/native.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_0/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/sine_interp.sv"
+      ]
+    },
+    "whole_1": {
+      "exit_code": 0,
+      "separate_off_note": 1,
+      "metrics": {
+        "frames": 6612,
+        "audible": 6456,
+        "slots": 6770688,
+        "panic": 34,
+        "max_latency": 1061,
+        "expression_updates": 4980,
+        "duplicate_releases": 960,
+        "half_edges": 6134628
+      },
+      "source_sha256": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+      "tb_sha256": "242722040a9581edbd5c9be922586c0858d0164d943f16d41e9b9d18d85198ac",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_oscillator_expression_equivalence",
+        "--Mdir",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_1/obj",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_1/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_1/native.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_1/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/sine_interp.sv"
+      ]
+    },
+    "whole_missing_low_group": {
+      "exit_code": 1,
+      "separate_off_note": 1,
+      "metrics": null,
+      "source_sha256": "98c9233c47d65c0b3f8e8789f69ae20790ef15a07ac442d0e744e6c643969ae3",
+      "tb_sha256": "242722040a9581edbd5c9be922586c0858d0164d943f16d41e9b9d18d85198ac",
+      "compile_argv": [
+        "verilator",
+        "--binary",
+        "--timing",
+        "-j",
+        "2",
+        "-Wno-fatal",
+        "--top-module",
+        "tb_oscillator_expression_equivalence",
+        "--Mdir",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_missing_low_group/obj",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_missing_low_group/tb.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_missing_low_group/native.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/whole_missing_low_group/reference.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_div147.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/midi_step_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/mode_timbre_rom.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/partial_step_generator_variable.sv",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v2/dependencies/legacy/rtl/audio/sine_interp.sv"
+      ]
+    }
+  },
+  "strict_inverse_controls": [
+    {
+      "control": "source_extra_byte",
+      "rejected": true,
+      "reason": "Oscillator release source identity changed"
+    },
+    {
+      "control": "adaptation_extra_byte",
+      "rejected": true,
+      "reason": "Oscillator release adaptation bytes changed"
+    },
+    {
+      "control": "clocked_source_tamper",
+      "rejected": true,
+      "reason": "Oscillator release source identity changed"
+    },
+    {
+      "control": "selector_source_tamper",
+      "rejected": true,
+      "reason": "Oscillator release source identity changed"
+    }
+  ],
+  "established_regression_checks": {
+    "runtime_oscillator": {
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_oscillator.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.939112500054762,
+      "log_sha256": "cbdf5fa7b76b4a60628ce744084f3045a6ceeab9fdea1a7d261166f8a7dff821"
+    },
+    "runtime_adsr": {
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_adsr_pipeline.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.166357042035088,
+      "log_sha256": "9496e7290567bcb88d5f256061af15c71d8a77c4402f3f9d0dfe136c0cfcc499"
+    },
+    "accepted_sources": {
+      "command": [
+        "/Users/sphenicidition/miniforge3/bin/python3",
+        "-B",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.2373154170345515,
+      "log_sha256": "80e922c10d7781a654e338842d0deb3767e640e739adb55d5a2e56d4828b5557"
+    }
+  },
+  "feature_preservation": "Only release lowest-match selection changed; exact local inverse reaches99cd parent; original expression/native/prepared inverse unchanged; all comparators, allocation/expression policy and every clocked source byte preserved",
+  "no_added_clock_cycles": true,
+  "physical_timing_tested": false,
+  "physical_gain_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "root_commits_and_pushes": true,
+  "remaining_gaps": [
+    "Fresh candidate source identity and prepare/synthesis audits",
+    "New routed timing/CDC/resource validation",
+    "Physical SRAM functional acceptance under root authorization"
+  ],
+  "preserved_failure_cache": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-equivalence-v1",
+  "failure_scope": "First proof run rejected a test-script genvar token substitution; RTL was unchanged by that fixture correction.",
+  "root_review": {
+    "evidence_files_reverified": 58,
+    "owned_and_original_inputs_verified": 8,
+    "source_inputs_reverified": 11,
+    "verification_sha256": "2d98684364aff7e1cf514fc0ee176dc4dbf6c53018644549f529a65c0ce0fa33",
+    "seal_sha256": "3be38230883f90254691910f2250db050cdfb3a5678039b29d77251f4270917a",
+    "independent_review": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-release-prefix-independent-review-v1.json",
+    "independent_review_sha256": "1f692de1e97f007651915ed0669c78d5232e3d59fa35d67d60cb4395d496ad15"
+  },
+  "profile_update": {
+    "m": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "sha256": "6b9202e925976ee1c8fd1fc5b47145d849ef040f61d00223dc113c5a99998b71",
+      "only_existing_updates": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+          "before": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef",
+          "after": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": {
+          "before": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+          "after": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": {
+          "before": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+          "after": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+          "before": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+          "after": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b"
+        }
+      },
+      "new_required_dependencies": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec"
+      },
+      "all_other_fields_unchanged": true,
+      "source_files": 825
+    },
+    "w": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "sha256": "d8b06a1d1a6d5738bb9c5b6ca457c97aa676bfaf34eea71f808cdc8349f7b455",
+      "only_existing_updates": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+          "before": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef",
+          "after": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": {
+          "before": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+          "after": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": {
+          "before": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+          "after": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+          "before": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+          "after": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b"
+        }
+      },
+      "new_required_dependencies": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+        "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec"
+      },
+      "all_other_fields_unchanged": true,
+      "source_files": 826
+    }
+  },
+  "next_candidate": "M21 full synthesis and PNR required; frozen M20 and W19 inputs unchanged"
+}

@@ -278,16 +278,33 @@ module workstation_runtime_oscillator_engine #(
     if(group_number<4)assign expression_prefix_4[group_number]=expression_prefix_2[group_number];
     else assign expression_prefix_4[group_number]=expression_prefix_2[group_number] || expression_prefix_2[group_number-4];
   end
+  // NoteOff uses the same lowest eligible voice policy in this clock.
+  // Keep its group prefix separate from expression/allocation selection.
+  (* syn_keep = 1 *) wire [7:0] release_group_any;
+  (* syn_keep = 1 *) wire [7:0] release_prefix_1,release_prefix_2,release_prefix_4;
+  for(genvar release_group=0;release_group<8;release_group=release_group+1) begin: g_release_prefix
+    assign release_group_any[release_group]=|release_matches[release_group*4+:4];
+    if(release_group==0)assign release_prefix_1[release_group]=release_group_any[release_group];
+    else assign release_prefix_1[release_group]=release_group_any[release_group] || release_group_any[release_group-1];
+    if(release_group<2)assign release_prefix_2[release_group]=release_prefix_1[release_group];
+    else assign release_prefix_2[release_group]=release_prefix_1[release_group] || release_prefix_1[release_group-2];
+    if(release_group<4)assign release_prefix_4[release_group]=release_prefix_2[release_group];
+    else assign release_prefix_4[release_group]=release_prefix_2[release_group] || release_prefix_2[release_group-4];
+  end
   for(genvar ev=0;ev<32;ev=ev+1) begin: g_direct_event_select
     wire earlier_group,earlier_local;
+    wire release_earlier_group,release_earlier_local;
     assign release_matches[ev]=ev<=maximum_voice_index && allocated_mask_o[ev] &&
         envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
         assigned_midi_note[ev]==off_note;
     assign expression_matches[ev]=allocated_mask_o[ev] &&
         envelope_state[ev]!=ENVELOPE_RELEASE && envelope_state[ev]!=ENVELOPE_IDLE &&
         assigned_midi_note[ev]==expression_note_i;
-    if(ev==0)assign release_select[ev]=release_matches[ev];
-    else assign release_select[ev]=release_matches[ev] && !(|release_matches[ev-1:0]);
+    if(ev<4)assign release_earlier_group=1'b0;
+    else assign release_earlier_group=release_prefix_4[ev/4-1];
+    if(ev%4==0)assign release_earlier_local=1'b0;
+    else assign release_earlier_local=|release_matches[ev-1:ev/4*4];
+    assign release_select[ev]=release_matches[ev] && !release_earlier_group && !release_earlier_local;
     if(ev<4)assign earlier_group=1'b0;
     else assign earlier_group=expression_prefix_4[ev/4-1];
     if(ev%4==0)assign earlier_local=1'b0;

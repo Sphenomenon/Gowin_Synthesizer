@@ -81,6 +81,8 @@ DEPENDENCIES = (
     'rtl/audio/workstation_runtime_oscillator_engine.provenance.json',
     'rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json',
     'tools/workstation_oscillator_expression_provenance.py',
+    'rtl/audio/workstation_runtime_oscillator_engine.release_selection.json',
+    'tools/workstation_oscillator_release_provenance.py',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json',

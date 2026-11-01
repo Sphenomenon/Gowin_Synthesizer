@@ -3,6 +3,11 @@ import hashlib
 import json
 from pathlib import Path
 
+if __package__:
+    from .workstation_oscillator_release_provenance import normalize_source
+else:
+    from workstation_oscillator_release_provenance import normalize_source
+
 SOURCE = 'rtl/audio/workstation_runtime_oscillator_engine.sv'
 PROVENANCE = 'rtl/audio/workstation_runtime_oscillator_engine.provenance.json'
 ADAPTATION = 'rtl/audio/workstation_runtime_oscillator_engine.expression_selection.json'
@@ -22,6 +27,7 @@ def restore_native(source, provenance, adaptation):
     if sha(adaptation) != ADAPTATION_SHA256:
         raise ValueError('Oscillator expression adaptation bytes changed')
     meta, bridge = json.loads(provenance), json.loads(adaptation)
+    source = normalize_source(source)
     if (bridge['policy'] != POLICY or bridge['source'] != SOURCE or
             bridge['original_provenance'] != PROVENANCE or
             bridge['original_provenance_sha256'] != sha(provenance) or

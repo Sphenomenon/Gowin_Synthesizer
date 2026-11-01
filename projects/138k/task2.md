@@ -438,6 +438,12 @@ W19 的[新prepare、全量综合与实际VG门](push2_workstation/usb_a/reports
 
 M20 的[同VG／SDC远端布局D2110127](push2_workstation/usb_a/reports/DUAL138K_M20_FAR_PHYSICAL_20261101.json)完整P&R和六审计完成：物理BSRAM235／DSP119／CLS51269，指定DDR原3.500ns hold已为+0.622ns，但48参考计数器出现5条hold／最差−0.438ns；setup2061／最差−1.348ns，audio1794／DDR266负端点，完整STA继续拒绝。native54过／4映射不适用与70负控、boundary7／69、PLL／7负控与held-v2均通过。位流`a061d50a…44538`及全部来源／物理证据由主线程重验；不启动第三M20布局，转入实际NoteOff长选择链和滑音算术修复，未上板。
 
+M 的[NoteOff最低匹配声部并行前缀](push2_workstation/usb_a/reports/DUAL138K_NOTE_OFF_PREFIX_20261101.json)已修改维护源码：只改变release选择，比较器、allocation／expression与全部clocked字节保持；32自由匹配位关系UNSAT、实际50434四态向量、SEPARATE_OFF_NOTE=0／1各6612帧／6134628半边沿／960重复释放／34PANIC通过，最大1061周期。缺低group的实际负控在符号、四态和整模块均拒绝，原provenance／expression manifest字节不改；新局部严格inverse与必要构建依赖已接入。独立审查无发现，主线程复验58证据与维护／原始来源，不提前记物理收益。
+
+M 的[滑音整数分解](push2_workstation/usb_a/reports/DUAL138K_GLIDE_PARTITION_20261101.json)已落维护：实际n23串行乘法路径改为四个nibble常量商余数与有界并行trial，不增周期，组合块外全部字节保持。实际16777220组合输入／40017事务、294912四态／160000半边沿、280925周期独立模型与旧48k16000周期对照通过；7整数、3四态／来源及2行为负控全部拒绝，两次独立审查无发现。新物理资源、时序与声画均待M21实测。
+
+两份[来源锁提升](push2_workstation/usb_a/reports/DUAL138K_M21_SOURCE_LOCK_20261101.json)只刷新上述4条已有hash并加入2个必需NoteOff依赖，M825／W826；配置、功能与旧候选保持。两profile check、17来源、16demo及7policy通过，下一M21使用新独立prepare及D211012B，必要far预留D211012C；当前W19仍消费原冻结输入，不混维护树新修改。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

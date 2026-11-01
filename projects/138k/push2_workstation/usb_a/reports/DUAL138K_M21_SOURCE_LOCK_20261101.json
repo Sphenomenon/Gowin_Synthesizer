@@ -1,0 +1,85 @@
+{
+  "m": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+    "sha256": "6b9202e925976ee1c8fd1fc5b47145d849ef040f61d00223dc113c5a99998b71",
+    "only_existing_updates": {
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+        "before": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef",
+        "after": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9"
+      },
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": {
+        "before": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+        "after": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4"
+      },
+      "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": {
+        "before": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+        "after": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8"
+      },
+      "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+        "before": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+        "after": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b"
+      }
+    },
+    "new_required_dependencies": {
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec"
+    },
+    "all_other_fields_unchanged": true,
+    "source_files": 825
+  },
+  "w": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+    "sha256": "d8b06a1d1a6d5738bb9c5b6ca457c97aa676bfaf34eea71f808cdc8349f7b455",
+    "only_existing_updates": {
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv": {
+        "before": "8d69922207e47c009c2340e18cd3704c0f433ed485338e8e03fe0fde2a30e8ef",
+        "after": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9"
+      },
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.sv": {
+        "before": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+        "after": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4"
+      },
+      "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": {
+        "before": "58d00d3c6303ac9a69485525daec3b2f71abdaf3229455d8bfbf17cfa3026a29",
+        "after": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8"
+      },
+      "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": {
+        "before": "280beeb5da83e4a8d11d4f14dd84f19f8e88e6ab4f197f7dfc4e823b38b530c8",
+        "after": "f4a32089ab60d3cc7a05cf6bdd2b0fd103e457e1114e3d742ba7a88ee13c296b"
+      }
+    },
+    "new_required_dependencies": {
+      "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_oscillator_engine.release_selection.json": "5791de08ba19b2a4b0069fb72e92645d6ff428689090bb0884b6d7d110580c16",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec"
+    },
+    "all_other_fields_unchanged": true,
+    "source_files": 826
+  },
+  "source_gates": {
+    "m21-M-profile-check-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m21-M-profile-check-v1.log",
+      "sha256": "79eefb3167de31ba08de4a791eb64fd4cdaeefd20fa2a3728de6909c8b2fdd38",
+      "tail": "{\n  \"profile\": \"custom138k-workstation-m-demo-v1\",\n  \"source_files\": 825,\n  \"configuration_sha256\": \"6b9202e925976ee1c8fd1fc5b47145d849ef040f61d00223dc113c5a99998b71\",\n  \"validation_stage\": \"source_lock_only\"\n}\n"
+    },
+    "m21-W-profile-check-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m21-W-profile-check-v1.log",
+      "sha256": "0f4b486a0533b3f524e395eddfd259c48478b85e17d21900bce1cc6d2861c08b",
+      "tail": "{\n  \"profile\": \"custom138k-workstation-w-demo-v1\",\n  \"source_files\": 826,\n  \"configuration_sha256\": \"d8b06a1d1a6d5738bb9c5b6ca457c97aa676bfaf34eea71f808cdc8349f7b455\",\n  \"validation_stage\": \"source_lock_only\"\n}\n"
+    },
+    "m21-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m21-current-sources-v1.log",
+      "sha256": "1aed8221977c2de4228d24b05533e28e84370d309988d3fdfa913a87264b460d",
+      "tail": ".................\n----------------------------------------------------------------------\nRan 17 tests in 0.097s\n\nOK\n"
+    },
+    "m21-demo-audit-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m21-demo-audit-v1.log",
+      "sha256": "bc54fc712ccc753a7e63601e82db714fb263eeeba76a006daaef9567c7228065",
+      "tail": "................\n----------------------------------------------------------------------\nRan 16 tests in 0.056s\n\nOK\n"
+    },
+    "m21-demo-policy-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m21-demo-policy-v1.log",
+      "sha256": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+      "tail": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.000s\n\nOK\n"
+    }
+  }
+}

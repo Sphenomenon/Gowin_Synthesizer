@@ -18,16 +18,55 @@ module workstation_rate_pitch_expression (
     logic signed [16:0] triangle;
     logic signed [24:0] modulation, combined;
     logic [7:0] glide_remainder;
-    // 160*s+r = 147*s+(13*s+r). The remainder is reachable only in0..146,
-    // so the residual numerator is at most852101 and fits20 bits. For that
-    // entire range floor(t/147) == (t*456523)>>26: 147*456523=2^26+17,
-    // and852101*17<2^26. See the independent exhaustive arithmetic regression.
-    wire [19:0] glide_residual = {4'd0,glide_step_q20_i} * 20'd13 + {12'd0,glide_remainder};
-    wire [38:0] glide_reciprocal_product = glide_residual * 19'd456523;
-    wire [12:0] glide_extra_step = glide_reciprocal_product[38:26];
-    wire [19:0] glide_residual_multiple = {7'd0,glide_extra_step} * 20'd147;
-    wire [19:0] glide_residual_remainder = glide_residual - glide_residual_multiple;
-    wire [7:0] next_glide_remainder = glide_residual_remainder[7:0];
+    // Divide13*s+r by147 without serial constant multipliers. Each nibble
+    // contributes an elaboration-time quotient and remainder. The four
+    // remainders plus the old fraction total at most839, so five parallel
+    // ten-bit trials select the exact final carry. All state and sample
+    // edges are unchanged; unknown table inputs retain unknown arithmetic.
+    wire [12:0] glide_digit_quotient[0:3];
+    wire [7:0] glide_digit_remainder[0:3];
+    for(genvar digit=0;digit<4;digit=digit+1)begin:g_glide_digit
+        localparam integer WEIGHT=13*(1<<(digit*4));
+        reg [20:0] divided_digit;
+        always_comb begin
+            case(glide_step_q20_i[digit*4+:4])
+                4'd0: divided_digit={13'((0*WEIGHT)/147),8'((0*WEIGHT)%147)};
+                4'd1: divided_digit={13'((1*WEIGHT)/147),8'((1*WEIGHT)%147)};
+                4'd2: divided_digit={13'((2*WEIGHT)/147),8'((2*WEIGHT)%147)};
+                4'd3: divided_digit={13'((3*WEIGHT)/147),8'((3*WEIGHT)%147)};
+                4'd4: divided_digit={13'((4*WEIGHT)/147),8'((4*WEIGHT)%147)};
+                4'd5: divided_digit={13'((5*WEIGHT)/147),8'((5*WEIGHT)%147)};
+                4'd6: divided_digit={13'((6*WEIGHT)/147),8'((6*WEIGHT)%147)};
+                4'd7: divided_digit={13'((7*WEIGHT)/147),8'((7*WEIGHT)%147)};
+                4'd8: divided_digit={13'((8*WEIGHT)/147),8'((8*WEIGHT)%147)};
+                4'd9: divided_digit={13'((9*WEIGHT)/147),8'((9*WEIGHT)%147)};
+                4'd10: divided_digit={13'((10*WEIGHT)/147),8'((10*WEIGHT)%147)};
+                4'd11: divided_digit={13'((11*WEIGHT)/147),8'((11*WEIGHT)%147)};
+                4'd12: divided_digit={13'((12*WEIGHT)/147),8'((12*WEIGHT)%147)};
+                4'd13: divided_digit={13'((13*WEIGHT)/147),8'((13*WEIGHT)%147)};
+                4'd14: divided_digit={13'((14*WEIGHT)/147),8'((14*WEIGHT)%147)};
+                4'd15: divided_digit={13'((15*WEIGHT)/147),8'((15*WEIGHT)%147)};
+                default:divided_digit=21'bx;
+            endcase
+        end
+        assign glide_digit_quotient[digit]=divided_digit[20:8];
+        assign glide_digit_remainder[digit]=divided_digit[7:0];
+    end
+    wire [12:0] glide_quotient_low=glide_digit_quotient[0]+glide_digit_quotient[1];
+    wire [12:0] glide_quotient_high=glide_digit_quotient[2]+glide_digit_quotient[3];
+    wire [9:0] glide_remainder_low={2'd0,glide_digit_remainder[0]}+{2'd0,glide_digit_remainder[1]};
+    wire [9:0] glide_remainder_high={2'd0,glide_digit_remainder[2]}+{2'd0,glide_digit_remainder[3]};
+    wire [9:0] glide_remainder_sum=glide_remainder_low+glide_remainder_high+{2'd0,glide_remainder};
+    wire [10:0] glide_trial[1:5];
+    for(genvar carry=1;carry<=5;carry=carry+1)begin:g_glide_trial
+        assign glide_trial[carry]={1'b0,glide_remainder_sum}-11'(carry*147);
+    end
+    wire [2:0] glide_carry=!glide_trial[5][10] ? 3'd5 : !glide_trial[4][10] ? 3'd4 :
+        !glide_trial[3][10] ? 3'd3 : !glide_trial[2][10] ? 3'd2 : !glide_trial[1][10] ? 3'd1 : 3'd0;
+    wire [12:0] glide_extra_step=glide_quotient_low+glide_quotient_high+{10'd0,glide_carry};
+    wire [7:0] next_glide_remainder=!glide_trial[5][10] ? glide_trial[5][7:0] :
+        !glide_trial[4][10] ? glide_trial[4][7:0] : !glide_trial[3][10] ? glide_trial[3][7:0] :
+        !glide_trial[2][10] ? glide_trial[2][7:0] : !glide_trial[1][10] ? glide_trial[1][7:0] : glide_remainder_sum[7:0];
     // Carry the fractional increment, so even small CC5 increments preserve
     // physical glide time. Initial73 rounds the cumulative sum to nearest.
     // Seventeen bits retain the full16-bit API range after160/147.

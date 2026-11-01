@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "policy": "native_release_balanced_prefix_v1",
+  "source": "rtl/audio/workstation_runtime_oscillator_engine.sv",
+  "parent_source_sha256": "99cdad64b9ed09773f5fb93c43e2303fd58c780a32b6bb6b051386511bec74e9",
+  "current_source_sha256": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+  "exact_changes": [
+    {
+      "before": "  for(genvar ev=0;ev<32;ev=ev+1) begin: g_direct_event_select\n    wire earlier_group,earlier_local;\n",
+      "after": "  // NoteOff uses the same lowest eligible voice policy in this clock.\n  // Keep its group prefix separate from expression/allocation selection.\n  (* syn_keep = 1 *) wire [7:0] release_group_any;\n  (* syn_keep = 1 *) wire [7:0] release_prefix_1,release_prefix_2,release_prefix_4;\n  for(genvar release_group=0;release_group<8;release_group=release_group+1) begin: g_release_prefix\n    assign release_group_any[release_group]=|release_matches[release_group*4+:4];\n    if(release_group==0)assign release_prefix_1[release_group]=release_group_any[release_group];\n    else assign release_prefix_1[release_group]=release_group_any[release_group] || release_group_any[release_group-1];\n    if(release_group<2)assign release_prefix_2[release_group]=release_prefix_1[release_group];\n    else assign release_prefix_2[release_group]=release_prefix_1[release_group] || release_prefix_1[release_group-2];\n    if(release_group<4)assign release_prefix_4[release_group]=release_prefix_2[release_group];\n    else assign release_prefix_4[release_group]=release_prefix_2[release_group] || release_prefix_2[release_group-4];\n  end\n  for(genvar ev=0;ev<32;ev=ev+1) begin: g_direct_event_select\n    wire earlier_group,earlier_local;\n    wire release_earlier_group,release_earlier_local;\n",
+      "count": 1
+    },
+    {
+      "before": "    if(ev==0)assign release_select[ev]=release_matches[ev];\n    else assign release_select[ev]=release_matches[ev] && !(|release_matches[ev-1:0]);\n",
+      "after": "    if(ev<4)assign release_earlier_group=1'b0;\n    else assign release_earlier_group=release_prefix_4[ev/4-1];\n    if(ev%4==0)assign release_earlier_local=1'b0;\n    else assign release_earlier_local=|release_matches[ev-1:ev/4*4];\n    assign release_select[ev]=release_matches[ev] && !release_earlier_group && !release_earlier_local;\n",
+      "count": 1
+    }
+  ],
+  "scope": "NoteOff lowest matching voice only; release comparator, maximum bound, allocation, expression, ADSR and every clocked byte unchanged",
+  "added_clock_latency": 0,
+  "physical_timing_verified": false,
+  "exit_plan": "Maintained RTL remains the production input. Reverse only this checked local selection edit for immutable ancestry validation; never generate production RTL."
+}
