@@ -69,7 +69,7 @@ def main():
             import prove_sample_admission_cofactor as admission
             sample_contract = admission.source_contract()
             references = list(admission.SAMPLE_ADMISSION_REFERENCES)
-            miter_inputs.append(Path(admission.__file__).resolve())
+            miter_inputs.extend(admission.contract_inputs())
         else:
             references = ([
                 (project / 'src/ae350/gw138k_event_workstation.sv', 'gw138k_event_workstation',

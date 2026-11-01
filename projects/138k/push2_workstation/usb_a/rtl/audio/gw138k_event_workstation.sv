@@ -387,8 +387,18 @@ module gw138k_event_workstation #(
     // independent of a queued NoteOn. During the fenced wait, ordinary event
     // dispatch resumes, including NoteOff/PANIC and existing loader pressure.
     assign runtime_config_block=!busy && (rate_commit_i || history_clear_i);
-    assign rate_ready_o=rst_ni && !busy && !runtime_fault && pipeline_quiet &&
-        !panic_accept && !core_event_valid && !core_expression_valid && !mode_valid && fx_config_ready;
+    logic public_rate_ready;
+    assign rate_ready_o=public_rate_ready;
+    // A held event-fenced rate request excludes dispatch/mode admission.
+    // Keep the original ready expression for every other/unknown control.
+    always_comb begin
+      case ({rate_commit_i,busy,event_rate_commit_i})
+        3'b101: public_rate_ready=rst_ni && !runtime_fault && pipeline_quiet &&
+            !usb_lifecycle && fx_config_ready;
+        default: public_rate_ready=rst_ni && !busy && !runtime_fault && pipeline_quiet &&
+            !panic_accept && !core_event_valid && !core_expression_valid && !mode_valid && fx_config_ready;
+      endcase
+    end
     assign history_ready_o=rst_ni && !busy && !runtime_fault && pipeline_quiet &&
         fx_history_ready && !rate_commit_i;
     assign engine_rate_commit=config_accept;

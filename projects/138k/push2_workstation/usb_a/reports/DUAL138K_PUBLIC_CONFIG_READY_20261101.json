@@ -1,0 +1,172 @@
+{
+  "branch": "codex/dual-138k-workstation",
+  "existing_regressions_sha256": "3ca81504826b20d0cf17e5c29bbc7f1267a18ad0ecbfcac29e0e875e7d517ba0",
+  "full_module_cases": [
+    {
+      "coincidences": 22,
+      "configs": 27,
+      "d_only": 1,
+      "events": 88,
+      "fault_checks": 28,
+      "histories": 37,
+      "native": 1,
+      "requests": 34,
+      "responses": 34
+    },
+    {
+      "coincidences": 2,
+      "configs": 0,
+      "d_only": 0,
+      "events": 68,
+      "fault_checks": 0,
+      "histories": 0,
+      "native": 0,
+      "requests": 34,
+      "responses": 34
+    },
+    {
+      "coincidences": 22,
+      "configs": 27,
+      "d_only": 0,
+      "events": 88,
+      "fault_checks": 28,
+      "histories": 37,
+      "native": 1,
+      "requests": 34,
+      "responses": 34
+    }
+  ],
+  "full_module_metrics": [
+    {
+      "common_boundaries": 25,
+      "d_only": 0,
+      "halfcycles": 88191,
+      "native": 1,
+      "native_boundaries": 7,
+      "public_outputs": 50
+    },
+    {
+      "common_boundaries": 25,
+      "d_only": 0,
+      "halfcycles": 88223,
+      "native": 0,
+      "native_boundaries": 7,
+      "public_outputs": 50
+    },
+    {
+      "common_boundaries": 25,
+      "d_only": 1,
+      "halfcycles": 88191,
+      "native": 1,
+      "native_boundaries": 7,
+      "public_outputs": 50
+    }
+  ],
+  "git_diff_check": true,
+  "hardware_accepted": false,
+  "limitations": [
+    "Four-state event tests use cache-local same-scope declaration reorders for Icarus compatibility, with token identity and hashes recorded; full sequential Verilator miter uses original declarations.",
+    "No synthesis, place-and-route, SRAM/Flash programming, port open, board acceptance or resource/timing benefit is included.",
+    "Only the ten source files listed here are owned by this delivery. Concurrent W/DDR modifications and root reports/task2/DEMO lock files are excluded."
+  ],
+  "new_combined_suite_sha256": "4090a2a10a12e44d9d05e24360fda373d62a200209509afede6c5f4acfcce7ee",
+  "owned_file_count": 10,
+  "passed": true,
+  "physical_timing_verified": false,
+  "python_syntax_checked": 8,
+  "resource_saving_claimed": false,
+  "schema": 1,
+  "stage": "maintained public config ready cofactor delivery seal",
+  "test_declared_hash_conflicts": 0,
+  "test_declared_hash_mismatches": 0,
+  "test_declared_hashes_reverified": 157,
+  "timestamp_utc": "2026-11-01T05:50:49.777635+00:00",
+  "delivery_sources": {
+    "branch": "codex/dual-138k-workstation",
+    "files": [
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+        "sha256": "b689d16fc95be1b25627d1471345f572292ec72f465e6e1ff80753e558abc1a6",
+        "size": 38689,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/rtl/audio/gw138k_event_workstation.sv"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/prove_sample_admission_cofactor.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/prove_sample_admission_cofactor.py",
+        "sha256": "428de8609d33ce6b02d49ea2fd2a2bde6daeeb6c51e520dcbdcd4627a4e4f835",
+        "size": 18690,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/prove_sample_admission_cofactor.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/prove_event_config_cofactor.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/prove_event_config_cofactor.py",
+        "sha256": "43bb0f7699d18c1eaa897d62e928918cdc95e488f555dfa74d7df82b690bad63",
+        "size": 16256,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/prove_event_config_cofactor.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/prove_effect_slot_admission.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/prove_effect_slot_admission.py",
+        "sha256": "8c66f9da10fbeb965519aceb2cd2ea4c2187ca32b8e4b944f335f0eba72ca9ce",
+        "size": 15889,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/prove_effect_slot_admission.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_event_config_contract.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_event_config_contract.py",
+        "sha256": "6a0b8781d4996182264d74b8ba7d7dfd20e809bd1cb02d672b478bd23354ee2d",
+        "size": 10324,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/run_event_config_contract.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py",
+        "sha256": "fac03605c3d81f33bdade43d4bd3c21f3fb951fdced8a6f5f77e87aec2e531e5",
+        "size": 15613,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/run_runtime_render_service.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/gw138k_event_workstation_before_config_ready_cofactor.sv",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/gw138k_event_workstation_before_config_ready_cofactor.sv",
+        "sha256": "5569269a1d5ef02f2b1702f928d282fbab7455fba9af6ac229a97cbf8dc77bc9",
+        "size": 38228,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/fixtures/gw138k_event_workstation_before_config_ready_cofactor.sv"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/prove_config_ready_cofactor.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/prove_config_ready_cofactor.py",
+        "sha256": "d11efa4e69b049e814da682993698278483811cffeb85be2f28e89eda94795c5",
+        "size": 7306,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/prove_config_ready_cofactor.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_config_ready_four_state.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_config_ready_four_state.py",
+        "sha256": "cd65dcdcdf42d8e763b24b1878c7c3f43e90845199b3057eba401624d92bb58a",
+        "size": 10760,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/run_config_ready_four_state.py"
+      },
+      {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_config_ready_cofactor.py",
+        "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_config_ready_cofactor.py",
+        "sha256": "5236f29119e1428f4e34d2f068cab58a5d84b0cb90d8639bce14911d72a69f89",
+        "size": 1402,
+        "snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources/sim/audio/run_config_ready_cofactor.py"
+      }
+    ]
+  },
+  "root_review": {
+    "artifacts": 121,
+    "inputs": 159,
+    "owned_files": 10,
+    "passed": true,
+    "seal_sha256": "7c520c8e33dae431dd54d9acff676dc1566ea30604da5b79f14a3335e06f0000"
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/seal.json": "7c520c8e33dae431dd54d9acff676dc1566ea30604da5b79f14a3335e06f0000",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/verification.json": "9de3cc7afa90df4331548ce7bef111fcb8f5abf4359aae5825923e56766a0b2f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-maintained-delivery-v1/sources.json": "c16be9939df3a49555b9b77ce8f32f741e7dc495b085a3268676ffba9570f6cf",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-config-ready-root-review-v1.json": "265b003a39abe202139a1fd6b61cc69e11685105ee30789718430b1e5f63c88b"
+  }
+}

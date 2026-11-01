@@ -159,7 +159,7 @@ def main():
     inputs=[sp,ep,ref,Path(__file__).resolve(),Path(__file__).with_name('prove_effect_slot_admission.py')]
     if 'begin: native_sample_admission' in ep.read_text():
         import prove_sample_admission_cofactor as admission
-        inputs.extend([Path(admission.__file__).resolve(),admission.REFERENCE])
+        inputs.extend(admission.contract_inputs())
     before={str(p):sha(p) for p in inputs};service=sp.read_text();event=ep.read_text()
     record=dict(schema=1,passed=False,input_sha256=before,scope='unrestricted binary actual service/event equations plus finite actual-source Icarus four-state checks; full module negatives are separate',hardware_accepted=False,physical_timing_verified=False,resource_saving_claimed=False)
     try:

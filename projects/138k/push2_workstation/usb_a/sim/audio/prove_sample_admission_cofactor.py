@@ -51,6 +51,12 @@ NATIVE_BLOCK="""  // Native request-driven rendering and dispatch reserve disjoi
 def source_contract(event=None):
     """Exact inverse to immutable source; preserve all other priorities/NBAs."""
     event=EVENT.read_text() if event is None else event
+    maintained_digest=hashlib.sha256(event.encode()).hexdigest()
+    config_ready_contract=None
+    if 'logic public_rate_ready;' in event:
+        import prove_config_ready_cofactor as readiness
+        config_ready_contract=readiness.source_contract(event)
+        event=readiness.reference_view(event)
     assert sha(REFERENCE)==REFERENCE_SHA256,'pre-sample-admission fixture drift'
     assert sha(SERVICE)==SERVICE_SHA256,'unchanged render-service reference drift'
     base=REFERENCE.read_text();old=equation(base,'core_ce')
@@ -58,20 +64,30 @@ def source_contract(event=None):
     inverse=event.replace(NATIVE_BLOCK,'  assign core_ce='+old+';')
     assert inverse==base,'sample admission edits escape exact original source'
     assert re.findall(r'\b(\w+(?:\[[^]]+\])?)\s*<=\s*([^;]+);',event)==re.findall(r'\b(\w+(?:\[[^]]+\])?)\s*<=\s*([^;]+);',base),'sequential assignment order/RHS drift'
-    return {'reference_sha256':REFERENCE_SHA256,'maintained_source_sha256':hashlib.sha256(event.encode()).hexdigest(),
+    return {'reference_sha256':REFERENCE_SHA256,'maintained_source_sha256':maintained_digest,
             'exact_whole_source_inverse':True,'all_NBA_targets_rhs_and_order_unchanged':True,
-            'service_reference_sha256':SERVICE_SHA256}
+            'service_reference_sha256':SERVICE_SHA256,
+            'public_config_ready_inverse':config_ready_contract}
 
 def reference_view(event):
     """Verified prior view for older cofactor proofs; never a build input."""
     source_contract(event)
     return REFERENCE.read_text()
 
+def contract_inputs():
+    """Inputs consumed by the layered exact inverse, including newer hunks."""
+    inputs=[Path(__file__).resolve(),REFERENCE]
+    if 'logic public_rate_ready;' in EVENT.read_text():
+        import prove_config_ready_cofactor as readiness
+        inputs.extend([Path(readiness.__file__).resolve(),readiness.REFERENCE])
+    return inputs
+
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     P=args.output.resolve();P.mkdir(parents=True,exist_ok=False)
     tracked=[REFERENCE,EVENT,OSCILLATOR,ENGINES,SERVICE,Path(__file__).resolve(),ROOT/'sim/audio/prove_effect_slot_admission.py']
+    tracked=list(dict.fromkeys(tracked+contract_inputs()))
     before={str(p):sha(p)for p in tracked};contract=source_contract();source_negatives=[]
     actual=EVENT.read_text()
     for label,mutant in [('native_fast_fault_veto',actual.replace(NATIVE_BLOCK,NATIVE_BLOCK.replace('!runtime_fault','1',1))),

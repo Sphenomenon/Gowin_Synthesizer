@@ -159,8 +159,8 @@ def main():
         import prove_sample_admission_cofactor as admission
         sample_contract=admission.source_contract(text)
         text=admission.reference_view(text)
-        paths.extend([Path(admission.__file__).resolve(),admission.REFERENCE])
-        before.update({str(p):sha(p)for p in (Path(admission.__file__).resolve(),admission.REFERENCE)})
+        paths.extend(admission.contract_inputs())
+        before.update({str(p):sha(p)for p in admission.contract_inputs()})
     from prove_event_config_cofactor import binary_proof
     service=ROOT/'rtl/audio/workstation_audio_render_service.sv'
     private_proof=Path(__file__).with_name('prove_event_config_cofactor.py')

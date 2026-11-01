@@ -366,6 +366,8 @@ W15 `D2110114` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUA
 
 M17／W15 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M17_W15_FAR_PHYSICAL_20261101.md)已封存：`D2110113`／`D2110115`保持原VG／完整SDC／DDR3.500ns，仅两远区CST；目标hold+.565／+.679ns，全局hold0／+.134和0／+.151ns。setup仍2614／−1.767ns及6813／−4.798ns；M最差配置反馈／TF read_buf，W最差raw failure／token及PCM written，完整STA未闭合。各58项原生回归及71／60负控、边界7／69、官方六PLL／7负控与held-v2入口通过；主线程分别逐32物理／2949及3255证据重验。W far的setup比默认更差，未预记整体收益；未上板，不转授声画／双板接受。
 
+M 的[公开配置就绪维护阶段](push2_workstation/usb_a/reports/DUAL138K_PUBLIC_CONFIG_READY_20261101.md)已完成：仅明确持有配置请求时采用既有广播cofactor，其他及X/Z回原表达式，状态／周期／事件与采样许可保持。全域二态、M/W各1792四态及5实际负控、原样完整M/W/legacy模块88191／88191／88223半周期和六项旧回归通过；主线程逐121证据／159输入及10源快照重验。新event `b689d16f…c1a6`待下一候选实际消费，旧M17/W15输入不改，不预记资源或时序收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
