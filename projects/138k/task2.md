@@ -342,6 +342,8 @@ M16／W14已完成[完整来源准备及全量综合](push2_workstation/usb_a/re
 
 TF的[响应选路cofactor维护阶段](push2_workstation/usb_a/reports/DUAL138K_TF_RESPONSE_COFACTOR_20261101.md)已完成：只在最终write_selected处选择两个同周期占用候选，保留原X/Z回退及全部NBA／容量分组。实际源143任意位四项UNSAT／四项SAT负控、1048576四态向量／六新源码负控、旧occupancy14／threshold8及完整service／stop／clear回归通过；229份最终证据由主线程逐项重验，来源17项再过。维护源`3f9eb8af…e7b6`未混入M16／W14冻结输入，两锁保持旧pin待下一候选升级；共享app_rdy仍可能带入上游写许可，不预记真实网表／资源／时序收益，未上板。
 
+M16 `D2110110` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M16_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50,976，setup529／−1.222ns、hold1／−3.445ns，recovery+.523／removal+.281ns，仍未闭合。四条clk50实测+2.282／+.181／+.860／−3.445ns；最差为已有握手payload的跨域路径，相关窄CDC正核对，同域残余负路径保持。实际VO54项（50通过／4跳过）及45负控、边界7／61、官方六PLL／7负控通过；30物理文件及2937份证据逐项重验，含1374冻结工具／588staged／875prepare来源。同VG／完整SDC／DDR3.500ns的`D2110111` far已启动P&R，未预记结果，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
