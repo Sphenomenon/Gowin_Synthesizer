@@ -459,6 +459,12 @@ W 的[25K真实momentary闭环](push2_workstation/usb_a/reports/DUAL138K_W_TOUCH
 
 M22的[全量综合及默认物理准备](push2_workstation/usb_a/reports/DUAL138K_M22_SYNTHESIS_20261101.json)已通过：FF43046／LUT48124／ALU11476／综合BSRAM等价203，实际VG `4b3da766…9b0b6`。旧协议库存门先拒绝，独立v2审计快照才按实际display132FF／230接收FF＋98注册RAM位、新参数邮箱60FF及本域queue tail CE→D映射通过，M22源码／VG／SDC未改；失败保留。默认D211012D已启动全量P&R，未派生far。新HMI逐位source origin、常量／alias闭包、后级SDC及破坏负控仍单列pending，不能将基础握手通过转为物理CDC／声画接受。主线程独立复验关键报告、VG／资源XML及两项新审计工具身份；不把综合BSRAM203当物理资源。
 
+M22实测HMI长链的[十进制文字查表修复](push2_workstation/usb_a/reports/DUAL138K_HMI_DECIMAL_LOOKUP_20261101.json)已落实际维护源：完整128值查表替代优先比较／DSP乘法／减法，X/Z默认保留原表达式，无新增状态或流水周期。128二态及16256四态输入逐一等价、2个实际负控拒绝；两完整页面各2073600像素／21369停顿，M／W图像均与v5逐字节相同。独立源码复核通过；同工具孤立函数MULT12X12／ALU由1／7变为0／0，仅为局部结构证据，整机资源／时序待新候选测量。原M22／W20来源、VG和物理结果不改。
+
+M的[performance邮箱释放修正](push2_workstation/usb_a/reports/DUAL138K_M_PERFORMANCE_RELEASE_20261101.json)已落维护构建选择与审计：新显式M-v3仅恢复既有6个异步释放CLEAR目标与4条2ns后级同步界，功能复位与时钟要求保持；旧M-v1／v2及W策略保持。实际M22 VG／VO各17项无skip及各8项变异拒绝通过。双profile只刷新dashboard及3个既有工具，明确加入2个回归依赖后为M847／W848锁；两来源check、17来源／17demo／8policy通过。M22默认STA仍失败，独立同VG的D211012F只追加上述5行并测量DDR／reference定向布局，不能继承默认或未来M23的身份。
+
+W的[流式Pitch源码缺口](push2_workstation/usb_a/reports/DUAL138K_W_STREAM_PITCH_GAP_20261101.json)已据实记录：第5节要求Pitch／Delay／Chorus／Reverb，但实际W20禁合成分支将pitch固定unity，完整stereo链未接PCM变调输入，25K kind4也被拒绝；W19同样如此，属于既有实现缺口。旧sampler_voice是储样本相位／voice引擎，长期输入的SRC漂移补偿也不是流式Pitch，均不能据此打勾。当前25K momentary证据只覆盖实际已实现效果；后续须接入真实流式Pitch及正式操作入口，独立验证持续输入、延迟、声画和共存。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

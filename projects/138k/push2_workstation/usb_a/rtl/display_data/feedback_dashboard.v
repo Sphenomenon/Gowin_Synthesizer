@@ -50,12 +50,148 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
         reg [6:0] remainder;
         reg [3:0] tens;
         begin
-            remainder=value>=100 ? value-7'd100 : value;
-            tens=remainder>=90 ? 9 : remainder>=80 ? 8 : remainder>=70 ? 7 :
-                remainder>=60 ? 6 : remainder>=50 ? 5 : remainder>=40 ? 4 :
-                remainder>=30 ? 3 : remainder>=20 ? 2 : remainder>=10 ? 1 : 0;
-            remainder=remainder-{3'd0,tens}*7'd10;
-            decimal3={value>=100 ? 8'h31 : 8'h30,8'h30+{4'd0,tens},8'h30+{1'd0,remainder}};
+            // Exact 7-bit binary-to-text lookup keeps the HMI critical path
+            // out of a priority comparator, DSP multiply and final subtraction.
+            // The complete binary case has no storage or pipeline latency.
+            case (value)
+                7'd0: decimal3="000";
+                7'd1: decimal3="001";
+                7'd2: decimal3="002";
+                7'd3: decimal3="003";
+                7'd4: decimal3="004";
+                7'd5: decimal3="005";
+                7'd6: decimal3="006";
+                7'd7: decimal3="007";
+                7'd8: decimal3="008";
+                7'd9: decimal3="009";
+                7'd10: decimal3="010";
+                7'd11: decimal3="011";
+                7'd12: decimal3="012";
+                7'd13: decimal3="013";
+                7'd14: decimal3="014";
+                7'd15: decimal3="015";
+                7'd16: decimal3="016";
+                7'd17: decimal3="017";
+                7'd18: decimal3="018";
+                7'd19: decimal3="019";
+                7'd20: decimal3="020";
+                7'd21: decimal3="021";
+                7'd22: decimal3="022";
+                7'd23: decimal3="023";
+                7'd24: decimal3="024";
+                7'd25: decimal3="025";
+                7'd26: decimal3="026";
+                7'd27: decimal3="027";
+                7'd28: decimal3="028";
+                7'd29: decimal3="029";
+                7'd30: decimal3="030";
+                7'd31: decimal3="031";
+                7'd32: decimal3="032";
+                7'd33: decimal3="033";
+                7'd34: decimal3="034";
+                7'd35: decimal3="035";
+                7'd36: decimal3="036";
+                7'd37: decimal3="037";
+                7'd38: decimal3="038";
+                7'd39: decimal3="039";
+                7'd40: decimal3="040";
+                7'd41: decimal3="041";
+                7'd42: decimal3="042";
+                7'd43: decimal3="043";
+                7'd44: decimal3="044";
+                7'd45: decimal3="045";
+                7'd46: decimal3="046";
+                7'd47: decimal3="047";
+                7'd48: decimal3="048";
+                7'd49: decimal3="049";
+                7'd50: decimal3="050";
+                7'd51: decimal3="051";
+                7'd52: decimal3="052";
+                7'd53: decimal3="053";
+                7'd54: decimal3="054";
+                7'd55: decimal3="055";
+                7'd56: decimal3="056";
+                7'd57: decimal3="057";
+                7'd58: decimal3="058";
+                7'd59: decimal3="059";
+                7'd60: decimal3="060";
+                7'd61: decimal3="061";
+                7'd62: decimal3="062";
+                7'd63: decimal3="063";
+                7'd64: decimal3="064";
+                7'd65: decimal3="065";
+                7'd66: decimal3="066";
+                7'd67: decimal3="067";
+                7'd68: decimal3="068";
+                7'd69: decimal3="069";
+                7'd70: decimal3="070";
+                7'd71: decimal3="071";
+                7'd72: decimal3="072";
+                7'd73: decimal3="073";
+                7'd74: decimal3="074";
+                7'd75: decimal3="075";
+                7'd76: decimal3="076";
+                7'd77: decimal3="077";
+                7'd78: decimal3="078";
+                7'd79: decimal3="079";
+                7'd80: decimal3="080";
+                7'd81: decimal3="081";
+                7'd82: decimal3="082";
+                7'd83: decimal3="083";
+                7'd84: decimal3="084";
+                7'd85: decimal3="085";
+                7'd86: decimal3="086";
+                7'd87: decimal3="087";
+                7'd88: decimal3="088";
+                7'd89: decimal3="089";
+                7'd90: decimal3="090";
+                7'd91: decimal3="091";
+                7'd92: decimal3="092";
+                7'd93: decimal3="093";
+                7'd94: decimal3="094";
+                7'd95: decimal3="095";
+                7'd96: decimal3="096";
+                7'd97: decimal3="097";
+                7'd98: decimal3="098";
+                7'd99: decimal3="099";
+                7'd100: decimal3="100";
+                7'd101: decimal3="101";
+                7'd102: decimal3="102";
+                7'd103: decimal3="103";
+                7'd104: decimal3="104";
+                7'd105: decimal3="105";
+                7'd106: decimal3="106";
+                7'd107: decimal3="107";
+                7'd108: decimal3="108";
+                7'd109: decimal3="109";
+                7'd110: decimal3="110";
+                7'd111: decimal3="111";
+                7'd112: decimal3="112";
+                7'd113: decimal3="113";
+                7'd114: decimal3="114";
+                7'd115: decimal3="115";
+                7'd116: decimal3="116";
+                7'd117: decimal3="117";
+                7'd118: decimal3="118";
+                7'd119: decimal3="119";
+                7'd120: decimal3="120";
+                7'd121: decimal3="121";
+                7'd122: decimal3="122";
+                7'd123: decimal3="123";
+                7'd124: decimal3="124";
+                7'd125: decimal3="125";
+                7'd126: decimal3="126";
+                7'd127: decimal3="127";
+                default: begin
+                    // Preserve the prior four-state result for X/Z inputs.
+                    remainder=value>=100 ? value-7'd100 : value;
+                    tens=remainder>=90 ? 9 : remainder>=80 ? 8 : remainder>=70 ? 7 :
+                        remainder>=60 ? 6 : remainder>=50 ? 5 : remainder>=40 ? 4 :
+                        remainder>=30 ? 3 : remainder>=20 ? 2 : remainder>=10 ? 1 : 0;
+                    remainder=remainder-{3'd0,tens}*7'd10;
+                    decimal3={value>=100 ? 8'h31 : 8'h30,8'h30+{4'd0,tens},8'h30+{1'd0,remainder}};
+                end
+            endcase
         end
     endfunction
     wire [255:0] applied_source=(HMI_D_ONLY!=0) ? "SOURCE   D / BLUETOOTH STREAM   " :

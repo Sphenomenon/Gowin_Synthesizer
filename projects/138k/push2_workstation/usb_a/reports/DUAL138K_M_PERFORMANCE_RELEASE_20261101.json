@@ -1,0 +1,155 @@
+{
+  "schema": 1,
+  "stage": "M_performance_release_v3_maintained_source_and_actual_netlist_verified",
+  "parent_commit": "a197c4e57bd9961040eca6b03936617a001a83df",
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-performance-release-maintenance-handoff-v2.json",
+    "sha256": "08e79cb8b217cce268270b0c6a22a4d5e1d8f0615e5a85853b529c28b96e1db5"
+  },
+  "root_verified_source_and_run_files": 8,
+  "implementation": {
+    "schema": 1,
+    "stage": "M_performance_release_v3_maintained_source_verified_actual_M22_VG_and_VO",
+    "root_cause": "M explicit DEMO timing v2 added reporting and held constraints but selected performance release only for W; demo_audit mirrored the W-only condition. No TF runtime change caused the omission.",
+    "policy": "independent-demo-m-performance-release-timing-v3",
+    "historical_M_v1_v2_and_W_policies_unchanged": true,
+    "selected_new_M_prepare": true,
+    "exact_source_sha256": {
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "454bad5c6dc6a07845454fd9790b597651f36ebc65905ee87dca47b3a094f6fd",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "d08572de736e314666dd27a0488f7f8bf215dc045f64320d48c171fe5b8a47c8",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "50076c2ba4bba8cc6eb2cd5a0199bebc5f26865c741989267a6147a03575cfd7",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_performance_reset.py": "c6abf88e11e38b74347cf36bdcbf280757b2fb63c4dd1de3013a0e5faa51d5bb"
+    },
+    "audit_tools_seal_sha256": "973bd9152f295241b7bff53bd9d65b6025fac0d10235819e4dee6aa0b9b69fa3",
+    "actual_regressions": {
+      "synthesis": {
+        "tests": 17,
+        "skips": 0,
+        "passed": true,
+        "mutation_records": 8,
+        "all_rejected": true,
+        "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vg-regression-v1.log",
+        "log_sha256": "01acdecb37e8ec7cba5d19e77e13f37d177aea2010de3b279e69c2105ff71323",
+        "mutant_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vg-mutants-v1.json",
+        "mutant_sha256": "7f605f41bf68f70da25ff1b721d4f3009327108104824a0047ffbe5e63cba28e",
+        "netlist_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "netlist_sha256": "4b3da76631cf6e84dec07b079770360eb4a827e7e25c6cfd7ac84120a869b0b6",
+        "explicit_environment": {
+          "GW138K_PERFORMANCE_NETLIST": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+          "GW138K_PERFORMANCE_MAPPING": "synthesis",
+          "GW138K_PERFORMANCE_EVIDENCE": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vg-mutants-v1.json"
+        },
+        "command": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/test_workstation_performance_reset.py",
+          "-v"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-audit-tools-v1"
+      },
+      "routed": {
+        "tests": 17,
+        "skips": 0,
+        "passed": true,
+        "mutation_records": 8,
+        "all_rejected": true,
+        "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vo-regression-v1.log",
+        "log_sha256": "40d2a24c4b1edd85a0d5a9e09f530dd6f70acfa02c37610c107851b03d649b52",
+        "mutant_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vo-mutants-v1.json",
+        "mutant_sha256": "eb8be18119b8bcea5fe9928c3cfa0161bd307205c07d8c31c29471b5622863c1",
+        "netlist_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-v1/impl/pnr/custom_138k_integration.vo",
+        "netlist_sha256": "13967d973586bb4b08b7c2959edfbfe9f726d2775f1b28f2e3ccca6dd3a7758e",
+        "explicit_environment": {
+          "GW138K_PERFORMANCE_NETLIST": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-v1/impl/pnr/custom_138k_integration.vo",
+          "GW138K_PERFORMANCE_MAPPING": "routed",
+          "GW138K_PERFORMANCE_EVIDENCE": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-vo-mutants-v1.json"
+        },
+        "command": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/test_workstation_performance_reset.py",
+          "-v"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-audit-tools-v1"
+      }
+    },
+    "hardware_tested": false,
+    "SRAM_deployed": false,
+    "Flash_deployed": false,
+    "parent_handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-performance-release-maintenance-handoff-v1.json",
+    "parent_handoff_sha256": "e875349b7ad2fae5a76f23525fa0c0545bfec2d50c945ed0b73408801109dab5",
+    "audit_tools_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-release-audit-tools-v1-seal.json",
+    "all_1440_audit_files_reverified_after_tests": true
+  },
+  "source_profiles": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "sha256": "546d982e5f31567b4c67aa6f1605e08a9b06804b35cb11871738628f5f18d774",
+      "source_count": 847,
+      "refreshed": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "f0b901c23f42da9bd4042825f6ef9107b5bdf9c4354da98bb666bdb695b81253",
+          "after": "454bad5c6dc6a07845454fd9790b597651f36ebc65905ee87dca47b3a094f6fd"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "46c9c4fd380168b8112f38ac2ee281088a44e71997deb3fe8232cd4bcfa127a6",
+          "after": "d08572de736e314666dd27a0488f7f8bf215dc045f64320d48c171fe5b8a47c8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "2baf5731983aa196e78b7d90f5d4475aab232fbb7bd790b2269875ccf8b75953",
+          "after": "50076c2ba4bba8cc6eb2cd5a0199bebc5f26865c741989267a6147a03575cfd7"
+        }
+      },
+      "explicit_test_dependency_added": {
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_performance_reset.py": "c6abf88e11e38b74347cf36bdcbf280757b2fb63c4dd1de3013a0e5faa51d5bb"
+      }
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "sha256": "61d829e5c29e9fd545bf90e84c5692bd4d049260890337f80b3a442a662d5978",
+      "source_count": 848,
+      "refreshed": {
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "f0b901c23f42da9bd4042825f6ef9107b5bdf9c4354da98bb666bdb695b81253",
+          "after": "454bad5c6dc6a07845454fd9790b597651f36ebc65905ee87dca47b3a094f6fd"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "46c9c4fd380168b8112f38ac2ee281088a44e71997deb3fe8232cd4bcfa127a6",
+          "after": "d08572de736e314666dd27a0488f7f8bf215dc045f64320d48c171fe5b8a47c8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "2baf5731983aa196e78b7d90f5d4475aab232fbb7bd790b2269875ccf8b75953",
+          "after": "50076c2ba4bba8cc6eb2cd5a0199bebc5f26865c741989267a6147a03575cfd7"
+        }
+      },
+      "explicit_test_dependency_added": {
+        "projects/138k/push2_workstation/usb_a/sim/test_workstation_performance_reset.py": "c6abf88e11e38b74347cf36bdcbf280757b2fb63c4dd1de3013a0e5faa51d5bb"
+      }
+    }
+  ],
+  "root_source_review": "Only explicit new M-v3 policy selects the existing reviewed six asynchronous release CLEAR targets and four 2ns synchronizer stage paths. Functional reset targets, clock requirements, prior M-v1/v2 and W policies retain their previous contract.",
+  "limits": [
+    "Actual M22 default full STA remains failed and unchanged.",
+    "New explicit M source policy requires a new prepare/synthesis/P&R candidate.",
+    "M22 same-VG 12F is a separately identified exact-SDC/layout experiment."
+  ],
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "root_verified_frozen_audit_files": 1440,
+  "root_verified_actual_VG_and_VO_inputs": true,
+  "root_verified_all_16_mutants_rejected": true,
+  "source_policy_checks": {
+    "M": {
+      "passed": true,
+      "count": 847
+    },
+    "W": {
+      "passed": true,
+      "count": 848
+    },
+    "source_tests": 17,
+    "demo_audit_tests": 17,
+    "policy_tests": 8
+  }
+}

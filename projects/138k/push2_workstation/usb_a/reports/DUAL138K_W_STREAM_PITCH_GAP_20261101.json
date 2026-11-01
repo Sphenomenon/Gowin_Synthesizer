@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "stage": "W20_D_stream_pitch_gap_source_review",
+  "review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-d-stream-pitch-source-review-v1/review.json",
+    "sha256": "066476a0be0ec5bf749f763d1a51ec7add38723885dc90ee267532431bf8e48b"
+  },
+  "candidate": "custom138k-workstation-w-demo-v1-49dc4695ee6881cb",
+  "prepared_manifest_sha256": "bfc411575a229d912758a5efdddd0ff6d25d6001b35a0677fca70fd9ed3745d1",
+  "source_HEAD": "a197c4e57bd9961040eca6b03936617a001a83df",
+  "findings": [
+    {
+      "id": "contract",
+      "conclusion": "task2 section5.1 explicitly requires W full Pitch/Delay/Chorus/Reverb."
+    },
+    {
+      "id": "current_streaming_path",
+      "conclusion": "Actual W20 prepared D-only event source fixes pitch_q20_o at Q20 unity. Its real PCM effects instance accepts PCM, gains, mask/order and delay-send, but no PCM pitch control. This does not implement streaming PCM pitch."
+    },
+    {
+      "id": "official_25k_entry",
+      "conclusion": "Firmware decodes Pitch Bend as kind4 globally but WORKSTATION_WORKER_DEMO accepts only momentary keys or a whitelist of kind2 CCs; kind4 is rejected. The current formal W adapter has no pitch command acceptance."
+    },
+    {
+      "id": "legacy_D_pitch",
+      "conclusion": "The maintained sampler voice pitch_ratio(note,root) advances stored-sample phase with voice/ADSR/descriptor state. It is sample playback transposition, not continuous Bluetooth PCM pitch, and reintroducing it would violate W engine retirement."
+    },
+    {
+      "id": "existing_SRC",
+      "conclusion": "AE350 PCM owner adaptive Q24 SRC corrects source-clock drift near unity by about +/-2000ppm; this is not a performance pitch effect. Simply changing its ratio for semitone-scale pitch would accumulate queue underflow/overflow for a continuous source."
+    },
+    {
+      "id": "existing_expression",
+      "conclusion": "workstation_rate_pitch_expression computes a frequency ratio for oscillators with no PCM stream input/output; it is not a ready streaming pitch processor."
+    },
+    {
+      "id": "age",
+      "conclusion": "Frozen W19 source already fixes D-only pitch to unity, so the identified gap predates the W20 momentary-tail change; no claim of newly introduced bug."
+    },
+    {
+      "id": "search_limit",
+      "conclusion": "No named pitch-shift/phase-vocoder/time-stretch implementation matched in the maintained usb_a/rtl tree. This bounded search does not prove absence throughout all historical/vendor trees."
+    },
+    {
+      "id": "next_boundary",
+      "conclusion": "A separate source/candidate change is needed for real continuous stereo PCM pitch and official25K controls, with both rates, bounded latency, cancellation/history/rate semantics and sustained input/output validation. Do not mutate frozen W20 or claim present task2 completion."
+    }
+  ],
+  "root_verified_evidence": [
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/task2.md",
+      "binding": "review_HEAD_git_bytes",
+      "sha256": "c0e0d1ee94c27e8c9dd65b949dd3e3464f36dd34538ab013673a05e648ea1859"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware.c",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "b84d9e0c0191963d851f964ef6e674671ed68e00cd1b373d6efba4cd62ea54cf"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_voice.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "3df6dba97859b2e14fad12ffb13522cfe5c38fbabc4fbf43ec8e4f63d5146d36"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/sampler/sampler_fx.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "013bce707bd9613baf6421b739d14cdf16570bbd4fb1dd5f1d026aeca5e03c9d"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/sampler/README.md",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "34b42edb3bc68a97ac60248fe24da53270faa60023dbfaaacaddf243ee62c90a"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/AE350_PCM_INGRESS_CONTRACT.md",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "69a25ac81399b8d418639ec3ba59f3fcd393403b4cb4df522475037977e0c787"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/AE350_PCM_INGRESS_CONTRACT.md",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "69a25ac81399b8d418639ec3ba59f3fcd393403b4cb4df522475037977e0c787"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0"
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_rate_pitch_expression.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "cee08fb91740f874fd25eea1702bcb3dae59da0c6aabea4bba0c0ec8957170a9"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-audits-v1/source-tools/rtl/audio/gw138k_event_workstation.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "7e5c0e3b8870d339f998ce3c6287fbc0c4d9e19e5e5e49365a7a6762f3a7e9aa"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v20/workstation/Prj1/src/ae350/gw138k_event_workstation.sv",
+      "binding": "current_frozen_or_unchanged_bytes",
+      "sha256": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738"
+    }
+  ],
+  "implementation_added": false,
+  "hardware_tested": false,
+  "completion_claim": "Streaming Pitch remains unimplemented; Delay/Chorus/Reverb and D crush/drive/send evidence do not cover it."
+}

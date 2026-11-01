@@ -565,7 +565,7 @@ def audit(root, output, metadata):
         require(demo_boundary_cdc.get('inventory_role') == role,
                 'DEMO boundary consumer inventory does not match selected role')
         demo_boundary_cdc['installed_sdc'] = validate_boundary(sdc, boundary_n, demo_boundary_cdc)
-    if metadata.get('demo_runtime_timing') is not None and role == 'W':
+    if (metadata.get('demo_runtime_timing') or {}).get('performance_release_selected') is True:
         from tools.workstation_performance_reset import audit as audit_performance, validate_sdc as validate_performance
         from tools.workstation_performance_reset import netlist as performance_netlist
         performance_n = performance_netlist(vg_text, mapping='synthesis')

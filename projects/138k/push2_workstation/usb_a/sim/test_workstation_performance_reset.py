@@ -20,6 +20,36 @@ from tools.workstation_performance_reset import (
 
 
 class DemoBuildSelection(unittest.TestCase):
+    def test_m_v3_selects_only_six_async_clears_and_keeps_old_m_v2(self):
+        from tools.workstation_performance_reset import M_RELEASE_TIMING_POLICY
+        with tempfile.TemporaryDirectory(prefix='m-release-timing-v3-') as directory:
+            stage = Path(directory)
+            tool = stage / DEMO_TIMING_TOOL
+            tool.parent.mkdir()
+            tool.write_bytes((ROOT / DEMO_TIMING_TOOL).read_bytes())
+            original = '# retained upstream\n'
+            old_sdc, old = select_demo_timing(stage, original, 'M')
+            selected, evidence = select_demo_timing(stage, original, 'M', policy=M_RELEASE_TIMING_POLICY)
+            self.assertEqual(old['policy'], DEMO_TIMING_POLICY)
+            self.assertEqual(len(old['added_lines']), 14)
+            self.assertFalse(old['performance_release_selected'])
+            self.assertEqual(evidence['policy'], M_RELEASE_TIMING_POLICY)
+            self.assertEqual(len(evidence['added_lines']), 19)
+            self.assertTrue(evidence['performance_release_selected'])
+            self.assertEqual(evidence['synchronizer_clear_exception_count'], 6)
+            self.assertEqual(selected, original + proposed_constraints() + old_sdc[len(original):])
+            self.assertTrue(verify_demo_timing(stage, selected, 'M', evidence)['installed_lines_verified'])
+            for line in proposed_constraints().splitlines():
+                for changed in (selected.replace(line + '\n', '', 1), selected + line + '\n'):
+                    with self.subTest(line=line), self.assertRaises(ValueError):
+                        verify_demo_timing(stage, changed, 'M', evidence)
+            with self.assertRaises(ValueError):
+                select_demo_timing(stage, original, 'W', policy=M_RELEASE_TIMING_POLICY)
+            with self.assertRaises(ValueError):
+                verify_demo_timing(stage, selected, 'W', evidence)
+            with self.assertRaises(ValueError):
+                verify_demo_timing(stage, selected, 'M', dict(evidence, performance_release_selected=False))
+
     def w_return_stage(self, stage):
         from tools import workstation_w_return_mailbox_cdc as mailbox
         for relative in (DEMO_TIMING_TOOL, mailbox.TOOL, mailbox.RAW_STORE_PATH):

@@ -326,9 +326,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     demo_boundary_cdc = None
     if demo_role is not None:
         from tools.workstation_performance_reset import (
-            select_demo_timing, DEMO_TIMING_POLICY, W_RETURN_TIMING_POLICY)
+            select_demo_timing, M_RELEASE_TIMING_POLICY, W_RETURN_TIMING_POLICY)
         selected_sdc, demo_runtime_timing = select_demo_timing(stage, selected_sdc, demo_role,
-            policy=W_RETURN_TIMING_POLICY if demo_role == 'W' else DEMO_TIMING_POLICY)
+            policy=W_RETURN_TIMING_POLICY if demo_role == 'W' else M_RELEASE_TIMING_POLICY)
         from tools.workstation_demo_boundary_cdc import select_demo_boundary
         selected_sdc, demo_boundary_cdc = select_demo_boundary(stage, selected_sdc, demo_role)
     if runtime:

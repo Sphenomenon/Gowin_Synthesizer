@@ -51,7 +51,8 @@ def proposed_constraints():
 DEMO_TIMING_POLICY = 'independent-demo-runtime-timing-v2'
 DEMO_TIMING_LEGACY_POLICY = 'independent-demo-runtime-timing-v1'
 W_RETURN_TIMING_POLICY = 'independent-demo-w-return-mailbox-timing-v3'
-DEMO_HELD_TIMING_POLICIES = (DEMO_TIMING_POLICY, W_RETURN_TIMING_POLICY)
+M_RELEASE_TIMING_POLICY = 'independent-demo-m-performance-release-timing-v3'
+DEMO_HELD_TIMING_POLICIES = (DEMO_TIMING_POLICY, W_RETURN_TIMING_POLICY, M_RELEASE_TIMING_POLICY)
 DEMO_TIMING_TOOL = 'tools/workstation_performance_reset.py'
 
 
@@ -69,11 +70,13 @@ def demo_timing_lines(role, *, policy=DEMO_TIMING_POLICY):
     require(role in ('M', 'W'), 'unknown DEMO timing role')
     require(policy in DEMO_HELD_TIMING_POLICIES, 'unknown DEMO timing policy revision')
     extra = ''
+    if policy == M_RELEASE_TIMING_POLICY:
+        require(role == 'M', 'M performance release timing policy requires M role')
     if policy == W_RETURN_TIMING_POLICY:
         require(role == 'W', 'W return timing policy requires W role')
         from tools.workstation_w_return_mailbox_cdc import constraints
         extra = constraints()
-    return ((proposed_constraints() if role == 'W' else '') + demo_clock_reports() +
+    return ((proposed_constraints() if role == 'W' or policy == M_RELEASE_TIMING_POLICY else '') + demo_clock_reports() +
             demo_held_handshake_constraints() + extra).splitlines()
 
 
@@ -105,10 +108,11 @@ def demo_timing_metadata(role, source_sha256, *, legacy=False, policy=None, retu
     legacy = policy == DEMO_TIMING_LEGACY_POLICY
     lines = (((proposed_constraints() if role == 'W' else '') + demo_clock_reports()).splitlines()
              if legacy else demo_timing_lines(role, policy=policy))
+    performance_release = role == 'W' or policy == M_RELEASE_TIMING_POLICY
     result = dict(policy=policy,
         role=role, source=DEMO_TIMING_TOOL, source_sha256=source_sha256, added_lines=lines,
-        performance_release_selected=role == 'W',
-        synchronizer_clear_exception_count=6 if role == 'W' else 0,
+        performance_release_selected=performance_release,
+        synchronizer_clear_exception_count=6 if performance_release else 0,
         routed_timing_verified=False)
     if legacy:
         result['clock_or_business_exceptions_added'] = False
@@ -213,6 +217,12 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
         demo_held_handshakes=demo_held_handshake_constraints())
     mailbox = {}
+    if selected['policy'] == M_RELEASE_TIMING_POLICY:
+        require(isinstance(netlist_text, str), 'actual M performance release netlist text required')
+        performance_n = netlist(netlist_text, mapping=mapping)
+        performance = audit(performance_n, mapping=mapping)
+        performance['installed_sdc'] = validate_sdc(sdc, performance_n, performance)
+        mailbox['actual_performance_release'] = performance
     if selected['policy'] == W_RETURN_TIMING_POLICY:
         require(isinstance(netlist_text, str), 'actual W return netlist text required')
         from tools.workstation_w_return_mailbox_cdc import audit as audit_return

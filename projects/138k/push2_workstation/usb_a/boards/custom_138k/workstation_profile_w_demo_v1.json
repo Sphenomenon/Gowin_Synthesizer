@@ -324,7 +324,7 @@
     ]
   },
   "source_sha256": {
-    "docs/ae350/manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC\u786c\u4ef6\u8bbe\u8ba1\u7528\u6237\u624b\u518c.pdf": "0f357e21c8341a23a399a32a54bc706de953767235826ed39886924549756dc3",
+    "docs/ae350/manuals/MUG1031-1.3.1_Gowin_RiscV_AE350_SOC硬件设计用户手册.pdf": "0f357e21c8341a23a399a32a54bc706de953767235826ed39886924549756dc3",
     "example/AK4493_AMP/constraints/audio.cst": "4bd27f25a384514303762e6140815e6f192a7088455bc7a36105cef8190d9844",
     "example/AK4493_AMP/rtl/ak4493_pin_test.v": "d6c73227827cf252e868188a59cc49f9747ffe858ef852e25fb82f2c62bc5f28",
     "example/CLOCK_MEASURE/reports/measurement.json": "53873dcb8d3161af9b5c79b4805601f338ebe7ce9cf5664a9a7f913703eafff2",
@@ -563,7 +563,7 @@
     "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_writer.v": "16266b2827c632e838db4ad5262fd13513dc76a507d75c54f694a7d4e8cfd034",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.provenance.json": "2238c7d1620d2a5cac9a65efe87d85eb80742f2933e46dbd2af27d352d1da74e",
-    "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "0bb2cd75046e3a0f43c8a63d0522c076fd018696088adf01bac858c32bf981b3",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "750d5347036619b88b06112a93c99fcb9fad039c0c25076b64837bdd3b2a1964",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v": "ae0bb155c76521ec4b87a2e70ac9d77e63a0e544cbf1c15307cec9ed7c2025cb",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/gw138k_ddr_arbiter.sv": "61b0353f72419f0a719f693e121b1aa9ff8b07ed0dbfbdd33ec39f72172ef178",
     "projects/138k/push2_workstation/usb_a/rtl/display_data/hdmi_display.v": "7421e472c9289b1cca0eefe1c428bc03d7f6ea1081e7f8f86a785d6d7ac42dcc",
@@ -1084,7 +1084,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_cdc.py": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef",
     "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
     "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "93fcfdbefe374553dda91dbbd4b61db54fb17713dbf18f8de9a272cbf04f6848",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "f0b901c23f42da9bd4042825f6ef9107b5bdf9c4354da98bb666bdb695b81253",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "454bad5c6dc6a07845454fd9790b597651f36ebc65905ee87dca47b3a094f6fd",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "24103f0e06a098221d613a2611341c6a8ce7f7ce5750dd18db1d474c044348b2",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_implementation.py": "8a4c16445632d6e6ee48933aab0622eecf07a95e54052d71ea78161c81423601",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "f2275091c19b6a8ddd9cd9969f853c5d6d0e1d2b8274e293268604ea87c0acc0",
@@ -1093,7 +1093,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_timing.py": "6b95fcd680f0fe6c90cb8f1434af66490c5a33acf014ef902c7d3589675ccabe",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
     "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": "3dd5b67b8c778c88d7d9ef54a5162f91b6fb561d65e438a02dc7a721f5dd379b",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "2baf5731983aa196e78b7d90f5d4475aab232fbb7bd790b2269875ccf8b75953",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "50076c2ba4bba8cc6eb2cd5a0199bebc5f26865c741989267a6147a03575cfd7",
     "projects/138k/push2_workstation/usb_a/tools/workstation_demo_boundary_cdc.py": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
     "projects/138k/push2_workstation/usb_a/tools/workstation_demo_policy.py": "b380932da93a8fea4189275366863bb97520e4986540c2730060eea8d788d354",
     "projects/138k/push2_workstation/usb_a/tools/workstation_display_load_222fb761_endpoints.py": "a998f669a7976299484e9ab8b3e7560b8ecbf4b3fcf8320dbf68fc5c31d059c7",
@@ -1108,7 +1108,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117",
     "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_expression_provenance.py": "b12c815e51efd702effeb5cdbfda42eb1c163617a56b063f89d5c3094f4778a8",
     "projects/138k/push2_workstation/usb_a/tools/workstation_oscillator_release_provenance.py": "97385ee2c4ff9574dd11bdc174df65e7439dc6744c088b38627717296b2347ec",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "46c9c4fd380168b8112f38ac2ee281088a44e71997deb3fe8232cd4bcfa127a6",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "d08572de736e314666dd27a0488f7f8bf215dc045f64320d48c171fe5b8a47c8",
     "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": "caccd4b0e807a8d2261f82f96e96ec122466675c9cdcee543e0545d6efdd147d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "8819d1ae8b44e00e708fe24a007ef4f62de6f07b9219ddc6c663586b59cafa66",
@@ -1169,7 +1169,9 @@
     "projects/25k/example/RTL8723DS_PROTOCOL/program_flash.py": "0eb37a4f4eecd349c8a8c7aa39702f6ee14e77443af993253863129552a88884",
     "projects/25k/example/RTL8723DS_PROTOCOL/program_sram.py": "153272ac16c9e3402e4c85fdc96a17732817da422d3a98fb49746677c9115f38",
     "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_protocol_command.v": "608c2c818e1b3546d40983f8798a6e8d50ca26d3182870093f3fd18a05cdac00",
-    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696"
+    "projects/25k/example/RTL8723DS_PROTOCOL/rtl/ble_recording.v": "f5e9447a67bb74d5b9dd80ab112a7e4d2422bbeef0f4375faa68f7400489a696",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_decimal.py": "bf63100998f07fef7c5e4a73af74b502376ab77752cbe0a6ed66d71091b73658",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_performance_reset.py": "c6abf88e11e38b74347cf36bdcbf280757b2fb63c4dd1de3013a0e5faa51d5bb"
   },
   "revision": 1
 }

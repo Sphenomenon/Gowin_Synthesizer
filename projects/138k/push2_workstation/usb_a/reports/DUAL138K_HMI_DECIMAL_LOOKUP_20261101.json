@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "stage": "HMI_decimal_lookup_maintained_source_verified",
+  "date_utc": "2026-11-01T10:39:03.986894+00:00",
+  "parent_commit": "a197c4e57bd9961040eca6b03936617a001a83df",
+  "trigger": {
+    "candidate": "M22 D211012D",
+    "path": "frame_applied_parameters90 -> a_text_line181",
+    "setup_slack_ns": -0.435,
+    "measured_path": "priority decimal decode -> MULT12X12 -> subtract -> text"
+  },
+  "implementation": "Exact binary decimal3 lookup in actual maintained HDMI source. Complete binary case, original four-state default, no new storage or pipeline cycle. Both demo profiles refresh the dashboard hash and bind the new regression.",
+  "source_files_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "750d5347036619b88b06112a93c99fcb9fad039c0c25076b64837bdd3b2a1964",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_decimal.py": "bf63100998f07fef7c5e4a73af74b502376ab77752cbe0a6ed66d71091b73658"
+  },
+  "profiles": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "source_count": 847,
+      "sha256": "546d982e5f31567b4c67aa6f1605e08a9b06804b35cb11871738628f5f18d774",
+      "source_refresh": [
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v"
+      ],
+      "explicit_test_dependency_added": "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_decimal.py",
+      "all_other_fields_unchanged": true,
+      "shared_tool_refresh_reference": "DUAL138K_M_PERFORMANCE_RELEASE_20261101.json"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "source_count": 848,
+      "sha256": "61d829e5c29e9fd545bf90e84c5692bd4d049260890337f80b3a442a662d5978",
+      "source_refresh": [
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v"
+      ],
+      "explicit_test_dependency_added": "projects/138k/push2_workstation/usb_a/sim/display/run_hmi_decimal.py",
+      "all_other_fields_unchanged": true,
+      "shared_tool_refresh_reference": "DUAL138K_M_PERFORMANCE_RELEASE_20261101.json"
+    }
+  ],
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-decimal-lookup-v1/equivalence-v2/verification.json": "7e6f2abf67bc59c650d0105e9a58dab85e153465e18657787c71efaa202f9697",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-decimal-lookup-v1/raster/verification.json": "fea3d68e8eb63aec83c6f4e37d645b8d5ced16aa1ee205d5f9e28e4327116c01",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-decimal-lookup-v1/synthesis-runs.json": "95e3684cbfbaded5a0936866da6d8b3ca705554cc831698910e98c026d6c558c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-decimal-lookup-v1/isolated-structure.json": "85e69cda079d1a32b09af38f5c4d9875de8c6ae10a3e9a0758912e02720f6c58",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-decimal-lookup-v1/independent-source-review.json": "97255a28cf68224bbe3910451ebced2d7dab0ec9d5a8a910f2161ed7ecae5e49"
+  },
+  "verification": {
+    "binary_inputs": 128,
+    "xz_inputs": 16256,
+    "negative_controls_rejected": 2,
+    "exact_source_inverse_outside_function": true,
+    "raster_pixels_per_role": 2073600,
+    "stalls_per_role": 21369,
+    "M_and_W_PPM_identical_to_v5": true,
+    "isolated_same_tool_original": {
+      "MULT12X12": 1,
+      "ALU": 7
+    },
+    "isolated_same_tool_lookup": {
+      "MULT12X12": 0,
+      "ALU": 0
+    },
+    "new_DFF": 0,
+    "independent_source_review_passed": true
+  },
+  "preserved_failure": "Initial equivalence invocation pointed to disabled src/video baseline dashboard and rejected missing decimal3. Corrected reference is the actual enabled rtl/display_data dashboard; failed output directory retained.",
+  "limits": [
+    "Isolated synthesis is not full candidate resource or routed timing acceptance.",
+    "M22/W20 frozen source, netlists and physical evidence are unchanged.",
+    "New full prepare/synthesis/P&R must consume these source hashes before physical claims."
+  ],
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "hardware_tested": false
+}
