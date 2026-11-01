@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "stage": "M22_W20_HMI_actual_VG_and_default_VO_independent_source_semantics_verified",
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/independent-hmi-handoff-v1.json",
+    "sha256": "a909feb5aeed7cda112e4689a602967010a800369ca74ebd90da345235add975"
+  },
+  "root_verified_evidence_count": 28,
+  "review": {
+    "schema": 1,
+    "scope": "Independent frozen-source + actual VG/default VO HMI source/mapping/constraint review only",
+    "evidence_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audit-tools-v2-seal.json": "b32971a34b522a4a5243a3ecdfe9451e772fa423556d0140d5a73229a5c5e56b",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-audits-v1/source-tools-seal.json": "d52da94e808a069d53e3aa169bc604ac95eff96ef8f937f096e6b1e3b958e1a8",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-hmi-audit-tools-v3-seal.json": "93cbfb08c9512f65e92c5fe5b2902930420011148277063b82cc1a264ad8d735",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-audits-v1/source-tools-seal.json": "430f58fa4cde30dd97c5bb05a05735dd71e725a2396c764fbaa85dd3fdb99f58",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/m22-links-v5.json": "8fe5ae756eb2ad7167222cb9fbc02599b114802e25d01eee4096ab5373786bca",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/w20-links-v4.json": "815e86c6790406136d22f625cebd9da1c3aa5fdae13a4cb60441a208149d755f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/m22-links-v7-routed.json": "0f6e906ff54e95d424071fcb2c22600204e6a6fb1ffb6e3df3e56ef49380c0fc",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/w20-links-v7-routed.json": "bfdf578c649b87f6812495eb4166fc5aaca4816649d8d5fa03c43bae5a5a3dd9",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/source-semantic-bindings-v2.json": "15a5c5bb7a5c71ca748125e752ff794341cf7f5c3df8e86818502f016dfa1c17",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/m22-hmi-8-negatives-v1.json": "559cabe4c67829df273e9769a14a1abebc6d2c221abbd74962ccd7b4fc53c393",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/w20-delivery-v2-independent-review.json": "da4f566531626991ffee08c5037f8736808bce520fdc81e2aceafd289ca6e7d1",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/check_links_v5.py": "c6abf5d11c824ccf0958ee4de57db4caa0e934aa624d7b9ae6c286668943a531",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/check_links_v7.py": "4e71972913e8abd47f237159dcd57ebca65f86866475ab64c29d8a5167a01837",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/check_source_semantics_v2.py": "f403be2b673a55742c2ae177e305ca3ff7cf4db98ebe3d88fd4369b582546d5f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/check_m22_hmi_negatives.py": "bf0e7bcdcb496b4e17caad5179ee2ecaa6304a0765827db2420ffa0d3071d975",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audits-v2/strict-synthesis-run.json": "ae19dd51484f989245e67869c19e0c9b6efc869f7bd3d636e6c78a3e303d0387",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-hmi-audits-v3/native-vg-regression-run.json": "9b83becc08acbcd4c9146cf20aba5c610aff78c65ec70f6ce4640e89ace72229",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-hmi-audits-v3/native-mutants-vg.json": "c6f5db4c4dd8f1fe02a132cb5fade4bf41849a96d5d636798df036c3b0ad6294",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-default-physical-audits-v1/results/W/native-vo-regression/native-mutants-vo.json": "1ca5f02f729c23607692a05a1a1fd5d4fade5981b6b69a51aa734efa2a00b85c",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-hmi-audits-v2/native-vg-regression.stderr": "94a7b792f5f8cd4acaf198eda322cac73ca904ec41217500362f474215d072dc",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/constraints/custom_138k.sdc": "3b99b2533b9f8298bd1ed7adf11c5cf6c1d923a1cc76a40127adcb8f0296f6d7",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-v1/physical.sdc": "3b99b2533b9f8298bd1ed7adf11c5cf6c1d923a1cc76a40127adcb8f0296f6d7",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4b3da76631cf6e84dec07b079770360eb4a827e7e25c6cfd7ac84120a869b0b6",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-v1/impl/pnr/custom_138k_integration.vo": "13967d973586bb4b08b7c2959edfbfe9f726d2775f1b28f2e3ccca6dd3a7758e",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v20/workstation/Prj1/constraints/custom_138k.sdc": "c2c821654f2c3e094a134830c7ebea8d1a46224089f0877208fc036b13317469",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v20-physical-v1/physical.sdc": "c2c821654f2c3e094a134830c7ebea8d1a46224089f0877208fc036b13317469",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v20/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "1f1c928e7ba67e8256e846151bf619b519d8720a0d036978527cb52ea354aae1",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v20-physical-v1/impl/pnr/custom_138k_integration.vo": "be55cb189256391cbc6cc9a645bae4844221ba68ba280313f89ec7e1999c1f2d"
+    },
+    "adapters": {
+      "m22": {
+        "seal_sha256": "b32971a34b522a4a5243a3ecdfe9451e772fa423556d0140d5a73229a5c5e56b",
+        "original_seal_sha256": "d52da94e808a069d53e3aa169bc604ac95eff96ef8f937f096e6b1e3b958e1a8",
+        "source_file_count": 1440,
+        "changed_files": {
+          "tools/workstation_demo_boundary_cdc.py": {
+            "previous": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
+            "current": "1d514003ede6e6d344a46a73583a0462df35b17725b2df94126064dd7072dff7"
+          },
+          "tools/workstation_native_protocol_audit.py": {
+            "previous": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117",
+            "current": "ddeaaedab73d286a32bcf056042cb89e31b14aef0abad4ab1c7d6ef89f6771d1"
+          }
+        }
+      },
+      "w20": {
+        "seal_sha256": "93cbfb08c9512f65e92c5fe5b2902930420011148277063b82cc1a264ad8d735",
+        "original_seal_sha256": "430f58fa4cde30dd97c5bb05a05735dd71e725a2396c764fbaa85dd3fdb99f58",
+        "source_file_count": 1440,
+        "changed_files": {
+          "tools/workstation_native_protocol_audit.py": {
+            "previous": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117",
+            "current": "f093c7e3bf7e8a7809979012810716a47cff1d7ee20b3016a19c2273537ae45d"
+          },
+          "sim/test_workstation_native_protocol.py": {
+            "previous": "7e94b0d44a07515834e62bddf4746cc214548190992b0598db50e3e971231fac",
+            "current": "f798787310db7dc803ba05e8812b9a31c32045f724780d4a57c801f19466795b"
+          }
+        }
+      }
+    },
+    "roles": {
+      "M": {
+        "live_bits": 60,
+        "consumer_used_zero_constant_bits": 8,
+        "unused_bits": 61
+      },
+      "W": {
+        "live_bits": 36,
+        "consumer_used_zero_constant_bits": 35,
+        "unused_bits": 58,
+        "extra_upstream_constant_capture_bit": 255,
+        "constant_meaning": "Q20 unity bit20; not master-enable",
+        "streaming_PCM_pitch_implemented": false
+      }
+    },
+    "live_source_to_old_display_to_new_mailbox_to_frame_mapping_verified": true,
+    "source_aliases_explicitly_resolved": true,
+    "frame_capture_expression_verified": "start AND snapshot_ready AND aligned_ready AND NOT busy, 16 boolean assignments",
+    "reset_release_aliases_verified": "Existing3stage source/UI local release; functional FF CLEAR inverse third release",
+    "exact_HMI_SDC_selectors_verified": true,
+    "default_physical_SDC_bytes_equal_candidate_SDC": true,
+    "no_HMI_functional_D_CE_RESET_false_path_overreach": true,
+    "existing_RAM98_and_handshake_gates_preserved": true,
+    "M_new_HMI_actual_VG_negative_controls": {
+      "count": 8,
+      "all_rejected": true
+    },
+    "W_native_VG_negative_controls": {
+      "count": 70,
+      "all_rejected": true
+    },
+    "W_native_default_VO_negative_controls": {
+      "count": 63,
+      "all_rejected": true
+    },
+    "W_v2_failed_old_fixture_retained_and_v3_repaired_only_dynamic_test_target": true,
+    "semantic_scope_closed": "Source origin,live links,source constants,consumer-unused partition,frame projection and exactCDC selector structure",
+    "physical_CDC_accepted": false,
+    "full_STA_accepted": false,
+    "arithmetic_netlist_functional_equivalence_reproved": false,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_programmed": false,
+    "release_ready": false,
+    "blocking_review_findings": [],
+    "limits": [
+      "Parameters are frame-frozen live-owner projection, not sample-identical association with previously cached waveform/effect metadata.",
+      "Consumer-used constants erased by synthesis are bound to sole-source assignments/configuration, not falsely counted as present FF payload.",
+      "M glide_CC0/step1 alias is128legal binary CC values/reset; no claim of four-state arithmetic equivalence.",
+      "Existing registered98-bit observationRAM rate source is bound to its preserved prior audit; no new sample-time association proof.",
+      "Actual VG/VO structural audit does not close routed timing, complete CDC, first-party DSP arithmetic proof, feature acceptance or hardware."
+    ]
+  },
+  "root_scope": "Each 129-bit port partitions into live state, source-proven consumed constants and unused bits; this review closes source origin and exact selector structure. Routed complete CDC/STA and physical feature acceptance remain separate.",
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "hardware_tested": false
+}

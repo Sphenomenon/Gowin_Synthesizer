@@ -471,6 +471,12 @@ W20的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_W20_DE
 
 W实测返回故障长链的[owner-veto分层选择](push2_workstation/usb_a/reports/DUAL138K_W_OWNER_VETO_TREE_20261101.json)已落维护RTL：实时tags先译码，经4:1有界组合树选择，奇数末层2:1；不增状态／周期，不增加影子tags，不延迟同拍故障。TAG_BITS2—8实际四态检查通过，当前8位347136例及4负控拒绝；原生DDR27配置／6故障／11负控和两模式严格lint通过，独立源码复核无阻塞。双profile仅刷新arbiter并明确加入原回归依赖，M848／W849锁；新映射／完整资源时序尚待W21全量实现，不提前记收益，M23与W20冻结输入保持。
 
+[新HMI实际来源语义审查](push2_workstation/usb_a/reports/DUAL138K_HMI_ACTUAL_SOURCE_REVIEW_20261101.json)已收口M22／W20的实际VG与默认VO：129位端口分别为M60有效／8已用零常量／61未用，W36有效／35已用零常量／58未用；W上游255明确为Q20 unity位20。逐位串联唯一owner→旧display→新邮箱→renderer，16组合frame接受CE、3级reset alias和6条精确SDC选择通过；M新增8负控、W70 VG／63 VO负控均拒绝，旧RAM98与握手门保持。主线程复验28绑定证据。此项关闭来源／映射语义，不将历史分析缓存与实时参数称为同一采样时刻，也不覆盖完整STA或实板验收；M23新网表须再次验证。
+
+M22的[定向布局D211012F](push2_workstation/usb_a/reports/DUAL138K_M22_DIRECTED_PHYSICAL_20261101.json)完整P&R及六审计＋performance专项完成：同VG，精确增加5条释放约束，DDR原3.500ns与所有功能保持；物理BSRAM243／DSP118／CLS46583。setup仍8端点／最差−0.007ns，hold0／最小+0.144ns，recovery+2.514／removal+0.278ns，指定DDR hold+0.514ns。原native／boundary／PLL负控、performance17项／8负控及override10负控通过；主线程复验1510绑定文件。微小负slack仍严格拒绝，不四舍五入成通过，不上板。
+
+M23的[新全量综合与定向物理准备](push2_workstation/usb_a/reports/DUAL138K_M23_SYNTHESIS_20261101.json)已通过：来源commit2b26f7a6、身份56a8bb5120ee3116，847锁／891来源／603暂存／262编译／1441工具；真实VG afe0228f…7b4ded，FF43096／LUT48033／ALU11423／综合BSRAM等价206／SSRAM99。当前完整综合含新十进制查表及正常M-v3 SDC，未复用M22网表；真正strict报告38s且非空，通过后直接采用已测有效的DDR／reference定向配方启动D2110130全量P&R。主线程复验4404文件，正常stage SDC与physical字节相同，无12F实验override。初次误用无CLI模块的空输出明确排除；物理资源／时序和声画尚未预记。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
