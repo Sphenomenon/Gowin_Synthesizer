@@ -382,6 +382,8 @@ W16 `D2110118` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUA
 
 M18 `D2110116` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M18_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50920，setup1813／−1.652ns、hold1／−3.638ns、recovery+2.933／removal+.278ns。最差TF available_bytes→accepted_used，其后为显示expected_sequence及音频transaction_fault相关路径；四张clk50−1.309／+.137／−1.309／−3.638ns。原生VO58项55通过3跳过／71负控、边界7／69、官方六PLL／7负控及held-v2通过；独立子代理与主线程各重验2966冻结证据，完整STA／物理接受仍失败。同VG／SDC／DDR3.500ns的`D2110117` far继续独立测量；未上板，不改变T2-D1／D2状态。
 
+M18 `D2110117` 的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M18_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50884，setup1093／−.866ns、hold3／−.113ns、recovery+2.222／removal+.281ns。原DDR hold要求3.500ns保持，实测+.534ns；三条剩余hold均为48k参考binary→Gray。四张clk50+.487／+.164／+.487／+.164ns；TF available_bytes7→accepted_used30仍为16级／−.864ns。六组审计全过（native58／3跳过／71负控、boundary7／69、六PLL／7负控／held-v2），主线程重验2971证据。完整STA仍失败，未上板；下一维护阶段针对实际TF响应尺寸和其余真实违例，不将定向布局转授整机接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
