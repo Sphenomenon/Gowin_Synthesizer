@@ -275,12 +275,19 @@ module hdmi_display #(
         .clk_i(clk_50m),.reset_ni(source_reset_pipe[2]),.sample_valid_i(sample_valid),
         .panic_epoch_i(applied_parameters_i[63:54]),.trusted_i(observation_trusted_i),
         .trusted_o(trace_observation_trusted));
-    workstation_display_runtime #(.XY_TRACE_ENABLE(1'b1)) u_runtime_display(
+    workstation_display_runtime #(.XY_TRACE_ENABLE(1'b1)
+`ifdef WORKSTATION_XY_STEREO
+        ,.XY_STEREO_ENABLE(1'b1)
+`endif
+    ) u_runtime_display(
 `else
     wire trace_observation_trusted=observation_trusted_i;
     workstation_display_runtime u_runtime_display(
 `endif
         .source_clk_i(clk_50m),.source_reset_ni(source_reset_pipe[2]),.clk_i(memory_clk),.rst_ni(ui_rst_n),
+        // scope_status[8] is the committed vector enable, in the same
+        // completed-frame snapshot as output_pcm (not a pending UI request).
+        .frame_vector_i(applied_parameters_i[104]),
         .enabled_i(display_enabled),.frame_valid_i(sample_valid),.frame_44k1_i(frame_44k1_i),.frame_error_i(frame_error_i),
         .observation_trusted_i(trace_observation_trusted),.frame_epoch_i(frame_epoch_i),.frame_sequence_i(frame_sequence_i),
         .frame_pcm_i(output_pcm),.trigger_reference_i(trigger_reference),.active_voices_i(active_voices),.status_i(status_data),

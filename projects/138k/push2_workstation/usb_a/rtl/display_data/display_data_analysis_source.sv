@@ -5,6 +5,7 @@
 module display_data_analysis_source (
     input wire clk,rst_ni,
     input wire frame_valid_i,frame_error_i,frame_44k1_i,
+    input wire vector_xy_i,
     input wire [31:0] frame_epoch_i,frame_sequence_i,frame_pcm_i,
     input wire observation_trusted_i,observation_loss_i,
     input wire [31:0] trigger_reference_i,active_voices_i,status_i,memory_status_i,
@@ -28,6 +29,8 @@ module display_data_analysis_source (
     output wire [31:0] read_data_o
 );
     parameter bit XY_TRACE_ENABLE=1'b0;
+    parameter bit XY_STEREO_ENABLE=1'b0;
+    reg vector_xy_q;
     reg have_context,rate_q,have_previous,break_previous,local_reset_n,aligned,exporting;
     reg [31:0] epoch_q,expected_sequence,generation_q,memory_status_q;
     reg [2:0] effect_mask_q;
@@ -65,7 +68,8 @@ module display_data_analysis_source (
             |(analysis_epoch_o[snapshot_group*4+:4]^epoch_q[snapshot_group*4+:4]) |
             |(analysis_generation_o[snapshot_group*4+:4]^generation_q[snapshot_group*4+:4]);
     end
-    wire context_changed=frame_valid_i && (!have_context || frame_44k1_i!=rate_q || |epoch_changed_groups);
+    wire context_changed=frame_valid_i && (!have_context || frame_44k1_i!=rate_q || |epoch_changed_groups ||
+        (XY_STEREO_ENABLE && vector_xy_i!=vector_xy_q));
     // context_changed already independently revokes the same sample below;
     // its negation need not sit in series with the sequence comparator.
     wire sequence_gap=frame_valid_i && have_previous && |sequence_changed_groups;
@@ -99,8 +103,10 @@ module display_data_analysis_source (
         .snapshot_revision(wave_revision),.snapshot_peak(wave_peak),.busy(align_busy),.done(align_done),.waveform_held(),
         .capture_read_enable,.capture_read_addr,.capture_read_data(capture_data),
         .wave_read_enable(read_enable_i && read_kind_i==0),.wave_read_addr(read_addr_i[8:0]),.wave_read_data(wave_data));
-    output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1),.XY_TRACE_ENABLE(XY_TRACE_ENABLE)) analysis(
+    output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1),.XY_TRACE_ENABLE(XY_TRACE_ENABLE),
+        .XY_STEREO_ENABLE(XY_STEREO_ENABLE)) analysis(
         .clk,.reset_n(local_reset_n),.source_clk(clk),.source_reset_n(local_reset_n),
+        .vector_xy_i(vector_xy_q),
         .pcm_pair(frame_pcm_i),.sample_valid(good_sample),.release_frame(accept_start && analysis_ready),
         .ready(analysis_ready),.peak_left,.peak_right,.image_gain(image_gain_o),
         .sequence_data(analysis_sequence_o),.skipped_data(analysis_skipped_o),
@@ -121,7 +127,7 @@ module display_data_analysis_source (
         {16'd0,spectrum_right,spectrum_left};
     always @(posedge clk or negedge rst_ni)begin
         if(!rst_ni)begin
-            have_context<=0;rate_q<=0;epoch_q<=0;have_previous<=0;expected_sequence<=0;
+            have_context<=0;rate_q<=0;epoch_q<=0;have_previous<=0;expected_sequence<=0;vector_xy_q<=0;
             generation_q<=1;break_previous<=0;local_reset_n<=0;aligned<=0;exporting<=0;
             waveform_sample_rate_o<=0;waveform_epoch_o<=0;waveform_generation_o<=0;
             analysis_sample_rate_o<=0;analysis_epoch_o<=0;analysis_generation_o<=0;
@@ -130,6 +136,7 @@ module display_data_analysis_source (
             local_reset_n<=!context_break;break_previous<=context_break;
             if(frame_valid_i)begin
                 have_context<=1;rate_q<=frame_44k1_i;epoch_q<=frame_epoch_i;
+                if(XY_STEREO_ENABLE)vector_xy_q<=vector_xy_i;
                 expected_sequence<=frame_sequence_i+1'b1;have_previous<=1;
             end
             if(context_break)begin

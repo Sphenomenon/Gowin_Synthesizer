@@ -9,8 +9,8 @@ module tb_workstation_xy_analysis;
  wire [31:0] seq[0:2],skip[0:2];wire [7:0] spectrum_left[0:2],spectrum_right[0:2];
 `define PORTS(N) .clk(clk),.reset_n(reset_n),.source_clk(clk),.source_reset_n(reset_n),.pcm_pair(pcm),.sample_valid(sample_valid),.release_frame(release_frame),.ready(ready[N]),.peak_left(peak_left[N]),.peak_right(peak_right[N]),.image_gain(gain[N]),.sequence_data(seq[N]),.skipped_data(skip[N]),.display_read_enable(read_enable),.spectrum_column(column),.image_addr(image_addr),.spectrum_left(spectrum_left[N]),.spectrum_right(spectrum_right[N]),.image_hit(image_hit[N]),.display_valid(display_valid[N])
  reference_output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) reference(`PORTS(0));
- output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) unchanged(`PORTS(1));
- output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1),.XY_TRACE_ENABLE(1)) connected(`PORTS(2));
+ output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) unchanged(.vector_xy_i(1'b1),`PORTS(1));
+ output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1),.XY_TRACE_ENABLE(1)) connected(.vector_xy_i(1'b1),`PORTS(2));
 `undef PORTS
  reg [31:0] samples[0:FRAMES*2048-1];reg expect_off[0:FRAMES*65536-1],expect_on[0:FRAMES*65536-1];
  reg [31:0] expect_peak[0:FRAMES-1];reg [2:0] expect_gain[0:FRAMES-1];

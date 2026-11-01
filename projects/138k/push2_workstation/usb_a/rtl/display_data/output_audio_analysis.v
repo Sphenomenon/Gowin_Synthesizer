@@ -2,11 +2,13 @@
 // Two independent 2048-point, periodic-Hann, radix-2 FFTs of the exact DAC
 // PCM channels. Stereo images use the same unwindowed immutable PCM block.
 // All displayed results stay fixed until release_frame, even under stalls.
-module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integer XY_DIRECT=0,parameter integer XY_TRACE_ENABLE=0) (
+module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integer XY_DIRECT=0,parameter integer XY_TRACE_ENABLE=0,
+    parameter integer XY_STEREO_ENABLE=0) (
     input wire clk, reset_n,
     input wire source_clk, source_reset_n,
     input wire [31:0] pcm_pair,
     input wire sample_valid,
+    input wire vector_xy_i,
     input wire release_frame,
     output reg ready,
     output wire [15:0] peak_left, peak_right,
@@ -81,15 +83,26 @@ module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integ
         for(gain_bit=0;gain_bit<7;gain_bit=gain_bit+1)
             if(max_peak!=0 && max_peak < (16'h4000 >> gain_bit)) computed_gain=gain_bit[2:0]+3'd1;
     end
-    wire signed [16:0] mid_sum={left_pcm[15],left_pcm}+{right_pcm[15],right_pcm};
-    wire signed [16:0] side_sum={right_pcm[15],right_pcm}-{left_pcm[15],left_pcm};
+    wire signed [16:0] mid_sum=$signed({left_pcm[15],left_pcm})+$signed({right_pcm[15],right_pcm});
+    wire signed [16:0] side_sum=$signed({right_pcm[15],right_pcm})-$signed({left_pcm[15],left_pcm});
+    // Equal /2 normalization keeps both stereo axes in the PCM16 range,
+    // before the existing common auto gain. Widen before adding/subtracting:
+    // -32768 + -32768 must remain -65536, not wrap to zero.
+    wire stereo_axes=XY_STEREO_ENABLE && !vector_xy_i;
     // Split capture-BRAM -> add/subtract -> shift/clamp -> image-BRAM path.
     // One extra cycle per image point keeps the image path short.
     reg signed [16:0] plot_mid,plot_side;
     reg plot_nonzero;
     always @(posedge clk) if(state==IMAGE_SUM) begin
-        plot_mid<=XY_DIRECT ? {right_pcm[15],right_pcm} : mid_sum;
-        plot_side<=XY_DIRECT ? {left_pcm[15],left_pcm} : side_sum;
+        // Keep arithmetic shifts outside the legacy unsigned concatenation
+        // conditional, so its type cannot turn negative normalization logical.
+        if(stereo_axes)begin
+            plot_mid<=mid_sum >>> 1;
+            plot_side<=side_sum >>> 1;
+        end else begin
+            plot_mid<=XY_DIRECT ? {right_pcm[15],right_pcm} : mid_sum;
+            plot_side<=XY_DIRECT ? {left_pcm[15],left_pcm} : side_sum;
+        end
         plot_nonzero<=captured!=0;
     end
     wire [3:0] image_shift=4'd9-{1'b0,work_image_gain};

@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "stage": "M26-1 ordinary stereo XY maintained source and targeted simulation; formal incremental capability only",
+  "passed": true,
+  "base_git_commit": "29f5a3357e4bceda52fbaf1c86fb15646626dd02",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": "5719b3abb70f1cfec0e1ece3cfd5ee49512a02cd93c95441dd1ad32d1fe4eb72",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": "ee4fdcc4bd4ba3627b923bb9f5d707d23d26b519e6e7b0ae8f0752b42c2bcb44",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": "570275a21f247439e1ed46e691ec35dbc18ad5531c47defb345e2b7c4e385385",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v": "a2b35c1cb4f8472c497bd7981ed16a73d803c379dd4b842f2d4eb7d43c57ce38",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv": "72572ba17cb2cc08202a03ad6622ab6dabe6de6c03e82176851499b851504aa1",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/RUNTIME_DISPLAY.md": "fb36d1862281a5af97c656469f8c7dae8ef183ee4ede76fbc49ac9f49da67018",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": "d262b320a9e718a13e65c42d3a8e21ef64ad0883f1c7a3e8e3c851bd36ba514d",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_m_demo.sv": "484cff29eac7658efbbe969144fcb3ffec70ee0a0ee1919e207915d1b015a52d",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_analysis.sv": "0954b7e7ca09505635b6d87997d29c42a725e9d5d1239c373dfd30f556966680",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "aec5a566a67389d0dedbd24226b15c5c9f9d5fbdfae25a44773508e9a112dd8b",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_xy_stereo.py": "d85d170af9d1cdc14361d019fb5fb7712d42013d674326da7cc3cd0c8a210354",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_stereo.sv": "1a7addf0b3a316a8deb70c1f8df4f2b96027f0261a164e2d37c296a373129338",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_xy_stereo_context.py": "6cb372089103e267a8318e61f37662cf38ceb90daeb066b07853c52d02c90040",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_stereo_context.sv": "a9aaeca964863e125de11f2e465a0e86c9c20158fd4a3c999ee6e1b3f76deeb1"
+  },
+  "profiles": {
+    "m": {
+      "revision": 4,
+      "locked_sources": 897,
+      "profile_sha256": "5719b3abb70f1cfec0e1ece3cfd5ee49512a02cd93c95441dd1ad32d1fe4eb72"
+    },
+    "w": {
+      "revision": 5,
+      "locked_sources": 1144,
+      "profile_sha256": "ee4fdcc4bd4ba3627b923bb9f5d707d23d26b519e6e7b0ae8f0752b42c2bcb44"
+    }
+  },
+  "selected_axes": {
+    "ordinary": "X=(R-L)/2; mathematical Y=(L+R)/2; screen=(128+scaled_X,128-scaled_Y)",
+    "vector": "Unchanged X=L, screen Y=-R, with existing common scale/clamp",
+    "arithmetic": "PCM16 sign-extended to 17 bits before add/subtract; signed arithmetic /2 before existing auto gain; original IMAGE_SUM register stage retained",
+    "mode": "M revision4 only; committed scope_status[8]=applied_parameters[104], held with PCM in a 205-bit tuple; selector change revokes producer context/history; default tuple remains 204 bits"
+  },
+  "preservation": {
+    "vector_default_exact_against_git": "29f5a335",
+    "audio_DSP_output_sources_changed": false,
+    "fft_and_peaks_original_pcm": true,
+    "continuous_trace_source_unchanged": true,
+    "two_raw_snapshot_history_unchanged": true,
+    "session_sample_rate_control_unchanged": true,
+    "default_and_old_M_revisions_preserved": [
+      1,
+      2,
+      3
+    ],
+    "W_configuration_revision_unchanged": 5,
+    "W_profile_changes": "Only precise hashes of 8 changed shared source/dependency/test inputs plus 4 new tests; audio-only display retirement unchanged",
+    "main_checkout": "No writes; same 9 preexisting dirty paths"
+  },
+  "evidence": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-tests-handoff-v1.json",
+      "sha256": "5fca8f550f19b7be60a630ac72b71ebd26ccfb3244fae83444b68d1b2b460a55"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-incremental-audit-v1/result.json",
+      "sha256": "0325738ff74512b66c3744f156a9a61c5bd737976a1ec6116f5292d4c5bf8c88"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-root-recheck-v1.json",
+      "sha256": "ad285aab77b952232df3a5061057a8058dfe6ceda8af03f32fe1e813084ef707"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-source-checks-v1.json",
+      "sha256": "2a07a147626e9f4532ed011a5e9ba3496fdb08c45e71cb47801ff8b930e8ce2a"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-default-parity-v2/verification.json",
+      "sha256": "0c15d5aaff56897f1eb00740f1589a345f8aae05ef1af08610b8c7ee753a1f31"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-panic-v1/verification.json",
+      "sha256": "4bb711f62d19f6597b883593f24958f8c83946060416344749334b134a4d91ac"
+    }
+  ],
+  "targeted_tests": {
+    "schema": 1,
+    "passed": true,
+    "stage": "M26-1 stereo XY source targeted regression handoff",
+    "owned_source_sha256": {
+      "projects/138k/push2_workstation/usb_a/sim/display/run_xy_stereo.py": "d85d170af9d1cdc14361d019fb5fb7712d42013d674326da7cc3cd0c8a210354",
+      "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_stereo.sv": "1a7addf0b3a316a8deb70c1f8df4f2b96027f0261a164e2d37c296a373129338",
+      "projects/138k/push2_workstation/usb_a/sim/display/run_xy_stereo_context.py": "6cb372089103e267a8318e61f37662cf38ceb90daeb066b07853c52d02c90040",
+      "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_stereo_context.sv": "a9aaeca964863e125de11f2e465a0e86c9c20158fd4a3c999ee6e1b3f76deeb1"
+    },
+    "reports": {
+      "analysis-v3": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-analysis-v3/verification.json",
+        "sha256": "437d1dba41bcb30879055d2c853fa469f2aafd4b27b2edd53ac47b854841de01",
+        "passed": true,
+        "negative_control_rejected": false,
+        "metrics": {
+          "frames": 21,
+          "vector_default_cycle_checks": 23492306,
+          "pixel_checks": 6815744,
+          "stereo_fft_column_checks": 39936,
+          "stalled_reads": 1664
+        }
+      },
+      "reverse-y-v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-reverse-y-v2/verification.json",
+        "sha256": "64f1dc7d8e0a3911bf0d61c9986e2c3921449fecf343ec5c7a201b02e9ec02b4",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "normalization-v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-normalization-v2/verification.json",
+        "sha256": "f1685e70a7ad9df045f8a78e0c740b306dd1718e5f24d8fc111574bb3b13a187",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "vector-negative-v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-vector-negative-v2/verification.json",
+        "sha256": "ce711447f1c8cda766c6e19a0c072a87f9f84b079c15e9390bfe097d44fc8d81",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "narrow-sum-v1": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-narrow-sum-v1/verification.json",
+        "sha256": "a357c5909201fdfed2798a8c151683a6c7377673a193931887d6110066bc6219",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "logical-normalization-v1": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-logical-normalization-v1/verification.json",
+        "sha256": "70396c6b6510ec437c2f9bb23ed946ed5a5c811c338094a07275324badffef0e",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "context-v4": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-context-v4/verification.json",
+        "sha256": "5054cb8b1815b4d57ee5461c7887413068a389fec44e6fc5c8934a4f04642c8d",
+        "passed": true,
+        "negative_control_rejected": false,
+        "metrics": {
+          "atomic_tuples": 5691,
+          "mode_revocations": 65,
+          "actual_producer_points": 6416
+        }
+      },
+      "context-separate-v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-context-separate-v2/verification.json",
+        "sha256": "0c6b1f4ee96dd4ed9dc52aab2d4b41fe6338bbbeb6373ca6fd236bd2a1c014dd",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      },
+      "context-no-revoke-v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-context-no-revoke-v2/verification.json",
+        "sha256": "1ca0bca24ce82cc85b41b8c2b8b5a65d9ab974871e2e115dd2c072792ae83ef3",
+        "passed": true,
+        "negative_control_rejected": true,
+        "metrics": null
+      }
+    },
+    "verified_files": 149,
+    "scope": {
+      "full_analysis": "21 true 2048-frame PCM blocks for widened/normalized R-L and L+R with Y inversion; frozen 29f5a335 vector/direct behavior exact, all 8 gain codes, complete bitmap oracle, continuous raster, finite previous raw and immutable front, stereo FFT equal",
+      "runtime_context": "actual 205-bit held-frame runtime tuple and producer; unsampled live selector flips, full history and 1024-sample partial capture revocation and recovery, 65 committed mode transitions"
+    },
+    "negative_controls": [
+      "screen Y reverse",
+      "missing common /2 normalization",
+      "vector accidentally receives stereo mapping",
+      "sum narrowed to 16 bits",
+      "logical instead of signed normalization",
+      "live selector bypasses tuple",
+      "mode change omitted from context revocation"
+    ],
+    "preserved_failed_attempts": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-context-v1/verification.json",
+        "reason": "fixture omitted required src/memory/ddr_address_map.vh include; no RTL execution, fixed only fixture staging"
+      }
+    ],
+    "hardware_tested": false,
+    "synthesized": false,
+    "placed_routed": false,
+    "maintenance_sources_changed_by_this_agent": false,
+    "committed": false
+  },
+  "root_independently_verified_test_files": 158,
+  "other_checks": {
+    "default_off_full_analysis": {
+      "frames": 7,
+      "cycle_checks": 5082314,
+      "pixels": 786432,
+      "stereo_fft_columns": 6144,
+      "stalled_reads": 192
+    },
+    "panic": {
+      "checks": 74,
+      "negative_controls": 3
+    },
+    "current_sources": 17,
+    "demo_audit": 18,
+    "demo_policy": 8,
+    "incremental_audit_rehashed_files": 18
+  },
+  "formal_incremental": {
+    "device": "GW5AST-LV138PG484AC2/I1 version C",
+    "capability": {
+      "incremental_placement": "officially_supported",
+      "incremental_placement_routing": "officially_supported_for_Arora_V",
+      "rtl_to_new_netlist_incremental_synthesis": "not_exposed_by_installed_documented_GowinSynthesis_or_gw_sh_options",
+      "direct_hdl_to_existing_bitstream_eco": "no_documented_supported_path_found",
+      "rom_init_only_update": "not_applicable_to_arithmetic_logic_change"
+    },
+    "official_route": "Create a new synthesized VG from changed maintained RTL, then invoke official run pnr with set_option -inc_pnr <explicit old .pr>. Keep baseline immutable, fail rather than silently fall back to full P&R, record matching/reused/changed placement and routing, rerun all new timing/PLL/CDC gates. Incremental support does not guarantee identical routing or preserved slack.",
+    "runtime_query_only": true,
+    "changed_netlist_has_not_loaded_old_checkpoint": true,
+    "old_pr_sha256": "c1f849c1bda790fdd3a1d2a860771b7e2a1ea75083e2a5015615e3b8bb23b3d8",
+    "documentation": "Installed SUG100-4.4.3E section 5.2.1, printed p39/PDF50; SUG1220 printed p35 names .p while detailed SUG100 names .pr, discrepancy retained",
+    "result_sha256": "0325738ff74512b66c3744f156a9a61c5bd737976a1ec6116f5292d4c5bf8c88"
+  },
+  "preserved_failed_attempts": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-default-parity-v1/verification.json",
+      "reason": "New optional vector input omitted by old fixture; PINMISSING warning rejected before RTL execution. Only maintained fixture ports tied explicitly; v2 passed."
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-context-v1/verification.json",
+      "reason": "fixture omitted required src/memory/ddr_address_map.vh include; no RTL execution, fixed only fixture staging"
+    }
+  ],
+  "full_synthesis_performed": false,
+  "incremental_PnR_performed": false,
+  "full_PnR_performed": false,
+  "new_bitstream_generated": false,
+  "timing_verified_for_changed_source": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "rollback": {
+    "last_recorded_SRAM_UserCode": "D211013A",
+    "unchanged_FS_sha256": "414bd24090b21fa126033f90e7f2ce4411e5086ba2c67b363d996198c09bc6f7",
+    "old_checkpoint_immutable": true
+  },
+  "remaining": [
+    "New VG is required before official incremental P&R; no documented incremental synthesis path was found in the installed tool.",
+    "A future explicit incremental run must prove actual checkpoint reuse and new timing/CDC/PLL. No automatic full P&R fallback.",
+    "Changed XY is not in the board image yet; HDMI/DAC functional acceptance remains pending."
+  ]
+}

@@ -58,17 +58,18 @@ LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 PROFILE_REGISTRY = {
-    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=3,
+    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=4,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             tf_policy='disabled_first_m_core_demo_v1',
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1',
             push_rate_control_policy='push_session_committed_toggle_generation_v1',
-            xy_trace_policy='connected_xy_two_snapshot_history_v1'),
+            xy_trace_policy='connected_xy_two_snapshot_history_v1',
+            xy_axes_policy='ordinary_mid_side_vector_direct_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
-        push_rate_control=True,xy_trace=True,integration_identity='custom138k-native-m-demo-session-rate-xy-revision3'),
+        push_rate_control=True,xy_trace=True,xy_stereo=True,integration_identity='custom138k-native-m-demo-session-rate-stereo-xy-revision4'),
     W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=5,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
@@ -155,6 +156,11 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') in (1, 2, 3):
+        configuration = dict(spec['configuration'])
+        configuration.pop('xy_axes_policy')
+        spec = dict(spec,revision=3,xy_stereo=False,configuration=configuration,
+            integration_identity='custom138k-native-m-demo-session-rate-xy-revision3')
     if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') in (1, 2):
         configuration = dict(spec['configuration'])
         configuration.pop('xy_trace_policy')
@@ -388,6 +394,9 @@ def _artifact(root, output, metadata, profile):
             raise ValueError('M connected XY configuration missing')
         if 'rtl/display_data/workstation_xy_trace.sv' not in metadata['enabled_inputs']:
             raise ValueError('M connected XY compiled source missing')
+    if spec.get('xy_stereo',False):
+        if '`define WORKSTATION_XY_STEREO' not in (stage / spec['provider']).read_text():
+            raise ValueError('M ordinary stereo/vector direct XY configuration missing')
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints

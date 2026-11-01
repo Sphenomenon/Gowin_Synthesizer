@@ -5,6 +5,7 @@
 module workstation_display_runtime (
     input wire source_clk_i,source_reset_ni,clk_i,rst_ni,enabled_i,
     input wire frame_valid_i,frame_44k1_i,frame_error_i,observation_trusted_i,
+    input wire frame_vector_i,
     input wire [31:0] frame_epoch_i,frame_sequence_i,frame_pcm_i,
     input wire [31:0] trigger_reference_i,active_voices_i,status_i,
     input wire [2:0] effect_mask_i,
@@ -39,6 +40,7 @@ module workstation_display_runtime (
     output wire [3:0] reader_diagnostic_o
 );
     parameter bit XY_TRACE_ENABLE=1'b0;
+    parameter bit XY_STEREO_ENABLE=1'b0;
     wire common_reset_n=source_reset_ni && rst_ni;
     // Either domain may revoke the whole display immediately. Each owner's
     // release must nevertheless wait for its own clock, including a stopped
@@ -57,16 +59,29 @@ module workstation_display_runtime (
     wire [31:0] tuple_epoch,tuple_sequence,tuple_pcm,tuple_reference,tuple_voices,tuple_status;
     wire [2:0] tuple_mask;
     wire [5:0] tuple_order;
+    // Only the explicit M stereo policy extends the held observation tuple.
+    // The committed vector selector travels with its actual final PCM; it is
+    // never sampled independently from another clock domain.
+    localparam OBSERVATION_WIDTH=204+XY_STEREO_ENABLE;
+    wire [204:0] source_tuple={frame_vector_i,observation_trusted_i,frame_44k1_i,frame_epoch_i,frame_sequence_i,frame_error_i,
+        frame_pcm_i,trigger_reference_i,active_voices_i,status_i,effect_mask_i,effect_order_i};
+    wire [OBSERVATION_WIDTH-1:0] destination_tuple;
+    wire tuple_vector;
+    generate if(XY_STEREO_ENABLE)begin:stereo_tuple
+        assign tuple_vector=destination_tuple[204];
+    end else begin:direct_tuple
+        assign tuple_vector=1'b0;
+    end endgenerate
+    assign {tuple_trusted,tuple_rate,tuple_epoch,tuple_sequence,tuple_error,
+        tuple_pcm,tuple_reference,tuple_voices,tuple_status,tuple_mask,tuple_order}=destination_tuple[203:0];
     // Every multibit field that came from the 50MHz completed-frame snapshot
     // stays in the same held-word CDC, including its receipt-time trust bit.
-    gw138k_stream_cdc #(.WIDTH(204)) observation(
+    gw138k_stream_cdc #(.WIDTH(OBSERVATION_WIDTH)) observation(
         .reset_n(common_reset_n),.source_clk(source_clk_i),.destination_clk(clk_i),
         .source_valid(frame_valid_i),
-        .source_data({observation_trusted_i,frame_44k1_i,frame_epoch_i,frame_sequence_i,frame_error_i,
-            frame_pcm_i,trigger_reference_i,active_voices_i,status_i,effect_mask_i,effect_order_i}),
+        .source_data(source_tuple[OBSERVATION_WIDTH-1:0]),
         .drop_count(observation_drop_o),.destination_valid(tuple_valid),
-        .destination_data({tuple_trusted,tuple_rate,tuple_epoch,tuple_sequence,tuple_error,
-            tuple_pcm,tuple_reference,tuple_voices,tuple_status,tuple_mask,tuple_order}));
+        .destination_data(destination_tuple));
     wire [31:0] destination_drop,destination_drop_gray;
     gw138k_counter_cdc drops(
         .reset_n(common_reset_n),.source_clk(source_clk_i),.destination_clk(clk_i),
@@ -134,8 +149,9 @@ module workstation_display_runtime (
     // loss/context comparator cone to the reader state transition.
     wire load_start=load_request && enabled_i && export_live && !loading &&
         !reader_busy_o && !raster_busy_i && !raster_start_i;
-    display_data_analysis_source #(.XY_TRACE_ENABLE(XY_TRACE_ENABLE)) producer(
+    display_data_analysis_source #(.XY_TRACE_ENABLE(XY_TRACE_ENABLE),.XY_STEREO_ENABLE(XY_STEREO_ENABLE)) producer(
         .clk(clk_i),.rst_ni(memory_reset_n),.frame_valid_i(tuple_valid),.frame_error_i(tuple_error),
+        .vector_xy_i(tuple_vector),
         .frame_44k1_i(tuple_rate),.frame_epoch_i(tuple_epoch),.frame_sequence_i(tuple_sequence),.frame_pcm_i(tuple_pcm),
         .observation_trusted_i(trusted),.observation_loss_i(observation_loss),
         .trigger_reference_i(tuple_valid ? tuple_reference:reference_q),
