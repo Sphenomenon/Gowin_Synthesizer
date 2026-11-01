@@ -1,0 +1,72 @@
+{
+  "schema": "dual138k_m22_explicit_user_sram_trial_20261101_v1",
+  "stage": "M22 D211012F user-requested SRAM functional trial despite recorded timing violations",
+  "authorization": "你顺带把M22烧进138k，我认为m22的微小时序违例已经能够给我先上板看功能了",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-8624239a297667b1",
+  "physical_identity": "custom138k-native-physical-D211012F",
+  "bitstream_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-release-far-v1/impl/pnr/custom_138k_integration.fs",
+  "bitstream_sha256": "c4a8f68bf536292d30e550fb02f1d7e7658d80ff616e7f1d5a507fd27feea495",
+  "source_report_path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_M22_DIRECTED_PHYSICAL_20261101.json",
+  "source_report_sha256": "68439b7dd372c4ab2cc06ff39992999ea5731105fc1e62b55fd5f9bcac9f78f1",
+  "physical_manifest_sha256": "c668bb17e15994ef96d41f58c98f1c0511f0514fcd79bc2d48ae5b5d80ff7557",
+  "timing_unchanged": {
+    "setup_violated_endpoints": 8,
+    "worst_setup_ns": -0.007,
+    "hold_violated_endpoints": 0,
+    "full_STA_passed": false
+  },
+  "programming_attempts": [
+    {
+      "name": "default operation4 SRAM Program and Verify",
+      "exit_code": 18,
+      "verify_passed": false
+    },
+    {
+      "name": "explicit0.9MHz operation4 retry (tool still auto-updates loading frequency)",
+      "exit_code": 18,
+      "verify_passed": false
+    },
+    {
+      "name": "operation2 SRAM Program",
+      "exit_code": 0,
+      "verify_passed": false
+    }
+  ],
+  "current_board": {
+    "device": "GW5AST-138C",
+    "ID": "0001081B",
+    "UserCode": "D211012F",
+    "Status": "00022230",
+    "independent_operation0_and74": true
+  },
+  "SRAM_program_invoked": true,
+  "SRAM_program_command_passed": true,
+  "SRAM_bitwise_verify_passed": false,
+  "Flash_write_invoked": false,
+  "hardware_functional_acceptance": false,
+  "release_ready": false,
+  "kept_for_user_functional_observation": true,
+  "evidence_file_count": 14,
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1/result.json": "d7c2d90f222844687d8345ea6b0ee1d69a423f513be63445d31c495b3c2d2874",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1/sram-program-verify.log": "286fab8cbf4dbff5fe7532d73a20bd46b235ab70c0e8dbc7aba6b14558d99844",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1/before.log": "fd2ac071e1ab92d93be45c39ac37b5be4183795841d1e3140eca566615036950",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1.py": "3520e25818a732606241e7fcb4f488fe1543474f65ca187fb0ca999cc4e4b4b5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v2/result.json": "30ef19772957a0fb1be578d5c8d76f9550106b9c93c739f83dc3ab13ccb8f18f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v2/sram-program-verify.log": "cd515539910161c2cbaea2c895af88ba34a3e37275f90b94857da4aeda12a6bd",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v2/before.log": "a79705fcb9d565171fd8f9e019e4e348d86d4d413e0ed3052291fa57a9941732",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v2.py": "ac436668cfb2598debff7d54aeb7a121642775a350fe92a893cac0a6616f70c2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3/result.json": "ba0217c5ec7091c8d5fc1ac5ee4971798fa8ac54daf22c46478d2488e1026b5c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3/sram-program.log": "3719c35cd32ab5b22ee0afb4e7cc19727c1167a74ac83eed29ffe16e2f6fb599",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3/status.log": "cc6c2308c8a57e2fb1522c1ce1e599962e6e34b23e59b4605940dc2d819313cf",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3/before.log": "715ba6a509560df54ed92a925bf46e663b3108e6d6d77a72319b299fe55556b0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3/after.log": "1876bd5ba779c622e39a083ed16c506d6dd8471ce0805d0615eaed5f4fbd5b63",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v3.py": "07a53fbca78a367dff13898c5a4e19e7c521161412dca2b3e639852aa7fe1e14"
+  },
+  "rollback": "Flash not written. Previous C11028E5 raw SRAM readback is preserved in m23-rollback-readback-v2 but is not a verified downloadable FS. No Flash reload was invoked; current SRAM remains M22 D211012F.",
+  "limitations": [
+    "No HDMI/capture or audio listening evidence has been obtained by this record.",
+    "UserCode match and operation2 success do not override the two failed bitwise Verify operations.",
+    "This explicit one-candidate functional trial does not change normal physical acceptance gates or permit Flash programming."
+  ]
+}

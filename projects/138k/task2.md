@@ -478,6 +478,8 @@ M24的[完整新综合与D2110132物理启动](push2_workstation/usb_a/reports/D
 
 W的[连续PCM Pitch维护单元](push2_workstation/usb_a/reports/DUAL138K_STREAM_PITCH_UNIT_20261101.json)已通过离线阶段：同采样率一入一出、双读头交叉淡化，32bit stereo／2048帧history、64frame启停ramp、每帧含接收41clock；不是sampler或SRC调速。实际维护模块在行为RAM及真实8×SDPB各87496请求与独立定点模型逐帧相等，4执行负控拒绝；独立补测两mode各57946请求，补齐接收后1—40全部取消边沿及clamp／极值／ramp反转。主线程核对全部来源及65份证据文件。当前仅单元入维护，正式W参数／25K／PCM生命周期接入、新整机EDA与手机DAC仍待验；粒状旁带、约4.4Hz dominant-peak偏差和pitch-up无抗混叠滤波如实保留，不冒称高保真或完成Pitch整机交付。
 
+用户本轮明确要求的[M22 SRAM功能试装](push2_workstation/usb_a/reports/DUAL138K_M22_SRAM_TRIAL_20261101.json)已执行，采用微小时序违例的定向版本D211012F（8 setup／最差−0.007ns、0 hold，原失败标记保持）；FS c4a8f68b…27feea495未改。两次op4逐位Verify均返回18／Verify Failed，含一次显式0.9MHz重试，工具实际加载频率仍自动切换；随后op2 SRAM Program退出0，独立op0及op74确认0001081B／D211012F／00022230。当前留此M22给用户现场看功能，未执行Flash写入或重载。下载命令及身份已确认，**逐位校验未通过，声画功能未验收**，不将用户本次试装授权改记为正常时序放行；M24／W新镜像开发继续。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
