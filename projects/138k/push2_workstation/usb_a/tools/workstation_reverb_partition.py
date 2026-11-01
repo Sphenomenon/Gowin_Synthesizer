@@ -102,12 +102,29 @@ def wrapper(case, payload):
 
 
 def case_sources(case):
+    """Direct maintained compiler inputs; CHAIN is included by its provider."""
     if case == 'w_reverb':
         return (*LOCKED, 'rtl/audio/workstation_runtime_spatial_reverb.sv', WORKER)
-    return (*LOCKED, CHAIN, 'rtl/audio/workstation_runtime_chorus_effect.sv',
+    return (*LOCKED, 'rtl/audio/workstation_runtime_chorus_effect.sv',
             'rtl/audio/workstation_runtime_spatial_reverb.sv',
             'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv',
             'rtl/music/music_async_fifo.sv', 'rtl/audio/workstation_remote_reverb_m.sv')
+
+
+def generated_compiler_sources(case):
+    return ('binding.sv',) if case == 'w_reverb' else ('chain_provider.sv', 'binding.sv')
+
+
+def transitive_sources(case):
+    return () if case == 'w_reverb' else (CHAIN,)
+
+
+def provider():
+    # Installed Gowin does not implement a -verilog_define Tcl option. Compile
+    # this checked provider instead of the bare chain so its macro and include
+    # occupy one compilation unit. The included maintained bytes are unedited.
+    return ('`define WORKSTATION_REMOTE_REVERB_PARTITION\n'
+            '`include "' + CHAIN + '"\n')
 
 
 def tcl_path(path):
@@ -122,12 +139,12 @@ def script(case, directory, top):
              'set_option -verilog_std sysv2017',
              'set_option -top_module ' + top,
              'set_option -output_base_name partition',
-             'set_option -include_path ' + tcl_path(directory.parent / 'sources'),
-             'set_option -verilog_define {WORKSTATION_REMOTE_REVERB_PARTITION}']
+             'set_option -include_path ' + tcl_path(directory.parent / 'sources')]
     lines.extend('add_file -type verilog ' + tcl_path(directory.parent / 'sources' / name)
                  for name in case_sources(case))
-    lines += ['add_file -type verilog ' + tcl_path(directory / 'binding.sv'),
-              'add_file -type sdc ' + tcl_path(directory / 'experiment.sdc'), 'run syn']
+    lines.extend('add_file -type verilog ' + tcl_path(directory / name)
+                 for name in generated_compiler_sources(case))
+    lines += ['add_file -type sdc ' + tcl_path(directory / 'experiment.sdc'), 'run syn']
     return '\n'.join(lines) + '\n'
 
 
@@ -146,6 +163,19 @@ def source_bundle(root):
                           sha256=digest(payload), bytes=len(payload))
                for name, payload in payloads.items()}
     return payloads, records, baseline.evidence()
+
+
+def case_inputs(case, directory, payloads):
+    binding, top = wrapper(case, payloads[WORKER if case == 'w_reverb' else CHAIN])
+    files = {'binding.sv': binding, 'run.tcl': script(case, directory, top),
+             'experiment.sdc': clocks(case)}
+    if case != 'w_reverb':
+        files['chain_provider.sv'] = provider()
+    record = dict(top=top, compiled_sources=list(case_sources(case)),
+                  generated_compiler_sources=list(generated_compiler_sources(case)),
+                  transitive_sources=list(transitive_sources(case)),
+                  generated_sha256={name: digest(text.encode()) for name, text in files.items()})
+    return files, record
 
 
 def prepare(output, root=ROOT):
@@ -167,12 +197,10 @@ def prepare(output, root=ROOT):
     for case in CASES:
         directory = output / case
         directory.mkdir()
-        binding, top = wrapper(case, payloads[WORKER if case == 'w_reverb' else CHAIN])
-        files = {'binding.sv': binding, 'run.tcl': script(case, directory, top), 'experiment.sdc': clocks(case)}
+        files, record = case_inputs(case, directory, payloads)
         for name, text in files.items():
             (directory / name).write_text(text)
-        case_records[case] = dict(top=top, compiled_sources=list(case_sources(case)),
-                                 generated_sha256={name: sha(directory / name) for name in files})
+        case_records[case] = record
     manifest = dict(schema=1, stage='prepared_subsystem_experiment', source_root=str(root),
                     source_commit=source_commit, source_files=records, tools_sha256=tools,
                     baseline=baseline, configuration=CONFIG, cases=case_records,
@@ -203,10 +231,7 @@ def verify(output, root=ROOT):
         require((output / 'sources' / name).read_bytes() == data, 'staged source drifted: ' + name)
     for case in CASES:
         directory = output / case
-        binding, top = wrapper(case, payloads[WORKER if case == 'w_reverb' else CHAIN])
-        files = {'binding.sv': binding, 'run.tcl': script(case, directory, top), 'experiment.sdc': clocks(case)}
-        expected = dict(top=top, compiled_sources=list(case_sources(case)),
-                        generated_sha256={name: digest(text.encode()) for name, text in files.items()})
+        files, expected = case_inputs(case, directory, payloads)
         require(manifest['cases'][case] == expected, 'case configuration/source manifest drifted: ' + case)
         for name, text in files.items():
             require((directory / name).read_bytes() == text.encode(), 'generated input drifted: ' + case + '/' + name)

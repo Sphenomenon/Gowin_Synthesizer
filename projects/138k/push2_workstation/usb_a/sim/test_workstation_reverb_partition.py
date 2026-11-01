@@ -42,9 +42,20 @@ class ReverbPartitionManifestTest(unittest.TestCase):
             self.assertEqual(text.count('run syn'), 1)
             self.assertNotIn('run pnr', text)
             self.assertNotIn('program', text)
+            self.assertNotIn('-verilog_define', text)
             self.assertIn(partition.CONFIG['device'], text)
             self.assertIn(partition.CONFIG['compute_period_ns'], (self.output / case / 'experiment.sdc').read_text())
         self.assertNotIn('impl', {path.name for path in self.output.iterdir()})
+        for case in ('local', 'm_remote'):
+            record = self.manifest['cases'][case]
+            self.assertNotIn(partition.CHAIN, record['compiled_sources'])
+            self.assertEqual(record['transitive_sources'], [partition.CHAIN])
+            self.assertEqual(record['generated_compiler_sources'], ['chain_provider.sv', 'binding.sv'])
+            provider = (self.output / case / 'chain_provider.sv').read_text()
+            self.assertEqual(provider, '`define WORKSTATION_REMOTE_REVERB_PARTITION\n' +
+                             '`include "' + partition.CHAIN + '"\n')
+            self.assertIn('chain_provider.sv', (self.output / case / 'run.tcl').read_text())
+        self.assertEqual(self.manifest['cases']['w_reverb']['transitive_sources'], [])
 
     def test_omitted_maintained_source_manifest_rejected(self):
         self.rewrite_manifest(lambda manifest: manifest['source_files'].pop(partition.CHAIN))
@@ -76,6 +87,12 @@ class ReverbPartitionManifestTest(unittest.TestCase):
         path = self.output / 'm_remote/run.tcl'
         path.write_text(path.read_text().replace('run syn', 'run all'))
         with self.assertRaisesRegex(ValueError, 'generated input drifted'):
+            partition.verify(self.output)
+
+    def test_modified_provider_rejected(self):
+        path = self.output / 'm_remote/chain_provider.sv'
+        path.write_text(path.read_text().replace('`define', '// removed `define'))
+        with self.assertRaisesRegex(ValueError, 'generated input drifted: m_remote/chain_provider.sv'):
             partition.verify(self.output)
 
     def test_omitted_case_source_rejected(self):
