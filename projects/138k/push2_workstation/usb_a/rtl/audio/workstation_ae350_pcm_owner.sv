@@ -283,7 +283,6 @@ module workstation_ae350_pcm_owner #(
         integer k;
         begin
             owned<=0;head_slot<=0;tail_slot<=0;head_index<=0;queued<=0;
-            for(k=0;k<4;k=k+1)written[k]<=0;
             phase<=0;step_q24<=ONE;integral<=0;window_count<=0;occupancy_sum<=0;
         end
     endtask
@@ -318,10 +317,41 @@ module workstation_ae350_pcm_owner #(
         else current_error=target_error;
         next_step=ONE+current_error;
     end
+    // Private bitmap writes retain the original ordering. The revocation
+    // clear needs no failure-code or unrelated command-response selection.
+    reg bitmap_clear_late /* synthesis syn_keep=1 */;
+    always @* begin
+        bitmap_clear_late=0;
+        if(accepted_stop)bitmap_clear_late=1;
+        if(accepted_cancel)bitmap_clear_late=1;
+        if(rejected_commit && usable && key_matches && !owned[tail_slot])bitmap_clear_late=1;
+        if(armed)begin
+            if(cpu_previous && !cpu_ready_i)bitmap_clear_late=1;
+            else if(!live_matches)bitmap_clear_late=1;
+            else if(!physical_matches)bitmap_clear_late=1;
+            else if(tf_busy_i)bitmap_clear_late=1;
+            else if(sample_take_i && selected && !hold_serial && !cache_current)bitmap_clear_late=1;
+        end
+    end
+    integer bitmap_slot;
+    always @(posedge clk_i or negedge reset_ni)begin
+        if(!reset_ni)begin
+            for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+        end else begin
+            if(accepted_window_write)written[write_slot][write_index]<=1;
+            if(accepted_start)begin
+                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+            end
+            if(accepted_commit)written[tail_slot]<=0;
+            if(bitmap_clear_late)begin
+                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+            end
+        end
+    end
     always @(posedge clk_i or negedge reset_ni)begin
         if(!reset_ni)begin
             owned<=0;head_slot<=0;tail_slot<=0;head_index<=0;queued<=0;
-            for(k=0;k<4;k=k+1)begin written[k]<=0;frames[k]<=0;end
+            for(k=0;k<4;k=k+1)frames[k]<=0;
             staged_controller<=0;staged_generation<=0;staged_stream<=0;staged_rate<=0;staged_physical<=0;
             staged_slot<=0;staged_frames<=0;staged_sequence<=0;
             active_controller<=0;active_generation<=0;active_stream<=0;active_rate<=0;active_physical<=0;
@@ -365,7 +395,7 @@ module workstation_ae350_pcm_owner #(
                 default:begin end
             endcase
             if(accepted_window_write)begin
-                memory[{write_slot,write_index}]<=command_data_i;written[write_slot][write_index]<=1;
+                memory[{write_slot,write_index}]<=command_data_i;
             end
             if(accepted_staging_write)begin
                 case(command_address_i)
@@ -390,7 +420,7 @@ module workstation_ae350_pcm_owner #(
             end
             if(accepted_commit)begin
                 owned<=(owned&~(sample_advance ? release_mask:4'd0))|(4'b1<<tail_slot);
-                frames[tail_slot]<=staged_frames[7:0];written[tail_slot]<=0;tail_slot<=tail_slot+1'b1;
+                frames[tail_slot]<=staged_frames[7:0];tail_slot<=tail_slot+1'b1;
                 queued<=queued+staged_frames[9:0]-(sample_advance ? {8'd0,consume}:10'd0);
                 expected_sequence<=expected_sequence+1'b1;
             end

@@ -101,15 +101,24 @@ def main():
     cycle_bench=whole.bench()
     (out/'cycles.sv').write_text(cycle_bench);(out/'descriptor.sv').write_text(descriptor_bench(cycle_bench))
     original=SOURCE.read_text()
+    physical_comparison_variants=[
+        ('!(|(active_physical^physical_epoch_i))','!(|(active_physical|physical_epoch_i))'),
+        ('!(|(active_physical[7:0]^physical_epoch_i[7:0]))',
+            '!(|(active_physical[7:0]|physical_epoch_i[7:0]))'),
+    ]
+    physical_comparison_matches=[mutation for mutation in physical_comparison_variants if mutation[0] in original]
+    require(len(physical_comparison_matches)==1 and original.count(physical_comparison_matches[0][0])==1,
+        'physical comparison negative requires one unique whole-word or low-byte anchor')
     mutations={
         'threshold_off_by_one':("staged_frames[7:0]>8'(frame_bit)","staged_frames[7:0]>=8'(frame_bit)"),
         'missing_frame_and_reduction':('descriptor_missing_frames=|(~written[tail_slot]&required_mask)',
             'descriptor_missing_frames=&(~written[tail_slot]&required_mask)'),
         'high_count_alias':('descriptor_frames_valid=staged_frames>=32\'d1 && staged_frames<=32\'d128',
             'descriptor_frames_valid=staged_frames[7:0]>=8\'d1 && staged_frames[7:0]<=8\'d128'),
-        'wrong_physical_compare':('!(|(active_physical^physical_epoch_i))','!(|(active_physical|physical_epoch_i))'),
+        'wrong_physical_compare':physical_comparison_matches[0],
     }
     result=dict(schema=1,passed=False,input_sha256=inputs,reference_sha256=REFERENCE_SHA256,cases={},
+        physical_comparison_negative_anchor=physical_comparison_matches[0][0],
         hardware_tested=False,physical_timing_verified=False,PNR=False)
     try:
         for name,mutation,bench in [('whole_owner',None,'cycles'),('descriptor',None,'descriptor'),

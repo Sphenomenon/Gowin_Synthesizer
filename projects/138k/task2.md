@@ -370,6 +370,8 @@ M 的[公开配置就绪维护阶段](push2_workstation/usb_a/reports/DUAL138K_P
 
 W 的[DDR返回邮箱私有预装维护阶段](push2_workstation/usb_a/reports/DUAL138K_RETURN_MAILBOX_PRELOAD_20261101.md)已完成：299bit私有payload仅在非pending时预装，原完整fault／同拍cancel guard及发布／ACK周期保持，无新增寄存器；未发布私有值可不同。665528完整／定向边沿、5实际负控和raw／BLE对象／nativeDDR／owner／authority及四旧证明通过；主线程复验8维护源、597证据和72输入版本／58blob。首轮测试锚点失败保留，修复未改旧proof函数；raw `d2e39654…c38d`及唯一pin待新候选消费，窄failure／token仍需实测，不预记收益，未上板。
 
+W 的[PCM位图清理维护阶段](push2_workstation/usb_a/reports/DUAL138K_PCM_BITMAP_GATE_20261101.md)已完成：4×128bit written独立唯一写入，原写窗／START／COMMIT／末尾撤销优先级及其余151条NBA保持；默认0过程式保留X/Z。7217整owner周期、1048576有限四态及3＋5实际负控、原8项长漂移／许可／描述符／正式D→完整效果→I2S显示回归通过；旧描述符负控锚点正式修复，原失败保留。主线程复验308证据、5维护源及102输入版本；owner `574c6e26…b71e`待新候选消费，未预记资源或时序收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

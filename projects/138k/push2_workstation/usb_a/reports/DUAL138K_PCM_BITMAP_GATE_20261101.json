@@ -1,0 +1,69 @@
+{
+  "checks": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-pcm-bitmap-peer-review-v1/verification.json": "9aa84abab3e5620350f2502edb327a3b9190e8e36ad4fa7eef750fd4de06ef42",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w16-pcm-bitmap-legacy-review-v1/verification.json": "535045c80c9773fbf73213c683ceb2daae922711a0f04e90a67162a756bcb2d4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w16-pcm-bitmap-maintained-four-state-v1/verification.json": "b1ba46ef777ddd2ec32ad3001a4f1ec3a39bd10ff0deb6c7914080b2c88e75a1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w16-pcm-bitmap-maintained-v1/verification.json": "44bc7ee2515b136dff23c85294c990f2229cba4ff46b81f4f3f26a6cdb7526ee"
+  },
+  "declared_artifact_hashes_independently_reverified": 267,
+  "hardware_accepted": false,
+  "input_original_path_count": 100,
+  "input_version_count": 102,
+  "new_bitmap_four_state_finite_not_formal": true,
+  "owned_source_count": 5,
+  "passed": true,
+  "physical_timing_verified": false,
+  "resource_saving_claimed": false,
+  "retained_failed_checks": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w16-pcm-bitmap-legacy-review-v1/descriptor-gate/verification.json": "d8199647ced3a214541ffd09bfd4e95f938d7b76b60b9eda2748ddc078614d78"
+  },
+  "schema": 1,
+  "scope": "No tests rerun during sealing; preserves initial descriptor failure and maintained full-suite success separately. All declared test input versions copied with exact hashes, including old owner baseline and old descriptor runner.",
+  "stage": "PCM bitmap maintained and legacy offline verification delivery",
+  "window_gate_separate_run_needed": false,
+  "source_manifest": [
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+      "repo_relative_path": "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv",
+      "sha256": "574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e",
+      "size": 26717
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_ae350_pcm_owner_before_bitmap_gate.sv",
+      "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_ae350_pcm_owner_before_bitmap_gate.sv",
+      "sha256": "3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3",
+      "size": 25352
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_gate.py",
+      "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_gate.py",
+      "sha256": "677fa3f1e3c53261b6ca4a5cd18a0c8891ff77f059dd0cf77297c5eb6b07d551",
+      "size": 6273
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_four_state.py",
+      "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_four_state.py",
+      "sha256": "9e2f782f45103fc6fe0db0d934ffd2ceb0ea02a12731e698a68d180821c15e7f",
+      "size": 6150
+    },
+    {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_descriptor_gate.py",
+      "repo_relative_path": "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_descriptor_gate.py",
+      "sha256": "4298239e49993a1e11daceadeb54240959fc153be6b947ed47373df872a7909b",
+      "size": 8586
+    }
+  ],
+  "root_review": {
+    "passed": true,
+    "captured_utc": "2026-11-01T06:02:45.875764+00:00",
+    "artifacts": 308,
+    "owned_files": 5,
+    "input_versions": 102,
+    "seal_sha256": "906b2ca39b2dd64719b7e31668e3528541ceb5ab0b4e569d30d14aabeb107cb3",
+    "scope": "root independent content reread; original and corrected descriptor results remain distinct"
+  },
+  "evidence_root": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w16-pcm-bitmap-stage-delivery-v1",
+  "seal_sha256": "906b2ca39b2dd64719b7e31668e3528541ceb5ab0b4e569d30d14aabeb107cb3",
+  "source_manifest_sha256": "e445d6adf0e46cca4b31de5a92e7d55b417cfea147910ebfb7f274d31dbcfcd9",
+  "input_snapshots_sha256": "54853fdc008e8fc3fca9c5e1362ec3b7806cd2819dc65a0f0e2a5559712ecc9c"
+}
