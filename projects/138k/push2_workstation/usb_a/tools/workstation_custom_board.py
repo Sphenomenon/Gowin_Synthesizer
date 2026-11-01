@@ -344,12 +344,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc, demo_boundary_cdc = select_demo_boundary(stage, selected_sdc, demo_role)
     if runtime:
         from tools.workstation_recognition_policy import adapt_constraints
-        selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
+        selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'],
+            tf_menu_enabled=specification(profile['name']).get('tf_menu_enabled', False))
         recognition['constraints'] = recognition_constraints
     demo_constraints = None
     if demo_role is not None:
         from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
-        selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role)
+        selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role,
+            tf_playback_enabled=specification(profile['name']).get('tf_menu_enabled', False))
     audio_constraints=None
     if audio_only:
         from tools.workstation_worker_audio_only import constraints as audio_sdc,cst as audio_cst

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // Push 2's 960x160 guide page. Names are the FAT scanner's 8.3 entries.
-module push2_song_screen #(parameter PIPELINED=0)(
+module push2_song_screen #(parameter PIPELINED=0,parameter bit TF_PLAYBACK_ONLY=1'b0)(
     input wire clk,rst,
     input wire name_write_valid,
     input wire [7:0] name_write_addr,name_write_data,
@@ -61,9 +61,10 @@ module push2_song_screen #(parameter PIPELINED=0)(
         (cursor>=16'd800 ? 10'd799 : cursor[9:0]);
     always @* begin
         character=8'd32;row=0;col=0;draw=0;charpos=0;
-        header=chosen ? "PRACTICE        " : "SELECT SONG     ";
+        header=chosen ? (TF_PLAYBACK_ONLY ? "TF SONG         " : "PRACTICE        ") : "SELECT SONG     ";
         hint=chosen ? "SELECT: LIST    " : "L/R SEL PLAY    ";
-        state_text=analysis_done ? "SONG READY      " : "SCANNING SONG   ";
+        state_text=TF_PLAYBACK_ONLY ? "TRACK SELECTED  " :
+            (analysis_done ? "SONG READY      " : "SCANNING SONG   ");
         effect_text="DELAY CHORUS RVB";
         progress={digit({4'b0,cursor_digits[19:16]}),digit({4'b0,cursor_digits[15:12]}),digit({4'b0,cursor_digits[11:8]}),digit({4'b0,cursor_digits[7:4]}),digit({4'b0,cursor_digits[3:0]}),8'h2f,
                   digit({4'b0,score_digits[19:16]}),digit({4'b0,score_digits[15:12]}),digit({4'b0,score_digits[11:8]}),digit({4'b0,score_digits[7:4]}),digit({4'b0,score_digits[3:0]}),40'h2020202020};
@@ -95,7 +96,7 @@ module push2_song_screen #(parameter PIPELINED=0)(
                 charpos=(x-96)/12;
                 character=state_text[127-charpos*8 -:8];
                 row=(y-58)/2;col=((x-96)%12)/2;draw=1;
-            end else if(y>=82 && y<96 && x>=96 && x<288) begin
+            end else if(!TF_PLAYBACK_ONLY && y>=82 && y<96 && x>=96 && x<288) begin
                 charpos=(x-96)/12;
                 character=progress[127-charpos*8 -:8];
                 row=(y-82)/2;col=((x-96)%12)/2;draw=1;
@@ -106,7 +107,7 @@ module push2_song_screen #(parameter PIPELINED=0)(
                     row=(y-120)/2;col=((x-24)%12)/2;draw=1;
                 end
             end
-            if(y>=104 && y<114 && x>=80 && x<880) begin
+            if(!TF_PLAYBACK_ONLY && y>=104 && y<114 && x>=80 && x<880) begin
                 if(x-10'd80<progress_pixels)
                     background=16'h67ee;
                 else background=16'h2945;

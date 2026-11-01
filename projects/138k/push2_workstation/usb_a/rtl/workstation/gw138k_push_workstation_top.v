@@ -573,8 +573,20 @@ module gw138k_push_workstation_top #(
 `endif
 `ifdef WORKSTATION_NO_CNN
     wire [6:0] music_score_note,score_usb_note;
+`ifdef WORKSTATION_TF_MENU_WITHOUT_CNN
+`ifndef WORKSTATION_DEMO_NO_TF
+    gw138k_stream_cdc #(.WIDTH(4)) u_song_command_cdc(
+        .reset_n(reset_n && usb_reset_n),.source_clk(usb_clk),.destination_clk(clk_50m),
+        .source_valid(push_track_launch),.source_data(push_track_index),.drop_count(),
+        .destination_valid(song_cmd_valid),.destination_data(song_cmd_index));
+`else
     assign song_cmd_valid=1'b0;
     assign song_cmd_index=4'd0;
+`endif
+`else
+    assign song_cmd_valid=1'b0;
+    assign song_cmd_index=4'd0;
+`endif
     assign music_score_ready=1'b1;
     assign score_usb_valid=1'b0;
     assign score_usb_note=7'd0;
@@ -620,6 +632,11 @@ module gw138k_push_workstation_top #(
 `endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
         ,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)
+`endif
+`ifdef WORKSTATION_TF_MENU_WITHOUT_CNN
+`ifndef WORKSTATION_DEMO_NO_TF
+        ,.TF_MENU_ENABLE(1'b1)
+`endif
 `endif
     ) u_native_usb (
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),

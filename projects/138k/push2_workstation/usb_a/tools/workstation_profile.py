@@ -57,7 +57,17 @@ LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
+TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
 PROFILE_REGISTRY = {
+    TASK3_M_TF_NAME:dict(config='boards/custom_138k/workstation_profile_task3_m_local_tf_v1.json', revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
+            local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
+            usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
+            tf_policy='local_tf_ddr_with_independent_menu_v1',
+            bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
+        provider='rtl/workstation/workstation_profile_task3_m_local_tf.sv',recognition_enabled=False,
+        local_panel_enabled=False,demo_role='M',tf_menu_enabled=True,
+        integration_identity='custom138k-native-task3-m-local-tf-revision1'),
     M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
@@ -170,11 +180,16 @@ def prepared_specification(prepared):
 
 
 def recognition_metadata(profile):
-    enabled = specification(profile['name'])['recognition_enabled']
-    return dict(policy='enabled_cnn_and_follow_v1' if enabled else 'disabled_cnn_and_follow_v1',
+    spec = specification(profile['name'])
+    enabled = spec['recognition_enabled']
+    metadata = dict(policy='enabled_cnn_and_follow_v1' if enabled else 'disabled_cnn_and_follow_v1',
         music_analysis_enabled=enabled, cnn_score_follow_enabled=enabled,
         model_ready_not_forged=True, local_score_cue_preserved=True,
         recognition_menu_available=enabled, ddr_nn_allocation_retained=True)
+    if spec.get('tf_menu_enabled', False):
+        metadata.update(tf_menu_enabled=True, recognition_menu_available=False,
+                        tf_song_menu_available=True)
+    return metadata
 
 
 def sha(path):
@@ -354,7 +369,8 @@ def _artifact(root, output, metadata, profile):
     if spec.get('demo_role') is not None:
         from tools.workstation_demo_policy import verify_constraints as verify_demo_constraints
         original_sdc = verify_demo_constraints(installed_sdc,
-            metadata.get('demo_constraint_retirement'), spec['demo_role'])
+            metadata.get('demo_constraint_retirement'), spec['demo_role'],
+            tf_playback_enabled=spec.get('tf_menu_enabled', False))
     else:
         original_sdc = installed_sdc
     staged_sdc = original_sdc.splitlines()
@@ -401,7 +417,8 @@ def _artifact(root, output, metadata, profile):
     if recognition != recognition_metadata(profile):
         raise ValueError('workstation recognition capability selection changed')
     verify_adaptation(original_sdc,
-                      constraint_evidence or {}, spec['recognition_enabled'])
+                      constraint_evidence or {}, spec['recognition_enabled'],
+                      tf_menu_enabled=spec.get('tf_menu_enabled', False))
     if metadata.get('runtime_audio', {}).get('top_provider') != spec['provider']:
         raise ValueError('workstation recognition compilation provider changed')
     from tools.workstation_runtime_counter import selection_evidence

@@ -1,0 +1,347 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "created_utc": "2026-11-01T13:51:15.602398+00:00",
+  "stage": "task3_read_only_unified_recording_source_audit_and_existing_component_rerun",
+  "scope": "Source facts and rerun evidence only. Not a selected task3 W integration, long recorder, bitstream, routed implementation or board acceptance.",
+  "source": {
+    "repository": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer",
+    "branch": "codex/dual-138k-task3",
+    "head": "f9a197006e329ee63dd002262b00eccaa5f99447",
+    "snapshot_policy": "Hashes identify bytes inspected during concurrent task3 work. This audit edits only this report. Other agents may change top/profile/TF sources; hashes are historical audit facts, not a new profile lock.",
+    "input_sha256": {
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c": "320e16f5bc8b6afe147cf625ed6366aedb71b20e145b04580e636ee755f1510b",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.h": "d3397ea1e217dba332f13d40693eeed3d4bfda809af157e764ad4ed7d7cba853",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/ui_main.c": "9283f9af5b0222ce5c3485a74fa4cb76ef7a5748468d874622394b1d4905084c",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_runtime.c": "382aa82e2856ad5a48319a22191a3e960eed966aa455e000d0d948cd3e9e3476",
+      "projects/138k/push2_workstation/usb_a/firmware/ae350/worker_audio_main.c": "c2dcffe194b027142044b7e4bcab77e3bbda6235b1f6ffc9c3da939dfb94dcf0",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/CONTRACT.md": "e624f3ff5f5b06ef6c20ed4644882c443144bfe5b8ac3308153041192c91a5df",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "0ac9f44f22c239ddfc37f90234661922fb2817052914ebe3872c8a9e595433b7",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "7484fb737ac9dde6c1cb4d0fa6534ae3d56ea221e57556ad3188b67d5b13b5d3",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_bluetooth.sv": "437bed0ec81836d916218be14e0bc8e97821a243449118a682a16b53da1845da",
+      "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "6fb4808c2a7a3de90682d6187e110cd6ef07594031728fb371e6fd2ef3d77c60",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": "5262395f5031a14aa6cf18b359852590d3dcab33ee3fde9ce5f4e069b6fb9739",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_authority.sv": "7d1e4d9e99c2d6859b3019890f49c97ebd2456065eb56ee77ce1124a5cc9b637",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_owner_mux.sv": "f13e76e3185b0ab96fe3f7a88bd2f46a2ab9d6fcfe060943889fc1993328e5fb",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_audio_memory.sv": "7ea62ad4c8b5b4af50ac27b65649c6ecbf05585449266406adf7a3082854c698",
+      "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "cff09dd9296089f0fd548f2110e02ac980540f231f242e05d317abb3d7337b03",
+      "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+      "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "dfe698e7bcde7c47c9263224a6615e5269e19b0e1509cda709420f626df94e0d",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_worker_audio_only.py": "1be4d2f6bdf054eca49a124039b8f99b8b406c6d19872aa222897b37b46eace3",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "9b8a84f0d1fb2f23d8f442e91474f9f50c720c5078cb81b785b871e6e28a1c5d",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_ble_recording_policy.py": "fa0a867cdf2006a2d510124c11ece16d4d39f39e91cc768b741711b567b275cf",
+      "projects/138k/push2_workstation/usb_a/tools/experiment_ae350_rom_split.py": "9bf7460a3fb34121097fcc9c9ab4d00dbb1696eb15177aaf0311e5a6cc66861d",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+      "projects/138k/push2_workstation/usb_a/boards/custom_138k/pinout.json": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75",
+      "projects/138k/push2_workstation/usb_a/reports/WORKER_SINGLE_RECORDING_20261031.md": "005f5e32dd6eca38fb89726dc8c341277a050c2adbc4061f47f2fc9f7455c138",
+      "projects/138k/push2_workstation/usb_a/reports/DUAL138K_W21_AUDIO_ONLY_SOURCE_20261101.json": "a026ff95db2423299d1c896475d2200059ec18178f8f51bc5718e71566f95f00",
+      "projects/138k/push2_workstation/usb_a/reports/DUAL138K_W_AUDIO_ONLY_FIRMWARE_20261101.json": "26701d480316da5f75554a99e53e268915bc4452ac06d50e269e119e35d0dcb9",
+      "projects/138k/push2_workstation/usb_a/reports/DUAL138K_W_STREAM_PITCH_GAP_20261101.json": "b8e1b9cd53b8d9ef7fb72e0e7eb6867583bdc3337047d8eff5df175d4fe3ff71"
+    }
+  },
+  "validation": {
+    "source_audit": true,
+    "component_simulation": true,
+    "synthesis": false,
+    "pnr": false,
+    "whole_profile_selected": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_written": false,
+    "long_recording_implemented": false,
+    "dual_rate_recording_implemented": false
+  },
+  "authority": {
+    "sole_owner": "firmware/ae350/ble_business_owner.c: eight tasks, monotonic operation/object/transfer IDs, recording command policy, OPEN/READ/ACK/combined/resume/CLOSE/CANCEL and transfer deadline.",
+    "owner_phases": {
+      "IDLE": 0,
+      "ENGINE": 1,
+      "PUBLISH": 2,
+      "OBSERVE": 3,
+      "INSPECT": 4
+    },
+    "physical": "workstation_ble_record_data_engine.sv: PCM capture, four-byte CRC, stop reason, raw seal/drain/fetch, Rice codec and wire bytes. Store allocates no business IDs.",
+    "local_proxy": {
+      "enable": "A138_SINGLE_BLE_RECORDING",
+      "functions": [
+        "a138_ble_record_local_submit",
+        "a138_ble_record_local_poll",
+        "a138_ble_record_firmware_submit",
+        "a138_ble_record_firmware_poll",
+        "a138_ble_record_firmware_facts"
+      ],
+      "opcodes": {
+        "START": "0x20",
+        "STOP": "0x21",
+        "CLEAR": "0x23"
+      },
+      "queue_is_not_application": true,
+      "start_success": "Actual complete first PCM frame",
+      "stop_success": "Actual native DDR committed prefix reaches READY",
+      "clear_success": "Actual raw CLEAR completion",
+      "identity": "CPU and BLE share owner task/object/descriptor counters and physical bytes/CRC. Receipt token is not a second object.",
+      "trusted_local_flag": "Internal flag bit4 only for START/STOP/CLEAR, never sourced from an external BLE request; READ retains existing Rice flag meaning."
+    },
+    "mmio": {
+      "business_slot": "0xf8050000..0xf80500ff",
+      "physical_primitive": "0xf8050100..0xf80501ff",
+      "physical_id": "0x52434403",
+      "physical_caps": "0x00301002",
+      "retired_independent_R00": "0xf8040000"
+    },
+    "retired_backends": [
+      "workstation_recording_runtime / R00 object64 physical store",
+      "local 96-bit short recording and cue/upload",
+      "staged native_bluetooth/ble_recording.v"
+    ],
+    "retirement_rule": "WORKSTATION_SINGLE_BLE_RECORDING rejects the R00 APB window, omits u_recording and ties owner8 subclient0 idle. Keep these retirements; the C recording_service header also contains the separate physical BLE-data API, which must remain.",
+    "reset": "Observer reset sets sticky fence; it cannot restart same-boot object/task counters. Raw transport faults remain quarantined until common reset; reconnect retires the transfer lease while preserving object/task/counter facts."
+  },
+  "current_capacity": {
+    "format_id": 1,
+    "rate_hz": 48000,
+    "channels": 2,
+    "bits_per_channel": 16,
+    "bytes_per_frame": 4,
+    "capacity_frames": 16384,
+    "capacity_bytes": 65536,
+    "duration_seconds": 0.3413333333333333,
+    "coupling_points": [
+      {
+        "file": "firmware/ae350/ble_business_owner.c",
+        "details": "get_object advertises 48000 and 16384; external START and local_submit both reject limit >16384."
+      },
+      {
+        "file": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv",
+        "details": "Physical fact MMIO rate at 0x24 is hardcoded 48000; epoch at0x28 is zero."
+      },
+      {
+        "file": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv",
+        "details": "EXTERNAL_RAW_STORE initial guard rejects CAPACITY_FRAMES>16384; object_bytes, CRC and fetch use actual recorded frame counters."
+      },
+      {
+        "file": "rtl/memory/workstation_ble_raw_ddr_store.sv",
+        "details": "Initial guard rejects capacity>16384. Fetch offset/frame arithmetic and 8KiB cache are separate from bulk capacity; raising a limit alone has not been validated."
+      },
+      {
+        "file": "rtl/workstation/gw138k_push_workstation_top.v",
+        "details": "Raw instance capacity16384; initial assertions require BLE64KiB/16384-native-word range; source_allowed rejects44.1k and mismatched current rate/epoch."
+      },
+      {
+        "file": "rtl/bluetooth/hci_owner/workstation_hci_bluetooth.sv",
+        "details": "Default capacity16384; source continuity currently checks sequential frame IDs and maximum4ms sample age."
+      },
+      {
+        "file": "tools/workstation_ble_recording_policy.py",
+        "details": "Policy metadata is still format1/48k/16384 frames. CPU business ownership supersedes historical RTL-owner metadata; do not copy old ownership wording."
+      },
+      {
+        "file": "rtl/ddr_address_map.vh and rtl/ddr_address_map_guard.v",
+        "details": "Recording total reservation1MiB, CPU64KiB and BLE64KiB suballocations; map and guards must change explicitly for a new long recorder."
+      }
+    ]
+  },
+  "ddr": {
+    "unit_authority": "rtl/ddr_address_map.vh: native app_addr counts 32-bit DQ words, not bytes. One256-bit BL8 beat=32bytes=8 native words=8 stereoPCM16 frames.",
+    "total_physical_bytes": 1073741824,
+    "allocation_granule_bytes": 1048576,
+    "existing_ranges": {
+      "delay_ring": {
+        "byte_first": "0x30000000",
+        "byte_last": "0x3001ffff",
+        "native_word_first": "0x0c000000",
+        "owner": 6
+      },
+      "basic_pitch_history": {
+        "byte_first": "0x30100000",
+        "byte_last": "0x304fffff"
+      },
+      "recording_reservation": {
+        "byte_first": "0x30500000",
+        "byte_last": "0x305fffff",
+        "native_word_first": "0x0c140000",
+        "bytes": 1048576
+      },
+      "retired_cpu_subclient0": {
+        "byte_first": "0x30500000",
+        "byte_last": "0x3050ffff",
+        "native_word_first": "0x0c140000",
+        "native_word_last": "0x0c143fff"
+      },
+      "current_raw_subclient1": {
+        "byte_first": "0x30510000",
+        "byte_last": "0x3051ffff",
+        "native_word_first": "0x0c144000",
+        "native_word_last": "0x0c147fff",
+        "bytes": 65536,
+        "native_words": 16384
+      }
+    },
+    "native_owner8": "workstation_recording_ddr_client_queues with RECORDING_ENABLE=1 routes recording_valid to native client8. Existing top recording_owner8 mux separates retired R00 subclient0 and BLE raw subclient1; native_accept[8], not local slot_ready, advances committed prefix. CPU memory client2 is a different client.",
+    "target60s": {
+      "rate48000": {
+        "frames": 2880000,
+        "bytes": 11520000,
+        "full_BL8_beats": 360000,
+        "continuous_payload_bytes_per_second": 192000,
+        "write_BL8_beats_per_second": 6000
+      },
+      "rate44100": {
+        "frames": 2646000,
+        "bytes": 10584000,
+        "continuous_payload_bytes_per_second": 176400
+      },
+      "minimum_contiguous_1MiB_granules_from_new_aligned_base": 11,
+      "keep_current_BLE_base_inside_0x30500000_reservation_requires_granules": 12,
+      "explanation": "11MiB=11534336 bytes fits 60s/48k if recorder begins at aligned allocation base. Keeping current BLE base offset64KiB leaves only11468800 bytes in11MiB;12 granules or explicit relocation is required. No new address range is allocated by this audit."
+    },
+    "download": {
+      "max_fetch_payload_bytes": 8112,
+      "max_native_DMA_bytes": 8160,
+      "cache_bytes": 8192,
+      "read_outstanding": 1,
+      "policy": "Bound recording write/capture service first; bound each download read and defer CNN. Measure actual service intervals and combined DDR timing before choosing queue depths."
+    },
+    "no_remote_memory": "All storage above must be physically W-local in a new selected W role; W has no direct access to M DDR, USB, TF, HDMI or DAC."
+  },
+  "W21": {
+    "role": "task2 W revision2 audio-only is intentionally not a recording integration.",
+    "policy": "worker_audio_only_no_display_no_recording_v1",
+    "source_retirement": "tools/workstation_worker_audio_only.py excludes rtl/bluetooth/cpu_owner/, recording data engines, UI/display/TF/CNN sources and recording selectors. Existing maintained files remain available.",
+    "firmware": "worker_audio_main.c only pumps Classic/HCI/SBC/PCM. Headless ROM selection removes A138_BLE_BUSINESS and recording/business compilation; A138_SINGLE_BLE_RECORDING may remain as source-selection flag but does not mean recording is linked.",
+    "native_memory": "workstation_audio_memory.sv retains BIST and native owner6 Delay, with other clients tied inactive; no recording owner8 port, CPU DDR window or framebuffer exists.",
+    "source_cdc": "WORKSTATION_WORKER_AUDIO_ONLY ties recording PCM input inactive; media preparation ENABLE_BLE=0 means nonexistent record sealing is not a rate-switch dependency.",
+    "protection": "Keep W21/task2 candidate and firmware profile unchanged. New W media/storage configuration must be opt-in, with its own source/configuration/hash/bitstream/resource/timing evidence.",
+    "D_stream_status": "Existing source/report proves real H5/HCI/SBC/PCM and D effect path intent, not actual phone/DAC acceptance. Maintained D-only branch still fixes pitch_q20_o unity in gw138k_event_workstation.sv; no new streaming pitch implementation was imported by this audit. task2 T2-D1/D2 remain open."
+  },
+  "minimal_selected_role_path": [
+    "Add a new explicit task3 W media/storage profile; do not mutate task2 W21 or accepted profiles.",
+    "Use a headless cooperative root pumping Classic/HCI/SBC/PCM plus the same C ble_business_owner; expose bounded CPU/M control adapters to local_submit/poll/facts without restoring framebuffer UI or a second recorder.",
+    "Select maintained CPU-owner GATT/physical data engine with EXTERNAL_PCM=1, EXTERNAL_SEAL_PROTOCOL=1, EXTERNAL_RAW_STORE=1, SINGLE_BLE_RECORDING=1; retain one H5/HCI credit owner.",
+    "Create minimal W-local memory composition reusing recording-aware native queues with RECORDING_ENABLE=1, preserving owner6 Delay and real BIST/authority/native bridge; no video dependency. Leave R00subclient0 and CPU memory client2 inactive unless separately required.",
+    "Initially bind one bounded, trusted final-output PCM stream and preserve 48k short-object semantics to prove source/capture/native commit/CPU-created-BLE-download identity. Extend long capacity and format/rate facts as an explicit new verified stage.",
+    "After measured LCD pin/electrical/throughput/RTT/congestion acceptance, feed M final completed serial-output PCM via session/rate/epoch/sequence/error-checked bounded receive queues. M never waits for record/download/CNN; overflow or gap fails object integrity and drains accepted prefix.",
+    "Extend capacity/map/guards/C+physical facts/protocol compatibility coherently for60s and later44.1k; test full actual native window, byte/word conversions, partial BL8, object immutable format, STOP/CLEAR/download/replay/reset/timeout and CNN/media contention."
+  ],
+  "link_admission_gaps": {
+    "expected_M_stream_bytes_per_second": {
+      "48000_stereo16": 192000,
+      "44100_stereo16": 176400
+    },
+    "burst_pacing": "Existing engine processes four CRC bytes after capture; a PCM valid during nonzero capture_state is a source failure. LCD receive bursts need a bounded decoder/queue with at least five control-clock edges between accepted PCM valids; direct one-frame-per-clock bursts are incompatible.",
+    "continuity": "Current HCI wrapper sequence+1 and4ms age are local-frame assumptions. New remote source wrapper must explicitly validate link session/rate/epoch, sequence wrap policy, duplicate/drop, packet CRC and timeout; do not reset sample_seen on reconnect to conceal a gap in an active recording.",
+    "measured_LCD": false,
+    "measured_Bluetooth_audio": false,
+    "bluetooth_budget": "Native UART8E1 at nominal921600 permits at most921600/11=83781.8B/s per direction before protocol/radio overhead. It cannot carry uncompressed48k stereo16 at192000B/s. Compressed or control-only use still requires physical throughput/jitter/latency evidence."
+  },
+  "tests": [
+    {
+      "name": "real_C_CPU_BLE_single_recording_owner",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py",
+        "--single-recording",
+        "--output",
+        "/tmp/task3-recording-audit-owner-20261101-a"
+      ],
+      "exit_code": 0,
+      "evidence": {
+        "path": "/private/tmp/task3-recording-audit-owner-20261101-a/verification.json",
+        "sha256": "e72d014c6d87c9a2b0d251636973d557b9694ec0e4c0d1d7549d5f13bf4d5fd5",
+        "bytes": 161116
+      },
+      "passed": true,
+      "inputs_unchanged": true,
+      "behavioral_checks": 1765,
+      "sole_object_checks": 64,
+      "compared_messages": 136,
+      "golden_wire_equal": true,
+      "mutation_controls": 15,
+      "all_mutations_rejected": true,
+      "clock_fixture": {
+        "timeprecision_ps": 1,
+        "cpp_step_ps": 1000,
+        "control_period_ns": 20,
+        "memory_period_ns": 14,
+        "historical_first_batch_control_period_ps": 20,
+        "historical_first_batch_memory_period_ns": 14,
+        "reconnect_hello_input_elapsed_ms": 65536,
+        "wire_bytes_normalized": false
+      },
+      "profile_selected": false
+    },
+    {
+      "name": "actual_raw_DDR_component",
+      "argv": [
+        "python3",
+        "projects/138k/push2_workstation/usb_a/sim/test_ble_raw_ddr_store.py",
+        "--output",
+        "/tmp/task3-recording-audit-raw-20261101-a"
+      ],
+      "exit_code": 0,
+      "evidence": {
+        "path": "/private/tmp/task3-recording-audit-raw-20261101-a/verification.json",
+        "sha256": "0e482a7bfa1bdfeaef040c483f9a2ae318d4372c6716254af730bb798e83ab0b",
+        "bytes": 18704
+      },
+      "passed": true,
+      "inputs_unchanged": true,
+      "source_set_sha256": "60debca79e845febb995a936e6e16dadbee3b00b765a154753c26705f96037c9",
+      "positive_cases": {
+        "fifo8_async_memory": {
+          "checks": 94766,
+          "full_frames": 16384,
+          "max_fetch_bytes": 8112
+        },
+        "fifo3_100mhz_memory": {
+          "checks": 93238,
+          "full_frames": 16384,
+          "max_fetch_bytes": 8112
+        }
+      },
+      "mutation_controls": 5,
+      "all_mutations_rejected": true,
+      "lint_reviewed_warning_count": 4,
+      "profile_selected": false
+    }
+  ],
+  "pinout_netlist_directory": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task-20261030/netlists",
+    "verification": "Current workstation_pinout.load_sources against boards/custom_138k/pinout.json completed exit0; all three locked hashes and netlist syntax accepted.",
+    "read_only": true,
+    "files": {
+      "carrier": {
+        "filename": "Netlist_my_138k_2026-10-21.tel",
+        "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+        "networks": 185,
+        "nodes": 737
+      },
+      "amplifier": {
+        "filename": "功放.tel",
+        "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+        "networks": 100,
+        "nodes": 492
+      },
+      "bluetooth": {
+        "filename": "蓝牙.tel",
+        "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+        "networks": 21,
+        "nodes": 88
+      }
+    },
+    "physical_electrical_acceptance": false
+  },
+  "remaining": [
+    "New explicit headless W media/storage source and firmware composition; no such profile was prepared or selected here.",
+    "Actual M-to-W LCD pin directions, voltage domains, source clocks, CRC/CDC, measured sustained bidirectional bandwidth/RTT/jitter/congestion and link-session fencing.",
+    "W-local map allocation/guards and real native owner8 client restoration; long and44.1k object format/protocol extension.",
+    "Actual CPU/M and BLE contention on same object, link-loss/overflow/reconnect/PANIC/cancel/CLEAR/download behavior, source and whole-profile regression.",
+    "Combined W media+recording+CNN DDR service/resource/timing budget; no full resource rewrite or restored retired backend.",
+    "Synthesis and P&R true resources, completeSTA/CDC/PLL, bitstream identity, SRAM readback, physical phone/PCM/DAC/latency and long downloaded WAV evidence remain outstanding; Flash not authorized."
+  ]
+}

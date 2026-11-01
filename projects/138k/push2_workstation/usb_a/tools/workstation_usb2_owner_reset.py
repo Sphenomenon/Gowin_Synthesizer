@@ -143,7 +143,12 @@ def audit_source_text(wrapper, top, owner):
             'unreviewed owner reset source fanout')
     require('wireruntime_reset_n=reset_n&&memory_guard_started;' in t,
             'runtime reset producer changed')
-    require('`ifdefWORKSTATION_RUNTIME_NATIVE,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)`endif)u_native_usb(' in t,
+    runtime_opt_in = ('`ifdefWORKSTATION_RUNTIME_NATIVE,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),'
+                      '.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)`endif')
+    task3_menu = ("`ifdefWORKSTATION_TF_MENU_WITHOUT_CNN`ifndefWORKSTATION_DEMO_NO_TF"
+                  ",.TF_MENU_ENABLE(1'b1)`endif`endif")
+    require(sum(t.count(runtime_opt_in + menu + ')u_native_usb(')
+                for menu in ('', task3_menu)) == 1,
             'runtime-only reset opt-in changed')
     require('.reset_n(usb_reset_n),.audio_reset_n(runtime_reset_n),.uart_rx_i' in t,
             'platform/USB qualified source changed')

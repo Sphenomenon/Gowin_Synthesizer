@@ -35,9 +35,13 @@ def digest(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def adapt_constraints(sdc, enabled):
+def adapt_constraints(sdc, enabled, *, tf_menu_enabled=False):
+    if type(tf_menu_enabled) is not bool or (enabled and tf_menu_enabled):
+        raise ValueError('independent TF menu requires the explicit no-CNN policy')
     lines = sdc.splitlines(keepends=True)
     retired = []
+    retired_lines = tuple(row for row in RETIRED_LINES
+                          if not (tf_menu_enabled and 'u_song_command_cdc/' in row))
     if not enabled:
         if digest(''.join(row+'\n' for row in RETIRED_LINES)) != RETIRED_SUBSET_SHA256:
             raise ValueError('recognition retired constraint identity changed')
@@ -48,16 +52,20 @@ def adapt_constraints(sdc, enabled):
             if any(prefix in row for prefix in ENDPOINT_PREFIXES):
                 if row.rstrip('\n') not in RETIRED_LINES:
                     raise ValueError('unknown or mixed recognition constraint: '+row)
-                retired.append(dict(line=row, line_number=index+1, sha256=digest(row)))
-        selected = ''.join(row for row in lines if row.rstrip('\n') not in RETIRED_LINES)
+                if row.rstrip('\n') in retired_lines:
+                    retired.append(dict(line=row, line_number=index+1, sha256=digest(row)))
+        selected = ''.join(row for row in lines if row.rstrip('\n') not in retired_lines)
     else:
         selected = sdc
-    return selected, dict(enabled=enabled, input_sha256=digest(sdc), output_sha256=digest(selected),
+    evidence = dict(enabled=enabled, input_sha256=digest(sdc), output_sha256=digest(selected),
         retired_subset_sha256=RETIRED_SUBSET_SHA256 if not enabled else None,
         retired=retired, retained_constraints_unchanged=True, physical_cdc_verified=False)
+    if tf_menu_enabled:
+        evidence['tf_menu_enabled'] = True
+    return selected, evidence
 
 
-def verify_adaptation(sdc, evidence, enabled):
+def verify_adaptation(sdc, evidence, enabled, *, tf_menu_enabled=False):
     if evidence.get('enabled') is not enabled or evidence.get('output_sha256') != digest(sdc):
         raise ValueError('recognition constraint selection changed')
     original = sdc.splitlines(keepends=True)
@@ -66,6 +74,6 @@ def verify_adaptation(sdc, evidence, enabled):
         if index < 0 or index > len(original):
             raise ValueError('recognition constraint position changed')
         original.insert(index, record['line'])
-    selected, expected = adapt_constraints(''.join(original), enabled)
+    selected, expected = adapt_constraints(''.join(original), enabled, tf_menu_enabled=tf_menu_enabled)
     if selected != sdc or expected != evidence:
         raise ValueError('recognition constraint retirement evidence changed')

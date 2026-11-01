@@ -1,5 +1,5 @@
 // 960x160 performance panel; snapshot at each frame boundary, no DDR wait.
-module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1, parameter bit MEDIA_CONTROLS_ENABLE=1'b1)(input wire clk,rst,frame_ready,output wire frame_start,
+module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1, parameter bit MEDIA_CONTROLS_ENABLE=1'b1,TF_PLAYBACK_ONLY=1'b0)(input wire clk,rst,frame_ready,output wire frame_start,
     input wire [9:0] x,input wire [7:0] y,output wire pixel_valid,
     output wire [15:0] pixel,input wire [31:0] control,options,
     input wire [63:0] held,input wire [6:0] note,velocity,
@@ -81,7 +81,7 @@ module push2_surface_pixels #(parameter PIPELINED=0,SHOW_LAST_NOTE=1, parameter 
     assign pixel=(PIPELINED ? guide_mode_q : guide_mode) ? song_pixel : base_pixel;
     video_font_5x7 font(.character(PIPELINED ? character_q : character),
         .column(PIPELINED ? col_q : col),.row(PIPELINED ? row_q : row),.ink(ink),.glyph());
-    push2_song_screen #(.PIPELINED(PIPELINED)) song_screen(.clk(clk),.rst(rst),
+    push2_song_screen #(.PIPELINED(PIPELINED),.TF_PLAYBACK_ONLY(TF_PLAYBACK_ONLY)) song_screen(.clk(clk),.rst(rst),
         .name_write_valid(name_write_valid),.name_write_addr(name_write_addr),
         .name_write_data(name_write_data),.chosen(guide_chosen),
         .browse_index(guide_browse),.track_index(guide_track),

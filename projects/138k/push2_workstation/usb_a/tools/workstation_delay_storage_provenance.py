@@ -19,6 +19,27 @@ REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 # W21 adds only explicit audio-only composition branches; the two legacy
 # non-runtime selectors and all effects provenance remain byte-identical.
 REFERENCE_SHA256 = '2c4376b7754a9b98486501fb91e258f5b70b4183b4ec5f687b2a588132ba7007'
+TF_MENU_REFERENCE_SHA256 = 'dfe698e7bcde7c47c9263224a6615e5269e19b0e1509cda709420f626df94e0d'
+# Optional TF menu selection is unrelated to the two non-runtime storage
+# defparams. Reverse only its exact two insertions; retain the original lock.
+TF_MENU_REFERENCE_INSERTIONS = (
+    "`ifdef WORKSTATION_TF_MENU_WITHOUT_CNN\n"
+    "`ifndef WORKSTATION_DEMO_NO_TF\n"
+    "    gw138k_stream_cdc #(.WIDTH(4)) u_song_command_cdc(\n"
+    "        .reset_n(reset_n && usb_reset_n),.source_clk(usb_clk),.destination_clk(clk_50m),\n"
+    "        .source_valid(push_track_launch),.source_data(push_track_index),.drop_count(),\n"
+    "        .destination_valid(song_cmd_valid),.destination_data(song_cmd_index));\n"
+    "`else\n"
+    "    assign song_cmd_valid=1'b0;\n"
+    "    assign song_cmd_index=4'd0;\n"
+    "`endif\n"
+    "`else\n",
+    "`ifdef WORKSTATION_TF_MENU_WITHOUT_CNN\n"
+    "`ifndef WORKSTATION_DEMO_NO_TF\n"
+    "        ,.TF_MENU_ENABLE(1'b1)\n"
+    "`endif\n"
+    "`endif\n",
+)
 PREPARED_SOURCE = 'rtl/audio/stereo_effects.sv'
 
 # Current scratch data is written in state2 before every state3 consumer.
@@ -435,7 +456,22 @@ def source_bundle(root):
     if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
         raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()
-    if sha(reference) != REFERENCE_SHA256:
+    restored_reference = reference
+    if sha(reference) == TF_MENU_REFERENCE_SHA256:
+        text = reference.decode()
+        if any(text.count(insertion) != 1 for insertion in TF_MENU_REFERENCE_INSERTIONS):
+            raise ValueError('TF menu reference insertion identity changed')
+        text = text.replace(TF_MENU_REFERENCE_INSERTIONS[0], '', 1)
+        # Remove the matching extra endif after the old no-CNN assignments.
+        tail = "    assign song_cmd_index=4'd0;\n`endif\n    assign music_score_ready=1'b1;"
+        if text.count(tail) != 1:
+            raise ValueError('TF menu reference closing anchor changed')
+        text = text.replace(tail, tail.replace('`endif\n', '', 1), 1)
+        text = text.replace(TF_MENU_REFERENCE_INSERTIONS[1], '', 1)
+        restored_reference = text.encode()
+        evidence['tf_menu_reference'] = dict(current_sha256=sha(reference),
+            parent_sha256=REFERENCE_SHA256, exact_inverse_round_trip_verified=True)
+    if sha(restored_reference) != REFERENCE_SHA256:
         raise ValueError('Maintained non-runtime storage policy reference changed')
     bridge = json.loads(adaptation)
     for selector in bridge['policy_reference']['selectors']:

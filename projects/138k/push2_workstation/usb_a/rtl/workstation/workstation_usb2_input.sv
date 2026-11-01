@@ -6,6 +6,7 @@ module workstation_usb2_input #(
     parameter integer FEEDBACK_AUDIO_DOMAIN = 0,
     parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
     parameter bit CNN_FOLLOW_ENABLE = 1'b1,
+    parameter bit TF_MENU_ENABLE = CNN_FOLLOW_ENABLE,
     parameter bit MEDIA_CONTROLS_ENABLE = 1'b1,
     parameter bit WORKER_DEMO = 1'b0,
     parameter integer AUDIO_OWNER_RESET_SYNC = 0
@@ -100,7 +101,8 @@ module workstation_usb2_input #(
     wire feedback_clk = FEEDBACK_AUDIO_DOMAIN != 0 ? clk_audio : clk_ref;
     wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? owner_audio_reset_n : feedback_release_q[1];
     push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
-                         .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
+                         .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE),.TF_MENU_ENABLE(TF_MENU_ENABLE),
+                         .MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
                          .WORKER_DEMO(WORKER_DEMO)) input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(owner_audio_reset_n),
         .feedback_clk(feedback_clk), .feedback_reset_n(feedback_reset_n), .performance_words(performance_words_i),

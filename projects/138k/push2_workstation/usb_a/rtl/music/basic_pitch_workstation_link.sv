@@ -4,7 +4,11 @@
 // observed in the TF decoder clock domain; the audio playback path is never
 // stalled by model upload or analysis.
 module basic_pitch_workstation_link #(
-    parameter bit USE_FLASH_WEIGHTS = 1'b0
+    parameter bit USE_FLASH_WEIGHTS = 1'b0,
+    // Opt in only for a task owner which waits for restart_done_o. The
+    // default retains the accepted single-board restart contract.
+    parameter bit DRAIN_RESTART_ENABLE = 1'b0,
+    parameter integer RESTART_TIMEOUT_CYCLES = 50000000
 ) (
     input wire clk_50m, reset_n,
     input wire memory_clk, memory_reset_n, memory_calibrated,
@@ -34,21 +38,30 @@ module basic_pitch_workstation_link #(
     output wire [255:0] ddr_data,
     output wire [31:0] ddr_mask,
     input wire ddr_ready, ddr_response,
-    input wire [255:0] ddr_read_data
+    input wire [255:0] ddr_read_data,
+    output wire restart_ready_o, restart_busy_o, restart_done_o,
+    output wire restart_fault_o,
+    // 1: drain timeout; 2: memory reset/calibration lost after readiness.
+    // Recovery from either fault requires a coherent global reset_n.
+    output wire [1:0] restart_failure_code_o
 );
     wire bp_busy,bp_done,bp_song_done;
-    assign analysis_done=bp_song_done;
+    wire pipeline_restart,task_io_enable,request_admit;
+    wire raw_result_valid,raw_score_valid;
+    assign analysis_done=bp_song_done && task_io_enable;
+    assign result_valid=raw_result_valid && task_io_enable;
+    assign score_valid=raw_score_valid && task_io_enable;
     wire bp_pcm_ready,converted_valid,converted_ready;
     wire signed [15:0] converted_left,converted_right;
     wire rate_48000=sample_rate==20'd48000;
     wire rate_44100=sample_rate==20'd44100;
-    assign pcm_ready=rate_48000 ? bp_pcm_ready :
-                     rate_44100 ? converted_ready : 1'b1;
+    assign pcm_ready=task_io_enable && (rate_48000 ? bp_pcm_ready :
+                     rate_44100 ? converted_ready : 1'b1);
     basic_pitch_44100_to_48000 u_44100_to_48000(
-        .clk_i(clk_50m),.rst_ni(reset_n && !analysis_restart),
-        .valid_i(pcm_valid && analysis_enable && rate_44100),
+        .clk_i(clk_50m),.rst_ni(reset_n && !pipeline_restart),
+        .valid_i(pcm_valid && analysis_enable && rate_44100 && task_io_enable),
         .ready_o(converted_ready),.left_i(pcm_left),.right_i(pcm_right),
-        .valid_o(converted_valid),.ready_i(bp_pcm_ready),
+        .valid_o(converted_valid),.ready_i(bp_pcm_ready && task_io_enable),
         .left_o(converted_left),.right_o(converted_right));
     wire [15:0] result_conf,debug_onset,debug_progress,debug_dwell;
     wire [8:0] debug_stream_wave;
@@ -73,7 +86,7 @@ module basic_pitch_workstation_link #(
         .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(1'b1),
         .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(1'b1)
     ) u_basic_pitch (
-        .clk_i(clk_50m),.rst_ni(reset_n),.analysis_restart_i(analysis_restart),
+        .clk_i(clk_50m),.rst_ni(reset_n),.analysis_restart_i(pipeline_restart),
         .model_serial_i(model_serial),.model_boot_ready_i(model_memory_ready),
         .flash_miso_i(flash_miso),
         .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
@@ -82,16 +95,16 @@ module basic_pitch_workstation_link #(
         .debug_model_expected_crc_o(model_expected_crc),
         .debug_model_actual_crc_o(model_actual_crc),
         .debug_model_error_stage_o(model_error_stage),
-        .pcm_valid_i(rate_48000 ? (pcm_valid && analysis_enable) :
-                     (rate_44100 && converted_valid && analysis_enable)),
-        .pcm_end_i(analysis_enable && pcm_end &&
+        .pcm_valid_i(task_io_enable && (rate_48000 ? (pcm_valid && analysis_enable) :
+                     (rate_44100 && converted_valid && analysis_enable))),
+        .pcm_end_i(task_io_enable && analysis_enable && pcm_end &&
                    (!rate_44100 || !converted_valid)),
         .pcm_ready_o(bp_pcm_ready),
         .pcm_left_i(rate_48000 ? pcm_left : converted_left),
         .pcm_right_i(rate_48000 ? pcm_right : converted_right),
-        .result_valid_o(result_valid),.result_note_o(result_note),
+        .result_valid_o(raw_result_valid),.result_note_o(result_note),
         .result_conf_o(result_conf),.result_frame_o(result_frame),
-        .score_valid_o(score_valid),.score_ready_i(score_ready),.score_note_o(score_note),
+        .score_valid_o(raw_score_valid),.score_ready_i(score_ready && task_io_enable),.score_note_o(score_note),
         .debug_onset_o(debug_onset),.debug_progress_o(debug_progress),
         .debug_dwell_o(debug_dwell),
         .debug_stream_wave_o(debug_stream_wave),
@@ -107,9 +120,11 @@ module basic_pitch_workstation_link #(
     wire [48:0] ddr_fifo_data;
     wire ddr_cmd_valid,ddr_cmd_ready;
     wire [48:0] ddr_cmd_data;
+    wire request_fifo_ready;
+    assign bp_mem_ready = request_fifo_ready && request_admit;
     music_async_fifo #(.WIDTH(49),.ADDRESS_BITS(4)) u_ddr_req_cdc (
         .write_clk_i(clk_50m),.write_rst_ni(reset_n),
-        .write_valid_i(bp_mem_req),.write_ready_o(bp_mem_ready),
+        .write_valid_i(bp_mem_req && request_admit),.write_ready_o(request_fifo_ready),
         .write_data_i({bp_mem_write,bp_mem_byte_addr,bp_mem_wdata}),
         .read_clk_i(memory_clk),.read_rst_ni(memory_reset_n),
         .read_valid_o(ddr_fifo_valid),.read_ready_i(ddr_fifo_ready),
@@ -147,6 +162,116 @@ module basic_pitch_workstation_link #(
         .ddr_read_data_i(ddr_read_data)
     );
 
+    generate if (!DRAIN_RESTART_ENABLE) begin:g_legacy_restart
+        assign pipeline_restart=analysis_restart;
+        assign task_io_enable=1'b1;
+        assign request_admit=1'b1;
+        assign restart_ready_o=1'b1;
+        assign restart_busy_o=1'b0;
+        assign restart_done_o=analysis_restart;
+        assign restart_fault_o=1'b0;
+        assign restart_failure_code_o=2'd0;
+    end else begin:g_drain_restart
+        localparam integer TIMER_BITS=(RESTART_TIMEOUT_CYCLES<2) ? 1 :
+                                      $clog2(RESTART_TIMEOUT_CYCLES);
+        localparam [1:0] RUN=0,DRAIN=1,RESET_PIPELINE=2,RELEASE_PIPELINE=3;
+        reg [1:0] state;
+        reg armed,done,fault;
+        reg [1:0] failure_code;
+        reg [TIMER_BITS-1:0] timer;
+        // The FIFO has only 16 slots and the pipeline permits one read in
+        // flight. Monotonic 16-bit ledgers wrap safely; they are never reset
+        // by a task restart or by a memory-domain-only reset.
+        reg [15:0] reads_accepted,reads_consumed,writes_accepted;
+        reg [15:0] writes_committed,writes_committed_gray;
+        (* ASYNC_REG="TRUE" *) reg [15:0] writes_gray_meta,writes_gray_sync;
+        reg memory_was_ready,memory_failed,transport_was_ready;
+        (* ASYNC_REG="TRUE" *) reg memory_failed_meta,memory_failed_sync;
+        wire restart_request=analysis_restart && armed;
+        wire request_fire=bp_mem_req && bp_mem_ready;
+        wire response_fire=ddr_rsp_fifo_valid;
+        wire write_commit=memory_reset_n && memory_calibrated &&
+                          ddr_cmd_valid && ddr_cmd_ready && ddr_cmd_data[48];
+        wire [15:0] writes_committed_next=writes_committed+16'd1;
+        function automatic [15:0] gray_to_binary(input [15:0] gray);
+            integer bit_index;
+            begin
+                gray_to_binary[15]=gray[15];
+                for(bit_index=14;bit_index>=0;bit_index=bit_index-1)
+                    gray_to_binary[bit_index]=gray_to_binary[bit_index+1]^gray[bit_index];
+            end
+        endfunction
+        wire [15:0] committed_sync=gray_to_binary(writes_gray_sync);
+        wire drained=(reads_accepted==reads_consumed) &&
+                     (writes_accepted==committed_sync);
+        wire transport_ready=model_memory_ready && !memory_failed_sync;
+        assign task_io_enable=state==RUN && !restart_request && !fault && transport_ready;
+        assign request_admit=task_io_enable;
+        assign pipeline_restart=state==RESET_PIPELINE && !fault && transport_ready;
+        assign restart_ready_o=state==RUN && armed && !fault && transport_ready;
+        assign restart_busy_o=state!=RUN && !fault;
+        assign restart_done_o=done && !fault && transport_ready;
+        assign restart_fault_o=fault;
+        assign restart_failure_code_o=failure_code;
+
+        // Register Gray from the very same single native-write acceptance.
+        // It changes by at most one bit per memory clock, even while source
+        // request admission is frozen for drain. Do not reset this counter
+        // with memory_reset_n: lost transport state must fault, not look empty.
+        always @(posedge memory_clk or negedge reset_n) begin
+            if(!reset_n)begin
+                writes_committed<=0;writes_committed_gray<=0;
+                memory_was_ready<=0;memory_failed<=0;
+            end else begin
+                if(memory_reset_n && memory_calibrated)memory_was_ready<=1;
+                if(memory_was_ready && (!memory_reset_n || !memory_calibrated))memory_failed<=1;
+                if(write_commit && !memory_failed)begin
+                    writes_committed<=writes_committed_next;
+                    writes_committed_gray<=(writes_committed_next>>1)^writes_committed_next;
+                end
+            end
+        end
+        always @(posedge clk_50m or negedge reset_n)begin
+            if(!reset_n)begin
+                writes_gray_meta<=0;writes_gray_sync<=0;
+                memory_failed_meta<=0;memory_failed_sync<=0;
+                reads_accepted<=0;reads_consumed<=0;writes_accepted<=0;
+                state<=RUN;armed<=1;done<=0;fault<=0;failure_code<=0;timer<=0;
+                transport_was_ready<=0;
+            end else begin
+                writes_gray_meta<=writes_committed_gray;
+                writes_gray_sync<=writes_gray_meta;
+                memory_failed_meta<=memory_failed;
+                memory_failed_sync<=memory_failed_meta;
+                if(model_memory_ready)transport_was_ready<=1;
+                done<=0;
+                if(!analysis_restart)armed<=1;
+                if(request_fire)begin
+                    if(bp_mem_write)writes_accepted<=writes_accepted+16'd1;
+                    else reads_accepted<=reads_accepted+16'd1;
+                end
+                if(response_fire)reads_consumed<=reads_consumed+16'd1;
+                // Source-side readiness loss also quarantines the client
+                // if the memory clock itself has stopped.
+                if(memory_failed_sync || (transport_was_ready && !model_memory_ready))begin
+                    fault<=1;failure_code<=2'd2;
+                end else if(!fault)begin
+                    case(state)
+                        RUN:if(restart_request)begin state<=DRAIN;armed<=0;timer<=0;end
+                        DRAIN:begin
+                            if(drained && transport_ready)state<=RESET_PIPELINE;
+                            else if(timer>=RESTART_TIMEOUT_CYCLES-1)begin
+                                fault<=1;failure_code<=2'd1;
+                            end else timer<=timer+1'b1;
+                        end
+                        RESET_PIPELINE:if(transport_ready)state<=RELEASE_PIPELINE;
+                        RELEASE_PIPELINE:if(transport_ready)begin state<=RUN;done<=1;end
+                    endcase
+                end
+            end
+        end
+    end endgenerate
+
     // These two diagnostic levels originate in the audio clock domain. Only
     // the first sampling stage is asynchronous; all sticky/UART consumers use
     // the second stage in clk_50m, rather than a raw level driving CE or data.
@@ -172,7 +297,7 @@ module basic_pitch_workstation_link #(
             seen_format <= 0;seen_source <= 0;
             hash_page <= 0;bp_done_q <= 0;
             score_count <= 0;score_first <= 0;score_last <= 0;
-        end else if (analysis_restart) begin
+        end else if (pipeline_restart) begin
             seen_pcm <= 0;seen_busy <= 0;seen_done <= 0;
             seen_format <= 0;seen_source <= 0;
             hash_page <= 0;bp_done_q <= 0;

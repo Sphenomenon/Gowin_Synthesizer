@@ -94,9 +94,15 @@ W直连蓝牙时，M→W的最终观测＋mono分析＋效果输入净PCM为672,
 
 TF复用维护的[native直读](push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md)、[ingress](push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md)和[真实尾帧](push2_workstation/usb_a/rtl/tf_audio/WORKSTATION_TF_PHYSICAL_TAIL_V1_CONTRACT.md)。恢复Push真实文件名浏览/确认/播放/暂停/停止/重播，以及HDMI实际曲目/错误反馈；CNN缺席仍能选曲播放。只有一个SD/FAT owner，实际profile/网表/请求trace证明播放无DDR双bank中转；真实卡连续供给、碎片/FAT间隙、预填充、拔卡和物理EOS需独立验证。
 
+已完成显式`custom138k-workstation-task3-m-local-tf-v1`菜单/整机prepare检查点，见[TF入口证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_TF_MENU_20261101.json)。`TF_MENU_ENABLE`与本地CNN分离，真实MMIO→曲名/像素→选曲CDC→TF服务通过，GW25K隔离和旧默认保留；现有TF mode/run仍由已提交控制决定，未进入TF模式时选曲不会擅自启播。新配置保留选曲mailbox的3条原约束，仅退出16条CNN约束；262项编译输入准备成功，候选`custom138k-workstation-task3-m-local-tf-v1-213b414982428727`。**它仍选旧DDR TF服务，不是直读完成或实体播放验收**；未选的原生直读整机装配正在独立实现。旧DEMO配置和锁不刷新。
+
 CNN首工作流为M选TF→明确分析PCM任务→W CQT/真实模型/CNN/Viterbi→完整谱面返回→M Push指导。先允许离线分析完再练习；不能称零延迟扒谱。模型权重/CRC、CQT、输入率/window/hop、量化、Viterbi和音符映射单独锁定；历史[full83验收](push2_workstation/usb_a/reports/CNN_83_ACCEPTANCE_20261006.json)不能转授新W。缺模型/loader/实现据实列缺口；允许W用部分BSRAM缓存加速，须测真实资源、推理最坏时间和录音/蓝牙共存。播放扇出不把两个ready相与：分析不足就降实际cadence或失败，不拖停播放。
 
 本轮已核对维护的`rtl/music/weights/cnn_ddr_blob.mem`：52,239个16-bit word、104,478B，文本SHA256为`b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf`，与accepted full83锁定模型逐字节相同；按little-endian word还原的CRC32为`AF01A61B`。真实模型存在；当前缺口是W角色装配、加载/CRC、BSRAM缓存配置、推理/任务链及实板质量，而不是“模型缺失”。原模型和Flash内容不修改。
+
+W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_link.sv`内显式可选实现（`DRAIN_RESTART_ENABLE=1`）；实际FIFO/DDR读返回与写接受排空后才重启推理，超时/内存复位/校准丢失隔离。真实模型、小窗口/2帧回归覆盖7种生命周期场景，取消后六层hash/写数/score与全新默认实例相同，跳过排空的负控失败，见[CNN任务证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_CNN_RESTART_20261101.json)。默认保持旧行为；W21未因此接回CNN，完整W装配/loader/质量与实板仍待验。
+
+[统一录音审计](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORDING_AUDIT_20261101.json)已确认可复用现有`ble_business_owner`与真实CRC/rawDDR后端：CPU本地代理与BLE可操作同一对象。既有联调1765检查/136条历史报文及15负控、rawDDR188004检查/5负控通过；当前仍为16384帧（约0.341s）。W21明确退出该后端；后续新增W媒体角色，不恢复R00独立对象。60秒需要同时扩大对象容量、物理engine/策略与DDR分配，不能只放宽一个常量；LCD突发PCM还须有界解包/节拍后喂给现有CRC录音端。
 
 D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Drive/Delay Send和Pitch/Delay/Chorus/Reverb逐项标实现/缺口。持续PCM Pitch不等于采样器变播放相位或近unity SRC。最终路径明确为手机→W蓝牙/解码→有界链路→经验证的M/W效果→M最终音量/调度→DAC；W演示DAC仅为回退，最终不能让手机音量标签冒充M实际输出。
 
@@ -112,8 +118,8 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-02a 第一计算迁移源码 | 已完成[源码/仿真证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SOURCE_20261101.json)：M真实链退出本地混响的显式分支，W真实混响/历史RAM；端点15,076帧、18故障场景，整链37,312帧、全部效果顺序/mask/双率及3次有尾音普通屏障通过，整链最大538计算时钟。默认19项、来源17项、候选清单11项通过；生产DEMO宏关闭且原层次不变 |
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
-| T3-04 M本地基础/TF前端 | 不依赖T3-03先推进本地候选：保留32声部/普通矢量；恢复真实选曲/直读/末帧；整机P&R及DAC/HDMI/控制延迟分别验证 |
-| T3-05 W CNN/分析/长录音 | 源码、模型、BSRAM/DDR预算及single-object适配，可与03/04并行；真实综合后以LCD额度接M，不能等完整M恢复后才开始 |
+| T3-04 M本地基础/TF前端 | 独立菜单与显式262输入整机prepare检查点已通过，详见TF入口证据；仍为旧DDR播放，原生直读/真实尾帧正在装配。保留32声部/普通矢量；完整P&R与实体DAC/HDMI/控制延迟待验 |
+| T3-05 W CNN/分析/长录音 | 真实CNN安全排空/重启源码与小窗口模型回归通过；统一CPU/BLE对象审计/组件重跑通过。W角色装配、长容量/地址分配、loader/推理质量、BSRAM/DDR并发及综合仍待实现；按LCD实测额度接M |
 | T3-06 同对候选集成 | TF→W CNN→Push、真实手机D→M DAC、CPU/BLE同一长录音、下载/重连/取消/PANIC；分别测两板并发资源/时序/吞吐/延迟 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 

@@ -3,6 +3,7 @@
 module push2_usb_a_control #(
     parameter integer STOP_CLOCK_QUEUE_FENCE=0,
     parameter bit CNN_FOLLOW_ENABLE=1'b1,
+    parameter bit TF_MENU_ENABLE=CNN_FOLLOW_ENABLE,
     parameter bit MEDIA_CONTROLS_ENABLE=1'b1,
     parameter bit WORKER_DEMO=1'b0
 )(
@@ -207,7 +208,7 @@ module push2_usb_a_control #(
     push2_controls #(.INITIAL_VOLUME(127),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) controls(.clk(clk),.rst(input_reset),.connected(connected),
         .valid(valid && !generic_midi),.ready(map_ready),.kind(kind),.cable(cable),.channel(channel),.a(a),.b(b),
         .actual_control(control),.actual_options(options),.actual_panic_epoch(panic_epoch),
-        .guide_enabled_i(CNN_FOLLOW_ENABLE),.guide_mode_i(guide_mode),
+        .guide_enabled_i(CNN_FOLLOW_ENABLE || TF_MENU_ENABLE),.guide_mode_i(guide_mode),
         .guide_toggle_o(push_guide_toggle),.guide_prev_o(push_guide_prev),
         .guide_next_o(push_guide_next),.guide_select_o(push_guide_select),
         .event_valid(mapped_valid),.event_ready(mapped_ready),.event_data(mapped_event),
@@ -253,11 +254,26 @@ module push2_usb_a_control #(
         .wrong_count(guide_wrong_count),.guide_mask(guide_mask));
     end else begin: no_cnn_follow
         assign score_flush_count=19'd0;
+        if(TF_MENU_ENABLE && MEDIA_CONTROLS_ENABLE && !WORKER_DEMO)begin: tf_menu_only
+            // Plain TF browsing does not instantiate the CNN score queue or
+            // claim a score target. Playback still belongs to the TF owner.
+            reg menu_mode;
+            always @(posedge clk or negedge reset_n)
+                if(!reset_n)menu_mode<=1'b0;
+                else if(guide_toggle)menu_mode<=!menu_mode;
+            assign guide_mode=menu_mode;
+            push2_song_menu u_song_menu(.clk(clk),.rst(!reset_n),
+                .toggle(guide_toggle),.mode(guide_mode),
+                .prev(guide_prev),.next(guide_next),.select_key(guide_select),
+                .track_count(guide_track_count),.chosen(guide_chosen),
+                .browse_index(guide_browse),.track_index(track_index),.launch(track_launch));
+        end else begin: no_tf_menu
         assign guide_mode=1'b0;
         assign guide_chosen=1'b0;
         assign guide_browse=4'd0;
         assign track_index=4'd0;
         assign track_launch=1'b0;
+        end
         assign guide_target_valid=1'b0;
         assign guide_target_note=7'd0;
         assign guide_mask=64'd0;
@@ -356,7 +372,8 @@ module push2_usb_a_control #(
         .packet_valid(packet_valid),.packet_length(packet_length),.packet_index(packet_index),
         .packet_data(packet_data),.packet_acked(packet_ack),.commands_acked(commands),.commands_rejected());
     wire frame_capture=accepted && write && address==8'h08;
-    push2_surface_pixels #(.PIPELINED(1),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
+    push2_surface_pixels #(.PIPELINED(1),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
+        .TF_PLAYBACK_ONLY(TF_MENU_ENABLE && !CNN_FOLLOW_ENABLE)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
         .note(note),.velocity(velocity),.display_meta(display_meta_q),

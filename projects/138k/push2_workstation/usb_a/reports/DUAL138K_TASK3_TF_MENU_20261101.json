@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "task3_independent_M_TF_menu_and_explicit_native_prepare",
+  "source_parent_commit": "f9a197006e329ee63dd002262b00eccaa5f99447",
+  "source_sha256": {
+    "rtl/workstation/gw138k_push_workstation_top.v": "dfe698e7bcde7c47c9263224a6615e5269e19b0e1509cda709420f626df94e0d",
+    "rtl/workstation/workstation_profile_task3_m_local_tf.sv": "e80741716f24930f4d960e63012cb10ea5a54335535ad7c3e06d479b56ffa39d",
+    "rtl/workstation/workstation_usb2_input.sv": "bb9fb6a4d6042b06ef78d59205fd776a80e696d3fd3d4af6f6169a75093988d2",
+    "rtl/push2_usb_a_control.sv": "5c8337bd53b51236826799a3f92e5fefb99fb34bbf1f034db6b8d0d39473459a",
+    "rtl/display_data/push2_surface_pixels.sv": "8b00bea9b72c131129088c4cc9f4d005c8708ec7e8ac82fe85b4e4b3be757844",
+    "rtl/push2/push2_song_screen.sv": "c486c47f58d32842e224582ccf6e1d8d82439ea4ca01b25e01db520f9e45af7c",
+    "tools/workstation_profile.py": "556adba69eb9003970e459f22c6169d5d485109baa9129959e037160bf4bf539",
+    "tools/workstation_custom_board.py": "0299729ad8d1e55ebe48e3a8a7308fefa6befce8d58a6b1217c89b99b35d02c5",
+    "tools/workstation_recognition_policy.py": "b18cb4ed3d81c864bbe3b20ad3d747759fa97f8e7f8e179f2160f87050755ea7",
+    "tools/workstation_demo_policy.py": "88d95de979a43291da0214b26365219b3f8fbeabca8ad17c051c546ad8b09329",
+    "tools/workstation_usb2_owner_reset.py": "72c3edae488cdf2cdf1f4373e6e7b7d57c0da0141cb3cd81cd1c3ea2d71c3b73",
+    "tools/workstation_delay_storage_provenance.py": "92794688bf470f04ef28fa24a60cd304de47161de35c524d64d902cb581b3625",
+    "sim/run_tf_menu_no_cnn.py": "e6c8b534292685299dbb1dc7c021274106eedc4d955b850303ffb0df31b1f486",
+    "sim/tb_tf_menu_no_cnn.sv": "2c1291ee6ec1af133cd7ad8cafa73022361c79ba2bbe88671cc4d27599fcbf48",
+    "sim/test_workstation_task3_tf_policy.py": "e2e6ff66cf00c5bec149ecb9637ea920d0b1ac2d1be272bf2356666f8a9878c6",
+    "boards/custom_138k/workstation_profile_task3_m_local_tf_v1.json": "2f28654c0825ead9f41e914dc96ee72d36594e95e370df193a28c00fdae8eaad"
+  },
+  "candidate_identity": "custom138k-workstation-task3-m-local-tf-v1-213b414982428727",
+  "configuration": {
+    "hdmi_mode": "1080p60",
+    "high_speed_allowed": true,
+    "tf_audio_kind": "wav",
+    "implemented_sample_rates_hz": [
+      48000,
+      44100
+    ],
+    "ae350_firmware_policy": "maintained_ae350_v1",
+    "scan_window_policy": "native_admission_v1",
+    "audio_policy": "native_dual_rate_runtime_v1",
+    "reserve_zero_epoch": true,
+    "display_metadata_minor": 1,
+    "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+    "recognition_policy": "disabled_cnn_and_follow_v1",
+    "local_panel_policy": "disabled_local_lcd_touch_v1",
+    "demo_role": "M",
+    "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+    "tf_policy": "local_tf_ddr_with_independent_menu_v1",
+    "bluetooth_policy": "retired_for_independent_m_demo_v1",
+    "recording_policy": "disabled_m_demo_v1"
+  },
+  "prepare": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-local-tf-prepare-v5",
+    "exit_code": 0,
+    "enabled_inputs": 262,
+    "integration_sha256": "d3e7360dfb2f05a11f331aa004f30b6b90930d2573aabdb3d3d1a3f61396518c",
+    "artifact_sha256": "98663e021bb08902cad3deb5a0d14ffda413f7f7e013173833c8e69575448122",
+    "source_seal": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-local-tf-source-seal-v2",
+    "source_seal_sha256": "96e37ccc50494cdd8c34acb7648cd0bd5732ce4eccff20033f489bdf6292c2e7",
+    "frozen_profile_verifier_exit_code": 0,
+    "inactive_snapshot_note": "Complete snapshot includes an unselected direct_runtime_service experiment. It is not staged or compiled in this checkpoint; exact snapshot bytes remain in source seal. Only the menu and existing DDR TF runtime are selected."
+  },
+  "validation": {
+    "menu": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/tf-menu-profile-review-v1/verification.json",
+      "sha256": "41aee3568e546feee4855658a224befbe19901109457781f4bd210e0408bd399",
+      "passed": true,
+      "scope": "Real MMIO, filename pixels, Push/generic menu, event FIFO, song CDC, TF transport/playback policy. SD PCM and board excluded."
+    },
+    "task3_constraint_tests": 4,
+    "legacy_role_retirement_tests": 8,
+    "legacy_recognition_constraint_tests": 2,
+    "usb_owner_reset_tests": 9,
+    "accepted_sources_tests": 17,
+    "all_passed": true,
+    "sdc": {
+      "song_mailbox_lines_retained": 3,
+      "cnn_lines_retired": 16,
+      "live_TF_constraints_retained": true,
+      "clocks_or_live_exceptions_relaxed": false
+    }
+  },
+  "unchanged": {
+    "old_demo_profiles": true,
+    "accepted_baselines": true,
+    "original_source_worktrees": true,
+    "default_top_token_modes": [
+      "default",
+      "native",
+      "no_cnn",
+      "demo_no_tf"
+    ]
+  },
+  "attempts": [
+    {
+      "directory": "m-local-tf-prepare-v1",
+      "result": "Host GCC16 lacks bare-metal string.h; no vendor byte changes. Use explicit installed xPack15.2 compiler."
+    },
+    {
+      "directory": "m-local-tf-prepare-v2",
+      "result": "Exact USB owner-reset source assertion rejected newly inserted menu parameter. Updated to allow precisely the optional known parameter block."
+    },
+    {
+      "directory": "m-local-tf-prepare-v3",
+      "result": "Top reference hash changed. Added reversible two-insertion adaptation retaining original reference hash and selectors."
+    },
+    {
+      "directory": "m-local-tf-prepare-v4",
+      "result": "Prepare passed. Subsequent inactive experimental-file changes prevented source-seal replay; kept unchanged and prepared v5 after source freeze."
+    }
+  ],
+  "limits": [
+    "Current selected TF path still uses DDR owner4 and existing EOF/transport contract, not native direct reader.",
+    "CNN is not restored to M; W task owner/profile and physical link remain unintegrated.",
+    "Menu selection does not bypass committed TF mode/run authority. Enter TF mode using existing controls; selecting while outside TF mode does not start playback.",
+    "No synthesis, routed resources/timing/CDC/PLL, bitstream or physical card/DAC/HDMI/latency acceptance for this checkpoint.",
+    "Stage profile is explicit and does not promote or refresh old M/W DEMO source locks."
+  ],
+  "bitstream": null,
+  "user_code": null,
+  "resources": null,
+  "timing": null,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false
+}
