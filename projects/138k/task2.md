@@ -607,3 +607,6 @@ M26-1／D211013A现已按持续授权[SRAM下载并留板](push2_workstation/usb
 W26的[A2DP真实能力声明修复](push2_workstation/usb_a/reports/DUAL138K_W26_DELAY_CAPABILITY_SOURCE_20261102.json)已落维护源码：冻结W25的pcm_media没有delay_valid事实，却在GetAllCapabilities公布08/00，手机选择时会以08/31拒绝；新代码仅A138_WORKER_AUDIO_ONLY退出这项无真实provider的可选能力，未经广告选择返回08/17，不造延迟值、不改D音频Delay效果。真实ACL相同请求对照旧947／新941×2检查及3执行负控通过；默认DelayReporting11199×2／18负控、Classic49640×2／15负控与真实SBC向量保持。实际W固件编译宏核实、ROM398f9677…d253ae3、ELFa15642d9…2396bf、栈上界896bytes；主线程用真实RV32编译器独立证明非W默认完整35552字节object相同（原raw预处理常数guard比较差异保留）。两profile仅精确刷新2来源并新增3测试锁，M893／W1140全匹配，17来源／18审计／8policy通过。预留新D2110143重新全量实现，未继承W142位流身份或时序／手机验收，M26-1仍留板；25K手机转发由用户自行完成，本轮不改25K。
 
 W／M被动UART零字节的来源核对另已收口：实际debug_uart_tx确接U15上的PL runtime_serial，50MHz下每秒独立发送115200遥测，CPU／HCI／DDR／音频ready均只是payload而非发送门；因此零字节不是预期活跃遥测。现有硬件盘点只将21201识别为FT2232接口1候选，旧引脚核对要求确认核心板调试口／外接3.3V串口路径；未实测21201→U15连接或时钟／复位，不能凭本次空capture判断业务成败，也不因此篡改冻结候选。
+
+
+W26的[正式生产prepare与预先来源冻结](push2_workstation/usb_a/reports/DUAL138K_W26_PREPARE_20261102.json)已完成：来源c7818498，身份`0a6b1eb610b17895`，975原源／613暂存／129编译／1492冻结工具，M893／W1140锁。实际生产指定xPack15.2、安装ROM `9f15d539…6ae487ea`／ELF `5c8c422f…d149e6b9`；先前源验证默认Homebrew的398f ROM另列，不混成同一构建。与冻结W25相比仅boot.mem及未启用HDMI源码两暂存项变化，129个启用RTL的路径／顺序／字节均保持；ROM仍是实际readmem输入，必须重新综合和全量P&R。新综合已启动，预留D2110143，不预记资源／时序／业务通过，不改M26-1留板。
