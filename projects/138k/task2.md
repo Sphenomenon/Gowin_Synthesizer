@@ -380,6 +380,8 @@ W16 的[实际返回邮箱CDC覆盖缺口](push2_workstation/usb_a/reports/DUAL1
 
 W16 `D2110118` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W16_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53289，setup4489／−4.472ns、hold3／−3.683ns、recovery+1.869／removal+.278ns。最差DDR read_pointer→raw pack_frames及HCI tx_header→generations WRE，另有48k参考hold−.002ns；四张clk50−4.442／+.175／−4.442／−3.683ns。原生VO58项44通过14跳过／60负控、边界7／69、官方六PLL／7负控及held-v2通过；主线程重验30物理／3264证据。专门实际VO也确认缺9632资格约束，整机STA／完整CDC均未接受；同VG／SDC／DDR3.500ns的`D2110119` far已全量P&R，未预记结果，未上板。
 
+M18 `D2110116` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M18_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50920，setup1813／−1.652ns、hold1／−3.638ns、recovery+2.933／removal+.278ns。最差TF available_bytes→accepted_used，其后为显示expected_sequence及音频transaction_fault相关路径；四张clk50−1.309／+.137／−1.309／−3.638ns。原生VO58项55通过3跳过／71负控、边界7／69、官方六PLL／7负控及held-v2通过；独立子代理与主线程各重验2966冻结证据，完整STA／物理接受仍失败。同VG／SDC／DDR3.500ns的`D2110117` far继续独立测量；未上板，不改变T2-D1／D2状态。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
