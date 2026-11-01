@@ -1,0 +1,81 @@
+{
+  "schema": "dual138k_M24_synthesis_132_physical_start_20261101_v1",
+  "stage": "M24 complete new full synthesis and independently checked directed physical inputs; D2110132 P&R started, result pending",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-b4a481778b7043c8",
+  "user_code": "0xD2110132",
+  "prepare_handoff_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-prepare-seal-handoff-v1.json": "1a7b3b44f8bb5d0a9485dafa30d2c11b33056de5bb17eb850c5508d762087f64"
+  },
+  "synthesis": {
+    "exit_code": 0,
+    "elapsed_seconds": 168.40042749978602,
+    "all_inputs_reverified": true,
+    "VG_sha256": "deca9e699a7b631c1f1f8d7927b7f889a085fa2b35e7917518c211d537c7d9e7",
+    "synthesis_resources": {
+      "Register": 43124,
+      "Lut": 48051,
+      "Alu": 11423,
+      "Bsram": 206,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "synthesis_BSRAM_is_not_physical_BSRAM": true
+  },
+  "strict_synthesis": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-strict-synthesis-v4.json",
+    "sha256": "a0becf06a52fdd5fca48f64fadafd52bb52121228621c46737021cc3829348be",
+    "validation_stage": "demo_full_profile_synthesis_only",
+    "visible_selectors_resolved": true,
+    "retained_retired_features_verified": true,
+    "old_source_auditor_known_HMI_inventory_rejection_preserved": true,
+    "new_frozen_HMI_auditor_from_prior_review": "ddeaaedab73d286a32bcf056042cb89e31b14aef0abad4ab1c7d6ef89f6771d1",
+    "exact_second_M140_queue_tail_D_inventory": true,
+    "queue_tail_nextq_comparison": {
+      "actual_register_leaves": 63,
+      "BDD_nodes": 1137,
+      "all_binary_assignments": true,
+      "old_new_exactly_equal": true,
+      "source_queue_bytes_identical": true
+    }
+  },
+  "physical": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24-physical-v1",
+    "manifest_sha256": "19491542ebf8c92bb95927eff93553bd5a8c1c29c9ce51e885d6ca9632990272",
+    "input_count": 11,
+    "independent_new_VG": true,
+    "normal_staged_M_v3_SDC_sha256": "c3b2add186c5fd2561e17664539f20649eff7c1140270dd476bf3d1201624f23",
+    "constraints_relaxed": false,
+    "prior_route_acceptance_inherited": false,
+    "DDR_root_and_macro_cell_port_parameters_equal_after_exact_three_clock_alias_renames": {
+      "memory_clk_326": "memory_clk_329",
+      "memory_clk_327": "memory_clk_330",
+      "memory_clk_328": "memory_clk_331"
+    },
+    "reference_FF_controls_rechecked": 128,
+    "D_equivalence_or_entire_VG_equality_claimed": false,
+    "strict_synthesis_audit_sha256": "a0becf06a52fdd5fca48f64fadafd52bb52121228621c46737021cc3829348be"
+  },
+  "pnr": {
+    "started": true,
+    "runner": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-directed-build-runner-v1.py",
+    "expected_result_metadata": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-directed-pnr-run-v1.json",
+    "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24-physical-v1/pnr.log",
+    "completion_claimed": false
+  },
+  "sealed_file_count": 4457,
+  "physical_timing_passed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "remaining": "Actual P&R, STA/resource/PLL/CDC/HMI gates and real board acceptance are pending; no deployment permission inferred from synthesis.",
+  "root_review": {
+    "files_rehashed": 4457,
+    "all_bound_inputs_match": true,
+    "handoff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-synthesis-directed-physical-handoff-v1.json",
+      "sha256": "97986870bad967fb51fb24b0a36990e870242f0fab32a6ed3de645690437b47b"
+    }
+  }
+}
