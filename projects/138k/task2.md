@@ -376,6 +376,8 @@ M 的[TF私有读缓冲预装维护阶段](push2_workstation/usb_a/reports/DUAL1
 
 M18/W16 的[完整prepare／综合及VG检查点](push2_workstation/usb_a/reports/DUAL138K_M18_W16_PREPARE_20261101.md)已完成：各822项锁仅更新6条hash，875／951原始来源、588／645staged及各1395冻结工具逐项复验，实际消费四项维护RTL。综合FF46932／45092、LUT53840／57259、ALU12537／13802、BSRAM equivalent195／257；原生58项分别53／42通过、68／57负控，边界各7／69通过。主线程重读4680证据；M实际VG确认available→256 read_buf CE闭包退出、深度14→2，但CE扇出仍256，routed收益另测。`D2110116`／`D2110118`默认全量P&R已启动；W专门返回邮箱CDC覆盖仍另查，不转授完整CDC／声画或硬件接受，未上板。
 
+W16 的[实际返回邮箱CDC覆盖缺口](push2_workstation/usb_a/reports/DUAL138K_W16_RETURN_MAILBOX_CDC_GAP_20261101.md)已确认：296实际payload CE冻结、pending／ACK／同步链及9项真实布尔关系通过，但原SDC只覆盖296直接D对，漏32×301＝9632资格路径，完整覆盖明确失败。cache精确10ns＋匹配held hold候选覆盖9928／9928、13负控全拒，尚未安装；主线程独立复验。正维护显式W新政策与实际网表门，冻结W16及其P&R仅保留测量身份，不转授CDC／硬件接受，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
