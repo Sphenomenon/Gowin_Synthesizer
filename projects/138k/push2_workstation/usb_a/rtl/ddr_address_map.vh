@@ -142,4 +142,20 @@
 `define PRJ1_DDR_RECORDING_BLE_APP_BASE  29'h0c14_4000
 `define PRJ1_DDR_RECORDING_BLE_APP_LAST  29'h0c14_7fff
 
+// Task3 W-only long recording reservation. No existing M/accepted profile
+// selects this range. It is disjoint from delay, Basic Pitch and the original
+// recording granule; W must own the actual DDR/native client when selected.
+// Eleven 1-MiB granules hold a 60-second format-1 object. The final 14,336
+// allocation bytes are padding, never part of the capture/fetch authority.
+`define PRJ1_DDR_TASK3_W_RECORDING_POOL_BYTE_BASE 32'h3060_0000
+`define PRJ1_DDR_TASK3_W_RECORDING_POOL_BYTE_LAST 32'h310f_ffff
+`define PRJ1_DDR_TASK3_W_RECORDING_POOL_BYTES     32'h00b0_0000
+`define PRJ1_DDR_TASK3_W_RECORDING_CAPACITY_FRAMES 32'd2_880_000
+`define PRJ1_DDR_TASK3_W_RECORDING_BYTES          32'd11_520_000
+`define PRJ1_DDR_TASK3_W_RECORDING_BYTE_BASE      32'h3060_0000
+`define PRJ1_DDR_TASK3_W_RECORDING_BYTE_LAST      32'h310f_c7ff
+`define PRJ1_DDR_TASK3_W_RECORDING_APP_BASE       29'h0c18_0000
+`define PRJ1_DDR_TASK3_W_RECORDING_APP_LAST       29'h0c43_f1ff
+`define PRJ1_DDR_TASK3_W_RECORDING_LAST_BEAT      29'h0c43_f1f8
+
 `endif

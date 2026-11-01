@@ -1,0 +1,203 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "stage": "task3_W_single_recording_configurable_capacity_components",
+  "scope": "Maintained capacity/authority/physical-CRC/native-DDR components and tests only. New W media profile, board link and whole-workstation integration remain unselected.",
+  "source": {
+    "base_commit": "86aa00aff64adb2190d98f6d5b3f495a6d39dddd",
+    "branch": "codex/dual-138k-task3",
+    "input_sha256": {
+      "firmware/ae350/ble_business_owner.c": "e7d4b9dc032d2a4e494baf90364c13230f3550627d8658751c1ecd910ef15122",
+      "firmware/ae350/ble_business_owner.h": "1b2841938b24f06d6ea252ae1172c7611320438dfec089b36551fddaeb29659a",
+      "rtl/bluetooth/cpu_owner/ble_protocol_command.v": "a9fb49bcdb6b5901d7f726bdd0f1221e2d13fb634a9b152853873aeb24971536",
+      "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "ea28fff83b5ab6f7175bf88cea97a1933ff8d87c06c1860bc44770fd3ac2a3b2",
+      "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "b53a89328c453f1b1dafcd4fbc296d6bdd50878eebd2177f74634ae8c4c429db",
+      "rtl/memory/workstation_ble_raw_ddr_store.sv": "5d2b3512b543ef2935161d468f61962965a508ffa9a23fd71ab8d9117626d874",
+      "rtl/ddr_address_map.vh": "c944deb9900553df75d5b980f3ae322378487fabfe9e4e26266583fd4dc4c16b",
+      "rtl/ddr_address_map_guard.v": "5970d209927aca68722bcc4521a65eb550a5a136a9cfa92cf9f6f7d7ae0fd97e",
+      "sim/services/ae350_ble_business_cosim.cpp": "6e51498cb2b36ebb18e48dc385131e2febdc8c7539222515ed31b9af97510d12",
+      "sim/services/ae350_ble_business_cosim.sv": "0df303d0c7d8511645200bc082f768857bcd84c44bf3ddc4502d5a6cc4967892",
+      "sim/services/ae350_ble_long_recording.cpp": "4d50ae05d84ede33947a85eec5e96f53a3b765f712a57bde2e56c9d0d816651c",
+      "sim/services/run_ae350_ble_long_recording.py": "131bdde815b84c82b51402962351092bbad7f833ad824cfd604a0bcbcbf49dbf",
+      "sim/test_ble_recording_capacity_guards.py": "3e9a653a66765c56e0990532892fa2025635ccaf6e9fc9edf86cf4a16ec038ba"
+    }
+  },
+  "implementation": {
+    "default_capacity_frames": 16384,
+    "default_format": 1,
+    "rate_hz": 48000,
+    "channels": 2,
+    "bits_per_channel": 16,
+    "firmware_configuration": "A138_BLE_RECORD_CAPACITY_FRAMES; default16384, accepted range1..0x10000000 frames, maximum1GiB PCM bytes.",
+    "C_authority": "Existing single C task/object/transfer owner retained. GET capacity and both external/local START bounds use the same configured constant; CPU receipt does not introduce another object.",
+    "physical_configuration": "Existing CAPACITY_FRAMES passed by cpu_owner/ble_protocol_command.v to both engine and physical service. Internal read-only MMIO0x3c exposes capacity; nondefault C refuses binding on missing/mismatched fact before allocating an object.",
+    "defaults": "Default capacity remains16384; existing format/opcodes/wire layout unchanged. Actual default golden136 messages are byte-identical; no new public BLE opcode or44.1k label.",
+    "raw_store": "Capacity guard now admits explicitly bounded native DDR ranges up to physical1GiB. Same FIFO/native bridge/generation fencing, CRC, close/drain/fetch semantics,8KiB cache and8112-byte max read remain.",
+    "no_retired_backend_restored": true,
+    "no_top_runtime_tools_or_profile_changes": true
+  },
+  "independent_W_allocation": {
+    "pool_byte_first": "0x30600000",
+    "pool_byte_last": "0x310fffff",
+    "pool_bytes": 11534336,
+    "granule_bytes": 1048576,
+    "object_capacity_frames": 2880000,
+    "object_bytes": 11520000,
+    "object_byte_first": "0x30600000",
+    "object_byte_last": "0x310fc7ff",
+    "native_word_first": "0x0c180000",
+    "native_word_last": "0x0c43f1ff",
+    "last_BL8_native_word": "0x0c43f1f8",
+    "full_BL8_count": 360000,
+    "unused_tail_padding_bytes": 14336,
+    "padding_part_of_object": false,
+    "scope": "Task3_W named reservation only, after the existing recording granule and disjoint from delay/BasicPitch/legacy record allocation. No M old address is moved or reused.",
+    "guard": "Checks1MiB pool alignment and span, bulk containment, disjoint earlier clients, capacity/bytes, byte/native conversion and complete last BL8; actual capture/fetch authority stops before pool padding."
+  },
+  "validation": {
+    "long": {
+      "actual_frames": 2880000,
+      "downloaded_bytes": 11520000,
+      "download_blocks": 1421,
+      "checks": 38475,
+      "object_crc": "3ddb23ec",
+      "last_native_beat": "0x0c43f1f8",
+      "full_capture_and_all_bytes_downloaded": true,
+      "CPU_created_BLE_downloaded": true,
+      "BLE_started_CPU_STOP_same_object": true,
+      "explicit_STOP": "Second object13 complete frames: native accept held after first8; CPU STOP remainsWAIT and hardwareCLOSING, then reachesREADY/13committed after native release. Final partial BL8 downloads52 bytes without old-object tail.",
+      "capacity_mismatch_fenced": true,
+      "C_invalid_capacity_controls": 3,
+      "map_mutation_controls": 4,
+      "timing_scope": "PCM fixture accelerates to one actual frame per8 control clocks. Real control20ns/native14ns ratio preserved; capacity equals60s at48k, not a measured60-second physical/audio run."
+    },
+    "default": {
+      "checks": 1765,
+      "compared_messages": 136,
+      "golden_wire_equal": true,
+      "mutation_controls": 15
+    },
+    "raw": {
+      "positive_checks": 188004,
+      "mutation_controls": 5,
+      "reviewed_lint_warnings": 4
+    },
+    "guards": {
+      "cases": 11,
+      "negative_cases": 7,
+      "includes": "Real engine/service/raw zero/oversize guard failures, last physical BL8 accepted, crossing physical DDR end rejected, and forced maximum engine frame-to-byte arithmetic without overflow. Forced arithmetic is not a captured maximum object."
+    },
+    "evidence": {
+      "long": {
+        "path": "/private/tmp/task3-long-recording-v3/verification.json",
+        "sha256": "26c1ce990eafc60ee3f05b4e4db51649d8e82ac70dc0235b80468b950d7a04b1",
+        "exit_code": 0,
+        "passed": true,
+        "durable_verification_copy": "/Users/sphenicidition/.cache/gw138k-task3-20261101/long-recording-support-v1/long/verification.json"
+      },
+      "default": {
+        "path": "/private/tmp/task3-recording-default-after-cap-v2/verification.json",
+        "sha256": "af8022dfec879aedb40925452c965f7240504d39d2d9430c046f8a610960125e",
+        "exit_code": 0,
+        "passed": true,
+        "durable_verification_copy": "/Users/sphenicidition/.cache/gw138k-task3-20261101/long-recording-support-v1/default/verification.json"
+      },
+      "raw": {
+        "path": "/private/tmp/task3-recording-raw-after-cap-v1/verification.json",
+        "sha256": "69491a11f5950cd382c64f7aac88ac981f00d22a760acae11d05c8be24219370",
+        "exit_code": 0,
+        "passed": true,
+        "durable_verification_copy": "/Users/sphenicidition/.cache/gw138k-task3-20261101/long-recording-support-v1/raw/verification.json"
+      },
+      "guards": {
+        "path": "/private/tmp/task3-recording-capacity-guards-v1/verification.json",
+        "sha256": "d76bf3d99d7a09df647d09302acaf18970c56c1dd83e7b7cf607befc483ee268",
+        "exit_code": 0,
+        "passed": true,
+        "durable_verification_copy": "/Users/sphenicidition/.cache/gw138k-task3-20261101/long-recording-support-v1/guards/verification.json"
+      }
+    },
+    "independent_root_repeat": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/long-recording-root-v1/verification.json",
+      "sha256": "e249966cd49c35b85adb41bfd195c634cde57df0beacbba8a94a7dc4e185a08a",
+      "passed": true,
+      "measured_frames": 2880000,
+      "downloaded_bytes": 11520000,
+      "object_crc": "3ddb23ec"
+    }
+  },
+  "acceptance": {
+    "source_component_implemented": true,
+    "component_simulation": true,
+    "whole_W_profile_selected": false,
+    "whole_native_owner8_selected": false,
+    "dual_board_link_selected": false,
+    "synthesis": false,
+    "pnr": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_written": false,
+    "dual_rate_recording": false
+  },
+  "remaining": [
+    "Parent must integrate one explicit headless W media/storage profile with common configured capacity across firmware/physical engine/service/raw store and the new W map; retain one C object owner and retire R00/local short recorder.",
+    "Real W native owner8/authority/arbiter composition, actual link session/rate/epoch/sequence/error admission, congestion/overflow/cancel/PANIC/reset and media/CNN arbitration are not integrated here.",
+    "Existing source/profile provenance locks are not silently updated by this change; accepted/task2 candidates remain immutable. New W profile needs fresh source identity and regressions.",
+    "Format1 remains48k stereo16.44.1k recording, compatible format/rate facts and real phone playback/record/download remain separate work.",
+    "Full synthesis/P&R resource/STA/CDC/PLL, bitstream/readback, wall-clock60s physical recording, downloaded WAV audition and timing/latency acceptance remain outstanding; no hardware operations occurred.",
+    "New long-object synthetic reconnect path in v2 remains unisolated; final capacity proof preserves session. Future W link/GATT reconnect acceptance must explicitly cover long-object identity/nonce/session/download resumption, not infer it from this capacity result."
+  ],
+  "bitstream_identity": null,
+  "W_profile_identity": null,
+  "failed_attempts": [
+    {
+      "output": "/tmp/task3-long-recording-v1",
+      "exit_code": 1,
+      "log": "/tmp/task3-long-recording-v1/long-run.log",
+      "log_sha256": "43f4ce2d9816f0add3a128fb68567f1e4c53a74a3db00d32915a31e95a96e2c5",
+      "stage": "Second object partial download after full60s capture/download passed",
+      "observed": "Test driver requested hardcoded object1 after CLEAR/new object2; partial READ assertion failed.",
+      "change": "Use actual object2 in second-object operation. No production capacity/CRC/native RTL changed for this fixture issue."
+    },
+    {
+      "output": "/tmp/task3-long-recording-v2",
+      "exit_code": 1,
+      "log": "/tmp/task3-long-recording-v2/long-run.log",
+      "log_sha256": "b69fca196f02f2563b9005ed3885d6e9773f005f8e3d49d60c050a1baa202f4a",
+      "stage": "Second object OPEN after synthetic GATT disable/re-HELLO",
+      "observed": "OPEN status/transfer assertion failed after full capture/download and CPU STOP passed. Exact reconnect failure was not isolated by this capacity stage.",
+      "change": "Final v3 keeps the actual session and tests BLE configured-capacity START -> CPU STOP -> BLE object2 download. Long-object reconnect behavior remains an explicit unverified integration item; original default reconnect/wire suite still passes."
+    }
+  ],
+  "supporting_test_input_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.sv": "0df303d0c7d8511645200bc082f768857bcd84c44bf3ddc4502d5a6cc4967892",
+    "/private/tmp/task3-long-recording-v3/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/ble_protocol_command.v": "a9fb49bcdb6b5901d7f726bdd0f1221e2d13fb634a9b152853873aeb24971536",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "ea28fff83b5ab6f7175bf88cea97a1933ff8d87c06c1860bc44770fd3ac2a3b2",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "b53a89328c453f1b1dafcd4fbc296d6bdd50878eebd2177f74634ae8c4c429db",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/services/workstation_business_mailbox.sv": "61b3ad5f9976294fd28ad8506ecb254d7e69e4409dd8c780c0af94404623632a",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": "5d2b3512b543ef2935161d468f61962965a508ffa9a23fd71ab8d9117626d874",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.c": "e7d4b9dc032d2a4e494baf90364c13230f3550627d8658751c1ecd910ef15122",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_long_recording.cpp": "4d50ae05d84ede33947a85eec5e96f53a3b765f712a57bde2e56c9d0d816651c",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_long_recording.py": "131bdde815b84c82b51402962351092bbad7f833ad824cfd604a0bcbcbf49dbf",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/ae350_ble_business_cosim.cpp": "6e51498cb2b36ebb18e48dc385131e2febdc8c7539222515ed31b9af97510d12",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/ble_business_owner.h": "1b2841938b24f06d6ea252ae1172c7611320438dfec089b36551fddaeb29659a",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/audio_services.h": "d84a0450f5aab3a24bc323e86401566da87e3a46cc681860d2f0b902c1ff74ff",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "c944deb9900553df75d5b980f3ae322378487fabfe9e4e26266583fd4dc4c16b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v": "5970d209927aca68722bcc4521a65eb550a5a136a9cfa92cf9f6f7d7ae0fd97e",
+    "/private/tmp/task3-recording-default-after-cap-v2/gw138k_apb_cdc.sv": "99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py": "7278509f31bd6d0bc847ad71285d4385613f69420847919dd2e1f99dea87f74b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_resource_timing.py": "86f288cba3f9d35951f654ffe74201b4dbdb23f0fb5526b073d3f8415f7afab3",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_ble_raw_ddr_store.sv": "bb63ccc4c61d097a166057bce3fafaef13cc8d34d083475c7546ffe042eb8dfa",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_ble_raw_ddr_store.py": "836868f459c638bcc14ba0a69b598d897167e7bb2532bb50883bcd798b3fb722"
+  }
+}

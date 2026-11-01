@@ -79,7 +79,7 @@ static void get_object(a138_ble_business_owner *o) {
     o->completion_payload[13]=1;o->completion_payload[14]=2;
     o->completion_payload[15]=(uint8_t)(o->transfer.open*4u+(state==4)*2u+(state==5));
     put(o->completion_payload+16,48000);put(o->completion_payload+20,f->frames);
-    put(o->completion_payload+24,f->frames*4u);put(o->completion_payload+28,16384);
+    put(o->completion_payload+24,f->frames*4u);put(o->completion_payload+28,A138_BLE_RECORD_CAPACITY_FRAMES);
     put(o->completion_payload+32,state==4 ? f->crc:0);
     o->completion_payload[36]=(uint8_t)f->reason;o->completion_payload[37]=(uint8_t)(f->reason>>8);
     put(o->completion_payload+40,o->current_operation);reply(o,0,48);
@@ -126,7 +126,7 @@ static void dispatch(a138_ble_business_owner *o) {
         if(len!=8 || word(p)!=1) {reject(o,BAD_ARG);return;}
         if(o->facts.state&(1u<<11)) {reject(o,BUSY);return;}
         if(!(o->facts.state&(1u<<10)) || state!=0) {reject(o,BAD_STATE);return;}
-        if(word(p+4)>16384) {reject(o,RANGE);return;}
+        if(word(p+4)>A138_BLE_RECORD_CAPACITY_FRAMES) {reject(o,RANGE);return;}
         if(!free_task(o) || o->operation_counter==UINT32_MAX || o->object_counter==UINT32_MAX) {reject(o,BUSY);return;}
         o->pending_object=o->object_counter+1u;o->pending_operation=o->operation_counter+1u;
     } else if(op==0x21) {
@@ -240,7 +240,7 @@ int a138_ble_record_local_submit(a138_ble_business_owner *o,uint32_t opcode,uint
     if(!o || !o->bound || o->fault || o->phase!=IDLE || o->local_pending ||
        o->local_record.phase==A138_LOCAL_WAIT || o->local_record.token==UINT32_MAX ||
        (opcode!=0x20 && opcode!=0x21 && opcode!=0x23) ||
-       (opcode==0x20 ? limit>16384u:limit!=0))return 0;
+       (opcode==0x20 ? limit>A138_BLE_RECORD_CAPACITY_FRAMES:limit!=0))return 0;
     uint32_t token=o->local_record.token+1u;
     o->local_record=(a138_ble_local_record_result){.token=token,.opcode=opcode,
         .phase=A138_LOCAL_QUEUED,.status=1};
@@ -296,6 +296,13 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
     if(!o->bound) {
         if(!a138_record_data_probe(&o->data) || a138_business_probe(&o->mailbox)!=A138_BM_OK ||
            o->facts.object_id || o->facts.accepted_seq || o->facts.applied_seq) {o->fault=A138_OWNER_DIRTY_BOOT;return;}
+#if A138_BLE_RECORD_CAPACITY_FRAMES != 16384u
+        /* Extended firmware must bind the actual configured physical engine;
+         * never advertise a longer object while retaining a short backend. */
+        uint32_t physical_capacity=0;
+        if(!o->data.read(o->data.context,0x3cu,&physical_capacity) ||
+           physical_capacity!=A138_BLE_RECORD_CAPACITY_FRAMES) {o->fault=A138_OWNER_CAPACITY_MISMATCH;return;}
+#endif
         o->context=context;o->bound=1;
     } else if(context.boot_id!=o->context.boot_id || context.owner!=o->context.owner) {o->fault=A138_OWNER_CONTEXT_CHANGED;return;}
     update_tasks(o);

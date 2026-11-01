@@ -254,7 +254,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .completion_read_address_i(cpu_read_address),.completion_data_valid_o(cpu_data_valid),
         .completion_data_o(cpu_data_byte));
     wire physical_recording_enable=recording_enable || SINGLE_BLE_RECORDING;
-    workstation_ble_record_data_service cpu_data(
+    workstation_ble_record_data_service #(.CAPACITY_FRAMES(CAPACITY_FRAMES)) cpu_data(
         .clk_i(clk),.rst_ni(resetn),.owner_reset_ni(business_owner_reset_ni),
         .command_valid_i(business_command_valid_i && data_select),.command_write_i(business_command_write_i),
         .command_address_i(business_command_address_i[7:0]),.command_data_i(business_command_data_i),

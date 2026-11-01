@@ -50,7 +50,7 @@ module workstation_ble_raw_ddr_store #(
         F_COMMAND_TIMEOUT=5,F_READ_TIMEOUT=6,F_TRANSPORT=7,F_PROTOCOL=8,
         F_GENERATION=9,F_CANCELLED=10;
     initial begin
-        if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES>16384 || FIFO_ADDRESS_BITS<2 ||
+        if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES>32'h10000000 || FIFO_ADDRESS_BITS<2 ||
            FIFO_ADDRESS_BITS>8 || COMMAND_TIMEOUT_CYCLES<4 || READ_TIMEOUT_CYCLES<4 ||
            BASE_APP[2:0]!=0 || {3'd0,BASE_APP}+32'(CAPACITY_FRAMES)>32'h10000000)
             $fatal(1,"invalid raw BLE DDR store geometry/budget");

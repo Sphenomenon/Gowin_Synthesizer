@@ -104,6 +104,8 @@ W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_lin
 
 [统一录音审计](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORDING_AUDIT_20261101.json)已确认可复用现有`ble_business_owner`与真实CRC/rawDDR后端：CPU本地代理与BLE可操作同一对象。既有联调1765检查/136条历史报文及15负控、rawDDR188004检查/5负控通过；当前仍为16384帧（约0.341s）。W21明确退出该后端；后续新增W媒体角色，不恢复R00独立对象。60秒需要同时扩大对象容量、物理engine/策略与DDR分配，不能只放宽一个常量；LCD突发PCM还须有界解包/节拍后喂给现有CRC录音端。
 
+[60秒容量组件](push2_workstation/usb_a/reports/DUAL138K_TASK3_LONG_RECORDING_20261101.json)已完成：C的GET/外部START/CPU START共用显式容量，非默认配置须核对真实physical容量；engine/service/rawDDR同时支持2,880,000帧。独立W地址池为`0x30600000..0x310fffff`，真实对象只到`0x310fc7ff`，不把池尾14,336B填充区提供给下载。真实C/APB/解析器/CRC/nativeDDR联调采满2,880,000帧并逐字节下载11,520,000B，CRC `3ddb23ec`，1421块；主线程完整复跑相同。第二对象由BLE START、CPU STOP，在native写暂停时保持WAIT，排空后封存13帧并下载52B。默认136条wire golden与15负控保留，另验容量不匹配、地址/尾BL8和上限拒绝。**这是加速仿真的60秒容量证明，尚未选入W整机、没有实测60秒录音或手机验收；44.1k和长对象重连仍待验。** 长对象重连试验的OPEN失败未隔离，未用保持会话的容量结果覆盖该缺口。
+
 D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Drive/Delay Send和Pitch/Delay/Chorus/Reverb逐项标实现/缺口。持续PCM Pitch不等于采样器变播放相位或近unity SRC。最终路径明确为手机→W蓝牙/解码→有界链路→经验证的M/W效果→M最终音量/调度→DAC；W演示DAC仅为回退，最终不能让手机音量标签冒充M实际输出。
 
 长录音优先W本地DDR。首档至少60秒：48k stereo16需11,520,000B，44.1k需10,584,000B。原CPU/BLE分区和对象需显式整合成一个权威对象，不能只因已有raw store就称完成。先真实48k format1，再实现44.1k能力；ID/rate/epoch/帧数/CRC封存后不可变，STOP等待真实写入终态。CPU与BLE共同操作这一对象；Android保持app→data→ble→protocol，实手机录制/下载/CRC/WAV试听不可用fixture代替。
@@ -119,7 +121,7 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 独立菜单与显式262输入整机prepare检查点已通过，详见TF入口证据；仍为旧DDR播放，原生直读/真实尾帧正在装配。保留32声部/普通矢量；完整P&R与实体DAC/HDMI/控制延迟待验 |
-| T3-05 W CNN/分析/长录音 | 真实CNN安全排空/重启源码与小窗口模型回归通过；统一CPU/BLE对象审计/组件重跑通过。W角色装配、长容量/地址分配、loader/推理质量、BSRAM/DDR并发及综合仍待实现；按LCD实测额度接M |
+| T3-05 W CNN/分析/长录音 | 真实CNN安全排空/重启源码与小窗口模型回归通过；同一CPU/BLE对象60秒容量/独立地址池及完整逐字节下载组件通过，默认wire保留，详见60秒容量证据。W角色装配、长对象重连、44.1k、loader/推理质量、BSRAM/DDR并发及综合仍待实现；按LCD实测额度接M |
 | T3-06 同对候选集成 | TF→W CNN→Push、真实手机D→M DAC、CPU/BLE同一长录音、下载/重连/取消/PANIC；分别测两板并发资源/时序/吞吐/延迟 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 

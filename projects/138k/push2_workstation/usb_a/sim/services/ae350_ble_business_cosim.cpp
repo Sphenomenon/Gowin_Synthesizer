@@ -30,9 +30,23 @@ struct Harness {
         a138_ble_business_init(&owner,m,d);
     }
     void cycle(unsigned count=1) {
+#ifdef A138_TASK3_LONG_RECORDING_TEST
+        // Visit every real internal #7-ns memory event and external 10-ns
+        // half-cycle; accelerate host evaluation only, never the clock ratio.
+        const uint64_t end=context.time()+uint64_t(count)*20000;
+        while(context.time()<end) {
+            uint64_t edge=(context.time()/10000+1)*10000;
+            uint64_t next=dut.eventsPending() ? std::min(edge,dut.nextTimeSlot()):edge;
+            if(next>end)next=end;
+            context.timeInc(next-context.time());
+            dut.clk=(context.time()%20000)>=10000;dut.eval();
+            if(dut.fragment_done)fragment_seen=true;
+        }
+#else
         for(unsigned k=0;k<count;k++)for(unsigned ns=0;ns<20;ns++) {
             dut.clk=(ns>=10);context.timeInc(1000);dut.eval();if(dut.fragment_done)fragment_seen=true;
         }
+#endif
     }
     void check(bool value,const char *name) {
         checks++;if(!value){std::fprintf(stderr,"FAIL %s time=%llu owner_fault=%u phase=%u state=%u frames=%u\n",name,(unsigned long long)context.time(),owner.fault,owner.phase,dut.record_state,dut.frames);std::fprintf(stderr,"engine phase=%u codec=%u fetch=%x\n",dut.engine_phase,dut.codec_phase,dut.fetch_debug);std::fprintf(stderr,"facts flags=%x id=%u seq=%u accepted=%u applied=%u\n",owner.facts.state,owner.facts.object_id,owner.command_sequence,owner.facts.accepted_seq,owner.facts.applied_seq);std::exit(1);}

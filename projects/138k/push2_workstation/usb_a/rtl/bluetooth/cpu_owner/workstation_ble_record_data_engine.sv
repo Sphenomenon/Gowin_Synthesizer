@@ -148,7 +148,11 @@ module workstation_ble_record_data_engine #(
     assign raw_fetch_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_FETCH_REQ && connected && enable;
     assign raw_fetch_offset_o=data_offset,raw_fetch_length_o={1'b0,data_length};
     assign raw_sample_addr_o=sample_address;
-    initial if(EXTERNAL_RAW_STORE && (!EXTERNAL_PCM || !EXTERNAL_SEAL_PROTOCOL || CAPACITY_FRAMES>16384 || RAW_DRAIN_TIMEOUT_CYCLES<64))
+    // One native word per stereo PCM16 frame. The physical 1-GiB address
+    // space also bounds object_bytes and every frame/byte counter below.
+    initial if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES>32'h10000000)
+        $fatal(1,"recording capacity exceeds native DDR or PCM byte count");
+    initial if(EXTERNAL_RAW_STORE && (!EXTERNAL_PCM || !EXTERNAL_SEAL_PROTOCOL || RAW_DRAIN_TIMEOUT_CYCLES<64))
         $fatal(1,"raw DDR requires external PCM, bounded capacity and explicit drain timeout");
     assign object_crc_o=object_crc,stop_reason_o={16'd0,stop_reason};
     assign block_crc_o=data_crc;

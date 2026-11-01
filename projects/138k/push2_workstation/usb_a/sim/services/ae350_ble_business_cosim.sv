@@ -1,6 +1,10 @@
 `timescale 1ns/1ps
-module ae350_ble_business_cosim(
- input wire clk,resetn,owner_resetn,enable,pcm_run,
+module ae350_ble_business_cosim #(
+ parameter integer CAPACITY_FRAMES=16384,
+ parameter bit FAST_CAPTURE=0,
+ parameter [28:0] BASE_APP=0
+)(
+ input wire clk,resetn,owner_resetn,enable,pcm_run,test_native_pause,
  input wire psel,penable,pwrite,input wire [11:0] paddr,
  input wire [31:0] pwdata,input wire [3:0] pstrb,
  output wire pready,pslverr,output wire [31:0] prdata,
@@ -21,7 +25,8 @@ module ae350_ble_business_cosim(
  output wire [3:0] engine_phase,
  output wire [2:0] codec_phase,
  output wire [3:0] fetch_debug,
- output wire [31:0] object_id,frames,record_state
+ output wire [31:0] object_id,frames,record_state,
+ output wire [31:0] native_writes,max_native_address,native_committed
 );
 assign engine_phase=endpoint.recording.state;
 assign codec_phase=endpoint.recording.encoder.phase;
@@ -57,17 +62,17 @@ gw138k_apb_cdc bus_bridge(.reset_n(owner_resetn && resetn),.pclk(clk),.audio_clk
  .response_data(bus_response_data),.response_error(response_error));
 reg [31:0] phase=0,ms_count=0,ms_divider=0;
 assign elapsed_ms_o=ms_count+test_time_bias;
-wire tick=phase+32'd48000>=32'd50000000;
+wire tick=FAST_CAPTURE ? phase[2:0]==7 : phase+32'd48000>=32'd50000000;
 always @(posedge clk)if(!resetn)begin phase<=0;ms_count<=0;ms_divider<=0;end
 else begin
- phase<=tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
+ phase<=FAST_CAPTURE ? phase+1'b1 : tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
  if(ms_divider==49999)begin ms_divider<=0;ms_count<=ms_count+1'b1;end else ms_divider<=ms_divider+1'b1;
 end
 ble_protocol_command #(
 `ifdef WORKSTATION_SINGLE_BLE_RECORDING
  .SINGLE_BLE_RECORDING(1),
 `endif
- .EXTERNAL_PCM(1),.CAPACITY_FRAMES(16384),.EXTERNAL_SEAL_PROTOCOL(1),
+ .EXTERNAL_PCM(1),.CAPACITY_FRAMES(CAPACITY_FRAMES),.EXTERNAL_SEAL_PROTOCOL(1),
  .EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) endpoint(
  .clk(clk),.resetn(resetn),.enable(enable),
  .business_owner_reset_ni(command_reset),.business_command_valid_i(command_valid),
@@ -75,7 +80,8 @@ ble_protocol_command #(
  .business_command_data_i(command_data),.business_command_strobes_i(command_strobes),
  .business_command_ready_o(command_ready),.business_response_error_o(response_error),
  .business_response_data_o(bus_response_data),
- .pcm_valid_i(tick && pcm_run),.source_ready_i(1'b1),.source_fault_i(1'b0),.pcm_pair_i(32'h22221111),
+ .pcm_valid_i(tick && pcm_run),.source_ready_i(1'b1),.source_fault_i(1'b0),
+ .pcm_pair_i(FAST_CAPTURE ? 32'h9e370b5a ^ (frames*32'h0010203) : 32'h22221111),
  .boot_id(64'h1122334455667788),.att_value_limit(test_att_limit),.boot_valid(1'b1),
  .response_subscribed(1'b1),.control_open(1'b1),.recording_enable(1'b1),.transfer_subscribed(1'b1),
  .elapsed_ms(ms_count+test_time_bias),.fragment_write(fragment_write),.fragment_addr(fragment_addr),.fragment_data(fragment_data),
@@ -117,7 +123,10 @@ ble_protocol_command #(
         .raw_sample_word_i(raw_sample_word_i));
 assign capture_phase=endpoint.recording.capture_state;
 assign object_id=endpoint.recording_id,frames=endpoint.recorded_frames,record_state={24'd0,endpoint.record_state};
-ble_raw_ddr_fixture backing(.clk(clk),.resetn(resetn),        .raw_start_valid_o(raw_start_valid_o),
+assign native_committed=raw_committed_frames_i;
+ble_raw_ddr_fixture #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.BASE_APP(BASE_APP)) backing(
+        .native_writes_o(native_writes),.max_native_address_o(max_native_address),
+        .clk(clk),.resetn(resetn),.native_pause(test_native_pause),        .raw_start_valid_o(raw_start_valid_o),
         .raw_start_ready_i(raw_start_ready_i),
         .raw_start_done_i(raw_start_done_i),
         .raw_clear_valid_o(raw_clear_valid_o),
@@ -147,7 +156,11 @@ ble_raw_ddr_fixture backing(.clk(clk),.resetn(resetn),        .raw_start_valid_o
         .raw_sample_word_i(raw_sample_word_i));
 endmodule
 `timescale 1ns/1ps
-module ble_raw_ddr_fixture(input wire clk,resetn,
+module ble_raw_ddr_fixture #(
+    parameter integer CAPACITY_FRAMES=16384,
+    parameter [28:0] BASE_APP=0
+)(input wire clk,resetn,native_pause,
+    output reg [31:0] native_writes_o,max_native_address_o,
     // clk / clk_i raw storage only; object/task/CRC/wire ownership stays here.
     input wire raw_start_valid_o,
     output wire raw_start_ready_i,raw_start_done_i,
@@ -173,7 +186,7 @@ module ble_raw_ddr_fixture(input wire clk,resetn,
     wire slot_valid,slot_ready,native_accept,write_enable;
     wire [28:0] address;wire [255:0] write_data;wire [31:0] mask;
     reg response=0;reg [255:0] response_data=0;
-    workstation_ble_raw_ddr_store #(.CAPACITY_FRAMES(16384)) store(
+    workstation_ble_raw_ddr_store #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.BASE_APP(BASE_APP)) store(
         .clk_i(clk),.memory_clk_i(memory_clk),.rst_ni(resetn),.start_valid_i(raw_start_valid_o),.start_ready_o(raw_start_ready_i),.start_done_o(raw_start_done_i),.clear_valid_i(raw_clear_valid_o),.clear_ready_o(raw_clear_ready_i),.clear_done_o(raw_clear_done_i),.capture_valid_i(raw_capture_valid_o),.capture_index_i(raw_capture_index_o),.capture_pcm_i(raw_capture_pcm_o),.capture_ready_o(raw_capture_ready_i),.close_valid_i(raw_close_valid_o),.close_ready_o(raw_close_ready_i),.drained_o(raw_drained_i),.fault_o(raw_fault_i),.object_fault_o(raw_object_fault_i),.channel_fault_o(raw_channel_fault_i),.failure_code_o(raw_failure_code_i),.accepted_frames_o(raw_accepted_frames_i),.committed_frames_o(raw_committed_frames_i),.fetch_valid_i(raw_fetch_valid_o),.fetch_ready_o(raw_fetch_ready_i),.fetch_offset_i(raw_fetch_offset_o),.fetch_length_i(raw_fetch_length_o),.fetch_done_o(raw_fetch_done_i),.fetch_fault_o(raw_fetch_fault_i),.cache_valid_o(raw_cache_valid_i),.sample_addr_i(raw_sample_addr_o),.sample_word_o(raw_sample_word_i),
         .slot_valid_o(slot_valid),.slot_ready_i(slot_ready),.native_accept_i(native_accept),.ddr_write_o(write_enable),
         .ddr_address_o(address),.ddr_data_o(write_data),.ddr_mask_o(mask),.read_response_i(response),.read_data_i(response_data),
@@ -182,24 +195,30 @@ module ble_raw_ddr_fixture(input wire clk,resetn,
     reg [28:0] address_q=0,read_address_q=0;
     reg [255:0] data_q=0;reg [31:0] mask_q=0;
     integer delay=0,read_delay=0,i;
-    reg [255:0] memory[0:2047];
+    localparam integer BEATS=(CAPACITY_FRAMES+7)/8;
+    reg [255:0] memory[0:BEATS-1];
     assign slot_ready=!submitted && !read_pending;
     assign native_accept=native;
     always @(negedge memory_clk)begin
-        native=resetn && submitted && delay==0;
+        native=resetn && submitted && delay==0 && !native_pause;
         response=resetn && read_pending && read_delay==0;
-        response_data=memory[read_address_q>>3];
+        response_data=read_pending ? memory[(read_address_q-BASE_APP)>>3] : 256'd0;
     end
     always @(posedge memory_clk or negedge resetn)begin
-        if(!resetn)begin submitted<=0;read_pending<=0;delay<=0;read_delay<=0;end
+        if(!resetn)begin submitted<=0;read_pending<=0;delay<=0;read_delay<=0;native_writes_o<=0;max_native_address_o<=0;end
         else begin
             if(slot_valid && slot_ready)begin
+                if(address[2:0]!=0 || address<BASE_APP || ((address-BASE_APP)>>3)>=BEATS)
+                    $fatal(1,"recording native byte/word/allocation boundary");
                 submitted<=1;address_q<=address;write_q<=write_enable;data_q<=write_data;mask_q<=mask;delay<=2;
             end
             if(submitted && delay>0)delay<=delay-1;
             if(native)begin
                 submitted<=0;
-                if(write_q)begin for(i=0;i<32;i=i+1)if(!mask_q[i])memory[address_q>>3][i*8+:8]<=data_q[i*8+:8];end
+                if(address_q>max_native_address_o)max_native_address_o<=address_q;
+                if(write_q)begin
+                    native_writes_o<=native_writes_o+1'b1;
+                    for(i=0;i<32;i=i+1)if(!mask_q[i])memory[(address_q-BASE_APP)>>3][i*8+:8]<=data_q[i*8+:8];end
                 else begin read_pending<=1;read_address_q<=address_q;read_delay<=3;end
             end
             if(read_pending && read_delay>0)read_delay<=read_delay-1;

@@ -2,7 +2,9 @@
 `default_nettype none
 // One immutable descriptor. This transport never allocates business identities.
 // Observer loss fences future submissions; accepted physical work still drains.
-module workstation_ble_record_data_service (
+module workstation_ble_record_data_service #(
+    parameter integer CAPACITY_FRAMES=16384
+) (
     input wire clk_i,rst_ni,owner_reset_ni,
     input wire command_valid_i,command_write_i,
     input wire [7:0] command_address_i,
@@ -59,6 +61,8 @@ module workstation_ble_record_data_service (
     assign engine_payload_o=active_payload;
     assign observer_fault_o=fenced;
     assign command_ready_o=1'b1;
+    initial if(CAPACITY_FRAMES<1 || CAPACITY_FRAMES>32'h10000000)
+        $fatal(1,"physical recording capacity exceeds native DDR or PCM byte count");
     wire submit=command_valid_i && command_write_i && command_address_i==8'h08 && !response_error_o;
     always @* begin
         response_error_o=0;response_data_o=0;
@@ -89,6 +93,7 @@ module workstation_ble_record_data_service (
             8'h30:response_data_o=committed_i;
             8'h34:response_data_o=crc_i;
             8'h38:response_data_o=stop_reason_i;
+            8'h3c:response_data_o=CAPACITY_FRAMES; // Internal configuration fact; no BLE wire field/opcode added.
             8'h40:response_data_o={23'd0,att_value_limit_i};
             8'h44:response_data_o=engine_time_ms_i;
             8'h48:response_data_o=elapsed_ms_i;
