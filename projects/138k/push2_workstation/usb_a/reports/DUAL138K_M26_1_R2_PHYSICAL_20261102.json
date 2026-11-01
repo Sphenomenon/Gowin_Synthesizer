@@ -1,0 +1,476 @@
+{
+  "schema": 1,
+  "stage": "M26_1_r2_full_physical_and_selected_routed_gates",
+  "recorded_utc": "2026-11-01T19:22:10.090986+00:00",
+  "role": "M",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-1ab654241de6eb73",
+  "integration_semantic_identity": "custom138k-native-m-demo-session-rate-xy-revision3",
+  "source_git_head": "c9bdae9d83ed41b864b82229d15e97367eb061f5",
+  "profile_sha256": "68f371c4711ef5d98b1fad7dbf1a783d43a14124a0f3347318430b16577f434c",
+  "manifest_sha256": "00d132dfc57ad96dcb867aa7804202e1e8108d5c5695b167ae92018e0cc26b82",
+  "physical_manifest_sha256": "4cab8cd9a933dc9b7ce1db1c9f4c45616ccbe3b5afdb17ba3d9fee524757ed38",
+  "physical_user_code": "D211013A",
+  "configuration_scope": "M26 base with Session CC51 committed-rate toggle through the sole existing audio clock service, connected final-PCM XY trace and current/previous raw binary persistence; TF/CNN remain retired for this demonstration.",
+  "source_policy": "independent_M26_1_full_VG_SDC_with_proven_M26_DDRfar_reference_placement_recipe_only",
+  "synthesis": {
+    "exit_code": 0,
+    "elapsed_seconds": 193.222223666,
+    "sealed_inputs": 610,
+    "all_sealed_inputs_unchanged": true,
+    "VG_sha256": "9dad96def2c611d01898343b66ad3efb1a9fa5f08c9d7d8bbce7d0dd47aa6f45",
+    "strict_audit_passed": true,
+    "resources": {
+      "Register": 43629,
+      "Lut": 48595,
+      "Alu": 11461,
+      "Bsram": 211,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "synthesis_BSRAM_equivalent": 211,
+    "physical_BSRAM_not_inferred": true
+  },
+  "physical": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A",
+    "elapsed_seconds": 596.597779333,
+    "exit_code": 0,
+    "resource_usage": {
+      "Logic": {
+        "used": 61106,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 43629,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 47008,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 251,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 116,
+        "capacity": 298
+      },
+      "LUT": 48476,
+      "ALU": 12036,
+      "ROM16": 0,
+      "SSRAM": 99
+    },
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "global_worst_ns": {
+        "setup": 0.0,
+        "hold": 0.126,
+        "recovery": 0.24,
+        "removal": 0.275
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 65.761
+        },
+        "ulpi_60m": {
+          "required_mhz": 60.0,
+          "actual_mhz": 84.47
+        },
+        "dac_ref12m288": {
+          "required_mhz": 12.288,
+          "actual_mhz": 137.883
+        },
+        "dac_ref16m9344": {
+          "required_mhz": 16.934,
+          "actual_mhz": 136.883
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.801
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 57.921
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2338.897
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 188.964
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 152.969
+        },
+        "cpu_ram50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 109.122
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1377.41
+        },
+        "selected48": {
+          "required_mhz": 12.288,
+          "actual_mhz": 117.229
+        },
+        "selected44": {
+          "required_mhz": 16.934,
+          "actual_mhz": 117.229
+        }
+      },
+      "checks": {
+        "clk_50m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ulpi_60m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref12m288": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref16m9344": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_ref49": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_serial742": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_pixel148": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_ram50": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_core100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_rtc_bound": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected48": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected44": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "top_negative_paths": {
+        "setup": [],
+        "hold": [],
+        "recovery": [],
+        "removal": []
+      }
+    },
+    "exact_DDR_hold": {
+      "slack_ns": 0.605,
+      "arrival_ns": 5.971,
+      "required_ns": 5.366,
+      "relationship_ns": 3.5,
+      "clock_skew_report_ns": 0.422,
+      "launch_location": "R104C175[0][A]",
+      "capture_location": "R2C2[0][A]",
+      "launch_within_requested_region": true,
+      "capture_within_requested_region": true
+    },
+    "warnings": [
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_12m288_d' by the specified constraint. And then it may lead to the excessive delay or skew",
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50m_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+    ]
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.fs",
+    "sha256": "414bd24090b21fa126033f90e7f2ce4411e5086ba2c67b363d996198c09bc6f7",
+    "user_code": "D211013A",
+    "checksum": "8096"
+  },
+  "raw_physical_inventory_sha256": {
+    "custom_138k_integration.vg": "9dad96def2c611d01898343b66ad3efb1a9fa5f08c9d7d8bbce7d0dd47aa6f45",
+    "directed_placement_source_closure.json": "fd95cf0f412609eec737e46af43e736af1a854ed647559b721e8cd093761f234",
+    "impl/pnr/custom_138k_integration.fs": "414bd24090b21fa126033f90e7f2ce4411e5086ba2c67b363d996198c09bc6f7",
+    "impl/pnr/custom_138k_integration.rpt.txt": "43ad9955c4d9effdcfa6515b8ac48306b78d0ec67d2370558956142f0b1e7382",
+    "impl/pnr/custom_138k_integration.tr": "6d4f483d2d123162b1fb0a12b6a7de762d5938661e23468c7df132b24f0bb345",
+    "impl/pnr/custom_138k_integration.vo": "5df721fac3b5c0c9e9dc7db8535bc8e03ab03989159a618c5d6fc2e5865739d1",
+    "parent_integration_inputs.json": "00d132dfc57ad96dcb867aa7804202e1e8108d5c5695b167ae92018e0cc26b82",
+    "parent_pinout.json": "7167100c4c828da3deeb151ffa7957a2c62111fd111baa028388b84a5a9f4571",
+    "parent_synthesis_audit.json": "d5e3ca95cee2b17e5819376ee537a51a354d1fd8bb62d12d3ea146670431f5d5",
+    "parent_workstation_profile.json": "ec69fbed93e747952efb7a338fc1c98fc62df5bd3b878f344a6baede9f6b86df",
+    "physical.cst": "30da7d27d507ca97267bd18db851f2db7817ffd952dc34f1aa4a63f33340a115",
+    "physical.sdc": "e6dfc0170d082e7341cf675ec0141740011be0e3701c5f0c20c86e06c7dd3784",
+    "physical_inputs.json": "4cab8cd9a933dc9b7ce1db1c9f4c45616ccbe3b5afdb17ba3d9fee524757ed38",
+    "placement_witness_summary.json": "9dfb708cd65a0d43a3312ff5ce60c6961f860902fc51ca3931daee2cde12dc61",
+    "pnr.log": "f17c32c4fcbbd525847572b1f4dea91d4ad4c30028ff4341a3647539232df96c",
+    "run.tcl": "d2ad8a56db217891ba071f5ff1023dabaaff53e37d10722585fbf84025ba0f67"
+  },
+  "gates": {
+    "native": {
+      "tests": 60,
+      "passed_after_split_rerun": 45,
+      "named_skips": 15,
+      "original_run_returncode": 1,
+      "original_error": "Only selected-entry source fixture ROOT resolved to relocated cache parent and raised FileNotFound before assertions.",
+      "rerun_case": "ActualDemoHeldHandshakes.test_shared_selected_entry_checks_actual_source_slice",
+      "rerun_exit_code": 0,
+      "rerun_seconds": 4.90926775,
+      "audit_logic_changed": false,
+      "original_failure_preserved": true,
+      "negative_controls_original": 59,
+      "negative_controls_rerun": 2,
+      "all_negative_controls_rejected": true,
+      "skips_verbatim": [
+        "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_headless_display_cannot_return_in_cells_hierarchy_or_sdc (__main__.ActualNativeProtocol.test_headless_display_cannot_return_in_cells_hierarchy_or_sdc) ... skipped 'explicit W-audio retirement only'",
+        "test_m22_new_hmi_mailbox_negative_controls (__main__.ActualNativeProtocol.test_m22_new_hmi_mailbox_negative_controls) ... skipped 'M22 actual new HMI mailbox only'",
+        "test_apb_ce_toggle_cannot_bypass_payload_capture (__main__.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_ce_toggle_feedback_must_invert_its_own_q (__main__.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+        "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+        "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+      ],
+      "inventory_adapter": "connected_xy only: 142 FF + 98 RAM = 240 payload; existing HMI60 and audit semantics retained"
+    },
+    "boundary": {
+      "tests": 7,
+      "negative_controls": 69,
+      "passed": true
+    },
+    "performance": {
+      "tests": 17,
+      "negative_controls": 8,
+      "passed": true
+    },
+    "hmi": {
+      "negative_controls": 8,
+      "passed": true
+    },
+    "clk50": {
+      "actual_report_tables": 4,
+      "all_reported_slacks_nonnegative": true
+    },
+    "pll": {
+      "plls": 6,
+      "shared_tuples": 3,
+      "negative_controls": 7,
+      "passed": true,
+      "held_handshakes_passed": true
+    },
+    "new_push_reset_panic_xy": {
+      "payload_bits": 69,
+      "mailboxes": 3,
+      "overlay_business_clear_consumers": 17,
+      "pixel_reset_owner": "existing four-stage release末级 u_video/u_clock/pixel_reset_pipe[3]",
+      "panic_epoch_bits": 10,
+      "history_rams": 4,
+      "public_image_rams": 8,
+      "write_gate": "frame_active && state[0] && !(state[1] && prepare_line)",
+      "vg_reset_controls": 26,
+      "vg_panic_xy_controls": 25,
+      "vo_new_cdc_controls": 10,
+      "vo_new_xy_controls": 7,
+      "vo_actual_wrong_order_fixtures": 2,
+      "unchanged_synthesis_controls_repeated_on_vo": false
+    }
+  },
+  "worker_handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-vg-vo-cdc-xy-handoff-v1/handoff.json",
+  "worker_handoff_sha256": "2aae1d019b99998dff28098ace11a9c8494add797cf8e830f585754965f7656e",
+  "root_independently_rehashed_files": 2510,
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/pll.json": "972b71aef09650991f15ecaa8540bd2db8f8ce814cab263030d9b16e5b5d9885",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/stdout.log": "8bab230ae03b91ca7d5a59abf1cf46c98578fe3f198e9c65fb71ed6e72f8faea",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/run.json": "c47fb07b72ecfc89a27396fadb7d37a66328cdf1465ae8274e4a161c74d6720b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/workspace/docs/evidence/ddr_configuration_paths.json": "8776c7a0d331882b9774d0f551327fd0fd096fb128d9f16d86271151e0f91b65",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/workspace/docs/evidence/ddr_reset_sequence.json": "905ac7d7f7b95eb9ea1da95337b4eed6fd35cf9cac627f57d1a456237d7e05d0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/workspace/reference/ddr3_memory_interface.v": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/pll/workspace/reference/ddr3_memory_interface.vo": "0a21efa69eab7d8b9912bb6aaf880ad35de00d562cc451587c11bd3c002ed17b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/native/stderr.log": "151597a84996ff82464b9e41c5c39276be4c1c3b6e6e3c9c81527cc5cf2a486a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/native/test.py": "9ace61f75982103fe2732315a27898de66c8d667b571890aac77a8d6c7ec50aa",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/native/mutants.json": "b4ba8961f1283a33e45868f6426bd59fa089ace0bc697ec932fc3de87b105461",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/native/stdout.log": "50ec1cb29a0489327c98f2975f93d03fa96e1379fc1bc26001b7202a3bfd8cc9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/native/run.json": "6314ce8d8244afadd620b31461e73e3e4fbbba9dedc6ae197585e1e79ee72b37",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/clk50/measure.py": "5a8a828a061c8b90cd5dc31653fee52bd5d448b91d7af512b564f4eb43886002",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/clk50/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/clk50/measurement.json": "9439ca2c31fee59f15ea4ad0d7d127b4f5e01f0666e39ccf187b56a3ad5ea591",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/clk50/stdout.log": "65b67fd66f97f1fdf79e1390340b6a6f05347ece6e98bcb793a0ac7e57991721",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/clk50/run.json": "5ab79e1433d03bda390e288cd56aa5c5883c117b4110a875e4c9f597d7deb06b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/hmi/stderr.log": "22f7d37c2ba90404b284a4ea4ab69ea2f5ccd3258de40e3ce22afe95faa6e4c9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/hmi/test.py": "caa3ef8741c2b20fb1815c22aae0aeff4b4ac63b86d4ae23538c472b2af2aa34",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/hmi/mutants.json": "4eb02dc67cbf31370968080cb2dbab67042e37991739bc9b30f8d6099b1c9c73",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/hmi/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/hmi/run.json": "38785c89c85ebbc71644fcff1ce98428543c04ef94578aa6c983dd51f988523d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/boundary/stderr.log": "cf23aaaf36c49e5dada465d516e75095814bb4e0a5790f5af73d4e825e29c89f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/boundary/mutants.json": "d49e3fd8d375c5d4200a5fd92ce873488448f0808bd010d144717d096fdacfd4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/boundary/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/boundary/run.json": "b8c3c32c175ebc8069a404d0c87648873359ca1bf531a251d8842cc1bf46338e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/performance/stderr.log": "e77f69cc10e8f230080dbdfb26d111b976673f344af4269fab2817035651925d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/performance/mutants.json": "eb8be18119b8bcea5fe9928c3cfa0161bd307205c07d8c31c29471b5622863c1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/performance/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-routed-gates-v1/performance/run.json": "e1940db86684d6897abfbcf58ccbd9ae355b8c087b10ba1047361e6d3e1355db",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-native-fixture-root-fix-v1/run.log": "8aa3c39634f4d58ec88e18b59d84b09355e5609307dbe37612a26d0c90b7752e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-native-fixture-root-fix-v1/test.py": "13c7a0826878bcaae7ca89650a1c73ad71d21bf61afcecdcf90bc6b7dd62cb60",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-native-fixture-root-fix-v1/mutants.json": "78847d275268ce73b26924b3dd9e3747f67c4be05eb7c3f80c9ef80ad84be6b1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-native-fixture-root-fix-v1/run.json": "9b756697696b801b06b9efbde1a8b10eb8026d10c67d3b6e33e8b3d15118cd36",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-pnr-run-v1.json": "ae268a7cea1c723bb68e4c204937bfeddb009d6041d8779d59ae60af979b2ffc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-measurement-v1.json": "35c2fcf2e0b0835a175eb1e1cfbd8294d64e8d4567f2ee99a98789d97f123ac1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-vg-vo-cdc-xy-handoff-v1/handoff.json": "2aae1d019b99998dff28098ace11a9c8494add797cf8e830f585754965f7656e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-vg-vo-cdc-xy-handoff-v1/file_sha256.json": "f19cad95a5c476bbec5871a335ec3cf52a1e82be75493dd0471df64e8fb0626a"
+  },
+  "clocks_or_exceptions_relaxed": false,
+  "timing_closed": true,
+  "offline_selected_gates_passed": true,
+  "physical_CDC_accepted": false,
+  "IO_and_electrical_acceptance_complete": false,
+  "hardware_tested": false,
+  "hardware_functional_acceptance": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "bitwise_verify_performed": false,
+  "release_ready": false,
+  "SRAM_functional_trial_authorized_by_current_session": true,
+  "remaining_gaps": [
+    "Setup minimum is reported as 0.000 ns, not a positive margin; any source/physical change requires a new candidate and implementation.",
+    "Complete IO/electrical/CDC acceptance remains open.",
+    "Physical HDMI, Push/25K performance, final DAC and bidirectional Session switching with sustained/tail audio, PANIC and recovery remain unaccepted.",
+    "XY persistence is two binary raw snapshots rather than graded brightness decay."
+  ],
+  "rollback": "No hardware action in this report; previous M26 D2110137 frozen candidate remains available. Hardware identity is maintained in separate dated SRAM trial reports."
+}
