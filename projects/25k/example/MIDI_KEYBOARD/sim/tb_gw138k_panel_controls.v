@@ -25,7 +25,7 @@ module tb_gw138k_panel_controls;
     wire [15:0] active_keys,lamp_keys,theme_rgb565,clear_rgb565;
     wire panic_busy,screen_update;
     wire [31:0] status_flags,emitted_events;
-    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.*);
+    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.pluck_diagnostics(512'd0),.pluck_noise_diagnostics(512'd0),.pluck_diagnostics_valid(1'b1),.input_config_write(),.input_config_opcode(),.input_config_value(),.*);
     wire [15:0] strip_leds;
     midi_slider_led_map slider_lamps(.enabled(1'b1),.position(strip_value),.led_bitmap(strip_leds));
 

@@ -1,10 +1,16 @@
 `timescale 1ns/1ps
 `include "usb1_profile.vh"
 `include "usb2_debug_profile.vh"
+`include "pluck_profile.vh"
 `default_nettype none
 // GW25K complete instrument. All board I/O banks are powered at 3.3 V.
 module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  input wire clk_50mhz,
+`ifdef MIDI_PLUCK_ADC
+ input wire pluck_busy,pluck_douta,pluck_doutb,
+ output wire pluck_convst,pluck_cs_n,pluck_sclk,pluck_ws2812,
+ output wire [4:0] pluck_emitters,
+`endif
 `ifdef MIDI_USB1_FS
  inout wire usb1_dp,usb1_dm,
 `else
@@ -13,8 +19,12 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
 `endif
  input wire sw1_a,sw1_b,sw1_key_n,sw2_a,sw2_b,sw2_key_n,
  input wire module_uart_tx,output wire module_uart_rx,module_bt_dis_n,
- inout wire touch1_scl,touch1_sda,touch2_scl,touch2_sda,pca_scl,pca_sda,
- input wire touch_change_n,output wire ws2812_data,
+ inout wire pca_scl,pca_sda,
+`ifndef MIDI_PLUCK_ONLY
+ inout wire touch1_scl,touch1_sda,touch2_scl,touch2_sda,
+ input wire touch_change_n,
+`endif
+ output wire ws2812_data,
  output wire lcd_mosi,lcd_sck,lcd_dc,lcd_ncs,
  input wire lcd_te,output wire led_ready,led_done
 );
@@ -26,6 +36,7 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  wire[7:0]slider_position,slider_raw_position,slider_general_status,slider_sample_count;
  wire slider_overrun;
  wire[799:0]touch_diagnostics;
+`ifndef MIDI_PLUCK_ONLY
  midi_touch_frontend touch(.clk(clk_50mhz),.reset(reset),.change_n(touch_change_n),
   .touch1_scl(touch1_scl),.touch1_sda(touch1_sda),.touch2_scl(touch2_scl),.touch2_sda(touch2_sda),
   .key_bitmap(raw_keys),.key_update(key_update),.slider_valid(slider_valid),.slider_position(slider_position),
@@ -33,6 +44,12 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
   .slider_raw_position(slider_raw_position),.slider_general_status(slider_general_status),
   .slider_overrun(slider_overrun),.slider_sample_count(slider_sample_count),.touch_diagnostics(touch_diagnostics));
  midi_key_layout key_layout(.raw_keys(raw_keys),.key_bitmap(keys));
+`else
+ assign raw_keys=0;assign keys=0;assign touch_errors=0;assign key_update=0;
+ assign keypad_ready=0;assign slider_ready=0;assign slider_valid=0;assign slider_touch=0;
+ assign slider_position=128;assign slider_raw_position=0;assign slider_general_status=0;
+ assign slider_sample_count=0;assign slider_overrun=0;assign touch_diagnostics=0;
+`endif
  wire e1step,e1press,e1pressed,e1long,e2step,e2press,e2pressed,e2rawpress;wire signed[1:0]e1dir,e2dir;
  encoder_input #(.DETENTS_PER_STEP(HOST_PANEL_CONTROLS ? 1 : 2)) e1(.clk(clk_50mhz),.reset(reset),.a(sw1_a),.b(sw1_b),.key_n(sw1_key_n),
   .position(),.press_count(),.invalid_count(),.ab_state(),.key_pressed(e1pressed),.direction(e1dir),.step_pulse(e1step),.press_pulse());
@@ -109,9 +126,47 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
  wire[1:0]slider_mode;wire[7:0]brightness,strip_value;wire[2:0]focus;
  wire[15:0]active_keys,lamp_keys,theme,background;wire panic_busy,screen_update;
  wire[31:0]status_flags,events;
- midi_keyboard_application #(.HOST_PANEL_CONTROLS(HOST_PANEL_CONTROLS)) app(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(usb_online),.ble_online(ble_online),
+ wire [511:0] pluck_diagnostics;
+ wire [511:0] pluck_noise_diagnostics;
+ wire pluck_diagnostics_valid;
+ wire [15:0] performance_keys;
+ wire performance_ready;
+ wire performance_slider_valid,performance_slider_touch;
+ wire [7:0] performance_slider_position;
+ wire input_config_write;
+ wire [7:0] input_config_opcode;
+ wire [31:0] input_config_value;
+`ifdef MIDI_PLUCK_ADC
+ localparam integer PLUCK_ENABLED=1;
+ midi_panel_inputs inputs(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),
+  .touch_keys(keys),.touch_ready(keypad_ready),.touch_slider_valid(slider_valid),
+  .touch_slider_touch(slider_touch),.touch_slider_position(slider_position),
+  .config_write(input_config_write),.config_opcode(input_config_opcode),.config_value(input_config_value),
+  .adc_busy(pluck_busy),.adc_douta(pluck_douta),.adc_doutb(pluck_doutb),
+  .adc_convst(pluck_convst),.adc_cs_n(pluck_cs_n),.adc_sclk(pluck_sclk),
+  .emitters(pluck_emitters),.midi_channel(channel),.transpose(transpose),
+  .key_bitmap(performance_keys),.ready(performance_ready),
+  .slider_valid(performance_slider_valid),.slider_touch(performance_slider_touch),.slider_position(performance_slider_position),
+  .diagnostics(pluck_diagnostics),.noise_diagnostics(pluck_noise_diagnostics),.diagnostics_valid(pluck_diagnostics_valid));
+ assign pluck_ws2812=1'b0;
+`else
+ localparam integer PLUCK_ENABLED=0;
+ assign pluck_diagnostics=0;
+ assign pluck_noise_diagnostics=0;
+ assign pluck_diagnostics_valid=1'b1;
+ assign performance_keys=keys;
+ assign performance_ready=keypad_ready;
+ assign performance_slider_valid=slider_valid;
+ assign performance_slider_touch=slider_touch;
+ assign performance_slider_position=slider_position;
+`endif
+ midi_keyboard_application #(.HOST_PANEL_CONTROLS(HOST_PANEL_CONTROLS),.PLUCK_ENABLED(PLUCK_ENABLED)) app(.clk(clk_50mhz),.reset(reset),.control_reset(control_reset||mk_reset),.usb_online(usb_online),.ble_online(ble_online),
+  .pluck_diagnostics(pluck_diagnostics),
+  .pluck_noise_diagnostics(pluck_noise_diagnostics),
+  .pluck_diagnostics_valid(pluck_diagnostics_valid),
+  .input_config_write(input_config_write),.input_config_opcode(input_config_opcode),.input_config_value(input_config_value),
   .touch_diagnostics(touch_diagnostics),
-  .key_bitmap(keys),.keypad_ready(keypad_ready),.slider_valid(slider_valid),.slider_touch(slider_touch),.slider_position(slider_position),
+  .key_bitmap(performance_keys),.keypad_ready(performance_ready),.slider_valid(performance_slider_valid),.slider_touch(performance_slider_touch),.slider_position(performance_slider_position),
   .enc1_step(e1step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_press(e1press&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc1_direction(e1dir),
   .enc2_step(e2step&&(HOST_PANEL_CONTROLS || !remote_enable)),.enc2_press(e2press),.enc2_direction(e2dir),
   .usb_packet_tx_valid(uv),.usb_packet_tx_ready(ur),.usb_packet_tx_data(ud),.usb_packet_rx_valid(urv),.usb_packet_rx_ready(urr),.usb_packet_rx_data(urd),
@@ -149,7 +204,7 @@ module midi_keyboard_top #(parameter integer HOST_PANEL_CONTROLS=1)(
   .tile_x(tile_x),.tile_y(tile_y),.tile_width(tile_width),.tile_height(tile_height),
   .tile_read_addr(tile_read_addr),.tile_read_data(tile_read_data),.tile_done(tile_done),
   .snapshot(snapshot),.completed_refreshes(frames),.lcd_ncs(lcd_ncs),.lcd_dc(lcd_dc),.lcd_sck(lcd_sck),.lcd_mosi(lcd_mosi));
- assign led_ready=keypad_ready&&slider_ready&&pca_ready;
+ assign led_ready=PLUCK_ENABLED ? performance_ready : keypad_ready&&slider_ready&&pca_ready;
  assign led_done=usb_online||ble_online;
 endmodule
 `default_nettype wire

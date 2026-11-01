@@ -42,7 +42,7 @@ def sha256(path):
 
 def input_names():
     """Hash complete RTL/ROM, constraints, configs, tests and build tooling."""
-    names = {"sources.f", "build.tcl", "build.sh", "run_sim.sh", "usb1_profile.vh", "usb2_debug_profile.vh"}
+    names = {"sources.f", "build.tcl", "build.sh", "run_sim.sh", "usb1_profile.vh", "usb2_debug_profile.vh", "pluck_profile.vh"}
     for directory in ("rtl", "constraints", "config", "sim", "tools", REFERENCE, PANEL_REFERENCE):
         for path in (PROJECT / directory).rglob("*"):
             if path.is_file() and "__pycache__" not in path.parts:
@@ -203,6 +203,15 @@ def main():
             run("USB2 debug top elaboration (Verilog-2005)",
                 ["iverilog", "-g2005", "-Wall", "-DMIDI_USB2_DIAGNOSTICS", *INCLUDE_FLAGS,
                  "-s", "midi_keyboard_top", "-tnull", "-c", "sources.f", IO_MODELS])
+            run("Pluck development top elaboration (Verilog-2005)",
+                ["iverilog", "-g2005", "-Wall", "-DMIDI_PLUCK_ADC", *INCLUDE_FLAGS,
+                 "-s", "midi_keyboard_top", "-tnull", "-c", "sources.f", IO_MODELS])
+            run("Pluck-only complete top elaboration (Verilog-2005)",
+                ["iverilog", "-g2005", "-Wall", "-DMIDI_PLUCK_ADC", "-DMIDI_PLUCK_ONLY", *INCLUDE_FLAGS,
+                 "-s", "midi_keyboard_top", "-tnull", "-c", "sources.f", IO_MODELS])
+            run("Pluck USB diagnostic top elaboration (Verilog-2005)",
+                ["iverilog", "-g2005", "-Wall", *INCLUDE_FLAGS,
+                 "-s", "midi_pluck_probe_top", "-tnull", "-c", "sources.f", IO_MODELS])
             run("USB2 temporary probe top elaboration (Verilog-2005)",
                 ["iverilog", "-g2005", "-Wall", "-DMIDI_USB2_DIAGNOSTICS", "-DMIDI_USB2_PROBE", *INCLUDE_FLAGS,
                  "-s", "midi_usb2_probe_top", "-tnull", "-c", "sources.f", IO_MODELS])
@@ -221,6 +230,32 @@ def main():
                     fs_command[1:1] = ["-P", "tb_usb_board_device.HIGH_SPEED=0"]
                     if run(test + " full-speed compile", fs_command):
                         run(test + " full-speed", ["vvp", fs_executable], require_pass=True)
+                if test == "tb_pluck_midi":
+                    probe_executable = executable + "_probe"
+                    probe_command = command.copy()
+                    probe_command[probe_command.index(executable)] = probe_executable
+                    probe_command[1:1] = ["-P", "tb_pluck_midi.DIAGNOSTIC_ONLY=1"]
+                    if run(test + " safe probe compile", probe_command):
+                        run(test + " safe probe", ["vvp", probe_executable], require_pass=True)
+                    vpp_executable = executable + "_vpp"
+                    vpp_command = command.copy()
+                    vpp_command[vpp_command.index(executable)] = vpp_executable
+                    vpp_command[1:1] = ["-P", "tb_pluck_midi.DIAGNOSTIC_ONLY=1", "-P", "tb_pluck_midi.VPP_MODE=1"]
+                    if run(test + " Vpp probe compile", vpp_command):
+                        run(test + " Vpp probe", ["vvp", vpp_executable], require_pass=True)
+                    noise_executable = executable + "_noise"
+                    noise_command = vpp_command.copy()
+                    noise_command[noise_command.index(vpp_executable)] = noise_executable
+                    noise_command[1:1] = ["-P", "tb_pluck_midi.ADAPTIVE_NOISE=1"]
+                    if run(test + " noise-calibrated probe compile", noise_command):
+                        run(test + " noise-calibrated probe", ["vvp", noise_executable], require_pass=True)
+                if test == "tb_pluck_diagnostics":
+                    noise_executable = executable + "_noise"
+                    noise_command = command.copy()
+                    noise_command[noise_command.index(executable)] = noise_executable
+                    noise_command[1:1] = ["-P", "tb_pluck_diagnostics.NOISE=1"]
+                    if run(test + " noise bank compile", noise_command):
+                        run(test + " noise bank", ["vvp", noise_executable], require_pass=True)
             run("Python screen protocol", [sys.executable, "-m", "unittest", "discover",
                                            "-s", "sim", "-p", "test_*.py", "-v"])
         changed = [name for name, digest in manifest["sha256"].items()

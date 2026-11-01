@@ -25,7 +25,7 @@ module tb_gw138k_panel_backpressure;
     wire [15:0] active_keys,lamp_keys,theme_rgb565,clear_rgb565;
     wire panic_busy,screen_update;
     wire [31:0] status_flags,emitted_events;
-    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.*);
+    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2)) dut(.pluck_diagnostics(512'd0),.pluck_noise_diagnostics(512'd0),.pluck_diagnostics_valid(1'b1),.input_config_write(),.input_config_opcode(),.input_config_value(),.*);
 
     reg [23:0] ble_messages[0:4095];
     reg [23:0] messages[0:4095];integer received=0,ble_received=0,sequence_number=0,mark,i,last_bend,current_bend;

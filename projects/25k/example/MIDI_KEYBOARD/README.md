@@ -1,10 +1,16 @@
 # GW25K 16键 MIDI 键盘
 
+按附件分别构建两份完整固件：`build.sh --input-panel touch`（默认）和`build.sh --input-panel pluck`（兼容`--pluck`）。两版共用本工程，均保留USB双速、BLE、LCD、PL、编码器及灯光，只移除不使用的附件前端；不复制工程，不再要求单个位流自动切换附件。换附件需使用匹配固件，构建身份、验证与部署边界见[双配置报告](reports/INPUT_PROFILES_20261101.md)。此前单个位流合并超资源的记录保留在[合并实验报告](reports/PLUCK_INTEGRATION_20261101.md)。
+
+完整触摸候选`C125C201`与完整弹拨候选`C125D201`均已通过综合、P&R及原时序门禁；相同输入的143项离线回归通过。两版均未上板、未下载SRAM或写Flash，不能继承历史候选的实体验收。
+
+弹拨 ADC 配置与电脑 MIDI/原始数据 GUI 见 [PLUCK_INTERFACE.md](docs/PLUCK_INTERFACE.md)。弹拨完整版在ADC online后自动开启指定五路50%PWM，25kHz双串行采样、2ms窗口Vpp、无遮挡参考与下降迟滞检测，无需GUI租约。`--pluck-probe`仅为弹拨＋USB诊断，不含完整键盘外围，发射器默认关闭。历史`C125B101`已有授权SRAM下载、校验、独立回读及关闭状态USB/GUI检查，随后用户反馈识别满意；不将该反馈继承给新完整版。原始证据见[PWM报告](reports/PLUCK_PWM_20261101.md)，旧证据见[噪声校准报告](reports/PLUCK_NOISE_20261101.md)和[10月31日报告](reports/PLUCK_BRINGUP_20261031.md)。本轮未操作板卡或写Flash。
+
 USB2 可选独立 JTAG 观察配置见 [USB2_DEBUG.md](docs/USB2_DEBUG.md)：保留完整键盘功能，用于检查 PHY 初始化、枚举地址及真实 MIDI 受理计数；默认构建不启用。
 
 138K USB1 全速主机连接本板 USB2 的双速回退、复位尾段修正及验证边界见 [USB2_FS_FALLBACK.md](docs/USB2_FS_FALLBACK.md)；不切换本板 USB1，也不改变 MIDI/PL 线规。
 
-本工程将触摸键盘、一个触摸条、两个编码器、灯光和横屏界面接入同一套 MIDI 应用：USB2 / USB3300 提供 USB-MIDI 1.0 与独立屏幕控制接口，RTL8723DS 提供标准 BLE MIDI 服务。两路可同时发送，接收主机音符用于灯光反馈。旧 USB、BLE、编码器和屏幕例程保持独立，派生文件在本目录维护。
+本工程将所选附件（触摸键盘／触摸条，或五路弹拨）、两个编码器、灯光和横屏界面接入同一套 MIDI 应用：USB2 / USB3300 提供 USB-MIDI 1.0 与独立屏幕控制接口，RTL8723DS 提供标准 BLE MIDI 服务。USB与BLE两路可同时发送，接收主机音符用于灯光反馈。旧 USB、BLE、编码器和屏幕例程保持独立，派生文件在本目录维护。
 
 2026-10-17用户已补全键序：A–P依次对应QT2160原始0基位`5 3 1 7 13 11 9 15 4 2 0 6 12 10 8 14`。GPIO与原理图一致，当前源码在顶层将原始快照经`midi_key_layout`统一重排，再交给MIDI、显示、WS2812和主机按键反馈。WS链序保持`ABCDHGFEIJKLPONM`；PCA9685仍指示滑条位置，屏幕保持反向横屏、滑条在右侧。见 [键序核对](docs/KEY_ORDER_AUDIT.md)。
 

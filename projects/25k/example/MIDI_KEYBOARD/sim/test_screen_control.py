@@ -30,6 +30,10 @@ class ScreenControlTest(unittest.TestCase):
         for opcode, values in (
             (protocol.GET_STATUS, [0]),
             (protocol.GET_TOUCH, [0, 24]),
+            (protocol.GET_PLUCK, [0, 15]),
+            (protocol.GET_PLUCK_NOISE, [0, 15]),
+            (protocol.SET_PLUCK_EMITTERS, [0, 1]),
+            (protocol.SET_PLUCK_THRESHOLDS, [1, 65535, (65534 << 16) | 65535]),
             (protocol.SET_CHANNEL, [0, 15]),
             (protocol.SET_TRANSPOSE, [-48, -1, 0, 48]),
             (protocol.SET_PAGE, [0, 15]),
@@ -53,6 +57,10 @@ class ScreenControlTest(unittest.TestCase):
         for _ in range(200):
             opcode = rng.choice(list(protocol.OPCODES))
             value = {
+                0x03: rng.randrange(16),
+                0x04: rng.randrange(2),
+                0x05: (rng.randrange(32768) << 16) | rng.randrange(32768, 65536),
+                0x06: rng.randrange(16),
                 0x01: 0, 0x02: rng.randrange(25), 0x10: rng.randrange(16), 0x11: rng.randrange(-48, 49),
                 0x20: rng.randrange(16), 0x21: rng.randrange(65536),
                 0x22: rng.randrange(65536),
@@ -67,6 +75,9 @@ class ScreenControlTest(unittest.TestCase):
             (0x80, 0, 0, 0), (0x7F, 0, 0, 0), (0x01, -1, 0, 0),
             (0x01, 65536, 0, 0), (0x01, 0, 1, 0), (0x01, 0, 0, 1),
             (0x02, 0, 25, 0), (0x02, 0, 0xFFFFFFFF, 0), (0x02, 0, 0, 1),
+            (0x05, 0, 0, 0), (0x05, 0, (64 << 16) | 64, 0),
+            (0x05, 0, (65 << 16) | 64, 0), (0x05, 0, 64, 1),
+            (0x06, 0, 16, 0), (0x06, 0, 0, 1),
             (0x10, 0, 16, 0), (0x10, 0, -1, 0),
             (0x11, 0, -49, 0), (0x11, 0, 49, 0),
             (0x11, 0, 0xFFFFFFFF, 0), (0x20, 0, 16, 0),

@@ -14,6 +14,7 @@ import sys
 import platform
 import tempfile
 from gowin_timing import timing_passed
+from input_profiles import panel_defines, remove_touch_constraints, select_panel
 
 prj = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -22,9 +23,14 @@ parser.add_argument('--user-code', required=True, help='New candidate identity: 
 parser.add_argument('--output', type=Path, help='New evidence directory (default results/build_TIMESTAMP)')
 parser.add_argument('--usb2-debug', action='store_true', help='Keep the MIDI application and add the independent 50 MHz USB2 GAO observer')
 parser.add_argument('--usb2-probe', action='store_true', help='Temporary USB-only MIDI echo and event-history probe; not the complete keyboard')
+parser.add_argument('--input-panel', choices=('touch', 'pluck'), help='Complete accessory-specific firmware; default touch, common USB/BLE/display functions retained')
+parser.add_argument('--pluck', action='store_true', help='Alias for --input-panel pluck; not the temporary diagnostic probe')
+parser.add_argument('--pluck-probe', action='store_true', help='Temporary pluck plus USB diagnostic only; emitters initially OFF, no touch/display/BLE, not the complete keyboard')
 parser.add_argument('--place-option', type=int, choices=(1, 2), help='Explicit Gowin placement strategy; default remains unchanged')
 parser.add_argument('--route-option', type=int, choices=(1, 2), help='Explicit Gowin routing strategy; default remains unchanged')
 parser.add_argument('--replicate-resources', type=int, choices=(0, 1), help='Explicit Gowin resource replication policy')
+parser.add_argument('--opt-goal', choices=('auto', 'area', 'timing'), help='Explicit Gowin synthesis optimization goal; routed timing gates remain mandatory')
+parser.add_argument('--map-option', type=int, choices=(1, 2, 3, 4), help='Explicit Gowin LUT mapping strategy; resource and timing gates remain mandatory')
 args = parser.parse_args()
 if not re.fullmatch(r'[0-9A-Fa-f]{8}', args.user_code):
     parser.error('--user-code must contain exactly eight hexadecimal digits')
@@ -37,13 +43,26 @@ if re.search(r'^set_option -user_code ', text, re.M):
     raise SystemExit('Candidate UserCode must be selected explicitly, not embedded in the Tcl source.')
 setup = re.sub(r'^run all\s*$', '', text, flags=re.M)
 setup += '\nset_option -user_code ' + args.user_code.upper() + '\n'
-implementation = {name: getattr(args, name) for name in ('place_option', 'route_option', 'replicate_resources')
+implementation = {name: getattr(args, name) for name in ('place_option', 'route_option', 'replicate_resources', 'opt_goal', 'map_option')
                   if getattr(args, name) is not None}
 for name, value in implementation.items():
     setup += f'set_option -{name} {value}\n'
 if args.usb2_probe and args.usb2_debug:
     parser.error('--usb2-probe and --usb2-debug select different top-level profiles')
 debug_enabled = args.usb2_debug or args.usb2_probe
+probe_enabled = args.usb2_probe or args.pluck_probe
+try:
+    input_panel = select_panel(args.input_panel, args.pluck, probe_enabled)
+except ValueError as error:
+    parser.error(str(error))
+full_pluck = input_panel == 'pluck' and not probe_enabled
+pluck_enabled = full_pluck or args.pluck_probe
+if args.pluck_probe and (args.pluck or debug_enabled or relative_script != Path('build.tcl')):
+    parser.error('--pluck-probe is an independent temporary build.tcl profile')
+if full_pluck and relative_script != Path('build.tcl'):
+    parser.error('--pluck requires the complete-keyboard build.tcl profile')
+if pluck_enabled:
+    setup += 'set_option -use_i2c_as_gpio 1\n'
 if debug_enabled:
     if relative_script != Path('build.tcl'):
         parser.error('--usb2-debug requires the ordinary build.tcl profile')
@@ -54,6 +73,10 @@ if args.usb2_probe:
     if setup.count('set_option -top_module midi_keyboard_top') != 1:
         parser.error('Expected one complete-keyboard top selection before probe adaptation')
     setup = setup.replace('set_option -top_module midi_keyboard_top', 'set_option -top_module midi_usb2_probe_top')
+if args.pluck_probe:
+    if setup.count('set_option -top_module midi_keyboard_top') != 1:
+        parser.error('Expected one complete-keyboard top selection before pluck probe staging')
+    setup = setup.replace('set_option -top_module midi_keyboard_top', 'set_option -top_module midi_pluck_probe_top')
 env = dict(os.environ)
 ide_setting = os.environ.get('GW25K_IDE_DIR')
 if ide_setting:
@@ -91,10 +114,21 @@ stage_project = (stage_prj/relative_script).parent
 result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
           'script': str(relative_script), 'stage_directory': str(stage),
           'user_code': '0x' + args.user_code.upper(),
-          'configuration': {'top': 'midi_usb2_probe_top' if args.usb2_probe else 'midi_keyboard_top',
-                            'HOST_PANEL_CONTROLS': 0 if args.usb2_probe else 1,
+          'configuration': {'top': 'midi_pluck_probe_top' if args.pluck_probe else ('midi_usb2_probe_top' if args.usb2_probe else 'midi_keyboard_top'),
+                            'HOST_PANEL_CONTROLS': 0 if probe_enabled else 1,
                             'usb2_debug': args.usb2_debug, 'usb2_probe': args.usb2_probe,
-                            'complete_keyboard': not args.usb2_probe,
+                            'complete_keyboard': not probe_enabled,
+                            'pluck_probe': args.pluck_probe,
+                            'input_panel': None if probe_enabled else input_panel,
+                            'disabled_accessory_frontends': [] if probe_enabled else (['touch'] if full_pluck else ['pluck']),
+                            'pluck_adc': pluck_enabled,
+                            'pluck_use_i2c_as_gpio': pluck_enabled,
+                            'emitters_initially_off': pluck_enabled,
+                            'pluck_emitter_policy': ('manual two-second host lease' if args.pluck_probe else 'automatic after ADC online in pluck-only accessory profile') if pluck_enabled else None,
+                            'panel_input_policy': None if probe_enabled else ('calibrated carrier pluck only; automatic PWM after ADC online' if full_pluck else 'QT2160 keypad and slider only'),
+                            'panel_event_storage': 'lossless 32-bit panel payload, synchronous FIFO with same-cycle write/read bypass' if not probe_enabled else None,
+                            'pl_pixel_storage': 'independent staging/committed banks in one 512x16 RAM' if not probe_enabled else None,
+                            'omitted_subsystems': ['touch', 'encoders', 'LCD', 'PCA lamps', 'BLE', '138K PL display business'] if args.pluck_probe else [],
                             'implementation': implementation,
                             'device': 'GW5A-LV25MG121NC1/I0'},
           'tool': {'executable': str(executable), 'platform': platform.platform()},
@@ -105,7 +139,7 @@ result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
                      for x in (prj/directory).rglob('*')
                      if x.is_file() and '__pycache__' not in x.parts}}
 
-for name in ('sources.f', 'build.tcl', 'build.sh', 'run_sim.sh', 'usb1_profile.vh', 'usb2_debug_profile.vh'):
+for name in ('sources.f', 'build.tcl', 'build.sh', 'run_sim.sh', 'usb1_profile.vh', 'usb2_debug_profile.vh', 'pluck_profile.vh'):
     result['sha256'][name] = hashlib.sha256((prj/name).read_bytes()).hexdigest()
 
 result['source_identity'] = {
@@ -120,6 +154,68 @@ for name in result['sha256']:
     target = source_snapshot / name
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(prj / name, target)
+
+if pluck_enabled:
+    profile = stage_project/'pluck_profile.vh'
+    expected = '`ifndef MIDI_PLUCK_PROFILE_VH\n`define MIDI_PLUCK_PROFILE_VH\n`endif\n'
+    if profile.read_text() != expected:
+        raise SystemExit('Pluck profile header differs from the checked empty configuration.')
+    defines = ['MIDI_PLUCK_ADC'] if args.pluck_probe else panel_defines(input_panel)
+    profile.write_text(expected.replace('`endif', ''.join('`define ' + define + '\n' for define in defines) + '`endif'))
+    result['pluck_profile'] = {
+        'file': 'pluck_profile.vh', 'defines': defines,
+        'gpio_options': {'use_i2c_as_gpio': 1},
+        'input_sha256': result['sha256']['pluck_profile.vh'],
+        'staged_sha256': hashlib.sha256(profile.read_bytes()).hexdigest(),
+        'adc_contract': 'AD7606BSTZ (user-confirmed 2026-10-31), eight signed 16-bit channels, dual serial output; electrical and hardware acceptance pending',
+        'diagnostic_details': True,
+        'detector': 'open-carrier Vpp reference, falling-amplitude debounce and single-shot rearm',
+        'sample_hz': 25000,
+        'window_samples': 50,
+        'thresholds_on_off': [64, 32],
+        'thresholds_are_trial_values': True,
+        'adaptive_noise_peak_calibration': False,
+        'carrier_drop_detection': True,
+        'serialized_carrier_engine': full_pluck,
+        'serialized_sample_cycles': 35 if full_pluck else None,
+        'serialized_sample_budget_cycles': 2000 if full_pluck else None,
+        'calibration_windows': 500,
+        'settle_windows': 50,
+        'threshold_semantics': 'reference minimum minus max(ceil(reference/2), ON); release at reference minus max(ceil(reference/4), OFF); valid only reference > 2*ON',
+        'trigger_windows': 2,
+        'quiet_windows': 5,
+        'hold_windows': 25,
+        'emitter_drive': 'five independent 50 percent duty PWM carriers; host lease in probe, automatic after ADC online in pluck-only accessory profile',
+        'pwm_targets_hz_chn1_to_5': [1660, 3400, 6970, 1000, 4860],
+        'pwm_half_cycles_50mhz': [15060, 7353, 3587, 25000, 5144],
+        'pwm_actual_hz_50mhz': [50000000 / (2 * half_cycles) for half_cycles in (15060, 7353, 3587, 25000, 5144)],
+        'adc_read_mode': 'original AD7606 Rev.G tables 3/8 and figure 46: CONVST pulse, BUSY high then low, CS low, 64 falling SCLK samples on both DOUTs; 2.5 MHz SCLK',
+        'netlist_evidence_20261101': {
+            '25k.tel': '671de2772ed243270d6719c6d2837b31ccd10cba4a0391078b4f1899114dd56a',
+            '弹拨板.tel': '245e75ca42e67ccb14dbbb8d8a44c7e743a26d9a31f0c792a712e43a7349369a',
+            'policy': 'external electrical reference hashes, not RTL build inputs; originals not modified',
+        },
+        'scope': 'temporary USB/pluck probe, not production; retire after full-keyboard routed timing and hardware acceptance' if args.pluck_probe else 'full keyboard development candidate',
+        'constraints': {},
+    }
+    for suffix in ('cst', 'sdc'):
+        target = stage_project/f'constraints/midi_keyboard.{suffix}'
+        extra_name = f'constraints/midi_pluck{"_probe" if args.pluck_probe and suffix == "sdc" else ""}.{suffix}'
+        extra = stage_project/extra_name
+        if args.pluck_probe:
+            anchor = b'// Schematic SW1/SW2' if suffix == 'cst' else b'# Mechanical contacts:'
+            if target.read_bytes().count(anchor) != 1:
+                raise SystemExit('Pluck probe constraint boundary changed: '+suffix)
+            target.write_bytes(target.read_bytes().split(anchor)[0])
+        elif full_pluck:
+            adapted, removed = remove_touch_constraints(target.read_text(), suffix)
+            target.write_text(adapted)
+            result['pluck_profile'].setdefault('disabled_touch_constraints', {})[suffix] = removed
+        target.write_bytes(target.read_bytes()+b'\n'+extra.read_bytes())
+        result['pluck_profile']['constraints'][suffix] = {
+            'inputs': [f'constraints/midi_keyboard.{suffix}', extra_name],
+            'staged_sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+        }
 
 if debug_enabled:
     profile = stage_project/'usb2_debug_profile.vh'
@@ -241,11 +337,20 @@ run pnr
             fail('Synthesis resource report is missing.')
         resource_tree = ElementTree.parse(resources[0])
         initializer = [node for node in resource_tree.iter('SubModule') if node.get('name') == 'initializer']
-        if not args.usb2_probe and (len(initializer) != 1 or int(initializer[0].get('Bsram', '0')) < 16):
+        if not probe_enabled and (len(initializer) != 1 or int(initializer[0].get('Bsram', '0')) < 16):
             fail('BLE firmware ROM did not map to its required 16 block RAMs.')
-        if args.usb2_probe and initializer:
-            fail('The USB-only probe unexpectedly includes the BLE firmware initializer.')
+        if probe_enabled and initializer:
+            fail('The temporary probe unexpectedly includes the BLE firmware initializer.')
         result['synthesis_resources'] = resource_tree.getroot().attrib
+        if not probe_enabled:
+            present = {node.get('name') for node in resource_tree.getroot()}
+            required = {'usb', 'ble', 'app', 'e1', 'e2', 'lamps', 'rgb', 'view', 'display', 'panel_input', 'screen_router'}
+            required.add('inputs' if full_pluck else 'touch')
+            forbidden = 'touch' if full_pluck else 'inputs'
+            result['feature_preservation'] = {'required': sorted(required), 'present': sorted(present),
+                                              'disabled_accessory': forbidden}
+            if not required.issubset(present) or forbidden in present:
+                fail('Accessory profile lost a required common function or includes the wrong input frontend.')
     if phase == 'pnr' and 'GowinSynthesis start' in output_text:
         fail('PnR unexpectedly repeated synthesis; refusing to publish artifacts.')
     if phase == 'pnr' and 'Skip synthesis, because there is only one netlist file' not in output_text:

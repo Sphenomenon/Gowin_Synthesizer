@@ -3,11 +3,18 @@
 module midi_keyboard_application #(
  parameter integer CLK_HZ=50000000,
  parameter integer FIFO_DEPTH=32,
- parameter integer HOST_PANEL_CONTROLS=1
+ parameter integer HOST_PANEL_CONTROLS=1,
+ parameter integer PLUCK_ENABLED=0
 )(
  input wire clk,reset,control_reset,
  input wire usb_online,ble_online,
  input wire [799:0] touch_diagnostics,
+ input wire [511:0] pluck_diagnostics,
+ input wire [511:0] pluck_noise_diagnostics,
+ input wire pluck_diagnostics_valid,
+ output wire input_config_write,
+ output wire [7:0] input_config_opcode,
+ output wire [31:0] input_config_value,
  input wire [15:0] key_bitmap,
  input wire keypad_ready,slider_valid,slider_touch,
  input wire [7:0] slider_position,
@@ -36,8 +43,15 @@ module midi_keyboard_application #(
   else ms_count<=ms_count+1'b1;
  end
  wire cfg_write;wire[7:0]cfg_opcode;wire[31:0]cfg_value;
+ assign input_config_write=cfg_write;
+ assign input_config_opcode=cfg_opcode;
+ assign input_config_value=cfg_value;
  wire[15:0]control_errors;
- screen_control_endpoint controls(
+ screen_control_endpoint #(.PLUCK_ENABLED(PLUCK_ENABLED),.PLUCK_VPP_CONTROL(PLUCK_ENABLED),
+                           .PLUCK_NOISE_DIAGNOSTICS(PLUCK_ENABLED)) controls(
+  .pluck_diagnostics(pluck_diagnostics),
+  .pluck_noise_diagnostics(pluck_noise_diagnostics),
+  .pluck_diagnostics_valid(pluck_diagnostics_valid),
   .clk(clk),.reset(reset||control_reset),.rx_valid(control_rx_valid),.rx_ready(control_rx_ready),.rx_data(control_rx_data),
   .tx_valid(control_tx_valid),.tx_ready(control_tx_ready),.tx_data(control_tx_data),.status_flags(status_flags),.touch_diagnostics(touch_diagnostics),
   .midi_channel(),.transpose(),.screen_page(screen_page),.theme_rgb565(theme_rgb565),.clear_rgb565(clear_rgb565),
@@ -74,7 +88,7 @@ module midi_keyboard_application #(
  wire u_valid,u_ready,b_valid,b_ready,u_full,b_full;
  wire[23:0]u_message,b_message;wire[1:0]u_length,b_length;wire[12:0]u_timestamp,b_timestamp;
  wire[15:0]unrouted;
- midi_event_router #(.FIFO_DEPTH(FIFO_DEPTH)) router(
+ midi_event_router #(.FIFO_DEPTH(FIFO_DEPTH),.PANEL_EVENTS(HOST_PANEL_CONTROLS)) router(
   .clk(clk),.reset(reset),.in_valid(event_valid),.in_ready(event_ready),
   .in_message(event_message),.in_length(event_length),.in_timestamp(event_timestamp),.in_targets(event_targets),
   .usb_online(usb_online),.ble_online(ble_online),
