@@ -400,6 +400,8 @@ W实测HCI长链的[known generation字节组维护阶段](push2_workstation/usb
 
 M19／W17的[来源锁与整机prepare检查点](push2_workstation/usb_a/reports/DUAL138K_M19_W17_PREPARE_20261101.md)已通过：两份各刷新8条已提交维护源码／工具hash，M保持822项锁，W显式新增返回邮箱helper为823项；其余配置／features／references保持。原始来源876／952、staged588／646、enabled261／284及各1403冻结工具在综合前封存；来源17、审计16、政策7项回归通过。主线程独立重验6964路径与精确锁差异，新身份后缀3b42d2cc55cc70d5／518b142532fd5352。M为v2／14行，W显式v3／21行；新实际网表与完整物理门仍待验证，未预记收益或上板，T2-D1／D2保持未完成。
 
+M19／W17的[完整综合与actual VG检查点](push2_workstation/usb_a/reports/DUAL138K_M19_W17_SYNTHESIS_20261101.md)已通过：FF46932／45220、LUT53910／57394、ALU12550／13802、综合BSRAM equivalent195／257；native58项分别53／44通过、5／14不适用，68／59负控全拒，边界各7／69。W新v3实际296payload／301资格端点／9928对10ns及hold覆盖、4专项／19负控通过，native-response完整映射归纳证明和物理CDC未转授。主线程独立复验7039路径；两次外围封存skip解析失败及原始结果均保留，工具／RTL／回归不改。新default D2110120／D2110122各8输入封存后全量P&R已启动；未预记routed资源／时序或上板，T2-D1／D2保持未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

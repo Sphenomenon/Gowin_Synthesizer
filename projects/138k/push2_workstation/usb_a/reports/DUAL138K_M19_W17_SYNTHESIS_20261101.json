@@ -1,0 +1,124 @@
+{
+  "schema": "dual138k-m19-w17-synthesis-checkpoint-v1",
+  "stage": "M19_W17_root_independent_synthesis_and_actual_VG_review",
+  "captured_utc": "2026-11-01T07:26:51.629130+00:00",
+  "review_script_sha256": "e18f912654b28656b5cadcfd0222133de7a57df49453b1bf8ab7fa6daad35812",
+  "passed": true,
+  "roles": [
+    {
+      "role": "M",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-3b42d2cc55cc70d5",
+      "synthesis_exit_code": 0,
+      "synthesis_elapsed_seconds": 178.442692792,
+      "synthesis_netlist_sha256": "ba56b0570d2ce5fee396bf3ec223da3af33d3da41f9c2e8d5b480599fbc77bd1",
+      "synthesis_resources": {
+        "Register": 46932,
+        "Lut": 53910,
+        "Alu": 12550,
+        "Bsram": 195
+      },
+      "resource_scope": "synthesis equivalent, not physical BSRAM or CLS",
+      "native_tests": 58,
+      "native_passed": 53,
+      "native_skipped": 5,
+      "native_skips": [
+        "review_m19_tests.ActualDemoHeldHandshakes.test_shared_selected_entry_checks_actual_source_slice: actual physical parent identity required for entry source slice",
+        "review_m19_tests.ActualNativeProtocol.test_routed_added_ram_fragment_must_use_the_same_acceptance: routed 18-bit split only",
+        "review_m19_tests.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture: reviewed CE-factored request mapping not present",
+        "review_m19_tests.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q: reviewed CE-factored request mapping not present",
+        "review_m19_tests.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact: reviewed routed LUT1 inverse mapping not present"
+      ],
+      "native_negative_controls": 68,
+      "boundary_tests": 7,
+      "boundary_negative_controls": 69,
+      "physical_UserCode": "0xD2110120",
+      "physical_manifest_sha256": "f0e760960d1811124fd9e7baf1a9ae37a777f5c830fb407b983d68641020b434",
+      "physical_prepare_passed": true
+    },
+    {
+      "role": "W",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-518b142532fd5352",
+      "synthesis_exit_code": 0,
+      "synthesis_elapsed_seconds": 219.955951875,
+      "synthesis_netlist_sha256": "521de14894728f1943aabcf19f09bc50eccc93c65be713aab0a1ee4bdee3b9f4",
+      "synthesis_resources": {
+        "Register": 45220,
+        "Lut": 57394,
+        "Alu": 13802,
+        "Bsram": 257
+      },
+      "resource_scope": "synthesis equivalent, not physical BSRAM or CLS",
+      "native_tests": 58,
+      "native_passed": 44,
+      "native_skipped": 14,
+      "native_skips": [
+        "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_shared_selected_entry_checks_actual_source_slice (__main__.ActualDemoHeldHandshakes.test_shared_selected_entry_checks_actual_source_slice) ... skipped 'actual physical parent identity required for entry source slice'",
+        "test_routed_added_ram_fragment_must_use_the_same_acceptance (__main__.ActualNativeProtocol.test_routed_added_ram_fragment_must_use_the_same_acceptance) ... skipped 'routed 18-bit split only'",
+        "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+        "test_apb_split_launch_combined_and_is_exact (__main__.ActualTimingBoundaries.test_apb_split_launch_combined_and_is_exact) ... skipped 'reviewed split launch AND mapping not present'",
+        "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+        "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+      ],
+      "native_negative_controls": 59,
+      "boundary_tests": 7,
+      "boundary_negative_controls": 69,
+      "physical_UserCode": "0xD2110122",
+      "physical_manifest_sha256": "b30acd2ccceafdbea597fee1251e830a38fcb3ff0a6c1980d1edda4634ee5b92",
+      "physical_prepare_passed": true,
+      "w_return_mailbox": {
+        "actual_pairs": 9928,
+        "actual_qualification_endpoints": 301,
+        "negative_controls": 19,
+        "mapped_live_payload_bits": 296,
+        "complete_payload_10ns_coverage_verified": true,
+        "native_response_reachability_invariant_formally_proven": false,
+        "physical_CDC_accepted": false
+      }
+    }
+  ],
+  "checked_file_count": 7039,
+  "scope": "Full synthesis, actual VG regression and physical input prepare only; P&R running separately",
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "timing_closed": false,
+  "release_ready": false,
+  "preserved_wrapper_failure": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-synthesis-review-attempt-v1.json",
+    "sha256": "c43f9ad835cf833523bedc78e3d9a30af90d856e48f91d704f9755ae9287962e",
+    "production_or_regression_inputs_changed": false,
+    "regression_repeated": false
+  },
+  "reported_utc": "2026-11-01T07:28:05.377207+00:00",
+  "source_parent_commit": "205d461a",
+  "root_review_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-synthesis-review-v2.json",
+  "root_review_sha256": "21214aa2a3bbcd01e4503554abac1a65fc814bc7ba62eb154b3ce4a4f174241a",
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-synthesis-review-v1.py": "a737d976c82f1992d34b9a1806ec25ed81c48761b230441c59952a1bac8f78a2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-synthesis-review-v2.py": "e18f912654b28656b5cadcfd0222133de7a57df49453b1bf8ab7fa6daad35812",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-synthesis-review-attempt-v1.json": "c43f9ad835cf833523bedc78e3d9a30af90d856e48f91d704f9755ae9287962e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-synthesis-stage-v1/summary.json": "6fb8cb95b755c543fa716e8a56fdf73a44064c4129c9d735da7cb784da65c3cc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-synthesis-stage-v1/seal.json": "bfe94d45e2283eb6c654b6d855b3548cb75413ee56bb7bfae4e86ebb7b940859",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w17-vg-gates-seal-v2.json": "a5a2f566e3d9a96d28729aea4ebc6e827d763d74c8e4800ebf48108391580ee8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w17-vg-gates-seal-attempt-v1/failure.json": "a6ffa0e26a544a9fdf1f8b4bba7d87fd51e0a9a24e3fe5713680d5c65251e473",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-synthesis-run-v1.json": "f565dcd31275689c47b3d00524852edb6515a65d38f73141de11032dfcd7d203",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w17-synthesis-run-v1.json": "9266ec3ad2c05800a462d4d3410793445b9da905efffb667bbfa84a46227925a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-audits-v1/source-tools-seal.json": "a1d0fe2748d25127b531cb61dcb3119d17ca1c0c4f876ab623a4d42a14531270",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w17-audits-v1/source-tools-seal.json": "83c60752a49d38372976f37e751ccb09ce5aef13776351ceeb9250aea7704421"
+  },
+  "remaining_gaps": [
+    "Actual routed resource, full setup/hold/recovery/removal STA, CDC and PLL acceptance.",
+    "M base omits CNN; W recording is 16384 frames, not long recording.",
+    "No hardware HDMI/DAC, USB/25K, A2DP/BLE or phone download acceptance.",
+    "No LCD interconnect or dual-board concurrency acceptance."
+  ],
+  "rollback": "No board operation or SRAM/Flash programming in this stage; prior image and Flash fallback retained."
+}
