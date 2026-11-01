@@ -153,6 +153,7 @@ def prepared_specification(prepared):
         # Revision 1 had a real display and one BLE recording owner. Its
         # immutable candidates continue to be audited against that contract.
         spec = dict(spec, revision=1, worker_audio_only=False,
+            recording_enabled=True, ble_recording_storage_enabled=True,
             integration_identity='custom138k-native-w-demo-d-only-revision1',
             configuration=dict(CPU_BUSINESS_CONFIGURATION,
                 hci_transport_policy='native_shared_hci_owner_v1',

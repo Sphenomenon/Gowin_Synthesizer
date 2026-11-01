@@ -26,6 +26,7 @@ RETIRED_SOURCE_PREFIXES = (
     'rtl/push2/', 'src/usb_a/push2_screen_',
 )
 RETIRED_SOURCES = (
+    'constraints/p11.gsc',
     'legacy_audio.sv', 'src/memory/display_data_layout_pkg.sv',
     'rtl/workstation/workstation_runtime_controlled.sv',
     'rtl/audio/workstation_observation_consumers.sv',
@@ -42,7 +43,6 @@ RETIRED_SOURCES = (
     'rtl/audio/scope_vec/scope_control_player.sv',
     'rtl/audio/scope_vec/scope_vec_engine.sv',
     'rtl/audio/scope_vec/scope_dac_select.sv',
-    'rtl/audio/scope_vec/scope_tf_control.sv',
     'rtl/audio/scope_vec/scope_tf_transport.sv',
     'rtl/runtime_replacements/scope_tf_transport.sv',
     'rtl/music/tf_playlist_bridge.sv',
@@ -62,6 +62,8 @@ RETIRED_SELECTORS = (
     'u_bluetooth/u_core/acl_bridge/',
 )
 RETIRED_CLOCKS = ('video_ref49', 'video_serial742', 'video_pixel148')
+RETIRED_SEQUENCE_CE = tuple(
+    f'u_managed/runtime/serializer/current_sequence_{bit}_s*/CE' for bit in range(32))
 REBIND = (('u_video/u_bist/', 'u_audio_memory/u_bist/'),
           ('u_video/u_arbiter/', 'u_audio_memory/u_arbiter/'),
           ('u_video/flags_meta', 'u_audio_memory/flags_meta'),
@@ -81,6 +83,10 @@ def sha(path):
 
 
 def retired_source(path):
+    # This shared PLL analog initializer also owns the audio PLL startup;
+    # its historical directory name does not make it a video clock owner.
+    if path == 'vendor/sipeed_dvi/video_pll_init.v':
+        return False
     music_retired=path.startswith('rtl/music/') and path not in ('rtl/music/music_async_fifo.sv','rtl/music/basic_pitch_flash_io_guard.sv')
     return music_retired or path in RETIRED_SOURCES or path.startswith(RETIRED_SOURCE_PREFIXES)
 
@@ -92,6 +98,12 @@ def select_sources(stage, files):
     for entry in files:
         path = entry.get('path')
         if entry.get('enable') == '1' and retired_source(path):
+            if path == 'constraints/p11.gsc':
+                active = [line for line in (stage / path).read_text().splitlines()
+                          if line.strip() and not line.lstrip().startswith('//')]
+                expected = 'INS "u_video/u_clock/g_hardware.u_pll/u_reference/u_pll_init/enable_r" syn_preserve = 1;'
+                if active != [expected]:
+                    raise ValueError('W retired video-only synthesis constraint identity changed')
             retired[path] = sha(stage / path)
             entry.set('enable', '0')
     if 'legacy_audio.sv' not in retired:
@@ -118,7 +130,9 @@ def constraints(text):
                     if member.startswith(old):
                         member = new + member[len(old):]
                         break
-                if member.startswith(RETIRED_SELECTORS) or (match[1] == 'get_clocks' and member in RETIRED_CLOCKS):
+                if (member.startswith(RETIRED_SELECTORS) or
+                        (match[1] == 'get_pins' and member in RETIRED_SEQUENCE_CE) or
+                        (match[1] == 'get_clocks' and member in RETIRED_CLOCKS)):
                     removed.append(original)
                 else:
                     keep.append(member)

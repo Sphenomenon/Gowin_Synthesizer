@@ -14,10 +14,29 @@ from tools.workstation_worker_audio_only import constraints, restore_constraints
 
 
 class WorkerAudioOnly(unittest.TestCase):
+    def test_hci_only_keeps_all_apb_bounds_without_recording(self):
+        from tools.workstation_runtime_profile import protocol_constraints
+        base = protocol_constraints()
+        selected = protocol_constraints(business_owner_enabled=True, hci_only=True)
+        added = [line for line in selected.splitlines() if line not in base.splitlines()]
+        self.assertEqual(len(added), 8)
+        self.assertTrue(all('business_commands/' in line for line in added))
+        self.assertEqual(sum(line.startswith('set_max_delay 20.000 ') for line in added), 2)
+        self.assertEqual(sum(line.startswith('set_false_path -hold ') for line in added), 2)
+        self.assertEqual(sum(line.startswith('set_max_delay 2.000 ') for line in added), 2)
+        self.assertEqual(sum(line.startswith('set_false_path -to ') for line in added), 2)
+        self.assertNotIn('recording_ble_store/', selected)
+        for options in (dict(business_owner_enabled=True), dict(hci_only=True),
+                        dict(hci_only=True, business_owner_enabled=True, ble_raw_enabled=True),
+                        dict(hci_only=1, business_owner_enabled=True)):
+            with self.assertRaises(ValueError):
+                protocol_constraints(**options)
+
     def test_timing_retirement_is_exact_reversible_and_fail_closed(self):
         source = (
             'create_generated_clock -name video_pixel148 -source [get_ports {clk_50m}] [get_pins {u_video/u_clock/CLKOUT}]\n'
             'set_false_path -to [get_pins {u_video/ui_reset_pipe*/CLEAR live/reset*/CLEAR}]\n'
+            'set_false_path -hold -to [get_pins {u_managed/runtime/serializer/current_sequence_0_s*/CE live/pcm*/CE}]\n'
             'set_max_delay 10.000 -from [get_regs {u_video/flags_meta*}] -to [get_regs {u_video/flags_sync*}]\n'
             'set_max_delay 13.020 -from [get_regs {live/data*}] -to [get_regs {live/capture*}]\n'
             'set_false_path -hold -from [get_regs {recording_ble_store/held*}] -to [get_regs {recording_ble_store/local*}]\n'
@@ -25,6 +44,7 @@ class WorkerAudioOnly(unittest.TestCase):
         selected, evidence = constraints(source)
         self.assertEqual(restore_constraints(selected, evidence), source)
         self.assertIn('set_false_path -to [get_pins {live/reset*/CLEAR}]\n', selected)
+        self.assertIn('set_false_path -hold -to [get_pins {live/pcm*/CE}]\n', selected)
         self.assertIn('set_max_delay 13.020 -from [get_regs {live/data*}] -to [get_regs {live/capture*}]\n', selected)
         self.assertIn('u_audio_memory/flags_meta*', selected)
         for text in (selected.replace('13.020', '20.000'), selected.replace('live/reset', 'live/business'),
@@ -36,6 +56,8 @@ class WorkerAudioOnly(unittest.TestCase):
                      'rtl/tf_audio/workstation_tf_runtime_service.sv', 'vendor/sipeed_dvi/dvi_tx_tmds_enc.v'):
             self.assertTrue(retired_source(path), path)
         for path in ('rtl/timing/basic_pitch_ddr_client_queues.sv',
+                     'vendor/sipeed_dvi/video_pll_init.v',
+                     'rtl/audio/scope_vec/scope_tf_control.sv',
                      'rtl/audio/workstation_ae350_pcm_owner.sv',
                      'rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv',
                      'rtl/workstation/workstation_usb2_input.sv'):

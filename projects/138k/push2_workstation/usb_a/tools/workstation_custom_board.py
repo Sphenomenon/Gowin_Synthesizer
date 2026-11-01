@@ -321,7 +321,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if runtime:
         from tools.workstation_runtime_profile import constraints
         runtime_constraints = constraints(root, shared_crossings, local_panel_enabled=local_panel_enabled,
-            ble_raw_enabled=ble_raw_selected, business_owner_enabled=business_selected)
+            ble_raw_enabled=ble_raw_selected, business_owner_enabled=business_selected, hci_only=audio_only)
         combined_cst += runtime_constraints['extra_cst']
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True, recording_authority=ble_raw_selected) + MODEL_FLASH_SDC
     else:
@@ -367,6 +367,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     (stage / 'scripts/custom_board_synthesis.tcl').write_text(
         'set root [file normalize [file join [file dirname [info script]] ..]]\n'
         'cd $root\nopen_project Prj1.gprj\n'
+        + ('set_option -include_path $root\n' if audio_only else '') +
         'set_option -top_module workstation_custom_138k_top\n'
         'set_option -output_base_name custom_138k_integration\n'
         'set_option -verilog_std sysv2017\nset_option -timing_driven 1\nrun syn\n')

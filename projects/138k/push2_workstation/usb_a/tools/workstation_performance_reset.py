@@ -212,6 +212,10 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
         provider = Path(stage) / 'rtl/workstation/workstation_profile_m_demo.sv'
         if '`define WORKSTATION_DEMO_NO_TF' in provider.read_text().splitlines():
             profile = 'm-demo-core'
+    else:
+        provider = Path(stage) / 'rtl/workstation/workstation_profile_w_demo.sv'
+        if '`define WORKSTATION_WORKER_AUDIO_ONLY' in provider.read_text().splitlines():
+            profile = 'w-demo-audio'
     result = audit_native_protocol(n, profile=profile, mapping=mapping)
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,

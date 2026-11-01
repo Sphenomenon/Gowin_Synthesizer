@@ -26,7 +26,8 @@ POLICY = 'native-demo-mailbox-structure-v3'
 RAM_SCOPE = 'u_managed/observation/frames/'
 RAM_STEM = 'g_small_head.memory_g_small_head.memory_0_'
 STREAM_SHA256 = '90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376'
-PROFILES = ('m-demo-base', 'm-demo-core', 'w-demo-d')
+PROFILES = ('m-demo-base', 'm-demo-core', 'w-demo-d', 'w-demo-audio')
+HEADLESS_DISPLAY_SCOPES = ('u_managed/display', 'u_managed/display_observation_health', 'u_video')
 DELAY = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage'
 DMA = 'u_managed/runtime/delay_dma'
 APB = 'u_managed/control_cdc'
@@ -47,20 +48,36 @@ def require(condition, message):
         raise ValueError('native protocol audit: ' + message)
 
 
+def audit_headless_display_absence(n):
+    """Prove retired display owners are absent; retain physical I2S observation."""
+    for label, paths in (('cell', n.cells), ('hierarchy', n.frames)):
+        retained = sorted(path for path in paths if any(
+            path == scope or path.startswith(scope + '/') for scope in HEADLESS_DISPLAY_SCOPES))
+        require(not retained, 'headless profile retained display/video ' + label + ': ' + repr(retained))
+    return dict(absent_scopes=list(HEADLESS_DISPLAY_SCOPES),
+                reachable_cells_checked=len(n.cells), reachable_hierarchies_checked=len(n.frames),
+                display_mailbox_absent=True, display_health_absent=True, video_hierarchy_absent=True)
+
+
 def audit_native_protocol(n, *, profile, mapping='synthesis'):
     require(profile in PROFILES, 'unknown role/profile')
     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')
     g = Graph(n)
     domains = dict(control='clk_50m', compute='audio_clk', memory='memory_clk', selected='dac_mclk_d')
+    headless = profile == 'w-demo-audio'
+    display_absence = audit_headless_display_absence(n) if headless else None
     ordinary = 41 if profile == 'w-demo-d' else 73
     display_bits = (*range(ordinary), *range(105, 203))
     specifications = (
         ('u_managed/pc_bytes', tuple(range(8)), 8, 'control', 'compute'),
         ('u_managed/health_snapshot', tuple(range(32, 64)), 32, 'selected', 'compute'),
-        ('u_managed/display', display_bits, ordinary, 'compute', 'control'),
-        ('u_video/u_runtime_display/observation', (*display_bits, 203), len(display_bits) + 1,
-         'control', 'memory'),
     )
+    if not headless:
+        specifications += (
+            ('u_managed/display', display_bits, ordinary, 'compute', 'control'),
+            ('u_video/u_runtime_display/observation', (*display_bits, 203), len(display_bits) + 1,
+             'control', 'memory'),
+        )
     proofs, mailboxes = [], []
 
     def regs(scope, stem, bits):
@@ -201,8 +218,9 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
             minimum_request_pipeline_stages=3, destination_ack_and_payload_capture_share_enable=True))
 
     health = 'u_managed/display_observation_health'
-    for bit, count_scope, count_stem in ((0, 'u_managed/observation/drops', 'sync_value'),
-                                        (1, 'u_managed/display', 'drop_count')):
+    loss_counters = () if headless else ((0, 'u_managed/observation/drops', 'sync_value'),
+                                         (1, 'u_managed/display', 'drop_count'))
+    for bit, count_scope, count_stem in loss_counters:
         sticky = g.register(health, 'source_sticky', bit)
         first, second = g.register(health, 'loss_meta', bit), g.register(health, 'loss_sync', bit)
         unconditional(sticky, 'compute')
@@ -229,11 +247,14 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled profile retained TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)
     timing = audit_timing_boundaries(n, g, profile=profile)
-    return dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
+    result = dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
                 mailboxes=mailboxes, level_proofs=proofs, control_boundaries=controls,
                 timing_boundaries=timing, exact_payload_driver_closure=True,
-                source_stop_loss_bypass_preserved=True, constraints_complete=False,
+                source_stop_loss_bypass_preserved=not headless, constraints_complete=False,
                 routed_timing_verified=False, physical_cdc_accepted=False, hardware_tested=False)
+    if headless:
+        result['display_absence'] = display_absence
+    return result
 
 
 def audit_demo_held_boundaries(n, result):
@@ -731,28 +752,33 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     This is a local pin-selector check. The role audit still owns clock-query
     resolution, other exceptions and complete synthesis/input provenance.
     """
+    headless = result['profile'] == 'w-demo-audio'
+    display_absence = audit_headless_display_absence(n) if headless else None
     mandatory = [line for line in protocol_constraints().splitlines()
-                 if RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line
+                 if not headless and (RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line)
                  or 'u_managed/pc_health_meta_' in line
                  or APB + '/response_held_' in line or DELAY + '/' in line or DMA + '/peer_' in line
                  or result['profile'] == 'm-demo-base' and
                     ('u_tf_audio/held_control_' in line or 'u_tf_audio/frames/quiesce_sync_' in line)]
-    require(len(mandatory) == (20 if result['profile'] == 'm-demo-base' else 16) and
+    required_count = 10 if headless else (20 if result['profile'] == 'm-demo-base' else 16)
+    require(len(mandatory) == required_count and
             all(sdc.splitlines().count(line) == 1 for line in mandatory),
             'local RAM/loss/TF/PC/heartbeat/APB constraints missing, duplicated or changed')
-    display = next(row for row in result['mailboxes'] if row['scope'] == 'u_managed/display')
-    ram_pins = {row['cell'] + '/DO' for row in display['ram']}
+    ram_pins, captures = set(), set()
     # Both mandatory selectors have fixed local scope prefixes. Index those
     # scopes once so 98 explicit bits never rescan unrelated whole-chip pins.
-    all_pins = {p + '/' + port for p, c in n.cells.items()
-                if p.startswith((RAM_SCOPE, 'u_managed/display/')) for port in c['ports']}
-    queries = re.findall(r'\[get_pins \{([^}]+)\}\]', mandatory[0])
-    require(len(queries) == 2, 'registered RAM constraint query shape')
-    matches = lambda body: {p for selector in body.split() for p in all_pins if fnmatch.fnmatchcase(p, selector)}
-    require(matches(queries[0]) == ram_pins, 'registered RAM selector resolves outside exact reviewed cells')
-    captures = {p for p in all_pins if re.fullmatch(r'u_managed/display/destination_data_(\d+)_s\d+/D', p)
-                and 105 <= int(re.search(r'destination_data_(\d+)_', p)[1]) <= 202}
-    require(len(captures) == 98 and matches(queries[1]) == captures, 'RAM constraint does not cover exact 98 capture bits')
+    if not headless:
+        display = next(row for row in result['mailboxes'] if row['scope'] == 'u_managed/display')
+        ram_pins = {row['cell'] + '/DO' for row in display['ram']}
+        all_pins = {p + '/' + port for p, c in n.cells.items()
+                    if p.startswith((RAM_SCOPE, 'u_managed/display/')) for port in c['ports']}
+        queries = re.findall(r'\[get_pins \{([^}]+)\}\]', mandatory[0])
+        require(len(queries) == 2, 'registered RAM constraint query shape')
+        matches = lambda body: {p for selector in body.split() for p in all_pins if fnmatch.fnmatchcase(p, selector)}
+        require(matches(queries[0]) == ram_pins, 'registered RAM selector resolves outside exact reviewed cells')
+        captures = {p for p in all_pins if re.fullmatch(r'u_managed/display/destination_data_(\d+)_s\d+/D', p)
+                    and 105 <= int(re.search(r'destination_data_(\d+)_', p)[1]) <= 202}
+        require(len(captures) == 98 and matches(queries[1]) == captures, 'RAM constraint does not cover exact 98 capture bits')
     protected = {row[key]['second'] for row in result['mailboxes'] for key in ('request', 'acknowledge')}
     protected.update(row['third_request_stage'] for row in result['mailboxes'])
     for row in result['level_proofs']:
@@ -870,7 +896,7 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
             require(not any(fnmatch.fnmatchcase(pin if kind == 'get_pins' else pin.rsplit('/', 1)[0], selector)
                             for selector in body.split() for pin in protected),
                     'timing exception reaches a later synchronizer/settled stage: ' + line)
-    return dict(required_local_lines_installed_once=True, registered_ram_source_pins=sorted(ram_pins),
+    checked = dict(required_local_lines_installed_once=True, registered_ram_source_pins=sorted(ram_pins),
                 exact_98_registered_ram_capture_pins=sorted(captures),
                 protected_later_stage_pins=sorted(protected), later_stage_setup_hold_exceptions_absent=True,
                 tf_control_payload_pins_verified=bool(controls['tf_control']), pc_health_levels_verified=2,
@@ -878,6 +904,11 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
                 demo_held_handshake_constraints=demo_resolved,
                 tf_quiesce_first_stage_verified=bool(timing['tf_quiesce']),
                 global_clock_exception_audit_complete=False)
+    if headless:
+        checked.update(mandatory_local_constraint_count=required_count,
+                       display_constraints_skipped_due_to_proved_absence=True,
+                       display_absence=display_absence)
+    return checked
 
 
 def main():

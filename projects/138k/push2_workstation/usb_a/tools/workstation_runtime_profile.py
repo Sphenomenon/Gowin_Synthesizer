@@ -242,16 +242,18 @@ def shared_constraints(sdc):
                 omitted=omitted, adapted=adapted)
 
 
-def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False):
+def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False, hci_only=False):
     """Bound existing held-word handshakes at their native runtime scopes.
 
     SUG940 5.4.1/5.4.2: max delay retains setup; only the specified held
     payload paths lose hold. First-stage D exceptions never cover later
     synchronizer stages, functional resets, or whole clock domains.
     """
-    if type(ble_raw_enabled) is not bool or type(business_owner_enabled) is not bool:
+    if any(type(value) is not bool for value in (ble_raw_enabled, business_owner_enabled, hci_only)):
         raise ValueError('runtime protocol selections must be boolean')
-    if business_owner_enabled and not ble_raw_enabled:
+    if hci_only and (not business_owner_enabled or ble_raw_enabled):
+        raise ValueError('HCI-only APB requires its owner and no recording backend')
+    if business_owner_enabled and not ble_raw_enabled and not hci_only:
         raise ValueError('business mailbox requires selected BLE raw storage')
     lines = []
 
@@ -364,7 +366,7 @@ def protocol_constraints(*, ble_raw_enabled=False, business_owner_enabled=False)
 
 
 def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_enabled=False,
-                business_owner_enabled=False):
+                business_owner_enabled=False, hci_only=False):
     """Keep surviving constraints, inventory removed hierarchy, fail closed.
 
     The new runtime CDC needs a separate endpoint audit after synthesis. No
@@ -418,7 +420,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_ena
         dispatch_slot_source=dispatch_slot_source,
         usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
         runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'] + protocol_constraints(
-            ble_raw_enabled=ble_raw_enabled, business_owner_enabled=business_owner_enabled),
+            ble_raw_enabled=ble_raw_enabled, business_owner_enabled=business_owner_enabled, hci_only=hci_only),
         bluetooth_sdc=bluetooth['sdc'], bluetooth_cdc_adaptation=bluetooth['evidence'],
         runtime_cdc={key: value for key, value in runtime_cdc.items() if key != 'sdc'},
         runtime_pcm_cdc={key: value for key, value in runtime_pcm_cdc.items() if key != 'sdc'},
