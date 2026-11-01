@@ -1,0 +1,94 @@
+{
+  "schema": "dual138k_M24_prepare_20261101_v1",
+  "stage": "M24 complete independent DEMO prepare, source/tool seal; full synthesis started, no result yet",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-b4a481778b7043c8",
+  "candidate_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24",
+  "prepare_git_head": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc",
+  "profile_sha256": "2d34572201fb50c39b2750a9b7b9515f266e1733a38895b802bcc87b061b7d00",
+  "source_manifest_sha256": "61166b5b33194b43673cb0dbef605fa4739a63453ffe581568d3e347cf39f405",
+  "profile_artifact_sha256": "10dbdfaa2820f76923aeb8f8ffae5a05159a176b303aa165d8ee1800be24979a",
+  "compiler_input_count": 262,
+  "staged_input_count": 604,
+  "original_source_snapshot_count": 898,
+  "frozen_audit_tool_count": 1460,
+  "profile_locked_source_count": 857,
+  "configuration": {
+    "hdmi_mode": "1080p60",
+    "high_speed_allowed": true,
+    "tf_audio_kind": "wav",
+    "implemented_sample_rates_hz": [
+      48000,
+      44100
+    ],
+    "ae350_firmware_policy": "maintained_ae350_v1",
+    "scan_window_policy": "native_admission_v1",
+    "audio_policy": "native_dual_rate_runtime_v1",
+    "reserve_zero_epoch": true,
+    "display_metadata_minor": 1,
+    "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+    "recognition_policy": "disabled_cnn_and_follow_v1",
+    "local_panel_policy": "disabled_local_lcd_touch_v1",
+    "demo_role": "M",
+    "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+    "bluetooth_policy": "retired_for_independent_m_demo_v1",
+    "recording_policy": "disabled_m_demo_v1",
+    "tf_policy": "disabled_first_m_core_demo_v1"
+  },
+  "prepare": {
+    "exit_code": 0,
+    "all_profile_inputs_verified_before_and_after": true,
+    "source_validation_stage": "integration_prepare_only",
+    "new_synthesis_or_physical_benefit_claimed": false
+  },
+  "post_prepare_source_drift_reconstruction": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+      "sealed_sha256": "c6ac11184588f5c6b9ff732b3dc8e3d7693a1cbffd3bf2c0c905dba2feedbe0a",
+      "post_prepare_live_sha256": "91bd6c6044dc1b6c75f4b3dead4a654e9ef930b10211e8220a06d40752646ed5",
+      "restored_from_git_commit": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc",
+      "git_object": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc:projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py"
+    },
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": {
+      "sealed_sha256": "19aba426e6e63bbc1f45d7d17c39d766b28b4bd5022606dfcb4aeb166fab4ccc",
+      "post_prepare_live_sha256": "3539e8ff90eb5ff73a25aa287770569db03538057edec7b9e167e5217a6fe377",
+      "restored_from_git_commit": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc",
+      "git_object": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc:projects/138k/push2_workstation/usb_a/tools/workstation_profile.py"
+    },
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": {
+      "sealed_sha256": "8493f009b7a2ebae0fc9d52dd67f396bcce210eafa5b33e7127247d282ffe0ea",
+      "post_prepare_live_sha256": "938245bdf476638e78861c54b7b35a277500dcda6fe1da2ec73f23cd190ba26c",
+      "restored_from_git_commit": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc",
+      "git_object": "9e88d1fb5bc9b79316749e90acd1bda52eae67bc:projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json"
+    }
+  },
+  "reconstruction_policy": "Only three exact Git9e88 blob restorations matching original sealed SHA; candidate metadata/profile/staged bytes never modified or regenerated",
+  "unfinished_raw_inventory_evidence_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-source-enabled-closure-v1.json",
+  "unfinished_raw_is_not_compiler_input_or_acceptance": true,
+  "sealed_file_count": 2974,
+  "synthesis": {
+    "started": true,
+    "runner": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-build-runner-v1.py",
+    "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24/synthesis.log",
+    "result_metadata": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-synthesis-run-v1.json",
+    "success_claimed": false
+  },
+  "planned_physical_user_code": "D2110132",
+  "planned_physical_policy": "new full VG plus normal M-v3 SDC; independently recheck exact DDR and 128 reference FF boundaries before same directed placement recipe; no prior route acceptance inherited",
+  "synthesis_passed": false,
+  "physical_passed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "root_review": {
+    "rehashed_files": 2974,
+    "all_frozen_bindings_match": true,
+    "handoff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-prepare-seal-handoff-v1.json",
+      "sha256": "1a7b3b44f8bb5d0a9485dafa30d2c11b33056de5bb17eb850c5508d762087f64"
+    },
+    "raw_inventory_evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-source-enabled-closure-v1.json",
+      "sha256": "59063bdb28f6f13643e5a73abf13b7dc7458bdadde7d111df2eb825035f837c2"
+    }
+  },
+  "scope": "Full prepare and source/tool seal only; synthesis/PnR/hardware results remain separate"
+}
