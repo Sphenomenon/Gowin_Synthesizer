@@ -6,6 +6,7 @@ does not certify the remaining CDC inventory, routed timing or hardware.
 """
 from pathlib import Path
 import argparse
+import bisect
 import fnmatch
 import hashlib
 import json
@@ -233,6 +234,78 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
                 timing_boundaries=timing, exact_payload_driver_closure=True,
                 source_stop_loss_bypass_preserved=True, constraints_complete=False,
                 routed_timing_verified=False, physical_cdc_accepted=False, hardware_tested=False)
+
+
+def audit_demo_held_boundaries(n, result):
+    """Extra closure required only by the explicit DEMO v2 timing owner.
+
+    Reuse the existing mailbox/APB Boolean state proofs. Custom PC reset is
+    power-up only; reusable module reset simulation is separate evidence.
+    """
+    g = Graph(n)
+    scope = 'u_managed/pc_bytes'
+    pc = next(row for row in result['mailboxes'] if row['scope'] == scope)
+    held, captured = (g.group(scope, stem, 8) for stem in ('held_data', 'destination_data'))
+    closure = complete_closure(n, g, held)
+    require(closure['ff_endpoints'] == {p + '/D': 'audio_clk' for p in captured} and
+            not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
+            'DEMO PC held payload exact consumer closure changed')
+    reset_rows = []
+    for p in sorted(p for p in g.regs if p.startswith(scope + '/')):
+        cell = n.cells[p]
+        require(cell['kind'] in ('DFFCE', 'DFFRE'), 'DEMO PC reset primitive changed')
+        pin = 'CLEAR' if cell['kind'] == 'DFFCE' else 'RESET'
+        require(n.pin(p, pin) in g.low and cell['parameters'].get('INIT', "1'b0") == "1'b0",
+                'DEMO PC inactive reset or zero power-up INIT changed: ' + p)
+        reset_rows.append(dict(register=p, primitive=cell['kind'], reset_pin=pin,
+                               inactive_reset=n.pin(p, pin), effective_init=0))
+    require(not any(re.search(r'/(source|destination)_release_', row['register']) for row in reset_rows),
+            'DEMO PC raw-button release unexpectedly retained')
+    chains = []
+    for name in ('request', 'acknowledge'):
+        chain = pc[name]
+        first, second = (chain[key].rsplit('/', 1)[0] for key in ('first', 'second'))
+        fanout = complete_closure(n, g, [first])
+        require(fanout['ff_endpoints'] == {second + '/D': n.pin(second, 'CLK')} and
+                not fanout['primitive_endpoints'] and not fanout['top_output_endpoints'],
+                'DEMO PC first-stage complete consumer closure changed')
+        chains.append(dict(chain, closure=fanout))
+    apb = result['timing_boundaries']['apb_response']
+    resets = {}
+    for side, stem, clock, controls, groups in (
+            ('source', 'p_release', 'ram_clk',
+             ('request_toggle', 'state_0', 'state_1', 'ack_meta', 'ack_sync', 'ack_settled'),
+             (('request_held', 49), ('response_local', 33))),
+            ('destination', 'a_release', 'audio_clk',
+             ('acknowledge_toggle', 'req_meta', 'req_sync', 'req_settled', 'request_decoded'),
+             (('request_local', 49), ('response_held', 33)))):
+        release = g.group(APB, stem, 3)
+        require(all(n.canonical('', n.pin(p, 'CLK')) == clock and n.pin(p, 'CE') in g.high and
+                    n.cells[p]['kind'] == 'DFFCE' for p in release), 'DEMO APB release clock/CE/primitive changed')
+        require(n.pin(release[0], 'D') in g.high and
+                all(n.pin(release[i], 'D') == n.pin(release[i - 1], 'Q') for i in (1, 2)) and
+                len({n.pin(p, 'CLEAR') for p in release}) == 1, 'DEMO APB release bypass/assertion changed')
+        owners = [g.register(APB, s) for s in controls]
+        owners += [p for name, width in groups for p in g.group(APB, name, width)]
+        require(all(n.cells[p]['kind'] == 'DFFCE' and
+                    n.cells[p]['parameters'].get('INIT', "1'b0") == "1'b0" for p in owners + release) and
+                len({n.pin(p, 'CLEAR') for p in owners}) == 1, 'DEMO APB shared payload/control reset or INIT changed')
+        proof = g.equivalent('DEMO APB ' + side + ' reset inverse third release',
+            [n.pin(owners[0], 'CLEAR'), n.pin(release[2], 'Q')], lambda x: x[0] == 1 - x[1])
+        resets[side] = dict(release=release, shared_assertion=n.pin(release[0], 'CLEAR'),
+                            affected_registers=len(owners), proof=proof)
+    require(resets['source']['shared_assertion'] == resets['destination']['shared_assertion'],
+            'DEMO APB source/destination common assertion differs')
+    resets['common_assertion_proof'] = g.equivalent('DEMO APB common assertion inverse preset_n',
+        [resets['source']['shared_assertion'], 'preset_n'], lambda x: x[0] == 1 - x[1], cuts=('preset_n',))
+    return dict(pc_source_pins=[p + '/Q' for p in held], pc_capture_pins=[p + '/D' for p in captured],
+        pc_payload_closure=closure, pc_chains=chains, pc_actual_reset=dict(mode='custom_top_power_up_only',
+            runtime_reset_supported=False, registers=reset_rows, reusable_reset_simulation=False),
+        apb_request_source_pins=[p + '/Q' for p in g.group(APB, 'request_held', 49)],
+        apb_request_capture_pins=[p + '/D' for p in g.group(APB, 'request_local', 49)],
+        apb_resets=resets, new_chains=[chains[0], *apb['chains']], max_delay_ns=13.020,
+        pc_minimum_receiving_capture_edge=4, apb_request_minimum_receiving_capture_edge=3,
+        physical_timing_verified=False, hardware_tested=False)
 
 
 def protocol_netlist(text, *, mapping):
@@ -652,7 +725,7 @@ def source_identity(root):
         'rtl/music/music_async_fifo.sv', *REVIEWED_BOUNDARY_SOURCES)}
 
 
-def validate_native_protocol_sdc(sdc, n, result):
+def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     """Confirm the local installed bounds and protect every subsequent D.
 
     This is a local pin-selector check. The role audit still owns clock-query
@@ -726,11 +799,72 @@ def validate_native_protocol_sdc(sdc, n, result):
     for row in apb['chains']:
         protected.update((row['second'], row['third']))
     protected.update(apb['capture_pins'])
+    allowed_hold = {apb_lines[1]}
+    demo_resolved = []
+    if demo_held_handshakes is not None:
+        demo = result.get('demo_held_handshakes')
+        require(isinstance(demo, dict), 'selected DEMO held-handshake graph proof absent')
+        selected = demo_held_handshakes.splitlines()
+        require(len(selected) == 10 and all(sdc.splitlines().count(line) == 1 for line in selected),
+                'DEMO held-handshake constraints missing, duplicated or changed')
+        pc_ack_lines = [line for line in protocol_constraints().splitlines()
+                        if 'u_managed/pc_bytes/ack_meta_' in line]
+        require(len(pc_ack_lines) == 2 and all(sdc.splitlines().count(line) == 1 for line in pc_ack_lines),
+                'DEMO existing PC ACK constraints missing, duplicated or changed')
+        # Resolve every selector over the whole actual netlist: a wider glob
+        # retaining the local bits must still fail if it reaches another owner.
+        local_pins = sorted(p + '/' + port for p, cell in n.cells.items() for port in cell['ports'])
+
+        def resolved(body):
+            actual = set()
+            for pattern in body.split():
+                prefix = pattern[:next((i for i, char in enumerate(pattern) if char in '*?['), len(pattern))]
+                first = bisect.bisect_left(local_pins, prefix)
+                last = bisect.bisect_right(local_pins, prefix + '\U0010ffff')
+                actual.update(pin for pin in local_pins[first:last] if fnmatch.fnmatchcase(pin, pattern))
+            return actual
+        expected = []
+        for source, capture in ((demo['pc_source_pins'], demo['pc_capture_pins']),
+                                (demo['apb_request_source_pins'], demo['apb_request_capture_pins'])):
+            expected.extend((('set_max_delay 13.020 ', source, capture),
+                             ('set_false_path -hold ', source, capture)))
+            protected.update(capture)
+        for row in demo['new_chains']:
+            expected.extend((('set_false_path ', [row['source']], [row['first']]),
+                             ('set_max_delay 2.000 ', [row['first'].rsplit('/', 1)[0] + '/Q'], [row['second']])))
+        for line, (prefix, source, capture) in zip(selected, expected):
+            require(line.startswith(prefix) and (prefix != 'set_false_path ' or '-hold' not in line),
+                    'DEMO payload setup must remain finite; only first-stage toggle setup may be cut')
+            bodies = re.findall(r'\[get_pins \{([^}]+)\}\]', line)
+            require(len(bodies) == 2 and 'get_clocks' not in line, 'DEMO held-handshake query shape changed')
+            for body, wanted in zip(bodies, (source, capture)):
+                actual = resolved(body)
+                require(actual == set(wanted), 'DEMO held-handshake exact source/capture inventory changed')
+            if prefix == 'set_false_path -hold ':
+                allowed_hold.add(line)
+            demo_resolved.append(dict(constraint=line, source_pins=source, capture_pins=capture))
+        # A second, weaker max-delay command must not override the finite
+        # payload/second-stage bounds while the mandatory line still exists.
+        bounded_targets = set(demo['pc_capture_pins'] + demo['apb_request_capture_pins'] + apb['capture_pins'])
+        bounded_targets.update(row['second'] for row in demo['new_chains'])
+        finite_lines = set(selected + apb_lines + pc_ack_lines)
+        for raw in sdc.splitlines():
+            line = raw.strip()
+            if not line.startswith('set_max_delay'):
+                continue
+            for kind, body in re.findall(r'-to\s+\[(get_pins|get_regs)\s+\{([^}]+)\}\]', line):
+                if any(fnmatch.fnmatchcase(pin if kind == 'get_pins' else pin.rsplit('/', 1)[0], pattern)
+                       for pattern in body.split() for pin in bounded_targets):
+                    require(line in finite_lines, 'DEMO held-handshake finite setup bound overridden')
     protected.discard(None)
-    for line in sdc.splitlines():
+    for raw in sdc.splitlines():
+        line = raw.strip()
         if not line.startswith('set_false_path'):
             continue
-        if line == apb_lines[1]:
+        if demo_held_handshakes is not None and 'get_clocks' in line:
+            from tools.workstation_runtime_cdc import MODE_EXCLUSIONS
+            require(line in MODE_EXCLUSIONS, 'DEMO held-handshake whole-clock setup cut is forbidden')
+        if line in allowed_hold:
             continue
         for kind, body in re.findall(r'-to\s+\[(get_pins|get_regs)\s+\{([^}]+)\}\]', line):
             require(not any(fnmatch.fnmatchcase(pin if kind == 'get_pins' else pin.rsplit('/', 1)[0], selector)
@@ -741,6 +875,7 @@ def validate_native_protocol_sdc(sdc, n, result):
                 protected_later_stage_pins=sorted(protected), later_stage_setup_hold_exceptions_absent=True,
                 tf_control_payload_pins_verified=bool(controls['tf_control']), pc_health_levels_verified=2,
                 apb_response_payload_pins_verified=33, delay_heartbeat_crossings_verified=2,
+                demo_held_handshake_constraints=demo_resolved,
                 tf_quiesce_first_stage_verified=bool(timing['tf_quiesce']),
                 global_clock_exception_audit_complete=False)
 

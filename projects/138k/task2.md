@@ -356,6 +356,8 @@ TF 的[available响应计算维护阶段](push2_workstation/usb_a/reports/DUAL13
 
 W 的[global failure末级选择维护阶段](push2_workstation/usb_a/reports/DUAL138K_RAW_GLOBAL_FAILURE_CASE_20261101.md)已完成：仅最后memory_failure同位置NBA使用精确cofactor，保留即时owner8故障、sticky guard、错误优先级及X/Z合并；lower写入、channel／cancel和32bit completion不变。任意prior nextQ证明、1024／262144四态、661577旧新twin、35定向＋4096任意状态及6负控通过；原CLEAR／两START和raw／BLE／DDR／owner／authority／来源回归保持。主线程重验526证据与7维护源，首轮负控构造失败和格式版本区别保留；新raw`b654b55a…3809`及唯一pin已进入W15独立输入，不预记物理收益，未上板。
 
+M／W 的[PC／APB既有握手窄约束维护阶段](push2_workstation/usb_a/reports/DUAL138K_DEMO_HELD_HANDSHAKES_20261101.md)已完成：显式DEMO v2实际SDC增加10行，PC8／APB49bit held请求保持13.020ns有限setup、仅hold豁免，三个toggle仅首级cut及后级2ns；旧APB响应／PC ACK保持。严格综合及物理入口均门检真实closure和全网表selector，16项／100负控及旧v1兼容通过；物理单测2项旧失败已隔离HEAD复现并保留。实际PC仍power-up-only，不把模块reset仿真升级为warm-reset。新M17／W15已实际选择，资源／routed时序另验，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

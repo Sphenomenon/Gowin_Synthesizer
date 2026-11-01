@@ -307,6 +307,13 @@ def audit(physical, self_test=False, workspace=None, output=None):
         Path(__file__), Path(__file__).with_name('workstation_serializer_startup_audit.py'),
         Path(__file__).with_name('workstation_ae350_clock_placement.py'),
         Path(__file__).with_name('workstation_ae350_rtc.py'), ROOT / RTC_SOURCE, ROOT / RTC_TOP,
+        Path(__file__).with_name('workstation_performance_reset.py'),
+        Path(__file__).with_name('workstation_native_protocol_audit.py'),
+        Path(__file__).with_name('workstation_runtime_pcm_cdc.py'),
+        Path(__file__).with_name('workstation_synthesis_netlist.py'),
+        Path(__file__).with_name('workstation_recording_phase1_cdc.py'),
+        Path(__file__).with_name('workstation_runtime_profile.py'),
+        Path(__file__).with_name('workstation_runtime_cdc.py'),
         reference, physical / 'physical.cst', base.with_suffix('.sdf'), base.with_suffix('.vo'), base.with_suffix('.tr')))
     stage, parent, local_panel_enabled, selection = source_context(physical, inputs, snapshot)
     if workspace is not None and output is not None:
@@ -355,6 +362,22 @@ def audit(physical, self_test=False, workspace=None, output=None):
     config_errors, config = check_build.inspect_ddr_configuration_audit()
     sdf, vo, sdc = (path.read_text() for path in (base.with_suffix('.sdf'), base.with_suffix('.vo'), physical / 'physical.sdc'))
     demo_role = selection.get('demo_role')
+    demo_held_handshakes, demo_held_errors = {}, []
+    if demo_role:
+        from tools.workstation_performance_reset import (
+            audit_demo_held_handshakes, DEMO_TIMING_POLICY)
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        evidence = parent.get('demo_runtime_timing')
+        try:
+            # v1 candidates keep their sealed evidence and do not acquire
+            # the v2 mailbox policy by re-running a maintained auditor.
+            if evidence and evidence.get('policy') == DEMO_TIMING_POLICY:
+                demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, demo_role, evidence,
+                    protocol_netlist(vo, mapping='routed'), mapping='routed')
+            else:
+                demo_held_handshakes = dict(gate_applied=False, scope='sealed legacy DEMO timing policy')
+        except (ValueError, KeyError, OSError) as error:
+            demo_held_errors.append(str(error))
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
                                                          startup_grant_role=demo_role)
     video_errors, video = inspect_video_pll_init(sdf, vo, stage)
@@ -373,7 +396,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
                        sealed_source=bool(demo_role) or 'synthesis' in inputs.get('source', {}))
     except (ValueError, KeyError, OSError) as error:
         rtc_errors.append(str(error))
-    errors = ddr_errors + config_errors + startup_errors + video_errors + shared_errors + core_errors + rtc_errors
+    errors = (ddr_errors + config_errors + startup_errors + video_errors + shared_errors + core_errors +
+              rtc_errors + demo_held_errors)
     negatives = {}
     if self_test:
         if errors:
@@ -423,11 +447,14 @@ def audit(physical, self_test=False, workspace=None, output=None):
     evidence.update({str(path): sha(path) for path in outputs.glob('*.json')})
     verify_unchanged(snapshot)
     return dict(schema=1, recorded_at=datetime.now().astimezone().isoformat(), identity=inputs['identity'],
-                scope='Complete maintained native PLL/startup subgate; not full STA/CDC/electrical or board acceptance',
+                scope='Maintained native PLL/startup and selected DEMO held-mailbox subgates; not full STA/CDC/electrical or board acceptance',
                 pll_gate_passed=not errors, errors=errors, ddr_source=ddr, ddr_configuration=config,
                 serializer_startup=startup, video_pll=video, shared_clock_plls=shared,
                 ae350_dedicated_core_clock=core_clock, ae350_dedicated_core_clock_errors=core_errors,
                 ae350_rtc=rtc, ae350_rtc_errors=rtc_errors,
+                demo_held_handshake_audit=demo_held_handshakes, demo_held_handshake_errors=demo_held_errors,
+                demo_held_handshake_gate_passed=(not demo_held_errors
+                    if demo_held_handshakes.get('gate_applied') or demo_held_errors else None),
                 profile_selection=selection, expected_pll_count=7 if local_panel_enabled else 6,
                 expected_shared_tuple_count=4 if local_panel_enabled else 3,
                 audit_workspace=str(view),

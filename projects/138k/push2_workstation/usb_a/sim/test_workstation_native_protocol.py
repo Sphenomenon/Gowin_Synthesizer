@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_native_protocol_audit import (
     audit_native_protocol, protocol_netlist, validate_native_protocol_sdc, RAM_SCOPE, RAM_STEM, TOP,
-    APB, DELAY, DMA,
+    APB, DELAY, DMA, audit_demo_held_boundaries,
 )
 from tools.workstation_runtime_pcm_cdc import Graph
 from tools.workstation_runtime_profile import protocol_constraints
@@ -524,6 +524,115 @@ class ActualTimingBoundaries(ActualNativeFixture):
                 with self.subTest(cut=pin, option=option), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
                     validate_native_protocol_sdc(sdc + f'set_false_path{option} -to [get_pins {{{pin}}}]\n', self.n, result)
 
+
+class ActualDemoHeldHandshakes(ActualNativeFixture):
+    def audited(self):
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        result['demo_held_handshakes'] = audit_demo_held_boundaries(self.n, result)
+        return result
+
+    def test_actual_pc_power_up_and_apb_local_release_are_separate(self):
+        result = self.audited()['demo_held_handshakes']
+        self.assertEqual(len(result['pc_source_pins']), 8)
+        self.assertEqual(len(result['apb_request_source_pins']), 49)
+        self.assertEqual(result['pc_actual_reset']['mode'], 'custom_top_power_up_only')
+        self.assertFalse(result['pc_actual_reset']['runtime_reset_supported'])
+        self.assertFalse(result['pc_actual_reset']['reusable_reset_simulation'])
+        self.assertEqual(result['apb_resets']['common_assertion_proof']['exhaustive_assignments'], 2)
+
+    def test_actual_graph_mutants(self):
+        g = Graph(self.n); scope = 'u_managed/pc_bytes'
+        reg = lambda s, t: g.register(s, t)
+        for label, target, port, source, value in (
+                ('PC payload alias', reg(scope,'destination_data_7'),'D',reg(scope,'destination_data_6'),None),
+                ('PC held extra consumer',reg(scope,'drop_count_0'),'D',reg(scope,'held_data_0'),None),
+                ('PC first bypass',reg(scope,'req_sync'),'D',reg(scope,'request_toggle'),None),
+                ('PC meta functional consumer',reg(scope,'destination_data_0'),'CE',reg(scope,'req_meta'),None),
+                ('PC active reset',reg(scope,'destination_data_7'),'RESET',None,"1'b1"),
+                ('PC wrong clock',reg(scope,'held_data_7'),'CLK',None,"1'b0"),
+                ('APB payload reset',reg(APB,'request_held_48'),'CLEAR',None,"1'b0"),
+                ('APB release bypass',reg(APB,'a_release_2'),'D',reg(APB,'a_release_0'),None)):
+            if source is not None:
+                value = self.n.cells[source]['ports']['D' if label == 'PC payload alias' else 'Q']
+            # The reviewed PC mapping may use either synchronous RESET or
+            # asynchronous CLEAR when the constant-inactive control is folded.
+            if label == 'PC active reset' and port not in self.n.cells[target]['ports']:
+                port = 'CLEAR'
+            with self.change(target,'ports',port,value):
+                with self.assertRaises(ValueError) as error:
+                    self.audited()
+            self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
+
+    def test_selected_sdc_and_negative_controls(self):
+        from tools.workstation_performance_reset import demo_held_handshake_constraints
+        result = self.audited(); addition = demo_held_handshake_constraints()
+        baseline = protocol_constraints(); sdc = baseline + addition
+        def check(text, selected=addition):
+            return validate_native_protocol_sdc(text,self.n,result,demo_held_handshakes=selected)
+        self.assertEqual(len(check(sdc)['demo_held_handshake_constraints']),10)
+        lines = addition.splitlines(); scope = 'u_managed/pc_bytes'
+        mutants = {
+            'missing payload bit': addition.replace(scope+'/held_data_*_s*/Q',
+                ' '.join(scope+'/held_data_'+str(i)+'_s*/Q' for i in range(7))),
+            'missing APB bit': addition.replace(APB+'/request_held_*_s*/Q',
+                ' '.join(APB+'/request_held_'+str(i)+'_s*/Q' for i in range(48))),
+            'wrong payload destination': addition.replace(scope+'/destination_data_*_s*/D',scope+'/drop_count_*_s*/D'),
+            'payload setup false path': addition.replace(lines[1],lines[1].replace(' -hold','')),
+            'later stage cut': addition.replace(lines[4],lines[4].replace('/req_meta_','/req_sync_')),
+            'weaker setup budget': addition.replace('13.020','20.000'),
+            'wrong ACK publisher': addition.replace(lines[8],lines[8].replace('/acknowledge_toggle_','/request_toggle_')),
+            'wider source also reaches another mailbox': addition.replace(scope+'/held_data_*_s*/Q','u_managed/*/held_data_*_s*/Q'),
+        }
+        for label,bad in mutants.items():
+            with self.subTest(case=label),self.assertRaises(ValueError) as error:
+                check(baseline+bad,bad)
+            self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
+
+        for label,bad in (
+                ('missing line',sdc.replace(lines[0]+'\n','')),
+                ('duplicate line',sdc+lines[0]+'\n'),
+                ('override finite payload bound',sdc+lines[0].replace('13.020','20.000')+'\n'),
+                ('override second-stage bound',sdc+lines[5].replace('2.000','3.000')+'\n'),
+                ('whole clock cut',sdc+'set_false_path -from [get_clocks {clk_50m}] -to [get_clocks {audio_76m8}]\n'),
+                ('remove old PC ACK',sdc.replace(next(x for x in baseline.splitlines() if scope+'/ack_meta_' in x)+'\n','')),
+                ('remove old APB response',sdc.replace(next(x for x in baseline.splitlines() if APB+'/response_held_' in x)+'\n',''))):
+            with self.subTest(case=label),self.assertRaises(ValueError) as error:
+                check(bad)
+            self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
+
+    def test_shared_selected_entry_checks_actual_source_slice(self):
+        from tools.workstation_performance_reset import (
+            DEMO_TIMING_TOOL, select_demo_timing, audit_demo_held_handshakes)
+        path = Path(os.environ['GW138K_NATIVE_PROTOCOL_VG'])
+        physical = next((p for p in path.parents if (p/'physical_inputs.json').is_file()),None)
+        if physical is None:
+            self.skipTest('actual physical parent identity required for entry source slice')
+        source = Path(json.loads((physical/'physical_inputs.json').read_text())['parent_candidate'])/'workstation/Prj1'
+        role = 'M' if self.profile == 'm-demo-base' else 'W'
+        with tempfile.TemporaryDirectory(prefix='selected-demo-held-entry-') as directory:
+            stage = Path(directory)
+            for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',
+                             'rtl/workstation/workstation_runtime_controlled.sv'):
+                target = stage/relative;target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes(((ROOT if relative == DEMO_TIMING_TOOL else source)/relative).read_bytes())
+            sdc,evidence = select_demo_timing(stage,protocol_constraints(),role)
+            def gate(text=sdc):
+                return audit_demo_held_handshakes(stage,text,role,evidence,self.n,mapping=self.mapping)
+            checked = gate()
+            self.assertTrue(checked['gate_applied'])
+            self.assertEqual(checked['actual_pc_reset_scope'],'power_up_only')
+            self.assertFalse(checked['reusable_module_reset_simulation'])
+            with self.assertRaisesRegex(ValueError,'absent or duplicated'):
+                gate(sdc.replace(evidence['added_lines'][-1]+'\n',''))
+            controlled=stage/'rtl/workstation/workstation_runtime_controlled.sv'
+            changed,count=re.subn(r'(\bpc_bytes\s*\(\s*\.reset_n\()common_reset_n',
+                r'\g<1>rst_ni',controlled.read_text(),count=1)
+            self.assertEqual(count,1)
+            controlled.write_text(changed)
+            with self.assertRaisesRegex(ValueError,'source common-reset selection changed'):
+                gate()
+            self.mutations.extend((dict(case='selected entry missing SDC line',rejected=True),
+                                   dict(case='selected entry actual PC source reset binding',rejected=True)))
 
 if __name__ == '__main__':
     unittest.main()

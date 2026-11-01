@@ -48,7 +48,8 @@ def proposed_constraints():
     return '\n'.join(lines) + '\n'
 
 
-DEMO_TIMING_POLICY = 'independent-demo-runtime-timing-v1'
+DEMO_TIMING_POLICY = 'independent-demo-runtime-timing-v2'
+DEMO_TIMING_LEGACY_POLICY = 'independent-demo-runtime-timing-v1'
 DEMO_TIMING_TOOL = 'tools/workstation_performance_reset.py'
 
 
@@ -64,7 +65,46 @@ def demo_clock_reports():
 
 def demo_timing_lines(role):
     require(role in ('M', 'W'), 'unknown DEMO timing role')
-    return ((proposed_constraints() if role == 'W' else '') + demo_clock_reports()).splitlines()
+    return ((proposed_constraints() if role == 'W' else '') + demo_clock_reports() +
+            demo_held_handshake_constraints()).splitlines()
+
+
+def demo_held_handshake_constraints():
+    """Only explicit DEMO selections gain the reviewed 8/49-bit held bounds."""
+    lines = []
+    for scope, source, destination in (
+            ('u_managed/pc_bytes', 'held_data', 'destination_data'),
+            ('u_managed/control_cdc', 'request_held', 'request_local')):
+        path = (f'-from [get_pins {{{scope}/{source}_*_s*/Q}}] '
+                f'-to [get_pins {{{scope}/{destination}_*_s*/D}}]')
+        lines.extend(('set_max_delay 13.020 ' + path, 'set_false_path -hold ' + path))
+    for scope, source, first, second in (
+            ('u_managed/pc_bytes', 'request_toggle', 'req_meta', 'req_sync'),
+            ('u_managed/control_cdc', 'request_toggle', 'req_meta', 'req_sync'),
+            ('u_managed/control_cdc', 'acknowledge_toggle', 'ack_meta', 'ack_sync')):
+        lines.extend((f'set_false_path -from [get_pins {{{scope}/{source}_s*/Q}}] '
+                      f'-to [get_pins {{{scope}/{first}_s*/D}}]',
+                      f'set_max_delay 2.000 -from [get_pins {{{scope}/{first}_s*/Q}}] '
+                      f'-to [get_pins {{{scope}/{second}_s*/D}}]'))
+    return '\n'.join(lines) + '\n'
+
+
+def demo_timing_metadata(role, source_sha256, *, legacy=False):
+    lines = (((proposed_constraints() if role == 'W' else '') + demo_clock_reports()).splitlines()
+             if legacy else demo_timing_lines(role))
+    result = dict(policy=DEMO_TIMING_LEGACY_POLICY if legacy else DEMO_TIMING_POLICY,
+        role=role, source=DEMO_TIMING_TOOL, source_sha256=source_sha256, added_lines=lines,
+        performance_release_selected=role == 'W',
+        synchronizer_clear_exception_count=6 if role == 'W' else 0,
+        routed_timing_verified=False)
+    if legacy:
+        result['clock_or_business_exceptions_added'] = False
+    else:
+        result.update(whole_clock_exceptions_added=False, held_handshake_constraints_added=True,
+            held_handshake_payload_bits=dict(pc_request=8, apb_request=49),
+            held_handshake_setup_budget_ns=13.020, held_handshake_only_hold_waived=True,
+            toggle_first_stage_exception_count=3, toggle_second_stage_max_delay_ns=2.0)
+    return result
 
 
 def select_demo_timing(stage, sdc, role):
@@ -73,11 +113,7 @@ def select_demo_timing(stage, sdc, role):
     require(all(line not in sdc.splitlines() for line in lines), 'DEMO timing lines already installed')
     source = Path(stage) / DEMO_TIMING_TOOL
     result = sdc + ('' if not sdc or sdc.endswith('\n') else '\n') + '\n'.join(lines) + '\n'
-    return result, dict(policy=DEMO_TIMING_POLICY, role=role, source=DEMO_TIMING_TOOL,
-        source_sha256=digest(source), added_lines=lines,
-        performance_release_selected=role == 'W', clock_or_business_exceptions_added=False,
-        synchronizer_clear_exception_count=6 if role == 'W' else 0,
-        routed_timing_verified=False)
+    return result, demo_timing_metadata(role, digest(source))
 
 
 def verify_demo_timing(stage, sdc, role, evidence):
@@ -89,15 +125,49 @@ def verify_demo_timing(stage, sdc, role, evidence):
     require(evidence.get('source') == DEMO_TIMING_TOOL, 'DEMO timing source changed')
     require(evidence.get('source_sha256') == digest(Path(stage) / DEMO_TIMING_TOOL),
             'DEMO timing sealed source identity changed')
-    expected = dict(policy=DEMO_TIMING_POLICY, role=role, source=DEMO_TIMING_TOOL,
-        source_sha256=evidence['source_sha256'], added_lines=lines,
-        performance_release_selected=role == 'W', clock_or_business_exceptions_added=False,
-        synchronizer_clear_exception_count=6 if role == 'W' else 0,
-        routed_timing_verified=False)
+    require(evidence.get('policy') in (DEMO_TIMING_POLICY, DEMO_TIMING_LEGACY_POLICY),
+            'unknown DEMO timing policy revision')
+    legacy = evidence['policy'] == DEMO_TIMING_LEGACY_POLICY
+    expected = demo_timing_metadata(role, evidence['source_sha256'], legacy=legacy)
+    lines = expected['added_lines']
     require(evidence == expected, 'DEMO timing selection metadata changed')
     require(all(sdc.splitlines().count(line) == 1 for line in lines),
             'DEMO timing selected line absent or duplicated')
+    if legacy:
+        require(not any(line in sdc.splitlines() for line in demo_held_handshake_constraints().splitlines()),
+                'legacy DEMO timing cannot acquire unsealed held-handshake constraints')
     return dict(evidence, installed_lines_verified=True)
+
+
+def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping):
+    """One selected gate shared by strict synthesis and actual routed entry."""
+    selected = verify_demo_timing(stage, sdc, role, evidence)
+    if selected.get('policy') != DEMO_TIMING_POLICY:
+        return dict(gate_applied=False, policy=selected.get('policy'),
+                    scope='sealed legacy without new DEMO held-handshake policy')
+    # The caller has already sealed the complete candidate input closure.
+    # Bind the extra constant-reset proof to the actual consumed composition.
+    top_path = Path(stage) / 'rtl/workstation/gw138k_push_workstation_top.v'
+    controlled_path = Path(stage) / 'rtl/workstation/workstation_runtime_controlled.sv'
+    top, controlled = top_path.read_text(), controlled_path.read_text()
+    instance = re.search(r'workstation_runtime_controlled\s*#\(.*?\)\s*u_managed\s*\(.*?\);', top, re.S)
+    require(top.count("wire button1_n=1'b1;") == 1 and instance is not None and
+            instance[0].count('.SEPARATE_COMMON_RESET(1)') == 1 and
+            instance[0].count('.common_reset_ni(button1_n)') == 1,
+            'DEMO PC custom-top raw button binding changed')
+    require(re.search(r'wire\s+common_reset_n\s*=\s*SEPARATE_COMMON_RESET\s*\?\s*common_reset_ni\s*:\s*rst_ni\s*;', controlled) and
+            re.search(r'gw138k_stream_cdc\s*#\(\.WIDTH\(8\)\)\s*pc_bytes\s*\(\s*\.reset_n\(common_reset_n\)', controlled),
+            'DEMO PC source common-reset selection changed')
+    from tools.workstation_native_protocol_audit import (
+        audit_native_protocol, audit_demo_held_boundaries, validate_native_protocol_sdc)
+    result = audit_native_protocol(n, profile='m-demo-base' if role == 'M' else 'w-demo-d', mapping=mapping)
+    result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
+    result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
+        demo_held_handshakes=demo_held_handshake_constraints())
+    return dict(gate_applied=True, selection=selected, actual_native_protocol=result,
+                reset_source_slice_sha256={str(p): digest(p) for p in (top_path, controlled_path)},
+                actual_pc_reset_scope='power_up_only', reusable_module_reset_simulation=False,
+                physical_timing_verified=False, hardware_tested=False)
 
 
 def audit(n, *, mapping):

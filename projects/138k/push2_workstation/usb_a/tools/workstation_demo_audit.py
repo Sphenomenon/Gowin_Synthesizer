@@ -532,7 +532,15 @@ def audit(root, output, metadata):
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist)
     performance_release = None
+    demo_held_handshakes = None
     demo_boundary_cdc = None
+    if metadata.get('demo_runtime_timing') is not None:
+        from tools.workstation_performance_reset import audit_demo_held_handshakes, DEMO_TIMING_POLICY
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        timing_evidence = metadata['demo_runtime_timing']
+        demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, role,
+            timing_evidence, protocol_netlist(vg_text, mapping='synthesis')
+            if timing_evidence.get('policy') == DEMO_TIMING_POLICY else None, mapping='synthesis')
     if metadata.get('demo_boundary_cdc') is not None:
         from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
         from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
@@ -573,6 +581,7 @@ def audit(root, output, metadata):
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,
         demo_usb_fifo_write_reset_audit=fifo_write_reset,
         demo_performance_release_audit=performance_release,
+        demo_held_handshake_audit=demo_held_handshakes,
         demo_boundary_cdc_audit=demo_boundary_cdc,
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,

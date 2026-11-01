@@ -14,6 +14,8 @@ from tools.workstation_performance_reset import audit,netlist,proposed_constrain
 from tools.workstation_runtime_pcm_cdc import Graph
 from tools.workstation_performance_reset import (
     DEMO_TIMING_TOOL, demo_clock_reports, select_demo_timing, verify_demo_timing,
+    DEMO_TIMING_POLICY, DEMO_TIMING_LEGACY_POLICY, demo_timing_metadata,
+    demo_held_handshake_constraints,
 )
 
 
@@ -27,6 +29,13 @@ class DemoBuildSelection(unittest.TestCase):
                 self.assertTrue(verify_demo_timing(stage,sdc,role,evidence)['installed_lines_verified'])
                 self.assertEqual('source_release' in sdc,role=='W')
                 self.assertEqual(sdc.count('report_timing'),4)
+                self.assertEqual(evidence['policy'], DEMO_TIMING_POLICY)
+                self.assertEqual(len(evidence['added_lines']), 14 if role == 'M' else 19)
+                self.assertTrue(evidence['held_handshake_constraints_added'])
+                self.assertFalse(evidence['whole_clock_exceptions_added'])
+                self.assertNotIn('clock_or_business_exceptions_added', evidence)
+                self.assertEqual(evidence['held_handshake_payload_bits'],dict(pc_request=8,apb_request=49))
+                self.assertEqual(evidence['toggle_first_stage_exception_count'],3)
                 for line in evidence['added_lines']:
                     for changed in (sdc.replace(line+'\n','',1),sdc+line+'\n'):
                         with self.subTest(role=role,line=line),self.assertRaisesRegex(ValueError,'absent or duplicated'):
@@ -47,6 +56,21 @@ class DemoBuildSelection(unittest.TestCase):
                          'sealed_legacy_without_demo_timing_additions')
         self.assertTrue(all(line in NATIVE_PERIPHERAL_SDC and line not in PERIPHERAL_SDC
                             for line in demo_clock_reports().splitlines()))
+
+    def test_legacy_v1_keeps_original_lines_without_upgrading(self):
+        import hashlib
+        with tempfile.TemporaryDirectory(prefix='legacy-demo-runtime-timing-') as directory:
+            stage=Path(directory);tool=stage/DEMO_TIMING_TOOL;tool.parent.mkdir()
+            tool.write_text('sealed historical timing owner\n')
+            digest=hashlib.sha256(tool.read_bytes()).hexdigest()
+            for role in ('M','W'):
+                evidence=demo_timing_metadata(role,digest,legacy=True)
+                sdc='\n'.join(evidence['added_lines'])+'\n'
+                self.assertEqual(evidence['policy'],DEMO_TIMING_LEGACY_POLICY)
+                self.assertEqual(len(evidence['added_lines']),4 if role=='M' else 9)
+                self.assertTrue(verify_demo_timing(stage,sdc,role,evidence)['installed_lines_verified'])
+                with self.assertRaisesRegex(ValueError,'legacy DEMO timing cannot acquire'):
+                    verify_demo_timing(stage,sdc+demo_held_handshake_constraints(),role,evidence)
 
 
 class ActualRelease(unittest.TestCase):

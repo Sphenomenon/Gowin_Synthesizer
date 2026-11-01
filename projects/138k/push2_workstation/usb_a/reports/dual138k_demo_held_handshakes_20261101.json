@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "maintained_targeted_checks_passed": true,
+  "actual_fixture_checks": {
+    "m_vg": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-held-maintained-v3-m-vg.json",
+      "sha256": "c1d26d63a9dc04bac21c92df19a7a21c2a75927b476944c89b8d5038587d4a8c",
+      "tests_passed": 4,
+      "negative_controls": 25,
+      "all_rejected": true
+    },
+    "m_vo": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-held-maintained-v3-m-vo.json",
+      "sha256": "7d48ad8e4612d92eaccd0d859e10961e2e56747032d051bf1439591f0aa72187",
+      "tests_passed": 4,
+      "negative_controls": 25,
+      "all_rejected": true
+    },
+    "w_vg": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-held-maintained-v3-w-vg.json",
+      "sha256": "6dc7a153d46ac39353138e2c8abb27ee6b152c01fcbd2e4d24b7671fdf7a39d8",
+      "tests_passed": 4,
+      "negative_controls": 25,
+      "all_rejected": true
+    },
+    "w_vo": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m17-held-maintained-v3-w-vo.json",
+      "sha256": "01af6596495b4700f39df71b3703dbb75d474276ce5b6fa00bbc790e75968e21",
+      "tests_passed": 4,
+      "negative_controls": 25,
+      "all_rejected": true
+    }
+  },
+  "negative_controls": 100,
+  "demo_selection_tests_passed": 3,
+  "legacy_candidate_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/held-maintained-legacy-candidates-v1.json",
+    "sha256": "19e8c920ca91fb4692e8f96db2dc1384cda7f3939228cd0f8698bf0352179984",
+    "old_sdc_unchanged": true,
+    "new_policy_not_applied_to_old_candidates": true
+  },
+  "preexisting_physical_unit_failures": {
+    "head": "f0d4f8742689f173b242a7cb8e88ff26de1e6710",
+    "reproduction": "/Users/sphenicidition/.cache/gw138k-dual-20261031/held-maintained-head-fixture-v1/reproduction.json",
+    "sha256": "2aef7e3f574d01b42c75117f51577944d670d84f882d4a70a291699947cec80e",
+    "test_count": 23,
+    "failures": 2,
+    "skipped": 1,
+    "reason": "M/W malformed configuration fixtures are rejected earlier by integration metadata hash binding; same exact failures on isolated HEAD original helper/test",
+    "gates_or_error_order_relaxed": false
+  },
+  "maintained_file_sha256": {
+    "tools/workstation_performance_reset.py": "ab3116e1abee2797d8b7bd0678a90684d1d2c99991c136d410f4660a6c3b5bad",
+    "tools/workstation_native_protocol_audit.py": "4b49d554738d498d8ea181d7d82329a16894b4e76d86c669223c94c3a94190de",
+    "tools/workstation_demo_audit.py": "25fd327d98345aed0a9cfdf337c3475ace0444c23a0b2c813d1a9b4612572633",
+    "tools/workstation_physical_pll_audit.py": "acc31a21d2c29ee0a44ac4f73bfd894481243eb8865ced44a110151a87c3028f",
+    "sim/test_workstation_performance_reset.py": "b7a7794335c55b1348fd3f940bb02168ffcc1fb8f35f246f7664ad459c8ff80b",
+    "sim/test_workstation_native_protocol.py": "583ae51336d515cb27bcc3f381312739444d066d2a05bd607f3b491939b32989"
+  },
+  "source_behavior_reference": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m16-timing-independent-v1/held-boundaries-validation.json",
+    "scope": "reusable actual consumed modules; reset input exercised; not custom-top PC warm reset"
+  },
+  "actual_pc_reset": "custom-top power-up-only with inactive reset controls and INIT0",
+  "new_candidate_full_build_pending": true,
+  "physical_timing_accepted": false,
+  "hardware_tested": false,
+  "source_locks_task2_commits_owned_by_root": true
+}
