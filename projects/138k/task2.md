@@ -410,6 +410,8 @@ W17 `0xD2110122`的[default完整物理结果](push2_workstation/usb_a/reports/D
 
 W17 `D2110123`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W17_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53431，setup5696／−5.123ns、hold1／−.232ns，recovery+1.803／removal+0.278ns、pulse+.580ns。DDR原3.500ns保持且实测+.844ns；仍有tags19→raw memory_failure、active_generation→written及host_rx generation→reliable长链。六审计及补充Wreturn19全过（native58／11不适用／63负控、边界7／69、六PLL／7负控／v3），主线程重验32物理／3277标准证据，另复验default／far扩展3307／3322。外围schema／数量断言失败保留，不放宽门禁。完整STA仍失败，未上板，T2-D1／D2未完成。
 
+HCI ACL generation 的[维护源码比较分组](push2_workstation/usb_a/reports/DUAL138K_HCI_ACL_GENERATION_20261101.md)已通过：先并行比较各slot完整32bit，再按原selector选单比特；clocked字节、信用、即时取消与错误优先级不变。两完整owner各91,711周期对照、151,160四态、128自由位组合关系UNSAT及8实际／4来源负控通过，原pool与完整native默认入口（含UART8E1／H5）通过。主线程重验757封存文件及严格inverse，尚未更新profile或进入新综合／P&R，无物理收益主张，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

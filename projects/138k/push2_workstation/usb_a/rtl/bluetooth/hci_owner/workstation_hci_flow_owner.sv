@@ -89,6 +89,19 @@ module workstation_hci_flow_owner #(
     // one-bit result instead of driving the front of a 16-bit comparator.
     wire acl_exceeds_br = acl_data_length_i > br_length;
     wire acl_exceeds_le = acl_data_length_i > le_length;
+    // Compare generations before the handle lookup selects one result.
+    // Kept byte groups bound the combinational reduction; no extra cycle.
+    (* syn_keep=1 *) wire [HANDLE_SLOTS*4-1:0] acl_generation_changed_groups;
+    wire [HANDLE_SLOTS-1:0] acl_generation_changed;
+    for(genvar generation_slot=0;generation_slot<HANDLE_SLOTS;generation_slot=generation_slot+1)begin:acl_generation_identity
+        for(genvar generation_group=0;generation_group<4;generation_group=generation_group+1)begin:byte_group
+            assign acl_generation_changed_groups[generation_slot*4+generation_group]=
+                |(acl_generation_i[generation_group*8+:8]^
+                  generations[generation_slot][generation_group*8+:8]);
+        end
+        assign acl_generation_changed[generation_slot]=
+            |acl_generation_changed_groups[generation_slot*4+:4];
+    end
     wire special_command = command_owner_i == 3 && command_opcode_i == 16'h0c35;
     wire ordinary_command = command_owner_i != 3 && command_opcode_i != 16'h0c35 &&
                             command_opcode_i != 16'h0000;
@@ -147,7 +160,7 @@ module workstation_hci_flow_owner #(
         acl_error_o=0;
         if (!configured_o || fault_o) acl_error_o=1;
         else if (acl_slot == -1) acl_error_o=2;
-        else if (acl_generation_i != generations[acl_slot]) acl_error_o=3;
+        else if (acl_generation_changed[acl_slot]) acl_error_o=3;
         else if (acl_data_length_i == 0 ||
             (is_le[acl_slot] && !shared_pool ? acl_exceeds_le : acl_exceeds_br)) acl_error_o=4;
     end

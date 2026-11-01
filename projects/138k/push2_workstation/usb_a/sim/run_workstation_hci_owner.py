@@ -19,7 +19,7 @@ BENCHES = {
 }
 MUTANTS = (
     ('shared_pool_removed', 'flow', 'shared_pool<=le_acl_count_i==0;', 'shared_pool<=0;'),
-    ('stale_generation_accepted', 'flow', 'acl_generation_i != generations[acl_slot]', "1'b0"),
+    ('stale_generation_accepted', 'flow', 'acl_generation_changed[acl_slot]', "1'b0"),
     ('disconnect_credit_lost', 'flow', 'br_available_o<=br_available_o+outstanding[lifecycle_slot];', 'br_available_o<=br_available_o;'),
     ('host_credit_command_blocked', 'flow', '(special_command || (!command_pending_o && command_credits_o != 0));', '(!command_pending_o && command_credits_o != 0);'),
     ('opcode_zero_completes_command', 'flow', "if (response_opcode_i == 16'h0000) begin end", "if (1'b0) begin end"),

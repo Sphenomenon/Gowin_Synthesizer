@@ -1,0 +1,135 @@
+{
+  "schema": "dual138k-hci-acl-generation-maintained-checkpoint-v1",
+  "passed": true,
+  "stage": "maintained_source_and_complete_native_simulation",
+  "owned_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": "e32a9ef62a527907da7baeaaf4ec592b38261483f9f6f7d7fa3429cbd32b9dc8",
+    "projects/138k/push2_workstation/usb_a/sim/workstation_hci_flow_generation_sources.py": "eb87ea28630a932ce47a6dcf6101dfdb87b780f4a2a645d28a04676190e354c9",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_flow_generation_groups.py": "59ac95904e7a15e34462d203d9f42ef056e74f8b1b0646002f97ee9675b80cd5",
+    "projects/138k/push2_workstation/usb_a/sim/run_workstation_hci_owner.py": "6f2a6a0fa288d5fee7fe8e1002face17f7cb8344c68559062e78d2351d2499e3"
+  },
+  "original_cache_seal_sha256": "67fd992971a88b8a8f51114748767509db73a30ebd86aa5a50d829826801db26",
+  "original_cache_files_verified": 82,
+  "report_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-groups-maintained-v2/verification.json": "d770b103ad84a05de01fddf7a15571459cfca54a754a56a284bd1ce14e94eec8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-pool-maintained-v2/verification.json": "bd1270d62cc56cf6d0d99a95a7cc398a9d96f1b4af0f0e979992ec1d9bbc2af0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v1/prior/host-rx/shared-owner/verification.json": "fc6e099b9835f2640db18bec6c28237bae83e58c1030f5a0ba24d8d07fdfc2b1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v1/prior/host-rx/verification.json": "8ed6e75756c0cf5a2dffbe2f6060bdfa16c492e49bb8a9784009be78c7a457de",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v1/prior/verification.json": "d33aa51906991f3e11237c35f098372be1cb6294d361fcca9d0b86c486b563a0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v1/verification.json": "7cc96a3eee6f7fb0064a1b4c348808ccdd987554ee40239a57c7ca927a89ac0e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v2/prior/host-rx/shared-owner/verification.json": "d4b8cc69f5ab1455df55713c3cdf8e03bcf625d8ddfabc867bbe1e31844c3921",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v2/prior/host-rx/verification.json": "d9b4255094c305e354e1f9f01436ccb0929791df0ff3fac7299894ed5dcde3cb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v2/prior/verification.json": "34a8d7c3d31ec347f0e68968fe3ee1b06b4389e2fbebde4a2de7f9fd4d1b2f5f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v2/verification.json": "0690f2feccf859277b6339baa5512f81865980b80cdf316fdf9991bf3bb08ad6"
+  },
+  "report_output_manifest_entries_verified": 1555,
+  "maintained_input_source_hash_checks": 115,
+  "targeted": {
+    "four_state_checks": 151160,
+    "actual_module_mutants_rejected": 8,
+    "strict_source_controls_rejected": 4,
+    "complete_owner_twins": {
+      "stale-acl": {
+        "exit_code": 0,
+        "summary": "FLOW GENERATION same_edge_priority_scenarios=4\nPASS checks=116832 scenarios=19 random_steps=10000\n/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-groups-maintained-v2/whole-owner-stale-acl/bench.sv:269: $finish called at 917107000 (1ps)\nFLOW GENERATION TWIN cycles=91711 outputs=32 scalar_groups=19 array_words=8\n",
+        "expected_pass": true
+      },
+      "legal-acl": {
+        "exit_code": 0,
+        "summary": "FLOW GENERATION same_edge_priority_scenarios=4\nPASS checks=116836 scenarios=19 random_steps=10000\n/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-groups-maintained-v2/whole-owner-legal-acl/bench.sv:270: $finish called at 917107000 (1ps)\nFLOW GENERATION TWIN cycles=91711 outputs=32 scalar_groups=19 array_words=8\n",
+        "expected_pass": true
+      }
+    },
+    "symbolic": {
+      "result": "UNSAT",
+      "independent_input_bits": 128,
+      "known_mismatch_dominates_unknown": true,
+      "reachability_assumptions": [],
+      "scope": "Hand-lifted logical inequality/XOR/reduction relation; not formal SV elaboration or temporal proof",
+      "version": "5.1.0"
+    },
+    "all_clocked_bytes_unchanged": true
+  },
+  "pool": {
+    "summary": "PASS exact HCI comparison cycles=118730 public_outputs=32 internal_scalar_groups=19 array_groups=8 semantic_vectors=270336",
+    "oracle_vectors": 270336,
+    "mutants_rejected": 4
+  },
+  "native": {
+    "baseline": {
+      "summary": "PASS native integration checks=268 commands=12 fragments=3 BR=1 hostreturns=3",
+      "checks": 268
+    },
+    "mutants_rejected": 11,
+    "uart": {
+      "summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+      "adapted_h5_sha256": "015f476ff98dc9f1394510c7a80492b200c8feef409c2898ce9a33f42998c4ed",
+      "patch_bytes": 253,
+      "physical_uart": true,
+      "physical_board": false
+    },
+    "prior_bootstrap": {
+      "summary": "PASS checks=418 scenarios=32 commands4 pools2 timeout_phases5",
+      "checks": 418
+    },
+    "prior_host_rx": {
+      "checks": 160228,
+      "mutants": 13
+    },
+    "prior_shared_owner": {
+      "flow_checks": 116780,
+      "event_checks": 9174,
+      "mutants": 11
+    },
+    "all_prior_and_uart_enabled": true
+  },
+  "retained_failure": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-runtime-failure-v1",
+    "stage": "z3 import before simulation",
+    "errors": 2,
+    "code_or_fixture_correction": false,
+    "recovery": "Use existing Miniforge 3.14.6 and z3 5.1.0 in new v2 output directories"
+  },
+  "canonical_python": {
+    "path": "/Users/sphenicidition/miniforge3/bin/python3",
+    "version": "3.14.6 | packaged by conda-forge | (main, Aug 11 2026, 10:24:52) [Clang 20.1.8 ]"
+  },
+  "alternate_complete_native": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-native-maintained-v1",
+    "runtime": "CLT Python3.9.6",
+    "all_prior_and_uart_enabled": true,
+    "passed": true
+  },
+  "syntheses_run": 0,
+  "pnr_runs": 0,
+  "hardware_tested": false,
+  "physical_gain_measured": false,
+  "source_selected_by_new_build": false,
+  "profile_locks_changed": false,
+  "docs_or_task2_changed": false,
+  "git_mutations": false,
+  "remaining": "Root independent review, report, commit/push, and new explicitly identified build/profile input selection; physical timing/resource gains remain unmeasured.",
+  "root_independent_review": {
+    "schema": 1,
+    "stage": "flow_acl_generation_root_review",
+    "passed": true,
+    "handoff_verification_sha256": "3ab1ffd4877d152a8cd7ebc74380e92e8c9f6fbd09f62588e531d70eaaad06ee",
+    "handoff_seal_sha256": "0a7b68c2a22b44b1163c97013d7ebbcd12ea384a9095602209974678dd7cb316",
+    "rehashed_seal_files": 757,
+    "checked_maintained_files": 4,
+    "strict_inverse_matches_HEAD": true,
+    "all_clocked_bytes_unchanged": true,
+    "regression_reports_verified": 10,
+    "whole_owner_twins_cycles_each": 91711,
+    "four_state_checks": 151160,
+    "actual_module_mutants_rejected": 8,
+    "source_controls_rejected": 4,
+    "symbolic_scope": "Hand-lifted logical inequality/XOR/reduction relation; not formal SV elaboration or temporal proof",
+    "native_uart_summary": "PASS native UART8E1/H5 patch=253 bootstrap=4 hostreturns=10 notifications=3 reconnect=1",
+    "physical_gain_measured": false,
+    "hardware_tested": false,
+    "source_selected_by_new_build": false
+  },
+  "root_review_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/flow-acl-generation-maintained-root-review-v1.json",
+  "root_review_sha256": "f304e915d21c029f1b769a536f5aab441193888e119387bbbd56ccb51b584e68"
+}
