@@ -68,7 +68,7 @@ module tb_touch_frontend;
         wait(keypad_ready && slider_ready); #1;
         if (keys !== 0 || errors !== 0) $fatal(1,"Bad startup state");
         if (key_device.mem[12] !== 1 || key_device.mem[13] !== 1 ||
-            key_device.mem[17] !== 7 || key_device.mem[20] !== 0 ||
+            key_device.mem[17] !== 1 || key_device.mem[20] !== 0 ||
             key_device.mem[38] !== 12 || key_device.mem[54] !== 4 || key_device.mem[10] !== 1)
             $fatal(1,"Keypad configuration not actually written");
         if (slider_device.mem[12] !== 1 || slider_device.mem[13] !== 1 ||
@@ -84,8 +84,13 @@ module tb_touch_frontend;
                 $fatal(1,"Slider electrode %0d not configured",electrode);
         end
         // Complete bitmap semantics include releases and all sixteen notes.
+        // A stable press is published by the first complete snapshot;
+        // the host must not add another multi-frame detection integrator.
+        wait(dut.keypad.state == 10); @(negedge clk);
         key_device.mem[3] = 8'h81; key_device.mem[4] = 8'h81;
-        change_n = 0; wait_keys(16'h8181); change_n = 1;
+        change_n = 0; @(posedge key_update); #1;
+        if (keys !== 16'h8181) $fatal(1,"Stable press delayed beyond its first complete snapshot");
+        change_n = 1;
         key_device.mem[3] = 8'hff; key_device.mem[4] = 8'hff;
         wait_keys(16'hffff);
         // Held-key hysteresis: bit0 delta=10 passes, bit1 delta=9 fails;
