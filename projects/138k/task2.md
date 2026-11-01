@@ -358,6 +358,8 @@ W 的[global failure末级选择维护阶段](push2_workstation/usb_a/reports/DU
 
 M／W 的[PC／APB既有握手窄约束维护阶段](push2_workstation/usb_a/reports/DUAL138K_DEMO_HELD_HANDSHAKES_20261101.md)已完成：显式DEMO v2实际SDC增加10行，PC8／APB49bit held请求保持13.020ns有限setup、仅hold豁免，三个toggle仅首级cut及后级2ns；旧APB响应／PC ACK保持。严格综合及物理入口均门检真实closure和全网表selector，16项／100负控及旧v1兼容通过；物理单测2项旧失败已隔离HEAD复现并保留。实际PC仍power-up-only，不把模块reset仿真升级为warm-reset。新M17／W15已实际选择，资源／routed时序另验，未上板。
 
+M17／W15 的[完整来源、综合与VG检查点](push2_workstation/usb_a/reports/DUAL138K_M17_W15_PREPARE_20261101.md)已完成：各822项锁仅更新8条hash，配置／库存保持；875／951原始来源、588／645staged及各1381冻结审计输入逐项复验。综合LUT＋ALU66,380／71,074、BSRAM equivalent195／257；两套严格门／原生CLI通过，原生58项分别53通过5跳过／42通过16跳过及68／57负控，边界各7项／69负控通过。主线程重读4655证据，prepare seal v2仅更正“综合开始时刻”的说明、原v1保留，候选字节不变。`D2110112`／`D2110114`默认完整P&R已启动，资源／routed时序另记；未上板，不转授声画或无线／双板接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
