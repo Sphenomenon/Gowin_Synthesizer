@@ -177,6 +177,8 @@ def demo_source_context(physical, inputs, snapshot):
         snapshot[source / firmware['evidence_directory'] / relative] = expected
     return stage, parent, False, dict(policy='sealed_immutable_demo_profile_source',
         candidate_identity=profile['candidate_identity'], demo_role=role,
+        startup_grant_role=('M-core' if role == 'M' and profile['configuration'].get('tf_policy') ==
+                            'disabled_first_m_core_demo_v1' else role),
         prepared_profile_sha256=sha(profile_path), vg_sha256=audit['netlist_sha256'],
         synthesis_evidence_scope='hash_bound_Gowin_emitted_log_not_driver_stdout',
         synthesis_log_sha256=audit['synthesis_log_sha256'],
@@ -370,6 +372,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
     config_errors, config = check_build.inspect_ddr_configuration_audit()
     sdf, vo, sdc = (path.read_text() for path in (base.with_suffix('.sdf'), base.with_suffix('.vo'), physical / 'physical.sdc'))
     demo_role = selection.get('demo_role')
+    startup_grant_role = selection.get('startup_grant_role', demo_role)
     demo_held_handshakes, demo_held_errors = {}, []
     if demo_role:
         from tools.workstation_performance_reset import (
@@ -387,7 +390,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
         except (ValueError, KeyError, OSError) as error:
             demo_held_errors.append(str(error))
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
-                                                         startup_grant_role=demo_role)
+                                                         startup_grant_role=startup_grant_role)
     video_errors, video = inspect_video_pll_init(sdf, vo, stage)
     shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled)
     core_clock, core_errors = {}, []
@@ -424,7 +427,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
             broken = vo[:match.start()] + changed + vo[match.end():]
             bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled) if kind == 'PLL' else
                            inspect_serializer_startup(sdf, broken, ddr, sdc, lane_layout='native',
-                                                      startup_grant_role=demo_role))
+                                                      startup_grant_role=startup_grant_role))
             if not bad or not any(reason in message for message in bad):
                 raise ValueError('Negative mutation did not fail its gate: ' + name + ' ' + str(bad))
             negatives[name + '/' + pin] = bad

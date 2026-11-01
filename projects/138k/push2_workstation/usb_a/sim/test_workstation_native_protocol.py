@@ -132,10 +132,11 @@ class ActualNativeFixture(unittest.TestCase):
 class ActualNativeProtocol(ActualNativeFixture):
     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
-        self.assertEqual(result['mailbox_count'], 4)
+        self.assertEqual(result['mailbox_count'], 5 if result.get('hmi_inventory_reviewed') else 4)
         display = next(x for x in result['mailboxes'] if x['scope'] == 'u_managed/display')
         self.assertEqual(display['registered_ram_bits'], 98)
-        self.assertEqual(display['held_ff_bits'], 41 if self.profile == 'w-demo-d' else 73)
+        expected_display = (75 if self.profile == 'w-demo-d' else 132) if result.get('hmi_inventory_reviewed') else (41 if self.profile == 'w-demo-d' else 73)
+        self.assertEqual(display['held_ff_bits'], expected_display)
         self.assertFalse(result['physical_cdc_accepted'])
         pins = {p + '/' + port for p, c in self.n.cells.items()
                 if p.startswith((RAM_SCOPE, 'u_managed/display/')) for port in c['ports']}
@@ -145,6 +146,30 @@ class ActualNativeProtocol(ActualNativeFixture):
                 self.assertEqual([sum(fnmatch.fnmatchcase(pin, s) for pin in pins) for s in bodies[0].split()],
                                  [3 if self.mapping == 'synthesis' else 6])
                 self.assertEqual([sum(fnmatch.fnmatchcase(pin, s) for pin in pins) for s in bodies[1].split()], [1] * 98)
+
+    def test_m22_new_hmi_mailbox_negative_controls(self):
+        if self.profile != 'm-demo-core' or 'u_video/u_applied_parameters_cdc' not in self.n.frames:
+            self.skipTest('M22 actual new HMI mailbox only')
+        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping)
+        display=next(x for x in result['mailboxes'] if x['scope']=='u_managed/display')
+        hmi=next(x for x in result['mailboxes'] if x['scope']=='u_video/u_applied_parameters_cdc')
+        self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['constant_payload_bits'],display['payload_bits']),(132,98,0,230))
+        self.assertEqual((hmi['held_ff_bits'],hmi['registered_ram_bits'],hmi['constant_payload_bits'],hmi['payload_bits']),(60,0,0,60))
+        g=Graph(self.n);scope='u_video/u_applied_parameters_cdc'
+        held=g.register(scope,'held_data',0);destination=g.register(scope,'destination_data',0)
+        reqmeta=g.register(scope,'req_meta');reqsync=g.register(scope,'req_sync')
+        request=g.register(scope,'request_toggle');ack=g.register(scope,'acknowledge_toggle')
+        for name,path,pin,value in [
+            ('HMI held payload alias',destination,'D',self.n.cells[g.register(scope,'held_data',1)]['ports']['Q']),
+            ('HMI destination wrong clock',destination,'CLK',"1'b0"),
+            ('HMI source ignores busy',held,'CE',"1'b1"),
+            ('HMI capture ignores settled request',destination,'CE',"1'b1"),
+            ('HMI first meta functional fanout',held,'D',self.n.cells[reqmeta]['ports']['Q']),
+            ('HMI second request stage bypass',reqsync,'D',self.n.cells[request]['ports']['Q']),
+            ('HMI request does not toggle',request,'D',"1'b0"),
+            ('HMI ACK ignores settled request',ack,'D',"1'b0"),
+        ]:
+            self.reject(name,path,'ports',pin,value,'.')
 
     def test_installed_sdc_keeps_later_stages_and_exact_local_bounds(self):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
@@ -205,10 +230,17 @@ class ActualNativeProtocol(ActualNativeFixture):
         self.reject('settled bypass', 'u_managed/display/req_settled_s0', 'ports', 'D', 'request_toggle', 'third request stage')
 
     def test_request_must_toggle_with_actual_acceptance(self):
-        self.reject('request toggles without capture', 'u_managed/display/n496_s5', 'parameters', 'INIT', "16'hAAAA", 'request must toggle')
+        request=Graph(self.n).register('u_managed/display','request_toggle')
+        self.reject('request toggles without capture',request,'ports','D',"1'b0",'request must toggle')
 
     def test_acceptance_cannot_overwrite_busy_payload(self):
-        self.reject('capture ignores ACK', 'u_managed/display/n1637_s4', 'parameters', 'INIT', "16'hFFFF", 'overwrite while request')
+        g=Graph(self.n);held=g.register('u_managed/display','held_data',0)
+        drivers=g.drivers[self.n.pin(held,'CE')]
+        self.assertEqual(len(drivers),1);gate,output=drivers[0]
+        self.assertEqual(output,'F');kind=self.n.cells[gate]['kind']
+        self.assertIn(kind,('LUT3','LUT4'))
+        value="16'hFFFF" if kind=='LUT4' else "8'hFF"
+        self.reject('capture ignores ACK',gate,'parameters','INIT',value,'overwrite while request')
 
     def test_loss_bypass_cannot_be_removed(self):
         path = 'u_managed/display_observation_health/loss_meta_0_s0'
@@ -612,7 +644,8 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
         with tempfile.TemporaryDirectory(prefix='selected-demo-held-entry-') as directory:
             stage = Path(directory)
             for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',
-                             'rtl/workstation/workstation_runtime_controlled.sv'):
+                             'rtl/workstation/workstation_runtime_controlled.sv',
+                             *(('rtl/workstation/workstation_profile_m_demo.sv',) if role == 'M' else ())):
                 target = stage/relative;target.parent.mkdir(parents=True,exist_ok=True)
                 target.write_bytes(((ROOT if relative == DEMO_TIMING_TOOL else source)/relative).read_bytes())
             sdc,evidence = select_demo_timing(stage,protocol_constraints(),role)

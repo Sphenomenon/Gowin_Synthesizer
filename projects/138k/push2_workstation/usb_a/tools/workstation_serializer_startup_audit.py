@@ -41,7 +41,7 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     from tools.workstation_native_protocol_audit import protocol_netlist
     from tools.workstation_runtime_pcm_cdc import Graph
     from tools.workstation_synthesis_netlist import IDENTIFIER
-    assert role in ('M', 'W'), 'grant RESET proof requires an explicit DEMO role'
+    assert role in ('M', 'M-core', 'W'), 'grant RESET proof requires an explicit DEMO role'
     assert sdc is not None, 'grant RESET proof requires the installed SDC'
     n = protocol_netlist(netlist, mapping='routed')
     g = Graph(n)
@@ -50,6 +50,12 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     destinations = {prefix: domain for prefix, source, domain in RUNTIME_GRANT_CHAINS}
     prefixes = [prefix for prefix in RUNTIME_GRANT_RESET_INPUTS
                 if role == 'M' or not prefix.startswith('u_tf_audio/')]
+    if role == 'M-core':
+        assert not any(name == 'u_tf_audio' or name.startswith('u_tf_audio/') for name in n.cells), \
+            'M-core grant policy requires every actual TF cell absent'
+        assert not any('u_tf_audio/' in line for line in sdc.splitlines()
+                       if line.lstrip().startswith(('set_false_path ', 'set_max_delay '))), \
+            'M-core grant policy requires retired TF selectors absent'
     result, protected = [], set()
     for prefix in prefixes:
         receivers = [[p for p in g.regs if re.fullmatch(re.escape(prefix) + f'_{bit}_s' + r'\d+', p)]

@@ -482,6 +482,8 @@ W的[连续PCM Pitch维护单元](push2_workstation/usb_a/reports/DUAL138K_STREA
 
 W21-j的[无显示／无录音完整新综合与严格VG门](push2_workstation/usb_a/reports/DUAL138K_W21_J_SYNTHESIS_20261101.json)已通过：身份343123757bea9052、1750冻结来源／工具、608暂存／128编译输入；综合101.768秒，FF26186／LUT29149／ALU10737／BSRAM等价184（不是物理数）。1553可见selector完整解析；只精确退休已从VG消失的32 serializer sequence CE，其余混合query活项保持，112反馈、HCI8条、USB／reset／native／held／boundary／ROM及功能退出门通过。i实际VG36破坏控制与j实际strict分列；实际xPack ELF已在RV32执行断连／错HCI身份，8heartbeat且0退休MMIO／DDR／trap。a—i失败均保留；未通过的raw优化实际7份完整封存后精确恢复原HEAD，不冒记通过。主线程重hash2397绑定文件；131全量P&R及真实资源／STA另记，尚无W SRAM／手机／DAC接受。
 
+此前M23已验证但只在封存工具中的[HMI／M-core审计修复](push2_workstation/usb_a/reports/DUAL138K_HMI_CORE_AUDIT_MAINTENANCE_20261101.json)已按原SHA落维护3文件：5邮箱及实际门名负控、显式M-core的TF全部cells／selector缺席证明、由封存profile选择grant角色。M24实际VO原v3测试／PLL先拒绝并保留；新独立v4封存后59项native（45通过／14具名skip）、六PLL及7负控均通过。routed HMI帧级guard的skip不转授8项专门破坏控制，这些另跑；未改原VG／CST／SDC／候选，完整STA仍失败。主线程重hash1476文件；后续W-only无HDMI PLL分支独立推进。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
