@@ -163,6 +163,34 @@ module workstation_tf_runtime_dma #(
     wire [31:0] accepted_after_input = add_occupancy_delta(accepted_used, occupancy_input_delta);
     wire [31:0] accepted_after_read = add_occupancy_delta(accepted_used, occupancy_read_delta);
     wire [31:0] accepted_after_input_read = add_occupancy_delta(accepted_used, occupancy_input_read_delta);
+    // Compute both read-response cofactors before the late write admission.
+    // With a selected write, no new read can be accepted; an outstanding
+    // registered read may still respond in the same cycle. Unknown admission
+    // retains the original selection above, including its four-state delta.
+    wire read_request_without_write = mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&
+                        !read_pending && !read_buf_valid &&
+                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat);
+    wire read_accept_without_write = read_request_without_write && app_rdy;
+    wire read_response_without_write = app_rvalid && (read_pending || read_accept_without_write);
+    wire read_response_pending_only = app_rvalid && read_pending;
+    reg [31:0] accepted_without_write /* synthesis syn_keep=1 */;
+    reg [31:0] accepted_pending_only /* synthesis syn_keep=1 */;
+    always @* begin
+        case ({input_byte_accepted, read_response_without_write})
+            2'b00: accepted_without_write = add_occupancy_delta(accepted_used, 7'd0);
+            2'b01: accepted_without_write = accepted_after_read;
+            2'b10: accepted_without_write = accepted_after_input;
+            2'b11: accepted_without_write = accepted_after_input_read;
+            default: accepted_without_write = add_occupancy_delta(accepted_used, accepted_delta);
+        endcase
+        case ({input_byte_accepted, read_response_pending_only})
+            2'b00: accepted_pending_only = add_occupancy_delta(accepted_used, 7'd0);
+            2'b01: accepted_pending_only = accepted_after_read;
+            2'b10: accepted_pending_only = accepted_after_input;
+            2'b11: accepted_pending_only = accepted_after_input_read;
+            default: accepted_pending_only = add_occupancy_delta(accepted_used, accepted_delta);
+        endcase
+    end
     reg [31:0] next_available_bytes, next_accepted_used;
     always @* begin
         case ({write_accept, read_response})
@@ -178,6 +206,11 @@ module workstation_tf_runtime_dma #(
             2'b10: next_accepted_used = accepted_after_input;
             2'b11: next_accepted_used = accepted_after_input_read;
             default: next_accepted_used = add_occupancy_delta(accepted_used, accepted_delta);
+        endcase
+        case (write_selected)
+            1'b0: next_accepted_used = accepted_without_write;
+            1'b1: next_accepted_used = accepted_pending_only;
+            default: begin end
         endcase
     end
     wire emit_byte = !runtime_hold_i && (state == S_STREAM) && read_buf_valid && !fifo_out_full &&

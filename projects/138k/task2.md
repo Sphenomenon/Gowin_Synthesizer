@@ -340,6 +340,8 @@ Chorus的[35bit CSA维护阶段](push2_workstation/usb_a/reports/DUAL138K_CHORUS
 
 M16／W14已完成[完整来源准备及全量综合](push2_workstation/usb_a/reports/DUAL138K_M16_W14_PREPARE_20261101.md)：两锁各822项仅更新10个来源hash，配置／库存不变，来源17／DEMO15／策略7项通过；875／951原始来源、588／645staged及各1374冻结审计输入复制后逐项复验。两综合退出0，LUT＋ALU66,462／71,057、BSRAM equivalent195／257，不能预记物理收益。M16 `5f5ba9978313e96b`严格门通过并以`D2110110`启动全量P&R；W14 `df8c9ba4d32507f1`完整门因watchdog_fault消费者清单漂移拒绝，初次失败保留，核对实际映射前不进入P&R。旧M15／W13来源不变，未上板，声画、CNN、长录音、手机真机及双板验收仍未完成。
 
+TF的[响应选路cofactor维护阶段](push2_workstation/usb_a/reports/DUAL138K_TF_RESPONSE_COFACTOR_20261101.md)已完成：只在最终write_selected处选择两个同周期占用候选，保留原X/Z回退及全部NBA／容量分组。实际源143任意位四项UNSAT／四项SAT负控、1048576四态向量／六新源码负控、旧occupancy14／threshold8及完整service／stop／clear回归通过；229份最终证据由主线程逐项重验，来源17项再过。维护源`3f9eb8af…e7b6`未混入M16／W14冻结输入，两锁保持旧pin待下一候选升级；共享app_rdy仍可能带入上游写许可，不预记真实网表／资源／时序收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "stage": "maintained_TF_response_admission_cofactor_verified",
+  "created_utc": "2026-11-01T04:17:34.033465+00:00",
+  "source_applied": true,
+  "source_sha256": "3f9eb8afa2c3308d270ce215693723bfb7cb48584ee96c3c3fbe749a4902e7b6",
+  "pre_response_cofactor_fixture_sha256": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+  "reviewed_cache_variant_exact_match": true,
+  "source_files": {
+    "rtl/tf_audio/workstation_tf_runtime_dma.sv": "3f9eb8afa2c3308d270ce215693723bfb7cb48584ee96c3c3fbe749a4902e7b6",
+    "sim/tf_audio/fixtures/workstation_tf_runtime_dma_before_response_cofactor.sv": "5ac87cbacd1ddc35f897fdf7c3427f80bcf7b151e44370baae6fb3305a596d3b",
+    "sim/tf_audio/fixtures/README.md": "ae1b4bf13164b0f90132491ef4c4b85e3a26a4144356ff833ce62a399fec89ee",
+    "sim/tf_audio/run_tf_dma_response_cofactor.py": "f933d31b260d819fb61349f64be9c208978e7bac106dddd15e81f9dd66128a53",
+    "sim/tf_audio/tb_tf_dma_response_cofactor_four_state.sv": "eac8fb4cda5df4c110dd41933d2c38db68472332b39393a0ad884159f5273c0f"
+  },
+  "old_gates_unchanged": {
+    "sim/tf_audio/run_tf_dma_occupancy_equivalence.py": {
+      "sha256": "18f247ec4e982d5730af765689efc06e2a705c90baa3bbbd8a0ff094ebc46059",
+      "unchanged_against_HEAD": true
+    },
+    "sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv": {
+      "sha256": "25fd2b783e1b8db82ff5a58f5469e8b34016ac603514c6b6e233909e9e91c071",
+      "unchanged_against_HEAD": true
+    },
+    "sim/tf_audio/fixtures/workstation_tf_runtime_dma_pre_occupancy.sv": {
+      "sha256": "bc1dcfad79af5777c27d7bfa65ae3b397ce103ca0a992b938027201877119752",
+      "unchanged_against_HEAD": true
+    },
+    "sim/tf_audio/run_tf_dma_threshold_groups.py": {
+      "sha256": "c62ae6f780ddb22d8c938524897f7f70614244adfd3f930b43c06cecc856134a",
+      "unchanged_against_HEAD": true
+    },
+    "sim/tf_audio/tb_tf_dma_threshold_groups.sv": {
+      "sha256": "4c772e5bb7de8438d18375dfbf3058143f7e893f080d0116ad6c858919b3f76d",
+      "unchanged_against_HEAD": true
+    },
+    "rtl/tf_audio/workstation_tf_runtime_storage.provenance.json": {
+      "sha256": "d77d6e7792a19c6cb09b2e6bd1b0829a3d114d1d2fe88bc1b3818664964f1139",
+      "unchanged_against_HEAD": true
+    }
+  },
+  "actual_source_proof": {
+    "rows": [
+      {
+        "label": "read_response_when_selected",
+        "result": "UNSAT"
+      },
+      {
+        "label": "read_response_without_write",
+        "result": "UNSAT"
+      },
+      {
+        "label": "new_read_excludes_selected_write",
+        "result": "UNSAT"
+      },
+      {
+        "label": "accepted_next_arbitrary_candidates",
+        "result": "UNSAT"
+      },
+      {
+        "negative": "drop_immediate_read",
+        "result": "SAT",
+        "counterexample": "[app_rvalid = True,\n read_has_full_beat = True,\n mem_ready = True,\n stream_started = True,\n read_buf_valid = False,\n accepted_after_read = 0,\n fifo_out_full = False,\n runtime_hold_i = False,\n input_byte_accepted = True,\n state = 0,\n ring_can_commit = False,\n write_pending = True,\n read_pending = False,\n hold_after_zero_delta = 0,\n accepted_after_input = 4294967295,\n app_rdy = True,\n accepted_after_input_read = 0,\n read_has_partial_beat = False]"
+      },
+      {
+        "negative": "invent_unpending_response",
+        "result": "SAT",
+        "counterexample": "[accepted_after_read = 134221824,\n app_rvalid = True,\n accepted_after_input = 134221824,\n runtime_hold_i = False,\n accepted_after_input_read = 4160745471,\n read_has_full_beat = True,\n app_rdy = True,\n state = 0,\n mem_ready = True,\n read_buf_valid = False,\n input_byte_accepted = False,\n read_pending = False,\n fifo_out_full = True,\n ring_can_commit = True,\n hold_after_zero_delta = 4160745471,\n stream_started = True,\n write_pending = True,\n read_has_partial_beat = False]"
+      },
+      {
+        "negative": "allow_new_read_with_write",
+        "result": "SAT",
+        "counterexample": "[app_rvalid = True,\n runtime_hold_i = False,\n app_rdy = True,\n input_byte_accepted = True,\n accepted_after_read = 0,\n read_buf_valid = False,\n accepted_after_input_read = 8388608,\n hold_after_zero_delta = 4194304,\n mem_ready = True,\n ring_can_commit = True,\n write_pending = True,\n stream_started = True,\n state = 0,\n read_has_full_beat = True,\n fifo_out_full = False,\n accepted_after_input = 4286578687,\n read_pending = False,\n read_has_partial_beat = False]"
+      },
+      {
+        "negative": "lose_simultaneous_input",
+        "result": "SAT",
+        "counterexample": "[app_rdy = True,\n app_rvalid = True,\n read_buf_valid = False,\n stream_started = True,\n accepted_after_input_read = 269621986,\n runtime_hold_i = False,\n state = 0,\n hold_after_zero_delta = 269621986,\n read_has_full_beat = True,\n ring_can_commit = True,\n accepted_after_read = 4025345309,\n fifo_out_full = False,\n write_pending = True,\n accepted_after_input = 96592153,\n input_byte_accepted = True,\n read_pending = True,\n mem_ready = True,\n read_has_partial_beat = False]"
+      }
+    ],
+    "actual_source_equations": {
+      "write_selected": "mem_ready && !runtime_hold_i && write_pending && ring_can_commit",
+      "read_request": "mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&\n                        !write_selected && !read_pending && !read_buf_valid &&\n                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat)",
+      "read_accept": "read_request && app_rdy",
+      "read_response": "app_rvalid && (read_pending || read_accept)",
+      "read_request_without_write": "mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&\n                        !read_pending && !read_buf_valid &&\n                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat)",
+      "read_accept_without_write": "read_request_without_write && app_rdy",
+      "read_response_without_write": "app_rvalid && (read_pending || read_accept_without_write)",
+      "read_response_pending_only": "app_rvalid && read_pending"
+    },
+    "free_bits": 143,
+    "arithmetic_candidates": "four arbitrary independent 32-bit unchanged RHS values",
+    "unreachable_state_assumptions": false,
+    "arbitrary_four_state_proof": false,
+    "z3_version": "5.1.0"
+  },
+  "source_drift_controls": [
+    {
+      "label": "candidate_drift",
+      "rejected": true
+    },
+    {
+      "label": "selection_drift",
+      "rejected": true
+    }
+  ],
+  "exact_inverse": true,
+  "NBA_targets_RHS_order_identical": true,
+  "extra_four_state_vectors": 1048576,
+  "new_actual_source_negatives": 6,
+  "existing_regressions": {
+    "occupancy_equivalence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-maintained-v1/occupancy_equivalence/verification.json",
+      "sha256": "f13b06a98bce4fd01993ac436e360f27fae7425c2a3091c77cdb77376e25fe8a",
+      "passed": true,
+      "runs": 14,
+      "negative_controls": 8
+    },
+    "threshold_groups": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-maintained-v1/threshold_groups/verification.json",
+      "sha256": "c1e1fae9c9273f99c8200795dfdb78793b4d0e6e8b430a82ce438a1237456c81",
+      "passed": true,
+      "runs": 8,
+      "negative_controls": 6
+    }
+  },
+  "runtime_stop_clear_service": {
+    "passed": true,
+    "input_count": 35,
+    "verification_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-runtime-stop-v1/verification.json",
+    "verification_sha256": "70c0bc4d5cc349821ab4eea1c50a1037e78128138a65f1414f7124de850a2307",
+    "stop_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-stage-v1/runtime-stop-seal.json",
+    "stop_seal_sha256": "995e94d520cc88a5cabc670c39acebc1aa2a7518653afdc7e9265e9b3be74025",
+    "scope": "real service buffered 0/1 x23 cases; legacy default x12531 cycles; clear buffered 0/1 x6; stop buffered 0/1 x11; disabled; original ACK/source-registered/combinational-loop negative controls",
+    "positive_structural_warning_counts": {
+      "WIDTHEXPAND": 11,
+      "WIDTHTRUNC": 22
+    },
+    "positive_UNOPTFLAT": 0,
+    "original_loop_negative_UNOPTFLAT": 1
+  },
+  "maintenance_verification": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-maintained-v1/verification.json",
+    "sha256": "80a3cd41ec21f6ad5416a4bea2dcf8b9b8c0e7924bedc732a567b0752683e5de",
+    "final_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-maintained-v1/final-seal.json",
+    "final_seal_sha256": "b0b9882270ac015dbb149818329a825b41bd498afd501c2d31d91575c2ccc08d",
+    "input_count": 13
+  },
+  "stage_final_seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-response-cofactor-stage-v1/final-seal.json",
+  "native_source_pin_changed": false,
+  "demo_locks_modified_by_this_stage": false,
+  "task2_modified_by_this_stage": false,
+  "M16_W14_frozen_inputs_modified": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "physical_timing_or_resource_gain_claimed": false,
+  "remaining_gap": "shared app_rdy feedback remains in no-write cofactor; new consumed-source synthesis/netlist/routed timing must establish any physical benefit; historical M15 VG/VO certificate is not a new-cofactor physical result",
+  "rollback": "restore only maintained DMA bytes from versioned before_response_cofactor fixture; next-candidate identity and source locks remain root-owned"
+}
