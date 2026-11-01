@@ -44,6 +44,10 @@ module workstation_runtime_oscillator_engine #(
     input  logic               panic_i,
     input  logic               event_valid_i,
     output logic               event_ready_o,
+    // Stored readiness before the caller's same-edge mode/event arbitration.
+    // Only a caller that proves those requests mutually exclusive may use it.
+    output wire                event_slot_ready_o,
+    output wire                expression_slot_ready_o,
     input  logic               event_note_on_i,
     input  logic               expression_valid_i,
     output logic               expression_ready_o,
@@ -826,15 +830,17 @@ module workstation_runtime_oscillator_engine #(
   assign mode_set_ready_o = allocated_mask_o == 32'd0 &&
       load_state == LOAD_IDLE && !mix_busy_o &&
       (!PIPELINED_ENVELOPE || !envelope_lane_busy) && (!PIPELINED_RATE || quiescent_o);
-  assign event_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
-      !mode_set_valid_i && (event_note_on_i ? allocation_found : 1'b1) &&
+  assign event_slot_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
+      (event_note_on_i ? allocation_found : 1'b1) &&
       (!PIPELINED_ENVELOPE || !envelope_lane_busy) && (!PIPELINED_RATE || quiescent_o);
+  assign event_ready_o = event_slot_ready_o && !mode_set_valid_i;
   assign sample_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !envelope_lane_busy &&
       !(event_valid_i && event_ready_o) && !mode_set_valid_i && (!PIPELINED_RATE || quiescent_o);
-  assign expression_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
+  assign expression_slot_ready_o = load_state == LOAD_IDLE && !mix_busy_o &&
       !envelope_lane_busy &&
-      !event_valid_i && !mode_set_valid_i && (!PIPELINED_RATE || quiescent_o);
+      (!PIPELINED_RATE || quiescent_o);
+  assign expression_ready_o = expression_slot_ready_o && !event_valid_i && !mode_set_valid_i;
 
   midi_step_rom #(
       .MEM_FILE(`UNIFIED_MIDI_STEP_MEM_FILE)

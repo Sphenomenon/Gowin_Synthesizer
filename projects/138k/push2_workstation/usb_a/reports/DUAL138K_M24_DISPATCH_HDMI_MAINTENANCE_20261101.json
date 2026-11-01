@@ -1,0 +1,139 @@
+{
+  "schema": "dual138k_M24_dispatch_HDMI_maintenance_20261101_v1",
+  "stage": "maintained RTL and offline equivalence; new full synthesis, P&R and hardware pending",
+  "source_sha256": {
+    "rtl/audio/gw138k_event_workstation.sv": "3082f2411b658903a869a77a78f19987f07577a11f42271c9155599c643d1d87",
+    "rtl/audio/workstation_runtime_render_engines.sv": "56a9d0719f0896fd61c16e274168d1b54ad6b5710d4cd9f781762ee6f47a9d57",
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": "757e734ca7225f168b84ec161f2bb080d849ebed76b0878e337392e7efb493d3",
+    "rtl/display_data/feedback_dashboard.v": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375",
+    "sim/audio/dispatch_slot_sources.py": "5ea2e843f9084e885ce07a8e9e12623fc91619963e453f9e6c72729006911679",
+    "sim/audio/prove_dispatch_slots.py": "5120bd8a3f1873ce78646caec1c2fcc1f1a2226f526142815b6b8844984875fe",
+    "sim/audio/run_dispatch_slots.py": "8b664f617c0e725f43287ba0ffd67b6b6fae809c4c0e8cf52a1c08b434615e8c",
+    "sim/display/dashboard_predicate_sources.py": "b19e4ffa2bbbd16b1a99a6ae174415c700dec59791869ff651665d7d51b27551",
+    "sim/display/run_dashboard_predicates.py": "749d1cd3555016886d27d7ac981e5301452550bca291a0741e5cace7df6b67c5"
+  },
+  "source_change": {
+    "audio": "Read-only stored slot readiness composed through owning native engines; dispatch excludes same-edge mode and kind-5 excludes Note-valid, original public ready retained; no audio registers or cycles added",
+    "HDMI": "27 pure coordinate predicates captured on existing Stage A; complete B color priority, other parameters, four-stage pixel pipeline, reset and enable stalls retained",
+    "constraints_changed": false,
+    "clocks_changed": false,
+    "public_event_layout_changed": false,
+    "parameter_application_cycle_changed": false
+  },
+  "validation": {
+    "audio_full_module_cases": [
+      {
+        "native": 1,
+        "d_only": 1,
+        "requests": 34,
+        "responses": 34,
+        "configs": 27,
+        "histories": 37,
+        "events": 88,
+        "coincidences": 22,
+        "fault_checks": 28
+      },
+      {
+        "native": 0,
+        "d_only": 0,
+        "requests": 34,
+        "responses": 34,
+        "configs": 0,
+        "histories": 0,
+        "events": 68,
+        "coincidences": 2,
+        "fault_checks": 0
+      },
+      {
+        "native": 1,
+        "d_only": 0,
+        "requests": 34,
+        "responses": 34,
+        "configs": 27,
+        "histories": 37,
+        "events": 88,
+        "coincidences": 22,
+        "fault_checks": 28
+      }
+    ],
+    "audio_public_outputs_compared": 50,
+    "audio_original_private_boundaries": 25,
+    "audio_added_private_boundaries": 7,
+    "audio_native_transaction_boundaries": 7,
+    "audio_binary_proofs": 3,
+    "audio_four_state_vectors": 147456,
+    "audio_executed_observable_rejected_mutants": 3,
+    "audio_unknown_fallback_source_shape_rejected": true,
+    "HDMI_configs": 4,
+    "HDMI_pixels_per_config": 2073600,
+    "HDMI_extra_vectors_per_config": 65536,
+    "HDMI_ticks": 2160605,
+    "HDMI_stalls": 26411,
+    "HDMI_actual_coordinate_mutant_rejected": true,
+    "current_workstation_sources_tests": 17,
+    "diff_check_passed": true
+  },
+  "exact_audio_source_inverse": {
+    "rtl/audio/gw138k_event_workstation.sv": {
+      "original_sha256": "19222032cf9d0e2ebf33b1ad100ad4dc3b2efa4207b7f491beb9d5c5ee823738",
+      "maintained_sha256": "3082f2411b658903a869a77a78f19987f07577a11f42271c9155599c643d1d87",
+      "exact_whole_source_inverse": true,
+      "NBA_targets_values_and_order_unchanged": true
+    },
+    "rtl/audio/workstation_runtime_render_engines.sv": {
+      "original_sha256": "cd4ed71690c7780c047f350ee0c51818643a2768774793a68a0019810ffa2ae3",
+      "maintained_sha256": "56a9d0719f0896fd61c16e274168d1b54ad6b5710d4cd9f781762ee6f47a9d57",
+      "exact_whole_source_inverse": true,
+      "NBA_targets_values_and_order_unchanged": true
+    },
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": {
+      "original_sha256": "ab0fe039cde6f5274c9edcaf79425cd78b31b652ca2d2d580af18f4aa17b5ab4",
+      "maintained_sha256": "757e734ca7225f168b84ec161f2bb080d849ebed76b0878e337392e7efb493d3",
+      "exact_whole_source_inverse": true,
+      "NBA_targets_values_and_order_unchanged": true
+    }
+  },
+  "exact_HDMI_source_inverse_sha256": "750d5347036619b88b06112a93c99fcb9fad039c0c25076b64837bdd3b2a1964",
+  "key_evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-slots-module-v1/verification.json": "10ebc8f0ff60761e9c4068d5855bb84e1eef61f4bca62dd39d8c2dab82aea9df",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-slots-proof-v4/verification.json": "6df7c608166068801ff656f60bd1744a2b5709ef2a2a19000eff224a9a2339dc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dashboard-predicates-positive-v3/verification.json": "f1006995ed38e17e421d640ee815363b3ea160310bc55d8f7c4c853382b372b3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dashboard-predicates-negative-v3/verification.json": "7049282100cfa56801af966b0eeca77635d47417e9b625d61c519caad6f676db",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-current-source-tests-v1.json": "f8fe0c2296f83529871567dc11bbe23597c8b035475beeab8518e6b595e39c1b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-current-source-tests-v1.log": "061df2c0e9c3a55addf476acdff062cb24d3b91ca68df0f7f5996a062624edbc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-older-config-ready-fixture-preexisting-v1.json": "9042c62a952972ac01acef2b57cafa9a5bf38f57a84c431f6d3634cc28e3f534"
+  },
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-HDMI-maintenance-handoff-v1.json",
+    "sha256": "cdc98c143512cb387b40d36a17a9f062e4344ce77e7efa5fcc7ce5323c3cc63e"
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-root-maintenance-review-v1.json",
+    "sha256": "0b98abd3308a23628c86135d8e2ff80aea067b0e17e82b3f743622717b8eea3a",
+    "schema": 1,
+    "passed": true,
+    "handoff_sha256": "cdc98c143512cb387b40d36a17a9f062e4344ce77e7efa5fcc7ce5323c3cc63e",
+    "hash_binding_checks": 164,
+    "unique_files": 119,
+    "all_four_source_inverses_exact_to_git_HEAD": true,
+    "source_tests": 17,
+    "source_tests_passed": true,
+    "hardware_tested": false,
+    "physical_timing_verified": false
+  },
+  "historical_failures_retained": [
+    "m24-dispatch-slots-proof-v1: restricted proof parser rejected sized literals; no execution claimed",
+    "m24-dispatch-slots-proof-v2: missing sustain fixture declaration; no pass claimed",
+    "m24-dispatch-slots-proof-v3: unknown-fallback removal is observationally equivalent in tested cone, so not counted as a runtime rejected mutant; exact source shape rejects it separately",
+    "m24-dashboard-predicates-v1: caller mistakenly supplied unused legacy src/video dashboard; compilation rejected missing HMI port before simulation. v2/v3 bind actual enabled rtl/display_data source",
+    "m24-config-ready-regression-v1 and event-config-regression-v1 use older exact historical sources and reject the already sealed M23 source too; hashes remain protected, not weakened"
+  ],
+  "next_candidate_user_code": "D2110132",
+  "full_synthesis_completed": false,
+  "P_and_R_completed": false,
+  "resource_or_timing_benefit_claimed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "rollback": "M23 sealed failed D2110130 unchanged; current board C11028E5 unchanged, original Flash untouched; raw SRAM readback is not an independently verified downloadable FS"
+}

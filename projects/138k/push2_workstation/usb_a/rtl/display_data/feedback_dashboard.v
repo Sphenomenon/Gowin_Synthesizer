@@ -359,13 +359,17 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
     reg [2:0] a_hex_index;
     reg [7:0] a_voice_character;
     reg [10:0] a_x, a_y, a_level_width;
+    // Coordinate-only decisions share the existing A capture edge. The B
+    // color priority now consumes one-bit predicates instead of repeated
+    // subtract/compare chains; pipeline length and enable stalls stay fixed.
+    reg a_header,a_separator,a_wave_box,a_wave_grid,a_wave_center,a_level_box,a_level_red,a_level_orange,a_memory_box,a_analysis_wave_box,a_analysis_wave_grid,a_analysis_wave_center,a_spectrum_box,a_spectrum_grid,a_spectrum_even,a_xy_box,a_xy_grid,a_xy_axis,a_left_box,a_right_box,a_card_band,a_card_box,a_card_edge,a_arrow_shaft,a_arrow_head,a_status_box,a_status_grid;
     reg a_voice_active;
     reg [7:0] a_spectrum_left,a_spectrum_right;
     reg a_image_hit;
     reg [9:0] a_left_width,a_right_width;
-    wire [10:0] a_image_x=a_x-11'd1248, a_image_y=a_y-11'd224;
-    wire [10:0] full_distance_x=a_image_x>=11'd256 ? a_image_x-11'd256 : 11'd256-a_image_x;
-    wire [10:0] full_distance_y=a_image_y>=11'd256 ? a_image_y-11'd256 : 11'd256-a_image_y;
+    wire [10:0] input_image_x=pixel_x-11'd1248, input_image_y=pixel_y-11'd224;
+    wire [10:0] full_distance_x=input_image_x>=11'd256 ? input_image_x-11'd256 : 11'd256-input_image_x;
+    wire [10:0] full_distance_y=input_image_y>=11'd256 ? input_image_y-11'd256 : 11'd256-input_image_y;
     // Only used inside the 512x512 plot, where each distance is 0..256.
     wire [8:0] distance_x=full_distance_x[8:0], distance_y=full_distance_y[8:0];
     wire [9:0] diamond_distance={1'b0,distance_x}+{1'b0,distance_y};
@@ -533,7 +537,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
                     text_y=888;text_enable=1;
                 end
                 if(pixel_y>=920 && pixel_y<936) begin
-                    
+
                     text_y=920;text_enable=1;
                 end
             end
@@ -573,73 +577,71 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
         if (a_voice_enable) next_character = a_voice_character;
 
         next_background = 32'h00f2f3f5;
-        if (a_y < 128) next_background = 32'h00ffffff;
-        if (a_y == 127 || a_y == 991) next_background = 32'h00b6c0cb;
-        if (a_x >= 64 && a_x < 1088 && a_y >= 224 && a_y < 736) begin
+        if (a_header) next_background = 32'h00ffffff;
+        if (a_separator) next_background = 32'h00b6c0cb;
+        if (a_wave_box) begin
             next_background = 32'h00ffffff;
-            if (a_x[6:0] == 64 || a_y[6:0] == 96) next_background = 32'h00e1e5e9;
-            if (a_y == 480) next_background = 32'h00b6c0cb;
+            if (a_wave_grid) next_background = 32'h00e1e5e9;
+            if (a_wave_center) next_background = 32'h00b6c0cb;
             if (trace_ink) next_background = 32'h00285c81;
         end
-        if (a_x >= 1216 && a_x < 1856 && a_y >= 224 && a_y < 256) begin
+        if (a_level_box) begin
             next_background = 32'h00dce1e6;
             if (a_level_x < a_level_width) begin
-                if (a_x >= 1816) next_background = 32'h00b94343;
-                else if (a_x >= 1716) next_background = 32'h00b17522;
+                if (a_level_red) next_background = 32'h00b94343;
+                else if (a_level_orange) next_background = 32'h00b17522;
                 else next_background = 32'h00285c81;
             end
         end
-        if (a_x >= 1776 && a_x < 1856 && a_y >= 432 && a_y < 448)
+        if (a_memory_box)
             next_background = a_memory_status[2] ? 32'h00b94343 :
                          a_memory_status[1:0] == 2'b11 ? 32'h00285c81 : 32'h00b17522;
         if(ENABLE_ANALYSIS) begin
-            next_background=a_y<128 ? 32'h00ffffff : 32'h00f2f3f5;
-            if(a_y==127 || a_y==991) next_background=32'h00b6c0cb;
-            if(a_x>=64 && a_x<1088 && a_y>=208 && a_y<464) begin
+            next_background=a_header ? 32'h00ffffff : 32'h00f2f3f5;
+            if(a_separator) next_background=32'h00b6c0cb;
+            if(a_analysis_wave_box) begin
                 next_background=32'h00ffffff;
-                if(a_x[6:0]==64 || a_y[5:0]==16) next_background=32'h00e1e5e9;
-                if(a_y==336) next_background=32'h00b6c0cb;
+                if(a_analysis_wave_grid) next_background=32'h00e1e5e9;
+                if(a_analysis_wave_center) next_background=32'h00b6c0cb;
                 if(trace_ink) next_background=32'h00285c81;
             end
-            if(a_x>=64 && a_x<1088 && a_y>=568 && a_y<792) begin
+            if(a_spectrum_box) begin
                 next_background=32'h00ffffff;
-                if(a_y[5:0]==56 || a_x==64 || a_x==306 || a_x==578 || a_x==850 || a_x==1086)
+                if(a_spectrum_grid)
                     next_background=32'h00b6c0cb;
-                if(spectrum_l_ink && !a_x[0]) next_background=32'h00285c81;
-                if(spectrum_r_ink && !a_x[0]) next_background=spectrum_l_ink ? 32'h0068798b : 32'h00b17522;
+                if(spectrum_l_ink && a_spectrum_even) next_background=32'h00285c81;
+                if(spectrum_r_ink && a_spectrum_even) next_background=spectrum_l_ink ? 32'h0068798b : 32'h00b17522;
             end
-            if(a_x>=1248 && a_x<1760 && a_y>=224 && a_y<736) begin
+            if(a_xy_box) begin
                 next_background=32'h00ffffff;
-                if(a_image_x[6:0]==0 || a_image_y[6:0]==0) next_background=32'h00e1e5e9;
-                if(a_image_x==256 || a_image_y==256 || diamond_distance==256) next_background=32'h00b6c0cb;
+                if(a_xy_grid) next_background=32'h00e1e5e9;
+                if(a_xy_axis) next_background=32'h00b6c0cb;
                 if(a_image_hit) next_background=32'h00285c81;
             end
-            if(a_x>=1248 && a_x<1760 && a_y>=784 && a_y<800) begin
+            if(a_left_box) begin
                 next_background=32'h00e0e4e8;
                 if(a_x-11'd1248<a_left_width) next_background=32'h00285c81;
             end
-            if(a_x>=1248 && a_x<1760 && a_y>=816 && a_y<832) begin
+            if(a_right_box) begin
                 next_background=32'h00e0e4e8;
                 if(a_x-11'd1248<a_right_width) next_background=32'h00b17522;
             end
         end
-        if (a_y>=872 && a_y<960) begin
-            if((a_x>=64 && a_x<352) || (a_x>=400 && a_x<688) || (a_x>=736 && a_x<1024)) begin
+        if (a_card_band) begin
+            if(a_card_box) begin
                 next_background=32'h00e9edf1;
-                if(a_y==872 || a_y==959 || a_x==64 || a_x==351 || a_x==400 || a_x==687 || a_x==736 || a_x==1023)
+                if(a_card_edge)
                     next_background=32'h00aab7c3;
             end
             // 48-pixel gaps leave enough room for a readable arrowhead.
-            if(a_y>=917 && a_y<=921 && ((a_x>=360 && a_x<=380) || (a_x>=696 && a_x<=716)))
+            if(a_arrow_shaft)
                 next_background=32'h00343b42;
-            if(a_y>=907 && a_y<=931 &&
-                (((a_x>=378 && a_x<=390) && (a_y>=919 ? a_y-11'd919 : 11'd919-a_y)<=11'd390-a_x) ||
-                 ((a_x>=714 && a_x<=726) && (a_y>=919 ? a_y-11'd919 : 11'd919-a_y)<=11'd726-a_x)))
+            if(a_arrow_head)
                 next_background=32'h00343b42;
         end
-        if(a_x>=1232 && a_x<1776 && a_y>=856 && a_y<1048) begin
+        if(a_status_box) begin
             next_background=32'h00ffffff;
-            if(a_y==856 || a_y==1047 || a_x==1232 || a_x==1775 || a_y[4:0]==23)
+            if(a_status_grid)
                 next_background=32'h00c2cbd3;
         end
         if(brand_hit) next_background={8'd0,brand_rgb};
@@ -656,6 +658,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
             a_text_enable <= 0; a_hex_enable <= 0; a_voice_enable <= 0;
             a_hex_word <= 0; a_hex_index <= 0; a_voice_character <= 0;
             a_x <= 0; a_y <= 0; a_level_width <= 0; a_voice_active <= 0; a_memory_status <= 0;
+            a_header<=1'b1; a_separator<=1'b0; a_wave_box<=1'b0; a_wave_grid<=1'b0; a_wave_center<=1'b0; a_level_box<=1'b0; a_level_red<=1'b0; a_level_orange<=1'b0; a_memory_box<=1'b0; a_analysis_wave_box<=1'b0; a_analysis_wave_grid<=1'b0; a_analysis_wave_center<=1'b0; a_spectrum_box<=1'b0; a_spectrum_grid<=1'b0; a_spectrum_even<=1'b0; a_xy_box<=1'b0; a_xy_grid<=1'b0; a_xy_axis<=1'b0; a_left_box<=1'b0; a_right_box<=1'b0; a_card_band<=1'b0; a_card_box<=1'b0; a_card_edge<=1'b0; a_arrow_shaft<=1'b0; a_arrow_head<=1'b0; a_status_box<=1'b0; a_status_grid<=1'b0;
             a_spectrum_left<=0;a_spectrum_right<=0;a_image_hit<=0;a_left_width<=0;a_right_width<=0;
             a_sample_top <= 0; a_sample_bottom <= 0; a_previous_top <= 0; a_previous_bottom <= 0;
             b_character <= 0; b_font_column <= 0; b_font_row <= 0; b_text_enable <= 0; b_background <= 0;
@@ -672,6 +675,35 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
             a_hex_enable <= hex_enable; a_hex_word <= hex_word; a_hex_index <= hex_x[6:4];
             a_voice_enable <= voice_enable; a_voice_character <= voice_character;
             a_x <= pixel_x; a_y <= pixel_y;
+            a_header<=(pixel_y < 128);
+            a_separator<=(pixel_y == 127 || pixel_y == 991);
+            a_wave_box<=(pixel_x >= 64 && pixel_x < 1088 && pixel_y >= 224 && pixel_y < 736);
+            a_wave_grid<=(pixel_x[6:0] == 64 || pixel_y[6:0] == 96);
+            a_wave_center<=(pixel_y == 480);
+            a_level_box<=(pixel_x >= 1216 && pixel_x < 1856 && pixel_y >= 224 && pixel_y < 256);
+            a_level_red<=(pixel_x >= 1816);
+            a_level_orange<=(pixel_x >= 1716);
+            a_memory_box<=(pixel_x >= 1776 && pixel_x < 1856 && pixel_y >= 432 && pixel_y < 448);
+            a_analysis_wave_box<=(pixel_x>=64 && pixel_x<1088 && pixel_y>=208 && pixel_y<464);
+            a_analysis_wave_grid<=(pixel_x[6:0]==64 || pixel_y[5:0]==16);
+            a_analysis_wave_center<=(pixel_y==336);
+            a_spectrum_box<=(pixel_x>=64 && pixel_x<1088 && pixel_y>=568 && pixel_y<792);
+            a_spectrum_grid<=(pixel_y[5:0]==56 || pixel_x==64 || pixel_x==306 || pixel_x==578 || pixel_x==850 || pixel_x==1086);
+            a_spectrum_even<=(!pixel_x[0]);
+            a_xy_box<=(pixel_x>=1248 && pixel_x<1760 && pixel_y>=224 && pixel_y<736);
+            a_xy_grid<=(input_image_x[6:0]==0 || input_image_y[6:0]==0);
+            a_xy_axis<=(input_image_x==256 || input_image_y==256 || diamond_distance==256);
+            a_left_box<=(pixel_x>=1248 && pixel_x<1760 && pixel_y>=784 && pixel_y<800);
+            a_right_box<=(pixel_x>=1248 && pixel_x<1760 && pixel_y>=816 && pixel_y<832);
+            a_card_band<=(pixel_y>=872 && pixel_y<960);
+            a_card_box<=((pixel_x>=64 && pixel_x<352) || (pixel_x>=400 && pixel_x<688) || (pixel_x>=736 && pixel_x<1024));
+            a_card_edge<=(pixel_y==872 || pixel_y==959 || pixel_x==64 || pixel_x==351 || pixel_x==400 || pixel_x==687 || pixel_x==736 || pixel_x==1023);
+            a_arrow_shaft<=(pixel_y>=917 && pixel_y<=921 && ((pixel_x>=360 && pixel_x<=380) || (pixel_x>=696 && pixel_x<=716)));
+            a_arrow_head<=(pixel_y>=907 && pixel_y<=931 &&
+                (((pixel_x>=378 && pixel_x<=390) && (pixel_y>=919 ? pixel_y-11'd919 : 11'd919-pixel_y)<=11'd390-pixel_x) ||
+                 ((pixel_x>=714 && pixel_x<=726) && (pixel_y>=919 ? pixel_y-11'd919 : 11'd919-pixel_y)<=11'd726-pixel_x)));
+            a_status_box<=(pixel_x>=1232 && pixel_x<1776 && pixel_y>=856 && pixel_y<1048);
+            a_status_grid<=(pixel_y==856 || pixel_y==1047 || pixel_x==1232 || pixel_x==1775 || pixel_y[4:0]==23);
             a_spectrum_left<=spectrum_left;a_spectrum_right<=spectrum_right;a_image_hit<=image_hit;
             a_left_width<=peak_left[15:6];a_right_width<=peak_right[15:6];
             a_level_width <= peak_data[31] ? 11'd640 : {2'b00,peak_data[30:22]} + {4'b0000,peak_data[30:24]};

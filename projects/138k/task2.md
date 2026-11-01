@@ -466,6 +466,8 @@ M23的[完整物理D2110130](push2_workstation/usb_a/reports/DUAL138K_M23_DIRECT
 
 W的[显式无图形／无录音AE350固件](push2_workstation/usb_a/reports/DUAL138K_W_AUDIO_ONLY_FIRMWARE_20261101.json)已完成真实RV32链接：24编译单元仅维护startup／libc／Classic／HCI／SBC／PCM／clock，ui_main／ui_render及录音／business C未编译且ELF无其符号；源实现保留。保守栈896／16384、93实际JALR闭包及4回调负控，实际loader后断连／坏ID两场景持续pump且零UI／录音／DDR访问；8组成／误标负控、默认分支预处理等价、原11SBC双版本／15runtime＋9PCM负控和17来源测试通过。独立review发现的证据角色误标漏洞已修，v5 ELF与v4逐字一致；FPGA实际编译／VG／物理退出仍由新W21另验，不把固件通过当整机／手机／DAC通过。
 
+M24的[同拍dispatch与HDMI既有级坐标修复](push2_workstation/usb_a/reports/DUAL138K_M24_DISPATCH_HDMI_MAINTENANCE_20261101.json)已落维护RTL：只读stored slot经原引擎owner组合，保留公开ready、同拍mode／事件互斥及未知态fallback，不增加音频状态／周期；27个坐标谓词前移至既有Stage A，颜色优先级、四级像素延迟、reset／enable停顿保持。M／W／legacy完整service／engine／effects／DMA miter、3项无假设二态证明、147456四态、3可观察负控及4配置整屏＋65536额外输入通过；旧fixture对封存M23已拒绝、fallback移除在观测锥无差异，均据实保留而未冒记负控。主线程重验164绑定／119文件，4份完整inverse逐字节等于Git HEAD；17来源测试通过。新D2110132将独立全量综合／P&R，不预记资源或时序收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

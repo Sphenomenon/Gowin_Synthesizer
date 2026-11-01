@@ -145,6 +145,8 @@ module gw138k_event_workstation #(
   assign held_notes_o=held;
   logic core_event_valid, core_event_ready, core_note_on;
   logic core_expression_valid, core_expression_ready;
+  wire core_event_slot_ready,core_expression_slot_ready;
+  logic core_event_dispatch_ready,core_expression_dispatch_ready;
   logic [6:0] core_note, core_velocity;
   logic [6:0] core_expression_note, core_expression_value;
   logic core_sample_ready, load_busy, mix_busy;
@@ -289,6 +291,29 @@ module gw138k_event_workstation #(
   assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !event_config_block && !native_clear;
   assign full = scope_enable ? &vec_active : &allocated;
   assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !event_config_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);
+  // Dispatch excludes a pending mode with no allocated voices. Otherwise
+  // mode_pending is zero or the oscillator's mode_ready is zero, so no mode
+  // can commit on this edge. Expression dispatch also has no NoteOn/Off.
+  // Use the stored engine slot here instead of feeding mode_valid (and the
+  // sample/fault admission cone behind it) back through the full ready path.
+  // Keep the public engine handshakes and unknown-state behavior intact.
+  generate if(TIMING_OPTIMIZED && RUNTIME_RATE_ENABLE)begin: engine_dispatch_slots
+    always_comb begin
+      case({mode_pending,allocated==32'd0})
+        2'b00,2'b01,2'b10,2'b11: begin
+          core_event_dispatch_ready=core_event_slot_ready;
+          core_expression_dispatch_ready=core_expression_slot_ready;
+        end
+        default: begin
+          core_event_dispatch_ready=core_event_ready;
+          core_expression_dispatch_ready=core_expression_ready;
+        end
+      endcase
+    end
+  end else begin: original_engine_dispatch_slots
+    assign core_event_dispatch_ready=core_event_ready;
+    assign core_expression_dispatch_ready=core_expression_ready;
+  end endgenerate
   // CC120 uses the control-event dispatch condition directly. It never needs
   // engine event_ready; keeping that dependency out of cancellation also
   // avoids a PANIC/configuration/sample-ready combinational cycle.
@@ -457,10 +482,10 @@ module gw138k_event_workstation #(
         // A public NoteOn/Off is accepted only with the owning engine's
         // handshake, so held state cannot advance while its event is rejected.
         event_ready=dispatch && ((TIMING_OPTIMIZED && !RUNTIME_RATE_ENABLE) ||
-            (kind==1 && full) || (scope_enable ? vec_dispatch_ready : core_event_ready));
+            (kind==1 && full) || (scope_enable ? vec_dispatch_ready : core_event_dispatch_ready));
       end else if(kind==5) begin
-        core_expression_valid=dispatch && core_expression_ready;
-        event_ready=dispatch && core_expression_ready;
+        core_expression_valid=dispatch && core_expression_dispatch_ready;
+        event_ready=dispatch && core_expression_dispatch_ready;
       end else event_ready=dispatch;
     end
   end
@@ -491,6 +516,7 @@ module gw138k_event_workstation #(
     end
     assign runtime_quiescent=!rendered;assign runtime_rate_ready=!rendered;assign engine_rate=applied_rate;
     assign core_sample_ready=1;assign core_event_ready=1;assign core_expression_ready=1;
+    assign core_event_slot_ready=1;assign core_expression_slot_ready=1;
     assign vec_event_ready=1;assign vec_ready=1;assign vec_busy=0;
     assign synth_valid_o=rendered;assign synth_o=0;assign vec_valid=rendered;
     assign vec_left=0;assign vec_right=0;assign vec_active=0;assign vec_count=0;assign vec_rejected=0;
@@ -512,6 +538,7 @@ module gw138k_event_workstation #(
       .scope_enable_i(scope_enable),.event_profile_i(profile),
       .event_note_i(a),.event_off_note_i(core_note),.event_velocity_i(core_velocity),
       .synth_event_ready_o(core_event_ready),.vector_event_ready_o(vec_event_ready),
+      .synth_event_slot_ready_o(core_event_slot_ready),.expression_slot_ready_o(core_expression_slot_ready),
       .expression_valid_i(core_expression_valid),.expression_ready_o(core_expression_ready),
       .expression_note_i(core_expression_note),.expression_value_i(core_expression_value),
       .synth_sample_ready_o(core_sample_ready),.synth_valid_o,.synth_o,
@@ -531,6 +558,8 @@ module gw138k_event_workstation #(
       .vector_rejected_o(vec_rejected),.vector_config_error_o(vec_config_error),
       .vector_frequency_error_o(vec_frequency_error),.vector_clip_o(vec_clip));
   end else begin: legacy_engines
+    assign core_event_slot_ready=core_event_ready;
+    assign core_expression_slot_ready=core_expression_ready;
     assign runtime_quiescent=1'b0;
     assign runtime_rate_ready=1'b0;
     assign engine_rate=1'b0;
@@ -661,7 +690,7 @@ module gw138k_event_workstation #(
         end
         if(effects_valid && !fx_ready) deadline_miss_o<=deadline_miss_o+1;
       end
-      if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_dispatch_ready : core_event_ready))) begin
+      if(releasing && dispatch && (!deferred_current || (scope_enable ? vec_dispatch_ready : core_event_dispatch_ready))) begin
         deferred[release_index]<=0;
         if(release_index==127) begin releasing<=0;deferred_current<=0;end
         else begin release_index<=next_release_index;deferred_current<=deferred[next_release_index];end
