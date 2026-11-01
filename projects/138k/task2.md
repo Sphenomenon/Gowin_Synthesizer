@@ -626,3 +626,6 @@ W26新VG与实际VO各64颗pROM全部32768word重建等于实际生产ROM，未�
 
 
 M26-1新普通立体声XY的[正式prepare与原检查点增量输入准备](push2_workstation/usb_a/reports/DUAL138K_M26_1_STEREO_PREPARE_20261102.json)已完成：来源ada8cf9e（含1cf5bf83坐标维护修改），新M revision4／897锁，身份cf7678174e8941a7，905原源／608暂存／263编译／1496审计工具在prepare前冻结，主线程重核3009文件。相对M13A只有四个编译输入、include的HDMI provider及显示契约共六份暂存文件变化，其余RTL、两套固件及全部SDC逐字节相同。第一阶段仿真和正式增量能力核实已先完成；本次逻辑不能仅改ROM／旧位流，安装工具未暴露增量综合，因此现在生成新的正式VG，再仅允许显式`-inc_pnr`引用原M13A .pr的增量P&R，预留新身份D2110144。旧.pr／FS及原CST／SDC保留；增量失败即封存停止，不自动全量P&R，不继承旧余量或硬件接受；板卡未操作。
+
+
+M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_workstation/usb_a/reports/DUAL138K_M26_1_STEREO_SYNTHESIS_20261102.json)已完成：170.488s／exit0，610封存输入前后保持；新VG `eaac0fa2…76a16f7`，FF43632／LUT48626／ALU11495／综合BSRAM等价211／SSRAM99，非物理资源。原strict因新增observation bit204库存拒绝的失败保持，独立v2仅对显式M revision4／精确axes policy增加同tuple位检查，默认／旧M／W不放宽；1496原工具不改，临时3文件完整精确patch和退出计划入报告。strict原有角色／32声部／完整效果／HDMI／时钟／CDC／SDC门通过，主线程独立重验4512来源及工具／网表／证据文件；新bit204实际来源和算术消费、完整native等附加门另验。正式增量输出仅允许引用原D211013A .pr，检测匹配不足或自动default/full即终止；尚无新P&R／位流／时序结果，本阶段未操作板卡，不继承旧余量。

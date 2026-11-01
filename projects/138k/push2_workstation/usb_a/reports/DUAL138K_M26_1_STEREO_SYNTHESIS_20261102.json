@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "stage": "M26-1 stereo r1 new complete synthesis and strict netlist verification",
+  "created_utc": "2026-11-01T20:46:29.810769+00:00",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-cf7678174e8941a7",
+  "identity": "custom138k-native-m-demo-session-rate-stereo-xy-revision4",
+  "source_commit": "ada8cf9e4b6c843fd8a7b0c0b9d1d632ff5f0d03",
+  "maintained_stereo_change_commit": "1cf5bf83ce2aabb0c54cf325a29041ba3dd60127",
+  "manifest_sha256": "f70912357d577f63f9cca93a93ef920696ec31f5c31b76ed433a27522d3a7592",
+  "profile_revision": 4,
+  "targeted_source_simulation_report": "DUAL138K_M26_1_STEREO_XY_SOURCE_20261102.json",
+  "prepare_report": "DUAL138K_M26_1_STEREO_PREPARE_20261102.json",
+  "reason_new_synthesis_required": "Targeted simulation and installed-tool formal-incremental capability verification preceded synthesis. No documented HDL arithmetic ECO or incremental synthesis interface exists in the installed tool; a new VG is required before explicit official incremental placement/routing.",
+  "synthesis": {
+    "exit_code": 0,
+    "elapsed_seconds": 170.48824537500002,
+    "sealed_input_count": 610,
+    "sealed_inputs_reverified_after_run": true,
+    "netlist_sha256": "eaac0fa2dd534fa96905989f7f7dcc18e0c7582af73f91f6b4168999876a16f7",
+    "log_sha256": "b80f670cdebaa9483d8f920e2c724ee03305fc84f7cfcd75df91cf84f6b29b51",
+    "resource_report_sha256": "a9a62bcedba55cfa2d98594398b7e653961143930b8df87f0b05d2b3f05106bb",
+    "resources": {
+      "Register": 43632,
+      "Lut": 48626,
+      "Alu": 11495,
+      "Bsram": 211,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "resources_are_synthesis_equivalents_not_physical": true
+  },
+  "strict_verification": {
+    "passed": true,
+    "role_retirement_verified": true,
+    "worker_audio_only": false,
+    "voice_storage": {
+      "voices": 32,
+      "groups": {
+        "sample_envelope_q18": {
+          "voices": 32,
+          "bits_per_voice": 18,
+          "registers": 576,
+          "register_inventory_sha256": "19b3e4e29a1001facaee3437381a680b475e6b166ed2488bdd9bf595c55b39e4"
+        },
+        "envelope_state": {
+          "voices": 32,
+          "bits_per_voice": 3,
+          "registers": 96,
+          "register_inventory_sha256": "24e520cccd012e9cdea1c55b7d68b07a671ab1e244b75ab22e2fa0c2a6f3c543"
+        },
+        "expression_gain_q8": {
+          "voices": 32,
+          "bits_per_voice": 8,
+          "registers": 256,
+          "register_inventory_sha256": "dd42a11e3bcdf867cfc4a698d165cd31117b4c40f4209d959669f0f4d050e5dd"
+        }
+      },
+      "synthesized_storage_verified": true,
+      "concurrent_voice_functionality_hardware_verified": false
+    },
+    "clocks_or_live_exceptions_relaxed": false,
+    "all_visible_selector_members_resolved": true,
+    "source_seal_verified_before_and_after": true
+  },
+  "preserved_failed_attempts": [
+    {
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-strict-synthesis-v1.json",
+        "sha256": "93b6ae9e831095529041d02bebf75e7c44710d1433d915ee9d84627726eac7d1"
+      },
+      "reason": "Original audit hardcoded the old observation mailbox inventory and rejected the added held bit204; original source/tools/log and failure retained."
+    }
+  ],
+  "candidate_specific_audit_adapter": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-audits-v2/adapter.json",
+      "sha256": "390f35a88ebda3226578e0f5172e7336926e42ceaf67af6cda44804b961fc1b9"
+    },
+    "original_tool_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-audits-v1/source-tools-seal.json",
+      "sha256": "2c64fd60608cbfaef00906dbb5998881bcde303a26c8656e4eedab0c638cea4c"
+    },
+    "adapted_tool_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-audits-v2/source-tools-seal.json",
+      "sha256": "8f641db2c5beb8e2db602dcee828e1a7c7365c4252a343fd3a8a4efcd30c400f"
+    },
+    "files": 1496,
+    "changed_files": [
+      "sim/test_workstation_native_protocol.py",
+      "tools/workstation_native_protocol_audit.py",
+      "tools/workstation_performance_reset.py"
+    ],
+    "exact_patch": {
+      "tools/workstation_native_protocol_audit.py": "--- original/tools/workstation_native_protocol_audit.py\n+++ adapter/tools/workstation_native_protocol_audit.py\n@@ -59,7 +59,7 @@\n                 display_mailbox_absent=True, display_health_absent=True, video_hierarchy_absent=True)\n \n \n-def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False):\n+def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False, stereo_xy=False, profile_revision=None, xy_axes_policy=None):\n     require(profile in PROFILES, 'unknown role/profile')\n     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')\n     g = Graph(n)\n@@ -75,6 +75,10 @@\n     require(not hmi or profile == 'm-demo-core', 'new W HMI inventory not yet reviewed')\n     hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()\n     require(not connected_xy or profile == 'm-demo-core', 'connected XY requires explicit M core')\n+    require(not stereo_xy or (profile == 'm-demo-core' and connected_xy and profile_revision == 4 and\n+            xy_axes_policy == 'ordinary_mid_side_vector_direct_v1'),\n+            'stereo XY requires explicit M core revision4 axes policy')\n+    observation_extra = (203, 204) if stereo_xy else (203,)\n     # PANIC is read at the 50MHz completed-frame receipt, then uses the\n     # existing trust bit/drop counter. No observation-mailbox bits are added.\n     panic_bits = tuple(range(54, 64)) if connected_xy else ()\n@@ -88,7 +92,7 @@\n     if not headless:\n         specifications += (\n             ('u_managed/display', display_bits, (*range(ordinary), *display_extra), 'compute', 'control'),\n-            ('u_video/u_runtime_display/observation', (*old_display_bits, 203), len(old_display_bits) + 1,\n+            ('u_video/u_runtime_display/observation', (*old_display_bits, *observation_extra), len(old_display_bits) + len(observation_extra),\n              'control', 'memory'),\n         )\n     if hmi:\n",
+      "sim/test_workstation_native_protocol.py": "--- original/sim/test_workstation_native_protocol.py\n+++ adapter/sim/test_workstation_native_protocol.py\n@@ -126,7 +126,7 @@\n     def reject(self, name, path, part, key, value, message):\n         with self.change(path, part, key, value):\n             with self.assertRaisesRegex(ValueError, message) as error:\n-                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         self.mutations.append(dict(case=name, rejected=True, error=str(error.exception)))\n \n class ActualNativeProtocol(ActualNativeFixture):\n@@ -136,7 +136,7 @@\n             self.skipTest('explicit W-audio retires display/RAM and display-loss monitor; actual absence verified')\n \n     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):\n-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         if self.profile == 'w-demo-audio':\n             self.assertEqual(result['mailbox_count'], 2)\n             self.assertEqual({row['scope'] for row in result['mailboxes']},\n@@ -171,7 +171,7 @@\n             self.n.scopes[path] = self.n.scopes[source]\n             try:\n                 with self.assertRaisesRegex(ValueError, 'headless profile retained display/video') as error:\n-                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n                 self.mutations.append(dict(case='headless cell returned ' + scope, rejected=True, error=str(error.exception)))\n             finally:\n                 del self.n.cells[path]\n@@ -185,7 +185,7 @@\n                 del self.n.frames[scope]\n             from tools.workstation_worker_audio_only import constraints\n             sdc, unused = constraints(protocol_constraints())\n-            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n             for command in ('set_false_path', 'set_max_delay 2.000'):\n                 changed = sdc + command + ' -to [get_pins {' + path + '/D}]\\n'\n                 with self.assertRaisesRegex(ValueError, 'retired display timing selector') as error:\n@@ -196,7 +196,7 @@\n     def test_m22_new_hmi_mailbox_negative_controls(self):\n         if self.profile != 'm-demo-core' or 'u_video/u_applied_parameters_cdc' not in self.n.frames:\n             self.skipTest('M22 actual new HMI mailbox only')\n-        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping,connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping,connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         display=next(x for x in result['mailboxes'] if x['scope']=='u_managed/display')\n         hmi=next(x for x in result['mailboxes'] if x['scope']=='u_video/u_applied_parameters_cdc')\n         self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['payload_bits']),(132,98,230))\n@@ -218,7 +218,7 @@\n             self.reject(name,path,'ports',pin,value,'.')\n \n     def test_installed_sdc_keeps_later_stages_and_exact_local_bounds(self):\n-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         sdc = protocol_constraints()\n         headless = self.profile == 'w-demo-audio'\n         if headless:\n@@ -598,7 +598,7 @@\n                     self.bind(target, self.reg('u_tf_audio/frames', 'quiesce_sync_0')), 'first-stage has another consumer')\n \n     def test_sdc_protects_payload_setup_and_all_later_stages(self):\n-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         timing = result['timing_boundaries']\n         sdc = protocol_constraints()\n         headless = self.profile == 'w-demo-audio'\n@@ -625,7 +625,7 @@\n \n class ActualDemoHeldHandshakes(ActualNativeFixture):\n     def audited(self):\n-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')\n+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)\n         result['demo_held_handshakes'] = audit_demo_held_boundaries(self.n, result)\n         return result\n \n",
+      "tools/workstation_performance_reset.py": "--- original/tools/workstation_performance_reset.py\n+++ adapter/tools/workstation_performance_reset.py\n@@ -217,7 +217,14 @@\n         if '`define WORKSTATION_WORKER_AUDIO_ONLY' in provider.read_text().splitlines():\n             profile = 'w-demo-audio'\n     connected_xy = role == 'M' and '`define WORKSTATION_XY_TRACE' in provider.read_text().splitlines()\n-    result = audit_native_protocol(n, profile=profile, mapping=mapping, connected_xy=connected_xy)\n+    stereo_xy = role == 'M' and '`define WORKSTATION_XY_STEREO' in provider.read_text().splitlines()\n+    sealed_profile = json.loads((Path(stage).parents[1] / 'workstation_profile.json').read_text())\n+    axes_policy = sealed_profile['configuration'].get('xy_axes_policy')\n+    require(stereo_xy == (axes_policy == 'ordinary_mid_side_vector_direct_v1'),\n+            'sealed explicit stereo profile/provider disagreement')\n+    result = audit_native_protocol(n, profile=profile, mapping=mapping, connected_xy=connected_xy,\n+        stereo_xy=stereo_xy, profile_revision=sealed_profile['revision'], xy_axes_policy=axes_policy)\n+    result['stereo_axes_inventory_reviewed'] = stereo_xy\n     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)\n     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,\n         demo_held_handshakes=demo_held_handshake_constraints())\n"
+    },
+    "scope": "Explicit M core revision4, connected XY, exact axes policy and sealed profile/provider agreement only. Adds observation bit204 under existing held CDC checks; all default/old M/W inventory rules remain. This structural inventory gate alone does not prove bit204 source/consumer arithmetic semantics.",
+    "exit_plan": "Promote the reviewed explicit-policy audit support to maintained tools after complete candidate verification; the exact temporary patch and input seals are retained here and must not become an undocumented production input."
+  },
+  "evidence": {
+    "synthesis_run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-synthesis-run-v1.json",
+      "sha256": "b1292b1820be52690eedbdbdd0b906ef97efde435a729de94d09242ecce176dc"
+    },
+    "strict_v2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-strict-synthesis-v2.json",
+      "sha256": "fa5f5192981a468ed2c8a6357659d829fedf57b36a1571504f7778900be664fb"
+    },
+    "root_recheck": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-synthesis-root-recheck-v1.json",
+      "sha256": "1b7c2d5c1c68f1b8ea2ba0b58897dcc5de49166cd1cb5a2e1879b078e97cb6da"
+    }
+  },
+  "root_independently_rehashed_files": 4512,
+  "remaining_gates": [
+    "New actual-VG stereo source/consumer/context semantics and negative controls",
+    "Full native/boundary/performance/Push/PANIC regressions for new actual VG",
+    "Actual official incremental old-checkpoint load, matching/reuse evidence; stop on fallback",
+    "New routed resource/timing/PLL/CDC and feature gates",
+    "Hardware visual/audio verification"
+  ],
+  "physical_UserCode_reserved": "D2110144",
+  "automatic_full_PnR_fallback": false,
+  "new_PnR_result_claimed": false,
+  "new_bitstream_claimed": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "rollback": "Original M26-1 r2 D211013A .pr/FS remain immutable; no board operation in this phase. Last recorded SRAM identity is D211013A."
+}
