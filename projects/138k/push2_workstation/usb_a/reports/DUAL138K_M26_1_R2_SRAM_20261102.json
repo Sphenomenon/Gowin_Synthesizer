@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "stage": "M26_1_r2_D211013A_authorized_SRAM_program_and_independent_identity_trial",
+  "recorded_utc": "2026-11-01T19:27:14.569131+00:00",
+  "authorization": "Current session explicitly authorizes JTAG checks and SRAM tests of M/W real candidates; Flash excluded.",
+  "trial_started_utc": "2026-11-01T19:25:24.790578+00:00",
+  "trial_finished_utc": "2026-11-01T19:25:45.574038+00:00",
+  "role": "M",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-1ab654241de6eb73",
+  "source_git_head": "c9bdae9d83ed41b864b82229d15e97367eb061f5",
+  "configuration_sha256": "68f371c4711ef5d98b1fad7dbf1a783d43a14124a0f3347318430b16577f434c",
+  "candidate_manifest_sha256": "00d132dfc57ad96dcb867aa7804202e1e8108d5c5695b167ae92018e0cc26b82",
+  "physical_manifest_sha256": "4cab8cd9a933dc9b7ce1db1c9f4c45616ccbe3b5afdb17ba3d9fee524757ed38",
+  "physical_report": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_M26_1_R2_PHYSICAL_20261102.json",
+  "physical_report_sha256": "1ef7456ccfee243e1abf0f2c367245edb86017f6c509f61172a7b8d86394f3e4",
+  "result_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/result.json",
+  "result_sha256": "18dd9fb1b6570ff83fad0c8d75186f5efad17a404c619f3409bc2a9eadee9b9e",
+  "runner_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1.py",
+  "runner_sha256": "7eea3679ef40fc9b9b5021f1135e06ac54acf76452af52e4276dcaa6039c9d49",
+  "programmer_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+  "programmer_sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+  "device_id": "0001081B",
+  "cable_index": 1,
+  "cable_location": "8257",
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.fs",
+    "sha256": "414bd24090b21fa126033f90e7f2ce4411e5086ba2c67b363d996198c09bc6f7",
+    "user_code": "D211013A",
+    "checksum": "8096"
+  },
+  "programmer_events": [
+    {
+      "name": "before",
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8257",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.457663833,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/before.log",
+      "log_sha256": "a6e73527f8d50b9d53fcb9b514fd71114688d7889a38dd33ae74af33703df786"
+    },
+    {
+      "name": "sram-program",
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8257",
+        "--operation_index",
+        "2",
+        "--fsFile",
+        "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.fs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 7.514016084,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/sram-program.log",
+      "log_sha256": "6ecfe1e78fa4827b08172de35ecdfa14a9fd4967aab05b2d2cb9190557ffc20c"
+    },
+    {
+      "name": "after",
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8257",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.3891958330000005,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/after.log",
+      "log_sha256": "d91c099db58de91b51c2ae6820d9b9b17f4fb0eacec604035a3b6c58e5473deb"
+    },
+    {
+      "name": "status",
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8257",
+        "--operation_index",
+        "74"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.37872149999999927,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/status.log",
+      "log_sha256": "ecab414e72bac16158f55b79800941a526fea5e525fd7b124c47ce9e48202325"
+    }
+  ],
+  "observed": {
+    "before_UserCode": "D2110142",
+    "program_operation_index": 2,
+    "program_exit_code": 0,
+    "independent_after_identity_operation_index": 0,
+    "after_UserCode": "D211013A",
+    "independent_status_operation_index": 74,
+    "status_code": "00022230",
+    "status_interpretation": "JTAG register value only; not proof of DDR, CPU, display or audio readiness."
+  },
+  "passive_UART": {
+    "port": "/dev/cu.usbserial-21201",
+    "baud": 115200,
+    "seconds": 12.001884334,
+    "bytes_received": 0,
+    "commands_sent": 0,
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "valid_CRC_record_count": 0,
+    "invalid_CRC_records": 0,
+    "last_by_kind": {}
+  },
+  "root_physical_and_log_hashes_reverified": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/custom_138k_integration.vg": "9dad96def2c611d01898343b66ad3efb1a9fa5f08c9d7d8bbce7d0dd47aa6f45",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/directed_placement_source_closure.json": "fd95cf0f412609eec737e46af43e736af1a854ed647559b721e8cd093761f234",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.fs": "414bd24090b21fa126033f90e7f2ce4411e5086ba2c67b363d996198c09bc6f7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.rpt.txt": "43ad9955c4d9effdcfa6515b8ac48306b78d0ec67d2370558956142f0b1e7382",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.tr": "6d4f483d2d123162b1fb0a12b6a7de762d5938661e23468c7df132b24f0bb345",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.vo": "5df721fac3b5c0c9e9dc7db8535bc8e03ab03989159a618c5d6fc2e5865739d1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/parent_integration_inputs.json": "00d132dfc57ad96dcb867aa7804202e1e8108d5c5695b167ae92018e0cc26b82",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/parent_pinout.json": "7167100c4c828da3deeb151ffa7957a2c62111fd111baa028388b84a5a9f4571",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/parent_synthesis_audit.json": "d5e3ca95cee2b17e5819376ee537a51a354d1fd8bb62d12d3ea146670431f5d5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/parent_workstation_profile.json": "ec69fbed93e747952efb7a338fc1c98fc62df5bd3b878f344a6baede9f6b86df",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/physical.cst": "30da7d27d507ca97267bd18db851f2db7817ffd952dc34f1aa4a63f33340a115",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/physical.sdc": "e6dfc0170d082e7341cf675ec0141740011be0e3701c5f0c20c86e06c7dd3784",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/physical_inputs.json": "4cab8cd9a933dc9b7ce1db1c9f4c45616ccbe3b5afdb17ba3d9fee524757ed38",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/placement_witness_summary.json": "9dfb708cd65a0d43a3312ff5ce60c6961f860902fc51ca3931daee2cde12dc61",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/pnr.log": "f17c32c4fcbbd525847572b1f4dea91d4ad4c30028ff4341a3647539232df96c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/run.tcl": "d2ad8a56db217891ba071f5ff1023dabaaff53e37d10722585fbf84025ba0f67",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/before.log": "a6e73527f8d50b9d53fcb9b514fd71114688d7889a38dd33ae74af33703df786",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/sram-program.log": "6ecfe1e78fa4827b08172de35ecdfa14a9fd4967aab05b2d2cb9190557ffc20c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/after.log": "d91c099db58de91b51c2ae6820d9b9b17f4fb0eacec604035a3b6c58e5473deb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-authorized-sram-v1/status.log": "ecab414e72bac16158f55b79800941a526fea5e525fd7b124c47ce9e48202325"
+  },
+  "SRAM_program_and_independent_identity_trial_passed": true,
+  "SRAM_deployed_at_trial_end": true,
+  "Flash_deployed": false,
+  "bitwise_verify_performed": false,
+  "timing_closed_offline": true,
+  "hardware_functional_acceptance": false,
+  "HDMI_functional_acceptance": false,
+  "Push25K_functional_acceptance": false,
+  "Session_dual_rate_hardware_acceptance": false,
+  "DAC_continuity_functional_acceptance": false,
+  "release_ready": false,
+  "features_in_selected_frozen_image": [
+    "Session CC51 effective press toggles committed 48/44.1 kHz through existing unique clock service; release does not trigger, busy/fault/stale input rejected without queue.",
+    "Select vector entry and M26 ordinary A/B/C, vector, 32 voices/ADSR, full effects, Push/25K, complete HDMI and real I2S/DAC remain.",
+    "HDMI committed-rate/busy/fault status and final-PCM connected XY with autoscale and current/previous raw binary persistence."
+  ],
+  "remaining_gaps": [
+    "Physical HDMI appearance/continuity and final DAC audio require external observation; this host has no connected HDMI capture or line audio input.",
+    "Real Push bidirectional Session rate switching under held/tail audio, busy presses, PANIC and failure recovery remains to be accepted on hardware.",
+    "12 seconds passive UART yielded zero bytes; no CPU/DDR/clock readiness telemetry is established by this observation.",
+    "M TF/CNN remain excluded from this demonstration. Complete IO/electrical/CDC acceptance and dual-board concurrent validation remain open."
+  ],
+  "rollback": {
+    "candidate": "M26 D2110137",
+    "bitstream": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "behavior": "SRAM-only image is volatile across power loss; previous Flash content was not modified. Reprogram the separately identified candidate when required."
+  },
+  "board_handoff": "The same physical 138K was sequentially tested as W25 D2110142 then M26-1 D211013A. It is left with M26-1 at the end of this trial, not two-board concurrent acceptance."
+}
