@@ -412,6 +412,8 @@ W17 `D2110123`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138
 
 HCI ACL generation 的[维护源码比较分组](push2_workstation/usb_a/reports/DUAL138K_HCI_ACL_GENERATION_20261101.md)已通过：先并行比较各slot完整32bit，再按原selector选单比特；clocked字节、信用、即时取消与错误优先级不变。两完整owner各91,711周期对照、151,160四态、128自由位组合关系UNSAT及8实际／4来源负控通过，原pool与完整native默认入口（含UART8E1／H5）通过。主线程重验757封存文件及严格inverse，尚未更新profile或进入新综合／P&R，无物理收益主张，未上板。
 
+M19 的[reference区域布局D2110124](push2_workstation/usb_a/reports/DUAL138K_M19_REFERENCE_PHYSICAL_20261101.md)完整P&R及六审计完成，VG／SDC／DDR3.500ns保持，CST仅追加两个64FF bank区域。实测BSRAM235／DSP119／CLS50878，setup5526／−3.417ns、hold11／−0.198ns，recovery+1.807／removal+0.281ns、DDR指定hold+.503ns。reference同域hold仍失败，最差setup转为delay peer_fault→config_state CE；DDR UI另有571 setup负端点／TNS−476.102ns。主线程重验12物理输入／30产物／2972证据；不以局部改善转授整机通过，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
