@@ -28,7 +28,7 @@ def replace_once(text,anchor,replacement):
     if text.count(anchor)!=1:raise ValueError('Negative-control anchor drift: '+anchor)
     return text.replace(anchor,replacement)
 
-def run(output,*,direct_crc_source_adaptation=False):
+def run(output,*,direct_crc_source_adaptation=False,direct_fat_cache_source_adaptation=False):
     output.mkdir(parents=True,exist_ok=False)
     maintained=[NATIVE,NATIVE_SESSION,PROVENANCE,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT))]
     hashes={name:sha((ROOT/name).read_bytes()) for name in maintained+list(LOCKS)}
@@ -37,15 +37,18 @@ def run(output,*,direct_crc_source_adaptation=False):
     provenance=json.loads((ROOT/PROVENANCE).read_text())
     adaptation=None
     legacy_sector_hash=hashes[NATIVE]
-    if direct_crc_source_adaptation:
+    if direct_crc_source_adaptation or direct_fat_cache_source_adaptation:
         import sys
         sys.path.insert(0,str(ROOT))
         from tools.workstation_tf_sd_crc16_provenance import restored_basis,MANIFEST
-        basis,adaptation=restored_basis(ROOT,NATIVE)
+        basis,adaptation=restored_basis(ROOT,NATIVE,fat_cache_source_adaptation=direct_fat_cache_source_adaptation)
         legacy_sector_hash=sha(basis)
         for relative in (MANIFEST,'tools/workstation_tf_sd_crc16_provenance.py',
                          'rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.sv'):
             hashes[relative]=sha((ROOT/relative).read_bytes())
+        if direct_fat_cache_source_adaptation:
+            for relative in ('rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.adaptation.json','tools/workstation_tf_fat_cache_provenance.py','rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.sv','rtl/tf_audio/workstation_tf_direct_native_v1.sv','rtl/tf_audio/workstation_tf_direct_runtime_service.sv','rtl/tf_audio/storage/workstation_tf_file_reader.sv'):
+                hashes[relative]=sha((ROOT/relative).read_bytes())
     if provenance['native_sector_sha256']!=legacy_sector_hash or provenance['native_session_sha256']!=hashes[NATIVE_SESSION]:
         raise ValueError('Maintained source provenance drift')
     if provenance['session_origin_sha256']!=hashes[SESSION] or provenance['sector_origin_sha256']!=hashes[HISTORICAL]:
@@ -162,5 +165,7 @@ if __name__=='__main__':
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--direct-crc-source-adaptation',action='store_true',
         help='explicit DIRECT source branch: strictly recover old source hashes before original provenance validation; tests still use VERIFY_DATA_CRC=0')
+    parser.add_argument('--direct-fat-cache-source-adaptation',action='store_true',
+        help='explicit newer chain: invert FAT cache then unchanged CRC adaptation; DUT still uses both defaults zero')
     args=parser.parse_args()
-    run(args.output.resolve(),direct_crc_source_adaptation=args.direct_crc_source_adaptation)
+    run(args.output.resolve(),direct_crc_source_adaptation=args.direct_crc_source_adaptation,direct_fat_cache_source_adaptation=args.direct_fat_cache_source_adaptation)

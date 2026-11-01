@@ -84,6 +84,7 @@ PROFILE_REGISTRY = {
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             tf_policy='task3_m_native_direct_tf_v1',
+            tf_storage_policy='direct_sd_crc16_validated_fat_cache_v1',tf_sdc_revision=3,
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
         provider='rtl/workstation/workstation_profile_task3_m_direct_tf.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',tf_menu_enabled=True,tf_direct_enabled=True,
@@ -398,8 +399,13 @@ def _artifact(root, output, metadata, profile):
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     if spec.get('tf_direct_enabled', False):
         from tools.workstation_task3_tf_direct import restore_constraints
+        from tools.workstation_task3_tf_storage_selection import prepared_selection
+        if metadata.get('task3_tf_direct_storage')!=prepared_selection(root,stage,profile['configuration']):
+            raise ValueError('DIRECT TF actual CRC/cache source selection changed')
+        if metadata.get('task3_tf_direct_cdc',{}).get('constraint_revision')!=profile['configuration']['tf_sdc_revision']:
+            raise ValueError('DIRECT TF explicit SDC revision changed')
         installed_sdc = restore_constraints(root, installed_sdc, metadata.get('task3_tf_direct_cdc', {}))
-    elif 'task3_tf_direct_cdc' in metadata:
+    elif 'task3_tf_direct_cdc' in metadata or 'task3_tf_direct_storage' in metadata:
         raise ValueError('unselected profile cannot claim direct TF constraints')
     media_worker=spec.get('worker_media',False)
     if media_worker:

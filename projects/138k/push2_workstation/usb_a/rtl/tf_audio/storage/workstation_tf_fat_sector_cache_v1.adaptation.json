@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "policy": "task3-direct-opt-in-validated-FAT-sector-cache-v1",
+  "parameter": "FAT_SECTOR_CACHE",
+  "default": 0,
+  "requires_VERIFY_DATA_CRC": 1,
+  "DIRECT_selection_requires_explicit_value": 1,
+  "storage_bytes": 512,
+  "metadata_only": true,
+  "prior_CRC_manifest": {
+    "path": "rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.adaptation.json",
+    "sha256": "230b9436cab1b56311ef757f548ccf12705ff94ca7381b0e718aedfa7b0d17f4"
+  },
+  "adaptations": [
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+      "basis_sha256": "3d20a0d1cbe0475c958114f77e7a61dc94cabc3f0981c0ff8e77b023cf561ce8",
+      "adapted_sha256": "28d741287dc8751a57130a518af1b4fabf7bac1aca66406c00b9cc1b017e6dcb",
+      "edits": [
+        {
+          "before": "    parameter integer VERIFY_DATA_CRC = 0\n",
+          "after": "    parameter integer VERIFY_DATA_CRC = 0,\n    parameter integer FAT_SECTOR_CACHE = 0\n",
+          "count": 1
+        },
+        {
+          "before": "    if (MAX_TRACKS < 1 || MAX_TRACKS > 16 || MAX_ROOT_SECTORS < 1 || WATCHDOG_CLOCKS < 1)\n",
+          "after": "    if ((FAT_SECTOR_CACHE!=0 && FAT_SECTOR_CACHE!=1) ||\n        (FAT_SECTOR_CACHE!=0 && VERIFY_DATA_CRC!=1))\n        $fatal(1,\"native FAT cache requires explicit CRC verification\");\n    if (MAX_TRACKS < 1 || MAX_TRACKS > 16 || MAX_ROOT_SECTORS < 1 || WATCHDOG_CLOCKS < 1)\n",
+          "count": 1
+        },
+        {
+          "before": "assign sector_busy=inflight || probe_pending;",
+          "after": "assign sector_busy=inflight || probe_pending || cache_lookup_pending;",
+          "count": 1
+        },
+        {
+          "before": "wire stop_new = stop && !stop_q;\n",
+          "after": "wire stop_new = stop && !stop_q;\n// Local FAT metadata lookup never fabricates a transport read_done. All fills\n// use the single existing sector owner and require its real CRC-checked done.\nwire cache_invalidate=stop || stop_req || track_start || start_req || file_error || read_error;\nwire cache_hit,cache_lookup_valid;\nwire [31:0] cache_lookup_data;\nreg cache_lookup_pending,cache_lookup_done;\nwire cache_lookup_request=FAT_SECTOR_CACHE!=0 && !cache_invalidate &&\n    filesystem_state==READ_A_FILE && !inflight && !probe_pending && search_fat &&\n    !cache_lookup_pending && !cache_lookup_done && card_stat==8 && cache_hit;\ngenerate if(FAT_SECTOR_CACHE!=0)begin: g_fat_cache\n    workstation_tf_fat_sector_cache_v1 cache(\n        .clk_i(clk),.rst_ni(rstn),.invalidate_i(cache_invalidate),\n        .fill_start_i(read_start && search_fat && !probe_pending && filesystem_state==READ_A_FILE),\n        .fill_lba_i(read_sector_no),\n        .fill_byte_valid_i(rvalid && search_fat && filesystem_state==READ_A_FILE && !probe_pending),\n        .fill_byte_index_i(raddr),.fill_byte_i(rdata),.fill_done_i(read_done),\n        .lookup_lba_i(read_sector_no),\n        .lookup_word_i(filesystem==FAT16 ? curr_cluster[7:1] : curr_cluster[6:0]),\n        .lookup_request_i(cache_lookup_request),.lookup_hit_o(cache_hit),\n        .lookup_valid_o(cache_lookup_valid),.lookup_data_o(cache_lookup_data));\nend else begin: g_no_fat_cache\n    assign cache_hit=1'b0;\n    assign cache_lookup_valid=1'b0;\n    assign cache_lookup_data=32'd0;\nend endgenerate\nalways @(posedge clk or negedge rstn)begin\n    if(!rstn)begin cache_lookup_pending<=0;cache_lookup_done<=0;end\n    else if(cache_invalidate)begin cache_lookup_pending<=0;cache_lookup_done<=0;end\n    else begin\n        cache_lookup_done<=cache_lookup_valid;\n        if(cache_lookup_request)cache_lookup_pending<=1;\n        if(cache_lookup_done)cache_lookup_pending<=0;\n    end\nend\n",
+          "count": 1
+        },
+        {
+          "before": "        if(read_done || !(inflight || (filesystem_state!=DONE && card_stat!=8))) watchdog<=0;",
+          "after": "        if(read_done || cache_lookup_done || !(inflight || (filesystem_state!=DONE && card_stat!=8))) watchdog<=0;",
+          "count": 1
+        },
+        {
+          "before": "            end else if(read_done) begin\n",
+          "after": "            end else if(read_done || cache_lookup_done) begin\n",
+          "count": 1
+        },
+        {
+          "before": "                end else if(!inflight && !stop && !stop_req && !probe_pending && card_stat==8 &&\n                            (search_fat || data_sector_start)) begin read_start<=1;inflight<=1;end\n",
+          "after": "                end else if(!inflight && !cache_lookup_pending && !stop && !stop_req && !probe_pending && card_stat==8 &&\n                            (search_fat || data_sector_start)) begin\n                    if(!cache_lookup_request)begin read_start<=1;inflight<=1;end\n                end\n",
+          "count": 1
+        },
+        {
+          "before": "        if (search_fat && rvalid) begin\n",
+          "after": "        if (cache_lookup_valid && !cache_invalidate) begin\n            target_cluster <= cache_lookup_data;\n            target_cluster_fat16 <= curr_cluster[0] ? cache_lookup_data[31:16] : cache_lookup_data[15:0];\n        end else if (search_fat && rvalid) begin\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_native_v1.sv",
+      "basis_sha256": "5a54f4515b51a85638503ce849ef45c973fe88295403ad53906468db28f377af",
+      "adapted_sha256": "3e64b6faf85669d7e924f74aef6d813860326f8e3c09a56367ccbfe92c432c9c",
+      "edits": [
+        {
+          "before": "    parameter integer VERIFY_DATA_CRC=0,\n",
+          "after": "    parameter integer VERIFY_DATA_CRC=0,\n    parameter integer FAT_SECTOR_CACHE=0,\n",
+          "count": 1
+        },
+        {
+          "before": "        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),\n",
+          "after": "        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),.FAT_SECTOR_CACHE(FAT_SECTOR_CACHE),\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_runtime_service.sv",
+      "basis_sha256": "82f77d9b4dfcda27a3dc87ebde91a4f2876a7dab75879e1a10bbd0a971bf0428",
+      "adapted_sha256": "2f92cd3a008df79b291667094d8aee82acaeab2470278446647c269a485f6b07",
+      "edits": [
+        {
+          "before": "    parameter integer VERIFY_DATA_CRC=0,\n",
+          "after": "    parameter integer VERIFY_DATA_CRC=0,\n    parameter integer FAT_SECTOR_CACHE=0,\n",
+          "count": 1
+        },
+        {
+          "before": "        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),\n",
+          "after": "        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),.FAT_SECTOR_CACHE(FAT_SECTOR_CACHE),\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "tools/workstation_tf_sd_crc16_provenance.py",
+      "basis_sha256": "5a5ecace8234c700876debf219a2d5bf2c5aa8ede48bf0d51367d14777a10c11",
+      "adapted_sha256": "e9791c951306e5e8f5205fd9d98087021e8dee3af67e0a7a6381256e38e79e7e",
+      "edits": [
+        {
+          "before": "def validate_adaptation(root):\n    root=Path(root)\n",
+          "after": "def validate_adaptation(root,*,fat_cache_source_adaptation=False):\n    if fat_cache_source_adaptation:\n        from tools.workstation_tf_fat_cache_provenance import validate_adaptation as validate_fat\n        fat_report,crc_basis=validate_fat(root)\n        report,restored=_validate_adaptation(root,crc_basis)\n        report['explicit_FAT_cache_source_adaptation']=fat_report\n        return report,restored\n    return _validate_adaptation(root,{})\n\n\ndef _validate_adaptation(root,source_bytes):\n    # Only the strict newer verifier supplies exact inverse-restored bytes.\n    # Default validation still consumes the actual source and rejects drift.\n    root=Path(root)\n",
+          "count": 1
+        },
+        {
+          "before": "        raw=(root/row['path']).read_bytes()\n",
+          "after": "        raw=source_bytes[row['path']] if row['path'] in source_bytes else (root/row['path']).read_bytes()\n",
+          "count": 1
+        },
+        {
+          "before": "def restored_basis(root,relative):\n    \"\"\"For explicit DIRECT source validation; never a product fallback.\"\"\"\n    result,restored=validate_adaptation(root)\n",
+          "after": "def restored_basis(root,relative,*,fat_cache_source_adaptation=False):\n    \"\"\"For explicit DIRECT source validation; never a product fallback.\"\"\"\n    result,restored=validate_adaptation(root,fat_cache_source_adaptation=fat_cache_source_adaptation)\n",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "new_cache": {
+    "path": "rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.sv",
+    "sha256": "b7a6cf37d399c49f1ba9a49b04c090865909cb6a793509491e2cd7ab94a97b76"
+  },
+  "publication": "Exact ascending512 payload byte indexes plus the existing CRC-checked successful read_done; cache hit does not synthesize a sector read_done.",
+  "invalidation": [
+    "STOP",
+    "pending STOP",
+    "track_start/new task",
+    "pending track_start",
+    "file error",
+    "sector error",
+    "owner reset"
+  ],
+  "limits": [
+    "No atomic audio-data publication",
+    "One line can thrash for unrelated FAT LBAs",
+    "No divider/prefill changes",
+    "Physical BSRAM/timing and hardware acceptance not implied"
+  ]
+}

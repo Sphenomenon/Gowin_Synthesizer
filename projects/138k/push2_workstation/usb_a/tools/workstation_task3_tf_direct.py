@@ -12,6 +12,8 @@ import re
 import xml.etree.ElementTree as ET
 
 POLICY = 'task3_m_native_direct_tf_v1'
+STORAGE_POLICY = 'direct_sd_crc16_validated_fat_cache_v1'
+SDC_REVISION = 3
 TOOL = 'tools/workstation_task3_tf_direct.py'
 LEGACY = 'boards/custom_138k/task3_tf_direct_legacy_cdc_v1.json'
 LEGACY_SHA256 = '5766ce220bae56e2d7d6db787250b94e879cb53af04a982092a05adfc9658bfd'
@@ -20,6 +22,7 @@ SOURCES = tuple('rtl/tf_audio/' + path for path in (
     'workstation_tf_direct_ingress_v1.sv', 'workstation_tf_frame_bridge_v2.sv',
     'workstation_tf_physical_tail_v1.sv', 'storage/workstation_tf_file_reader.sv',
     'storage/workstation_tf_sd_sector_reader.sv', 'storage/workstation_tf_spi_session.sv',
+    'storage/workstation_tf_sd_crc16_v1.sv', 'storage/workstation_tf_fat_sector_cache_v1.sv',
     'storage/workstation_tf_wav_pcm_decoder_v1.sv', 'storage/workstation_tf_wav_chunk_parser_v1.sv'))
 RETIRED_SOURCES = (
     'rtl/tf_audio/workstation_tf_frame_bridge.sv',
@@ -30,6 +33,19 @@ RETIRED_SOURCES = (
 UNSELECTED_WORKER_SOURCES = ('rtl/music/workstation_cnn_ddr_broker.sv',
                              'rtl/music/workstation_cnn_task_service.sv')
 DEPENDENCIES = (TOOL, LEGACY,
+    'tools/workstation_task3_tf_storage_selection.py',
+    'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
+    'tools/workstation_tf_sd_crc16_provenance.py',
+    'tools/workstation_tf_fat_cache_provenance.py',
+    'rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.adaptation.json',
+    'rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.adaptation.json',
+    'rtl/tf_audio/storage/WORKSTATION_TF_SD_CRC16_V1_CONTRACT.md',
+    'rtl/tf_audio/storage/WORKSTATION_TF_FAT_SECTOR_CACHE_V1_CONTRACT.md',
+    'rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json',
+    'rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json',
+    'rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v',
+    'rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v',
+    'rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v',
     'tools/workstation_task3_root_reset_audit.py',
     'tools/workstation_task3_native_held.py',
     'tools/workstation_task3_peripheral_releases_audit.py',
@@ -100,12 +116,20 @@ def selected_direct_top(stage, text):
     The real compiler still consumes the unmodified, fully hashed source.
     """
     stage=Path(stage)
+    from tools.workstation_task3_tf_storage_selection import inverse_top as inverse_storage_top
     from tools.workstation_task3_w_media_profile import inverse_top
-    text=inverse_top(stage,text)
+    text=inverse_top(stage,inverse_storage_top(stage,text))
     project=stage/'Prj1.gprj'
     selected=[row.get('path') for row in ET.parse(project).find('FileList') if row.get('enable')=='1'] if project.is_file() else []
-    provider='rtl/workstation/workstation_profile_task3_m_direct_tf.sv'
-    direct_enabled=provider in selected
+    from tools.workstation_profile import PROFILE_REGISTRY
+    providers={spec['provider'] for spec in PROFILE_REGISTRY.values() if spec.get('tf_direct_enabled',False)}
+    actual=providers.intersection(selected)
+    if len(actual)>1:raise ValueError('direct TF provider is not uniquely selected')
+    direct_enabled=bool(actual)
+    provider=next(iter(actual)) if direct_enabled else None
+    if direct_enabled and any(spec['provider'] in selected and spec['provider']!=provider
+            for spec in PROFILE_REGISTRY.values()):
+        raise ValueError('direct TF cannot select another registered profile provider')
     if 'WORKSTATION_TF_DIRECT_NATIVE' not in text:
         if direct_enabled:raise ValueError('direct TF top branch missing')
         return text, False

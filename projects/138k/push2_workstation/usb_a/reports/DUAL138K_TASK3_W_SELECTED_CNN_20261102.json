@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "stage": "selected_immutable_W_media_4Hz_maximum_clip_actual_CNN_component",
+  "status": "PASS_scoped_offline_verification_only",
+  "source": {
+    "base_commit": "a070a620",
+    "candidate_identity": "custom138k-workstation-task3-w-media-v1-01a09c94f065b7ba",
+    "candidate_input_sha256": "01a09c94f065b7ba7e347f189650267a08c9bd191e649d7d6c6b55158cde5f5e",
+    "prepared_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/workstation_profile.json",
+      "sha256": "899773f6eac70761fa43b878e065c2668ced8ea0a520d149a34612e90798c0b0"
+    },
+    "selected_dimensions": {
+      "WIN_LEN": 44100,
+      "FRAME_LIMIT": 8,
+      "OCTAVE_LIMIT": 9,
+      "CQT_HOP_NUMERATOR": 22050,
+      "CQT_HOP_DENOMINATOR": 4,
+      "FEATURE_TILE_COLS": 16,
+      "COARSE_GUIDANCE": 1
+    },
+    "RTL_overlay_count": 0,
+    "staged_inputs_checked_before_and_after": 646,
+    "enabled_inputs_checked_before_and_after": 188
+  },
+  "actual_path": "Full read-only BPF1 SPI model -> actual native DDR model/readback CRC -> descriptor/96000 stereo16 PCM -> distinct bounded staging pool/input and DDR readback CRC -> real resampler/CQT/six convolution layers/normalization/Viterbi -> bounded score -> terminal; actual owner5 broker/media BIST plus independent owner6/8 write probes.",
+  "evidence": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-selected-4hz-task-v2/verification.json",
+      "sha256": "58656e68ff091b39cb14e53c70e4c217c4d84523baa60399de353a45bb0a3c13"
+    },
+    "build_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-selected-4hz-task-v2/build.log",
+      "sha256": "837aab2a96a0c06561cbee99e7cf5d387513f9add4965636666b5b05cbb11295"
+    },
+    "run_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-selected-4hz-task-v2/run.log",
+      "sha256": "f76adc53cc061a3cc907a32a3a575c1ee8871fab35ad4146ef503d474fc14b4f"
+    },
+    "first_failed_fixture_assembly": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-selected-4hz-task-v1/verification.json",
+      "sha256": "edcc7381f66a9879d9cdd592bc2baee42ffab5ab0045220997295dee54913915"
+    }
+  },
+  "model": {
+    "magic": "BPF1",
+    "version": 1,
+    "header_bytes": 32,
+    "word_count": 52239,
+    "payload_bytes": 104478,
+    "payload_crc32": "AF01A61B",
+    "flash_image_bytes": 104510,
+    "payload_byte_order": "little-endian 16-bit words",
+    "contains_pcm": false
+  },
+  "input": {
+    "frames": 96000,
+    "rate_hz": 48000,
+    "channels": 2,
+    "bits_per_channel": 16,
+    "payload_bytes": 384000,
+    "duration_seconds": 2,
+    "content": "deterministic LFSR fixture, no ground-truth score",
+    "not_a_physical_TF_or_LCD_capture": true
+  },
+  "results": {
+    "checks": 74,
+    "clocks": 746693697,
+    "task_metrics": [
+      {
+        "task": "5",
+        "clip_frames": "96000",
+        "launch_clock": "7572038",
+        "first_score_clock": "376518957",
+        "complete_clock": "376519066",
+        "task_cycles": "368947028",
+        "hashes": "893fa902aa70f42a853874e2b3deb4e3b970dd4d0538e207",
+        "writes0": "16896",
+        "writes1": "2112",
+        "writes2": "22528",
+        "writes3": "704",
+        "writes4": "22528",
+        "writes5": "704",
+        "notes": "4"
+      },
+      {
+        "task": "7",
+        "clip_frames": "96000",
+        "launch_clock": "377749185",
+        "first_score_clock": "746693526",
+        "complete_clock": "746693639",
+        "task_cycles": "368944454",
+        "hashes": "893fa902aa70f42a853874e2b3deb4e3b970dd4d0538e207",
+        "writes0": "16896",
+        "writes1": "2112",
+        "writes2": "22528",
+        "writes3": "704",
+        "writes4": "22528",
+        "writes5": "704",
+        "notes": "4"
+      }
+    ],
+    "six_layer_write_count_oracle": [
+      16896,
+      2112,
+      22528,
+      704,
+      22528,
+      704
+    ],
+    "write_count_derivation": [
+      "8*264*8",
+      "8*264",
+      "8*88*32",
+      "8*88",
+      "8*88*32",
+      "8*88"
+    ],
+    "full_six_layer_hashes_equal": true,
+    "all_score_notes_equal": true,
+    "notes_per_inference": 4,
+    "first_note_MIDI": 89,
+    "simulated_task_seconds": [
+      7.37894056,
+      7.37888908
+    ],
+    "simulated_first_score_seconds": [
+      7.37893838,
+      7.37888682
+    ],
+    "simulated_task_seconds_are_not_physical_latency": true,
+    "simulation_wall_seconds": 1751.579,
+    "native_counts": {
+      "checks": 74,
+      "clocks": 746693697,
+      "model_commands": 1,
+      "reads": 35297843,
+      "writes": 6600182,
+      "owner5_native": 35699987,
+      "owner6_native": 4150604,
+      "owner8_native": 2047418,
+      "stage_writes": 36007,
+      "stage_reads": 60007,
+      "notes": 0
+    }
+  },
+  "lifecycle_cases": [
+    "oversize and old-generation descriptor rejection",
+    "native write stalls and cancellation drain",
+    "input CRC failure before CNN",
+    "DDR readback CRC failure before CNN",
+    "cancel with actual outstanding staging response",
+    "score stable under backpressure",
+    "cancel with actual outstanding CNN native response",
+    "old cancellation ignored by next generation",
+    "post-cancel complete inference matches fresh hashes/layer writes/full score",
+    "stale PCM identity rejection",
+    "unowned native return causes terminal quarantine; consuming terminal cannot re-enable service"
+  ],
+  "limits": [
+    "This reuses selected inputs, not the full W top/CPU/APB simulation. The prior APB tests remain a separate boundary proof.",
+    "Selected firmware currently has diagnostic APB task reachability, not an automatic TF/LCD PCM task producer. LCD-ready remains fixed down.",
+    "4Hz describes eight analysis frames across a 2-second window; measured simulated batch time is about 7.379 seconds under this DDR model, not real-time analysis throughput.",
+    "Owner6/8 are competing native probes, not real simultaneous D Delay or 60-second recording.",
+    "LFSR input proves computation/lifecycle, not recognition accuracy, music transcription, complete-song chunking or Push guidance.",
+    "No actual LCD transport, physical DDR, target-board audio latency, synthesis timing, PLL, full CDC or P&R is accepted here.",
+    "Model/Flash contents were not written."
+  ],
+  "acceptance": {
+    "bitstream_sha256": null,
+    "physical_resources": null,
+    "physical_task_latency_seconds": null,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_written": false,
+    "release_ready": false,
+    "deployment_allowed": false
+  },
+  "rollback": {
+    "source_commit": "a070a620",
+    "W_candidate": "custom138k-workstation-task3-w-media-v1-01a09c94f065b7ba",
+    "immutable_prepared_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13"
+  }
+}

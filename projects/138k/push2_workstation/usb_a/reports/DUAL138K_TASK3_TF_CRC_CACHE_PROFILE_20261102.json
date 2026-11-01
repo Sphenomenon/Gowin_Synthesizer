@@ -1,0 +1,693 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "stage": "M_explicit_CRC1_FATcache1_r3_source_prepare_and_actual_synthesis_only",
+  "status": "SCOPED_PASS_FULL_TF_CDC_REJECTED",
+  "source": {
+    "base_commit": "a070a620",
+    "policy": "native maintained source; exact inverse adapters verify only, no historical product-source fallback",
+    "candidate_identity": "custom138k-workstation-task3-m-direct-tf-v1-68efbb0415ea234e",
+    "candidate_input_sha256": "68efbb0415ea234e8326e61fa590c8a0888426bac0fb34f36e7ba64941be9f10",
+    "profile": {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_direct_tf_v1.json",
+      "sha256": "5d93df8aa58e05d2086ba59e93424e9547ac2768bb920792d678ac155a1304e8"
+    },
+    "source_lock_entries": 898,
+    "staged_inputs": 654,
+    "enabled_inputs": 269,
+    "prepared_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/workstation_profile.json",
+      "sha256": "1c8acb55c57b75e4aba5c64d6fdb3d7227c2d68ffa5ffe1061a2bc3595a5e1ba"
+    },
+    "configuration": {
+      "hdmi_mode": "1080p60",
+      "high_speed_allowed": true,
+      "tf_audio_kind": "wav",
+      "implemented_sample_rates_hz": [
+        48000,
+        44100
+      ],
+      "ae350_firmware_policy": "maintained_ae350_v1",
+      "scan_window_policy": "native_admission_v1",
+      "audio_policy": "native_dual_rate_runtime_v1",
+      "reserve_zero_epoch": true,
+      "display_metadata_minor": 1,
+      "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+      "recognition_policy": "disabled_cnn_and_follow_v1",
+      "local_panel_policy": "disabled_local_lcd_touch_v1",
+      "demo_role": "M",
+      "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+      "tf_policy": "task3_m_native_direct_tf_v1",
+      "tf_storage_policy": "direct_sd_crc16_validated_fat_cache_v1",
+      "tf_sdc_revision": 3,
+      "bluetooth_policy": "retired_for_independent_m_demo_v1",
+      "recording_policy": "disabled_m_demo_v1"
+    },
+    "other_profile_locks_unchanged": 13,
+    "old_W_helper_reference_and_CRC_manifest_bytes_unchanged": true,
+    "prepare_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-crc-cache-prepare-review-v1.json",
+      "sha256": "37f09573cd89abba7020af6af17eacc995af16045c7af5410868ee64dba95651"
+    }
+  },
+  "selection": {
+    "VERIFY_DATA_CRC": 1,
+    "FAT_SECTOR_CACHE": 1,
+    "SDC_revision": 3,
+    "production_component_defaults_unchanged": true,
+    "CRC_checker_instances": [
+      "u_tf_audio/native/file_owner/u_sector_reader/g_data_crc.crc_guard"
+    ],
+    "FAT_cache_instances": [
+      "u_tf_audio/native/file_owner/g_fat_cache.cache"
+    ],
+    "TF_owner4_DDR_requests_tied_zero": true,
+    "base_voices": 32,
+    "ordinary_and_vector_synth_retained": true,
+    "local_effects_HDMI_I2S_retained": true,
+    "M_CNN_Bluetooth_and_recording_disabled": true,
+    "W_transport_enabled": false
+  },
+  "offline_validation": {
+    "root_source_regressions": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-crc-cache-root-source-regressions-v1/verification.json",
+      "sha256": "efba74b1518dcb435051e2a5b4752837c592a03b24bb0d16922b2f65b887708c"
+    },
+    "root_source_tests": [
+      17,
+      7,
+      3
+    ],
+    "actual_prepared_preprocessing_and_source_rejection_controls": 13,
+    "FAT_cache_component_report": "DUAL138K_TF_FAT_CACHE_20261102.md",
+    "root_local_cache": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/fat-cache-local-root-review-v1/verification.json",
+      "sha256": "50da287a295a0e414e344fef987a972dff4c90b1475c387981b2e76db7b813ca"
+    },
+    "root_wire_cache": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/fat-cache-wire-root-review-v1/verification.json",
+      "sha256": "28987e05c4f1a65cc34f6ca93ee09bfb7d34b277096b4e8a02ef10c90bb752e5"
+    },
+    "real_wire_scope": "Digital SPI/card model, not physical card. Two rates11000+97 PCM; bad FAT CRC; STOP cache lookup. Other FAT component cases and destructive controls remain separately sealed.",
+    "new_actual_netlist_local_suites": {
+      "summary": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-crc-cache-combined-actual-suite-review-v1.json",
+        "sha256": "552bf3e7bcd3cc9a394df9c6e75fe260afe05b908254b2d4e75fc02c12a2eaf4"
+      },
+      "candidate": "custom138k-workstation-task3-m-direct-tf-v1-68efbb0415ea234e",
+      "effective_suite_count": 10,
+      "scheduled_tests": 35,
+      "skipped_tests": 2,
+      "executed_tests": 33,
+      "different_destructive_mutations_rejected": 387,
+      "optional_RAM_boundary_gap_detections": 3,
+      "gap_detections_counted_as_fail_closed_rejections": false,
+      "separate_official_ROOT_primitive_replay_tests": 1,
+      "retained_invocations": {
+        "v1_v2_executed_tests": 40,
+        "v1_v2_rejection_executions": 454,
+        "repeated_rejection_executions": 67
+      },
+      "first_run_failures_retained": "FRAME/TAIL tests assumed r2 missing bounds. Tests now read explicit r3 metadata and verify installed bounds; only those two suites reran, no production auditor, candidate input or SDC changed.",
+      "old_revision_branches_retained": true,
+      "complete_TF_CDC_accepted": false,
+      "routed_timing_verified": false
+    },
+    "storage_selection_test_outcome_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-storage-outcome-review-v1/verification.json",
+      "sha256": "fbaf1005fdeb9b1f80baa9cdd8293e6f61ec3c2d0aa8bfc5d9275ce6c3734c12",
+      "positive_tests": 3,
+      "source_rejection_controls": 13,
+      "bad_fixture_exit": 1,
+      "bad_fixture_passed_field": false,
+      "historical_evidence_unchanged": true
+    }
+  },
+  "actual_synthesis": {
+    "invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/synthesis_invocation.json",
+      "sha256": "841ccfc519272442304b765b076577ce2de1248018c0b15a44c48d19eb7801f0"
+    },
+    "netlist": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "181ba7c6106ad2780af8e1494d3dea04665d30701f3df819147b4e71890712d5"
+    },
+    "resource_XML": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+      "sha256": "8ff290c2c01e466bd316386dca4dee32fcccb9846ac9e934582c60a5d3d5d8ff"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/synthesis.log",
+      "sha256": "297a4a91be226fdc44640331ee9ed1aaa93bd15c76a7c65da9167bd74147b99c"
+    },
+    "structure": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/synthesis_structure_root_review.json",
+      "sha256": "ac202505eb7cd165710a1b470dc143edb1f03478e97c097c80197a96b3dbad8c"
+    },
+    "elapsed_seconds": 188.426,
+    "resources_synthesis_equivalent": {
+      "Register": 48494,
+      "Lut": 56082,
+      "Alu": 13857,
+      "Bsram": 216,
+      "Ssram": 218,
+      "MULTALU27X18": 33,
+      "MULT12X12": 3,
+      "MULT27X36": 41
+    },
+    "resource_count_note": "Lut includes INV as the Gowin XML utilization does; raw LUT55813 plus INV269. Physical routed resource counts remain null.",
+    "delta_from_immutable_M_v13": {
+      "Register": 109,
+      "Lut_including_INV": 165,
+      "Alu": 67,
+      "Bsram": 1,
+      "Ssram": 0
+    },
+    "features": {
+      "retained": {
+        "usb_host": {
+          "instance": "u_native_usb/host",
+          "Register": 1965,
+          "Lut": 4530,
+          "Alu": 386,
+          "Bsram": 38,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "usb_cpu": {
+          "instance": "u_native_usb/host/cpu",
+          "Register": 524,
+          "Lut": 1103,
+          "Alu": 136,
+          "Bsram": 2,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "usb_input_owner": {
+          "instance": "u_native_usb/input_owner",
+          "Register": 1474,
+          "Lut": 3475,
+          "Alu": 336,
+          "Bsram": 1,
+          "Ssram": 60,
+          "MULTALU27X18": 0,
+          "MULT12X12": 2,
+          "MULT27X36": 0
+        },
+        "authoritative_parameters": {
+          "instance": "u_managed/runtime/service/workstation/parameters",
+          "Register": 187,
+          "Lut": 276,
+          "Alu": 20,
+          "Bsram": 1,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "session": {
+          "instance": "u_managed/runtime/service/workstation/session",
+          "Register": 24,
+          "Lut": 123,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "serial_effects": {
+          "instance": "u_managed/runtime/service/workstation/runtime_effects.effects",
+          "Register": 4463,
+          "Lut": 4398,
+          "Alu": 2528,
+          "Bsram": 32,
+          "Ssram": 0,
+          "MULTALU27X18": 1,
+          "MULT12X12": 0,
+          "MULT27X36": 26
+        },
+        "delay": {
+          "instance": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage",
+          "Register": 825,
+          "Lut": 839,
+          "Alu": 273,
+          "Bsram": 8,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 2
+        },
+        "chorus": {
+          "instance": "u_managed/runtime/service/workstation/runtime_effects.effects/chorus_stage",
+          "Register": 420,
+          "Lut": 629,
+          "Alu": 176,
+          "Bsram": 4,
+          "Ssram": 0,
+          "MULTALU27X18": 1,
+          "MULT12X12": 0,
+          "MULT27X36": 2
+        },
+        "reverb": {
+          "instance": "u_managed/runtime/service/workstation/runtime_effects.effects/reverb_stage",
+          "Register": 2755,
+          "Lut": 2132,
+          "Alu": 1945,
+          "Bsram": 20,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 19
+        },
+        "delay_ddr_dma": {
+          "instance": "u_managed/runtime/delay_dma",
+          "Register": 813,
+          "Lut": 939,
+          "Alu": 34,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "playback_service": {
+          "instance": "u_managed/runtime/service",
+          "Register": 15089,
+          "Lut": 18406,
+          "Alu": 5554,
+          "Bsram": 68,
+          "Ssram": 14,
+          "MULTALU27X18": 26,
+          "MULT12X12": 0,
+          "MULT27X36": 39
+        },
+        "final_pcm_router": {
+          "instance": "u_managed/runtime/final_pcm",
+          "Register": 342,
+          "Lut": 282,
+          "Alu": 313,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 2,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "physical_i2s": {
+          "instance": "u_managed/runtime/serializer",
+          "Register": 322,
+          "Lut": 195,
+          "Alu": 110,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "physical_frame_observation": {
+          "instance": "u_managed/observation",
+          "Register": 271,
+          "Lut": 179,
+          "Alu": 68,
+          "Bsram": 0,
+          "Ssram": 25,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "shared_ddr": {
+          "instance": "u_memory",
+          "Register": 5517,
+          "Lut": 3031,
+          "Alu": 206,
+          "Bsram": 16,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "ae350_memory": {
+          "instance": "u_boot_memory",
+          "Register": 255,
+          "Lut": 151,
+          "Alu": 40,
+          "Bsram": 16,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi": {
+          "instance": "u_video",
+          "Register": 10479,
+          "Lut": 12211,
+          "Alu": 3737,
+          "Bsram": 64,
+          "Ssram": 73,
+          "MULTALU27X18": 5,
+          "MULT12X12": 1,
+          "MULT27X36": 2
+        },
+        "hdmi_renderer": {
+          "instance": "u_video/u_renderer",
+          "Register": 1210,
+          "Lut": 4567,
+          "Alu": 783,
+          "Bsram": 18,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_live_analysis": {
+          "instance": "u_video/u_runtime_display/producer",
+          "Register": 2016,
+          "Lut": 2306,
+          "Alu": 1062,
+          "Bsram": 32,
+          "Ssram": 0,
+          "MULTALU27X18": 5,
+          "MULT12X12": 0,
+          "MULT27X36": 2
+        },
+        "hdmi_waveform": {
+          "instance": "u_video/u_runtime_display/producer/waveform",
+          "Register": 790,
+          "Lut": 1118,
+          "Alu": 317,
+          "Bsram": 1,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_xy_alignment": {
+          "instance": "u_video/u_runtime_display/producer/aligner",
+          "Register": 13,
+          "Lut": 25,
+          "Alu": 0,
+          "Bsram": 1,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_spectrum": {
+          "instance": "u_video/u_runtime_display/producer/analysis",
+          "Register": 961,
+          "Lut": 1012,
+          "Alu": 409,
+          "Bsram": 30,
+          "Ssram": 0,
+          "MULTALU27X18": 5,
+          "MULT12X12": 0,
+          "MULT27X36": 2
+        },
+        "hdmi_scanout": {
+          "instance": "u_video/u_scanout",
+          "Register": 414,
+          "Lut": 539,
+          "Alu": 102,
+          "Bsram": 4,
+          "Ssram": 64,
+          "MULTALU27X18": 0,
+          "MULT12X12": 1,
+          "MULT27X36": 0
+        },
+        "hdmi_serializer_clock": {
+          "instance": "u_video/u_dvi/clock_lane",
+          "Register": 0,
+          "Lut": 0,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_serializer_data_0": {
+          "instance": "u_video/u_dvi/data_lanes[0].serializer",
+          "Register": 0,
+          "Lut": 10,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_serializer_data_1": {
+          "instance": "u_video/u_dvi/data_lanes[1].serializer",
+          "Register": 0,
+          "Lut": 10,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "hdmi_serializer_data_2": {
+          "instance": "u_video/u_dvi/data_lanes[2].serializer",
+          "Register": 0,
+          "Lut": 10,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "oscillator": {
+          "instance": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator",
+          "Register": 6177,
+          "Lut": 6330,
+          "Alu": 965,
+          "Bsram": 24,
+          "Ssram": 4,
+          "MULTALU27X18": 10,
+          "MULT12X12": 0,
+          "MULT27X36": 4
+        },
+        "vector": {
+          "instance": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine",
+          "Register": 3379,
+          "Lut": 4453,
+          "Alu": 1544,
+          "Bsram": 10,
+          "Ssram": 0,
+          "MULTALU27X18": 14,
+          "MULT12X12": 0,
+          "MULT27X36": 9
+        },
+        "tf": {
+          "instance": "u_tf_audio",
+          "Register": 3082,
+          "Lut": 5813,
+          "Alu": 1021,
+          "Bsram": 13,
+          "Ssram": 42,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_decoder": {
+          "instance": "u_tf_audio/native/ingress/decoder",
+          "Register": 466,
+          "Lut": 1401,
+          "Alu": 43,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_file_owner": {
+          "instance": "u_tf_audio/native/file_owner",
+          "Register": 1536,
+          "Lut": 3566,
+          "Alu": 648,
+          "Bsram": 2,
+          "Ssram": 15,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_sd_sector": {
+          "instance": "u_tf_audio/native/file_owner/u_sector_reader",
+          "Register": 384,
+          "Lut": 683,
+          "Alu": 16,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_spi": {
+          "instance": "u_tf_audio/native/file_owner/u_sector_reader/u_spi_session",
+          "Register": 272,
+          "Lut": 484,
+          "Alu": 0,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_pcm_ingress": {
+          "instance": "u_tf_audio/native/ingress",
+          "Register": 628,
+          "Lut": 1676,
+          "Alu": 43,
+          "Bsram": 11,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_transport": {
+          "instance": "u_tf_audio/frames",
+          "Register": 454,
+          "Lut": 341,
+          "Alu": 131,
+          "Bsram": 0,
+          "Ssram": 27,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "tf_physical_tail": {
+          "instance": "u_managed/runtime/g_direct_tf.tail",
+          "Register": 1120,
+          "Lut": 945,
+          "Alu": 800,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        }
+      },
+      "retired_prefixes": [
+        "u_music",
+        "u_recording",
+        "u_lcd",
+        "u_usb_host",
+        "u_push",
+        "u_bluetooth",
+        "u_ble_pcm_cdc"
+      ],
+      "role_retirement_verified": true,
+      "worker_audio_only": false,
+      "synthesis_storage_only": true,
+      "hardware_functionality_verified": false
+    },
+    "voice_storage": {
+      "voices": 32,
+      "groups": {
+        "sample_envelope_q18": {
+          "voices": 32,
+          "bits_per_voice": 18,
+          "registers": 576,
+          "register_inventory_sha256": "19b3e4e29a1001facaee3437381a680b475e6b166ed2488bdd9bf595c55b39e4"
+        },
+        "envelope_state": {
+          "voices": 32,
+          "bits_per_voice": 3,
+          "registers": 96,
+          "register_inventory_sha256": "24e520cccd012e9cdea1c55b7d68b07a671ab1e244b75ab22e2fa0c2a6f3c543"
+        },
+        "expression_gain_q8": {
+          "voices": 32,
+          "bits_per_voice": 8,
+          "registers": 256,
+          "register_inventory_sha256": "dd42a11e3bcdf867cfc4a698d165cd31117b4c40f4209d959669f0f4d050e5dd"
+        }
+      },
+      "synthesized_storage_verified": true,
+      "concurrent_voice_functionality_hardware_verified": false
+    },
+    "cache_primitives": {
+      "u_tf_audio/native/file_owner/g_fat_cache.cache": {
+        "LUT4": 19,
+        "LUT3": 17,
+        "LUT2": 4,
+        "DFFCE": 70,
+        "SDPB": 1,
+        "ALU": 50,
+        "VCC": 1,
+        "GND": 1
+      }
+    },
+    "CRC_primitives": {
+      "u_tf_audio/native/file_owner/u_sector_reader/g_data_crc.crc_guard": {
+        "LUT4": 30,
+        "LUT3": 19,
+        "LUT2": 18,
+        "DFFCE": 35,
+        "DFFPE": 2,
+        "ALU": 16,
+        "VCC": 1,
+        "GND": 1
+      }
+    },
+    "staged_bytes_checked_after_tool": 654,
+    "tool_created_user_file_not_treated_as_prepare_only_reverification": true
+  },
+  "timing": {
+    "synthesis_estimates": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1/synthesis_clock_estimates.json",
+      "sha256": "06a6b4a18a5d3fa16ef04ef8290d9ab343013c51939f199bbbf61f6c9543f6b4"
+    },
+    "clk50_required_MHz": 50,
+    "clk50_synthesis_estimated_MHz": 44.254,
+    "audio_required_MHz": 76.8,
+    "audio_synthesis_estimated_MHz": 62.444,
+    "estimates_are_not_routed_STA": true,
+    "full_profile_CDC_attempt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-crc-cache-full-cdc-root-review-v2.json",
+      "sha256": "519360fa157b24a4ae39c08cc5103b421b8cc91f2517cea43f922f479015f8b5"
+    },
+    "full_profile_rejection": "performance reset audit: DIRECT TF dedicated CDC gate pending: receipt source/acceptance and all actual remote consumer finite bounds; DIRECT TF startup release and physical-tail CDC complete proof",
+    "full_setup_hold_recovery_removal_verified": false,
+    "PLL_accepted": false,
+    "physical_CDC_accepted": false
+  },
+  "remaining": [
+    "Validated audio-data-sector atomic publication: payload may be consumed before final CRC verdict. This cache isolates FAT metadata only.",
+    "Physical-card throughput, token jitter and maximum cumulative service deficit; arbitrary FAT-LBA thrashing still cannot sustain48k stereo16 in the digital model.",
+    "Public recovery/remount after file/transport fault; no false automatic playback/retry.",
+    "FIFO arithmetic/ownership/overwrite stability, physical RAM timing arcs, complete tail serial context and compute reply business next-Q, complete reset/CDC and routed STA/PLL.",
+    "Target-board32-voice/ordinary-vector performance, Push/HDMI/DAC functionality and measured control-to-sound latency.",
+    "Actual reverse LCD continuity/VCCIO/directions/clocks/throughput/RTT/congestion, bounded final W-to-M audio path and M-final-tap recording."
+  ],
+  "hardware": {
+    "target_M_and_W_connected": false,
+    "current_connected_138K_reserved_for_another_branch": true,
+    "TF_on_M": true,
+    "LCD_cable_reverse": true,
+    "bluetooth_preferred_on_W": true,
+    "board_operated": false,
+    "bitstream_sha256": null,
+    "user_code": null,
+    "physical_resources": null,
+    "control_to_sound_latency": null,
+    "sram_programmed": false,
+    "flash_written": false,
+    "release_ready": false,
+    "deployment_allowed": false
+  },
+  "rollback": {
+    "source_commit": "a070a620",
+    "M_candidate": "custom138k-workstation-task3-m-direct-tf-v1-188b183ce57d22fe",
+    "M_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13",
+    "W_candidate": "custom138k-workstation-task3-w-media-v1-01a09c94f065b7ba",
+    "W_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13",
+    "frozen_new_candidate_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-crc-cache-prepare-v1"
+  }
+}

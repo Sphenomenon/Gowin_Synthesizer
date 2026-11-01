@@ -27,7 +27,19 @@ def require(ok,message):
         raise ValueError('SD CRC16 adaptation provenance: '+message)
 
 
-def validate_adaptation(root):
+def validate_adaptation(root,*,fat_cache_source_adaptation=False):
+    if fat_cache_source_adaptation:
+        from tools.workstation_tf_fat_cache_provenance import validate_adaptation as validate_fat
+        fat_report,crc_basis=validate_fat(root)
+        report,restored=_validate_adaptation(root,crc_basis)
+        report['explicit_FAT_cache_source_adaptation']=fat_report
+        return report,restored
+    return _validate_adaptation(root,{})
+
+
+def _validate_adaptation(root,source_bytes):
+    # Only the strict newer verifier supplies exact inverse-restored bytes.
+    # Default validation still consumes the actual source and rejects drift.
     root=Path(root)
     data=(root/MANIFEST).read_bytes()
     require(digest(data)==MANIFEST_SHA256,'explicit adaptation manifest identity changed')
@@ -43,7 +55,7 @@ def validate_adaptation(root):
             len(m['adaptations'])==len(BASIS),'exact four source/basis identities changed')
     restored={};rows=[]
     for row in m['adaptations']:
-        raw=(root/row['path']).read_bytes()
+        raw=source_bytes[row['path']] if row['path'] in source_bytes else (root/row['path']).read_bytes()
         require(digest(raw)==row['adapted_sha256'],'maintained adapted source changed: '+row['path'])
         text=raw.decode()
         for e in reversed(row['edits']):
@@ -83,8 +95,8 @@ def validate_adaptation(root):
                 reconstruction_used_only_for_verification=True,hardware_tested=False),restored
 
 
-def restored_basis(root,relative):
+def restored_basis(root,relative,*,fat_cache_source_adaptation=False):
     """For explicit DIRECT source validation; never a product fallback."""
-    result,restored=validate_adaptation(root)
+    result,restored=validate_adaptation(root,fat_cache_source_adaptation=fat_cache_source_adaptation)
     require(relative in restored,'unknown explicit adaptation source')
     return restored[relative],result

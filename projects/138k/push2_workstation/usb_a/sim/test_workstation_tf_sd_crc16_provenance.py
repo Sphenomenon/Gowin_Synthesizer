@@ -12,6 +12,10 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from tools.workstation_tf_sd_crc16_provenance import validate_adaptation,MANIFEST,BASIS
 
+DIRECT_FAT_CACHE_SOURCE_ADAPTATION='--direct-fat-cache-source-adaptation' in sys.argv
+if DIRECT_FAT_CACHE_SOURCE_ADAPTATION:
+    sys.argv.remove('--direct-fat-cache-source-adaptation')
+
 
 class CrcSourceProvenance(unittest.TestCase):
     @classmethod
@@ -28,7 +32,7 @@ class CrcSourceProvenance(unittest.TestCase):
                 hardware_tested=False),indent=2)+'\n')
 
     def test_01_actual_chain_and_original_manifests(self):
-        r,restored=validate_adaptation(ROOT)
+        r,restored=validate_adaptation(ROOT,fat_cache_source_adaptation=DIRECT_FAT_CACHE_SOURCE_ADAPTATION)
         self.assertEqual(set(restored),set(BASIS))
         self.assertTrue(r['original_manifests_and_vendor_bytes_unchanged'])
         self.assertTrue(r['original_file_forward_derivation_exact'])
@@ -41,7 +45,8 @@ class CrcSourceProvenance(unittest.TestCase):
         old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
         with self.assertRaisesRegex(ValueError,'file-owner source identity drift'):
             old.provenance(ROOT)
-        r=old.provenance(ROOT,direct_crc_source_adaptation=True)
+        r=old.provenance(ROOT,direct_crc_source_adaptation=True,
+                         direct_fat_cache_source_adaptation=DIRECT_FAT_CACHE_SOURCE_ADAPTATION)
         self.assertTrue(r['exact_forward_and_reverse'])
         self.assertTrue(r['explicit_DIRECT_crc_source_adaptation']['original_manifests_and_vendor_bytes_unchanged'])
         self.assertNotEqual(r['native_sha256'],r['original_manifest_native_sha256'])
@@ -63,7 +68,7 @@ class CrcSourceProvenance(unittest.TestCase):
                 return raw+b'\n' if path==selected else raw
             with self.subTest(source=relative),patch.object(Path,'read_bytes',changed):
                 with self.assertRaises(ValueError) as error:
-                    validate_adaptation(ROOT)
+                    validate_adaptation(ROOT,fat_cache_source_adaptation=DIRECT_FAT_CACHE_SOURCE_ADAPTATION)
             self.mutations.append(dict(source=relative,rejected=True,error=str(error.exception)))
         self.assertEqual(len(paths),12)
 

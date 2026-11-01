@@ -167,7 +167,9 @@ class ActualTask3Root(unittest.TestCase):
     def test_selected_source_negative_controls(self):
         with tempfile.TemporaryDirectory(prefix='task3-root-source-') as directory:
             stage=Path(directory)
-            for relative in ('Prj1.gprj',ROOT_SOURCE,PROVIDER,TOP_SOURCE):
+            for relative in ('Prj1.gprj',ROOT_SOURCE,PROVIDER,TOP_SOURCE,
+                    'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
+                    'rtl/workstation/workstation_task3_w_media_top_reference.json'):
                 path=stage/relative;path.parent.mkdir(parents=True,exist_ok=True)
                 path.write_bytes((self.stage/relative).read_bytes())
             source_binding(stage)

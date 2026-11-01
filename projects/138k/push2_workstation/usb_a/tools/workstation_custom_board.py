@@ -130,6 +130,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     tf_direct=runtime and specification(profile['name']).get('tf_direct_enabled',False)
     if tf_direct:
         from tools.workstation_task3_tf_direct import SOURCES as DIRECT_SOURCES, RETIRED_SOURCES, UNSELECTED_WORKER_SOURCES, DEPENDENCIES as DIRECT_DEPENDENCIES, POLICY as DIRECT_POLICY
+        from tools.workstation_task3_tf_storage_selection import configuration_selection
+        configuration_selection(profile['configuration'])
         if (recognition['music_analysis_enabled'] or not specification(profile['name']).get('tf_menu_enabled',False)
                 or demo_role!='M' or profile['configuration'].get('tf_policy')!=DIRECT_POLICY):
             raise ValueError('direct TF requires the explicit native M/no-CNN/menu composition')
@@ -392,7 +394,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     task3_tf_direct_cdc=None
     if tf_direct:
         from tools.workstation_task3_tf_direct import adapt_constraints as direct_constraints
-        selected_sdc,task3_tf_direct_cdc=direct_constraints(root,selected_sdc)
+        selected_sdc,task3_tf_direct_cdc=direct_constraints(root,selected_sdc,
+            revision=profile['configuration']['tf_sdc_revision'])
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
@@ -539,6 +542,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['demo_constraint_retirement'] = demo_constraints
         if task3_tf_direct_cdc is not None:
             metadata['task3_tf_direct_cdc'] = task3_tf_direct_cdc
+            from tools.workstation_task3_tf_storage_selection import prepared_selection
+            metadata['task3_tf_direct_storage'] = prepared_selection(root,stage,profile['configuration'])
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
             metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker)

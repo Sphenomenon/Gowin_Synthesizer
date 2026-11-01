@@ -53,7 +53,8 @@ module workstation_tf_file_reader #(
     parameter integer TOKEN_WAIT_CLOCKS = 8320000,
     parameter integer WATCHDOG_CLOCKS = 250000000,
     parameter integer MAX_ROOT_SECTORS = 4096,
-    parameter integer VERIFY_DATA_CRC = 0
+    parameter integer VERIFY_DATA_CRC = 0,
+    parameter integer FAT_SECTOR_CACHE = 0
 ) (
     input  wire        rstn,
     input  wire        clk,
@@ -126,6 +127,9 @@ wire        read_done, read_error;
 wire [1:0] read_error_code;
 wire transport_rstn = rstn && !file_error;
 initial begin
+    if ((FAT_SECTOR_CACHE!=0 && FAT_SECTOR_CACHE!=1) ||
+        (FAT_SECTOR_CACHE!=0 && VERIFY_DATA_CRC!=1))
+        $fatal(1,"native FAT cache requires explicit CRC verification");
     if (MAX_TRACKS < 1 || MAX_TRACKS > 16 || MAX_ROOT_SECTORS < 1 || WATCHDOG_CLOCKS < 1)
         $fatal(1,"native TF file reader parameter range");
 end
@@ -461,8 +465,42 @@ wire [31:0] cluster_sector = first_data_sector_no + ((curr_cluster-2) << cluster
 wire [6:0] curr_cluster_fat_offset=curr_cluster[6:0];
 wire [7:0] curr_cluster_fat_offset_fat16=curr_cluster[7:0];
 wire stop_new = stop && !stop_q;
+// Local FAT metadata lookup never fabricates a transport read_done. All fills
+// use the single existing sector owner and require its real CRC-checked done.
+wire cache_invalidate=stop || stop_req || track_start || start_req || file_error || read_error;
+wire cache_hit,cache_lookup_valid;
+wire [31:0] cache_lookup_data;
+reg cache_lookup_pending,cache_lookup_done;
+wire cache_lookup_request=FAT_SECTOR_CACHE!=0 && !cache_invalidate &&
+    filesystem_state==READ_A_FILE && !inflight && !probe_pending && search_fat &&
+    !cache_lookup_pending && !cache_lookup_done && card_stat==8 && cache_hit;
+generate if(FAT_SECTOR_CACHE!=0)begin: g_fat_cache
+    workstation_tf_fat_sector_cache_v1 cache(
+        .clk_i(clk),.rst_ni(rstn),.invalidate_i(cache_invalidate),
+        .fill_start_i(read_start && search_fat && !probe_pending && filesystem_state==READ_A_FILE),
+        .fill_lba_i(read_sector_no),
+        .fill_byte_valid_i(rvalid && search_fat && filesystem_state==READ_A_FILE && !probe_pending),
+        .fill_byte_index_i(raddr),.fill_byte_i(rdata),.fill_done_i(read_done),
+        .lookup_lba_i(read_sector_no),
+        .lookup_word_i(filesystem==FAT16 ? curr_cluster[7:1] : curr_cluster[6:0]),
+        .lookup_request_i(cache_lookup_request),.lookup_hit_o(cache_hit),
+        .lookup_valid_o(cache_lookup_valid),.lookup_data_o(cache_lookup_data));
+end else begin: g_no_fat_cache
+    assign cache_hit=1'b0;
+    assign cache_lookup_valid=1'b0;
+    assign cache_lookup_data=32'd0;
+end endgenerate
+always @(posedge clk or negedge rstn)begin
+    if(!rstn)begin cache_lookup_pending<=0;cache_lookup_done<=0;end
+    else if(cache_invalidate)begin cache_lookup_pending<=0;cache_lookup_done<=0;end
+    else begin
+        cache_lookup_done<=cache_lookup_valid;
+        if(cache_lookup_request)cache_lookup_pending<=1;
+        if(cache_lookup_done)cache_lookup_pending<=0;
+    end
+end
 assign scan_done=(filesystem_state==READY || filesystem_state==READ_A_FILE) && !ncopy_active && !file_error;
-assign sector_busy=inflight || probe_pending;
+assign sector_busy=inflight || probe_pending || cache_lookup_pending;
 // Same-edge synchronous handshake: no metadata read reserves file FIFO space.
 assign data_sector_start = rstn && !file_error && filesystem_state==READ_A_FILE &&
     !inflight && !probe_pending && !search_fat && !track_applied && card_stat==8 &&
@@ -493,7 +531,7 @@ always @(posedge clk or negedge rstn) begin
         if((filesystem_state!=READY && filesystem_state!=READ_A_FILE) || probe_pending)
             probe_timer<=0;
         else if(probe_timer!=PROBE_INTERVAL_CYCLES) probe_timer<=probe_timer+1'b1;
-        if(read_done || !(inflight || (filesystem_state!=DONE && card_stat!=8))) watchdog<=0;
+        if(read_done || cache_lookup_done || !(inflight || (filesystem_state!=DONE && card_stat!=8))) watchdog<=0;
         else if(watchdog<WATCHDOG_CLOCKS) watchdog<=watchdog+1'b1;
 
         if(!file_error) begin
@@ -504,7 +542,7 @@ always @(posedge clk or negedge rstn) begin
                     (!inflight || read_done)) begin
                 inflight<=0;probe_pending<=0;playing<=0;start_req<=0;stop_req<=0;
                 search_fat<=0;final_fat<=0;filesystem_state<=READY;cancelled<=1;
-            end else if(read_done) begin
+            end else if(read_done || cache_lookup_done) begin
                 inflight<=0;
                 if(probe_pending) begin probe_pending<=0;read_sector_no<=probe_resume_sector;end
                 else case(filesystem_state)
@@ -611,8 +649,10 @@ always @(posedge clk or negedge rstn) begin
                 end
                 READ_A_FILE:if(!inflight && (start_req || track_start) && !stop && !stop_req) begin
                     playing<=0;search_fat<=0;final_fat<=0;filesystem_state<=READY;
-                end else if(!inflight && !stop && !stop_req && !probe_pending && card_stat==8 &&
-                            (search_fat || data_sector_start)) begin read_start<=1;inflight<=1;end
+                end else if(!inflight && !cache_lookup_pending && !stop && !stop_req && !probe_pending && card_stat==8 &&
+                            (search_fat || data_sector_start)) begin
+                    if(!cache_lookup_request)begin read_start<=1;inflight<=1;end
+                end
                 else if(!inflight && !search_fat && !sector_allow && !stop && !stop_req &&
                         !probe_pending && probe_timer==PROBE_INTERVAL_CYCLES && card_stat==8) begin
                     probe_resume_sector<=read_sector_no;read_sector_no<=0;read_start<=1;inflight<=1;probe_pending<=1;
@@ -631,7 +671,10 @@ always @(posedge clk or negedge rstn) begin
         target_cluster <= 0;
         target_cluster_fat16 <= 16'h0;
     end else begin
-        if (search_fat && rvalid) begin
+        if (cache_lookup_valid && !cache_invalidate) begin
+            target_cluster <= cache_lookup_data;
+            target_cluster_fat16 <= curr_cluster[0] ? cache_lookup_data[31:16] : cache_lookup_data[15:0];
+        end else if (search_fat && rvalid) begin
             if (filesystem == FAT16) begin
                 if (raddr[8:1] == curr_cluster_fat_offset_fat16)
                     target_cluster_fat16[8*raddr[0] +: 8] <= rdata;

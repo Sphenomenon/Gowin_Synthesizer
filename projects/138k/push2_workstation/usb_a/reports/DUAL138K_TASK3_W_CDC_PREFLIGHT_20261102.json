@@ -1,0 +1,347 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "scope": "Read-only actual SYN endpoint and selected CDC-structure preflight for immutable W-media v13; not an applied SDC change or physical acceptance",
+  "preflight_complete": true,
+  "preflight_passed": false,
+  "frozen_candidate": {
+    "name": "custom138k-workstation-task3-w-media-v1",
+    "candidate_identity": "custom138k-workstation-task3-w-media-v1-01a09c94f065b7ba",
+    "configuration_sha256": "79505ebc75593d9be55d6bd1531630767824d729ce5ce1c801408a69b4343d13",
+    "artifact": "workstation_profile.json",
+    "artifact_sha256": "899773f6eac70761fa43b878e065c2668ced8ea0a520d149a34612e90798c0b0",
+    "profile_containing_commit": "a070a620",
+    "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13",
+    "VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "b86f94d320bdb90447d8a34c2f028a522ce2260ca58f72e355b4082f52aca2b8",
+      "bytes": 26786725
+    },
+    "selected_SDC": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/workstation/Prj1/constraints/custom_138k.sdc",
+      "sha256": "b3bffc365fabe010c4b5a65d8aa63879b36d9aca22947d8cc9c7ccc485c20bd4",
+      "bytes": 181135
+    },
+    "integration_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/integration_inputs.json",
+      "sha256": "09d99834febfc321869f086db1ca03963b5dd9ea10dc6d587ba2105fa4bc48f4",
+      "bytes": 1005022
+    },
+    "workstation_profile": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/workstation_profile.json",
+      "sha256": "899773f6eac70761fa43b878e065c2668ced8ea0a520d149a34612e90798c0b0",
+      "bytes": 1042947
+    },
+    "synthesis_frozen_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-prepare-v13/synthesis_frozen_inputs.json",
+      "sha256": "a1bae11d68e261d2b2bfa9b94bb4973106d2df77a9d068a4afc704856125565a",
+      "bytes": 22423
+    },
+    "source_snapshot_identity": "Original1016 recorded source hashes remain inside immutable integration_inputs; later M worktree edits are separate work and are not new inputs to v13.",
+    "recorded_staged_files": 646,
+    "recorded_enabled_inputs": 188,
+    "recorded_staged_byte_drift": [],
+    "enabled_byte_drift": [],
+    "prepare_inventory_note": "Tool-created Prj1.gprj.user is output, not a new production input; no original metadata or staged input was changed."
+  },
+  "method": {
+    "parser": "Maintained PcmNetlist/Graph using actual untouched Gowin SYN VG",
+    "lexical_connection_audit": {
+      "original_text_sha256": "b86f94d320bdb90447d8a34c2f028a522ce2260ca58f72e355b4082f52aca2b8",
+      "named_port_count": 639504,
+      "escaped_named_port_count": 851,
+      "duplicate_bindings_rejected": true,
+      "original_vg_rewritten": false,
+      "shared_parser_modified": false
+    },
+    "vendor_SDC_query_engine_executed": false,
+    "scope_limit": "Lexical pattern resolution is preliminary. Real net connectivity proves the listed alias/MSB findings; a nonempty wildcard alone does not prove CDC completeness or timing.",
+    "query_patterns": 3118,
+    "zero_match_patterns": 85,
+    "new_task3_patterns": 308,
+    "new_task3_zero_match_patterns": 4
+  },
+  "findings": [
+    {
+      "id": "CNN_MODEL_READY_ALIAS",
+      "status": "actual_alias_proven_selected_constraint_unresolved",
+      "selected_SDC_lines": [
+        375,
+        376
+      ],
+      "missing_patterns": [
+        {
+          "line": 375,
+          "command": "set_false_path",
+          "query": "get_pins",
+          "pattern": "u_task3_media/cnn_task/cnn/model_memory_meta*/D",
+          "count": 0,
+          "sample": []
+        },
+        {
+          "line": 376,
+          "command": "set_max_delay",
+          "query": "get_regs",
+          "pattern": "u_task3_media/cnn_task/cnn/model_memory_meta*",
+          "count": 0,
+          "sample": []
+        }
+      ],
+      "actual_first": "u_task3_media/cnn_task/backend_meta_s0",
+      "actual_second": "u_task3_media/cnn_task/cnn/model_memory_ready_s0",
+      "actual_first_Q_to_second_D": true,
+      "actual_first_Q_closure_only_second_D": true,
+      "backend_sync_also_merged": true,
+      "minimum_candidate_change": "Replace stale model_memory_meta selectors with exact actual backend_meta first-stage D and Q->model_memory_ready D2ns bound. Fail if a new SYN changes this alias or adds any direct first-stage fanout.",
+      "remaining": "Upstream backend-ready Boolean cone meets unsupported arbiter primitive in maintained Graph; full upstream source/reset semantics and physical recovery/removal are not proved."
+    },
+    {
+      "id": "APB_SHARED_RESET_ALIAS",
+      "status": "actual_shared_chain_proven_selected_constraint_unresolved",
+      "selected_SDC_lines": [
+        393
+      ],
+      "missing_patterns": [
+        {
+          "line": 393,
+          "command": "set_false_path",
+          "query": "get_pins",
+          "pattern": "u_task3_media_apb/p_release*/CLEAR",
+          "count": 0,
+          "sample": []
+        },
+        {
+          "line": 393,
+          "command": "set_false_path",
+          "query": "get_pins",
+          "pattern": "u_task3_media_apb/a_release*/CLEAR",
+          "count": 0,
+          "sample": []
+        }
+      ],
+      "actual_chains": [
+        {
+          "stem": "p_release",
+          "registers": [
+            "business_commands/p_release_0_s0",
+            "business_commands/p_release_1_s0",
+            "business_commands/p_release_2_s0"
+          ],
+          "clock": [
+            "ram_clk"
+          ],
+          "actual_async_clear": "business_commands/n6_5"
+        },
+        {
+          "stem": "a_release",
+          "registers": [
+            "business_commands/a_release_0_s0",
+            "business_commands/a_release_1_s0",
+            "business_commands/a_release_2_s0"
+          ],
+          "clock": [
+            "clk_50m"
+          ],
+          "actual_async_clear": "business_commands/n6_5"
+        }
+      ],
+      "APB_ram_clk_FF_consumers": 88,
+      "APB_clk50_FF_consumers": 87,
+      "minimum_candidate_change": "Bind only the six actual shared release CLEAR pins at business_commands, retaining asynchronous assertion policy; add finite2ns Q->D bounds for each of the four adjacent release stages. Do not blanket-cut downstream logic reset recovery/removal.",
+      "remaining": "Full shared-reset fanout reaches AE350 blackbox and CNN staging SSRAM WRE; source preset_n Boolean upstream and physical assertion/recovery/removal remain unclosed."
+    },
+    {
+      "id": "STAGING_FIFO_GRAY_MSB_NOT_COVERED",
+      "status": "actual_uncovered_cross_domain_Q_to_D_paths",
+      "selected_SDC_lines": [
+        377,
+        378,
+        381,
+        382
+      ],
+      "uncovered_actual_paths": [
+        {
+          "capture": "u_task3_media/cnn_task/staging_requests/read_gray_meta_2_s0/D",
+          "clock": "clk_50m",
+          "support": [
+            "u_task3_media/cnn_task/staging_requests/read_binary[2]"
+          ],
+          "source_Q_drivers": [
+            "u_task3_media/cnn_task/staging_requests/read_binary_2_s0"
+          ],
+          "all_actual_source_Q_covered_by_from_pattern": false,
+          "only_one_source_register": true,
+          "source_clocks": [
+            "memory_clk"
+          ]
+        },
+        {
+          "capture": "u_task3_media/cnn_task/staging_completions/read_gray_meta_2_s0/D",
+          "clock": "memory_clk",
+          "support": [
+            "u_task3_media/cnn_task/staging_completions/read_binary[2]"
+          ],
+          "source_Q_drivers": [
+            "u_task3_media/cnn_task/staging_completions/read_binary_2_s0"
+          ],
+          "all_actual_source_Q_covered_by_from_pattern": false,
+          "only_one_source_register": true,
+          "source_clocks": [
+            "clk_50m"
+          ]
+        }
+      ],
+      "nonempty_original_query_is_insufficient": true,
+      "write_side_original_source_support_covered": true,
+      "minimum_candidate_change": "For each of the two depth4 staging FIFOs, bind exact three sourceQ pins read_gray[0],read_gray[1],read_binary[2] to three read_gray_meta D pins. Keep10ns setup and existing hold treatment; never omit the binary MSB alias.",
+      "remaining": "Exact query sets, both directions, all later synchronizer stages, FIFO reset/readiness and routed Gray skew/setup/hold need a new sealed candidate and complete validation."
+    },
+    {
+      "id": "INHERITED_ENDPOINTS_AND_IP_SCOPE",
+      "status": "unresolved_preliminary_inventory",
+      "patterns": 81,
+      "serializer_current_sequence_CE_patterns": 64,
+      "DDR_internal_patterns": 17,
+      "serializer_lines": [
+        53,
+        54
+      ],
+      "DDR_lines": [
+        7,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        312
+      ],
+      "interpretation": "SYN has no former serializer current_sequence register name, while DDR internals are outside available synthesis primitive hierarchy. These are unresolved endpoint inventories, not proof that physical paths are harmless or absent.",
+      "remaining": "Resolve renamed/merged serializer endpoints and inspect authoritative implemented DDR IP hierarchy with actual vendor queries; retain all original budgets and feature checks."
+    }
+  ],
+  "successful_scoped_checks": {
+    "APB_request_payload_bits": 49,
+    "APB_response_payload_bits": 33,
+    "payloads_direct_bitwise_to_expected_local_D": true,
+    "payload_Graph_closures_exact": true,
+    "request_direction": "ram_clk -> clk_50m",
+    "response_direction": "clk_50m -> ram_clk",
+    "req_ack_meta_sync_settled_structure": true,
+    "req_ack_first_stage_and2ns_query_sets_match": true,
+    "req_ack_globs_do_not_select_later_sync_Q": true,
+    "APB_payload_or_sync_success_does_not_close_reset_or_board_CDC": true
+  },
+  "nonselected_minimal_proposal": {
+    "proposal_metadata": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-cdc-minimal-adaptation-proposal-v1.json",
+      "sha256": "b4b4f81817b821534f862e77b72fb2a75d4bce4af7190c182b5f1dd10f544ac1",
+      "bytes": 18174
+    },
+    "proposed_SDC": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-cdc-minimal-proposal-v1.sdc",
+      "sha256": "f82b3790983f7e5b2936fd6b55b732c578ad05954c827aa63683f72a1b83ac16",
+      "bytes": 182827
+    },
+    "diff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-cdc-minimal-proposal-v1.diff",
+      "sha256": "c9fa6e81cbb0cd39a22abf57b559d5db4c8d80f6ec4c7079079854c87301de16",
+      "bytes": 6465
+    },
+    "implemented": false,
+    "selected_by_any_profile": false,
+    "unique_replacement_anchors": 7,
+    "proposed_query_sets_checked": 20,
+    "negative_controls": [
+      {
+        "name": "u_task3_media/cnn_task/staging_requests old Gray-only source selector",
+        "rejected": true,
+        "missing_actual_source_Q": [
+          "u_task3_media/cnn_task/staging_requests/read_binary_2_s0/Q"
+        ]
+      },
+      {
+        "name": "u_task3_media/cnn_task/staging_completions old Gray-only source selector",
+        "rejected": true,
+        "missing_actual_source_Q": [
+          "u_task3_media/cnn_task/staging_completions/read_binary_2_s0/Q"
+        ]
+      },
+      {
+        "name": "restore stale u_task3_media/cnn_task/cnn/model_memory_meta*/D",
+        "rejected": true,
+        "matched_pins": 0
+      },
+      {
+        "name": "restore stale u_task3_media_apb/p_release*/CLEAR",
+        "rejected": true,
+        "matched_pins": 0
+      },
+      {
+        "name": "restore stale u_task3_media_apb/a_release*/CLEAR",
+        "rejected": true,
+        "matched_pins": 0
+      }
+    ],
+    "scope": "Concrete review input for a later distinct W candidate. It neither mutates v13 nor establishes complete CDC or routed timing.",
+    "clock_or_payload_budget_relaxed": false
+  },
+  "evidence": {
+    "SDC_inventory": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-sdc-lexical-inventory-v1.json",
+      "sha256": "bbd944ed643e404f97bc49ead4a7e13d0e2a8e65b2768dc9023b4b7f55238ab0",
+      "bytes": 892225
+    },
+    "APB_structure_and_shared_resets": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-task3-apb-cdc-preflight-20261102.json",
+      "sha256": "73bff409cd16f9f6c0613de70863814710656e75e43d11e99fbf064095d831f5",
+      "bytes": 62493
+    },
+    "staging_Gray_source_support": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-v13-staging-gray-cdc-preflight-v1.json",
+      "sha256": "a903568f94a151cb18807f5cba11845a29c35c227547f1b1dc362c57cf29c327",
+      "bytes": 12045
+    },
+    "prior_synthesis_stage_report": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_MEDIA_PROFILE_20261102.json",
+      "sha256": "44bf2891f15341f886bc113ead06b8c8771c4f5a084fdb31105ac5b7741b1259",
+      "bytes": 38950
+    }
+  },
+  "required_next_gates": [
+    "A later distinct candidate may apply reviewed actual endpoint adaptations with exact input/anchor checks and fail-closed source selection; preserve frozen v13 and original W21/task2 rollback identities.",
+    "Re-synthesize and verify complete exact producer/capture/synchronizer/reset query sets and Boolean source support; negative controls must reject stale aliases and missing MSBs.",
+    "Finish unsupported arbiter/AE350/SSRAM reset/source analysis and audit later-stage false-path coverage.",
+    "Run actual vendor endpoint resolution and complete CDC, PLL, routed setup/hold/resource and IO electrical checks.",
+    "Measure physical LCD link and actual dual-board end-to-end audio/recording/guidance behavior; no simulation or lexical inventory substitutes for those tests."
+  ],
+  "acceptance": {
+    "entire_W_CDC_accepted": false,
+    "all_constraint_endpoints_resolved": false,
+    "physical_reset_recovery_removal_accepted": false,
+    "routed_setup_hold_accepted": false,
+    "PLL_accepted": false,
+    "physical_resources_accepted": false,
+    "LCD_link_accepted": false,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_written": false,
+    "release_ready": false
+  },
+  "changes": {
+    "repository_change": "This evidence report only",
+    "selected_SDC_changed": false,
+    "profile_or_source_lock_changed": false,
+    "RTL_changed": false,
+    "frozen_inputs_changed": false,
+    "place_and_route_started": false,
+    "board_operated": false,
+    "commit_by_subagent": false
+  }
+}

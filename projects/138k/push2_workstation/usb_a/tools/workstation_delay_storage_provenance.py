@@ -459,11 +459,17 @@ def source_bundle(root):
     if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
         raise ValueError('Delay FIFO source bytes changed')
     selected_reference = (root / REFERENCE).read_bytes()
+    from tools.workstation_task3_tf_storage_selection import inverse_top as inverse_storage_top
+    storage_reference = inverse_storage_top(root, selected_reference.decode()).encode()
+    if storage_reference != selected_reference:
+        evidence['task3_direct_storage_reference'] = dict(parent_sha256=sha(storage_reference),
+            current_sha256=sha(selected_reference), exact_inverse_round_trip_verified=True,
+            selected_only_in_direct_branch=True, reconstruction_used_only_for_verification=True)
     from tools.workstation_task3_w_media_profile import inverse_top
-    reference = inverse_top(root, selected_reference.decode()).encode()
-    if reference != selected_reference:
+    reference = inverse_top(root, storage_reference.decode()).encode()
+    if reference != storage_reference:
         evidence['task3_w_media_reference'] = dict(parent_sha256=sha(reference),
-            current_sha256=sha(selected_reference), exact_inverse_round_trip_verified=True,default_macro_off=True)
+            current_sha256=sha(storage_reference), exact_inverse_round_trip_verified=True,default_macro_off=True)
     restored_reference = reference
     if sha(reference) == DIRECT_TOP_SHA256:
         payload = (root / DIRECT_REFERENCE).read_bytes()

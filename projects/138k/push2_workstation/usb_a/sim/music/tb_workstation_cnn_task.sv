@@ -1,7 +1,13 @@
 `timescale 1ns/1ps
 `include "rtl/ddr_address_map.vh"
-module tb_workstation_cnn_task;
-    localparam integer CLIP_FRAMES=4096,MODEL_BYTES=104510;
+module tb_workstation_cnn_task #(
+    parameter integer CLIP_FRAMES=4096,
+    parameter integer MAX_CYCLES=120000000,
+    parameter integer IO_TIMEOUT_CYCLES=4096,
+    parameter [31:0] TASK_TIMEOUT_CYCLES=32'd400000000,
+    parameter bit REQUIRE_SELECTED_W=0
+);
+    localparam integer MODEL_BYTES=104510;
     reg clk=0,mclk=0,reset_n=0,memory_reset_n=0,calibrated=0;
     always #10 clk=~clk;
     always #7 mclk=~mclk;
@@ -33,7 +39,7 @@ module tb_workstation_cnn_task;
     reg allow_native=1,allow_response=1,corrupt_stage=0,inject_unowned_return=0,expect_fatal=0;
     reg delay_valid=0,recording_valid=0;
     wire delay_ready,recording_ready;
-    workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(4096),.TASK_TIMEOUT_CYCLES(400000000)) dut(
+    workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES),.TASK_TIMEOUT_CYCLES(TASK_TIMEOUT_CYCLES)) dut(
         .clk_i(clk),.reset_ni(reset_n),.memory_clk_i(mclk),.memory_reset_ni(media_reset),
         .backend_ready_i(media_ready),.transport_fault_i(media_fault),
         .start_valid_i(start),.start_ready_o(start_ready),.start_task_id_i(start_id),.start_generation_i(start_generation),
@@ -158,6 +164,7 @@ module tb_workstation_cnn_task;
     endfunction
     integer clocks=0,checks=0,notes=0,layer_writes[0:5],analysis_count=0;
     integer reference_writes[0:5],reference_notes=0;
+    integer launch_clock=0,first_score_clock=0;
     reg [191:0] reference_hashes;
     reg [6:0] observed_notes[0:511],reference_sequence[0:511];
     reg capture_layers=0;
@@ -170,9 +177,10 @@ module tb_workstation_cnn_task;
         if(clocks%10000000==0)begin
             $display("PROGRESS clocks=%0d task=%0d state=%0d cnn=%0d replayed=%0d reads=%0d writes=%0d front_started=%b full=%b drained=%b score=%b notes=%0d",clocks,id,dut.state,dut.cnn.u_basic_pitch.state,replayed,reads,writes,dut.cnn.u_basic_pitch.front_window_started,dut.cnn.u_basic_pitch.front_win_full,dut.cnn.u_basic_pitch.front_drained,score_valid,notes);$fflush();
         end
-        if(clocks>120000000)$fatal(1,"task fixture deadline model=%0d state=%0d cnn=%0d frontend_n=%0d base=%0d busy=%b",model_status,dut.state,dut.cnn.u_basic_pitch.state,dut.cnn.u_basic_pitch.u_frontend.n_recv,dut.cnn.u_basic_pitch.u_frontend.base_val,dut.cnn.u_basic_pitch.u_frontend.busy);
+        if(clocks>MAX_CYCLES)$fatal(1,"task fixture deadline model=%0d state=%0d cnn=%0d frontend_n=%0d base=%0d busy=%b",model_status,dut.state,dut.cnn.u_basic_pitch.state,dut.cnn.u_basic_pitch.u_frontend.n_recv,dut.cnn.u_basic_pitch.u_frontend.base_val,dut.cnn.u_basic_pitch.u_frontend.busy);
         if(cancel && cancel_id==id && cancel_generation==generation && score_valid)$fatal(1,"old score escaped immediate cancellation");
         if(score_valid && score_ready)begin
+            if(notes==0)first_score_clock=clocks;
             check(id==5 || id==7,"score belongs to current successful task");
             check(score_index==32'(notes),"score sequence ordinal is exact");observed_notes[notes]=score_note;notes=notes+1;
         end
@@ -184,6 +192,7 @@ module tb_workstation_cnn_task;
             if(dut.cnn.u_basic_pitch.onset_act_valid)layer_writes[4]=layer_writes[4]+1;
             if(dut.cnn.u_basic_pitch.onset_out_act_valid)layer_writes[5]=layer_writes[5]+1;
             if(dut.cnn_analysis_done)begin
+                $display("TASK_METRICS task=%0d clip_frames=%0d launch_clock=%0d first_score_clock=%0d complete_clock=%0d task_cycles=%0d hashes=%h writes0=%0d writes1=%0d writes2=%0d writes3=%0d writes4=%0d writes5=%0d notes=%0d",id,CLIP_FRAMES,launch_clock,first_score_clock,clocks,clocks-launch_clock,dut.cnn.layer_hashes,layer_writes[0],layer_writes[1],layer_writes[2],layer_writes[3],layer_writes[4],layer_writes[5],notes);$fflush();
                 analysis_count=analysis_count+1;
                 if(id==5)begin
                     reference_hashes=dut.cnn.layer_hashes;reference_notes=notes;
@@ -202,7 +211,7 @@ module tb_workstation_cnn_task;
     task automatic launch(input integer task_number,input integer frames,input [31:0] crc_value);
         begin wait(start_ready);@(negedge clk);start_id=32'(task_number);start_generation=32'(task_number);start_frames=32'(frames);start_crc=crc_value;start=1;
             @(negedge clk);check(start_accepted,"valid bounded descriptor accepted");start=0;
-            wait(frame_ready);notes=0;for(integer k=0;k<6;k=k+1)layer_writes[k]=0;
+            wait(frame_ready);launch_clock=clocks;first_score_clock=0;notes=0;for(integer k=0;k<6;k=k+1)layer_writes[k]=0;
         end
     endtask
     task automatic feed(input integer task_number,input integer frames);
@@ -224,6 +233,14 @@ module tb_workstation_cnn_task;
         end
     endtask
     initial begin
+        if(REQUIRE_SELECTED_W)begin
+            check(dut.cnn.u_basic_pitch.WIN_LEN==44100 && dut.cnn.u_basic_pitch.FRAME_LIMIT==8 &&
+                  dut.cnn.u_basic_pitch.CQT_HOP_NUMERATOR==22050 && dut.cnn.u_basic_pitch.CQT_HOP_DENOMINATOR==4 &&
+                  dut.cnn.u_basic_pitch.FEATURE_TILE_COLS==16 && dut.cnn.u_basic_pitch.COARSE_GUIDANCE==1,
+                  "actual selected W4Hz dimensions, tile and guidance are elaborated");
+            check(CLIP_FRAMES==96000 && IO_TIMEOUT_CYCLES==50000000 && TASK_TIMEOUT_CYCLES==32'd3600000000,
+                  "selected W task budgets and maximum clip capacity are unchanged");
+        end
         if(!$value$plusargs("IMAGE=%s",image_path))$fatal(1,"full real IMAGE required");
         $readmemh(image_path,image);
         for(integer k=0;k<CLIP_FRAMES;k=k+1)begin

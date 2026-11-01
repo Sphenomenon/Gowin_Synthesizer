@@ -119,6 +119,8 @@ class Task3TFPolicy(unittest.TestCase):
         self.assertTrue(spec['tf_menu_enabled'])
         self.assertFalse(spec['recognition_enabled'])
         self.assertEqual(spec['configuration']['tf_policy'], direct.POLICY)
+        self.assertEqual(spec['configuration']['tf_storage_policy'], direct.STORAGE_POLICY)
+        self.assertEqual(spec['configuration']['tf_sdc_revision'], direct.SDC_REVISION)
         for old in (profiles.TASK3_M_TF_NAME, profiles.M_DEMO_NAME, profiles.W_DEMO_NAME):
             self.assertFalse(profiles.specification(old).get('tf_direct_enabled', False))
 
@@ -128,6 +130,7 @@ class Task3TFPolicy(unittest.TestCase):
             stage=Path(temp)
             for relative in ('rtl/workstation/gw138k_push_workstation_top.v',
                              'rtl/workstation/workstation_task3_w_media_top_reference.json',
+                             'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
                              'rtl/workstation/workstation_runtime_controlled.sv',
                              'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'):
                 target=stage/relative;target.parent.mkdir(parents=True,exist_ok=True)

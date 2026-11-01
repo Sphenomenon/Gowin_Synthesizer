@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "policy": "task3_direct_crc16_fat_cache_exact_top_selection_v1",
+  "source": "rtl/workstation/gw138k_push_workstation_top.v",
+  "parent_commit": "a070a620",
+  "parent_sha256": "9377948d17aa8fed710744827cc4c4e18b7414d88cdfd5f5ca28a86978b04615",
+  "selected_sha256": "4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f",
+  "selected_only_in_direct_branch": true,
+  "reconstruction_used_only_for_verification": true,
+  "edits": [
+    {
+      "parent": "    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1)) u_tf_audio(\n",
+      "selected": "    // Explicit task3 M DIRECT storage selection; component defaults stay off.\n    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1),\n        .VERIFY_DATA_CRC(1),.FAT_SECTOR_CACHE(1)) u_tf_audio(\n"
+    }
+  ]
+}

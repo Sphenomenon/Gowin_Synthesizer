@@ -925,7 +925,9 @@ module gw138k_push_workstation_top #(
     assign tf_source_active=0;
 `elsif WORKSTATION_RUNTIME_NATIVE
 `ifdef WORKSTATION_TF_DIRECT_NATIVE
-    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1)) u_tf_audio(
+    // Explicit task3 M DIRECT storage selection; component defaults stay off.
+    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1),
+        .VERIFY_DATA_CRC(1),.FAT_SECTOR_CACHE(1)) u_tf_audio(
         .rst_ni(runtime_reset_n),.common_reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
         .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),
         .transport_error_i(tf_scope_error),.track_index_i(playback_track),

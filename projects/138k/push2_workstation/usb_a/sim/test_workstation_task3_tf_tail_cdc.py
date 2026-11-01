@@ -28,13 +28,19 @@ class ActualTail(unittest.TestCase):
         if not vg or not stage:
             raise unittest.SkipTest('explicit matching actual VG/stage required; no fallback or mocked positive')
         cls.path,cls.stage=Path(vg),Path(stage)
+        cls.metadata_path=cls.stage.parents[1]/'integration_inputs.json'
+        metadata=json.loads(cls.metadata_path.read_text())
+        cls.constraint_revision=metadata['task3_tf_direct_cdc'].get('constraint_revision',1)
+        if cls.constraint_revision not in (1,2,3):
+            raise ValueError('unsupported explicit TF constraint revision')
         cls.sdc=(cls.stage/'constraints/custom_138k.sdc').read_text()
         cls.n=protocol_netlist(cls.path.read_text(),mapping='synthesis')
         cls.root=audit_root_startup(cls.n,stage=cls.stage)
-        cls.before={str(p):sha(p) for p in (cls.path,cls.stage/'Prj1.gprj',cls.stage/SOURCE,
-                    cls.stage/'constraints/custom_138k.sdc')}
+        cls.before={str(p):sha(p) for p in (cls.path,cls.metadata_path,cls.stage/'Prj1.gprj',cls.stage/SOURCE,
+                    cls.stage/'constraints/custom_138k.sdc',ROOT/'tools/workstation_task3_tf_tail_cdc_audit.py')}
         cls.positive,cls.mutations,cls.sdc_rejection,cls.failed=None,[],None,False
         cls.proposed_sdc_test=None
+        cls.installed_sdc_validation=None
 
     def tearDown(self):
         r=self._outcome.result
@@ -46,9 +52,12 @@ class ActualTail(unittest.TestCase):
         selected=os.environ.get('GW138K_TASK3_TAIL_EVIDENCE')
         if selected:
             Path(selected).write_text(json.dumps(dict(
-                status='PARTIAL_LOCAL_PASS_SDC_GAP_RETAINED' if unchanged and cls.positive and not cls.failed else 'FAIL',
+                status='PARTIAL_LOCAL_PASS' if unchanged and cls.positive and not cls.failed else 'FAIL',
                 selected_stage=str(cls.stage),actual_input_sha256=cls.before,original_inputs_unchanged=unchanged,
+                explicit_constraint_revision=cls.constraint_revision,
+                selected_revision_metadata=str(cls.metadata_path),
                 actual_tail=cls.positive,actual_installed_sdc_rejection=cls.sdc_rejection,
+                actual_installed_sdc_validation=cls.installed_sdc_validation,
                 corrected_text_only_sdc_test=cls.proposed_sdc_test,
                 mutations=cls.mutations,mutation_count=len(cls.mutations),
                 audit_source_sha256={p:sha(ROOT/p) for p in (
@@ -85,12 +94,26 @@ class ActualTail(unittest.TestCase):
         self.assertFalse(r['full_tf_cdc_proven'])
         self.__class__.positive=r
 
-    def test_02_actual_installed_sdc_missing_CE_is_rejected(self):
+    def test_02_actual_installed_sdc_matches_explicit_revision(self):
         r=self.audit()
-        with self.assertRaisesRegex(ValueError,'complete SDC source/target inventory changed: .*held_reply') as e:
-            validate_tf_tail_sdc(self.sdc,self.n,tail=r)
-        self.__class__.sdc_rejection=dict(expected=True,error=str(e.exception),missing_real_CE_pins=36,
-            bounded_actual_D_pins=32,required_real_D_and_CE_pins=68,actual_sdc_accepted=False)
+        if self.constraint_revision==3:
+            result=validate_tf_tail_sdc(self.sdc,self.n,tail=r)
+            self.assertEqual(result['exact_held_reply_D_and_CE_pin_count'],68)
+            reply=[row for row in result['installed_constraints']
+                   if set(row['source_pins'])==set(r['held_reply_source_pins'])]
+            self.assertEqual(len(reply),2)
+            for row in reply:
+                self.assertEqual(sum(p.endswith('/D') for p in row['capture_pins']),32)
+                self.assertEqual(sum(p.endswith('/CE') for p in row['capture_pins']),36)
+            self.assertFalse(result['full_tf_cdc_proven'])
+            self.assertFalse(result['routed_timing_verified'])
+            self.__class__.installed_sdc_validation=dict(proposal_only=False,actual_sdc_changed=False,
+                exact_installed_sdc_accepted=True,full_tf_cdc_accepted=False,result=result)
+        else:
+            with self.assertRaisesRegex(ValueError,'complete SDC source/target inventory changed: .*held_reply') as e:
+                validate_tf_tail_sdc(self.sdc,self.n,tail=r)
+            self.__class__.sdc_rejection=dict(expected=True,error=str(e.exception),missing_real_CE_pins=36,
+                bounded_actual_D_pins=32,required_real_D_and_CE_pins=68,actual_sdc_accepted=False)
 
     def test_03_destructive_netlist_controls(self):
         r=self.audit();g=Graph(self.n);s=SCOPE;n=self.n
@@ -151,21 +174,27 @@ class ActualTail(unittest.TestCase):
             self.mutations.append(dict(case=label,rejected=True,error=str(e.exception)))
         self.assertEqual(len(cases),40)
 
-    def test_04_proposed_text_only_exact_SDC_and_destructive_controls(self):
-        # This exercises the validator with a corrected string. No stage SDC,
-        # source, build identity or installed-constraint claim is changed.
+    def test_04_revision_selected_exact_SDC_and_destructive_controls(self):
+        # r1/r2 exercise a corrected string only; r3 exercises installed SDC.
+        # All destructive probes remain in memory and never change the stage.
         r=self.audit();s=SCOPE
         old=' '.join(s+'/'+stem+suffix+'/D' for stem,suffix in (
             ('arm_pending','_s*'),('armed_o','_s*'),('baseline_drops_o','_*_s*'),
             ('failed_o','_s*'),('tail_receipted','_s*')))
         new=' '.join([s+'/baseline_drops_o_*_s*/D',s+'/baseline_drops_o_*_s*/CE']+
                      [s+'/'+stem+'_s*/CE' for stem in ('arm_pending','armed_o','failed_o','tail_receipted')])
-        self.assertEqual(self.sdc.count(old),2)
-        proposal=self.sdc.replace(old,new)
+        if self.constraint_revision==3:
+            self.assertEqual(self.sdc.count(old),0)
+            self.assertEqual(self.sdc.count(new),2)
+            proposal=self.sdc
+        else:
+            self.assertEqual(self.sdc.count(old),2)
+            proposal=self.sdc.replace(old,new)
         result=validate_tf_tail_sdc(proposal,self.n,tail=r)
         self.assertEqual(result['exact_held_reply_D_and_CE_pin_count'],68)
-        self.__class__.proposed_sdc_test=dict(proposal_only=True,actual_sdc_changed=False,
-            installed_sdc_accepted=False,result=result)
+        if self.constraint_revision!=3:
+            self.__class__.proposed_sdc_test=dict(proposal_only=True,actual_sdc_changed=False,
+                installed_sdc_accepted=False,result=result)
         replyline=next(l for l in proposal.splitlines() if l.startswith('set_max_delay 13.020 ')
                        and s+'/held_reply_' in l)
         cases=[
@@ -184,7 +213,10 @@ class ActualTail(unittest.TestCase):
         for label,text in cases:
             with self.subTest(case=label),self.assertRaises(ValueError) as e:
                 validate_tf_tail_sdc(text,self.n,tail=r)
-            self.mutations.append(dict(case=label,rejected=True,error=str(e.exception),text_only_sdc_mutation=True))
+            self.mutations.append(dict(case=label,rejected=True,error=str(e.exception),
+                text_only_sdc_mutation=self.constraint_revision!=3,
+                installed_sdc_string_mutation=self.constraint_revision==3))
+        self.assertEqual(len(cases),11)
 
 
 if __name__=='__main__':

@@ -32,17 +32,24 @@ class ActualTask3FrameCdc(unittest.TestCase):
         if not vg or not sdc or not stage:
             raise unittest.SkipTest('explicit actual VG/SDC/stage required; no fallback')
         cls.vg,cls.sdc_path,cls.stage=Path(vg),Path(sdc),Path(stage)
+        cls.metadata_path=cls.stage.parents[1]/'integration_inputs.json'
+        metadata=json.loads(cls.metadata_path.read_text())
+        cls.constraint_revision=metadata['task3_tf_direct_cdc'].get('constraint_revision',1)
+        if cls.constraint_revision not in (1,2,3):
+            raise ValueError('unsupported explicit TF constraint revision')
         cls.mapping=os.environ.get('GW138K_TASK3_FRAME_MAPPING','synthesis')
         cls.n=protocol_netlist(cls.vg.read_text(),mapping=cls.mapping)
         cls.sdc=cls.sdc_path.read_text()
         cls.positive,cls.mutations,cls.failed=None,[],False
-        cls.before={str(p):sha(p) for p in (cls.vg,cls.sdc_path,cls.stage/'Prj1.gprj',
+        cls.gap_detections=[]
+        cls.before={str(p):sha(p) for p in (cls.vg,cls.sdc_path,cls.metadata_path,cls.stage/'Prj1.gprj',
             cls.stage/'rtl/tf_audio/workstation_tf_frame_bridge_v2.sv',
             cls.stage/'rtl/music/music_async_fifo.sv',
             ROOT/'tools/workstation_task3_root_reset_audit.py',
             ROOT/'tools/workstation_task3_peripheral_releases_audit.py',
             ROOT/'tools/workstation_task3_tf_startup_audit.py',
-            ROOT/'tools/workstation_task3_receipt_audit.py')}
+            ROOT/'tools/workstation_task3_receipt_audit.py',
+            ROOT/'tools/workstation_task3_tf_frame_cdc_audit.py')}
 
     def tearDown(self):
         result=self._outcome.result
@@ -54,10 +61,14 @@ class ActualTask3FrameCdc(unittest.TestCase):
         target=os.environ.get('GW138K_TASK3_FRAME_EVIDENCE')
         if target:
             Path(target).write_text(json.dumps(dict(
-                status='PARTIAL_STRUCTURAL_PASS_GAPS_RETAINED' if unchanged and cls.positive and not cls.failed else 'FAIL',
+                status='PARTIAL_STRUCTURAL_PASS' if unchanged and cls.positive and not cls.failed else 'FAIL',
                 mapping=cls.mapping,selected_stage=str(cls.stage),selected_vg=str(cls.vg),
+                explicit_constraint_revision=cls.constraint_revision,
+                selected_revision_metadata=str(cls.metadata_path),
                 selected_sdc=str(cls.sdc_path),actual_input_sha256=cls.before,
                 actual_frame_partial=cls.positive,mutations=cls.mutations,mutation_count=len(cls.mutations),
+                optional_boundary_gap_detections=cls.gap_detections,
+                optional_boundary_gap_detection_count=len(cls.gap_detections),
                 original_inputs_unchanged=unchanged,
                 audit_source_sha256={p:sha(ROOT/p) for p in (
                     'tools/workstation_task3_tf_frame_cdc_audit.py','sim/test_workstation_task3_tf_frame_cdc.py')},
@@ -81,9 +92,14 @@ class ActualTask3FrameCdc(unittest.TestCase):
         self.assertEqual(len(result['single_bit_chains']),5)
         self.assertEqual(len(result['ram_instances']),27)
         self.assertEqual(len(result['ram_data_complete_closure']['ff_endpoints']),218)
-        self.assertEqual([(g['id'],len(g['source_pins']),len(g['capture_pins']))
-            for g in result['missing_finite_boundaries']],
-            [('fifo-async-RAM-data',27,218),('fifo-read-address-to-asynchronous-RAD',4,27)])
+        expected=[('fifo-async-RAM-data',27,218),('fifo-read-address-to-asynchronous-RAD',4,27)]
+        inventory=lambda rows:[(g['id'],len(g['source_pins']),len(g['capture_pins'])) for g in rows]
+        if self.constraint_revision==3:
+            self.assertEqual(result['missing_finite_boundaries'],[])
+            self.assertEqual(inventory([g for g in result['installed_frame_constraints']
+                if g['id'] in {row[0] for row in expected}]),expected)
+        else:
+            self.assertEqual(inventory(result['missing_finite_boundaries']),expected)
         self.assertTrue(result['existing_gray_and_second_stage_sdc_exact'])
         self.assertTrue(result['source_only_and_through_exceptions_rejected'])
         self.assertFalse(result['constraints_complete'])
@@ -132,11 +148,18 @@ class ActualTask3FrameCdc(unittest.TestCase):
         generation=records['generation-first']['constraint']
         ack=records['ack-first']['constraint']
         second=records['write-pointer-second']['constraint']
-        gaps={g['id']:g for g in actual['missing_finite_boundaries']}
-        data=gaps['fifo-async-RAM-data']
+        boundaries={r['id']:r for r in [*actual['missing_finite_boundaries'],
+                                      *actual['installed_frame_constraints']]}
+        data=boundaries['fifo-async-RAM-data']
+        address=boundaries['fifo-read-address-to-asynchronous-RAD']
         def query(pins):return '[get_pins {'+' '.join(pins)+'}]'
         data_path='-from '+query(data['source_pins'])+' -to '+query(data['capture_pins'])
         only_d=[pin for pin in data['capture_pins'] if pin.endswith('/D')]
+        def ram_data_bound(line):
+            if self.constraint_revision==3:
+                self.assertEqual(self.sdc.count(data['constraint']),1)
+                return self.sdc.replace(data['constraint'],line,1)
+            return self.sdc+'\n'+line+'\n'
         alive='u_usb_pll/u_pll_init/enable_r_0_s[0-9]*/Q'
         self.assertIn(alive,self.sdc)
         cases=[
@@ -145,13 +168,13 @@ class ActualTask3FrameCdc(unittest.TestCase):
             ('write pointer second bound removed',self.sdc.replace(second+'\n','',1)),
             ('alive source glob includes other PLL registers',self.sdc.replace(alive,'u_usb_pll/u_pll_init/enable_r_*_s*/Q',1)),
             ('RAM held CE setup cut',self.sdc+'\nset_false_path -to '+query([g.register(B,'held_packet',0)+'/CE'])+'\n'),
-            ('RAM RAD setup cut',self.sdc+'\nset_false_path -to '+query(gaps['fifo-read-address-to-asynchronous-RAD']['capture_pins'])+'\n'),
-            ('RAM data weak optional bound',self.sdc+'\nset_max_delay 20.000 '+data_path+'\n'),
-            ('RAM data partial D-only bound',self.sdc+'\nset_max_delay 13.020 -from '+query(data['source_pins'])+' -to '+query(only_d)+'\n'),
+            ('RAM RAD setup cut',self.sdc+'\nset_false_path -to '+query(address['capture_pins'])+'\n'),
+            ('RAM data weak optional bound',ram_data_bound('set_max_delay 20.000 '+data_path)),
+            ('RAM data partial D-only bound',ram_data_bound('set_max_delay 13.020 -from '+query(data['source_pins'])+' -to '+query(only_d))),
             ('source-only generation setup cut',self.sdc+'\nset_false_path -from '+query(actual['gray_buses'][0]['source_pins'])+'\n'),
             ('source-only RAM DO setup cut',self.sdc+'\nset_false_path -from '+query(data['source_pins'])+'\n'),
             ('source-only read address get_regs setup cut',self.sdc+'\nset_false_path -from [get_regs {'+
-                ' '.join(p.rsplit('/',1)[0] for p in gaps['fifo-read-address-to-asynchronous-RAD']['source_pins'])+'}]\n'),
+                ' '.join(p.rsplit('/',1)[0] for p in address['source_pins'])+'}]\n'),
             ('RAM data through setup cut',self.sdc+'\nset_false_path -through '+query(data['source_pins'])+'\n'),
             ('generation through setup cut',self.sdc+'\nset_false_path -through '+query(actual['gray_buses'][0]['source_pins'])+'\n'),
             ('source-only RAM weak max bound',self.sdc+'\nset_max_delay 50.000 -from '+query(data['source_pins'])+'\n'),
@@ -162,6 +185,23 @@ class ActualTask3FrameCdc(unittest.TestCase):
             with self.subTest(case=label),self.assertRaises(ValueError) as error:
                 audit_tf_frame_cdc(self.n,sdc=modified)
             self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
+        self.assertEqual(len(cases),16)
+        if self.constraint_revision==3:
+            # The partial helper reports absent optional bounds as gaps. These
+            # probes detect missing coverage; they are not fail-closed rejections.
+            for removed in ((data,),(address,),(data,address)):
+                modified=self.sdc
+                for row in removed:
+                    self.assertEqual(modified.count(row['constraint']),1)
+                    modified=modified.replace(row['constraint']+'\n','',1)
+                result=audit_tf_frame_cdc(self.n,sdc=modified)
+                expected=[row['id'] for row in removed]
+                self.assertEqual([row['id'] for row in result['missing_finite_boundaries']],expected)
+                self.assertFalse(result['constraints_complete'])
+                self.assertFalse(result['complete_tf_cdc_accepted'])
+                self.gap_detections.append(dict(removed_optional_boundaries=expected,
+                    missing_boundaries_detected=expected,global_fail_closed_rejection=False,
+                    complete_tf_cdc_accepted=False))
 
 
 if __name__=='__main__':
