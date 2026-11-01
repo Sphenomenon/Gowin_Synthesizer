@@ -493,11 +493,16 @@ module workstation_ble_raw_ddr_store #(
                     read_outstanding<=1;read_generation<=published_generation;read_word<=published_word;
                 end
             end
+            // The return payload is private until the original narrow request
+            // publication below. Preload only while no acknowledged consumer
+            // owns the mailbox; pending freezes every payload field until ACK.
+            if(!return_pending)begin
+                return_data<=read_data_i;return_generation<=response_generation;return_word<=response_word;
+            end
             if(read_response_i && (read_outstanding || native_read_commit))begin
                 read_outstanding<=0;
                 if(memory_fetch_active && !memory_fetch_cancel && !cancel_now &&
                    !memory_channel_fault && !memory_fault_now && response_generation==memory_generation)begin
-                    return_data<=read_data_i;return_generation<=response_generation;return_word<=response_word;
                     return_req<=~return_req;return_pending<=1;
                 end
             end

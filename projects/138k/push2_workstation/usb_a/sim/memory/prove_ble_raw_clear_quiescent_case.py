@@ -30,6 +30,13 @@ def restore_before_clear(text):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,required=True);args=parser.parse_args();root=Path(__file__).resolve().parents[2];out=args.output.resolve();out.mkdir(parents=True,exist_ok=False);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
     maintained_source = root / 'rtl/memory/workstation_ble_raw_ddr_store.sv'
+    preload_proof = Path(__file__).with_name('prove_ble_raw_return_mailbox_preload.py')
+    preload_fixture = (Path(__file__).with_name('fixtures') /
+                       'workstation_ble_raw_ddr_store_before_return_preload.sv')
+    preload_spec = importlib.util.spec_from_file_location('return_preload_inverse', preload_proof)
+    preload = importlib.util.module_from_spec(preload_spec)
+    preload_spec.loader.exec_module(preload)
+    assert sha(preload_fixture) == preload.BASELINE_SHA256
     global_proof = Path(__file__).with_name('prove_ble_raw_global_failure_case.py')
     global_fixture = (Path(__file__).with_name('fixtures') /
                       'workstation_ble_raw_ddr_store_before_global_failure_case.sv')
@@ -38,7 +45,7 @@ def main():
     global_spec.loader.exec_module(global_failure)
     assert sha(global_fixture) == global_failure.BASELINE_SHA256
     source = out / 'normalized-before-global-failure.sv'
-    source.write_text(global_failure.restore_before_global_failure(maintained_source.read_text()))
+    source.write_text(global_failure.restore_before_global_failure(preload.restore_before_return_preload(maintained_source.read_text())))
     baseline=Path(__file__).with_name('fixtures')/'workstation_ble_raw_ddr_store_before_clear_case.sv';assert sha(baseline)==BASELINE_SHA256;old=baseline.read_text();assert restore_before_clear(source.read_text())==old;helper_src=root/'sim/memory/prove_ble_raw_start_factor.py';helper=out/'proof-helper-snapshot.py';helper.write_bytes(helper_src.read_bytes());s=importlib.util.spec_from_file_location('h',helper);h=importlib.util.module_from_spec(s);s.loader.exec_module(h);tb=out/'tb-source.sv';tb.write_bytes((root/'sim/memory/tb_ble_raw_ddr_store.sv').read_bytes());h.TB=tb
     oldguard=OLD_CLEAR_GUARD;newguard=NEW_CLEAR_GUARD;block=CLEAR_BLOCK
     assert old.count(oldguard)==1 and old.count('    wire clear_fifo_pop=')==1
@@ -86,7 +93,7 @@ def main():
     $display("PASS exact CLEAR procedural guards four_state_combinations=16384");$finish;
     end endmodule
     ''';(out/'clear-guard-four.sv').write_text(four)
-    deps=[root/'rtl/memory/workstation_sdp.sv',root/'rtl/music/music_async_fifo.sv',bridge];inputs=[maintained_source,global_proof,global_fixture,source,baseline,Path(__file__),helper_src,helper,tb,variant,reference,*deps];before={str(p):sha(p) for p in inputs};result=dict(schema=1,passed=False,scope='complete maintained CLEAR completion guard cofactor against immutable actual W13 source',source_sha256=sha(source),maintained_source_sha256=sha(maintained_source),exact_reviewed_global_failure_inverse=True,baseline_W13_sha256=sha(baseline),variant_sha256=sha(variant),exact_inverse=True,all_sequential_NBA_target_RHS_order_identical=True,source_equations=eq,full_domain_guard_proof='UNSAT',whole_twin_inventory=inventory,directed_cases=cases+[name for name,_ in cases_more],input_sha256=before,cases={},source_implementation=True,synthesis=False,pnr=False,hardware_tested=False,timing_or_resource_gain_claimed=False,runner_sha256=sha(Path(__file__)))
+    deps=[root/'rtl/memory/workstation_sdp.sv',root/'rtl/music/music_async_fifo.sv',bridge];inputs=[maintained_source,preload_proof,preload_fixture,global_proof,global_fixture,source,baseline,Path(__file__),helper_src,helper,tb,variant,reference,*deps];before={str(p):sha(p) for p in inputs};result=dict(schema=1,passed=False,scope='complete maintained CLEAR completion guard cofactor against immutable actual W13 source',source_sha256=sha(source),maintained_source_sha256=sha(maintained_source),exact_reviewed_global_failure_inverse=True,exact_reviewed_return_preload_inverse=True,baseline_W13_sha256=sha(baseline),variant_sha256=sha(variant),exact_inverse=True,all_sequential_NBA_target_RHS_order_identical=True,source_equations=eq,full_domain_guard_proof='UNSAT',whole_twin_inventory=inventory,directed_cases=cases+[name for name,_ in cases_more],input_sha256=before,cases={},source_implementation=True,synthesis=False,pnr=False,hardware_tested=False,timing_or_resource_gain_claimed=False,runner_sha256=sha(Path(__file__)))
     try:
      result['cases']['clear_guard_four']=h.simulate(out,'clear-guard-four',[out/'clear-guard-four.sv'],'clear_guard_four')
      for name,params in [('fifo8_async_memory',[('FIFO_BITS',8),('MEM_HALF',7)]),('fifo3_100mhz_memory',[('FIFO_BITS',3),('MEM_HALF',5)])]:result['cases'][name]=h.simulate(out,name,[out/'twin.sv',variant,reference,*deps],'tb_ble_raw_ddr_store',params,timeout=180)

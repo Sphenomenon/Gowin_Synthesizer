@@ -28,7 +28,16 @@ def main():
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     root=Path(__file__).resolve().parents[2]
     sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-    source=root/'rtl/memory/workstation_ble_raw_ddr_store.sv'
+    maintained_source=root/'rtl/memory/workstation_ble_raw_ddr_store.sv'
+    preload_proof = Path(__file__).with_name('prove_ble_raw_return_mailbox_preload.py')
+    preload_fixture = (Path(__file__).with_name('fixtures') /
+                       'workstation_ble_raw_ddr_store_before_return_preload.sv')
+    preload_spec = importlib.util.spec_from_file_location('return_preload_inverse', preload_proof)
+    preload = importlib.util.module_from_spec(preload_spec)
+    preload_spec.loader.exec_module(preload)
+    assert sha(preload_fixture) == preload.BASELINE_SHA256
+    source=out/'normalized-before-return-preload.sv'
+    source.write_text(preload.restore_before_return_preload(maintained_source.read_text()))
     fixture=Path(__file__).with_name('fixtures')/'workstation_ble_raw_ddr_store_before_global_failure_case.sv'
     assert sha(fixture)==BASELINE_SHA256
     old=fixture.read_text();new=source.read_text();assert restore_before_global_failure(new)==old
@@ -128,8 +137,8 @@ def main():
     $display("PASS global failure four-state guard_vectors=%0d arbitrary_prior_nextQ=%0d no_reachability_filter=1",guard_vectors,nextq_vectors);$finish;
     end endmodule
     ''';(out/'guard-four-state.sv').write_text(four)
-    inputs=[source,fixture,helper_src,tb_source,*dep_sources,baseline,helper,h.TB,*deps,variant,reference,Path(__file__).resolve()];beforehash={str(p):sha(p) for p in inputs}
-    result=dict(schema=1,passed=False,cache_only=False,source_implementation=True,baseline_sha256=sha(baseline),variant_sha256=sha(variant),patch_sha256=sha(out/'proposed.patch'),exact_whole_source_inverse=True,all_prior_memory_failure_writes_and_RHS_byte_identical=True,all_other_targets_global_NBA_order_identical=True,only_last_global_memory_failure_NBA_redirected=True,immediate_bridge_fault_retained=True,completion_generation_unchanged=True,full_binary_guard_code_arbitrary_4bit_nextQ='UNSAT',source_equations=eq,whole_twin_inventory=inventory,directed_cases=cases+[n for n,_,_ in extra],input_sha256=beforehash,cases={},synthesis=False,pnr=False,hardware_tested=False,timing_or_resource_gain_claimed=False,scope_limit='Only final global memory_failure write is redirected to exact combinational cofactor. Lower writes, channel/cancel and completion retain original source priority. No physical gain claimed and full sequential formal not proven.')
+    inputs=[maintained_source,preload_proof,preload_fixture,source,fixture,helper_src,tb_source,*dep_sources,baseline,helper,h.TB,*deps,variant,reference,Path(__file__).resolve()];beforehash={str(p):sha(p) for p in inputs}
+    result=dict(schema=1,passed=False,cache_only=False,source_implementation=True,maintained_source_sha256=sha(maintained_source),exact_reviewed_return_preload_inverse=True,baseline_sha256=sha(baseline),variant_sha256=sha(variant),patch_sha256=sha(out/'proposed.patch'),exact_whole_source_inverse=True,all_prior_memory_failure_writes_and_RHS_byte_identical=True,all_other_targets_global_NBA_order_identical=True,only_last_global_memory_failure_NBA_redirected=True,immediate_bridge_fault_retained=True,completion_generation_unchanged=True,full_binary_guard_code_arbitrary_4bit_nextQ='UNSAT',source_equations=eq,whole_twin_inventory=inventory,directed_cases=cases+[n for n,_,_ in extra],input_sha256=beforehash,cases={},synthesis=False,pnr=False,hardware_tested=False,timing_or_resource_gain_claimed=False,scope_limit='Only final global memory_failure write is redirected to exact combinational cofactor. Lower writes, channel/cancel and completion retain original source priority. No physical gain claimed and full sequential formal not proven.')
     try:
      result['cases']['guard_four_state']=h.simulate(out,'guard-four-state',[out/'guard-four-state.sv'],'failure_guards')
      for name,params in [('fifo8_async_memory',[('FIFO_BITS',8),('MEM_HALF',7)]),('fifo3_100mhz_memory',[('FIFO_BITS',3),('MEM_HALF',5)])]:result['cases'][name]=h.simulate(out,name,[out/'twin.sv',variant,reference,*deps],'tb_ble_raw_ddr_store',params,timeout=180)

@@ -368,6 +368,8 @@ M17／W15 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M1
 
 M 的[公开配置就绪维护阶段](push2_workstation/usb_a/reports/DUAL138K_PUBLIC_CONFIG_READY_20261101.md)已完成：仅明确持有配置请求时采用既有广播cofactor，其他及X/Z回原表达式，状态／周期／事件与采样许可保持。全域二态、M/W各1792四态及5实际负控、原样完整M/W/legacy模块88191／88191／88223半周期和六项旧回归通过；主线程逐121证据／159输入及10源快照重验。新event `b689d16f…c1a6`待下一候选实际消费，旧M17/W15输入不改，不预记资源或时序收益，未上板。
 
+W 的[DDR返回邮箱私有预装维护阶段](push2_workstation/usb_a/reports/DUAL138K_RETURN_MAILBOX_PRELOAD_20261101.md)已完成：299bit私有payload仅在非pending时预装，原完整fault／同拍cancel guard及发布／ACK周期保持，无新增寄存器；未发布私有值可不同。665528完整／定向边沿、5实际负控和raw／BLE对象／nativeDDR／owner／authority及四旧证明通过；主线程复验8维护源、597证据和72输入版本／58blob。首轮测试锚点失败保留，修复未改旧proof函数；raw `d2e39654…c38d`及唯一pin待新候选消费，窄failure／token仍需实测，不预记收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
