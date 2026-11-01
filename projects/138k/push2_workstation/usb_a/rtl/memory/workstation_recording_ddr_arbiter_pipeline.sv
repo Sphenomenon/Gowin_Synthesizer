@@ -222,7 +222,15 @@ module workstation_recording_ddr_arbiter_pipeline #(
     assign app_wend=app_wren;
     wire push=app_en && !command_write;
     wire pop=app_response && count!=0;
-    wire invalid_return_owner=count!=0 && (tags[read_pointer]==4'd3 || tags[read_pointer]>4'd8);
+    // Decode each authoritative tag before selecting the head's one-bit veto.
+    // No shadow state: same-edge tag corruption and X/Z still reach the live
+    // transport fault, including an unknown read index. Ownership/data retire
+    // on the original edge; the four-bit response-owner read is unchanged.
+    wire [DEPTH-1:0] invalid_owner_by_slot;
+    for(genvar slot=0;slot<DEPTH;slot=slot+1)begin:g_invalid_owner
+        assign invalid_owner_by_slot[slot]=tags[slot]==4'd3 || tags[slot]>4'd8;
+    end
+    wire invalid_return_owner=count!=0 && invalid_owner_by_slot[read_pointer];
     wire response_fault_now=app_response && (count==0 || invalid_return_owner);
     assign transport_fault_o=response_fault || response_fault_now;
     for(genvar client=0;client<9;client=client+1)begin:g_native_accept

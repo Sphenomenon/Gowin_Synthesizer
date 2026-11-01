@@ -392,6 +392,8 @@ M的[TF accepted响应尺寸维护阶段](push2_workstation/usb_a/reports/DUAL13
 
 W-v3的[strict审计来源兼容修正](push2_workstation/usb_a/reports/DUAL138K_W_RETURN_AUDIT_COMPAT_20261101.md)通过16项回归：新helper／bluetooth仅v3封存，起止复用同一来源tuple，M/W旧策略在两新依赖缺失时可继续验证；v3缺任一依赖仍拒绝。修正初始工具无条件读取依赖，未改旧seal或时序门，未启动EDA／硬件。
 
+W实测DDR长链的[owner组合预译码维护阶段](push2_workstation/usb_a/reports/DUAL138K_DDR_OWNER_PREDECODE_20261101.md)已完成：每entry先译invalid再单bit选址，tags仍唯一权威，原owner／返回数据及same-edge empty／invalid故障保持，无新状态／周期。实际e4cd6d…655d通过620880四态／边沿、3新负控、原native27场景＋6fault＋11负控及authority10相位／6负控；主线程重验248证据／2owned。推断存储及路由成本可能变化，需新候选实测，不预记收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
