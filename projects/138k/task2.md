@@ -610,3 +610,6 @@ W／M被动UART零字节的来源核对另已收口：实际debug_uart_tx确接U
 
 
 W26的[正式生产prepare与预先来源冻结](push2_workstation/usb_a/reports/DUAL138K_W26_PREPARE_20261102.json)已完成：来源c7818498，身份`0a6b1eb610b17895`，975原源／613暂存／129编译／1492冻结工具，M893／W1140锁。实际生产指定xPack15.2、安装ROM `9f15d539…6ae487ea`／ELF `5c8c422f…d149e6b9`；先前源验证默认Homebrew的398f ROM另列，不混成同一构建。与冻结W25相比仅boot.mem及未启用HDMI源码两暂存项变化，129个启用RTL的路径／顺序／字节均保持；ROM仍是实际readmem输入，必须重新综合和全量P&R。新综合已启动，预留D2110143，不预记资源／时序／业务通过，不改M26-1留板。
+
+
+手机配套的[当前可安装交付复核](push2_workstation/usb_a/reports/DUAL138K_ANDROID_CURRENT_DELIVERY_20261102.json)已完成：保留0.3.1-demo-d3／versionCode16和App业务源码／依赖，强制重跑83项单测（81过／2原实体skip／零失败）、35实际Gradle任务、构建／lint及API35独立模拟器5项instrumentation通过。正式App另经真实系统SAF选8秒静音文件，未选输出禁播、选本地扬声器后实际设备ID路由确认、播放／暂停均实测，静音夹具只验证手机文件／路由，不充当W音频闭环。主线程复验145来源／证据文件并查看截图；已将同一APK `c19645ec…139c5be`归档至本机ignored的`clients/android/artifacts/gowin-control-0.3.1-demo-d3-current-debug.apk`，README首入口从旧0.2.10历史说明改为当前安装入口。复用本机API35镜像创建cache隔离无窗口AVD，没有下载／改其他虚拟机。真实手机A2DP／BLE MIDI及W的D／25K／DAC仍待，25K→138K转发由用户实现，本轮不改25K。

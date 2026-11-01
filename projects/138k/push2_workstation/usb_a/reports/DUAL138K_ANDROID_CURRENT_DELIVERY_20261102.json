@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "stage": "Android_current_demo_d3_build_runtime_and_installable_delivery_recheck",
+  "recorded_utc": "2026-11-01T19:57:47.455673+00:00",
+  "source_git_head": "8fe366133238a19c7ed84fc2fc532960323231df",
+  "branch": "codex/dual-138k-workstation",
+  "versionName": "0.3.1-demo-d3",
+  "versionCode": 16,
+  "App_business_sources_changed": false,
+  "dependencies_changed": false,
+  "unit_tests": {
+    "tests": 83,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "forced_unit_rerun": true,
+  "actual_gradle_tasks_executed": 35,
+  "lint": {
+    "errors": 0,
+    "warnings": 7,
+    "warning_ids": [
+      "GradleDependency"
+    ]
+  },
+  "instrumentation": {
+    "tests": 5,
+    "passed": 5,
+    "seconds": 13.789,
+    "actual_local_MediaPlayer": true,
+    "MIDI_transport": "explicit fixture - not real 25K/GATT/radio"
+  },
+  "system_SAF_and_local_route": {
+    "file": "phone-file-selection-fixture-8s.wav",
+    "duration_seconds": 8,
+    "selected_through_system_picker": true,
+    "unselected_output_play_button_disabled": true,
+    "local_actual_output": "手机扬声器",
+    "actual_route_matches_selected_device_id": true,
+    "paused_after_play": true,
+    "audio_fixture": "silence solely for Android file/route tests, never W functional evidence"
+  },
+  "emulator": {
+    "avd": "dual138k-delivery-v4",
+    "serial": "emulator-5580",
+    "pid": 41229,
+    "ANDROID_AVD_HOME": "/Users/sphenicidition/.cache/gw138k-dual-20261031/android-current-delivery-v4/avds",
+    "system_image": "system-images;android-35;google_apis;arm64-v8a",
+    "window": false,
+    "audio": false,
+    "cores": 2,
+    "memory_mb": 2048,
+    "live_at_handoff": true,
+    "no_system_image_download": true,
+    "initial_AVD_create_failure_preserved": true,
+    "toolsdir_override_used": true
+  },
+  "APK": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/clients/android/artifacts/gowin-control-0.3.1-demo-d3-current-debug.apk",
+    "sha256": "c19645ec9e981a267738d3f637b94cbd7febfdc19d28c79ac9ae41a69139c5be",
+    "bytes": 9866240,
+    "ignored_local_artifact": true,
+    "committed_to_Git": false
+  },
+  "source_and_runtime_evidence_manifest": "/Users/sphenicidition/.cache/gw138k-dual-20261031/android-current-delivery-v4/verification.json",
+  "source_and_runtime_evidence_manifest_sha256": "e1ba7eff502885541cc00924205fc55dc935b22e234a8743127b2dfd345b43d6",
+  "root_recheck": "/Users/sphenicidition/.cache/gw138k-dual-20261031/android-current-delivery-v4/root-recheck.json",
+  "root_recheck_sha256": "4b200423d753c0dd91b3a37e409255ec102315fd4297454ffb08f78b0ff787ed",
+  "root_independently_rehashed_files": 145,
+  "root_reviewed_screenshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/android-current-delivery-v4/saf-playing-local.png",
+  "final_document_sha256": {
+    "clients/android/README.md": "0e2c8ca47300f7c0bbd6bead4704e03cee7d2f053b9f3c724b7f5b1ec0e43e47",
+    "clients/android/docs/DELIVERY_CHECK_20261102.md": "1596ece374951d7cbfbd42db17ed845cb830d9510cb899100aa541645c2a9a55"
+  },
+  "README_current_install_entry_corrected_from_historical_0_2_10": true,
+  "panel25K_forwarding_owner": "User; no25K source/firmware changes in this round.",
+  "physical_wireless_accepted": false,
+  "FPGA_or_Flash_operations": false,
+  "remaining_gaps": [
+    "Physical Android phone BLE MIDI permissions, connection, CCCD, GATT delivery and RF behavior",
+    "25K USB forwarding/138K sound, which is user-owned device work",
+    "Real A2DP pairing, SBC media negotiation, route loss and sustained phone streaming",
+    "W real D/Pitch/25K controls and I2S/DAC audio acceptance",
+    "Two physical board concurrent validation"
+  ]
+}
