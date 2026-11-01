@@ -218,6 +218,11 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
             minimum_request_pipeline_stages=3, destination_ack_and_payload_capture_share_enable=True))
 
     health = 'u_managed/display_observation_health'
+    if headless:
+        # The display's sticky bridge is retired, while the physical I2S
+        # observation drop count remains public compute-domain health.
+        for p in regs('u_managed/observation/drops', 'sync_value', range(32)).values():
+            clock(p, 'compute')
     loss_counters = () if headless else ((0, 'u_managed/observation/drops', 'sync_value'),
                                          (1, 'u_managed/display', 'drop_count'))
     for bit, count_scope, count_stem in loss_counters:
@@ -754,6 +759,11 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     """
     headless = result['profile'] == 'w-demo-audio'
     display_absence = audit_headless_display_absence(n) if headless else None
+    if headless:
+        active = [line for line in sdc.splitlines() if line.strip() and not line.lstrip().startswith('#')]
+        require(not any(re.search(r'(?<![\w/])' + re.escape(scope) + r'(?:/|(?=[\s}\]]))', line)
+                        for scope in HEADLESS_DISPLAY_SCOPES for line in active),
+                'headless profile retained retired display timing selector')
     mandatory = [line for line in protocol_constraints().splitlines()
                  if not headless and (RAM_SCOPE in line or 'u_managed/display_observation_health/loss_meta_' in line)
                  or 'u_managed/pc_health_meta_' in line

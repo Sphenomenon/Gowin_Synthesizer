@@ -67,7 +67,7 @@ PROFILE_REGISTRY = {
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
         integration_identity='custom138k-native-m-demo-base-revision1'),
-    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=2,
+    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=3,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
             hdmi_mode='disabled_worker_audio_only',display_policy='disabled_worker_audio_only_v1',
@@ -79,11 +79,13 @@ PROFILE_REGISTRY = {
             ae350_pcm_policy='ae350_decoded_pcm_source_v1',demo_role='W',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
-            recording_owner_policy='disabled_worker_audio_only_v1',usb_adapter_policy='worker_25k_v1'),
+            recording_owner_policy='disabled_worker_audio_only_v1',usb_adapter_policy='worker_25k_v1',
+            w_stream_pitch_policy='continuous_pcm_dual_head_v1'),
         provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
         recording_enabled=False,local_panel_enabled=False,ble_recording_storage_enabled=False,
         business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,demo_role='W',
-        worker_audio_only=True,integration_identity='custom138k-native-w-audio-only-revision2'),
+        worker_audio_only=True,worker_stream_pitch=True,
+        integration_identity='custom138k-native-w-audio-only-pitch-revision3'),
     CLASSIC_ROM96_NAME:dict(config=CLASSIC_ROM96_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_classic_runtime_rom96_failclosed_v1',ae350_boot_rom_bytes=98304,
@@ -149,10 +151,15 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 2:
+        configuration = dict(spec['configuration'])
+        configuration.pop('w_stream_pitch_policy')
+        spec = dict(spec, revision=2, worker_stream_pitch=False, configuration=configuration,
+                    integration_identity='custom138k-native-w-audio-only-revision2')
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 1:
         # Revision 1 had a real display and one BLE recording owner. Its
         # immutable candidates continue to be audited against that contract.
-        spec = dict(spec, revision=1, worker_audio_only=False,
+        spec = dict(spec, revision=1, worker_audio_only=False, worker_stream_pitch=False,
             recording_enabled=True, ble_recording_storage_enabled=True,
             integration_identity='custom138k-native-w-demo-d-only-revision1',
             configuration=dict(CPU_BUSINESS_CONFIGURATION,
@@ -390,6 +397,15 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile runtime PCM constraint policy changed')
     if any(staged_sdc.count(line) != 1 for line in pcm['sdc'].splitlines()):
         raise ValueError('workstation profile runtime PCM constraint installation changed')
+    from tools.workstation_stream_pitch_provenance import source_bundle as stream_pitch_source_bundle, IMPLEMENTATION
+    if metadata.get('runtime_audio', {}).get('stream_pitch_source') != stream_pitch_source_bundle(root):
+        raise ValueError('workstation streaming Pitch source provenance changed')
+    pitch_enabled = spec.get('worker_stream_pitch', False)
+    if ((IMPLEMENTATION in metadata['enabled_inputs']) != pitch_enabled or
+            (pitch_enabled and (not audio_only or spec.get('demo_role') != 'W' or
+             profile['configuration'].get('w_stream_pitch_policy') != 'continuous_pcm_dual_head_v1')) or
+            metadata.get('runtime_audio', {}).get('stream_pitch_compilation_enabled') is not pitch_enabled):
+        raise ValueError('workstation streaming Pitch explicit W compilation selection changed')
     from tools.workstation_delay_storage_provenance import source_bundle as delay_storage_source_bundle
     if metadata.get('runtime_audio', {}).get('delay_fifo_storage') != delay_storage_source_bundle(root):
         raise ValueError('workstation profile runtime delay FIFO storage policy changed')

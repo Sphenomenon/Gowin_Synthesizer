@@ -126,6 +126,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
     audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
+    stream_pitch=runtime and specification(profile['name']).get('worker_stream_pitch',False)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -180,6 +181,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_worker_audio_only import SOURCES as AUDIO_SOURCES, DEPENDENCIES as AUDIO_DEPENDENCIES, retired_source
         native_sources=tuple(x for x in native_sources if not retired_source(x))+AUDIO_SOURCES
         profile_dependencies+=AUDIO_DEPENDENCIES
+    if stream_pitch:
+        if not audio_only or demo_role != 'W' or profile['configuration'].get('w_stream_pitch_policy') != 'continuous_pcm_dual_head_v1':
+            raise ValueError('Streaming Pitch compilation requires the explicit W audio-only profile')
+        from tools.workstation_stream_pitch_provenance import IMPLEMENTATION
+        native_sources += (IMPLEMENTATION,)
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -454,13 +460,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if audio_only:
         metadata['scan_window']=dict(policy='disabled_worker_audio_only_v1',enabled=False)
         metadata['bluetooth']['capture_source']='absent_audio_only_no_recording'
-        metadata['remaining_gaps']=['physical A2DP/SBC/D/25K/DAC acceptance','complete IO/CDC/timing/PLL/P&R gates','streaming Pitch remains unimplemented']
+        metadata['remaining_gaps']=['physical A2DP/SBC/D/25K/DAC acceptance','complete IO/CDC/timing/PLL/P&R gates','streaming Pitch physical timing and hardware acceptance unverified' if stream_pitch else 'streaming Pitch remains unimplemented']
     if runtime:
         from tools.workstation_runtime_counter import metadata as counter_metadata
         metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
                                      if key not in ('sdc', 'runtime_cdc_sdc', 'bluetooth_sdc', 'shared_sdc', 'extra_cst')}
         metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
             top_provider=selected_provider,
+            stream_pitch_compilation_enabled=stream_pitch,
             common_parameter_owner='u_managed/runtime/service/workstation/parameters',
             clock_service_address='0xf8030000', legacy_capture_rate_hz=None if audio_only else 48000,
             tf_policy=profile['configuration'].get('tf_policy',

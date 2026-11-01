@@ -41,7 +41,7 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     from tools.workstation_native_protocol_audit import protocol_netlist
     from tools.workstation_runtime_pcm_cdc import Graph
     from tools.workstation_synthesis_netlist import IDENTIFIER
-    assert role in ('M', 'M-core', 'W'), 'grant RESET proof requires an explicit DEMO role'
+    assert role in ('M', 'M-core', 'W', 'W-audio'), 'grant RESET proof requires an explicit DEMO role'
     assert sdc is not None, 'grant RESET proof requires the installed SDC'
     n = protocol_netlist(netlist, mapping='routed')
     g = Graph(n)
@@ -50,12 +50,12 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     destinations = {prefix: domain for prefix, source, domain in RUNTIME_GRANT_CHAINS}
     prefixes = [prefix for prefix in RUNTIME_GRANT_RESET_INPUTS
                 if role == 'M' or not prefix.startswith('u_tf_audio/')]
-    if role == 'M-core':
+    if role in ('M-core', 'W-audio'):
         assert not any(name == 'u_tf_audio' or name.startswith('u_tf_audio/') for name in n.cells), \
-            'M-core grant policy requires every actual TF cell absent'
+            role + ' grant policy requires every actual TF cell absent'
         assert not any('u_tf_audio/' in line for line in sdc.splitlines()
                        if line.lstrip().startswith(('set_false_path ', 'set_max_delay '))), \
-            'M-core grant policy requires retired TF selectors absent'
+            role + ' grant policy requires retired TF selectors absent'
     result, protected = [], set()
     for prefix in prefixes:
         receivers = [[p for p in g.regs if re.fullmatch(re.escape(prefix) + f'_{bit}_s' + r'\d+', p)]
@@ -104,6 +104,135 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     return result
 
 
+def inspect_audio_only_retirement(cells, parameters, sdc):
+    """Prove the explicit W role has no display clock/output implementation.
+
+    DDR keeps its dedicated CLKDIV. The eight package TMDS outputs are
+    individually bound to unique ground-driven OBUFs, rather than treating
+    missing serializers as enough evidence that the pins are disabled.
+    """
+    assert sdc is not None, 'W-audio retirement requires the installed SDC'
+    retired = ('u_video', 'u_managed/display', 'u_managed/display_observation_health')
+    assert not any(name == scope or name.startswith(scope + '/')
+                   for name in cells for scope in retired), 'W-audio retained display hierarchy'
+    assert not any(kind == 'OSER10' for kind, ports in cells.values()), 'W-audio retained TMDS serializer'
+    assert {name for name, (kind, ports) in cells.items() if kind == 'CLKDIV'} == {
+        'u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv'}, 'W-audio dedicated divider inventory changed'
+    active = [line for line in sdc.splitlines() if line.strip() and not line.lstrip().startswith('#')]
+    assert not any(re.search(r'(?<![\w/])' + re.escape(scope) + r'(?:/|(?=[\s}\]]))', line)
+                   for line in active for scope in retired), \
+        'W-audio retained display timing selector'
+    assert not any(name in line for line in active for name in
+                   ('video_ref49', 'video_serial742', 'video_pixel148')), 'W-audio retained display clock declaration'
+    ground = {ports['G'] for kind, ports in cells.values() if kind == 'GND'}
+    outputs = {}
+    expected = ('tmds_clk_p', 'tmds_clk_n', *(f'tmds_data_{side}[{bit}]'
+                for side in ('p', 'n') for bit in range(3)))
+    for port in expected:
+        matches = [(name, kind, ports) for name, (kind, ports) in cells.items()
+                   if port in ports.values()]
+        assert len(matches) == 1, 'W-audio TMDS output is not a unique direct buffer: ' + port
+        name, kind, pins = matches[0]
+        assert kind == 'OBUF' and set(pins) == {'I', 'O'} and pins['O'] == port and pins['I'] in ground, \
+            'W-audio TMDS output is not static low: ' + port
+        outputs[port] = dict(buffer=name, source=pins['I'], constant=0)
+    selectors = [(name, pins) for name, (kind, pins) in cells.items() if kind == 'DCS']
+    assert len(selectors) == 1 and selectors[0][0] == 'u_managed/runtime/clocks/selector', \
+        'W-audio selected-clock DCS inventory changed'
+    selector, pins = selectors[0]
+    assert parameters.get((selector, 'DCS_MODE')) == '"FALLING"', 'W-audio DCS mode changed'
+    assert all(pins[pin] in ground for pin in ('CLKIN2', 'CLKIN3', 'SELFORCE')), \
+        'W-audio DCS unused input changed'
+    for pin, port in (('CLKIN0', 'clk_12m288'), ('CLKIN1', 'clk_16m9344')):
+        matches = [(name, kind, p) for name, (kind, p) in cells.items() if p.get('O') == pins[pin]]
+        assert len(matches) == 1 and matches[0][1] == 'IBUF' and matches[0][2].get('I') == port, \
+            'W-audio DCS reference bypasses unique package input buffer: ' + pin
+    select = re.fullmatch(r'\{([^,{}]+),([^,{}]+),([^,{}]+)\[1:0\]\}', pins['CLKSEL'])
+    assert select and select[1] in ground and select[2] in ground, 'W-audio DCS select upper bits changed'
+    select_drivers = []
+    output_pins = ('Q', 'F', 'O', 'CLKOUT', 'CLKOUT0', 'CLKOUT1', 'CLKOUT2', 'CLKOUT3', 'CLKOUT4', 'G', 'V')
+    def drivers_of(net):
+        return [(name, kind, p) for name, (kind, p) in cells.items()
+                if any(p.get(pin) == net for pin in output_pins)]
+    for pin in ('CLKIN0', 'CLKIN1'):
+        assert len(drivers_of(pins[pin])) == 1, 'W-audio DCS reference has a competing driver'
+    for bit in (0, 1):
+        drivers = drivers_of(select[3] + f'[{bit}]')
+        assert len(drivers) == 1, 'W-audio DCS select is not a unique register Q'
+        name, kind, driver = drivers[0]
+        assert re.fullmatch(r'u_managed/runtime/clocks/transaction/clock_select_o_' + str(bit) + r'_s\d+', name) \
+            and kind.startswith('DFF') and driver['CLK'] == 'clk_50m_d', 'W-audio DCS select owner/clock changed'
+        select_drivers.append(name)
+    serial_outputs = {}
+    for port, stem in (('dac_mclk', None), ('hp_bck', 'bck_o'), ('hp_ws', 'lrck_o'), ('hp_din', 'data_o')):
+        buffers = [(name, p) for name, (kind, p) in cells.items() if kind == 'OBUF' and p.get('O') == port]
+        assert len(buffers) == 1, 'W-audio I2S output buffer inventory changed: ' + port
+        name, p = buffers[0]
+        if stem is None:
+            assert p['I'] == pins['CLKOUT'], 'W-audio DAC MCLK bypasses DCS'
+            assert len(drivers_of(p['I'])) == 1, 'W-audio DAC MCLK has a competing driver'
+        else:
+            drivers = drivers_of(p['I'])
+            assert len(drivers) == 1, 'W-audio I2S output is not a unique register Q: ' + port
+            q, kind, qpins = drivers[0]
+            assert re.fullmatch(r'u_managed/runtime/serializer/' + stem + r'_s\d+', q) and \
+                kind.startswith('DFF') and qpins['CLK'] == pins['CLKOUT'], 'W-audio I2S output clock/owner changed: ' + port
+        serial_outputs[port] = dict(buffer=name, source=p['I'])
+    selected = pins['CLKOUT']
+    serializer = [(name, p) for name, (kind, p) in cells.items()
+                  if name.startswith('u_managed/runtime/serializer/') and kind.startswith('DFF')]
+    assert serializer and all(p['CLK'] == selected for name, p in serializer), 'W-audio serializer clock consumer bypass'
+    for line in (
+            'create_generated_clock -name selected48 -source [get_ports {clk_12m288}] -master_clock dac_ref12m288 -divide_by 1 [get_pins {u_managed/runtime/clocks/selector/CLKOUT}]',
+            'create_generated_clock -name selected44 -source [get_ports {clk_16m9344}] -master_clock dac_ref16m9344 -divide_by 1 -add [get_pins {u_managed/runtime/clocks/selector/CLKOUT}]',
+            'set_false_path -from [get_clocks {selected48}] -to [get_clocks {selected44}]',
+            'set_false_path -from [get_clocks {selected44}] -to [get_clocks {selected48}]'):
+        assert active.count(line) == 1, 'W-audio selected clock declaration/exclusion changed'
+    return dict(policy='explicit_worker_audio_only_routed_retirement_v1',
+                absent_scopes=list(retired), no_OSER10=True, hdmi_enabled=False,
+                only_ddr_CLKDIV=True, retired_display_selectors_absent=True,
+                static_low_tmds_outputs=outputs,
+                dcs=dict(path=selector, mode='FALLING', select_registers=select_drivers,
+                         serializer_registers=len(serializer), serial_outputs=serial_outputs,
+                         both_rate_clocks_and_exclusions_preserved=True))
+
+
+def normalize_audio_only_sdf(sdf, netlist):
+    """Collapse only identical delay repeats from Gowin's ground cell.
+
+    Some routed W files emit a ground INTERCONNECT twice. A second identical
+    arc adds no timing information; all non-ground, conflicting
+    or partially parsed duplicates remain errors. This is an in-memory view;
+    the original SDF is preserved and identified in the returned evidence.
+    """
+    import hashlib
+    grounds = set()
+    for match in re.finditer(r'^GND\s+(\\\S+|\w+)\s*\(\s*\.G\(([^()]*)\)\s*\);', netlist, re.M):
+        grounds.add(match[1].lstrip('\\') + '/G')
+    assert grounds, 'W-audio SDF normalization requires actual ground primitives'
+    seen, kept, removed = {}, [], []
+    for line in sdf.splitlines(keepends=True):
+        match = re.fullmatch(r'\s*\(INTERCONNECT\s+(\S+)\s+(\S+)\s+\(\d+\.\d+:\d+\.\d+:\d+\.\d+\)\)\s*', line)
+        generic = re.search(r'\(INTERCONNECT\s+(\S+)\s+(\S+)\s+', line)
+        if not generic:
+            kept.append(line)
+            continue
+        key = tuple(re.sub(r'\\(.)', r'\1', value) for value in generic.groups())
+        if key in seen:
+            assert key[0] in grounds and match and line == seen[key], \
+                'W-audio conflicting/non-ground duplicate SDF interconnect: ' + repr(key)
+            removed.append(dict(source=key[0], endpoint=key[1], exact_duplicate_line=line.rstrip('\n')))
+        else:
+            seen[key] = line
+            kept.append(line)
+    normalized = ''.join(kept)
+    return normalized, dict(policy='identical_actual_ground_interconnect_repeat_v1',
+        original_sha256=hashlib.sha256(sdf.encode()).hexdigest(),
+        normalized_sha256=hashlib.sha256(normalized.encode()).hexdigest(),
+        removed_duplicate_count=len(removed), removed_duplicates=removed,
+        raw_sdf_modified=False, conflicting_or_non_ground_duplicates_allowed=False, delay_values_preserved=True)
+
+
 def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native',
                                startup_grant_role=None):
     if not __debug__:
@@ -145,61 +274,73 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
             assert len(names) == 1, f"expected one routed cell for {pattern}, found {len(names)}"
             return names[0]
 
-        source = unique(r"/u_startup/serializer_reset_s\d+$")
-        prefix = source.rsplit("/u_startup/", 1)[0]
-        stages = [unique(re.escape(prefix) + rf"/u_startup/startup_pipe_{i}_s\d+$") for i in range(5)]
-        src_type, src = cells[source]
-        assert src_type == "DFFPE", "serializer reset is not the preserved active-high reset FF"
-        assert parameters[(source, "INIT")] == "1'b1", "serializer reset does not initialize asserted"
-        ground = {ports["G"] for kind, ports in cells.values() if kind == "GND"}
-        power = {ports["V"] for kind, ports in cells.values() if kind == "VCC"}
-        assert src["D"] in ground and src["CE"] in power, "serializer reset is not a constant-zero release FF"
-        for index, name in enumerate(stages):
-            kind, ports = cells[name]
-            assert kind == "DFFCE" and ports["CLK"] == src["CLK"], "startup stages must share the control clock"
-            assert parameters[(name, "INIT")] == "1'b0", "startup gate/pipeline does not initialize disabled"
-            assert ports["CLEAR"] == src["PRESET"] and ports["CE"] in power, "startup reset/enable mismatch"
-            assert (ports["D"] in power if index == 0 else ports["D"] == cells[stages[index-1]][1]["Q"]), \
-                "startup no longer waits four full control-clock cycles after reset release"
+        audio_only = startup_grant_role == 'W-audio'
+        retirement = None
+        if audio_only:
+            assert ddr_audit is not None, 'W-audio requires the complete official DDR source proof'
+            retirement = inspect_audio_only_retirement(cells, parameters, sdc)
+            source = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_rsti_reg_2_s0'
+            src_type, src = cells[source]
+            assert src_type == 'DFFCE', 'W-audio DDR reset source primitive changed'
+            ground = {ports['G'] for kind, ports in cells.values() if kind == 'GND'}
+            power = {ports['V'] for kind, ports in cells.values() if kind == 'VCC'}
+            serdes, expected_lanes, clock_serializer, word = [], {}, None, None
+        else:
+            source = unique(r"/u_startup/serializer_reset_s\d+$")
+            prefix = source.rsplit("/u_startup/", 1)[0]
+            stages = [unique(re.escape(prefix) + rf"/u_startup/startup_pipe_{i}_s\d+$") for i in range(5)]
+            src_type, src = cells[source]
+            assert src_type == "DFFPE", "serializer reset is not the preserved active-high reset FF"
+            assert parameters[(source, "INIT")] == "1'b1", "serializer reset does not initialize asserted"
+            ground = {ports["G"] for kind, ports in cells.values() if kind == "GND"}
+            power = {ports["V"] for kind, ports in cells.values() if kind == "VCC"}
+            assert src["D"] in ground and src["CE"] in power, "serializer reset is not a constant-zero release FF"
+            for index, name in enumerate(stages):
+                kind, ports = cells[name]
+                assert kind == "DFFCE" and ports["CLK"] == src["CLK"], "startup stages must share the control clock"
+                assert parameters[(name, "INIT")] == "1'b0", "startup gate/pipeline does not initialize disabled"
+                assert ports["CLEAR"] == src["PRESET"] and ports["CE"] in power, "startup reset/enable mismatch"
+                assert (ports["D"] in power if index == 0 else ports["D"] == cells[stages[index-1]][1]["Q"]), \
+                    "startup no longer waits four full control-clock cycles after reset release"
 
-        pll_name = prefix + "/u_tmds/PLL_inst"
-        divider_name = prefix + "/u_pixel_div"
-        assert cells[pll_name][0] == "PLL" and cells[divider_name][0] == "CLKDIV", "dedicated clock primitives missing"
-        pll, divider = cells[pll_name][1], cells[divider_name][1]
-        assert parameters[(pll_name, "CLKOUT0_EN")] == '"TRUE"' and parameters[(divider_name, "DIV_MODE")] == '"5"', \
-            "serial output or dedicated /5 divider configuration changed"
-        assert pll["ENCLK0"] == cells[stages[4]][1]["Q"], "serial PLL output gate is not controlled by startup stage 4"
-        assert divider["HCLKIN"] == pll["CLKOUT0"] and divider["RESETN"] == cells[stages[0]][1]["Q"], \
-            "pixel divider does not share the stopped-clock startup sequence"
-        serdes = [(name, ports) for name, (kind, ports) in cells.items() if kind == "OSER10"]
-        assert len(serdes) == 4, f"expected four routed OSER10 lanes, found {len(serdes)}"
-        for name, ports in serdes:
-            assert ports["RESET"] == src["Q"], f"{name}: reset is not driven by the preserved startup FF"
-            assert ports["FCLK"] == pll["CLKOUT0"] and ports["PCLK"] == divider["CLKOUT"], \
-                f"{name}: clocks bypass the dedicated startup gate/divider"
+            pll_name = prefix + "/u_tmds/PLL_inst"
+            divider_name = prefix + "/u_pixel_div"
+            assert cells[pll_name][0] == "PLL" and cells[divider_name][0] == "CLKDIV", "dedicated clock primitives missing"
+            pll, divider = cells[pll_name][1], cells[divider_name][1]
+            assert parameters[(pll_name, "CLKOUT0_EN")] == '"TRUE"' and parameters[(divider_name, "DIV_MODE")] == '"5"', \
+                "serial output or dedicated /5 divider configuration changed"
+            assert pll["ENCLK0"] == cells[stages[4]][1]["Q"], "serial PLL output gate is not controlled by startup stage 4"
+            assert divider["HCLKIN"] == pll["CLKOUT0"] and divider["RESETN"] == cells[stages[0]][1]["Q"], \
+                "pixel divider does not share the stopped-clock startup sequence"
+            serdes = [(name, ports) for name, (kind, ports) in cells.items() if kind == "OSER10"]
+            assert len(serdes) == 4, f"expected four routed OSER10 lanes, found {len(serdes)}"
+            for name, ports in serdes:
+                assert ports["RESET"] == src["Q"], f"{name}: reset is not driven by the preserved startup FF"
+                assert ports["FCLK"] == pll["CLKOUT0"] and ports["PCLK"] == divider["CLKOUT"], \
+                    f"{name}: clocks bypass the dedicated startup gate/divider"
 
-        # Bind all four serializers to their actual differential package
-        # ports. The clock is a serialized 00000/11111 word, not raw CLKDIV /5.
-        assert lane_layout in {'native', 'legacy'}, 'unknown explicit TMDS layout'
-        clock_serializer = ('u_video/u_dvi/clock_lane/serializer' if lane_layout == 'native'
-                            else 'u_video/u_dvi/clock_phy/tmds_serdes_inst0')
-        expected_lanes = {clock_serializer: ("tmds_clk_p", "tmds_clk_n")}
-        data_lanes = [(f'u_video/u_dvi/data_lanes[{i}].serializer/serializer' if lane_layout == 'native'
-                       else f'u_video/u_dvi/gen_enc[{i}].dvi_tx_tmds_phy_inst/tmds_serdes_inst0') for i in range(3)]
-        expected_lanes.update({name: (f"tmds_data_p[{i}]", f"tmds_data_n[{i}]")
-                               for i, name in enumerate(data_lanes)})
-        assert {name for name, _ in serdes} == set(expected_lanes), "TMDS serializer lane inventory changed"
-        for name, ports in serdes:
-            buffer_name = name.rsplit("/", 1)[0] + ('/differential' if lane_layout == 'native' else '/tmds_bufds_isnt0')
-            kind, buffer = cells[buffer_name]
-            assert kind == "ELVDS_OBUF" and buffer["I"] == ports["Q"] and \
-                (buffer["O"], buffer["OB"]) == expected_lanes[name], \
-                f"{name}: serializer no longer directly drives its audited TMDS differential ports"
-        clock_ports = cells[clock_serializer][1]
-        word = '0000011111' if lane_layout == 'native' else '1111100000'
-        for bit in range(10):
-            assert clock_ports[f"D{bit}"] in (power if word[9-bit] == '1' else ground), \
-                f"TMDS clock D{bit} differs from the audited 10'b{word} clock word"
+            # Bind all four serializers to their actual differential package
+            # ports. The clock is a serialized 00000/11111 word, not raw CLKDIV /5.
+            assert lane_layout in {'native', 'legacy'}, 'unknown explicit TMDS layout'
+            clock_serializer = ('u_video/u_dvi/clock_lane/serializer' if lane_layout == 'native'
+                                else 'u_video/u_dvi/clock_phy/tmds_serdes_inst0')
+            expected_lanes = {clock_serializer: ("tmds_clk_p", "tmds_clk_n")}
+            data_lanes = [(f'u_video/u_dvi/data_lanes[{i}].serializer/serializer' if lane_layout == 'native'
+                           else f'u_video/u_dvi/gen_enc[{i}].dvi_tx_tmds_phy_inst/tmds_serdes_inst0') for i in range(3)]
+            expected_lanes.update({name: (f"tmds_data_p[{i}]", f"tmds_data_n[{i}]")
+                                   for i, name in enumerate(data_lanes)})
+            assert {name for name, _ in serdes} == set(expected_lanes), "TMDS serializer lane inventory changed"
+            for name, ports in serdes:
+                buffer_name = name.rsplit("/", 1)[0] + ('/differential' if lane_layout == 'native' else '/tmds_bufds_isnt0')
+                kind, buffer = cells[buffer_name]
+                assert kind == "ELVDS_OBUF" and buffer["I"] == ports["Q"] and \
+                    (buffer["O"], buffer["OB"]) == expected_lanes[name], \
+                    f"{name}: serializer no longer directly drives its audited TMDS differential ports"
+            clock_ports = cells[clock_serializer][1]
+            word = '0000011111' if lane_layout == 'native' else '1111100000'
+            for bit in range(10):
+                assert clock_ports[f"D{bit}"] in (power if word[9-bit] == '1' else ground), \
+                    f"TMDS clock D{bit} differs from the audited 10'b{word} clock word"
 
         ibuf = unique(r"^clk_50m_ibuf$")
         assert cells[ibuf][0] == "IBUF" and cells[ibuf][1]["I"] == "clk_50m" and cells[ibuf][1]["O"] == src["CLK"], \
@@ -246,7 +387,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
             return {"source": reset_source, "source_clock_route_max_ns": clock,
                     "source_clock_to_q_max_ns": cq, "paths": result}
 
-        divider_audit = reset_distribution(stages[0], [(divider_name, "RESETN")])
+        divider_audit = ({'gate_applied': False, 'paths': [], 'reason': 'explicit W-audio has no pixel divider'}
+                         if audio_only else reset_distribution(stages[0], [(divider_name, "RESETN")]))
         ddr_distribution = None
         resolved_logic = {}
         if ddr_audit is not None:
@@ -449,8 +591,10 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                     "source_clock_to_q_max_ns": clock_to_q, "paths": paths,
                     "tmds_clock_lane": {"serializer": clock_serializer, "word_d9_to_d0": word,
                                          "low_unit_intervals": 5, "high_unit_intervals": 5,
-                                         "differential_ports": list(expected_lanes[clock_serializer])},
-                    "pixel_divider": divider_audit, "ddr_phy": ddr_distribution, 'resolved_logic': resolved_logic,
+                                         "differential_ports": list(expected_lanes.get(clock_serializer, ())),
+                                         "gate_applied": not audio_only},
+                    "pixel_divider": divider_audit, "ddr_phy": ddr_distribution,
+                    "audio_only_retirement": retirement, "hdmi_enabled": not audio_only, 'resolved_logic': resolved_logic,
                     "sdc_reset_exception_coverage": reset_constraints,
                     "synchronous_grant_reset_inputs": grant_inputs}
     except (AssertionError, KeyError, ValueError) as error:

@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 sys.dont_write_bytecode = True
-from workstation_serializer_startup_audit import inspect_serializer_startup
+from workstation_serializer_startup_audit import inspect_serializer_startup, normalize_audio_only_sdf
 from workstation_ae350_clock_placement import audit_routed as audit_ae350_clock
 from workstation_ae350_rtc import (verify_prepared as verify_ae350_rtc, audit_netlist as audit_rtc,
                                   validate_constraints as validate_rtc_constraints,
@@ -52,12 +52,14 @@ def physical_snapshot(physical, additional=()):
     return inputs, snapshot
 
 
-def pll_inventory(cells, *, local_panel_enabled=True):
-    """Require the whole seven/six PLL set before checking any shared tuple."""
+def pll_inventory(cells, *, local_panel_enabled=True, hdmi_enabled=True):
+    """Require the complete explicitly selected PLL set before any tuple."""
     from workstation_runtime_clock_audit import PLL_PATHS
-    if type(local_panel_enabled) is not bool:
-        raise ValueError('PLL local-panel selection must be explicit boolean')
+    if type(local_panel_enabled) is not bool or type(hdmi_enabled) is not bool:
+        raise ValueError('PLL local-panel/HDMI selections must be explicit booleans')
     expected = PLL_PATHS if local_panel_enabled else PLL_PATHS - {'u_lcd/u_pll/PLL_inst'}
+    if not hdmi_enabled:
+        expected = {name for name in expected if not name.startswith('u_video/')}
     actual = {name for name, (kind, unused) in cells.items() if kind == 'PLL'}
     if actual != expected:
         raise ValueError('Selected PLL inventory changed: missing=' + str(sorted(expected - actual)) +
@@ -65,12 +67,12 @@ def pll_inventory(cells, *, local_panel_enabled=True):
     return sorted(actual)
 
 
-def shared_clock_plls(sdf, netlist, routed_type, *, local_panel_enabled=True):
+def shared_clock_plls(sdf, netlist, routed_type, *, local_panel_enabled=True, hdmi_enabled=True):
     """Preserve all ten-bit control tuples and the original 10ns budget."""
     evidence, errors = {}, []
     try:
         routed = routed_type(sdf, netlist)
-        pll_inventory(routed.cells, local_panel_enabled=local_panel_enabled)
+        pll_inventory(routed.cells, local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled)
         prefixes = ('u_audio_clock/g_hardware.u_pll', 'u_usb_pll', 'u_cpu_pll')
         if local_panel_enabled:
             prefixes += ('u_lcd/u_pll',)
@@ -175,10 +177,16 @@ def demo_source_context(physical, inputs, snapshot):
     firmware = parent['ae350_firmware']
     for relative, expected in firmware['artifacts_sha256'].items():
         snapshot[source / firmware['evidence_directory'] / relative] = expected
+    from tools.workstation_profile import prepared_specification
+    audio_only = prepared_specification(profile).get('worker_audio_only', False)
+    if audio_only and (role != 'W' or profile['configuration'].get('display_policy') !=
+                       'disabled_worker_audio_only_v1'):
+        raise ValueError('Audio-only PLL role is not the explicit sealed W profile')
     return stage, parent, False, dict(policy='sealed_immutable_demo_profile_source',
         candidate_identity=profile['candidate_identity'], demo_role=role,
-        startup_grant_role=('M-core' if role == 'M' and profile['configuration'].get('tf_policy') ==
-                            'disabled_first_m_core_demo_v1' else role),
+        startup_grant_role=('W-audio' if audio_only else 'M-core' if role == 'M' and
+                            profile['configuration'].get('tf_policy') == 'disabled_first_m_core_demo_v1' else role),
+        hdmi_enabled=not audio_only,
         prepared_profile_sha256=sha(profile_path), vg_sha256=audit['netlist_sha256'],
         synthesis_evidence_scope='hash_bound_Gowin_emitted_log_not_driver_stdout',
         synthesis_log_sha256=audit['synthesis_log_sha256'],
@@ -372,7 +380,11 @@ def audit(physical, self_test=False, workspace=None, output=None):
     config_errors, config = check_build.inspect_ddr_configuration_audit()
     sdf, vo, sdc = (path.read_text() for path in (base.with_suffix('.sdf'), base.with_suffix('.vo'), physical / 'physical.sdc'))
     demo_role = selection.get('demo_role')
+    hdmi_enabled = selection.get('hdmi_enabled', True)
     startup_grant_role = selection.get('startup_grant_role', demo_role)
+    sdf_normalization = None
+    if not hdmi_enabled:
+        sdf, sdf_normalization = normalize_audio_only_sdf(sdf, vo)
     demo_held_handshakes, demo_held_errors = {}, []
     if demo_role:
         from tools.workstation_performance_reset import (
@@ -391,8 +403,16 @@ def audit(physical, self_test=False, workspace=None, output=None):
             demo_held_errors.append(str(error))
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
                                                          startup_grant_role=startup_grant_role)
-    video_errors, video = inspect_video_pll_init(sdf, vo, stage)
-    shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled)
+    if hdmi_enabled:
+        video_errors, video = inspect_video_pll_init(sdf, vo, stage)
+    else:
+        # Retirement is proved on this actual VO/SDC by the startup gate,
+        # rather than inheriting a success value from synthesis metadata.
+        video_errors = [] if startup.get('audio_only_retirement') else ['W-audio routed video retirement not proved']
+        video = dict(gate_applied=False, hdmi_enabled=False,
+                     retirement=startup.get('audio_only_retirement'))
+    shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign,
+        local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled)
     core_clock, core_errors = {}, []
     cst = (physical / 'physical.cst').read_text()
     timing_report = base.with_suffix('.tr').read_text()
@@ -413,19 +433,23 @@ def audit(physical, self_test=False, workspace=None, output=None):
     if self_test:
         if errors:
             raise ValueError('Positive PLL gate must pass before negative mutation checks: ' + str(errors))
-        for kind, name, pin, reason in (
+        mutations = (
                 ('OSER10', 'u_video/u_dvi/clock_lane/serializer', 'D0', 'clock word'),
                 ('ELVDS_OBUF', 'u_video/u_dvi/clock_lane/differential', 'I', 'directly drives'),
-                ('PLL', 'u_usb_pll/PLL_inst', 'RESET', 'PLL control constant changed')):
-            match = re.search(r'^' + kind + r'\s+\\' + re.escape(name) + r'\s*\((.*?)^\);', vo, re.M | re.S)
+                ('PLL', 'u_usb_pll/PLL_inst', 'RESET', 'PLL control constant changed'))
+        if not hdmi_enabled:
+            mutations = (('OBUF', 'tmds_clk_p_obuf', 'I', 'not static low'), mutations[-1])
+        for kind, name, pin, reason in mutations:
+            match = re.search(r'^' + kind + r'\s+(?:\\)?' + re.escape(name) + r'\s*\((.*?)^\);', vo, re.M | re.S)
             if match is None:
                 raise ValueError('Negative mutation target missing: ' + name)
             changed, count = re.subn(r'(\.' + pin + r'\()([^)]*)',
-                                     r'\g<1>' + ('VCC' if kind == 'PLL' else 'GND'), match[0])
+                                     r'\g<1>' + ('VCC' if kind in ('PLL', 'OBUF') else 'GND'), match[0])
             if count != 1 or changed == match[0]:
                 raise ValueError('Negative mutation is not exact: ' + name)
             broken = vo[:match.start()] + changed + vo[match.end():]
-            bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled) if kind == 'PLL' else
+            bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign,
+                           local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled) if kind == 'PLL' else
                            inspect_serializer_startup(sdf, broken, ddr, sdc, lane_layout='native',
                                                       startup_grant_role=startup_grant_role))
             if not bad or not any(reason in message for message in bad):
@@ -461,12 +485,13 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 scope='Maintained native PLL/startup and selected DEMO held-mailbox subgates; not full STA/CDC/electrical or board acceptance',
                 pll_gate_passed=not errors, errors=errors, ddr_source=ddr, ddr_configuration=config,
                 serializer_startup=startup, video_pll=video, shared_clock_plls=shared,
+                sdf_normalization=sdf_normalization,
                 ae350_dedicated_core_clock=core_clock, ae350_dedicated_core_clock_errors=core_errors,
                 ae350_rtc=rtc, ae350_rtc_errors=rtc_errors,
                 demo_held_handshake_audit=demo_held_handshakes, demo_held_handshake_errors=demo_held_errors,
                 demo_held_handshake_gate_passed=(not demo_held_errors
                     if demo_held_handshakes.get('gate_applied') or demo_held_errors else None),
-                profile_selection=selection, expected_pll_count=7 if local_panel_enabled else 6,
+                profile_selection=selection, expected_pll_count=(7 if local_panel_enabled else 6) - (0 if hdmi_enabled else 2),
                 expected_shared_tuple_count=4 if local_panel_enabled else 3,
                 audit_workspace=str(view),
                 negative_checks=negatives, evidence_sha256=evidence,

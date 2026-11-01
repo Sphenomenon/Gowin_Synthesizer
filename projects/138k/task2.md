@@ -192,6 +192,8 @@ M25的[完整prepare／新综合与D2110133启动](push2_workstation/usb_a/repor
 
 M25 `D2110133`的[全量P&R及完整物理子门](push2_workstation/usb_a/reports/DUAL138K_M25_DIRECTED_PHYSICAL_20261101.json)已完成：377.508秒、12输入前后不变，物理BSRAM246／DSP116／CLS46606／FF43272／LUT48015／ALU11922／SSRAM99；setup109／最差−.203ns，hold0／最差+.146ns，recovery+3.033／removal+.281ns。DDR原3.500ns且指定hold+.482ns；新brand glyph地址已退出top50，但expected_sequence1→writer req_addr CE、audio rate→vector phase／envelope及read_x→HMI文字仍负。actual VO native60项45过／15具名skip／61负控、boundary7／69、六PLL／7负控、performance17／8及clk50四报告全正；通用HMI guard的skip不冒记执行，另以新VG库存及实际routed来源／16组合frameCE／reset／SDC和8破坏控制补证，60live／8常0／61unused保持。完整STA与物理CDC接受仍false，未上板，M22 v6留板、Flash未写；主线程完整重hash封存见报告，不以局部门覆盖失败。
 
+W22的[显式revision3实际来源／全量综合／134物理启动](push2_workstation/usb_a/reports/DUAL138K_W22_SOURCE_SYNTHESIS_20261101.json)已完成来源阶段：连续Pitch实际加入W GPRJ，M不编译该实现，M配置／features／policy只刷新来源锁；M866／W1113均逐hash核对。新W身份187bb0b3d2cab14f，970原源／610暂存／129编译／1466冻结工具；完整综合113.520秒，612输入前后不变，FF27210／LUT30832／ALU11298／BSRAM等价192（物理另测）。旧112反馈门真实拒绝后，独立strict v3只显式W Pitch接受精确142位，新增30位直接绑定唯一parameters Q，bit36常1；150实际VG负控全拒，source148／dest149统计如实，旧131112位结果不改。17来源／17审计／audio-only4／Pitch8正28负、W131 native60／23skip／64负控与boundary7／69通过，W-only4PLL／3tuple／6grant及47独立负控、M132默认行为逐项保全；645个完全相同GND重复SDF只内存折叠，448非零至.537ns保持，原SDF不改。W131完整P&R真实BSRAM210／DSP57／CLS30822，setup2304／−2.868ns、hold2／−4.376ns失败并保留。134普通CST全量P&R已真实启动，DDR原3.500ns不放宽，不把定向比较先前拒绝改成通过；新资源／STA／手机DAC仍待验。既有PLL单测8处文案断言失败及单独fixture修复后续另记，不冒记全测试通过；本阶段不碰板。
+
 ## 6. 分阶段任务与退出条件
 
 **当前状态解释：** 以下按日期保留的W完整HDMI／录音证据属于此前候选；不代表本轮仍需交付这些能力，也不证明最新无显示／无录音配置已通过。当前执行与验收以第5.1—5.4节最新范围为准。

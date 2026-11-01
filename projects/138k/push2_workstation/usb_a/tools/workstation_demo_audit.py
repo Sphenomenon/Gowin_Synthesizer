@@ -197,7 +197,7 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False):
+def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, stream_pitch_enabled=False):
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
     features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
     if worker_audio_only:
@@ -205,6 +205,12 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
         features = {k: p for k, p in features.items() if not k.startswith('hdmi')}
         features.update(audio_memory='u_audio_memory', audio_memory_bist='u_audio_memory/u_bist',
                         audio_memory_queues='u_audio_memory/u_arbiter')
+    pitch_scope = WS + '/streaming_pcm_pitch.pitch'
+    if stream_pitch_enabled:
+        require(role == 'W' and worker_audio_only, 'streaming Pitch requires explicit audio-only W')
+        features.update(stream_pitch=pitch_scope,
+                        stream_pitch_history_left=pitch_scope + '/history_left',
+                        stream_pitch_history_right=pitch_scope + '/history_right')
     require(not any(p not in rows for p in features.values()),
             'retained features missing: ' + ', '.join(k for k, p in features.items() if p not in rows))
     require(rows['u_native_usb/host']['Bsram'] >= 38 and
@@ -215,6 +221,14 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
             continue
         require(rows[features[name]]['Bsram'] >= minimum, 'retained storage swept: ' + name)
     retired = ['u_music', 'u_recording', 'u_lcd', 'u_usb_host', 'u_push']
+    require(sum(c['kind'] == 'workstation_stream_pitch' for c in netlist.cells.values()) ==
+            (1 if stream_pitch_enabled else 0), 'streaming Pitch actual implementation inventory changed')
+    if stream_pitch_enabled:
+        require(all(rows[features[name]]['Bsram'] >= 4 for name in
+                    ('stream_pitch_history_left', 'stream_pitch_history_right')),
+                'streaming Pitch stereo history storage swept')
+    else:
+        retired += [pitch_scope]
     if role == 'M':
         retired += ['u_bluetooth', 'u_ble_pcm_cdc']
         if not tf_enabled:
@@ -258,6 +272,7 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
     return dict(retained={k: dict(instance=p, **rows[p]) for k, p in features.items()},
                 retired_prefixes=retired, role_retirement_verified=True,
                 worker_audio_only=worker_audio_only,
+                stream_pitch_enabled=stream_pitch_enabled,
                 synthesis_storage_only=True, hardware_functionality_verified=False)
 
 
@@ -282,18 +297,22 @@ def audit_m_voice_storage(netlist):
                 concurrent_voice_functionality_hardware_verified=False)
 
 
-def audit_worker_feedback(netlist, clocks):
+def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False):
     """Prove the W snapshot that the 25K firmware actually reads.
 
     W removes Push display delivery, whose unused destination_valid pulse is
-    swept. Its 112 live parameter bits and complete request/ack mailbox remain;
-    accepting an arbitrary smaller payload or an unknown register is forbidden.
+    swept. The sealed old role has 112 live bits. Explicit streaming Pitch
+    adds 30 fixed bits, with each new value tied to the sole parameter owner;
+    no arbitrary smaller payload or unknown register is accepted.
     """
     prefix = 'u_native_usb/input_owner/feedback/'
     source_clock = clocks['clocks']['audio_76m8']['net']
     destination_clock = clocks['clocks']['usb_48m']['net']
     bits = {*range(32, 35), *range(37, 42), *range(56, 64), *range(132, 196),
             *range(224, 245), 276, *range(278, 288)}
+    require(type(stream_pitch_enabled) is bool, 'W feedback Pitch selection must be explicit boolean')
+    if stream_pitch_enabled:
+        bits |= {36, *range(245, 253), *range(256, 278)}
     regs = {p: c for p, c in netlist.cells.items()
             if p.startswith(prefix) and c['kind'].startswith('DFF')}
     groups = {}
@@ -338,11 +357,33 @@ def audit_worker_feedback(netlist, clocks):
                 netlist.pin(held, 'CE') == netlist.pin(request, 'CE') and
                 netlist.pin(captured, 'CE') == netlist.pin(ack, 'CE'),
                 'W feedback immutable payload/capture enable changed: ' + str(bit))
-    return dict(policy='worker_25k_112_parameter_bit_mailbox_v1',
+    pitch_source = None
+    if stream_pitch_enabled:
+        from tools.workstation_runtime_pcm_cdc import Graph
+        graph = Graph(netlist)
+        source_rows = []
+        require(netlist.pin(groups['held_data'][36], 'D') in graph.high,
+                'W feedback asserted state bit36 changed')
+        for low, stem, width in ((245, 'bend_index_o', 8), (256, 'target_ratio_o', 22)):
+            for bit in range(width):
+                register = graph.register(WS + '/parameters', stem, bit)
+                source_net = netlist.pin(groups['held_data'][low + bit], 'D')
+                require(graph.drivers[source_net] == [(register, 'Q')] and
+                        netlist.cells[register]['kind'].startswith('DFF') and
+                        netlist.pin(register, 'CLK') == source_clock,
+                        'W feedback streaming Pitch sole-owner source bit changed: ' + str(low + bit))
+                source_rows.append(dict(payload_bit=low + bit, owner_register=register,
+                                        owner_output='Q', source_net=source_net, clock=source_clock))
+        pitch_source = dict(state_bit36_constant=1, direct_parameter_Q_bits=source_rows,
+                            committed_parameter_owner=WS + '/parameters',
+                            parallel_parameter_state_allowed=False)
+    return dict(policy=('worker_25k_142_streaming_pitch_parameter_bit_mailbox_v2' if stream_pitch_enabled else
+                        'worker_25k_112_parameter_bit_mailbox_v1'),
                 source_clock=source_clock, destination_clock=destination_clock,
                 source_registers=len(source) + len(bits), destination_registers=len(dest) + len(bits),
                 live_payload_bits=sorted(bits), request=request, acknowledge=ack,
                 source_domain_verified=True, payload_bit_identity_verified=True,
+                stream_pitch_source=pitch_source,
                 unused_Push_destination_valid_swept=True, physical_timing_verified=False)
 
 
@@ -577,7 +618,8 @@ def audit(root, output, metadata):
     totals, rows = hierarchy_counts(ET.parse(report).getroot())
     features = audit_features(role, rows, netlist,
         tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
-        worker_audio_only=worker_audio_only)
+        worker_audio_only=worker_audio_only,
+        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1')
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -603,7 +645,8 @@ def audit(root, output, metadata):
             actual_synthesis=audit_fifo_reset(PcmNetlist(vg_text, TOP)))
     bridge = audit_bridge_resets(vg_text, TOP)
     resets = audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8')
-    feedback = (audit_worker_feedback(netlist, base_clocks) if role == 'W' else
+    feedback = (audit_worker_feedback(netlist, base_clocks,
+        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1') if role == 'W' else
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist,

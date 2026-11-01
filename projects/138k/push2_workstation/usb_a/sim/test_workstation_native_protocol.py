@@ -15,7 +15,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_native_protocol_audit import (
-    audit_native_protocol, protocol_netlist, validate_native_protocol_sdc, RAM_SCOPE, RAM_STEM, TOP,
+    audit_headless_display_absence, audit_native_protocol, protocol_netlist, validate_native_protocol_sdc, RAM_SCOPE, RAM_STEM, TOP,
     APB, DELAY, DMA, audit_demo_held_boundaries,
 )
 from tools.workstation_runtime_pcm_cdc import Graph
@@ -130,8 +130,20 @@ class ActualNativeFixture(unittest.TestCase):
         self.mutations.append(dict(case=name, rejected=True, error=str(error.exception)))
 
 class ActualNativeProtocol(ActualNativeFixture):
+    def display_only(self):
+        if self.profile == 'w-demo-audio':
+            audit_headless_display_absence(self.n)
+            self.skipTest('explicit W-audio retires display/RAM and display-loss monitor; actual absence verified')
+
     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        if self.profile == 'w-demo-audio':
+            self.assertEqual(result['mailbox_count'], 2)
+            self.assertEqual({row['scope'] for row in result['mailboxes']},
+                             {'u_managed/pc_bytes', 'u_managed/health_snapshot'})
+            self.assertTrue(result['display_absence']['video_hierarchy_absent'])
+            self.assertFalse(result['physical_cdc_accepted'])
+            return
         self.assertEqual(result['mailbox_count'], 5 if result.get('hmi_inventory_reviewed') else 4)
         display = next(x for x in result['mailboxes'] if x['scope'] == 'u_managed/display')
         self.assertEqual(display['registered_ram_bits'], 98)
@@ -146,6 +158,40 @@ class ActualNativeProtocol(ActualNativeFixture):
                 self.assertEqual([sum(fnmatch.fnmatchcase(pin, s) for pin in pins) for s in bodies[0].split()],
                                  [3 if self.mapping == 'synthesis' else 6])
                 self.assertEqual([sum(fnmatch.fnmatchcase(pin, s) for pin in pins) for s in bodies[1].split()], [1] * 98)
+
+    def test_headless_display_cannot_return_in_cells_hierarchy_or_sdc(self):
+        if self.profile != 'w-demo-audio':
+            self.skipTest('explicit W-audio retirement only')
+        import copy
+        for scope in ('u_video', 'u_managed/display', 'u_managed/display_observation_health'):
+            path = scope + '/forbidden_retired_owner'
+            source = 'u_managed/pc_bytes/ack_meta_s0'
+            self.n.cells[path] = copy.deepcopy(self.n.cells[source])
+            self.n.cells[path]['ports']['Q'] = 'forbidden_retired_output'
+            self.n.scopes[path] = self.n.scopes[source]
+            try:
+                with self.assertRaisesRegex(ValueError, 'headless profile retained display/video') as error:
+                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+                self.mutations.append(dict(case='headless cell returned ' + scope, rejected=True, error=str(error.exception)))
+            finally:
+                del self.n.cells[path]
+                del self.n.scopes[path]
+            self.n.frames[scope] = self.n.frames['']
+            try:
+                with self.assertRaisesRegex(ValueError, 'headless profile retained display/video') as error:
+                    audit_headless_display_absence(self.n)
+                self.mutations.append(dict(case='headless hierarchy returned ' + scope, rejected=True, error=str(error.exception)))
+            finally:
+                del self.n.frames[scope]
+            from tools.workstation_worker_audio_only import constraints
+            sdc, unused = constraints(protocol_constraints())
+            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+            for command in ('set_false_path', 'set_max_delay 2.000'):
+                changed = sdc + command + ' -to [get_pins {' + path + '/D}]\n'
+                with self.assertRaisesRegex(ValueError, 'retired display timing selector') as error:
+                    validate_native_protocol_sdc(changed, self.n, result)
+                self.mutations.append(dict(case='headless selector returned ' + command + ' ' + scope,
+                                          rejected=True, error=str(error.exception)))
 
     def test_m22_new_hmi_mailbox_negative_controls(self):
         if self.profile != 'm-demo-core' or 'u_video/u_applied_parameters_cdc' not in self.n.frames:
@@ -174,21 +220,26 @@ class ActualNativeProtocol(ActualNativeFixture):
     def test_installed_sdc_keeps_later_stages_and_exact_local_bounds(self):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
         sdc = protocol_constraints()
+        headless = self.profile == 'w-demo-audio'
+        if headless:
+            from tools.workstation_worker_audio_only import constraints
+            sdc, unused = constraints(sdc)
         checked = validate_native_protocol_sdc(sdc, self.n, result)
-        self.assertEqual(len(checked['exact_98_registered_ram_capture_pins']), 98)
-        self.assertEqual(len(checked['registered_ram_source_pins']), 3 if self.mapping == 'synthesis' else 6)
+        self.assertEqual(len(checked['exact_98_registered_ram_capture_pins']), 0 if headless else 98)
+        self.assertEqual(len(checked['registered_ram_source_pins']), 0 if headless else 3 if self.mapping == 'synthesis' else 6)
         for line in sdc.splitlines():
             if RAM_SCOPE in line or 'display_observation_health/loss_meta_0' in line:
                 with self.subTest(missing=line), self.assertRaisesRegex(ValueError, 'missing, duplicated or changed'):
                     validate_native_protocol_sdc(sdc.replace(line + '\n', '', 1), self.n, result)
-        for stem in ('req_sync', 'req_settled', 'ack_sync'):
+        for stem in (() if headless else ('req_sync', 'req_settled', 'ack_sync')):
             for kind in ('', ' -hold'):
                 changed = sdc + f'set_false_path{kind} -to [get_pins {{u_managed/display/{stem}_s*/D}}]\n'
                 with self.subTest(cut=stem, kind=kind), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
                     validate_native_protocol_sdc(changed, self.n, result)
         changed = sdc + 'set_false_path -to [get_regs {u_managed/display_observation_health/loss_sync_0_s*}]\n'
-        with self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
-            validate_native_protocol_sdc(changed, self.n, result)
+        if not headless:
+            with self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
+                validate_native_protocol_sdc(changed, self.n, result)
         for stem in ('pc_health_sync_0', 'pc_health_sync_1'):
             with self.subTest(cut=stem), self.assertRaisesRegex(ValueError, 'later synchronizer/settled'):
                 validate_native_protocol_sdc(sdc + f'set_false_path -hold -to [get_pins {{u_managed/{stem}_s*/D}}]\n', self.n, result)
@@ -203,20 +254,25 @@ class ActualNativeProtocol(ActualNativeFixture):
                     validate_native_protocol_sdc(sdc + f'set_false_path -hold -to [get_pins {{u_tf_audio/{stem}_s*/D}}]\n', self.n, result)
 
     def test_ram_enable_cannot_ignore_mailbox_busy(self):
+        self.display_only()
         self.reject('RAM overwrite while busy', RAM_SCOPE + RAM_STEM + '0_s', 'ports', 'CEB', "1'b1", 'RAM read register')
 
     def test_ram_read_clock_cannot_be_selected_mclk(self):
+        self.display_only()
         self.reject('RAM read wrong clock', RAM_SCOPE + RAM_STEM + '0_s', 'ports', 'CLKB', "1'b0", 'RAM read register')
 
     def test_ram_output_mode_must_be_reviewed(self):
+        self.display_only()
         self.reject('RAM extra output stage', RAM_SCOPE + RAM_STEM + '0_s', 'parameters', 'READ_MODE', "1'b1", 'RAM read register')
 
     def test_ram_bit_mapping_is_exact(self):
+        self.display_only()
         path = 'u_managed/display/destination_data_105_s0'
         self.reject('RAM bit alias', path, 'ports', 'D', self.n.cells['u_managed/display/destination_data_106_s0']['ports']['D'],
                     'RAM payload destination fanout')
 
     def test_ack_first_stage_cannot_drive_functional_payload(self):
+        self.display_only()
         path = 'u_managed/display/held_data_0_s0'
         # This stays entirely inside the actual hierarchy; it adds a consumer
         # of meta.Q before its second synchronizer stage.
@@ -227,13 +283,16 @@ class ActualNativeProtocol(ActualNativeFixture):
         self.reject('first meta wrong clock', 'u_managed/pc_bytes/ack_meta_s0', 'ports', 'CLK', "1'b0", 'clock changed')
 
     def test_request_third_stage_cannot_bypass_second(self):
+        self.display_only()
         self.reject('settled bypass', 'u_managed/display/req_settled_s0', 'ports', 'D', 'request_toggle', 'third request stage')
 
     def test_request_must_toggle_with_actual_acceptance(self):
+        self.display_only()
         request=Graph(self.n).register('u_managed/display','request_toggle')
         self.reject('request toggles without capture',request,'ports','D',"1'b0",'request must toggle')
 
     def test_acceptance_cannot_overwrite_busy_payload(self):
+        self.display_only()
         g=Graph(self.n);held=g.register('u_managed/display','held_data',0)
         drivers=g.drivers[self.n.pin(held,'CE')]
         self.assertEqual(len(drivers),1);gate,output=drivers[0]
@@ -243,6 +302,7 @@ class ActualNativeProtocol(ActualNativeFixture):
         self.reject('capture ignores ACK',gate,'parameters','INIT',value,'overwrite while request')
 
     def test_loss_bypass_cannot_be_removed(self):
+        self.display_only()
         path = 'u_managed/display_observation_health/loss_meta_0_s0'
         self.reject('lost final-drop bypass', path, 'ports', 'D',
                     self.n.cells['u_managed/display_observation_health/source_sticky_0_s0']['ports']['Q'],
@@ -252,11 +312,13 @@ class ActualNativeProtocol(ActualNativeFixture):
         self.reject('loss source wrong clock', 'u_managed/observation/drops/sync_value_13_s0', 'ports', 'CLK', "1'b0", 'clock changed')
 
     def test_ram_payload_cannot_feed_an_extra_register(self):
+        self.display_only()
         self.reject('RAM payload extra consumer', 'u_managed/display/held_data_0_s0', 'ports', 'D',
                     self.n.cells['u_managed/display/destination_data_105_s0']['ports']['D'],
                     'RAM payload destination fanout')
 
     def test_routed_added_ram_fragment_must_use_the_same_acceptance(self):
+        self.display_only()
         if self.mapping != 'routed':
             self.skipTest('routed 18-bit split only')
         self.reject('routed added half ignores busy', RAM_SCOPE + 'gowin_add_SDPX9B_' + RAM_STEM + '0_s',
@@ -539,6 +601,10 @@ class ActualTimingBoundaries(ActualNativeFixture):
         result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
         timing = result['timing_boundaries']
         sdc = protocol_constraints()
+        headless = self.profile == 'w-demo-audio'
+        if headless:
+            from tools.workstation_worker_audio_only import constraints
+            sdc, unused = constraints(sdc)
         checked = validate_native_protocol_sdc(sdc, self.n, result)
         self.assertEqual(checked['apb_response_payload_pins_verified'], 33)
         lines = [line for line in sdc.splitlines() if APB + '/response_held_' in line or DELAY + '/' in line or
@@ -598,7 +664,11 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
     def test_selected_sdc_and_negative_controls(self):
         from tools.workstation_performance_reset import demo_held_handshake_constraints
         result = self.audited(); addition = demo_held_handshake_constraints()
-        baseline = protocol_constraints(); sdc = baseline + addition
+        baseline = protocol_constraints()
+        if self.profile == 'w-demo-audio':
+            from tools.workstation_worker_audio_only import constraints
+            baseline, unused = constraints(baseline)
+        sdc = baseline + addition
         def check(text, selected=addition):
             return validate_native_protocol_sdc(text,self.n,result,demo_held_handshakes=selected)
         self.assertEqual(len(check(sdc)['demo_held_handshake_constraints']),10)
@@ -640,15 +710,19 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
         if physical is None:
             self.skipTest('actual physical parent identity required for entry source slice')
         source = Path(json.loads((physical/'physical_inputs.json').read_text())['parent_candidate'])/'workstation/Prj1'
-        role = 'W' if self.profile == 'w-demo-d' else 'M'
+        role = 'W' if self.profile in ('w-demo-d', 'w-demo-audio') else 'M'
         with tempfile.TemporaryDirectory(prefix='selected-demo-held-entry-') as directory:
             stage = Path(directory)
             for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',
                              'rtl/workstation/workstation_runtime_controlled.sv',
-                             *(('rtl/workstation/workstation_profile_m_demo.sv',) if role == 'M' else ())):
+                             'rtl/workstation/workstation_profile_' + ('m' if role == 'M' else 'w') + '_demo.sv'):
                 target = stage/relative;target.parent.mkdir(parents=True,exist_ok=True)
                 target.write_bytes(((ROOT if relative == DEMO_TIMING_TOOL else source)/relative).read_bytes())
-            sdc,evidence = select_demo_timing(stage,protocol_constraints(),role)
+            baseline = protocol_constraints()
+            if self.profile == 'w-demo-audio':
+                from tools.workstation_worker_audio_only import constraints
+                baseline, unused = constraints(baseline)
+            sdc,evidence = select_demo_timing(stage,baseline,role)
             def gate(text=sdc):
                 return audit_demo_held_handshakes(stage,text,role,evidence,self.n,mapping=self.mapping)
             checked = gate()

@@ -19,6 +19,7 @@ from tools.workstation_chorus_provenance import source_bundle as chorus_source_b
 from tools.workstation_delay_storage_provenance import source_bundle as delay_storage_source_bundle
 from tools.workstation_oscillator_expression_provenance import source_bundle as oscillator_expression_source_bundle
 from tools.workstation_dispatch_slot_provenance import source_bundle as dispatch_slot_source_bundle
+from tools.workstation_stream_pitch_provenance import source_bundle as stream_pitch_source_bundle
 
 POLICY = 'native_dual_rate_runtime_v1'
 SOURCES = (
@@ -98,6 +99,8 @@ DEPENDENCIES = (
     'rtl/audio/workstation_runtime_oscillator_engine.release_selection.json',
     'tools/workstation_oscillator_release_provenance.py',
     'tools/workstation_dispatch_slot_provenance.py',
+    'tools/workstation_stream_pitch_provenance.py',
+    'rtl/audio/workstation_stream_pitch.sv',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json',
@@ -388,6 +391,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_ena
     delay_fifo_storage = delay_storage_source_bundle(root)
     oscillator_expression_source = oscillator_expression_source_bundle(root)
     dispatch_slot_source = dispatch_slot_source_bundle(root)
+    stream_pitch_source = stream_pitch_source_bundle(root)
     bluetooth = bluetooth_constraints(BLUETOOTH_SDC, raw_common_reset=True)
     if runtime_cdc['sdc'].splitlines().count(bluetooth['evidence']['replacement']['constraint']) != 1:
         raise ValueError('runtime BLE reset replacement constraint missing or duplicated')
@@ -418,6 +422,7 @@ def constraints(root, shared_crossings, *, local_panel_enabled=True, ble_raw_ena
         delay_fifo_storage=delay_fifo_storage,
         oscillator_expression_source=oscillator_expression_source,
         dispatch_slot_source=dispatch_slot_source,
+        stream_pitch_source=stream_pitch_source,
         usb2_owner_reset={key: value for key, value in owner_reset.items() if key != 'sdc'},
         runtime_cdc_sdc=runtime_cdc['sdc'] + runtime_pcm_cdc['sdc'] + protocol_constraints(
             ble_raw_enabled=ble_raw_enabled, business_owner_enabled=business_owner_enabled, hci_only=hci_only),
