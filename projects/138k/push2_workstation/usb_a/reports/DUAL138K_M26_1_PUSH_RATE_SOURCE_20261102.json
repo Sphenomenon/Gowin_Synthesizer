@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "candidate": "M26-1",
+  "planned_user_code": "D2110138",
+  "stage": "source_implementation_and_targeted_offline_verification",
+  "source_parent_commit": "531f6bbb1b857c9e7ec4015960c4b24fdfe1ce76",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": "4c60edfbc009e2f185983471468e473cb204b2feb2fd3a72845e8c5ba1330dc1",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": "bf28086965235b1982725ccaa544ccda21d6af86187d2713d63e590b2cc856ba",
+    "projects/138k/push2_workstation/usb_a/rtl/push2_usb_a_control.sv": "043ce7443b3e3d8564f3efa8463ed6698f0eff3449359a67f42ee93344c9eb81",
+    "projects/138k/push2_workstation/usb_a/rtl/services/workstation_audio_clock_service.sv": "bd1e6a5e5e428796b7c4e564a646b2db97772f30aeaeaade511568ab075f70d3",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "1d2288097f12e19944bbe78350fa003559e960f96fe8bf591943b782a79ee331",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": "53535f89d7ee801cad370f26f3cadcc9f3b0d2ea440945ab7c2a02de822bb4b1",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_m_demo.sv": "30cca2d4829c29b244a5b5a1ee0f884916bdd022b67ac1fe2e2892b50264db88",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_usb2_input.sv": "1ea90544e6d5ed022434d819a153bee924e1454a9d681f64d054e300fe69022e",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_media_policy.py": "c5ecf081d62c6a9714c4d533ab307367de5c9dd8d05f859f1f866261e1899839",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_media_runtime_ble_integration.py": "eaa4f387f94e95edb14abef2a621c2fbc09fc8aa6676aeac5ee0d9af5aa88fb8",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_media_runtime_integration.py": "b5f8dd7643e5bfb41dda6ae1194cf15ac49eb893b25559c022cdc367388cf107",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_audio_clock_service.sv": "2bfc93a47e2780774b46671b6f297243f7012cf7f3e12475f409b6b36bab5722",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_policy.sv": "a7b305c14a9983a5c21a9da668096ad824c494d3addb779481e006f854fd2731",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_runtime_ble.sv": "4870c18e7fc91292db123741177c61d8b6cae1564b9c12f78e9a731b4bb67d2b",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_workstation_media_runtime_integration.sv": "21df339e9af3661eb66901d54bbe966e7afe02ef10ed0d92698c0cf0a2da9a38",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "12913ecd6d98754b4211bed5ebba2e6b7f4220809212733c8331b7471a9c80b4",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "90372d1ef3f15ffeff80cbba5cae478daf93c17331574a60c787d0a4b7615e94",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_push_rate_runtime.py": "8a369b0569477032dc0e52934c799c396293b58e75e31545d18ef0e5c5616228",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_push_rate_runtime.sv": "c97b0762bd14fff38b356c0148a17b4d86c3fef0b8a8b3237388e8c5bca4c6fe",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_audio_rate_overlay.py": "b8942d5f0fc000f1356bc62e0abc1f7de9158177ba970aa794b593b1c7adbc62",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_audio_rate_overlay.sv": "921be91a7d1e4f70cee34cc768ac4b4919b521b1407ce782e0319d27559215d1",
+    "projects/138k/push2_workstation/usb_a/sim/services/run_push_rate_control.py": "486b11677e1f6386511e0219823f2294dfc5bf89d8cf21f6a4e31ed4c0e3677f",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_push_rate_control.sv": "43516f9e16862425ee08733e334dad003ba27ae6aa4b2c67c9fe955443a7b6a8",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_push_rate_default.sv": "5fd55de38db6f4b034c42406a2279e83a76898c4dcaeee1ef3aa60904295ae1f",
+    "projects/138k/push2_workstation/usb_a/sim/services/tb_push_rate_media.sv": "49b2436746e7e0dfd24732c96a01f75c0cd147c7a0d40a9f0e7b8662c9607936",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_push_rate_control.py": "ecaa03b9966f604c1b5b0daa2f9c7f0375b54151521e8f6802cba0477bdb816f"
+  },
+  "verified_evidence": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-owner-handoff-v1/handoff.json",
+      "sha256": "1d5978dd1dfe9d2e5340efa0af83a2774d85e3a4876e650252d55444d0ad7bc0"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-runtime-v3/verification.json",
+      "sha256": "a7bbfdaea871c23463044e8397e9cc425a604b99820f8f7ebdebcfaa5bd8b8d7"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m221-audio-rate-overlay-v2/verification.json",
+      "sha256": "01c2a92a8d0040854a079c2779b2c679bfe929f17449da82acd66a23f6780bad"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-rate-final-v3/verification.json",
+      "sha256": "277ebff48eae0d1f6be85656f52403e9f3047aa80ee0fbeafccec76f0deea8ce"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-existing-media-policy-v2/verification.json",
+      "sha256": "aa17b98cadae86f16c37f08871d3946d270213d6883a94d6487fac70d94da120"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-owner-enabled-lint-v2/verification.json",
+      "sha256": "eff6bc0e11529027df4db8e7990bf9db00ea4db8e3809a78c6a38812330478a0"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-default-service-legacy-v2/verification.json",
+      "sha256": "1085437f1a47d9aa9928f0e66b6c9b77f209ddb7f1f9eb22ae0793dc6538deb6"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-default-service-nonzero-v2/verification.json",
+      "sha256": "6cb5cb98b92d5a31c21816f787d392e776aaf9f6a02a77c550a0fb27db2c7964"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-default-service-wrap-v2/verification.json",
+      "sha256": "d13dfc099fbacb4ff5647cf627d3f1d2c191fda9dd3ad5331216272d2eecf47b"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-source_queue_gate-v3/verification.json",
+      "sha256": "54b8e1b6c0d5c4c68c2337d561e555ed55f2d7407aeffb9ec1cb7c222ebc52d0"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-held_repeat-v3/verification.json",
+      "sha256": "a376c04fd9b0a985f2be1a46017e6b07ae8ce5e8c64538d7deef1e17c0c996df"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-stale_generation-v3/verification.json",
+      "sha256": "470ad2367fbe39a8aeff9c22e00bbf4013b7dd44dcfbfd1cae4778e61c2dbc4b"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-wrong_target-v3/verification.json",
+      "sha256": "2fda183af72a9cab1eb5335b81defef79b2028f41c0cdc6ad4c0a6975f2ac100"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-apb_priority-v3/verification.json",
+      "sha256": "f582b1ae44b4e527894601933079cb7a14e46a094da2fe0118e0f34646ea7db3"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-release_quiet-v3/verification.json",
+      "sha256": "d3df0c35f546011767720f2673d95f5a85d29995bfaeda52f7d3cb037b4356b8"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-media_prepare-v1/verification.json",
+      "sha256": "c353b2dc940181ef0cbb3ad980bbe03bafca218d7bf0e6a1e9eadedc99bb000f"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-media_admission-v1/verification.json",
+      "sha256": "c1ed85c4691e4bfe584b6b54eb15daec56c8afb0f208ae81239958be30522312"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-negative-media_gate-v1/verification.json",
+      "sha256": "a6642413faad477a1f458f58ccb1ac480af974983d83091b5bacab98882b04ad"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-runtime-negative-wrong_target-v2/verification.json",
+      "sha256": "5afa3163ba6c767f7ea5ebfaf5e5cf7175c50cd8f51b2f357c10faf72852a6bc"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-push-runtime-negative-wrong_period-v2/verification.json",
+      "sha256": "1c27bb6d4eb4654ca296a1b69a1fdd622b1e73e2765e97a22aae58eb3366adf9"
+    }
+  ],
+  "owner_metrics": {
+    "USB_fixture_cases": 12,
+    "Push_media_fixture_cases": 5,
+    "default_USB_public_output_bits": 285,
+    "default_USB_output_checks": 118182,
+    "default_service_epoch_policies": 3,
+    "default_service_clock_phases_per_policy": 3,
+    "targeted_mutants_rejected": 9,
+    "original_media_clock_phases": 3,
+    "original_media_score_cases": 5,
+    "original_media_mutants_rejected": 4,
+    "enabled_service_lint_warning_count": 0,
+    "USB_new_lint_warning_count": 0,
+    "USB_inherited_lint_warning_count": 59
+  },
+  "runtime_metrics": {
+    "period48_checks": 994,
+    "period44_checks": 494,
+    "tolerance_ns": 1,
+    "mute_policy_checks": 4137468,
+    "prefill_commit_checks": 6,
+    "committed_context_checks": 6,
+    "physical_frames": 1495,
+    "observed_frames": 1495,
+    "observed48": 998,
+    "observed44": 497,
+    "display_frames": 1494,
+    "nonzero": 615,
+    "nonzero48": 368,
+    "nonzero44": 247,
+    "USB_events": 78,
+    "USB_pulses": 6,
+    "source_rejects": 3,
+    "transport_rejects": 0,
+    "requests": 6,
+    "recovers": 1,
+    "accepts": 6,
+    "applies": 6,
+    "failures": 1,
+    "full_FIFO_fill": 67,
+    "held_checks": 2,
+    "tail_checks": 1,
+    "panic_checks": 1,
+    "busy_checks": 2,
+    "DDR_writes": 371,
+    "DDR_reads": 10,
+    "mute_edges": 4145071,
+    "prefill_edges": 445078,
+    "DCS_off_edges": 251735
+  },
+  "legacy_runtime_support_blockers": {
+    "m26-1-existing-runtime-media-v2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-existing-runtime-media-v2/verification.json",
+      "sha256": "f370c67fe8ca389c1af5b596748843cab6c5c0ac3c25b356c131fe08eda59dc2",
+      "passed": false,
+      "compile_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-existing-runtime-media-v2/positive/compile.log",
+      "compile_log_sha256": "f4cdbdf9b2e296b64cc917c213ac54c4b4bebe5a6b8389cc7f3b66ed7f362602",
+      "reason": "Old support identity verified, but current maintained owners require newer session/parameter/counter interfaces; no source policy relaxation or physical claim."
+    },
+    "m26-1-existing-runtime-media-ble-v2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-existing-runtime-media-ble-v2/verification.json",
+      "sha256": "fbdafbe1fb30192e8bc2c12d28bf170ee840cefd332c8850650cab2f6d4c8d5b",
+      "passed": false,
+      "compile_log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-existing-runtime-media-ble-v2/positive/compile.log",
+      "compile_log_sha256": "ee8494e71dfc6113e7f42107712bdd3d78e175ef401af22c270d701caa074804",
+      "reason": "Old support identity verified, but current maintained owners require newer session/parameter/counter interfaces; no source policy relaxation or physical claim."
+    }
+  },
+  "contract": {
+    "physical_key": "Push Session CC51 press; release quiet5ms; Select unchanged",
+    "clock_owner": "existing u_clock_service only; same DCS/mute/prefill transaction",
+    "target": "inverse actual committed rate",
+    "busy_fault_stale": "consumed/rejected; never queued",
+    "display": "frame frozen actual committed rate plus busy/fault; independent PCM"
+  },
+  "root_checks": {
+    "source_boundary_tests_passed": 17,
+    "demo_audit_tests_passed": 18,
+    "M_source_locks": 876,
+    "W_source_locks": 1123,
+    "profile_checks_passed": [
+      "M",
+      "W"
+    ],
+    "git_diff_check": true
+  },
+  "remaining": [
+    "M26-1 continuous XY implementation and regressions",
+    "Full new synthesis/P&R, actual VG/VO Push CDC semantics/timing audit",
+    "Physical Push/HDMI/audio acceptance; no inheritance from offline tests"
+  ],
+  "SRAM_programmed_for_this_candidate": false,
+  "Flash_programmed": false
+}

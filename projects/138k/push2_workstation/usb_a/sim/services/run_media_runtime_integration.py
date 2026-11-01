@@ -80,10 +80,10 @@ def main():
             v['negative_controls']=[]
             cases=[
                 ('legacy-active-media-admission',ROOT/'rtl/services/workstation_audio_clock_service.sv',
-                 '(!core_request_ready_i && !needs_media_stop)','!core_request_ready_i',
+                 '(!core_request_ready_i && !prepare_media)','!core_request_ready_i',
                  'joint APB failure addr=1008 expected_error=0 actual=1 reason=11'),
                 ('unconditional-admission',ROOT/'rtl/services/workstation_audio_clock_service.sv',
-                 '(!core_request_ready_i && !needs_media_stop)',"1'b0",
+                 '(!core_request_ready_i && !prepare_media)',"1'b0",
                  'clock request preceded actual media stop'),
                 ('ignore-final-tf-ack',ROOT/'rtl/tf_audio/workstation_tf_runtime_service.sv',
                  'memory_open_sync[1] && !control_pending_o;', 'memory_open_sync[1];',

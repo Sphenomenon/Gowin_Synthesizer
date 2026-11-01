@@ -56,6 +56,8 @@ module tb_workstation_media_policy;
     workstation_audio_clock_service #(.ENABLE_MEDIA_POLICY(1),.ACCEPT_TIMEOUT_CYCLES(16),
         .RESULT_TIMEOUT_CYCLES(192),.MEDIA_TIMEOUT_CYCLES(1000)) clock_service(
         .clk_i(clk50),.reset_ni(clock_reset),.command_valid_i(clock_valid_cmd),.command_write_i(clock_write_cmd),
+        .push_toggle_i(1'b0),.push_generation_i(32'd0),.push_ready_o(),.push_generation_o(),
+        .push_rejected_o(),.service_busy_o(),.service_fault_o(),
         .command_address_i(clock_addr),.command_data_i(clock_data),.command_strobes_i(clock_strobes),
         .command_ready_o(clock_ready_cmd),.response_data_o(clock_response),.response_error_o(clock_error_cmd),
         .switch_permit_i(platform_permit),.core_request_ready_i(core_ready),.core_busy_i(core_busy),.core_fault_i(core_fault),

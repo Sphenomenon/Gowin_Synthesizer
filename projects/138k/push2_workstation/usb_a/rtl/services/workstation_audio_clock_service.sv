@@ -10,13 +10,22 @@ module workstation_audio_clock_service #(
     parameter integer REARM_QUIET_CYCLES = 4,
     parameter bit RESERVE_ZERO_EPOCH = 0,
     parameter bit ENABLE_MEDIA_POLICY = 0,
-    parameter integer MEDIA_TIMEOUT_CYCLES = 50000000
+    parameter integer MEDIA_TIMEOUT_CYCLES = 50000000,
+    parameter bit ENABLE_PUSH_RATE_CONTROL = 0
 ) (
     input wire clk_i, reset_ni,
     input wire command_valid_i, command_write_i,
     input wire [11:0] command_address_i,
     input wire [31:0] command_data_i,
     input wire [3:0] command_strobes_i,
+    // Already transported to clk_i. The bridge carries the generation that
+    // accompanied USB admission, so a delayed press cannot enter a new window.
+    input wire push_toggle_i,
+    input wire [31:0] push_generation_i,
+    output wire push_ready_o,
+    output reg [31:0] push_generation_o,
+    output reg push_rejected_o,
+    output wire service_busy_o,service_fault_o,
     output wire command_ready_o,
     output reg [31:0] response_data_o,
     output reg response_error_o,
@@ -81,11 +90,24 @@ module workstation_audio_clock_service #(
         core_active_valid_i,core_active_44k1_i};
     reg known_address;
     reg [3:0] admission_error;
+    reg push_ready_previous;
     wire bus_fire=command_valid_i && command_ready_o;
-    wire submit=bus_fire && command_write_i && !response_error_o;
+    wire apb_submit=bus_fire && command_write_i && !response_error_o;
+    wire push_fire=ENABLE_PUSH_RATE_CONTROL && push_toggle_i;
+    wire [1:0] push_operation={1'b0,!core_active_44k1_i};
+    wire push_needs_media_stop=ENABLE_MEDIA_POLICY;
+    reg [3:0] push_admission_error;
+    wire push_submit=push_fire && !(bus_fire && command_write_i) &&
+        push_generation_i==push_generation_o && push_admission_error==BUS_OK;
+    wire submit=apb_submit || push_submit;
+    wire [1:0] submitted_operation=apb_submit ? command_data_i[1:0] : push_operation;
     wire needs_media_stop=ENABLE_MEDIA_POLICY &&
         (command_data_i==2 || command_data_i[0]!=core_active_44k1_i);
+    wire submitted_media_stop=apb_submit ? needs_media_stop : push_needs_media_stop;
     assign command_ready_o=reset_ni && !command_seen;
+    assign push_ready_o=ENABLE_PUSH_RATE_CONTROL && reset_ni && push_admission_error==BUS_OK;
+    assign service_busy_o=phase!=IDLE || core_busy_i;
+    assign service_fault_o=correlation_fault || core_fault_i || core_dsp_fault_i;
 
     initial begin
         if(ACCEPT_TIMEOUT_CYCLES<4 || RESULT_TIMEOUT_CYCLES<4 || REARM_QUIET_CYCLES<3 || MEDIA_TIMEOUT_CYCLES<4)
@@ -93,6 +115,27 @@ module workstation_audio_clock_service #(
     end
     function automatic [31:0] increment_saturated(input [31:0] value);
         increment_saturated=&value ? value : value+1'b1;
+    endfunction
+    // Both physical Push requests and APB writes pass this single admission
+    // policy. Push faults are rejected; recovery remains the existing APB op2.
+    function automatic [3:0] operation_admission(input [1:0] candidate,
+                                               input bit prepare_media);
+        begin
+            operation_admission=BUS_OK;
+            if(phase!=IDLE)operation_admission=BUS_PENDING;
+            else if(correlation_fault)operation_admission=BUS_DESYNCHRONIZED;
+            else if(!armed)operation_admission=BUS_UNARMED;
+            else if(!switch_permit_i)operation_admission=BUS_NO_PERMIT;
+            else if(core_dsp_fault_i)operation_admission=BUS_DSP_FAULT;
+            else if(core_busy_i)operation_admission=BUS_BUSY;
+            else if(prepare_media && !media_stop_ready_i)operation_admission=BUS_MEDIA_NOT_READY;
+            else if(candidate==2)begin
+                if(!core_fault_i)operation_admission=BUS_RECOVER_STATE;
+                else if(!core_source_qualified_i[core_active_44k1_i])operation_admission=BUS_SOURCE_UNQUALIFIED;
+            end else if(core_fault_i || (!core_request_ready_i && !prepare_media) || !core_active_valid_i)
+                operation_admission=BUS_NOT_READY;
+            else if(!core_source_qualified_i[candidate[0]])operation_admission=BUS_SOURCE_UNQUALIFIED;
+        end
     endfunction
     task automatic finish(input [3:0] code, input bit lose_correlation);
         begin
@@ -118,7 +161,8 @@ module workstation_audio_clock_service #(
             address_aligned<=command_address_i[11:8]==0 && command_address_i[1:0]==0;
         end
     end
-    always @* begin
+    always_comb begin
+        push_admission_error=operation_admission(push_operation,push_needs_media_stop);
         known_address=word_address<=6'h17 || (ENABLE_MEDIA_POLICY && word_address<=6'h1a);
         admission_error=BUS_OK;
         if(!address_aligned || !known_address)admission_error=BUS_ADDRESS;
@@ -127,22 +171,7 @@ module workstation_audio_clock_service #(
         else if(command_write_i)begin
             if(command_strobes_i!=4'hf)admission_error=BUS_STROBES;
             else if(command_data_i>2)admission_error=BUS_VALUE;
-            else if(phase!=IDLE)admission_error=BUS_PENDING;
-            else if(correlation_fault)admission_error=BUS_DESYNCHRONIZED;
-            else if(!armed)admission_error=BUS_UNARMED;
-            else if(!switch_permit_i)admission_error=BUS_NO_PERMIT;
-            else if(core_dsp_fault_i)admission_error=BUS_DSP_FAULT;
-            else if(core_busy_i)admission_error=BUS_BUSY;
-            else if(needs_media_stop && !media_stop_ready_i)admission_error=BUS_MEDIA_NOT_READY;
-            else if(command_data_i==2)begin
-                if(!core_fault_i)admission_error=BUS_RECOVER_STATE;
-                else if(!core_source_qualified_i[core_active_44k1_i])admission_error=BUS_SOURCE_UNQUALIFIED;
-            // Public runtime readiness includes active-media gating. An
-            // enabled real change prepares that media before revalidating
-            // readiness at the actual core issue boundary below.
-            end else if(core_fault_i || (!core_request_ready_i && !needs_media_stop) || !core_active_valid_i)
-                admission_error=BUS_NOT_READY;
-            else if(!core_source_qualified_i[command_data_i[0]])admission_error=BUS_SOURCE_UNQUALIFIED;
+            else admission_error=operation_admission(command_data_i[1:0],needs_media_stop);
         end
         response_error_o=admission_error!=BUS_OK;
         response_data_o=0;
@@ -188,8 +217,18 @@ module workstation_audio_clock_service #(
             snapshot_epoch<=0;snapshot_valid<=0;request_o<=0;request_44k1_o<=0;recover_o<=0;
             media_pending<=0;media_completed<=0;media_failed<=0;media_timer<=0;
             media_failure_code<=0;media_stop_request_o<=0;media_stop_hold_o<=0;
+            push_generation_o<=ENABLE_PUSH_RATE_CONTROL ? 32'd1 : 32'd0;
+            push_ready_previous<=0;push_rejected_o<=0;
         end else begin
             request_o<=0;recover_o<=0;media_stop_request_o<=0;
+            push_rejected_o<=push_fire && !push_submit;
+            if(ENABLE_PUSH_RATE_CONTROL)begin
+                // One change per closed window, with an immediate change on
+                // submission. Reopening keeps the same generation stable.
+                push_ready_previous<=submit ? 1'b0 : push_ready_o;
+                if(submit || (push_ready_previous && !push_ready_o))
+                    push_generation_o<=push_generation_o==32'hffffffff ? 32'd1 : push_generation_o+1'b1;
+            end
             if(!command_valid_i)command_seen<=0;
             else if(bus_fire)command_seen<=1;
             if(!armed)begin
@@ -208,18 +247,18 @@ module workstation_audio_clock_service #(
                 snapshot_epoch<=core_stream_epoch_i;snapshot_valid<=1;
             end
             if(submit)begin
-                command_id<=next_id;operation<=command_data_i[1:0];
-                expected_rate<=command_data_i==2 ? core_active_44k1_i : command_data_i[0];
+                command_id<=next_id;operation<=submitted_operation;
+                expected_rate<=submitted_operation==2 ? core_active_44k1_i : submitted_operation[0];
                 base_epoch<=core_stream_epoch_i;base_rate<=core_active_44k1_i;
-                expected_epoch<=command_data_i==2 || command_data_i[0]!=core_active_44k1_i
+                expected_epoch<=submitted_operation==2 || submitted_operation[0]!=core_active_44k1_i
                     ? following_epoch : core_stream_epoch_i;
                 submitted_count<=increment_saturated(submitted_count);
-                request_44k1_o<=command_data_i[0];
-                request_o<=!needs_media_stop && command_data_i!=2;
-                recover_o<=!needs_media_stop && command_data_i==2;
-                media_pending<=needs_media_stop;media_completed<=0;media_failed<=0;
+                request_44k1_o<=submitted_operation[0];
+                request_o<=!submitted_media_stop && submitted_operation!=2;
+                recover_o<=!submitted_media_stop && submitted_operation==2;
+                media_pending<=submitted_media_stop;media_completed<=0;media_failed<=0;
                 media_failure_code<=0;media_timer<=0;
-                media_stop_request_o<=needs_media_stop;media_stop_hold_o<=needs_media_stop;
+                media_stop_request_o<=submitted_media_stop;media_stop_hold_o<=submitted_media_stop;
                 phase<=ISSUE;timer<=0;
             end
             case(phase)

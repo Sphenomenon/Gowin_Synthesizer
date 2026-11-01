@@ -58,15 +58,16 @@ LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 PROFILE_REGISTRY = {
-    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=1,
+    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=2,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             tf_policy='disabled_first_m_core_demo_v1',
-            bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
+            bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1',
+            push_rate_control_policy='push_session_committed_toggle_generation_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
-        integration_identity='custom138k-native-m-demo-base-revision1'),
+        push_rate_control=True,integration_identity='custom138k-native-m-demo-session-rate-revision2'),
     W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=4,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
@@ -152,6 +153,11 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') == 1:
+        configuration = dict(spec['configuration'])
+        configuration.pop('push_rate_control_policy')
+        spec = dict(spec,revision=1,push_rate_control=False,configuration=configuration,
+            integration_identity='custom138k-native-m-demo-base-revision1')
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') in (2, 3):
         configuration = dict(spec['configuration'])
         configuration.pop('w_midi_input_policy')
@@ -360,6 +366,11 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    if spec.get('push_rate_control',False):
+        from tools.workstation_push_rate_control import verify as verify_push_rate
+        verify_push_rate(installed_sdc,metadata.get('push_rate_control'))
+    elif 'push_rate_control' in metadata:
+        raise ValueError('unselected Push Session rate control policy')
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints

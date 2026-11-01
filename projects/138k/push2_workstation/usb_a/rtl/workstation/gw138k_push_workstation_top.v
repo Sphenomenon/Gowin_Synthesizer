@@ -493,7 +493,26 @@ module gw138k_push_workstation_top #(
         .command_write(clock_command_write),.command_address(clock_command_address),
         .command_data(clock_command_data),.command_strobes(clock_command_strobes),
         .response_data(clock_response_data),.response_error(clock_response_error));
-    workstation_audio_clock_service #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) u_clock_service(
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+    wire push_rate_usb_ready,push_rate_usb_toggle,push_rate_toggle,push_rate_ready;
+    wire clock_service_busy,clock_service_fault;
+    wire [31:0] push_rate_generation,push_rate_command_generation;
+    workstation_push_rate_bridge u_push_rate_bridge(
+        .reset_ni(clock_command_reset_n && usb_reset_n),.usb_clk_i(usb_clk),.control_clk_i(clk_50m),
+        .service_ready_i(push_rate_ready),.service_generation_i(push_rate_generation),
+        .usb_ready_o(push_rate_usb_ready),.usb_toggle_i(push_rate_usb_toggle),
+        .service_toggle_o(push_rate_toggle),.service_generation_o(push_rate_command_generation));
+`endif
+    workstation_audio_clock_service #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+        ,.ENABLE_PUSH_RATE_CONTROL(1)
+`endif
+    ) u_clock_service(
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+        .push_toggle_i(push_rate_toggle),.push_generation_i(push_rate_command_generation),
+        .push_ready_o(push_rate_ready),.push_generation_o(push_rate_generation),.push_rejected_o(),
+        .service_busy_o(clock_service_busy),.service_fault_o(clock_service_fault),
+`endif
         .clk_i(clk_50m),.reset_ni(clock_command_reset_n),
         .command_valid_i(clock_command_valid),.command_write_i(clock_command_write),
         .command_address_i(clock_command_address),.command_data_i(clock_command_data),
@@ -612,6 +631,9 @@ module gw138k_push_workstation_top #(
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+        ,.PUSH_RATE_CONTROL_ENABLE(1'b1)
+`endif
 `ifdef WORKSTATION_DEMO_NO_TF
         ,.MEDIA_CONTROLS_ENABLE(1'b0)
 `endif
@@ -622,6 +644,9 @@ module gw138k_push_workstation_top #(
         ,.CNN_FOLLOW_ENABLE(RECOGNITION_ENABLED),.STOP_CLOCK_QUEUE_FENCE(1),.AUDIO_OWNER_RESET_SYNC(1)
 `endif
     ) u_native_usb (
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+        .rate_control_ready_i(push_rate_usb_ready),.rate_toggle_o(push_rate_usb_toggle),.rate_rejected_o(),
+`endif
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
 `ifdef WORKSTATION_RUNTIME_NATIVE
         // Compute PLL recovery must not manufacture a second USB attach and
@@ -1188,6 +1213,12 @@ module gw138k_push_workstation_top #(
     assign tmds_clk_p=0,tmds_clk_n=0,tmds_data_p=0,tmds_data_n=0;
 `else
     hdmi_display u_video (
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+        // Independent of PCM observations: a stopped/muted audio stream must
+        // not freeze switching/fault feedback. Bit0 is the committed rate.
+        .audio_clock_status_i({rate_fault || rate_dsp_fault || memory_guard_fault || clock_service_fault,
+            rate_busy || clock_service_busy,rate_valid,rate44}),
+`endif
 `ifdef WORKSTATION_RECORDING_DDR
         .recording_req(recording_req),.recording_write(recording_write),.recording_address(recording_address),
         .recording_data(recording_data),.recording_mask(recording_mask),.recording_ready(recording_ready),

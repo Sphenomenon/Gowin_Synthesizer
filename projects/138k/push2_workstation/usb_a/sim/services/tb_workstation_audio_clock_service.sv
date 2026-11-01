@@ -68,6 +68,8 @@ module tb_workstation_audio_clock_service #(
     workstation_audio_clock_service #(.ACCEPT_TIMEOUT_CYCLES(16),.RESULT_TIMEOUT_CYCLES(192),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH)) dut(
         .clk_i(clk),.reset_ni(command_reset_n),
+        .push_toggle_i(1'b0),.push_generation_i(32'd0),.push_ready_o(),.push_generation_o(),
+        .push_rejected_o(),.service_busy_o(),.service_fault_o(),
         .command_valid_i(command_valid || hold_valid),.command_write_i(command_write),
         .command_address_i(command_address),.command_data_i(command_data),.command_strobes_i(command_strobes),
         .command_ready_o(command_ready),.response_data_o(response_data),.response_error_o(response_error),

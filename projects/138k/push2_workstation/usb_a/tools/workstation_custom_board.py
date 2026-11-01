@@ -353,6 +353,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc, recognition_constraints = adapt_constraints(selected_sdc, recognition['music_analysis_enabled'])
         recognition['constraints'] = recognition_constraints
     demo_constraints = None
+    push_rate_control = None
+    if runtime and specification(profile['name']).get('push_rate_control',False):
+        from tools.workstation_push_rate_control import constraints as push_rate_sdc, evidence as push_rate_evidence
+        selected_sdc += push_rate_sdc()
+        push_rate_control = push_rate_evidence()
     if demo_role is not None:
         from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
         selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role)
@@ -426,6 +431,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     remaining_gaps=['USB3300/TXS electrical compatibility', 'physical FPC DAC/audio acceptance',
                                     'physical BLE pairing/recording/download acceptance', 'complete IO/CDC/timing/PLL/P&R gates',
                                     'real external peripheral and hardware acceptance'])
+    if push_rate_control is not None:
+        metadata['push_rate_control']=push_rate_control
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)

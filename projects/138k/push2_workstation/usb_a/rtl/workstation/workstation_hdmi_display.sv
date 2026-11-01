@@ -11,6 +11,9 @@ module hdmi_display #(
 `endif
 ) (
     input wire clk_50m, reset_n,
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+    input wire [3:0] audio_clock_status_i,
+`endif
     input wire hdmi_hpd,
     output wire [127:0] video_diagnostics,
     input wire signed [31:0] sample_data,
@@ -382,14 +385,89 @@ module hdmi_display #(
         else begin fallback_de<={fallback_de[0],de};fallback_hs<={fallback_hs[0],hs};fallback_vs<={fallback_vs[0],vs};end
     end
     wire scanning=pixel_reset_pipe[2];
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+    wire [23:0] rate_status_rgb;
+    wire rate_status_hit;
+    workstation_audio_rate_overlay u_rate_status(
+        .reset_ni(reset_n && pixel_reset_n),.control_clk_i(clk_50m),.pixel_clk_i(pixel_clk),
+        .actual_status_i(audio_clock_status_i),.frame_start_i(frame_start),
+        .x_i(x[10:0]),.y_i(y),.hit_o(rate_status_hit),.rgb_o(rate_status_rgb));
+    wire [23:0] display_rgb=rate_status_hit ? rate_status_rgb : rgb;
+`else
+    wire [23:0] display_rgb=rgb;
+`endif
     dvi_tx_top u_dvi (
         .pixel_clock(pixel_clk),.ddr_bit_clock(serial_clk),.reset(!pixel_reset_n),
         .serializer_reset(serializer_reset),
         .den(scanning ? scan_de : fallback_de[1]),
         .hsync(scanning ? scan_hs : fallback_hs[1]),
-        .vsync(scanning ? scan_vs : fallback_vs[1]),.pixel_data(scanning ? rgb : 24'd0),
+        .vsync(scanning ? scan_vs : fallback_vs[1]),.pixel_data(scanning ? display_rgb : 24'd0),
         .tmds_clk({tmds_clk_p,tmds_clk_n}),.tmds_d0({tmds_data_p[0],tmds_data_n[0]}),
         .tmds_d1({tmds_data_p[1],tmds_data_n[1]}),.tmds_d2({tmds_data_p[2],tmds_data_n[2]})
     );
 endmodule
+`ifdef WORKSTATION_PUSH_RATE_CONTROL
+// A small read-only HMI table in the final scanout. It remains live when a
+// clock transaction revokes old PCM/analysis; it neither republishes stale
+// analysis nor waits for a new audio frame. Both pipeline stages match scanout.
+module workstation_audio_rate_overlay(
+    input wire reset_ni,control_clk_i,pixel_clk_i,
+    input wire [3:0] actual_status_i,
+    input wire frame_start_i,
+    input wire [10:0] x_i,y_i,
+    output reg hit_o,
+    output reg [23:0] rgb_o
+);
+    wire [3:0] pixel_status;
+    wire status_valid;
+    reg status_seen;
+    reg [3:0] frame_status;
+    gw138k_stream_cdc #(.WIDTH(4)) status_cdc(
+        .reset_n(reset_ni),.source_clk(control_clk_i),.destination_clk(pixel_clk_i),
+        .source_valid(1'b1),.source_data(actual_status_i),.drop_count(),
+        .destination_valid(status_valid),.destination_data(pixel_status));
+    always @(posedge pixel_clk_i or negedge reset_ni)begin
+        if(!reset_ni)begin status_seen<=0;frame_status<=0;end
+        else begin
+            if(status_valid)status_seen<=1;
+            if(frame_start_i && status_seen)frame_status<=pixel_status;
+        end
+    end
+    wire [10:0] relative_x=x_i-11'd1248;
+    wire area=x_i>=1248 && x_i<1760 && y_i>=992 && y_i<1040;
+    wire text_row=y_i[4:0]<16;
+    wire [255:0] rate_word=frame_status[0] ? "OUTPUT   44100 HZ / STEREO      " : "OUTPUT   48000 HZ / STEREO      ";
+    wire [255:0] state_word=frame_status[3] ? "CLOCK    FAULT / SWITCH REJECTED" :
+        frame_status[2] ? "CLOCK    SWITCHING / MUTED      " :
+        !frame_status[1] ? "CLOCK    NOT VALID              " : "CLOCK    READY / SESSION TOGGLE ";
+    wire [255:0] text_word=y_i<1024 ? rate_word : state_word;
+    wire [7:0] character=text_word[255-relative_x[8:4]*8 -:8];
+    wire [34:0] decoded_glyph;
+    video_font_5x7 font(.character(character),.column(3'd0),.row(3'd0),.ink(),.glyph(decoded_glyph));
+    reg [34:0] glyph;
+    reg [2:0] column,row;
+    reg area_q,text_q;
+    reg [4:0] glyph_row;
+    reg ink;
+    always @*begin
+        case(row)
+            0:glyph_row=glyph[34:30];1:glyph_row=glyph[29:25];2:glyph_row=glyph[24:20];
+            3:glyph_row=glyph[19:15];4:glyph_row=glyph[14:10];5:glyph_row=glyph[9:5];
+            6:glyph_row=glyph[4:0];default:glyph_row=0;
+        endcase
+        case(column)
+            0:ink=glyph_row[4];1:ink=glyph_row[3];2:ink=glyph_row[2];
+            3:ink=glyph_row[1];4:ink=glyph_row[0];default:ink=0;
+        endcase
+    end
+    always @(posedge pixel_clk_i or negedge reset_ni)begin
+        if(!reset_ni)begin glyph<=0;column<=0;row<=0;area_q<=0;text_q<=0;hit_o<=0;rgb_o<=0;end
+        else begin
+            glyph<=decoded_glyph;column<=relative_x[3:1];row<=y_i[3:1];
+            area_q<=area;text_q<=text_row;hit_o<=area_q;
+            rgb_o<=text_q && ink ? 24'h343b42 : 24'hf3f4f5;
+        end
+    end
+endmodule
+`endif
 `default_nettype wire

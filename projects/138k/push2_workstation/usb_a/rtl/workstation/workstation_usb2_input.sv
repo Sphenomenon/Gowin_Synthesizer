@@ -7,6 +7,7 @@ module workstation_usb2_input #(
     parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
     parameter bit CNN_FOLLOW_ENABLE = 1'b1,
     parameter bit MEDIA_CONTROLS_ENABLE = 1'b1,
+    parameter bit PUSH_RATE_CONTROL_ENABLE = 1'b0,
     parameter bit WORKER_DEMO = 1'b0,
     parameter integer AUDIO_OWNER_RESET_SYNC = 0
 )(
@@ -30,6 +31,8 @@ module workstation_usb2_input #(
     input wire [15:0] playlist_word_i,
     output wire track_launch_o,
     output wire [3:0] track_index_o,
+    input wire rate_control_ready_i,
+    output wire rate_toggle_o, rate_rejected_o,
     output wire audio_valid_o, audio_lifecycle_o, audio_cancel_o,
     input wire audio_ready_i,
     output wire [17:0] audio_event_o,
@@ -101,6 +104,7 @@ module workstation_usb2_input #(
     wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? owner_audio_reset_n : feedback_release_q[1];
     push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
                          .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
+                         .PUSH_RATE_CONTROL_ENABLE(PUSH_RATE_CONTROL_ENABLE),
                          .WORKER_DEMO(WORKER_DEMO)) input_owner (
         .clk(clk_cpu), .reset_n(cpu_reset_n), .audio_clk(clk_audio), .audio_reset_n(owner_audio_reset_n),
         .feedback_clk(feedback_clk), .feedback_reset_n(feedback_reset_n), .performance_words(performance_words_i),
@@ -109,8 +113,64 @@ module workstation_usb2_input #(
         .score_valid(score_valid_i), .analysis_done(analysis_done_i), .score_ready(score_ready_o), .score_note(score_note_i),
         .playlist_valid(playlist_valid_i), .playlist_ready(playlist_ready_o), .playlist_word(playlist_word_i),
         .track_launch(track_launch_o), .track_index(track_index_o), .select(owner_select), .write(owner_write),
+        .rate_control_ready_i(rate_control_ready_i),.rate_toggle_o(rate_toggle_o),.rate_rejected_o(rate_rejected_o),
         .address(owner_address), .wdata(owner_write_data), .ready(owner_ready), .rdata(owner_read_data),
         .audio_valid(audio_valid_o), .audio_ready(audio_ready_i), .audio_event(audio_event_o),
         .audio_lifecycle(audio_lifecycle_o), .audio_cancel(audio_cancel_o), .telemetry(telemetry_o)
     );
+endmodule
+
+// Transport only. The always-on service remains the sole transaction owner.
+// A single held generation crosses independently of the stopped audio queue.
+// No second request is retained while the mailbox is occupied. The service
+// rejects an old generation even if its admission window reopened in transit.
+module workstation_push_rate_bridge (
+    input wire reset_ni,usb_clk_i,control_clk_i,
+    input wire service_ready_i,
+    input wire [31:0] service_generation_i,
+    output wire usb_ready_o,
+    input wire usb_toggle_i,
+    output reg service_toggle_o,
+    output reg [31:0] service_generation_o
+);
+    wire [32:0] usb_window;
+    wire window_valid;
+    reg window_seen;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] usb_release,control_release;
+    always @(posedge usb_clk_i or negedge reset_ni)
+        if(!reset_ni)usb_release<=0;else usb_release<={usb_release[0],1'b1};
+    always @(posedge control_clk_i or negedge reset_ni)
+        if(!reset_ni)control_release<=0;else control_release<={control_release[0],1'b1};
+    wire usb_reset_n=usb_release[1],control_reset_n=control_release[1];
+    gw138k_stream_cdc #(.WIDTH(33)) window_cdc(
+        .reset_n(reset_ni),.source_clk(control_clk_i),.destination_clk(usb_clk_i),
+        .source_valid(1'b1),.source_data({service_ready_i,service_generation_i}),
+        .drop_count(),.destination_valid(window_valid),.destination_data(usb_window));
+    reg request_toggle,acknowledge_toggle;
+    reg [31:0] held_generation;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg ack_meta,ack_sync,req_meta,req_sync;
+    assign usb_ready_o=usb_reset_n && window_seen && usb_window[32] && request_toggle==ack_sync;
+    always @(posedge usb_clk_i or negedge usb_reset_n)begin
+        if(!usb_reset_n)begin
+            window_seen<=0;request_toggle<=0;held_generation<=0;ack_meta<=0;ack_sync<=0;
+        end else begin
+            if(window_valid)window_seen<=1;
+            ack_meta<=acknowledge_toggle;ack_sync<=ack_meta;
+            if(usb_toggle_i && usb_ready_o)begin
+                held_generation<=usb_window[31:0];request_toggle<=!request_toggle;
+            end
+        end
+    end
+    always @(posedge control_clk_i or negedge control_reset_n)begin
+        if(!control_reset_n)begin
+            req_meta<=0;req_sync<=0;acknowledge_toggle<=0;
+            service_toggle_o<=0;service_generation_o<=0;
+        end else begin
+            req_meta<=request_toggle;req_sync<=req_meta;service_toggle_o<=0;
+            if(req_sync!=acknowledge_toggle)begin
+                service_generation_o<=held_generation;service_toggle_o<=1;
+                acknowledge_toggle<=req_sync;
+            end
+        end
+    end
 endmodule

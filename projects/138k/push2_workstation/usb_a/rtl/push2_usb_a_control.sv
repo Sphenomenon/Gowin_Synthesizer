@@ -4,7 +4,10 @@ module push2_usb_a_control #(
     parameter integer STOP_CLOCK_QUEUE_FENCE=0,
     parameter bit CNN_FOLLOW_ENABLE=1'b1,
     parameter bit MEDIA_CONTROLS_ENABLE=1'b1,
-    parameter bit WORKER_DEMO=1'b0
+    parameter bit WORKER_DEMO=1'b0,
+    parameter bit PUSH_RATE_CONTROL_ENABLE=1'b0,
+    // USB clock is 48 MHz in the maintained workstation composition.
+    parameter integer RATE_RELEASE_QUIET_CYCLES=240000
 )(
     input wire clk,reset_n,audio_clk,audio_reset_n,
     output wire audio_lifecycle,audio_cancel,
@@ -25,6 +28,10 @@ module push2_usb_a_control #(
     output wire [3:0] track_index,
     input wire select,write,input wire [7:0] address,
     input wire [31:0] wdata,output wire ready,output reg [31:0] rdata,
+    // USB-domain admission snapshot. A denied physical press is consumed,
+    // never retained in the ordinary audio FIFO for a later rate change.
+    input wire rate_control_ready_i,
+    output reg rate_toggle_o,rate_rejected_o,
     output wire audio_valid,input wire audio_ready,output wire [17:0] audio_event,
     output wire [223:0] telemetry
 );
@@ -119,6 +126,12 @@ module push2_usb_a_control #(
     // A CPU store is acknowledged only when the decoder accepts the word.
     // Full event FIFO stalls the USB CPU, never the audio sample clock.
     wire raw_store=select && write && address==8'h04;
+    wire raw_rate_control=PUSH_RATE_CONTROL_ENABLE && !WORKER_DEMO && raw_store &&
+        wdata[15:0]==16'hb00b && wdata[23:16]==8'd51 && !wdata[31];
+    localparam integer RATE_RELEASE_COUNTER_WIDTH=RATE_RELEASE_QUIET_CYCLES<2 ? 1 : $clog2(RATE_RELEASE_QUIET_CYCLES+1);
+    localparam [RATE_RELEASE_COUNTER_WIDTH-1:0] RATE_RELEASE_DELAY=RATE_RELEASE_COUNTER_WIDTH'(RATE_RELEASE_QUIET_CYCLES);
+    reg rate_button_down;
+    reg [RATE_RELEASE_COUNTER_WIDTH-1:0] rate_release_quiet;
     wire generic_store=select && write && address==8'h54;
     // Reserved generic-MIDI controls: CC110 is absolute guide enable,
     // CC111 (0/127) browses, and CC112 (rising >=64) selects/returns.
@@ -138,14 +151,35 @@ module push2_usb_a_control #(
     wire mapped_valid,mapped_ready;wire [17:0] mapped_event;
     // Both routes share the existing audio FIFO. Push/disconnect PANIC has
     // priority over a generic store; the USB CPU waits if the FIFO is full.
-    assign ready=select && (raw_store ? ((raw_panic || (raw_ready && push_warmup==0 && queue_write_ready)) && !input_reset && push_connected) :
+    assign ready=select && (raw_store ? (raw_rate_control ? push_connected :
+        ((raw_panic || (raw_ready && push_warmup==0 && queue_write_ready)) && !input_reset && push_connected)) :
         generic_store ? ((generic_panic || generic_guide_command || (queue_write_ready && fifo_ready && !mapped_valid)) &&
                          !input_reset && connected && generic_midi) :
         pixel_read ? pixel_loaded : 1'b1);
     wire accepted=select && ready;
+    always @(posedge clk or negedge reset_n)begin
+        if(!reset_n)begin rate_button_down<=0;rate_release_quiet<=0;rate_toggle_o<=0;rate_rejected_o<=0;end
+        else begin
+            rate_toggle_o<=0;rate_rejected_o<=0;
+            if(!push_connected || panic_flush)begin rate_button_down<=0;rate_release_quiet<=0;end
+            else begin
+                if(PUSH_RATE_CONTROL_ENABLE && rate_release_quiet!=0)rate_release_quiet<=rate_release_quiet-1'b1;
+                if(raw_rate_control && accepted)begin
+                    rate_button_down<=wdata[30:24]!=0;
+                    if(wdata[30:24]==0)rate_release_quiet<=RATE_RELEASE_DELAY;
+                    else if(!rate_button_down)begin
+                        // A short release/repress is consumed and held just
+                        // like a denied press. It never queues a later toggle.
+                        rate_toggle_o<=rate_control_ready_i && rate_release_quiet==0;
+                        rate_rejected_o<=!rate_control_ready_i || rate_release_quiet!=0;
+                    end
+                end
+            end
+        end
+    end
 `ifndef WORKSTATION_DEMO_D_ONLY
     push2_midi_rx midi(.clk(clk),.rst(input_reset),
-        .usb_valid(raw_store && !raw_panic && !input_reset && queue_write_ready && push_warmup==0 && push_connected),.usb_ready(raw_ready),.usb_event(wdata),
+        .usb_valid(raw_store && !raw_panic && !raw_rate_control && !input_reset && queue_write_ready && push_warmup==0 && push_connected),.usb_ready(raw_ready),.usb_event(wdata),
         .event_valid(valid),.event_ready(map_ready),.event_kind(kind),.event_cable(cable),
         .event_channel(channel),.event_data1(a),.event_data2(b),.event_pitch(),
         .events_received(),.packets_ignored());

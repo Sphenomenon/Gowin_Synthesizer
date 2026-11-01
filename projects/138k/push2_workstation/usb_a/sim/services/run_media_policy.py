@@ -95,19 +95,19 @@ def main():
         # Only temporary copies are compiled; maintained sources stay unchanged.
         cases=[
             ('early-core',ROOT/'rtl/services/workstation_audio_clock_service.sv',
-             'request_o<=!needs_media_stop && command_data_i!=2;',
-             'request_o<=command_data_i!=2;', 'tb_workstation_media_policy', sources,
+             'request_o<=!submitted_media_stop && submitted_operation!=2;',
+             'request_o<=submitted_operation!=2;', 'tb_workstation_media_policy', sources,
              'core pulse preceded actual media stop'),
             ('seal-flush',ROOT/'rtl/audio/workstation_observation_consumers.sv',
-             'recorder_reset_n<=!(record_enable_i && (record_failed_o || record_abort));',
-             'recorder_reset_n<=!(record_enable_i && (record_failed_o || record_abort)); if(seal_request)recorder_reset_n<=0;',
+             'recorder_reset_n<=!(record_enable && (record_failed_o || record_abort));',
+             'recorder_reset_n<=!(record_enable && (record_failed_o || record_abort)); if(seal_request)recorder_reset_n<=0;',
              'tb_workstation_media_policy',sources,'read addr=009c got=00000013 expected=0000001b'),
             ('missing-cancel',ROOT/'rtl/audio/workstation_observation_consumers.sv',
              'score_cancelled_o<=1;', 'score_cancelled_o<=0;',
              'tb_workstation_media_policy_score',score_sources,'planned score stop lost explicit cancellation'),
             ('stale-media',ROOT/'rtl/services/workstation_audio_clock_service.sv',
-             'else if(needs_media_stop && !media_stop_ready_i)admission_error=BUS_MEDIA_NOT_READY;',
-             "else if(1'b0)admission_error=BUS_MEDIA_NOT_READY;",
+             'else if(prepare_media && !media_stop_ready_i)operation_admission=BUS_MEDIA_NOT_READY;',
+             "else if(1'b0)operation_admission=BUS_MEDIA_NOT_READY;",
              'tb_workstation_media_policy',sources,'bus error addr=1008 got=0 expected=1'),
         ]
         result['negative_controls']=[]

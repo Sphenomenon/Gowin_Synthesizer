@@ -86,6 +86,8 @@ module tb_workstation_media_runtime_integration #(parameter bit BUSY_FENCE_ONLY=
     workstation_audio_clock_service #(.ENABLE_MEDIA_POLICY(1),.RESERVE_ZERO_EPOCH(1),
         .ACCEPT_TIMEOUT_CYCLES(32),.RESULT_TIMEOUT_CYCLES(100000),.MEDIA_TIMEOUT_CYCLES(8000)) commands(
         .clk_i(control_clk),.reset_ni(clock_reset),.command_valid_i(clock_valid),.command_write_i(clock_write),
+        .push_toggle_i(1'b0),.push_generation_i(32'd0),.push_ready_o(),.push_generation_o(),
+        .push_rejected_o(),.service_busy_o(),.service_fault_o(),
         .command_address_i(clock_address),.command_data_i(clock_data),.command_strobes_i(clock_strobes),
         .command_ready_o(clock_ready),.response_data_o(clock_response),.response_error_o(clock_error),
         .switch_permit_i(permit),.core_request_ready_i(ready),.core_busy_i(busy),.core_fault_i(fault),.core_dsp_fault_i(dsp_fault),
