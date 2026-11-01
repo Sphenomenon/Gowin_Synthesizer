@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "candidate": "M26",
+  "validation_stage": "SRAM_programming_and_independent_identity_status_readback",
+  "result": {
+    "schema": 1,
+    "started_utc": "2026-11-01T16:43:06.519824+00:00",
+    "authorization": "Standing explicit authorization to inspect JTAG and SRAM-program candidates; latest user selects M26 for hardware verification and requests M26-1 derivative. Flash excluded.",
+    "candidate": "M26",
+    "user_code": "D2110137",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-6e4fadc51e5a2888",
+    "bitstream_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "bitstream_sha256": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75",
+    "physical_report_path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_M26_PHYSICAL_20261102.json",
+    "physical_report_sha256": "2aa781cc975d5001e62ddd569c2dc0a4f5abfec4c62714d8f91058c6bfe08e0e",
+    "programmer_sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+    "script_sha256": "2173aa638202eaf4994df2cab26fe65456fb07d88b5dae194b66eb44fb7cb050",
+    "events": [
+      {
+        "name": "before",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.3951229997910559,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v1/before.log",
+        "log_sha256": "766efd39645b8f39b383f4897874a5d5683070147a96827d8e16a99aa0ea39c0"
+      },
+      {
+        "name": "sram-program",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "2",
+          "--fsFile",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 7.104648625012487,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v1/sram-program.log",
+        "log_sha256": "c16c77d3a7014d971a7273f4050c012d2df2f984d02c335f144a71daa4533868"
+      },
+      {
+        "name": "after",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.3854889168869704,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v1/after.log",
+        "log_sha256": "80733707e559c77a4a8cd03c7d672928a0e29b500a1a210ecc0f60ca0a16f538"
+      },
+      {
+        "name": "status",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "74"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.3824597089551389,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v1/status.log",
+        "log_sha256": "cc6c2308c8a57e2fb1522c1ce1e599962e6e34b23e59b4605940dc2d819313cf"
+      },
+      {
+        "name": "independent-identity",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "0"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v2/independent-identity.log",
+        "log_sha256": "7464d179c179e0ce2548876a2e685ace1c489566477eda6307588af3e070824e"
+      },
+      {
+        "name": "independent-status",
+        "argv": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+          "--device",
+          "GW5AST-138C",
+          "--cable-index",
+          "1",
+          "--location",
+          "8257",
+          "--operation_index",
+          "74"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v2/independent-status.log",
+        "log_sha256": "907480d729734f2ea779e5f6e54d12867a0e17770b54d66924757bebd61a6105"
+      }
+    ],
+    "SRAM_write_invoked": true,
+    "Flash_write_invoked": false,
+    "hardware_functional_acceptance": false,
+    "bitwise_verify_performed": false,
+    "v1_finalizer_failure": "Assertion incorrectly expected UserCode in operation74 status-only output; operation2 SRAM program, independent operation0 identity, and operation74 status all succeeded. Original result and script preserved.",
+    "prior_result_sha256": "877892ffdcbc82cdd58e8059774ed64d2b30385001b6bffeb8b7836955a9b72e",
+    "finalizer_sha256": "a2c1b6ebff6a20745bb786d9012544f8751b1dcfe654f820ba09ab85e86327cf",
+    "finished_utc": "2026-11-01T16:47:30.930024+00:00",
+    "programmer_success": true,
+    "UserCode_readback_matches": true,
+    "current_board_user_code": "D2110137",
+    "status_code": "00022230",
+    "functional_result": "SRAM write and independent device/UserCode/status confirmed; no bitwise verify or audio/video/Push/25K acceptance claim."
+  },
+  "result_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-authorized-sram-v2/result.json",
+    "sha256": "e639549ef85f915eec3b19e82f17302d4bb8dcb517fa8a2b80b77c16920210b3"
+  },
+  "rollback": {
+    "candidate": "M22",
+    "user_code": "D211012F",
+    "policy": "explicit SRAM rollback only; no Flash"
+  },
+  "hardware_functional_acceptance": false
+}
