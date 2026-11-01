@@ -1,0 +1,491 @@
+{
+  "schema": 1,
+  "role": "M",
+  "candidate": "M26",
+  "user_code": "D2110137",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-6e4fadc51e5a2888",
+  "source_prepare_commit": "69670c1d7154c6d053662795fffe158fb9d173cd",
+  "configuration": "M revision1 complete instrument and HDMI; TF/CNN/BLE/recording disabled; before M22-1 Session entry",
+  "full_synthesis": {
+    "schema": "dual138k-build-run-v1",
+    "stage": "synthesis",
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-6e4fadc51e5a2888",
+    "manifest_sha256": "b2787cd0701ff6629f281d00c2614c990c6f0c61aa6d3538eea343a05e9ac821",
+    "command": [
+      "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+      "scripts/custom_board_synthesis.tcl"
+    ],
+    "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26/workstation/Prj1",
+    "environment": {
+      "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+    },
+    "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+    "runner_sha256": "892164d04110b2f17e45728af8e6f7c65a4b61d295a98e4c8107e187c5357224",
+    "sealed_input_count": 608,
+    "started_utc": "2026-11-01T15:40:41.919960+00:00",
+    "exit_code": 0,
+    "child_pid": 72795,
+    "finished_utc": "2026-11-01T15:43:36.626212+00:00",
+    "elapsed_seconds": 174.70737366680987,
+    "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26/synthesis.log",
+    "log_sha256": "6c51116da425572870299a284459a6af089ea15b1fde76163a2c260b45a3de0c",
+    "sealed_inputs_reverified_after_run": true
+  },
+  "synthesis_gate": {
+    "passed": true,
+    "sha256": "54298f25e4e745ea40e1ac3935a0232f4cfb2a615f757348ea658d9d0b2adf7f",
+    "netlist_sha256": "f7cbe69a00c2a2114091a28acaf6e94848c97dbdb39772962e1f9f641a81db7d",
+    "resources": {
+      "Register": 43243,
+      "Lut": 48137,
+      "Alu": 11338,
+      "Bsram": 206,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "BSRAM_is_synthesis_equivalent": true,
+    "actual_role_retirement_verified": true
+  },
+  "synthesis_native": {
+    "tests": 60,
+    "skipped": 16,
+    "errors": 0,
+    "mutants": 66,
+    "all_rejected": true,
+    "official_registered_RAM_fixture_executed": true
+  },
+  "synthesis_boundary": {
+    "tests": 7,
+    "mutants": 69,
+    "all_rejected": true,
+    "full_M140_FIFO_closure": true
+  },
+  "physical_measurement": {
+    "schema": 1,
+    "stage": "full_physical_implementation_measurement",
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137",
+    "role": "M",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-6e4fadc51e5a2888",
+    "user_code": "D2110137",
+    "tool": "Gowin V1.9.12",
+    "process_exit_code": 0,
+    "pnr_completed": true,
+    "bitstream_generated": true,
+    "source_policy": "independent_M26_full_synthesis_VG_and_normal_staged_M_v3_SDC_with_measured_DDRfar_128_reference_FF_placement_recipe_after_exact_new_VG_boundary_checks",
+    "resource_usage": {
+      "Logic": {
+        "used": 60458,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 43243,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 46694,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 246,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 116,
+        "capacity": 298
+      },
+      "LUT": 48025,
+      "ALU": 11839,
+      "ROM16": 0,
+      "SSRAM": 99
+    },
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "global_worst_ns": {
+        "setup": 0.007,
+        "hold": 0.143,
+        "recovery": 2.843,
+        "removal": 0.275
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 75.786
+        },
+        "ulpi_60m": {
+          "required_mhz": 60.0,
+          "actual_mhz": 82.09
+        },
+        "dac_ref12m288": {
+          "required_mhz": 12.288,
+          "actual_mhz": 118.161
+        },
+        "dac_ref16m9344": {
+          "required_mhz": 16.934,
+          "actual_mhz": 135.492
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.841
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 58.054
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2338.897
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 226.963
+        },
+        "video_pixel148": {
+          "required_mhz": 148.5,
+          "actual_mhz": 170.133
+        },
+        "cpu_ram50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 102.856
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1377.41
+        },
+        "selected48": {
+          "required_mhz": 12.288,
+          "actual_mhz": 106.013
+        },
+        "selected44": {
+          "required_mhz": 16.934,
+          "actual_mhz": 106.013
+        }
+      },
+      "checks": {
+        "clk_50m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ulpi_60m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref12m288": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref16m9344": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_ref49": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_serial742": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "video_pixel148": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_ram50": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_core100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_rtc_bound": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected48": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected44": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "top_negative_paths": {
+        "setup": [],
+        "hold": [],
+        "recovery": [],
+        "removal": []
+      }
+    },
+    "exact_DDR_hold": {
+      "slack_ns": 0.624,
+      "arrival_ns": 6.038,
+      "required_ns": 5.414,
+      "relationship_ns": 3.5,
+      "clock_skew_report_ns": 0.47,
+      "launch_location": "R104C175[0][A]",
+      "capture_location": "R2C2[0][A]",
+      "launch_within_requested_region": true,
+      "capture_within_requested_region": true
+    },
+    "source_and_output_sha256": {
+      "custom_138k_integration.vg": "f7cbe69a00c2a2114091a28acaf6e94848c97dbdb39772962e1f9f641a81db7d",
+      "directed_placement_source_closure.json": "95c0719d93d497932d39bacabe5289ae8c8d5c9ef538c72f4216e758404e608f",
+      "impl/pnr/custom_138k_integration.fs": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75",
+      "impl/pnr/custom_138k_integration.rpt.txt": "5f616732948dccee23206fadac70494fa1555309262f227849013291fc950c12",
+      "impl/pnr/custom_138k_integration.tr": "da07e36191d34e1d94a27f9884f5cc7a51e6dd07e87091ee309e791bb37971ed",
+      "impl/pnr/custom_138k_integration.vo": "76298a83b96b690387ad5fb799fdd17d75d7b82f8093b8d2793523819762cffd",
+      "parent_integration_inputs.json": "b2787cd0701ff6629f281d00c2614c990c6f0c61aa6d3538eea343a05e9ac821",
+      "parent_pinout.json": "7167100c4c828da3deeb151ffa7957a2c62111fd111baa028388b84a5a9f4571",
+      "parent_synthesis_audit.json": "0a81c99643251e5218e553d92e2b2eac17afc395af308203322b7f22d28f4e11",
+      "parent_workstation_profile.json": "26341f3a3ac884ee56b743d50e6e97b2d17f6e85f0afbdd721053947423fc131",
+      "physical.cst": "30da7d27d507ca97267bd18db851f2db7817ffd952dc34f1aa4a63f33340a115",
+      "physical.sdc": "c3b2add186c5fd2561e17664539f20649eff7c1140270dd476bf3d1201624f23",
+      "physical_inputs.json": "a057950297ce543fb89451eb23b9d46b4c083c40aac6784acc84e01d972e8576",
+      "placement_witness_summary.json": "9a7428827fa8fb392bfeb90f3ff3a6369ed09971694cc0f45a332f64400e994a",
+      "pnr.log": "4c48a079ddaea2e31ab5b9cc9d9afbcdaf7b32dd84faf17c94c66794a7814ec2",
+      "run.tcl": "109992a0d1f3a359186a5cc643d2be97b74d5ba731365454bf7f0541c1bf4884",
+      "template_physical_inputs.json": "3df49554b4d1cbcc9c5aef311db329f6915d1d76994f371e7a35574c22d1d08e"
+    },
+    "measurement_script_sha256": "d2d19cb0af7f8c685ca31c7a43e7567ce4c42b3b6837be0cf894862122e038f9",
+    "timing_auditor_sha256": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+    "physical_input_inventory_reverified_after_pnr": true,
+    "timing_closed": true,
+    "physical_CDC_accepted": false,
+    "hardware_tested": false,
+    "SRAM_deployed": false,
+    "Flash_deployed": false,
+    "release_ready": false,
+    "rollback": "No programming; previous board image unchanged.",
+    "warnings": [
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_12m288_d' by the specified constraint. And then it may lead to the excessive delay or skew",
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk_50m_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+    ]
+  },
+  "routed_gates": {
+    "native": {
+      "returncode": 0,
+      "elapsed_seconds": 119.21260412503034,
+      "tests": 60,
+      "skips": [
+        "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_headless_display_cannot_return_in_cells_hierarchy_or_sdc (__main__.ActualNativeProtocol.test_headless_display_cannot_return_in_cells_hierarchy_or_sdc) ... skipped 'explicit W-audio retirement only'",
+        "test_m22_new_hmi_mailbox_negative_controls (__main__.ActualNativeProtocol.test_m22_new_hmi_mailbox_negative_controls) ... skipped 'M22 actual new HMI mailbox only'",
+        "test_apb_ce_toggle_cannot_bypass_payload_capture (__main__.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_ce_toggle_feedback_must_invert_its_own_q (__main__.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+        "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+        "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+      ]
+    },
+    "boundary": {
+      "returncode": 0,
+      "elapsed_seconds": 176.86606745794415,
+      "tests": 7,
+      "skips": []
+    },
+    "performance": {
+      "returncode": 0,
+      "elapsed_seconds": 71.46748741692863,
+      "tests": 17,
+      "skips": []
+    },
+    "pll": {
+      "returncode": 0,
+      "elapsed_seconds": 100.9063965829555,
+      "tests": null,
+      "skips": []
+    },
+    "hmi": {
+      "returncode": 0,
+      "elapsed_seconds": 13.885577665874735,
+      "tests": null,
+      "skips": []
+    },
+    "clk50": {
+      "returncode": 0,
+      "elapsed_seconds": 5.788492124993354,
+      "tests": null,
+      "skips": []
+    }
+  },
+  "root_review": {
+    "files": 1542,
+    "sha256": "e7d32d41aa50bc6e4adbaab16d1aa8d08e0af6eb2e294d34cf9de663c6a9144d"
+  },
+  "offline_physical_gates_passed": true,
+  "gate_limits": [
+    "setup margin only +0.007 ns",
+    "routed native suite has 15 named mapping/retired skips; HMI eight mutations separately executed",
+    "all hardware/analog audio/video/Push/25K acceptance remains pending",
+    "M22-1 changes require an independent complete synthesis and P&R"
+  ],
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "hardware_tested": false,
+  "board": "M22 D211012F remains",
+  "rollback": "No programming performed; M22 unchanged",
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-physical-measurement-v1.json": "9dfb708cd65a0d43a3312ff5ce60c6961f860902fc51ca3931daee2cde12dc61",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-pnr-run-v1.json": "70cfaf6fa6bc3887f13188c280d7ae87a93dcb79c167cddebfe79065d0014b7c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/boundary/mutants.json": "fcaa900c6f047f7899ddbee1e93c08a295f6eb29ec5caa30f7d0bbe0b011d6a0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/boundary/run.json": "d9b2bd03a740370acc7fc4447c4fd94b3bccead09a9650ad2c466d0dd8492d59",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/boundary/stderr.log": "3d9e97440f57dc06b60253056a2f92e1d06150f8411c23ac9fdecf4541a30b0a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/boundary/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/clk50/measure.py": "4af0edda8d2efdbc16904d04cd581fbb47b4836f99e4998148c0fe1fcc6eaab8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/clk50/measurement.json": "6efec3f29362fe94ac1d2bf4dfa5c84dfa33fce2e620167b704fb65926510b15",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/clk50/run.json": "fbf3d337c77d37260a2240c976475c3a3d151bd4063f44882537357b3893a3d7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/clk50/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/clk50/stdout.log": "c65258cedf48f0650cd3b0368aaf10a7a86e1aa7a330b735807c25a57c65dc15",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/hmi/mutants.json": "4eb02dc67cbf31370968080cb2dbab67042e37991739bc9b30f8d6099b1c9c73",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/hmi/run.json": "44d0e5c324779fb17802730a2bc14306fba96ea6083adbfaac4038ae8ccc08e3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/hmi/stderr.log": "76cc446383b9b16119dd509c5911035da39cc570d98b7c493cd9d5203c96af77",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/hmi/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/hmi/test.py": "2fdf871986ff9a7170be717fb32204122c367cd087001092993e2656186c5dbd",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/native/mutants.json": "cec93d7fe6847228b137889b224a1ad4d022e6e8c7af83c50a4d2f505b9c08fc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/native/run.json": "53e9752d45ecd0e5339a5c35567265e5e21915c8d1500b77f88df6448a9578da",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/native/stderr.log": "eb97f8d052047f21b8abebdd1ad177c1c08a2040001414fa69da6a36f167de3c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/native/stdout.log": "9eca453dce6550b81963bd66e60525382bf297a579bd01f7b6e184b8b2006ca5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/performance/mutants.json": "eb8be18119b8bcea5fe9928c3cfa0161bd307205c07d8c31c29471b5622863c1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/performance/run.json": "f46770df2cc20b02368a8262ed7380a88960b141370bdaa670117d3bc9da06e2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/performance/stderr.log": "a2d846af594ce53d7c11b986f4b27efbf5da891cb46f2bb8fdc76cf08d61aba5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/performance/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/pll.json": "4e8ae4533dc990adf9cfe43c3fb46b86245c469412da1b6fd14a198cac4ae524",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/run.json": "773fe3c743183eabfeb388d99abf2a45e7581447f007d079697e4c7e5f902909",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/stdout.log": "71b3d046f46872107f81288c7b82ce175adbd367f4a691eb0d0a035000cef7b5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/workspace/docs/evidence/ddr_configuration_paths.json": "8776c7a0d331882b9774d0f551327fd0fd096fb128d9f16d86271151e0f91b65",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/workspace/docs/evidence/ddr_reset_sequence.json": "328ff6479d1dff2191a64c851a851453a49b4ef3177313a920948f278a52856f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/workspace/reference/ddr3_memory_interface.v": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1/pll/workspace/reference/ddr3_memory_interface.vo": "0a21efa69eab7d8b9912bb6aaf880ad35de00d562cc451587c11bd3c002ed17b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v1.py": "947fcde4744643a67c7ce1a23cfe6440d0248f75ed92a8e52d4d8ce825ab254b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v2.py": "355e1a62b22f791f62b45b27edb93df267801fb17a8f7722849539ee8d820e91",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-root-physical-gates-v3.py": "ee684db22db91c3b64b3d9327e5b9945347a4786fcdf26017ac10e4670bad6be",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-synthesis-and-physical-start-handoff-v1.json": "b5b7e92949f1e77ff77ab0b121def37aa61781a23f9519c2b6dc31099e3ceff5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-m26-physical-review-v1.json": "e7d32d41aa50bc6e4adbaab16d1aa8d08e0af6eb2e294d34cf9de663c6a9144d"
+  }
+}
