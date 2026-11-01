@@ -587,13 +587,20 @@ module workstation_tf_runtime_dma #(
                     playback_start_toggle <= ~playback_start_toggle;
                 end
 
+                // Data is private until the unchanged response publishes it.
+                // A valid beat stays fixed while the byte FIFO consumes it.
+                // Keep the original procedural behavior for unknown validity.
+                case (read_buf_valid)
+                    1'b0: read_buf <= app_rdata;
+                    1'b1: begin end
+                    default: if (read_response) read_buf <= app_rdata;
+                endcase
                 if (read_accept) begin
                     read_pending <= 1'b1;
                     read_pending_bytes <= read_chunk_bytes;
                 end
                 if (read_response) begin
                     read_pending <= 1'b0;
-                    read_buf <= app_rdata;
                     read_buf_valid <= 1'b1;
                     emit_index <= 6'd0;
                     emit_bytes_left <= read_response_bytes;

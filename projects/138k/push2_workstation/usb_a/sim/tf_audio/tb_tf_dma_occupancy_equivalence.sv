@@ -53,23 +53,29 @@ module tb_tf_dma_occupancy_equivalence;
                 dut.accepted_used !== reference.capture_byte_count-reference.read_total_bytes)
                 $fatal(1,"occupancy invariant differs checks=%0d",checks);
             if ({fifo_in_rd_en,playback_start_toggle,playback_done_toggle,fifo_out_wr_en,
-                 fifo_out_wr_data,app_cmd,app_en,app_addr,app_wdata,app_wren,app_wend,
+                 app_cmd,app_en,app_addr,app_wdata,app_wren,app_wend,
                  capacity_error,bank0_valid,bank1_valid,file_size_valid,staged_file_size,runtime_restart_ack_o}
              !=={r_fifo_in_rd_en,r_playback_start_toggle,r_playback_done_toggle,r_fifo_out_wr_en,
-                 r_fifo_out_wr_data,r_app_cmd,r_app_en,r_app_addr,r_app_wdata,r_app_wren,r_app_wend,
+                 r_app_cmd,r_app_en,r_app_addr,r_app_wdata,r_app_wren,r_app_wend,
                  r_capacity_error,r_bank0_valid,r_bank1_valid,r_file_size_valid,r_staged_file_size,r_runtime_restart_ack_o})
                 $fatal(1,"public DMA output differs checks=%0d",checks);
             if ({dut.state,dut.capture_byte_count,dut.write_total_bytes,dut.read_total_bytes,
                  dut.write_ring_offset,dut.read_ring_offset,dut.write_count,dut.pending_bytes,
                  dut.read_pending_bytes,dut.emit_index,dut.emit_bytes_left,dut.write_pending,
                  dut.read_pending,dut.read_buf_valid,dut.in_read_wait,dut.capture_overflow,
-                 dut.eof_seen,dut.eof_finalized,dut.stream_started,dut.end_reported,dut.read_buf}
+                 dut.eof_seen,dut.eof_finalized,dut.stream_started,dut.end_reported}
              !=={reference.state,reference.capture_byte_count,reference.write_total_bytes,reference.read_total_bytes,
                  reference.write_ring_offset,reference.read_ring_offset,reference.write_count,reference.pending_bytes,
                  reference.read_pending_bytes,reference.emit_index,reference.emit_bytes_left,reference.write_pending,
                  reference.read_pending,reference.read_buf_valid,reference.in_read_wait,reference.capture_overflow,
-                 reference.eof_seen,reference.eof_finalized,reference.stream_started,reference.end_reported,reference.read_buf})
+                 reference.eof_seen,reference.eof_finalized,reference.stream_started,reference.end_reported})
                 $fatal(1,"legacy DMA state differs checks=%0d",checks);
+            if(fifo_out_wr_en === 1'b1 && fifo_out_wr_data !== r_fifo_out_wr_data)
+                $fatal(1,"valid FIFO payload differs checks=%0d",checks);
+            if(dut.read_buf_valid === 1'b1 && dut.read_buf !== reference.read_buf)
+                $fatal(1,"published private buffer differs checks=%0d",checks);
+            if(rst_n && dut.read_pending === 1'b1 && dut.read_buf_valid === 1'b1)
+                $fatal(1,"pending/valid invariant violated checks=%0d",checks);
             checks=checks+1;
         end
     endtask

@@ -14,6 +14,8 @@ import subprocess
 import sys
 
 import z3
+from tf_dma_read_preload_sources import (
+    SOURCE_SHA256 as PRELOAD_SHA256, before_read_preload, apply_read_preload_to_test_mutant)
 from run_tf_dma_available_response_cofactor import (
     ORIGINAL_AVAILABLE_LINES, available_cofactor_block, before_available_response_cofactor)
 
@@ -84,6 +86,9 @@ def response_mutant(text, anchor, replacement):
     derive mutants in the original pinned source to keep the original unique
     anchor and oracle, then simulate both cofactors in the actual module.
     """
+    preloaded = hashlib.sha256(text.encode()).hexdigest() == PRELOAD_SHA256
+    if preloaded:
+        text = before_read_preload(text)
     block = None
     if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
         block = available_cofactor_block(text)
@@ -95,7 +100,7 @@ def response_mutant(text, anchor, replacement):
         if mutant.count(ORIGINAL_AVAILABLE_LINES) != 1:
             raise ValueError('TF available cofactor mutation reconstruction drift')
         mutant = mutant.replace(ORIGINAL_AVAILABLE_LINES, block, 1)
-    return mutant
+    return apply_read_preload_to_test_mutant(mutant) if preloaded else mutant
 
 
 def equation(text, name):
@@ -217,6 +222,8 @@ def main():
     scripts = {name: Path(__file__).with_name('run_tf_dma_' + name + '.py')
                for name in ('occupancy_equivalence', 'threshold_groups')}
     inputs = [SOURCE, REFERENCE, Path(__file__).resolve(), tb, header,
+              Path(__file__).with_name('tf_dma_read_preload_sources.py'),
+              Path(__file__).with_name('fixtures') / 'workstation_tf_runtime_dma_before_read_preload.sv',
               Path(__file__).with_name('run_tf_dma_available_response_cofactor.py'),
               Path(__file__).with_name('fixtures') / 'workstation_tf_runtime_dma_before_available_response_cofactor.sv',
               ROOT / 'sim/audio/prove_effect_slot_admission.py',
@@ -245,9 +252,11 @@ def main():
         if old != REFERENCE.read_text():
             raise ValueError('reviewed inverse is not the entire pinned module')
         nba = lambda value: re.findall(r'\b(\w+(?:\[[^]]+\])?)\s*<=\s*([^;]+);', value)
-        if nba(text) != nba(old):
+        if nba(before_read_preload(text)) != nba(old):
             raise ValueError('TF cofactor changed sequential target/RHS/order')
         result.update(exact_source_inverse=True, NBA_targets_RHS_order_identical=True,
+                      reviewed_private_preload_inverse_sha256=hashlib.sha256(before_read_preload(text).encode()).hexdigest(),
+                      actual_preloaded_module_simulated=True,
                       binary=binary_proof(text))
         result['source_drift_controls'] = []
         for label, anchor in [('candidate_drift', '    reg [31:0] accepted_without_write'),

@@ -15,6 +15,7 @@ import subprocess
 import sys
 
 import z3
+from tf_dma_read_preload_sources import before_read_preload
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'rtl/tf_audio/workstation_tf_runtime_dma.sv'
@@ -48,12 +49,16 @@ def one(text, pattern):
 
 def available_cofactor_block(text):
     if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
+        text = before_read_preload(text)
+    if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
         raise ValueError('maintained TF available-cofactor source identity changed')
     return one(text, BLOCK_PATTERN)
 
 
 def before_available_response_cofactor(text):
     """Reverse exactly the reviewed insertion, then require all 3f9 bytes."""
+    if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
+        text = before_read_preload(text)
     block = available_cofactor_block(text)
     restored = text.replace(block, ORIGINAL_AVAILABLE_LINES, 1)
     if hashlib.sha256(restored.encode()).hexdigest() != REFERENCE_SHA256:
@@ -207,6 +212,8 @@ def main():
              'sim/tf_audio/tb_tf_dma_occupancy_equivalence.sv',
              'sim/tf_audio/tb_tf_dma_threshold_groups.sv', 'sim/tf_audio/tb_tf_audio_ddr_dma.sv']
     inputs = [SOURCE, REFERENCE, Path(__file__).resolve(), base_tb, old_runner, header,
+              Path(__file__).with_name('tf_dma_read_preload_sources.py'),
+              Path(__file__).with_name('fixtures') / 'workstation_tf_runtime_dma_before_read_preload.sv',
               *[ROOT / name for name in names]]
     before = {str(path): sha(path) for path in inputs}
     snapshots = {}
@@ -222,7 +229,8 @@ def main():
     try:
         if sha(REFERENCE) != REFERENCE_SHA256:
             raise ValueError('pinned pre-available-cofactor fixture changed')
-        text = SOURCE.read_text()
+        actual_text = SOURCE.read_text()
+        text = before_read_preload(actual_text)
         old = before_available_response_cofactor(text)
         if old != REFERENCE.read_text():
             raise ValueError('TF available inverse is not the entire pinned module')
@@ -233,6 +241,8 @@ def main():
         if text[text.index(tail):] != old[old.index(tail):]:
             raise ValueError('TF accepted-used cofactor or later bytes changed')
         result.update(exact_source_inverse=True, NBA_targets_RHS_order_identical=True,
+                      reviewed_private_preload_inverse_sha256=SOURCE_SHA256,
+                      actual_preloaded_module_simulated=True,
                       accepted_used_cofactor_and_later_source_byte_identical=True,
                       binary=binary_proof(text, old))
         result['source_drift_controls'] = []
@@ -261,7 +271,7 @@ def main():
             if text.count(anchor) != 1:
                 raise ValueError('TF available source mutation anchor drift: ' + label)
             mutant = out / (label + '.sv')
-            mutant.write_text(text.replace(anchor, replacement, 1))
+            mutant.write_text(actual_text.replace(anchor, replacement, 1))
             result['runs'].append(simulate(out, label, mutant, reference, tb, negative=True))
         folder = out / 'response_cofactor'
         command = [sys.executable, '-B', str(old_runner), '--output', str(folder)]
@@ -270,7 +280,7 @@ def main():
         run.check_returncode()
         verification = folder / 'verification.json'
         record = json.loads(verification.read_text())
-        if not record['passed'] or record['source_sha256'] != SOURCE_SHA256:
+        if not record['passed'] or record['source_sha256'] != sha(SOURCE):
             raise ValueError('existing response cofactor did not verify actual maintained source')
         result['existing_regressions']['response_cofactor'] = dict(
             path=str(verification), sha256=sha(verification), passed=True,
