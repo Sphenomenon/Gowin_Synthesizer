@@ -1,0 +1,308 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "created_utc": "2026-11-01T14:15:32.439470+00:00",
+  "stage": "task3_real_basic_pitch_optional_task_restart_component",
+  "status": "COMPONENT_SIMULATION_PASS_W_PROFILE_NOT_INTEGRATED",
+  "scope": "Actual maintained Basic Pitch link lifecycle and real-model offline evidence. Not a selected W profile, routed candidate, music-quality acceptance or board deployment.",
+  "source": {
+    "repository": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer",
+    "branch": "codex/dual-138k-task3",
+    "head_at_report": "96fbd67a1592bb5a823bf476eda9c3cdbfca9d3a",
+    "frozen_changed_sources_sha256": {
+      "projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_workstation_link.sv": "6466ac40b178cdf8b23a2fe7d200acf4341c9780ed59a5cf877736e534fe1cc4",
+      "projects/138k/push2_workstation/usb_a/sim/music/run_bp_link_restart.py": "01da9a6ee7e8baada92926fca5104bf9986bb90cedf1076f16672dc730b2cc66",
+      "projects/138k/push2_workstation/usb_a/sim/music/tb_bp_link_restart.sv": "256613acadfb11d7e01821100905369ea45403a4ee91c0f1bc8a827e8fe02c69"
+    },
+    "contract": "projects/138k/push2_workstation/usb_a/rtl/music/BASIC_PITCH_TASK_RESTART_CONTRACT.md",
+    "contract_sha256": "7b0cd0c10354b04e46cfb644bbf0ce081b1bcab71e36e1cfbecc5d3fc2532d6a",
+    "production_pipeline_dimensions": {
+      "WIN_LEN": 43844,
+      "FRAME_LIMIT": 172,
+      "OCTAVE_LIMIT": 9
+    },
+    "production_dimensions_anchor_unchanged": true,
+    "model_or_existing_pipeline_sources_modified": false,
+    "accepted_profile_source_policy_modified_by_this_work": false
+  },
+  "integration": {
+    "drain_restart_default": false,
+    "enable_explicit_parameter": "DRAIN_RESTART_ENABLE=1",
+    "new_w_profile_selects_enabled_link": false,
+    "w21_cnn_automatically_restored": false,
+    "bitstream_identity": null,
+    "hardware_board_identity": null,
+    "physical_resources": null,
+    "routed_timing": null,
+    "measured_board_latency": null,
+    "sram_programmed": false,
+    "flash_written": false
+  },
+  "contract_facts": {
+    "restart_request_not_standard_valid_ready": true,
+    "run_acceptance_condition": "RUN && armed && analysis_restart && !fault; does not test restart_ready_o",
+    "restart_ready_does_not_mean_model_crc_done": true,
+    "request_before_initial_memory_ready": "accepted in RUN while armed, blocks task I/O, waits in DRAIN until transport ready plus equal ledgers or timeout",
+    "timeout_cycles_default": 50000000,
+    "immediate_fences": [
+      "PCM ingress and PCM ready",
+      "converted PCM output ready",
+      "result valid",
+      "score valid and ready",
+      "analysis_done",
+      "new request FIFO admission and bp_mem_ready"
+    ],
+    "read_completion": "actual response FIFO source-domain consume",
+    "write_completion": "actual DDR16/native write acceptance in memory domain; registered Gray cumulative count returns through two synchronizer stages",
+    "counter_bits": 16,
+    "read_outstanding_bound": 1,
+    "uncommitted_write_bound_current_queue": 17,
+    "comparison_lag_bound": "finite Gray visibility lag; conservative below 32 at current one-admission/source-clock, two-stage synchronization and tested 20ns/14ns clocks; reproven if queue/rate/clock policy changes",
+    "local_memory_reset_clears_ledgers": false,
+    "failure_codes": {
+      "1": "DRAIN timeout",
+      "2": "memory reset/calibration lost after readiness; supersedes timeout if later observed"
+    },
+    "fault_recovery": "coordinated reset_n, memory_reset_n, FIFO domains and native DDR/arbiter old transactions, recalibration and model revalidation; local reset or another analysis_restart cannot recover"
+  },
+  "real_model": {
+    "path": "projects/138k/push2_workstation/usb_a/rtl/music/weights/cnn_ddr_blob.mem",
+    "mem_text_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+    "words": 52239,
+    "payload_bytes": 104478,
+    "payload_crc32": "AF01A61B",
+    "payload_byte_order": "little-endian 16-bit words",
+    "model_missing": false,
+    "trained_or_replaced_during_this_work": false
+  },
+  "restart_v4": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-v4/verification.json",
+      "sha256": "6532514f1d8a924867d3c005b644ec9049f96df7bcecf4fde062742b0324dc16"
+    },
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/music/run_bp_link_restart.py --output /Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-v4",
+    "status": "PASS",
+    "parameters": {
+      "WIN_LEN": 2048,
+      "FRAME_LIMIT": 2,
+      "RESTART_TIMEOUT_CYCLES": 512,
+      "source_period_ns": 20,
+      "memory_period_ns": 14
+    },
+    "simulation_copy_sha256": "c033eab3a6a0e0159e122bcfd6630c3140f76ed7f32b5381ae5a6781328dd75c",
+    "simulation_overlay": "exact one-anchor WIN_LEN=2048, FRAME_LIMIT=2; no production RTL mutation",
+    "model_loader": "simulation-only UART loader state DONE; real DDR model preload",
+    "actual_components": [
+      "basic_pitch_workstation_link",
+      "basic_pitch_pcm_pipeline CQT plus six CNN layers plus Viterbi",
+      "two music_async_fifo CDCs",
+      "basic_pitch_ddr_command_buffer",
+      "basic_pitch_ddr16_port",
+      "native 256-bit DDR behavior model"
+    ],
+    "runs": [
+      {
+        "drain_restart": 1,
+        "cases": [
+          "CASE 1 drain PASS clocks=5",
+          "CASE 2 drain PASS clocks=14",
+          "CASE 3 drain PASS clocks=6",
+          "CASE 4 timeout PASS",
+          "CASE 5 memory reset PASS",
+          "CASE 6 calibration loss PASS",
+          "CASE 7 stopped memory clock PASS"
+        ],
+        "inference": [
+          "INFERENCE hashes=a03d33094c74c58c2d3900167980a8bf34a5acbde7e6ee0a notes=1",
+          "NOTE 0 44",
+          "LAYER 0 writes=4224",
+          "LAYER 1 writes=528",
+          "LAYER 2 writes=5632",
+          "LAYER 3 writes=176",
+          "LAYER 4 writes=5632",
+          "LAYER 5 writes=176"
+        ],
+        "exit_code": 0
+      },
+      {
+        "drain_restart": 0,
+        "cases": [],
+        "inference": [
+          "INFERENCE hashes=a03d33094c74c58c2d3900167980a8bf34a5acbde7e6ee0a notes=1",
+          "NOTE 0 44",
+          "LAYER 0 writes=4224",
+          "LAYER 1 writes=528",
+          "LAYER 2 writes=5632",
+          "LAYER 3 writes=176",
+          "LAYER 4 writes=5632",
+          "LAYER 5 writes=176"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "inference_equal": true,
+    "final_layer_hash_low_to_high": [
+      "e7e6ee0a",
+      "34a5acbd",
+      "7980a8bf",
+      "2d390016",
+      "4c74c58c",
+      "a03d3309"
+    ],
+    "viterbi_midi_notes": [
+      44
+    ],
+    "layer_writes": [
+      4224,
+      528,
+      5632,
+      176,
+      5632,
+      176
+    ],
+    "enabled_cycles": 29987257,
+    "default_cycles": 29984805,
+    "enabled_native_reads": 1217372,
+    "default_native_reads": 1217189,
+    "read_counter_wraps_exercised": true,
+    "write_counter_wraps_specifically_exercised": false,
+    "elapsed_seconds": 107.861,
+    "logs": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-v4/run_1.log",
+        "sha256": "6be7fedf165e681107cc7aa287d3502299e562e8a7bf0c3bb4efc6085fcde90c"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-v4/run_0.log",
+        "sha256": "63dcef31a5f43d69088805c5dab1a2c96dc7b4f9777c01af39ea58e9f0ed28ee"
+      }
+    ]
+  },
+  "negative_drain_bypass": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-negative-v1/verification.json",
+      "sha256": "79f748ef10309fb6fc3d3b64cd581c084a66ba30b2b35b0c3593e870a4b359b1"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-link-restart-negative-v1/run.log",
+      "sha256": "85331d24a2a384c6f7a1d029dba27be57a8afd82296297c2c4b3af0e62782778"
+    },
+    "status": "PASS",
+    "mutation": "bypass actual drain before pipeline restart",
+    "mutated_simulation_copy_sha256": "52c2c5ef1e7e1af7e38c56e2322b5e05f4ec3ab9af684dd4da2a587f57d8c31f",
+    "observed_exit_code": 1,
+    "expected_failure": "pipeline reset before actual DDR drain",
+    "production_rtl_modified": false
+  },
+  "cached_vs_all_ddr_ab": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/music/run_bp_config_ab.py --simulator verilator --frames 2 --win-len 2048 --ddr-latency 1 --max-cycles 400000000",
+    "metadata": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/music/gen/run_metadata.json",
+      "sha256": "8cb156f3fa90ea1b894eee4f5b221cd01f2140a6dcac7ababe95c4eb62b75645"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/music/gen/run.log",
+      "sha256": "3adad87e81c771466e6a1edbb0f02351f71fe91cbd5ac1558c0dc3ad65a1bfa9"
+    },
+    "status": "PASS",
+    "parameters": {
+      "FRAMES": 2,
+      "WIN_LEN": 2048,
+      "DDR_READ_CYCLES": 1,
+      "MAX_CYCLES": 400000000
+    },
+    "tested_configs": [
+      "USE_ALL_DDR=1 baseline",
+      "USE_ALL_DDR=0 staged cache"
+    ],
+    "six_layer_hashes_equal": true,
+    "layer_writes_equal": [
+      4224,
+      528,
+      5632,
+      176,
+      5632,
+      176
+    ],
+    "score_count_each": 1,
+    "elapsed_simulation_wall_seconds": 83.197,
+    "loader_scope": "real model preloaded; UART loader forced DONE",
+    "oracle_limit": "compares two implementations of same maintained fixed-point algorithm; not an independent musical-quality oracle"
+  },
+  "separate_model_boot_component": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/tools/test_cnn_flash_boot.py --output /Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-flash-boot-v1.json",
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-flash-boot-v1.json",
+      "sha256": "66355fd912869c6077012fb6028c4755983c2880847f420aac560388019f19f2"
+    },
+    "status": "PASS",
+    "rtl_cases": 19,
+    "host_invalid_cases_rejected": 7,
+    "flash_io_guard_passed": true,
+    "full_real_model_case": {
+      "words": 52239,
+      "clk_div": 4,
+      "case": 0,
+      "zero_response": 0,
+      "payload_crc32": "AF01A61B",
+      "log": "PASS case=0 words=52239 clk_div=4 zero_rsp=0 cycles=7386959 writes=52239 reads=52239 source=1 crc=af01a61b flash_error=0\n/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/model_flash/tb_boot_model.sv:156: $finish called at 147739180000 (1ps)"
+    },
+    "full_model_manifest": {
+      "magic": "BPF1",
+      "version": 1,
+      "header_bytes": 32,
+      "word_count": 52239,
+      "payload_bytes": 104478,
+      "payload_crc32": "AF01A61B",
+      "flash_image_bytes": 104510,
+      "payload_byte_order": "little-endian 16-bit words",
+      "contains_pcm": false
+    },
+    "hardware_tested": false,
+    "scope": "separate actual SPI/DDR boot-loader simulation including readback CRC and UART fallback; not cancellation concurrent with loader, not hardware Flash access"
+  },
+  "separate_ddr_isolation_component": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/music/run_bp_ddr_isolation.py --output /Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-ddr-isolation-v1",
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-ddr-isolation-v1/summary.json",
+      "sha256": "4eb0e7cf3ae4527fb815279e4b082364016f37c12e6c2578d30586a4a5bc1b2d"
+    },
+    "cases": [
+      {
+        "case": "old_map",
+        "expected_behavior_confirmed": true,
+        "exit_code": 1,
+        "seconds": 0.21
+      },
+      {
+        "case": "new_map",
+        "expected_behavior_confirmed": true,
+        "exit_code": 0,
+        "seconds": 27.66
+      }
+    ],
+    "logs": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-ddr-isolation-v1/new_map.log",
+        "sha256": "d268a496f23af6eef0536aa14a22d81f2941bb0fd09b125bf7a84407741a04f3"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-audit-ddr-isolation-v1/old_map.log",
+        "sha256": "c159a64bd866156196b8841ea041471d1146c7c40f507012eea99167fef2614c"
+      }
+    ],
+    "scope": "172-frame 89-state DP versus competing delay writes; original-map negative fails as expected; not whole W integration"
+  },
+  "limits": [
+    "Restart v4 uses WIN_LEN=2048 and FRAME_LIMIT=2 in a strictly checked simulation copy; production remains 43844/172.",
+    "Restart and A/B simulations preload the unchanged real model and force UART loader DONE; no CRC-loader acceptance may be inferred from these two tests.",
+    "Separate full-model loader test passed, but concurrent cancellation during serial/flash model upload and upload flow control were not exercised by restart v4.",
+    "Default0 new-link fresh inference matches enabled post-cancel inference and explicit pass-through assertions; this is not formal equivalence across every accepted historical configuration.",
+    "No whole W profile selects this optional boundary yet; W21 remains without CNN and no LCD/session/generation task owner is implied.",
+    "No new W synthesis/P&R/PLL/full-STA/physical-BSRAM/CDC evidence or bitstream identity exists for this boundary.",
+    "ASYNC_REG and asynchronous simulation do not establish Gray bus skew/max-delay, reset release or routed CDC acceptance; prove these at actual W clocks without hiding paths.",
+    "No TF-to-W transport, Push guidance, model accuracy, board latency, reverse LCD cable, SRAM or Flash hardware acceptance is claimed.",
+    "Coherent global recovery must eliminate old native DDR responses before a new epoch; the local link cannot provide system-level reset coordination alone.",
+    "All local cache evidence paths are machine-local; SHA256 values and essential outcomes in this versioned report preserve their identity if caches are later unavailable."
+  ]
+}
