@@ -11,6 +11,14 @@
 #define MEDIA_CID 0x42u
 #define SIGNALING 1u
 #define SEP 4u /* SEID 1 encoded in bits 7:2. */
+/* W's decoded-PCM provider supplies no measured sink latency. Its explicit
+ * audio-only firmware policy must not offer a capability it cannot complete.
+ * Other profiles retain the existing externally supplied delay contract. */
+#ifdef A138_WORKER_AUDIO_ONLY
+#define DELAY_REPORTING_SUPPORTED 0
+#else
+#define DELAY_REPORTING_SUPPORTED 1
+#endif
 
 static uint16_t le16(const uint8_t *p) { return (uint16_t)(p[0] | (uint16_t)p[1] << 8); }
 static uint16_t be16(const uint8_t *p) { return (uint16_t)((uint16_t)p[0] << 8 | p[1]); }
@@ -419,7 +427,7 @@ static enum a138_classic_result avdtp_command(struct a138_classic_service *s,uin
         memcpy(out,caps,sizeof caps); bytes=sizeof caps;
         if (signal==4u) memcpy(out+6,s->codec,4);
         /* DelayReporting is not a basic GetCapabilities service. */
-        if (signal==12u || (signal==4u && s->delay_selected)) {
+        if (DELAY_REPORTING_SUPPORTED && (signal==12u || (signal==4u && s->delay_selected))) {
             out[bytes++]=8; out[bytes++]=0;
         }
         break;
@@ -442,6 +450,7 @@ static enum a138_classic_result avdtp_command(struct a138_classic_service *s,uin
                 memcpy(s->pending_codec,p+off+4,4); seen|=2;
             } else if (cat==8u) {
                 if (len || (seen&4u)) { error=0x18; break; }
+                if (!DELAY_REPORTING_SUPPORTED) { error=0x17; break; }
                 if (!s->clock_valid || !s->delay_valid) { error=0x31; break; }
                 seen|=4;
             } else { error=0x17; break; }

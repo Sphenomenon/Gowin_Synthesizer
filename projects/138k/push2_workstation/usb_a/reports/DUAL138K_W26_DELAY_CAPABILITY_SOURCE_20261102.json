@@ -1,0 +1,368 @@
+{
+  "schema": 1,
+  "stage": "W26_explicit_audio_only_A2DP_delay_capability_source_fix",
+  "recorded_utc": "2026-11-01T19:48:26.833080+00:00",
+  "source_parent_head": "8fe366133238a19c7ed84fc2fc532960323231df",
+  "changes": {
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c": {
+      "before_sha256": "daff52b5e1c64f8be0d2152a9e2c9eee76f91a701ca062e38acf6b4232dc4075",
+      "after_sha256": "f5889df8c6306472313146021f14ad2d1eb0761527afea0d05ce403b4a9c3ab7"
+    },
+    "projects/138k/push2_workstation/usb_a/firmware/ae350/CLASSIC_SOURCE_STAGE.md": {
+      "before_sha256": "eab0adede461ab894e4700a938ef995d77320b339b75fb25ac2c402d9f958380",
+      "after_sha256": "b7e0c91d4d95373c6df773275e0542e6d46eaca3667f7949d289f1b24bdc1c06"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/ae350_worker_delay_fixture.c": {
+      "before_sha256": null,
+      "after_sha256": "97b2a92c306b0be08c2c785eb8b121cb96f6288599079377fac20c42f28f2f76"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/run_ae350_worker_delay_reporting.py": {
+      "before_sha256": null,
+      "after_sha256": "810e391c2a82177e72a726f9434a1b981c208e0b03e2e10371b5ac378bd08751"
+    },
+    "projects/138k/push2_workstation/usb_a/sim/run_ae350_delay_reporting.py": {
+      "before_sha256": "067700e847fd62f167cd3aac6fa05e0505f328e6d0766e2ce79dbfc9c538638b",
+      "after_sha256": "53664bef499fe652bef1c3b8df6621053412d6bf72dae9b68e5f7e1ca4611956"
+    }
+  },
+  "problem": {
+    "frozen_runtime_policy": "ae350_worker_audio_only_classic_runtime_v1",
+    "source_entry": "worker_audio_main.c:14 init and :17 pump",
+    "session_init": "classic_runtime.c:220 A138_SINGLE_BLE_RECORDING selects session-only Classic init",
+    "provider": "classic_runtime.c:215, pcm_media.c:64 and :92 provide no delay_valid fact",
+    "call": "classic_runtime.c:134-137 delay_update only if f.delay_valid",
+    "original_advertisement": "frozen classic_service.c:422-423 GetAllCapabilities includes category08/00",
+    "original_rejection": "frozen classic_service.c:445 SetConfiguration category08 without clock/delay returns08/31",
+    "conditional_scope": "Peers selecting the advertised DelayReporting capability are blocked; this is not proof of controller discovery or radio failure."
+  },
+  "fix": {
+    "selection": "A138_WORKER_AUDIO_ONLY only",
+    "behavior": "Do not advertise absent measured-delay provider; reject unsolicited category08 with08/17; keep ordinary SBC and default external-delay behavior",
+    "audio_delay_effect_changed": false,
+    "delay_value_invented": false
+  },
+  "wire_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-worker-delay-wire-three-mutants-20261102/verification.json",
+    "sha256": "58a3d5d81e5d0f5ed8c74398707ef604573004a7da230c44fa3ffbacf4cb5b00",
+    "profiles": {
+      "worker": {
+        "checks": 941,
+        "wire_packet_count": 14
+      },
+      "worker-sanitized": {
+        "checks": 941,
+        "wire_packet_count": 14
+      },
+      "frozen-worker": {
+        "checks": 947,
+        "wire_packet_count": 14
+      }
+    },
+    "behavioral_mutants_rejected": 3,
+    "same_requests_old_and_new": true
+  },
+  "default_regression": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-default-delay-regression-20261102/verification.json",
+    "sha256": "3e8d524cc126a3fa99b4b9cc4913f92de09100a1d7173624a829559c1e9027b4",
+    "delay_checks": {
+      "native": 11199,
+      "sanitized": 11199
+    },
+    "delay_mutants_rejected": 18,
+    "prior_wire": [
+      {
+        "tag": "native",
+        "summary": "classic source-stage: 49640 checks passed; object=2876 frame=252 tx=296"
+      },
+      {
+        "tag": "sanitized",
+        "summary": "classic source-stage: 49640 checks passed; object=2876 frame=252 tx=296"
+      }
+    ],
+    "prior_classic_mutants_rejected": 15,
+    "actual_decoder_cases": [
+      {
+        "case": "00",
+        "samples": 4096,
+        "max_abs_error": 5,
+        "pcm_sha256": "b48b91a4835855f277c21feb8133fd3ebba92aea89ab6b5f9aa7675104ee26ed"
+      },
+      {
+        "case": "02",
+        "samples": 8192,
+        "max_abs_error": 6,
+        "pcm_sha256": "f7d0bade97f35b44a4a4593022a1d5e72e55e8ee28f9c2c6db6262962b66d008"
+      },
+      {
+        "case": "12",
+        "samples": 8192,
+        "max_abs_error": 5,
+        "pcm_sha256": "30ccf5ae95849e151f09b1dc3f77607c27c7fb491427bc164971d70f026e4ef3"
+      },
+      {
+        "case": "14",
+        "samples": 16384,
+        "max_abs_error": 6,
+        "pcm_sha256": "cf45616ae288272a40a1721a536b7d6f8d17df57210b98f4c66a2e3506510e77"
+      },
+      {
+        "case": "16",
+        "samples": 4096,
+        "max_abs_error": 5,
+        "pcm_sha256": "f34a0d9eee6ac6d30429d5ae6986092e25a4a4158ce5bfed6635cac74250ded3"
+      },
+      {
+        "case": "18",
+        "samples": 8192,
+        "max_abs_error": 6,
+        "pcm_sha256": "263b03e279644290a6828ceeec239066d26ca2721d89ada90b335915480fd022"
+      },
+      {
+        "case": "28",
+        "samples": 8192,
+        "max_abs_error": 5,
+        "pcm_sha256": "9d8b432f10cccb0374efecbeb5e6dc9346805839771c3f89ce51ca562f014267"
+      },
+      {
+        "case": "30",
+        "samples": 16384,
+        "max_abs_error": 6,
+        "pcm_sha256": "82371cd60231c3148877d6003140b2f89fdfccd4f3a8ad79c66488e708e11864"
+      },
+      {
+        "case": "32",
+        "samples": 16384,
+        "max_abs_error": 4,
+        "pcm_sha256": "d17861408b836edb6d101a1a2c4f4003ddcaa9b5231edb16a27d66c9c8f10483"
+      },
+      {
+        "case": "37",
+        "samples": 16384,
+        "max_abs_error": 5,
+        "pcm_sha256": "9ee4b7e938fef831b18d9db9e91107bd43ac7c83e7531e20ea47bb3ce9702c3a"
+      },
+      {
+        "case": "41",
+        "samples": 12288,
+        "max_abs_error": 5,
+        "pcm_sha256": "e3c3d815fec267b2bca6792eada98cb53fcf3e1e08d348aa58fe941b311ba500"
+      }
+    ]
+  },
+  "actual_W_firmware": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/build_metadata.json",
+    "sha256": "931ff655714f36e3f8d58195ade7c281c3cfda0de102e91d83e363c84bd039d0",
+    "defines": [
+      "-DA138_CLASSIC_RUNTIME",
+      "-DA138_ILM64K_DLM64K",
+      "-DA138_SINGLE_BLE_RECORDING",
+      "-DA138_WORKER_AUDIO_ONLY"
+    ],
+    "runtime_policy": "ae350_worker_audio_only_classic_runtime_v1",
+    "source_text_overlay": false,
+    "rom_sha256": "398f9677912061d8cf917daabb4f0a35db25c305e611548816f9b9187d253ae3",
+    "elf_sha256": "a15642d98ab77d32650573ea5ed960293c9103d5779a6220e475a921e22396bf",
+    "binary_sha256": "10aec481cc4036ebc3121392355f89696233842715d4ce129f83d7589247c2e6",
+    "stack_bound_bytes": 896,
+    "stack_verified": true,
+    "capacity": {
+      "rom_capacity_bytes": 131072,
+      "binary_bytes": 90752,
+      "payload_bytes": 57568,
+      "padding_hole_bytes": 33184,
+      "upper_rom_code_bytes": 25216,
+      "cold_code_unallocated_bytes": 40320,
+      "hot_load_bank_bytes": 32352,
+      "hot_load_unallocated_bytes": 33184,
+      "ilm_capacity_bytes": 65536,
+      "ilm_runtime_bytes": 31744,
+      "ilm_reserved_final_word_bytes": 4,
+      "ilm_usable_remaining_bytes": 33788,
+      "dlm_capacity_bytes": 65536,
+      "static_ram_span_bytes": 7008,
+      "ram_reserved_prefix_bytes": 256,
+      "stack_capacity_bytes": 16384,
+      "unallocated_dlm_bytes": 41888,
+      "heap_bytes": 0,
+      "selected_in_production": false,
+      "hardware_acceptance": false
+    }
+  },
+  "actual_W_classic_service_compile_command": [
+    "/opt/homebrew/bin/riscv64-elf-gcc",
+    "-march=rv32im_zicsr_zifencei",
+    "-mabi=ilp32",
+    "-msmall-data-limit=0",
+    "-O2",
+    "-ffreestanding",
+    "-fno-builtin",
+    "-fno-pic",
+    "-fno-stack-protector",
+    "-fno-common",
+    "-fno-jump-tables",
+    "-fstack-usage",
+    "-fcallgraph-info=su",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Wno-unused-parameter",
+    "-DA138_ILM64K_DLM64K",
+    "-I/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware",
+    "-I/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/adapted/decoder/include",
+    "-I/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/adapted/decoder/srce",
+    "-DA138_CLASSIC_RUNTIME",
+    "-DA138_SINGLE_BLE_RECORDING",
+    "-DA138_WORKER_AUDIO_ONLY",
+    "-c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/classic_service.c",
+    "-o",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/classic_service.o"
+  ],
+  "root_default_non_W_complete_object_equivalence": {
+    "scope": "actual_RV32_default_classic_service_complete_object_byte_identity",
+    "compiler_sha256": "d21f58713e7f2f9a9ef9de8762b2c2d1995cd4cdeda724d5fe4834f3af4737b2",
+    "flags": [
+      "-march=rv32im_zicsr_zifencei",
+      "-mabi=ilp32",
+      "-msmall-data-limit=0",
+      "-O2",
+      "-ffreestanding",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "results": {
+      "before": {
+        "source_sha256": "daff52b5e1c64f8be0d2152a9e2c9eee76f91a701ca062e38acf6b4232dc4075",
+        "object_sha256": "c468c352f5de73523a3885a9fe84a12151b53d626a82a6b74f76545e359bfcfd",
+        "binary_sha256": "89be29d58492b2e90473f7b8289b5a9c11c36df6b923e8c3fc4c289db6f2b22a",
+        "argv": [
+          "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+          "-march=rv32im_zicsr_zifencei",
+          "-mabi=ilp32",
+          "-msmall-data-limit=0",
+          "-O2",
+          "-ffreestanding",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-I",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350",
+          "-c",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v2/before/classic_service.c",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v2/before/classic_service.o"
+        ]
+      },
+      "after": {
+        "source_sha256": "f5889df8c6306472313146021f14ad2d1eb0761527afea0d05ce403b4a9c3ab7",
+        "object_sha256": "c468c352f5de73523a3885a9fe84a12151b53d626a82a6b74f76545e359bfcfd",
+        "binary_sha256": "89be29d58492b2e90473f7b8289b5a9c11c36df6b923e8c3fc4c289db6f2b22a",
+        "argv": [
+          "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf-gcc",
+          "-march=rv32im_zicsr_zifencei",
+          "-mabi=ilp32",
+          "-msmall-data-limit=0",
+          "-O2",
+          "-ffreestanding",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-I",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350",
+          "-c",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v2/after/classic_service.c",
+          "-o",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v2/after/classic_service.o"
+        ]
+      }
+    },
+    "object_byte_identical": true,
+    "hardware_tested": false,
+    "prior_raw_preprocessor_check_preserved": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v1/result.json"
+  },
+  "profile_source_lock_update": {
+    "source_handoff_sha256": "ac5c4cd294ab9c41488737d0381d14ef1bb5f2b8bb1210e3c82e8516bfd540d1",
+    "source_head": "8fe366133238a19c7ed84fc2fc532960323231df",
+    "profiles": {
+      "m": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+        "before_sha256": "68f371c4711ef5d98b1fad7dbf1a783d43a14124a0f3347318430b16577f434c",
+        "after_sha256": "a9c9e4ac3b6ec21dc702d10a4fd2a7f0035abc6382a36c7e39d85ee560dba6f6",
+        "before_count": 890,
+        "after_count": 893,
+        "added_source_locks": [
+          "projects/138k/push2_workstation/usb_a/sim/ae350_worker_delay_fixture.c",
+          "projects/138k/push2_workstation/usb_a/sim/run_ae350_worker_delay_reporting.py",
+          "projects/138k/push2_workstation/usb_a/sim/run_ae350_delay_reporting.py"
+        ],
+        "refreshed_source_locks": [
+          "projects/138k/push2_workstation/usb_a/firmware/ae350/CLASSIC_SOURCE_STAGE.md",
+          "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c"
+        ],
+        "only_source_sha256_changed": true
+      },
+      "w": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+        "before_sha256": "a1271081205ee18c2403988c1c447d7b696ee4ea96ff5d1682e146d56237fcb3",
+        "after_sha256": "d5ce9f76f7c00b022dc3b9d4c78102df6921f8c71a47550901614be2e99b2fe1",
+        "before_count": 1137,
+        "after_count": 1140,
+        "added_source_locks": [
+          "projects/138k/push2_workstation/usb_a/sim/ae350_worker_delay_fixture.c",
+          "projects/138k/push2_workstation/usb_a/sim/run_ae350_worker_delay_reporting.py",
+          "projects/138k/push2_workstation/usb_a/sim/run_ae350_delay_reporting.py"
+        ],
+        "refreshed_source_locks": [
+          "projects/138k/push2_workstation/usb_a/firmware/ae350/CLASSIC_SOURCE_STAGE.md",
+          "projects/138k/push2_workstation/usb_a/firmware/ae350/classic_service.c"
+        ],
+        "only_source_sha256_changed": true
+      }
+    },
+    "prior_check": "First preflight expected every changed test already locked; run_ae350_delay_reporting.py was not previously locked. No profile was written before that rejection."
+  },
+  "entry_tests": {
+    "test_current_workstation_sources.py": 17,
+    "test_workstation_demo_audit.py": 18,
+    "test_workstation_demo_policy.py": 8
+  },
+  "uart_observation_followup": {
+    "source_top": "rtl/workstation/gw138k_push_workstation_top.v:9-10,44,96-97,209-210,791-806",
+    "actual_output": "VG:583630-583633 and VO:56295-56298 OBUF debug_uart_tx connects runtime_serial; CST:1 U15",
+    "PL_schedule": "src/push2/gw138k_push_performance_uart.sv:6-7,130-140: independent50MHz/115200 periodic1s, six83byte A138/C350/K138/E138/U138/P138 lines; CPU/HCI/audio/DDR ready are payload facts and do not gate transmission",
+    "reset": "custom top button1_n=1; reset_release startup count1024 with two synchronizer clocks; VO:61039-61046 started DFF Q(reset_n), clock clk_50m_d,INIT0",
+    "silent_observation": "W142 21201@115200 passive12.002132125s received0bytes, no command sent; root separately observed same on M13A",
+    "mapping_evidence": "reports/DUAL138K_HARDWARE_INVENTORY_20261031.md identifies21201 only as FT2232 interface1 UART candidate; reports/CUSTOM_BOARD_PIN_AUDIT_20261021.md:111 requires external3.3V UART/core-port verification and has no BL616 bridge evidence",
+    "conclusion": "Zero bytes is not the intended active PL telemetry behavior and cannot diagnose CPU/HCI/A2DP success or failure. Port-to-U15 physical routing and active50MHz/reset/serial output remain unmeasured."
+  },
+  "root_independently_rehashed_file_count": 1451,
+  "worker_handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/handoff.json",
+  "worker_handoff_sha256": "ac5c4cd294ab9c41488737d0381d14ef1bb5f2b8bb1210e3c82e8516bfd540d1",
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/handoff.json": "ac5c4cd294ab9c41488737d0381d14ef1bb5f2b8bb1210e3c82e8516bfd540d1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-source-entry-regressions-v1/run.json": "4624aff1f0d533f991911cf66112aa95eeaaf27dd055eba35f16ae0c602186d3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-source-lock-refresh-v2.json": "8bfba24aaabb3849d4e3af3ad6c364f111494c0d13752402be9f58433d860532",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-default-classic-preservation-root-v2/result.json": "670ea577b3a56795b591e60359f5aecb323a389f1bfc8baedd30a13d82c07f6c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-worker-delay-wire-three-mutants-20261102/verification.json": "58a3d5d81e5d0f5ed8c74398707ef604573004a7da230c44fa3ffbacf4cb5b00",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-default-delay-regression-20261102/verification.json": "3e8d524cc126a3fa99b4b9cc4913f92de09100a1d7173624a829559c1e9027b4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-delay-capability-source-v1/firmware/build_metadata.json": "931ff655714f36e3f8d58195ade7c281c3cfda0de102e91d83e363c84bd039d0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-hci-init-readonly-20261102.json": "047d89b25ab724eab8ec631203d1435c6ea8c54f6ad928d9baad8ad03d6ff35a"
+  },
+  "new_physical_user_code_reserved": "D2110143",
+  "new_candidate_prepared": false,
+  "new_synthesis_passed": false,
+  "new_PnR_passed": false,
+  "hardware_functional_acceptance": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "panel25K_source_or_firmware_modified": false,
+  "panel25K_phone_to_USB_forwarding_owner": "User will implement; assistant does not modify25K in this round.",
+  "rollback": "M26-1 D211013A remains in SRAM; W25 D2110142 and all frozen failed/accepted stage evidence retained unchanged.",
+  "remaining_gaps": [
+    "Fresh complete production prepare, synthesis, P&R and actual routed gates under new W26 identity.",
+    "Real Android A2DP/SBC/D effects,25K press-release/combination/disconnect and physical DAC continuity.",
+    "21201-to-U15 physical UART observation mapping not confirmed;0 bytes does not establish CPU/HCI success or failure."
+  ]
+}

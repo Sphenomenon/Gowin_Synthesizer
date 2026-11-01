@@ -112,6 +112,12 @@ ACP SEID. GetConfiguration returns the committed delay-selection capability.
 A source that does not select this optional SRC capability retains the preceding
 non-delay wire behavior; no report is invented for an unnegotiated service.
 
+The explicit `A138_WORKER_AUDIO_ONLY` W firmware uses `pcm_media`, which supplies
+no measured delay fact. That configuration omits category08 from capabilities
+and rejects an unsolicited category08 selection with category08/error17. It
+retains ordinary SBC configuration and the audio Delay effect; other firmware
+configurations retain the external-delay contract above.
+
 After successful configuration acceptance, the five-byte AVDTP DelayReport is
 queued before dispatching a waiting Open: command header/label, signal0x0d,
 remote SEID in bits7:2, then delay MSB and LSB in0.1ms units. The source accepts

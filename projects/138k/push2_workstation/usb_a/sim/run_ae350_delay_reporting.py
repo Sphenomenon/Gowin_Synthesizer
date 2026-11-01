@@ -5,8 +5,8 @@ import argparse,hashlib,json,re,shutil,subprocess,sys
 
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 MUTANTS=(
- ('basic-capability-leak','if (signal==12u || (signal==4u && s->delay_selected))','if (signal==2u || signal==12u || (signal==4u && s->delay_selected))'),
- ('missing-all-capability','if (signal==12u || (signal==4u && s->delay_selected))','if (signal==4u && s->delay_selected)'),
+ ('basic-capability-leak','if (DELAY_REPORTING_SUPPORTED && (signal==12u || (signal==4u && s->delay_selected)))','if (DELAY_REPORTING_SUPPORTED && (signal==2u || signal==12u || (signal==4u && s->delay_selected)))'),
+ ('missing-all-capability','if (DELAY_REPORTING_SUPPORTED && (signal==12u || (signal==4u && s->delay_selected)))','if (DELAY_REPORTING_SUPPORTED && signal==4u && s->delay_selected)'),
  ('local-seid-used','p[2]=s->remote_seid;','p[2]=SEP;'),
  ('delay-byte-order','putbe(p+3,s->delay_value);','putle(p+3,s->delay_value);'),
  ('clock-gate-removed','if (!s->clock_valid || !s->delay_valid)','if (0)'),
