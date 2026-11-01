@@ -46,7 +46,7 @@
   "hardware_functional_acceptance": false,
   "release_ready": false,
   "kept_for_user_functional_observation": true,
-  "evidence_file_count": 32,
+  "evidence_file_count": 38,
   "evidence_sha256": {
     "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1/result.json": "d7c2d90f222844687d8345ea6b0ee1d69a423f513be63445d31c495b3c2d2874",
     "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v1/sram-program-verify.log": "286fab8cbf4dbff5fe7532d73a20bd46b235ab70c0e8dbc7aba6b14558d99844",
@@ -79,7 +79,13 @@
     "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6/after.log": "a7c8e66b0bb4238425c6e4866ca543310dd8218205ec2c9dffc8a2b97130b3ef",
     "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6/status.log": "cc6c2308c8a57e2fb1522c1ce1e599962e6e34b23e59b4605940dc2d819313cf",
     "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6/result.json": "77dc51fcfe457ba3285c8defe7eed0eb6005e1d1dd9dfbd571bc0576c088cafb",
-    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6.py": "c8f81308b5f62f260332a1d6e2dc7f75413936eb90ad10d92c15c2ff31ee92b5"
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6.py": "c8f81308b5f62f260332a1d6e2dc7f75413936eb90ad10d92c15c2ff31ee92b5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/result.json": "62f15acbd3780944896456972a5ab9b13a38ec16c8239a9311601e0db93e2fc7",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7.py": "a8b5d5146f23009dd1e302616385e4bbf35cca73dd5078736480b0a1a2dc76f1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/before.log": "1876bd5ba779c622e39a083ed16c506d6dd8471ce0805d0615eaed5f4fbd5b63",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/sram-program.log": "dba23a80eb6af98188ad3164a250333f185fef3b75a2568dd17c0ab72026245a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/after.log": "1876bd5ba779c622e39a083ed16c506d6dd8471ce0805d0615eaed5f4fbd5b63",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/status.log": "cc6c2308c8a57e2fb1522c1ce1e599962e6e34b23e59b4605940dc2d819313cf"
   },
   "rollback": "Flash not written. Previous C11028E5 raw SRAM readback is preserved in m23-rollback-readback-v2 but is not a verified downloadable FS. No Flash reload was invoked; current SRAM remains M22 D211012F.",
   "limitations": [
@@ -116,7 +122,7 @@
   },
   "latest_user_requested_reload": {
     "authorization": "再重烧一下；沿用先前明确接受M22微小时序违例的同一SRAM功能试装授权",
-    "utc": "2026-11-01T13:37:45.794005+00:00",
+    "utc": "2026-11-01T14:47:25.975880+00:00",
     "before_UserCode": "D211012F",
     "before_Status": "00022230",
     "SRAM_program_exit_code": 0,
@@ -125,7 +131,23 @@
     "same_bitstream_sha256": "c4a8f68bf536292d30e550fb02f1d7e7658d80ff616e7f1d5a507fd27feea495",
     "new_bitwise_verify_claimed": false,
     "Flash_write_invoked": false,
-    "result_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6/result.json",
-    "result_sha256": "77dc51fcfe457ba3285c8defe7eed0eb6005e1d1dd9dfbd571bc0576c088cafb"
-  }
+    "result_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v7/result.json",
+    "result_sha256": "62f15acbd3780944896456972a5ab9b13a38ec16c8239a9311601e0db93e2fc7"
+  },
+  "prior_latest_user_requested_reloads": [
+    {
+      "authorization": "再重烧一下；沿用先前明确接受M22微小时序违例的同一SRAM功能试装授权",
+      "utc": "2026-11-01T13:37:45.794005+00:00",
+      "before_UserCode": "D211012F",
+      "before_Status": "00022230",
+      "SRAM_program_exit_code": 0,
+      "after_UserCode": "D211012F",
+      "after_Status": "00022230",
+      "same_bitstream_sha256": "c4a8f68bf536292d30e550fb02f1d7e7658d80ff616e7f1d5a507fd27feea495",
+      "new_bitwise_verify_claimed": false,
+      "Flash_write_invoked": false,
+      "result_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-user-requested-sram-v6/result.json",
+      "result_sha256": "77dc51fcfe457ba3285c8defe7eed0eb6005e1d1dd9dfbd571bc0576c088cafb"
+    }
+  ]
 }
