@@ -404,6 +404,8 @@ M19／W17的[完整综合与actual VG检查点](push2_workstation/usb_a/reports/
 
 M19 `D2110120`的[default完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M19_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50976，setup5710／−3.450ns、hold1／−3.617ns，recovery+3.233／removal+.275ns。最差效果transaction_fault→config_state及矢量DSP；DDR原3.500ns要求保持。六审计通过（native58／3不适用／71负控、边界7／69、六PLL／7负控／held-v2），主线程重验30物理／2968证据。TF实际新源已消费，但available→accepted仍13条routed负路径、最差−2.175ns，图结构缩短不记routed收益。相同VG／SDC独立far `D2110121`继续测量；完整STA失败，未上板，T2-D1／D2保持未完成。
 
+M19 `0xD2110121`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M19_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50954，setup3476／-2.302ns、hold10／-0.586ns，recovery+2.428／removal+0.278ns。六审计通过（native58／3不适用／71负控、边界7／69、六PLL／7负控／held-v2），主线程重验30物理／2970证据。最差setup为delay underflow_sticky→config_state CE。DDR原3.500ns要求保持，定向区域实测hold +0.508ns；剩余10个hold负端点属于48k参考计数器binary→Gray／binary，不能放宽CDC或时钟绕过。DDR UI另有505个setup负端点／TNS −319.105ns。报告中仍有TF available_bytes→write_ring_offset／write_total_bytes路径，不能因为有界表未列出accepted_used而宣称TF时序通过。完整STA和整机接受仍失败，未上板，T2-D1／D2未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
