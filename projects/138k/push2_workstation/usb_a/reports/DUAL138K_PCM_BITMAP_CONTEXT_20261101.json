@@ -1,0 +1,262 @@
+{
+  "schema": "dual138k-PCM-bitmap-context-maintained-v1",
+  "passed": true,
+  "source_implementation": true,
+  "owned_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0",
+    "projects/138k/push2_workstation/usb_a/sim/audio/ae350_pcm_bitmap_context_sources.py": "9db984f127b41e9ebd1f12fce11fd5dbac270b3733bd8506f6a1abae694756de",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_context.py": "dfb8ba27417f4c44e389cc5ed258ee5fe4a5cb5ab7e0caeb18a58f7671724389",
+    "projects/138k/push2_workstation/usb_a/sim/audio/ae350_pcm_output_context_sources.py": "ba87b21085576fbe2d63376ecff11c096781ea0e6d84d513f8cbf790279e55eb",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_gate.py": "1c38584d318d47efb53ee3352f0779201bdf94a2d467d0460328d0440004130e",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_four_state.py": "dc153d8efbab0d00f91e15b9d6ae7d5cf8ba24f8f9a8f27b99db7770abf0488e"
+  },
+  "before_source_sha256": "1c575c3fd39d73c795cb7e49c075a1b5848be90d3cccd57e24db991a9071649b",
+  "maintained_source_sha256": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0",
+  "exact_candidate_promoted": true,
+  "all_non_bitmap_bytes_unchanged": true,
+  "proof": {
+    "record": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-proof-v2/verification.json",
+    "sha256": "603ec6b1227248aa002a89ee4a3d32e32484d7471c6445c0e5a34c85e301d570",
+    "four_state_checks": 52224,
+    "state_groups": 50,
+    "outputs": 11,
+    "memory_words": 512,
+    "bitmaps": 4,
+    "derived_predicates_forced": false,
+    "symbolic": {
+      "proofs": {
+        "context_0": "UNSAT",
+        "context_1": "UNSAT",
+        "context_X": "UNSAT",
+        "context_Z": "UNSAT",
+        "context0_accepted_start_is_zero": "UNSAT",
+        "context0_accepted_commit_is_zero": "UNSAT",
+        "context0_armed_true_implies_original_final_clear": "UNSAT",
+        "window_write_true_implies_armed_true": "UNSAT"
+      },
+      "negative_controls": {
+        "missing_armed_revoke": {
+          "result": "SAT",
+          "witness": "[raw_217143281b5a = 1,\n raw_f067e4f7df53 = 1,\n raw_a3326289f3a8 = 0,\n raw_dc808664c034 = 1,\n raw_355282b1366b = 1,\n same_window_bit_address = True,\n raw_0ae0200a8616 = 0,\n raw_dc083dbe056a = 1,\n raw_c54ba11f3105 = 1,\n raw_92df51c3f0aa = 1,\n raw_8af03dd6df64 = 1,\n raw_151e2a0d6342 = 0,\n raw_4014a83bc214 = 1,\n raw_fc250e865bb4 = 1,\n raw_487d6431c7a5 = 1,\n raw_ee1855104467 = 1,\n raw_0c670c278bfb = 1,\n raw_0acd8e404a83 = 1,\n raw_ae09aba7c468 = 0,\n raw_01d5917634a2 = 0,\n raw_bbc342a12961 = 3,\n raw_0067dfadbafb = 0,\n raw_ddedf2bf7594 = 0,\n raw_f646ea2fc1d5 = 1,\n raw_00b7b1f7e5aa = 1,\n raw_bf40617d05e6 = 1,\n raw_3629050f78c6 = 1,\n raw_c76b0624ca53 = 2,\n raw_3b3692810375 = 1,\n raw_245b21b5e134 = 1,\n raw_3b1a5ae0b0c5 = 1,\n raw_cbb61feb5cfa = 0,\n raw_1e84c0311179 = 0,\n raw_d2e7110031d6 = 1,\n raw_6721a257de38 = 1,\n original_written_bit = 3,\n raw_dcd4c67f1dab = 1,\n raw_7ca4c0d8a5df = 0,\n raw_05eb736621f0 = 1]"
+        },
+        "unknown_uses_cofactor": {
+          "result": "SAT",
+          "witness": "[raw_dcf8892de68f = 3,\n raw_00009c200c0d = 3,\n raw_217143281b5a = 1,\n raw_89eccfe9c540 = 0,\n raw_0ae0200a8616 = 1,\n raw_808544a1f03e = 0,\n raw_5d28a90f4498 = 0,\n raw_760c7ae2f7f0 = 0,\n raw_ae09aba7c468 = 0,\n original_written_bit = 3,\n raw_bbc342a12961 = 3,\n raw_3b1a5ae0b0c5 = 0,\n raw_6721a257de38 = 0,\n raw_dc808664c034 = 0,\n raw_f9942da680d0 = 0,\n raw_d74789f50403 = 0,\n raw_3b3692810375 = 0,\n raw_30125097214e = 2,\n raw_e6c03a3a72e4 = 1,\n raw_9a7070cfe490 = 0,\n raw_355282b1366b = 0,\n raw_c54ba11f3105 = 0,\n raw_a3326289f3a8 = 1,\n raw_d2e7110031d6 = 0,\n raw_2d0918423cbd = 0,\n raw_245b21b5e134 = 0,\n raw_6e8d9324abbd = 0,\n raw_f8970d9c1378 = 0,\n raw_e8f73373288a = 0,\n raw_4e0bfe336ac2 = 0,\n raw_cbb61feb5cfa = 1,\n raw_0067dfadbafb = 0,\n raw_bd805c6ec76b = 0,\n raw_4014a83bc214 = 0,\n raw_015a3d25aa42 = 3,\n raw_487d6431c7a5 = 0,\n raw_1e84c0311179 = 0,\n raw_ab667baf4231 = 0,\n raw_fc250e865bb4 = 0,\n raw_ddedf2bf7594 = 1,\n raw_e0457d33edbd = 0,\n raw_7110ae5bca01 = 1,\n raw_151e2a0d6342 = 0,\n raw_78c9be4fd0e3 = 0,\n raw_dc083dbe056a = 1,\n raw_8af03dd6df64 = 1,\n raw_d7cbbb688b2e = 1,\n raw_f67465493d0d = 0,\n raw_11e77ea4ff36 = 1,\n same_window_bit_address = True,\n raw_f0e3c56b4930 = 1,\n raw_3629050f78c6 = 0,\n raw_0acd8e404a83 = 0,\n raw_ee1855104467 = 0,\n raw_0c670c278bfb = 1,\n raw_3884da23fbdf = 1,\n raw_f646ea2fc1d5 = 0,\n raw_01d5917634a2 = 0,\n raw_2862164e2887 = 1,\n raw_9ba6ec7475c0 = 2,\n raw_00b7b1f7e5aa = 0,\n same_tail_slot = True,\n raw_bf40617d05e6 = 0,\n raw_92df51c3f0aa = 0,\n raw_1ebd0e03bc31 = 3,\n raw_c76b0624ca53 = 2,\n raw_86b7abbe2ab8 = 0,\n raw_8cfe89d0a135 = 1,\n raw_4cbd520ada87 = 3,\n raw_0d91c7b172d3 = 0,\n raw_2783b513cfd0 = 0,\n raw_9ae68abf165b = 0,\n raw_dcd4c67f1dab = 0,\n raw_ccf2c8e38bab = 1,\n raw_f067e4f7df53 = 0,\n raw_57264a3e3dda = 1,\n raw_7ca4c0d8a5df = 2,\n raw_05eb736621f0 = 1]"
+        }
+      },
+      "four_state_atoms": 75,
+      "derived_admissions_not_free": true,
+      "z3_version": "5.1.0"
+    },
+    "actual_mutants": 4,
+    "source_inverse_negatives": 4,
+    "whole_owner_cycles": 7217,
+    "random_commands": 6000
+  },
+  "regressions": {
+    "record": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/verification.json",
+    "sha256": "613a47670d6f20eb9acdb3391ffc33ff71b0ece094988d4f0049b6cd7f19cdb8",
+    "tests": [
+      {
+        "name": "owner-eight",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/test_ae350_pcm_owner.py",
+          "-v"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 151.963,
+        "log_sha256": "19d42fbda9f1a0886602fc430051b8db8a52f94ade31cfd97edb542d9e327bb2"
+      },
+      {
+        "name": "window-gate",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_window_gate.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/window-gate"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 2.12,
+        "log_sha256": "303ed576863594fac0b853e4abe2d3272ad6f641fc480a24a9cc0ec1f3914469"
+      },
+      {
+        "name": "descriptor-gate",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_descriptor_gate.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/descriptor-gate"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 3.732,
+        "log_sha256": "157e541fe83ddeec6a8ea9d1758d7362f42c9a8fbf11196672c66cbf6f621621"
+      },
+      {
+        "name": "control-admission",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_control_admission.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/control-admission"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 2.501,
+        "log_sha256": "db470f0c1017cb973ff5c53f0cf092bc5509b8be790c6fef5474a3f76556f2b2"
+      },
+      {
+        "name": "output-context-gate",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_output_context_gate.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/output-context-gate"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 23.885,
+        "log_sha256": "7409e8a1a2af155d71c0a5239c7638d4512721c0ee78d2fa7467507a27393b5d"
+      },
+      {
+        "name": "bitmap-gate",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_bitmap_gate.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/bitmap-gate"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 1.923,
+        "log_sha256": "a6e1d9629392287f6471cea47c302a0476b3a96759ddd08dd3ef6917b5a15d48"
+      },
+      {
+        "name": "bitmap-four-state",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "sim/audio/run_ae350_pcm_bitmap_four_state.py",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-regressions-v1/bitmap-four-state"
+        ],
+        "cwd": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "returncode": 0,
+        "elapsed_seconds": 40.114,
+        "log_sha256": "12f8ff35917e675f101bd814b034d3f5ab1a79b0d12713f1bc77125fd7bf0f28"
+      }
+    ],
+    "owner_unittest_tests": 8,
+    "owner_long_drift_cases": [
+      {
+        "rate": 48000,
+        "ppm": -2000,
+        "frames": 576000
+      },
+      {
+        "rate": 48000,
+        "ppm": 2000,
+        "frames": 576000
+      },
+      {
+        "rate": 44100,
+        "ppm": -2000,
+        "frames": 576000
+      },
+      {
+        "rate": 44100,
+        "ppm": 2000,
+        "frames": 576000
+      }
+    ],
+    "legacy_bitmap_scope": "Exact inverse290->1c then unchanged historical extraction controls. Forced accepted/usable test proves only that historical stage; current-context proof uses actual dependency DAG and raw-command module miter."
+  },
+  "formal_runtime": {
+    "record": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-runtime-v1/verification.json",
+    "sha256": "52b2172c99e5bb538a0156efe75b083bd42e15e4edcdf82a5d3d80b40f26f4dd",
+    "inputs_unchanged": true,
+    "cases": [
+      {
+        "label": "general",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_runtime.py",
+          "--project",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v17/workstation/Prj1",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-runtime-v1/general"
+        ],
+        "returncode": 0,
+        "elapsed_seconds": 15.999,
+        "log_sha256": "460f3751812c71aff59f233661de318fab6a3c34efd4a9b699049ef0aae15b4b"
+      },
+      {
+        "label": "d-only",
+        "argv": [
+          "/Users/sphenicidition/miniforge3/bin/python3",
+          "-B",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_runtime.py",
+          "--project",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-d-v17/workstation/Prj1",
+          "--output",
+          "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-runtime-v1/d-only",
+          "--d-only"
+        ],
+        "returncode": 0,
+        "elapsed_seconds": 18.429,
+        "log_sha256": "f6cf1b3f06c2789feaf4a4fc75f916cf76eab288cbd6b46b6e4d459bd304f2cb"
+      }
+    ],
+    "general": {
+      "record": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-runtime-v1/general/result.json",
+      "sha256": "2140407a2cd0a2bdccc61acdcbba2c0f48b8dc61da3257184737ed7a703877b7",
+      "inputs": 83,
+      "result": "PASS AE350 PCM real APB/CDC owner, DSP/chorus, one-volume final PCM, I2S, MIDI retention, CPU/session fence, TF and both rates: physical=       1454 good=       1436 errors=         18 direct_pcm=        119 half_pcm=         37 history=          9 wet=        446",
+      "d_only": false
+    },
+    "d-only": {
+      "record": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-runtime-v1/d-only/result.json",
+      "sha256": "d26fe66e08aec873fb395e39c266c388ae097f23ef3bedc5b0ac7784b17c333c",
+      "inputs": 83,
+      "result": "PASS D real APB/CDC owner, exact old core_ce snapshots, complete effects, I2S both rates/PANIC: physical=1918 snapshots=1913 display_snapshots=1917 panic_cases=12 inflight_panics=10 dry48=143 dry44=143 drive48=32 drive44=32 crush48=32 crush44=32 wet48=547 wet44=547",
+      "d_only": true
+    }
+  },
+  "failure_preserved": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-prep-failure-v1",
+    "stage": "authoring AST parse before any simulation",
+    "reason": "Helper literal conversion used stale line offsets; corrected before tests. Failed snapshots immutable."
+  },
+  "current_inputs_verified": 132,
+  "limitations": [
+    "Local scalar source dependency overapproximation with exact checked ordered NBA shape; not full-SystemVerilog formal elaboration or temporal proof.",
+    "Complex raw vector predicates shared arbitrary four-state atoms; no derived accepted/usable/staging/physical predicate is free.",
+    "Offline formal runtime uses ideal clocks and ordered DDR model; no actual HCI/SBC, HDMI pixels, DAC or hardware acceptance.",
+    "No synthesis/P&R/resource gain claimed or EDA/hardware run by this subagent.",
+    "No live_matches grouping included; all other owner bytes exactly unchanged."
+  ],
+  "synthesis": false,
+  "pnr": false,
+  "physical_gain_measured": false,
+  "hardware_tested": false,
+  "SRAM_written": false,
+  "Flash_written": false,
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/pcm-bitmap-context-maintained-root-review-v1.json",
+    "sha256": "14c5fa0ce6501a0ae43d659962cd34274e1e3031617592e22e46faa6f0a40318",
+    "files_verified": 462
+  },
+  "source_only": true,
+  "profile_changed": false,
+  "release_ready": false
+}

@@ -418,6 +418,8 @@ W 的[raw最终故障写使能](push2_workstation/usb_a/reports/DUAL138K_RAW_FIN
 
 M 的[TF epoch比较分组](push2_workstation/usb_a/reports/DUAL138K_TF_EPOCH_GROUPS_20261101.md)已落维护源码：针对D2110124实际32级NE链，将全部32bit比较分4×8保留组，无新周期／状态，X-Z与即时取消保持。实际完整模块66560四态、原四配置owner共1069069边沿、stop／clear及17来源门通过，8实际／2来源负控保持；旧实际VG／VO native各58项、68／71变异拒绝，缺失的vendor模型门已明确补跑，余5／3项映射不适用。两独立review无发现，主线程复验104绑定文件及Git严格inverse。尚未更新profile或测量新物理结果，未上板，T2-D1／D2未完成。
 
+W 的[PCM bitmap最终context判定](push2_workstation/usb_a/reports/DUAL138K_PCM_BITMAP_CONTEXT_20261101.md)已落维护：已知context在最终写入选择，X-Z保留原顺序NBA，其他字节不改，不含live_matches新修改。实际模块52224四态、8依赖关系UNSAT／2错误SAT、7217全owner周期、4实际／4来源负控、原owner八项与四种576000帧频差通过；旧window／descriptor／control／output及bitmap来源链保留。正式通用PCM1454重建串行帧、D1918帧／1917显示快照／12PANIC通过，绑定同批回执修复。主线程复验462封存文件／132当前输入及Git严格inverse；未新EDA／上板，不记物理收益。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

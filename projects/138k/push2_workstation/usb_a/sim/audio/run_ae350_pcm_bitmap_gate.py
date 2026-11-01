@@ -12,6 +12,7 @@ C=parser.parse_args().output.resolve();C.mkdir(parents=True,exist_ok=False)
 sys.path.insert(0,str(U/'sim/audio'))
 import run_ae350_pcm_window_gate as whole
 import ae350_pcm_output_context_sources as output_context
+import ae350_pcm_bitmap_context_sources as bitmap_context
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 p=U/'rtl/audio/workstation_ae350_pcm_owner.sv';original=REFERENCE.read_text()
 assert sha(REFERENCE)==REFERENCE_SHA256
@@ -73,7 +74,9 @@ for before,after in reversed(changes):
   assert inverse.count(after)==1,after;inverse=inverse.replace(after,before,1)
 assert inverse==original
 assert source==output_context.reference_view(p.read_text()), 'maintained bitmap gate exact source inverse drift'
-source=p.read_text()
+# This extraction-stage regression retains its original destructive controls.
+# The later context cofactor has a separate real-command/current-source miter.
+source=bitmap_context.reference_view(p.read_text())
 (C/'reference.sv').write_text(original.replace('module workstation_ae350_pcm_owner','module pcm_owner_window_reference',1))
 (C/'variant.sv').write_text(source)
 (C/'proposal.patch').write_text(''.join(difflib.unified_diff(original.splitlines(True),source.splitlines(True),fromfile='before.sv',tofile='after.sv')))
@@ -98,6 +101,9 @@ for label,text in [('baseline',source),('missing_context_revoke',source.replace(
  print(label,r.returncode,log[-300:],flush=True)
 assert all(sha(k)==v for k,v in inputs.items())
 d=dict(schema=1,source_implementation=True,passed=True,baseline_sha256=REFERENCE_SHA256,variant_sha256=sha(C/'variant.sv'),source_inverse_exact=True,
+ stage='historical_bitmap_extraction_after_exact_later_context_inverse',
+ current_source_sha256=sha(p),later_context_source_contract=bitmap_context.contract(),
+ current_context_proof_entry='sim/audio/run_ae350_pcm_bitmap_context.py',
  inputs=inputs,cases=cases,files={str(p.relative_to(C)):sha(p) for p in C.rglob('*') if p.is_file()},synthesis=False,pnr=False,hardware=False)
 (C/'verification.json').write_text(json.dumps(d,indent=2)+'\n')
 print('verification',sha(C/'verification.json'))

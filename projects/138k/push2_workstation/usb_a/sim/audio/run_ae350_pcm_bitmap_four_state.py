@@ -3,6 +3,7 @@ from pathlib import Path
 import hashlib,json,subprocess
 import argparse
 import ae350_pcm_output_context_sources as output_context
+import ae350_pcm_bitmap_context_sources as bitmap_context
 U=Path(__file__).resolve().parents[2]
 SOURCE=U/'rtl/audio/workstation_ae350_pcm_owner.sv'
 REFERENCE=Path(__file__).with_name('fixtures')/'workstation_ae350_pcm_owner_before_bitmap_gate.sv'
@@ -12,7 +13,10 @@ O=parser.parse_args().output.resolve();O.mkdir(parents=True,exist_ok=False)
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 assert hashlib.sha256(output_context.reference_view(SOURCE.read_text()).encode()).hexdigest()=='574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e'
 assert sha(REFERENCE)=='3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3'
-original=REFERENCE.read_text().replace('module workstation_ae350_pcm_owner','module pcm_owner_window_reference',1);variant=SOURCE.read_text()
+original=REFERENCE.read_text().replace('module workstation_ae350_pcm_owner','module pcm_owner_window_reference',1)
+# Freely forced admission scalars are valid only for this historical stage.
+# Never use them as evidence for the later real-dependency context cofactor.
+variant=bitmap_context.reference_view(SOURCE.read_text())
 inputs={str(p):sha(p) for p in (SOURCE,REFERENCE,Path(__file__).resolve())}
 inputs.update({str(p):sha(p)for p in output_context.inputs()})
 signals=['accepted_window_write','accepted_start','accepted_commit','accepted_stop','accepted_cancel',
@@ -90,6 +94,10 @@ for label,change in [('baseline',None),*mutants.items()]:
  rows[label]={'passed':passed,'exit_code':r.returncode,'log':log,'source_sha256':sha(p)}
  print(label,passed,log[-250:],flush=True);assert passed
 result=dict(passed=True,source_implementation=True,finite_four_state_not_formal=True,checks=1048576,cases=rows,
+ stage='historical_bitmap_extraction_after_exact_later_context_inverse',
+ tested_source_sha256=hashlib.sha256(variant.encode()).hexdigest(),
+ later_context_source_contract=bitmap_context.contract(),
+ current_context_proof_entry='sim/audio/run_ae350_pcm_bitmap_context.py',
  source_sha256=sha(SOURCE),reference_sha256=sha(REFERENCE),input_sha256=inputs,
  stimulus_scope='8 permission scalars exhaustively enumerated in four-state for each of 16 index/cpu/tf groups; other context scalars use fixed-seed random four-state values. No reachability assumption or full four-state formal claim.',
  files={str(p.relative_to(O)):sha(p) for p in O.rglob('*') if p.is_file()},hardware=False,pnr=False)

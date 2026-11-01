@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import re
+import ae350_pcm_bitmap_context_sources as bitmap_context
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=ROOT/'rtl/audio/workstation_ae350_pcm_owner.sv'
@@ -21,10 +22,13 @@ NEW='''    // Context can be revoked by an immediate upstream DSP fault. Compute
     assign pcm_right_o=selected ? (context_ready_i && pcm_output_without_context ? {interpolated_r,16'd0}:32'd0):legacy_right_i;'''
 
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-def inputs():return [SOURCE,REFERENCE,Path(__file__).resolve()]
+def inputs():return list(dict.fromkeys([SOURCE,REFERENCE,Path(__file__).resolve()]+bitmap_context.inputs()))
 
 def reference_view(text=None):
     text=SOURCE.read_text() if text is None else text
+    # Remove the later reviewed bitmap change before checking this output-only
+    # stage. The complete 290d... -> 1c575... inverse fails on any byte drift.
+    text=bitmap_context.reference_view(text)
     assert sha(REFERENCE)==REFERENCE_SHA256,'PCM pre-output-context fixture drift'
     assert text.count(NEW)==1,'PCM output-context exact hunk drift'
     previous=text.replace(NEW,OLD,1)
@@ -37,5 +41,7 @@ def contract():
     reference_view()
     return dict(reference_sha256=REFERENCE_SHA256,source_sha256=sha(SOURCE),
         exact_whole_source_inverse=True,all_NBA_targets_RHS_and_order_unchanged=True,
+        NBA_identity_scope='output-context stage after exact later bitmap inverse',
+        later_bitmap_context_inverse=bitmap_context.contract(),
         kept_context_free_cofactor=True,immediate_context_output_zero_gate=True,
         new_registers=False,new_sample_latency=False)
