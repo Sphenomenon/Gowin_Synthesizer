@@ -589,3 +589,7 @@ M26-1的[实测路径最小维护修复](push2_workstation/usb_a/reports/DUAL138
 第二轮M26-1的[完整新综合与D211013A物理启动](push2_workstation/usb_a/reports/DUAL138K_M26_1_R2_SYNTHESIS_20261102.json)已完成：193.222s／exit0，610封存输入保持；新VG `9dad96de…47aa6f45`，FF43629／LUT48595／ALU11461／综合BSRAM等价211／SSRAM99，strict通过。实际native60项44过／16具名skip、66执行负控全部拒绝；仅显式connected_xy库存断言窄适配，原门不放宽。新VG／SDC经完整DDR及128ref来源闭包复核后全量P&R；此阶段尚无新routed资源／完整STA／硬件接受，不下载，M26留板。
 
 W25的[独立布线／时钟定位试验](push2_workstation/usb_a/reports/DUAL138K_W25_ROUTE_CLOCK_TRIALS_20261102.json)已冻结139／140／141失败：140仅route1，setup0／+.012ns，DDR hold仍−.453ns；141的LOCAL_CLOCK被CT1018拒绝、实际未应用，STA与139相同，VO仅唯一CreatedTime行变化，不能算作新语义／资源结果。逐pin对照显示M/W该数据路径基本相同，W捕获clk50使用PRIMARY、延迟比M的LW多.988ns；已核对vendor文档LOCAL非LW同义词。主线程重验物理及证据输入，下一独立142只追加显式BUFG8选线并按实际分布／全STA判断，原VG／SDC及DDR3.500ns保持，不预记收益、不下载。
+
+W25／D2110142的[完整物理及选定门禁](push2_workstation/usb_a/reports/DUAL138K_W25_PHYSICAL_20261102.json)已通过离线范围：434.069s／exit0，实际clk50为LW、44.1参考改为PRIMARY，setup0／+.013ns、hold0／+.140ns、recovery+2.376／removal+.281ns，DDR hold+.626ns且原3.500ns不变；物理BSRAM218／DSP59／CLS32197。142实际全STA／各时钟零TNS／脉宽和PLL及6负控重验，完整VO仅精确CreatedTime头与139不同，主线程独立证明该唯一逆变换并复验1536文件，复用139语义门而不冒称重跑。FS `0d5b7659…ce1c078`／CheckSum3575；等待现有授权的SRAM试装及真实手机／25K／DAC业务验收，仍不宣称全IO／电气／CDC或最终发布接受，无HDMI／录音范围保持。
+
+M26-1第二轮STA已闭合，期间预备的[Delay私有数据路径化简实验](push2_workstation/usb_a/reports/DUAL138K_DELAY_COFACTOR_EXPERIMENT_RETAINED_20261102.json)未进入r2；完整补丁、3修改／5新增源码及3523032边沿／四态／映射FIFO验证已封存cache。只撤回逐字节核对后的本实验改动，使正式维护源保持已过物理的冻结来源，不记资源或时序收益；无用户未提交文件被撤回。

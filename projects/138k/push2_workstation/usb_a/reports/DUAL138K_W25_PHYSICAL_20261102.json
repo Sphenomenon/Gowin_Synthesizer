@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "stage": "W25_v2_D2110142_explicit_BUFG8_full_STA_closed_actual_PLL_passed_offline_audio_only_candidate",
+  "scope": "W audio-only candidate: A2DP SBC streaming Pitch full D effects DAC and 25K USB control feedback; HDMI and recording explicitly disabled; no board acceptance",
+  "source_commit": "664e250655df1a364273706331a335e2a12d294d",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-ff53a5420e3db5ed",
+  "integration_identity": "custom138k-native-w-audio-only-pitch-registered-epoch-revision5",
+  "candidate_manifest_sha256": "eeb01906ef71ed7f4c3213568c5d2c3fa6aded64ba84b1f46c31c59d94fe7a51",
+  "source_snapshot_entries": 975,
+  "staged_inputs": 613,
+  "enabled_inputs": 129,
+  "synthesis_VG_sha256": "a9c47d184db1dda998ebacb5a5ecbd31b2deb8f9b279c71780fd6ba8041eefda",
+  "actual_VO_sha256": "b9b34f57d8d365c057cfbff6c1f1de03e3031990becee84336f2402ae4c5cfff",
+  "physical_identity": "custom138k-native-physical-D2110142",
+  "physical_manifest_sha256": "c496986fa128cb555bbfa6cff9c44102dc7fdda405fc95650e14227965f69b3c",
+  "physical_inputs_unchanged": true,
+  "all_raw_physical_outputs_unchanged": true,
+  "physical_input_count": 13,
+  "physical_runner_input_count_including_manifest": 14,
+  "resource_usage": {
+    "Logic": {
+      "used": 43324,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 27030,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 32197,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 218,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 59,
+      "capacity": 298
+    },
+    "LUT": 30655,
+    "ALU": 11607,
+    "ROM16": 0,
+    "SSRAM": 177
+  },
+  "synthesis_BSRAM_equivalent": 192,
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "global_worst_ns": {
+      "setup": 0.013,
+      "hold": 0.14,
+      "recovery": 2.376,
+      "removal": 0.281
+    }
+  },
+  "exact_DDR_hold": {
+    "slack_ns": 0.626,
+    "arrival_ns": 6.044,
+    "required_ns": 5.418,
+    "relationship_ns": 3.5,
+    "clock_skew_report_ns": 0.474,
+    "launch_location": "R104C175[0][A]",
+    "capture_location": "R2C2[0][A]",
+    "launch_within_requested_region": true,
+    "capture_within_requested_region": true
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-physical-D2110142/impl/pnr/custom_138k_integration.fs",
+    "sha256": "0d5b7659a184fd0b11e5775f5ac8f4909d6b503c2380787929d03c6d9ce1c078",
+    "usercode": "0xd2110142",
+    "checksum": "0x3575"
+  },
+  "gates": {
+    "actual_routed_registered_epoch32Q": true,
+    "epoch_negative_controls": 33,
+    "epoch_synthesis_default_INIT_adapter_used_on_route": false,
+    "whole_flat_VO_strict_lexer": "unchanged maintained workstation_demo_boundary_cdc.netlist mapping=routed",
+    "actual_routed_feedback_payload_bits": 142,
+    "feedback_negative_controls": 110,
+    "actual_native_tests": 60,
+    "actual_native_skips": 23,
+    "actual_native_negative_controls": 64,
+    "actual_boundary_tests": 7,
+    "actual_boundary_negative_controls": 69,
+    "PLL_passed": true,
+    "PLL_negative_controls": 6,
+    "retired_MIDI_scope_counts": {
+      "u_managed/midi_uart": 0,
+      "u_managed/midi_bytes": 0,
+      "u_managed/midi_drops": 0
+    },
+    "semantic_tests_and_negative_controls_reexecuted_on142": false,
+    "semantic_gate_reference_identity": "custom138k-native-physical-D2110139",
+    "semantic_gate_reuse_equivalence_sha256": "98e21d37e914a81250827867da981327b6a5ecd90c814c83c761d08ca1ad3b5c",
+    "actual_142_full_STA_reexecuted": true,
+    "actual_142_clk50_intra_domain_setup_hold": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "actual_142_all_clock_TNS_zero": true,
+    "actual_142_pulse_width_worst10_positive": true,
+    "actual_142_PLL_reexecuted": true
+  },
+  "review_scope": "worker parent self-review; independent agent spawn refused by thread limit",
+  "raw_physical_inventory_sha256": {
+    "audit_tools_seal.json": "84e1a2655f8681bfe306a01fbe4049137252774b4785601a708c8045a7912de2",
+    "custom_138k_integration.vg": "a9c47d184db1dda998ebacb5a5ecbd31b2deb8f9b279c71780fd6ba8041eefda",
+    "directed_placement_source_closure.json": "242ff3a3eed4f2a545ba50a114e3d9e561e3f7f921f1aa18415711b88c0f18de",
+    "impl/pnr/cmd.do": "385f2dbce63a32279470c734c064950f69e6760e75961818cd805e5173d3bdc4",
+    "impl/pnr/custom_138k_integration.bin": "3b2147da70216b2e1a70908a1f2e4bb1e1325bb3de26888499f6694436f2d163",
+    "impl/pnr/custom_138k_integration.binx": "990944ee78a88f9402f10b63dcc6aa65668ca8876dec7b940bb900301d3cf805",
+    "impl/pnr/custom_138k_integration.db": "b79e706f810585c6095fde1e7c056643727c53efeb5273cbe9f6a49e445a8283",
+    "impl/pnr/custom_138k_integration.fs": "0d5b7659a184fd0b11e5775f5ac8f4909d6b503c2380787929d03c6d9ce1c078",
+    "impl/pnr/custom_138k_integration.log": "5e9060a29af853bc9907693e9febe9a1e17a5ecae6a52c2311781513119f5e7b",
+    "impl/pnr/custom_138k_integration.p": "6b44cd80191381ac4f646c04d0cd2d494340b200824b50a5554242e6419741b6",
+    "impl/pnr/custom_138k_integration.pin.html": "e225b04cce8097cf7435cd6340aeaab091537343e121d1e936354923c2e6a131",
+    "impl/pnr/custom_138k_integration.power.html": "601e1633ed26ea8959369fcf516b174a8350ebb458e92dbb6ab698ca970cd84b",
+    "impl/pnr/custom_138k_integration.pr": "b0a7d8c3bfa9acb55a53bb9e2ed168184540e5c48ab162ec08168344646814b1",
+    "impl/pnr/custom_138k_integration.rpt.html": "c3df62a9361e109690e48bd91e4c2ad5312524c0a5cf8eb392a500342f47502b",
+    "impl/pnr/custom_138k_integration.rpt.txt": "f7388e28ef392cd60cb697c81ae8beddf1cc9e827c7251ee6e3bd6f840346246",
+    "impl/pnr/custom_138k_integration.sdf": "68d620e39304584507d5871ca72cb21eec535581d0ba0b0a6e48e52c2d21e822",
+    "impl/pnr/custom_138k_integration.timing_paths": "bdf1b99b9fc1b46a3669990d375cf79a623b368735809f8621db840924c5e7f3",
+    "impl/pnr/custom_138k_integration.tr": "b6f9c3e0e83efa3ee8a8f3705e99b8bafb78566f91c77dcbece56fdd2a4d8f08",
+    "impl/pnr/custom_138k_integration.tr.html": "6cec34e8cbcb38c7f6f0ba6af30a8299078bf6fb9849fb6ace2d39eec7c0f6f7",
+    "impl/pnr/custom_138k_integration.vo": "b9b34f57d8d365c057cfbff6c1f1de03e3031990becee84336f2402ae4c5cfff",
+    "impl/pnr/custom_138k_integration_tr_cata.html": "32ea23a9691781ce5c08f5e4c77bd9d0a1232e31140338a7996cde4ae621c995",
+    "impl/pnr/custom_138k_integration_tr_content.html": "7017b439667a22a0180f8391720955bd40edbf971f845ecae7a8ce33111cb584",
+    "impl/pnr/device.cfg": "a14088bdad415a9e8aed4b89763fd220342cddb12bca8e985eca5dae9124c8b4",
+    "parent_integration_inputs.json": "eeb01906ef71ed7f4c3213568c5d2c3fa6aded64ba84b1f46c31c59d94fe7a51",
+    "parent_pinout.json": "7167100c4c828da3deeb151ffa7957a2c62111fd111baa028388b84a5a9f4571",
+    "parent_synthesis_audit.json": "ee24183c73c910a885dc8664b124868f070f20985efa4d3cc3bfe9dca4854bbb",
+    "parent_workstation_profile.json": "7bade21810f99b3444e8618c859f016e12a7c77d4e32e5f2f863bb201f154b96",
+    "physical.cst": "a017853f8cafee8a212f2818a6828773808813242dbba8c78ad4b608bde22b58",
+    "physical.sdc": "d55a6e57a6a6e2da216666f168ca39af46e6794ce526882cddcfaed26e15c9a2",
+    "physical_inputs.json": "c496986fa128cb555bbfa6cff9c44102dc7fdda405fc95650e14227965f69b3c",
+    "placement_witness_measurement.json": "4431d79a1a83cb31f6b068129834311006f1082fa58a574ac485789e1b8ce810",
+    "placement_witness_summary.json": "6cce20ef44780c7a1971a45f9103b8b42a8a62cc2670d82552ad4b48946be28a",
+    "pnr.log": "13836c6b176d0a3de49945289a01ac25f1eb8cf94a1b0ebe143f7dee17d4fdec",
+    "registered_epoch_synthesis_review.json": "8118b436bc076b494ccf7e6e5a2e2b994777f500fa52f0d04e5345ce2fbe9b89",
+    "run.tcl": "c0472941cee483c6d189b1a4343f9cb32c5ddd39cb73c78bc55999502d41f905"
+  },
+  "JSON_sha256": {
+    "w25-v2-explicit-bufg8-prepare-v1.json": "3d5604800bc40b2f6e3556c20dcd45c684b7b9877d9d27a1ee01c99843baeb5f",
+    "w25-v2-explicit-bufg8-pnr-run-v1.json": "84818a495a93afaf16f3e92070fe68ed9165b4b12c3a378757865abd38ce8bf7",
+    "w25-v2-physical-D2110142/physical_inputs.json": "c496986fa128cb555bbfa6cff9c44102dc7fdda405fc95650e14227965f69b3c",
+    "w25-v2-explicit-bufg8-physical-measurement-v1.json": "444d5715bd95abf008ecc234a18bf4b34f5604ab0fcdb3423d1c9c8be3845af4",
+    "w25-v2-explicit-bufg8-VO-header-equivalence-v1.json": "98e21d37e914a81250827867da981327b6a5ecd90c814c83c761d08ca1ad3b5c",
+    "w25-v2-explicit-bufg8-clock-STA-review-v1.json": "6ed93fdf07509bdff2db64f3be7244ebdf9f29fd9bfe39cd4e36836d2cb671a5",
+    "w25-v2-explicit-bufg8-pll-audit-v1.json": "38b3ad0aad8ea4dcf4b10c32d1deeaec4d7441c6009890d416729612320983b4",
+    "w25-v2-clock-guide-concept-review-v1.json": "7c8ca6ae35ef15e9f00fa86d258a93ea1aa3ed9c85eaa9c66f53fff0c4971194",
+    "w25-v2-capture-clock-comparison-v1.json": "8760d03e6088386a2972f7929ba4daea53c309fdbc3480258bd6e824ab696fe3",
+    "w25-v2-full-physical-handoff-v1.json": "22a93b9956cf9bf5ee9026471bcf2d28280024ea43810ae71aabe4158a87a373",
+    "w25-v2-intermediate-139-141-v1.json": "7e8aabca475e62e98c0ed6102995d88c26d4cf48ca89ee634aefdeb6bdf68775",
+    "w25-v2-audit-tools-v2-seal.json": "84e1a2655f8681bfe306a01fbe4049137252774b4785601a708c8045a7912de2"
+  },
+  "hdmi_explicitly_disabled": true,
+  "recording_explicitly_disabled": true,
+  "timing_closed": true,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "remaining_gaps": [
+    "complete IO/electrical/CDC acceptance still required; timing closure alone is not board acceptance",
+    "physical A2DP SBC streaming Pitch full D effects 25K feedback I2S/DAC acceptance",
+    "HDMI and recording not included in this audio-only candidate",
+    "setup worst margin is +0.013ns; future source or physical changes require fresh closure"
+  ],
+  "followup": {
+    "next_stage": "parent independent offline evidence review then separately authorized physical checks",
+    "no_board_actions_by_this_worker": true
+  },
+  "rollback": "No board operation by this worker; board image is managed separately by parent; 139/140/141 failed experiments retained",
+  "actual_SDF_sha256": "68d620e39304584507d5871ca72cb21eec535581d0ba0b0a6e48e52c2d21e822",
+  "physical_CST_sha256": "a017853f8cafee8a212f2818a6828773808813242dbba8c78ad4b608bde22b58",
+  "physical_SDC_sha256": "d55a6e57a6a6e2da216666f168ca39af46e6794ce526882cddcfaed26e15c9a2",
+  "actual_clock_distribution": {
+    "clk_16m9344_d": {
+      "type": "PRIMARY",
+      "locations": "PTR1 PTR3 PBR1"
+    },
+    "usb2_ulpi_clk_d": {
+      "type": "PRIMARY",
+      "locations": "PBR3"
+    },
+    "audio_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR0 PTR1 PTR2 PBR0 PBR1 PBR2"
+    },
+    "usb_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2 PTR3 PBR2 PBR3"
+    },
+    "dac_mclk_d": {
+      "type": "PRIMARY",
+      "locations": "PTR1 PTR2 PTR3 PBR1 PBR2"
+    },
+    "memory_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR0 PTR1 PBR0 PBR1 PBR3"
+    },
+    "ram_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2 PTR3 PBR2 PBR3"
+    },
+    "core_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2"
+    },
+    "clk_50m_d": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "clk_12m288_d": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "reset_n": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "enable_r[1]": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/n4069_5": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/compute_release[2]": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/runtime/clocks/control_reset_n": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_memory/controller_reset": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_memory/memory_clk_1426": {
+      "type": "HCLK",
+      "locations": "BANK6_HCLK0 BANK7_HCLK0"
+    }
+  },
+  "selected_BUFG8_actual_clk50_distribution": "LW",
+  "reassigned_clk16m9344_actual_distribution": "PRIMARY",
+  "actual_142_all_reported_clock_checks": {
+    "clk_50m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ulpi_60m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "dac_ref12m288": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "dac_ref16m9344": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "audio_76m8": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "usb_48m": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_mem400": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "ddr_ui100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_ram50": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_core100": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "cpu_rtc_bound": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "selected48": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    },
+    "selected44": {
+      "setup": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      },
+      "hold": {
+        "tns_ns": 0.0,
+        "endpoints": 0
+      }
+    }
+  },
+  "minimum_pulse_width_worst10_reported_all_positive": true,
+  "minimum_pulse_width_worst_ns": 2.851,
+  "semantic_gate_reuse_via_exact_header_inverse": true,
+  "IO_and_electrical_acceptance_complete": false,
+  "root_independently_rehashed_files": 1536,
+  "root_header_only_semantic_equivalence_independently_verified": true,
+  "root_equivalence_scope": "Complete actual VO bytes equal to gated D2110139 after the only exact Created Time header normalization; actual D2110142 physical STA/PLL/clock reports separately measured.",
+  "worker_handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-explicit-bufg8-full-physical-handoff-v1.json",
+  "worker_handoff_sha256": "cdebaca359a241c35b61e6a03380ea5fe0f0cf655c1248c2e90e8576ffe35245",
+  "offline_selected_gates_passed": true,
+  "SRAM_functional_trial_authorized_by_current_session": true,
+  "hardware_functional_acceptance": false
+}

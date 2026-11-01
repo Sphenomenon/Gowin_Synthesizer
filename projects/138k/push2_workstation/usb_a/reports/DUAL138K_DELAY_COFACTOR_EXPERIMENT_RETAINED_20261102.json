@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "stage": "validated_but_unconsumed_delay_datapath_experiment_retired_from_release_worktree",
+  "reason": "M26-1 r2 independently closed all STA with the already-frozen source; keep release source aligned with that physically validated candidate.",
+  "source_consumed_by_M26_1_r2": false,
+  "source_snapshot_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-unconsumed-delay-cofactor-source-seal-v1",
+  "source_snapshot_manifest_sha256": "f00ca284be9cc73875e0f58a8dce3559ea10632dd3e5dd1754e6a7067485f25c",
+  "complete_patch_sha256": "56134f6f8137baaecf3407cec6331f7bea3f071389b2505d6b56475a74621765",
+  "preserved_file_count": 75,
+  "validated_scope": {
+    "complete_delay_DMA_edge_comparisons": 3523032,
+    "DDR_scenarios": 13,
+    "four_state_vectors": 400,
+    "strict_negative_controls": 3,
+    "original_Verilator_tests": 13,
+    "actual_mapped_FIFO_test_passed": true
+  },
+  "reverted_only_exact_verified_experiment_files": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv",
+      "change": "modified",
+      "before_sha256": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+      "after_sha256": "9a006ee5fafb7ba73cadbb40155d826269b94479ae5ed6e5aa68a2423360e62a",
+      "before_bytes": 11405,
+      "after_bytes": 11869,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py",
+      "change": "modified",
+      "before_sha256": "5f861dec5be8d28c43da5c5d858dd846b245a18a0a7c53c566f4e3025dc65520",
+      "after_sha256": "213a4173dcc5453571c50fc73a8de143aa6636de7f9f6c5ba5737d7b9205a209",
+      "before_bytes": 30305,
+      "after_bytes": 34195,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/README.md",
+      "change": "modified",
+      "before_sha256": "fc63c0c97ee46b3771a1a51e4595bcb41f2125a2f0e6af083e5b18daaa7fa099",
+      "after_sha256": "503d524d11657baa5e8341b8334602a2bc1777d27a3520a2d23f28ff0044336f",
+      "before_bytes": 3760,
+      "after_bytes": 4619,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/sim/audio/fixtures/workstation_runtime_delay_before_state_cofactor.sv",
+      "change": "new",
+      "before_sha256": null,
+      "after_sha256": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+      "before_bytes": null,
+      "after_bytes": 11405,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/sim/audio/run_delay_datapath_cofactor.py",
+      "change": "new",
+      "before_sha256": null,
+      "after_sha256": "fa886d0acc6ce0b655af05c9b90539fd4ca6f16fa71a1369a2c6f5dfb17a5952",
+      "before_bytes": null,
+      "after_bytes": 9885,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_delay_datapath_cofactor.sv",
+      "change": "new",
+      "before_sha256": null,
+      "after_sha256": "f9c077d0740ce2687c7cb4a265a2dd24b36a636594c22f1c1a8520043ef7542f",
+      "before_bytes": null,
+      "after_bytes": 5326,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/sim/audio/tb_runtime_delay_datapath_four_state.sv",
+      "change": "new",
+      "before_sha256": null,
+      "after_sha256": "28c7b373e73dfdfaf797bdd5d60e813c1df7b786d702cd57976df0d8cd737b84",
+      "before_bytes": null,
+      "after_bytes": 5832,
+      "after_mode": "0o644"
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/reports/M26_1_DELAY_DATAPATH_COFACTOR_20261102.md",
+      "change": "new",
+      "before_sha256": null,
+      "after_sha256": "1f9fee3509c89c6d7e38ea4dd90d2bedffc9a3050a1fb34e5342db78d5d422df",
+      "before_bytes": null,
+      "after_bytes": 4275,
+      "after_mode": "0o644"
+    }
+  ],
+  "production_source_restored_to_frozen_candidate": true,
+  "resource_or_timing_benefit_claimed": false,
+  "hardware_tested": false,
+  "Flash_deployed": false
+}
