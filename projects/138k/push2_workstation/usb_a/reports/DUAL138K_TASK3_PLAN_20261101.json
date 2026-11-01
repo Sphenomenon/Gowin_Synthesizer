@@ -1,0 +1,59 @@
+{
+  "schema": "dual138k-task3-plan-v1",
+  "date": "2026-11-01",
+  "timezone": "Asia/Shanghai",
+  "base_commit": "cfad079f1640f44602f31d69b18084a3d429d226",
+  "branch": "codex/dual-138k-task3",
+  "stage": "source_and_ownership_audit",
+  "sources": {
+    "projects/138k/task2.md": "19932dac377cec4d6f4f5c8124c922f86f7097327ed93b09af220b6360f4e54a",
+    "projects/138k/push2_workstation/usb_a/reports/DUAL138K_M23_DIRECTED_PHYSICAL_20261101.json": "44c6365fefdce52189f8f3feef55d0b7dd2f53122ef4f1ba70f45e860f41f7fe",
+    "projects/138k/push2_workstation/usb_a/reports/DUAL138K_M24_PREPARE_20261101.json": "468f3993151a0b2acefaa2e45273453781105d9cd69159568d4f24b3d2a64033",
+    "example/LCD_RGB/docs/接线核对.md": "cc5dcc7f6e27d3ec32f234025fad80df55d13f6ee3f47175be9aed1676418c9f",
+    "example/LCD_RGB/constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a",
+    "docs/requests/全国大学生嵌入式芯片与系统设计竞赛'2026FPGA赛道选题指南-高云半导体.pdf": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d",
+    "projects/25k/example/RTL8723DS_PROTOCOL/adaptations/bt_uart_fast.v": "f17d460523fe9faecf05862de5fcde23d591aab656fc7412bb83ea4a89dbd646"
+  },
+  "original_task3_sha256": "2c04df976d94ead344fa2c8ac86fb195e385d190a2dc7818390c6fbc07bd0020",
+  "original_task3_was_ignored": true,
+  "user_hardware_facts": {
+    "target_boards_connected": false,
+    "attached_board_reserved_for_other_branch": true,
+    "lcd_cable": "reverse_contact_direction_not_continuity_verified",
+    "tf_owner": "M",
+    "bluetooth_can_connect_to_either": true
+  },
+  "checks": {
+    "task3_relative_links": 14,
+    "all_links_exist": true,
+    "task3_versioned_by_ignore_exception": true
+  },
+  "communication": {
+    "measured": false,
+    "lcd_target_payload_bytes_per_second_per_direction": 5000000,
+    "uart_nominal_baud": 921600,
+    "uart_frame_bits": 11,
+    "uart_nominal_bytes_per_second": 83781.81818181818,
+    "pcm16_stereo_48k_bytes_per_second": 192000,
+    "pcm32_stereo_48k_bytes_per_second": 384000
+  },
+  "hardware_tested": false,
+  "bitstream": null,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "rollback": {
+    "task2_worktree_unchanged_by_task3": true,
+    "task3_branch_base": "cfad079f1640f44602f31d69b18084a3d429d226",
+    "task3_can_be_deselected": true
+  },
+  "remaining": [
+    "Source-stage reverb partition validation and matched synthesis",
+    "Both target boards and confirmed connector map",
+    "Measured LCD throughput latency congestion",
+    "M and W complete candidate prepare and routed timing/CDC/PLL",
+    "TF selection and direct playback integration",
+    "W real model CNN and Push guidance",
+    "Single W long recording object and phone D integration",
+    "Physical latency DAC HDMI and functional acceptance"
+  ]
+}
