@@ -455,6 +455,8 @@ W19的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_W19_DE
 
 W 的[25K真实momentary闭环](push2_workstation/usb_a/reports/DUAL138K_W_TOUCH_MOMENTARY_20261101.json)已落维护固件与唯一参数owner：触摸按下启效、松开只撤自身效果；并按组合、H按住dry／释放恢复仍按住项、G按住全链、P主音量、重复释放及断连PANIC明确处理。真实C→MMIO→FIFO／CDC→D完整DSP／DDR→已提交反馈通过110 checkpoints／2380帧／266USB事件／9生命周期，含44.1k；关效尾音不再混回D，M及默认保留原尾音。默认完整effects18项及9 provenance／262144四态全部通过，原manifest字节保持；这仍是离线闭环，真实25K／手机与新W20物理证据待后续。
 
+[M22／W20新整机prepare及来源冻结](push2_workstation/usb_a/reports/DUAL138K_M22_W20_PREPARE_20261101.json)已完成：M `8624239a297667b1`／891来源／603暂存／262编译／845锁；W `49dc4695ee6881cb`／967来源／661暂存／285编译／846锁，分别冻结1440工具文件。主线程重新核对全部来源／工具及1264暂存文件。两份均由`a33f4115`源码全量新综合，不复用旧VG；此阶段不预记TF退出的资源收益，不代表实际网表／物理或声画接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

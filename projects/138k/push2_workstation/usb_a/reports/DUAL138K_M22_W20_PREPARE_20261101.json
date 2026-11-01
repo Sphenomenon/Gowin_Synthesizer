@@ -1,0 +1,43 @@
+{
+  "stage": "prepare_only",
+  "candidates": [
+    {
+      "candidate_identity": "custom138k-workstation-m-demo-v1-8624239a297667b1",
+      "configuration_sha256": "278dc6fc2123f3b81a8e6a5fd945653a7154d99bc573bffcc65c2fd5d8995411",
+      "manifest_sha256": "dc99d73eb0b21fefcd6251b57213c27070937aa5d5a2192eff3b9a10bf3f3fc6",
+      "source_snapshot_count": 891,
+      "staged_count": 603,
+      "enabled_count": 262,
+      "profile_locked_source_count": 845,
+      "source_tools_count": 1440,
+      "git_head": "a33f4115207ad8bddcc1fb9be77b5383507a6aff",
+      "hardware_tested": false,
+      "SRAM_programmed": false,
+      "Flash_programmed": false,
+      "role": "M22",
+      "root_rechecked_frozen_files": 2331,
+      "root_rechecked_staged_files": 603,
+      "source_seal_sha256": "ac94846105abbc56665ab9d500b837b166b1134091d8fc79e2fd77c2a05356ab"
+    },
+    {
+      "candidate_identity": "custom138k-workstation-w-demo-v1-49dc4695ee6881cb",
+      "configuration_sha256": "c941634fe4571f7a0df8b3e76d931c2c14c6e26a0377e0a08d3aea6258691aa4",
+      "manifest_sha256": "bfc411575a229d912758a5efdddd0ff6d25d6001b35a0677fca70fd9ed3745d1",
+      "source_snapshot_count": 967,
+      "staged_count": 661,
+      "enabled_count": 285,
+      "profile_locked_source_count": 846,
+      "source_tools_count": 1440,
+      "git_head": "a33f4115207ad8bddcc1fb9be77b5383507a6aff",
+      "hardware_tested": false,
+      "SRAM_programmed": false,
+      "Flash_programmed": false,
+      "role": "W20",
+      "root_rechecked_frozen_files": 2407,
+      "root_rechecked_staged_files": 661,
+      "source_seal_sha256": "41dfe5f453986990dfada1ed1e41a7dfd98b35d60fdcebcb7e30eba0ab1267c5"
+    }
+  ],
+  "synthesis_status_at_report": "both_started",
+  "hardware_tested": false
+}
