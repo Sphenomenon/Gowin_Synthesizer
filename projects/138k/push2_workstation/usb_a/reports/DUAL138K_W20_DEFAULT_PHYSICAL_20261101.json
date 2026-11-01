@@ -1,0 +1,1017 @@
+{
+  "schema": 1,
+  "stage": "W20_default_full_physical_result_STA_rejected",
+  "source_summary": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w20-default-delivery-v2/delivery.json",
+    "sha256": "e5327a714df92c2ffc1296564ef866359bcd7b792c3ebe8a327e1a9c5117b82c"
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-w20-root-default-physical-review-v2.json",
+    "sha256": "188a2ffebee24c3fb0eb7d28a8f366cf916e84f76f9a6da6ef59f786ead769a9",
+    "unique_paths": 9358,
+    "all_bound_files_verified": true
+  },
+  "candidate_identity": "custom138k-workstation-w-demo-v1-49dc4695ee6881cb",
+  "user_code": "0xD211012E",
+  "physical_manifest_sha256": "e55842b1ad7a95237b0e424f79bc89ababf87ed6e036bc6b680ba155bd521061",
+  "bitstream_sha256": "ade1057c9dd9c564668420014ea402b4104ecb389fad89a9b0eae87411cd2a32",
+  "resource_usage": {
+    "Logic": {
+      "used": 86052,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 45476,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 57944,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 306,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 68.5,
+      "capacity": 298
+    },
+    "LUT": 63505,
+    "ALU": 20699,
+    "ROM16": 0,
+    "SSRAM": 308
+  },
+  "timing": {
+    "setup_violated_endpoints": 7640,
+    "hold_violated_endpoints": 2,
+    "global_worst_ns": {
+      "setup": -6.13,
+      "hold": -3.392,
+      "recovery": 2.867,
+      "removal": 0.278
+    },
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 42.162
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 80.554
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 314.861
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 282.506
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 52.566
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 64.921
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 205.381
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 165.583
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 62.77
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1406.47
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 99.845
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 99.845
+      }
+    },
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": -1196.418,
+          "endpoints": 1289
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": -7619.226,
+          "endpoints": 4268
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": -4421.486,
+          "endpoints": 2079
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_rtc_bound": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "top_negative_paths": {
+      "setup": [
+        {
+          "kind": "setup",
+          "slack_ns": -6.13,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/pack_frames_3_s1/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.112,
+          "data_delay_ns": 16.192,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.092,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_closed_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.11,
+          "data_delay_ns": 15.954,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.034,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_1_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.103,
+          "data_delay_ns": 15.888,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.034,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_2_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.103,
+          "data_delay_ns": 15.888,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.019,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/pack_frames_3_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.112,
+          "data_delay_ns": 15.883,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.018,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_kind_1_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.99,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.017,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_6_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.019,
+          "data_delay_ns": 15.787,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.017,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_29_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.019,
+          "data_delay_ns": 15.787,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.003,
+          "source": "u_managed/runtime/compute_release_2_s0/Q",
+          "destination": "u_managed/runtime/cpu_pcm.owner/written[3]_11_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.025,
+          "data_delay_ns": 19.002,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -6.003,
+          "source": "u_managed/runtime/compute_release_2_s0/Q",
+          "destination": "u_managed/runtime/cpu_pcm.owner/written[3]_59_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.025,
+          "data_delay_ns": 19.002,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.989,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_1_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.019,
+          "data_delay_ns": 15.759,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.989,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_30_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.019,
+          "data_delay_ns": 15.759,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.985,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_committed_20_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.007,
+          "data_delay_ns": 15.743,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.983,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_clear_target_0_s0/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.02,
+          "data_delay_ns": 15.754,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.983,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_clear_target_1_s0/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.02,
+          "data_delay_ns": 15.754,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.983,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_clear_target_2_s0/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.02,
+          "data_delay_ns": 15.754,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.983,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_clear_target_3_s0/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.02,
+          "data_delay_ns": 15.754,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.982,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_committed_11_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.007,
+          "data_delay_ns": 15.74,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.982,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_committed_12_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.007,
+          "data_delay_ns": 15.74,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.979,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_code_0_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.103,
+          "data_delay_ns": 15.833,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.957,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_19_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.024,
+          "data_delay_ns": 15.733,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.947,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_2_s/AD[13]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.071,
+          "data_delay_ns": 15.934,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.943,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_next_index_6_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.097,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.943,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_next_index_7_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.097,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.943,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_next_index_8_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.097,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.943,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/memory_next_index_9_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.097,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.941,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_7_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.099,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.941,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_8_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.099,
+          "data_delay_ns": 15.791,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.94,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_1_s/AD[10]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.079,
+          "data_delay_ns": 15.919,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.934,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/pack_frames_0_s3/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.12,
+          "data_delay_ns": 16.003,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.915,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_22_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.103,
+          "data_delay_ns": 15.769,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.915,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_27_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.103,
+          "data_delay_ns": 15.769,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.91,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_13_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.034,
+          "data_delay_ns": 15.695,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_23_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_24_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_25_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_address_26_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_0_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.908,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_7_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.101,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_11_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_14_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_20_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_21_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_23_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_24_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.903,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/completion_generation_25_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.023,
+          "data_delay_ns": 15.677,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.9,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_3_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.109,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.9,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_4_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.109,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.9,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_5_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.109,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -5.9,
+          "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+          "destination": "recording_ble_store/fetch_beats_issued_8_s1/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": -0.109,
+          "data_delay_ns": 15.76,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        }
+      ],
+      "hold": [
+        {
+          "kind": "hold",
+          "slack_ns": -3.392,
+          "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+          "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "clk_50m:[R]",
+          "relation_ns": 3.5,
+          "skew_ns": -0.486,
+          "data_delay_ns": 0.642,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "hold",
+          "slack_ns": -0.067,
+          "source": "u_managed/midi_bytes/acknowledge_toggle_s0/Q",
+          "destination": "u_managed/midi_bytes/ack_meta_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "clk_50m:[R]",
+          "relation_ns": -0.0,
+          "skew_ns": -0.407,
+          "data_delay_ns": 0.388,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        }
+      ],
+      "recovery": [],
+      "removal": []
+    }
+  },
+  "exact_DDR_hold": {
+    "slack_ns": -3.392,
+    "arrival_ns": 2.043,
+    "required_ns": 5.435,
+    "relationship_ns": 3.5,
+    "clock_skew_report_ns": 0.486,
+    "launch_location": "R88C161[1][A]",
+    "capture_location": "R88C150[2][A]"
+  },
+  "audit_subgates_passed": true,
+  "full_STA_passed": false,
+  "physical_CDC_accepted": false,
+  "new_HMI_semantic_origin_scope": "Independent source-to-renderer review pending at this physical handoff; no deployment claim.",
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false,
+  "rollback": "No programming at this stage; existing board configuration retained.",
+  "PNR_elapsed_seconds": 402.21078225,
+  "native_VG": {
+    "tests": 59,
+    "passed": 45,
+    "skips": 14,
+    "negative_controls": 70,
+    "all_rejected": true
+  },
+  "native_VO": {
+    "tests": 59,
+    "passed": 47,
+    "skipped": [
+      "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_w20_new_hmi_mailbox_and_constant_capture_negative_controls (__main__.ActualNativeProtocol.test_w20_new_hmi_mailbox_and_constant_capture_negative_controls) ... skipped 'W20 actual new HMI mailbox only'",
+      "test_apb_split_launch_combined_and_is_exact (__main__.ActualTimingBoundaries.test_apb_split_launch_combined_and_is_exact) ... skipped 'reviewed split launch AND mapping not present'",
+      "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+      "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+    ],
+    "negative_controls": 63,
+    "all_rejected": true
+  },
+  "boundary": {
+    "tests": 7,
+    "skips": 0,
+    "negative_controls": 69,
+    "all_rejected": true
+  },
+  "W_return": {
+    "tests": 4,
+    "skips": 0,
+    "negative_controls": 19,
+    "all_rejected": true,
+    "actual_source_consumer_pairs": 9928,
+    "qualifier_endpoints": 301,
+    "original_SDC_audited_by_PLL": true,
+    "native_response_reachability_invariant_formally_proven": false,
+    "physical_CDC_accepted": false
+  },
+  "PLL": {
+    "count": 6,
+    "negative_controls": 7,
+    "selected_held_gate_passed": true
+  },
+  "streaming_PCM_pitch_implemented": false,
+  "worst_same_clock_setup": {
+    "clk_50m:[R]": {
+      "kind": "setup",
+      "slack_ns": -3.718,
+      "source": "u_bluetooth/u_core/owner/flow/active_1_s0/Q",
+      "destination": "u_bluetooth/u_core/owner/host_rx/lease_handles_lease_handles_0_1_s/WRE",
+      "source_clock": "clk_50m:[R]",
+      "destination_clock": "clk_50m:[R]",
+      "relation_ns": 20.0,
+      "skew_ns": 0.049,
+      "data_delay_ns": 23.668,
+      "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+    },
+    "ddr_ui100:[R]": {
+      "kind": "setup",
+      "slack_ns": -6.13,
+      "source": "u_video/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0/Q",
+      "destination": "recording_ble_store/pack_frames_3_s1/D",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": -0.112,
+      "data_delay_ns": 16.192,
+      "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+    },
+    "audio_76m8:[R]": {
+      "kind": "setup",
+      "slack_ns": -6.003,
+      "source": "u_managed/runtime/compute_release_2_s0/Q",
+      "destination": "u_managed/runtime/cpu_pcm.owner/written[3]_11_s1/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": -0.025,
+      "data_delay_ns": 19.002,
+      "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+    }
+  },
+  "limits": [
+    "All setup, hold, recovery, removal and pulse width results are the measured default physical reports. Full STA FAIL is not overridden by six passing audit subprocesses.",
+    "Passed structural CDC/mailbox subgates do not prove HMI semantic-origin closure, complete CDC or formal response reachability.",
+    "Source implementation and passed subgates are not hardware sound/display/25K/A2DP/record/download or concurrent dual-board acceptance.",
+    "Task2 streaming PCM Pitch remains an existing implementation gap, separately source-reviewed; adaptive drift SRC and sample playback transposition are not equivalent.",
+    "No DDR floorplan child has been prepared or routed by this delivery."
+  ],
+  "next": "Repair measured tags-to-pack_frames and compute-release-to-written paths in maintained owners; continuous PCM Pitch remains a separate recorded implementation gap."
+}

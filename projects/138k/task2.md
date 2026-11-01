@@ -465,6 +465,10 @@ M的[performance邮箱释放修正](push2_workstation/usb_a/reports/DUAL138K_M_P
 
 W的[流式Pitch源码缺口](push2_workstation/usb_a/reports/DUAL138K_W_STREAM_PITCH_GAP_20261101.json)已据实记录：第5节要求Pitch／Delay／Chorus／Reverb，但实际W20禁合成分支将pitch固定unity，完整stereo链未接PCM变调输入，25K kind4也被拒绝；W19同样如此，属于既有实现缺口。旧sampler_voice是储样本相位／voice引擎，长期输入的SRC漂移补偿也不是流式Pitch，均不能据此打勾。当前25K momentary证据只覆盖实际已实现效果；后续须接入真实流式Pitch及正式操作入口，独立验证持续输入、延迟、声画和共存。
 
+M22的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_M22_DEFAULT_PHYSICAL_20261101.json)已封存：D211012D，物理BSRAM243／DSP118／CLS46587，setup242／最差−0.435ns、hold4／−3.419ns、recovery−5.021ns、removal+0.278ns。六项选定审计通过（native44过／15具名不适用、60负控；boundary7／69；六PLL／7负控），另有TF退出grant的10项负控；旧库存／fixture失败保留。完整STA仍拒绝，新的HMI逐位语义审查另列，不上板。M23已由新维护源独立全量综合；D211012F的同VG实验与M23新VG不混同。
+
+W20的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_W20_DEFAULT_PHYSICAL_20261101.json)已封存：D211012E，物理BSRAM306／DSP68.5／CLS57944，setup7640／最差−6.130ns、hold2／−3.392ns，recovery+2.867／removal+0.278ns。六审计及Wreturn4／19通过（native47过／12具名不适用、63负控；boundary7／69；六PLL／7负控），完整STA仍失败。主线程独立复核W的4917封存文件与M实际资源、位流／工具／source／stage绑定；没有SRAM／Flash操作。下一步修复实测tags→pack_frames、compute_release→written路径；不宣称流式Pitch或真实手机声画验收通过。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

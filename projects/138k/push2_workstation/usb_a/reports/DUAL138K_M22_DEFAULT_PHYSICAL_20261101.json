@@ -1,0 +1,1103 @@
+{
+  "schema": 1,
+  "stage": "M22_default_full_physical_result_STA_rejected",
+  "source_summary": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-final-summary-v1.json",
+    "sha256": "1e74e47a517fcf17979b1130d662f8e44593470d5772eabcab0d0c3f7db81fbf"
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-w20-root-default-physical-review-v2.json",
+    "sha256": "188a2ffebee24c3fb0eb7d28a8f366cf916e84f76f9a6da6ef59f786ead769a9",
+    "unique_paths": 9358,
+    "all_bound_files_verified": true
+  },
+  "candidate_identity": "custom138k-workstation-m-demo-v1-8624239a297667b1",
+  "user_code": "D211012D",
+  "physical_manifest_sha256": "d5509851ac35bc513cdd96d363cbf7fd5e042c8577521b2abe039267b261dca6",
+  "bitstream_sha256": "2c7731f5bd2e4d2e00c4a60f32888c0f09252c6fb3d90d0938761c2ceaf4db7c",
+  "resource_usage": {
+    "Logic": {
+      "used": 60605,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 43046,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 46587,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 243,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 118,
+      "capacity": 298
+    },
+    "LUT": 48017,
+    "ALU": 11994,
+    "ROM16": 0,
+    "SSRAM": 99
+  },
+  "timing": {
+    "setup_violated_endpoints": 242,
+    "hold_violated_endpoints": 4,
+    "global_worst_ns": {
+      "setup": -0.435,
+      "hold": -3.419,
+      "recovery": -5.021,
+      "removal": 0.278
+    },
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 70.834
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 88.321
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 151.607
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 159.616
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 74.356
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 60.828
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 191.241
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 170.566
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 103.949
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1410.438
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 97.073
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 97.073
+      }
+    },
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": -0.558,
+          "endpoints": 3
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": -28.726,
+          "endpoints": 176
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": -12.672,
+          "endpoints": 60
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_rtc_bound": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "top_negative_paths": {
+      "setup": [
+        {
+          "kind": "setup",
+          "slack_ns": -0.435,
+          "source": "u_video/u_renderer/frame_applied_parameters_90_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/a_text_line_181_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.027,
+          "data_delay_ns": 10.357,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.428,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deferred_96_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.068,
+          "data_delay_ns": 13.33,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.426,
+          "source": "u_managed/runtime/service/workstation/parameters/glide_step_o_5_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/pitch/glide_ratio_2_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.007,
+          "data_delay_ns": 13.388,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.422,
+          "source": "u_video/u_renderer/frame_applied_parameters_90_s0/Q",
+          "destination": "u_video/u_renderer/u_even/a_text_line_182_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.011,
+          "data_delay_ns": 10.359,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.416,
+          "source": "u_video/u_runtime_display/producer/analysis/work_image_gain_2_s0/Q",
+          "destination": "u_video/u_runtime_display/producer/analysis/image_pixels_image_pixels_2_0_s/BLKSELA[0]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.08,
+          "data_delay_ns": 10.268,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.415,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_0_s/AD[12]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.003,
+          "data_delay_ns": 10.47,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.412,
+          "source": "u_video/u_renderer/frame_applied_parameters_14_s0/Q",
+          "destination": "u_video/u_renderer/u_even/a_text_line_189_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.046,
+          "data_delay_ns": 10.315,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.409,
+          "source": "u_video/u_renderer/frame_applied_parameters_90_s0/Q",
+          "destination": "u_video/u_renderer/u_even/a_text_line_178_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.036,
+          "data_delay_ns": 10.322,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.402,
+          "source": "u_video/u_renderer/u_even/a_x_6_s0/Q",
+          "destination": "u_video/u_renderer/u_even/b_background_12_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.024,
+          "data_delay_ns": 10.327,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.397,
+          "source": "u_video/u_renderer/frame_applied_parameters_90_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/a_text_line_182_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.02,
+          "data_delay_ns": 10.325,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.396,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_2_s/AD[12]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.003,
+          "data_delay_ns": 10.451,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.391,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[7]_17_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.034,
+          "data_delay_ns": 13.327,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.389,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_0_s/AD[13]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.003,
+          "data_delay_ns": 10.444,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.383,
+          "source": "u_video/u_renderer/frame_applied_parameters_14_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/a_text_line_190_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.002,
+          "data_delay_ns": 10.33,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.379,
+          "source": "u_video/u_renderer/u_even/a_y_0_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/b_background_20_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.01,
+          "data_delay_ns": 10.318,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.377,
+          "source": "u_video/u_runtime_display/producer/expected_sequence_10_s0/Q",
+          "destination": "u_video/u_runtime_display/writer/state_0_s1/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.014,
+          "data_delay_ns": 10.313,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.374,
+          "source": "u_managed/runtime/service/workstation/parameters/glide_step_o_5_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/pitch/glide_ratio_17_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.01,
+          "data_delay_ns": 13.353,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.371,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/allocated_mask_o_21_s1/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/allocated_mask_o_9_s1/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.15,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.364,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[3]_5_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.023,
+          "data_delay_ns": 13.311,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.358,
+          "source": "u_video/u_renderer/read_x_5_s0/Q",
+          "destination": "u_video/u_renderer/u_even/brand/glyph_rom_glyph_rom_0_0_s/AD[13]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.003,
+          "data_delay_ns": 10.413,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.355,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[3]_2_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.023,
+          "data_delay_ns": 13.302,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.355,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[3]_3_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.023,
+          "data_delay_ns": 13.302,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.351,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_29_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.054,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.351,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_30_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.054,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.351,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_31_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.054,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.344,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/held_98_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.029,
+          "data_delay_ns": 13.285,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.344,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deferred_117_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.055,
+          "data_delay_ns": 13.259,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.339,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_y_13_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.01,
+          "data_delay_ns": 13.101,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.339,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_y_14_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.01,
+          "data_delay_ns": 13.101,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.339,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_x_7_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.01,
+          "data_delay_ns": 13.101,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.339,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_x_8_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.01,
+          "data_delay_ns": 13.101,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.337,
+          "source": "u_video/u_renderer/frame_applied_parameters_90_s0/Q",
+          "destination": "u_video/u_renderer/u_even/a_text_line_181_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.004,
+          "data_delay_ns": 10.282,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.333,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_y_7_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.006,
+          "data_delay_ns": 13.099,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.333,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_y_9_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.006,
+          "data_delay_ns": 13.099,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.333,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/frame_cal_y_11_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.006,
+          "data_delay_ns": 13.099,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.324,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deferred_123_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.081,
+          "data_delay_ns": 13.213,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.323,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deferred_100_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.06,
+          "data_delay_ns": 13.233,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.322,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/allocated_mask_o_21_s1/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/envelope_state[22]_1_s1/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.005,
+          "data_delay_ns": 13.099,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.318,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[3]_12_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.038,
+          "data_delay_ns": 13.25,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.311,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/allocated_mask_o_21_s1/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/envelope_state[22]_1_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.005,
+          "data_delay_ns": 13.155,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.304,
+          "source": "u_managed/runtime/service/workstation/runtime_engines.engines/oscillator/frame_rate_44100_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/runtime_engines.engines/vector_engine/envelope[3]_17_s1/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.051,
+          "data_delay_ns": 13.223,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.304,
+          "source": "u_video/u_arbiter/u_delay_slot/full_s1/Q",
+          "destination": "u_video/u_arbiter/u_delay_slot/queued_data_10_s0/CE",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.0,
+          "data_delay_ns": 10.055,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.303,
+          "source": "u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage/peer_fault_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/held_124_s0/D",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": 0.029,
+          "data_delay_ns": 13.244,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.296,
+          "source": "u_video/u_renderer/read_x_4_s0/Q",
+          "destination": "u_video/u_renderer/u_odd/brand/glyph_rom_glyph_rom_0_2_s/AD[13]",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "ddr_ui100:[R]",
+          "relation_ns": 10.0,
+          "skew_ns": 0.003,
+          "data_delay_ns": 10.351,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_23_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_24_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_25_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_26_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_27_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "setup",
+          "slack_ns": -0.29,
+          "source": "u_managed/runtime/config_accept_pending_s0/Q",
+          "destination": "u_managed/runtime/service/workstation/deadline_miss_o_28_s0/CE",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 13.021,
+          "skew_ns": -0.007,
+          "data_delay_ns": 13.069,
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+        }
+      ],
+      "hold": [
+        {
+          "kind": "hold",
+          "slack_ns": -3.419,
+          "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+          "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+          "source_clock": "ddr_ui100:[R]",
+          "destination_clock": "clk_50m:[R]",
+          "relation_ns": 3.5,
+          "skew_ns": -0.423,
+          "data_delay_ns": 0.552,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "hold",
+          "slack_ns": -0.346,
+          "source": "u_managed/runtime/clocks/reference_48_monitor/source_binary_29_s0/Q",
+          "destination": "u_managed/runtime/clocks/reference_48_monitor/source_gray_29_s0/D",
+          "source_clock": "dac_ref12m288:[R]",
+          "destination_clock": "dac_ref12m288:[R]",
+          "relation_ns": 0.0,
+          "skew_ns": -0.722,
+          "data_delay_ns": 0.401,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "hold",
+          "slack_ns": -0.194,
+          "source": "u_managed/runtime/clocks/reference_48_monitor/source_binary_29_s0/Q",
+          "destination": "u_managed/runtime/clocks/reference_48_monitor/source_binary_30_s0/D",
+          "source_clock": "dac_ref12m288:[R]",
+          "destination_clock": "dac_ref12m288:[R]",
+          "relation_ns": 0.0,
+          "skew_ns": -0.722,
+          "data_delay_ns": 0.553,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "hold",
+          "slack_ns": -0.019,
+          "source": "u_managed/runtime/clocks/reference_48_monitor/source_binary_0_s0/Q",
+          "destination": "u_managed/runtime/clocks/reference_48_monitor/source_gray_2_s0/D",
+          "source_clock": "dac_ref12m288:[R]",
+          "destination_clock": "dac_ref12m288:[R]",
+          "relation_ns": 0.0,
+          "skew_ns": -0.445,
+          "data_delay_ns": 0.451,
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+        }
+      ],
+      "recovery": [
+        {
+          "kind": "recovery",
+          "slack_ns": -5.021,
+          "source": "u_reset/started_s0/Q",
+          "destination": "u_runtime/u_performance_cdc/source_release_2_s0/CLEAR",
+          "source_clock": "clk_50m:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 0.104,
+          "skew_ns": 0.251,
+          "data_delay_ns": 4.563,
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "recovery",
+          "slack_ns": -5.021,
+          "source": "u_reset/started_s0/Q",
+          "destination": "u_runtime/u_performance_cdc/source_release_0_s0/CLEAR",
+          "source_clock": "clk_50m:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 0.104,
+          "skew_ns": 0.251,
+          "data_delay_ns": 4.563,
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "recovery",
+          "slack_ns": -5.021,
+          "source": "u_reset/started_s0/Q",
+          "destination": "u_runtime/u_performance_cdc/source_release_1_s0/CLEAR",
+          "source_clock": "clk_50m:[R]",
+          "destination_clock": "audio_76m8:[R]",
+          "relation_ns": 0.104,
+          "skew_ns": 0.251,
+          "data_delay_ns": 4.563,
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "recovery",
+          "slack_ns": -3.105,
+          "source": "u_audio_clock/audio_reset_pipe_3_s0/Q",
+          "destination": "u_runtime/u_performance_cdc/destination_release_0_s0/CLEAR",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "clk_50m:[R]",
+          "relation_ns": 0.104,
+          "skew_ns": -0.176,
+          "data_delay_ns": 3.072,
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1"
+        },
+        {
+          "kind": "recovery",
+          "slack_ns": -3.105,
+          "source": "u_audio_clock/audio_reset_pipe_3_s0/Q",
+          "destination": "u_runtime/u_performance_cdc/destination_release_1_s0/CLEAR",
+          "source_clock": "audio_76m8:[R]",
+          "destination_clock": "clk_50m:[R]",
+          "relation_ns": 0.104,
+          "skew_ns": -0.176,
+          "data_delay_ns": 3.072,
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1"
+        }
+      ],
+      "removal": []
+    }
+  },
+  "exact_DDR_hold": {
+    "slack_ns": -3.419,
+    "arrival_ns": 1.964,
+    "required_ns": 5.383,
+    "relationship_ns": 3.5,
+    "clock_skew_report_ns": 0.423,
+    "launch_location": "R88C45[1][B]",
+    "capture_location": "R88C36[2][A]"
+  },
+  "audit_subgates_passed": true,
+  "full_STA_passed": false,
+  "physical_CDC_accepted": false,
+  "new_HMI_semantic_origin_scope": "Independent source-to-renderer review pending at this physical handoff; no deployment claim.",
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false,
+  "rollback": "No programming at this stage; existing board configuration retained.",
+  "jobs": {
+    "physical-measurement": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/physical-measurement/run.json",
+      "run_sha256": "a9db7bf52a6863d50515a3205c2aa8c0f525b1b4f2b137ef48362a71c2f0fc4d",
+      "returncode": 0,
+      "elapsed_seconds": 6.458533541997895,
+      "unittest_tests_ran": null,
+      "skips": [],
+      "physical_directory_and_audit_outputs_reverified": true
+    },
+    "clk50-measurement": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/clk50-measurement/run.json",
+      "run_sha256": "dcee61fcd79a10f8ef3eaf2379150981f2cd26173431115727f8267b3809a8f0",
+      "returncode": 0,
+      "elapsed_seconds": 6.61069762497209,
+      "unittest_tests_ran": null,
+      "skips": [],
+      "physical_directory_and_audit_outputs_reverified": true
+    },
+    "native-vo-cli": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/native-vo-cli/run.json",
+      "run_sha256": "073341ffe92c03e4840c88ed64cb4fe80b0428ea13afa0874bcb4d5b440b6cef",
+      "returncode": 0,
+      "elapsed_seconds": 5.378554874798283,
+      "unittest_tests_ran": null,
+      "skips": [],
+      "physical_directory_and_audit_outputs_reverified": true
+    },
+    "native-vo-regression": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-native-hmi-audits-v4/native-vo-regression/run.json",
+      "run_sha256": "a9615d986936a82868dea53a4f593e16c1518af7c4ab4c8d40266de06235a959",
+      "returncode": 0,
+      "elapsed_seconds": 85.39582062512636,
+      "unittest_tests_ran": 59,
+      "skips": [
+        "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+        "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+        "test_m22_new_hmi_mailbox_negative_controls (__main__.ActualNativeProtocol.test_m22_new_hmi_mailbox_negative_controls) ... skipped 'M22 actual new HMI mailbox only'",
+        "test_apb_ce_toggle_cannot_bypass_payload_capture (__main__.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_ce_toggle_feedback_must_invert_its_own_q (__main__.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q) ... skipped 'reviewed CE-factored request mapping not present'",
+        "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+        "test_apb_split_launch_combined_and_is_exact (__main__.ActualTimingBoundaries.test_apb_split_launch_combined_and_is_exact) ... skipped 'reviewed split launch AND mapping not present'",
+        "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+        "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+      ],
+      "physical_directory_and_audit_outputs_reverified": true,
+      "negative_count": 60,
+      "all_rejected": true
+    },
+    "boundary-vo-regression": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/boundary-vo-regression/run.json",
+      "run_sha256": "dbdd83b882b1d3d2a9b707d14fded8a70efd637185b80c632e8cdf30c12820ca",
+      "returncode": 0,
+      "elapsed_seconds": 141.05716229090467,
+      "unittest_tests_ran": 7,
+      "skips": [],
+      "physical_directory_and_audit_outputs_reverified": true,
+      "negative_count": 69,
+      "all_rejected": true
+    },
+    "pll-official": {
+      "run_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-pll-inventory-audits-v3/pll-official/run.json",
+      "run_sha256": "0853a803452578879e5e2bb19f949ceac42907ff234cfcc1ce254c3a3c1f0693",
+      "returncode": 0,
+      "elapsed_seconds": 63.953507457859814,
+      "unittest_tests_ran": null,
+      "skips": [],
+      "physical_directory_and_audit_outputs_reverified": true,
+      "pll_gate_passed": true,
+      "negative_count": 7,
+      "errors": [],
+      "selected_held_v2_gate_passed": true
+    }
+  },
+  "retained_original_failures": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/native-vo-regression/run.json": {
+      "sha256": "c70ac75abf6b3e1011520c271bd6bad98994878b9514935c1b44ef6cfea4e28e",
+      "returncode": 1
+    },
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-default-physical-audits-v1/results/M/pll-official/run.json": {
+      "sha256": "fb798c21e3520d4e74c7279acc571d7cb175608114a8cea52191197bff75eb3e",
+      "returncode": 2
+    }
+  },
+  "no_TF_grant_negative_controls": {
+    "report": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-pll-inventory-audits-v3/grant-mutants/grant-mutants.json",
+    "sha256": "b5d6b71d212b24f1075c622243808af17ff69c0431e5d772b16e812b3bfaab1c",
+    "positive_receiver_pairs": 6,
+    "negative_count": 10,
+    "all_rejected": true
+  },
+  "next": "D211012F is independent same-VG exact release/layout experiment; M23 uses new dashboard lookup plus maintained M-v3 source."
+}
