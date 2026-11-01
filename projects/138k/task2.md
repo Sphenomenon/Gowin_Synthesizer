@@ -398,6 +398,8 @@ W实际overflow至PCM链的[输出context许可维护阶段](push2_workstation/u
 
 W实测HCI长链的[known generation字节组维护阶段](push2_workstation/usb_a/reports/DUAL138K_HCI_KNOWN_GENERATION_GROUPS_20261101.md)已完成：actual VG／VO逐位确认far的32carry对象后，将两处stored/live比较按4×8bit保留边界；无新状态／周期，clocked bytes及credit／lease／fault等保持。654717…fc88通过128位表达式证明、208896实际模块四态／4负控＋2来源负控、完整owner miter及原action／identity／UART8E1-H5 native回归；主线程重验393证据／4owned／1395冻结工具。default上游transport／flow链仍另查，收益待M19/W17实际全量实现，不转授无线／硬件接受。
 
+M19／W17的[来源锁与整机prepare检查点](push2_workstation/usb_a/reports/DUAL138K_M19_W17_PREPARE_20261101.md)已通过：两份各刷新8条已提交维护源码／工具hash，M保持822项锁，W显式新增返回邮箱helper为823项；其余配置／features／references保持。原始来源876／952、staged588／646、enabled261／284及各1403冻结工具在综合前封存；来源17、审计16、政策7项回归通过。主线程独立重验6964路径与精确锁差异，新身份后缀3b42d2cc55cc70d5／518b142532fd5352。M为v2／14行，W显式v3／21行；新实际网表与完整物理门仍待验证，未预记收益或上板，T2-D1／D2保持未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

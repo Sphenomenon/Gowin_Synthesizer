@@ -1,0 +1,166 @@
+{
+  "schema": "dual138k-m19-w17-prepare-checkpoint-v1",
+  "stage": "M19_W17_root_independent_prepare_review",
+  "captured_utc": "2026-11-01T07:18:08.221035+00:00",
+  "base_commit": "f2e8be213afa556b3ab75f5b812260afb6228700",
+  "review_script_sha256": "bd1170ea517a9294415c10f336a85e2e83abd2d98b21a2d97a5a4c14f9ac2c7f",
+  "roles": [
+    {
+      "role": "M",
+      "candidate_identity": "custom138k-workstation-m-demo-v1-3b42d2cc55cc70d5",
+      "manifest_sha256": "f414d40c60bc3fd6f368dea59f5e48e703b961b302cb2bcead35587a2d61de03",
+      "source_seal_sha256": "c1d6f9ca76975dfa64475cb00fa8bd4397fbd2c5dc87aa7c466af3e93f1037b4",
+      "tool_seal_sha256": "a1d0fe2748d25127b531cb61dcb3119d17ca1c0c4f876ab623a4d42a14531270",
+      "configuration_sha256": "609ec88edcf6aade42178f27b65c3e5956fbc6884064f0588a52f77bf415e44e",
+      "snapshot_staged_enabled_locked_counts": [
+        876,
+        588,
+        261,
+        822
+      ],
+      "timing_policy": "independent-demo-runtime-timing-v2",
+      "timing_added_lines": 14
+    },
+    {
+      "role": "W",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-518b142532fd5352",
+      "manifest_sha256": "eda22067f21a768d8d22b00f4c93c1eaae20f5fdde4ead14e7af01bed7d44ab7",
+      "source_seal_sha256": "55256c9f05f4b1654f8c15a1ba8a084c36c703e3e1f7e7b11de966d55e70119b",
+      "tool_seal_sha256": "83c60752a49d38372976f37e751ccb09ce5aef13776351ceeb9250aea7704421",
+      "configuration_sha256": "a90ee46ba2c699d93fbaed3d5530c67ad75a23e7d653168a722c92dbc397d9a1",
+      "snapshot_staged_enabled_locked_counts": [
+        952,
+        646,
+        284,
+        823
+      ],
+      "timing_policy": "independent-demo-w-return-mailbox-timing-v3",
+      "timing_added_lines": 21
+    }
+  ],
+  "checks_passed": true,
+  "checked_file_count": 6964,
+  "validation_scope": "Source locks, explicit prepare, frozen tools and sources only. Synthesis and routed physical acceptance are separate.",
+  "timing_closed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "reported_utc": "2026-11-01T07:19:19.019875+00:00",
+  "source_lock_changes": {
+    "source_key_inventory_policy": {
+      "M": "same822 entries",
+      "W": "822existing + explicit return mailbox helper =823"
+    },
+    "changes": {
+      "m": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "before": "574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e",
+          "after": "1c575c3fd39d73c795cb7e49c075a1b5848be90d3cccd57e24db991a9071649b"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": {
+          "before": "20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f",
+          "after": "6547173e42b6057dedb9ec5fe22ba3dbcda957c7f6344fcda98a39643be7fc88"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": {
+          "before": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+          "after": "e4cd6d5e3e485659041015adcfbcdf34259e3e33240a4027bdf90e11467f655d"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "before": "5fc0fd0930fcaedf9a5b2e43f8f0b04a8fd085ba7261f68feefe80539ad5ef3f",
+          "after": "31dcbf5f65d7e7f16aca1cca6189f5975a7adec46c4b2ef03514f5ad2cce07b7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "d46708072b9ff67bcb04e2eed9e525a86732810340457df3722e3302971942e4",
+          "after": "e66581f1a557dbc1e70f09f84b6b469a7bd942eaec8f634346357cd28298afd2"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "25fd327d98345aed0a9cfdf337c3475ace0444c23a0b2c813d1a9b4612572633",
+          "after": "8f817ea18c59298c85a12d437261a655aaf0e4cd91391257008a56404775f563"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "ab3116e1abee2797d8b7bd0678a90684d1d2c99991c136d410f4660a6c3b5bad",
+          "after": "e71ea8ba5bcab4aac227f8b988f68dc1b6a9c05631795165a63fceb95576cce8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "acc31a21d2c29ee0a44ac4f73bfd894481243eb8865ced44a110151a87c3028f",
+          "after": "caccd4b0e807a8d2261f82f96e96ec122466675c9cdcee543e0545d6efdd147d"
+        }
+      },
+      "w": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "before": "574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e",
+          "after": "1c575c3fd39d73c795cb7e49c075a1b5848be90d3cccd57e24db991a9071649b"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_host_rx_owner.sv": {
+          "before": "20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f",
+          "after": "6547173e42b6057dedb9ec5fe22ba3dbcda957c7f6344fcda98a39643be7fc88"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": {
+          "before": "4320716d8bdea661647de0433c5520dc46ec1be8a6d5674153802c61c5717deb",
+          "after": "e4cd6d5e3e485659041015adcfbcdf34259e3e33240a4027bdf90e11467f655d"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": {
+          "before": "5fc0fd0930fcaedf9a5b2e43f8f0b04a8fd085ba7261f68feefe80539ad5ef3f",
+          "after": "31dcbf5f65d7e7f16aca1cca6189f5975a7adec46c4b2ef03514f5ad2cce07b7"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": {
+          "before": "d46708072b9ff67bcb04e2eed9e525a86732810340457df3722e3302971942e4",
+          "after": "e66581f1a557dbc1e70f09f84b6b469a7bd942eaec8f634346357cd28298afd2"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": {
+          "before": "25fd327d98345aed0a9cfdf337c3475ace0444c23a0b2c813d1a9b4612572633",
+          "after": "8f817ea18c59298c85a12d437261a655aaf0e4cd91391257008a56404775f563"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": {
+          "before": "ab3116e1abee2797d8b7bd0678a90684d1d2c99991c136d410f4660a6c3b5bad",
+          "after": "e71ea8ba5bcab4aac227f8b988f68dc1b6a9c05631795165a63fceb95576cce8"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": {
+          "before": "acc31a21d2c29ee0a44ac4f73bfd894481243eb8865ced44a110151a87c3028f",
+          "after": "caccd4b0e807a8d2261f82f96e96ec122466675c9cdcee543e0545d6efdd147d"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_w_return_mailbox_cdc.py": {
+          "before": null,
+          "after": "796052f6b78b1cfd194de0ecf10b90774c434713d8c4bf0c48c19d9a5503fe85",
+          "reason": "explicit W-v3 actual return mailbox helper dependency"
+        }
+      }
+    }
+  },
+  "regression_tests": {
+    "current_workstation_sources": 17,
+    "workstation_demo_audit": 16,
+    "workstation_demo_policy": 7
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-prepare-review-v1.json": "c77f5406a688cf0732e300e1426c5c85a5aa142ad824768af898ef6ff6bf5f30",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-root-prepare-review-v1.py": "bd1170ea517a9294415c10f336a85e2e83abd2d98b21a2d97a5a4c14f9ac2c7f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-refresh-prepare-v1.py": "655fd1eb04274241a7e9392a842284af716fe40adb835bd8e5424db369986eea",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-freeze-snapshots-v1.py": "cf4085bea0391d6ca6ab6f6ef22d359b2063fd98ea95fc70cd13456361d70b49",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-prepare-source-seal-v1.json": "c1d6f9ca76975dfa64475cb00fa8bd4397fbd2c5dc87aa7c466af3e93f1037b4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w17-prepare-source-seal-v1.json": "55256c9f05f4b1654f8c15a1ba8a084c36c703e3e1f7e7b11de966d55e70119b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/w17-prepare.log": "962cc157321a1d114867552690dba5173e2b8c1ba4f8962718508eb9305de107",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/source-lock-delta.json": "7ef542e5bdd4f6ce74e8db11d4b1ec21629ad39a72d74cb1897c85936fcfd8bc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/demo-audit-test.log": "6d60851b1d5e843a5f847e5fa6e86d9ef66dd8d4caf0825719cdacca4b98cada",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/source-test-run.json": "c436b63dfcb682cf87e8fa60a08c1e9009426d8f2345ff51e8c3b0b5f71505c9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/workstation_profile_w_demo_v1.json": "a90ee46ba2c699d93fbaed3d5530c67ad75a23e7d653168a722c92dbc397d9a1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/demo-policy-test.log": "fe836cbecd3b6b4f70bec51b58d30c3e45ad72ae7fb3cb63421a0f7337e651ae",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/m19-prepare.log": "883899563effbf6128aec38443bde2f6d4be193eaa7c06bd6b2e80adf7c1df13",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/demo-policy-test-run.json": "a8a76ebe42771ed566d6127b35712852007f63f66cda451efe49a348321ffd60",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/prepare-runs.json": "5c766bfaa44712d7fcda38bb55fd98dc7b813346aa1fda5593d8cf5060d12e3e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/source-test.log": "5f923907032928100743855c0ed0f9bcb86872b71e128a831a1c7fca69a3c0bc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/w17-prepare-run.json": "d9489276fd8ad16df116cb25241633adeec346ac0e58bd356fa65c0ba61f62d4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/workstation_profile_m_demo_v1.json": "609ec88edcf6aade42178f27b65c3e5956fbc6884064f0588a52f77bf415e44e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/m19-prepare-run.json": "252cc9bd29f3ce28485964a9cc99cac1f65630e0907c1bd22b9a1c6dc94866e8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/snapshot-complete-seal-v1.json": "c436d7ffb098f01a046da815f145fcce83117d5999ea3dbfa8b9095ad80c1f37",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m19-w17-source-freeze-v1/demo-audit-test-run.json": "07ea63a8dd073ceb32b79a18a5c0b5e4c445bf6761ed5de5c8c8d845f093dc32"
+  },
+  "remaining_gaps": [
+    "Full synthesis and actual VG checks are separate stages.",
+    "Full routed STA, CDC, PLL and resource gates not accepted.",
+    "No physical HDMI/DAC, USB/25K or phone A2DP/BLE acceptance.",
+    "M base has no CNN. W recording object is 16384 frames/64 KiB, not long recording.",
+    "T2-D1 and T2-D2 remain incomplete."
+  ],
+  "rollback": "No hardware operation in this stage. Existing board image/Flash fallback and historical M18/W16 evidence retained."
+}
