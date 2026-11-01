@@ -384,6 +384,8 @@ M18 `D2110116` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUA
 
 M18 `D2110117` 的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M18_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50884，setup1093／−.866ns、hold3／−.113ns、recovery+2.222／removal+.281ns。原DDR hold要求3.500ns保持，实测+.534ns；三条剩余hold均为48k参考binary→Gray。四张clk50+.487／+.164／+.487／+.164ns；TF available_bytes7→accepted_used30仍为16级／−.864ns。六组审计全过（native58／3跳过／71负控、boundary7／69、六PLL／7负控／held-v2），主线程重验2971证据。完整STA仍失败，未上板；下一维护阶段针对实际TF响应尺寸和其余真实违例，不将定向布局转授整机接受。
 
+W16 `D2110119` 的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W16_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53333，setup6810／−5.168ns、hold0／+.103ns、recovery+1.966／removal+.278ns。原DDR3.500ns保持、hold+.622ns；四张clk50−4.536／+.138／−4.536／+.138ns。DDR所有权检查至录音即时故障及D效果overflow至PCM资格为当前实测长链，HCI generations至offer_handle CE仍违例。六审计全过（native58／14跳过／60负控、boundary7／69、六PLL／7负控／held-v2），主线程逐项复验3273冻结证据；完整STA和原返回邮箱资格约束缺口仍失败，未上板，T2-D1／D2未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
