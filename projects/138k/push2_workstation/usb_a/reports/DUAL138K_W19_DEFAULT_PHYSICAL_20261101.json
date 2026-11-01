@@ -1,0 +1,376 @@
+{
+  "stage": "W19_default_physical_delivery",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-2938af5370fd07a0",
+  "user_code": "0xD2110129",
+  "physical_manifest_sha256": "7e884c4228f25aae44ae22d61006f65fda0eda66b68e2cd4a21c1ff80c7015de",
+  "bitstream_sha256": "cdc5c58952abe420da48a3b27af764291402de1840ed72f5d8ec8f08ccedc2ff",
+  "PNR_elapsed_seconds": 372.3242945,
+  "source_tools_count": 1415,
+  "source_snapshot_count": 952,
+  "staged_count": 646,
+  "enabled_count": 284,
+  "physical_file_count": 30,
+  "file_count": 3374,
+  "native": {
+    "tests": 58,
+    "passed": 44,
+    "skipped": [
+      "test_tf_ack_must_wait_for_payload_capture (__main__.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_capture_needs_registered_settling (__main__.ActualControlBoundaries.test_tf_capture_needs_registered_settling) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_compare_must_cover_same_desired_bits (__main__.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_payload_bit_swap_rejected (__main__.ActualControlBoundaries.test_tf_payload_bit_swap_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_meta_extra_consumer_rejected (__main__.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_must_toggle_on_capture (__main__.ActualControlBoundaries.test_tf_request_must_toggle_on_capture) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_request_second_cannot_bypass_first (__main__.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first) ... skipped 'W explicitly retires the TF owner'",
+      "test_tf_source_busy_gate_rejected (__main__.ActualControlBoundaries.test_tf_source_busy_gate_rejected) ... skipped 'W explicitly retires the TF owner'",
+      "test_apb_ce_toggle_cannot_bypass_payload_capture (__main__.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture) ... skipped 'reviewed CE-factored request mapping not present'",
+      "test_apb_ce_toggle_feedback_must_invert_its_own_q (__main__.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q) ... skipped 'reviewed CE-factored request mapping not present'",
+      "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+      "test_apb_split_launch_combined_and_is_exact (__main__.ActualTimingBoundaries.test_apb_split_launch_combined_and_is_exact) ... skipped 'reviewed split launch AND mapping not present'",
+      "test_tf_quiesce_cannot_bypass_registered_source (__main__.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source) ... skipped 'W retires TF'",
+      "test_tf_quiesce_first_stage_cannot_reach_functional_state (__main__.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state) ... skipped 'W retires TF'"
+    ],
+    "negative_controls": 60,
+    "all_rejected": true
+  },
+  "boundary": {
+    "tests": 7,
+    "skips": 0,
+    "negative_controls": 69,
+    "all_rejected": true
+  },
+  "W_return": {
+    "tests": 4,
+    "skips": 0,
+    "negative_controls": 19,
+    "all_rejected": true,
+    "actual_source_consumer_pairs": 9928,
+    "qualifier_endpoints": 301,
+    "original_SDC_audited_by_PLL": true,
+    "native_response_reachability_invariant_formally_proven": false,
+    "physical_CDC_accepted": false
+  },
+  "PLL": {
+    "count": 6,
+    "negative_controls": 7,
+    "selected_held_gate_passed": true
+  },
+  "full_STA_passed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false,
+  "rollback": "No board operation by this worker; prior board image retained.",
+  "limits": [
+    "All setup, hold, recovery, removal and pulse width results are the measured default physical reports.",
+    "Source implementation and passed subgates are not hardware sound/display/25K/A2DP/record/download or concurrent dual-board acceptance.",
+    "No DDR floorplan child has been prepared or routed by this delivery."
+  ],
+  "delivery_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-default-delivery-v1/delivery.json",
+  "delivery_sha256": "61c47b7896b683aeaa8d9f7c7b9ef3a2b5dd5d3a1019e0bce144b187a50602e2",
+  "root_independent_recheck": {
+    "files": 3374,
+    "all_hashes_match": true
+  },
+  "worst_same_clock_setup": {
+    "clk_50m:[R]": {
+      "kind": "setup",
+      "slack_ns": -1.15,
+      "source": "u_bluetooth/u_core/owner/tx_header[0]_1_s0/Q",
+      "destination": "u_bluetooth/u_core/owner/bootstrap/br_acl_count_o_0_s0/CE",
+      "source_clock": "clk_50m:[R]",
+      "destination_clock": "clk_50m:[R]",
+      "relation_ns": 20.0,
+      "skew_ns": 0.017,
+      "data_delay_ns": 20.884,
+      "command": "report_timing -setup -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 100 -max_common_paths 1"
+    },
+    "ddr_ui100:[R]": {
+      "kind": "setup",
+      "slack_ns": -5.87,
+      "source": "u_video/u_arbiter/g_recording.u_core/g_recording.read_pointer_1_s0/Q",
+      "destination": "recording_ble_store/completion_generation_10_s1/CE",
+      "source_clock": "ddr_ui100:[R]",
+      "destination_clock": "ddr_ui100:[R]",
+      "relation_ns": 10.0,
+      "skew_ns": 0.051,
+      "data_delay_ns": 15.57,
+      "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+    },
+    "audio_76m8:[R]": {
+      "kind": "setup",
+      "slack_ns": -5.806,
+      "source": "u_managed/runtime/compute_release_2_s0/Q",
+      "destination": "u_managed/runtime/cpu_pcm.owner/written[0]_7_s1/D",
+      "source_clock": "audio_76m8:[R]",
+      "destination_clock": "audio_76m8:[R]",
+      "relation_ns": 13.021,
+      "skew_ns": 0.047,
+      "data_delay_ns": 18.729,
+      "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+    }
+  },
+  "exact_DDR_hold": {
+    "slack_ns": -3.547,
+    "arrival_ns": 1.887,
+    "required_ns": 5.434,
+    "relationship_ns": 3.5,
+    "clock_skew_report_ns": 0.481,
+    "launch_location": "R88C152[1][B]",
+    "capture_location": "R87C151[2][B]"
+  },
+  "pulse_width_worst_ns": 0.58,
+  "resource_usage": {
+    "Logic": {
+      "used": 83456,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 45180,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 57746,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 293,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 66.5,
+      "capacity": 298
+    },
+    "LUT": 61098,
+    "ALU": 20510,
+    "ROM16": 0,
+    "SSRAM": 308
+  },
+  "timing": {
+    "setup_violated_endpoints": 6535,
+    "hold_violated_endpoints": 2,
+    "global_worst_ns": {
+      "setup": -5.87,
+      "hold": -3.547,
+      "recovery": 2.822,
+      "removal": 0.278
+    },
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 47.281
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 78.07
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 302.823
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 260.892
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 53.115
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 61.526
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 224.064
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 141.282
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 67.19
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1377.41
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 126.976
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 126.976
+      }
+    },
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": -105.486,
+          "endpoints": 260
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": -8353.175,
+          "endpoints": 4728
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": -3593.034,
+          "endpoints": 1539
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": -0.358,
+          "endpoints": 2
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_rtc_bound": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    }
+  }
+}
