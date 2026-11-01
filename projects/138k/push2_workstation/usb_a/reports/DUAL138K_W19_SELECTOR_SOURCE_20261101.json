@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "stage": "maintained_W_selector_and_boundary_negative_control_verified",
+  "passed": true,
+  "captured_utc": "2026-11-01T08:50:02.406430+00:00",
+  "owned_file": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_w_return_mailbox_cdc.py",
+  "owned_sha256": "1044cefc071cfbed233d11a74384e8a02b8f0cdcfb697436d9252f6b4c6cc9a4",
+  "changes": [
+    "only unpack_active target CE -> D",
+    "only unpack_index bit0 target D -> CE"
+  ],
+  "actual_mapped_input": "frozenW18 synthesisVG c016fb99fdd1dbd1fecfb036203ec0803b161a4b46864f3c6b1c4a675af9327b",
+  "cache_validation_directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-return-selector-maintained-v1",
+  "formal_prepare": false,
+  "new_candidate_identity_created": false,
+  "root_inventory_agrees": true,
+  "source_domains_and_resets_unchanged": true,
+  "max_delay_ns": 10.0,
+  "hold_only": true,
+  "setup_falsepaths_added": 0,
+  "actual_generation_source_pins": 32,
+  "actual_qualifier_endpoints": 301,
+  "actual_real_return_pairs": 9928,
+  "mapped_payload_bits": 296,
+  "primary_negative_controls": 13,
+  "additional_sdc_negative_controls": 6,
+  "all19negative_controls_rejected": true,
+  "complete_10ns_and_hold_coverage_verified": true,
+  "selected_strict_native_held_gate_passed": true,
+  "original_W_return_tests": 4,
+  "skips": 0,
+  "tests_exit_zero": true,
+  "entire_original_frozen_W18_inputs_and_outputs_unchanged": true,
+  "all_adapted_stage_and_tool_inputs_reverified": true,
+  "evidence_file_count": 5091,
+  "limits": [
+    "This is explicit cache adaptation on actualW18VG, not formalW19prepare or source/profile acceptance.",
+    "NoP&R started and no routed timing/CDC or hardware acceptance.",
+    "FrozenW18 still retains its original rejectedselector and boundarytest evidence; newmaintenance must be selected by a newidentity."
+  ],
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-selector-boundary-root-review-v1.json",
+    "sha256": "7ff3f990e469f131bbb0966edee0ac9dd92156747528e27caed90bad0ea33597",
+    "files_reverified": 6511
+  },
+  "boundary": {
+    "tests": 7,
+    "negative_controls": 69,
+    "skips": 0,
+    "direct_and_whole_rejections": {
+      "name": "wptr0 actual D/CE interchange",
+      "kind": "parsed_actual_netlist_function_mutant",
+      "rejected": true,
+      "reason": "DEMO boundary CDC audit: fault watchdog_fault all FF consumers drift",
+      "fault_closure_preserved": false,
+      "direct_nextq_rejection": "DEMO boundary CDC audit: fault wptr LSB D/CE/CLEAR next-Q equation drift",
+      "whole_audit_rejected": true
+    },
+    "verification_sha256": "d1aeec1eee54927098a9c0e0ad3de442e95392df23671c576f565d68edbb4df3",
+    "seal_sha256": "5d984fa96f67fe306aafca6fbb7f23f968aa902a40b7de4057c9464f45741742"
+  },
+  "profile_change": {
+    "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+    "sha256": "d2d239304e71916efc491570579d433ebf16bec16943699a816281dd1402d110",
+    "only_one_existing_helper_hash_updated": true,
+    "configuration_and_source_sets_unchanged": true,
+    "M_profile_unchanged": true,
+    "tests_frozen_in_candidate_tool_snapshot_not_added_to_profile": true
+  },
+  "source_gates": {
+    "w19-profile-source-check-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-profile-source-check-v1.log",
+      "sha256": "a5c3a8b7ffc3c3841f9ddbf9d3b3b91970d89d1955a3bc94ef37131fd3cb447f",
+      "tail": "{\n  \"profile\": \"custom138k-workstation-w-demo-v1\",\n  \"source_files\": 824,\n  \"configuration_sha256\": \"d2d239304e71916efc491570579d433ebf16bec16943699a816281dd1402d110\",\n  \"validation_stage\": \"source_lock_only\"\n}\n"
+    },
+    "w19-M-unchanged-source-check-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-M-unchanged-source-check-v1.log",
+      "sha256": "aeff084b7256a33fc23b208e21e2631d06a9933b27a237bd3499221246f08340",
+      "tail": "{\n  \"profile\": \"custom138k-workstation-m-demo-v1\",\n  \"source_files\": 823,\n  \"configuration_sha256\": \"2a3435ec8bf15667544975ef2ebf732652eb1e22904fa90dc21859a7fe5931a6\",\n  \"validation_stage\": \"source_lock_only\"\n}\n"
+    },
+    "w19-current-sources-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-current-sources-v1.log",
+      "sha256": "4b855e87500830498564647ca3840ba01bef45cdfa9cb61963fe6b1e241e3ebf",
+      "tail": ".................\n----------------------------------------------------------------------\nRan 17 tests in 0.092s\n\nOK\n"
+    },
+    "w19-demo-audit-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w19-demo-audit-v1.log",
+      "sha256": "68434668ac903c7c2aa54b78c0042a68e7c821c5cfb61f7d264da84edaa9aedb",
+      "tail": "................\n----------------------------------------------------------------------\nRan 16 tests in 0.049s\n\nOK\n"
+    }
+  },
+  "new_candidate": "W19 must be prepared and fully synthesized because the changed helper is a non-SDC staged input; W18 remains rejected",
+  "release_ready": false
+}

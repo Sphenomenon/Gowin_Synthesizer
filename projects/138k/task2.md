@@ -430,6 +430,8 @@ M20 的[完整综合及实际VG门](push2_workstation/usb_a/reports/DUAL138K_M20
 
 W18 的[全量综合与严格门拒绝](push2_workstation/usb_a/reports/DUAL138K_W18_SYNTHESIS_REJECTED_20261101.json)分别记录：FF45180／LUT61247／ALU19772／综合BSRAM equivalent257，LUT／ALU明显增加，未预记收益。actual VG `c016fb99…9327b`的generation闭包仍333／资格301端点，但旧选择器对unpack_active与index0的D／CE各漏一项、多选相反引脚；主线程独立全闭包核对相同。strict门拒绝后未P&R，旧W18固定输入不改，下一独立候选精确修正覆盖；boundary实际正向通过但一项D／CE变异在更早closure门拒绝，原预期归因断言失败也保留。当前只读JTAG仍一块有效138K／C11028E5，未写SRAM／Flash，无专用HDMI采集或线路音频输入；不转授为实板声画接受。
 
+W 的[实际return选择器与负控修复](push2_workstation/usb_a/reports/DUAL138K_W19_SELECTOR_SOURCE_20261101.json)已验证并落维护：只将unpack_active目标改D、index0目标改CE，32源／301资格／9928真实pair、10.000ns与仅hold豁免保持；真实W18 VG的strict held入口、原4项及19负控全通过。boundary D／CE变异先以具体next-Q关系拒绝，再由完整audit拒绝，7项／69负控／0skip通过；不依赖首个异常门归因。主线程复验6511绑定输入／证据，W仅提升一个既有helper hash，M profile及配置不改，两profile来源门、17来源与16demo入口通过。旧W18仍冻结拒绝；因helper本身是non-SDC staged输入，新W19必须完整综合，当前不记新的物理或硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

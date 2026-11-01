@@ -34,10 +34,19 @@ def actual_mutations(n, mapping, text):
  # Verify the exact mapped LSB function, including mutants whose complete
  # fault closure still matches a reviewed mapping or remains byte-identical.
  wptr=reg(D,'wptr',0)
- def guarded(name,p,updates,expected,param=False,preserve_fault_closure=False):
+ def guarded(name,p,updates,expected,param=False,preserve_fault_closure=False,direct_nextq=False):
   target=n.cells[p]['parameters' if param else 'ports'];saved=copy.deepcopy(target)
   target.update(updates)
   try:
+   nextq_reason=None
+   if direct_nextq:
+    # D/CE interchange can also change the complete fault fanout. Prove
+    # this precise state relation rejects before checking the whole graph.
+    try:verify_wptr_lsb_nextq(n,Graph(n))
+    except ValueError as e:
+     if expected not in str(e):raise RuntimeError('wrong direct next-Q rejection '+name+': '+str(e))
+     nextq_reason=str(e)
+    else:raise RuntimeError('direct next-Q mutant accepted '+name)
    if preserve_fault_closure:
     mutated_graph=Graph(n)
     for stem in FAULTS:
@@ -47,13 +56,14 @@ def actual_mutations(n, mapping, text):
       if actual[field]!=original[field]:raise RuntimeError('functional mutant altered closure '+name)
    try:audit(n,mapping=mapping)
    except ValueError as e:
-    if expected not in str(e):raise RuntimeError('wrong specific function rejection '+name+': '+str(e))
+    if not direct_nextq and expected not in str(e):raise RuntimeError('wrong specific function rejection '+name+': '+str(e))
     result.append(dict(name=name,kind='parsed_actual_netlist_function_mutant',rejected=True,
-      reason=str(e),fault_closure_preserved=preserve_fault_closure))
+      reason=str(e),fault_closure_preserved=preserve_fault_closure,
+      direct_nextq_rejection=nextq_reason,whole_audit_rejected=True))
    else:raise RuntimeError('function mutant accepted '+name)
   finally:target.clear();target.update(saved)
  ports=n.cells[wptr]['ports']
- guarded('wptr0 actual D/CE interchange',wptr,{'D':ports['CE'],'CE':ports['D']},'next-Q equation drift')
+ guarded('wptr0 actual D/CE interchange',wptr,{'D':ports['CE'],'CE':ports['D']},'next-Q equation drift',direct_nextq=True)
  guarded('wptr0 functional reset always asserted',wptr,
   {'CLEAR':n.cells[reg(D,'watchdog_fault')]['ports']['D']},'fault wptr LSB',preserve_fault_closure=True)
  guarded('wptr0 INIT changed',wptr,{'INIT':"1'b1"},'clock/INIT',param=True,preserve_fault_closure=True)

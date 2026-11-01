@@ -26,9 +26,9 @@ def digest(path):
 def constraints():
  # return_ack_s*/CE also selects return_ack_sync_s0/CE. The exact reviewed
  # ACK FF suffix is intentional; every new mapping must resolve these pins.
- targets = ' '.join((B+'/return_ack_s0/CE', B+'/unpack_active_s*/CE',
+ targets = ' '.join((B+'/return_ack_s0/CE', B+'/unpack_active_s*/D',
      B+'/unpack_data_*_s*/CE', B+'/unpack_generation_*_s*/CE',
-     B+'/unpack_word_*_s*/CE', B+'/unpack_index_0_s*/D',
+     B+'/unpack_word_*_s*/CE', B+'/unpack_index_0_s*/CE',
      B+'/unpack_index_1_s*/CE', B+'/unpack_index_2_s*/CE'))
  path = '-from [get_pins {'+B+'/return_generation_*_s*/Q}] -to [get_pins {'+targets+'}]'
  return 'set_max_delay 10.000 '+path+'\nset_false_path -hold '+path+'\n'
