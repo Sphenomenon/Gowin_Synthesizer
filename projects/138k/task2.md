@@ -484,6 +484,8 @@ W21-j的[无显示／无录音完整新综合与严格VG门](push2_workstation/u
 
 此前M23已验证但只在封存工具中的[HMI／M-core审计修复](push2_workstation/usb_a/reports/DUAL138K_HMI_CORE_AUDIT_MAINTENANCE_20261101.json)已按原SHA落维护3文件：5邮箱及实际门名负控、显式M-core的TF全部cells／selector缺席证明、由封存profile选择grant角色。M24实际VO原v3测试／PLL先拒绝并保留；新独立v4封存后59项native（45通过／14具名skip）、六PLL及7负控均通过。routed HMI帧级guard的skip不转授8项专门破坏控制，这些另跑；未改原VG／CST／SDC／候选，完整STA仍失败。主线程重hash1476文件；后续W-only无HDMI PLL分支独立推进。
 
+M24最差实测glyph地址路径的[最小维护修复](push2_workstation/usb_a/reports/DUAL138K_BRAND_ADDRESS_TIMING_20261101.json)已完成：只把既有layout函数在elaboration组合成绝对8pixel块查表、glyph×24按行组分解；ROM／官方素材／时序状态／enable／单周期brand及4周期dashboard不改。全部4194304坐标／34560文字地址与37117停顿、4配置各2073600像素＋65536额外向量，以及实际1080p和720p缩放renderer均逐位相等；错地址负控在(402,24)出现真实RGB差异被拒。root完整inverse等于Git HEAD并核对31绑定输入。真实同器件leaf综合逻辑级15→8、估计91.333→164.690MHz，仅为小单元估计；新M25/D2110133须完整新综合／P&R，不预记整机收益，旧132不改。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

@@ -33,14 +33,33 @@ module workstation_contest_brand (
     wire [13:0] logo_address = (logo_y_ext << 7) + (logo_y_ext << 3) +
                                (logo_y_ext << 2) + (logo_y_ext << 1) +
                                {6'd0, logo_x[8:1]};
-    wire [10:0] text_x = pixel_x - 11'd400;
-    wire [10:0] text_y = pixel_y - (principle_hit ? 11'd64 : 11'd24);
-    wire [7:0] column = brand_column(text_x[9:3]);
-    wire [4:0] glyph_column = {column[1:0], text_x[2:0]};
-    wire [5:0] glyph_id = brand_glyph(principle_hit, column[7:2]);
-    wire [10:0] glyph_ext = {5'd0, glyph_id};
-    wire [10:0] glyph_address = (glyph_ext << 4) + (glyph_ext << 3) +
-                                {6'd0, text_y[4:0]};
+    // Compose the existing layout functions at elaboration, before the live
+    // address path. Text starts at x=400=50*8; the seven chunk bits wrap at
+    // 1024 exactly like the old (pixel_x-400)[9:3]. Both visible text rows
+    // have a fixed pixel_y[6], so line selection needs no rectangle decode.
+    function automatic [9:0] glyph_decode_entry(input [7:0] absolute_chunk);
+        reg [7:0] column;
+        reg [5:0] glyph;
+        reg [7:0] groups;
+        begin
+            column = brand_column(absolute_chunk[6:0] - 7'd50);
+            glyph = brand_glyph(absolute_chunk[7], column[7:2]);
+            groups = {2'd0,glyph} + ({2'd0,glyph} << 1);
+            glyph_decode_entry = {groups,column[1:0]};
+        end
+    endfunction
+    wire [9:0] glyph_decode_rows [0:255];
+    generate for (genvar chunk=0; chunk<256; chunk=chunk+1) begin : g_glyph_decode
+        assign glyph_decode_rows[chunk] = glyph_decode_entry(8'(chunk));
+    end endgenerate
+    wire [9:0] glyph_decode = glyph_decode_rows[{pixel_y[6],pixel_x[9:3]}];
+    wire [4:0] glyph_column = {glyph_decode[1:0],pixel_x[2:0]};
+    // glyph*24+row = {glyph*3+row[4:3],row[2:0]}. The row origins
+    // (24 and 64) are multiples of eight; only a two-bit row group changes.
+    // This leaves one eight-bit add instead of serial eleven-bit adds.
+    wire [1:0] glyph_row_eighth = pixel_y[6] ? pixel_y[4:3] : pixel_y[4:3]+2'd1;
+    wire [7:0] glyph_row_group = glyph_decode[9:2] + {6'd0,glyph_row_eighth};
+    wire [10:0] glyph_address = {glyph_row_group,pixel_y[2:0]};
 
     reg logo_valid_q, text_valid_q, logo_odd_q;
     reg [3:0] logo_pair_q;

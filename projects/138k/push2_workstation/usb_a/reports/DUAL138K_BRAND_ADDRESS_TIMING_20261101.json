@@ -1,0 +1,110 @@
+{
+  "schema": "dual138k_brand_address_maintenance_20261101_v1",
+  "passed": true,
+  "scope": "minimal maintained M24 brand glyph address timing repair and complete pixel equivalence; no full-workstation physical timing claim",
+  "source_sha256": {
+    "rtl/display_data/workstation_contest_brand.sv": "280c6dedfacfd1be88bcd78712a96f89db460c4a0bff08835006aaa8a5f9921e",
+    "sim/display/run_contest_brand_address.py": "f4e75bf29b9815b6b58607d09b2b63f2ec1d7d7f948f1179d1cf9aeb6e70d834",
+    "sim/display/tb_contest_brand_address.sv": "589f91f3e350fb65ea62c0f71d63aac5062c9f6c767cec7b856d71dc4c7d53d3"
+  },
+  "original_brand_sha256": "f5d330b625ea5bc545d1e6c3b9e844a7cc23ba2c4e0b6549e035cffd47d18275",
+  "change": "compose official layout functions at elaboration into absolute eight-pixel-chunk lookup; split glyph*24+row into one eight-bit row-group sum plus three unmodified row bits",
+  "maintained_rtl_changed": [
+    "rtl/display_data/workstation_contest_brand.sv"
+  ],
+  "renderer_and_dashboard_source_unchanged": true,
+  "official_assets_and_rom_initialization_unchanged": true,
+  "enabled_brand_latency_cycles": 1,
+  "enabled_dashboard_latency_cycles": 4,
+  "unit_pixels": 4194304,
+  "unit_stalls": 37117,
+  "visible_text_addresses": 34560,
+  "dashboard_configurations": 4,
+  "dashboard_pixels_per_configuration": 2073600,
+  "dashboard_extra_vectors": 65536,
+  "dashboard_stalls": 26411,
+  "actual_renderer_rasters": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "accepted_pairs": 1036800,
+      "stalls": 604798
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "scale_three_halves": true,
+      "accepted_pairs": 460800,
+      "stalls": 268798
+    }
+  ],
+  "exact_current_vs_original_pixel_and_handshake_equality": true,
+  "negative_control": {
+    "changed": "glyph row group plus one",
+    "actual_pixel_mismatch_rejected": true,
+    "x": 402,
+    "y": 24
+  },
+  "leaf_synthesis": {
+    "device": "GW5AST-LV138PG484AC2/I1",
+    "clock_period_ns": 10.0,
+    "same_registered_even_odd_wrapper_and_constraints": true,
+    "old_estimated_worst_logic_levels": 15,
+    "new_estimated_worst_logic_levels": 8,
+    "old_estimated_fmax_mhz": 91.333,
+    "new_estimated_fmax_mhz": 164.69,
+    "old_glyph_estimated_setup_slack_ns": -0.949,
+    "new_glyph_estimated_setup_slack_ns": 4.104,
+    "old_unpruned_read_x6_to_glyph_AD13_dependency_levels": 18,
+    "new_unpruned_read_x6_to_glyph_AD13_dependency_levels": 14,
+    "full_workstation_resources_or_routed_timing_inferred": false
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/handoff.json": "bed2110090286969b463470bf811af420e2f9db07a2ca12ae0ca49444148f6fa",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_contest_brand.sv": "280c6dedfacfd1be88bcd78712a96f89db460c4a0bff08835006aaa8a5f9921e",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/run_contest_brand_address.py": "f4e75bf29b9815b6b58607d09b2b63f2ec1d7d7f948f1179d1cf9aeb6e70d834",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/display/tb_contest_brand_address.sv": "589f91f3e350fb65ea62c0f71d63aac5062c9f6c767cec7b856d71dc4c7d53d3",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/verification.json": "a0c26c336d39d704a88bcf05d6d0c97a30f1f048afb6f6bf58e6956a4d25ff15",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/workstation_contest_brand.sv": "f5d330b625ea5bc545d1e6c3b9e844a7cc23ba2c4e0b6549e035cffd47d18275",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_renderer.v": "ae0bb155c76521ec4b87a2e70ac9d77e63a0e544cbf1c15307cec9ed7c2025cb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24/workstation/Prj1/src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/CONTEST_BRAND.md": "31feae274405ad4a3c5caa3dfbba3c8748181e4c0d794370979326bf2da15f24",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_font_OFL.txt": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_glyphs.memh": "31138a27ebe3a7a6d2c38764dfdc10b5eeec76f70f5ef8e3be65533ce21c5a76",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.json": "975e2ffebcdbd1b38f5df2a942c21918bbe943ef5e3caf1937b18f25771ae1de",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_layout.svh": "9ee2b9e381b023f564875215e8f3a500c12b73bf806812ecc637bed4c3131b83",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_logo_pairs.memh": "4e64cb94e0f214be518d620b50ab48a069168ae1ebaca4d0981516413fcbb112",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_brand_sources.json": "deb7d2269a524f73b85f5625f7495208a8ae7e7357c754dc33899c83d83dec22",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/assets/contest_fpga_logo_original.png": "aed6092164c0e0ef9eaf68931066147abc6e5466bbaaa6b46de60d2f15fe92ad",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_capture.v": "6b09b616d061a2d6fb8defd08d8be2889e70fca93e0d05a243b42887a3eddab9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24/workstation/Prj1/src/video/feedback_wave_align.v": "4cc6e5bb6c065266185236ee6dcb6acf9403872096d912cf096ce07b66848d4a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v24/workstation/Prj1/src/video/output_audio_capture.v": "855292cf2db770b21ff690920deee65aeb44a32a786b7a6069403ccbd9ea3a60",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/unit_run.log": "4298eb42409d1b4c5de586e58fa70a3ed75f8c0b48846dc294ce57bcdd59821a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/reference_brand.sv": "0d3f609b64895213c661d6eefe4a39b0fcfb39736cc3bd79f5717c81c5e886ab",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/dashboard_run.log": "fc4f069cbcf04464e9dab14b0d5c11feb650cbd005b7139241d1a73c8f30137b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/reference_dashboard.v": "720a4043747ea39998c3448a1875eaa1f92fee018d098d1bb0dcdec3e6b77a32",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/renderer_run.log": "8ee6d961bff6ce8ec07053225dedb0b8137d4a46ebc444e4b6f9fcfcf893ec5a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/positive-final/reference_renderer.v": "798253cbce96d22f136af1244cb7053ca09a6cf7b6a31eaf488037ca54c0ed88",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/negative/verification.json": "a17f91b7800904c2829f8d6447f8078029fccf3fbb2121278626fcd5eb230501",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/negative/mutant_brand.sv": "6560616490fec467bf021787182799b612226611965dff898083431903c2e719",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/negative/unit_run.log": "5b1bd64e66efd87a9993e2b79be64085d49f9d96c04c9bed8992a44f146c3425",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/negative/reference_brand.sv": "0d3f609b64895213c661d6eefe4a39b0fcfb39736cc3bd79f5717c81c5e886ab",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-brand-address-maintenance-v1/synthesis-comparison.json": "2fdb8f893409460e01761b076a7c7cdcfcd2016f7c857509e325487aeba820a3"
+  },
+  "diff_check_passed": true,
+  "input_bytes_reverified_at_handoff": true,
+  "frozen_132_and_131_modified": false,
+  "committed": null,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "source_parent_commit": "ed67b41ab96c4c00435cf3d4b2a15d6804dbb0c1",
+  "root_review": {
+    "exact_complete_inverse_to_git_HEAD": true,
+    "all_state_ROM_enable_latency_and_palette_bytes_unchanged": true,
+    "official_assets_byte_exact_to_HEAD": true,
+    "rehashed_evidence_bindings": 31
+  }
+}
