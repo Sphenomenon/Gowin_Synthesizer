@@ -575,3 +575,5 @@ M26-1的[完整XY分析／runtime离线门及prepare来源修复](push2_workstat
 W25已由664e2506完成新prepare（身份ff53a5420e3db5ed／975原源／613暂存／129编译），进入全量新综合。M26-1第二次prepare则因新增Push SDC在recognition适配之后、demo retirement之前追加而被旧recognition hash拒绝；新验证先严格恢复demo、再唯一精确去除新增Push后缀后验证原recognition，不改实际SDC或任何时钟。17来源／18审计及M来源门通过；失败目录保持，M使用新prepare目录，不复用不完整输出。
 
 [M26-1／W25新整机prepare与冻结](push2_workstation/usb_a/reports/DUAL138K_M26_1_W25_PREPARE_20261102.json)已成功并由主线程重验全部原源／暂存／工具：M来自f2cbce53，身份3dbbf0577da87328／608暂存／263编译；W来自664e2506，身份ff53a5420e3db5ed／613暂存／129编译，各1488审计工具在prepare前捕获。两份已独立全量新综合，预留D2110138／D2110139；新增三条Push控制CDC、10位PANIC实际来源及W32Q仍须新实际VG／VO门，未预记资源／时序或硬件接受，板上M26不变。
+
+M26-1的[全量新综合与物理启动](push2_workstation/usb_a/reports/DUAL138K_M26_1_SYNTHESIS_20261102.json)已完成：182.929s／exit0，610运行输入保持；新VG `e39eccbe…4c7b91e`，FF43627／LUT48834／ALU11484／综合BSRAM等价211／SSRAM99。strict通过，native60项43过／17具名skip及65负控、boundary7项／69负控、performance17项／8负控均通过。native旧库存断言先拒绝，独立v2只在显式connected_xy下按实际142FF＋98RAM＝240payload修正，HMI60及旧规则保持；10位PANIC来源／trust语义与新Push三CDC另验，不以库存替代。主线程重验3011文件；D2110138用新VG／原3.500ns DDR及M26仅定位配方独立全量P&R，128ref控制与DDR完整alias闭包明确核对，未继承旧route接受。新物理资源／完整STA／VO门和实板尚待结果，不下载，板上仍M26。

@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "stage": "new_full_synthesis_with_independent_full_physical_implementation_started",
+  "role": "M",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-3dbbf0577da87328",
+  "source_git_head": "f2cbce532ebcd38b8d709963dcb656c83977b99f",
+  "configuration_revision": 3,
+  "manifest_sha256": "b4bfc8481833df5dd0195db682044e3e7fe8b29f73752c18fe58affe57e030a0",
+  "profile_sha256": "0678e12ca5215a247b1be5d6beb080daf3530d99ba5e88a5739273e40b4d86ca",
+  "source_policy": "m26-1-v3 complete production DEMO prepare and immediate source/tools seal",
+  "new_reserved_user_code": "D2110138",
+  "synthesis": {
+    "process_exit_code": 0,
+    "elapsed_seconds": 182.92899312499998,
+    "netlist_sha256": "e39eccbe0b1b0010ee5c50994faf0b8542eb39bb6b9771edf2ce7e9bd4c7b91e",
+    "resources": {
+      "Register": 43627,
+      "Lut": 48834,
+      "Alu": 11484,
+      "Bsram": 211,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "synthesis_BSRAM_equivalent": 211,
+    "physical_BSRAM_not_inferred": true,
+    "strict_audit_passed": true,
+    "sealed_run_inputs": 610
+  },
+  "regressions": {
+    "native": {
+      "tests": 60,
+      "passed": 43,
+      "named_skips": 17,
+      "all_mutants_rejected": 65,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-native-synthesis-v2.json"
+    },
+    "boundary": {
+      "tests": 7,
+      "passed": 7,
+      "named_skips": 0,
+      "all_mutants_rejected": 69,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-boundary-synthesis-v1.json"
+    },
+    "performance": {
+      "tests": 17,
+      "passed": 17,
+      "named_skips": 0,
+      "all_mutants_rejected": 8,
+      "evidence": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-performance-synthesis-v1.json"
+    }
+  },
+  "root_independently_rehashed_files": 3011,
+  "physical": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-physical-D2110138",
+    "manifest_sha256": "de43ac57d71f4e4ced0a16873b1bfb4f3dfb8ec3b6381079747440e62083321f",
+    "new_complete_PnR_started": true,
+    "placement_recipe_only_from_M26": true,
+    "old_routed_acceptance_inherited": false,
+    "DDR_relationship_ns": 3.5,
+    "clocks_or_exceptions_relaxed": false
+  },
+  "audit_adaptations": {
+    "native_v1_failure_retained": true,
+    "native_v2": "Only explicit connected_xy inventory assertions updated from 132FF/230payload to actual 142FF/240payload. Existing 98 registered RAM bits and HMI60 remain; actual 10bit PANIC source/trust semantic gate separate."
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-v3-prepare-source-seal-v1.json": "b42d38635b81197a7c37812bd2d7bb43d89f086760d6dc44c768e62b65c39590",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-v3-audits-v1/source-tools-seal.json": "eb3497adecd1d1f488999bae95120f09baa507dbb7774dedef1650549f0b95bc",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-synthesis-run-v1.json": "4d4dd396041dfe862f8cfe95be1164afe4844e5484c70d54188af6553afb7665",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-strict-synthesis-v1.json": "a9c6e3355a748358242f67d253193df4b44d8292c335de2815979f7541dc5f16",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-directed-physical-prepare-v1.py": "8e05ba27acb1546f9ef878be303ed6ebb6b3b5f598392f31461ec6e0a40626cb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-physical-D2110138/physical_inputs.json": "de43ac57d71f4e4ced0a16873b1bfb4f3dfb8ec3b6381079747440e62083321f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-native-synthesis-v2.json": "b79cdb1da787259b2a62ce76e7e6d53a7edc87018e3db6d089d3d6724b7dd530",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-native-synthesis-v2.log": "f07f53c71814f8f4472aaa65269232af24c83416eabf062810243c64eb4c9a30",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-boundary-synthesis-v1.json": "88bb7191af29fe553eb12071529c7018d6114c2c27eee2abd7704fa203fa1b8d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-boundary-synthesis-v1.log": "0e3e5fe4a967d64be4c637dd39be06c859a5af36e7f3135f3458c5863d96b2df",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-performance-synthesis-v1.json": "7f605f41bf68f70da25ff1b721d4f3009327108104824a0047ffbe5e63cba28e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-performance-synthesis-v1.log": "66480abc0f14b6c911937035bf20912110c3e9a1801e7c2a96dfb6076955d32c"
+  },
+  "pending": [
+    "New Push CDC semantic and source-origin audits on actual VG/VO with executed negative controls",
+    "New 10-bit PANIC and XY history write-path semantic audit on actual VG/VO",
+    "Complete routed STA, resources, PLL, native/boundary/performance/HMI gates",
+    "SRAM identity/status readback and physical HDMI/Push/25K/DAC functional acceptance"
+  ],
+  "timing_closed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "rollback": "No board operation. M26 D2110137 remains in SRAM; no Flash writes."
+}
