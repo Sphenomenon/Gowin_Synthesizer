@@ -2,7 +2,7 @@
 // Two independent 2048-point, periodic-Hann, radix-2 FFTs of the exact DAC
 // PCM channels. Stereo images use the same unwindowed immutable PCM block.
 // All displayed results stay fixed until release_frame, even under stalls.
-module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integer XY_DIRECT=0) (
+module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integer XY_DIRECT=0,parameter integer XY_TRACE_ENABLE=0) (
     input wire clk, reset_n,
     input wire source_clk, source_reset_n,
     input wire [31:0] pcm_pair,
@@ -50,7 +50,8 @@ module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integ
         FFT_READ_A=8, FFT_READ_B=9, FFT_MULT=10, FFT_ROTATE=11,
         FFT_WRITE_A=12, FFT_WRITE_B=13, POWER_READ=14, POWER_MULT=15,
         POWER_SUM=16, POWER_EXPONENT=17, POWER_WRITE=18, FRAME_READY=19,
-        MAP_CLEAR=20, MAP_BEGIN=21, MAP_READ=22, MAP_PEAK=23, MAP_WRITE=24, IMAGE_SUM=25;
+        MAP_CLEAR=20, MAP_BEGIN=21, MAP_READ=22, MAP_PEAK=23, MAP_WRITE=24, IMAGE_SUM=25, TRACE_WAIT=26;
+    localparam TRACE_ENABLED=XY_TRACE_ENABLE && XY_DIRECT;
     reg [4:0] state;
     reg channel;
     reg [10:0] index, group_base, butterfly;
@@ -99,10 +100,27 @@ module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integ
     wire [IMAGE_ADDR_BITS-1:0] image_clear_index=ASYNC_DISPLAY ? {write_bank,clear_addr}:clear_addr;
     wire [IMAGE_ADDR_BITS-1:0] image_write_index=ASYNC_DISPLAY ? {write_bank,image_y,image_x}:{image_y,image_x};
     wire [IMAGE_ADDR_BITS-1:0] image_read_index=ASYNC_DISPLAY ? {read_bank,image_addr}:image_addr;
+    wire trace_frame_ready,trace_point_ready,trace_idle,trace_write_enable,trace_write_pixel;
+    wire [15:0] trace_write_address;
+    wire [IMAGE_ADDR_BITS-1:0] trace_image_write_index=ASYNC_DISPLAY ? {write_bank,trace_write_address}:trace_write_address;
+    generate if(TRACE_ENABLED)begin:connected_xy
+        workstation_xy_trace trace(
+            .clk(clk),.reset_n(reset_n),.frame_start_i(state==GAIN),.gain_i(computed_gain),
+            .frame_ready_o(trace_frame_ready),.point_valid_i(state==IMAGE_WRITE),.point_nonzero_i(plot_nonzero),
+            .point_x_i(image_x),.point_y_i(image_y),.point_ready_o(trace_point_ready),.idle_o(trace_idle),
+            .write_enable_o(trace_write_enable),.write_address_o(trace_write_address),.write_pixel_o(trace_write_pixel));
+    end else begin:point_xy
+        assign trace_frame_ready=1'b0,trace_point_ready=1'b0,trace_idle=1'b0;
+        assign trace_write_enable=1'b0,trace_write_address=16'd0,trace_write_pixel=1'b0;
+    end endgenerate
     reg image_pixels[0:(65536 << ASYNC_DISPLAY)-1];
     always @(posedge clk) begin
-        if(state==CLEAR_IMAGE) image_pixels[image_clear_index]<=0;
-        else if(state==IMAGE_WRITE && plot_nonzero) image_pixels[image_write_index]<=1;
+        if(TRACE_ENABLED)begin
+            if(trace_write_enable)image_pixels[trace_image_write_index]<=trace_write_pixel;
+        end else begin
+            if(state==CLEAR_IMAGE) image_pixels[image_clear_index]<=0;
+            else if(state==IMAGE_WRITE && plot_nonzero) image_pixels[image_write_index]<=1;
+        end
         if(display_read_enable) image_hit<=(ASYNC_DISPLAY && !front_valid) ? 1'b0 : image_pixels[image_read_index];
     end
 
@@ -216,12 +234,20 @@ module output_audio_analysis #(parameter integer ASYNC_DISPLAY=0,parameter integ
                 end else begin index<=index+1'b1; state<=LOAD_READ; end
             end
             GAIN: begin work_image_gain<=computed_gain; clear_addr<=0; state<=CLEAR_IMAGE; end
-            CLEAR_IMAGE: if(clear_addr==65535) begin index<=0; state<=IMAGE_READ; end
+            CLEAR_IMAGE: if(TRACE_ENABLED)begin
+                             if(trace_frame_ready)begin index<=0;state<=IMAGE_READ;end
+                         end else if(clear_addr==65535) begin index<=0; state<=IMAGE_READ; end
                          else clear_addr<=clear_addr+1'b1;
             IMAGE_READ: state<=IMAGE_SUM;
             IMAGE_SUM: state<=IMAGE_WRITE;
-            IMAGE_WRITE: if(index==2047) begin index<=0; state<=FFT_READ_A; end
+            IMAGE_WRITE: if(TRACE_ENABLED)begin
+                             if(trace_point_ready)begin
+                                 if(index==2047)state<=TRACE_WAIT;
+                                 else begin index<=index+1'b1;state<=IMAGE_READ;end
+                             end
+                         end else if(index==2047) begin index<=0; state<=FFT_READ_A; end
                          else begin index<=index+1'b1; state<=IMAGE_READ; end
+            TRACE_WAIT: if(trace_idle)begin index<=0;state<=FFT_READ_A;end
             FFT_READ_A: state<=FFT_READ_B;
             FFT_READ_B: begin a_real<=ram_real; a_imag<=ram_imag; state<=FFT_MULT; end
             FFT_MULT: begin

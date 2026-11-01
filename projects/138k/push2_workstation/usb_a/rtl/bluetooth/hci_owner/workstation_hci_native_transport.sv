@@ -2,6 +2,7 @@
 // irreversible private TX slot serve initializer, bootstrap, BLE and AE350.
 module workstation_hci_native_transport #(
     parameter bit SESSION_ONLY_PAIRING=0,
+    parameter bit REGISTERED_CONTROLLER_EPOCH=0,
     parameter integer CLK_HZ=50000000,
     parameter integer BOOTSTRAP_TIMEOUT_CYCLES=CLK_HZ,
     parameter integer COMMAND_TIMEOUT_CYCLES=CLK_HZ*2
@@ -210,7 +211,10 @@ module workstation_hci_native_transport #(
     assign fault_o=local_fault || rx_fault || flow_fault || decoder_fault || host_fault || bootstrap_fault;
     assign classic_fenced_o=classic_fenced || cpu_queue_fault;
     assign ble_acl_limit_o=le_limit;
-    assign controller_epoch_o=epoch,classic_generation_o=current_br_generation;
+    // Explicit new W alone exports the existing source-clock snapshot. Raw
+    // epoch remains authoritative for HCI checks and ready revocation below.
+    assign controller_epoch_o=REGISTERED_CONTROLLER_EPOCH ? published_epoch : epoch;
+    assign classic_generation_o=current_br_generation;
     assign classic_active_o=br_slot!=-1 && !classic_fenced_o && !fault_o;
 
     always @(posedge clk_i)begin

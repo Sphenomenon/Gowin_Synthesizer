@@ -27,6 +27,7 @@ module display_data_analysis_source (
     input wire [15:0] read_addr_i,
     output wire [31:0] read_data_o
 );
+    parameter bit XY_TRACE_ENABLE=1'b0;
     reg have_context,rate_q,have_previous,break_previous,local_reset_n,aligned,exporting;
     reg [31:0] epoch_q,expected_sequence,generation_q,memory_status_q;
     reg [2:0] effect_mask_q;
@@ -98,7 +99,7 @@ module display_data_analysis_source (
         .snapshot_revision(wave_revision),.snapshot_peak(wave_peak),.busy(align_busy),.done(align_done),.waveform_held(),
         .capture_read_enable,.capture_read_addr,.capture_read_data(capture_data),
         .wave_read_enable(read_enable_i && read_kind_i==0),.wave_read_addr(read_addr_i[8:0]),.wave_read_data(wave_data));
-    output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1)) analysis(
+    output_audio_analysis #(.ASYNC_DISPLAY(1),.XY_DIRECT(1),.XY_TRACE_ENABLE(XY_TRACE_ENABLE)) analysis(
         .clk,.reset_n(local_reset_n),.source_clk(clk),.source_reset_n(local_reset_n),
         .pcm_pair(frame_pcm_i),.sample_valid(good_sample),.release_frame(accept_start && analysis_ready),
         .ready(analysis_ready),.peak_left,.peak_right,.image_gain(image_gain_o),

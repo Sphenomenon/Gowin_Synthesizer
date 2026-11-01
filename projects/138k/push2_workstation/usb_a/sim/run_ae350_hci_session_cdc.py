@@ -18,7 +18,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from sim.run_workstation_hci_native import MODULES,BRIDGE,BENCH
 SESSION=ROOT/'rtl/audio/workstation_ae350_pcm_session.sv'
-BENCH_SHA='50311d163e2b74af740b3fee1090b25afc37711f37e764f65e5ef382f902ec2f'
+# The current source-locked fixture also covers the native session policy.
+BENCH_SHA='9190d7a0d0439b834198001c4bcf1d05aa216e23b914ae025f11724bb1c243a8'
 
 MONITOR=r'''
     // Distinct 76.8MHz compute clock against the actual 50MHz HCI fixture.
@@ -39,6 +40,11 @@ MONITOR=r'''
         if(resetn && classic_ready && was_source_ready &&
             (epoch!==previous_epoch || generation!==previous_generation))
             $fatal(1,"FAIL CDC source tuple changed while ready remained high");
+        if(resetn && classic_ready && epoch!==
+            (boot_id[31:0]!=0 ? boot_id[31:0] : boot_id[63:32]))
+            $fatal(1,"FAIL CDC published epoch differs from normalized live boot ID");
+        if(resetn && REGISTERED && epoch!==dut.published_epoch)
+            $fatal(1,"FAIL CDC controller epoch bypassed its existing published register");
         was_source_ready=resetn && classic_ready;
         previous_epoch=epoch;previous_generation=generation;
     end
@@ -89,16 +95,25 @@ def run(argv,where,log):
  log.write_text(r.stdout+r.stderr)
  return r
 
-def exercise(out,name,phase,mutant=None):
+def exercise(out,name,phase,mutant=None,*,registered_controller_epoch=False,fallback=False):
  dest=out/name;dest.mkdir()
  data=BENCH.read_text()
  require(sha(BENCH)==BENCH_SHA,'actual integration bench identity drift')
+ require(type(registered_controller_epoch)is bool and type(fallback)is bool,'explicit test policy required')
+ if registered_controller_epoch:
+  before='.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING),.CLK_HZ(1000)'
+  require(data.count(before)==1,'native owner parameter anchor drift')
+  data=data.replace(before,'.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING),.REGISTERED_CONTROLLER_EPOCH(1),.CLK_HZ(1000)')
+ if fallback:
+  for before,after in [("64'h8877665544332211","64'h4433221100000000"),("64'h8877665544332212","64'h4433221200000000")]:
+   require(data.count(before)==1,'normalized high32 fallback fixture drift')
+   data=data.replace(before,after)
  before='    always #5 clk=~clk;'
  require(data.count(before)==1,'source clock fixture anchor drift')
  data=data.replace(before,'    always #10 clk=~clk;')
  anchor='    initial begin: exercise\n'
  require(data.count(anchor)==1,'monitor insertion anchor drift')
- data=data.replace(anchor,MONITOR.replace('PHASE',str(phase))+'\n'+anchor)
+ data=data.replace(anchor,MONITOR.replace('PHASE',str(phase)).replace('REGISTERED',str(int(registered_controller_epoch)))+'\n'+anchor)
  anchor='        $display("PASS native integration checks='
  require(data.count(anchor)==1,'coverage insertion anchor drift')
  data=data.replace(anchor,COVERAGE.replace('PHASE',str(phase))+'\n'+anchor)
@@ -119,7 +134,7 @@ def exercise(out,name,phase,mutant=None):
  match=re.search(r'PASS HCI/session CDC captures=(\d+) revokes=(\d+).*',result.stdout)
  prior=re.search(r'PASS native integration checks=(\d+).*',result.stdout)
  require(result.returncode==0 and match and prior,'actual HCI/session baseline failed: '+result.stdout)
- return dict(summary=match.group(),captures=int(match[1]),revokes=int(match[2]),native_checks=int(prior[1]),source_clock_ns=20,compute_clock_ns=13.020834,phase_ns=phase)
+ return dict(summary=match.group(),captures=int(match[1]),revokes=int(match[2]),native_checks=int(prior[1]),source_clock_ns=20,compute_clock_ns=13.020834,phase_ns=phase,registered_controller_epoch=registered_controller_epoch,low32_zero_high32_fallback=fallback)
 
 def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path);args=parser.parse_args()
@@ -127,13 +142,22 @@ def main():
  require(ROOT not in out.parents,'generated evidence must stay outside source')
  out.mkdir(parents=True,exist_ok=True);require(not any(out.iterdir()),'evidence output must be empty')
  inputs={str(p):sha(p)for p in [BENCH,*MODULES,BRIDGE,SESSION,Path(__file__)]}
- report=dict(policy='actual-hci-to-audio-session-cdc-source-v1',inputs=inputs,phases={},mutants={},
+ report=dict(policy='actual-hci-to-audio-session-cdc-source-v2',inputs=inputs,phases={},mutants={},registered_phases={},registered_mutants={},
   actual_native_transport_and_session=True,physical_CDC_accepted=False,hardware_tested=False,
   synthesis=False,pnr=False,sram_programmed=False,flash_programmed=False,release_ready=False)
  for at,phase in enumerate([0.0,1.37,5.9]):report['phases'][str(phase)]=exercise(out,'baseline-'+str(at),phase)
  for mutant in MUTANTS:report['mutants'][mutant[0]]=exercise(out,mutant[0],1.37,mutant)
+ for at,phase in enumerate([0.0,1.37,5.9]):
+  report['registered_phases'][str(phase)]=exercise(out,'registered-'+str(at),phase,registered_controller_epoch=True)
+ report['registered_high32_fallback']=exercise(out,'registered-high32-fallback',1.37,registered_controller_epoch=True,fallback=True)
+ for mutant in MUTANTS:
+  report['registered_mutants'][mutant[0]]=exercise(out,'registered-'+mutant[0],1.37,mutant,registered_controller_epoch=True)
+ mutant=('published_epoch_output_wrong','native_transport',
+  'REGISTERED_CONTROLLER_EPOCH ? published_epoch : epoch',"REGISTERED_CONTROLLER_EPOCH ? (published_epoch ^ 32'd1) : epoch",1,
+  'FAIL CDC controller epoch bypassed its existing published register')
+ report['registered_mutants'][mutant[0]]=exercise(out,'registered-'+mutant[0],1.37,mutant,registered_controller_epoch=True)
  require(inputs=={p:sha(p)for p in inputs},'maintained sources changed during simulation')
  report['outputs']={str(p.relative_to(out)):sha(p)for p in out.rglob('*')if p.is_file()}
  (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n')
- print(json.dumps(dict(output=str(out),phases=len(report['phases']),mutants=len(report['mutants']),hardware_tested=False)))
+ print(json.dumps(dict(output=str(out),default_phases=len(report['phases']),default_mutants=len(report['mutants']),registered_phases=len(report['registered_phases']),registered_mutants=len(report['registered_mutants']),registered_high32_fallback=True,hardware_tested=False)))
 if __name__=='__main__':main()

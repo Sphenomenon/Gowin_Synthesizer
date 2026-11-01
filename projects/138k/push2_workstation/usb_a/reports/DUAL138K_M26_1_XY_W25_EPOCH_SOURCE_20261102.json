@@ -1,0 +1,243 @@
+{
+  "schema": 1,
+  "stage": "Maintained M connected XY/PANIC and explicit W registered epoch source stage",
+  "source_parent_commit": "168d2a0b90534c8b99a975d7e7fe37e3540ae5e7",
+  "planned_candidates": {
+    "M26-1": "D2110138",
+    "W25": "D2110139"
+  },
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json": "f80212efb2ba9d621820a1022d43972c0a1e777554a2994eb96caa9ff6cc0c4a",
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": "c6df4f5e84c3bb75ca600bbcfff77e6f2d2bc251a7c680c0f5cfcd653c8e1440",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/AE350_PCM_INGRESS_CONTRACT.md": "f685dce3ae3bd75006985c8834a27f9def3f96c279b4f68f1e02d39313907e62",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "6509851405748bac786fde0d467bbf0d850f76e124b0a1a507d4d105e6d4c3b5",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "9001a444efb631416b0ce25fe671a31c0c15b695cdb0de1e8e73f0a92997daa1",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": "1caa51ba4a05802a265bd0b7a0442293ef377a0f7ebda5dd72ad9d6c30db77c3",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/output_audio_analysis.v": "1a01118a3552507253731dcfc79df5ae3f68a378dc4dc4b5e736a1c41dc66c5d",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_display_runtime.sv": "6e53219f4ed4f0b70e4cb7bca40e6f9dac3bfa9d6f14c4df8bfd56e4a456aa85",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_hdmi_display.sv": "45f487f655472c2914b03b08afc9fa3bc08194867215c3d0a12155d7d825fd2c",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_m_demo.sv": "6eafa87d96b096d51053908d39a4ddc29a5a73a5abbcc05d787c18c573acb073",
+    "projects/138k/push2_workstation/usb_a/sim/run_ae350_hci_session_cdc.py": "3c07a4530376d5855fb5b51b2a7baca0840ad4ba715ebf0a23c438733f7b4347",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py": "4fe130dac03467cfe5b9718fbc105f2f573a031b9de66a2039525c407b50e42d",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_classic_runtime.py": "3af6e15287fbbd6cba72f7f635edfa7aeb92935f4a53dcf7a6c732d1d170ca28",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "88930c90ef0635ff01f809668cb9c4561c1ef52dd8badf12b219dae64920de54",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "87e97211a1d6baf069fcba6d56073bca1efb91705251260f838007511a502179",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "263842403a93149e061a61245455d3e2b014a420b5035318383f091dce12005e",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_boundary_cdc.py": "1e161c9ad1668012570c6876a626be98556773862f009c854a83e4f7fb166195",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "d5283916a852dd7461894e5401bb7d4bca2d94150cc1a880a663af04c911a1cf",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "17c1ceca18172221623fa48c143f9164d1601311d9b7b050869f810b0e5f1425",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "956844a290dd427b221610ae5a4627d50d6b330cccb563b86677eb11478a0cdc",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py": "744a77274a5e40f1493e8f70e791c40ab1209d93522866e5d072d43f0649a70a",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_audio_registered_epoch_provider.sv": "08dc05e6cb536e855e88be999122c41b162271ee1f5ce191820341666ac9fecc",
+    "projects/138k/push2_workstation/usb_a/rtl/display_data/workstation_xy_trace.sv": "d51297ba9b7d4c96f87e72f9e2b956abc5c76d2f50399c1a97fbfcc54ade721d",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_xy_panic.py": "91864c5825d1fc2cc263021d15b10cd81f93e9d5e7a5723677eb605845a3c4ef",
+    "projects/138k/push2_workstation/usb_a/sim/display/run_xy_trace.py": "3cd711c7cf86a9d2fafd7472d2d1968360dc79281d87090394f94385bf135fbd",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_panic.sv": "9f83781391b885f0cd2bd6f9ce9bde8d90771c5a8fcf95ea4010d6efa1b93b83",
+    "projects/138k/push2_workstation/usb_a/sim/display/tb_workstation_xy_trace.sv": "98e18a90cf1f45e62282d26337695a0444079a8357df39fbd1d18e5b14e39974",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_hci_epoch.py": "8c6bb94ebf95eb5dde45e915cbacc5e12c658f915c4c5b02e98fe9d0ce0a79ea",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_hci_epoch.py": "04a5fddf9689973e84d7ef3e00e7d5917992a2beebfd8b8189616b5acead8894"
+  },
+  "evidence": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-source-unit-handoff-v1.json",
+      "sha256": "ed099e1346d8aafa6abab55db6e420ced4619336af4c33e70adad5a879564600"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-panic-v2/verification.json",
+      "sha256": "27d430f765b8828803284dc775dae783be464e89fec073c2b17bfbc5fb4cc326"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-maintained-epoch-handoff-v1/handoff.json",
+      "sha256": "f2ffc3aed15d594c412647f52bf95897c6dc4c2e62c18b507d9ba2ae68841e6f"
+    }
+  ],
+  "M": {
+    "XY": "real final PCM L/-R; same gain; bounded256pixel Bresenham; current OR previous raw snapshot; gain/reset/context/PANIC revoke; one-bit ABI has finite binary afterimage, no brightness gradient",
+    "unit": {
+      "verilator": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-verilator-v4/verification.json",
+        "sha256": "4301414722be1e6026b4e4e327d556f9e711c991739f1c94b6a0154bc83b67a1"
+      },
+      "iverilog": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-iverilog-v4/verification.json",
+        "sha256": "1813f15778e218090487246452d2545ec745892b7f9d849c414797ec3480c294"
+      },
+      "no_lines": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-no_lines-v4/verification.json",
+        "sha256": "b47c2f711b3855b1ecfbc288d8b1bb40f3b900c548197f8af50b8ca07c22b52c"
+      },
+      "sticky_history": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-sticky_history-v4/verification.json",
+        "sha256": "f631e8679f9cbcd85dbc04c5190b52eb0de7ee8fdd707b1c202205f269b0e484"
+      },
+      "gain_history": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-gain_history-v4/verification.json",
+        "sha256": "f6bbe6c12dc2e278321688912b2a4e5720ddd80e00ac5b7ee9882403c1377448"
+      },
+      "segment_cap": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-xy-unit-segment_cap-v4/verification.json",
+        "sha256": "fe125d6f7871801932bda5dba51a8e3044f6fc6221847b53ba4f074900d38e82"
+      }
+    },
+    "integration": "HDMI explicit M macro -> runtime -> producer -> analysis; defaults off",
+    "PANIC": "real completed-frame panic epoch comparator; existing atomic trust tuple OR existing counted-drop CDC revokes",
+    "full_analysis_on_off_regression": "running separately; not claimed by leaf tests"
+  },
+  "W": {
+    "schema": 1,
+    "scope": "W139 explicit existing published epoch Q export plus W136 strict feedback/boundary auditor adapters maintained source handoff",
+    "source_head_before_commit": "168d2a0b90534c8b99a975d7e7fe37e3540ae5e7",
+    "workspace": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer",
+    "source_sha256": {
+      "rtl/audio/AE350_PCM_INGRESS_CONTRACT.md": "f685dce3ae3bd75006985c8834a27f9def3f96c279b4f68f1e02d39313907e62",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "6509851405748bac786fde0d467bbf0d850f76e124b0a1a507d4d105e6d4c3b5",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "9001a444efb631416b0ce25fe671a31c0c15b695cdb0de1e8e73f0a92997daa1",
+      "rtl/bluetooth/hci_owner/workstation_hci_audio_registered_epoch_provider.sv": "08dc05e6cb536e855e88be999122c41b162271ee1f5ce191820341666ac9fecc",
+      "sim/run_ae350_hci_session_cdc.py": "3c07a4530376d5855fb5b51b2a7baca0840ad4ba715ebf0a23c438733f7b4347",
+      "sim/test_workstation_hci_epoch.py": "8c6bb94ebf95eb5dde45e915cbacc5e12c658f915c4c5b02e98fe9d0ce0a79ea",
+      "tools/workstation_classic_runtime.py": "3af6e15287fbbd6cba72f7f635edfa7aeb92935f4a53dcf7a6c732d1d170ca28",
+      "tools/workstation_cpu_business.py": "88930c90ef0635ff01f809668cb9c4561c1ef52dd8badf12b219dae64920de54",
+      "tools/workstation_demo_audit.py": "263842403a93149e061a61245455d3e2b014a420b5035318383f091dce12005e",
+      "tools/workstation_demo_boundary_cdc.py": "1e161c9ad1668012570c6876a626be98556773862f009c854a83e4f7fb166195",
+      "tools/workstation_hci_epoch.py": "04a5fddf9689973e84d7ef3e00e7d5917992a2beebfd8b8189616b5acead8894"
+    },
+    "before_sha256": {
+      "rtl/audio/AE350_PCM_INGRESS_CONTRACT.md": "69a25ac81399b8d418639ec3ba59f3fcd393403b4cb4df522475037977e0c787",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "6fb4808c2a7a3de90682d6187e110cd6ef07594031728fb371e6fd2ef3d77c60",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "02dc68255bad7182d6b1616f3809c53b672887726fbb69790a58271183700787",
+      "rtl/bluetooth/hci_owner/workstation_hci_audio_registered_epoch_provider.sv": null,
+      "sim/run_ae350_hci_session_cdc.py": "c321aedb48b4b94505bcfcefa7f55c714e86724c7b215948c866fd1ae50dd94c",
+      "sim/test_workstation_hci_epoch.py": null,
+      "tools/workstation_classic_runtime.py": "7e268b6f4d67679a61d5c9d4703e11750f26fc17b3adddb688447ad81bad133c",
+      "tools/workstation_cpu_business.py": "9b8a84f0d1fb2f23d8f442e91474f9f50c720c5078cb81b785b871e6e28a1c5d",
+      "tools/workstation_demo_audit.py": "59bdc8c4c53b678bc02cebc22f34cf42788d267205f4636bb4f4d544bd506856",
+      "tools/workstation_demo_boundary_cdc.py": "e5bf72a94c4e2cd2357655fc4729c71cec56dde0df4b0979842298e8d0cc7bbd",
+      "tools/workstation_hci_epoch.py": null
+    },
+    "owned_files": [
+      "rtl/audio/AE350_PCM_INGRESS_CONTRACT.md",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_core.v",
+      "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv",
+      "rtl/bluetooth/hci_owner/workstation_hci_audio_registered_epoch_provider.sv",
+      "sim/run_ae350_hci_session_cdc.py",
+      "sim/test_workstation_hci_epoch.py",
+      "tools/workstation_classic_runtime.py",
+      "tools/workstation_cpu_business.py",
+      "tools/workstation_demo_audit.py",
+      "tools/workstation_demo_boundary_cdc.py",
+      "tools/workstation_hci_epoch.py"
+    ],
+    "owned_patch_sha256": "21d5c7eadc748556e9d347f854959b0bbc1aa9c4f2caac880c551a422d5d6f9b",
+    "maintenance_source_frozen": true,
+    "commit_and_profile_locks_owned_by_root": true,
+    "selection": {
+      "keyword": "registered_controller_epoch",
+      "default": false,
+      "only_explicit_audio_only_W": true,
+      "configuration_key": "w_hci_epoch_policy",
+      "configuration_policy": "registered_controller_epoch_v1",
+      "specification_bool": "hci_registered_controller_epoch",
+      "HCI_policy": "native_shared_hci_audio_only_registered_epoch_v2",
+      "CDC_policy": "classic_pcm_registered_controller_epoch_cdc_v2",
+      "provider": "rtl/bluetooth/hci_owner/workstation_hci_audio_registered_epoch_provider.sv"
+    },
+    "implementation": {
+      "existing_published_epoch_Q_only": true,
+      "new_state_or_owner_added": false,
+      "internal_raw_epoch_and_CPU_MMIO_unchanged": true,
+      "ready_revocation_logic_unchanged": true,
+      "generation_output_unchanged": true,
+      "session_three_release_plus_fourth_capture_unchanged": true,
+      "existing_max_delay_ns": 10,
+      "original_hold_policy_preserved": true,
+      "default_M_and_legacy_W_contracts_preserved": true
+    },
+    "validation": {
+      "source_tests": 17,
+      "original_demo_auditor_tests": 18,
+      "epoch_policy_tests": 6,
+      "python_syntax_files": 7,
+      "diff_check_passed": true,
+      "actual_HCI_session_default_phases": 3,
+      "actual_HCI_session_default_mutants_rejected": 4,
+      "actual_HCI_session_registered_phases": 3,
+      "actual_HCI_session_registered_high32_fallback": true,
+      "actual_HCI_session_registered_mutants_rejected": 5,
+      "native_targeted_checks": 268,
+      "native_targeted_mutants_rejected": 11,
+      "native_lint_passed": true,
+      "native_prior_and_UART_skipped": true,
+      "maintained_feedback_negative_controls_rejected": 110,
+      "legacy_W131_W134_feedback_full_dictionary_equal": true,
+      "M25_boundary_full_dictionary_equal": true,
+      "independent_review_checks": 50,
+      "independent_selector_negatives": 9,
+      "independent_synthetic_netlist_negatives": 20
+    },
+    "auditor_seal_order_correction": {
+      "issue": "Initial implementation prematurely reached verify_prepared before optional helper hash; original OptionalReturnAuditor regression found it",
+      "fix": "Restore helper hashing before verify_prepared, choose new helper from explicit Classic metadata, then require exact profile policy and W role",
+      "default_optional_return_contract_restored": true,
+      "new_helper_missing_early_failure_regression_added": true,
+      "original_18_and_new_6_tests_pass": true,
+      "independent_v2_predates_this_narrow_order_correction": true
+    },
+    "evidence": {
+      "actual_hci_session": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-maintained-epoch-session-v1/verification.json",
+        "sha256": "0396ee1e097070124613a279943fbe3d7f2b9b80f3da8aeb1381b2e21c4e4db4"
+      },
+      "native_hci_targeted": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-maintained-native-hci-v1/verification.json",
+        "sha256": "6f125b4166f46070c98d716c16a3bf9da8e2c3fb9e19c7ce80809b1ef20cc64e"
+      },
+      "feedback_adapter_actual_W136_VG_and_legacy_comparisons": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-maintained-feedback-adapter-self-review-v1.json",
+        "sha256": "6d12cff3f6490f95b81ee1009fbac5714a3baf02923f9c02cb2b43579ab8111a"
+      },
+      "independent_review_v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-registered-epoch-independent-review-v2/review.json",
+        "sha256": "550a4fe0711f2b03408693be6d899cac3e26b7aadc9eb0f188eb42b431ef2526"
+      },
+      "independent_synthetic_view_gate_review_v2": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-registered-epoch-independent-review-v2/netlist_review.json",
+        "sha256": "52f03797fb95dcea093e3d63cd1512e67a2a20227ed814698352e50b52aa2bef"
+      },
+      "independent_review_v2_seal": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-registered-epoch-independent-review-v2/seal.json",
+        "sha256": "62db968ef7eb872784d3cd8e92ca8e126aacd84ba51ae3b89492997f654afa16"
+      }
+    },
+    "remaining": [
+      "New W139 actual synthesis VG source32/Q gate and physical actual VO must pass",
+      "New W139 full synthesis/P&R/STA/CDC/PLL and phone/25K/DAC acceptance not performed by this handoff",
+      "W136 DDR hold failure remains separate and unresolved; no SDC clock/budget relaxation"
+    ],
+    "new_candidate_usercode": "D2110139",
+    "synthesis": false,
+    "pnr": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "task2_or_report_edited": false,
+    "root_profile_or_M_files_edited": false
+  },
+  "source_validation": {
+    "source_boundary_tests": 17,
+    "demo_audit_tests": 18,
+    "HCI_epoch_tests": 6,
+    "demo_policy_tests": 8,
+    "M_locks": 884,
+    "W_locks": 1131,
+    "both_profile_checks_passed": true,
+    "sealed_M26_W24_historical_specification_preserved": true
+  },
+  "remaining": [
+    "Complete full-analysis on/off regression",
+    "Full new synthesis/P&R and all actual VG/VO gates including Push CDC, PANIC consumer origin and W32Q",
+    "Physical phone/Push/25K/HDMI/DAC acceptance"
+  ],
+  "timing_closed_for_new_candidates": false,
+  "SRAM_programmed_for_new_candidates": false,
+  "Flash_programmed": false
+}

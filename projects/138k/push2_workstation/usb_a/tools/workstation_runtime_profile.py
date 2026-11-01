@@ -61,6 +61,7 @@ SOURCES = (
     'rtl/display_data/display_data_reader.v',
     'rtl/display_data/feedback_capture.v',
     'rtl/display_data/output_audio_analysis.v',
+    'rtl/display_data/workstation_xy_trace.sv',
     'rtl/display_data/feedback_renderer.v',
     'rtl/display_data/feedback_dashboard.v',
     'rtl/display_data/workstation_contest_brand.sv',

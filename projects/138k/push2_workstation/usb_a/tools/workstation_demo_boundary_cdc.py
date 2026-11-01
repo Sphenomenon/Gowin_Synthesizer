@@ -230,16 +230,19 @@ def audit(n, *, mapping="synthesis", expected_role=None):
  exp_add(queue_ends,R,'release_q',range(2),'CLEAR','usb_clk');exp_add(queue_ends,U,'stopped_clock_queue_fence.drain_release',range(6),'CLEAR','audio_clk')
  queue_closure=complete_closure(n,g,[chain[5]])
  w_queue_ends=dict(queue_ends);w_queue_ends[reg('u_managed/events/queue','tail')+'/D']='audio_clk'
- m_d_queue_ends=dict(w_queue_ends)
- m_d_queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
  if queue_closure['ff_endpoints']==dict(sorted(w_queue_ends.items())):
   inventory_role='W';queue_ends=w_queue_ends;tail_mapping='D'
- elif queue_closure['ff_endpoints']==dict(sorted(m_d_queue_ends.items())):
-  inventory_role='M';queue_ends=m_d_queue_ends;tail_mapping='D'
  else:
-  inventory_role='M';tail_mapping='CE'
-  queue_ends[reg('u_managed/events/queue','tail')+'/CE']='audio_clk'
-  queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
+  # W fully retires Push-only settled_sync; resolve M-only registers only
+  # after the exact complete W queue endpoint dictionary failed to match.
+  m_d_queue_ends=dict(w_queue_ends)
+  m_d_queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
+  if queue_closure['ff_endpoints']==dict(sorted(m_d_queue_ends.items())):
+   inventory_role='M';queue_ends=m_d_queue_ends;tail_mapping='D'
+  else:
+   inventory_role='M';tail_mapping='CE'
+   queue_ends[reg('u_managed/events/queue','tail')+'/CE']='audio_clk'
+   queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
  require(len(queue_ends)==(140 if inventory_role=='M' else 139),'reviewed queue source inventory count')
  packet=F+'/storage_storage_0_0_s';require(n.cells[packet]['kind']=='SDPX9B' and n.pin(packet,'CLKA')=='usb_clk' and n.pin(packet,'CLKB')=='audio_clk','packet RAM clock/identity')
  queue_prims={packet+'/'+pin:{'kind':'SDPX9B','clock_pins':{'CLKA':'usb_clk','CLKB':'audio_clk'}} for pin in ('ADB','OCE')}

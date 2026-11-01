@@ -58,17 +58,18 @@ LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 PROFILE_REGISTRY = {
-    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=2,
+    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=3,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             tf_policy='disabled_first_m_core_demo_v1',
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1',
-            push_rate_control_policy='push_session_committed_toggle_generation_v1'),
+            push_rate_control_policy='push_session_committed_toggle_generation_v1',
+            xy_trace_policy='connected_xy_two_snapshot_history_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
-        push_rate_control=True,integration_identity='custom138k-native-m-demo-session-rate-revision2'),
-    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=4,
+        push_rate_control=True,xy_trace=True,integration_identity='custom138k-native-m-demo-session-rate-xy-revision3'),
+    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=5,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
             hdmi_mode='disabled_worker_audio_only',display_policy='disabled_worker_audio_only_v1',
@@ -82,12 +83,13 @@ PROFILE_REGISTRY = {
             synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
             recording_owner_policy='disabled_worker_audio_only_v1',usb_adapter_policy='worker_25k_v1',
             w_stream_pitch_policy='continuous_pcm_dual_head_v1',
-            w_midi_input_policy='disabled_unused_synth_uart_v1'),
+            w_midi_input_policy='disabled_unused_synth_uart_v1',
+            w_hci_epoch_policy='registered_controller_epoch_v1'),
         provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
         recording_enabled=False,local_panel_enabled=False,ble_recording_storage_enabled=False,
         business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,demo_role='W',
-        worker_audio_only=True,worker_stream_pitch=True,worker_synth_midi_retired=True,
-        integration_identity='custom138k-native-w-audio-only-pitch-no-midi-revision4'),
+        worker_audio_only=True,worker_stream_pitch=True,worker_synth_midi_retired=True,hci_registered_controller_epoch=True,
+        integration_identity='custom138k-native-w-audio-only-pitch-registered-epoch-revision5'),
     CLASSIC_ROM96_NAME:dict(config=CLASSIC_ROM96_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_classic_runtime_rom96_failclosed_v1',ae350_boot_rom_bytes=98304,
@@ -153,11 +155,21 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') in (1, 2):
+        configuration = dict(spec['configuration'])
+        configuration.pop('xy_trace_policy')
+        spec = dict(spec,revision=2,xy_trace=False,configuration=configuration,
+            integration_identity='custom138k-native-m-demo-session-rate-revision2')
     if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') == 1:
         configuration = dict(spec['configuration'])
         configuration.pop('push_rate_control_policy')
         spec = dict(spec,revision=1,push_rate_control=False,configuration=configuration,
             integration_identity='custom138k-native-m-demo-base-revision1')
+    if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') in (1, 2, 3, 4):
+        configuration = dict(spec['configuration'])
+        configuration.pop('w_hci_epoch_policy')
+        spec = dict(spec,revision=4,hci_registered_controller_epoch=False,configuration=configuration,
+            integration_identity='custom138k-native-w-audio-only-pitch-no-midi-revision4')
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') in (2, 3):
         configuration = dict(spec['configuration'])
         configuration.pop('w_midi_input_policy')
@@ -371,6 +383,11 @@ def _artifact(root, output, metadata, profile):
         verify_push_rate(installed_sdc,metadata.get('push_rate_control'))
     elif 'push_rate_control' in metadata:
         raise ValueError('unselected Push Session rate control policy')
+    if spec.get('xy_trace',False):
+        if '`define WORKSTATION_XY_TRACE' not in (stage / spec['provider']).read_text():
+            raise ValueError('M connected XY configuration missing')
+        if 'rtl/display_data/workstation_xy_trace.sv' not in metadata['enabled_inputs']:
+            raise ValueError('M connected XY compiled source missing')
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints
@@ -489,7 +506,8 @@ def _artifact(root, output, metadata, profile):
     if audio_only:
         from tools.workstation_cpu_business import verify_prepared as verify_hci_audio
         ble_raw_adaptation=metadata['worker_audio_only']['hci']
-        verify_hci_audio(root,stage,ble_raw_adaptation,shared_hci=True,audio_only=True)
+        verify_hci_audio(root,stage,ble_raw_adaptation,shared_hci=True,audio_only=True,
+            registered_controller_epoch=spec.get('hci_registered_controller_epoch',False))
     if spec.get('recording_enabled',False):
         from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
         selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
@@ -588,7 +606,7 @@ def _artifact(root, output, metadata, profile):
     ae350 = _ae350_evidence(root, output, metadata, profile)
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
-        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only)
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,registered_controller_epoch=spec.get('hci_registered_controller_epoch',False))
     elif 'classic_runtime'in metadata:
         raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']

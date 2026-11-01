@@ -127,6 +127,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
     audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
     stream_pitch=runtime and specification(profile['name']).get('worker_stream_pitch',False)
+    registered_epoch=runtime and specification(profile['name']).get('hci_registered_controller_epoch',False)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -154,7 +155,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile_dependencies += BLE_RAW_DEPENDENCIES
     if business_selected:
         from tools.workstation_cpu_business import selection as cpu_selection
-        _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected,audio_only=audio_only)
+        _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected,audio_only=audio_only,registered_controller_epoch=registered_epoch)
         native_sources += cpu_sources
         profile_dependencies += cpu_dependencies
     if classic_selected:
@@ -296,7 +297,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     ble_raw_adaptation=None
     if business_selected:
         from tools.workstation_cpu_business import prepare as prepare_cpu_business
-        ble_raw_adaptation=prepare_cpu_business(root,stage,shared_hci=hci_selected,audio_only=audio_only)
+        ble_raw_adaptation=prepare_cpu_business(root,stage,shared_hci=hci_selected,audio_only=audio_only,registered_controller_epoch=registered_epoch)
         bluetooth['sources'].remove('native_bluetooth/ble_recording.v')
     elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
@@ -334,7 +335,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
     if classic_selected:
         from tools.workstation_classic_runtime import cdc_bundle as classic_cdc_bundle
-        selected_sdc += classic_cdc_bundle()['sdc']
+        selected_sdc += classic_cdc_bundle(registered_controller_epoch=registered_epoch)['sdc']
     business_telemetry_reset=None
     if business_telemetry_alias_selected:
         from tools.workstation_cpu_business import telemetry_reset_constraints
@@ -502,7 +503,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['demo_constraint_retirement'] = demo_constraints
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only)
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,registered_controller_epoch=registered_epoch)
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata

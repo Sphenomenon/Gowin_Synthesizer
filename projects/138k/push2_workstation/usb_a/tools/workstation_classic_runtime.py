@@ -81,8 +81,9 @@ def physical96_report(root,evidence):
         nominal_removed_storage_bytes=32768,nominal_removed_512x32_storage_banks=16,
         actual_resource_savings_verified=False,constant_padding_may_be_pruned_by_synthesis=True)
     return capacity,report
-def cdc_bundle():
+def cdc_bundle(*,registered_controller_epoch=False):
     """Scoped synthesis constraints; physical endpoint resolution is still due."""
+    if type(registered_controller_epoch)is not bool:raise ValueError('registered HCI epoch requires explicit boolean')
     bridge='u_managed/pcm_apb/commands';session='u_managed/runtime/cpu_pcm/session'
     owner='u_managed/runtime/cpu_pcm/owner';runtime='u_managed/runtime'
     lines=[]
@@ -104,11 +105,15 @@ def cdc_bundle():
         bridge+'/req_meta*/CLEAR '+bridge+'/req_sync*/CLEAR '+bridge+'/req_settled*/CLEAR '+bridge+'/request_decoded*/CLEAR '+bridge+'/request_local*/CLEAR '+bridge+'/response_held*/CLEAR '+bridge+'/acknowledge_toggle*/CLEAR',
         bridge+'/ack_meta*/CLEAR '+bridge+'/ack_sync*/CLEAR '+bridge+'/ack_settled*/CLEAR '+bridge+'/request_held*/CLEAR '+bridge+'/response_local*/CLEAR '+bridge+'/request_toggle*/CLEAR '+bridge+'/state*/CLEAR']:
         lines.append('set_false_path -to [get_pins {'+pins+'}]')
-    return dict(policy='classic_pcm_scoped_candidate_cdc_v1',held_payload_max_delay_ns=10,
+    result=dict(policy='classic_pcm_scoped_candidate_cdc_v1',held_payload_max_delay_ns=10,
         synchronizer_max_delay_ns=2,physical_endpoint_resolution_verified=False,
         physical_timing_verified=False,source_bundle_before_capture=True,
         remaining=['resolve mux source/destination bits against actual synthesis','registered ready async-close recovery/removal','switch-inhibit and serial-hold propagation','routed setup/hold and complete service budget'],
         sdc='\n'.join(lines)+'\n')
+    if registered_controller_epoch:
+        from tools.workstation_hci_epoch import cdc_selection
+        return cdc_selection(result,True)
+    return result
 def _selected_hdl(stage):
     from xml.etree import ElementTree
     entries=ElementTree.parse(Path(stage)/'Prj1.gprj').find('FileList')
@@ -123,7 +128,7 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,registered_controller_epoch=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
@@ -132,6 +137,7 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
         provider=selected_provider
         policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
+    if type(registered_controller_epoch)is not bool or (registered_controller_epoch and (not headless_worker or selected_provider!='rtl/workstation/workstation_profile_w_demo.sv')):raise ValueError('registered HCI epoch requires explicit audio-only W provider')
     installed=shutil.which('iverilog')
     if not installed:raise ValueError('Classic runtime actual preprocessing requires iverilog')
     tool=Path(installed).resolve();enabled,hdl=_selected_hdl(stage)
@@ -142,13 +148,14 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     record=dict(policy=policy,pcm=dict(source_bundle(root),profile_selected=True),
         provider=provider,headless_worker=headless_worker,preprocessed_sha256=sha(target),command=argv,
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
-        tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
+        tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle(registered_controller_epoch=registered_controller_epoch).items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker)
+    if registered_controller_epoch:record['hci_epoch_policy']='registered_controller_epoch_v1'
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,registered_controller_epoch=registered_controller_epoch)
     return record
-def verify_cdc_selection(text,record,*,worker_demo=False):
+def verify_cdc_selection(text,record,*,worker_demo=False,registered_controller_epoch=False):
     """Check the exact final scoped lines for the explicitly selected role."""
-    cdc=cdc_bundle()
+    cdc=cdc_bundle(registered_controller_epoch=registered_controller_epoch)
     selected=cdc['sdc']
     if worker_demo:
         from tools.workstation_demo_policy import adapt_constraints
@@ -157,7 +164,7 @@ def verify_cdc_selection(text,record,*,worker_demo=False):
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,registered_controller_epoch=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
@@ -166,7 +173,9 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         provider=selected_provider
         policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
+    if type(registered_controller_epoch)is not bool or (registered_controller_epoch and (not headless_worker or selected_provider!='rtl/workstation/workstation_profile_w_demo.sv')):raise ValueError('registered HCI epoch requires explicit audio-only W provider')
     if record.get('headless_worker',False)!=headless_worker:raise ValueError('audio-only worker selection drift')
+    if (record.get('hci_epoch_policy')=='registered_controller_epoch_v1')!=registered_controller_epoch or (not registered_controller_epoch and 'hci_epoch_policy'in record):raise ValueError('registered HCI epoch metadata selection drift')
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -184,13 +193,14 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if argv!=record['command']or hashlib.sha256(payload).hexdigest()!=record['preprocessed_sha256']:
         raise ValueError('Classic runtime actual macro closure cannot be reproduced')
     text=target.read_text()
+    if text.count('.REGISTERED_CONTROLLER_EPOCH(1)')!=(1 if registered_controller_epoch else 0):raise ValueError('registered HCI epoch actual owner parameter selection drift')
     for anchor in ['localparam AE350_PCM_ENABLED=1;','gw138k_boot_memory #(.ROM_BYTES('+str(physical_rom_bytes)+'))',
         '.hci_classic_ready_o(hci_pcm_session_ready)', '.hci_epoch_o(hci_pcm_controller_epoch)',
         '.hci_classic_generation_o(hci_pcm_transport_generation)',
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
     verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
-        worker_demo=selected_provider=='rtl/workstation/workstation_profile_w_demo.sv')
+        worker_demo=selected_provider=='rtl/workstation/workstation_profile_w_demo.sv',registered_controller_epoch=registered_controller_epoch)
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record

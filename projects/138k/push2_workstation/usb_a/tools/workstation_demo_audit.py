@@ -303,7 +303,7 @@ def audit_m_voice_storage(netlist):
                 concurrent_voice_functionality_hardware_verified=False)
 
 
-def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False):
+def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False, allow_unconditional_request=False):
     """Prove the W snapshot that the 25K firmware actually reads.
 
     W removes Push display delivery, whose unused destination_valid pulse is
@@ -357,12 +357,59 @@ def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False):
                           (req_settled, ack), (ack, ack_meta), (ack_meta, ack_sync)):
         require(netlist.pin(first, 'Q') == netlist.pin(second, 'D'),
                 'W feedback request/ack direct stage changed')
+    require(type(allow_unconditional_request) is bool,
+            'W feedback unconditional request selection must be explicit boolean')
+    capture_ce = netlist.pin(request, 'CE')
+    request_mapping = None
+    if allow_unconditional_request:
+        from tools.workstation_runtime_pcm_cdc import Graph, BooleanDiagram
+        request_graph = Graph(netlist)
+        if capture_ce in request_graph.high:
+            constant_drivers = request_graph.drivers[capture_ce]
+            require((capture_ce == "1'b1" and not constant_drivers) or
+                    (len(constant_drivers) == 1 and constant_drivers[0][1] == 'V' and
+                     netlist.cells[constant_drivers[0][0]]['kind'] == 'VCC'),
+                    'W feedback request CE must have only its constant VCC driver')
+            capture_ce = netlist.pin(groups['held_data'][min(bits)], 'CE')
+            scope = prefix.rstrip('/')
+            request_q = netlist.pin(request_graph.register(scope, 'request_toggle'), 'Q')
+            ack_q = netlist.pin(request_graph.register(scope, 'ack_sync'), 'Q')
+            divider = [request_graph.register('u_native_usb/input_owner', 'feedback_divider', bit)
+                       for bit in range(12)]
+            divider_q = [netlist.pin(p, 'Q') for p in divider]
+            require(all(netlist.cells[p]['kind'] == 'DFFCE' and
+                        netlist.pin(p, 'CLK') == source_clock for p in divider),
+                    'W feedback actual 12bit capture divider clock/primitive changed')
+            leaves = {request_q, ack_q, *divider_q}
+            request_d = netlist.pin(request, 'D')
+            require(request_graph.support(request_d) == leaves and
+                    request_graph.support(capture_ce) == leaves,
+                    'W feedback unconditional request/capture Boolean inputs changed')
+            bd = BooleanDiagram(sorted(leaves))
+            held_capture = bd.net(request_graph, capture_ce)
+            expected_capture = bd.both(bd.invert(bd.different(bd.inputs[request_q], bd.inputs[ack_q])),
+                                       bd.all([bd.inputs[q] for q in divider_q]))
+            require(held_capture == expected_capture and held_capture != 0,
+                    'W feedback common held capture must be divider wrap and idle ACK')
+            require(bd.net(request_graph, request_d) ==
+                    bd.different(bd.inputs[request_q], held_capture),
+                    'W feedback unconditional request D must be Q XOR common held capture')
+            request_mapping = dict(policy='explicit_W_revision4_unconditional_request_equivalent_XOR_v1',
+                request=request, request_clock_enable_constant=1, request_D=request_d,
+                held_capture_CE=capture_ce, Boolean_inputs=sorted(leaves),
+                common_held_capture_is_divider_wrap_and_idle=True,
+                request_D_equals_Q_XOR_common_held_capture=True,
+                all_14_inputs_symbolically_verified=True)
     for bit in bits:
         held, captured = groups['held_data'][bit], groups['destination_data'][bit]
         require(netlist.pin(held, 'Q') == netlist.pin(captured, 'D') and
-                netlist.pin(held, 'CE') == netlist.pin(request, 'CE') and
+                netlist.pin(held, 'CE') == capture_ce and
                 netlist.pin(captured, 'CE') == netlist.pin(ack, 'CE'),
                 'W feedback immutable payload/capture enable changed: ' + str(bit))
+        if request_mapping is not None:
+            require(netlist.pin(held, 'CLEAR') == netlist.pin(request, 'CLEAR') and
+                    netlist.pin(captured, 'CLEAR') == netlist.pin(ack, 'CLEAR'),
+                    'W feedback unconditional request payload reset identity changed: ' + str(bit))
     pitch_source = None
     if stream_pitch_enabled:
         from tools.workstation_runtime_pcm_cdc import Graph
@@ -390,7 +437,8 @@ def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False):
                 live_payload_bits=sorted(bits), request=request, acknowledge=ack,
                 source_domain_verified=True, payload_bit_identity_verified=True,
                 stream_pitch_source=pitch_source,
-                unused_Push_destination_valid_swept=True, physical_timing_verified=False)
+                unused_Push_destination_valid_swept=True, physical_timing_verified=False,
+                **(dict(unconditional_request_mapping=request_mapping) if request_mapping is not None else {}))
 
 
 def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None):
@@ -591,12 +639,18 @@ def audit(root, output, metadata):
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
     root, output = Path(root), Path(output)
     audit_source_names = AUDIT_SOURCES
+    registered_epoch_selected = (metadata.get('classic_runtime') or {}).get('hci_epoch_policy') == 'registered_controller_epoch_v1'
+    if registered_epoch_selected:
+        audit_source_names += ('tools/workstation_hci_epoch.py',)
     from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
     if (metadata.get('demo_runtime_timing') or {}).get('policy') == W_RETURN_TIMING_POLICY:
         audit_source_names += ('tools/workstation_w_return_mailbox_cdc.py',
                                'tools/workstation_bluetooth_ddr.py')
     audit_sources = {relative: sha(root / relative) for relative in audit_source_names}
     role, profile, stage = verify_prepared(output, metadata)
+    require(registered_epoch_selected == (profile['configuration'].get('w_hci_epoch_policy') ==
+            'registered_controller_epoch_v1') and (not registered_epoch_selected or role == 'W'),
+            'registered HCI epoch role/policy drift')
     worker_audio_only = profile['configuration'].get('display_policy') == 'disabled_worker_audio_only_v1'
     require(metadata.get('top_module') == TOP and metadata.get('validation_stage') == 'integration_prepare_only' and
             metadata.get('source_policy') == 'explicit_native_board_on_resource_timing' and
@@ -642,6 +696,13 @@ def audit(root, output, metadata):
     rtc = verify_rtc(stage, stage, metadata.get('ae350_rtc'))
     clocks = audit_runtime_clocks(root, stage, vg_text)
     base_clocks = clocks['base_clock_audit']
+    registered_hci_epoch = None
+    if registered_epoch_selected:
+        from tools.workstation_hci_epoch import audit_registered_epoch
+        from tools.workstation_runtime_pcm_cdc import PcmNetlist
+        registered_hci_epoch = audit_registered_epoch(PcmNetlist(vg_text, TOP),
+            source_clock=base_clocks['clocks']['clk_50m']['net'],
+            destination_clock=base_clocks['clocks']['audio_76m8']['net'])
     usb_cdc = audit_usb2_cdc(root, vg_text, base_clocks)
     input_cdc = audit_input_fifo(root, vg_text, base_clocks)
     fifo_write_reset = None
@@ -653,7 +714,8 @@ def audit(root, output, metadata):
     bridge = audit_bridge_resets(vg_text, TOP)
     resets = audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8')
     feedback = (audit_worker_feedback(netlist, base_clocks,
-        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1') if role == 'W' else
+        stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1',
+        allow_unconditional_request=profile['configuration'].get('w_midi_input_policy') == 'disabled_unused_synth_uart_v1') if role == 'W' else
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist,
@@ -711,6 +773,7 @@ def audit(root, output, metadata):
         demo_performance_release_audit=performance_release,
         demo_held_handshake_audit=demo_held_handshakes,
         demo_boundary_cdc_audit=demo_boundary_cdc,
+        **(dict(registered_hci_epoch_audit=registered_hci_epoch) if registered_epoch_selected else {}),
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,
         recording_diagnostic_retirement_audit=recording_diagnostics,

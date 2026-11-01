@@ -159,6 +159,7 @@ and captures the tuple at a fourth edge. Source data never drives asynchronous
 reset. Actual source registers relative to `u_bluetooth` are
 `u_core/initializer/boot_id[63:0]` and
 `u_core/owner/flow/{generations[0..1],active,is_le}`; output tuple uses muxes.
+For the default transport and legacy W profiles,
 `u_core/owner/{published_epoch,published_generation}` are comparison state, not
 the actual tuple sources. Ready source is `u_core/owner/classic_ready_o`.
 Destination under `u_managed/runtime/cpu_pcm/session` is the epoch/generation
@@ -166,6 +167,27 @@ capture. A fresh synthesis must enumerate the real mux source endpoints and
 all destination bits, bound held data propagation before capture, and audit
 registered ready→async-close plus synchronizer release/recovery paths. RTL
 hierarchical names are proposals until resolved against the sealed netlist.
+
+The explicit W `registered_controller_epoch_v1` policy alone selects
+`REGISTERED_CONTROLLER_EPOCH=1` through its separately selected audio provider.
+Only the external controller epoch then comes from the existing
+`u_core/owner/published_epoch[31:0]` Q outputs. No additional register or identity
+owner is added. Internal raw epoch normalization, CPU MMIO identity, Classic
+generation output, ready comparison and ready revocation retain their existing
+behavior. The snapshot updates on the source edge that withdraws ready after a
+boot identity change; consumers still wait for ready to reopen, three settling
+edges and the fourth compute capture edge. The low32-zero/high32-nonzero boot-ID
+fallback is preserved. Default, M and W revisions before this explicit policy
+continue to expose the raw normalized boot mux.
+
+This policy rebinds only the epoch source in the existing held-data max10ns and
+hold-exception pair from initializer boot-ID registers to published-epoch Q.
+Generation endpoints and the destination capture remain unchanged; no clock or
+budget is relaxed. A strict selected-policy netlist gate resolves all32 source
+Q and capture D pairs, all64 boot-ID normalization inputs, source reset/ready,
+and the asynchronous-close/fourth-edge capture equations. This source policy
+requires a fresh candidate and routed timing/CDC validation; it does not inherit
+the physical status of an earlier W candidate.
 
 Also audit the new APB held-command bridge, CPU reset→stream revoke,
 `switch_inhibit_50`→compute inhibit and owner hold→selected-MCLK hold crossings.

@@ -150,7 +150,11 @@ module workstation_hci_native_core #(
     assign bridge_tx_start=0,bridge_tx_type=0,bridge_tx_length=0,bridge_tx_data=0;
     assign bridge_rx_addr=0,bridge_rx_consume=1'b1;
 `endif
-    workstation_hci_native_transport #(.CLK_HZ(CLK_HZ),.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING)) owner (
+    workstation_hci_native_transport #(.CLK_HZ(CLK_HZ),.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING)
+`ifdef WORKSTATION_HCI_REGISTERED_CONTROLLER_EPOCH
+        ,.REGISTERED_CONTROLLER_EPOCH(1)
+`endif
+    ) owner (
         .clk_i(clk),.reset_ni(sub_resetn),.enable_i(start_ready && outputs_active),.observer_reset_ni(business_owner_reset_ni),
         .link_up_i(link_up),.physical_fault_i(init_failed),.boot_id_i(boot_id),
         .initializer_handoff_i(hci_handoff),.initialized_i(initialized),.host_flow_ready_o(host_flow_ready),

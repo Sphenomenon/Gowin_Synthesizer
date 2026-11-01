@@ -59,7 +59,7 @@ def audit_headless_display_absence(n):
                 display_mailbox_absent=True, display_health_absent=True, video_hierarchy_absent=True)
 
 
-def audit_native_protocol(n, *, profile, mapping='synthesis'):
+def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False):
     require(profile in PROFILES, 'unknown role/profile')
     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')
     g = Graph(n)
@@ -74,7 +74,11 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     # 60 consumed bits and all normal handshake/driver/clock checks.
     require(not hmi or profile == 'm-demo-core', 'new W HMI inventory not yet reviewed')
     hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()
-    display_extra = tuple(203 + bit for bit in hmi_bits if bit < 128)
+    require(not connected_xy or profile == 'm-demo-core', 'connected XY requires explicit M core')
+    # PANIC is read at the 50MHz completed-frame receipt, then uses the
+    # existing trust bit/drop counter. No observation-mailbox bits are added.
+    panic_bits = tuple(range(54, 64)) if connected_xy else ()
+    display_extra = tuple(203 + bit for bit in (*hmi_bits, *panic_bits) if bit < 128)
     old_display_bits = (*range(ordinary), *range(105, 203))
     display_bits = (*old_display_bits, *display_extra)
     specifications = (
@@ -938,6 +942,7 @@ def main():
     parser.add_argument('--netlist', type=Path, required=True)
     parser.add_argument('--profile', choices=PROFILES, required=True)
     parser.add_argument('--mapping', choices=('synthesis', 'routed'), default='synthesis')
+    parser.add_argument('--connected-xy', action='store_true', help='Explicit M connected XY/PANIC inventory')
     parser.add_argument('--sdc', type=Path, help='Optional actual installed role SDC; no timing-engine execution')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
@@ -945,7 +950,7 @@ def main():
     data = args.netlist.read_bytes()
     sdc_data = args.sdc.read_bytes() if args.sdc else None
     netlist = protocol_netlist(data.decode(), mapping=args.mapping)
-    result = audit_native_protocol(netlist, profile=args.profile, mapping=args.mapping)
+    result = audit_native_protocol(netlist, profile=args.profile, mapping=args.mapping, connected_xy=args.connected_xy)
     result['lexical_audit'] = (netlist.lexical_connection_audit if args.mapping == 'synthesis'
                                else netlist.protocol_lexical_audit)
     result.update(netlist=str(args.netlist), netlist_sha256=hashlib.sha256(data).hexdigest(),

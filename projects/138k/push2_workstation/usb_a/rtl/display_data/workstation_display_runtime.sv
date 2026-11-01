@@ -38,6 +38,7 @@ module workstation_display_runtime (
     output wire [2:0] writer_diagnostic_o,
     output wire [3:0] reader_diagnostic_o
 );
+    parameter bit XY_TRACE_ENABLE=1'b0;
     wire common_reset_n=source_reset_ni && rst_ni;
     // Either domain may revoke the whole display immediately. Each owner's
     // release must nevertheless wait for its own clock, including a stopped
@@ -133,7 +134,7 @@ module workstation_display_runtime (
     // loss/context comparator cone to the reader state transition.
     wire load_start=load_request && enabled_i && export_live && !loading &&
         !reader_busy_o && !raster_busy_i && !raster_start_i;
-    display_data_analysis_source producer(
+    display_data_analysis_source #(.XY_TRACE_ENABLE(XY_TRACE_ENABLE)) producer(
         .clk(clk_i),.rst_ni(memory_reset_n),.frame_valid_i(tuple_valid),.frame_error_i(tuple_error),
         .frame_44k1_i(tuple_rate),.frame_epoch_i(tuple_epoch),.frame_sequence_i(tuple_sequence),.frame_pcm_i(tuple_pcm),
         .observation_trusted_i(trusted),.observation_loss_i(observation_loss),

@@ -126,7 +126,7 @@ class ActualNativeFixture(unittest.TestCase):
     def reject(self, name, path, part, key, value, message):
         with self.change(path, part, key, value):
             with self.assertRaisesRegex(ValueError, message) as error:
-                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         self.mutations.append(dict(case=name, rejected=True, error=str(error.exception)))
 
 class ActualNativeProtocol(ActualNativeFixture):
@@ -136,7 +136,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.skipTest('explicit W-audio retires display/RAM and display-loss monitor; actual absence verified')
 
     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         if self.profile == 'w-demo-audio':
             self.assertEqual(result['mailbox_count'], 2)
             self.assertEqual({row['scope'] for row in result['mailboxes']},
@@ -171,7 +171,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.n.scopes[path] = self.n.scopes[source]
             try:
                 with self.assertRaisesRegex(ValueError, 'headless profile retained display/video') as error:
-                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
                 self.mutations.append(dict(case='headless cell returned ' + scope, rejected=True, error=str(error.exception)))
             finally:
                 del self.n.cells[path]
@@ -185,7 +185,7 @@ class ActualNativeProtocol(ActualNativeFixture):
                 del self.n.frames[scope]
             from tools.workstation_worker_audio_only import constraints
             sdc, unused = constraints(protocol_constraints())
-            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
             for command in ('set_false_path', 'set_max_delay 2.000'):
                 changed = sdc + command + ' -to [get_pins {' + path + '/D}]\n'
                 with self.assertRaisesRegex(ValueError, 'retired display timing selector') as error:
@@ -196,7 +196,7 @@ class ActualNativeProtocol(ActualNativeFixture):
     def test_m22_new_hmi_mailbox_negative_controls(self):
         if self.profile != 'm-demo-core' or 'u_video/u_applied_parameters_cdc' not in self.n.frames:
             self.skipTest('M22 actual new HMI mailbox only')
-        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping)
+        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping,connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         display=next(x for x in result['mailboxes'] if x['scope']=='u_managed/display')
         hmi=next(x for x in result['mailboxes'] if x['scope']=='u_video/u_applied_parameters_cdc')
         self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['payload_bits']),(132,98,230))
@@ -218,7 +218,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.reject(name,path,'ports',pin,value,'.')
 
     def test_installed_sdc_keeps_later_stages_and_exact_local_bounds(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         sdc = protocol_constraints()
         headless = self.profile == 'w-demo-audio'
         if headless:
@@ -598,7 +598,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
                     self.bind(target, self.reg('u_tf_audio/frames', 'quiesce_sync_0')), 'first-stage has another consumer')
 
     def test_sdc_protects_payload_setup_and_all_later_stages(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         timing = result['timing_boundaries']
         sdc = protocol_constraints()
         headless = self.profile == 'w-demo-audio'
@@ -625,7 +625,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
 
 class ActualDemoHeldHandshakes(ActualNativeFixture):
     def audited(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping)
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
         result['demo_held_handshakes'] = audit_demo_held_boundaries(self.n, result)
         return result
 

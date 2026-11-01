@@ -269,10 +269,20 @@ module hdmi_display #(
         .frame_pending(frame_pending),.rendered_frames(rendered_frames)
     );
 `ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_XY_TRACE
+    wire trace_observation_trusted;
+    workstation_xy_panic_observation u_xy_panic(
+        .clk_i(clk_50m),.reset_ni(source_reset_pipe[2]),.sample_valid_i(sample_valid),
+        .panic_epoch_i(applied_parameters_i[63:54]),.trusted_i(observation_trusted_i),
+        .trusted_o(trace_observation_trusted));
+    workstation_display_runtime #(.XY_TRACE_ENABLE(1'b1)) u_runtime_display(
+`else
+    wire trace_observation_trusted=observation_trusted_i;
     workstation_display_runtime u_runtime_display(
+`endif
         .source_clk_i(clk_50m),.source_reset_ni(source_reset_pipe[2]),.clk_i(memory_clk),.rst_ni(ui_rst_n),
         .enabled_i(display_enabled),.frame_valid_i(sample_valid),.frame_44k1_i(frame_44k1_i),.frame_error_i(frame_error_i),
-        .observation_trusted_i(observation_trusted_i),.frame_epoch_i(frame_epoch_i),.frame_sequence_i(frame_sequence_i),
+        .observation_trusted_i(trace_observation_trusted),.frame_epoch_i(frame_epoch_i),.frame_sequence_i(frame_sequence_i),
         .frame_pcm_i(output_pcm),.trigger_reference_i(trigger_reference),.active_voices_i(active_voices),.status_i(status_data),
         .effect_mask_i(effect_mask),.effect_order_i(effect_order),.observation_drop_o(display_observation_drop_o),
         .memory_status_i(memory_status),.raster_busy_i(native_raster_lease || renderer_busy || write_req),.raster_start_i(renderer_start),
@@ -410,6 +420,22 @@ endmodule
 // A small read-only HMI table in the final scanout. It remains live when a
 // clock transaction revokes old PCM/analysis; it neither republishes stale
 // analysis nor waits for a new audio frame. Both pipeline stages match scanout.
+// This bit travels in the existing atomic observation tuple. If the mailbox
+// drops a PANIC-marked sample, its existing drop counter revokes the analysis
+// instead. The level synchronizer is supplementary, never the sole delivery.
+module workstation_xy_panic_observation(
+    input wire clk_i,reset_ni,sample_valid_i,trusted_i,
+    input wire [9:0] panic_epoch_i,
+    output wire trusted_o
+);
+    reg [9:0] panic_epoch_q;
+    wire panic_changed=sample_valid_i && panic_epoch_i!=panic_epoch_q;
+    always @(posedge clk_i or negedge reset_ni)
+        if(!reset_ni)panic_epoch_q<=0;
+        else if(sample_valid_i)panic_epoch_q<=panic_epoch_i;
+    assign trusted_o=trusted_i && !panic_changed;
+endmodule
+
 module workstation_audio_rate_overlay(
     input wire reset_ni,control_clk_i,pixel_clk_i,
     input wire [3:0] actual_status_i,

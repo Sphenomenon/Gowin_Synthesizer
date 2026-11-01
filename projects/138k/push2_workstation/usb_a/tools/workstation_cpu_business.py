@@ -66,13 +66,18 @@ def verify_telemetry_reset_constraints(sdc,evidence):
     if checked!=sdc or evidence!=expected:
         raise ValueError('CPU business telemetry reset constraint evidence changed')
     return evidence
-def selection(shared_hci=False,*,audio_only=False):
+def selection(shared_hci=False,*,audio_only=False,registered_controller_epoch=False):
+    if type(registered_controller_epoch)is not bool or (registered_controller_epoch and not(shared_hci and audio_only)):raise ValueError('registered HCI epoch requires explicit audio-only shared HCI selection')
     if audio_only:
         if not shared_hci:raise ValueError('W audio-only requires the native shared HCI owner')
         from tools.workstation_worker_audio_only import HCI_PROVIDER
+        extra=()
+        if registered_controller_epoch:
+            from tools.workstation_hci_epoch import PROVIDER as HCI_PROVIDER, TOOL
+            extra=(TOOL,'rtl/bluetooth/hci_owner/workstation_hci_audio_provider.sv')
         return ({'rtl/bluetooth/workstation_bluetooth.sv':HCI_PROVIDER},
             tuple(x for x in HCI_SOURCES if not x.endswith('workstation_hci_ble_bridge.v')),
-            (*HCI_DEPENDENCIES,HCI_PROVIDER,'tools/workstation_cpu_business.py'))
+            (*HCI_DEPENDENCIES,HCI_PROVIDER,'tools/workstation_cpu_business.py',*extra))
     return (HCI_COPIES,(*SOURCES,*HCI_SOURCES),(*DEPENDENCIES,*HCI_DEPENDENCIES)) if shared_hci else (COPIES,SOURCES,DEPENDENCIES)
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def metadata():
@@ -83,7 +88,7 @@ def metadata():
         hardware_owned=['capture_crc','raw_storage','native_commit','media_seal','block_fetch','rice_codec','wire_bytes'],
         remaining_software_migration=[])
     return m
-def prepare(root,stage,*,shared_hci=False,audio_only=False):
+def prepare(root,stage,*,shared_hci=False,audio_only=False,registered_controller_epoch=False):
     root,stage=Path(root),Path(stage)
     # Verify exactly the original stage being replaced, without generating the
     # legacy raw recorder. Stable native sources already contain the raw ports.
@@ -92,24 +97,24 @@ def prepare(root,stage,*,shared_hci=False,audio_only=False):
         p=stage/relative
         if sha(p)!=legacy.INPUT_SHA256[name]:raise ValueError('CPU business original stage drift: '+relative)
         before[relative]=sha(p)
-    copies,sources,dependencies=selection(shared_hci,audio_only=audio_only)
+    copies,sources,dependencies=selection(shared_hci,audio_only=audio_only,registered_controller_epoch=registered_controller_epoch)
     for destination,source in copies.items():
         shutil.copyfile(root/source,stage/destination)
     retired='native_bluetooth/ble_recording.v'
     (stage/retired).unlink()
-    evidence=dict(policy='native_shared_hci_audio_only_v1' if audio_only else HCI_POLICY if shared_hci else POLICY,source_sha256={p:sha(root/p) for p in (*sources,*dependencies)},
+    evidence=dict(policy=('native_shared_hci_audio_only_registered_epoch_v2' if registered_controller_epoch else 'native_shared_hci_audio_only_v1') if audio_only else HCI_POLICY if shared_hci else POLICY,source_sha256={p:sha(root/p) for p in (*sources,*dependencies)},
         copied={d:dict(source=s,sha256=sha(root/s)) for d,s in copies.items()},
         replaced_input_sha256=before,retired=[retired],rtl_text_generation=False,
         hardware_tested=False,synthesis=False,pnr=False,deployment_allowed=False)
-    verify_prepared(root,stage,evidence,shared_hci=shared_hci,audio_only=audio_only)
+    verify_prepared(root,stage,evidence,shared_hci=shared_hci,audio_only=audio_only,registered_controller_epoch=registered_controller_epoch)
     return evidence
-def verify_prepared(root,stage,evidence,*,shared_hci=False,audio_only=False):
+def verify_prepared(root,stage,evidence,*,shared_hci=False,audio_only=False,registered_controller_epoch=False):
     root,stage=Path(root),Path(stage)
-    copies,sources,dependencies=selection(shared_hci,audio_only=audio_only)
+    copies,sources,dependencies=selection(shared_hci,audio_only=audio_only,registered_controller_epoch=registered_controller_epoch)
     expected_sources={p:sha(root/p) for p in (*sources,*dependencies)}
     expected_copies={d:dict(source=s,sha256=sha(root/s)) for d,s in copies.items()}
     expected_before={legacy.STAGED_PATHS[n]:h for n,h in legacy.INPUT_SHA256.items()}
-    if evidence.get('policy')!=('native_shared_hci_audio_only_v1' if audio_only else HCI_POLICY if shared_hci else POLICY) or evidence.get('source_sha256')!=expected_sources or evidence.get('copied')!=expected_copies or evidence.get('replaced_input_sha256')!=expected_before or evidence.get('retired')!=['native_bluetooth/ble_recording.v'] or evidence.get('rtl_text_generation') is not False:
+    if evidence.get('policy')!=(('native_shared_hci_audio_only_registered_epoch_v2' if registered_controller_epoch else 'native_shared_hci_audio_only_v1') if audio_only else HCI_POLICY if shared_hci else POLICY) or evidence.get('source_sha256')!=expected_sources or evidence.get('copied')!=expected_copies or evidence.get('replaced_input_sha256')!=expected_before or evidence.get('retired')!=['native_bluetooth/ble_recording.v'] or evidence.get('rtl_text_generation') is not False:
         raise ValueError('CPU business source policy/evidence drift')
     for destination,source in copies.items():
         if sha(stage/destination)!=sha(root/source):raise ValueError('CPU business staged source drift: '+destination)
