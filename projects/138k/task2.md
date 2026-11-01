@@ -414,6 +414,8 @@ HCI ACL generation 的[维护源码比较分组](push2_workstation/usb_a/reports
 
 M19 的[reference区域布局D2110124](push2_workstation/usb_a/reports/DUAL138K_M19_REFERENCE_PHYSICAL_20261101.md)完整P&R及六审计完成，VG／SDC／DDR3.500ns保持，CST仅追加两个64FF bank区域。实测BSRAM235／DSP119／CLS50878，setup5526／−3.417ns、hold11／−0.198ns，recovery+1.807／removal+0.281ns、DDR指定hold+.503ns。reference同域hold仍失败，最差setup转为delay peer_fault→config_state CE；DDR UI另有571 setup负端点／TNS−476.102ns。主线程重验12物理输入／30产物／2972证据；不以局部改善转授整机通过，未上板。
 
+W 的[raw最终故障写使能](push2_workstation/usb_a/reports/DUAL138K_RAW_FINAL_FAILURE_CE_20261101.md)已修改维护源码并通过：私有4bit故障码同沿process保留first-fault／X-Z投影，其他NBA目标／RHS／顺序保持。完整owner两几何356656／304921边沿、4096任意四态＋32定向、524288 CE/value与16384唯一协议向量、5实际／4来源负控通过；原raw、DDR queue／bridge、preload／global及BLE五层入口均通过。工具旧source pin拒绝保留，显式提升后新输出验证；主线程重验552证据与Git严格inverse。尚未更新profile或新综合／P&R，无物理收益主张，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

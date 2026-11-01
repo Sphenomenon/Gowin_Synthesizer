@@ -437,6 +437,71 @@ module workstation_ble_raw_ddr_store #(
         assign packed_payload[lane*32+:32]=pack_frames>4'(lane) ? pack_data[lane*32+:32] : 32'd0;
     end endgenerate
 
+    // Private failure-code writes keep the original edge and first-fault rule.
+    // A known immediate fault suppresses every protocol write, so it reaches
+    // the final write enable directly. Its zero cofactor has no fault feedback;
+    // unknown fault values retain the exact original procedural projection.
+    wire failure_fifo_without_fault=fifo_read_valid && memory_reset_n && !memory_channel_fault &&
+        !memory_command_start && (clear_fifo_pop || (!memory_clear_pending && normal_fifo_pop));
+    reg memory_failure_protocol_write /* synthesis syn_keep=1 */;
+    always @* begin
+        memory_failure_protocol_write=0;
+        if(failure_fifo_without_fault)begin
+            if(!memory_clear_pending)begin
+                if(fifo_read_data[63:32]!=memory_next_index ||
+                   (!fifo_read_data[64] && memory_next_index>=CAPACITY_FRAMES))begin
+                    memory_failure_protocol_write=1;
+                end
+            end
+        end
+        if(memory_command_start)begin
+            if(memory_channel_fault)begin end
+            else case(command_kind)
+                CMD_START:begin if(start_context_bad)memory_failure_protocol_write=1;end
+                CMD_CLEAR:begin
+                    if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
+                        memory_failure_protocol_write=1;
+                end
+                CMD_FETCH:begin end
+                default:memory_failure_protocol_write=1;
+            endcase
+        end
+    end
+    always @(posedge memory_clk_i or negedge memory_reset_n)begin
+        if(!memory_reset_n)memory_failure<=0;
+        else case(memory_fault_now)
+            1'b1:begin
+                if(!memory_channel_fault)memory_failure<=global_failure_value;
+            end
+            1'b0:begin
+                if(memory_failure_protocol_write)memory_failure<=F_PROTOCOL;
+            end
+            default:begin
+                if(fifo_pop)begin
+                    if(!memory_clear_pending)begin
+                        if(fifo_read_data[63:32]!=memory_next_index ||
+                           (!fifo_read_data[64] && memory_next_index>=CAPACITY_FRAMES))begin
+                            memory_failure<=F_PROTOCOL;
+                        end
+                    end
+                end
+                if(memory_command_start)begin
+                    if(memory_channel_fault || memory_fault_now)begin end
+                    else case(command_kind)
+                        CMD_START:begin if(start_context_bad)memory_failure<=F_PROTOCOL;end
+                        CMD_CLEAR:begin
+                            if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
+                                memory_failure<=F_PROTOCOL;
+                        end
+                        CMD_FETCH:begin end
+                        default:memory_failure<=F_PROTOCOL;
+                    endcase
+                end
+                if(global_failure_write)memory_failure<=global_failure_value;
+            end
+        endcase
+    end
+
     always @(posedge memory_clk_i or negedge memory_reset_n)begin
         if(!memory_reset_n)begin
             command_req_meta<=0;command_req_sync<=0;command_ack<=0;cancel_meta<=0;cancel_sync<=0;cancel_seen<=0;
@@ -446,7 +511,7 @@ module workstation_ble_raw_ddr_store #(
             completion_generation<=0;completion_committed<=0;completion_kind<=0;completion_code<=0;
             memory_generation<=0;memory_next_index<=0;memory_committed<=0;fifo_consumed<=0;memory_clear_target<=0;
             memory_active<=0;memory_closed<=1;memory_empty<=1;memory_clear_pending<=0;memory_command_active<=0;
-            memory_channel_fault<=0;memory_failure<=0;pack_frames<=0;published_frames<=0;
+            memory_channel_fault<=0;pack_frames<=0;published_frames<=0;
             pack_word_valid<=0;
             write_address<=BASE_APP;published_valid<=0;read_outstanding<=0;published_generation<=0;read_generation<=0;
             published_word<=0;read_word<=0;command_wait<=0;read_wait<=0;
@@ -513,7 +578,7 @@ module workstation_ble_raw_ddr_store #(
                 if(!memory_clear_pending)begin
                     if(fifo_read_data[63:32]!=memory_next_index ||
                        (!fifo_read_data[64] && memory_next_index>=CAPACITY_FRAMES))begin
-                        memory_channel_fault<=1;memory_failure<=F_PROTOCOL;
+                        memory_channel_fault<=1;
                     end else if(fifo_read_data[64])begin
                         memory_active<=0;memory_closed<=1;
                     end else begin
@@ -545,7 +610,7 @@ module workstation_ble_raw_ddr_store #(
                         // the same time as START. Prove the old epoch retired
                         // using its immutable event target, not FIFO visibility.
                         if(start_context_bad)begin
-                            memory_channel_fault<=1;memory_failure<=F_PROTOCOL;completion_code<=F_PROTOCOL;
+                            memory_channel_fault<=1;completion_code<=F_PROTOCOL;
                         end else begin
                             memory_active<=1;memory_closed<=0;memory_empty<=0;completion_code<=0;
                         end
@@ -554,7 +619,7 @@ module workstation_ble_raw_ddr_store #(
                     end
                     CMD_CLEAR:begin
                         if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)begin
-                            memory_channel_fault<=1;memory_failure<=F_PROTOCOL;
+                            memory_channel_fault<=1;
                             completion_generation<=command_generation;completion_committed<=memory_committed;
                             completion_kind<=CMD_CLEAR;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
                         end else begin
@@ -576,7 +641,7 @@ module workstation_ble_raw_ddr_store #(
                         end
                     end
                     default:begin
-                        memory_channel_fault<=1;memory_failure<=F_PROTOCOL;
+                        memory_channel_fault<=1;
                         completion_generation<=command_generation;completion_committed<=memory_committed;
                         completion_kind<=command_kind;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
                     end
@@ -606,7 +671,6 @@ module workstation_ble_raw_ddr_store #(
             if(memory_fault_now)begin
                 memory_channel_fault<=1;memory_fetch_cancel<=1;
             end
-            if(global_failure_write)memory_failure<=global_failure_value;
         end
     end
 endmodule

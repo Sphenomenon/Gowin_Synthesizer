@@ -1,0 +1,163 @@
+{
+  "stage": "maintained_raw_final_failure_CE_handoff",
+  "captured_utc": "2026-11-01T08:15:45.741750+00:00",
+  "review_base_commit": "614595e1767f300b26b5d4b7c9a1ceba793dc47e",
+  "passed": true,
+  "owned_sha256": {
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "5262395f5031a14aa6cf18b359852590d3dcab33ee3fde9ce5f4e069b6fb9739",
+    "sim/memory/ble_raw_failure_ce_sources.py": "40a700472f82ebc92387214782a580442d223bd5e05c5f29cde6439205b62d66",
+    "sim/memory/prove_ble_raw_failure_final_ce.py": "5d378da3bb48b0d1bd3a30067bfda4346b1d168d8ad2b8b4d18dc95498af8e70",
+    "sim/memory/prove_ble_raw_return_mailbox_preload.py": "f36f772fc32d43e11e49bf118ec3b0b017b2526e640dd8de844f9fa067aa497f"
+  },
+  "owned_files": 4,
+  "root_owned_source_pin": {
+    "path": "tools/workstation_bluetooth_ddr.py",
+    "sha256": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d",
+    "approved_raw_sha256": "5262395f5031a14aa6cf18b359852590d3dcab33ee3fde9ce5f4e069b6fb9739"
+  },
+  "all_owned_and_evidence_verified_twice": true,
+  "evidence_count": 552,
+  "jobs": {
+    "final-ce": {
+      "returncode": 0,
+      "elapsed_seconds": 129.0159582500346,
+      "verification_sha256": "6dc1d21beaa7a467e3a398fbc945f7921dd447d597b836c32259cf9e4010ca47",
+      "cases": 5,
+      "negative_case_entries": 0,
+      "negative_controls": 5
+    },
+    "raw-owner": {
+      "returncode": 0,
+      "elapsed_seconds": 6.82899362500757,
+      "verification_sha256": "eb238ba71f65595561d8cff7b7cfc2848bc1be84795961bac99478b4b373a049",
+      "cases": 7,
+      "negative_case_entries": 5,
+      "negative_controls": 0
+    },
+    "ddr-path": {
+      "returncode": 0,
+      "elapsed_seconds": 21.02380191697739,
+      "verification_sha256": "04a3b037e3e78c97e590aa63e6b05725b1ac2e323c711d1f7665a8a0e61169c0",
+      "cases": 44,
+      "negative_case_entries": 11,
+      "negative_controls": 0
+    },
+    "return-preload": {
+      "returncode": 0,
+      "elapsed_seconds": 20.616553499829024,
+      "verification_sha256": "be0fd9ed1260cdd102ef18de9e7079f04add5bad56c1bd9be55a80e3dc52f2bf",
+      "cases": 4,
+      "negative_case_entries": 0,
+      "negative_controls": 5
+    },
+    "global-failure": {
+      "returncode": 0,
+      "elapsed_seconds": 129.633531749947,
+      "verification_sha256": "6a75eaf28bc7730b960089c922d781d21c4b528a83af56de73003d4621c02aa9",
+      "cases": 10,
+      "negative_case_entries": 6,
+      "negative_controls": 0
+    },
+    "ble-protocol-chain-v2": {
+      "returncode": 0,
+      "elapsed_seconds": 41.14098120899871,
+      "verification_sha256": "68b133a2317d68c56f6d1139f1cd0558228eb6614da71b86f6f68cf25838bd72",
+      "cases": 5,
+      "negative_case_entries": 0,
+      "negative_controls": 27
+    }
+  },
+  "exact_inverse_lineage": [
+    {
+      "stage": "before_final_failure_CE",
+      "sha256": "d2e39654e16fde55c13b231ef672162fb2b2b6bdfa3740d4b7ac25bb95f8c38d"
+    },
+    {
+      "stage": "before_return_preload",
+      "sha256": "b654b55a47e017aec5f3c386f26cb2aac34f311bdb564852cf047c24dc1c3809",
+      "fixture": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/fixtures/workstation_ble_raw_ddr_store_before_return_preload.sv"
+    },
+    {
+      "stage": "before_global_failure",
+      "sha256": "39ae3b918a4674f849eb0663bb193e2890881f164063f22b473b5dbb61df290b",
+      "fixture": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/fixtures/workstation_ble_raw_ddr_store_before_global_failure_case.sv"
+    },
+    {
+      "stage": "before_CLEAR",
+      "sha256": "21471d722da294e841829f6ff1ec396fab016358bf6a796f93d17ec0f95c978d",
+      "fixture": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/fixtures/workstation_ble_raw_ddr_store_before_clear_case.sv"
+    }
+  ],
+  "final_failure_proof": {
+    "four_state_CE_value_vectors": 524288,
+    "protocol_kind_unique_four_state_vectors": 16384,
+    "complete_owner_edge_counts": [
+      356656,
+      304921
+    ],
+    "random_four_state_edges": 4096,
+    "directed_cases": 32,
+    "negative_controls": 5,
+    "source_drift_controls": 4,
+    "original_outputs": 24,
+    "original_declared_regs": 117,
+    "compared_signals": 182,
+    "final_cache_cells": 4096,
+    "derived_predicate_forces": false,
+    "mirrored_original_TB_generation_forces": 5
+  },
+  "raw_owner": {
+    "geometries": 2,
+    "negative_controls": 5,
+    "lint_exact_prior_warnings": 4
+  },
+  "native_DDR": {
+    "positive_scenarios": 27,
+    "fault_cases": 6,
+    "negative_controls": 11,
+    "strict_lint_modes": 2
+  },
+  "BLE": {
+    "positive_cases": 5,
+    "negative_controls": 27,
+    "actual_protocol_cases": 6,
+    "protocol_seals": 3,
+    "source_and_output_hashes_checked": true
+  },
+  "no_skip": true,
+  "source_implementation": true,
+  "new_synthesis": false,
+  "new_PNR": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "timing_or_resource_gain_claimed": false,
+  "release_ready": false,
+  "failures_preserved": [
+    "v1 wrapper SyntaxError _in before execution",
+    "formal BLE chain first attempted before approved tool source pin promotion; source identity gate rejected at prepare"
+  ],
+  "limits": [
+    "Complete sequential formal equivalence is not established; actual whole-owner twins plus local exhaustive four-state projection/source bindings are preserved.",
+    "Formal BLE chain uses native DDR model, forced BLE link/initial connection and direct command injection, with shortened test budgets.",
+    "Old preload/global proofs normalize through strict newest inverse and retain all historical fixture identities.",
+    "Actual routed resource, setup/hold, CDC and hardware sound/display/25K/A2DP/record/download still require new complete-workstation candidate."
+  ],
+  "schema": "dual138k-raw-final-failure-ce-maintained-v1",
+  "root_review": {
+    "stage": "root_raw_final_failure_CE_review",
+    "passed": true,
+    "captured_utc": "2026-11-01T08:17:21.277447+00:00",
+    "handoff_verification_sha256": "f1b606a994955c9365f53739c93a0f1fa12f98762475eb734f197ac9e9b6c83e",
+    "handoff_seal_sha256": "03d3c0ba7f45a525ad35cdaf46eead56a2eddd6a096fe25b6452cf0651e34ceb",
+    "evidence_count": 552,
+    "strict_inverse_matches_HEAD": true,
+    "all_six_regression_entrypoints_exit_zero": true,
+    "root_owned_source_pin_sha256": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d",
+    "hardware_tested": false,
+    "physical_gain_measured": false
+  },
+  "root_review_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/raw-final-ce-maintained-root-review-v1.json",
+  "root_review_sha256": "fe848812877602f0cf2a4a71687b849c8746c9603e4e700f49cd927def08a7f8"
+}

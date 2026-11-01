@@ -117,8 +117,23 @@ def replace_once(text, anchor, replacement):
     return text.replace(anchor, replacement, 1)
 
 
+def normalize_before_failure_final_ce(text):
+    """Keep the newer private failure-register change out of this older proof."""
+    helper_path = Path(__file__).with_name('ble_raw_failure_ce_sources.py')
+    require(sha(helper_path) ==
+            '40a700472f82ebc92387214782a580442d223bd5e05c5f29cde6439205b62d66',
+            'final failure CE inverse helper changed')
+    spec = importlib.util.spec_from_file_location('raw_failure_ce_inverse', helper_path)
+    helper = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(helper)
+    if hashlib.sha256(text.encode()).hexdigest() == helper.BASELINE_SHA256:
+        return text
+    return helper.restore_before_failure_final_ce(text)
+
+
 def restore_before_return_preload(text):
     """Strict inverse for old proofs; it proves no new private-state contract."""
+    text = normalize_before_failure_final_ce(text)
     require(hashlib.sha256(text.encode()).hexdigest() == MAINTAINED_SHA256,
             'maintained source identity changed')
     restored = replace_once(text, PRELOAD_BLOCK, '')
@@ -181,7 +196,9 @@ def main():
     dependencies = [ROOT / relative for relative in (
         'rtl/memory/workstation_sdp.sv', 'rtl/music/music_async_fifo.sv',
         'rtl/memory/workstation_recording_ddr_native_bridge.sv')]
-    paths = [source, fixture, helper_source, tb_source, *dependencies, Path(__file__).resolve()]
+    failure_helper = Path(__file__).with_name('ble_raw_failure_ce_sources.py')
+    paths = [source, fixture, helper_source, tb_source, *dependencies,
+             Path(__file__).resolve(), failure_helper]
     original_hashes = {str(path): sha(path) for path in paths}
     snapshots = {}
     for path in paths:
@@ -190,13 +207,15 @@ def main():
         target.write_bytes(path.read_bytes())
         require(sha(target) == original_hashes[str(path)], 'input changed during snapshot')
         snapshots[path] = target
-    old, new = snapshots[fixture].read_text(), snapshots[source].read_text()
+    old = snapshots[fixture].read_text()
+    new = normalize_before_failure_final_ce(snapshots[source].read_text())
     structure = source_structure(old, new)
     helper = load_helper(snapshots[helper_source])
     ports, states, nets = helper.inventories(old)
     require(helper.inventories(new) == (ports, states, nets), 'port/state/net inventory changed')
     compared_states = [name for name in states if name not in PRIVATE_PAYLOAD]
-    variant = snapshots[source]
+    variant = out / 'normalized-before-final-failure-ce.sv'
+    variant.write_text(new)
     reference = out / 'reference.sv'
     reference.write_text(replace_once(old, 'module workstation_ble_raw_ddr_store #(',
                                      'module workstation_ble_raw_ddr_store_reference #('))
@@ -223,6 +242,8 @@ def main():
     deps = [snapshots[path] for path in dependencies]
     result = dict(schema=1, passed=False, source_implementation=True,
                   source_sha256=sha(variant), baseline_sha256=sha(snapshots[fixture]),
+                  maintained_source_sha256=sha(snapshots[source]),
+                  exact_reviewed_final_failure_ce_inverse=True,
                   source_structure=structure, logical_payload_bits=299,
                   added_registers=0, added_latency=0, whole_twin_inventory=inventory,
                   allowed_private_difference=sorted(PRIVATE_PAYLOAD), cases={}, negative_controls={},
