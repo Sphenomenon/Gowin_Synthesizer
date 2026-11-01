@@ -278,6 +278,9 @@ def sha(data):
 def restore_parent(relative, source):
     """Reverse the complete reviewed owner change and verify forward roundtrip."""
     relative = str(relative)
+    if relative == 'rtl/audio/gw138k_event_workstation.sv':
+        from tools.workstation_stream_pitch_provenance import normalize_source
+        source = normalize_source(relative, source)
     if relative not in HUNKS or sha(source) != CURRENT_SHA256[relative]:
         raise ValueError('Dispatch slot source identity changed: ' + relative)
     current = source.decode()

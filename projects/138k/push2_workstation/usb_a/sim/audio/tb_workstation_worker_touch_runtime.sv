@@ -93,10 +93,14 @@ module tb_workstation_worker_touch_runtime;
   always @(posedge clk)if(rst_n && dut.workstation.core_ce)begin
     expected_capture_l=d_process_old_reference(dut.workstation.pcm_left_i,dut.workstation.d_crush,dut.workstation.d_drive);
     expected_capture_r=d_process_old_reference(dut.workstation.pcm_right_i,dut.workstation.d_crush,dut.workstation.d_drive);
+    old_function_snapshots=old_function_snapshots+1;
+  end
+  always @(posedge clk)if(rst_n && dut.workstation.pcm_pitch_valid && dut.workstation.frame_inflight)begin
+    expected_capture_l=d_process_old_reference(dut.workstation.pcm_pitch_left,dut.workstation.pcm_crush,dut.workstation.pcm_drive);
+    expected_capture_r=d_process_old_reference(dut.workstation.pcm_pitch_right,dut.workstation.pcm_crush,dut.workstation.pcm_drive);
     #1;
     if(dut.workstation.held_pcm_l!==expected_capture_l || dut.workstation.held_pcm_r!==expected_capture_r)
-      $fatal(1,"D original core_ce snapshot changed");
-    old_function_snapshots=old_function_snapshots+1;
+      $fatal(1,"D core_ce depth snapshot changed across streaming Pitch");
   end
   task clocks(input integer n);repeat(n)@(negedge clk);endtask
   task frame(input signed [31:0] l,r);begin
@@ -107,8 +111,13 @@ module tb_workstation_worker_touch_runtime;
     frames=frames+1;clocks(2);
   end endtask
   task change_rate(input reg next_rate);begin
-    while(!config_ready)clocks(1);config_rate=next_rate;config_valid=1;clocks(1);config_valid=0;waited=0;
-    while(!config_applied)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"config timeout");end
+    // C trace MMIO completes on an unrelated CPU edge. Start on an audio
+    // falling edge and hold until an actual valid/ready rising edge; a pulse
+    // ending at the next falling edge can otherwise contain no rising edge.
+    @(negedge clk);config_rate=next_rate;config_valid=1;waited=0;
+    do begin @(posedge clk);waited=waited+1;if(waited>3000)$fatal(1,"config acceptance timeout");end while(!config_ready);
+    @(negedge clk);config_valid=0;waited=0;
+    while(!config_applied)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"config timeout configready=%b corebusy=%b quiet=%b stagequiet=%b pitchjoined=%b pitchvalid=%b fxquiet=%b fxhistorydone=%b engine_rate=%b fxrate=%b pending_rate=%b configapplied=%b historydone=%b fault=%b",config_ready,dut.workstation.runtime_config_busy,quiet,dut.workstation.pcm_pitch_quiet,dut.workstation.pcm_pitch_joined,dut.workstation.pcm_pitch_valid,dut.workstation.fx_quiet,dut.workstation.fx_history_done,dut.workstation.engine_rate,dut.workstation.fx_rate,dut.workstation.runtime_configuration.pending_rate,dut.workstation.fx_config_applied,history_done,fault);end
     if(applied_rate!=next_rate || fault)$fatal(1,"config ACK before all-rate agreement");rate=next_rate;clocks(2);
   end endtask
 
@@ -117,13 +126,13 @@ module tb_workstation_worker_touch_runtime;
   integer settled_lifecycles=-1,startup_frames=0;
   reg [31:0] read_value;string trace_path;
   reg signed [31:0] expected_l,expected_r;
-  task checkpoint(input integer c,d,s,fx);
+  task checkpoint(input integer c,d,s,fx,bend);
     integer spins;
     reg [2:0] effective;
     begin
       allow_events=1;repeat(120)@(negedge cpu_clk);spins=0;
       effective=3'(fx) | (s!=0?3'b001:3'b000);
-      while(options[20:0]!=={7'(s),7'(d),7'(c)} || mask!==effective ||
+      while(options[20:0]!=={7'(s),7'(d),7'(c)} || options[28:21]!==8'(bend) || mask!==effective ||
             dut.workstation.attach_initializing || usb_valid)begin
         clocks(1);spins=spins+1;
         if(spins>10000)$fatal(1,"touch commit mismatch expected %0d/%0d/%0d/%0d got %h/%d",c,d,s,fx,options,mask);
@@ -138,9 +147,9 @@ module tb_workstation_worker_touch_runtime;
         for(integer i=0;i<300;i=i+1)frame(32'sh12345678,-32'sh12345678);
         startup_frames=startup_frames+300;settled_lifecycles=lifecycles;
       end
-      for(integer i=0;i<8;i=i+1)begin
+      for(integer i=0;i<72;i=i+1)begin
         frame(32'sh12345678,-32'sh12345678);
-        if(effective==0 && (left_o!==expected_l || right_o!==expected_r))
+        if(i>=64 && bend==128 && effective==0 && (left_o!==expected_l || right_o!==expected_r))
           $fatal(1,"C touch release did not restore actual dry/D-processed PCM checkpoint=%d frame=%d rate=%d c=%d d=%d got=%h/%h expected=%h/%h",checkpoints,i,rate,c,d,left_o,right_o,expected_l,expected_r);
       end
       if(effective!=0)wet_checkpoints=wet_checkpoints+1;else dry_checkpoints=dry_checkpoints+1;
@@ -164,7 +173,7 @@ module tb_workstation_worker_touch_runtime;
       n=$fscanf(fd,"%h %h %h %h %h %h %h\n",op,address,value,crush,drive,send,selected);
       if(n==7)begin
         if(op==0)access_bus(1,8'(address),32'(value),read_value);
-        else if(op==1)checkpoint(crush,drive,send,selected);
+        else if(op==1)checkpoint(crush,drive,send,selected,value);
         else if(op==2)begin allow_events=1;change_rate(1'(value));allow_events=0;end
         else $fatal(1,"bad C trace operation");
       end else if(n!=-1)$fatal(1,"malformed C trace row %d",n);

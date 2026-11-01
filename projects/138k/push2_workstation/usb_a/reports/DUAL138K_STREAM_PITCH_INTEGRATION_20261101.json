@@ -1,0 +1,271 @@
+{
+  "schema": "dual138k_stream_pitch_formal_integration_20261101_v1",
+  "stage": "Reviewed maintained W-only continuous PCM Pitch plus real firmware/25K/sole-parameter/service integration; actual candidate EDA pending",
+  "git_parent_at_review": "6e8e59bd9f68d3dd2c7e67c14853e723c30040a6",
+  "owned_source_sha256": {
+    "GW25K_PANEL.md": "a3d1bfe5b7495b2ed63d5de8f718fc908ea85d82940ec81101a1cdd12112d8fc",
+    "firmware.c": "d0bdf89eff7be0f0a23354f393315e13d531bb7eafbfc9afe3aaeee056cbc108",
+    "gw25k_panel.h": "2598ccd24930d967d57e9a18900400fdfe92103078edb0ee3861079b535803f5",
+    "rtl/audio/gw138k_event_workstation.sv": "c94ef35bdd97e69bf0aabcd3dc0b773949771c42e2ab30178d94b592e3529747",
+    "rtl/control/workstation_parameters.sv": "2dcba388e52d78adbc6817ba011a1b24a4b86c56048acaa8e4bdecf9236d2069",
+    "tools/workstation_dispatch_slot_provenance.py": "3941dfca4a49b7ef5eeb3f748baefb1ea0385048b833a32221856a3a8a859aaf",
+    "tools/workstation_stream_pitch_provenance.py": "36c32a130b347ea6ed12b8fc63e3cae27abd135efaa9447270d0ede66d4c7a3e",
+    "sim/test_gw25k_panel.c": "0d2651a8411eb47740e65847eae27268b2145578fbc4948c6b03c41c11817a18",
+    "sim/test_workstation_stream_pitch_provenance.py": "859e1978ea141a30924d09a16edbc6503fc1593af8c7a5286db997a0f6ff7dec",
+    "sim/audio/run_runtime_controlled.py": "7eba2ac7ff54de519cd70a24e89543968956c30dcf37a693c942eb53519ff889",
+    "sim/audio/run_demo_d_only.py": "c426d53a5cb39eadb72190f3302be225957311967284756fc2e8caab830de857",
+    "sim/audio/tb_workstation_demo_d_only.sv": "4c62926d6b681c45d05b330a9a64795cfab3b53c3c4ac0de3d21e1c03b8857cf",
+    "sim/audio/tb_workstation_worker_touch_runtime.sv": "96dbc65066f531d0e0243503fbda002460a806f0207b0ae8823014f46f6d3b7c",
+    "sim/audio/run_stream_pitch_m_preservation.py": "017a324b379e872b12acb11fc68e390c5fd153449c544ea1f38c4446afef2e1e"
+  },
+  "configuration_and_controls": {
+    "D_ONLY_ENABLE": true,
+    "M_disabled": true,
+    "PCM_path": "actual PCM -> continuous Pitch -> original crush/drive -> complete stereo FX -> render delivery",
+    "parameter_owner": "rtl/control/workstation_parameters.sv",
+    "ratio_snapshot": "core_ce actual frame acceptance",
+    "depth_snapshot": "same core_ce",
+    "clear": "existing delayed native clear, accepted rate broadcast, accepted source-session history broadcast",
+    "G": "momentary Pitch using currently held standard MIDI slider request",
+    "H": "temporary dry; release restores only still-held G and live slider",
+    "O": "momentary complete D/C/R mask",
+    "feedback": "actual control_options[28:21] committed bend index; center128; depths low21 retained"
+  },
+  "validation": {
+    "full_D_frames": 29312,
+    "production_C_touch_frames": 28716,
+    "production_C_checkpoints": 378,
+    "production_USB_events": 559,
+    "production_lifecycles": 9,
+    "slider_positions": 256,
+    "history_clear_checks": 2,
+    "inflight_cancel_checks": 2,
+    "max_render_cycles_observed": 149,
+    "render_cycle_budget_check": 1500,
+    "M_native_miter_halfcycles": 88191,
+    "legacy_miter_halfcycles": 88223,
+    "compared_public_outputs": 50,
+    "common_private_boundaries": 25,
+    "native_transaction_boundaries": 7,
+    "M_execution_negative_rejected": true,
+    "provenance_positive": 8,
+    "provenance_negative": 28,
+    "prior_dispatch_lineage_positive": 7,
+    "prior_dispatch_lineage_negative": 18,
+    "integration_execution_negatives_rejected": 2,
+    "final_output_spectra": [
+      {
+        "rate_hz": 48000,
+        "pitch_ratio": 1.1214494705200195,
+        "channels": [
+          {
+            "expected_hz": 1118.0851221084595,
+            "measured_peak_hz": 1119.140625,
+            "shifted_to_dry_magnitude_ratio": 657.3260453234219
+          },
+          {
+            "expected_hz": 1627.2231817245483,
+            "measured_peak_hz": 1623.046875,
+            "shifted_to_dry_magnitude_ratio": 948.4630186968527
+          }
+        ]
+      },
+      {
+        "rate_hz": 44100,
+        "pitch_ratio": 0.8908987045288086,
+        "channels": [
+          {
+            "expected_hz": 888.2260084152222,
+            "measured_peak_hz": 882.861328125,
+            "shifted_to_dry_magnitude_ratio": 661.5993329166482
+          },
+          {
+            "expected_hz": 1292.6940202713013,
+            "measured_peak_hz": 1291.9921875,
+            "shifted_to_dry_magnitude_ratio": 12460.690457404753
+          }
+        ]
+      }
+    ],
+    "M_firmware_preprocessing_cases": [
+      {
+        "WORKSTATION_USB2_NATIVE": false,
+        "WORKSTATION_WORKER_DEMO": false,
+        "passed": true,
+        "complete_preprocessed_C_bytes_equal": true
+      },
+      {
+        "WORKSTATION_USB2_NATIVE": true,
+        "WORKSTATION_WORKER_DEMO": false,
+        "passed": true,
+        "complete_preprocessed_C_bytes_equal": true
+      }
+    ],
+    "M_native_only_execution_negative": {
+      "passed": true,
+      "mutation": "no-streaming-Pitch branch joined constant forced low",
+      "scope": "native M only; legacy case explicitly uninstantiated in a cache-only runner",
+      "rejected_at": "native M complete service public output miter",
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-v1/verification.json",
+      "verification_sha256": "243d80b504051115d138778d331dd3352d25bfc25db4e32002d0c9f78730c917",
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-v1/run.log",
+      "log_sha256": "1781a8ac779b82c1eb5df2f8cc9e76d0f81599106ca95c9225dafbc29cde9223",
+      "runner": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-runner-v2.py",
+      "runner_sha256": "f3c0c3e44ce191f61e74208ec2d4e3ae7a8eb64af41c068a9f289bb97f6d6e20"
+    },
+    "prior_combined_M_legacy_negative_first_observed_in": "legacy case; native M separately executed above"
+  },
+  "source_binding_counts": {
+    "repeated_references_across_six_verifications": 336,
+    "unique_paths": 123,
+    "unique_content_objects": 111,
+    "root_distinct_hashed_files": 274
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-stream-pitch-integration-review-v2.json",
+    "sha256": "54339634a6e2324f3dc5864dbff1e256158a4d2477d708c875fa4db2c327e1cf",
+    "four_owner_inverse_equal_git_HEAD": true,
+    "independent_provenance_rerun": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-stream-pitch-integration-provenance-v1/verification.json",
+    "independent_dispatch_lineage_rerun": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-stream-pitch-dispatch-lineage-v1/verification.json",
+    "post_consumption_runtime_profile_change": "Later worker revision3 edit is outside this test stage; exact originally consumed tool bytes were independently hashed from the content-addressed seal. Initial current-path check rejected drift; no old test input substituted."
+  },
+  "firmware": {
+    "isa": "rv32i",
+    "abi": "ilp32",
+    "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "compiler_version": "riscv-none-elf-gcc (xPack GNU RISC-V Embedded GCC arm64) 15.2.0",
+    "firmware_profile": "workstation",
+    "high_speed_allowed": true,
+    "worker_demo": true,
+    "entry": "firmware.c",
+    "input_sha256": {
+      "vendor/usb_host_fs_8fc3/firmware/start.S": "922d197b938e653b3a94ef6107303cb828a2be267629bd92899498d429cbb60e",
+      "firmware.c": "d0bdf89eff7be0f0a23354f393315e13d531bb7eafbfc9afe3aaeee056cbc108",
+      "drivers/usb2/workstation_usb2_host.c": "5b029d03517893272582f506b07f2ec77f1ac300b9f7f236377a5a90bba6f5ea",
+      "drivers/usb2/workstation_usb2_cpu_port.c": "cd841c339aad4f99d00af9a694f7a119cf2f2c4067ba8befd18de805e4df3589",
+      "drivers/usb2/workstation_usb2_backend.c": "527c5e420bc35b39c829f6fc0c83c71a445fbf3a4f2cedab0254f0eae7d86a28",
+      "vendor/usb_host_fs_8fc3/firmware/minlibc.c": "67270201c156358943bf01df27fc81da2a97730668174426ee11584a60f607bf",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_core.c": "fbe2b0995c27bf3621e3b32993b2405ff3b018ffe751dfebad14611c2cc50fa5",
+      "drivers/usb2/workstation_usb2_host.h": "4d7ea3e7374f951d295dfa7acb160ddc1a73b0604394982927b9aa43eea32192",
+      "drivers/usb2/workstation_usb2_cpu_port.h": "5ecb71b2a57fa8e5c6d958bafbcdbaa3e146ceb0b003666ac5ea1aedb2453e0b",
+      "gw25k_panel.h": "2598ccd24930d967d57e9a18900400fdfe92103078edb0ee3861079b535803f5",
+      "drivers/usb2/workstation_usb2_backend.h": "2b8530fe2ef0ad98b42d14070c25c0895b6a4b5c6dee8bd05a11cf1539821d17",
+      "vendor/usb_host_fs_8fc3/firmware/minlibc.h": "6b69e720d83f1a50d1bb617116cab5a77be69f4bfacbc1bbca41c31889f13e86",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_core.h": "6b121c052986df83a612db01ade9a7e8524fec80fd8bd718e8b5722c985900c6",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_defs.h": "d492a33d57f93d939dac591b5c1f5a70ed71018b1f0310c9d3b51880a677a6f5",
+      "vendor/usb_host_fs_8fc3/firmware/usb/usb_hw.h": "3e72e7c5821e5d965c646be4114b6bb691749679ad4eea35ab7149743cf9af08",
+      "vendor/usb_host_fs_8fc3/firmware/baremetal.ld": "782346f25a8dfffc5bfbb8198c2b12e5166b2d500aa00e626e8187f5a0473da8"
+    },
+    "firmware_bytes": 19676,
+    "static_ram_bytes": 25473,
+    "static_ram_end": 25480,
+    "stack_margin_bytes": 40056,
+    "elf_sha256": "7b6154d23f5fe1e72d67b00e55759adef7188d9fe734be694b123458ea098d3c",
+    "binary_sha256": "3e8b33fb47602b172adc6010ced0f59c2525d56b43a82f54603f099f478815bf",
+    "rom_sha256": "d2018f993adecbbe09f93b42c7dcd30ce5ecc0b687a9cecd1d913445b43f3a9a",
+    "vendor_manifest_sha256": "901833fa2083c9a09db62045c5b12e63360c3f61e7775847ca78ddaeb5c76ba6",
+    "hardware_tested": false
+  },
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-formal-integration-handoff-v3.json",
+    "sha256": "0350384c28fec284eb5492714cd3037601017e3abebf42d92c03f2ae49ae9c78"
+  },
+  "evidence": {
+    "source_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-final-seal-v1/consumed-sources.json",
+    "source_snapshot_sha256": "9b976ae0665223487ad6b45599252dcbfbac346c4421ff6d0ac55337c1f22d0f",
+    "positive_verification_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/verification.json": "178209711913d320fc3ecc96d101b6cd4e530349a572a41031258c50408abbbe",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/verification.json": "c63f2edfc5e9216649a3e1eaa74fd67d7897c100ae69fcaf94fd42e87ea13851",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/verification.json": "0a634cd36f3f26bd84146bb924b0442c9971536dea28b02f0a44ad351dc82a6a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/verification.json": "fff9243b3fb1945e80e84766fc6677261dc2041703fd842e2436a52cea33b86f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-provenance-v1/verification.json": "8efcb73dff2ea6a4b3ab888ecf9bcbdf0bad1a1c7a0a8a0419dd1d70b270aec4",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-dispatch-lineage-v1/verification.json": "ea27e0ed08cfca581a4953353978797e775079c619102aab8dd93221080d07b9",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/negative-controls-reviewed-v1.json": "d184f84a13de255333bac178ed3c0b2c83b9fa354486342f639a56b593625717"
+    },
+    "final_output_and_log_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/pitch-final-output.txt": "1cda5b0be2c3b730a1f28bf127c374236ec2018032c9768b74ca5369cb415c34",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/retirement_run.log": "8362d5e6d061acd85b0087c2dd3261914d750070da7ef72a37080c18e259ebb2",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/retirement_compile.log": "9143231caba16be6bc47cb398cf49f64693da3722010534251a5f3ae522a8f9a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/verification.json": "178209711913d320fc3ecc96d101b6cd4e530349a572a41031258c50408abbbe",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/render_compile.log": "c2e0f3f178d1c5721c7dbb868a4236bb1bb6a2dd249640453cdc391de30d0703",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-full-D-final-v1/render_run.log": "f40139aff94b81a0f4a5c2cba455ae5c5261772e5fed672898f4a9d6f52efc06",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/c_compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/rtl_compile.log": "3802a401aa5fb18d16242dddb11f6be98a11c9875b66e6dab77b507a09eab633",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/verification.json": "c63f2edfc5e9216649a3e1eaa74fd67d7897c100ae69fcaf94fd42e87ea13851",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/c_trace.log": "49d39b5b95cd06d658bb87601a21e75bc1a7969e287988f7449cac71d7759512",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/production-c-touch-trace.txt": "b25d5c0a135b55443b4e0f0de9c40c6e1a7d00dacf03258a0c888f1fc041c627",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v3/rtl_run.log": "45dd3489f6abf4446b49a4530542b1e3c5fdd0ffa5caf69b3e27a31353b884f7",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/gw138k_event_workstation_before_stream_pitch.sv": "1665db5d9e0f1ded9b56dee7a0a56792dd42bce0667df4504a834e04e5e174de",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/tb_stream_pitch_m_preservation.sv": "ef88ba7270443518a5f9cbb96d78d8bf7909cded75d322322a7a2d20b53841c6",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/run.log": "0a95fd68c591ba93faf7bab1c7752a41fe88e1fc710fbe1bb6be42a6e2a3f999",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/compile.log": "08673a7965c68756112d0540aec16ed7c8945dd15b8f0af1cad6ffc1ec34fae2",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/workstation_audio_render_service_before_stream_pitch.sv": "7938926c61e262390d76025cea22cf3f4fcc424468545112ebfbf46b5c2a8e9d",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/verification.json": "0a634cd36f3f26bd84146bb924b0442c9971536dea28b02f0a44ad351dc82a6a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/event_config_contract_miter.sv": "8f283181ae9fcf2b7dfec4c11a70d7eb6db64fa6831e126652dbdaf299e18c82",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-v1/workstation_parameters_before_stream_pitch.sv": "524e99e89e065b1ef5d0f3a92c3e843a02474080b677fb6daff07beb8dfabc5b",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/gw138k_event_workstation_before_stream_pitch.sv": "1665db5d9e0f1ded9b56dee7a0a56792dd42bce0667df4504a834e04e5e174de",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/tb_stream_pitch_m_preservation.sv": "ef88ba7270443518a5f9cbb96d78d8bf7909cded75d322322a7a2d20b53841c6",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/run.log": "c3316f7034b48d87cdbeabedab758a13fe673024dc7f89c94161d6cb1de12203",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/compile.log": "0dd89647dc6d949a08a1472847a09dbfebd48539f3791e110c5da7ef6f9500dc",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/gw138k_event_workstation_m_guard_negative.sv": "305e33afb2ab83aba80166429f1a07f3003851a8de4892ed5b1605f42ee41e0b",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/workstation_audio_render_service_before_stream_pitch.sv": "7938926c61e262390d76025cea22cf3f4fcc424468545112ebfbf46b5c2a8e9d",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/verification.json": "fff9243b3fb1945e80e84766fc6677261dc2041703fd842e2436a52cea33b86f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/event_config_contract_miter.sv": "8f283181ae9fcf2b7dfec4c11a70d7eb6db64fa6831e126652dbdaf299e18c82",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-M-preservation-negative-v1/workstation_parameters_before_stream_pitch.sv": "524e99e89e065b1ef5d0f3a92c3e843a02474080b677fb6daff07beb8dfabc5b",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-provenance-v1/verification.json": "8efcb73dff2ea6a4b3ab888ecf9bcbdf0bad1a1c7a0a8a0419dd1d70b270aec4",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-dispatch-lineage-v1/verification.json": "ea27e0ed08cfca581a4953353978797e775079c619102aab8dd93221080d07b9",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/pitch-final-output.txt": "47f1f895e9e7118906300b5f4ced00cf0c5c429f02321d64a0911dfbdf074d9f",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/retirement_run.log": "8362d5e6d061acd85b0087c2dd3261914d750070da7ef72a37080c18e259ebb2",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/retirement_compile.log": "9143231caba16be6bc47cb398cf49f64693da3722010534251a5f3ae522a8f9a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/verification.json": "30733b6bcb86c2bb858b14dbaa0e8ffa7476e8066e688570a1d097fb0eaf1ab8",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/render_compile.log": "c2975e66b2c936cc1f4a65b64273e6a27e83f0a6ddf8b85ed08d0be04453185e",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/pitch-bypassed-run/render_run.log": "7f13b257e8431097ec3f4a4adefee56ba896aedcb6668d2e04bf7b1fa523baa9",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/history-broadcast-run/pitch-final-output.txt": "17d100d5b8dde25c6826f67b0ab7fde3c2e81d0ad3cbef9f3fca073f34b1dc73",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/history-broadcast-run/ordered_posted_ddr_model.sv": "4ec073117811fdd24a32d9df4b268204ead28c2a320d1ea429b360209b5fbd1a",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/history-broadcast-run/verification.json": "23919de6bb1acc2a77315be240f4f2bdc613ec5c4ca956915f6ccdbf2180df1d",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/history-broadcast-run/render_compile.log": "86b919be56b3f127fbf326ba56f91d64a6b9111ffafe3450ef02027152db1022",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-integration-negatives-v1/history-broadcast-run/render_run.log": "899e12cd264433072adf23a3582de33590d79572592bfb6b2425fb11cd52d529"
+    },
+    "native_M_only_negative_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-v1/verification.json": "243d80b504051115d138778d331dd3352d25bfc25db4e32002d0c9f78730c917",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-v1/run.log": "1781a8ac779b82c1eb5df2f8cc9e76d0f81599106ca95c9225dafbc29cde9223",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-native-M-only-negative-runner-v2.py": "f3c0c3e44ce191f61e74208ec2d4e3ae7a8eb64af41c068a9f289bb97f6d6e20"
+    },
+    "historical_failures": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v1/verification.json": "cda06b52472be167a8b7310310413621c7ab5c074f449c3b2610033b709cb4ad",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-stream-pitch-production-touch-v2/verification.json": "8d988179c6e71987673d09ef54ba17b40e3e3ef7ca1dbdfa90ba13142ecba978"
+    },
+    "historical_failure_reason": "old trace change_rate test pulsed config valid between CPU completion and the next audio falling edge, possibly no accepting rising edge; fixed benchmark holds through real valid/ready acceptance, no production timing/timeout relaxation"
+  },
+  "scope_notes": [
+    "The D runner retirement fixture separately preserves M FFT/context. It is not evidence that current W keeps FFT; W actual GPRJ and VG gates establish display retirement.",
+    "M and legacy full-service positive miter compare actual outputs every half-cycle; the original combined negative first failed in legacy. A separate actual native-M-only negative now fails at its public service output.",
+    "This stage does not change the original three oscillator manifests or frozen W131/M132 inputs. Production provenance helper only checks identities and exact inverse; it does not generate RTL."
+  ],
+  "limits": [
+    "Synthetic continuous PCM and ideal RTL clocks; ordered DDR functional model",
+    "No physical source/radio/I2S/DAC accepted",
+    "Granular sidebands and upward anti-aliasing limitations remain as in reviewed DSP",
+    "M/legacy compared actual full services, W intentionally adds latency; no old W cycle identity claim",
+    "Dominant peaks differ from ideal by up to about 5.4 Hz in these complete-service vectors; granular sidebands and lack of upward anti-aliasing remain.",
+    "Firmware used explicit xPack prefix after the default riscv64-elf toolchain lacked string.h; original failure kept.",
+    "No new top-level W synthesis/P&R/resource/timing/physical CDC/PLL/phone/DAC acceptance is granted by these functional tests."
+  ],
+  "pending": [
+    "worker explicit revision3/source selection/profile locks and actual consumed GPRJ",
+    "test_current_workstation_sources and relevant production prepare/source checks after locks",
+    "full synthesis/PnR/resources/STA/CDC/PLL for a new candidate",
+    "real phone A2DP/25K/I2S/DAC and disconnect acceptance"
+  ],
+  "frozen131_132_modified": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "hardware_tested": false,
+  "release_ready": false,
+  "rollback": "Revert this isolated maintained integration stage and select the existing explicit W revision2 source policy; no frozen candidate or board change by this commit."
+}

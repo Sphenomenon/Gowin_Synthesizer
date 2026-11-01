@@ -107,7 +107,7 @@ static void gw_format_scene(void) {
     const uint32_t *s=gw.scene;
 #ifdef WORKSTATION_WORKER_DEMO
     /* Values are committed audio-owner feedback, never a Host shadow of the
-     * touch requests. W reuses options[20:0] for its three D depths. */
+     * touch requests. W reports D depths in options[20:0], pitch index[28:21]. */
     gw_copy(gw.line1,"D STREAM  GAIN 000  OUT ",sizeof "D STREAM  GAIN 000  OUT ");
     gw_decimal(gw.line1+15,(s[0]>>16)>=32768u?127u:(s[0]>>24),3);
     gw_copy(gw.line1+24,routes[(s[0]>>5)&3u],7);
@@ -115,9 +115,10 @@ static void gw_format_scene(void) {
     gw_decimal(gw.line2+6,s[1]&127u,3);
     gw_decimal(gw.line2+16,(s[1]>>7)&127u,3);
     gw_decimal(gw.line2+25,(s[1]>>14)&127u,3);
-    gw_copy(gw.line3,"FX DCR 000  TOUCH A-C HOLD",sizeof "FX DCR 000  TOUCH A-C HOLD");
+    gw_copy(gw.line3,"FX DCR 000  PITCH IDX 000",sizeof "FX DCR 000  PITCH IDX 000");
     gw.line3[7]=(s[0]&1u)?'1':'0';gw.line3[8]=(s[0]&2u)?'1':'0';gw.line3[9]=(s[0]&4u)?'1':'0';
-    gw_copy(gw.line4,"D-F CHAIN G MASTER H CLEAR",sizeof "D-F CHAIN G MASTER H CLEAR");
+    gw_decimal(gw.line3+22,(s[1]>>21)&255u,3);
+    gw_copy(gw.line4,"G PITCH + SLIDER  H DRY",sizeof "G PITCH + SLIDER  H DRY");
 #else
     unsigned profile=(s[0]>>7)&7u,mode=(s[0]>>3)&3u;
     gw_copy(gw.line1,"NOTE 000  VEL 000  GAIN 000  TONE ",sizeof "NOTE 000  VEL 000  GAIN 000  TONE ");

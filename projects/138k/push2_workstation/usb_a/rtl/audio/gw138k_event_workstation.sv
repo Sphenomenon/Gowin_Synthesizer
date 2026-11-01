@@ -185,7 +185,10 @@ module gw138k_event_workstation #(
   logic [31:0] vec_previous_rejected;
   logic vec_previous_frequency_error;
   logic signed [31:0] held_synth,held_vec_l,held_vec_r;
-  wire effects_valid=synth_joined && vec_joined;
+  wire pcm_pitch_joined,pcm_pitch_quiet,pcm_pitch_fault,pcm_pitch_valid;
+  wire signed [31:0] pcm_pitch_left,pcm_pitch_right;
+  wire [6:0] pcm_crush,pcm_drive;
+  wire effects_valid=synth_joined && vec_joined && pcm_pitch_joined;
   wire [15:0] scope_morph_q15=scope_morph==127 ? 16'd32768 : {1'b0,scope_morph,8'd0};
   wire [15:0] scope_scale_q15=scope_muted ? 16'd0 : scope_scale==127 ? 16'd32768 : {1'b0,scope_scale,8'd0};
   assign scope_status_o={vec_rejected[15:0],cue_running,cue_done,cue_error,|cue_late,(scope_control_error || tf_scope_control_o[15]),vec_frequency_error,vec_config_error,scope_enable,vec_active};
@@ -410,7 +413,7 @@ module gw138k_event_workstation #(
     end
     wire history_accept=history_clear_i && history_ready_o;
     assign runtime_config_busy=busy;
-    assign runtime_fault=failed || fx_fault;
+    assign runtime_fault=failed || fx_fault || pcm_pitch_fault;
     // Block event admission on the broadcast edge so engine rate_ready is
     // independent of a queued NoteOn. During the fenced wait, ordinary event
     // dispatch resumes, including NoteOff/PANIC and existing loader pressure.
@@ -440,7 +443,7 @@ module gw138k_event_workstation #(
       else begin
         applied<=0;history_done<=0;
         if(!busy && fx_history_done && !config_accept && !history_accept && !runtime_fault)history_done<=1;
-        if(fx_fault)failed<=1;
+        if(fx_fault || pcm_pitch_fault)failed<=1;
         if(config_accept || history_accept)begin
           busy<=1;is_config<=config_accept;
           pending_rate<=config_accept ? rate_44100_i : committed_rate;
@@ -514,15 +517,15 @@ module gw138k_event_workstation #(
         if(engine_rate_commit)applied_rate<=rate_44100_i;
       end
     end
-    assign runtime_quiescent=!rendered;assign runtime_rate_ready=!rendered;assign engine_rate=applied_rate;
-    assign core_sample_ready=1;assign core_event_ready=1;assign core_expression_ready=1;
+    assign runtime_quiescent=!rendered && pcm_pitch_quiet;assign runtime_rate_ready=!rendered && pcm_pitch_quiet;assign engine_rate=applied_rate;
+    assign core_sample_ready=pcm_pitch_quiet;assign core_event_ready=1;assign core_expression_ready=1;
     assign core_event_slot_ready=1;assign core_expression_slot_ready=1;
     assign vec_event_ready=1;assign vec_ready=1;assign vec_busy=0;
     assign synth_valid_o=rendered;assign synth_o=0;assign vec_valid=rendered;
     assign vec_left=0;assign vec_right=0;assign vec_active=0;assign vec_count=0;assign vec_rejected=0;
     assign vec_config_error=0;assign vec_frequency_error=0;assign vec_clip=0;
     assign allocated=0;assign legacy_active_mask=0;assign legacy_active_count=0;
-    assign load_busy=0;assign mix_busy=0;assign issued=0;assign pitch_q20_o=22'd1048576;
+    assign load_busy=0;assign mix_busy=0;assign issued=0;assign pitch_q20_o=D_ONLY_ENABLE ? target_ratio : 22'd1048576;
     assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? 2'd3 : 2'd2;
   end else if(RUNTIME_RATE_ENABLE) begin: runtime_engines
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
@@ -596,6 +599,38 @@ module gw138k_event_workstation #(
   end endgenerate
   assign active_mask_o=scope_enable ? {24'd0,vec_active} : legacy_active_mask;
   assign active_voice_count_o=scope_enable ? {2'd0,vec_count} : legacy_active_count;
+  generate if(D_ONLY_ENABLE)begin: streaming_pcm_pitch
+    logic joined;
+    logic [6:0] held_crush,held_drive;
+    wire quiet,ready;
+    wire clear=engine_clear || engine_rate_commit || (history_clear_i && history_ready_o);
+    // The existing source-session history transaction and native cancellation
+    // own this history too. A new epoch cannot replay an old read-head tail.
+    workstation_stream_pitch pitch(
+        .clk_i,.rst_ni,.clear_i(clear),.valid_i(core_ce),.enable_i(effect_master),
+        .ratio_q20_i(target_ratio),.left_i(pcm_left_i),.right_i(pcm_right_i),
+        .ready_o(ready),.quiescent_o(quiet),.valid_o(pcm_pitch_valid),
+        .fault_o(pcm_pitch_fault),.left_o(pcm_pitch_left),.right_o(pcm_pitch_right));
+    // Observe stored work rather than ready (which contains the same-edge
+    // clear request). This prevents configuration admission feeding itself.
+    assign pcm_pitch_quiet=quiet && !pcm_pitch_valid && !joined;
+    assign pcm_pitch_joined=joined;
+    assign pcm_crush=held_crush;assign pcm_drive=held_drive;
+    always_ff @(posedge clk_i or negedge rst_ni)begin
+      if(!rst_ni)begin joined<=0;held_crush<=0;held_drive<=0;end
+      else if(clear || panic_accept)begin joined<=0;held_crush<=0;held_drive<=0;end
+      else begin
+        if(core_ce)begin held_crush<=d_crush;held_drive<=d_drive;end
+        if(pcm_pitch_valid && frame_inflight)joined<=1;
+        if(effects_valid && fx_ready)joined<=0;
+      end
+    end
+  end else begin: no_streaming_pcm_pitch
+    assign pcm_pitch_quiet=1;assign pcm_pitch_joined=1;
+    assign pcm_pitch_fault=0;assign pcm_pitch_valid=0;
+    assign pcm_pitch_left=0;assign pcm_pitch_right=0;
+    assign pcm_crush=0;assign pcm_drive=0;
+  end endgenerate
   // Join independently scheduled engines before the existing P10 input mixer.
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin synth_joined<=0;vec_joined<=0;held_synth<=0;held_vec_l<=0;held_vec_r<=0;held_vec_clip<=0;end
@@ -685,8 +720,11 @@ module gw138k_event_workstation #(
           frame_inflight<=1;
         end
         if(core_ce) begin pending<=0;
-          held_pcm_l<=D_ONLY_ENABLE ? d_process(pcm_left_i,d_crush,d_drive) : pcm_left_i;
-          held_pcm_r<=D_ONLY_ENABLE ? d_process(pcm_right_i,d_crush,d_drive) : pcm_right_i;
+          if(!D_ONLY_ENABLE)begin held_pcm_l<=pcm_left_i;held_pcm_r<=pcm_right_i;end
+        end
+        if(D_ONLY_ENABLE && pcm_pitch_valid && frame_inflight)begin
+          held_pcm_l<=d_process(pcm_pitch_left,pcm_crush,pcm_drive);
+          held_pcm_r<=d_process(pcm_pitch_right,pcm_crush,pcm_drive);
         end
         if(effects_valid && !fx_ready) deadline_miss_o<=deadline_miss_o+1;
       end

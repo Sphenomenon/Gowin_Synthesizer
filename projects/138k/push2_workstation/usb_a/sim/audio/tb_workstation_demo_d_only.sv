@@ -44,16 +44,24 @@ module tb_workstation_demo_d_only;
   runtime_effects_memory_model memory_model(.clk(mclk),.rst_n(mrst_n),.req(ddr_req),.write_i(ddr_write),
       .ready_i(1'b1),.hold_fence,.address_i(ddr_addr),.data_i(ddr_wdata),.is_fence(dma.state==8),
       .response_o(ddr_response),.data_o(ddr_rdata));
-  integer frames=0,events=0,waited=0;
+  integer frames=0,events=0,waited=0,max_render_cycles=0,pitch_fd=0,pitch_captures=0,pitch_clear_checks=0,pitch_cancels=0,responses=0;
+  reg last_error;
+  reg signed [31:0] last_left,last_right;
+  string pitch_pcm_path;
+  always @(posedge clk)if(rst_n && done)begin responses=responses+1;last_error=error;last_left=left_o;last_right=right_o;end
   integer old_function_snapshots=0,delayed_parameter_frames=0;
   reg signed [31:0] expected_capture_l,expected_capture_r;
   always @(posedge clk)if(rst_n && dut.workstation.core_ce)begin
     expected_capture_l=d_process_old_reference(dut.workstation.pcm_left_i,dut.workstation.d_crush,dut.workstation.d_drive);
     expected_capture_r=d_process_old_reference(dut.workstation.pcm_right_i,dut.workstation.d_crush,dut.workstation.d_drive);
+    old_function_snapshots=old_function_snapshots+1;
+  end
+  always @(posedge clk)if(rst_n && dut.workstation.pcm_pitch_valid && dut.workstation.frame_inflight)begin
+    expected_capture_l=d_process_old_reference(dut.workstation.pcm_pitch_left,dut.workstation.pcm_crush,dut.workstation.pcm_drive);
+    expected_capture_r=d_process_old_reference(dut.workstation.pcm_pitch_right,dut.workstation.pcm_crush,dut.workstation.pcm_drive);
     #1;
     if(dut.workstation.held_pcm_l!==expected_capture_l || dut.workstation.held_pcm_r!==expected_capture_r)
-      $fatal(1,"D original core_ce snapshot changed");
-    old_function_snapshots=old_function_snapshots+1;
+      $fatal(1,"D core_ce depth snapshot changed across streaming Pitch");
   end
   task clocks(input integer n);repeat(n)@(negedge clk);endtask
   task event_send(input [17:0] data);begin
@@ -68,6 +76,8 @@ module tb_workstation_demo_d_only;
     pcm_l=l;pcm_r=r;request=1;clocks(1);request=0;waited=0;
     while(!done)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"render timeout");end
     if(error || fault || active!=0 || mode!=3)$fatal(1,"D-only state/error/voices");
+    if(waited>max_render_cycles)max_render_cycles=waited;
+    if(waited>1500)$fatal(1,"D effects plus Pitch missed the 48k sample budget");
     frames=frames+1;clocks(2);
   end endtask
   task change_rate(input reg next_rate);begin
@@ -94,6 +104,58 @@ module tb_workstation_demo_d_only;
       if(error || left_o!==expected_l || right_o!==expected_r)
         $fatal(1,"D moved accepted PCM or core_ce parameter sampling across config drain");
       delayed_parameter_frames=delayed_parameter_frames+1;frames=frames+1;clocks(2);
+    end
+  endtask
+  task pitch_capture(input bit next_rate,input bit down);
+    integer fs;
+    reg signed [31:0] l,r;
+    real angle;
+    begin
+      change_rate(next_rate);cc(81,0);cc(20,0);cc(21,0);cc(22,0);
+      event_send({4'd4,down ? 7'd0:7'd127,down ? 7'd0:7'd127});
+      if(options[28:21]!=(down ? 8'd0:8'd255) || dut.workstation.pitch_q20_o==22'd1048576)
+        $fatal(1,"Pitch actual parameter/index feedback stayed unity");
+      fs=next_rate ? 44100:48000;
+      for(integer n=0;n<12288;n=n+1)begin
+        angle=6.283185307179586*n/fs;
+        l=32'($rtoi($sin(angle*997.0)*67108864.0));
+        r=32'($rtoi($sin(angle*1451.0)*50331648.0));
+        frame(l,r);
+        if(n>=4096)$fwrite(pitch_fd,"%0d %0d %0d %0d %0d\n",next_rate,down,n-4096,left_o,right_o);
+      end
+      pitch_captures=pitch_captures+1;
+    end
+  endtask
+  task clear_pitch_history;
+    begin
+      @(negedge clk);history_clear=1;waited=0;
+      do begin @(posedge clk);waited=waited+1;if(waited>3000)$fatal(1,"Pitch history accept timeout");end while(!history_ready);
+      @(negedge clk);history_clear=0;waited=0;
+      while(!history_done)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"Pitch history done timeout");end
+      if(dut.workstation.streaming_pcm_pitch.pitch.filled!=0 || dut.workstation.streaming_pcm_pitch.pitch.phase!=0)
+        $fatal(1,"PCM session history did not clear actual Pitch history");
+      for(integer n=0;n<1100;n=n+1)begin frame(0,0);if(left_o!==0 || right_o!==0)$fatal(1,"old Pitch PCM replayed after source history clear");end
+      pitch_clear_checks=pitch_clear_checks+1;
+    end
+  endtask
+  task cancel_inflight_pitch(input bit lifecycle);
+    integer before_responses;
+    begin
+      event_send({4'd4,7'd127,7'd127});
+      while(!ready)clocks(1);
+      before_responses=responses;pcm_l=32'sh31415926;pcm_r=-32'sh27182818;
+      @(negedge clk);request=1;clocks(1);request=0;
+      while(dut.workstation.streaming_pcm_pitch.pitch.quiescent_o)clocks(1);
+      // Cancel inside the real new stage, before its joined PCM is available.
+      clocks(2);event_send(lifecycle ? {4'd15,7'd0,7'd0}:{4'd2,7'd120,7'd0});waited=0;
+      while(responses==before_responses)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"cancelled Pitch result did not complete");end
+      if(responses!=before_responses+1 || !last_error || last_left!==0 || last_right!==0)
+        $fatal(1,"cancelled Pitch leaked a stale or duplicate result");
+      waited=0;while(!quiet)begin clocks(1);waited=waited+1;if(waited>3000)$fatal(1,"cancelled Pitch failed to drain");end
+      if(dut.workstation.streaming_pcm_pitch.pitch.filled!=0 || options[28:21]!=128)
+        $fatal(1,"cancelled Pitch retained history or committed bend");
+      frames=frames+1;pitch_cancels=pitch_cancels+1;
+      for(integer n=0;n<80;n=n+1)begin frame(0,0);if(left_o!==0 || right_o!==0)$fatal(1,"cancelled Pitch replayed PCM");end
     end
   endtask
   initial begin
@@ -133,8 +195,20 @@ module tb_workstation_demo_d_only;
     for(integer i=0;i<300;i=i+1)frame(32'sh12345678,-32'sh12345678);
     if(left_o!=32'sh12345678 || right_o!=-32'sh12345678)$fatal(1,"D did not resume after25K attach withoutNoteOn");
     if(deadline!=0 || unsupported!=0 || duplicates!=0 || note_drops!=0)$fatal(1,"D health counters");
+    if(!$value$plusargs("PITCH_PCM=%s",pitch_pcm_path))$fatal(1,"missing integrated Pitch output capture");
+    pitch_fd=$fopen(pitch_pcm_path,"w");if(!pitch_fd)$fatal(1,"cannot create integrated Pitch output capture");
+    pitch_capture(0,0);clear_pitch_history();
+    pitch_capture(1,1);clear_pitch_history();
+    $fclose(pitch_fd);
+    cancel_inflight_pitch(0);cancel_inflight_pitch(1);
+    event_send({4'd4,7'd0,7'd64});
+    for(integer n=0;n<80;n=n+1)frame(32'sh12345678,-32'sh12345678);
+    if(left_o!==32'sh12345678 || right_o!==-32'sh12345678 || options[28:21]!=128)
+      $fatal(1,"Pitch release did not restore exact full-width dry PCM");
+    if(deadline || unsupported || duplicates || note_drops || fault || pitch_captures!=2 || pitch_clear_checks!=2 || pitch_cancels!=2)
+      $fatal(1,"continuous Pitch integration health/coverage");
     if(old_function_snapshots!=frames || delayed_parameter_frames!=2)$fatal(1,"D old-function/config sampling coverage");
-    $display("PASS demo_d_only frames=%0d events=%0d rate44=%0d full_effects=1 no_instrument_engines=1 old_function_snapshots=%0d deferred_parameter_frames=%0d",frames,events,rate,old_function_snapshots,delayed_parameter_frames);$finish;
+    $display("PASS demo_d_only frames=%0d events=%0d rate44=%0d full_effects=1 no_instrument_engines=1 old_function_snapshots=%0d deferred_parameter_frames=%0d pitch_captures=%0d pitch_clear_checks=%0d pitch_cancels=%0d max_render_cycles=%0d",frames,events,rate,old_function_snapshots,delayed_parameter_frames,pitch_captures,pitch_clear_checks,pitch_cancels,max_render_cycles);$finish;
   end
   initial begin #100000000;$fatal(1,"test watchdog");end
 endmodule

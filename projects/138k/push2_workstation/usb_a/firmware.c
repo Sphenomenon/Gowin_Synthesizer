@@ -19,6 +19,9 @@ static unsigned toggles[3],frames,out_errors;
 #else
 /* W-DEMO retains the same Host and PL transport, with no Push surface code. */
 static uint16_t worker_keys,worker_blocked_keys;
+/* Last physical slider request, only for H's temporary dry composition.
+ * Applied pitch remains owned and reported by the audio parameter RTL. */
+static uint16_t worker_bend=8192;
 #endif
 // P138 has one 32-bit USB IN diagnostic word.  Keep four independent,
 // saturating byte counters so a long idle NAK stream cannot wrap into a
@@ -59,7 +62,7 @@ static void disconnect(void) {
 #ifndef WORKSTATION_WORKER_DEMO
     displayed_state_valid=0;
 #else
-    worker_keys=0;worker_blocked_keys=0;
+    worker_keys=0;worker_blocked_keys=0;worker_bend=8192;
 #endif
     // Existing RTL releases held notes and resets LED/display initialization.
     // Audio, HDMI, DDR and AE350 continue running throughout reconnection.
@@ -142,7 +145,6 @@ static void worker_commit_touch(void) {
      * temporarily requests dry; releasing it restores only still-held keys. */
     unsigned keys=(worker_keys&(1u<<7))?0:worker_keys,mask=0;
     for(unsigned key=3;key<6;key++)if(keys&(1u<<key))mask|=1u<<(key-3);
-    if(keys&(1u<<6))mask=7;
     for(unsigned key=8;key<15;key++)if(keys&(1u<<key))mask|=key-7;
     for(unsigned key=0;key<3;key++)
         MMIO(0x54)=(2u<<14)|((20u+key)<<7)|((keys&(1u<<key))?100u:0u);
@@ -187,14 +189,26 @@ static void forward_midi(const uint8_t *p) {
         }
         if(down==!!(worker_keys&bit))return;
         if(down)worker_keys|=(uint16_t)bit;else worker_keys&=(uint16_t)~bit;
-        if(key!=15){worker_commit_touch();return;}
+        if(key!=15){
+            worker_commit_touch();
+            if(key==6 || key==7){
+                unsigned bend=(worker_keys&(1u<<6)) && !(worker_keys&(1u<<7))?worker_bend:8192u;
+                MMIO(0x54)=(4u<<14)|((bend&127u)<<7)|(bend>>7);
+            }
+            return;
+        }
         if(!down)return;
         kind=2;a=7;b=127; // P is the existing main-volume action.
+    } else if(kind==4) {
+        worker_bend=(uint16_t)((b<<7)|a);
+        /* G is momentary Pitch; the physical slider remains centered on
+         * release. H temporarily requests dry, preserving only live input. */
+        if(!(worker_keys&(1u<<6)) || (worker_keys&(1u<<7)))return;
     } else if(kind!=2 || (a!=7 && a!=11 && a!=20 && a!=21 && a!=22 &&
                          a!=81 && a!=82 && a!=84 && a!=85 && a!=86 &&
                          a!=87 && a!=88 && a!=120 && a!=123))return;
     if(kind==2 && (a==120 || a==123)) {
-        worker_blocked_keys|=worker_keys;worker_keys=0;
+        worker_blocked_keys|=worker_keys;worker_keys=0;worker_bend=8192;
         // W has no note engine. Both panel clear commands use its existing
         // urgent lifecycle path, which resumes D without requiring NoteOn.
         a=120;

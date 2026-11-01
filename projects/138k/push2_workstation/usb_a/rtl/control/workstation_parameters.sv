@@ -58,7 +58,7 @@ module workstation_parameters #(
     assign effect_state_o = {23'd0,effect_master_o,effect_count_o,effect_order_o};
     assign effect_mask_o = effect_master_o ? (effect_selected_o |
         (D_ONLY_ENABLE && d_delay_send_o!=0 ? 3'b001 : 3'b000)) : 3'b000;
-    assign options_o = D_ONLY_ENABLE ? {11'd0,d_delay_send_o,d_drive_o,d_crush_o} :
+    assign options_o = D_ONLY_ENABLE ? {3'd0,bend_index_o,d_delay_send_o,d_drive_o,d_crush_o} :
         {snapshot_request, bend_index_o, glide_cc_o, vibrato_depth_o,
         sustain_o, target_ratio_o != 22'd1048576, glide_step_o != 0, vibrato_depth_o != 0};
 
@@ -136,6 +136,7 @@ module workstation_parameters #(
                 sustain_o <= 0;
                 if(D_ONLY_ENABLE)begin
                     d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;
+                    target_ratio_o<=22'd1048576;bend_index_o<=8'd128;
                     effect_selected_o<=0;effect_count_o<=0;
                     effect_order_o<=6'b10_01_00;effect_master_o<=1;
                 end
@@ -227,6 +228,7 @@ module workstation_parameters #(
                         120, 123: begin sustain_o <= 0;
                             if(D_ONLY_ENABLE)begin
                                 d_crush_o<=0;d_drive_o<=0;d_delay_send_o<=0;
+                                target_ratio_o<=22'd1048576;bend_index_o<=8'd128;
                                 effect_selected_o<=0;effect_count_o<=0;
                                 effect_order_o<=6'b10_01_00;effect_master_o<=1;
                             end
