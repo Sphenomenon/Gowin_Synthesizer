@@ -360,6 +360,8 @@ M／W 的[PC／APB既有握手窄约束维护阶段](push2_workstation/usb_a/rep
 
 M17／W15 的[完整来源、综合与VG检查点](push2_workstation/usb_a/reports/DUAL138K_M17_W15_PREPARE_20261101.md)已完成：各822项锁仅更新8条hash，配置／库存保持；875／951原始来源、588／645staged及各1381冻结审计输入逐项复验。综合LUT＋ALU66,380／71,074、BSRAM equivalent195／257；两套严格门／原生CLI通过，原生58项分别53通过5跳过／42通过16跳过及68／57负控，边界各7项／69负控通过。主线程重读4655证据，prepare seal v2仅更正“综合开始时刻”的说明、原v1保留，候选字节不变。`D2110112`／`D2110114`默认完整P&R已启动，资源／routed时序另记；未上板，不转授声画或无线／双板接受。
 
+M17 `D2110112` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M17_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50,863，setup3821／−1.945ns、hold1／−3.392ns、recovery+2.571／removal+.278ns，仍不可部署。最差为config_accept_pending同域反馈，TF available→accepted仍−1.824ns；四张clk50报告+.393／+.183／+.393／−3.392ns。原生VO58项55通过3跳过及71负控、边界7／69、官方六PLL／7负控和held-v2物理入口通过；主线程逐30物理／2947证据重验，子门不转授完整时序或硬件。原VG／完整SDC／DDR3.500ns的`D2110113` far另测；未上板，仍待真实声画。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
