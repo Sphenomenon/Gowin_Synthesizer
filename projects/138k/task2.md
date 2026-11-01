@@ -402,6 +402,8 @@ M19／W17的[来源锁与整机prepare检查点](push2_workstation/usb_a/reports
 
 M19／W17的[完整综合与actual VG检查点](push2_workstation/usb_a/reports/DUAL138K_M19_W17_SYNTHESIS_20261101.md)已通过：FF46932／45220、LUT53910／57394、ALU12550／13802、综合BSRAM equivalent195／257；native58项分别53／44通过、5／14不适用，68／59负控全拒，边界各7／69。W新v3实际296payload／301资格端点／9928对10ns及hold覆盖、4专项／19负控通过，native-response完整映射归纳证明和物理CDC未转授。主线程独立复验7039路径；两次外围封存skip解析失败及原始结果均保留，工具／RTL／回归不改。新default D2110120／D2110122各8输入封存后全量P&R已启动；未预记routed资源／时序或上板，T2-D1／D2保持未完成。
 
+M19 `D2110120`的[default完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M19_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50976，setup5710／−3.450ns、hold1／−3.617ns，recovery+3.233／removal+.275ns。最差效果transaction_fault→config_state及矢量DSP；DDR原3.500ns要求保持。六审计通过（native58／3不适用／71负控、边界7／69、六PLL／7负控／held-v2），主线程重验30物理／2968证据。TF实际新源已消费，但available→accepted仍13条routed负路径、最差−2.175ns，图结构缩短不记routed收益。相同VG／SDC独立far `D2110121`继续测量；完整STA失败，未上板，T2-D1／D2保持未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
