@@ -14,6 +14,8 @@ import subprocess
 import sys
 
 import z3
+from run_tf_dma_available_response_cofactor import (
+    ORIGINAL_AVAILABLE_LINES, available_cofactor_block, before_available_response_cofactor)
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'sim/audio'))
@@ -61,6 +63,11 @@ def one(text, pattern):
 def before_response_cofactor(text):
     """Recover only the reviewed baseline; reject any source or anchor drift."""
     if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
+        # The later available-response insertion has its own exact full-file
+        # gate. Reverse only that reviewed hunk, then retain the original
+        # response-cofactor source pin and complete baseline inverse below.
+        text = before_available_response_cofactor(text)
+    if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
         raise ValueError('maintained TF response-cofactor source identity changed')
     block = one(text, r'(    // Compute both read-response cofactors.*?)(?=    reg \[31:0\] next_available_bytes)')
     tail = one(text, r"(        case \(write_selected\)\n            1'b0: next_accepted_used.*?        endcase\n)")
@@ -68,6 +75,27 @@ def before_response_cofactor(text):
     if hashlib.sha256(restored.encode()).hexdigest() != REFERENCE_SHA256:
         raise ValueError('exact pre-response-cofactor reconstruction changed')
     return restored
+
+
+def response_mutant(text, anchor, replacement):
+    """Apply the unchanged response mutant before restoring the later hunk.
+
+    The later combinational case has a matching default/endcase spelling;
+    derive mutants in the original pinned source to keep the original unique
+    anchor and oracle, then simulate both cofactors in the actual module.
+    """
+    block = None
+    if hashlib.sha256(text.encode()).hexdigest() != SOURCE_SHA256:
+        block = available_cofactor_block(text)
+        text = before_available_response_cofactor(text)
+    if text.count(anchor) != 1:
+        raise ValueError('TF cofactor source mutation anchor drift')
+    mutant = text.replace(anchor, replacement, 1)
+    if block is not None:
+        if mutant.count(ORIGINAL_AVAILABLE_LINES) != 1:
+            raise ValueError('TF available cofactor mutation reconstruction drift')
+        mutant = mutant.replace(ORIGINAL_AVAILABLE_LINES, block, 1)
+    return mutant
 
 
 def equation(text, name):
@@ -189,8 +217,11 @@ def main():
     scripts = {name: Path(__file__).with_name('run_tf_dma_' + name + '.py')
                for name in ('occupancy_equivalence', 'threshold_groups')}
     inputs = [SOURCE, REFERENCE, Path(__file__).resolve(), tb, header,
+              Path(__file__).with_name('run_tf_dma_available_response_cofactor.py'),
+              Path(__file__).with_name('fixtures') / 'workstation_tf_runtime_dma_before_available_response_cofactor.sv',
               ROOT / 'sim/audio/prove_effect_slot_admission.py',
               ROOT / 'tools/test_cnn_tf_write_buffer_retime.py',
+              ROOT / 'tools/cnn_ddr_pipeline_patch.py',
               Path(__file__).with_name('fixtures') / 'workstation_tf_runtime_dma_pre_occupancy.sv',
               Path(__file__).with_name('tb_tf_dma_occupancy_equivalence.sv'),
               Path(__file__).with_name('tb_tf_dma_threshold_groups.sv'),
@@ -239,10 +270,8 @@ def main():
         (include / header.name).write_bytes(header.read_bytes())
         result['runs'].append(simulate(out, 'four_state', SOURCE, reference, tb))
         for label, anchor, replacement in MUTATIONS + FOUR_STATE_MUTATIONS:
-            if text.count(anchor) != 1:
-                raise ValueError('TF cofactor source mutation anchor drift: ' + label)
             mutant = out / (label + '.sv')
-            mutant.write_text(text.replace(anchor, replacement, 1))
+            mutant.write_text(response_mutant(text, anchor, replacement))
             result['runs'].append(simulate(out, label, mutant, reference, tb, negative=True))
         # Do not normalize or replace either existing oracle. Both consume
         # the actual maintained source and retain every old negative control.

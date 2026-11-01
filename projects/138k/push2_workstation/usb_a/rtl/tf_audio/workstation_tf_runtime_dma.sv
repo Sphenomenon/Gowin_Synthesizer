@@ -158,8 +158,44 @@ module workstation_tf_runtime_dma #(
     wire [6:0] occupancy_input_delta = 7'd1 - 7'd0;
     wire [6:0] occupancy_input_read_delta = 7'd1 - {1'b0, occupancy_response_bytes};
     wire [31:0] available_after_write = add_occupancy_delta(available_bytes, occupancy_write_delta);
-    wire [31:0] available_after_read = add_occupancy_delta(available_bytes, occupancy_read_delta);
-    wire [31:0] available_after_write_read = add_occupancy_delta(available_bytes, occupancy_write_read_delta);
+    // Precompute the exact full and pending response alternatives before
+    // the availability classification. Unknown controls keep the old calls.
+    wire [31:0] available_read_generic = add_occupancy_delta(available_bytes, occupancy_read_delta);
+    wire [31:0] available_write_read_generic = add_occupancy_delta(available_bytes, occupancy_write_read_delta);
+    wire [31:0] available_full_read = add_occupancy_delta(available_bytes, 7'd96);
+    wire [31:0] available_full_write_read = add_occupancy_delta(available_bytes, {1'b0, pending_bytes} - 7'd32);
+    wire [31:0] available_pending_read = add_occupancy_delta(available_bytes, 7'd0 - {1'b0, read_pending_bytes});
+    wire [31:0] available_pending_write_read = add_occupancy_delta(available_bytes, {1'b0, pending_bytes} - {1'b0, read_pending_bytes});
+    reg [31:0] available_after_read, available_after_write_read;
+    always @* begin
+        available_after_read = available_read_generic;
+        available_after_write_read = available_write_read_generic;
+        case (read_pending)
+            1'b0: begin
+                case (eof_finalized && !read_has_full_beat)
+                    1'b0: begin
+                        available_after_read = available_full_read;
+                        available_after_write_read = available_full_write_read;
+                    end
+                    1'b1: begin
+                        // The original X-pessimistic full comparison being
+                        // zero proves a known unsigned occupancy below 32.
+                        available_after_read = 32'd0;
+                        case (^pending_bytes)
+                            1'b0, 1'b1: available_after_write_read = {26'd0, pending_bytes};
+                            default: begin end
+                        endcase
+                    end
+                    default: begin end
+                endcase
+            end
+            1'b1: begin
+                available_after_read = available_pending_read;
+                available_after_write_read = available_pending_write_read;
+            end
+            default: begin end
+        endcase
+    end
     wire [31:0] accepted_after_input = add_occupancy_delta(accepted_used, occupancy_input_delta);
     wire [31:0] accepted_after_read = add_occupancy_delta(accepted_used, occupancy_read_delta);
     wire [31:0] accepted_after_input_read = add_occupancy_delta(accepted_used, occupancy_input_read_delta);

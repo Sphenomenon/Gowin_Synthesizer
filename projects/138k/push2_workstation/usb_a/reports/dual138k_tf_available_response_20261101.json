@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "stage": "maintained_TF_available_response_cofactor_source_implementation",
+  "passed": true,
+  "modified_versioned_files": {
+    "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_dma.sv": "1baa71464c9180f13fa03a281c81d9cd7d8cb3ace0c538b674e610604d6f25e7",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/fixtures/workstation_tf_runtime_dma_before_available_response_cofactor.sv": "3f9eb8afa2c3308d270ce215693723bfb7cb48584ee96c3c3fbe749a4902e7b6",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_available_response_cofactor.py": "470fc11a66199231970d7c2ef51c4edbc2a6ddb4138789bcafbc061bde33840f",
+    "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_tf_dma_response_cofactor.py": "152af3680b9ca95c814c38863fbb2deb4a607c4df088c47bb5b0ede9993f6c14"
+  },
+  "source_sha256": "1baa71464c9180f13fa03a281c81d9cd7d8cb3ace0c538b674e610604d6f25e7",
+  "pre_change_fixture_sha256": "3f9eb8afa2c3308d270ce215693723bfb7cb48584ee96c3c3fbe749a4902e7b6",
+  "reviewed_cache_candidate_exact": true,
+  "exact_inverse_to_complete_3f9_module": true,
+  "original_NBA_targets_RHS_order_identical": true,
+  "original_accepted_cofactor_and_later_bytes_identical": true,
+  "new_binary_free_bits": 48,
+  "arbitrary_32bit_occupancy": true,
+  "independent_6bit_pending_and_delayed_response": true,
+  "reachability_assumptions": false,
+  "four_state_simulation_is_bounded": true,
+  "original_oracle_functions_mutations_threshold_occupancy_and_fixtures_preserved": true,
+  "checks": {
+    "available_response_cofactor": {
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-v1/verification.json",
+      "sha256": "f59c9c53b4f5669da2f755d462b8569543b8d035eb7eed67fdb537ca6bd0ff0e",
+      "binary": {
+        "rows": [
+          {
+            "name": "available_read_arbitrary_state",
+            "result": "UNSAT"
+          },
+          {
+            "name": "available_write_read_arbitrary_state",
+            "result": "UNSAT"
+          },
+          {
+            "name": "unchanged_four_way_selector_arbitrary_write_and_response",
+            "result": "UNSAT"
+          }
+        ],
+        "free_bits": 48,
+        "arbitrary_32bit_occupancy": true,
+        "independent_6bit_pending_and_delayed_response": true,
+        "reachability_assumptions": false,
+        "arbitrary_four_state_proof": false,
+        "scope": "Expression algebra bound by full source pin and exact inverse; not formal SV elaboration",
+        "actual_arithmetic_equations": {
+          "available_read_generic": "add_occupancy_delta(available_bytes, occupancy_read_delta)",
+          "available_write_read_generic": "add_occupancy_delta(available_bytes, occupancy_write_read_delta)",
+          "available_full_read": "add_occupancy_delta(available_bytes, 7'd96)",
+          "available_full_write_read": "add_occupancy_delta(available_bytes, {1'b0, pending_bytes} - 7'd32)",
+          "available_pending_read": "add_occupancy_delta(available_bytes, 7'd0 - {1'b0, read_pending_bytes})",
+          "available_pending_write_read": "add_occupancy_delta(available_bytes, {1'b0, pending_bytes} - {1'b0, read_pending_bytes})"
+        },
+        "unchanged_helper_sha256": "5eeb369db5896a93f33f0be16136a8fe7362f312c72120c48689e7c375ea6750",
+        "z3_version": "5.1.0"
+      },
+      "four_state_vectors": 2097152,
+      "runs": 4,
+      "negatives": 3
+    },
+    "original_response_cofactor": {
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-v1/response_cofactor/verification.json",
+      "sha256": "5f5f3aef702c74b18a268985ad17eaed40884c886894ee0ed2d24513fa03779d",
+      "binary": {
+        "rows": [
+          {
+            "label": "read_response_when_selected",
+            "result": "UNSAT"
+          },
+          {
+            "label": "read_response_without_write",
+            "result": "UNSAT"
+          },
+          {
+            "label": "new_read_excludes_selected_write",
+            "result": "UNSAT"
+          },
+          {
+            "label": "accepted_next_arbitrary_candidates",
+            "result": "UNSAT"
+          },
+          {
+            "negative": "drop_immediate_read",
+            "result": "SAT",
+            "counterexample": "[app_rvalid = True,\n read_has_full_beat = True,\n mem_ready = True,\n stream_started = True,\n read_buf_valid = False,\n accepted_after_read = 0,\n fifo_out_full = False,\n runtime_hold_i = False,\n input_byte_accepted = True,\n state = 0,\n ring_can_commit = False,\n write_pending = True,\n read_pending = False,\n hold_after_zero_delta = 0,\n accepted_after_input = 4294967295,\n app_rdy = True,\n accepted_after_input_read = 0,\n read_has_partial_beat = False]"
+          },
+          {
+            "negative": "invent_unpending_response",
+            "result": "SAT",
+            "counterexample": "[accepted_after_read = 134221824,\n app_rvalid = True,\n accepted_after_input = 134221824,\n runtime_hold_i = False,\n accepted_after_input_read = 4160745471,\n read_has_full_beat = True,\n app_rdy = True,\n state = 0,\n mem_ready = True,\n read_buf_valid = False,\n input_byte_accepted = False,\n read_pending = False,\n fifo_out_full = True,\n ring_can_commit = True,\n hold_after_zero_delta = 4160745471,\n stream_started = True,\n write_pending = True,\n read_has_partial_beat = False]"
+          },
+          {
+            "negative": "allow_new_read_with_write",
+            "result": "SAT",
+            "counterexample": "[app_rvalid = True,\n runtime_hold_i = False,\n app_rdy = True,\n input_byte_accepted = True,\n accepted_after_read = 0,\n read_buf_valid = False,\n accepted_after_input_read = 8388608,\n hold_after_zero_delta = 4194304,\n mem_ready = True,\n ring_can_commit = True,\n write_pending = True,\n stream_started = True,\n state = 0,\n read_has_full_beat = True,\n fifo_out_full = False,\n accepted_after_input = 4286578687,\n read_pending = False,\n read_has_partial_beat = False]"
+          },
+          {
+            "negative": "lose_simultaneous_input",
+            "result": "SAT",
+            "counterexample": "[app_rdy = True,\n app_rvalid = True,\n read_buf_valid = False,\n stream_started = True,\n accepted_after_input_read = 269621986,\n runtime_hold_i = False,\n state = 0,\n hold_after_zero_delta = 269621986,\n read_has_full_beat = True,\n ring_can_commit = True,\n accepted_after_read = 4025345309,\n fifo_out_full = False,\n write_pending = True,\n accepted_after_input = 96592153,\n input_byte_accepted = True,\n read_pending = True,\n mem_ready = True,\n read_has_partial_beat = False]"
+          }
+        ],
+        "actual_source_equations": {
+          "write_selected": "mem_ready && !runtime_hold_i && write_pending && ring_can_commit",
+          "read_request": "mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&\n                        !write_selected && !read_pending && !read_buf_valid &&\n                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat)",
+          "read_accept": "read_request && app_rdy",
+          "read_response": "app_rvalid && (read_pending || read_accept)",
+          "read_request_without_write": "mem_ready && !runtime_hold_i && state == S_STREAM && stream_started &&\n                        !read_pending && !read_buf_valid &&\n                        !fifo_out_full && (read_has_full_beat || read_has_partial_beat)",
+          "read_accept_without_write": "read_request_without_write && app_rdy",
+          "read_response_without_write": "app_rvalid && (read_pending || read_accept_without_write)",
+          "read_response_pending_only": "app_rvalid && read_pending"
+        },
+        "free_bits": 143,
+        "arithmetic_candidates": "four arbitrary independent 32-bit unchanged RHS values",
+        "unreachable_state_assumptions": false,
+        "arbitrary_four_state_proof": false,
+        "z3_version": "5.1.0"
+      },
+      "runs": 7,
+      "negatives": 6
+    },
+    "occupancy_equivalence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-v1/response_cofactor/occupancy_equivalence/verification.json",
+      "sha256": "fdbc5bfc5020bb9ebcb19c71b6b73763059d148030acc49faf354b7e179fc27b",
+      "passed": true,
+      "runs": 14,
+      "negative_controls": 8
+    },
+    "threshold_groups": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-v1/response_cofactor/threshold_groups/verification.json",
+      "sha256": "58b7bb3d7daf6bb363aa5fc1274e93db5af0785a569f289a47f632d6d607dfcc",
+      "passed": true,
+      "runs": 8,
+      "negative_controls": 6
+    },
+    "runtime_service": {
+      "passed": true,
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-service-v1/verification.json",
+      "sha256": "8aa824d6889299b187114e2e4c88ace41112b8469f75bd8af4b63f0a0d987fbf",
+      "actual_source_sha256": "1baa71464c9180f13fa03a281c81d9cd7d8cb3ace0c538b674e610604d6f25e7",
+      "inputs_unchanged_during_run": true
+    },
+    "runtime_clear": {
+      "passed": true,
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-clear-v1/verification.json",
+      "sha256": "f7cccdca3c5fcde4fc058fbc95529347425d897198e26173e5542f4e934ec1a8",
+      "actual_source_sha256": "1baa71464c9180f13fa03a281c81d9cd7d8cb3ace0c538b674e610604d6f25e7",
+      "inputs_unchanged_during_run": true
+    },
+    "runtime_stop": {
+      "passed": true,
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-stop-v1/verification.json",
+      "sha256": "3c34f1c5708384f54b194045a7cbd328e4e4be7ff777e3a11f8d2e69ee2599fc",
+      "actual_source_sha256": "1baa71464c9180f13fa03a281c81d9cd7d8cb3ace0c538b674e610604d6f25e7",
+      "inputs_unchanged_during_run": true
+    },
+    "oracle-preservation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-review-v1/oracle-preservation.json",
+      "sha256": "13865e7494a83b8c00922551e91930cde3da70aac7c7fdd389fbc62e0d0e0033"
+    },
+    "current-source-regression": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-review-v1/current-source-regression.json",
+      "sha256": "e8cb0eab78dd5c1e914a050647670e1e5648b645f77f00858ff8905007628483"
+    }
+  },
+  "main_runner_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-available-response-maintained-v1/final-seal.json",
+    "sha256": "18853b91561fc19553a7cda71ca00911d83f1ca7129b828ef9f2797994a81d5f",
+    "artifacts_reverified": 174
+  },
+  "formal_scope": "Expression algebra hash-bound to actual source and exact inverse; not formal SystemVerilog elaboration or whole-netlist equivalence.",
+  "unknown_contract": "Known pending/full use the unchanged helper with exact original operands. Known partial implies known unsigned occupancy below32; pending X/Z keeps original arithmetic. Unknown pending/classification keeps original helper calls; final four-way default delta unchanged.",
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "demo_source_locks_modified_by_this_change": false,
+  "task2_modified_by_this_change": false,
+  "commit_or_push_by_child": false,
+  "EDA_started_by_child": false,
+  "timing_or_resource_gain_claimed": false,
+  "limitations": "Additional arithmetic alternatives may increase area or final mux load. A distinct future M candidate must establish mapped/physical effect; no timing/resource or hardware acceptance inferred.",
+  "environment": "Tests used /Users/sphenicidition/miniforge3/bin/python3 with z3 5.1.0 and Homebrew Icarus. Initial default-python import preflight lacked z3; no tests started in that preflight."
+}
