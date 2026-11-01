@@ -422,6 +422,8 @@ W 的[PCM bitmap最终context判定](push2_workstation/usb_a/reports/DUAL138K_PC
 
 M／W 的[配置实际接受回执](push2_workstation/usb_a/reports/DUAL138K_CONFIG_ACCEPT_RECEIPT_20261101.md)已修复：runtime CFG_ACCEPT不再因ready独立为1而虚假ACK，直接等待原engine_rate_commit广播回执，故障／valid撤销同拍禁止ACK，无新状态或延迟。完整M／W33280四态、实际FSM及旧ready负控、原config-ready／sample／effect证明和完整service对照通过；M22532帧、生产启动1028帧、48645独立定点模型帧／31边界／115929947 effect对照通过。主线程独立核对十一份变更及797封存文件／220当前输入；未更新profile或新EDA／上板，不记物理收益。
 
+[M20／W18来源锁](push2_workstation/usb_a/reports/DUAL138K_M20_W18_SOURCE_LOCK_20261101.json)已明确刷新：两份各10条已验证源码／工具hash提升，并锁定render回归新import的receipt helper，库存M823／W824；配置、功能、历史references和source_sets保持。两profile严格check、17来源与26demo审计（1项skip）通过。下一全量prepare／综合／P&R分别使用新目录与D2110125／D2110126，旧M19／W17身份和证据不改；当前只完成来源门，不提前记物理或硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

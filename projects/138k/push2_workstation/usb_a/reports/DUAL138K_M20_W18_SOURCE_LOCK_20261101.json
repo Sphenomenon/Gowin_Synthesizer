@@ -1,0 +1,131 @@
+{
+  "schema": "dual138k-m20-w18-source-lock-refresh-v1",
+  "captured_utc": "2026-11-01T08:28:11.690977+00:00",
+  "source_commit": "3cca892f3f6f78a2c13a18e6490bce2c8765e029",
+  "profiles": {
+    "M": {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "before_sha256": "609ec88edcf6aade42178f27b65c3e5956fbc6884064f0588a52f77bf415e44e",
+      "after_sha256": "2a3435ec8bf15667544975ef2ebf732652eb1e22904fa90dc21859a7fe5931a6",
+      "source_files": 823,
+      "existing_changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "b689d16fc95be1b25627d1471345f572292ec72f465e6e1ff80753e558abc1a6",
+          "after": "7e5c0e3b8870d339f998ce3c6287fbc0c4d9e19e5e5e49365a7a6762f3a7e9aa"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "before": "1c575c3fd39d73c795cb7e49c075a1b5848be90d3cccd57e24db991a9071649b",
+          "after": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0",
+          "after": "6a2108214f5e252cf89a245960e4928fee40440f3b8f2e66e8ca1a9ae95401d9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": {
+          "before": "51fb7a96487b4aa27fdf9fce38901c6ee3a5403ce29292bac51ab3c7901fa2c8",
+          "after": "e32a9ef62a527907da7baeaaf4ec592b38261483f9f6f7d7fa3429cbd32b9dc8"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": {
+          "before": "d2e39654e16fde55c13b231ef672162fb2b2b6bdfa3740d4b7ac25bb95f8c38d",
+          "after": "5262395f5031a14aa6cf18b359852590d3dcab33ee3fde9ce5f4e069b6fb9739"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": {
+          "before": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f",
+          "after": "9dce45ba47ed58314ce4d30a308b6869bbcb815d382777ec868e936cab3fc848"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": {
+          "before": "3f2889e9616839aa4657416fa9164e5e4f79502560f8e9b0b9b32f9985a55987",
+          "after": "3b6bc255af5d652a6badd8d78b01a2fb02de89892999e39b9a46a71ee2532569"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py": {
+          "before": "fac03605c3d81f33bdade43d4bd3c21f3fb951fdced8a6f5f77e87aec2e531e5",
+          "after": "a92d6cd9d10f0f961f1d51d7f188fb292c86b741c35de68bfc108f0477130f1a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+          "before": "5a0e6693fd5a2dedde09df0e0ba1cc84250afee028708f825e130bee3082a152",
+          "after": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": {
+          "before": "4b49d554738d498d8ea181d7d82329a16894b4e76d86c669223c94c3a94190de",
+          "after": "77441305d4f44977a747be53b0844abf6305d9422b87b30ec7ab520133d44f85"
+        }
+      },
+      "added_helper": {
+        "projects/138k/push2_workstation/usb_a/sim/audio/config_accept_receipt_sources.py": "dd1782d792479f930735bee541da31893b10d98c794bd340807af74bc1aa8ee0"
+      },
+      "configuration_features_references_source_sets_unchanged": true
+    },
+    "W": {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "before_sha256": "a90ee46ba2c699d93fbaed3d5530c67ad75a23e7d653168a722c92dbc397d9a1",
+      "after_sha256": "16fae46f7c3fa2dfafbf56da92a2fb06770a45be0b2ef2e8de7866ee05506810",
+      "source_files": 824,
+      "existing_changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv": {
+          "before": "b689d16fc95be1b25627d1471345f572292ec72f465e6e1ff80753e558abc1a6",
+          "after": "7e5c0e3b8870d339f998ce3c6287fbc0c4d9e19e5e5e49365a7a6762f3a7e9aa"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": {
+          "before": "1c575c3fd39d73c795cb7e49c075a1b5848be90d3cccd57e24db991a9071649b",
+          "after": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_audio_render_service.sv": {
+          "before": "9c80e68049ec1a08b9d176bd1d7dcb22723e3058c7015166a051c45dcd9d2bd0",
+          "after": "6a2108214f5e252cf89a245960e4928fee40440f3b8f2e66e8ca1a9ae95401d9"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_flow_owner.sv": {
+          "before": "51fb7a96487b4aa27fdf9fce38901c6ee3a5403ce29292bac51ab3c7901fa2c8",
+          "after": "e32a9ef62a527907da7baeaaf4ec592b38261483f9f6f7d7fa3429cbd32b9dc8"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ble_raw_ddr_store.sv": {
+          "before": "d2e39654e16fde55c13b231ef672162fb2b2b6bdfa3740d4b7ac25bb95f8c38d",
+          "after": "5262395f5031a14aa6cf18b359852590d3dcab33ee3fde9ce5f4e069b6fb9739"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/tf_audio/workstation_tf_runtime_service.sv": {
+          "before": "90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f",
+          "after": "9dce45ba47ed58314ce4d30a308b6869bbcb815d382777ec868e936cab3fc848"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_audio.sv": {
+          "before": "3f2889e9616839aa4657416fa9164e5e4f79502560f8e9b0b9b32f9985a55987",
+          "after": "3b6bc255af5d652a6badd8d78b01a2fb02de89892999e39b9a46a71ee2532569"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_render_service.py": {
+          "before": "fac03605c3d81f33bdade43d4bd3c21f3fb951fdced8a6f5f77e87aec2e531e5",
+          "after": "a92d6cd9d10f0f961f1d51d7f188fb292c86b741c35de68bfc108f0477130f1a"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_bluetooth_ddr.py": {
+          "before": "5a0e6693fd5a2dedde09df0e0ba1cc84250afee028708f825e130bee3082a152",
+          "after": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d"
+        },
+        "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": {
+          "before": "4b49d554738d498d8ea181d7d82329a16894b4e76d86c669223c94c3a94190de",
+          "after": "77441305d4f44977a747be53b0844abf6305d9422b87b30ec7ab520133d44f85"
+        }
+      },
+      "added_helper": {
+        "projects/138k/push2_workstation/usb_a/sim/audio/config_accept_receipt_sources.py": "dd1782d792479f930735bee541da31893b10d98c794bd340807af74bc1aa8ee0"
+      },
+      "configuration_features_references_source_sets_unchanged": true
+    }
+  },
+  "passed": true,
+  "validation_stage": "source_lock_only",
+  "tests": {
+    "current_sources": {
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-w18-current-sources-v1.log",
+      "sha256": "eb3afbcf22bf62c6314844f07cc67ec46338777907e79bd56bf92e9b526a15ae",
+      "summary": ".................\n----------------------------------------------------------------------\nRan 17 tests in 0.101s\n\nOK\n"
+    },
+    "demo_audit": {
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-w18-demo-audit-v1.log",
+      "sha256": "ff2a79a1f2404ecfc8857849789da516f2f3746d366fe73a84307eb588cdf0b5",
+      "summary": "................\n----------------------------------------------------------------------\nRan 16 tests in 0.047s\n\nOK\n"
+    }
+  },
+  "refresh_record_sha256": "01b33c1334edd30449e18c3ab25593e8a9c5df39272e0df441a9369e9accfa08",
+  "new_prepare": false,
+  "new_synthesis": false,
+  "new_PNR": false,
+  "hardware_tested": false,
+  "release_ready": false
+}
