@@ -316,6 +316,14 @@ def audit(physical, self_test=False, workspace=None, output=None):
         Path(__file__).with_name('workstation_runtime_cdc.py'),
         reference, physical / 'physical.cst', base.with_suffix('.sdf'), base.with_suffix('.vo'), base.with_suffix('.tr')))
     stage, parent, local_panel_enabled, selection = source_context(physical, inputs, snapshot)
+    from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
+    if (parent.get('demo_runtime_timing') or {}).get('policy') == W_RETURN_TIMING_POLICY:
+        # The helper is lazily imported after the initial snapshot. Bind both
+        # its reviewed implementation and the candidate's sealed input now.
+        for helper in ('tools/workstation_w_return_mailbox_cdc.py',
+                       'tools/workstation_bluetooth_ddr.py'):
+            snapshot[ROOT / helper] = sha(ROOT / helper)
+            snapshot[stage / helper] = parent['staged_input_sha256'][helper]
     if workspace is not None and output is not None:
         audit_output_path(physical, stage, output)
     for module in tuple(sys.modules.values()):
@@ -365,15 +373,15 @@ def audit(physical, self_test=False, workspace=None, output=None):
     demo_held_handshakes, demo_held_errors = {}, []
     if demo_role:
         from tools.workstation_performance_reset import (
-            audit_demo_held_handshakes, DEMO_TIMING_POLICY)
+            audit_demo_held_handshakes, DEMO_HELD_TIMING_POLICIES)
         from tools.workstation_native_protocol_audit import protocol_netlist
         evidence = parent.get('demo_runtime_timing')
         try:
             # v1 candidates keep their sealed evidence and do not acquire
             # the v2 mailbox policy by re-running a maintained auditor.
-            if evidence and evidence.get('policy') == DEMO_TIMING_POLICY:
+            if evidence and evidence.get('policy') in DEMO_HELD_TIMING_POLICIES:
                 demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, demo_role, evidence,
-                    protocol_netlist(vo, mapping='routed'), mapping='routed')
+                    protocol_netlist(vo, mapping='routed'), mapping='routed', netlist_text=vo)
             else:
                 demo_held_handshakes = dict(gate_applied=False, scope='sealed legacy DEMO timing policy')
         except (ValueError, KeyError, OSError) as error:

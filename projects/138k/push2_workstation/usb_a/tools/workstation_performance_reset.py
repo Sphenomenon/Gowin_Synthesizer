@@ -50,6 +50,8 @@ def proposed_constraints():
 
 DEMO_TIMING_POLICY = 'independent-demo-runtime-timing-v2'
 DEMO_TIMING_LEGACY_POLICY = 'independent-demo-runtime-timing-v1'
+W_RETURN_TIMING_POLICY = 'independent-demo-w-return-mailbox-timing-v3'
+DEMO_HELD_TIMING_POLICIES = (DEMO_TIMING_POLICY, W_RETURN_TIMING_POLICY)
 DEMO_TIMING_TOOL = 'tools/workstation_performance_reset.py'
 
 
@@ -63,10 +65,16 @@ def demo_clock_reports():
         for kind in ('setup', 'hold')) + '\n'
 
 
-def demo_timing_lines(role):
+def demo_timing_lines(role, *, policy=DEMO_TIMING_POLICY):
     require(role in ('M', 'W'), 'unknown DEMO timing role')
+    require(policy in DEMO_HELD_TIMING_POLICIES, 'unknown DEMO timing policy revision')
+    extra = ''
+    if policy == W_RETURN_TIMING_POLICY:
+        require(role == 'W', 'W return timing policy requires W role')
+        from tools.workstation_w_return_mailbox_cdc import constraints
+        extra = constraints()
     return ((proposed_constraints() if role == 'W' else '') + demo_clock_reports() +
-            demo_held_handshake_constraints()).splitlines()
+            demo_held_handshake_constraints() + extra).splitlines()
 
 
 def demo_held_handshake_constraints():
@@ -89,10 +97,15 @@ def demo_held_handshake_constraints():
     return '\n'.join(lines) + '\n'
 
 
-def demo_timing_metadata(role, source_sha256, *, legacy=False):
+def demo_timing_metadata(role, source_sha256, *, legacy=False, policy=None, return_mailbox=None):
+    policy = policy or (DEMO_TIMING_LEGACY_POLICY if legacy else DEMO_TIMING_POLICY)
+    require(policy in (*DEMO_HELD_TIMING_POLICIES, DEMO_TIMING_LEGACY_POLICY),
+            'unknown DEMO timing policy revision')
+    require(not legacy or policy == DEMO_TIMING_LEGACY_POLICY, 'legacy timing policy mismatch')
+    legacy = policy == DEMO_TIMING_LEGACY_POLICY
     lines = (((proposed_constraints() if role == 'W' else '') + demo_clock_reports()).splitlines()
-             if legacy else demo_timing_lines(role))
-    result = dict(policy=DEMO_TIMING_LEGACY_POLICY if legacy else DEMO_TIMING_POLICY,
+             if legacy else demo_timing_lines(role, policy=policy))
+    result = dict(policy=policy,
         role=role, source=DEMO_TIMING_TOOL, source_sha256=source_sha256, added_lines=lines,
         performance_release_selected=role == 'W',
         synchronizer_clear_exception_count=6 if role == 'W' else 0,
@@ -104,31 +117,61 @@ def demo_timing_metadata(role, source_sha256, *, legacy=False):
             held_handshake_payload_bits=dict(pc_request=8, apb_request=49),
             held_handshake_setup_budget_ns=13.020, held_handshake_only_hold_waived=True,
             toggle_first_stage_exception_count=3, toggle_second_stage_max_delay_ns=2.0)
+    if policy == W_RETURN_TIMING_POLICY:
+        require(isinstance(return_mailbox, dict), 'W return mailbox source selection missing')
+        result['return_mailbox'] = return_mailbox
+    else:
+        require(return_mailbox is None, 'old timing policy cannot acquire W return selection')
     return result
 
 
-def select_demo_timing(stage, sdc, role):
+def select_demo_timing(stage, sdc, role, *, policy=DEMO_TIMING_POLICY):
     """Explicit DEMO-only additions; historical and accepted profiles stay out."""
-    lines = demo_timing_lines(role)
+    lines = demo_timing_lines(role, policy=policy)
     require(all(line not in sdc.splitlines() for line in lines), 'DEMO timing lines already installed')
     source = Path(stage) / DEMO_TIMING_TOOL
     result = sdc + ('' if not sdc or sdc.endswith('\n') else '\n') + '\n'.join(lines) + '\n'
-    return result, demo_timing_metadata(role, digest(source))
+    return_mailbox = None
+    if policy == W_RETURN_TIMING_POLICY:
+        from tools.workstation_w_return_mailbox_cdc import selection_metadata
+        return_mailbox = selection_metadata(stage)
+    return result, demo_timing_metadata(role, digest(source), policy=policy, return_mailbox=return_mailbox)
 
 
 def verify_demo_timing(stage, sdc, role, evidence):
     lines = demo_timing_lines(role)
+    # Old M/W candidates must not import or stage the new W-only helper.
+    # Recognize its qualification scope without copying its constraints.
+    def has_return_qualification():
+        for line in sdc.splitlines():
+            if 'recording_ble_store/return_generation_' not in line:
+                continue
+            if any('recording_ble_store/' + stem in line for stem in (
+                    'return_ack_', 'unpack_active_', 'unpack_data_', 'unpack_word_', 'unpack_index_')):
+                return True
+            if 'recording_ble_store/unpack_generation_' in line and '/CE' in line:
+                return True
+        return False
     if evidence is None:
-        require(all(line not in sdc.splitlines() for line in lines),
+        require(all(line not in sdc.splitlines() for line in lines) and not has_return_qualification(),
                 'DEMO timing additions lack sealed selection evidence')
         return dict(mode='sealed_legacy_without_demo_timing_additions')
     require(evidence.get('source') == DEMO_TIMING_TOOL, 'DEMO timing source changed')
     require(evidence.get('source_sha256') == digest(Path(stage) / DEMO_TIMING_TOOL),
             'DEMO timing sealed source identity changed')
-    require(evidence.get('policy') in (DEMO_TIMING_POLICY, DEMO_TIMING_LEGACY_POLICY),
+    require(evidence.get('policy') in (*DEMO_HELD_TIMING_POLICIES, DEMO_TIMING_LEGACY_POLICY),
             'unknown DEMO timing policy revision')
     legacy = evidence['policy'] == DEMO_TIMING_LEGACY_POLICY
-    expected = demo_timing_metadata(role, evidence['source_sha256'], legacy=legacy)
+    return_mailbox = None
+    if evidence['policy'] == W_RETURN_TIMING_POLICY:
+        require(role == 'W', 'W return timing policy requires W role')
+        from tools.workstation_w_return_mailbox_cdc import verify_selection
+        return_mailbox = verify_selection(stage, evidence.get('return_mailbox'))
+    else:
+        require(not has_return_qualification(),
+                'old DEMO timing cannot acquire unsealed W return constraints')
+    expected = demo_timing_metadata(role, evidence['source_sha256'], legacy=legacy,
+        policy=evidence['policy'], return_mailbox=return_mailbox)
     lines = expected['added_lines']
     require(evidence == expected, 'DEMO timing selection metadata changed')
     require(all(sdc.splitlines().count(line) == 1 for line in lines),
@@ -139,10 +182,10 @@ def verify_demo_timing(stage, sdc, role, evidence):
     return dict(evidence, installed_lines_verified=True)
 
 
-def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping):
+def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlist_text=None):
     """One selected gate shared by strict synthesis and actual routed entry."""
     selected = verify_demo_timing(stage, sdc, role, evidence)
-    if selected.get('policy') != DEMO_TIMING_POLICY:
+    if selected.get('policy') not in DEMO_HELD_TIMING_POLICIES:
         return dict(gate_applied=False, policy=selected.get('policy'),
                     scope='sealed legacy without new DEMO held-handshake policy')
     # The caller has already sealed the complete candidate input closure.
@@ -164,7 +207,13 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping):
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
         demo_held_handshakes=demo_held_handshake_constraints())
-    return dict(gate_applied=True, selection=selected, actual_native_protocol=result,
+    mailbox = {}
+    if selected['policy'] == W_RETURN_TIMING_POLICY:
+        require(isinstance(netlist_text, str), 'actual W return netlist text required')
+        from tools.workstation_w_return_mailbox_cdc import audit as audit_return
+        mailbox['actual_w_return_mailbox'] = audit_return(n, stage=stage, sdc=sdc,
+            mapping=mapping, netlist_text=netlist_text)
+    return dict(gate_applied=True, selection=selected, actual_native_protocol=result, **mailbox,
                 reset_source_slice_sha256={str(p): digest(p) for p in (top_path, controlled_path)},
                 actual_pc_reset_scope='power_up_only', reusable_module_reset_simulation=False,
                 physical_timing_verified=False, hardware_tested=False)

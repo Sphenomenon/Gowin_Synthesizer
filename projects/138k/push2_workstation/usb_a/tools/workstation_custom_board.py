@@ -128,6 +128,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
+        if demo_role == 'W':
+            from tools.workstation_w_return_mailbox_cdc import TOOL as RETURN_MAILBOX_TOOL
+            profile_dependencies += (RETURN_MAILBOX_TOOL,)
         from tools.workstation_usb_fifo_reset import POLICY as FIFO_RESET_POLICY
         if profile['configuration'].get('usb_fifo_reset_policy') != FIFO_RESET_POLICY:
             raise ValueError('new DEMO prepare requires explicit USB FIFO local-reset policy')
@@ -322,8 +325,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     demo_runtime_timing = None
     demo_boundary_cdc = None
     if demo_role is not None:
-        from tools.workstation_performance_reset import select_demo_timing
-        selected_sdc, demo_runtime_timing = select_demo_timing(stage, selected_sdc, demo_role)
+        from tools.workstation_performance_reset import (
+            select_demo_timing, DEMO_TIMING_POLICY, W_RETURN_TIMING_POLICY)
+        selected_sdc, demo_runtime_timing = select_demo_timing(stage, selected_sdc, demo_role,
+            policy=W_RETURN_TIMING_POLICY if demo_role == 'W' else DEMO_TIMING_POLICY)
         from tools.workstation_demo_boundary_cdc import select_demo_boundary
         selected_sdc, demo_boundary_cdc = select_demo_boundary(stage, selected_sdc, demo_role)
     if runtime:

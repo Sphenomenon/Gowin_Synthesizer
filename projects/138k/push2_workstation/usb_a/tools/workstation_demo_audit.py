@@ -43,6 +43,8 @@ AUDIT_SOURCES = (
     'tools/workstation_demo_boundary_cdc.py',
     'tools/workstation_native_protocol_audit.py', 'tools/workstation_recording_phase1_cdc.py',
     'tools/workstation_runtime_profile.py', 'tools/workstation_runtime_cdc.py',
+    'tools/workstation_w_return_mailbox_cdc.py',
+    'tools/workstation_bluetooth_ddr.py',
 )
 COMMON_FEATURES = {
     'usb_host': 'u_native_usb/host', 'usb_cpu': 'u_native_usb/host/cpu',
@@ -535,12 +537,13 @@ def audit(root, output, metadata):
     demo_held_handshakes = None
     demo_boundary_cdc = None
     if metadata.get('demo_runtime_timing') is not None:
-        from tools.workstation_performance_reset import audit_demo_held_handshakes, DEMO_TIMING_POLICY
+        from tools.workstation_performance_reset import audit_demo_held_handshakes, DEMO_HELD_TIMING_POLICIES
         from tools.workstation_native_protocol_audit import protocol_netlist
         timing_evidence = metadata['demo_runtime_timing']
         demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, role,
             timing_evidence, protocol_netlist(vg_text, mapping='synthesis')
-            if timing_evidence.get('policy') == DEMO_TIMING_POLICY else None, mapping='synthesis')
+            if timing_evidence.get('policy') in DEMO_HELD_TIMING_POLICIES else None,
+            mapping='synthesis', netlist_text=vg_text)
     if metadata.get('demo_boundary_cdc') is not None:
         from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
         from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary

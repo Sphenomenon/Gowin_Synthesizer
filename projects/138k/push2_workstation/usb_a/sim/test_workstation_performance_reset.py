@@ -20,6 +20,93 @@ from tools.workstation_performance_reset import (
 
 
 class DemoBuildSelection(unittest.TestCase):
+    def w_return_stage(self, stage):
+        from tools import workstation_w_return_mailbox_cdc as mailbox
+        for relative in (DEMO_TIMING_TOOL, mailbox.TOOL, mailbox.RAW_STORE_PATH):
+            target = stage / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / relative).read_bytes())
+        return mailbox
+
+    def test_w_return_v3_is_explicit_and_seals_helper_and_raw_sources(self):
+        import hashlib
+        from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
+        with tempfile.TemporaryDirectory(prefix='w-return-timing-v3-') as directory:
+            stage = Path(directory)
+            mailbox = self.w_return_stage(stage)
+            original = '# retained upstream\n'
+            selected, evidence = select_demo_timing(stage, original, 'W',
+                                                    policy=W_RETURN_TIMING_POLICY)
+            self.assertEqual(evidence['policy'], W_RETURN_TIMING_POLICY)
+            self.assertEqual(len(evidence['added_lines']), 21)
+            self.assertEqual(evidence['added_lines'][-2:], mailbox.constraints().splitlines())
+            self.assertIsInstance(evidence['return_mailbox'], dict)
+            self.assertTrue(evidence['return_mailbox'])
+            encoded = json.dumps(evidence['return_mailbox'], sort_keys=True)
+            self.assertIn(hashlib.sha256((stage / mailbox.TOOL).read_bytes()).hexdigest(), encoded)
+            self.assertIn(mailbox.RAW_STORE_SHA256, encoded)
+            self.assertTrue(verify_demo_timing(stage, selected, 'W', evidence)['installed_lines_verified'])
+            default, old = select_demo_timing(stage, original, 'W')
+            self.assertEqual(old['policy'], DEMO_TIMING_POLICY)
+            self.assertEqual(len(old['added_lines']), 19)
+            self.assertNotIn('return_mailbox', old)
+            self.assertNotIn(mailbox.constraints(), default)
+            for line in mailbox.constraints().splitlines():
+                for changed in (selected.replace(line + '\n', '', 1), selected + line + '\n'):
+                    with self.subTest(line=line), self.assertRaises(ValueError):
+                        verify_demo_timing(stage, changed, 'W', evidence)
+            for relative in (mailbox.TOOL, mailbox.RAW_STORE_PATH):
+                source = stage / relative
+                saved = source.read_bytes()
+                source.write_bytes(saved + b'\n// cache test source drift\n')
+                with self.subTest(source=relative), self.assertRaises((ValueError, OSError)):
+                    verify_demo_timing(stage, selected, 'W', evidence)
+                source.write_bytes(saved)
+                source.unlink()
+                with self.subTest(missing=relative), self.assertRaises((ValueError, OSError)):
+                    verify_demo_timing(stage, selected, 'W', evidence)
+                source.write_bytes(saved)
+            altered = dict(evidence, return_mailbox=dict(evidence['return_mailbox'], unsealed_test=True))
+            with self.assertRaises(ValueError):
+                verify_demo_timing(stage, selected, 'W', altered)
+
+    def test_w_return_v3_cannot_be_selected_or_replayed_for_m(self):
+        from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
+        with tempfile.TemporaryDirectory(prefix='w-return-role-v3-') as directory:
+            stage = Path(directory)
+            self.w_return_stage(stage)
+            with self.assertRaises(ValueError):
+                select_demo_timing(stage, '# retained upstream\n', 'M',
+                                   policy=W_RETURN_TIMING_POLICY)
+            selected, evidence = select_demo_timing(stage, '# retained upstream\n', 'W',
+                                                    policy=W_RETURN_TIMING_POLICY)
+            with self.assertRaises(ValueError):
+                verify_demo_timing(stage, selected, 'M', evidence)
+
+    def test_old_m_and_w_policies_need_no_return_helper_and_reject_its_lines(self):
+        import hashlib
+        from tools import workstation_w_return_mailbox_cdc as mailbox
+        with tempfile.TemporaryDirectory(prefix='old-demo-no-return-helper-') as directory:
+            stage = Path(directory)
+            tool = stage / DEMO_TIMING_TOOL
+            tool.parent.mkdir(parents=True)
+            tool.write_text('sealed historical timing owner\n')
+            digest = hashlib.sha256(tool.read_bytes()).hexdigest()
+            self.assertFalse((stage / mailbox.TOOL).exists())
+            self.assertFalse((stage / mailbox.RAW_STORE_PATH).exists())
+            for role in ('M', 'W'):
+                for legacy in (True, False):
+                    evidence = demo_timing_metadata(role, digest, legacy=legacy)
+                    selected = '\n'.join(evidence['added_lines']) + '\n'
+                    with self.subTest(role=role, legacy=legacy):
+                        self.assertTrue(verify_demo_timing(stage, selected, role, evidence)['installed_lines_verified'])
+                        self.assertNotIn('return_mailbox', evidence)
+                        self.assertNotIn(mailbox.constraints(), selected)
+                        with self.assertRaises(ValueError):
+                            verify_demo_timing(stage, selected + mailbox.constraints(), role, evidence)
+                with self.subTest(role=role, evidence=None), self.assertRaises(ValueError):
+                    verify_demo_timing(stage, mailbox.constraints(), role, None)
+
     def test_role_specific_selection_is_sealed_and_cannot_omit_lines(self):
         with tempfile.TemporaryDirectory(prefix='demo-runtime-timing-') as directory:
             stage=Path(directory);tool=stage/DEMO_TIMING_TOOL;tool.parent.mkdir()

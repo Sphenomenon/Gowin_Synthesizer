@@ -386,6 +386,8 @@ M18 `D2110117` 的[far完整物理结果](push2_workstation/usb_a/reports/DUAL13
 
 W16 `D2110119` 的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W16_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53333，setup6810／−5.168ns、hold0／+.103ns、recovery+1.966／removal+.278ns。原DDR3.500ns保持、hold+.622ns；四张clk50−4.536／+.138／−4.536／+.138ns。DDR所有权检查至录音即时故障及D效果overflow至PCM资格为当前实测长链，HCI generations至offer_handle CE仍违例。六审计全过（native58／14跳过／60负控、boundary7／69、六PLL／7负控／held-v2），主线程逐项复验3273冻结证据；完整STA和原返回邮箱资格约束缺口仍失败，未上板，T2-D1／D2未完成。
 
+W专属[返回邮箱v3维护阶段](push2_workstation/usb_a/reports/DUAL138K_W_RETURN_V3_MAINTAINED_20261101.md)已完成：仅新W prepare显式选择v3，32×301资格路径添加10.000ns及hold-only，actual VG／VO overlay确认9928／9928覆盖，13原负控＋6补充全拒且mapped项强制校验预期契约原因。早期cache部分VG负控缺driver的范围在报告收窄；来源／旧政策兼容10项、accepted source17项通过，M及旧v1／v2不导入／不偷加新规则。主线程重验7owned／8冻结输入／51证据及6函数AST。尚待新来源锁、新候选和完整物理时序；冻结W16原缺口保留，native-response可达性及整机CDC／硬件未升格，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
