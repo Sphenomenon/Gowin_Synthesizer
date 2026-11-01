@@ -197,8 +197,41 @@ module workstation_tf_runtime_dma #(
         endcase
     end
     wire [31:0] accepted_after_input = add_occupancy_delta(accepted_used, occupancy_input_delta);
-    wire [31:0] accepted_after_read = add_occupancy_delta(accepted_used, occupancy_read_delta);
-    wire [31:0] accepted_after_input_read = add_occupancy_delta(accepted_used, occupancy_input_read_delta);
+    // Precompute accepted-occupancy response sizes before the late full/partial
+    // classification, retaining the generic result for unknown controls.
+    wire [31:0] accepted_read_generic = add_occupancy_delta(accepted_used, occupancy_read_delta);
+    wire [31:0] accepted_input_read_generic = add_occupancy_delta(accepted_used, occupancy_input_read_delta);
+    wire [31:0] accepted_full_read = add_occupancy_delta(accepted_used, 7'd96);
+    wire [31:0] accepted_full_input_read = add_occupancy_delta(accepted_used, 7'd97);
+    wire [31:0] accepted_pending_read = add_occupancy_delta(accepted_used, 7'd0 - {1'b0, read_pending_bytes});
+    wire [31:0] accepted_pending_input_read = add_occupancy_delta(accepted_used, 7'd1 - {1'b0, read_pending_bytes});
+    wire [31:0] accepted_partial_read = add_occupancy_delta(accepted_used, 7'd0 - {1'b0, available_bytes[5:0]});
+    wire [31:0] accepted_partial_input_read = add_occupancy_delta(accepted_used, 7'd1 - {1'b0, available_bytes[5:0]});
+    reg [31:0] accepted_after_read, accepted_after_input_read;
+    always @* begin
+        accepted_after_read = accepted_read_generic;
+        accepted_after_input_read = accepted_input_read_generic;
+        case (read_pending)
+            1'b0: begin
+                case (eof_finalized && !read_has_full_beat)
+                    1'b0: begin
+                        accepted_after_read = accepted_full_read;
+                        accepted_after_input_read = accepted_full_input_read;
+                    end
+                    1'b1: begin
+                        accepted_after_read = accepted_partial_read;
+                        accepted_after_input_read = accepted_partial_input_read;
+                    end
+                    default: begin end
+                endcase
+            end
+            1'b1: begin
+                accepted_after_read = accepted_pending_read;
+                accepted_after_input_read = accepted_pending_input_read;
+            end
+            default: begin end
+        endcase
+    end
     // Compute both read-response cofactors before the late write admission.
     // With a selected write, no new read can be accepted; an outstanding
     // registered read may still respond in the same cycle. Unknown admission
