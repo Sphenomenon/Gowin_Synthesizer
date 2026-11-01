@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CORE = ROOT / 'rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv'
 LEGACY = ROOT / 'rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv'
 OLD = "    wire invalid_return_owner=count!=0 && (tags[read_pointer]==4'd3 || tags[read_pointer]>4'd8);\n"
-NEW = """    // Decode each authoritative tag before selecting the head's one-bit veto.
+FLAT = """    // Decode each authoritative tag before selecting the head's one-bit veto.
     // No shadow state: same-edge tag corruption and X/Z still reach the live
     // transport fault, including an unknown read index. Ownership/data retire
     // on the original edge; the four-bit response-owner read is unchanged.
@@ -20,6 +20,9 @@ NEW = """    // Decode each authoritative tag before selecting the head's one-bi
     end
     wire invalid_return_owner=count!=0 && invalid_owner_by_slot[read_pointer];
 """
+
+PREVIOUS_SHA256 = 'e4cd6d5e3e485659041015adcfbcdf34259e3e33240a4027bdf90e11467f655d'
+NEW = "    // Decode the authoritative tags, then select through bounded four-way\n    // stages. Keep each stage so mapping cannot rebuild a serial owner mux.\n    // No shadow state: corruption reaches the same-edge transport fault.\n    // Unknown address bits still produce X as the original variable index.\n    // Response owner/data continue to retire on their original edge.\n    wire [DEPTH-1:0] invalid_owner_by_slot;\n    for(genvar slot=0;slot<DEPTH;slot=slot+1)begin:g_invalid_owner\n        assign invalid_owner_by_slot[slot]=tags[slot]==4'd3 || tags[slot]>4'd8;\n    end\n    localparam OWNER_VETO_LEVELS=(TAG_BITS+1)/2;\n    wire [DEPTH-1:0] owner_veto_tree[0:OWNER_VETO_LEVELS];\n    assign owner_veto_tree[0]=invalid_owner_by_slot;\n    for(genvar level=0;level<OWNER_VETO_LEVELS;level=level+1)begin:g_owner_veto_level\n        localparam INPUTS=DEPTH>>(level*2);\n        localparam OUTPUTS=(INPUTS+3)/4;\n        for(genvar group=0;group<DEPTH;group=group+1)begin:g_group\n            if(group<OUTPUTS)begin:g_live\n                reg selected /* synthesis syn_keep=1 */;\n                if(level*2+1<TAG_BITS)begin:g_four\n                    always @* case(read_pointer[level*2+:2])\n                        2'd0:selected=owner_veto_tree[level][group*4];\n                        2'd1:selected=owner_veto_tree[level][group*4+1];\n                        2'd2:selected=owner_veto_tree[level][group*4+2];\n                        2'd3:selected=owner_veto_tree[level][group*4+3];\n                        default:selected=1'bx;\n                    endcase\n                end else begin:g_two\n                    always @* case(read_pointer[level*2])\n                        1'b0:selected=owner_veto_tree[level][group*2];\n                        1'b1:selected=owner_veto_tree[level][group*2+1];\n                        default:selected=1'bx;\n                    endcase\n                end\n                assign owner_veto_tree[level+1][group]=selected;\n            end else begin:g_unused\n                assign owner_veto_tree[level+1][group]=1'b0;\n            end\n        end\n    end\n    wire invalid_return_owner=count!=0 && owner_veto_tree[OWNER_VETO_LEVELS][0];\n"
 
 TB = r"""`timescale 1ns/1ps
 `default_nettype none
@@ -156,7 +159,10 @@ def once(text, old, new):
 def run(out):
     out.mkdir(parents=True, exist_ok=False)
     source = CORE.read_text()
-    original = once(source, NEW, OLD)
+    previous = once(source, NEW, FLAT)
+    if sha(previous.encode()) != PREVIOUS_SHA256:
+        raise ValueError('change outside bounded owner-veto tree')
+    original = once(previous, FLAT, OLD)
     fixture = out / 'tb_owner_predecode.sv'
     fixture.write_text(TB)
     original_path = out / 'arbiter-before-predecode.sv'
@@ -164,7 +170,9 @@ def run(out):
     inputs = [CORE, LEGACY, Path(__file__).resolve()]
     hashes = {str(p.relative_to(ROOT)): sha(p.read_bytes()) for p in inputs}
     result = dict(passed=False, source_sha256=hashes, original_inverse_sha256=sha(original.encode()),
-                  fixture_sha256=sha(TB.encode()), cases={}, synthesis=False, pnr=False,
+                  fixture_sha256=sha(TB.encode()), previous_flat_source_sha256=PREVIOUS_SHA256,
+                  no_sequential_state_or_retirement_change=True, tree_fanin_max=4,
+                  physical_timing_gain_claimed=False, cases={}, synthesis=False, pnr=False,
                   hardware_tested=False, sram_programmed=False, flash_written=False,
                   limits='Live owner-veto cone and response retirement only; native queue/bridge regressions, actual mapping, routed timing and hardware are separate checks.')
 
@@ -201,8 +209,9 @@ def run(out):
         for bits in range(2, 9):
             execute('predecode_bits' + str(bits), bits, CORE)
         for name, old, new in [
-            ('wrong_head', 'invalid_owner_by_slot[read_pointer];', 'invalid_owner_by_slot[write_pointer];'),
-            ('unknown_collapsed', 'invalid_owner_by_slot[read_pointer];', "(invalid_owner_by_slot[read_pointer] === 1'b1);"),
+            ('wrong_head', 'case(read_pointer[level*2+:2])', 'case(write_pointer[level*2+:2])'),
+            ('unknown_collapsed', 'owner_veto_tree[OWNER_VETO_LEVELS][0];', "(owner_veto_tree[OWNER_VETO_LEVELS][0] === 1'b1);"),
+            ('unknown_address_zeroed', "                        default:selected=1'bx;\n                    endcase\n                end else begin:g_two", "                        default:selected=1'b0;\n                    endcase\n                end else begin:g_two"),
             ('fault_delayed', 'assign transport_fault_o=response_fault || response_fault_now;', 'assign transport_fault_o=response_fault;'),
         ]:
             mutant = out / (name + '.sv')

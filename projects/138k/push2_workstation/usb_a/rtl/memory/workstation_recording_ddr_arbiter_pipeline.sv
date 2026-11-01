@@ -222,15 +222,46 @@ module workstation_recording_ddr_arbiter_pipeline #(
     assign app_wend=app_wren;
     wire push=app_en && !command_write;
     wire pop=app_response && count!=0;
-    // Decode each authoritative tag before selecting the head's one-bit veto.
-    // No shadow state: same-edge tag corruption and X/Z still reach the live
-    // transport fault, including an unknown read index. Ownership/data retire
-    // on the original edge; the four-bit response-owner read is unchanged.
+    // Decode the authoritative tags, then select through bounded four-way
+    // stages. Keep each stage so mapping cannot rebuild a serial owner mux.
+    // No shadow state: corruption reaches the same-edge transport fault.
+    // Unknown address bits still produce X as the original variable index.
+    // Response owner/data continue to retire on their original edge.
     wire [DEPTH-1:0] invalid_owner_by_slot;
     for(genvar slot=0;slot<DEPTH;slot=slot+1)begin:g_invalid_owner
         assign invalid_owner_by_slot[slot]=tags[slot]==4'd3 || tags[slot]>4'd8;
     end
-    wire invalid_return_owner=count!=0 && invalid_owner_by_slot[read_pointer];
+    localparam OWNER_VETO_LEVELS=(TAG_BITS+1)/2;
+    wire [DEPTH-1:0] owner_veto_tree[0:OWNER_VETO_LEVELS];
+    assign owner_veto_tree[0]=invalid_owner_by_slot;
+    for(genvar level=0;level<OWNER_VETO_LEVELS;level=level+1)begin:g_owner_veto_level
+        localparam INPUTS=DEPTH>>(level*2);
+        localparam OUTPUTS=(INPUTS+3)/4;
+        for(genvar group=0;group<DEPTH;group=group+1)begin:g_group
+            if(group<OUTPUTS)begin:g_live
+                reg selected /* synthesis syn_keep=1 */;
+                if(level*2+1<TAG_BITS)begin:g_four
+                    always @* case(read_pointer[level*2+:2])
+                        2'd0:selected=owner_veto_tree[level][group*4];
+                        2'd1:selected=owner_veto_tree[level][group*4+1];
+                        2'd2:selected=owner_veto_tree[level][group*4+2];
+                        2'd3:selected=owner_veto_tree[level][group*4+3];
+                        default:selected=1'bx;
+                    endcase
+                end else begin:g_two
+                    always @* case(read_pointer[level*2])
+                        1'b0:selected=owner_veto_tree[level][group*2];
+                        1'b1:selected=owner_veto_tree[level][group*2+1];
+                        default:selected=1'bx;
+                    endcase
+                end
+                assign owner_veto_tree[level+1][group]=selected;
+            end else begin:g_unused
+                assign owner_veto_tree[level+1][group]=1'b0;
+            end
+        end
+    end
+    wire invalid_return_owner=count!=0 && owner_veto_tree[OWNER_VETO_LEVELS][0];
     wire response_fault_now=app_response && (count==0 || invalid_return_owner);
     assign transport_fault_o=response_fault || response_fault_now;
     for(genvar client=0;client<9;client=client+1)begin:g_native_accept

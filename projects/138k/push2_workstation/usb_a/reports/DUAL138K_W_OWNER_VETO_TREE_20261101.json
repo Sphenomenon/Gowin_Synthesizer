@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "stage": "W_live_return_owner_veto_bounded_tree_maintained_source_verified",
+  "parent_commit": "4488d31f25991d796bcf67aad60b6ff774179c71",
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-owner-veto-handoff-v1.json",
+    "sha256": "8b930011e9de7c13bba0b792ee2b6a72118a8b8e265194d37db3b4d0faac2c83"
+  },
+  "root_verified_files_sha256": {
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_recording_owner_predecode.py": "db4ab59843fcdedab47f27c0b2a16ad6e60031bbce898e6ca275e7e6548733f0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-owner-veto-tree-v1/verification.json": "094ab4416394ce188177406e961598692538b7384a6e675402514f0400097837",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-owner-veto-path-v1/verification.json": "24789b1639a1d36e8d579510f0f221d955adc46516e3a32d904267edbf49285e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/hmi-vg-independent-review-v1/owner-veto-balanced-source-review-v1.json": "828d89f02fe1620df7968631b3645945aedf6e04b1821066c95e61fcd94ff64f"
+  },
+  "implementation": {
+    "schema": "owner-veto-bounded-tree-source-handoff-v1",
+    "captured_utc": "2026-11-01T10:56:17.262622+00:00",
+    "source_sha256": {
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_recording_owner_predecode.py": "db4ab59843fcdedab47f27c0b2a16ad6e60031bbce898e6ca275e7e6548733f0"
+    },
+    "verification_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-owner-veto-tree-v1/verification.json": "094ab4416394ce188177406e961598692538b7384a6e675402514f0400097837",
+      "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-owner-veto-path-v1/verification.json": "24789b1639a1d36e8d579510f0f221d955adc46516e3a32d904267edbf49285e"
+    },
+    "TAG_BITS_2_to_8_actual_four_state_checks": {
+      "predecode_bits2": 21552,
+      "predecode_bits3": 22752,
+      "predecode_bits4": 25536,
+      "predecode_bits5": 32640,
+      "predecode_bits6": 52992,
+      "predecode_bits7": 118272,
+      "predecode_bits8": 347136
+    },
+    "four_fault_variants_rejected": true,
+    "native_DDR_configurations": 27,
+    "native_fault_cases": 6,
+    "native_negative_controls": 11,
+    "strict_verilator_lint_modes": [
+      0,
+      1
+    ],
+    "unchanged_all_sequential_state": true,
+    "unchanged_live_tag_authority": true,
+    "no_new_state_or_cycle": true,
+    "physical_gain_claimed": false,
+    "synthesis_executed": false,
+    "PNR_executed": false,
+    "hardware_tested": false
+  },
+  "profiles": [
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "sha256": "f3a4764ee8a9214d210710b72bbd616d34aaa68d8b4c60ccebbdf698bf7b2e64",
+      "source_count": 848,
+      "source_refresh": {
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": {
+          "before": "e4cd6d5e3e485659041015adcfbcdf34259e3e33240a4027bdf90e11467f655d",
+          "after": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161"
+        }
+      },
+      "explicit_regression_dependency_added": {
+        "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_recording_owner_predecode.py": "db4ab59843fcdedab47f27c0b2a16ad6e60031bbce898e6ca275e7e6548733f0"
+      },
+      "all_other_fields_unchanged": true
+    },
+    {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "sha256": "03833af1e0fef906cf056f6091f47296856034bec9f760b38e7bc30c227419ec",
+      "source_count": 849,
+      "source_refresh": {
+        "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": {
+          "before": "e4cd6d5e3e485659041015adcfbcdf34259e3e33240a4027bdf90e11467f655d",
+          "after": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161"
+        }
+      },
+      "explicit_regression_dependency_added": {
+        "projects/138k/push2_workstation/usb_a/sim/tf_audio/run_workstation_recording_owner_predecode.py": "db4ab59843fcdedab47f27c0b2a16ad6e60031bbce898e6ca275e7e6548733f0"
+      },
+      "all_other_fields_unchanged": true
+    }
+  ],
+  "root_review": "Only the live one-bit veto selection changes into bounded four-way kept layers. Odd final layer is two-way; ordinary case preserves unknown-index X, count!=0 masking and live tag authority. Original tag/data retirement, sequential state, same-edge fault and all non-veto source bytes retained.",
+  "physical_gain_claimed": false,
+  "source_or_clock_contract_changed": false,
+  "full_synthesis_or_PNR_completed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "limits": [
+    "M23 and W20 frozen candidates are unchanged.",
+    "A new W candidate must measure actual mapping, complete routed timing and resources before any acceptance."
+  ],
+  "source_policy_checks": {
+    "M": {
+      "passed": true,
+      "source_count": 848
+    },
+    "W": {
+      "passed": true,
+      "source_count": 849
+    },
+    "source_tests": 17,
+    "demo_audit_tests": 17,
+    "policy_tests": 8
+  }
+}

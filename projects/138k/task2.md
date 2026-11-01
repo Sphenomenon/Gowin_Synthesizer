@@ -469,6 +469,8 @@ M22的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_M22_DE
 
 W20的[默认全量物理结果](push2_workstation/usb_a/reports/DUAL138K_W20_DEFAULT_PHYSICAL_20261101.json)已封存：D211012E，物理BSRAM306／DSP68.5／CLS57944，setup7640／最差−6.130ns、hold2／−3.392ns，recovery+2.867／removal+0.278ns。六审计及Wreturn4／19通过（native47过／12具名不适用、63负控；boundary7／69；六PLL／7负控），完整STA仍失败。主线程独立复核W的4917封存文件与M实际资源、位流／工具／source／stage绑定；没有SRAM／Flash操作。下一步修复实测tags→pack_frames、compute_release→written路径；不宣称流式Pitch或真实手机声画验收通过。
 
+W实测返回故障长链的[owner-veto分层选择](push2_workstation/usb_a/reports/DUAL138K_W_OWNER_VETO_TREE_20261101.json)已落维护RTL：实时tags先译码，经4:1有界组合树选择，奇数末层2:1；不增状态／周期，不增加影子tags，不延迟同拍故障。TAG_BITS2—8实际四态检查通过，当前8位347136例及4负控拒绝；原生DDR27配置／6故障／11负控和两模式严格lint通过，独立源码复核无阻塞。双profile仅刷新arbiter并明确加入原回归依赖，M848／W849锁；新映射／完整资源时序尚待W21全量实现，不提前记收益，M23与W20冻结输入保持。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
