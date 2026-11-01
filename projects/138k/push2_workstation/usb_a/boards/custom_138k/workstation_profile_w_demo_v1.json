@@ -1403,7 +1403,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_performance_reset.py": "17c1ceca18172221623fa48c143f9164d1601311d9b7b050869f810b0e5f1425",
     "projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py": "dca9bf0951ece7969e993f1213fad2a6bf6278601e6d2cc137f0c8d9ab631685",
     "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "956844a290dd427b221610ae5a4627d50d6b330cccb563b86677eb11478a0cdc",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "692619bb81b689bee8252063c584ad2fa880561f0d3b73abc46f4d265c8e25b1",
     "projects/138k/push2_workstation/usb_a/tools/workstation_push_rate_control.py": "ecaa03b9966f604c1b5b0daa2f9c7f0375b54151521e8f6802cba0477bdb816f",
     "projects/138k/push2_workstation/usb_a/tools/workstation_recognition_policy.py": "eea5d1512dff6c016e210adb4090a6794e245e3af91c59c2fa26a8f45287b23f",
     "projects/138k/push2_workstation/usb_a/tools/workstation_recording_phase1_cdc.py": "228964de1736bacbca648807871d8f64749db3dcd9070e28483737d6c22d75bc",

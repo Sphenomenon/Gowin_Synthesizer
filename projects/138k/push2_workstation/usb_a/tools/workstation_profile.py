@@ -402,6 +402,12 @@ def _artifact(root, output, metadata, profile):
             metadata.get('demo_constraint_retirement'), spec['demo_role'])
     else:
         original_sdc = installed_sdc
+    if spec.get('push_rate_control',False):
+        from tools.workstation_push_rate_control import constraints as push_constraints
+        selected_push_sdc=push_constraints()
+        if not original_sdc.endswith(selected_push_sdc) or original_sdc.count(selected_push_sdc)!=1:
+            raise ValueError('Push Session constraint installation order changed')
+        original_sdc=original_sdc[:-len(selected_push_sdc)]
     staged_sdc = original_sdc.splitlines()
     if profile['name']==CPU_BUSINESS_NAME:
         from tools.workstation_cpu_business import verify_telemetry_reset_constraints
