@@ -432,6 +432,8 @@ W18 的[全量综合与严格门拒绝](push2_workstation/usb_a/reports/DUAL138K
 
 W 的[实际return选择器与负控修复](push2_workstation/usb_a/reports/DUAL138K_W19_SELECTOR_SOURCE_20261101.json)已验证并落维护：只将unpack_active目标改D、index0目标改CE，32源／301资格／9928真实pair、10.000ns与仅hold豁免保持；真实W18 VG的strict held入口、原4项及19负控全通过。boundary D／CE变异先以具体next-Q关系拒绝，再由完整audit拒绝，7项／69负控／0skip通过；不依赖首个异常门归因。主线程复验6511绑定输入／证据，W仅提升一个既有helper hash，M profile及配置不改，两profile来源门、17来源与16demo入口通过。旧W18仍冻结拒绝；因helper本身是non-SDC staged输入，新W19必须完整综合，当前不记新的物理或硬件接受。
 
+M20 的[默认全量P&R与六项实际审计](push2_workstation/usb_a/reports/DUAL138K_M20_DEFAULT_PHYSICAL_20261101.json)已完成：D2110125位流`66059d24…cab6b`，物理BSRAM235／DSP119／CLS51133；setup1936端点、最差−1.170ns，DDR单hold−3.364ns，recovery+2.782／removal+0.290ns。native58项54过／4映射不适用、70负控拒绝，boundary7／69及六PLL／7负控、selected held v2通过；完整STA仍拒绝，不转授上板。主线程重新核对实际物理、工具、暂存及审计全部绑定hash；audio1671与DDR264 setup端点仍须针对实际路径修复。已从同次实际VO派生far D2110127，VG／SDC／DDR3.500ns保持，待独立完整物理重测，不预记通过。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
