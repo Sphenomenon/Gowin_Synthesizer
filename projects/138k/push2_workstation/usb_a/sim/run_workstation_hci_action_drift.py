@@ -18,6 +18,25 @@ REPO = ROOT.parents[3]
 OWNER = ROOT / 'rtl/bluetooth/hci_owner'
 HOST = OWNER / 'workstation_hci_host_rx_owner.sv'
 PRE_ACTION_SHA256 = '271e3d701eb8f84e238ac9ccf3114c2669ef44e09d56407fc22afb1e5e9785ea'
+PRE_KNOWN_GROUPS_SHA256 = '20f45bf00fbb23ca09512d35f4bfff4273e3d4d865d56fc03bdb2e89a342b13f'
+KNOWN_GROUPS_SHA256 = '6547173e42b6057dedb9ec5fe22ba3dbcda957c7f6344fcda98a39643be7fc88'
+KNOWN_GROUPS_ANCHOR = '    // Action readiness excludes a known disconnect edge. Preserve the full\n'
+KNOWN_GENERATION_EXPRESSION = '(|(generations[at]^known_generations_i[32*at+:32]))'
+KNOWN_GENERATION_TREE = 'known_generation_changed[at]'
+KNOWN_GROUPS = '''    // Compare each stored/live generation before the drift predicates.
+    // Keep byte boundaries explicit so equality cannot become a serial carry.
+    (* syn_keep=1 *) wire [HANDLE_SLOTS*4-1:0] known_generation_changed_groups;
+    wire [HANDLE_SLOTS-1:0] known_generation_changed;
+    for(genvar known_handle=0;known_handle<HANDLE_SLOTS;known_handle=known_handle+1)begin:known_identity
+        for(genvar known_group=0;known_group<4;known_group=known_group+1)begin:g_generation
+            assign known_generation_changed_groups[known_handle*4+known_group]=
+                |(generations[known_handle][known_group*8+:8]^
+                  known_generations_i[known_handle*32+known_group*8+:8]);
+        end
+        assign known_generation_changed[known_handle]=
+            |known_generation_changed_groups[known_handle*4+:4];
+    end
+'''
 ACTION_FENCE = '''    // Action readiness excludes a known disconnect edge. Preserve the full
     // owner drift for real disconnect/fault processing and unknown controls.
     (* syn_keep=1 *) reg action_owner_drift_fence;
@@ -56,7 +75,32 @@ def apply_action_transform(text):
     return text
 
 
+def apply_known_groups(text):
+    require(hashlib.sha256(text.encode()).hexdigest() == PRE_KNOWN_GROUPS_SHA256,
+            'pre-known-generation-group source identity')
+    require(text.count(KNOWN_GROUPS_ANCHOR) == 1 and text.count(KNOWN_GENERATION_EXPRESSION) == 2,
+            'known-generation-group forward anchors')
+    result = text.replace(KNOWN_GROUPS_ANCHOR, KNOWN_GROUPS + KNOWN_GROUPS_ANCHOR, 1).replace(
+        KNOWN_GENERATION_EXPRESSION, KNOWN_GENERATION_TREE)
+    require(hashlib.sha256(result.encode()).hexdigest() == KNOWN_GROUPS_SHA256,
+            'complete grouped known-generation source identity')
+    return result
+
+
+def reverse_known_groups(text):
+    require(hashlib.sha256(text.encode()).hexdigest() == KNOWN_GROUPS_SHA256,
+            'grouped known-generation source identity')
+    require(text.count(KNOWN_GROUPS) == 1 and text.count(KNOWN_GENERATION_TREE) == 2,
+            'known-generation-group inverse anchors')
+    result = text.replace(KNOWN_GROUPS, '', 1).replace(KNOWN_GENERATION_TREE, KNOWN_GENERATION_EXPRESSION)
+    require(hashlib.sha256(result.encode()).hexdigest() == PRE_KNOWN_GROUPS_SHA256,
+            'exact pre-known-generation-group identity')
+    return result
+
+
 def reverse_action_transform(text):
+    if hashlib.sha256(text.encode()).hexdigest() == KNOWN_GROUPS_SHA256:
+        text = reverse_known_groups(text)
     for before, after, count in reversed(ACTION_CHANGES):
         require(text.count(after) == count, 'inverse anchor ' + after)
         text = text.replace(after, before)
@@ -183,8 +227,9 @@ def main():
     require(not out.exists() and out != REPO and REPO not in out.parents, 'new external output required')
     out.mkdir(parents=True)
     source = HOST.read_text()
+    action_source = reverse_known_groups(source)
     old = reverse_action_transform(source)
-    require(apply_action_transform(old) == source, 'exact reviewed forward/inverse')
+    require(apply_known_groups(apply_action_transform(old)) == source, 'exact reviewed forward/inverse')
     # No mutable cache or historical staging dependency is required.
     original = out / 'pre-action-source.sv'
     original.write_text(old)
@@ -192,7 +237,8 @@ def main():
               ROOT / 'sim/run_workstation_hci_identity_compare.py', ROOT / 'sim/tb_workstation_hci_host_rx_owner.sv']
     before = {str(p): sha(p) for p in inputs}
     report = dict(passed=False, inputs_sha256=before, exact_pre_action_inverse_sha256=sha(original),
-                  symbolic=symbolic(source, old), physical_timing_gain_claimed=False, hardware_tested=False)
+                  exact_pre_known_groups_inverse_sha256=hashlib.sha256(action_source.encode()).hexdigest(),
+                  symbolic=symbolic(action_source, old), physical_timing_gain_claimed=False, hardware_tested=False)
     ref = out / 'reference.sv'
     ref.write_text(old.replace('module workstation_hci_host_rx_owner', 'module workstation_hci_host_rx_owner_reference', 1))
     import run_workstation_hci_identity_compare as identity
@@ -209,10 +255,11 @@ def main():
     report['whole_owner'] = dict(metrics, summary=result.stdout, exit_code=result.returncode)
     tb = out / 'four-state-tb.sv'
     tb.write_text(four_state_bench(identity.ports(old)))
+    actual_action_base = ACTION_BASE.replace(KNOWN_GENERATION_EXPRESSION, KNOWN_GENERATION_TREE)
     mutants = {
         'unconditional_fallback': ('default:action_owner_drift_fence=owner_drift;', 'default:action_owner_drift_fence=action_owner_drift;'),
-        'missing_outstanding_guard': ('if(' + ACTION_BASE + ')action_owner_drift=1;',
-                                      'if(' + ACTION_BASE.replace('outstanding[at]!=0&&', '', 1) + ')action_owner_drift=1;'),
+        'missing_outstanding_guard': ('if(' + actual_action_base + ')action_owner_drift=1;',
+                                      'if(' + actual_action_base.replace('outstanding[at]!=0&&', '', 1) + ')action_owner_drift=1;'),
         'missing_disconnect_ready_guard': ('!activate_i&&!(return_transport_done_i&&!return_inflight_o)&&\n        !disconnect_valid_i&&!rx_valid_i&&!release_valid_i&&!action_owner_drift_fence',
                                            '!activate_i&&!(return_transport_done_i&&!return_inflight_o)&&\n        !rx_valid_i&&!release_valid_i&&!action_owner_drift_fence'),
     }

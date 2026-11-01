@@ -8,7 +8,9 @@ import re
 import subprocess
 import itertools
 import z3
-from run_workstation_hci_action_drift import apply_action_transform, reverse_action_transform
+from run_workstation_hci_action_drift import (
+    apply_action_transform, reverse_action_transform, apply_known_groups,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 OWNER = ROOT / 'rtl/bluetooth/hci_owner'
@@ -279,6 +281,7 @@ def main():
         if name == 'host_rx_owner':
             pre_action = expected
             expected = apply_action_transform(pre_action)
+            expected = apply_known_groups(expected)
             require(reverse_action_transform(expected) == pre_action, 'exact reviewed action drift inverse')
         require(expected == (OWNER / (module(name) + '.sv')).read_text(), 'bytes changed outside reviewed identity expressions: ' + name)
         grouped_contract(name, expected)
@@ -308,7 +311,8 @@ def main():
     four_state, group_mutants = four_state_groups(out)
     mutants.update(group_mutants)
     report = dict(stage='W10_complete_HCI_grouped_identity_comparison', inputs_sha256=inputs, exact_bytes_outside_reviewed_comparisons=True,
-                  action_drift_reviewed_transform=True, original_full_drift_and_sequential_bytes_preserved=True,
+                  action_drift_reviewed_transform=True, known_generation_grouped_transform=True,
+                  original_full_drift_relation_and_sequential_bytes_preserved=True,
                   relation_laws=laws, z3_version=z3.get_version_string(), whole_modules={}, mutants=mutants,
                   finite_four_state_grouped_relations=four_state,
                   new_registers_or_cycles=0, priorities_and_credit_owner_unchanged=True, physical_gain_measured=False, hardware_tested=False)

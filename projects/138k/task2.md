@@ -396,6 +396,8 @@ W实测DDR长链的[owner组合预译码维护阶段](push2_workstation/usb_a/re
 
 W实际overflow至PCM链的[输出context许可维护阶段](push2_workstation/usb_a/reports/DUAL138K_PCM_OUTPUT_CONTEXT_20261101.md)已完成：独立前算非context输出许可，context保留最终同拍静音门；legacy／X/Z／采样及全部NBA、bitmap逻辑保持。实际owner1c575…649b通过源码四态证明／3反例、786432完整模块四态／3负控、全状态／RAM逐拍miter及8 owner测试（含4×576000帧频差）；旧bitmap／descriptor及实际APB／CDC→完整D效果／I2S双率／PANIC回归均通过。主线程重验108包内／238外部产物／93输入／6owned；初始测试锚点失败保留，新物理收益待测，未上板。
 
+W实测HCI长链的[known generation字节组维护阶段](push2_workstation/usb_a/reports/DUAL138K_HCI_KNOWN_GENERATION_GROUPS_20261101.md)已完成：actual VG／VO逐位确认far的32carry对象后，将两处stored/live比较按4×8bit保留边界；无新状态／周期，clocked bytes及credit／lease／fault等保持。654717…fc88通过128位表达式证明、208896实际模块四态／4负控＋2来源负控、完整owner miter及原action／identity／UART8E1-H5 native回归；主线程重验393证据／4owned／1395冻结工具。default上游transport／flow链仍另查，收益待M19/W17实际全量实现，不转授无线／硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

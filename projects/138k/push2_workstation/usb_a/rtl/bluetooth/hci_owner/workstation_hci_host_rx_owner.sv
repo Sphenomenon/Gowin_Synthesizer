@@ -99,6 +99,19 @@ module workstation_hci_host_rx_owner #(
         assign disconnect_generation_changed[identity_handle]=
             |disconnect_generation_changed_groups[identity_handle*4+:4];
     end
+    // Compare each stored/live generation before the drift predicates.
+    // Keep byte boundaries explicit so equality cannot become a serial carry.
+    (* syn_keep=1 *) wire [HANDLE_SLOTS*4-1:0] known_generation_changed_groups;
+    wire [HANDLE_SLOTS-1:0] known_generation_changed;
+    for(genvar known_handle=0;known_handle<HANDLE_SLOTS;known_handle=known_handle+1)begin:known_identity
+        for(genvar known_group=0;known_group<4;known_group=known_group+1)begin:g_generation
+            assign known_generation_changed_groups[known_handle*4+known_group]=
+                |(generations[known_handle][known_group*8+:8]^
+                  known_generations_i[known_handle*32+known_group*8+:8]);
+        end
+        assign known_generation_changed[known_handle]=
+            |known_generation_changed_groups[known_handle*4+:4];
+    end
     // Action readiness excludes a known disconnect edge. Preserve the full
     // owner drift for real disconnect/fault processing and unknown controls.
     (* syn_keep=1 *) reg action_owner_drift_fence;
@@ -125,9 +138,9 @@ module workstation_hci_host_rx_owner #(
             total_outstanding=total_outstanding+{16'd0,outstanding[at]};
             if(pending[at]>outstanding[at])invariant_bad=1;
             if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
-                (|(generations[at]^known_generations_i[32*at+:32]))))action_owner_drift=1;
+                known_generation_changed[at]))action_owner_drift=1;
             if(outstanding[at]!=0&&(!known_active_i[at]||(|(handles[at]^known_handles_i[12*at+:12]))||
-                (|(generations[at]^known_generations_i[32*at+:32])))&&
+                known_generation_changed[at])&&
                 !(disconnect_valid_i&&!(|(handles[at]^disconnect_handle_i))&&
                     !disconnect_generation_changed[at]))owner_drift=1;
         end
