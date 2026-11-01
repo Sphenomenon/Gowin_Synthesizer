@@ -370,37 +370,38 @@ module workstation_ae350_pcm_owner #(
             else if(sample_take_i && selected && !hold_serial && !cache_current)bitmap_clear_without_context=1;
         end
     end
-    integer bitmap_slot;
-    always @(posedge clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin
-            for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
-        end else begin
-            case(context_ready_i)
-                1'b0:begin
-                    if(accepted_stop || accepted_cancel || armed)
-                        for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
-                end
-                1'b1:begin
-            if(accepted_window_write)written[write_slot][write_index]<=1;
-            if(bitmap_start_without_context)begin
-                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+    // Resolve the original ordered bitmap clears once for each slot. Keep
+    // this final permission separate from the wide data update mux. Partial
+    // writes lose to START, COMMIT and revoke exactly as before, including
+    // unknown guards and unknown dynamic slot/index values.
+    reg [3:0] bitmap_clear_by_slot /* synthesis syn_keep=1 */;
+    reg bitmap_allow_write;
+    always @* begin
+        bitmap_clear_by_slot=0;bitmap_allow_write=0;
+        case(context_ready_i)
+            1'b0:begin
+                if(accepted_stop || accepted_cancel || armed)bitmap_clear_by_slot=4'hf;
             end
-            if(bitmap_commit_without_context)written[tail_slot]<=0;
-            if(bitmap_clear_without_context)begin
-                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+            1'b1:begin
+                if(accepted_window_write)bitmap_allow_write=1;
+                if(bitmap_start_without_context)bitmap_clear_by_slot=4'hf;
+                if(bitmap_commit_without_context)bitmap_clear_by_slot[tail_slot]=1;
+                if(bitmap_clear_without_context)bitmap_clear_by_slot=4'hf;
             end
-                end
-                default:begin
-            if(accepted_window_write)written[write_slot][write_index]<=1;
-            if(accepted_start)begin
-                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
+            default:begin
+                if(accepted_window_write)bitmap_allow_write=1;
+                if(accepted_start)bitmap_clear_by_slot=4'hf;
+                if(accepted_commit)bitmap_clear_by_slot[tail_slot]=1;
+                if(bitmap_clear_late)bitmap_clear_by_slot=4'hf;
             end
-            if(accepted_commit)written[tail_slot]<=0;
-            if(bitmap_clear_late)begin
-                for(bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)written[bitmap_slot]<=0;
-            end
-                end
-            endcase
+        endcase
+    end
+    for(genvar bitmap_slot=0;bitmap_slot<4;bitmap_slot=bitmap_slot+1)begin:g_bitmap_slot
+        always @(posedge clk_i or negedge reset_ni)begin
+            if(!reset_ni)written[bitmap_slot]<=0;
+            else if(bitmap_clear_by_slot[bitmap_slot])written[bitmap_slot]<=0;
+            else if(bitmap_allow_write && write_slot==2'(bitmap_slot))
+                written[bitmap_slot][write_index]<=1;
         end
     end
     always @(posedge clk_i or negedge reset_ni)begin

@@ -5,6 +5,7 @@ never consumed by a production build and has no external cache dependency.
 """
 from pathlib import Path
 import hashlib
+import importlib.util
 
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=ROOT/'rtl/audio/workstation_ae350_pcm_owner.sv'
@@ -123,12 +124,21 @@ NEW='''    // Context revoke is the final private bitmap decision. All other
 '''
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-def inputs():return [SOURCE,Path(__file__).resolve()]
+def inputs():return [SOURCE,Path(__file__).resolve(),Path(__file__).with_name('ae350_pcm_bitmap_slot_sources.py')]
 def require(ok,message):
     if not ok:raise ValueError('PCM bitmap context: '+message)
 
+def normalize_later_bitmap_slots(text):
+    if hashlib.sha256(text.encode()).hexdigest()==SOURCE_SHA256:return text
+    path=Path(__file__).with_name('ae350_pcm_bitmap_slot_sources.py')
+    require(sha(path)=='f6bf3369b0b78b5589e53da78bf87348d5bf9eaa7adf4a056312c2a750687c01','later bitmap slot inverse helper changed')
+    spec=importlib.util.spec_from_file_location('pcm_bitmap_slots_inverse',path)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    return helper.restore_before_bitmap_slots(text)
+
 def reference_view(text=None):
     text=SOURCE.read_text() if text is None else text
+    text=normalize_later_bitmap_slots(text)
     require(text.count(NEW)==1,'exact reviewed bitmap region drift')
     previous=text.replace(NEW,OLD,1)
     require(hashlib.sha256(previous.encode()).hexdigest()==PREVIOUS_SHA256,'change outside bitmap boundary')
@@ -138,6 +148,7 @@ def reference_view(text=None):
 def contract():
     reference_view()
     return dict(source_sha256=SOURCE_SHA256,reference_sha256=PREVIOUS_SHA256,
+        maintained_source_sha256=sha(SOURCE),later_bitmap_slots_inverse_verified=True,
         exact_whole_source_inverse=True,only_private_bitmap_region_changed=True,
         known_zero_context_clears_on_armed_stop_or_cancel=True,
         unknown_context_uses_original_ordered_NBA_body=True,

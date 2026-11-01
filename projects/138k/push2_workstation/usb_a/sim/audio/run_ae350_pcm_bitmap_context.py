@@ -410,11 +410,12 @@ def main():
     inputs=list(dict.fromkeys(sources.inputs()+[WINDOW,whole.REFERENCE,
         ROOT/'sim/test_ae350_pcm_owner.py',Path(__file__).resolve()]))
     hashes={str(path):sha(path) for path in inputs}
-    candidate=SOURCE.read_text();before=sources.reference_view(candidate)
-    require(sha(SOURCE)==NEW_SHA and hashlib.sha256(before.encode()).hexdigest()==PRE_SHA,
+    candidate=sources.normalize_later_bitmap_slots(SOURCE.read_text());before=sources.reference_view(candidate)
+    require(hashlib.sha256(candidate.encode()).hexdigest()==NEW_SHA and hashlib.sha256(before.encode()).hexdigest()==PRE_SHA,
             'strict complete current/previous owner identities')
     comb,cofactor=check_structure(before,candidate)
-    report=dict(schema=1,passed=False,stage='maintained_PCM_context_bitmap',
+    report=dict(schema=1,passed=False,stage='historical_PCM_context_bitmap_after_exact_later_slot_inverse',
+        maintained_source_sha256=sha(SOURCE),later_bitmap_slot_inverse_verified=True,
         inputs_sha256=hashes,contract=sources.contract(),source_shape_bound=True,
         all_non_bitmap_bytes_unchanged=True,derived_predicates_forced=False,
         source_implementation=True,synthesis=False,pnr=False,hardware_tested=False,

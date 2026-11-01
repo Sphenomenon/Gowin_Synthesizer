@@ -1,0 +1,65 @@
+{
+  "schema": "dual138k_pcm_bitmap_slot_permissions_20261101_v1",
+  "captured_utc": "2026-11-01T11:12:58.813625+00:00",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_ae350_pcm_owner.sv": "7dd8a51d5fc6d847b638f12c42c54684682f66a0950312683481f70f64efb4f1",
+    "projects/138k/push2_workstation/usb_a/sim/audio/ae350_pcm_bitmap_slot_sources.py": "f6bf3369b0b78b5589e53da78bf87348d5bf9eaa7adf4a056312c2a750687c01",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_slots.py": "1a95d47aa18e180be3e123c31bb7c1710483a22a2216d89f1f096bb7ba9e0dbd",
+    "projects/138k/push2_workstation/usb_a/sim/audio/ae350_pcm_bitmap_context_sources.py": "b287c72145ee760374a7b8e25c4b3903b8c11150855b2ee7d4773c687b0c1d1f",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_ae350_pcm_bitmap_context.py": "a6f6f9a2d9907ea26b3baf68a659f5855a44437de420f87689d1aaeb3a878d4f"
+  },
+  "previous_owner_sha256": "290d3fbab8de519772d2be44f7ded6a7a94d5ff8e00781b37d4d2680d8aff1f0",
+  "current_actual_module": {
+    "four_state_checks": 52224,
+    "whole_owner_cycles": 7217,
+    "random_commands": 6000,
+    "compared_state": 61,
+    "memory_words": 512,
+    "written_slots": 4,
+    "negative_controls": 3,
+    "strict_lint_passed": true
+  },
+  "historical_context_after_exact_inverse": {
+    "four_state_checks": 52224,
+    "whole_owner_cycles": 7217,
+    "negative_controls": 4
+  },
+  "owner_suite": {
+    "tests": 8,
+    "passed": true,
+    "elapsed_seconds": 168.852,
+    "actual_drift_runs": 4,
+    "output_frames_each": 576000,
+    "rates": [
+      44100,
+      48000
+    ],
+    "ppm": [
+      -2000,
+      2000
+    ],
+    "stereo_reference": true,
+    "jitter": true
+  },
+  "no_new_state_or_latency": true,
+  "command_acceptance_and_reset_contract_unchanged": true,
+  "physical_gain_claimed": false,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "summary": "Per-slot combinational clear permission preserves original ordered bitmap clear/write priority, including X/Z guards and dynamic indices; no new state or command/sample latency.",
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-pcm-bitmap-slots-handoff-v1.json": "dd48987847798ef5d3bf70e1550cc2b7044570d246aed1d980a48518567da71f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-pcm-bitmap-slots-root-review-v1.json": "5a5a3bfd89e2e3741fa2955fee51cd5a595587645a410890cd53a570976dbc81",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-pcm-bitmap-slots-v1/verification.json": "966988f5e643f027fd4687761a8dc300f1356487f875ddff57d53a448273dd18",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-pcm-bitmap-context-legacy-v1/verification.json": "7200d27718856769950d1664f041528e30b62e5c585c1d39852aeb91cc0941ac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-pcm-owner-suite-final-tool-result-v1.json": "c5559d5b3f5eb3eb145ef32b22f7d60c51b617d6f4eb8681cb6e2c03f54e07a5"
+  },
+  "independent_review": {
+    "all_67_source_and_evidence_hashes_recomputed": true,
+    "exact_inverse_equals_git_HEAD": true,
+    "frozen_M23_unchanged": true,
+    "profile_refresh": "W audio-only candidate will explicitly consume; frozen M23 does not"
+  },
+  "retired_recording_work": "Uncommitted raw pack_frames optimization and interrupted proof retained separately; not included or declared fully verified."
+}
