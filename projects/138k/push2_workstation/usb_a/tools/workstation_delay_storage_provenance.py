@@ -386,8 +386,12 @@ def source_bundle(root):
     if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
         raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()
+    reference_adaptation = None
     if sha(reference) != REFERENCE_SHA256:
-        raise ValueError('Maintained non-runtime storage policy reference changed')
+        from tools.workstation_top_session_reference import restore_parent
+        parent_reference, reference_adaptation = restore_parent(reference)
+        if sha(parent_reference) != REFERENCE_SHA256:
+            raise ValueError('Maintained non-runtime storage policy reference changed')
     bridge = json.loads(adaptation)
     for selector in bridge['policy_reference']['selectors']:
         if reference.decode().count('defparam ' + selector + '="block_ram";') != 1:
@@ -420,4 +424,6 @@ def source_bundle(root):
         storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(reference),
         original_prepared_source=PREPARED_SOURCE, original_prepared_identity=info['prepared_source_identity'],
         accepted_baseline_storage_selection_inherited=False)
+    if reference_adaptation is not None:
+        evidence['storage_policy_reference_adaptation'] = reference_adaptation
     return evidence

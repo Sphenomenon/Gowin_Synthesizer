@@ -111,6 +111,7 @@ DEPENDENCIES = (
     'rtl/audio/workstation_runtime_stereo_effects.provenance.json',
     'rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json',
     'tools/workstation_delay_storage_provenance.py',
+    'tools/workstation_top_session_reference.py',
     'rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md',
     'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json',
     'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json',
