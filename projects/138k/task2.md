@@ -434,6 +434,10 @@ W 的[实际return选择器与负控修复](push2_workstation/usb_a/reports/DUAL
 
 M20 的[默认全量P&R与六项实际审计](push2_workstation/usb_a/reports/DUAL138K_M20_DEFAULT_PHYSICAL_20261101.json)已完成：D2110125位流`66059d24…cab6b`，物理BSRAM235／DSP119／CLS51133；setup1936端点、最差−1.170ns，DDR单hold−3.364ns，recovery+2.782／removal+0.290ns。native58项54过／4映射不适用、70负控拒绝，boundary7／69及六PLL／7负控、selected held v2通过；完整STA仍拒绝，不转授上板。主线程重新核对实际物理、工具、暂存及审计全部绑定hash；audio1671与DDR264 setup端点仍须针对实际路径修复。已从同次实际VO派生far D2110127，VG／SDC／DDR3.500ns保持，待独立完整物理重测，不预记通过。
 
+W19 的[新prepare、全量综合与实际VG门](push2_workstation/usb_a/reports/DUAL138K_W19_SYNTHESIS_20261101.json)全部通过：独立身份`2938af5370fd07a0`，952来源／646暂存／284编译输入／824锁，未复用W18综合；实际VG `ff74be96…720f1`。综合FF45180／LUT61247／ALU19772／BSRAM equivalent257，与W18资源相同；strict通过，native58项42过／16具名不适用与57负控、boundary7／69、Wreturn4／19全部通过。主线程复验3064封存文件；默认D2110129开始完整P&R，物理资源、STA和硬件尚未接受。
+
+M20 的[同VG／SDC远端布局D2110127](push2_workstation/usb_a/reports/DUAL138K_M20_FAR_PHYSICAL_20261101.json)完整P&R和六审计完成：物理BSRAM235／DSP119／CLS51269，指定DDR原3.500ns hold已为+0.622ns，但48参考计数器出现5条hold／最差−0.438ns；setup2061／最差−1.348ns，audio1794／DDR266负端点，完整STA继续拒绝。native54过／4映射不适用与70负控、boundary7／69、PLL／7负控与held-v2均通过。位流`a061d50a…44538`及全部来源／物理证据由主线程重验；不启动第三M20布局，转入实际NoteOff长选择链和滑音算术修复，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
