@@ -553,3 +553,6 @@ W的[普通合成MIDI遗留链退出](push2_workstation/usb_a/reports/DUAL138K_W
 
 
 M的[实际显示组合路径平衡](push2_workstation/usb_a/reports/DUAL138K_M_DISPLAY_BALANCE_20261101.json)已落维护源码：producer把32bit epoch／sequence比较改为2bit XOR pair＋两级OR，原source_valid／context_break和同周期撤销保持；dashboard将文字word从坐标优先链拆为互斥并行选择＋平衡OR，保留if-X跳过、HMI最终优先级、metadata／hex／effect覆盖、四级使能与几何。完整producer21输出／5645819边沿与真实FFT／XY／wave publication对照通过；源抽取四态9472及漏bit负控通过。冻结M25整dashboard四配置×4194304完整11bit坐标、65536固定seed合法参数、48282 stalls及18354 X/Z向量逐像素／word／77bit metadata等价，两个执行负控拒绝，来源17项通过。主线程复核1156文件及严格before／after／patch逆向，两profile只更新两owner并新增定向回归锁，M867／W1114的1981来源全匹配且实际load通过；保留刚提交W revision4功能与全部source locks。此阶段不记物理收益、不操作板；新M137／W136后续各自全量综合及P&R，M22留板。
+
+
+[M26／W24新整机来源准备](push2_workstation/usb_a/reports/DUAL138K_M26_W24_PREPARE_20261101.json)已通过：两者均从已提交69670c1d及prepare前原字节／工具快照取源，M身份`6e4fadc51e5a2888`、900原源／606暂存／262编译／1467工具，W身份`32ebb8aa64afa5e2`、970原源／610暂存／129编译／1467工具；分别使用M867／W1114锁与新物理编号D2110137／D2110136。主线程独立重验6030文件；M的259其余编译输入与M25同字节，W新配置实际采用专用无MIDI wrapper，三实例退出继续由新VG验证。两份全量综合已转入独立运行，物理资源／时序／板测随后实测记录，M22留板。M显示独立审查也已收口：65项hash、全11bit坐标域区域互斥、冻结旧像素oracle、四级CE suffix与producer撤销／状态字节均通过，无具体问题；相应证据已补入显示报告。

@@ -185,7 +185,6 @@
     "actual_profile_loads": 2,
     "only2_owner_locks_and1_new_regression_lock_per_profile_changed": true
   },
-  "independent_readonly_review_at_capture": "No concrete functional issue found; exact before/after and all five verification inputs independently rehashed; immutable old pixel oracle confirmed. Final spatial/suffix check pending separate evidence.",
   "limits": [
     "No new prepare, synthesis, P&R, resource or timing benefit measured",
     "No board/JTAG/SRAM/Flash operation",
@@ -204,5 +203,33 @@
   "next_physical_candidates": {
     "M": "D2110137",
     "W": "D2110136"
+  },
+  "independent_readonly_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-independent-review-v1/review.json",
+    "sha256": "509bb8ae561c0f73d039c920de2a34bff067b84cc2798a93d3f769c75af9de0a",
+    "hash_checks": 65,
+    "findings": [],
+    "immutable_oracle_verified": true,
+    "spatial_regions_exclusive_over_entire_11bit_domain": [
+      {
+        "configuration": "analysis",
+        "guards": 27,
+        "cartesian_cells": 1221,
+        "proven_coordinates": 4194304,
+        "max_selected": 1,
+        "proof": "Source-extracted range predicates constant on every partition cell"
+      },
+      {
+        "configuration": "plain",
+        "guards": 27,
+        "cartesian_cells": 378,
+        "proven_coordinates": 4194304,
+        "max_selected": 1,
+        "proof": "Source-extracted range predicates constant on every partition cell"
+      }
+    ],
+    "four_stage_CE_sequential_suffix_byte_identical": true,
+    "producer_revocation_and_sequential_state_byte_identical": true,
+    "review_did_not_rerun_full_frame_tests": true
   }
 }
