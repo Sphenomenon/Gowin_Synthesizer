@@ -24,6 +24,8 @@ WS = 'u_managed/runtime/service/workstation'
 EFFECTS = WS + '/runtime_effects.effects'
 ENGINES = WS + '/runtime_engines.engines'
 PROFILES = {
+    'custom138k-workstation-task3-m-direct-tf-v1': ('M', 'custom138k-native-task3-m-direct-tf-revision1',
+                                      'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'),
     'custom138k-workstation-m-demo-v1': ('M', 'custom138k-native-m-demo-base-revision1',
                                       'rtl/workstation/workstation_profile_m_demo.sv'),
     'custom138k-workstation-w-demo-v1': ('W', 'custom138k-native-w-demo-d-only-revision1',
@@ -141,6 +143,11 @@ def verify_prepared(output, metadata):
     verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
         selected_inputs, expected_configuration=spec['configuration'])
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    if spec.get('tf_direct_enabled', False):
+        from tools.workstation_task3_tf_direct import restore_constraints
+        # The manifest is a versioned policy input, while the synthesized
+        # closure remains independently immutable after live sources advance.
+        installed_sdc = restore_constraints(stage, installed_sdc, metadata['task3_tf_direct_cdc'])
     if spec.get('worker_audio_only', False):
         from tools.workstation_worker_audio_only import restore_constraints
         installed_sdc = restore_constraints(installed_sdc, metadata['worker_audio_only']['constraints'])
@@ -197,8 +204,16 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False):
+def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, tf_direct_enabled=False):
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
+    if tf_direct_enabled:
+        require(role == 'M' and tf_enabled, 'direct TF requires retained M playback')
+        selected_m.update(tf_decoder='u_tf_audio/native/ingress/decoder',
+            tf_file_owner='u_tf_audio/native/file_owner',
+            tf_sd_sector='u_tf_audio/native/file_owner/u_sector_reader',
+            tf_spi='u_tf_audio/native/file_owner/u_sector_reader/u_spi_session',
+            tf_pcm_ingress='u_tf_audio/native/ingress',tf_transport='u_tf_audio/frames',
+            tf_physical_tail='u_managed/runtime/g_direct_tf.tail')
     features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
     if worker_audio_only:
         require(role == 'W', 'audio-only selection on non-W role')
@@ -227,6 +242,11 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
                 require(forbidden not in kinds, 'M deferred TF implementation remains: ' + forbidden)
         require(rows[M_FEATURES['vector']]['Bsram'] >= 8 and rows[M_FEATURES['oscillator']]['Bsram'] >= 8,
                 'M vector geometry or oscillator storage swept')
+        if tf_direct_enabled:
+            kinds = {c['kind'] for c in netlist.cells.values()}
+            for forbidden in ('workstation_tf_runtime_service', 'workstation_tf_runtime_dma', 'tf_audio_ddr_path'):
+                require(forbidden not in kinds, 'direct TF retains legacy intermediate: ' + forbidden)
+            require(rows['u_tf_audio/native/ingress']['Bsram'] >= 11, 'native prefill/byte storage swept')
     else:
         retired += ['u_tf_audio', 'u_tf_control_cdc', ENGINES, WS + '/instrument_cue.cue_player']
         kinds = {c['kind'] for c in netlist.cells.values()}
@@ -346,13 +366,13 @@ def audit_worker_feedback(netlist, clocks):
                 unused_Push_destination_valid_swept=True, physical_timing_verified=False)
 
 
-def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None):
+def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None, *, tf_playback_enabled=False):
     from tools.workstation_demo_policy import verify_constraints, W_SCOPE_BINDINGS
     selected = sdc
     if worker_evidence is not None:
         from tools.workstation_worker_audio_only import restore_constraints, REBIND, RETIRED_SELECTORS, RETIRED_CLOCKS
         selected = restore_constraints(sdc, worker_evidence)
-    original = verify_constraints(selected, evidence, role)
+    original = verify_constraints(selected, evidence, role, tf_playback_enabled=tf_playback_enabled)
     universes = dict(get_regs=sorted(p for p, c in netlist.cells.items() if c['kind'].startswith('DFF')),
         get_pins=sorted(p + '/' + pin for p, c in netlist.cells.items() for pin in c['ports']),
         get_ports=sorted(netlist.directions[TOP]),
@@ -544,6 +564,15 @@ def audit(root, output, metadata):
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
     root, output = Path(root), Path(output)
     audit_source_names = AUDIT_SOURCES
+    if metadata.get('workstation_profile',{}).get('name')=='custom138k-workstation-task3-m-direct-tf-v1':
+        audit_source_names+=('tools/workstation_task3_tf_direct.py',
+            'boards/custom_138k/task3_tf_direct_legacy_cdc_v1.json',
+            'tools/workstation_task3_root_reset_audit.py',
+            'tools/workstation_task3_native_held.py',
+            'tools/workstation_task3_peripheral_releases_audit.py',
+            'tools/workstation_task3_tf_startup_audit.py',
+            'tools/workstation_task3_receipt_audit.py',
+            'tools/workstation_task3_tf_sdc_audit.py')
     from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
     if (metadata.get('demo_runtime_timing') or {}).get('policy') == W_RETURN_TIMING_POLICY:
         audit_source_names += ('tools/workstation_w_return_mailbox_cdc.py',
@@ -551,6 +580,7 @@ def audit(root, output, metadata):
     audit_sources = {relative: sha(root / relative) for relative in audit_source_names}
     role, profile, stage = verify_prepared(output, metadata)
     worker_audio_only = profile['configuration'].get('display_policy') == 'disabled_worker_audio_only_v1'
+    tf_direct = profile['configuration'].get('tf_policy') == 'task3_m_native_direct_tf_v1'
     require(metadata.get('top_module') == TOP and metadata.get('validation_stage') == 'integration_prepare_only' and
             metadata.get('source_policy') == 'explicit_native_board_on_resource_timing' and
             metadata.get('synthesis_allowed') is True and metadata.get('native_usb') is True and
@@ -577,7 +607,7 @@ def audit(root, output, metadata):
     totals, rows = hierarchy_counts(ET.parse(report).getroot())
     features = audit_features(role, rows, netlist,
         tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
-        worker_audio_only=worker_audio_only)
+        worker_audio_only=worker_audio_only,tf_direct_enabled=tf_direct)
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -606,8 +636,12 @@ def audit(root, output, metadata):
     feedback = (audit_worker_feedback(netlist, base_clocks) if role == 'W' else
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
-    retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist,
-        metadata['worker_audio_only']['constraints'] if worker_audio_only else None)
+    retirement_sdc=sdc
+    if tf_direct:
+        from tools.workstation_task3_tf_direct import restore_constraints
+        retirement_sdc=restore_constraints(stage,sdc,metadata['task3_tf_direct_cdc'])
+    retirement = audit_constraint_retirement(retirement_sdc, metadata.get('demo_constraint_retirement'), role, netlist,
+        metadata['worker_audio_only']['constraints'] if worker_audio_only else None,tf_playback_enabled=tf_direct)
     performance_release = None
     demo_held_handshakes = None
     demo_boundary_cdc = None
@@ -618,7 +652,8 @@ def audit(root, output, metadata):
         demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, role,
             timing_evidence, protocol_netlist(vg_text, mapping='synthesis')
             if timing_evidence.get('policy') in DEMO_HELD_TIMING_POLICIES else None,
-            mapping='synthesis', netlist_text=vg_text)
+            mapping='synthesis', netlist_text=vg_text,
+            task3_direct_constraints=metadata['task3_tf_direct_cdc'] if tf_direct else None)
     if metadata.get('demo_boundary_cdc') is not None:
         from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
         from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
@@ -628,11 +663,17 @@ def audit(root, output, metadata):
                 'DEMO boundary consumer inventory does not match selected role')
         demo_boundary_cdc['installed_sdc'] = validate_boundary(sdc, boundary_n, demo_boundary_cdc)
     if (metadata.get('demo_runtime_timing') or {}).get('performance_release_selected') is True:
-        from tools.workstation_performance_reset import audit as audit_performance, validate_sdc as validate_performance
-        from tools.workstation_performance_reset import netlist as performance_netlist
-        performance_n = performance_netlist(vg_text, mapping='synthesis')
-        performance_release = audit_performance(performance_n, mapping='synthesis')
-        performance_release['installed_sdc'] = validate_performance(sdc, performance_n, performance_release)
+        if tf_direct:
+            require(demo_held_handshakes is not None and
+                    'actual_peripheral_releases' in demo_held_handshakes,
+                    'DIRECT requires the actual shared performance release proof')
+            performance_release = demo_held_handshakes['actual_peripheral_releases']
+        else:
+            from tools.workstation_performance_reset import audit as audit_performance, validate_sdc as validate_performance
+            from tools.workstation_performance_reset import netlist as performance_netlist
+            performance_n = performance_netlist(vg_text, mapping='synthesis')
+            performance_release = audit_performance(performance_n, mapping='synthesis')
+            performance_release['installed_sdc'] = validate_performance(sdc, performance_n, performance_release)
     from tools.workstation_demo_policy import POLICY, V3_POLICY
     recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
         if role == 'W' and not worker_audio_only and retirement['policy'] in (V3_POLICY, POLICY) else None)
@@ -645,7 +686,7 @@ def audit(root, output, metadata):
     require(audit_sources == {relative: sha(root / relative) for relative in audit_source_names},
             'audit implementation drifted during review')
     return dict(schema=1, identity=metadata['identity'], candidate_identity=profile['candidate_identity'],
-        validation_stage='demo_full_profile_synthesis_only', demo_role=role, top_module=TOP,
+        validation_stage='task3_m_direct_tf_synthesis_only' if tf_direct else 'demo_full_profile_synthesis_only', demo_role=role, top_module=TOP,
         auditor_sha256=sha(Path(__file__)), integration_inputs_sha256=sha(output / 'integration_inputs.json'),
         audit_sources_sha256=audit_sources, audit_source_seal_before_and_after=True,
         synthesis_log_sha256=sha(log), netlist_sha256=sha(vg), resource_report_sha256=sha(report),

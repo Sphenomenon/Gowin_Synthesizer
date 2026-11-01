@@ -117,6 +117,8 @@ def prepared_ble_reset_policy(stage):
     """Select only the explicit common-reset wiring in a sealed staged top."""
     relative = 'rtl/workstation/gw138k_push_workstation_top.v'
     text = (Path(stage) / relative).read_text()
+    from tools.workstation_task3_tf_direct import selected_direct_top
+    text,direct_root_reset=selected_direct_top(stage,text)
     instances = re.findall(r'workstation_runtime_controlled\s*#\((.*?)\)\s*u_managed\s*\((.*?)\);', text, re.S)
     require(len(instances) == 1, 'staged runtime instance missing/duplicate')
     parameters, ports = instances[0]
@@ -127,7 +129,7 @@ def prepared_ble_reset_policy(stage):
     custom = text.split('`else', 1)[0]
     require('module workstation_custom_138k_top' in custom and
             len(re.findall(r"\bwire\s+button1_n\s*=\s*1'b1\s*;", custom)) == 1 and
-            len(re.findall(r'\.common_reset_ni\s*\(\s*button1_n\s*\)', ports)) == 1 and
+            len(re.findall(r'\.common_reset_ni\s*\(\s*' + ('runtime_common_reset_n' if direct_root_reset else 'button1_n') + r'\s*\)', ports)) == 1 and
             len(re.findall(r'\.rst_ni\s*\(\s*runtime_reset_n\s*\)', ports)) == 1 and
             len(re.findall(r'\bwire\s+runtime_reset_n\s*=\s*reset_n\s*&&\s*memory_guard_started\s*;', text)) == 1,
             'staged raw button/common assertion or startup grant changed')
@@ -153,8 +155,9 @@ def prepared_ble_reset_policy(stage):
                 for domain in ('control', 'compute')) and
             len(re.findall(r'\bwire\s+common_reset_n\s*=\s*SEPARATE_COMMON_RESET\s*\?\s*common_reset_ni\s*:\s*rst_ni\s*;', controlled)) == 1,
             'staged media/common assertion changed')
-    return dict(mode='separate-common-own-ble-release', raw_common_reset=True,
+    return dict(mode='separate-root-common-own-ble-release' if direct_root_reset else 'separate-common-own-ble-release', raw_common_reset=True,
                 raw_button_constant=1, ble_reset='runtime_reset_n',
+                **({'root_common_reset':'reset_n','physical_root_reset_audit_required':True} if direct_root_reset else {}),
                 source_sha256={p: file_sha(Path(stage) / p) for p in (relative, controlled_relative)})
 
 

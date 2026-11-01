@@ -14,6 +14,7 @@ module workstation_runtime_audio #(
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
     parameter bit TF_CONTROL_ENABLE=1,
+    parameter bit TF_DIRECT_ENABLE=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
     parameter bit SEPARATE_COMMON_RESET=0
 ) (
@@ -73,6 +74,12 @@ module workstation_runtime_audio #(
     input wire [19:0] tf_sample_rate_i,
     input wire [31:0] tf_generation_i, expected_tf_generation_i,
     output wire tf_ready_o,
+    input wire tf_last_i,tf_pause_i,
+    input wire [31:0] tf_session_i,
+    input wire tf_observation_valid_i,tf_observation_error_i,tf_observation_44k1_i,
+    input wire tf_observation_gap_i,tf_observation_drop_i,
+    input wire [31:0] tf_observation_epoch_i,tf_observation_sequence_i,tf_observation_source_drops_i,
+    output wire tf_physical_eos_o,tf_physical_quiescent_o,tf_physical_failed_o,tf_physical_abort_o,
     // Existing owner-6 DDR channel; address units are 32-bit native words.
     output wire ddr_req_o, ddr_write_o,
     output wire [28:0] ddr_address_o,
@@ -125,6 +132,14 @@ module workstation_runtime_audio #(
     wire signed [31:0] service_left,service_right;
     wire bridge_quiet,bridge_busy,router_quiet,router_ready,router_done,router_error;
     wire [31:0] router_pcm;
+    wire router_source_tf,router_frame_rate;
+    wire [31:0] router_frame_epoch,router_frame_sequence;
+    wire [31:0] router_unexpected,bridge_unexpected;
+    wire router_tf_ready,tail_admit,direct_session_blocked;
+    wire direct_tf_selected=TF_DIRECT_ENABLE ?
+        (tf_active_i && tail_admit && !tf_pause_i && !direct_session_blocked):tf_active_i;
+    wire direct_silence=TF_DIRECT_ENABLE && tf_active_i && !scope_status_o[8] && !direct_tf_selected;
+    assign tf_ready_o=router_tf_ready && (!TF_DIRECT_ENABLE || direct_tf_selected);
     wire config_ready,config_accepted,config_applied;
     reg integration_fault;
     wire pcm_hard_fault,pcm_history_request,pcm_history_ready,pcm_history_done,pcm_serial_hold;
@@ -330,21 +345,22 @@ module workstation_runtime_audio #(
         .render_request_o(bridge_request),.render_44k1_o(bridge_rate),.render_epoch_o(bridge_epoch),
         .render_sequence_o(bridge_sequence),.render_busy_o(bridge_busy),.quiescent_o(bridge_quiet),
         .request_drop_count_o(bridge_request_drop_count_o),.return_discard_count_o(bridge_return_discard_count_o),
-        .cancelled_request_count_o(),.cancelled_render_count_o(),.unexpected_render_count_o());
+        .cancelled_request_count_o(),.cancelled_render_count_o(),.unexpected_render_count_o(bridge_unexpected));
     wire render_request,render_rate;
-    workstation_final_pcm_router final_pcm(
+    workstation_final_pcm_router #(.CONTROLLED_SILENCE_ENABLE(TF_DIRECT_ENABLE)) final_pcm(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),.request_i(bridge_request),.request_44k1_i(bridge_rate),
         .request_epoch_i(bridge_epoch),.request_sequence_i(bridge_sequence),.request_ready_o(router_ready),
         .active_44k1_i(compute_rate),.active_epoch_i(compute_epoch),.cancel_epoch_i({pcm_cancel_epoch,panic_epoch_o}),
-        .scope_enable_i(scope_status_o[8]),.tf_active_i,.master_volume_i(master_volume_o),
+        .scope_enable_i(scope_status_o[8]),.tf_active_i(direct_tf_selected),.master_volume_i(master_volume_o),
         .mute_i(output_mute_i || panic_muted_o),.tf_valid_i,.tf_error_i,.tf_left_i,.tf_right_i,
-        .tf_sample_rate_i,.tf_generation_i,.expected_tf_generation_i,.tf_ready_o,
+        .controlled_silence_i(direct_silence),
+        .tf_sample_rate_i,.tf_generation_i,.expected_tf_generation_i,.tf_ready_o(router_tf_ready),
         .render_ready_i(service_ready),.render_done_i(service_done),.render_error_i(service_error),
         .render_left_i(service_left),.render_right_i(service_right),.render_request_o(render_request),.render_44k1_o(render_rate),
-        .frame_valid_o(router_done),.frame_error_o(router_error),.frame_44k1_o(),.frame_source_tf_o(),
-        .frame_epoch_o(),.frame_sequence_o(),.frame_pcm_o(router_pcm),.frame_error_bits_o(),.frame_gain_o(),
+        .frame_valid_o(router_done),.frame_error_o(router_error),.frame_44k1_o(router_frame_rate),.frame_source_tf_o(router_source_tf),
+        .frame_epoch_o(router_frame_epoch),.frame_sequence_o(router_frame_sequence),.frame_pcm_o(router_pcm),.frame_error_bits_o(),.frame_gain_o(),
         .quiescent_o(router_quiet),.rejected_request_count_o(),.tf_underrun_count_o(),.rate_mismatch_count_o(),
-        .stale_source_count_o(),.cancelled_frame_count_o(),.unexpected_render_count_o(),.clipped_frame_count_o());
+        .stale_source_count_o(),.cancelled_frame_count_o(),.unexpected_render_count_o(router_unexpected),.clipped_frame_count_o());
     wire dwr_valid,dwr_pop,drd_push,drd_ready,audio_heartbeat,memory_heartbeat,dma_fault;
     wire [64:0] dwr_data,drd_data;
     workstation_audio_render_service #(.RUNTIME_RATE_ENABLE(1),.RUNTIME_EFFECTS_ENABLE(1),
@@ -387,6 +403,83 @@ module workstation_runtime_audio #(
         .frame_44k1_o(physical_rate),.frame_epoch_o(physical_epoch),.underrun_count_o,.source_error_count_o,.rejected_sample_count_o());
     assign pdn_no=serializer_pdn && !dsp_fault_o;
     assign smute_o=serializer_mute || dac_mute || dsp_fault_o;
+    generate if(TF_DIRECT_ENABLE)begin:g_direct_tf
+        reg [31:0] generation_q,epoch_q;
+        reg [9:0] panic_q;
+        reg [21:0] cancel_q;
+        reg rate_q,blocked,tail_failed_q,drain_pending,quiet_published;
+        reg [31:0] drain_epoch,drain_sequence;
+        reg drain_rate;
+        wire tail_failed,tail_quiet,tail_closed,tail_pending,tail_armed;
+        wire generation_change=expected_tf_generation_i!=generation_q;
+        wire local_abort=tf_active_i && !blocked &&
+            (panic_epoch_o!=panic_q || pcm_cancel_epoch!=cancel_q || compute_epoch!=epoch_q ||
+             compute_rate!=rate_q || compute_fault || !compute_context_valid);
+        wire failure_event=tail_failed && !tail_failed_q;
+        wire fence=generation_change || local_abort || failure_event;
+        wire fire=tf_valid_i && tf_ready_o;
+        wire arm_valid=compute_context_valid && config_state==CFG_IDLE && !compute_fault &&
+            tf_active_i && tf_valid_i && !tf_pause_i && !blocked && !fence;
+        wire transport_health_valid;
+        wire [63:0] transport_health;
+        reg [63:0] transport_health_q;
+        reg [31:0] router_unexpected_q,bridge_unexpected_q;
+        gw138k_stream_cdc #(.WIDTH(64)) transport_health_mailbox(
+            .reset_n(common_reset_n),.source_clk(selected_clock),.destination_clk(compute_clk_i),
+            .source_valid(frame_valid_o),.source_data({bridge_request_drop_count_o,bridge_return_discard_count_o}),
+            .drop_count(),.destination_valid(transport_health_valid),.destination_data(transport_health));
+        wire transport_fault=(transport_health_valid && transport_health!=transport_health_q) ||
+            router_unexpected!=router_unexpected_q || bridge_unexpected!=bridge_unexpected_q;
+        (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] serial_quiet_compute;
+        always @(posedge compute_clk_i or negedge common_reset_n)
+            if(!common_reset_n)begin
+                generation_q<=0;epoch_q<=0;panic_q<=0;cancel_q<=0;rate_q<=0;
+                blocked<=0;tail_failed_q<=0;drain_pending<=0;drain_epoch<=0;drain_sequence<=0;drain_rate<=0;serial_quiet_compute<=0;quiet_published<=0;
+                transport_health_q<=0;router_unexpected_q<=0;bridge_unexpected_q<=0;
+            end else begin
+                generation_q<=expected_tf_generation_i;epoch_q<=compute_epoch;rate_q<=compute_rate;
+                panic_q<=panic_epoch_o;cancel_q<=pcm_cancel_epoch;tail_failed_q<=tail_failed;
+                serial_quiet_compute<={serial_quiet_compute[0],serial_quiet};
+                quiet_published<=compute_reset_n && tail_quiet && !drain_pending && !fire && !arm_valid && !fence;
+                if(transport_health_valid)transport_health_q<=transport_health;
+                router_unexpected_q<=router_unexpected;bridge_unexpected_q<=bridge_unexpected;
+                if(generation_change)blocked<=0;
+                if(local_abort || failure_event)blocked<=1;
+                // Cancellation retires only after the actual last admitted
+                // slot is observed, or the entire real serial path is quiet.
+                if(tf_observation_valid_i && tf_observation_epoch_i==drain_epoch &&
+                   tf_observation_sequence_i==drain_sequence && tf_observation_44k1_i==drain_rate)
+                    drain_pending<=0;
+                if(serial_quiet_compute[1] && bridge_quiet && router_quiet)drain_pending<=0;
+                if(fire)begin
+                    drain_pending<=1;drain_epoch<=bridge_epoch;drain_sequence<=bridge_sequence;drain_rate<=bridge_rate;
+                end
+            end
+        assign direct_session_blocked=blocked;
+        assign tf_physical_quiescent_o=quiet_published;
+        assign tf_physical_abort_o=local_abort;
+        assign tf_physical_failed_o=failure_event;
+        workstation_tf_physical_tail_v1 tail(
+            .rst_ni(common_reset_n),.compute_clk_i,.serial_clk_i(selected_clock),.fence_i(fence),
+            .arm_valid_i(arm_valid),.arm_ready_o(),.arm_44k1_i(compute_rate),
+            .arm_generation_i(tf_generation_i),.arm_session_i(tf_session_i),.arm_epoch_i(compute_epoch),
+            .armed_o(tail_armed),.tail_pending_o(tail_pending),.tail_closed_o(tail_closed),.tf_admit_o(tail_admit),.quiescent_o(tail_quiet),
+            .tf_fire_i(fire),.tf_last_i(tf_last_i),.tf_error_i(tf_error_i),.tf_44k1_i(tf_sample_rate_i==20'd44100),
+            .tf_generation_i(tf_generation_i),.tf_session_i(tf_session_i),.render_epoch_i(bridge_epoch),.render_sequence_i(bridge_sequence),
+            .router_valid_i(router_done),.router_error_i(router_error),.router_source_tf_i(router_source_tf),
+            .router_44k1_i(router_frame_rate),.router_epoch_i(router_frame_epoch),.router_sequence_i(router_frame_sequence),
+            .transport_fault_i(transport_fault),
+            .observation_valid_i(tf_observation_valid_i),.observation_error_i(tf_observation_error_i),
+            .observation_44k1_i(tf_observation_44k1_i),.observation_gap_i(tf_observation_gap_i),.observation_drop_event_i(tf_observation_drop_i),
+            .observation_epoch_i(tf_observation_epoch_i),.observation_sequence_i(tf_observation_sequence_i),
+            .physical_valid_i(frame_valid_o),.physical_error_i(physical_error),.physical_44k1_i(physical_rate),
+            .physical_epoch_i(physical_epoch),.physical_sequence_i(physical_sequence),.observation_source_drops_i(tf_observation_source_drops_i),
+            .physical_eos_o(tf_physical_eos_o),.failed_o(tail_failed),.tail_cancelled_o(),.failure_code_o(),
+            .tail_epoch_o(),.tail_sequence_o(),.baseline_drops_o(),.tail_drops_o(),.mailbox_busy_o());
+    end else begin:g_legacy_tf
+        assign tail_admit=1'b1,direct_session_blocked=1'b0;
+        assign tf_physical_eos_o=1'b0,tf_physical_quiescent_o=1'b1,tf_physical_failed_o=1'b0,tf_physical_abort_o=1'b0;
+    end endgenerate
     workstation_pcm_frame_fanout taps(
         .clk_i(selected_clock),.rst_ni(SEPARATE_COMMON_RESET ? serial_common_reset_n:rst_ni),.frame_valid_i(frame_valid_o),.frame_error_i(physical_error),
         .frame_44k1_i(physical_rate),.frame_epoch_i(physical_epoch),.frame_sequence_i(physical_sequence),.frame_pcm_i(physical_pcm),

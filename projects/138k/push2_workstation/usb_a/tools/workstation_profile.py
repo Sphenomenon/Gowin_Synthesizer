@@ -58,7 +58,17 @@ LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
+TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
 PROFILE_REGISTRY = {
+    TASK3_M_DIRECT_NAME:dict(config='boards/custom_138k/workstation_profile_task3_m_direct_tf_v1.json', revision=1,
+        configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
+            local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
+            usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
+            tf_policy='task3_m_native_direct_tf_v1',
+            bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1'),
+        provider='rtl/workstation/workstation_profile_task3_m_direct_tf.sv',recognition_enabled=False,
+        local_panel_enabled=False,demo_role='M',tf_menu_enabled=True,tf_direct_enabled=True,
+        integration_identity='custom138k-native-task3-m-direct-tf-revision1'),
     TASK3_M_TF_NAME:dict(config='boards/custom_138k/workstation_profile_task3_m_local_tf_v1.json', revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
@@ -360,6 +370,11 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    if spec.get('tf_direct_enabled', False):
+        from tools.workstation_task3_tf_direct import restore_constraints
+        installed_sdc = restore_constraints(root, installed_sdc, metadata.get('task3_tf_direct_cdc', {}))
+    elif 'task3_tf_direct_cdc' in metadata:
+        raise ValueError('unselected profile cannot claim direct TF constraints')
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints

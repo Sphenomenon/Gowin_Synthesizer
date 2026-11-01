@@ -186,18 +186,65 @@ def verify_demo_timing(stage, sdc, role, evidence):
     return dict(evidence, installed_lines_verified=True)
 
 
-def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlist_text=None):
+def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlist_text=None,
+                               task3_direct_constraints=None):
     """One selected gate shared by strict synthesis and actual routed entry."""
-    selected = verify_demo_timing(stage, sdc, role, evidence)
+    # Preserve the old no-held-policy early return, including callers which
+    # intentionally have no prepared top/source slice to inspect.
+    selected = None
+    if task3_direct_constraints is None:
+        selected = verify_demo_timing(stage, sdc, role, evidence)
+        if selected.get('policy') not in DEMO_HELD_TIMING_POLICIES:
+            return dict(gate_applied=False, policy=selected.get('policy'),
+                        scope='sealed legacy without new DEMO held-handshake policy')
+    top_path = Path(stage) / 'rtl/workstation/gw138k_push_workstation_top.v'
+    controlled_path = Path(stage) / 'rtl/workstation/workstation_runtime_controlled.sv'
+    from tools.workstation_task3_tf_direct import selected_direct_top
+    top, direct_root_reset = selected_direct_top(stage, top_path.read_text())
+    timing_sdc = sdc
+    if direct_root_reset:
+        require(isinstance(task3_direct_constraints, dict),
+                'DIRECT constraints need sealed explicit selection evidence')
+        from tools.workstation_task3_tf_direct import restore_constraints
+        timing_sdc = restore_constraints(stage, sdc, task3_direct_constraints)
+    else:
+        require(task3_direct_constraints is None, 'legacy profile cannot select DIRECT reset proof')
+    selected = selected or verify_demo_timing(stage, timing_sdc, role, evidence)
     if selected.get('policy') not in DEMO_HELD_TIMING_POLICIES:
         return dict(gate_applied=False, policy=selected.get('policy'),
                     scope='sealed legacy without new DEMO held-handshake policy')
     # The caller has already sealed the complete candidate input closure.
     # Bind the extra constant-reset proof to the actual consumed composition.
-    top_path = Path(stage) / 'rtl/workstation/gw138k_push_workstation_top.v'
-    controlled_path = Path(stage) / 'rtl/workstation/workstation_runtime_controlled.sv'
-    top, controlled = top_path.read_text(), controlled_path.read_text()
+    controlled = controlled_path.read_text()
     instance = re.search(r'workstation_runtime_controlled\s*#\(.*?\)\s*u_managed\s*\(.*?\);', top, re.S)
+    if direct_root_reset:
+        require(role == 'M' and selected['policy'] == M_RELEASE_TIMING_POLICY,
+                'DIRECT root proof requires explicitly selected M release policy')
+        require(instance is not None and instance[0].count('.SEPARATE_COMMON_RESET(1)') == 1 and
+                instance[0].count('.common_reset_ni(runtime_common_reset_n)') == 1,
+                'DIRECT managed owner common-root binding changed')
+        require(re.search(r'wire\s+common_reset_n\s*=\s*SEPARATE_COMMON_RESET\s*\?\s*common_reset_ni\s*:\s*rst_ni\s*;', controlled) and
+                re.search(r'gw138k_stream_cdc\s*#\(\.WIDTH\(8\)\)\s*pc_bytes\s*\(\s*\.reset_n\(common_reset_n\)', controlled),
+                'DIRECT PC source common-root selection changed')
+        from tools.workstation_task3_root_reset_audit import audit_root_startup
+        from tools.workstation_task3_native_held import audit_direct_held_boundaries
+        from tools.workstation_task3_peripheral_releases_audit import audit_peripheral_releases
+        from tools.workstation_native_protocol_audit import audit_native_protocol, validate_native_protocol_sdc
+        root = audit_root_startup(n, stage=stage)
+        result = audit_native_protocol(n, profile='m-task3-direct', mapping=mapping)
+        result['demo_held_handshakes'] = audit_direct_held_boundaries(n, result, root=root)
+        result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
+            demo_held_handshakes=demo_held_handshake_constraints())
+        peripherals = audit_peripheral_releases(n, root=root)
+        tf = next(row for row in result['level_proofs'] if 'full_direct_tf_cdc_accepted' in row)
+        require(tf['full_direct_tf_cdc_accepted'],
+                'DIRECT TF dedicated CDC gate pending: ' + '; '.join(tf['gate_pending']))
+        return dict(gate_applied=True, selection=selected, actual_native_protocol=result,
+                    actual_root_startup=root, actual_peripheral_releases=peripherals,
+                    reset_source_slice_sha256={str(p): digest(p) for p in (top_path, controlled_path)},
+                    actual_pc_reset_scope='real_root_power_up_three_edge_local_release',
+                    reusable_module_reset_simulation=False,
+                    physical_timing_verified=False, hardware_tested=False)
     require(top.count("wire button1_n=1'b1;") == 1 and instance is not None and
             instance[0].count('.SEPARATE_COMMON_RESET(1)') == 1 and
             instance[0].count('.common_reset_ni(button1_n)') == 1,

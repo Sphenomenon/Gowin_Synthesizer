@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "policy": "task3_direct_tf_default_off_reference_v1",
+  "source": "rtl/workstation/gw138k_push_workstation_top.v",
+  "parent_source_sha256": "dfe698e7bcde7c47c9263224a6615e5269e19b0e1509cda709420f626df94e0d",
+  "current_source_sha256": "2bd14a9c81c28817dc0fd2bf39a87d208f0344f7f1c8f06571953bc2550f3cd0",
+  "default_macro_off": true,
+  "exact_changes": [
+    {
+      "before": "    wire reset_n;\n    reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));\n    wire audio_clk,audio_reset_n,audio_locked;\n    gw138k_audio_clock u_audio_clock(.clk_50m(clk_50m),.reset_n(reset_n),\n",
+      "after": "    wire reset_n;\n    reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n    // The custom board has no external button reset. Use the initialized,\n    // once-per-root-start release as COMMON assertion, never the DDR grant\n    // or a recoverable PLL reset. Each consumer still releases locally.\n    wire runtime_common_reset_n=reset_n;\n`endif\n    wire audio_clk,audio_reset_n,audio_locked;\n    gw138k_audio_clock u_audio_clock(.clk_50m(clk_50m),.reset_n(reset_n),\n",
+      "count": 1
+    },
+    {
+      "before": "    // clears held notes, committed parameters or the stream epoch in place.\n    workstation_runtime_memory_guard u_runtime_memory_guard(\n        .reset_ni(button1_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),\n        .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),\n        .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),\n",
+      "after": "    // clears held notes, committed parameters or the stream epoch in place.\n    workstation_runtime_memory_guard u_runtime_memory_guard(\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n        .reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),\n`else\n        .reset_ni(button1_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),\n`endif\n        .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),\n        .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),\n",
+      "count": 1
+    },
+    {
+      "before": "    (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [1:0] output_safe_sync;\n    (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [2:0] output_safe_compute;\n    always @(posedge audio_clk or negedge button1_n)\n        if(!button1_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};\n    always @(posedge audio_clk or negedge button1_n)\n        if(!button1_n)output_safe_compute<=0;\n        else if(!output_safe_sync[1])output_safe_compute<=0;\n        else output_safe_compute<={output_safe_compute[1:0],1'b1};\n",
+      "after": "    (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [1:0] output_safe_sync;\n    (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [2:0] output_safe_compute;\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n    always @(posedge audio_clk or negedge runtime_common_reset_n)\n        if(!runtime_common_reset_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};\n    always @(posedge audio_clk or negedge runtime_common_reset_n)\n        if(!runtime_common_reset_n)output_safe_compute<=0;\n`else\n    always @(posedge audio_clk or negedge button1_n)\n        if(!button1_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};\n    always @(posedge audio_clk or negedge button1_n)\n        if(!button1_n)output_safe_compute<=0;\n`endif\n        else if(!output_safe_sync[1])output_safe_compute<=0;\n        else output_safe_compute<={output_safe_compute[1:0],1'b1};\n",
+      "count": 1
+    },
+    {
+      "before": "    wire [19:0] tf_packet_rate;\n    wire [31:0] tf_packet_generation,tf_expected_generation;\n    wire tf_media_quiet,tf_media_quiet50,tf_busy50,tf_runtime_failed;\n    wire [3:0] tf_runtime_failure;\n",
+      "after": "    wire [19:0] tf_packet_rate;\n    wire [31:0] tf_packet_generation,tf_expected_generation;\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n    wire tf_packet_last,tf_packet_pause;\n    wire [31:0] tf_packet_session;\n    wire tf_physical_eos,tf_physical_quiet,tf_physical_failed,tf_physical_abort;\n`endif\n    wire tf_media_quiet,tf_media_quiet50,tf_busy50,tf_runtime_failed;\n    wire [3:0] tf_runtime_failure;\n",
+      "count": 1
+    },
+    {
+      "before": "    wire [15:0] master_volume;\n    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)\n`ifdef WORKSTATION_DEMO_NO_TF\n        ,.TF_CONTROL_ENABLE(0)\n",
+      "after": "    wire [15:0] master_volume;\n    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n        ,.TF_DIRECT_ENABLE(1)\n`endif\n`ifdef WORKSTATION_DEMO_NO_TF\n        ,.TF_CONTROL_ENABLE(0)\n",
+      "count": 1
+    },
+    {
+      "before": "`endif\n    ) u_managed(\n        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),\n        .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),\n        .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),\n",
+      "after": "`endif\n    ) u_managed(\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n        .rst_ni(runtime_reset_n),.common_reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),\n`else\n        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),\n`endif\n        .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),\n        .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),\n",
+      "count": 1
+    },
+    {
+      "before": "        .tf_sample_rate_i(tf_packet_rate),.tf_generation_i(tf_packet_generation),\n        .expected_tf_generation_i(tf_expected_generation),.tf_ready_o(tf_packet_ready),\n        .ddr_req_o(runtime_delay_req),.ddr_write_o(delay_ddr_write),.ddr_address_o(delay_ddr_address),\n        .ddr_data_o(delay_ddr_data),.ddr_mask_o(),.ddr_ready_i(delay_ddr_ready && runtime_channel_open),\n",
+      "after": "        .tf_sample_rate_i(tf_packet_rate),.tf_generation_i(tf_packet_generation),\n        .expected_tf_generation_i(tf_expected_generation),.tf_ready_o(tf_packet_ready),\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n        .tf_last_i(tf_packet_last),.tf_pause_i(tf_packet_pause),.tf_session_i(tf_packet_session),\n        .tf_physical_eos_o(tf_physical_eos),.tf_physical_quiescent_o(tf_physical_quiet),\n        .tf_physical_failed_o(tf_physical_failed),.tf_physical_abort_o(tf_physical_abort),\n`endif\n        .ddr_req_o(runtime_delay_req),.ddr_write_o(delay_ddr_write),.ddr_address_o(delay_ddr_address),\n        .ddr_data_o(delay_ddr_data),.ddr_mask_o(),.ddr_ready_i(delay_ddr_ready && runtime_channel_open),\n",
+      "count": 1
+    },
+    {
+      "before": "`ifdef WORKSTATION_RUNTIME_NATIVE\n    gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(\n        .usb_cdc_assert_ni(button1_n),\n`else\n    gw138k_push_performance_uart u_runtime(\n",
+      "after": "`ifdef WORKSTATION_RUNTIME_NATIVE\n    gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n        .usb_cdc_assert_ni(runtime_common_reset_n),\n`else\n        .usb_cdc_assert_ni(button1_n),\n`endif\n`else\n    gw138k_push_performance_uart u_runtime(\n",
+      "count": 1
+    },
+    {
+      "before": "    assign tf_source_active=0;\n`elsif WORKSTATION_RUNTIME_NATIVE\n    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT(\"WAV\"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(\n        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),\n",
+      "after": "    assign tf_source_active=0;\n`elsif WORKSTATION_RUNTIME_NATIVE\n`ifdef WORKSTATION_TF_DIRECT_NATIVE\n    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1)) u_tf_audio(\n        .rst_ni(runtime_reset_n),.common_reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),\n        .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),\n        .transport_error_i(tf_scope_error),.track_index_i(playback_track),\n        .runtime_valid_i(rate_valid && memory_guard_ready),.runtime_44k1_i(rate44),\n        .runtime_fault_i(rate_fault || rate_dsp_fault || memory_guard_fault),\n        .runtime_busy_i(rate_busy),.runtime_epoch_i(rate_epoch),\n        .sd_miso_i(sd_miso),.sd_cs_no(sd_cs_n),.sd_sck_o(sd_sck),.sd_mosi_o(sd_mosi),\n        .track_count_o(tf_track_count),.playlist_ready_o(playlist_scan_done),.card_lost_o(tf_card_lost),\n        .playlist_name_address_i(playlist_name_addr),.playlist_name_data_o(playlist_name_data),\n        .format_ready_o(tf_format_ready),.unsupported_o(tf_unsupported),.file_sample_rate_o(tf_sample_rate),\n        .busy_50_o(tf_busy50),.failed_o(tf_runtime_failed),.eof_seen_o(),.failure_code_o(tf_runtime_failure),\n        .media_quiescent_50_o(tf_media_quiet50),\n        .tf_active_o(tf_packet_active),.tf_busy_o(tf_packet_busy),.tf_valid_o(tf_packet_valid),.tf_error_o(tf_packet_error),\n        .tf_last_o(tf_packet_last),.tf_pause_o(tf_packet_pause),.tf_session_o(tf_packet_session),\n        .tf_left_o(tf_packet_left),.tf_right_o(tf_packet_right),.tf_sample_rate_o(tf_packet_rate),\n        .tf_generation_o(tf_packet_generation),.expected_generation_o(tf_expected_generation),.tf_ready_i(tf_packet_ready),\n        .media_quiescent_o(tf_media_quiet),.physical_eos_i(tf_physical_eos),.physical_quiescent_i(tf_physical_quiet),\n        .physical_failed_i(tf_physical_failed),.physical_abort_i(tf_physical_abort),\n        .stop_request_i(tf_stop_request),.stop_done_o(tf_stop_done),.stop_failed_o(tf_stop_failed),\n        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));\n    // No selected TF file intermediate or request generator remains on owner4.\n    assign audio_ddr_req=0,audio_ddr_write=0,audio_ddr_address=0,audio_ddr_data=0;\n    assign analysis_pcm_valid=0,analysis_pcm_end=0,analysis_pcm_left=0,analysis_pcm_right=0,analysis_sample_rate=0;\n    // Unavailable native-v1 diagnostics, never file-completion acknowledgements.\n    assign tf_ddr_error=0,tf_file_size=0,tf_hotplug_debug=0;\n`else\n    workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT(\"WAV\"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(\n        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),\n",
+      "count": 1
+    },
+    {
+      "before": "        .stop_request_i(tf_stop_request),.stop_done_o(tf_stop_done),.stop_failed_o(tf_stop_failed),\n        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));\n    assign tf_source_active=tf_busy50;\n`else\n",
+      "after": "        .stop_request_i(tf_stop_request),.stop_done_o(tf_stop_done),.stop_failed_o(tf_stop_failed),\n        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));\n`endif\n    assign tf_source_active=tf_busy50;\n`else\n",
+      "count": 1
+    }
+  ]
+}

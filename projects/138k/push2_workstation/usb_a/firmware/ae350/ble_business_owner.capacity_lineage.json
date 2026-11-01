@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "policy": "task3_single_recording_configurable_capacity_v1",
+  "source_commit": "f5b737a9",
+  "default_frames": 16384,
+  "files": {
+    "ble_business_owner.c": {
+      "parent_sha256": "320e16f5bc8b6afe147cf625ed6366aedb71b20e145b04580e636ee755f1510b",
+      "current_sha256": "e7d4b9dc032d2a4e494baf90364c13230f3550627d8658751c1ecd910ef15122",
+      "exact_changes": [
+        {
+          "before": "    o->completion_payload[15]=(uint8_t)(o->transfer.open*4u+(state==4)*2u+(state==5));\n    put(o->completion_payload+16,48000);put(o->completion_payload+20,f->frames);\n    put(o->completion_payload+24,f->frames*4u);put(o->completion_payload+28,16384);\n    put(o->completion_payload+32,state==4 ? f->crc:0);\n    o->completion_payload[36]=(uint8_t)f->reason;o->completion_payload[37]=(uint8_t)(f->reason>>8);\n",
+          "after": "    o->completion_payload[15]=(uint8_t)(o->transfer.open*4u+(state==4)*2u+(state==5));\n    put(o->completion_payload+16,48000);put(o->completion_payload+20,f->frames);\n    put(o->completion_payload+24,f->frames*4u);put(o->completion_payload+28,A138_BLE_RECORD_CAPACITY_FRAMES);\n    put(o->completion_payload+32,state==4 ? f->crc:0);\n    o->completion_payload[36]=(uint8_t)f->reason;o->completion_payload[37]=(uint8_t)(f->reason>>8);\n",
+          "count": 1
+        },
+        {
+          "before": "        if(o->facts.state&(1u<<11)) {reject(o,BUSY);return;}\n        if(!(o->facts.state&(1u<<10)) || state!=0) {reject(o,BAD_STATE);return;}\n        if(word(p+4)>16384) {reject(o,RANGE);return;}\n        if(!free_task(o) || o->operation_counter==UINT32_MAX || o->object_counter==UINT32_MAX) {reject(o,BUSY);return;}\n        o->pending_object=o->object_counter+1u;o->pending_operation=o->operation_counter+1u;\n",
+          "after": "        if(o->facts.state&(1u<<11)) {reject(o,BUSY);return;}\n        if(!(o->facts.state&(1u<<10)) || state!=0) {reject(o,BAD_STATE);return;}\n        if(word(p+4)>A138_BLE_RECORD_CAPACITY_FRAMES) {reject(o,RANGE);return;}\n        if(!free_task(o) || o->operation_counter==UINT32_MAX || o->object_counter==UINT32_MAX) {reject(o,BUSY);return;}\n        o->pending_object=o->object_counter+1u;o->pending_operation=o->operation_counter+1u;\n",
+          "count": 1
+        },
+        {
+          "before": "       o->local_record.phase==A138_LOCAL_WAIT || o->local_record.token==UINT32_MAX ||\n       (opcode!=0x20 && opcode!=0x21 && opcode!=0x23) ||\n       (opcode==0x20 ? limit>16384u:limit!=0))return 0;\n    uint32_t token=o->local_record.token+1u;\n    o->local_record=(a138_ble_local_record_result){.token=token,.opcode=opcode,\n",
+          "after": "       o->local_record.phase==A138_LOCAL_WAIT || o->local_record.token==UINT32_MAX ||\n       (opcode!=0x20 && opcode!=0x21 && opcode!=0x23) ||\n       (opcode==0x20 ? limit>A138_BLE_RECORD_CAPACITY_FRAMES:limit!=0))return 0;\n    uint32_t token=o->local_record.token+1u;\n    o->local_record=(a138_ble_local_record_result){.token=token,.opcode=opcode,\n",
+          "count": 1
+        },
+        {
+          "before": "        if(!a138_record_data_probe(&o->data) || a138_business_probe(&o->mailbox)!=A138_BM_OK ||\n           o->facts.object_id || o->facts.accepted_seq || o->facts.applied_seq) {o->fault=A138_OWNER_DIRTY_BOOT;return;}\n        o->context=context;o->bound=1;\n    } else if(context.boot_id!=o->context.boot_id || context.owner!=o->context.owner) {o->fault=A138_OWNER_CONTEXT_CHANGED;return;}\n",
+          "after": "        if(!a138_record_data_probe(&o->data) || a138_business_probe(&o->mailbox)!=A138_BM_OK ||\n           o->facts.object_id || o->facts.accepted_seq || o->facts.applied_seq) {o->fault=A138_OWNER_DIRTY_BOOT;return;}\n#if A138_BLE_RECORD_CAPACITY_FRAMES != 16384u\n        /* Extended firmware must bind the actual configured physical engine;\n         * never advertise a longer object while retaining a short backend. */\n        uint32_t physical_capacity=0;\n        if(!o->data.read(o->data.context,0x3cu,&physical_capacity) ||\n           physical_capacity!=A138_BLE_RECORD_CAPACITY_FRAMES) {o->fault=A138_OWNER_CAPACITY_MISMATCH;return;}\n#endif\n        o->context=context;o->bound=1;\n    } else if(context.boot_id!=o->context.boot_id || context.owner!=o->context.owner) {o->fault=A138_OWNER_CONTEXT_CHANGED;return;}\n",
+          "count": 1
+        }
+      ]
+    },
+    "ble_business_owner.h": {
+      "parent_sha256": "d3397ea1e217dba332f13d40693eeed3d4bfda809af157e764ad4ed7d7cba853",
+      "current_sha256": "1b2841938b24f06d6ea252ae1172c7611320438dfec089b36551fddaeb29659a",
+      "exact_changes": [
+        {
+          "before": "#include \"recording_service.h\"\n#define A138_BLE_BUSINESS_BASE UINT32_C(0xf8050000)\nenum {\n    A138_OWNER_SUBMIT_IO=101,A138_OWNER_FACT_IO,A138_OWNER_OBSERVER_LOST,\n",
+          "after": "#include \"recording_service.h\"\n#define A138_BLE_BUSINESS_BASE UINT32_C(0xf8050000)\n/* Explicit firmware/physical-store configuration; format 1 stays 48-kHz\n * stereo PCM16. Default builds retain their existing 64-KiB object. */\n#ifndef A138_BLE_RECORD_CAPACITY_FRAMES\n#define A138_BLE_RECORD_CAPACITY_FRAMES 16384u\n#endif\n#if A138_BLE_RECORD_CAPACITY_FRAMES < 1 || A138_BLE_RECORD_CAPACITY_FRAMES > 0x10000000u\n#error \"BLE recording capacity must fit native DDR and 32-bit PCM byte counts\"\n#endif\nenum {\n    A138_OWNER_SUBMIT_IO=101,A138_OWNER_FACT_IO,A138_OWNER_OBSERVER_LOST,\n",
+          "count": 1
+        },
+        {
+          "before": "    A138_OWNER_REQUEST_IO,A138_OWNER_CLAIM_IO,A138_OWNER_SUBMIT_UNOBSERVED,\n    A138_OWNER_COMPLETE_UNOBSERVED,A138_OWNER_REQUEST_META_IO,\n    A138_OWNER_REQUEST_META_UNOBSERVED,A138_OWNER_RESULT_IDENTITY\n};\ntypedef struct {\n",
+          "after": "    A138_OWNER_REQUEST_IO,A138_OWNER_CLAIM_IO,A138_OWNER_SUBMIT_UNOBSERVED,\n    A138_OWNER_COMPLETE_UNOBSERVED,A138_OWNER_REQUEST_META_IO,\n    A138_OWNER_REQUEST_META_UNOBSERVED,A138_OWNER_RESULT_IDENTITY,\n    A138_OWNER_CAPACITY_MISMATCH\n};\ntypedef struct {\n",
+          "count": 1
+        }
+      ]
+    }
+  }
+}

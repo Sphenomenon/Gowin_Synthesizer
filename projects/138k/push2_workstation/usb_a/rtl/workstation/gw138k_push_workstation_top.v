@@ -95,6 +95,12 @@ module gw138k_push_workstation_top #(
 `endif
     wire reset_n;
     reset_release u_reset(.clk(clk_50m),.ext_reset_n(button1_n),.reset_n(reset_n));
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+    // The custom board has no external button reset. Use the initialized,
+    // once-per-root-start release as COMMON assertion, never the DDR grant
+    // or a recoverable PLL reset. Each consumer still releases locally.
+    wire runtime_common_reset_n=reset_n;
+`endif
     wire audio_clk,audio_reset_n,audio_locked;
     gw138k_audio_clock u_audio_clock(.clk_50m(clk_50m),.reset_n(reset_n),
         .audio_clk(audio_clk),.audio_reset_n(audio_reset_n),.pll_locked(audio_locked));
@@ -288,7 +294,11 @@ module gw138k_push_workstation_top #(
     // Backend loss quarantines both directions until common reset. It never
     // clears held notes, committed parameters or the stream epoch in place.
     workstation_runtime_memory_guard u_runtime_memory_guard(
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+        .reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+`else
         .reset_ni(button1_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+`endif
         .backend_reset_ni(ddr_client_reset_n),.backend_ready_i(ddr_client_ready && audio_reset_n),
         .started_o(memory_guard_started),.fault_o(memory_guard_fault),.start_ready_o(memory_guard_ready),
         .mute_o(memory_guard_mute),.channel_open_o(runtime_channel_open),.clock_alive_o(),.fault_code_o(memory_guard_code));
@@ -297,16 +307,28 @@ module gw138k_push_workstation_top #(
     // policy consumes only the synchronized local permission, in both directions.
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] output_safe_sync;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] output_safe_compute;
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+    always @(posedge audio_clk or negedge runtime_common_reset_n)
+        if(!runtime_common_reset_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};
+    always @(posedge audio_clk or negedge runtime_common_reset_n)
+        if(!runtime_common_reset_n)output_safe_compute<=0;
+`else
     always @(posedge audio_clk or negedge button1_n)
         if(!button1_n)output_safe_sync<=0;else output_safe_sync<={output_safe_sync[0],compute_output_safe_n};
     always @(posedge audio_clk or negedge button1_n)
         if(!button1_n)output_safe_compute<=0;
+`endif
         else if(!output_safe_sync[1])output_safe_compute<=0;
         else output_safe_compute<={output_safe_compute[1:0],1'b1};
     wire tf_packet_active,tf_packet_busy,tf_packet_valid,tf_packet_error,tf_packet_ready;
     wire signed [15:0] tf_packet_left,tf_packet_right;
     wire [19:0] tf_packet_rate;
     wire [31:0] tf_packet_generation,tf_expected_generation;
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+    wire tf_packet_last,tf_packet_pause;
+    wire [31:0] tf_packet_session;
+    wire tf_physical_eos,tf_physical_quiet,tf_physical_failed,tf_physical_abort;
+`endif
     wire tf_media_quiet,tf_media_quiet50,tf_busy50,tf_runtime_failed;
     wire [3:0] tf_runtime_failure;
     wire runtime_media_request,runtime_media_hold,runtime_media_ready;
@@ -676,6 +698,9 @@ module gw138k_push_workstation_top #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire [15:0] master_volume;
     workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+        ,.TF_DIRECT_ENABLE(1)
+`endif
 `ifdef WORKSTATION_DEMO_NO_TF
         ,.TF_CONTROL_ENABLE(0)
 `endif
@@ -689,7 +714,11 @@ module gw138k_push_workstation_top #(
         ,.LOCAL_SCORE_ENABLE(0)
 `endif
     ) u_managed(
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+        .rst_ni(runtime_reset_n),.common_reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
+`else
         .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),
+`endif
         .reference_48_i(clk_12m288),.reference_44_i(clk_16m9344),.midi_rx_i(midi_rx_i),
         .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),
         .usb_event_valid(all_usb_valid),.usb_lifecycle(usb_lifecycle),.usb_cancel(usb_cancel),
@@ -714,6 +743,11 @@ module gw138k_push_workstation_top #(
         .tf_error_i(tf_packet_error),.tf_left_i(tf_packet_left),.tf_right_i(tf_packet_right),
         .tf_sample_rate_i(tf_packet_rate),.tf_generation_i(tf_packet_generation),
         .expected_tf_generation_i(tf_expected_generation),.tf_ready_o(tf_packet_ready),
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+        .tf_last_i(tf_packet_last),.tf_pause_i(tf_packet_pause),.tf_session_i(tf_packet_session),
+        .tf_physical_eos_o(tf_physical_eos),.tf_physical_quiescent_o(tf_physical_quiet),
+        .tf_physical_failed_o(tf_physical_failed),.tf_physical_abort_o(tf_physical_abort),
+`endif
         .ddr_req_o(runtime_delay_req),.ddr_write_o(delay_ddr_write),.ddr_address_o(delay_ddr_address),
         .ddr_data_o(delay_ddr_data),.ddr_mask_o(),.ddr_ready_i(delay_ddr_ready && runtime_channel_open),
         .ddr_response_i(delay_ddr_response && runtime_channel_open),.ddr_read_data_i(client_rdata),
@@ -781,7 +815,11 @@ module gw138k_push_workstation_top #(
     wire [127:0] video_diagnostics;
 `ifdef WORKSTATION_RUNTIME_NATIVE
     gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+        .usb_cdc_assert_ni(runtime_common_reset_n),
+`else
         .usb_cdc_assert_ni(button1_n),
+`endif
 `else
     gw138k_push_performance_uart u_runtime(
 `endif
@@ -878,6 +916,34 @@ module gw138k_push_workstation_top #(
     assign tf_media_quiet=1,tf_stop_done=0,tf_stop_failed=0,tf_stop_failure=0,tf_stop_pending=0;
     assign tf_source_active=0;
 `elsif WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_TF_DIRECT_NATIVE
+    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1)) u_tf_audio(
+        .rst_ni(runtime_reset_n),.common_reset_ni(runtime_common_reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
+        .mode_i(tf_mode_50),.run_i(tf_run_50),.restart_i(tf_explicit_restart),.cancel_i(tf_file_cancel),
+        .transport_error_i(tf_scope_error),.track_index_i(playback_track),
+        .runtime_valid_i(rate_valid && memory_guard_ready),.runtime_44k1_i(rate44),
+        .runtime_fault_i(rate_fault || rate_dsp_fault || memory_guard_fault),
+        .runtime_busy_i(rate_busy),.runtime_epoch_i(rate_epoch),
+        .sd_miso_i(sd_miso),.sd_cs_no(sd_cs_n),.sd_sck_o(sd_sck),.sd_mosi_o(sd_mosi),
+        .track_count_o(tf_track_count),.playlist_ready_o(playlist_scan_done),.card_lost_o(tf_card_lost),
+        .playlist_name_address_i(playlist_name_addr),.playlist_name_data_o(playlist_name_data),
+        .format_ready_o(tf_format_ready),.unsupported_o(tf_unsupported),.file_sample_rate_o(tf_sample_rate),
+        .busy_50_o(tf_busy50),.failed_o(tf_runtime_failed),.eof_seen_o(),.failure_code_o(tf_runtime_failure),
+        .media_quiescent_50_o(tf_media_quiet50),
+        .tf_active_o(tf_packet_active),.tf_busy_o(tf_packet_busy),.tf_valid_o(tf_packet_valid),.tf_error_o(tf_packet_error),
+        .tf_last_o(tf_packet_last),.tf_pause_o(tf_packet_pause),.tf_session_o(tf_packet_session),
+        .tf_left_o(tf_packet_left),.tf_right_o(tf_packet_right),.tf_sample_rate_o(tf_packet_rate),
+        .tf_generation_o(tf_packet_generation),.expected_generation_o(tf_expected_generation),.tf_ready_i(tf_packet_ready),
+        .media_quiescent_o(tf_media_quiet),.physical_eos_i(tf_physical_eos),.physical_quiescent_i(tf_physical_quiet),
+        .physical_failed_i(tf_physical_failed),.physical_abort_i(tf_physical_abort),
+        .stop_request_i(tf_stop_request),.stop_done_o(tf_stop_done),.stop_failed_o(tf_stop_failed),
+        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));
+    // No selected TF file intermediate or request generator remains on owner4.
+    assign audio_ddr_req=0,audio_ddr_write=0,audio_ddr_address=0,audio_ddr_data=0;
+    assign analysis_pcm_valid=0,analysis_pcm_end=0,analysis_pcm_left=0,analysis_pcm_right=0,analysis_sample_rate=0;
+    // Unavailable native-v1 diagnostics, never file-completion acknowledgements.
+    assign tf_ddr_error=0,tf_file_size=0,tf_hotplug_debug=0;
+`else
     workstation_tf_runtime_service #(.AUDIO_KIND(TF_AUDIO_KIND),.FILE_EXT("WAV"),.EXTERNAL_STOP_PROTOCOL(1),.SEPARATE_COMMON_RESET(1)) u_tf_audio(
         .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),
         .memory_clk_i(memory_clk),.memory_reset_ni(memory_reset_n),
@@ -907,6 +973,7 @@ module gw138k_push_workstation_top #(
         .media_quiescent_o(tf_media_quiet),.stale_discard_count_o(),.quiesce_discard_count_o(),
         .stop_request_i(tf_stop_request),.stop_done_o(tf_stop_done),.stop_failed_o(tf_stop_failed),
         .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));
+`endif
     assign tf_source_active=tf_busy50;
 `else
     tf_workstation_audio_bridge #(

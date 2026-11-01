@@ -3,7 +3,7 @@
 // Independent compute-domain final PCM owner; not selected by any profile.
 // This completion is a PRE-SERIAL diagnostic. Default analysis/record taps
 // must consume the physical serializer frame through pcm_frame_fanout instead.
-module workstation_final_pcm_router (
+module workstation_final_pcm_router #(parameter bit CONTROLLED_SILENCE_ENABLE=0)(
     input wire clk_i, rst_ni,
     input wire request_i, request_44k1_i,
     input wire [31:0] request_epoch_i, request_sequence_i,
@@ -13,6 +13,9 @@ module workstation_final_pcm_router (
     input wire scope_enable_i, tf_active_i,
     input wire [15:0] master_volume_i,
     input wire mute_i,
+    // Opt-in direct TF waits still advance the REAL render service. Silence
+    // replaces only that completed slot's PCM; it never consumes a TF head.
+    input wire controlled_silence_i,
     // TF pair/rate/generation must be one atomic, same-clock transaction.
     // Mismatched or absent input is NOT consumed or held as a prior sample.
     input wire tf_valid_i, tf_error_i,
@@ -39,7 +42,7 @@ module workstation_final_pcm_router (
         RATE_MISMATCH=8'h04, STALE_SOURCE=8'h08, CANCELLED=8'h10,
         RENDER_BUSY=8'h20;
     reg [1:0] state;
-    reg held_rate, held_tf;
+    reg held_rate, held_tf,held_silence;
     reg [31:0] held_epoch, held_sequence, held_cancel, held_tf_generation;
     reg [7:0] held_errors;
     reg [15:0] applied_gain, held_gain;
@@ -97,7 +100,7 @@ module workstation_final_pcm_router (
     wire [16:0] scaled_left=scale16(product_left), scaled_right=scale16(product_right);
     always @(posedge clk_i or negedge rst_ni) begin
         if(!rst_ni) begin
-            state<=IDLE;held_rate<=0;held_tf<=0;held_epoch<=0;held_sequence<=0;
+            state<=IDLE;held_rate<=0;held_tf<=0;held_silence<=0;held_epoch<=0;held_sequence<=0;
             held_cancel<=0;held_tf_generation<=0;held_errors<=0;
             applied_gain<=0;held_gain<=0;gain_remainder<=73;
             selected_left<=0;selected_right<=0;selected_clipped<=0;
@@ -115,6 +118,7 @@ module workstation_final_pcm_router (
                 IDLE: if(accepted)begin
                     held_rate<=request_44k1_i;held_epoch<=request_epoch_i;held_sequence<=request_sequence_i;
                     held_cancel<=cancel_epoch_i;held_tf<=choose_tf;held_tf_generation<=expected_tf_generation_i;
+                    held_silence<=CONTROLLED_SILENCE_ENABLE && controlled_silence_i;
                     applied_gain<=next_gain;held_gain<=next_gain;
                     if(request_44k1_i && !mute_i && master_volume_i!=0)gain_remainder<=8'(rate_step_product%17'd147);
                     selected_left<=0;selected_right<=0;selected_clipped<=0;held_errors<=0;
@@ -139,7 +143,7 @@ module workstation_final_pcm_router (
                     if(render_done_i)begin
                         render_request_o<=0;
                         if(render_error_i)begin selected_left<=0;selected_right<=0;held_errors<=held_errors|SOURCE_ERROR;end
-                        else begin
+                        else if(!held_silence)begin
                             selected_left<=quantized_left[15:0];selected_right<=quantized_right[15:0];
                             selected_clipped<=quantized_left[16] || quantized_right[16];
                         end

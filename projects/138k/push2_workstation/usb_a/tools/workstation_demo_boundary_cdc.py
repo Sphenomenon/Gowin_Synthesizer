@@ -230,10 +230,14 @@ def audit(n, *, mapping="synthesis", expected_role=None):
  exp_add(queue_ends,R,'release_q',range(2),'CLEAR','usb_clk');exp_add(queue_ends,U,'stopped_clock_queue_fence.drain_release',range(6),'CLEAR','audio_clk')
  queue_closure=complete_closure(n,g,[chain[5]])
  w_queue_ends=dict(queue_ends);w_queue_ends[reg('u_managed/events/queue','tail')+'/D']='audio_clk'
+ m_d_queue_ends=dict(w_queue_ends)
+ m_d_queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
  if queue_closure['ff_endpoints']==dict(sorted(w_queue_ends.items())):
-  inventory_role='W';queue_ends=w_queue_ends
+  inventory_role='W';queue_ends=w_queue_ends;tail_mapping='D'
+ elif queue_closure['ff_endpoints']==dict(sorted(m_d_queue_ends.items())):
+  inventory_role='M';queue_ends=m_d_queue_ends;tail_mapping='D'
  else:
-  inventory_role='M'
+  inventory_role='M';tail_mapping='CE'
   queue_ends[reg('u_managed/events/queue','tail')+'/CE']='audio_clk'
   queue_ends[reg(U,'settled_sync',0)+'/D']='usb_clk'
  require(len(queue_ends)==(140 if inventory_role=='M' else 139),'reviewed queue source inventory count')
@@ -249,6 +253,7 @@ def audit(n, *, mapping="synthesis", expected_role=None):
  return dict(policy=POLICY, mapping=mapping, inventory_role=inventory_role, fault_inventory_endpoints=fault_inventory, source_fault_registers=fault_regs,fault_source_closures=source_closures,fault_first_stage_closure=first,fault_wptr_lsb_nextq=wptr_lsb_nextq,
   source_sticky_D_constant_1=True,source_faults_memory_domain=True,source_OR_exact_all_three=True,
   fault_receiver_reset_source=compute_release+'/Q',fault_source_reset_source=mem_release+'/Q',
+  queue_tail_mapping=tail_mapping,
   queue_source_chain=chain,queue_source_closure=queue_closure,queue_reset_support=[p+'/Q' for p in producer]+[chain[5]+'/Q'],
   fifo_release_chain=release,fifo_first_release_closure=first_release,fifo_write_pointers=pointers,
   functional_pointer_recovery_removal_waived=False,

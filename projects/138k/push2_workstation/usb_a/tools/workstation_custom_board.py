@@ -126,6 +126,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
     audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
+    tf_direct=runtime and specification(profile['name']).get('tf_direct_enabled',False)
+    if tf_direct:
+        from tools.workstation_task3_tf_direct import SOURCES as DIRECT_SOURCES, RETIRED_SOURCES, UNSELECTED_WORKER_SOURCES, DEPENDENCIES as DIRECT_DEPENDENCIES, POLICY as DIRECT_POLICY
+        if (recognition['music_analysis_enabled'] or not specification(profile['name']).get('tf_menu_enabled',False)
+                or demo_role!='M' or profile['configuration'].get('tf_policy')!=DIRECT_POLICY):
+            raise ValueError('direct TF requires the explicit native M/no-CNN/menu composition')
+        native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
+        profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -227,6 +235,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     paths = [entry.get('path') for entry in files]
     if len(paths) != len(set(paths)):
         raise ValueError('duplicate native-board parent compilation inputs')
+    if tf_direct:
+        # The resource parent also enumerates maintained music libraries.
+        # W task modules belong only to a later explicit W role; preserve the
+        # staged parent bytes but do not compile these moving worker inputs.
+        for entry in files:
+            if entry.get('path') in UNSELECTED_WORKER_SOURCES:
+                entry.set('enable', '0')
     replacements = {}
     replaced_inputs = dict(REPLACED_INPUTS)
     if expanded_boot:
@@ -357,6 +372,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_worker_audio_only import constraints as audio_sdc,cst as audio_cst
         selected_sdc,audio_constraints=audio_sdc(selected_sdc)
         combined_cst=audio_cst(combined_cst)
+    task3_tf_direct_cdc=None
+    if tf_direct:
+        from tools.workstation_task3_tf_direct import adapt_constraints as direct_constraints
+        selected_sdc,task3_tf_direct_cdc=direct_constraints(root,selected_sdc)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
@@ -486,6 +505,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['ae350_firmware'] = ae350_firmware
         if demo_constraints is not None:
             metadata['demo_constraint_retirement'] = demo_constraints
+        if task3_tf_direct_cdc is not None:
+            metadata['task3_tf_direct_cdc'] = task3_tf_direct_cdc
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
             metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only)

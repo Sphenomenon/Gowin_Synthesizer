@@ -1,0 +1,298 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "stage": "task3_explicit_M_native_TF_direct_prepare_and_actual_synthesis",
+  "status": "M_DIRECT_SOURCE_AND_LOCAL_GATES_PASS_COMPLETE_PROFILE_NOT_ACCEPTED",
+  "source": {
+    "repository": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer",
+    "branch": "codex/dual-138k-task3",
+    "head_at_report": "21f2bf536cb0e29f46f01a1502d99cd0ff6c8898",
+    "changed_sources_uncommitted_at_report": true,
+    "source_policy": "new explicit task3 M direct profile; default/demo/accepted/locked baseline identities retained",
+    "live_sources_may_advance_after_seal": true
+  },
+  "implementation": {
+    "profile": "custom138k-workstation-task3-m-direct-tf-v1",
+    "provider": "rtl/workstation/workstation_profile_task3_m_direct_tf.sv",
+    "M_retained": "32 ordinary/vector voices, expression, ADSR/pitch/mix, local effects, USB/HDMI and real I2S; basic performance independent of W",
+    "TF_path": "real native SPI/SD/FAT/WAV -> bounded frame_bridge_v2 -> unique final router/DSP -> PCM bridge -> real I2S/observation/physical-tail receipt",
+    "owner4": "selected M top ties request/write/address/data zero; legacy TF DDR service/dma/path not instantiated",
+    "CNN_BLE_recording": "off M; worker sources disabled in M GPRJ, not promoted into full M",
+    "common_reset": "DIRECT only uses initialized actual reset_release root; separate memory startup grant does not assert shared common reset",
+    "receipt_fix": "settled 34-bit receipt_payload captured into preserved receipt_local; business dispatch one clk50 edge later from local data. Remote bus no longer directly fans into business consumers",
+    "EOF_and_cancel": "physical EOS/last-admitted retirement with real serializer observation; payload/CRC/CS drain; base sample schedule kept running while arming/paused/post-LAST"
+  },
+  "cold_start_and_audio_runtime": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/tf-direct-runtime-local-receipt-v1/verification.json",
+      "sha256": "f42030a3cfa22339e1cb556df751604e156e08f313826b2a533c1228d69e95ae"
+    },
+    "input_snapshot_index": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/tf-direct-runtime-local-receipt-v1/input_snapshot/index.json",
+      "sha256": "83711d0f6d9b1e9d61e9531fb2a0c5c0321c48d80bed1ef875cb7a124b05fabd"
+    },
+    "passed": true,
+    "cases": 16,
+    "hashed_inputs": 94,
+    "inputs_unchanged": true,
+    "UNOPTFLAT_count": 0,
+    "cases_each_rate": [
+      "play",
+      "pause",
+      "cancel",
+      "STOP",
+      "PANIC",
+      "invalid track",
+      "in-flight sector cancel",
+      "in-flight sector STOP"
+    ],
+    "rates": [
+      48000,
+      44100
+    ],
+    "actual_root_and_memory_startup": true,
+    "actual_DSP_I2S_observation": true,
+    "SPI_FAST_test_divider": 2,
+    "production_SPI_FAST_divider": 12,
+    "whole_top_tested": false,
+    "stereo16_only": true
+  },
+  "v11_actual_synthesis": {
+    "candidate_identity": "custom138k-workstation-task3-m-direct-tf-v1-444ac11b5f138844",
+    "profile_artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v11/workstation_profile.json",
+      "sha256": "ef62ba417c4d3e15c2ab238d6f6cce48dd8d6bb026b545278c12d8288753defe"
+    },
+    "synthesis_invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v11/synthesis_invocation.json",
+      "sha256": "6848bf93cc55e5f3e0d9185279aefc9edfa447e8dc4c1bac602149c022641a92"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v11/synthesis.log",
+      "sha256": "e799f3678fc3266807318a0f6f36eb0e3de1093d0c3f27da16486f89738e952b"
+    },
+    "netlist": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v11/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "89360cff8b2cc3658ce655ca7ed24810705015b3ca1d9b8461f42fd3520d1c73"
+    },
+    "resource_xml": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v11/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+      "sha256": "785cd7b08fc029c2daa5ab0ce4bcf96d2c43081a7c5898135ecf98e365e44016"
+    },
+    "tool_returncode": 0,
+    "resources_synthesis_only": {
+      "Register": 48385,
+      "Lut": 55917,
+      "Alu": 13790,
+      "Bsram": 215,
+      "Ssram": 218,
+      "MULTALU27X18": 33,
+      "MULT12X12": 3,
+      "MULT27X36": 41
+    },
+    "enabled_inputs": 267,
+    "local_actual_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v11-matching-stage-local-audit-v1.json",
+      "sha256": "b4e3393dc02280dbfac00f29a43916c3125c7afcc907d5ad0bbc4841ad499544"
+    },
+    "local_tests": {
+      "run": 22,
+      "skipped": 2,
+      "destructive_controls_rejected": 186
+    },
+    "local_proofs": {
+      "root_all_35_state_bits": true,
+      "pc_apb_real_root_held": true,
+      "status_reset_inclusive_updates": 138,
+      "peripheral_release_ff": 12,
+      "peripheral_owned_functional_ff": 1222,
+      "tf_startup_ff": 10,
+      "receipt_local_ff": 34,
+      "receipt_complete_remote_sinks": 34,
+      "receipt_reset_inclusive_ff": 76,
+      "exact_tf_mailbox_synchronizers": 4,
+      "status_setup_ns": 13.02,
+      "receipt_setup_ns": 20.0,
+      "later_synchronizer_setup_ns": 2.0
+    },
+    "actual_voices": 32,
+    "full_profile_audit_attempt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v11-full-audit-root-attempt-v1.json",
+      "sha256": "236a1ac07fb4fcc56a9d603658f137979f70557521258a88391e2e9e1e1e4aea"
+    },
+    "full_profile_audit_result": "REJECTED: runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor",
+    "complete_CDC_accepted": false,
+    "physical_resources": null,
+    "timing_accepted": false,
+    "bitstream_identity": null
+  },
+  "current_source_checkpoint": {
+    "candidate_identity": "custom138k-workstation-task3-m-direct-tf-v1-188b183ce57d22fe",
+    "profile_artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/workstation_profile.json",
+      "sha256": "52eafcdba46cd09193a9eb5b38b997e5e9b95961149732353946a0b313ec548c"
+    },
+    "configuration_sha256": "db52d55aadf8f6cf8b0f1d3c255269453dbaf30184cde0d3447ff8467197bfa3",
+    "source_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-source-seal-v5/source_seal.json",
+      "sha256": "554c5ef71e96705f529d2b0bd86b9cc0181ed2e04534ce94333d3ac2f57ddba9"
+    },
+    "source_root": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-source-seal-v5/sources/projects/138k/push2_workstation/usb_a",
+    "enabled_inputs": 267,
+    "prepared_source_verifier_passed": true,
+    "changed_enabled_inputs_from_v11": [
+      "rtl/music/basic_pitch_pcm_pipeline.sv",
+      "rtl/music/basic_pitch_workstation_link.sv"
+    ],
+    "changed_enabled_inputs_explanation": "new W EOF parameter defaults0; M CNN remains off. No automatic transfer of v11 synthesis acceptance.",
+    "synthesis_status": "ACTUAL_TOOL_PASS_COMPLETE_PROFILE_AUDIT_REJECTED",
+    "bitstream_identity": null,
+    "synthesis_invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/synthesis_invocation.json",
+      "sha256": "e408a366ea16d8fca6d670af40248a8b746b1cd32aa0e10e176d8fcb5675a46b"
+    },
+    "synthesis_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/synthesis.log",
+      "sha256": "fc474ce6278d5e9e7746d023445f5b542543ed7352538f17ca42c47bb0640788"
+    },
+    "netlist": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "3579feb4ead0bc77645608a1702b9d607bf0d67caf9d4d0f75b9351c9f09c3bc"
+    },
+    "resource_xml": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+      "sha256": "785cd7b08fc029c2daa5ab0ce4bcf96d2c43081a7c5898135ecf98e365e44016"
+    },
+    "resources_synthesis_only": {
+      "Register": 48385,
+      "Alu": 13790,
+      "Lut": 55917,
+      "MULTALU27X18": 33,
+      "MULT12X12": 3,
+      "MULT27X36": 41,
+      "Bsram": 215,
+      "Ssram": 218
+    },
+    "full_profile_audit_attempt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-full-audit-root-attempt-v1.json",
+      "sha256": "39784df08fc766fd23f9f142c50c9f6f67c9fc9c4d71494843787405a95239b8"
+    },
+    "full_profile_audit_result": "REJECTED: runtime clock audit: opposite-edge monitor release data chain changed: reference_48_monitor",
+    "v11_module_body_comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-v11-exact-module-body-comparison.json",
+      "sha256": "5270052f908895d0b210af0102073ebfc217ad6a7b71694e784effd183de621a"
+    },
+    "module_body_byte_identical_to_v11": false,
+    "matching_stage_local_positive": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-matching-stage-local-positive-v2.json",
+      "sha256": "98ef8250d887cc10abda3c2d928af648281beb6513d69679fe6c95b8d9c65d2c"
+    },
+    "matching_stage_evidence_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-local-positive-evidence-seal-v1.json",
+      "sha256": "58f053d65c136e0848b646a3d4a5521f55b0c2cc1dc4365d8770cc5489fe5986"
+    },
+    "feature_inventory": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-prepare-v13/feature_inventory_v13_v2.json",
+      "sha256": "55c99647a6047360450bf131de8eced401c242d6cf3014ff8d56e1cead583113"
+    },
+    "complete_CDC_accepted": false,
+    "local_positive_independently_rechecked": true,
+    "local_scope": "root/native/held/status/peripheral/startup/receipt/mailbox+native SDC/features/32voices; no whole-profile or physical acceptance"
+  },
+  "prior_attempts_retained": [
+    {
+      "scope": "runtime v1 constant common reset",
+      "result": "offline tests passed only after manual reset assertion; rejected as real custom-top cold-start proof; replaced by real platform root in direct-only path"
+    },
+    {
+      "scope": "actual synthesis v4",
+      "result": "tool succeeded, old receipt bus closure/SDC audit rejected; original resources and candidate not promoted"
+    },
+    {
+      "scope": "prepare v5/v6",
+      "result": "W task libraries unintentionally enabled by parent directory enumeration; preserved, not synthesized; direct selection now explicitly disables them"
+    },
+    {
+      "scope": "frozen source prepare v7-v10",
+      "result": "incomplete dependency closure failed; preserved; v11 succeeds from sealed closure"
+    },
+    {
+      "scope": "prepare v12",
+      "result": "default riscv64-elf compiler failed; v13 explicitly uses recorded xPack15.2 prefix"
+    },
+    {
+      "scope": "v13 tool startup attempts",
+      "result": "missing adjacent dylib, then Tcl framework runtime search path; logs/invocations renamed and preserved; active run sets both documented adjacent IDE/lib runtime paths"
+    },
+    {
+      "scope": "legacy firmware recording_api regression",
+      "result": "9 pass, legacy16KiB recording_api link fails ROM overflow760B; no duplicate R00 restoration; selected M direct firmware prepares successfully"
+    },
+    {
+      "scope": "old W return-policy tests",
+      "result": "two old fixed raw-store source-hash expectations reject capacity source change; not weakened, task2 checkout unchanged"
+    },
+    {
+      "scope": "v13 local-positive report metadata",
+      "result": "v1 read candidate identity from wrong metadata level, yielding null; preserved. v2 binds explicit workstation_profile.json; candidate bytes and local proofs unchanged."
+    }
+  ],
+  "known_remaining_gaps": [
+    "Complete actual TF FIFO/Gray/generation ownership and installed SDC proof; 27 RAM16SDP4/108 DO nets reach218 real held_packet/held_valid D/CE endpoints without current finite data bounds.",
+    "Actual physical-tail request/reply/sequence proof; current held_reply SDC misses36 real CE endpoints and lists4 phantom scalar D sinks.",
+    "Root-qualified clock monitor new release shape not yet proved by complete runtime clock gate.",
+    "Complete peripheral later-stage/functional CLEAR exception protection, routed CDC/PLL/full STA and physical BSRAM/resources.",
+    "Production fast SPI divider12 has known sustained supply deficit; test divider2 does not waive it.",
+    "SD data CRC bytes clocked but not validated; sticky native file error lacks file-owner remount/reset recovery entry.",
+    "Whole selected-top owner4 request trace; all supported WAV formats/rates and real card sustained/fragmented/hotplug behavior.",
+    "No target board identity/physical TF/HDMI/DAC/control-to-audio latency measurement.",
+    "No measured LCD electrical/throughput/RTT/congestion; no production remote-reverb or cross-board PCM selection."
+  ],
+  "boards": {
+    "M": {
+      "selected_candidate": "custom138k-workstation-task3-m-direct-tf-v1-188b183ce57d22fe",
+      "source_seal": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-direct-tf-source-seal-v5/source_seal.json",
+        "sha256": "554c5ef71e96705f529d2b0bd86b9cc0181ed2e04534ce94333d3ac2f57ddba9"
+      },
+      "physical_resources": null,
+      "routed_timing": null,
+      "measured_latency": null,
+      "bitstream": null,
+      "actual_synthesis_candidate": "custom138k-workstation-task3-m-direct-tf-v1-188b183ce57d22fe"
+    },
+    "W": {
+      "changed_by_M_checkpoint": false,
+      "source_profile_selected": false,
+      "physical_resources": null,
+      "routed_timing": null,
+      "measured_latency": null,
+      "bitstream": null
+    }
+  },
+  "hardware_operated": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "rollback": "Use frozen task2 M/W candidates in their original branch; this opt-in task3 profile is unaccepted and never replaces default/accepted or current connected board.",
+  "root_regressions": {
+    "accepted_current_workstation_sources": {
+      "tests": 17,
+      "passed": true
+    },
+    "task3_TF_policy": {
+      "tests": 7,
+      "passed": true
+    },
+    "recording_capacity_lineage": {
+      "tests": 2,
+      "passed": true
+    },
+    "default_demo_audit": {
+      "tests": 17,
+      "passed": true
+    },
+    "diff_check": true
+  }
+}

@@ -17,6 +17,7 @@ module workstation_runtime_controlled #(
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
     parameter bit TF_CONTROL_ENABLE=1,
+    parameter bit TF_DIRECT_ENABLE=0,
     parameter bit LOCAL_RECORD_ENABLE=1,
     parameter bit LOCAL_SCORE_ENABLE=1
 ) (
@@ -57,6 +58,9 @@ module workstation_runtime_controlled #(
     input wire [19:0] tf_sample_rate_i,
     input wire [31:0] tf_generation_i,expected_tf_generation_i,
     output wire tf_ready_o,
+    input wire tf_last_i,tf_pause_i,
+    input wire [31:0] tf_session_i,
+    output wire tf_physical_eos_o,tf_physical_quiescent_o,tf_physical_failed_o,tf_physical_abort_o,
     // Direct owner-6 channel from runtime.delay_dma; no second delay DMA.
     output wire ddr_req_o,ddr_write_o,
     output wire [28:0] ddr_address_o,
@@ -320,7 +324,7 @@ module workstation_runtime_controlled #(
         .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET),
         .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
-        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)
+        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),.TF_DIRECT_ENABLE(TF_DIRECT_ENABLE)
     ) runtime(
         .rst_ni,.common_reset_ni(common_reset_n),.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i(prepared_request),.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i(prepared_recover),.media_quiescent_i,
@@ -343,6 +347,12 @@ module workstation_runtime_controlled #(
         .panel_event_valid_o(panel_event_valid),.panel_command_o(panel_command),
         .tf_active_i,.tf_valid_i,.tf_error_i,.tf_left_i,.tf_right_i,.tf_sample_rate_i,
         .tf_generation_i,.expected_tf_generation_i,.tf_ready_o,
+        .tf_last_i,.tf_pause_i,.tf_session_i,
+        .tf_observation_valid_i(observed_valid),.tf_observation_error_i(observed_error),.tf_observation_44k1_i(observed_rate),
+        .tf_observation_gap_i(observed_gap),.tf_observation_drop_i(observation_loss),
+        .tf_observation_epoch_i(observed_epoch),.tf_observation_sequence_i(observed_sequence),
+        .tf_observation_source_drops_i(observation_source_drop),
+        .tf_physical_eos_o,.tf_physical_quiescent_o,.tf_physical_failed_o,.tf_physical_abort_o,
         .ddr_req_o,.ddr_write_o,.ddr_address_o,.ddr_data_o,.ddr_mask_o,.ddr_ready_i,.ddr_response_i,.ddr_read_data_i,
         .mclk_o,.bck_o,.lrck_o,.data_o,.pdn_no,.smute_o,
         .analysis_enable_i(1'b0),.analysis_ready_i(1'b1),.record_enable_i(1'b0),.record_ready_i(1'b1),

@@ -20,6 +20,9 @@ REFERENCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 # non-runtime selectors and all effects provenance remain byte-identical.
 REFERENCE_SHA256 = '2c4376b7754a9b98486501fb91e258f5b70b4183b4ec5f687b2a588132ba7007'
 TF_MENU_REFERENCE_SHA256 = 'dfe698e7bcde7c47c9263224a6615e5269e19b0e1509cda709420f626df94e0d'
+DIRECT_REFERENCE = 'rtl/workstation/workstation_task3_direct_reference.json'
+DIRECT_REFERENCE_SHA256 = '8e88000687825c6a6894378546febe1d4d3d6b281ea405363132b06b21c17879'
+DIRECT_TOP_SHA256 = '2bd14a9c81c28817dc0fd2bf39a87d208f0344f7f1c8f06571953bc2550f3cd0'
 # Optional TF menu selection is unrelated to the two non-runtime storage
 # defparams. Reverse only its exact two insertions; retain the original lock.
 TF_MENU_REFERENCE_INSERTIONS = (
@@ -457,8 +460,36 @@ def source_bundle(root):
         raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()
     restored_reference = reference
-    if sha(reference) == TF_MENU_REFERENCE_SHA256:
+    if sha(reference) == DIRECT_TOP_SHA256:
+        payload = (root / DIRECT_REFERENCE).read_bytes()
+        if sha(payload) != DIRECT_REFERENCE_SHA256:
+            raise ValueError('Direct TF reference adaptation bytes changed')
+        direct = json.loads(payload)
+        if (direct.get('schema') != 1 or direct.get('policy') != 'task3_direct_tf_default_off_reference_v1'
+                or direct.get('source') != REFERENCE or direct.get('parent_source_sha256') != TF_MENU_REFERENCE_SHA256
+                or direct.get('current_source_sha256') != DIRECT_TOP_SHA256 or direct.get('default_macro_off') is not True
+                or len(direct.get('exact_changes', [])) != 10):
+            raise ValueError('Direct TF reference adaptation identity changed')
         text = reference.decode()
+        for edit in reversed(direct['exact_changes']):
+            if edit['count'] != 1 or not edit['before'] or not edit['after'] or text.count(edit['after']) != 1:
+                raise ValueError('Direct TF inverse reference anchor changed')
+            text = text.replace(edit['after'], edit['before'], 1)
+        restored_reference = text.encode()
+        if sha(restored_reference) != TF_MENU_REFERENCE_SHA256:
+            raise ValueError('Direct TF parent reference identity changed')
+        forward = text
+        for edit in direct['exact_changes']:
+            if forward.count(edit['before']) != 1:
+                raise ValueError('Direct TF forward reference anchor changed')
+            forward = forward.replace(edit['before'], edit['after'], 1)
+        if forward.encode() != reference:
+            raise ValueError('Direct TF reference inverse round trip failed')
+        evidence['direct_tf_reference'] = dict(adaptation=DIRECT_REFERENCE, adaptation_sha256=sha(payload),
+            parent_sha256=TF_MENU_REFERENCE_SHA256, current_sha256=sha(reference),
+            exact_inverse_round_trip_verified=True, default_macro_off=True)
+    if sha(restored_reference) == TF_MENU_REFERENCE_SHA256:
+        text = restored_reference.decode()
         if any(text.count(insertion) != 1 for insertion in TF_MENU_REFERENCE_INSERTIONS):
             raise ValueError('TF menu reference insertion identity changed')
         text = text.replace(TF_MENU_REFERENCE_INSERTIONS[0], '', 1)
