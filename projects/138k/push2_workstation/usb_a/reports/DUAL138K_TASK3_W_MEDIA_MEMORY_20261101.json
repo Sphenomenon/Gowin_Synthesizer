@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "created_utc": "2026-11-01T15:31:15.903275+00:00",
+  "stage": "task3_w_media_memory_component",
+  "status": "SOURCE_AND_COMPONENT_SIMULATION_PASS_PROFILE_NOT_SELECTED",
+  "scope": "Independent native W BIST/owner5/owner6/owner8 composition. Not a whole W-media role, actual CNN/Delay/recording-engine workload, physical memory controller or board acceptance.",
+  "source": {
+    "repository": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer",
+    "branch": "codex/dual-138k-task3",
+    "head_context": "f5b737a9266d3efc0aef5e1a5a5142ffb2fabf91",
+    "owned_source_sha256": {
+      "rtl/memory/workstation_media_memory.sv": "81eec748fb1679ff0763f398a36dcc3a4476e89a4719693f9bc89800dcec25f1",
+      "rtl/memory/WORKSTATION_MEDIA_MEMORY_CONTRACT.md": "5c40ca08e412c9877d08cd3923506c172e043674f0fa511117f3396588bfda31",
+      "sim/memory/tb_workstation_media_memory.sv": "a5428ee5aa44dae310f0bec0bff0422a02cc0e84e378bb1c00b333589c7e528d",
+      "sim/memory/run_workstation_media_memory.py": "78abb3cc3bec8302bb68326463f2ad108e7ba4bd2996a1aa811d71df550a367c"
+    },
+    "compiled_and_test_input_sha256": {
+      "rtl/memory/workstation_ddr_bist.v": "d3737f42447cae6ddcf3c6939ffe9f937f4a2d72854fe3fbe549b3667031fb5c",
+      "rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "rtl/music/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+      "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "rtl/memory/workstation_media_memory.sv": "81eec748fb1679ff0763f398a36dcc3a4476e89a4719693f9bc89800dcec25f1",
+      "sim/memory/tb_workstation_media_memory.sv": "a5428ee5aa44dae310f0bec0bff0422a02cc0e84e378bb1c00b333589c7e528d",
+      "rtl/ddr_address_map.vh": "c944deb9900553df75d5b980f3ae322378487fabfe9e4e26266583fd4dc4c16b",
+      "rtl/memory/WORKSTATION_MEDIA_MEMORY_CONTRACT.md": "5c40ca08e412c9877d08cd3923506c172e043674f0fa511117f3396588bfda31",
+      "sim/memory/run_workstation_media_memory.py": "78abb3cc3bec8302bb68326463f2ad108e7ba4bd2996a1aa811d71df550a367c"
+    },
+    "existing_sources_HEAD_byte_identical": {
+      "rtl/memory/workstation_audio_memory.sv": "7ea62ad4c8b5b4af50ac27b65649c6ecbf05585449266406adf7a3082854c698",
+      "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+      "rtl/memory/workstation_ddr_bist.v": "d3737f42447cae6ddcf3c6939ffe9f937f4a2d72854fe3fbe549b3667031fb5c",
+      "rtl/music/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+      "rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "rtl/ddr_address_map.vh": "c944deb9900553df75d5b980f3ae322378487fabfe9e4e26266583fd4dc4c16b"
+    },
+    "old_audio_memory_modified": false,
+    "old_arbiter_policy_modified": false,
+    "top_runtime_tools_profiles_modified_by_this_component": false
+  },
+  "composition": {
+    "owners": {
+      "0": "real startup BIST, four bursts in tests only; production default keeps full BIST",
+      "5": "music/CNN/model DDR port",
+      "6": "Delay DDR port",
+      "8": "single raw recording DDR port"
+    },
+    "inactive_owners": [
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "per_client_slots": "one maintained FF request slot; no payload shadow BSRAM",
+    "tags": "maintained four-bit owner tag; tag FIFO depth default32, test8",
+    "authority": "No task/object IDs, storage allocation, recording owner or global drain authority added",
+    "gates": [
+      "Client valid and visible ready wait for actual successful BIST",
+      "Media returns fenced by client readiness and transport fault",
+      "Same-edge unowned return prevents queued native command dispatch"
+    ],
+    "native_commit": "native_accept_o[owner] is actual app_en plus stored command owner; writes additionally require app_write_ready_i",
+    "reset": "existing three-stage asynchronous assertion/synchronous memory release; native transaction queues and clients require coherent global reset"
+  },
+  "validation": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/memory/run_workstation_media_memory.py --output /tmp/task3-w-media-memory-v5",
+    "verification": {
+      "path": "/tmp/task3-w-media-memory-v5/verification.json",
+      "sha256": "0d8d6464176a0fb6b80907159c6e54d4333a16af3635f82a1fadc51b88c22b3e"
+    },
+    "passed": true,
+    "seeds": [
+      7,
+      31,
+      127
+    ],
+    "clock_phase_ns": [
+      0,
+      3,
+      9
+    ],
+    "control_period_ns": 20,
+    "memory_period_ns": 14,
+    "phases_per_run": 9,
+    "total_positive_checks": 84569,
+    "actual_native_commands_each": [
+      818,
+      818,
+      818
+    ],
+    "returned_reads_each": [
+      116,
+      116,
+      116
+    ],
+    "cases": [
+      "real BIST success and failed-data rejection",
+      "all three owners simultaneously; inactive owners never issue",
+      "CNN and recording byte masks preserved through actual native writes",
+      "local/core/native acceptance are independently counted",
+      "independent native command and write-data stalls",
+      "three accepted reads with responses paused64 clocks, then actual drain",
+      "coherent reset with actual outstanding reads; native returns while reset asserted",
+      "calibration loss while memory clock stopped",
+      "unowned late response and already-queued write fenced on same edge; sticky public fault"
+    ],
+    "max_pending_commands_observed": 4,
+    "max_outstanding_native_reads_observed": 3,
+    "negative_mutants": {
+      "recording_mask_lost": {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_memory",
+          "-I/private/tmp/task3-w-media-memory-v5/include",
+          "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+          "-o",
+          "/private/tmp/task3-w-media-memory-v5/recording_mask_lost/test.vvp",
+          "-Ptb_workstation_media_memory.SEED=7",
+          "-Ptb_workstation_media_memory.PHASE=0",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+          "/private/tmp/task3-w-media-memory-v5/recording_mask_lost/workstation_media_memory.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv"
+        ],
+        "run_argv": [
+          "vvp",
+          "/private/tmp/task3-w-media-memory-v5/recording_mask_lost/test.vvp"
+        ],
+        "returncode": 1,
+        "compiled_module_sha256": "4c52c9b6e47cc7304750cc3e907e45e21c6df60dbccb5fc016866370a6517ec7",
+        "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run_log_sha256": "eb5e84d99de99e7073f027e404e25b5aa3232f1b66c746737be8fd67b4a93f64",
+        "log": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv:62: native command/data/mask preserved in owner order cycle=211 seed=7\n       Time: 2947000  Scope: tb_workstation_media_memory.check\n",
+        "metrics": {
+          "cycle": 211,
+          "seed": 7
+        },
+        "expected_failure": "native command/data/mask preserved in owner order",
+        "rejected": true
+      },
+      "recording_response_wrong_owner": {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_memory",
+          "-I/private/tmp/task3-w-media-memory-v5/include",
+          "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+          "-o",
+          "/private/tmp/task3-w-media-memory-v5/recording_response_wrong_owner/test.vvp",
+          "-Ptb_workstation_media_memory.SEED=7",
+          "-Ptb_workstation_media_memory.PHASE=0",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+          "/private/tmp/task3-w-media-memory-v5/recording_response_wrong_owner/workstation_media_memory.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv"
+        ],
+        "run_argv": [
+          "vvp",
+          "/private/tmp/task3-w-media-memory-v5/recording_response_wrong_owner/test.vvp"
+        ],
+        "returncode": 1,
+        "compiled_module_sha256": "65557ba6c2c675e60b2b038f0a3eaed6293698666d0f3cf4082a1205f586f77f",
+        "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run_log_sha256": "b78fc73502c1d72594c985b393381e31394f241e6088af4f44d20dc4caabd041",
+        "log": "FATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv:62: returned owner is exclusive cycle=228 seed=7\n       Time: 3185000  Scope: tb_workstation_media_memory.check\n",
+        "metrics": {
+          "cycle": 228,
+          "seed": 7
+        },
+        "expected_failure": "returned owner is exclusive",
+        "rejected": true
+      },
+      "fault_does_not_fence_native_dispatch": {
+        "compile_argv": [
+          "iverilog",
+          "-g2012",
+          "-s",
+          "tb_workstation_media_memory",
+          "-I/private/tmp/task3-w-media-memory-v5/include",
+          "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+          "-o",
+          "/private/tmp/task3-w-media-memory-v5/fault_does_not_fence_native_dispatch/test.vvp",
+          "-Ptb_workstation_media_memory.SEED=7",
+          "-Ptb_workstation_media_memory.PHASE=0",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+          "/private/tmp/task3-w-media-memory-v5/fault_does_not_fence_native_dispatch/workstation_media_memory.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv"
+        ],
+        "run_argv": [
+          "vvp",
+          "/private/tmp/task3-w-media-memory-v5/fault_does_not_fence_native_dispatch/test.vvp"
+        ],
+        "returncode": 1,
+        "compiled_module_sha256": "88f0393df7ecc3b1db11c02fec4c25a9bb699ad83f351e30218eb77a6a32370c",
+        "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run_log_sha256": "27d2bba0234170c122f5fc4f64144de203b763049b99c84755d55c38510f9444",
+        "log": "TRAFFIC owner5_wait=12 owner6_wait=13 owner8_wait=13\nSATURATION cycles=1024 owner8_native=170 owner6_native=170 owner8_max_wait=37\nFATAL: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv:62: unowned late response fences on the same edge cycle=2331 seed=7\n       Time: 32726000  Scope: tb_workstation_media_memory.check\n",
+        "metrics": {
+          "owner5_wait": 12,
+          "owner6_wait": 13,
+          "owner8_wait": 13,
+          "cycles": 1024,
+          "owner8_native": 170,
+          "owner6_native": 170,
+          "owner8_max_wait": 37,
+          "cycle": 2331,
+          "seed": 7
+        },
+        "expected_failure": "unowned late response fences on the same edge",
+        "rejected": true
+      }
+    },
+    "lint": {
+      "argv": [
+        "verilator",
+        "--lint-only",
+        "--Wno-fatal",
+        "--top-module",
+        "workstation_media_memory",
+        "-I/private/tmp/task3-w-media-memory-v5/include",
+        "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_media_memory.sv"
+      ],
+      "returncode": 0,
+      "log_sha256": "f5e041680dc11d98438f4cb780033452bfb92057ae4b88ae148ce851e149fc03",
+      "log": "- V e r i l a t i o n   R e p o r t: Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905\n- Verilator: Built from 0.313 MB sources in 8 modules, into 0.233 MB in 3 C++ files needing 0.000 MB\n- Verilator: Walltime 0.038 s (elab=0.007, cvt=0.022, bld=0.000); cpu 0.037 s on 1 threads; allocated 18.797 MB\n%Warning-TIMESCALEMOD: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v:3:8: Timescale missing on this module as other modules have it (IEEE 1800-2023 3.14.2.3)\n    3 | module ddr3_bist #(\n      |        ^~~~~~~~~\n                       /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv:4:8: ... Location of module with timescale\n    4 | module basic_pitch_ddr_arbiter_pipeline #(\n      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n                       ... For warning description see https://verilator.org/warn/TIMESCALEMOD?v=5.052\n                       ... Use \"/* verilator lint_off TIMESCALEMOD */\" and lint_on around source to disable this message.\n%Warning-WIDTHTRUNC: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v:23:23: Operator VAR 'LAST_ADDR' expects 29 bits on the Initial value, but Initial value's MULS generates 32 bits.\n                                                                                                                                                                           : ... note: In instance 'workstation_media_memory.u_bist'\n   23 |     localparam [28:0] LAST_ADDR = (BURSTS - 1) * 8;\n      |                       ^~~~~~~~~\n                     ... For warning description see https://verilator.org/warn/WIDTHTRUNC?v=5.052\n                     ... Use \"/* verilator lint_off WIDTHTRUNC */\" and lint_on around source to disable this message.\n%Warning-WIDTHEXPAND: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v:115:35: Operator EQ expects 32 bits on the LHS, but LHS's VARREF 'watchdog' generates 24 bits.\n                                                                                                                                                                             : ... note: In instance 'workstation_media_memory.u_bist'\n  115 |             end else if (watchdog == TIMEOUT_CYCLES - 1) begin\n      |                                   ^~\n                      ... For warning description see https://verilator.org/warn/WIDTHEXPAND?v=5.052\n                      ... Use \"/* verilator lint_off WIDTHEXPAND */\" and lint_on around source to disable this message.\n",
+      "exact_reviewed_inherited_warnings": [
+        [
+          "TIMESCALEMOD",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "3"
+        ],
+        [
+          "WIDTHTRUNC",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "23"
+        ],
+        [
+          "WIDTHEXPAND",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+          "115"
+        ]
+      ],
+      "inherited_bist_sha256": "d3737f42447cae6ddcf3c6939ffe9f937f4a2d72854fe3fbe549b3667031fb5c",
+      "no_new_or_unreviewed_warnings": true
+    },
+    "source_unchanged_during_run": true,
+    "new_file_trailing_whitespace_check": true,
+    "git_diff_check_passed": true,
+    "independent_root_replay": {
+      "verification": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-memory-root-v1/verification.json",
+      "sha256": "426fbec54b78f703fba2aa2ad5caf6e2c6f9ccfb888189575a19d44b6b15511a",
+      "passed": true,
+      "total_positive_checks": 84569,
+      "mutants_rejected": 3,
+      "same_worktree_sources": true
+    }
+  },
+  "arbitration_budget": {
+    "existing_policy_changed": false,
+    "actual_wrapper_saturation": {
+      "cycles": 1024,
+      "all_three_valid_continuously": true,
+      "owner6_native_each": 170,
+      "owner8_native_each": 170,
+      "owner8_starvation_observed": false,
+      "note": "Mandatory per-client slots create bubbles. This test observes progress; it does not prove an arbitrary offered-load deadline."
+    },
+    "bare_core_negative": {
+      "compile_argv": [
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_media_memory_priority_budget",
+        "-I/private/tmp/task3-w-media-memory-v5/include",
+        "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "-o",
+        "/private/tmp/task3-w-media-memory-v5/queued_core_saturation_negative_budget/test.vvp",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_ddr_bist.v",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_recording_ddr_client_queues.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_media_memory.sv",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv"
+      ],
+      "run_argv": [
+        "vvp",
+        "/private/tmp/task3-w-media-memory-v5/queued_core_saturation_negative_budget/test.vvp"
+      ],
+      "returncode": 0,
+      "compiled_module_sha256": "81eec748fb1679ff0763f398a36dcc3a4476e89a4719693f9bc89800dcec25f1",
+      "compile_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_log_sha256": "800cafac44da23d05e547ffcbb89a44825915f012dad56e13ef20a3ded4d3644",
+      "log": "PASS priority_budget bypass_local_slots=1 pending_cycles=256 delay_native=127 recording_native=0 recording_core_accept=0\n/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/memory/tb_workstation_media_memory.sv:302: $finish called at 3626000 (1ps)\n",
+      "metrics": {
+        "bypass_local_slots": 1,
+        "pending_cycles": 256,
+        "delay_native": 127,
+        "recording_native": 0,
+        "recording_core_accept": 0
+      }
+    },
+    "bare_core_scope": "Deliberately bypasses mandatory local slots and holds queued Delay and recording valid continuously. Owner6 commits127 commands over256 cycles while owner8 commits0. This is not the wrapper trace.",
+    "owner8_max_wait_observed_memory_clocks": 37,
+    "wait_scope": "Includes an intentional32-clock command/write stall in this finite synthetic workload. It is not a worst-case service bound or hardware latency.",
+    "required_next": [
+      "Actual CNN/model/Delay/raw recording offered-load trace at chosen W clocks",
+      "Bounded native command/write/response stalls and timeout budgets",
+      "Queue watermark and recording overflow/error behavior with real LCD burst cadence"
+    ],
+    "fairness_change_needed_not_yet_established": true
+  },
+  "reset_limits": [
+    "Native DDR bus has no epoch field: arbitrary old response overlapping a fresh read cannot be distinguished by this wrapper",
+    "Safe recovery requires coherent native-controller and client reset, old native-transaction discard, recalibration and BIST",
+    "Higher-level recording DDR epoch authority and CNN restart fault coordination are not selected by this component",
+    "Per-client task cancellation and STOP/seal must stop admission and observe real native commits/read completion; local ready is insufficient"
+  ],
+  "integration": {
+    "new_W_profile_selected": false,
+    "CNN_instantiated": false,
+    "recording_engine_instantiated": false,
+    "capacity_frames_not_selected": true,
+    "LCD_source_or_transport_connected": false,
+    "bluetooth_or_phone_tested": false,
+    "bitstream_identity": null,
+    "physical_resources": null,
+    "routed_timing": null,
+    "physical_CDC": null,
+    "measured_audio_latency": null,
+    "sram_programmed": false,
+    "flash_written": false
+  },
+  "prior_attempts": [
+    {
+      "path": "/tmp/task3-w-media-memory-v1",
+      "result": "testbench initial reset did not create an assertion edge"
+    },
+    {
+      "path": "/tmp/task3-w-media-memory-v2",
+      "result": "parallel testbench tasks shared static input arguments; changed test tasks to automatic"
+    },
+    {
+      "path": "/tmp/task3-w-media-memory-v3",
+      "result": "all functional/negative cases passed; inherited BIST lint warnings required exact inventory review"
+    },
+    {
+      "path": "/tmp/task3-w-media-memory-v4",
+      "result": "testbench incorrectly expected transport_fault low while an unowned native return was actively driven during reset; corrected assertion to actual client/native isolation"
+    }
+  ]
+}
