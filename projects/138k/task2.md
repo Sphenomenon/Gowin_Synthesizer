@@ -350,6 +350,8 @@ W14 `D211010E` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUA
 
 M16 `D2110111` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M16_FAR_PHYSICAL_20261101.md)已封存：同VG／完整SDC／DDR3.500ns，仅两条远区CST，原DDR hold+.682ns、全局hold0／+.123ns；setup仍583／−1.221ns，recovery+1.745／removal+.278ns。物理BSRAM235／DSP119／CLS51,028；四条clk50+2.223／+.123／+.792／+.123ns。实际VO54项（50通过／4跳过）及45负控、边界7／61、官方六PLL／7负控通过；32物理文件、2939证据（1374冻结／588staged／875prepare／685PLL依赖）逐项重验。仍有真实同域负路径与待核对的握手跨域约束，未闭合、未上板，不转授演示或双板接受。
 
+W14 `D211010F` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_W14_FAR_PHYSICAL_20261101.md)已封存：同VG／完整SDC／DDR3.500ns，仅两条远区CST，原DDR hold+.667ns、全局hold0／+.106ns；setup仍6909／−5.058ns，recovery+2.469／removal+.278ns。物理BSRAM293／DSP66.5／CLS53,291，四条clk50−4.734／+.140／−4.734／+.140ns；最差到raw memory_generation CE。实际VO54项（40通过／14跳过）及35负控、boundary7／69、官方六PLL／7负控通过；32物理文件与3248证据逐项重验。整机时序未闭合，未上板，仍非合格演示镜像；继续实际RTL控制锥修复，不将模拟器或单板分时升级为无线／双板接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
