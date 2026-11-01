@@ -122,7 +122,14 @@ module workstation_tf_runtime_service #(
     wire memory_quiet_50,memory_gate;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] memory_ready_sync;
     wire bad_context=!runtime_valid_i || runtime_fault_i || runtime_busy_i;
-    wire epoch_mismatch=|(runtime_epoch_i ^ launched_epoch);
+    // Bound each comparison before the immediate cancel/stop path. The
+    // complete epoch still participates on this edge, including unknown bits.
+    (* syn_keep=1 *) wire [3:0] epoch_mismatch_groups;
+    for(genvar epoch_group=0;epoch_group<4;epoch_group=epoch_group+1)begin:g_epoch_identity
+        assign epoch_mismatch_groups[epoch_group]=
+            |(runtime_epoch_i[epoch_group*8+:8] ^ launched_epoch[epoch_group*8+:8]);
+    end
+    wire epoch_mismatch=|epoch_mismatch_groups;
     wire rate_mismatch=runtime_44k1_i!=launched_rate;
     reg [3:0] error_now;
     always @* begin

@@ -3,6 +3,7 @@
 import argparse,hashlib,json,re,subprocess,sys
 from pathlib import Path
 import z3
+from tf_epoch_match_sources import before_epoch_groups
 ROOT=Path(__file__).resolve().parents[2]
 SOURCE=ROOT/'rtl/tf_audio/workstation_tf_runtime_service.sv'
 REFERENCE=Path(__file__).with_name('fixtures')/'workstation_tf_runtime_service_before_failure_factor.sv'
@@ -86,7 +87,8 @@ def directed_controls(out,fixtures,original_sources,new):
 '''
  text=TB.read_text();pos=text.rfind('endmodule');bench=out/'directed.sv';bench.write_text(text[:pos]+directed+text[pos:])
  cases=[('baseline',new,None),
-  ('epoch_bit22_omitted',new.replace('|(runtime_epoch_i ^ launched_epoch)','|((runtime_epoch_i ^ launched_epoch) & 32\'hffbfffff)',1),'directed epoch bit 22'),
+  ('epoch_bit22_omitted',new.replace('|(runtime_epoch_i[epoch_group*8+:8] ^ launched_epoch[epoch_group*8+:8])',
+      '|((runtime_epoch_i[epoch_group*8+:8] ^ launched_epoch[epoch_group*8+:8]) & (epoch_group==2 ? 8\'hbf:8\'hff))',1),'directed epoch bit 22'),
   ('physical_guard_removed',new.replace("        if(physical)begin\n            if(card_lost_o ||","        if(1'b1)begin\n            if(card_lost_o ||",1),'directed physical guard'),
   ('stop_veto_removed',new.replace(' || stop_invalidate ||',' || 1\'b0 ||',1),'directed immediate stop veto'),
   ('diagnostic_priority_changed',new.replace('if(card_lost_o)error_now=CARD;','if(card_lost_o)error_now=DDR;',1),'directed diagnostic priority')]
@@ -104,9 +106,9 @@ def directed_controls(out,fixtures,original_sources,new):
  return results
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--fixtures',type=Path,required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args();out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
- require(sha(REFERENCE)==OLD_SHA,'complete M11 fixture identity');old=REFERENCE.read_text();new=SOURCE.read_text();old_inverse=new.replace('    wire epoch_mismatch=|(runtime_epoch_i ^ launched_epoch);\n    wire rate_mismatch=runtime_44k1_i!=launched_rate;\n','').replace('else if(epoch_mismatch || rate_mismatch)error_now=EPOCH;','else if(runtime_epoch_i!=launched_epoch || runtime_44k1_i!=launched_rate)error_now=EPOCH;')
+ require(sha(REFERENCE)==OLD_SHA,'complete M11 fixture identity');old=REFERENCE.read_text();new=SOURCE.read_text();old_inverse=before_epoch_groups(new).replace('    wire epoch_mismatch=|(runtime_epoch_i ^ launched_epoch);\n    wire rate_mismatch=runtime_44k1_i!=launched_rate;\n','').replace('else if(epoch_mismatch || rate_mismatch)error_now=EPOCH;','else if(runtime_epoch_i!=launched_epoch || runtime_44k1_i!=launched_rate)error_now=EPOCH;')
  start=old_inverse.index('    // Admission needs only whether a failure exists.');end=old_inverse.index('    wire invalidate=',start);old_inverse=old_inverse[:start]+'    wire new_failure=error_now!=0;\n'+old_inverse[end:];require(old_inverse==old,'changes escape exact combinational boundaries')
- inputs={str(p):sha(p)for p in (SOURCE,REFERENCE,TB,Path(__file__).resolve())};proof=prove();bench,inventory=twin_bench();(out/'bench.sv').write_text(bench);(out/'reference.sv').write_text(old.replace('module workstation_tf_runtime_service #(','module workstation_tf_runtime_service_reference #(',1))
+ inputs={str(p):sha(p)for p in (SOURCE,REFERENCE,TB,Path(__file__).resolve(),Path(__file__).with_name('tf_epoch_match_sources.py'))};proof=prove();bench,inventory=twin_bench();(out/'bench.sv').write_text(bench);(out/'reference.sv').write_text(old.replace('module workstation_tf_runtime_service #(','module workstation_tf_runtime_service_reference #(',1))
  meta=json.loads((a.fixtures/'verification.json').read_text());argv=meta['compile_argv'];original_sources=argv[argv.index('-o')+2:];sources=[str(out/'bench.sv')if s==str(TB)else s for s in original_sources]+[str(out/'reference.sv')]
  runs={}
  for buffered,split in [(0,0),(1,0),(0,1),(1,1)]:

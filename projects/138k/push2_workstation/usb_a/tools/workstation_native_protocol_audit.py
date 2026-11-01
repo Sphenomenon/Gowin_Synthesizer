@@ -36,7 +36,7 @@ REVIEWED_BOUNDARY_SOURCES = {
     'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv':
         '4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551',
     'rtl/tf_audio/workstation_tf_runtime_service.sv':
-        '90618bda686a82e9e4d61f4ef94feac72efa50723322acfbadb48c025421765f',
+        '9dce45ba47ed58314ce4d30a308b6869bbcb815d382777ec868e936cab3fc848',
     'rtl/tf_audio/workstation_tf_frame_bridge.sv':
         'c32000172587a674708d9454b1895b24ada26103d55206b0bda659817bcb4ac5',
 }

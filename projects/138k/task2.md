@@ -416,6 +416,8 @@ M19 的[reference区域布局D2110124](push2_workstation/usb_a/reports/DUAL138K_
 
 W 的[raw最终故障写使能](push2_workstation/usb_a/reports/DUAL138K_RAW_FINAL_FAILURE_CE_20261101.md)已修改维护源码并通过：私有4bit故障码同沿process保留first-fault／X-Z投影，其他NBA目标／RHS／顺序保持。完整owner两几何356656／304921边沿、4096任意四态＋32定向、524288 CE/value与16384唯一协议向量、5实际／4来源负控通过；原raw、DDR queue／bridge、preload／global及BLE五层入口均通过。工具旧source pin拒绝保留，显式提升后新输出验证；主线程重验552证据与Git严格inverse。尚未更新profile或新综合／P&R，无物理收益主张，未上板。
 
+M 的[TF epoch比较分组](push2_workstation/usb_a/reports/DUAL138K_TF_EPOCH_GROUPS_20261101.md)已落维护源码：针对D2110124实际32级NE链，将全部32bit比较分4×8保留组，无新周期／状态，X-Z与即时取消保持。实际完整模块66560四态、原四配置owner共1069069边沿、stop／clear及17来源门通过，8实际／2来源负控保持；旧实际VG／VO native各58项、68／71变异拒绝，缺失的vendor模型门已明确补跑，余5／3项映射不适用。两独立review无发现，主线程复验104绑定文件及Git严格inverse。尚未更新profile或测量新物理结果，未上板，T2-D1／D2未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

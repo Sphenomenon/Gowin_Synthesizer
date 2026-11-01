@@ -1,0 +1,70 @@
+{
+  "schema": "dual138k-TF-epoch-groups-maintained-v1",
+  "passed": true,
+  "captured_utc": "2026-11-01T08:22:54.007864+00:00",
+  "review_base_commit": "02f988a6e637a501db120f014f5283f1d30fd659",
+  "exact_inverse_to_HEAD": true,
+  "owned_sha256": {
+    "rtl/tf_audio/workstation_tf_runtime_service.sv": "9dce45ba47ed58314ce4d30a308b6869bbcb815d382777ec868e936cab3fc848",
+    "sim/tf_audio/tf_epoch_match_sources.py": "8e653f21307cb29ba96f4b279d8c69ffe2e8b5c8473538d30a62d612c7dde289",
+    "sim/tf_audio/run_tf_epoch_match_groups.py": "6233f803a7cf41fbd91b49aa85691bb767b1ffe06562dae8b2c4f6f9012bdaec",
+    "sim/tf_audio/run_tf_failure_factor_equivalence.py": "2c570238720f99e86a22b9eb3a0549fc6c2c893b89e3dad5ab027d17ab8307b9",
+    "tools/workstation_native_protocol_audit.py": "77441305d4f44977a747be53b0844abf6305d9422b87b30ec7ab520133d44f85"
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-actual-path-review-v2/verification.json": "a72cb4dd4ebbc08afca7fafa8ceda281edeffc187f2dc4871b1b43803c03fcaa",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-actual-four-state-v3/verification.json": "7c36be8fbf6fbb631cc80d9639f3a6d504e395eff2d707f142c151979c30ae7f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-failure-lineage-v2/verification.json": "8f37337a3b91ca987e4d62fa3336f776281c997633b073514a5a763e485327da",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-stop-v1/verification.json": "795f114147c407f1d6150106504b69a16289a9eeb22311250f60ac0a3ba91077",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-independent-review-v1/verification.json": "f3a66b3c14bc243d3c4d3e178a845bdb39bd7f34d37ef5218d48f8a9c6660947",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-vendor-read-hold-v1/verification.json": "7b4f3ee343c74db6b07e7528063f6cd7f41b9b2505322721524f9a348425d0f1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-independent-review-m19-v1/review.json": "1b2df9e554f33ab7be8f73abe258a3c9c5c8ccf8eec05b715e3c31b3b9389c2c"
+  },
+  "bound_file_checks": 104,
+  "reviewer_initial_path_resolution_failure": "Before writing output, first inline verifier incorrectly resolved a relative generated output under usb source root. Corrected to verification parent; source and existing evidence unchanged.",
+  "source_only": true,
+  "physical_gain_claimed": false,
+  "hardware_tested": false,
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/tf-epoch-groups-maintained-root-review-v1.json",
+    "sha256": "4fc4d58d50f6acb36bd785ed808ba338783698e6fcc320b32f6cf112037edcf5"
+  },
+  "validation": {
+    "actual_owner_four_state_vectors": 66560,
+    "immediate_controls": 7,
+    "actual_epoch_mutants": 4,
+    "source_drift_controls": 2,
+    "local_known_value_relation_bits": 128,
+    "local_known_value_relation_result": "UNSAT",
+    "whole_owner_edges": 1069069,
+    "original_outputs": 50,
+    "original_state_groups": 24,
+    "original_failure_relation_bits": 99,
+    "original_failure_relation_result": "UNSAT",
+    "original_actual_mutants": 4,
+    "current_source_tests": 17,
+    "native_VG": {
+      "tests": 58,
+      "skips": 6,
+      "rejected_mutants": 68
+    },
+    "native_VO": {
+      "tests": 58,
+      "skips": 4,
+      "rejected_mutants": 71
+    },
+    "vendor_skip_supplemented": true,
+    "remaining_mapping_skips": {
+      "VG": 5,
+      "VO": 3
+    }
+  },
+  "source_implementation": true,
+  "profile_changed": false,
+  "new_synthesis": false,
+  "new_PNR": false,
+  "physical_CDC_accepted": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "release_ready": false
+}
