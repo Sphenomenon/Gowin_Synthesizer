@@ -476,6 +476,8 @@ M24的[整机prepare及来源封存](push2_workstation/usb_a/reports/DUAL138K_M2
 
 M24的[完整新综合与D2110132物理启动](push2_workstation/usb_a/reports/DUAL138K_M24_SYNTHESIS_20261101.json)已完成：新VG deca9e69…c7d9e7，完整综合168.40秒，严格v4通过后启动全量P&R；正常M-v3 SDC原字节，DDR原3.500ns与128ref定向布局要求保持。新M queue tail出现另一完整D／CE映射，63个真实叶／1137 BDD节点的无假设next-Q等价通过，仅窄接纳第二M140 census，原139端点及opaque／clock门保持；错误的release低tail必零假设已被真实BDD拒绝、未采用。DDR根cells／params仅3个精确clock alias重命名后与参考相等，128ref D变化明确保留，不冒称整VG相同；主线程重验4457封存文件，旧失败与cache审计适配逐项记录。真实资源／STA／PLL／CDC／HMI及实板仍待物理结果，不据综合放行下载。
 
+W的[连续PCM Pitch维护单元](push2_workstation/usb_a/reports/DUAL138K_STREAM_PITCH_UNIT_20261101.json)已通过离线阶段：同采样率一入一出、双读头交叉淡化，32bit stereo／2048帧history、64frame启停ramp、每帧含接收41clock；不是sampler或SRC调速。实际维护模块在行为RAM及真实8×SDPB各87496请求与独立定点模型逐帧相等，4执行负控拒绝；独立补测两mode各57946请求，补齐接收后1—40全部取消边沿及clamp／极值／ramp反转。主线程核对全部来源及65份证据文件。当前仅单元入维护，正式W参数／25K／PCM生命周期接入、新整机EDA与手机DAC仍待验；粒状旁带、约4.4Hz dominant-peak偏差和pitch-up无抗混叠滤波如实保留，不冒称高保真或完成Pitch整机交付。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

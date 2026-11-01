@@ -1,0 +1,379 @@
+{
+  "schema": "dual138k_continuous_pitch_unit_20261101_v1",
+  "stage": "maintained RTL unit and real vendor-memory validation; formal W integration remains pending",
+  "source_parent_commit": "4349cc8404de17eca368223fd485130370d46d2d",
+  "source_sha256": {
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_stream_pitch.sv": "973ebd9787837972f220ea4078eaf8462afe4bc8e758b382913accff3b5033ac",
+    "projects/138k/push2_workstation/usb_a/sim/audio/run_stream_pitch.py": "f66c32d8e7f8dfb48881bb6c1db753fd5fa82f2c2836f2840e5875301a37e254",
+    "projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_stream_pitch.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac"
+  },
+  "implementation": {
+    "path": "continuous stereo PCM at unchanged input/output sample rate",
+    "history_frames": 2048,
+    "sample_bits": 32,
+    "read_heads": 2,
+    "head_spacing_frames": 512,
+    "window_frames": 1024,
+    "delay_frames": [
+      16,
+      1040
+    ],
+    "ratio_q20_clamp": [
+      524288,
+      2097152
+    ],
+    "wet_ramp_accepted_frames": 64,
+    "response_clocks_including_accept": 41,
+    "multiplier": "shared signed33 x signed18 => signed51",
+    "cancellation": "clear cancels in-flight result and banked RAM pending accesses; filled masks previous history",
+    "parameter_authority": "external sole committed workstation_parameters; ratio is sampled per accepted input",
+    "sample_clock_gating": false
+  },
+  "verification": {
+    "behavioral": {
+      "passed": true,
+      "scope": "actual maintained continuous stereo pitch module; complete W integration and hardware remain separate",
+      "vendor_SD PB": false,
+      "requests": 87496,
+      "cancelled_pipeline_edges": 39,
+      "exact_fixed_point_reference": true,
+      "settled_dry_bit_exact": true,
+      "wet_ramp_frames": 64,
+      "busy_overrun_fault_and_clear": true,
+      "maximum_response_cycles": 41,
+      "spectral_cases": [
+        {
+          "rate": 48000,
+          "ratio_q20": 934175,
+          "start": 23509,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 888.2260084152222,
+              "measured_peak_hz": 884.3994140625
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1335.457158088684,
+              "measured_peak_hz": 1335.205078125
+            }
+          ]
+        },
+        {
+          "rate": 48000,
+          "ratio_q20": 1176987,
+          "start": 39510,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 1119.0948858261108,
+              "measured_peak_hz": 1123.1689453125
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1682.5709466934204,
+              "measured_peak_hz": 1682.7392578125
+            }
+          ]
+        },
+        {
+          "rate": 44100,
+          "ratio_q20": 934175,
+          "start": 55511,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 888.2260084152222,
+              "measured_peak_hz": 884.2071533203125
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1335.457158088684,
+              "measured_peak_hz": 1339.0960693359375
+            }
+          ]
+        },
+        {
+          "rate": 44100,
+          "ratio_q20": 1176987,
+          "start": 71512,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 1119.0948858261108,
+              "measured_peak_hz": 1123.4275817871094
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1682.5709466934204,
+              "measured_peak_hz": 1678.2440185546875
+            }
+          ]
+        }
+      ],
+      "source_sha256": {
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_stream_pitch.sv": "973ebd9787837972f220ea4078eaf8462afe4bc8e758b382913accff3b5033ac",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_stream_pitch.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_stream_pitch.py": "f66c32d8e7f8dfb48881bb6c1db753fd5fa82f2c2836f2840e5875301a37e254",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec"
+      },
+      "hardware_tested": false,
+      "integrated": false,
+      "negative_controls": [
+        {
+          "name": "reverse_phase_direction",
+          "actual_execution_rejected": true,
+          "source_sha256": "ba8a70be330258aca09cdc593d231612dac59fa0a8912866b81377b82a17529e"
+        },
+        {
+          "name": "unsigned_negative_product",
+          "actual_execution_rejected": true,
+          "source_sha256": "cb6e04202f5fe97c8cdfb3643527cfac9e248bcaa90561ccfbb1bd42f13c4410"
+        },
+        {
+          "name": "stale_history_after_cancel",
+          "actual_execution_rejected": true,
+          "source_sha256": "662b7b1ffd14bb377a2535e1792f071eb2041c8ec4c3d84cfc4daf3e25d0031c"
+        },
+        {
+          "name": "lost_second_head",
+          "actual_execution_rejected": true,
+          "source_sha256": "35f239086f1a9bf9cf5005ea9c61cbdceb2b912fbfc0ceed21d82b2b1dbae530"
+        }
+      ]
+    },
+    "vendor": {
+      "passed": true,
+      "scope": "actual maintained continuous stereo pitch module; complete W integration and hardware remain separate",
+      "vendor_SD PB": true,
+      "requests": 87496,
+      "cancelled_pipeline_edges": 39,
+      "exact_fixed_point_reference": true,
+      "settled_dry_bit_exact": true,
+      "wet_ramp_frames": 64,
+      "busy_overrun_fault_and_clear": true,
+      "maximum_response_cycles": 41,
+      "spectral_cases": [
+        {
+          "rate": 48000,
+          "ratio_q20": 934175,
+          "start": 23509,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 888.2260084152222,
+              "measured_peak_hz": 884.3994140625
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1335.457158088684,
+              "measured_peak_hz": 1335.205078125
+            }
+          ]
+        },
+        {
+          "rate": 48000,
+          "ratio_q20": 1176987,
+          "start": 39510,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 1119.0948858261108,
+              "measured_peak_hz": 1123.1689453125
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1682.5709466934204,
+              "measured_peak_hz": 1682.7392578125
+            }
+          ]
+        },
+        {
+          "rate": 44100,
+          "ratio_q20": 934175,
+          "start": 55511,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 888.2260084152222,
+              "measured_peak_hz": 884.2071533203125
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1335.457158088684,
+              "measured_peak_hz": 1339.0960693359375
+            }
+          ]
+        },
+        {
+          "rate": 44100,
+          "ratio_q20": 1176987,
+          "start": 71512,
+          "count": 16000,
+          "frequencies": [
+            997,
+            1499
+          ],
+          "results": [
+            {
+              "channel": 0,
+              "input_hz": 997,
+              "target_hz": 1119.0948858261108,
+              "measured_peak_hz": 1123.4275817871094
+            },
+            {
+              "channel": 1,
+              "input_hz": 1499,
+              "target_hz": 1682.5709466934204,
+              "measured_peak_hz": 1678.2440185546875
+            }
+          ]
+        }
+      ],
+      "source_sha256": {
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_stream_pitch.sv": "973ebd9787837972f220ea4078eaf8462afe4bc8e758b382913accff3b5033ac",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_stream_pitch.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/run_stream_pitch.py": "f66c32d8e7f8dfb48881bb6c1db753fd5fa82f2c2836f2840e5875301a37e254",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+      },
+      "hardware_tested": false,
+      "integrated": false
+    },
+    "independent_review_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/review.json",
+    "independent_review_sha256": "ac8a136b5d1328e415763efcda6d3d69cc54ad4346d84c00bf624de660a83817",
+    "additional_independent_requests_per_memory_mode": 57946,
+    "additional_cancel_edges": "all post-accept edges1..40 including the maintained39-case missing earliest edge",
+    "root_rehashed_evidence_file_count": 65
+  },
+  "limitations": [
+    "Not yet selected or consumed by a full W build; actual integration, full DSP deadline, resource/timing and real phone/DAC remain pending.",
+    "Granular dual-head artifacts and sidebands remain; observed dominant spectral peaks can differ from ideal target by about4.4Hz in the declared dual-rate cases.",
+    "No anti-alias filter for pitch-up; this unit is not a claim of high-fidelity or arbitrary-ratio precision.",
+    "Only SRAM was authorized by the user; no SRAM or Flash was programmed in this phase."
+  ],
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/verification.json": "0ce0cdaf28995d4eeef997a5e98e5a712b3b3bd4c0be5b6ba3b4a2d362080deb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/verification.json": "1e13fde93ee415caae015c330be3de6b9c8e43e33459ca37eb1b2eeebcd45d96",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/review.json": "ac8a136b5d1328e415763efcda6d3d69cc54ad4346d84c00bf624de660a83817",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head.sv": "35f239086f1a9bf9cf5005ea9c61cbdceb2b912fbfc0ceed21d82b2b1dbae530",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/run.log": "dde6502ee38e06cc7c02c3ae9b0d375c6f752c0cde626c8d35f17cda4f9752b5",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction.log": "82e8335a174627ab93c63105fd76bf1c11559f49a8f33ea100abed618754b240",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product.sv": "cb6e04202f5fe97c8cdfb3643527cfac9e248bcaa90561ccfbb1bd42f13c4410",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product.log": "5af86fecc17ee37af3dd131cc2106d67ca48374f2a9f3e9a4b89a63779e5febd",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head.log": "1cf3c275a4bf42a3c3ee3c7bc12da520f9d0803e2a003e36ee03db8e8c6b7888",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction.sv": "ba8a70be330258aca09cdc593d231612dac59fa0a8912866b81377b82a17529e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/sim": "6d78b4820839fb9a9eaea874243f7db4f7e1743531ab823af37efa4e1f0dd320",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel.sv": "662b7b1ffd14bb377a2535e1792f071eb2041c8ec4c3d84cfc4daf3e25d0031c",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/output.txt": "f478a5bc85f5fa73a1c6cf2a4d71f0e0dfe9cbbfd82f532e32db7626dd576b4a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel.log": "cf458694760931a16ce6a7fda5f1e95bfef4c6be188b8e48d72cccdb0a0ab96e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/run.log": "96ed53f471e0c3cbb1111f5110c8c4ce048cffdda44d771b9dff1def22f8e34f",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/sim": "ba811ee6f28d7361f03e16ec8209e657aba51a43428f7ecc61aa9ce3640e597a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/reverse_phase_direction/output.txt": "6a34fb69ec25d4f5c0afb6c15a18cd57472566233b42c06548aea43502213218",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/run.log": "e5c4ab8053bc44a503bb8c12c10b73d2308db1243d525eb86ea3cb62a8441feb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/sim": "38e672cee23db14bace827fdaad357efe11f3f156ad7fa1dd1303b4f7018a220",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/unsigned_negative_product/output.txt": "064f69b08608eeda5a6ffdccff150f3ce4705353143a7f64e452a53801185065",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/run.log": "ae5852643478c0738320764cc8bd4eae7934912d6a32d923244f49032a06bae1",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/sim": "8001b163d5874d20b86602a93658236b015fb8db36d12a40ede05b9ad9287da0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/stale_history_after_cancel/output.txt": "f076df53454895a8e7e1d43e21fa4161c01c25921bcda198bfcbe116fcbc98ed",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/run.log": "1863c8c413185331a43c4fe0fbe0c6b1cfd1f1348f6add74d294b8b0e6a44bd8",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/sim": "5b63f954a68030db0211abd9cb9f29c055d02ffc4b1093bcf74ec196c093f4e4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-v1/lost_second_head/output.txt": "5fabc6ca86e60f07c1f5dcf724f4bc3e7283bb730d9115d71386fd15d80e371e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/tb.sv": "a0d0ddf2661f3cfdc25635fe58c082f50529acb6c5c936e134759592f107eaac",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/run.log": "b20aadec66b9187285df96d9ba98c1d6d77fbd51d9f878e3e52cb263a0b43c2d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/input.txt": "d87ee34db764d6b006d25ea69def9b2c4ac2af854d71579f371e57a030afc45d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/sim": "b7dfc13c7f03bc7006460cf7b33f1fedc0a120225f78117d6eb91194c97a4d3b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-maintained-vendor-v1/output.txt": "f478a5bc85f5fa73a1c6cf2a4d71f0e0dfe9cbbfd82f532e32db7626dd576b4a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/check_extra.py": "14b357362ca51ea4d18c74401c17cd2c62d9fe3c6be9552caed7a17af87d1a9a",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor.log": "67c29c223048a2088f4209ab6e9733dfe18749b15c6b0777f3ee188ae8d4acbf",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral.log": "a176fb34fb98447529b3507b9381f21883a7a35ea1fc6e6817f595f30e5e4e87",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/collect_review.py": "5d6f2ff96a9627379f6162ee1e02e8d96001aa81b630ccc293e6fdb4769132b9",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/tb.sv": "c1a80e3561ebe3f6a186ce08be582c5825e738d45e8ef2dac0b3b6a9856d5408",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/run.log": "e7b68a69f4ec3099a8037198717edc0b9637e36189f077a3605699097fb4b225",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/input.txt": "ec1d12d0d03e76702efafc1b33028d1842f0cc0540de70669cf0532556cb6ebb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/verification.json": "1510f26e558b4effa1aa390b83cf0316562e98bb8756e4d96aee8336b0a7d7c4",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/sim": "6b7a1e5fa68a6f3ed3a9e1161f906d2d236b27acd523287cc59e3886aa9fd82b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/behavioral/output.txt": "b1012ee3b96504759a0d5f0357fdeb94d4d12a5f4d96abbef07adb2152594a84",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/tb.sv": "c1a80e3561ebe3f6a186ce08be582c5825e738d45e8ef2dac0b3b6a9856d5408",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/run.log": "8828a7f0bd417e2be31ae9c2b25666d5ad3cfae771e71c90dc0416111b4b4f3d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/input.txt": "ec1d12d0d03e76702efafc1b33028d1842f0cc0540de70669cf0532556cb6ebb",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/verification.json": "bf8e9b3d5b109b68b390448e6b9cfed5a2b7f2f3a29ec34aa45898a025912b47",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/sim": "b323ff0c6f680fc83123baa76f738f119131a599898c9b2638af7987350e982e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/stream-pitch-independent-final-review-v1/vendor/output.txt": "b1012ee3b96504759a0d5f0357fdeb94d4d12a5f4d96abbef07adb2152594a84"
+  },
+  "integrated": false,
+  "full_synthesis_passed": false,
+  "physical_timing_passed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false
+}
