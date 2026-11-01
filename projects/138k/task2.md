@@ -406,6 +406,8 @@ M19 `D2110120`的[default完整物理结果](push2_workstation/usb_a/reports/DUA
 
 M19 `0xD2110121`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_M19_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM235／DSP119／CLS50954，setup3476／-2.302ns、hold10／-0.586ns，recovery+2.428／removal+0.278ns。六审计通过（native58／3不适用／71负控、边界7／69、六PLL／7负控／held-v2），主线程重验30物理／2970证据。最差setup为delay underflow_sticky→config_state CE。DDR原3.500ns要求保持，定向区域实测hold +0.508ns；剩余10个hold负端点属于48k参考计数器binary→Gray／binary，不能放宽CDC或时钟绕过。DDR UI另有505个setup负端点／TNS −319.105ns。报告中仍有TF available_bytes→write_ring_offset／write_total_bytes路径，不能因为有界表未列出accepted_used而宣称TF时序通过。完整STA和整机接受仍失败，未上板，T2-D1／D2未完成。
 
+W17 `0xD2110122`的[default完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W17_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53457，setup6774／-4.737ns、hold6／-3.683ns，recovery+2.169／removal+0.275ns。六审计通过（native58／11不适用／63负控、边界7／69、六PLL／7负控／held-v3），主线程重验30物理／3275证据。最差setup为delay overflow_sticky→PCM owner written bitmap CE，当前输出context修复没有消除bitmap长链。DDR另有ui_reset_pipe2→memory_failure CE −4.656ns，clk50为tx_header0→host_rx lease_handles CE −3.495ns。原DDR3.500ns要求保持，hold −3.683ns；其余5个hold负端点是44.1k参考计数器binary→Gray／binary，最差−0.406ns。新owner预译码实际把2个RAM16SDP4换为128个DFFRE，新增存储／mux成本如实保留，不以局部结构推断收益。完整STA和整机接受仍失败，未上板，T2-D1／D2未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
