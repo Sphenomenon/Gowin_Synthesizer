@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "policy": "task3-direct-opt-in-sd-data-crc16-v1",
+  "source_policy": "Maintained source only. Exact inverse restores pre-adaptation source identity for verification; never generate selected production RTL.",
+  "parameter": "VERIFY_DATA_CRC",
+  "default": 0,
+  "DIRECT_selection_requires_explicit_value": 1,
+  "CRC_algorithm": {
+    "poly": "1021",
+    "init": "0000",
+    "bit_order": "MSB-first",
+    "payload_bytes": 512,
+    "transmitted_order": "high byte then low byte",
+    "final_xor": "0000"
+  },
+  "completion": "Only original SPI session spidone after complete payload, CRC and CS-high release; bad or missing CRC becomes sticky read_error code 3, never done",
+  "streaming_prefix_limitation": "Payload remains streamed before CRC verdict. A failed sector invalidates its session; this does not prove no bad byte was already consumed or sector atomic publication.",
+  "unchanged_original_sha256": {
+    "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json": "2407cc17218c0d197c910e00ed78a8dcab61b581df47f8c4f7bc26d36e2e91b6",
+    "rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json": "0b9f63d267bba7bfc61f8fda58ad6e49917d5b22d8a8483af210addbb883e471",
+    "rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+    "rtl/tf_audio/storage/tang_mp3/vendor/tf_spi_session.v": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+    "rtl/tf_audio/storage/tang_mp3/sd/tf_sd_file_reader.v": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441"
+  },
+  "new_checker": {
+    "path": "rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.sv",
+    "sha256": "2ecddf90daced12e62c64a1bd8f98804cb86a1399c7429924522694a5b40f88d"
+  },
+  "adaptations": [
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+      "basis_sha256": "8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110",
+      "adapted_sha256": "115626c37c9db0e3289c7733efc1d4fd2468cd612f776d852d128ebb1fe384df",
+      "edits": [
+        {
+          "before": "    parameter integer SPI_CLK_DIV=100,\n    parameter integer SPI_CLK_DIV_FAST=12,\n    // 166.4 ms at the native 50-MHz source clock, independent of SPI divider.\n    parameter integer TOKEN_WAIT_CLOCKS=8320000\n) (\n    input wire rstn,clk,\n    output wire spi_ssn,spi_sck,spi_mosi,\n",
+          "after": "    parameter integer SPI_CLK_DIV=100,\n    parameter integer SPI_CLK_DIV_FAST=12,\n    // 166.4 ms at the native 50-MHz source clock, independent of SPI divider.\n    parameter integer TOKEN_WAIT_CLOCKS=8320000,\n    // First-party integrity adaptation, opt-in; original manifests unchanged.\n    parameter integer VERIFY_DATA_CRC=0\n) (\n    input wire rstn,clk,\n    output wire spi_ssn,spi_sck,spi_mosi,\n",
+          "count": 1
+        },
+        {
+          "before": "    localparam [63:0] TOKEN_BYTES_WIDE=(WAIT_CLOCKS_WIDE+BYTE_CLOCKS_WIDE-64'd1)/BYTE_CLOCKS_WIDE;\n    localparam [23:0] TOKEN_BYTES=TOKEN_BYTES_WIDE[23:0];\n    initial begin\n        if(SPI_CLK_DIV<2 || SPI_CLK_DIV>255 || READ_DIV<2 || READ_DIV>255)\n            $fatal(1,\"native SD SPI divider must be in 2..255 (FAST=0 inherits init)\");\n        if(TOKEN_WAIT_CLOCKS<1 || TOKEN_BYTES_WIDE>64'hffffff)\n",
+          "after": "    localparam [63:0] TOKEN_BYTES_WIDE=(WAIT_CLOCKS_WIDE+BYTE_CLOCKS_WIDE-64'd1)/BYTE_CLOCKS_WIDE;\n    localparam [23:0] TOKEN_BYTES=TOKEN_BYTES_WIDE[23:0];\n    initial begin\n        if(VERIFY_DATA_CRC!=0 && VERIFY_DATA_CRC!=1)\n            $fatal(1,\"native SD VERIFY_DATA_CRC must be 0 or 1\");\n        if(SPI_CLK_DIV<2 || SPI_CLK_DIV>255 || READ_DIV<2 || READ_DIV>255)\n            $fatal(1,\"native SD SPI divider must be in 2..255 (FAST=0 inherits init)\");\n        if(TOKEN_WAIT_CLOCKS<1 || TOKEN_BYTES_WIDE>64'hffffff)\n",
+          "count": 1
+        },
+        {
+          "before": "    wire rvalid_session;\n    wire [15:0] rindex_session;\n    wire [7:0] rdata_session;\n    assign card_type=cardtype;\n    assign card_stat=cardstate;\n    assign debug_cmdrsp=cmdrsp;\n",
+          "after": "    wire rvalid_session;\n    wire [15:0] rindex_session;\n    wire [7:0] rdata_session;\n    wire data_crc_complete,data_crc_valid;\n    generate if(VERIFY_DATA_CRC!=0) begin: g_data_crc\n        workstation_tf_sd_crc16_v1 crc_guard(\n            .clk_i(clk),.rst_ni(rstn),\n            .clear_i(cardstate==IDLE && !spistart && start && !start_q),\n            .byte_valid_i(cardstate==READING && cmdrsp_valid && cmdrsp==8'h00 &&\n                          rwrsp==8'hfe && rvalid_session),\n            .byte_index_i(rindex_session),.byte_i(rdata_session),\n            .complete_o(data_crc_complete),.valid_o(data_crc_valid));\n    end else begin: g_no_data_crc\n        assign data_crc_complete=1'b1;\n        assign data_crc_valid=1'b1;\n    end endgenerate\n    assign card_type=cardtype;\n    assign card_stat=cardstate;\n    assign debug_cmdrsp=cmdrsp;\n",
+          "count": 1
+        },
+        {
+          "before": "                    end\n                    CMD16: if(cmdrsp_valid && cmdrsp==8'h00) cardstate<=IDLE;\n                    READING: if(cmdrsp_valid && cmdrsp==8'h00 && rwrsp==8'hfe) begin\n                        cardstate<=IDLE;\n                        done<=1;\n                    end else begin\n                        cardstate<=FAULT;\n                        read_error<=1;\n",
+          "after": "                    end\n                    CMD16: if(cmdrsp_valid && cmdrsp==8'h00) cardstate<=IDLE;\n                    READING: if(cmdrsp_valid && cmdrsp==8'h00 && rwrsp==8'hfe) begin\n                        // Verdict is applied only after the original session\n                        // has drained both CRC bytes and its CS-high release.\n                        if(VERIFY_DATA_CRC!=0 && (!data_crc_complete || !data_crc_valid)) begin\n                            cardstate<=FAULT;\n                            read_error<=1;\n                            read_error_code<=2'd3;\n                        end else begin cardstate<=IDLE;done<=1;end\n                    end else begin\n                        cardstate<=FAULT;\n                        read_error<=1;\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+      "basis_sha256": "13495665a2c01dc3b2d129790e570a21122850e8664743efa44fa7d8d36c236b",
+      "adapted_sha256": "3d20a0d1cbe0475c958114f77e7a61dc94cabc3f0981c0ff8e77b023cf561ce8",
+      "edits": [
+        {
+          "before": "    parameter [25:0] PROBE_INTERVAL_CYCLES = 26'd50_000_000,\n    parameter integer TOKEN_WAIT_CLOCKS = 8320000,\n    parameter integer WATCHDOG_CLOCKS = 250000000,\n    parameter integer MAX_ROOT_SECTORS = 4096\n) (\n    input  wire        rstn,\n    input  wire        clk,\n",
+          "after": "    parameter [25:0] PROBE_INTERVAL_CYCLES = 26'd50_000_000,\n    parameter integer TOKEN_WAIT_CLOCKS = 8320000,\n    parameter integer WATCHDOG_CLOCKS = 250000000,\n    parameter integer MAX_ROOT_SECTORS = 4096,\n    parameter integer VERIFY_DATA_CRC = 0\n) (\n    input  wire        rstn,\n    input  wire        clk,\n",
+          "count": 1
+        },
+        {
+          "before": "workstation_tf_sd_sector_reader #(\n    .SPI_CLK_DIV      ( SPI_CLK_DIV      ),\n    .SPI_CLK_DIV_FAST ( SPI_CLK_DIV_FAST ),\n    .TOKEN_WAIT_CLOCKS( TOKEN_WAIT_CLOCKS )\n) u_sector_reader (\n    .rstn      ( transport_rstn ),\n    .clk       ( clk            ),\n",
+          "after": "workstation_tf_sd_sector_reader #(\n    .SPI_CLK_DIV      ( SPI_CLK_DIV      ),\n    .SPI_CLK_DIV_FAST ( SPI_CLK_DIV_FAST ),\n    .TOKEN_WAIT_CLOCKS( TOKEN_WAIT_CLOCKS ),\n    .VERIFY_DATA_CRC  ( VERIFY_DATA_CRC )\n) u_sector_reader (\n    .rstn      ( transport_rstn ),\n    .clk       ( clk            ),\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_native_v1.sv",
+      "basis_sha256": "48c4df2eea55652e1d2a684dd14f42dbdd63bd589fb8ed915a602068fac368c4",
+      "adapted_sha256": "5a54f4515b51a85638503ce849ef45c973fe88295403ad53906468db28f377af",
+      "edits": [
+        {
+          "before": "// No DDR interface, source selector, clock owner, physical EOS ACK or CDC.\nmodule workstation_tf_direct_native_v1 #(\n    parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,\n    parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,\n    parameter [25:0] PROBE_INTERVAL_CYCLES=26'd50000000,\n    parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072\n",
+          "after": "// No DDR interface, source selector, clock owner, physical EOS ACK or CDC.\nmodule workstation_tf_direct_native_v1 #(\n    parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,\n    parameter integer VERIFY_DATA_CRC=0,\n    parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,\n    parameter [25:0] PROBE_INTERVAL_CYCLES=26'd50000000,\n    parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072\n",
+          "count": 1
+        },
+        {
+          "before": "    assign cancelled_o=reader_cancelled;\n    workstation_tf_file_reader #(.EXT(\"WAV\"),.SPI_CLK_DIV(SPI_CLK_DIV),\n        .SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),.TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),\n        .WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),.PROBE_INTERVAL_CYCLES(PROBE_INTERVAL_CYCLES)) file_owner(\n        .rstn(rst_ni),.clk(clk_i),.spi_ssn(spi_ssn_o),.spi_sck(spi_sck_o),.spi_mosi(spi_mosi_o),.spi_miso(spi_miso_i),\n        .card_type(card_type_o),.card_stat(card_stat_o),.filesystem_type(filesystem_type_o),.filesystem_stat(filesystem_stat_o),\n",
+          "after": "    assign cancelled_o=reader_cancelled;\n    workstation_tf_file_reader #(.EXT(\"WAV\"),.SPI_CLK_DIV(SPI_CLK_DIV),\n        .SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),.TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),\n        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),\n        .WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),.PROBE_INTERVAL_CYCLES(PROBE_INTERVAL_CYCLES)) file_owner(\n        .rstn(rst_ni),.clk(clk_i),.spi_ssn(spi_ssn_o),.spi_sck(spi_sck_o),.spi_mosi(spi_mosi_o),.spi_miso(spi_miso_i),\n        .card_type(card_type_o),.card_stat(card_stat_o),.filesystem_type(filesystem_type_o),.filesystem_stat(filesystem_stat_o),\n",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_runtime_service.sv",
+      "basis_sha256": "a09810740bb94416d17c7d2b66d69937cb43ed62d2b62da91df417d64093056d",
+      "adapted_sha256": "82f77d9b4dfcda27a3dc87ebde91a4f2876a7dab75879e1a10bbd0a971bf0428",
+      "edits": [
+        {
+          "before": "// Committed rate/epoch and command generation are frozen session snapshots.\nmodule workstation_tf_direct_runtime_service #(\n    parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,\n    parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,\n    parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072,\n    parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,\n",
+          "after": "// Committed rate/epoch and command generation are frozen session snapshots.\nmodule workstation_tf_direct_runtime_service #(\n    parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,\n    parameter integer VERIFY_DATA_CRC=0,\n    parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,\n    parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072,\n    parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,\n",
+          "count": 1
+        },
+        {
+          "before": "    wire native_request=state==LAUNCH && !bad_context && !cancel_event && !stop_event;\n    workstation_tf_direct_native_v1 #(.SPI_CLK_DIV(SPI_CLK_DIV),.SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),\n        .TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),.WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),\n        .BYTE_DEPTH(BYTE_DEPTH),.PCM_DEPTH(PCM_DEPTH),.PREFILL_FRAMES(PREFILL_FRAMES)) native(\n        .clk_i(clk_50m_i),.rst_ni(source_n),.spi_ssn_o(sd_cs_no),.spi_sck_o(sd_sck_o),.spi_mosi_o(sd_mosi_o),.spi_miso_i(sd_miso_i),\n        .request_valid_i(native_request),.request_ready_o(native_ready),.track_index_i(pending_track),.generation_i(session),\n",
+          "after": "    wire native_request=state==LAUNCH && !bad_context && !cancel_event && !stop_event;\n    workstation_tf_direct_native_v1 #(.SPI_CLK_DIV(SPI_CLK_DIV),.SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),\n        .TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),.WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),\n        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),\n        .BYTE_DEPTH(BYTE_DEPTH),.PCM_DEPTH(PCM_DEPTH),.PREFILL_FRAMES(PREFILL_FRAMES)) native(\n        .clk_i(clk_50m_i),.rst_ni(source_n),.spi_ssn_o(sd_cs_no),.spi_sck_o(sd_sck_o),.spi_mosi_o(sd_mosi_o),.spi_miso_i(sd_miso_i),\n        .request_valid_i(native_request),.request_ready_o(native_ready),.track_index_i(pending_track),.generation_i(session),\n",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "hardware_tested": false,
+  "production_FAST12_supply_fixed": false
+}

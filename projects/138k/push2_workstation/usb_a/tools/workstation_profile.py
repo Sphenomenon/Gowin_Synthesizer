@@ -59,7 +59,26 @@ M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
 TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
+TASK3_W_MEDIA_NAME='custom138k-workstation-task3-w-media-v1'
 PROFILE_REGISTRY = {
+    TASK3_W_MEDIA_NAME:dict(config='boards/custom_138k/workstation_profile_task3_w_media_v1.json',revision=1,
+        configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
+            ae350_firmware_policy='task3_w_headless_media_single_recording_60s_v1',ae350_boot_rom_bytes=131072,
+            hdmi_mode='disabled_worker_media',display_policy='disabled_worker_media_v1',
+            scan_window_policy='disabled_worker_media_v1',
+            recording_policy='task3_w_single_C_BLE_recording_60s_v1',
+            ble_recording_storage_policy='task3_w_single_C_BLE_raw_ddr_60s_v1',
+            business_owner_policy='ae350_single_C_BLE_recording_owner_v1',
+            media_preparation_policy='single_C_BLE_seal_recording_v1',
+            recognition_policy='task3_w_bounded_CNN_task_v1',
+            ae350_pcm_policy='ae350_decoded_pcm_source_v1',demo_role='W',
+            usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,synth_policy='disabled_d_pcm_only_v1',
+            tf_policy='disabled_worker_media_v1',recording_owner_policy='single_C_BLE_ddr_60s_v1',
+            usb_adapter_policy='worker_25k_v1',interboard_transport_policy='LCD_unverified_down_v1'),
+        provider='rtl/workstation/workstation_profile_task3_w_media.sv',recognition_enabled=False,
+        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,
+        demo_role='W',worker_media=True,integration_identity='custom138k-native-task3-w-media-revision1'),
     TASK3_M_DIRECT_NAME:dict(config='boards/custom_138k/workstation_profile_task3_m_direct_tf_v1.json', revision=1,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
@@ -196,6 +215,11 @@ def recognition_metadata(profile):
         music_analysis_enabled=enabled, cnn_score_follow_enabled=enabled,
         model_ready_not_forged=True, local_score_cue_preserved=True,
         recognition_menu_available=enabled, ddr_nn_allocation_retained=True)
+    if spec.get('worker_media',False):
+        metadata.update(policy='task3_w_bounded_CNN_task_v1',task_CNN_enabled=True,
+            music_analysis_enabled=False,cnn_score_follow_enabled=False,
+            legacy_TF_follow_retired=True,task_results_available_through='0xf8070000',
+            Push_guidance_transport_connected=False)
     if spec.get('tf_menu_enabled', False):
         metadata.update(tf_menu_enabled=True, recognition_menu_available=False,
                         tf_song_menu_available=True)
@@ -227,7 +251,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
             type(profile.get('revision')) is not int or profile['revision'] != spec['revision']):
         raise ValueError('workstation profile identity changed')
     if (profile.get('configuration') != spec['configuration'] or
-            hdmi_mode not in (('1080p60','disabled_worker_audio_only') if spec.get('worker_audio_only',False) else ('1080p60',)) or allow_high_speed is not True):
+            hdmi_mode not in (('1080p60','disabled_worker_media') if spec.get('worker_media',False) else ('1080p60','disabled_worker_audio_only') if spec.get('worker_audio_only',False) else ('1080p60',)) or allow_high_speed is not True):
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
         raise ValueError('incomplete workstation profile')
@@ -257,7 +281,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False,headless_worker=False):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False,headless_worker=False,media_worker=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -269,10 +293,12 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     evidence = output / AE350_DIRECTORY
     policy=AE350_POLICY
     if classic_runtime:
-        if (not recording_api and not headless_worker) or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072) or (headless_worker and (recording_api or not worker_demo)):
+        if media_worker and (not recording_api or not business_owner or headless_worker or not worker_demo or memory_profile!='ilm64k_dlm64k' or boot_rom_bytes!=131072):
+            raise ValueError('W-media requires explicit full shared-HCI/single-recording/local64/ROM128')
+        if not media_worker and (not recording_api and not headless_worker) or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072) or (headless_worker and (recording_api or not worker_demo)):
             raise ValueError('Classic runtime requires explicit local64/ROM96-or-ROM128/business composition')
         from tools.workstation_classic_runtime import build as build_runtime
-        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo,headless_worker=headless_worker);policy=build['runtime_policy']
+        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo,headless_worker=headless_worker,media_worker=media_worker);policy=build['runtime_policy']
     else:
         build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
             memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
@@ -375,6 +401,10 @@ def _artifact(root, output, metadata, profile):
         installed_sdc = restore_constraints(root, installed_sdc, metadata.get('task3_tf_direct_cdc', {}))
     elif 'task3_tf_direct_cdc' in metadata:
         raise ValueError('unselected profile cannot claim direct TF constraints')
+    media_worker=spec.get('worker_media',False)
+    if media_worker:
+        from tools.workstation_task3_w_media_profile import restore_constraints
+        installed_sdc=restore_constraints(installed_sdc,metadata['worker_media']['constraints'])
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
         from tools.workstation_worker_audio_only import restore_constraints
@@ -452,6 +482,7 @@ def _artifact(root, output, metadata, profile):
             provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
             physical_deadlines_verified=False, d01_complete=False, d04_complete=False)
     if audio_only:expected_scan_window=dict(policy='disabled_worker_audio_only_v1',enabled=False)
+    if media_worker:expected_scan_window=dict(policy='disabled_worker_media_v1',enabled=False)
     if metadata.get('scan_window') != expected_scan_window:
         raise ValueError('workstation profile scan window source policy changed')
 
@@ -472,6 +503,9 @@ def _artifact(root, output, metadata, profile):
         from tools.workstation_bluetooth_ddr import verify_prepared as verify_ble_raw
         if business_selected:
             from tools.workstation_cpu_business import metadata as ble_recording_metadata,verify_prepared as verify_ble_raw
+        if media_worker:
+            from tools.workstation_task3_w_media_profile import raw_metadata
+            ble_recording_metadata=lambda:raw_metadata(root)
         selected = dict(metadata.get('ble_recording_storage', {}))
         ble_raw_adaptation = selected.pop('adaptation', None)
         if selected != ble_recording_metadata():
@@ -488,7 +522,11 @@ def _artifact(root, output, metadata, profile):
     if spec.get('recording_enabled',False):
         from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
         selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
-        if selected!=recording_metadata(ble_raw_ddr=ble_raw_selected):raise ValueError('R00 recording selection changed')
+        if media_worker:
+            from tools.workstation_task3_w_media_profile import recording_metadata as media_recording_metadata
+            expected_recording=media_recording_metadata(root)
+        else:expected_recording=recording_metadata(ble_raw_ddr=ble_raw_selected)
+        if selected!=expected_recording:raise ValueError('recording source/capacity selection changed')
         verify_address_map(root,stage,address_map)
         bind(MAP_DESTINATION,prefix+MAP_SOURCE)
     elif 'recording' in metadata:
@@ -583,7 +621,7 @@ def _artifact(root, output, metadata, profile):
     ae350 = _ae350_evidence(root, output, metadata, profile)
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
-        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only)
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker)
     elif 'classic_runtime'in metadata:
         raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']

@@ -28,14 +28,25 @@ def replace_once(text,anchor,replacement):
     if text.count(anchor)!=1:raise ValueError('Negative-control anchor drift: '+anchor)
     return text.replace(anchor,replacement)
 
-def run(output):
+def run(output,*,direct_crc_source_adaptation=False):
     output.mkdir(parents=True,exist_ok=False)
     maintained=[NATIVE,NATIVE_SESSION,PROVENANCE,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT))]
     hashes={name:sha((ROOT/name).read_bytes()) for name in maintained+list(LOCKS)}
     for name,expected in LOCKS.items():
         if hashes[name]!=expected:raise ValueError('Immutable dependency drift: '+name)
     provenance=json.loads((ROOT/PROVENANCE).read_text())
-    if provenance['native_sector_sha256']!=hashes[NATIVE] or provenance['native_session_sha256']!=hashes[NATIVE_SESSION]:
+    adaptation=None
+    legacy_sector_hash=hashes[NATIVE]
+    if direct_crc_source_adaptation:
+        import sys
+        sys.path.insert(0,str(ROOT))
+        from tools.workstation_tf_sd_crc16_provenance import restored_basis,MANIFEST
+        basis,adaptation=restored_basis(ROOT,NATIVE)
+        legacy_sector_hash=sha(basis)
+        for relative in (MANIFEST,'tools/workstation_tf_sd_crc16_provenance.py',
+                         'rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.sv'):
+            hashes[relative]=sha((ROOT/relative).read_bytes())
+    if provenance['native_sector_sha256']!=legacy_sector_hash or provenance['native_session_sha256']!=hashes[NATIVE_SESSION]:
         raise ValueError('Maintained source provenance drift')
     if provenance['session_origin_sha256']!=hashes[SESSION] or provenance['sector_origin_sha256']!=hashes[HISTORICAL]:
         raise ValueError('Provenance origin mismatch')
@@ -51,6 +62,8 @@ def run(output):
         source_policy='maintained unselected sector/session owners with explicit R1-valid adaptation; original vendor/session/baseline/profile untouched',
         wire_model='SPI edges only, real card initialization; no DUT hierarchy force/deposit or SPI-session stub',
         exact_session_provenance_verified=True,
+        explicit_DIRECT_crc_source_adaptation=adaptation,
+        CRC_verification_enabled_in_this_default_regression=False,
         profile_selected=False,file_reader_integration=False,no_DDR_playback_implemented=False,
         wav_decoder_changed=False,m03_complete=False,synthesis=False,pnr=False,
         hardware_tested=False,sram_programmed=False,flash_written=False,cases={})
@@ -147,4 +160,7 @@ def run(output):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
-    run(parser.parse_args().output.resolve())
+    parser.add_argument('--direct-crc-source-adaptation',action='store_true',
+        help='explicit DIRECT source branch: strictly recover old source hashes before original provenance validation; tests still use VERIFY_DATA_CRC=0')
+    args=parser.parse_args()
+    run(args.output.resolve(),direct_crc_source_adaptation=args.direct_crc_source_adaptation)

@@ -3,6 +3,7 @@
 // Committed rate/epoch and command generation are frozen session snapshots.
 module workstation_tf_direct_runtime_service #(
     parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,
+    parameter integer VERIFY_DATA_CRC=0,
     parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,
     parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072,
     parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,
@@ -150,6 +151,7 @@ module workstation_tf_direct_runtime_service #(
     wire native_request=state==LAUNCH && !bad_context && !cancel_event && !stop_event;
     workstation_tf_direct_native_v1 #(.SPI_CLK_DIV(SPI_CLK_DIV),.SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),
         .TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),.WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),
+        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),
         .BYTE_DEPTH(BYTE_DEPTH),.PCM_DEPTH(PCM_DEPTH),.PREFILL_FRAMES(PREFILL_FRAMES)) native(
         .clk_i(clk_50m_i),.rst_ni(source_n),.spi_ssn_o(sd_cs_no),.spi_sck_o(sd_sck_o),.spi_mosi_o(sd_mosi_o),.spi_miso_i(sd_miso_i),
         .request_valid_i(native_request),.request_ready_o(native_ready),.track_index_i(pending_track),.generation_i(session),

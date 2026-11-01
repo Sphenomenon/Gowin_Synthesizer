@@ -127,6 +127,7 @@ class Task3TFPolicy(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             stage=Path(temp)
             for relative in ('rtl/workstation/gw138k_push_workstation_top.v',
+                             'rtl/workstation/workstation_task3_w_media_top_reference.json',
                              'rtl/workstation/workstation_runtime_controlled.sv',
                              'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'):
                 target=stage/relative;target.parent.mkdir(parents=True,exist_ok=True)

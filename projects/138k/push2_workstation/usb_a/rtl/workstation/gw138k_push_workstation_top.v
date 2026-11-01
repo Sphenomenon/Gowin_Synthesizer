@@ -1,4 +1,7 @@
 // Independent C-revision migration candidate. Original Prj1 top is retained.
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`define WORKSTATION_HEADLESS_GRAPHICS
+`endif
 // G1 MIDI is on a separate expansion pin; BL616 V14 is not reused.
 `ifdef WORKSTATION_BLE_RAW_DDR
 `include "rtl/ddr_address_map.vh"
@@ -235,7 +238,7 @@ module gw138k_push_workstation_top #(
     wire [3:0] ui_command_strobes;
     wire ui_pending,ui_visible,ui_next_visible,ui_frame_commit;
     wire [28:0] ui_front_base,ui_next_base;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_HEADLESS_GRAPHICS
     // Retired graphics APB page fails explicitly; no UI CDC or framebuffer owner.
     assign ui_ready=1'b1,ui_error=ui_select,ui_read_data=32'd0;
     assign ui_pending=0,ui_visible=0,ui_next_visible=0,ui_front_base=0,ui_next_base=0;
@@ -394,6 +397,7 @@ module gw138k_push_workstation_top #(
     wire raw_fetch_valid,raw_fetch_ready,raw_fetch_done,raw_fetch_fault,raw_cache_valid;
     wire [31:0] raw_fetch_offset,raw_sample_addr,raw_sample_word;
     wire [13:0] raw_fetch_length;
+`ifndef WORKSTATION_TASK3_W_MEDIA
     (* ASYNC_REG="TRUE" *) reg [1:0] recording_memory_release;
     always @(posedge memory_clk or negedge reset_n)
         if(!reset_n)recording_memory_release<=0;
@@ -459,6 +463,10 @@ module gw138k_push_workstation_top #(
         .ddr_address_o(recording_ble_address),.ddr_data_o(recording_ble_data),.ddr_mask_o(recording_ble_mask),
         .read_response_i(recording_subclient_response[1]),.read_data_i(client_rdata),
         .transport_fault_i(recording_mux_fault),.native_protocol_fault_o(recording_bridge_protocol_fault[1]));
+`else
+    // Native task3 composition below owns the sole raw store and owner8.
+    wire recording_channel_ready50;
+`endif
 `endif
 `ifdef WORKSTATION_SINGLE_BLE_RECORDING
     // The BLE business owner is the sole object owner. The retired R00 APB
@@ -627,7 +635,7 @@ module gw138k_push_workstation_top #(
         .read_data_o(score_usb_note));
 `endif
     wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_HEADLESS_GRAPHICS
     assign service_state_usb=0,service_state_usb_valid=0;
     assign display_summary_usb=0,display_summary_usb_valid=0;
 `else
@@ -835,7 +843,7 @@ module gw138k_push_workstation_top #(
 `else
         .cpu_words({trap_cause,heartbeat,ram_result,signature,last_fetch,fetch_count,ui_report}));
 `endif
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_HEADLESS_GRAPHICS
     assign hdmi_tx_en=1'b0;
 `else
     assign hdmi_tx_en = 1'b1;
@@ -1031,10 +1039,12 @@ module gw138k_push_workstation_top #(
         .spi_cs_n_i(model_flash_cs_n),.spi_clk_i(model_flash_clk),.spi_mosi_i(model_flash_mosi),
         .flash_cs_n_o(flash_cs_n),.flash_clk_o(flash_clk),.flash_mosi_o(flash_mosi),
         .flash_wp_n_o(flash_wp_n),.flash_hold_n_o(flash_hold_n),.owned_o());
+`ifndef WORKSTATION_TASK3_W_MEDIA
 `ifdef WORKSTATION_NO_CNN
     assign model_flash_cs_n=1'b1;
     assign model_flash_clk=1'b0;
     assign model_flash_mosi=1'b0;
+`endif
 `endif
 `endif
 `ifndef WORKSTATION_NO_CNN
@@ -1145,7 +1155,12 @@ module gw138k_push_workstation_top #(
     assign ble_debug_uart=1'b1;
     assign ble_seal_ready=1'b1,ble_seal_done=1'b0,ble_seal_failed=1'b0,ble_seal_failure=4'd0;
 `else
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_TASK3_W_MEDIA
+    // Explicit injected M-final-tap aperture; no W local-DAC source selection.
+    assign ble_pcm_valid=task3_record_pcm_valid,ble_pcm=task3_record_pcm,ble_sequence=task3_record_sequence;
+    wire ble_frame44=1'b0,ble_frame_error=1'b0;
+    wire [31:0] ble_frame_epoch=0;
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
     // Capture/download is absent, so final audio is not crossed to the radio owner.
     assign ble_pcm_valid=0,ble_pcm=0,ble_sequence=0;
     wire ble_frame44=1'b0,ble_frame_error=1'b0;
@@ -1171,6 +1186,10 @@ module gw138k_push_workstation_top #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
 `ifdef WORKSTATION_WORKER_AUDIO_ONLY
     workstation_bluetooth #(.SESSION_ONLY_PAIRING(1)) u_bluetooth (
+`elsif WORKSTATION_TASK3_W_MEDIA
+    workstation_bluetooth #(.CAPACITY_FRAMES(`PRJ1_DDR_TASK3_W_RECORDING_CAPACITY_FRAMES),
+        .EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000),
+        .SINGLE_BLE_RECORDING(1),.SESSION_ONLY_PAIRING(1)) u_bluetooth (
 `elsif WORKSTATION_BLE_RAW_DDR
     workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)
 `ifdef WORKSTATION_SINGLE_BLE_RECORDING
@@ -1199,11 +1218,15 @@ module gw138k_push_workstation_top #(
 `ifdef WORKSTATION_RUNTIME_NATIVE
         // Existing BLE format 1 remains 48 kHz. Never relabel 44.1-kHz PCM.
         .source_allowed_i(
+`ifdef WORKSTATION_TASK3_W_MEDIA
+            task3_record_source_allowed && recording_channel_ready50),
+`else
 `ifdef WORKSTATION_BLE_RAW_DDR
             recording_channel_ready50 &&
 `endif
             memory_guard_ready && rate_valid && !rate44 && !rate_busy && !rate_fault && !rate_dsp_fault &&
             !ble_frame44 && !ble_frame_error && ble_frame_epoch==rate_epoch),
+`endif
 `else
         .source_allowed_i(1'b1),
 `endif
@@ -1253,7 +1276,9 @@ module gw138k_push_workstation_top #(
     wire [28:0] cpu_mem_address;
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_TASK3_W_MEDIA
+`include "rtl/workstation/workstation_task3_media_board.svh"
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
     workstation_audio_memory u_audio_memory(
         .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
         .memory_reset_ni(memory_reset_n),.memory_calibrated_i(memory_calibrated),
@@ -1363,7 +1388,7 @@ module gw138k_push_workstation_top #(
     always @(posedge ram_clk or negedge ram_reset_n)
         if(!ram_reset_n) local_data_phase<=1;
         else if(cpu_bus_ready) local_data_phase<=local_address;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_HEADLESS_GRAPHICS
     // Only the local scratch window is present. Retired external DDR accesses
     // terminate with AHB error instead of issuing an unowned memory request.
     reg external_rejected;
@@ -1425,7 +1450,11 @@ module gw138k_push_workstation_top #(
         .DDR_HRDATA(local_data_phase?ram_read_data:external_read_data),.DDR_HREADY(cpu_bus_ready),.DDR_HRESP(cpu_bus_error),.DDR_HADDR(ram_address),
         .DDR_HBURST(),.DDR_HPROT(),.DDR_HSIZE(ram_size),.DDR_HTRANS(ram_transfer),
         .DDR_HWDATA(ram_write_data),.DDR_HWRITE(ram_write),.DDR_HCLK(ram_clk),.DDR_HRSTN(ram_reset_n),
-`ifdef WORKSTATION_RECORDING_DDR
+`ifdef WORKSTATION_TASK3_W_MEDIA
+        .APB_PRDATA(task3_media_select?task3_media_bus_data:pcm_select?pcm_bus_data:business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(task3_media_select?task3_media_bus_ready:pcm_select?pcm_bus_ready:business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(task3_media_select?task3_media_bus_error:pcm_select?pcm_bus_error:business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+`elsif WORKSTATION_RECORDING_DDR
         .APB_PRDATA(pcm_select?pcm_bus_data:business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
         .APB_PREADY(pcm_select?pcm_bus_ready:business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
         .APB_PSLVERR(pcm_select?pcm_bus_error:business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
@@ -1452,3 +1481,6 @@ module gw138k_push_workstation_top #(
 `endif
         .POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));
 endmodule
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`undef WORKSTATION_HEADLESS_GRAPHICS
+`endif

@@ -98,7 +98,8 @@ module workstation_cnn_task_service #(
     wire [28:0] command_address=`PRJ1_DDR_TASK3_W_CNN_PCM_APP_BASE+
         (flush_pack?29'(committed_frames_o):{cursor[28:3],3'b000});
     wire [317:0] command_data={command_write,command_address,pack,command_write?tail_mask(pack_frames):32'd0};
-    wire command_ready,command_fire=command_valid && command_ready;
+    wire command_ready;
+    wire command_fire=command_valid && command_ready;
     wire request_valid,request_ready;
     wire [317:0] request_data;
     music_async_fifo #(.WIDTH(318),.ADDRESS_BITS(2)) staging_requests(

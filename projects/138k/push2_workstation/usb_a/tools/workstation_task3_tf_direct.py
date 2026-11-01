@@ -39,6 +39,9 @@ DEPENDENCIES = (TOOL, LEGACY,
     'tools/workstation_task3_clock_release_audit.py',
     'tools/workstation_task3_tf_frame_cdc_audit.py',
     'tools/workstation_task3_tf_tail_cdc_audit.py',
+    'tools/workstation_task3_tf_tail_retirement_audit.py',
+    'tools/workstation_task3_w_media_profile.py',
+    'rtl/workstation/workstation_task3_w_media_top_reference.json',
     *tuple('rtl/tf_audio/' + name for name in (
     'WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md',
     'WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md',
@@ -97,6 +100,8 @@ def selected_direct_top(stage, text):
     The real compiler still consumes the unmodified, fully hashed source.
     """
     stage=Path(stage)
+    from tools.workstation_task3_w_media_profile import inverse_top
+    text=inverse_top(stage,text)
     project=stage/'Prj1.gprj'
     selected=[row.get('path') for row in ET.parse(project).find('FileList') if row.get('enable')=='1'] if project.is_file() else []
     provider='rtl/workstation/workstation_profile_task3_m_direct_tf.sv'

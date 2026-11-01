@@ -3,6 +3,7 @@
 // No DDR interface, source selector, clock owner, physical EOS ACK or CDC.
 module workstation_tf_direct_native_v1 #(
     parameter integer SPI_CLK_DIV=100,SPI_CLK_DIV_FAST=12,
+    parameter integer VERIFY_DATA_CRC=0,
     parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,
     parameter [25:0] PROBE_INTERVAL_CYCLES=26'd50000000,
     parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072
@@ -63,6 +64,7 @@ module workstation_tf_direct_native_v1 #(
     assign cancelled_o=reader_cancelled;
     workstation_tf_file_reader #(.EXT("WAV"),.SPI_CLK_DIV(SPI_CLK_DIV),
         .SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),.TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),
+        .VERIFY_DATA_CRC(VERIFY_DATA_CRC),
         .WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),.PROBE_INTERVAL_CYCLES(PROBE_INTERVAL_CYCLES)) file_owner(
         .rstn(rst_ni),.clk(clk_i),.spi_ssn(spi_ssn_o),.spi_sck(spi_sck_o),.spi_mosi(spi_mosi_o),.spi_miso(spi_miso_i),
         .card_type(card_type_o),.card_stat(card_stat_o),.filesystem_type(filesystem_type_o),.filesystem_stat(filesystem_stat_o),

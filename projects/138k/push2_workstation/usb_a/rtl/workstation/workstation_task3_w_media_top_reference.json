@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "policy": "task3_w_media_exact_top_composition_v1",
+  "parent_sha256": "2bd14a9c81c28817dc0fd2bf39a87d208f0344f7f1c8f06571953bc2550f3cd0",
+  "selected_sha256": "9377948d17aa8fed710744827cc4c4e18b7414d88cdfd5f5ca28a86978b04615",
+  "edits": [
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    // Retired graphics APB page",
+      "selected": "`ifdef WORKSTATION_HEADLESS_GRAPHICS\n    // Retired graphics APB page"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    assign service_state_usb",
+      "selected": "`ifdef WORKSTATION_HEADLESS_GRAPHICS\n    assign service_state_usb"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    assign hdmi_tx_en",
+      "selected": "`ifdef WORKSTATION_HEADLESS_GRAPHICS\n    assign hdmi_tx_en"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    // Only the local scratch window",
+      "selected": "`ifdef WORKSTATION_HEADLESS_GRAPHICS\n    // Only the local scratch window"
+    },
+    {
+      "parent": "// Independent C-revision migration candidate. Original Prj1 top is retained.\n",
+      "selected": "// Independent C-revision migration candidate. Original Prj1 top is retained.\n`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n`define WORKSTATION_HEADLESS_GRAPHICS\n`endif\n"
+    },
+    {
+      "parent": "    (* ASYNC_REG=\"TRUE\" *) reg [1:0] recording_memory_release;",
+      "selected": "`ifndef WORKSTATION_TASK3_W_MEDIA\n    (* ASYNC_REG=\"TRUE\" *) reg [1:0] recording_memory_release;"
+    },
+    {
+      "parent": "`endif\n`ifdef WORKSTATION_SINGLE_BLE_RECORDING\n",
+      "selected": "`else\n    // Native task3 composition below owns the sole raw store and owner8.\n    wire recording_channel_ready50;\n`endif\n`endif\n`ifdef WORKSTATION_SINGLE_BLE_RECORDING\n"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_NO_CNN\n    assign model_flash_cs_n",
+      "selected": "`ifndef WORKSTATION_TASK3_W_MEDIA\n`ifdef WORKSTATION_NO_CNN\n    assign model_flash_cs_n"
+    },
+    {
+      "parent": "    assign model_flash_mosi=1'b0;\n`endif\n`endif",
+      "selected": "    assign model_flash_mosi=1'b0;\n`endif\n`endif\n`endif"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    // Capture/download is absent,",
+      "selected": "`ifdef WORKSTATION_TASK3_W_MEDIA\n    // Explicit injected M-final-tap aperture; no W local-DAC source selection.\n    assign ble_pcm_valid=task3_record_pcm_valid,ble_pcm=task3_record_pcm,ble_sequence=task3_record_sequence;\n    wire ble_frame44=1'b0,ble_frame_error=1'b0;\n    wire [31:0] ble_frame_epoch=0;\n`elsif WORKSTATION_WORKER_AUDIO_ONLY\n    // Capture/download is absent,"
+    },
+    {
+      "parent": "`elsif WORKSTATION_BLE_RAW_DDR\n    workstation_bluetooth #(",
+      "selected": "`elsif WORKSTATION_TASK3_W_MEDIA\n    workstation_bluetooth #(.CAPACITY_FRAMES(`PRJ1_DDR_TASK3_W_RECORDING_CAPACITY_FRAMES),\n        .EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000),\n        .SINGLE_BLE_RECORDING(1),.SESSION_ONLY_PAIRING(1)) u_bluetooth (\n`elsif WORKSTATION_BLE_RAW_DDR\n    workstation_bluetooth #("
+    },
+    {
+      "parent": "        .source_allowed_i(\n`ifdef WORKSTATION_BLE_RAW_DDR",
+      "selected": "        .source_allowed_i(\n`ifdef WORKSTATION_TASK3_W_MEDIA\n            task3_record_source_allowed && recording_channel_ready50),\n`else\n`ifdef WORKSTATION_BLE_RAW_DDR"
+    },
+    {
+      "parent": "            !ble_frame44 && !ble_frame_error && ble_frame_epoch==rate_epoch),\n`else",
+      "selected": "            !ble_frame44 && !ble_frame_error && ble_frame_epoch==rate_epoch),\n`endif\n`else"
+    },
+    {
+      "parent": "`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n    workstation_audio_memory u_audio_memory(",
+      "selected": "`ifdef WORKSTATION_TASK3_W_MEDIA\n`include \"rtl/workstation/workstation_task3_media_board.svh\"\n`elsif WORKSTATION_WORKER_AUDIO_ONLY\n    workstation_audio_memory u_audio_memory("
+    },
+    {
+      "parent": "`ifdef WORKSTATION_RECORDING_DDR\n        .APB_PRDATA(",
+      "selected": "`ifdef WORKSTATION_TASK3_W_MEDIA\n        .APB_PRDATA(task3_media_select?task3_media_bus_data:pcm_select?pcm_bus_data:business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),\n        .APB_PREADY(task3_media_select?task3_media_bus_ready:pcm_select?pcm_bus_ready:business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),\n        .APB_PSLVERR(task3_media_select?task3_media_bus_error:pcm_select?pcm_bus_error:business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),\n`elsif WORKSTATION_RECORDING_DDR\n        .APB_PRDATA("
+    },
+    {
+      "parent": "endmodule\n",
+      "selected": "endmodule\n`ifdef WORKSTATION_WORKER_AUDIO_ONLY\n`undef WORKSTATION_HEADLESS_GRAPHICS\n`endif\n"
+    }
+  ]
+}

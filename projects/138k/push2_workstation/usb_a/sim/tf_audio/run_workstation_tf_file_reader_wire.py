@@ -12,9 +12,16 @@ CARD='sim/tf_audio/workstation_tf_file_wire_card.sv'
 TB='sim/tf_audio/workstation_tf_file_reader_wire_tb.sv'
 LOCKS={ORIGIN:'57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441',SECTOR:'8f1961c951f3622ed6253bf0b1c42879f5b1950bc6a9e4a5ef40b5a01b546110',SESSION:'704e9b62caa4ef79c01f1d2b4c1c61b2e2bd55f93c83ae90bb573c9e71c0a6c8'}
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-def provenance(root=ROOT):
+def provenance(root=ROOT,*,direct_crc_source_adaptation=False):
  p=json.loads((root/PROVENANCE).read_text());original=(root/ORIGIN).read_bytes();native=(root/NATIVE).read_bytes()
- if hashlib.sha256(original).hexdigest()!=p['origin_sha256'] or sha(root/NATIVE)!=p['native_sha256']:raise ValueError('file-owner source identity drift')
+ actual_native_sha256=hashlib.sha256(native).hexdigest();adaptation=None;restored={}
+ if direct_crc_source_adaptation:
+  import sys
+  sys.path.insert(0,str(root))
+  from tools.workstation_tf_sd_crc16_provenance import validate_adaptation
+  adaptation,restored=validate_adaptation(root)
+  native=restored[NATIVE]
+ if hashlib.sha256(original).hexdigest()!=p['origin_sha256'] or hashlib.sha256(native).hexdigest()!=p['native_sha256']:raise ValueError('file-owner source identity drift')
  s=original.decode()
  for e in p['forward_edits']:
   if s.count(e['before'])!=e['count']:raise ValueError('file-owner exact forward anchor drift')
@@ -26,8 +33,9 @@ def provenance(root=ROOT):
   s=s.replace(e['after'],e['before'])
  if s.encode()!=original:raise ValueError('file-owner reverse restoration mismatch')
  for name,value in LOCKS.items():
-  if sha(root/name)!=value:raise ValueError('locked reader/transport drift: '+name)
- return dict(exact_forward_and_reverse=True,edits=len(p['forward_edits']),original_sha256=sha(root/ORIGIN),native_sha256=sha(root/NATIVE),GPL_notices_and_original_bytes_retained=True)
+  actual=hashlib.sha256(restored[name]).hexdigest() if name in restored else sha(root/name)
+  if actual!=value:raise ValueError('locked reader/transport drift: '+name)
+ return dict(exact_forward_and_reverse=True,edits=len(p['forward_edits']),original_sha256=sha(root/ORIGIN),native_sha256=actual_native_sha256,original_manifest_native_sha256=p['native_sha256'],explicit_DIRECT_crc_source_adaptation=adaptation,GPL_notices_and_original_bytes_retained=True)
 def le(a,o,v,n):a[o:o+n]=int(v).to_bytes(n,'little')
 def disk(folder,fs=16,mbr=False,fault=None,large=False,eoc=0xfffffff9):
  base=8 if mbr else 0;root_entries=4113 if large else 17;root_n=(root_entries+15)//16 if fs==16 else 0
@@ -119,8 +127,9 @@ def scenarios():
  for k in (1,2,3):s.append(('file_transport_'+str(k),dict(fs=16),dict(MODE=2,EXPECT_ERROR=1,INITIAL_FAULT_KIND=k,INITIAL_FAULT_LBA=21)))
  return s
 
-def run(output,only=None):
- output.mkdir(parents=True,exist_ok=False);proof=provenance();sources=[NATIVE,PROVENANCE,ORIGIN,SECTOR,SESSION,CARD,TB,'sim/tf_audio/run_workstation_tf_file_reader_wire.py','rtl/tf_audio/storage/tang_mp3/LICENSE','rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md','rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json']
+def run(output,only=None,*,direct_crc_source_adaptation=False):
+ output.mkdir(parents=True,exist_ok=False);proof=provenance(direct_crc_source_adaptation=direct_crc_source_adaptation);sources=[NATIVE,PROVENANCE,ORIGIN,SECTOR,SESSION,CARD,TB,'sim/tf_audio/run_workstation_tf_file_reader_wire.py','rtl/tf_audio/storage/tang_mp3/LICENSE','rtl/tf_audio/storage/WORKSTATION_TF_FILE_READER_CONTRACT.md','rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json']
+ if direct_crc_source_adaptation:sources += ['rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.adaptation.json','tools/workstation_tf_sd_crc16_provenance.py','rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.sv']
  hashes={p:sha(ROOT/p) for p in sources};result=dict(schema=1,passed=False,source_sha256=hashes,provenance=proof,wire_model='Real mode-0 SPI edges and constructed sparse FAT16/FAT32 disks; no DUT hierarchy force/deposit or session stub',profile_selected=False,CRC_validated=False,FAT_cache_implemented=False,PCM_ingress_implemented=False,no_DDR_profile=False,throughput_qualified=False,m03_complete=False,synthesis=False,pnr=False,hardware_tested=False,sram_programmed=False,flash_written=False,cases={},negative_controls={})
  def execute(case,config,parameters,source=None,expected_failure=None):
   folder=output/case;manifest=disk(folder,**config);path=source or ROOT/NATIVE
@@ -163,4 +172,4 @@ def run(output,only=None):
   result['source_inputs_unchanged']=True;result['passed']=True
  finally:(output/'verification.json').write_text(json.dumps(result,indent=2)+'\n')
 if __name__=='__main__':
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);p.add_argument('--case',action='append');a=p.parse_args();run(a.output.resolve(),a.case)
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);p.add_argument('--case',action='append');p.add_argument('--direct-crc-source-adaptation',action='store_true');a=p.parse_args();run(a.output.resolve(),a.case,direct_crc_source_adaptation=a.direct_crc_source_adaptation)

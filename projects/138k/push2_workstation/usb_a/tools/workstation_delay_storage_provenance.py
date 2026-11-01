@@ -458,7 +458,12 @@ def source_bundle(root):
             whole_workstation_selected=False, physical_transport_verified=False)
     if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
         raise ValueError('Delay FIFO source bytes changed')
-    reference = (root / REFERENCE).read_bytes()
+    selected_reference = (root / REFERENCE).read_bytes()
+    from tools.workstation_task3_w_media_profile import inverse_top
+    reference = inverse_top(root, selected_reference.decode()).encode()
+    if reference != selected_reference:
+        evidence['task3_w_media_reference'] = dict(parent_sha256=sha(reference),
+            current_sha256=sha(selected_reference), exact_inverse_round_trip_verified=True,default_macro_off=True)
     restored_reference = reference
     if sha(reference) == DIRECT_TOP_SHA256:
         payload = (root / DIRECT_REFERENCE).read_bytes()
@@ -533,7 +538,7 @@ def source_bundle(root):
         demo_d_controls={path: {key: value for key, value in item.items() if key!='edits'}
                          for path,item in D_CONTROL_ADAPTATIONS.items()},
         original_locked_prepared_slice_verified=True,
-        storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(reference),
+        storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(selected_reference),
         original_prepared_source=PREPARED_SOURCE, original_prepared_identity=info['prepared_source_identity'],
         accepted_baseline_storage_selection_inherited=False)
     return evidence

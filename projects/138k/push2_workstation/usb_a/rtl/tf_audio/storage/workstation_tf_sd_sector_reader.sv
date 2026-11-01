@@ -9,7 +9,9 @@ module workstation_tf_sd_sector_reader #(
     parameter integer SPI_CLK_DIV=100,
     parameter integer SPI_CLK_DIV_FAST=12,
     // 166.4 ms at the native 50-MHz source clock, independent of SPI divider.
-    parameter integer TOKEN_WAIT_CLOCKS=8320000
+    parameter integer TOKEN_WAIT_CLOCKS=8320000,
+    // First-party integrity adaptation, opt-in; original manifests unchanged.
+    parameter integer VERIFY_DATA_CRC=0
 ) (
     input wire rstn,clk,
     output wire spi_ssn,spi_sck,spi_mosi,
@@ -42,6 +44,8 @@ module workstation_tf_sd_sector_reader #(
     localparam [63:0] TOKEN_BYTES_WIDE=(WAIT_CLOCKS_WIDE+BYTE_CLOCKS_WIDE-64'd1)/BYTE_CLOCKS_WIDE;
     localparam [23:0] TOKEN_BYTES=TOKEN_BYTES_WIDE[23:0];
     initial begin
+        if(VERIFY_DATA_CRC!=0 && VERIFY_DATA_CRC!=1)
+            $fatal(1,"native SD VERIFY_DATA_CRC must be 0 or 1");
         if(SPI_CLK_DIV<2 || SPI_CLK_DIV>255 || READ_DIV<2 || READ_DIV>255)
             $fatal(1,"native SD SPI divider must be in 2..255 (FAST=0 inherits init)");
         if(TOKEN_WAIT_CLOCKS<1 || TOKEN_BYTES_WIDE>64'hffffff)
@@ -63,6 +67,19 @@ module workstation_tf_sd_sector_reader #(
     wire rvalid_session;
     wire [15:0] rindex_session;
     wire [7:0] rdata_session;
+    wire data_crc_complete,data_crc_valid;
+    generate if(VERIFY_DATA_CRC!=0) begin: g_data_crc
+        workstation_tf_sd_crc16_v1 crc_guard(
+            .clk_i(clk),.rst_ni(rstn),
+            .clear_i(cardstate==IDLE && !spistart && start && !start_q),
+            .byte_valid_i(cardstate==READING && cmdrsp_valid && cmdrsp==8'h00 &&
+                          rwrsp==8'hfe && rvalid_session),
+            .byte_index_i(rindex_session),.byte_i(rdata_session),
+            .complete_o(data_crc_complete),.valid_o(data_crc_valid));
+    end else begin: g_no_data_crc
+        assign data_crc_complete=1'b1;
+        assign data_crc_valid=1'b1;
+    end endgenerate
     assign card_type=cardtype;
     assign card_stat=cardstate;
     assign debug_cmdrsp=cmdrsp;
@@ -101,8 +118,13 @@ module workstation_tf_sd_sector_reader #(
                     end
                     CMD16: if(cmdrsp_valid && cmdrsp==8'h00) cardstate<=IDLE;
                     READING: if(cmdrsp_valid && cmdrsp==8'h00 && rwrsp==8'hfe) begin
-                        cardstate<=IDLE;
-                        done<=1;
+                        // Verdict is applied only after the original session
+                        // has drained both CRC bytes and its CS-high release.
+                        if(VERIFY_DATA_CRC!=0 && (!data_crc_complete || !data_crc_valid)) begin
+                            cardstate<=FAULT;
+                            read_error<=1;
+                            read_error_code<=2'd3;
+                        end else begin cardstate<=IDLE;done<=1;end
                     end else begin
                         cardstate<=FAULT;
                         read_error<=1;

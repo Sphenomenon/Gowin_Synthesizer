@@ -123,14 +123,20 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
-        if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
-            raise ValueError("unreviewed Classic demo compilation provider")
-        provider=selected_provider
-        policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
+        from tools.workstation_task3_w_media_profile import PROVIDER as MEDIA_PROVIDER,FIRMWARE_POLICY
+        if media_worker:
+            if selected_provider!=MEDIA_PROVIDER or headless_worker or physical_rom_bytes!=131072:
+                raise ValueError('explicit full W-media provider/configuration required')
+            provider,policy=MEDIA_PROVIDER,FIRMWARE_POLICY
+        else:
+            if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
+                raise ValueError("unreviewed Classic demo compilation provider")
+            provider=selected_provider
+            policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
     installed=shutil.which('iverilog')
     if not installed:raise ValueError('Classic runtime actual preprocessing requires iverilog')
@@ -140,11 +146,14 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     target.write_bytes(payload);log.write_text(diagnostic)
     from tools.workstation_ae350_pcm import source_bundle
     record=dict(policy=policy,pcm=dict(source_bundle(root),profile_selected=True),
-        provider=provider,headless_worker=headless_worker,preprocessed_sha256=sha(target),command=argv,
+        provider=provider,headless_worker=headless_worker,worker_media=media_worker,preprocessed_sha256=sha(target),command=argv,
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker)
+    if media_worker:
+        from tools.workstation_task3_w_media_profile import selected_source_evidence
+        record['worker_media_source']=selected_source_evidence(stage,payload.decode())
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker)
     return record
 def verify_cdc_selection(text,record,*,worker_demo=False):
     """Check the exact final scoped lines for the explicitly selected role."""
@@ -157,16 +166,22 @@ def verify_cdc_selection(text,record,*,worker_demo=False):
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
-        if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
-            raise ValueError("unreviewed Classic demo compilation provider")
-        provider=selected_provider
-        policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
+        from tools.workstation_task3_w_media_profile import PROVIDER as MEDIA_PROVIDER,FIRMWARE_POLICY
+        if media_worker:
+            if selected_provider!=MEDIA_PROVIDER or headless_worker or physical_rom_bytes!=131072:
+                raise ValueError('explicit full W-media provider/configuration required')
+            provider,policy=MEDIA_PROVIDER,FIRMWARE_POLICY
+        else:
+            if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
+                raise ValueError("unreviewed Classic demo compilation provider")
+            provider=selected_provider
+            policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
-    if record.get('headless_worker',False)!=headless_worker:raise ValueError('audio-only worker selection drift')
+    if record.get('headless_worker',False)!=headless_worker or record.get('worker_media',False)!=media_worker:raise ValueError('headless runtime role selection drift')
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -184,17 +199,25 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if argv!=record['command']or hashlib.sha256(payload).hexdigest()!=record['preprocessed_sha256']:
         raise ValueError('Classic runtime actual macro closure cannot be reproduced')
     text=target.read_text()
+    if media_worker:
+        from tools.workstation_task3_w_media_profile import selected_source_evidence
+        if record.get('worker_media_source')!=selected_source_evidence(stage,text):
+            raise ValueError('W-media actual source/entry proof drift')
     for anchor in ['localparam AE350_PCM_ENABLED=1;','gw138k_boot_memory #(.ROM_BYTES('+str(physical_rom_bytes)+'))',
         '.hci_classic_ready_o(hci_pcm_session_ready)', '.hci_epoch_o(hci_pcm_controller_epoch)',
         '.hci_classic_generation_o(hci_pcm_transport_generation)',
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
     verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
-        worker_demo=selected_provider=='rtl/workstation/workstation_profile_w_demo.sv')
+        worker_demo=selected_provider in ('rtl/workstation/workstation_profile_w_demo.sv','rtl/workstation/workstation_profile_task3_w_media.sv'))
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False,media_worker=False):
+    if media_worker:
+        if physical_rom_bytes!=131072 or not worker_demo or headless_worker:raise ValueError('W-media ROM/runtime role drift')
+        from tools.workstation_task3_w_media_profile import build_firmware
+        return build_firmware(root,evidence,prefix)
     from tools.experiment_ae350_rom_split import build as link
     from tools.ae350_classic_runtime_audit import analyze
     root,evidence=Path(root),Path(evidence)
@@ -230,6 +253,10 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=Fals
     verify_build(root,evidence,record,physical_rom_bytes)
     return record
 def verify_build(root,evidence,record,physical_rom_bytes=131072):
+    if record.get('worker_media',False):
+        if physical_rom_bytes!=131072:raise ValueError('W-media physical ROM drift')
+        from tools.workstation_task3_w_media_profile import verify_firmware
+        return verify_firmware(root,evidence,record)
     root,evidence=Path(root),Path(evidence)
     policy,_=composition(physical_rom_bytes)
     if record.get('worker_demo',False):

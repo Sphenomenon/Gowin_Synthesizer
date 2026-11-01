@@ -52,7 +52,8 @@ module workstation_tf_file_reader #(
     parameter [25:0] PROBE_INTERVAL_CYCLES = 26'd50_000_000,
     parameter integer TOKEN_WAIT_CLOCKS = 8320000,
     parameter integer WATCHDOG_CLOCKS = 250000000,
-    parameter integer MAX_ROOT_SECTORS = 4096
+    parameter integer MAX_ROOT_SECTORS = 4096,
+    parameter integer VERIFY_DATA_CRC = 0
 ) (
     input  wire        rstn,
     input  wire        clk,
@@ -135,7 +136,8 @@ wire [ 7:0] rdata;
 workstation_tf_sd_sector_reader #(
     .SPI_CLK_DIV      ( SPI_CLK_DIV      ),
     .SPI_CLK_DIV_FAST ( SPI_CLK_DIV_FAST ),
-    .TOKEN_WAIT_CLOCKS( TOKEN_WAIT_CLOCKS )
+    .TOKEN_WAIT_CLOCKS( TOKEN_WAIT_CLOCKS ),
+    .VERIFY_DATA_CRC  ( VERIFY_DATA_CRC )
 ) u_sector_reader (
     .rstn      ( transport_rstn ),
     .clk       ( clk            ),
