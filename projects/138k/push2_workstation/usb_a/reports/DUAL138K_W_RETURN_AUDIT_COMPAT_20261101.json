@@ -1,0 +1,25 @@
+{
+  "schema": "dual138k-w-return-audit-compat-v1",
+  "captured_utc": "2026-11-01T07:04:57.295426+00:00",
+  "problem": "Initial404926b8 strict auditor unconditionally hashed the new helper/bluetooth source even for old policies; prior no-import statement held but no-new-helper dependency needed this correction.",
+  "change": "Select one immutable local audit source tuple by sealed W-v3 metadata before first hash; reuse exactly the same tuple after full audit. Existing timing, role and unknown-policy gates remain.",
+  "source_sha256": {
+    "tools/workstation_demo_audit.py": "8f817ea18c59298c85a12d437261a655aaf0e4cd91391257008a56404775f563",
+    "sim/test_workstation_demo_audit.py": "8ed6e5f7defe8c4f030844801193418d4f56f68b2b149782f91809e9fc1007d2"
+  },
+  "tests": {
+    "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_demo_audit.py",
+    "passed": true,
+    "tests": 16,
+    "targeted_subcases": [
+      "M/W None/v1/v2 reaches prepared boundary with both new dependencies absent",
+      "W-v3 missing helper rejected",
+      "W-v3 missing bluetooth dependency rejected",
+      "W-v3 includes both source files in pre-audit hash snapshot"
+    ]
+  },
+  "independent_review": "usb_worker_adapter read-only review confirmed other helper imports/source dependencies are gated by W-v3; unknown policy or M claimingv3 remains rejected by existing timing gates.",
+  "new_EDA_started": false,
+  "hardware_tested": false,
+  "historical_seals_modified": false
+}

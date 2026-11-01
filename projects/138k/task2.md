@@ -390,6 +390,8 @@ W专属[返回邮箱v3维护阶段](push2_workstation/usb_a/reports/DUAL138K_W_R
 
 M的[TF accepted响应尺寸维护阶段](push2_workstation/usb_a/reports/DUAL138K_TF_ACCEPTED_RESPONSE_20261101.md)已完成：按M18 default／far实测链仅前算full／pending／partial六种accepted算术，未知控制保留generic，read_buf预装与全部NBA／周期不改。实际维护31dcb…07b7通过72自由位两表达式证明、2097152四态／5负控及旧available／response／occupancy／threshold／private-preload全链；严格inverse31→5fc→1baa→3f9→5ac和原fixture保持。主线程重验258产物／25输入／3owned，物理收益需新身份全量重测；未上板，不将旧M18时序转授新RTL。
 
+W-v3的[strict审计来源兼容修正](push2_workstation/usb_a/reports/DUAL138K_W_RETURN_AUDIT_COMPAT_20261101.md)通过16项回归：新helper／bluetooth仅v3封存，起止复用同一来源tuple，M/W旧策略在两新依赖缺失时可继续验证；v3缺任一依赖仍拒绝。修正初始工具无条件读取依赖，未改旧seal或时序门，未启动EDA／硬件。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

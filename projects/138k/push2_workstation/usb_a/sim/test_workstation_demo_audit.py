@@ -4,7 +4,9 @@ from pathlib import Path
 from types import SimpleNamespace
 import copy
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -32,6 +34,46 @@ DFFCE rx_sync_0_s0 (.D(d),.Q(q),.CLK(clk),.CE(d),.CLEAR(d));
 endmodule
 '''
     return SynthesisNetlist(text, audit.TOP)
+
+
+class OptionalReturnAuditor(unittest.TestCase):
+    def test_old_policies_do_not_require_new_helper_but_v3_does(self):
+        class PreparedBoundaryReached(Exception):
+            pass
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in audit.AUDIT_SOURCES:
+                if name in ('tools/workstation_w_return_mailbox_cdc.py',
+                            'tools/workstation_bluetooth_ddr.py'):
+                    continue
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('frozen auditor fixture\n')
+            for policy in (None, 'independent-demo-runtime-timing-v1',
+                           'independent-demo-runtime-timing-v2'):
+                for role in ('M', 'W'):
+                    metadata = {'demo_role': role}
+                    if policy is not None:
+                        metadata['demo_runtime_timing'] = {'policy': policy}
+                    with self.subTest(policy=policy, role=role), patch.object(audit, 'verify_prepared',
+                            side_effect=PreparedBoundaryReached):
+                        with self.assertRaises(PreparedBoundaryReached):
+                            audit.audit(root, root / 'candidate', metadata)
+            metadata = {'demo_runtime_timing': {
+                'policy': 'independent-demo-w-return-mailbox-timing-v3'}}
+            with patch.object(audit, 'verify_prepared', side_effect=PreparedBoundaryReached):
+                with self.assertRaisesRegex(FileNotFoundError, 'workstation_w_return_mailbox_cdc.py'):
+                    audit.audit(root, root / 'candidate', metadata)
+                (root / 'tools/workstation_w_return_mailbox_cdc.py').write_text('selected helper\n')
+                with self.assertRaisesRegex(FileNotFoundError, 'workstation_bluetooth_ddr.py'):
+                    audit.audit(root, root / 'candidate', metadata)
+                (root / 'tools/workstation_bluetooth_ddr.py').write_text('selected source authority\n')
+                with patch.object(audit, 'sha', wraps=audit.sha) as hashes:
+                    with self.assertRaises(PreparedBoundaryReached):
+                        audit.audit(root, root / 'candidate', metadata)
+                    paths = {call.args[0].name for call in hashes.call_args_list}
+                    self.assertTrue({'workstation_w_return_mailbox_cdc.py',
+                                     'workstation_bluetooth_ddr.py'} <= paths)
 
 
 class VisibleConstraints(unittest.TestCase):

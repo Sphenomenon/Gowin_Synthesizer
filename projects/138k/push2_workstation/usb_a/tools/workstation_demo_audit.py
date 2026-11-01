@@ -43,8 +43,6 @@ AUDIT_SOURCES = (
     'tools/workstation_demo_boundary_cdc.py',
     'tools/workstation_native_protocol_audit.py', 'tools/workstation_recording_phase1_cdc.py',
     'tools/workstation_runtime_profile.py', 'tools/workstation_runtime_cdc.py',
-    'tools/workstation_w_return_mailbox_cdc.py',
-    'tools/workstation_bluetooth_ddr.py',
 )
 COMMON_FEATURES = {
     'usb_host': 'u_native_usb/host', 'usb_cpu': 'u_native_usb/host/cpu',
@@ -478,7 +476,12 @@ def audit(root, output, metadata):
     from tools.workstation_ae350_clock_placement import verify_prepared as verify_clock_placement
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
     root, output = Path(root), Path(output)
-    audit_sources = {relative: sha(root / relative) for relative in AUDIT_SOURCES}
+    audit_source_names = AUDIT_SOURCES
+    from tools.workstation_performance_reset import W_RETURN_TIMING_POLICY
+    if (metadata.get('demo_runtime_timing') or {}).get('policy') == W_RETURN_TIMING_POLICY:
+        audit_source_names += ('tools/workstation_w_return_mailbox_cdc.py',
+                               'tools/workstation_bluetooth_ddr.py')
+    audit_sources = {relative: sha(root / relative) for relative in audit_source_names}
     role, profile, stage = verify_prepared(output, metadata)
     require(metadata.get('top_module') == TOP and metadata.get('validation_stage') == 'integration_prepare_only' and
             metadata.get('source_policy') == 'explicit_native_board_on_resource_timing' and
@@ -567,7 +570,7 @@ def audit(root, output, metadata):
     require(verify_prepared(output, metadata)[1] == profile, 'candidate drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)},
             'synthesis outputs drifted during audit')
-    require(audit_sources == {relative: sha(root / relative) for relative in AUDIT_SOURCES},
+    require(audit_sources == {relative: sha(root / relative) for relative in audit_source_names},
             'audit implementation drifted during review')
     return dict(schema=1, identity=metadata['identity'], candidate_identity=profile['candidate_identity'],
         validation_stage='demo_full_profile_synthesis_only', demo_role=role, top_module=TOP,
