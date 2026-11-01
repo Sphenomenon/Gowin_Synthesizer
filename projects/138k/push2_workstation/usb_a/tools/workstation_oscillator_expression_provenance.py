@@ -4,9 +4,11 @@ import json
 from pathlib import Path
 
 if __package__:
-    from .workstation_oscillator_release_provenance import normalize_source
+    from .workstation_oscillator_release_provenance import normalize_source, PARENT_SHA256 as RELEASE_PARENT_SHA256
+    from .workstation_dispatch_slot_provenance import source_evidence
 else:
-    from workstation_oscillator_release_provenance import normalize_source
+    from workstation_oscillator_release_provenance import normalize_source, PARENT_SHA256 as RELEASE_PARENT_SHA256
+    from workstation_dispatch_slot_provenance import source_evidence
 
 SOURCE = 'rtl/audio/workstation_runtime_oscillator_engine.sv'
 PROVENANCE = 'rtl/audio/workstation_runtime_oscillator_engine.provenance.json'
@@ -63,6 +65,7 @@ def verify(source, provenance, adaptation):
     if sha(current.encode()) != meta['prepared_sha256']:
         raise ValueError('Oscillator exact prepared identity changed')
     return dict(policy=POLICY, source=SOURCE, current_source_sha256=sha(source),
+                dispatch_slot_source=(None if sha(source) == RELEASE_PARENT_SHA256 else source_evidence(SOURCE, source)),
                 original_native_sha256=meta['native_sha256'],
                 original_provenance_sha256=sha(provenance), adaptation_sha256=sha(adaptation),
                 exact_prepared_sha256=sha(current.encode()), original_provenance_unchanged=True,

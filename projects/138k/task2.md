@@ -468,6 +468,8 @@ W的[显式无图形／无录音AE350固件](push2_workstation/usb_a/reports/DUA
 
 M24的[同拍dispatch与HDMI既有级坐标修复](push2_workstation/usb_a/reports/DUAL138K_M24_DISPATCH_HDMI_MAINTENANCE_20261101.json)已落维护RTL：只读stored slot经原引擎owner组合，保留公开ready、同拍mode／事件互斥及未知态fallback，不增加音频状态／周期；27个坐标谓词前移至既有Stage A，颜色优先级、四级像素延迟、reset／enable停顿保持。M／W／legacy完整service／engine／effects／DMA miter、3项无假设二态证明、147456四态、3可观察负控及4配置整屏＋65536额外输入通过；旧fixture对封存M23已拒绝、fallback移除在观测锥无差异，均据实保留而未冒记负控。主线程重验164绑定／119文件，4份完整inverse逐字节等于Git HEAD；17来源测试通过。新D2110132将独立全量综合／P&R，不预记资源或时序收益，未上板。
 
+M24的[实际生产来源逆链](push2_workstation/usb_a/reports/DUAL138K_M24_DISPATCH_PRODUCTION_PROVENANCE_20261101.json)已接入：同一tools helper唯一维护3源完整inverse，verification薄导入；只有精确新oscillator可逆回原release／expression链，旧3份manifest逐字节不变，混合新旧owner与越界修改严格拒绝。7来源正例／18负控、绑定新helper的147456四态＋3实际负控和M／W／legacy完整miter通过；主线程重验106绑定／94文件并重跑来源与17入口测试。仅解除新源码构建来源门，不把来源通过当综合、物理或硬件接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

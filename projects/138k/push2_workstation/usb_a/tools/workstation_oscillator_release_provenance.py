@@ -3,6 +3,11 @@ import hashlib
 import json
 from pathlib import Path
 
+if __package__:
+    from .workstation_dispatch_slot_provenance import normalize_source as normalize_dispatch_source, source_evidence
+else:
+    from workstation_dispatch_slot_provenance import normalize_source as normalize_dispatch_source, source_evidence
+
 SOURCE = 'rtl/audio/workstation_runtime_oscillator_engine.sv'
 ADAPTATION = 'rtl/audio/workstation_runtime_oscillator_engine.release_selection.json'
 POLICY = 'native_release_balanced_prefix_v1'
@@ -17,6 +22,9 @@ def sha(data):
 def restore_parent(source, adaptation):
     if sha(adaptation) != ADAPTATION_SHA256:
         raise ValueError('Oscillator release adaptation bytes changed')
+    # Normalize only the exact reviewed read-only slot addition. The immutable
+    # release manifest continues to bind the complete original parent bytes.
+    source = normalize_dispatch_source(SOURCE, source)
     bridge = json.loads(adaptation)
     if (bridge['schema'] != 1 or bridge['policy'] != POLICY or bridge['source'] != SOURCE or
             bridge['parent_source_sha256'] != PARENT_SHA256 or
@@ -54,6 +62,7 @@ def source_bundle(root):
     parent = restore_parent(source, adaptation)
     return dict(policy=POLICY, source=SOURCE, current_source_sha256=sha(source),
                 parent_source_sha256=sha(parent), adaptation_sha256=sha(adaptation),
+                dispatch_slot_source=source_evidence(SOURCE, source),
                 exact_inverse_and_roundtrip=True, all_clocked_source_bytes_unchanged=True,
                 added_clock_latency=0, physical_timing_verified=False,
                 hardware_acceptance_inherited=False)

@@ -1,0 +1,61 @@
+{
+  "schema": "dual138k_M24_dispatch_production_provenance_20261101_v1",
+  "stage": "M24 production provenance follow-up; no RTL/SDC changes; before profile seal and complete build",
+  "production_change": "One exact dispatch-slot inverse authority in tools, imported by verification; normalize only reviewed oscillator bytes before immutable release/expression chain; runtime metadata validates all three owner identities and rejects mixed stages; new production helper locked into runtime dependencies.",
+  "source_sha256": {
+    "tools/workstation_dispatch_slot_provenance.py": "1b7c3df5df93d18331a4b0cbdc7f3e5d2ca294992e8cb8783daffa405c27cf24",
+    "tools/workstation_oscillator_release_provenance.py": "796fbf281bf68f677bf2f58cf3e057ffe806b2425cb289b9e267926e9764378a",
+    "tools/workstation_oscillator_expression_provenance.py": "e5968f9e9397bcbcfba4d8c6a0a0f7ee06daf4d589888b84e40a078ef49ac07b",
+    "tools/workstation_runtime_profile.py": "dc5f3c8d9cc3298f11e9373fd6c9c54ee86845ca83018fa85b4ea415be3e2b69",
+    "sim/audio/dispatch_slot_sources.py": "b5e395445737c2c1ac6278286eaa9fc0b1fa64dcad57e1aae65f3ed5f026d044",
+    "sim/test_workstation_dispatch_provenance.py": "91581ceedfed16b94098c90b6809f4c7cf1d42cd6172e471ff4a0deeb09918d5"
+  },
+  "validation": {
+    "provenance_positive_cases": 7,
+    "provenance_rejected_negative_controls": 18,
+    "dispatch_binary_proofs": 3,
+    "dispatch_four_state_vectors": 147456,
+    "dispatch_executed_observable_rejected_mutants": 3,
+    "full_module_profiles": [
+      "M",
+      "W",
+      "legacy"
+    ],
+    "public_outputs": 50,
+    "common_boundaries": 25,
+    "added_dispatch_boundaries": 7,
+    "native_transaction_boundaries": 7,
+    "current_source_tests": 17,
+    "diff_check_passed": true
+  },
+  "root_review": {
+    "hash_bindings": 106,
+    "unique_files": 94,
+    "all_bindings_match": true,
+    "immutable_manifests_exact_to_git_HEAD": true,
+    "rerun_production_test": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-root-production-provenance-v1/verification.json",
+      "sha256": "ab5f571cbd65719881d64ff7996c4f68ad530ee816909d4942400dc606815010",
+      "positive_cases": 7,
+      "rejected_negative_controls": 18
+    },
+    "source_tests": 17,
+    "passed": true
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-production-dispatch-provenance-v1/verification.json": "ab5f571cbd65719881d64ff7996c4f68ad530ee816909d4942400dc606815010",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-slots-proof-v5/verification.json": "ca58d5eb8e07b71c0d7cf242625fee4c290a609c27d67ad4e9dbc3515c0f7479",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-slots-module-v2/verification.json": "6f95222d04228f61e3f6bfb880d44709e0d3eaa6bab9ad43a5c5d7296383b319",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-current-source-tests-v2.json": "9724d4d1361fb792451fccc83f1d2e81136a57b529a02fada2c62045bc43a530"
+  },
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-dispatch-HDMI-maintenance-handoff-v2.json",
+    "sha256": "25d50fbb5e50c76578384a5e1069af3bce5618cf1449906d3b00cf4ef4bdf6f6"
+  },
+  "new_full_synthesis_completed": false,
+  "P_and_R_completed": false,
+  "physical_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false
+}
