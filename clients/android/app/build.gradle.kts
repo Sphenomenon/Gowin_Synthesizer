@@ -7,8 +7,8 @@ android {
         applicationId = "cn.gowin.control"
         minSdk = 26
         targetSdk = 35
-        versionCode = 15
-        versionName = "0.3.0-demo-d2"
+        versionCode = 16
+        versionName = "0.3.1-demo-d3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true }

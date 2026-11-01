@@ -462,6 +462,8 @@ M23的[新全量综合与定向物理准备](push2_workstation/usb_a/reports/DUA
 
 M23的[完整物理D2110130](push2_workstation/usb_a/reports/DUAL138K_M23_DIRECTED_PHYSICAL_20261101.json)已封存：全量P&R623.863s，物理BSRAM246／DSP116／CLS46460；setup599／最差−0.556ns（audio477、DDR UI122），hold0／+0.143ns，recovery+2.462／removal+0.275ns，DDR原3.500ns保持且指定hold+0.453ns。native45过／14具名不适用／61负控、boundary7／69、六PLL／7负控、performance17／8负控，以及新VG／VO实际HMI来源60有效／8消费常量／61未用及各8负控均通过；完整STA仍严格失败，不下载。主线程重新核验4475冻结文件；新M最小修复另用D2110132，W无显示配置独立推进。
 
+手机App新版[0.3.1-demo-d3](../../clients/android/docs/DEMO_D3_20261101.md)已实现真实SAF文件选择、本机／具体A2DP设备选择与实际routedDevice核对、播放／暂停／seek，及独立标准BLE MIDI手机→25K单事件发送／16键／力度／通道／NoteOff／PANIC／会话清理。83项单测零失败（2原硬件项跳过）、lint零错误／7依赖提示，隔离模拟器5项UI全过及最终同APK真实文件选择通过；主线程复验102来源／APK／证据文件，APK SHA c19645ec…9c5be。当前25K维护固件只将手机MIDI用于remote LED，无BLE→USB→138K发声转发；App明确显示，真手机无线／25K反馈／W DAC及断连实测均待验，不能据此勾选T2-D1／D2。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

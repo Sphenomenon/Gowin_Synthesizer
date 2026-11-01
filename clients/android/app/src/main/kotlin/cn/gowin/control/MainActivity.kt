@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val model:ControlViewModel=viewModel(factory=object:ViewModelProvider.Factory{
                 override fun <T:ViewModel> create(modelClass:Class<T>):T {
-                    @Suppress("UNCHECKED_CAST") return ControlViewModel((application as ControlApplication).workstation, (application as ControlApplication).musicPlayback) as T
+                    @Suppress("UNCHECKED_CAST") return ControlViewModel((application as ControlApplication).workstation, (application as ControlApplication).musicPlayback, (application as ControlApplication).midiKeyboard) as T
                 }
             })
             MaterialTheme(colorScheme=darkColorScheme(primary=Color(0xFF77DFBE),secondary=Color(0xFFA5B9F1),background=Color(0xFF10141D),surface=Color(0xFF191F2B))) {
@@ -68,11 +68,11 @@ class MainActivity : ComponentActivity() {
         val uri=FileProvider.getUriForFile(this,"$packageName.files",entry.file)
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply{type="audio/wav";putExtra(Intent.EXTRA_STREAM,uri);clipData=ClipData.newRawUri("WAV",uri);addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)},"分享录音"))
     }
-    override fun onStop(){player?.pause();(application as ControlApplication).musicPlayback.pause();super.onStop()}
+    override fun onStop(){(application as ControlApplication).midiKeyboard.panic();player?.pause();(application as ControlApplication).musicPlayback.pause();super.onStop()}
     override fun onDestroy(){player?.release();super.onDestroy()}
 }
 
-class ControlViewModel(val repo:Workstation,val music:MusicPlayback):ViewModel(){
+class ControlViewModel(val repo:Workstation,val music:MusicPlayback,val midi:MidiKeyboard?=null):ViewModel(){
     val state=repo.state
     val devices=repo.scanner.devices
     fun action(block:suspend ()->Unit){
@@ -146,7 +146,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
                     vm.repo.download()
                 }
                 2->Library(s,vm,play,share){pendingExport=it;export.launch(it.name+".wav")}
-                3->Music(vm.music,pausePlayback)
+                3->Music(vm.music,vm.midi,pausePlayback)
             }
             Spacer(Modifier.height(16.dp))
         }
@@ -305,7 +305,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
 private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/sampleRate;return "%02d:%02d".format(seconds/60,seconds%60)}
 
 
-@Composable private fun Music(music:MusicPlayback,pauseLibrary:()->Unit){
+@Composable internal fun Music(music:MusicPlayback,midi:MidiKeyboard?,pauseLibrary:()->Unit){
     val state by music.state.collectAsStateWithLifecycle()
     val context=androidx.compose.ui.platform.LocalContext.current
     val choose=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
@@ -319,11 +319,17 @@ private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/samp
             .onFailure{music.reportError("无法打开系统蓝牙设置：${it.message}")}
         Unit
     }
-    Section("播放到138K"){
-        Text("选择手机音频，通过蓝牙媒体音频发送到工作站。在138K上听到处理后的声音，并用25K触摸调节D效果。")
+    Section("手机音频播放"){
+        Text("先选择实际输出。手机本地播放可用扬声器或耳机；发送至138K时，在系统连接其蓝牙媒体音频，再选择对应设备。")
+
         OutlinedButton(onClick=pair){Text("连接蓝牙媒体音频")}
         Text(if(state.a2dpAvailable)"已检测到蓝牙媒体设备"else "蓝牙媒体未连接",color=if(state.a2dpAvailable)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+        state.outputs.forEach { output ->
+            FilterChip(selected=state.selectedOutputId==output.id,onClick={music.selectOutput(output.id)},
+                label={Text((if(output.a2dp) "蓝牙媒体 · " else "本地 · ")+output.name)})
+        }
         Text("实际输出：${state.output}",style=MaterialTheme.typography.bodySmall)
+        Text(if(state.routeConfirmed) "已确认实际路由与选择一致" else "实际路由尚未确认",style=MaterialTheme.typography.bodySmall)
         Button(onClick={choose.launch(arrayOf("audio/*"))}){Text(if(state.name==null)"选择音频文件"else "更换音频文件")}
         state.name?.let{Text(it,style=MaterialTheme.typography.titleSmall)}
         if(state.preparing)LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -337,13 +343,14 @@ private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/samp
             Slider(value=position.coerceIn(0f,state.durationMs.coerceAtLeast(1).toFloat()),
                 valueRange=0f..state.durationMs.coerceAtLeast(1).toFloat(),
                 onValueChange={dragging=true;position=it},onValueChangeFinished={music.seek(position.toInt());dragging=false})
-            Button(enabled=state.playing||state.a2dpAvailable,onClick={pauseLibrary();if(state.playing)music.pause()else music.play()}){
-                Text(if(state.playing)"暂停"else "播放到蓝牙")
+            Button(enabled=state.playing||state.outputs.any{it.id==state.selectedOutputId},onClick={pauseLibrary();if(state.playing)music.pause()else music.play()}){
+                Text(if(state.playing)"暂停"else "播放所选音频")
             }
         }
         state.error?.let{Text(it,color=MaterialTheme.colorScheme.error)}
-        Text("蓝牙媒体音频负责音乐播放；设备连接和录音下载仍通过原来的连接入口操作。切换到录音或控制页面时音乐继续；应用进入后台时暂停。",style=MaterialTheme.typography.bodySmall)
+        Text("选择设备只是向系统提出路由请求；播放后根据实际路由确认，输出丢失或不符会暂停。BLE MIDI／业务连接不代表蓝牙媒体已连接。进入后台暂停。",style=MaterialTheme.typography.bodySmall)
     }
+    if(midi!=null) MidiKeyboardPanel(midi)
 }
 
 private fun playbackTime(milliseconds:Int):String{

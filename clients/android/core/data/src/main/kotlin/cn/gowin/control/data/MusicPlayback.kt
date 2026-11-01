@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-/** Phone media playback follows Android's A2DP route, independently of BLE. */
+/** Actual local/A2DP media routing, independent of both BLE business and MIDI. */
 data class MusicPlaybackState(
     val name: String? = null,
     val preparing: Boolean = false,
@@ -24,6 +24,9 @@ data class MusicPlaybackState(
     val playing: Boolean = false,
     val positionMs: Int = 0,
     val durationMs: Int = 0,
+    val outputs: List<MusicOutput> = emptyList(),
+    val selectedOutputId: Int? = null,
+    val routeConfirmed: Boolean = false,
     val a2dpAvailable: Boolean = false,
     val routedToA2dp: Boolean = false,
     val output: String = "尚未播放",
@@ -38,6 +41,7 @@ class MusicPlayback(context: Context) {
     val state: StateFlow<MusicPlaybackState> = mutableState.asStateFlow()
     private var player: MediaPlayer? = null
     private var routeDeadlineMs = 0L
+    private var routeEstablished = false
     private val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
     private val focus = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -51,9 +55,9 @@ class MusicPlayback(context: Context) {
             if (mutableState.value.ready) {
                 refreshRoute(current)
                 if (mutableState.value.playing) {
-                    if (!mutableState.value.routedToA2dp && android.os.SystemClock.elapsedRealtime() >= routeDeadlineMs) {
+                    if (!mutableState.value.routeConfirmed && (routeEstablished || android.os.SystemClock.elapsedRealtime() >= routeDeadlineMs)) {
                         pause()
-                        mutableState.value = mutableState.value.copy(error = "音频未输出到蓝牙媒体设备，已暂停。请在系统蓝牙中连接138K的媒体音频。")
+                        mutableState.value = mutableState.value.copy(error = "实际音频输出与选择的设备不一致，已暂停。请确认系统媒体输出后重试。")
                         return
                     }
                     runCatching { current.currentPosition }.onSuccess {
@@ -70,10 +74,10 @@ class MusicPlayback(context: Context) {
         refreshRoute(active)
         // A real route change from A2DP to the handset stops playback rather
         // than continuing on a different physical output without notice.
-        if (mutableState.value.playing && active.routedDevice?.type != AudioDeviceInfo.TYPE_BLUETOOTH_A2DP &&
-            android.os.SystemClock.elapsedRealtime() >= routeDeadlineMs) {
+        if (mutableState.value.playing && !mutableState.value.routeConfirmed &&
+            (routeEstablished || android.os.SystemClock.elapsedRealtime() >= routeDeadlineMs)) {
             pause()
-            mutableState.value = mutableState.value.copy(error = "蓝牙媒体输出已断开，播放已暂停。")
+            mutableState.value = mutableState.value.copy(error = "所选音频输出已断开或改变，播放已暂停。")
         }
     }
     private val devices = object : AudioDeviceCallback() {
@@ -87,13 +91,33 @@ class MusicPlayback(context: Context) {
     }
 
     private fun refreshDevices() {
-        val available = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
-            .any { it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP }
-        mutableState.value = mutableState.value.copy(a2dpAvailable = available)
-        if (!available && mutableState.value.playing) {
+        val outputs = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+            .filter { it.type in setOf(AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+                AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_USB_HEADSET, AudioDeviceInfo.TYPE_USB_DEVICE,
+                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP) }
+            .map { MusicOutput(it.id, if (it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) "手机扬声器" else it.productName.toString(),
+                it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP) }
+        val state = mutableState.value
+        mutableState.value = state.copy(outputs = outputs, a2dpAvailable = outputs.any { it.a2dp },
+            routeConfirmed = state.routeConfirmed && outputs.any { it.id == state.selectedOutputId })
+        if (state.selectedOutputId != null && outputs.none { it.id == state.selectedOutputId } && state.playing) {
             pause()
-            mutableState.value = mutableState.value.copy(routedToA2dp = false, output = "蓝牙媒体未连接", error = "蓝牙媒体输出已断开，播放已暂停。")
+            mutableState.value = mutableState.value.copy(routeConfirmed = false, error = "所选音频输出已断开，播放已暂停。请重新选择输出。")
         }
+    }
+
+    fun selectOutput(id: Int) {
+        refreshDevices()
+        if (mutableState.value.outputs.none { it.id == id }) return
+        pause()
+        mutableState.value = mutableState.value.copy(selectedOutputId = id, routeConfirmed = false, error = null)
+        player?.let { applyPreferredDevice(it) }
+    }
+
+    private fun applyPreferredDevice(current: MediaPlayer): Boolean {
+        val id = mutableState.value.selectedOutputId ?: return false
+        val device = audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).firstOrNull { it.id == id } ?: return false
+        return current.setPreferredDevice(device)
     }
 
     private fun refreshRoute(current: MediaPlayer) {
@@ -105,7 +129,9 @@ class MusicPlayback(context: Context) {
             device != null -> device.productName.toString()
             else -> "尚未取得实际输出路由"
         }
-        mutableState.value = mutableState.value.copy(routedToA2dp = isA2dp, output = output)
+        mutableState.value = mutableState.value.copy(routedToA2dp = isA2dp, output = output,
+            routeConfirmed = MusicRoute.accepts(mutableState.value.selectedOutputId, device?.id, mutableState.value.outputs.map { it.id }.toSet()))
+        if (mutableState.value.routeConfirmed) routeEstablished = true
     }
 
     fun select(uri: Uri) {
@@ -115,7 +141,8 @@ class MusicPlayback(context: Context) {
                 if (cursor.moveToFirst()) cursor.getString(0) else null
             }
         }.getOrNull() ?: uri.lastPathSegment ?: "音频文件"
-        mutableState.value = MusicPlaybackState(name = name, preparing = true, a2dpAvailable = mutableState.value.a2dpAvailable)
+        mutableState.value = mutableState.value.copy(name = name, preparing = true, ready = false, playing = false,
+            positionMs = 0, durationMs = 0, routeConfirmed = false, routedToA2dp = false, output = "尚未播放", error = null)
         val current = MediaPlayer()
         player = current
         try {
@@ -152,17 +179,22 @@ class MusicPlayback(context: Context) {
     fun play() {
         refreshDevices()
         if (!mutableState.value.ready) return
-        if (!mutableState.value.a2dpAvailable) {
-            mutableState.value = mutableState.value.copy(error = "请先在系统蓝牙中连接138K，并开启该设备的媒体音频。")
+        if (mutableState.value.outputs.none { it.id == mutableState.value.selectedOutputId }) {
+            mutableState.value = mutableState.value.copy(error = "请先明确选择手机本地输出或已连接的蓝牙媒体设备。")
             return
         }
         val current = player ?: return
         try {
+            if (!applyPreferredDevice(current)) {
+                mutableState.value = mutableState.value.copy(error = "系统未接受所选输出，请在系统媒体输出中选择后重试。")
+                return
+            }
             if (audio.requestAudioFocus(focus) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 mutableState.value = mutableState.value.copy(error = "系统暂未允许音乐播放，请结束其他通话或音频任务后重试。")
                 return
             }
             if (mutableState.value.positionMs >= mutableState.value.durationMs) current.seekTo(0)
+            routeEstablished = false
             routeDeadlineMs = android.os.SystemClock.elapsedRealtime() + 2000
             current.start()
             mutableState.value = mutableState.value.copy(playing = true, error = null)
@@ -192,6 +224,11 @@ class MusicPlayback(context: Context) {
     }
 
     fun reportError(message: String) { mutableState.value = mutableState.value.copy(error = message) }
+
+    fun close() {
+        releasePlayer()
+        audio.unregisterAudioDeviceCallback(devices)
+    }
 
     private fun releasePlayer() {
         audio.abandonAudioFocusRequest(focus)
