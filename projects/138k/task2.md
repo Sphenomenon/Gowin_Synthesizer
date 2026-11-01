@@ -587,3 +587,5 @@ M26-1的[实测路径最小维护修复](push2_workstation/usb_a/reports/DUAL138
 修复后的M26-1已完成[第二轮正式prepare及来源冻结](push2_workstation/usb_a/reports/DUAL138K_M26_1_R2_PREPARE_20261102.json)：来源c9bdae9d，身份`1ab654241de6eb73`，608暂存／263编译／1490冻结工具，主线程逐项复验。预留D211013A，已启动完整新综合；后续源码修改不进入本冻结闭包，原D2110138失败证据及M26留板身份均保持，未预记新资源／时序或硬件接受。
 
 第二轮M26-1的[完整新综合与D211013A物理启动](push2_workstation/usb_a/reports/DUAL138K_M26_1_R2_SYNTHESIS_20261102.json)已完成：193.222s／exit0，610封存输入保持；新VG `9dad96de…47aa6f45`，FF43629／LUT48595／ALU11461／综合BSRAM等价211／SSRAM99，strict通过。实际native60项44过／16具名skip、66执行负控全部拒绝；仅显式connected_xy库存断言窄适配，原门不放宽。新VG／SDC经完整DDR及128ref来源闭包复核后全量P&R；此阶段尚无新routed资源／完整STA／硬件接受，不下载，M26留板。
+
+W25的[独立布线／时钟定位试验](push2_workstation/usb_a/reports/DUAL138K_W25_ROUTE_CLOCK_TRIALS_20261102.json)已冻结139／140／141失败：140仅route1，setup0／+.012ns，DDR hold仍−.453ns；141的LOCAL_CLOCK被CT1018拒绝、实际未应用，STA与139相同，VO仅唯一CreatedTime行变化，不能算作新语义／资源结果。逐pin对照显示M/W该数据路径基本相同，W捕获clk50使用PRIMARY、延迟比M的LW多.988ns；已核对vendor文档LOCAL非LW同义词。主线程重验物理及证据输入，下一独立142只追加显式BUFG8选线并按实际分布／全STA判断，原VG／SDC及DDR3.500ns保持，不预记收益、不下载。

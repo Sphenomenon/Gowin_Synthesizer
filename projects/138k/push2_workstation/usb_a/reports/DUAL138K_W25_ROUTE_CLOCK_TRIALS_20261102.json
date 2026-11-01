@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "scope": "139/140/141 frozen intermediate W physical experiments; all timing rejected; no deployment",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-ff53a5420e3db5ed",
+  "source_commit": "664e250655df1a364273706331a335e2a12d294d",
+  "integration_manifest_sha256": "eeb01906ef71ed7f4c3213568c5d2c3fa6aded64ba84b1f46c31c59d94fe7a51",
+  "synthesis_VG_sha256": "a9c47d184db1dda998ebacb5a5ecbd31b2deb8f9b279c71780fd6ba8041eefda",
+  "physical_trials": [
+    {
+      "physical": "custom138k-native-physical-D2110139",
+      "handoff": "w25-v2-full-physical-handoff-v1.json",
+      "handoff_sha256": "22a93b9956cf9bf5ee9026471bcf2d28280024ea43810ae71aabe4158a87a373",
+      "resource_usage": {
+        "Logic": {
+          "used": 43324,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 27030,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 32197,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 218,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 59,
+          "capacity": 298
+        },
+        "LUT": 30655,
+        "ALU": 11607,
+        "ROM16": 0,
+        "SSRAM": 177
+      },
+      "timing": {
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 1,
+        "global_worst_ns": {
+          "setup": 0.001,
+          "hold": -0.31,
+          "recovery": 0.885,
+          "removal": 0.281
+        }
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-physical-D2110139/impl/pnr/custom_138k_integration.fs",
+        "sha256": "e00a325ad39803b0acda3c290409827925592c6674b6f82d7f62626ba020653a",
+        "usercode": "0xd2110139",
+        "checksum": "0x24F0"
+      },
+      "timing_closed": false,
+      "hardware_tested": false,
+      "release_ready": false
+    },
+    {
+      "physical": "custom138k-native-physical-D2110140",
+      "handoff": "w25-v2-route1-full-physical-handoff-v1.json",
+      "handoff_sha256": "6d3a8bdd7214591e38cff1b915f3d7a091e6289a01abd6d390bc06eb9380d80a",
+      "resource_usage": {
+        "Logic": {
+          "used": 43324,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 27030,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 32197,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 218,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 59,
+          "capacity": 298
+        },
+        "LUT": 30655,
+        "ALU": 11607,
+        "ROM16": 0,
+        "SSRAM": 177
+      },
+      "timing": {
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 1,
+        "global_worst_ns": {
+          "setup": 0.012,
+          "hold": -0.453,
+          "recovery": 0.885,
+          "removal": 0.299
+        }
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-physical-D2110140/impl/pnr/custom_138k_integration.fs",
+        "sha256": "91f8a8d2dd9381253d4e5c890c61112e33f5b37dff27cea4a13181d862b3a846",
+        "usercode": "0xd2110140",
+        "checksum": "0x2E25"
+      },
+      "timing_closed": false,
+      "hardware_tested": false,
+      "release_ready": false
+    },
+    {
+      "physical": "custom138k-native-physical-D2110141",
+      "handoff": "w25-v2-local-clock-full-physical-handoff-v1.json",
+      "handoff_sha256": "ba81bcf54a021241f66f5624f9689d1aff5dc8bfac39a0e6e360c9cab72f1e95",
+      "resource_usage": {
+        "Logic": {
+          "used": 43324,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 27030,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 32197,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 218,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 59,
+          "capacity": 298
+        },
+        "LUT": 30655,
+        "ALU": 11607,
+        "ROM16": 0,
+        "SSRAM": 177
+      },
+      "timing": {
+        "setup_violated_endpoints": 0,
+        "hold_violated_endpoints": 1,
+        "global_worst_ns": {
+          "setup": 0.001,
+          "hold": -0.31,
+          "recovery": 0.885,
+          "removal": 0.281
+        }
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-physical-D2110141/impl/pnr/custom_138k_integration.fs",
+        "sha256": "488b18bbddb4a946889640c07fb3542c844c8579ec0b10fc24e2575dcbf7343c",
+        "usercode": "0xd2110141",
+        "checksum": "0x24F0"
+      },
+      "timing_closed": false,
+      "hardware_tested": false,
+      "release_ready": false
+    }
+  ],
+  "clock_distribution_cause_comparison_sha256": "8760d03e6088386a2972f7929ba4daea53c309fdbc3480258bd6e824ab696fe3",
+  "W141_not_a_different_semantic_netlist_or_resource_result": true,
+  "W141_header_equivalence_sha256": "449c30ee8113b66e3a63d30288169d122c3fae87107e938704c0d0506acc56fe",
+  "W142_in_progress": {
+    "physical": "custom138k-native-physical-D2110142",
+    "manifest_sha256": "c496986fa128cb555bbfa6cff9c44102dc7fdda405fc95650e14227965f69b3c",
+    "VG_SDC_identical": true,
+    "route_option": 0,
+    "CST_append_exactly_one_BUFG8": true,
+    "actual_distribution_type_not_assumed": true
+  },
+  "HDMI_and_recording_excluded": true,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "root_independently_rehashed_files": 152,
+  "cache_handoff_sha256": "7e8aabca475e62e98c0ed6102995d88c26d4cf48ca89ee634aefdeb6bdf68775",
+  "clock_distribution_documentation_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-clock-guide-concept-review-v1.json",
+    "sha256": "7c8ca6ae35ef15e9f00fa86d258a93ea1aa3ed9c85eaa9c66f53fff0c4971194"
+  },
+  "interpretation": "LOCAL_CLOCK was rejected by CT1018; it did not apply and did not reproduce M LW. D2110141 VO differs from D2110139 only by the single checked CreatedTime header; semantic and resource results are identical. D2110142 is a distinct new trial and no success is inferred."
+}
