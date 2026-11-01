@@ -573,3 +573,5 @@ M26-1连续XY与W25会话时序修复的[维护源码阶段](push2_workstation/u
 M26-1的[完整XY分析／runtime离线门及prepare来源修复](push2_workstation/usb_a/reports/DUAL138K_M26_1_XY_COMPLETE_PREPARE_FIX_20261102.json)已完成：7份真实2048双声道快照，5075874默认off周期与M26一致，786432像素／6144双声道频谱栏／192停读及两反例通过；实际完整runtime参数均为1，PANIC被接收或因停memory clock被丢失，两路均换代并清真实history，10发布／15commit／229070 tuple／69drop及原取消／双率／复位检查通过。最初M／W prepare被旧顶层storage-reference锁严格拒绝，原失败保留；只增加已知Session顶层四锚点的严格逆向／往返来源桥，旧hash与manifest不改，7测试／29负控及原完整source_bundle对照通过。M888／W1135来源门、17来源检查及旧M26 VG native60项／16具名skip通过；换新prepare目录继续，不把prepare或离线门当综合／板测。
 
 W25已由664e2506完成新prepare（身份ff53a5420e3db5ed／975原源／613暂存／129编译），进入全量新综合。M26-1第二次prepare则因新增Push SDC在recognition适配之后、demo retirement之前追加而被旧recognition hash拒绝；新验证先严格恢复demo、再唯一精确去除新增Push后缀后验证原recognition，不改实际SDC或任何时钟。17来源／18审计及M来源门通过；失败目录保持，M使用新prepare目录，不复用不完整输出。
+
+[M26-1／W25新整机prepare与冻结](push2_workstation/usb_a/reports/DUAL138K_M26_1_W25_PREPARE_20261102.json)已成功并由主线程重验全部原源／暂存／工具：M来自f2cbce53，身份3dbbf0577da87328／608暂存／263编译；W来自664e2506，身份ff53a5420e3db5ed／613暂存／129编译，各1488审计工具在prepare前捕获。两份已独立全量新综合，预留D2110138／D2110139；新增三条Push控制CDC、10位PANIC实际来源及W32Q仍须新实际VG／VO门，未预记资源／时序或硬件接受，板上M26不变。
