@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "report_kind": "dated_SRAM_trial_record",
+  "stage": "W25_D2110142_temporary_authorized_SRAM_program_identity_status_and_passive_UART_trial",
+  "scope": "仅记录2026-11-02此次W142短暂SRAM试装及其身份／状态读回；不描述报告生成时或后续的留板镜像，不记录双板并发验收。",
+  "trial_window": {
+    "started_utc": "2026-11-01T19:15:33.614052+00:00",
+    "finished_utc": "2026-11-01T19:15:53.940876+00:00",
+    "started_Asia_Shanghai": "2026-11-02T03:15:33.614052+08:00",
+    "finished_Asia_Shanghai": "2026-11-02T03:15:53.940876+08:00"
+  },
+  "authorization": {
+    "source": "current user session and parent task instruction",
+    "scope": "JTAG连接核对与真实候选SRAM试装；Flash除外",
+    "hardware_actions_performed_by": "root",
+    "this_report_reviewer_hardware_access": false
+  },
+  "source": {
+    "result_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/result.json",
+    "result_sha256": "050c99373751c11e565be2f208c7b22178125c6cad3352472fae3dde73cb89e0",
+    "physical_report": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_W25_PHYSICAL_20261102.json",
+    "physical_report_sha256": "9d5e91346c327e3386b3b82806c0e5fd77519694e2c299899acadc7ae48a2629",
+    "physical_report_stage": "W25_v2_D2110142_explicit_BUFG8_full_STA_closed_actual_PLL_passed_offline_audio_only_candidate",
+    "source_commit": "664e250655df1a364273706331a335e2a12d294d",
+    "candidate_identity": "custom138k-workstation-w-demo-v1-ff53a5420e3db5ed",
+    "integration_identity": "custom138k-native-w-audio-only-pitch-registered-epoch-revision5",
+    "physical_identity": "custom138k-native-physical-D2110142",
+    "candidate_manifest_sha256": "eeb01906ef71ed7f4c3213568c5d2c3fa6aded64ba84b1f46c31c59d94fe7a51",
+    "physical_manifest_sha256": "c496986fa128cb555bbfa6cff9c44102dc7fdda405fc95650e14227965f69b3c"
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w25-v2-physical-D2110142/impl/pnr/custom_138k_integration.fs",
+    "sha256": "0d5b7659a184fd0b11e5775f5ac8f4909d6b503c2380787929d03c6d9ce1c078",
+    "user_code": "D2110142",
+    "checksum": "3575",
+    "host_file_identity_verified": true,
+    "FPGA_bitwise_readback_verified": false
+  },
+  "programmer": {
+    "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+    "sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+    "runner": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1.py",
+    "runner_sha256": "501506d2a0383366cc9b19e8e6081da9eb725f0168f2fdbadb559d4f70c41e80",
+    "device": "GW5AST-138C",
+    "device_ID": "0x0001081B",
+    "cable_index": 1,
+    "location": "8257",
+    "operations": [
+      {
+        "name": "before",
+        "operation_index": 0,
+        "operation_label": "Read Device Codes",
+        "exit_code": 0,
+        "elapsed_seconds": 0.38531458300000004,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/before.log",
+        "log_sha256": "80733707e559c77a4a8cd03c7d672928a0e29b500a1a210ecc0f60ca0a16f538"
+      },
+      {
+        "name": "sram-program",
+        "operation_index": 2,
+        "operation_label": "SRAM Program",
+        "exit_code": 0,
+        "elapsed_seconds": 7.129242958000001,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/sram-program.log",
+        "log_sha256": "fe2b2a9be4a059afdc863aa24b01937a897abe6211d042e6ada95ccc9fb5e438"
+      },
+      {
+        "name": "after",
+        "operation_index": 0,
+        "operation_label": "Read Device Codes",
+        "exit_code": 0,
+        "elapsed_seconds": 0.3843029999999992,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/after.log",
+        "log_sha256": "a6e73527f8d50b9d53fcb9b514fd71114688d7889a38dd33ae74af33703df786"
+      },
+      {
+        "name": "status",
+        "operation_index": 74,
+        "operation_label": "Read Status Register",
+        "exit_code": 0,
+        "elapsed_seconds": 0.38259566700000036,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/status.log",
+        "log_sha256": "cc6c2308c8a57e2fb1522c1ce1e599962e6e34b23e59b4605940dc2d819313cf"
+      }
+    ]
+  },
+  "observed_hardware_results": {
+    "before_trial_UserCode": "D2110137",
+    "SRAM_operation_index": 2,
+    "SRAM_operation_label": "SRAM Program",
+    "SRAM_program_process_completed": true,
+    "SRAM_program_process_exit_code": 0,
+    "independent_identity_readback": {
+      "operation_index": 0,
+      "performed_after_program_as_separate_process": true,
+      "device_ID": "0x0001081B",
+      "UserCode": "D2110142",
+      "matches_selected_bitstream_UserCode": true
+    },
+    "independent_status_readback": {
+      "operation_index": 74,
+      "status_code": "0x00022230",
+      "process_exit_code": 0,
+      "interpretation": "JTAG状态寄存器读数；本报告不将其解释为CPU、HCI或业务就绪"
+    },
+    "SRAM_write_invoked": true,
+    "Flash_write_invoked": false,
+    "bitwise_verify_performed": false
+  },
+  "passive_UART": {
+    "port": "/dev/cu.usbserial-21201",
+    "baud": 115200,
+    "observation_seconds": 12.002132125,
+    "bytes_received": 0,
+    "commands_sent": 0,
+    "valid_CRC_record_count": 0,
+    "invalid_CRC_records": 0,
+    "binary_capture": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/passive-uart.bin",
+    "text_capture": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/passive-uart.txt",
+    "empty_capture_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "interpretation": "12秒被动观察收到0字节，未取得任何有效遥测；不能据此建立或否定CPU／HCI就绪。"
+  },
+  "acceptance": {
+    "SRAM_program_and_independent_identity_trial_passed": true,
+    "CPU_readiness_established": false,
+    "HCI_readiness_established": false,
+    "phone_A2DP_streaming_tested": false,
+    "phone_A2DP_streaming_functional_acceptance": false,
+    "controls25K_functional_acceptance": false,
+    "I2S_DAC_functional_acceptance": false,
+    "audio_effect_parameters_functional_acceptance": false,
+    "HDMI_functional_acceptance": false,
+    "recording_and_download_functional_acceptance": false,
+    "hardware_functional_acceptance": false,
+    "dual_board_concurrent_acceptance": false,
+    "release_ready": false
+  },
+  "existing_offline_evidence": {
+    "reference_only_no_gates_rerun": true,
+    "timing_closed": true,
+    "resource_usage": {
+      "Logic": {
+        "used": 43324,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 27030,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 32197,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 218,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 59,
+        "capacity": 298
+      },
+      "LUT": 30655,
+      "ALU": 11607,
+      "ROM16": 0,
+      "SSRAM": 177
+    },
+    "timing": {
+      "setup_violated_endpoints": 0,
+      "hold_violated_endpoints": 0,
+      "global_worst_ns": {
+        "setup": 0.013,
+        "hold": 0.14,
+        "recovery": 2.376,
+        "removal": 0.281
+      }
+    },
+    "exact_DDR_hold": {
+      "slack_ns": 0.626,
+      "arrival_ns": 6.044,
+      "required_ns": 5.418,
+      "relationship_ns": 3.5,
+      "clock_skew_report_ns": 0.474,
+      "launch_location": "R104C175[0][A]",
+      "capture_location": "R2C2[0][A]",
+      "launch_within_requested_region": true,
+      "capture_within_requested_region": true
+    },
+    "hdmi_explicitly_disabled": true,
+    "recording_explicitly_disabled": true,
+    "physical_CDC_accepted": false,
+    "IO_and_electrical_acceptance_complete": false,
+    "offline_report_hardware_flags_describe_its_earlier_offline_stage": true
+  },
+  "hash_review": {
+    "independent_read_only_rehash": true,
+    "all_declared_hashes_checked_in_this_scope_match": true,
+    "unique_rehashed_files": 1545,
+    "formal_physical_raw_entries": 35,
+    "formal_physical_JSON_entries": 12,
+    "frozen_audit_source_entries": 1489,
+    "source_result_unchanged_during_review": true,
+    "formal_physical_report_unchanged_during_review": true,
+    "root_independently_rehashed_files": 1545,
+    "full_review_manifest_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w142-authorized-sram-v1/report-draft.json",
+    "full_review_manifest_sha256": "435ac80e571bfe7155e3ed0f7610abedd4929928469e281d6e26e02289e49827"
+  },
+  "result_statement": "op2 SRAM Program完成，随后独立op0读回UserCode D2110142，op74读到0x00022230；115200波特UART被动观察12.002秒收到0字节。身份／状态读回并非CPU、HCI、手机流式、25K或DAC功能通过。本报告只描述该次W短暂试装；后续留板身份由对应独立记录负责。",
+  "remaining_gaps": [
+    "CPU及HCI初始化／就绪遥测",
+    "真实手机A2DP／SBC／Pitch／完整D效果声流",
+    "25K实际触摸调参与参数反馈一致性",
+    "真实I2S／DAC输出验收",
+    "完整IO／电气／CDC业务验收",
+    "此音频候选未含HDMI／录音下载，不能记为完整W-DEMO"
+  ],
+  "no_workspace_edits": true,
+  "no_hardware_access_by_reviewer": true,
+  "no_gates_reexecuted": true,
+  "root_finalized_utc": "2026-11-01T19:26:06.539352+00:00",
+  "later_board_handoff": "A subsequent separately recorded M26-1 D211013A SRAM trial replaced this temporary W trial. This report does not identify the current board."
+}

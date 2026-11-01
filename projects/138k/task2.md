@@ -596,3 +596,6 @@ M26-1第二轮STA已闭合，期间预备的[Delay私有数据路径化简实验
 
 
 M26-1／D211013A的[第二轮完整物理与路由后门禁](push2_workstation/usb_a/reports/DUAL138K_M26_1_R2_PHYSICAL_20261102.json)已完成：596.598s／exit0，物理BSRAM251／DSP116／CLS47008／FF43629／LUT48476／ALU12036／SSRAM99；setup0／报告最小0.000ns（不记正余量）、hold0／+.126ns、recovery+.240／removal+.275ns，指定DDR hold+.605ns且原3.500ns不变。boundary7／69负控、performance17／8、HMI8、四张clk50实际表、六PLL／七负控通过；native原60项44过／15具名skip／1个fixture ROOT读源错误完整保留，只修临时wrapper ROOT后重跑该项通过，合计45过／15skip，59＋2负控拒绝，不冒称原整跑exit0。新实际VG／VO三条69bit Push控制mailbox、17个状态栏业务复位、10位PANIC及4history／8image RAM prepare门闭包均通过，26＋25综合控制、10＋7＋2新增路由控制拒绝，不冒称同核控制全部重跑。主线程独立重验冻结工具／物理／门禁文件；FS `414bd240…c09bc6f7`／CheckSum8096。这里只接受离线范围，完整IO／电气／CDC及现场声画／Push切率仍待验；将按已有SRAM授权试装，不写Flash、不把身份读回当功能验收。
+
+
+W25／D2110142已按持续授权完成[短暂SRAM试装及独立身份／状态核对](push2_workstation/usb_a/reports/DUAL138K_W25_SRAM_20261102.json)：写前M26／D2110137，op2 SRAM Program成功，随后独立op0读回D2110142，op74为00022230；原FS／程序／日志身份一致，主线程复核1545文件。21201串口115200被动观察12秒0字节，没有取得CPU／HCI就绪遥测，不由此判定无线链路成功或失败；没有手机A2DP、25K启效／释放、DAC连续输出的实体验收，也无逐位Verify或Flash写入。这次仅为同一块138K的分时试装，之后已由M26-1新候选替换，不能算双板并发验收。
