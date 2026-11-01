@@ -70,6 +70,45 @@ def sha(payload):
     return hashlib.sha256(payload).hexdigest()
 
 
+REMOTE_REVERB_ADAPTATION = 'rtl/audio/workstation_runtime_stereo_effects.remote_reverb_partition.json'
+REMOTE_REVERB_ADAPTATION_SHA256 = '20345a57c4000cacabad2daf89c6c70592cda77699fc0cd3c44cf0b021c2830f'
+REMOTE_REVERB_SOURCE_SHA256 = '50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13'
+REMOTE_REVERB_PARENT_SHA256 = '99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46fc0a311bdcdc2c9'
+
+
+def restore_remote_reverb_partition(source, adaptation=None):
+    """Undo only the opt-in partition; the original effects lineage stays locked."""
+    if sha(source) != REMOTE_REVERB_SOURCE_SHA256:
+        # Historical inputs continue through their original strict checks.
+        return source
+    if adaptation is None:
+        adaptation = (Path(__file__).resolve().parents[1] / REMOTE_REVERB_ADAPTATION).read_bytes()
+    if sha(adaptation) != REMOTE_REVERB_ADAPTATION_SHA256:
+        raise ValueError('Remote Reverb partition adaptation bytes changed')
+    bridge = json.loads(adaptation)
+    if (bridge['schema'] != 1 or bridge['policy'] != 'explicit_remote_reverb_partition_v1' or
+            bridge['source'] != SOURCE or bridge['macro'] != 'WORKSTATION_REMOTE_REVERB_PARTITION' or
+            bridge['parent_source_sha256'] != REMOTE_REVERB_PARENT_SHA256 or
+            bridge['current_source_sha256'] != sha(source) or
+            bridge['default_macro_off'] is not True or len(bridge['exact_changes']) != 3):
+        raise ValueError('Remote Reverb partition identity changed')
+    current = source.decode()
+    for edit in reversed(bridge['exact_changes']):
+        if edit['count'] != 1 or not edit['after'] or current.count(edit['after']) != 1:
+            raise ValueError('Remote Reverb partition reverse anchor drift')
+        current = current.replace(edit['after'], edit['before'])
+    restored = current.encode()
+    if sha(restored) != REMOTE_REVERB_PARENT_SHA256:
+        raise ValueError('Remote Reverb partition parent identity changed')
+    for edit in bridge['exact_changes']:
+        if not edit['before'] or current.count(edit['before']) != 1:
+            raise ValueError('Remote Reverb partition forward anchor drift')
+        current = current.replace(edit['before'], edit['after'])
+    if current.encode() != source:
+        raise ValueError('Remote Reverb partition round trip changed bytes')
+    return restored
+
+
 # W momentary effects stop mixing a released stage immediately. The default
 # retains the existing M tail selection; maintenance/history logic is unchanged.
 # Reverse only the two reviewed bytes before the unchanged slot/D/storage chain.
@@ -327,6 +366,7 @@ def restore_native(source, provenance, policy=STRICT_POLICY, adaptation=None):
     if sha(provenance) != PROVENANCE_SHA256:
         raise ValueError('Original effects provenance bytes changed')
     original = json.loads(provenance)
+    source = restore_remote_reverb_partition(source)
     source = restore_effect_release_policy(source)
     source = restore_effect_sample_slot(source)
     source = restore_demo_d_controls(source, SOURCE)
@@ -383,6 +423,15 @@ def source_bundle(root):
     root = Path(root)
     source, provenance, adaptation = ((root / p).read_bytes() for p in (SOURCE, PROVENANCE, ADAPTATION))
     prepared, evidence = verify(source, provenance, STORAGE_POLICY, adaptation)
+    if sha(source) == REMOTE_REVERB_SOURCE_SHA256:
+        partition = (root / REMOTE_REVERB_ADAPTATION).read_bytes()
+        restore_remote_reverb_partition(source, partition)
+        evidence['remote_reverb_partition'] = dict(
+            adaptation=REMOTE_REVERB_ADAPTATION, adaptation_sha256=sha(partition),
+            parent_source_sha256=REMOTE_REVERB_PARENT_SHA256,
+            macro='WORKSTATION_REMOTE_REVERB_PARTITION', default_macro_off=True,
+            exact_inverse_round_trip_verified=True,
+            whole_workstation_selected=False, physical_transport_verified=False)
     if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
         raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()

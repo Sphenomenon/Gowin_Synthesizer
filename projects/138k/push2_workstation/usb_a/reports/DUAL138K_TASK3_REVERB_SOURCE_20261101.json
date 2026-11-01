@@ -1,0 +1,310 @@
+{
+  "schema": "dual138k-task3-reverb-source-v1",
+  "date": "2026-11-01",
+  "stage": "actual_effects_chain_source_partition_and_RTL_simulation",
+  "candidate_identity": "dual138k-task3-reverb-source-0cd4fc175c7a2b6e",
+  "base_commit": "cfad079f1640f44602f31d69b18084a3d429d226",
+  "tested_git_head_before_source_commit": "e3fe7e4ad9920d0418108313eb7b01ec8ac897b1",
+  "source_identity_policy": "Committed source blobs identified by exact hashes below; tests ran before their source-stage commit",
+  "source_sha256": {
+    "rtl/audio/workstation_runtime_stereo_effects.sv": "50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13",
+    "rtl/audio/workstation_remote_reverb_m.sv": "c4b240512360c0fb376aebf97c41ca4b30dbf52d1f43231ef81b9d1e22fe511d",
+    "rtl/audio/workstation_remote_reverb_w.sv": "a4489681aa8cbcd347e6b161726e163fc68a0184df53be4c35bbd302dc0df677",
+    "rtl/audio/workstation_runtime_stereo_effects.remote_reverb_partition.json": "20345a57c4000cacabad2daf89c6c70592cda77699fc0cd3c44cf0b021c2830f",
+    "tools/workstation_delay_storage_provenance.py": "60d6ae9a8825577a762b63c743b4ceef20024540fd65b921411bb8a12da21eee",
+    "tools/workstation_reverb_partition.py": "5f0eeb7781e95faba5709840df73cb6d774bdda10f76546718b064b414e1dd5b",
+    "sim/test_workstation_reverb_partition.py": "540cefb94bce51f5422390e0d5710fb9f0339cd4f381806033ecba28ff97fcca",
+    "sim/audio/run_remote_reverb.py": "e6683a04f740b81c5d4b7cd52321d0d0704579a8213ece10dfbef32fb8e89098",
+    "sim/audio/run_remote_reverb_chain.py": "9dd295b3728aff6901d5ccb6cb6e1bbdf88b371493740ce4742500ce96582042",
+    "sim/audio/tb_workstation_remote_reverb.sv": "528a046644a8698c6304651f547ed373b18a0e6db9ce4077ea1650d7594620c1",
+    "sim/test_workstation_runtime_effects.py": "ef0c8d58f4a76ea6b334a073c2ea9a17759dffbbb90d3c7593b47f8556be3136"
+  },
+  "roles": {
+    "M": {
+      "owner": "existing runtime effects chain replaces real local reverb with bounded remote stage only when explicit macro and parameter selected",
+      "bitstream": null,
+      "user_code": null,
+      "physical_resources": null,
+      "routed_timing": null
+    },
+    "W": {
+      "owner": "maintained real full32 stereo dual-rate reverb plus history RAM and bounded request/result slot",
+      "bitstream": null,
+      "user_code": null,
+      "physical_resources": null,
+      "routed_timing": null
+    }
+  },
+  "tests": {
+    "endpoints": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/remote-reverb-test-v5/verification.json",
+      "sha256": "8f9e499c344508a6a3c62cb7bd0fb7e5974878d62b464d79d2a7e5164ff03401",
+      "evidence": {
+        "schema": 1,
+        "passed": true,
+        "scope": "synchronous logical transport RTL only",
+        "hardware_tested": false,
+        "physical_timing_accepted": false,
+        "physical_transport_selected": false,
+        "source_sha256": {
+          "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+          "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+          "rtl/audio/workstation_runtime_spatial_reverb.sv": "3e5e46d80f19d46347dc25dc6493a5f7290c8056846a9a17ced70673e3def846",
+          "rtl/audio/workstation_remote_reverb_m.sv": "c4b240512360c0fb376aebf97c41ca4b30dbf52d1f43231ef81b9d1e22fe511d",
+          "rtl/audio/workstation_remote_reverb_w.sv": "a4489681aa8cbcd347e6b161726e163fc68a0184df53be4c35bbd302dc0df677",
+          "sim/audio/tb_workstation_remote_reverb.sv": "528a046644a8698c6304651f547ed373b18a0e6db9ce4077ea1650d7594620c1",
+          "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+          "sim/audio/run_remote_reverb.py": "e6683a04f740b81c5d4b7cd52321d0d0704579a8213ece10dfbef32fb8e89098"
+        },
+        "baseline": {
+          "name": "resource_rework_route0",
+          "manifest": "projects/138k/push2_workstation/usb_a/baselines/resource_rework_route0.json",
+          "manifest_sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948",
+          "origin": {
+            "build": "results/resource_rework_final_route0_20261020_041042",
+            "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/resource_rework_route0.inputs.json",
+            "input_manifest_sha256": "ff5086550b0cedd8f75bd3c62650a28bb076c96137d1989a59a45816a7667fc7"
+          },
+          "source_files": 437,
+          "excluded_files": 180
+        },
+        "baseline_math_sha256": "f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d",
+        "results": {
+          "passed": true,
+          "exact_frames": 15076,
+          "wet_frames": 3115,
+          "fault_cases": 18,
+          "deadline_clocks": 512,
+          "rates_hz": [
+            48000,
+            44100
+          ]
+        },
+        "compile_command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "-j",
+          "2",
+          "-Wno-fatal",
+          "--top-module",
+          "tb_workstation_remote_reverb",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261101/remote-reverb-test-v5/obj",
+          "-o",
+          "remote_reverb",
+          "-I/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261101/remote-reverb-test-v5/audio_math_pkg.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/memory/workstation_sdp_banked.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_runtime_spatial_reverb.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_remote_reverb_m.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_remote_reverb_w.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_remote_reverb.sv"
+        ]
+      }
+    },
+    "full_chain": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/remote-chain-v5/verification.json",
+      "sha256": "710c6c7873c7031714c28d2433dd888283aea78f284650c44d50a8cefe77f239",
+      "evidence": {
+        "schema": 1,
+        "passed": true,
+        "stage": "actual partitioned effects-chain RTL simulation",
+        "original_bench_sha256": "5c7fb85775b9d5b365428c6c2f578fa37587aea4d034b57c5b105f2a21e3ec58",
+        "adapted_bench_sha256": "3fc50e66620609ec9003c5805576620383a1a9ebbec6ee9564aedc204d2c972a",
+        "checked_adaptation_count": 8,
+        "compile_warnings": {
+          "TIMESCALEMOD": 1,
+          "WIDTHEXPAND": 55,
+          "WIDTHTRUNC": 16
+        },
+        "cases": [
+          {
+            "scenario": 0,
+            "frames": 12144,
+            "max_latency_cycles": 538,
+            "vectors_sha256": "fe1d6ea74c1419cd383bf91253ebf348beaa6cda4353232b8c3f501d098ace86",
+            "stdout": "tail_preservation_checks=0\nPASS runtime full effects scenario=0 frames=12144 reference48=0 clips=839 max_latency=538 maintenance=895,1407,1664\n- /var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/runtime-effects-sak10g9o/remote_partition_chain.sv:356: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 92ms; walltime 4.509 s; speed 20.474 ms/s\n- Verilator: cpu 4.499 s on 1 threads; allocated 2 MB",
+            "active_tail_barrier_checks": 0
+          },
+          {
+            "scenario": 1,
+            "frames": 9144,
+            "max_latency_cycles": 538,
+            "vectors_sha256": "641461221addf12ca3beaa7161d8aeee2542b5debcbac29ae4f7ad08700ecd5f",
+            "stdout": "tail_preservation_checks=0\nPASS runtime full effects scenario=1 frames=9144 reference48=0 clips=608 max_latency=538 maintenance=965,1457,1694\n- /var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/runtime-effects-sak10g9o/remote_partition_chain.sv:356: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 70ms; walltime 3.419 s; speed 20.334 ms/s\n- Verilator: cpu 3.408 s on 1 threads; allocated 2 MB",
+            "active_tail_barrier_checks": 0
+          },
+          {
+            "scenario": 2,
+            "frames": 16024,
+            "max_latency_cycles": 538,
+            "vectors_sha256": "75c0696f36e9ffe5fcb75b79df6cc7c3a96ba2086ba0a4fe0dd2e299be939cfe",
+            "stdout": "tail_preservation_checks=3\nPASS runtime full effects scenario=2 frames=16024 reference48=0 clips=1471 max_latency=538 maintenance=772,773,773\n- /var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/runtime-effects-sak10g9o/remote_partition_chain.sv:356: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 122ms; walltime 5.969 s; speed 20.410 ms/s\n- Verilator: cpu 5.948 s on 1 threads; allocated 2 MB",
+            "active_tail_barrier_checks": 3
+          },
+          {
+            "scenario": 3,
+            "stdout": "PASS runtime effects PANIC collision scenario=3 completes matching new rate fences=1\n- /var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/runtime-effects-sak10g9o/remote_partition_chain.sv:356: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 617us; walltime 0.029 s; speed 21.292 ms/s\n- Verilator: cpu 0.029 s on 1 threads; allocated 2 MB"
+          },
+          {
+            "scenario": 4,
+            "stdout": "PASS runtime effects PANIC collision scenario=4 completes matching new rate fences=2\n- /var/folders/gp/wm62hyvs45bb80jy7vxw9tpr0000gn/T/runtime-effects-sak10g9o/remote_partition_chain.sv:356: Verilog $finish\n- S i m u l a t i o n   R e p o r t: Verilator 5.052 2026-09-05\n- Verilator: $finish at 617us; walltime 0.030 s; speed 20.823 ms/s\n- Verilator: cpu 0.030 s on 1 threads; allocated 2 MB"
+          }
+        ],
+        "frames": 37312,
+        "max_latency_cycles": 538,
+        "real_W_reverb": true,
+        "independent_full_chain_PCM_model": true,
+        "all_six_effect_orders": true,
+        "all_eight_masks": true,
+        "dual_rate": true,
+        "DDR_delay_and_maintenance": true,
+        "local_sample_period_budget_cycles": 1600,
+        "immediate_post_barrier_bypass": true,
+        "active_tail_barrier_checks": 3,
+        "physical_transport_selected": false,
+        "physical_timing_verified": false,
+        "hardware_tested": false,
+        "source_sha256": {
+          "rtl/audio/workstation_runtime_stereo_effects.delay_fifo_storage.json": "5590b0082117f53247f5d30236d5547ac2f358ee66e7b874c3ce6199ec13fe51",
+          "tools/workstation_delay_storage_provenance.py": "60d6ae9a8825577a762b63c743b4ceef20024540fd65b921411bb8a12da21eee",
+          "rtl/audio/workstation_runtime_stereo_effects.remote_reverb_partition.json": "20345a57c4000cacabad2daf89c6c70592cda77699fc0cd3c44cf0b021c2830f",
+          "rtl/audio/stereo_effects.sv": "e1197cd8b843b3f98b6254eca081af51f0e9b8ce61cf30f6cfdcf9e9cb2c98c6",
+          "rtl/workstation/gw138k_push_workstation_top.v": "2c4376b7754a9b98486501fb91e258f5b70b4183b4ec5f687b2a588132ba7007",
+          "rtl/audio/workstation_runtime_stereo_effects.sv": "50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13",
+          "rtl/audio/workstation_runtime_stereo_effects.provenance.json": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+          "rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json": "0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4",
+          "tools/workstation_chorus_provenance.py": "d11ebe021c35761ba0351c52602731b56728b9b3749631fb6634b42eae364a7f",
+          "rtl/audio/workstation_runtime_chorus_effect.sv": "1cc7ddd5e00edcb5975ed64cc2eceb4707029f5add724467700fbeae30b61ea5",
+          "rtl/audio/workstation_runtime_chorus_effect.provenance.json": "41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48",
+          "rtl/audio/workstation_runtime_spatial_reverb.pipeline.json": "fa5d015a145ba4b89ece7b8662eb3e2d7e7fc1c811131ec7a173fab19b415328",
+          "tools/workstation_reverb_provenance.py": "42ed59e654d63706dfda75f64ef9490ec3be9b4b013382d66821556e51a2fe7b",
+          "rtl/audio/workstation_runtime_spatial_reverb.sv": "3e5e46d80f19d46347dc25dc6493a5f7290c8056846a9a17ced70673e3def846",
+          "rtl/audio/workstation_runtime_spatial_reverb.provenance.json": "3ca4cbf55bb0dea90f67f08388fee5fd2460532ed8a64cc7f64a9d3b8bf01a52",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.sv": "f1366c86f721e0ac1befb2ccc84e1532528201c1eafb9b1b9ff45c8a01d1eca3",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json": "e19a665b94b99b65616c470ca8b4ad9b3de826f6d329b7da51ce66bf01016886",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+          "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json": "4b52679ff2c129ddd02d1e1e404408251d44dd4f35dbd32d0493f6aed0fe2b83",
+          "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+          "rtl/audio/runtime_spatial_room_preset.json": "fd07065308dca9ae65483a8ce9308890790b98934001918baf9ff262f459655e",
+          "rtl/audio/runtime_spatial_room_preset.svh": "b24dd0ba2b64fce1c11194c7cae51c2048d112e4ef7954d7452cf1ac5bbf8e04",
+          "sim/audio/tb_workstation_runtime_effects.sv": "5c7fb85775b9d5b365428c6c2f578fa37587aea4d034b57c5b105f2a21e3ec58",
+          "sim/test_workstation_runtime_effects.py": "ef0c8d58f4a76ea6b334a073c2ea9a17759dffbbb90d3c7593b47f8556be3136",
+          "sim/test_workstation_runtime_reverb.py": "ae7f046891bce06056162ba9770db02b4c420924eefa851d80565f54bbbf667b",
+          "rtl/audio/workstation_remote_reverb_m.sv": "c4b240512360c0fb376aebf97c41ca4b30dbf52d1f43231ef81b9d1e22fe511d",
+          "rtl/audio/workstation_remote_reverb_w.sv": "a4489681aa8cbcd347e6b161726e163fc68a0184df53be4c35bbd302dc0df677",
+          "sim/audio/run_remote_reverb_chain.py": "9dd295b3728aff6901d5ccb6cb6e1bbdf88b371493740ce4742500ce96582042"
+        }
+      }
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/default-chain-regression-v1/verification.json",
+      "sha256": "feddd481171158772950d5955445ca707cfe38a69d7886cb8f4c5f0ca9afe585",
+      "evidence": {
+        "schema": 1,
+        "passed": true,
+        "command": "python3 -B sim/test_workstation_runtime_effects.py",
+        "working_directory": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a",
+        "exit_code": 0,
+        "tests": 19,
+        "elapsed_seconds": 15.103,
+        "stdout_record": "Retained completion summary transcribed from tool session92026; raw streaming output was returned in chat tool results, not redirected to a local log",
+        "macro": "WORKSTATION_REMOTE_REVERB_PARTITION undefined",
+        "compile_warnings": {
+          "TIMESCALEMOD": 1,
+          "WIDTHEXPAND": 55,
+          "WIDTHTRUNC": 16
+        },
+        "scenarios": [
+          {
+            "scenario": 0,
+            "frames": 36288,
+            "exact_prepared_cycle_comparisons": 36288,
+            "max_latency_cycles": 105
+          },
+          {
+            "scenario": 1,
+            "frames": 24288,
+            "max_latency_cycles": 105
+          },
+          {
+            "scenario": 2,
+            "frames": 44512,
+            "max_latency_cycles": 105
+          }
+        ],
+        "additional_passed": [
+          "macro-off token and hierarchy compatibility",
+          "strict provenance and mutation rejection",
+          "all6 effect orders and8 masks",
+          "memory and audio clock stop",
+          "legacy clear9chain/stage boundaries",
+          "missing/late fence sticky failure",
+          "PANIC collision scenarios3/4"
+        ],
+        "source_sha256": {
+          "rtl/audio/workstation_runtime_stereo_effects.sv": "50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13",
+          "rtl/audio/workstation_runtime_stereo_effects.provenance.json": "5af689e1adc920524e83d0ae9da87382a75a6bc2868c08fc246abb47814df68c",
+          "rtl/audio/workstation_runtime_stereo_effects.remote_reverb_partition.json": "20345a57c4000cacabad2daf89c6c70592cda77699fc0cd3c44cf0b021c2830f",
+          "tools/workstation_delay_storage_provenance.py": "60d6ae9a8825577a762b63c743b4ceef20024540fd65b921411bb8a12da21eee",
+          "sim/test_workstation_runtime_effects.py": "ef0c8d58f4a76ea6b334a073c2ea9a17759dffbbb90d3c7593b47f8556be3136",
+          "sim/audio/tb_workstation_runtime_effects.sv": "5c7fb85775b9d5b365428c6c2f578fa37587aea4d034b57c5b105f2a21e3ec58"
+        },
+        "physical_timing_verified": false,
+        "hardware_tested": false
+      }
+    }
+  },
+  "communication": {
+    "physical_transport_selected": false,
+    "lcd_measured": false,
+    "request_bits": 163,
+    "response_bits": 164,
+    "minimum_bytes_each": 21,
+    "packed_48k_bytes_per_second_each": 1008000,
+    "deadline_compute_clocks": 512,
+    "compute_clock_hz": 76800000,
+    "minimum_serialization_rtt_us_at_5MBps": 8.4,
+    "deadline_us": 6.666666666666667,
+    "target_5MBps_sufficient_for_this_deadline": false
+  },
+  "additional_checks": {
+    "accepted_source_boundary_tests": 17,
+    "matched_candidate_manifest_tests": 11,
+    "matched_candidate_tests_rechecked_after_clock_label_change": true,
+    "all_referenced_test_source_hashes_reverified": true,
+    "macro_off_token_and_hierarchy_identical": true
+  },
+  "reproduced_and_fixed": {
+    "issue": "normal config/history cleared M tail-active although W wet gain is retained",
+    "negative_path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/remote-reverb-active-negative-v1/run.stdout",
+    "negative_sha256": "0711c73830809925fb4fb55214b8bb2eb312bcc31d0dc1ea7ba1a141f2d0c63a",
+    "regression": "3 live-tail history/rate barriers and immediate mask0 frames; preserves state before next W result"
+  },
+  "production_profile_selected": false,
+  "synthesis_complete": false,
+  "PNR": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "rollback": "Leave macro undefined; prepare task2 from its unchanged original worktree/frozen candidate, not from changed task3 source locks",
+  "remaining": [
+    "Actual matched synthesis resource delta",
+    "Physical LCD pin/electrical/clock mapping and measured worst RTT",
+    "Native complete M/W profile propagation and source lock registration",
+    "Whole-system physical timing CDC PLL and resources",
+    "Both target boards and real control-to-sound latency",
+    "TF front end/direct playback, W CNN/Push and unique W recording/download integration"
+  ],
+  "model_inventory": {
+    "path": "rtl/music/weights/cnn_ddr_blob.mem",
+    "words16": 52239,
+    "bytes": 104478,
+    "text_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+    "identical_accepted_full83": true,
+    "little_endian_crc32": "AF01A61B",
+    "W_integrated": false
+  }
+}

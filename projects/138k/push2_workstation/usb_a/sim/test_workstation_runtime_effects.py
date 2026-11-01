@@ -4,6 +4,7 @@ import hashlib
 import itertools
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -154,9 +155,43 @@ class DelayStorageProvenance(unittest.TestCase):
     def setUp(self):
         import workstation_delay_storage_provenance as storage
         self.storage=storage
-        self.source=(ROOT/storage.SOURCE).read_bytes()
+        self.live_source=(ROOT/storage.SOURCE).read_bytes()
+        self.source=storage.restore_remote_reverb_partition(self.live_source)
         self.provenance=(ROOT/storage.PROVENANCE).read_bytes()
         self.adaptation=(ROOT/storage.ADAPTATION).read_bytes()
+
+    def test_remote_partition_exact_parent_macro_off_and_drift(self):
+        m=self.storage
+        self.assertEqual(digest(self.live_source),m.REMOTE_REVERB_SOURCE_SHA256)
+        self.assertEqual(digest(self.source),m.REMOTE_REVERB_PARENT_SHA256)
+        self.assertEqual(m.REMOTE_REVERB_PARENT_SHA256,m.EFFECT_RELEASE_SOURCE_SHA256)
+        self.assertEqual(m.verify(self.live_source,self.provenance,STORAGE_POLICY,self.adaptation)[0],
+                         m.verify(self.source,self.provenance,STORAGE_POLICY,self.adaptation)[0])
+        partition=(ROOT/m.REMOTE_REVERB_ADAPTATION).read_bytes()
+        bridge=json.loads(partition)
+        self.assertEqual(len(bridge['exact_changes']),3)
+        for change in bridge['exact_changes']:
+            for mutant in (self.live_source.replace(change['after'].encode(),change['before'].encode()),
+                           self.live_source.replace(change['after'].encode(),change['after'].encode()*2)):
+                with self.assertRaises(ValueError):
+                    m.verify(mutant,self.provenance,STORAGE_POLICY,self.adaptation)
+        with self.assertRaises(ValueError):
+            m.restore_remote_reverb_partition(self.live_source,partition+b'\n')
+        with self.assertRaises(ValueError):
+            m.verify(self.live_source+b'// unrelated drift\n',self.provenance,STORAGE_POLICY,self.adaptation)
+        # The production macro-off token stream and reverb hierarchy stay exact.
+        # The original source's identity is independently pinned above.
+        with tempfile.TemporaryDirectory(prefix='effect-partition-default-') as directory:
+            path=Path(directory)
+            tokens=[]
+            for index,payload in enumerate((self.source,self.live_source)):
+                source=path/f'input{index}.sv';output=path/f'output{index}.sv'
+                source.write_bytes(payload)
+                subprocess.run(['iverilog','-g2012','-E','-o',str(output),str(source)],
+                               check=True,capture_output=True,text=True)
+                value=re.sub(r'/\*.*?\*/|//[^\n]*','',output.read_text(),flags=re.S)
+                tokens.append(re.findall(r'[A-Za-z_$][\w$]*|\d+|[^\s]',value))
+            self.assertEqual(tokens[0],tokens[1])
 
     def test_exact_original_native_and_prepared_chain(self):
         m=self.storage
@@ -354,6 +389,7 @@ class RuntimeEffectsTest(unittest.TestCase):
                     payload, provenance_path.read_bytes(), STORAGE_POLICY, adaptation_path.read_bytes())
                 cls.delay_storage_provenance_evidence = delay_storage_source_bundle(ROOT)
                 for path in (adaptation_path, ROOT / 'tools/workstation_delay_storage_provenance.py',
+                             ROOT / 'rtl/audio/workstation_runtime_stereo_effects.remote_reverb_partition.json',
                              ROOT / DELAY_PREPARED_SOURCE, ROOT / DELAY_STORAGE_REFERENCE):
                     cls.source_hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
             elif name == 'rtl/audio/workstation_runtime_chorus_effect.sv':

@@ -16,6 +16,10 @@ module workstation_runtime_stereo_effects #(
     parameter integer FIFO_ADDRESS_BITS=9,
     parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,
     parameter integer PEER_TIMEOUT_CYCLES=1048576
+`ifdef WORKSTATION_REMOTE_REVERB_PARTITION
+    ,parameter bit REMOTE_REVERB_ENABLE=0
+    ,parameter integer REMOTE_REVERB_DEADLINE_CYCLES=512
+`endif
 ) (
     input logic clk_i,rst_ni,clear_i,valid_i,
     input logic signed [31:0] synth_i,pcm_left_i,pcm_right_i,
@@ -44,6 +48,22 @@ module workstation_runtime_stereo_effects #(
     output logic [31:0] applied_transaction_o,
     input logic peer_heartbeat_i,delay_dma_fault_i,
     output logic heartbeat_o
+`ifdef WORKSTATION_REMOTE_REVERB_PARTITION
+    // Explicit subsystem candidate only. Transport and CDC remain external.
+    ,input wire remote_reverb_link_ready_i
+    ,input wire [31:0] remote_reverb_link_session_i
+    ,output wire remote_reverb_req_valid_o
+    ,input wire remote_reverb_req_ready_i
+    ,output wire [31:0] remote_reverb_req_session_o,remote_reverb_req_generation_o,remote_reverb_req_sequence_o
+    ,output wire remote_reverb_req_rate_44100_o,remote_reverb_req_enabled_o,remote_reverb_req_reset_gain_o
+    ,output wire signed [31:0] remote_reverb_req_left_o,remote_reverb_req_right_o
+    ,input wire remote_reverb_rsp_valid_i
+    ,output wire remote_reverb_rsp_ready_o
+    ,input wire [31:0] remote_reverb_rsp_session_i,remote_reverb_rsp_generation_i,remote_reverb_rsp_sequence_i
+    ,input wire remote_reverb_rsp_rate_44100_i,remote_reverb_rsp_active_i,remote_reverb_rsp_clip_i,remote_reverb_rsp_error_i
+    ,input wire signed [31:0] remote_reverb_rsp_left_i,remote_reverb_rsp_right_i
+    ,output wire [31:0] remote_reverb_fallback_count_o,remote_reverb_rejected_count_o
+`endif
 );
   import audio_math_pkg::*;
   localparam [3:0] IDLE=0,SCALE=1,DRY=2,SELECT=3,SEND=4,WAIT=5,FINISH=6;
@@ -156,12 +176,41 @@ module workstation_runtime_stereo_effects #(
       .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
       .config_ready_o(stage_config_ready[1]),.config_applied_o(),.history_ready_o(stage_history_ready[1]),
       .history_done_o(stage_done[1]),.quiescent_o(stage_quiet[1]),.applied_rate_44100_o(stage_rate[1]));
+`ifdef WORKSTATION_REMOTE_REVERB_PARTITION
+  generate if(REMOTE_REVERB_ENABLE)begin: remote_reverb
+    workstation_remote_reverb_m #(.DEADLINE_CYCLES(REMOTE_REVERB_DEADLINE_CYCLES)) reverb_stage(
+      .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==2),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
+      .ready_o(reverb_ready),.valid_o(reverb_valid),.active_o(reverb_active),.left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),
+      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
+      .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),
+      .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]),
+      .link_ready_i(remote_reverb_link_ready_i),.link_session_i(remote_reverb_link_session_i),
+      .req_valid_o(remote_reverb_req_valid_o),.req_ready_i(remote_reverb_req_ready_i),
+      .req_session_o(remote_reverb_req_session_o),.req_generation_o(remote_reverb_req_generation_o),.req_sequence_o(remote_reverb_req_sequence_o),
+      .req_rate_44100_o(remote_reverb_req_rate_44100_o),.req_enabled_o(remote_reverb_req_enabled_o),.req_reset_gain_o(remote_reverb_req_reset_gain_o),
+      .req_left_o(remote_reverb_req_left_o),.req_right_o(remote_reverb_req_right_o),
+      .rsp_valid_i(remote_reverb_rsp_valid_i),.rsp_ready_o(remote_reverb_rsp_ready_o),
+      .rsp_session_i(remote_reverb_rsp_session_i),.rsp_generation_i(remote_reverb_rsp_generation_i),.rsp_sequence_i(remote_reverb_rsp_sequence_i),
+      .rsp_rate_44100_i(remote_reverb_rsp_rate_44100_i),.rsp_active_i(remote_reverb_rsp_active_i),
+      .rsp_clip_i(remote_reverb_rsp_clip_i),.rsp_error_i(remote_reverb_rsp_error_i),
+      .rsp_left_i(remote_reverb_rsp_left_i),.rsp_right_i(remote_reverb_rsp_right_i),
+      .fallback_count_o(remote_reverb_fallback_count_o),.rejected_count_o(remote_reverb_rejected_count_o));
+  end else begin: local_reverb
+    assign remote_reverb_req_valid_o=1'b0,remote_reverb_rsp_ready_o=1'b0;
+    assign remote_reverb_req_session_o=32'd0,remote_reverb_req_generation_o=32'd0,remote_reverb_req_sequence_o=32'd0;
+    assign remote_reverb_req_rate_44100_o=1'b0,remote_reverb_req_enabled_o=1'b0,remote_reverb_req_reset_gain_o=1'b0;
+    assign remote_reverb_req_left_o=32'sd0,remote_reverb_req_right_o=32'sd0;
+    assign remote_reverb_fallback_count_o=32'd0,remote_reverb_rejected_count_o=32'd0;
+`endif
   workstation_runtime_spatial_reverb reverb_stage(
       .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==2),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
       .ready_o(reverb_ready),.valid_o(reverb_valid),.active_o(reverb_active),.left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),
       .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
       .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),
       .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]));
+`ifdef WORKSTATION_REMOTE_REVERB_PARTITION
+  end endgenerate
+`endif
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni) begin
