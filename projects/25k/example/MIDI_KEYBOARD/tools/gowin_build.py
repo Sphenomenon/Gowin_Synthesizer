@@ -128,6 +128,7 @@ result = {'started_at': datetime.datetime.now().astimezone().isoformat(),
                             'panel_input_policy': None if probe_enabled else ('calibrated carrier pluck only; automatic PWM after ADC online' if full_pluck else 'QT2160 keypad and slider only'),
                             'panel_event_storage': 'lossless 32-bit panel payload, synchronous FIFO with same-cycle write/read bypass' if not probe_enabled else None,
                             'pl_pixel_storage': 'independent staging/committed banks in one 512x16 RAM' if not probe_enabled else None,
+                            'ble_midi_thru': None if probe_enabled else 'BLE RX to USB only; original messages, fair local arbitration, exact-note and sustain disconnect cleanup, USB session fencing',
                             'omitted_subsystems': ['touch', 'encoders', 'LCD', 'PCA lamps', 'BLE', '138K PL display business'] if args.pluck_probe else [],
                             'implementation': implementation,
                             'device': 'GW5A-LV25MG121NC1/I0'},
@@ -351,6 +352,10 @@ run pnr
                                               'disabled_accessory': forbidden}
             if not required.issubset(present) or forbidden in present:
                 fail('Accessory profile lost a required common function or includes the wrong input frontend.')
+            bridges = [node for node in resource_tree.iter('SubModule') if node.get('name') == 'ble_usb']
+            if len(bridges) != 1 or int(bridges[0].get('Bsram', '0')) != 1:
+                fail('BLE-to-USB forwarding or its complete 2048-note block-RAM ownership map is missing.')
+            result['feature_preservation']['ble_usb_forwarding'] = bridges[0].attrib
     if phase == 'pnr' and 'GowinSynthesis start' in output_text:
         fail('PnR unexpectedly repeated synthesis; refusing to publish artifacts.')
     if phase == 'pnr' and 'Skip synthesis, because there is only one netlist file' not in output_text:

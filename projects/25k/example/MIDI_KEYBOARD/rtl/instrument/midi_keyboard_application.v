@@ -104,8 +104,15 @@ module midi_keyboard_application #(
  assign usb_packet_rx_ready=urx_ready_internal&&!ureset;
  assign ble_value_tx_valid=btx_valid_internal&&!breset;
  assign ble_value_rx_ready=brx_ready_internal&&!breset;
+ wire usb_send_valid,usb_send_ready;
+ wire [23:0] usb_send_message;wire [1:0] usb_send_length;
+ midi_ble_usb_bridge ble_usb(
+  .clk(clk),.reset(reset),.usb_online(usb_online),.ble_online(ble_online),
+  .local_valid(u_valid),.local_ready(u_ready),.local_message(u_message),.local_length(u_length),
+  .phone_valid(brx_valid&&!breset),.phone_ready(brx_ready),.phone_message(brx_message),.phone_length(brx_length),
+  .out_valid(usb_send_valid),.out_ready(usb_send_ready),.out_message(usb_send_message),.out_length(usb_send_length));
  usb_midi_codec ucodec(
-  .clk(clk),.reset(ureset),.tx_valid(u_valid),.tx_ready(u_ready),.tx_message(u_message),.tx_length(u_length),
+  .clk(clk),.reset(ureset),.tx_valid(usb_send_valid),.tx_ready(usb_send_ready),.tx_message(usb_send_message),.tx_length(usb_send_length),
   .packet_tx_valid(utx_valid_internal),.packet_tx_ready(usb_packet_tx_ready),.packet_tx_data(usb_packet_tx_data),
   .packet_rx_valid(usb_packet_rx_valid&&!ureset),.packet_rx_ready(urx_ready_internal),.packet_rx_data(usb_packet_rx_data),
   .rx_valid(urx_valid),.rx_ready(urx_ready),.rx_message(urx_message),.rx_length(urx_length),
@@ -116,18 +123,26 @@ module midi_keyboard_application #(
   .value_rx_valid(ble_value_rx_valid&&!breset),.value_rx_ready(brx_ready_internal),.value_rx_data(ble_value_rx_data),.value_rx_length(ble_value_rx_length),
   .rx_valid(brx_valid),.rx_ready(brx_ready),.rx_message(brx_message),.rx_length(brx_length),.rx_timestamp(brx_timestamp),
   .tx_errors(btx_errors),.rx_errors(brx_errors));
- // Host NoteOn/Off provides lamp feedback. Arbitrate both inputs so a
- // simultaneous USB and BLE event is never silently dropped or echoed.
  assign urx_ready=1'b1;
  wire host_usb=urx_valid&&!ureset;
- assign brx_ready=!host_usb;
- wire host_valid=host_usb||(brx_valid&&brx_ready&&!breset);
- wire[23:0]host_message=host_usb ? urx_message : brx_message;
+ wire host_ble=brx_valid&&brx_ready&&!breset;
  reg[15:0]remote_usb,remote_ble;
  reg[3:0]previous_channel;
  reg signed[7:0]previous_transpose;
- integer host_index;
- always @* host_index=$signed({1'b0,host_message[14:8]})-48-$signed(transpose);
+ function [15:0] feedback;
+  input [15:0] previous;
+  input [23:0] message;
+  integer note_index;
+  begin
+   feedback=previous;
+   note_index=$signed({1'b0,message[14:8]})-48-$signed(transpose);
+   if(message[19:16]==midi_channel)begin
+    if(message[23:20]==4'hb && (message[15:8]==120 || message[15:8]==123))feedback=0;
+    else if(note_index>=0 && note_index<16 && (message[23:20]==9 || message[23:20]==8))
+     feedback[note_index]=message[23:20]==9 && message[6:0]!=0;
+   end
+  end
+ endfunction
  always @(posedge clk)begin
   if(reset)begin remote_usb<=0;remote_ble<=0;previous_channel<=0;previous_transpose<=0;end
   else begin
@@ -136,16 +151,8 @@ module midi_keyboard_application #(
    else begin
     if(!usb_online)remote_usb<=0;
     if(!ble_online)remote_ble<=0;
-    if(host_valid && host_message[19:16]==midi_channel)begin
-     if(host_message[23:20]==4'hb && (host_message[15:8]==120 || host_message[15:8]==123))begin
-      if(host_usb)remote_usb<=0;else remote_ble<=0;
-     end else if(host_index>=0 && host_index<16)begin
-      if(host_message[23:20]==4'h9 || host_message[23:20]==4'h8)begin
-       if(host_usb)remote_usb[host_index]<=host_message[23:20]==4'h9 && host_message[6:0]!=0;
-       else remote_ble[host_index]<=host_message[23:20]==4'h9 && host_message[6:0]!=0;
-      end
-     end
-    end
+    if(host_usb)remote_usb<=feedback(remote_usb,urx_message);
+    if(host_ble)remote_ble<=feedback(remote_ble,brx_message);
    end
   end
  end

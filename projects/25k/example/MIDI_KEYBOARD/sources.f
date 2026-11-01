@@ -24,6 +24,7 @@ rtl/input/midi_pluck_detector.v
 rtl/input/midi_pluck_vpp_detector.v
 rtl/instrument/encoder_button_gestures.v
 rtl/instrument/encoder_input.v
+rtl/instrument/midi_ble_usb_bridge.v
 rtl/instrument/midi_keyboard_application.v
 rtl/instrument/gw138k_panel_performance.v
 rtl/instrument/midi_performance.v
