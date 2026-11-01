@@ -408,6 +408,8 @@ M19 `0xD2110121`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL1
 
 W17 `0xD2110122`的[default完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W17_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53457，setup6774／-4.737ns、hold6／-3.683ns，recovery+2.169／removal+0.275ns。六审计通过（native58／11不适用／63负控、边界7／69、六PLL／7负控／held-v3），主线程重验30物理／3275证据。最差setup为delay overflow_sticky→PCM owner written bitmap CE，当前输出context修复没有消除bitmap长链。DDR另有ui_reset_pipe2→memory_failure CE −4.656ns，clk50为tx_header0→host_rx lease_handles CE −3.495ns。原DDR3.500ns要求保持，hold −3.683ns；其余5个hold负端点是44.1k参考计数器binary→Gray／binary，最差−0.406ns。新owner预译码实际把2个RAM16SDP4换为128个DFFRE，新增存储／mux成本如实保留，不以局部结构推断收益。完整STA和整机接受仍失败，未上板，T2-D1／D2未完成。
 
+W17 `D2110123`的[far完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W17_FAR_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53431，setup5696／−5.123ns、hold1／−.232ns，recovery+1.803／removal+0.278ns、pulse+.580ns。DDR原3.500ns保持且实测+.844ns；仍有tags19→raw memory_failure、active_generation→written及host_rx generation→reliable长链。六审计及补充Wreturn19全过（native58／11不适用／63负控、边界7／69、六PLL／7负控／v3），主线程重验32物理／3277标准证据，另复验default／far扩展3307／3322。外围schema／数量断言失败保留，不放宽门禁。完整STA仍失败，未上板，T2-D1／D2未完成。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
