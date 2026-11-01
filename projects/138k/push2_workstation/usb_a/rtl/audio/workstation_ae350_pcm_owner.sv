@@ -173,8 +173,16 @@ module workstation_ae350_pcm_owner #(
     wire signed [41:0] interpolation_r=$signed({{2{cache0[31]}},cache0[31:16],24'd0})+product_r;
     wire [15:0] interpolated_l=interpolation_l[39:24],interpolated_r=interpolation_r[39:24];
     // Fixed stereo linear interpolation, no independent channel phase/control.
-    assign pcm_left_o=selected ? (usable && !hold_serial && cache_current ? {interpolated_l,16'd0}:32'd0):legacy_left_i;
-    assign pcm_right_o=selected ? (usable && !hold_serial && cache_current ? {interpolated_r,16'd0}:32'd0):legacy_right_i;
+    // Context can be revoked by an immediate upstream DSP fault. Compute
+    // every other permission independently so that revoke remains the final
+    // PCM zero gate, before the caller's gain/DSP path, without a new cycle.
+    wire pcm_output_without_context /* synthesis syn_keep=1 */;
+    assign pcm_output_without_context=armed && !failed && live_matches &&
+        physical_epoch_match_0 && physical_epoch_match_1 && physical_epoch_match_2 && physical_epoch_match_3 &&
+        active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i &&
+        cpu_ready_i && !tf_busy_i && !hold_serial && cache_current;
+    assign pcm_left_o=selected ? (context_ready_i && pcm_output_without_context ? {interpolated_l,16'd0}:32'd0):legacy_left_i;
+    assign pcm_right_o=selected ? (context_ready_i && pcm_output_without_context ? {interpolated_r,16'd0}:32'd0):legacy_right_i;
     assign selected_o=selected;
     assign failed_o=failed;
     assign hard_fault_o=history_state==H_FAULT;

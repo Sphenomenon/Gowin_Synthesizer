@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib,json,subprocess
 import argparse
+import ae350_pcm_output_context_sources as output_context
 U=Path(__file__).resolve().parents[2]
 SOURCE=U/'rtl/audio/workstation_ae350_pcm_owner.sv'
 REFERENCE=Path(__file__).with_name('fixtures')/'workstation_ae350_pcm_owner_before_bitmap_gate.sv'
@@ -9,10 +10,11 @@ parser=argparse.ArgumentParser(description='Actual complete PCM owner bitmap fin
 parser.add_argument('--output',type=Path,required=True)
 O=parser.parse_args().output.resolve();O.mkdir(parents=True,exist_ok=False)
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-assert sha(SOURCE)=='574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e'
+assert hashlib.sha256(output_context.reference_view(SOURCE.read_text()).encode()).hexdigest()=='574c6e268e952a2d72063db5296e781528f47158f4c63ad8cc2968a767d1b71e'
 assert sha(REFERENCE)=='3eab83ad77e0ff28aac3bee416751262bb3af01241d1df596e769a871d53f5b3'
 original=REFERENCE.read_text().replace('module workstation_ae350_pcm_owner','module pcm_owner_window_reference',1);variant=SOURCE.read_text()
 inputs={str(p):sha(p) for p in (SOURCE,REFERENCE,Path(__file__).resolve())}
+inputs.update({str(p):sha(p)for p in output_context.inputs()})
 signals=['accepted_window_write','accepted_start','accepted_commit','accepted_stop','accepted_cancel',
  'rejected_commit','usable','key_matches','armed','cpu_previous','live_matches','physical_matches',
  'selected','hold_serial','cache_current']

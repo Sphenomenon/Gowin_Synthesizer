@@ -11,10 +11,13 @@ parser.add_argument('--output',type=Path,required=True)
 C=parser.parse_args().output.resolve();C.mkdir(parents=True,exist_ok=False)
 sys.path.insert(0,str(U/'sim/audio'))
 import run_ae350_pcm_window_gate as whole
+import ae350_pcm_output_context_sources as output_context
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 p=U/'rtl/audio/workstation_ae350_pcm_owner.sv';original=REFERENCE.read_text()
-assert sha(REFERENCE)==REFERENCE_SHA256 and sha(p)==SOURCE_SHA256
+assert sha(REFERENCE)==REFERENCE_SHA256
+assert hashlib.sha256(output_context.reference_view(p.read_text()).encode()).hexdigest()==SOURCE_SHA256
 inputs={str(p):sha(p),str(Path(whole.__file__)):sha(whole.__file__),str(U/'sim/test_ae350_pcm_owner.py'):sha(U/'sim/test_ae350_pcm_owner.py'),str(REFERENCE):sha(REFERENCE),str(Path(__file__).resolve()):sha(__file__)}
+inputs.update({str(p):sha(p)for p in output_context.inputs()})
 source=original
 changes=[
  ('            for(k=0;k<4;k=k+1)written[k]<=0;\n',''),
@@ -69,7 +72,8 @@ for before,after in reversed(changes):
  else:
   assert inverse.count(after)==1,after;inverse=inverse.replace(after,before,1)
 assert inverse==original
-assert source==p.read_text(), 'maintained bitmap gate exact source inverse drift'
+assert source==output_context.reference_view(p.read_text()), 'maintained bitmap gate exact source inverse drift'
+source=p.read_text()
 (C/'reference.sv').write_text(original.replace('module workstation_ae350_pcm_owner','module pcm_owner_window_reference',1))
 (C/'variant.sv').write_text(source)
 (C/'proposal.patch').write_text(''.join(difflib.unified_diff(original.splitlines(True),source.splitlines(True),fromfile='before.sv',tofile='after.sv')))

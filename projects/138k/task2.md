@@ -394,6 +394,8 @@ W-v3的[strict审计来源兼容修正](push2_workstation/usb_a/reports/DUAL138K
 
 W实测DDR长链的[owner组合预译码维护阶段](push2_workstation/usb_a/reports/DUAL138K_DDR_OWNER_PREDECODE_20261101.md)已完成：每entry先译invalid再单bit选址，tags仍唯一权威，原owner／返回数据及same-edge empty／invalid故障保持，无新状态／周期。实际e4cd6d…655d通过620880四态／边沿、3新负控、原native27场景＋6fault＋11负控及authority10相位／6负控；主线程重验248证据／2owned。推断存储及路由成本可能变化，需新候选实测，不预记收益，未上板。
 
+W实际overflow至PCM链的[输出context许可维护阶段](push2_workstation/usb_a/reports/DUAL138K_PCM_OUTPUT_CONTEXT_20261101.md)已完成：独立前算非context输出许可，context保留最终同拍静音门；legacy／X/Z／采样及全部NBA、bitmap逻辑保持。实际owner1c575…649b通过源码四态证明／3反例、786432完整模块四态／3负控、全状态／RAM逐拍miter及8 owner测试（含4×576000帧频差）；旧bitmap／descriptor及实际APB／CDC→完整D效果／I2S双率／PANIC回归均通过。主线程重验108包内／238外部产物／93输入／6owned；初始测试锚点失败保留，新物理收益待测，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
