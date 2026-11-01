@@ -1,0 +1,103 @@
+{
+  "schema": "dual138k_maintained_HMI60_M140_PLL_fixture_20261101_v1",
+  "stage": "Stable netlist audit mappings promoted to maintained sources and explicit M/W source locks",
+  "utc": "2026-11-01T14:52:01.295824+00:00",
+  "parent_source_commit": "275d855e3603cc41d346b56ef82c46711955ef92",
+  "current_board": "M22 D211012F remains in SRAM",
+  "scope": [
+    "Recognize exact 60 consumed HMI bits and M display132 FF plus98 RAM bits while preserving original observation inventory.",
+    "Accept complete M140 queue tail-D closure in addition to original M tail-CE and W139 tail-D branches.",
+    "Use existing native protocol result API and actual mapped HMI bits3/4 in all eight destructive controls.",
+    "Correct one anchored PLL exception-text assertion without removing any of eight M/W identity-mutation cases.",
+    "Refresh exactly four source_sha256 entries in each explicit DEMO profile; profile configuration, source lists and historical profiles unchanged."
+  ],
+  "source_after": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py": "87a91ceb5e63a4246a9ed66595c67616f4a50386d85b363577f1bfc55fced55d",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_boundary_cdc.py": "e5bf72a94c4e2cd2357655fc4729c71cec56dde0df4b0979842298e8d0cc7bbd",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py": "1225223265e6006b9751b5f7297e2030b43d4ce7edcb2dc43c170163028826af",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_physical_pll_audit.py": "af2e4ef8f4af9bbbd89a1ebb9fc9e5770063d0ae902074484000a6ca7a0bf175"
+  },
+  "whole_file_inverse_exact_to_parent": true,
+  "profiles": {
+    "m": {
+      "source_count": 866,
+      "all_locks_match": true,
+      "only_four_expected_entries_changed": true,
+      "sha256": "7a8dd50b9a532beda1375efe69f11356d82f588b40efac14e05a390680c2c0cf"
+    },
+    "w": {
+      "source_count": 1113,
+      "all_locks_match": true,
+      "only_four_expected_entries_changed": true,
+      "sha256": "dbc4b1316e0662a005fa95743df74ef80eb260a21b46ab54e20d92fca05de998"
+    }
+  },
+  "validation": {
+    "actual_M25_live_native_synthesis": {
+      "tests": 60,
+      "skipped": 16,
+      "mutants": 66,
+      "all_rejected": true,
+      "HMI_actual_mutants": 8,
+      "vendor_registered_RAM18_36_fixture_executed": true
+    },
+    "same_exact_maintained_bytes_M25_boundary": {
+      "tests": 7,
+      "mutants": 69,
+      "all_rejected": true
+    },
+    "same_exact_maintained_bytes_W134_native_synthesis": {
+      "tests": 60,
+      "skipped": 25,
+      "mutants": 61,
+      "all_rejected": true
+    },
+    "live_W134_native_CLI": {
+      "actual_SDC_checked": true,
+      "mailboxes": 2,
+      "retired_display_absence_verified": true
+    },
+    "live_DEMO_policy_tests": 8,
+    "root_accepted_source_tests": 17,
+    "root_PLL_entry": {
+      "tests": 23,
+      "skipped": 1,
+      "exit_code": 0,
+      "skip": "ActualCandidates requires GW138K_PLL_AUDIT_PHYSICALS"
+    },
+    "source_locks_verified": 1979,
+    "root_verified_files": 2615
+  },
+  "known_unrelated_failure": {
+    "entry": "sim/test_workstation_profile.py",
+    "tests": 22,
+    "failures": 2,
+    "errors": 8,
+    "skipped": 15,
+    "reason": "Historical six native profiles retain firmware12b1dd... while committed/current firmware isd0bdf8...; explicit DEMO M866/W1113 source locks all pass.",
+    "historical_locks_not_rewritten": true
+  },
+  "failed_prior_attempts_preserved": [
+    "Original PLL suite failed eight subtests only because expected error text was stale; actual identity mutations were rejected.",
+    "Mapped HMI native test original nonexistent constant_payload_bits API and mapped-out bits0/1 failed; corrected API and actual3/4 preserve all eight mutations."
+  ],
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-hmi-maintenance-installed-handoff-v1.json": "b4917b424c7647fad0bbb298ddf2a6ce2723ca8efe9a983f1ee3b1981e97e8af",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-hmi-maintenance-review-v1/handoff.json": "75fb82dcf96abeb8e3ea45d182a48a2d31e4a046f90c345081b0e2a039220968",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-hmi-maintenance-application-v1.json": "8f8f5db2da8fdc8d252bece588d866637db936a7533635ed5138b43b0c226fa2",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-hmi-and-PLL-serialized-locks-v1.json": "f9d9f81dff1f0019f4e10446463a772241c132c8f830dad26e2bab42b180343d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/pll-test-error-contract-v1/installed-v1/handoff.json": "2680801c32987d81e3111dfa50f31aaba17da66d017c3266b918a5535c624a14",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-hmi-maintenance-review-v1/result.json": "78a64bbf0fed627503ceceaef680544d9e4262122eaf6990c988923a0bb09416",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-hmi-maintenance-review-v1/accepted-sources.log": "06caadd2f38ec50dd1cc8369df1d8278a15d62f4026b9e5ed16ffe0cdab75497",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-hmi-maintenance-review-v1/pll-fixture.log": "4407ea4bd1e4ded898a4f95c0b5800109ac9fa33e0acf97f5cf190de3f609551"
+  },
+  "RTL_changed": false,
+  "SDC_changed": false,
+  "frozen_candidates_modified": false,
+  "new_EDA_run_by_this_stage": false,
+  "new_resource_or_timing_benefit_claimed": false,
+  "hardware_acceptance": false,
+  "SRAM_programmed_by_this_stage": false,
+  "Flash_programmed": false,
+  "rollback": "Revert this maintenance commit and its four lock entries together; original M25/W134 candidates retain immutable original audit inputs and original physical failures."
+}

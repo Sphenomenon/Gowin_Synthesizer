@@ -67,17 +67,28 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     headless = profile == 'w-demo-audio'
     display_absence = audit_headless_display_absence(n) if headless else None
     ordinary = 41 if profile == 'w-demo-d' else 73
-    display_bits = (*range(ordinary), *range(105, 203))
+    hmi = 'u_video/u_applied_parameters_cdc' in n.frames or any(
+        p.startswith('u_video/u_applied_parameters_cdc/') for p in n.cells)
+    require(profile != 'm-demo-core' or hmi, 'M core applied-parameter mailbox missing')
+    # Exact M22 mapped inventory already reviewed against M24; retain all
+    # 60 consumed bits and all normal handshake/driver/clock checks.
+    require(not hmi or profile == 'm-demo-core', 'new W HMI inventory not yet reviewed')
+    hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()
+    display_extra = tuple(203 + bit for bit in hmi_bits if bit < 128)
+    old_display_bits = (*range(ordinary), *range(105, 203))
+    display_bits = (*old_display_bits, *display_extra)
     specifications = (
         ('u_managed/pc_bytes', tuple(range(8)), 8, 'control', 'compute'),
         ('u_managed/health_snapshot', tuple(range(32, 64)), 32, 'selected', 'compute'),
     )
     if not headless:
         specifications += (
-            ('u_managed/display', display_bits, ordinary, 'compute', 'control'),
-            ('u_video/u_runtime_display/observation', (*display_bits, 203), len(display_bits) + 1,
+            ('u_managed/display', display_bits, (*range(ordinary), *display_extra), 'compute', 'control'),
+            ('u_video/u_runtime_display/observation', (*old_display_bits, 203), len(old_display_bits) + 1,
              'control', 'memory'),
         )
+    if hmi:
+        specifications += (('u_video/u_applied_parameters_cdc', hmi_bits, hmi_bits, 'control', 'memory'),)
     proofs, mailboxes = [], []
 
     def regs(scope, stem, bits):
@@ -125,7 +136,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
                 n.pin(settled, 'CLEAR') == n.pin(sync, 'CLEAR') and
                 set(g.closure([sync])['endpoints']) == {settled + '/D'},
                 'third request stage bypass/fanout: ' + scope)
-        held_bits = tuple(range(held_width)) if scope.endswith('/display') else bits
+        held_bits = held_width if isinstance(held_width, tuple) else bits
         held, destination = regs(scope, 'held_data', held_bits), regs(scope, 'destination_data', bits)
         for p in held.values():
             clock(p, source_domain)
@@ -252,7 +263,8 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled profile retained TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)
     timing = audit_timing_boundaries(n, g, profile=profile)
-    result = dict(schema=1, policy=POLICY, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
+    result = dict(schema=1, policy=POLICY + ('-M22-hmi60-v1' if hmi else ''), hmi_inventory_reviewed=hmi,
+                hmi_semantic_origin_verified=False, profile=profile, mapping=mapping, mailbox_count=len(mailboxes),
                 mailboxes=mailboxes, level_proofs=proofs, control_boundaries=controls,
                 timing_boundaries=timing, exact_payload_driver_closure=True,
                 source_stop_loss_bypass_preserved=not headless, constraints_complete=False,
@@ -343,7 +355,7 @@ def protocol_netlist(text, *, mapping):
     # every local protocol primitive with a complete strict named-port lexer.
     n = SynthesisNetlist(text, TOP)
     prefixes = ('u_managed/pc_bytes/', 'u_managed/health_snapshot/', 'u_managed/display/',
-                'u_video/u_runtime_display/observation/', RAM_SCOPE,
+                'u_video/u_runtime_display/observation/', 'u_video/u_applied_parameters_cdc/', RAM_SCOPE,
                 'u_managed/display_observation_health/', 'u_tf_audio/', 'u_managed/pc_',
                 APB + '/', DELAY + '/', DMA + '/')
     expected = {p for p, c in n.cells.items() if c['kind'] not in n.modules and p.startswith(prefixes)}

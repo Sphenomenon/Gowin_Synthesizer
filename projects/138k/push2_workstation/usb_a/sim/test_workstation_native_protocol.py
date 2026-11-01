@@ -199,14 +199,14 @@ class ActualNativeProtocol(ActualNativeFixture):
         result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping)
         display=next(x for x in result['mailboxes'] if x['scope']=='u_managed/display')
         hmi=next(x for x in result['mailboxes'] if x['scope']=='u_video/u_applied_parameters_cdc')
-        self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['constant_payload_bits'],display['payload_bits']),(132,98,0,230))
-        self.assertEqual((hmi['held_ff_bits'],hmi['registered_ram_bits'],hmi['constant_payload_bits'],hmi['payload_bits']),(60,0,0,60))
+        self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['payload_bits']),(132,98,230))
+        self.assertEqual((hmi['held_ff_bits'],hmi['registered_ram_bits'],hmi['payload_bits']),(60,0,60))
         g=Graph(self.n);scope='u_video/u_applied_parameters_cdc'
-        held=g.register(scope,'held_data',0);destination=g.register(scope,'destination_data',0)
+        held=g.register(scope,'held_data',3);destination=g.register(scope,'destination_data',3)
         reqmeta=g.register(scope,'req_meta');reqsync=g.register(scope,'req_sync')
         request=g.register(scope,'request_toggle');ack=g.register(scope,'acknowledge_toggle')
         for name,path,pin,value in [
-            ('HMI held payload alias',destination,'D',self.n.cells[g.register(scope,'held_data',1)]['ports']['Q']),
+            ('HMI held payload alias',destination,'D',self.n.cells[g.register(scope,'held_data',4)]['ports']['Q']),
             ('HMI destination wrong clock',destination,'CLK',"1'b0"),
             ('HMI source ignores busy',held,'CE',"1'b1"),
             ('HMI capture ignores settled request',destination,'CE',"1'b1"),

@@ -538,3 +538,6 @@ M24最差实测glyph地址路径的[最小维护修复](push2_workstation/usb_a/
 
 
 按用户再次要求，已将同一 M22／`D211012F` [重新写入 SRAM（v7）](push2_workstation/usb_a/reports/DUAL138K_M22_SRAM_TRIAL_20261101.json)：原 FS SHA `c4a8f68b…7feea495` 及完整物理输入逐项核验，operation2 exit0，独立 operation0／74 读回 `0001081B／D211012F／00022230`。此次记录 SHA `62f15acb…93e2fc7`，此前 v1–v6 证据完整保留；未写 Flash，未声称逐位 Verify 或现场声画验收通过。板上继续保留 M22，后续 M／W 候选离线推进。
+
+
+[HMI60／M140与PLL测试维护收敛](push2_workstation/usb_a/reports/DUAL138K_MAINTAINED_HMI_PLL_AUDIT_20261101.json)已完成：正式维护审计精确覆盖 M 显示132FF＋98RAM、HMI60位和完整 M140 tail-D 闭包，保留原M tail-CE／W139 tail-D规则；实际HMI八破坏控制修正至现有API与已映射3／4位。PLL仅修正一行异常文案断言，原八组身份变异保持。两显式profile各仅提升四条来源锁，1979项全匹配；主线程独立复核2615文件及四源严格inverse，并重跑来源17项和PLL完整23项（1既有actual环境skip）。M25实际VG native60项／66负控、M boundary7／69、W134实际CLI与61负控结果通过；通用历史profile入口的旧固件锁漂移失败如实保留，未改历史配置。本阶段不改RTL／SDC，不重写冻结候选，不增加时序豁免，也不记物理收益；板上仍为M22。
