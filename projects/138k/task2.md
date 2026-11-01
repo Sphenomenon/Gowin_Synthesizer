@@ -188,6 +188,8 @@ W的[连续PCM Pitch正式维护接入](push2_workstation/usb_a/reports/DUAL138K
 
 M24 `D2110132`的[完整定向物理结果](push2_workstation/usb_a/reports/DUAL138K_M24_DIRECTED_PHYSICAL_20261101.json)已封存：全量P&R551.683秒退出0，物理BSRAM246／DSP116／CLS46554／FF43124／LUT47943／ALU11940／SSRAM99；setup135／最差−.215ns、hold10／最差−.144ns，recovery+2.100／removal+.275ns，DDR原3.500ns保持且指定hold+.631ns。最差glyph地址，audio rate→vector envelope与delay underflow→oscillator expression CE仍负，完整STA失败。原冻结v3审计失败保留，独立v4 native59项45过／14具名skip／61负控、六PLL／7负控，以及boundary7／69、performance17／8通过；HMI通用guard的skip不冒记执行，另补实际routed60live／8常0／61unused、16组合frameCE及8破坏控制全拒，物理CDC接受仍为false。全部物理输入／产物及审计证据逐项重hash，详见报告seal；未上板，M25新身份另测，不修改旧132或预记修复收益。
 
+M25的[完整prepare／新综合与D2110133启动](push2_workstation/usb_a/reports/DUAL138K_M25_PREPARE_SYNTHESIS_20261101.json)已完成阶段验证：真实prepare前dirty原字节900／暂存606／编译262／冻结工具1466及M866锁，身份5f7dce4fde5c4ce0；当时HEAD6e8仅作上下文，不冒称含稍后5b17的Pitch提交。较M24仅event owner／parameters的W分支和brand3编译输入改变，其他259逐字相同，M不编译Pitch实现。完整综合169.821秒、608输入前后不变，FF43272／LUT48124／ALU11406／BSRAM等价206；17来源回归通过。strict v1因缺既有HMI60/M140审计适配拒绝，独立cache v2窄移植后通过；旧native测试API／映射错误保留，独立v3实际60项43过／17具名skip／66负控（含8HMI）通过，维护迁入另记。主线程重hash全部原源／暂存／三套工具及物理输入，133以新VG独立定向P&R，原SDC／DDR3.500ns与128ref要求不放宽；实际routed资源／STA及实板待验，不预记通过。
+
 ## 6. 分阶段任务与退出条件
 
 **当前状态解释：** 以下按日期保留的W完整HDMI／录音证据属于此前候选；不代表本轮仍需交付这些能力，也不证明最新无显示／无录音配置已通过。当前执行与验收以第5.1—5.4节最新范围为准。

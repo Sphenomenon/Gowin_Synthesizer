@@ -1,0 +1,233 @@
+{
+  "schema": "dual138k_m25_prepare_synthesis_20261101_v1",
+  "stage": "Independent M25 full prepare/synthesis and strict gates; D2110133 P&R started",
+  "handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-synthesis-and-physical-start-handoff-v1.json",
+  "handoff_sha256": "0151e1f3f99e29c04df5324f454edd9ccb22f1761d018796479e02748ad79d60",
+  "handoff": {
+    "schema": "dual138k-M25-synthesis-and-physical-start-handoff-v1",
+    "created_utc": "2026-11-01T14:00:26.203100+00:00",
+    "scope": "Complete M25 production prepare and immediate original-byte seal, independent full synthesis, strict post-synthesis gate, new D2110133 physical start; no route/hardware acceptance",
+    "candidate_identity": "custom138k-workstation-m-demo-v1-5f7dce4fde5c4ce0",
+    "candidate_input_sha256": "5f7dce4fde5c4ce0721652b835b3b324b7bf4fa023ad99b0ff4a48a29c009316",
+    "manifest_sha256": "e0c7aad8a3fed8af8ee104ddb6b3642fdc39d952d979ef8bea9d3b87bc48bf53",
+    "artifact_sha256": "a1b98b8f6af0bef0d4f38fb534c5469e619c868cb75d664d4fd641a267ffe3c5",
+    "profile_sha256": "a6cc7cb62f408be7af497df8d6ca341d6b1f6a40929358ee527a55e16da49e83",
+    "profile_locked_sources": 866,
+    "prepare_git_HEAD": "6e8e59bd9f68d3dd2c7e67c14853e723c30040a6",
+    "prepare_HEAD_contains_formal_Pitch14_commit": false,
+    "prepare_dirty_inventory": " M projects/138k/push2_workstation/usb_a/GW25K_PANEL.md\n M projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json\n M projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json\n M projects/138k/push2_workstation/usb_a/firmware.c\n M projects/138k/push2_workstation/usb_a/gw25k_panel.h\n M projects/138k/push2_workstation/usb_a/rtl/audio/gw138k_event_workstation.sv\n M projects/138k/push2_workstation/usb_a/rtl/control/workstation_parameters.sv\n M projects/138k/push2_workstation/usb_a/sim/audio/run_demo_d_only.py\n M projects/138k/push2_workstation/usb_a/sim/audio/run_runtime_controlled.py\n M projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_demo_d_only.sv\n M projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_worker_touch_runtime.sv\n M projects/138k/push2_workstation/usb_a/sim/test_gw25k_panel.c\n M projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_dispatch_slot_provenance.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_native_protocol_audit.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_physical_pll_audit.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_profile.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py\n M projects/138k/push2_workstation/usb_a/tools/workstation_serializer_startup_audit.py\n?? projects/138k/push2_workstation/usb_a/sim/audio/run_stream_pitch_m_preservation.py\n?? projects/138k/push2_workstation/usb_a/sim/test_workstation_stream_pitch_provenance.py\n?? projects/138k/push2_workstation/usb_a/tools/workstation_stream_pitch_provenance.py\n",
+    "source_authority": "Actual originals captured BEFORE prepare and checked after prepare; Git HEAD only context; no post-prepare Git blob reconstruction",
+    "original_source_count": 900,
+    "staged_source_count": 606,
+    "enabled_source_count": 262,
+    "audit_tool_source_count": 1466,
+    "all_original_staged_tool_and_physical_inputs_reverified_now": true,
+    "changed_enabled_inputs_from_M24": {
+      "src/ae350/gw138k_event_workstation.sv": {
+        "M24": "3082f2411b658903a869a77a78f19987f07577a11f42271c9155599c643d1d87",
+        "M25": "c94ef35bdd97e69bf0aabcd3dc0b773949771c42e2ab30178d94b592e3529747"
+      },
+      "rtl/control/workstation_parameters.sv": {
+        "M24": "47437fb03ad79e55cb3836df73ec0b66772bab8f2d315be366cb02964a0468a2",
+        "M25": "2dcba388e52d78adbc6817ba011a1b24a4b86c56048acaa8e4bdecf9236d2069"
+      },
+      "rtl/display_data/workstation_contest_brand.sv": {
+        "M24": "f5d330b625ea5bc545d1e6c3b9e844a7cc23ba2c4e0b6549e035cffd47d18275",
+        "M25": "280c6dedfacfd1be88bcd78712a96f89db460c4a0bff08835006aaa8a5f9921e"
+      }
+    },
+    "all_other259_enabled_inputs_identical": true,
+    "W_stream_pitch_in_M_compilation": false,
+    "full_synthesis": {
+      "exit_code": 0,
+      "elapsed_seconds": 169.82054087519646,
+      "started_utc": "2026-11-01T13:36:48.785035+00:00",
+      "finished_utc": "2026-11-01T13:39:38.604527+00:00",
+      "sealed_inputs": 608,
+      "sealed_inputs_reverified": true,
+      "netlist_sha256": "7ce6b07a59f786e8044ebe4a9e7a93420eeffa8b0b49f7ffbffec7d9f48efe33",
+      "resources": {
+        "Register": 43272,
+        "Lut": 48124,
+        "Alu": 11406,
+        "Bsram": 206,
+        "Ssram": 99,
+        "MULTALU27X18": 33,
+        "MULT12X12": 2,
+        "MULT27X36": 41
+      },
+      "synthesis_equivalent_BSRAM_not_physical": true
+    },
+    "source_regression": {
+      "command": [
+        "python3",
+        "-B",
+        "sim/test_current_workstation_sources.py"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-audits-v1/source-tools",
+      "exit_code": 0,
+      "tests": 17,
+      "log_sha256": "caddabff874d1b47aa5fec429b50d585a3a055d091a92b6abdaab0c29d82f90e"
+    },
+    "strict_synthesis": {
+      "v1_failed": true,
+      "v1_error": "native protocol audit: register bit inventory changed: u_managed/display/held_data",
+      "v1_failure_cause": "Original frozen maintenance audit lacks existing M22/M24 HMI60 inventory; M24/M25 mapped display/observation bit sets are identical",
+      "v2_passed": true,
+      "v2_sha256": "456c881fbd3a5204d909b3da44482a9da3e3145416cb62c14e0a1b0470e12998",
+      "v2_source_seal": "30afa60c0c5bb919e99565504190cf290dd29772d3ca441f1e577c236e3de213",
+      "cache_only_adaptation": "exact HMI60 and complete M140 tail-D alternative from sealed M24 tools, retain original M25 W headless rules",
+      "no_compiler_input_changes": true,
+      "no_SDC_changes": true,
+      "mailbox_counts": [
+        {
+          "scope": "u_managed/pc_bytes",
+          "held_ff_bits": 8,
+          "registered_ram_bits": 0,
+          "payload_bits": 8
+        },
+        {
+          "scope": "u_managed/health_snapshot",
+          "held_ff_bits": 32,
+          "registered_ram_bits": 0,
+          "payload_bits": 32
+        },
+        {
+          "scope": "u_managed/display",
+          "held_ff_bits": 132,
+          "registered_ram_bits": 98,
+          "payload_bits": 230
+        },
+        {
+          "scope": "u_video/u_runtime_display/observation",
+          "held_ff_bits": 172,
+          "registered_ram_bits": 0,
+          "payload_bits": 172
+        },
+        {
+          "scope": "u_video/u_applied_parameters_cdc",
+          "held_ff_bits": 60,
+          "registered_ram_bits": 0,
+          "payload_bits": 60
+        }
+      ]
+    },
+    "native_regression": {
+      "v2": {
+        "tests": 60,
+        "skipped": 17,
+        "error_count": 1,
+        "failed_before_8_HMI_mutants": "test expected nonexistent constant_payload_bits and unmapped HMI0/1; actual inventory starts3/4",
+        "passed_claimed": false
+      },
+      "v3": {
+        "status": "running",
+        "session_id": 54170,
+        "scope": "test correction only: existing132FF+98RAM=230 and exact mappedHMI3/4; eight destructive semantics retained",
+        "passed_claimed": false
+      }
+    },
+    "physical": {
+      "user_code": "0xD2110133",
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v25-physical-v1",
+      "manifest_sha256": "a7008303def044b39bc169f651e0b992c36e29a620807ac011233ae8d149b318",
+      "source_closure_sha256": "13c2adb8100c82d2c2f18451e165fc1a35ced672be135cbc7274a1dbb0404779",
+      "parent_manifest_sha256": "e0c7aad8a3fed8af8ee104ddb6b3642fdc39d952d979ef8bea9d3b87bc48bf53",
+      "independent_M25_VG": true,
+      "old_whole_VG_reused": false,
+      "unchanged_SDC_sha256": "c3b2add186c5fd2561e17664539f20649eff7c1140270dd476bf3d1201624f23",
+      "DDR_minimum_delay_ns": 3.5,
+      "reference_source_FF_count": 128,
+      "DDR_full_instance_and_module_equal_to_M24_without_alias_renames": true,
+      "prior_M23_VO_only_supplies_placement_recipe": true,
+      "prior_route_acceptance_inherited": false,
+      "PNR_started": true,
+      "session_id": 30798,
+      "current_actual_log_tail": [
+        "Reading constraint file: \"/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v25-physical-v1/physical.cst\"",
+        "Physical Constraint parsed completed",
+        "Running placement......",
+        "[10%] Placement Phase 0 completed",
+        "[20%] Placement Phase 1 completed",
+        "[30%] Placement Phase 2 completed",
+        "[50%] Placement Phase 3 completed",
+        "Running routing......"
+      ],
+      "P_and_R_success_claimed": false,
+      "physical_resource_savings_claimed": false,
+      "timing_closed": false
+    },
+    "files_sha256": {
+      "m25-source-freeze-v1/before.json": "714ebf15912706a20c8ed82fca1765046a9483d3fe8f06c7913a90eaa9cbf944",
+      "m25-source-freeze-v1/m25-prepare-run.json": "c50a0c830fe3e985f9d6d1df0bf5477fb9cff17c0c3df465e4ab47212b90a487",
+      "m25-source-freeze-v1/m25-prepare.log": "6d6b02cd6321a49d1d25427bfa457cd4adca2535ca56464c80c175835982b300",
+      "m25-prepare-source-seal-v1.json": "327e4f0a4b00b72563e7f703fa1cd008f01b3042003f0b9b1c8203f321d692b7",
+      "m25-audits-v1/source-tools-seal.json": "2ca5703b6ad4263c6b7f90d6baaf998fe73c04637721d0e952437c42bfb90f98",
+      "m25-synthesis-run-v1.json": "ca73253849e296a8b6f67bc9e54876dd34c2f59e21e3032e136fc4199db8bc05",
+      "m25-strict-synthesis-v1.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "m25-strict-synthesis-v2.json": "456c881fbd3a5204d909b3da44482a9da3e3145416cb62c14e0a1b0470e12998",
+      "m25-hmi-audit-tools-v2-seal.json": "30afa60c0c5bb919e99565504190cf290dd29772d3ca441f1e577c236e3de213",
+      "m25-hmi-audit-tests-v3-seal.json": "8a85ec5800895b0cd49ab3f6f56987e9e9d51169a58712f153af43cce066e33b",
+      "m25-native-synthesis-tests-v2.log": "796ee032fd4fecb249d40bc4459d517e9b4b0106185ae63a3e319ddd706aa268",
+      "m25-native-synthesis-negatives-v2.json": "57a3bb460ac1041e7014415fca98485880c2555c11ae006dc367852a00b14eef",
+      "m25-physical-template-prepare-v1.json": "8cb89b18004006b3bedf77512e8807651e3af6e2bd3501fa6d57077335bc267a",
+      "m25-directed-physical-prepare-v1.json": "a9564b80aa989c67d906232a7796f473640fbe171eb3ec478b3509ef6151c7d0",
+      "m25-current-workstation-sources-v1.log": "caddabff874d1b47aa5fec429b50d585a3a055d091a92b6abdaab0c29d82f90e",
+      "m25-prepare-and-source-seal-v1.py": "fe474af14ba7b26f0ccc8d5136c0e09cfe185a992748fd23b32b108fe0e6a1e0",
+      "m25-directed-build-runner-v1.py": "2c51a0ffd59996f967c52be95789ffc288f3b12638b30f7eef69bad3c45bd724",
+      "m25-directed-physical-prepare-v1.py": "fc7275726567ad2259c5a4c350a2c192a8ad81c5babe90e69fc9d1a6a7587850",
+      "m25-hmi-audit-adaptation-v1.py": "e45f857437a037471fa23c763c9fbaa005aea04272330456c249fd7989f1b63f",
+      "m25-native-test-adaptation-v1.py": "8432270febd8a1343b96e6ca6d937d52d5f56491bdfae9940a01aca308704f75",
+      "m25-audit-adaptation-workstation_native_protocol_audit.patch": "7a1ad1692ed2e128e03915770b5c4a40a0e7e83703be3d839a5cd8ebaa1c7b89",
+      "m25-audit-adaptation-workstation_demo_boundary_cdc.patch": "32e7a49fc42be464a06d2fd15966da37534e362b94c0ca39f746308bbbb6a1f8",
+      "m25-native-test-mapped-HMI60.patch": "b7308fafc4ce0e7403b64aa8ce922259e12f3dacc9d5b70364e990e8a9fdc1c8",
+      "m-demo-base-v25/integration_inputs.json": "e0c7aad8a3fed8af8ee104ddb6b3642fdc39d952d979ef8bea9d3b87bc48bf53",
+      "m-demo-base-v25/workstation_profile.json": "a1b98b8f6af0bef0d4f38fb534c5469e619c868cb75d664d4fd641a267ffe3c5",
+      "m-demo-base-v25-physical-v1/physical_inputs.json": "a7008303def044b39bc169f651e0b992c36e29a620807ac011233ae8d149b318",
+      "m-demo-base-v25-physical-v1/directed_placement_source_closure.json": "13c2adb8100c82d2c2f18451e165fc1a35ced672be135cbc7274a1dbb0404779",
+      "m-demo-base-v25-physical-v1/template_physical_inputs.json": "8cb89b18004006b3bedf77512e8807651e3af6e2bd3501fa6d57077335bc267a"
+    },
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_programmed": false,
+    "rollback": "Board unchanged: root M22 v5 D211012F /00022230 retained; this subagent performs no board operations",
+    "generator_sha256": "826bb2270a791393e5c0f64e290c3316032bd70f3a235e96b123c45fb8234cc1"
+  },
+  "completed_native_followup": {
+    "tests": 60,
+    "passed": 43,
+    "named_skips": 17,
+    "errors": 0,
+    "failures": 0,
+    "actual_destructive_controls_rejected": 66,
+    "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-native-synthesis-tests-v3.log",
+    "log_sha256": "0d1979eaa1434726497141af51b102c590f81975cc758cca9bf4b206227e9cab",
+    "negative_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-native-synthesis-negatives-v3.json",
+    "negative_sha256": "2d8b61aee36dcc209332c5189ffd5420bd61c8c433cc162cce1346406cdd7e9e",
+    "test_adaptation_only": "Existing audited132FF+98RAM API and actual HMI3/4 mapping; original v2 error retained. Audit and compiler inputs remain unchanged."
+  },
+  "root_review": {
+    "distinct_files_rehashed": 5945,
+    "seal_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-root-prepare-synthesis-stage-seal-v1.json",
+    "seal_sha256": "0717413a703e02cbf77cbe72f243cab961838fa4e7fb750609cc81cbe75f4836",
+    "original_inputs": 900,
+    "staged_files": 606,
+    "enabled_files": 262,
+    "frozen_tool_files_each": 1466,
+    "changed_enabled_inputs_exactly_three": [
+      "rtl/control/workstation_parameters.sv",
+      "rtl/display_data/workstation_contest_brand.sv",
+      "src/ae350/gw138k_event_workstation.sv"
+    ],
+    "M_Pitch_implementation_in_compilation": false,
+    "all_other_259_enabled_inputs_identical_to_M24": true,
+    "git_identity_context": "Prepare HEAD6e8e59bd did not contain formal Pitch14 commit. Real dirty original bytes were captured before prepare and bound after copy; those owned bytes were later committed5b17c12d. Live newer profiles/tools never substitute for the frozen copies."
+  },
+  "maintenance_exit_plan": "M25 external audit HMI60/M140 and test corrections will be moved into maintained audit sources as an isolated verified stage after W-only audit/source changes, preserving frozen candidate inputs.",
+  "physical_resource_or_timing_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "board_state": "Current board remains independently user-requested M22 SRAM v6 D211012F/00022230; this stage performs no board operation."
+}
