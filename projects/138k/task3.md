@@ -102,7 +102,7 @@ v11候选`…-444ac11b5f138844`实际综合保留32声部envelope/state/expressi
 
 CNN首工作流为M选TF→明确分析PCM任务→W CQT/真实模型/CNN/Viterbi→完整谱面返回→M Push指导。先允许离线分析完再练习；不能称零延迟扒谱。模型权重/CRC、CQT、输入率/window/hop、量化、Viterbi和音符映射单独锁定；历史[full83验收](push2_workstation/usb_a/reports/CNN_83_ACCEPTANCE_20261006.json)不能转授新W。缺模型/loader/实现据实列缺口；允许W用部分BSRAM缓存加速，须测真实资源、推理最坏时间和录音/蓝牙共存。播放扇出不把两个ready相与：分析不足就降实际cadence或失败，不拖停播放。
 
-本轮已核对维护的`rtl/music/weights/cnn_ddr_blob.mem`：52,239个16-bit word、104,478B，文本SHA256为`b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf`，与accepted full83锁定模型逐字节相同；按little-endian word还原的CRC32为`AF01A61B`。真实模型存在；当前缺口是W角色装配、加载/CRC、BSRAM缓存配置、推理/任务链及实板质量，而不是“模型缺失”。原模型和Flash内容不修改。
+本轮已核对维护的`rtl/music/weights/cnn_ddr_blob.mem`：52,239个16-bit word、104,478B，文本SHA256为`b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf`，与accepted full83锁定模型逐字节相同；按little-endian word还原的CRC32为`AF01A61B`。真实模型存在；下述W组件已验证实际装载/CRC和短片段任务链，仍缺W角色整机装配、生产维度/整曲识别、BSRAM缓存配置及实板质量，而不是“模型缺失”。原模型和Flash内容不修改。
 
 W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_link.sv`内显式可选实现（`DRAIN_RESTART_ENABLE=1`）；实际FIFO/DDR读返回与写接受排空后才重启推理，超时/内存复位/校准丢失隔离。真实模型、小窗口/2帧回归覆盖7种生命周期场景，取消后六层hash/写数/score与全新默认实例相同，跳过排空的负控失败，见[CNN任务证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_CNN_RESTART_20261101.json)。默认保持旧行为；W21未因此接回CNN，完整W装配/loader/质量与实板仍待验。
 
@@ -112,7 +112,9 @@ W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_lin
 
 [60秒容量组件](push2_workstation/usb_a/reports/DUAL138K_TASK3_LONG_RECORDING_20261101.json)已完成：C的GET/外部START/CPU START共用显式容量，非默认配置须核对真实physical容量；engine/service/rawDDR同时支持2,880,000帧。独立W地址池为`0x30600000..0x310fffff`，真实对象只到`0x310fc7ff`，不把池尾14,336B填充区提供给下载。真实C/APB/解析器/CRC/nativeDDR联调采满2,880,000帧并逐字节下载11,520,000B，CRC `3ddb23ec`，1421块；主线程完整复跑相同。第二对象由BLE START、CPU STOP，在native写暂停时保持WAIT，排空后封存13帧并下载52B。默认136条wire golden与15负控保留，另验容量不匹配、地址/尾BL8和上限拒绝。**这是加速仿真的60秒容量证明，尚未选入W整机、没有实测60秒录音或手机验收；44.1k和长对象重连仍待验。** 长对象重连试验的OPEN失败未隔离，未用保持会话的容量结果覆盖该缺口。
 
-[W媒体内存组合](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_MEDIA_MEMORY_20261101.json)已建立真实BIST及owner5 CNN、owner6 Delay、owner8唯一录音通路；其余owner关闭，旧audio-only组合和仲裁器未改。三种时钟相位共84,569检查、3项突变拒绝，主线程独立复跑相同；覆盖实际native提交、写掩码、返回归属、停顿、停钟校准丢失、共同复位和迟包同沿隔离。真实单槽组合在1024周期持续请求中Delay/录音各完成170次；绕过单槽的裸仲裁负控中持续Delay使录音256周期零服务，因此没有据此宣称录音期限或改公平性。**尚未选择W整机、未运行实际CNN/录音负载；安全恢复仍要求controller/client共同清除旧native事务，任意旧响应与新读重叠不能靠无epoch总线识别。**
+[W媒体内存组合](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_MEDIA_MEMORY_20261101.json)已建立真实BIST及owner5 CNN、owner6 Delay、owner8唯一录音通路；其余owner关闭，旧audio-only组合和仲裁器未改。三种时钟相位共84,569检查、3项突变拒绝，主线程独立复跑相同；覆盖实际native提交、写掩码、返回归属、停顿、停钟校准丢失、共同复位和迟包同沿隔离。真实单槽组合在1024周期持续请求中Delay/录音各完成170次；绕过单槽的裸仲裁负控中持续Delay使录音256周期零服务，因此没有据此宣称录音期限或改公平性。**该内存层回归未选择W整机、未运行实际CNN/录音负载；安全恢复仍要求controller/client共同清除旧native事务，任意旧响应与新读重叠不能靠无epoch总线识别。**
+
+[W媒体原生装配、固件与录音入口](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_MEDIA_NATIVE_20261102.json)已把实际BIST、CNN任务和唯一raw store组合起来：完整52,239-word真实SPI模型启动/DDR CRC与24帧录取、排空、逐样本下载/清除通过；native owner5/6/8分别实际接受104,478/42,082/6条命令，owner6仍是竞争探针。新增headless-media固件保留真实Classic/HCI/SBC/GATT及唯一C/BLE owner，退出图形UI；每个TU按同一DDR图编译2,880,000帧容量。新ELF审计167处实际JALR、4张真实回调表、896B保守栈峰值，4负控拒绝。独立256帧有界录音入口按至少5个50MHz时钟送一帧，真实engine完成16帧/CRC；111项/15场景及3突变通过，涵盖溢出、断链、4ms lease、取消/PANIC与高generation重arm。主线程复跑原生组合和入口相同。**本阶段仍未选择W整机、没有连接HCI radio或LCD/M实际tap，也未并发运行整段CNN/真实Delay/60秒录音。** 不复用会退出业务录音的W21 audio-only选择，不以W本地最终PCM冒充M最终输出；真实手机解码出口、M最终tap录音入口和TF分析入口保持独立有界边界。
 
 D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Drive/Delay Send和Pitch/Delay/Chorus/Reverb逐项标实现/缺口。持续PCM Pitch不等于采样器变播放相位或近unity SRC。最终路径明确为手机→W蓝牙/解码→有界链路→经验证的M/W效果→M最终音量/调度→DAC；W演示DAC仅为回退，最终不能让手机音量标签冒充M实际输出。
 
@@ -129,7 +131,7 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 独立菜单、实际原生直读/真实DSP-I2S尾帧、双率冷启动16场景通过；显式267输入新prepare已封存。v11实际综合保留32声部/普通矢量，局部CDC通过，完整profile/TF CDC仍拒绝；真实卡供给/CRC/remount、完整P&R、实体DAC/HDMI/控制延迟待验 |
-| T3-05 W CNN/分析/长录音 | 真实SPI模型/DDR CRC→独立短PCM任务→CQT/六层CNN/Viterbi及取消组件57项通过；同一CPU/BLE对象60秒容量/完整逐字节下载组件通过，默认wire保留。W媒体owner5/6/8与真实BIST组件已通过，尚未选入W整机；W角色装配、生产维度/整曲识别、长对象重连、44.1k、识别质量、BSRAM/DDR真实并发及综合仍待实现；按LCD实测额度接M |
+| T3-05 W CNN/分析/长录音 | 真实短PCM任务→CNN/Viterbi与取消组件57项、同一CPU/BLE对象60秒容量/完整下载组件通过。W原生BIST/真实模型启动/唯一raw store、headless-media实际ELF及有界录音pacer已验证，尚未选入W整机；显式W角色/APB入口正接入。生产维度/整曲识别、长对象重连、44.1k、识别质量、BSRAM/DDR真实并发及综合仍待实现；按LCD实测额度接M |
 | T3-06 同对候选集成 | TF→W CNN→Push、真实手机D→M DAC、CPU/BLE同一长录音、下载/重连/取消/PANIC；分别测两板并发资源/时序/吞吐/延迟 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 
