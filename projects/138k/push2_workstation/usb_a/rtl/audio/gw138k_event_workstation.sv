@@ -40,7 +40,7 @@ module gw138k_event_workstation #(
     // sample_ce_i is zero this must equal rate_commit_i; it omits only a
     // configuration request caused by accepting this cycle's new sample.
     input logic event_rate_commit_i,
-    output wire rate_ready_o, applied_rate_44100_o,
+    output wire rate_ready_o, rate_accepted_o, applied_rate_44100_o,
     output wire rate_applied_o,rate_busy_o,rate_fault_o,
     input logic history_clear_i,
     output wire history_ready_o,history_done_o,
@@ -151,6 +151,8 @@ module gw138k_event_workstation #(
   wire runtime_config_block,runtime_config_busy,runtime_fault;
   (* syn_keep=1 *) logic event_config_block;
   wire engine_rate_commit;
+  // This is the actual same-edge broadcast acceptance, not a ready offer.
+  assign rate_accepted_o=engine_rate_commit;
   wire fx_config_ready,fx_config_applied,fx_history_ready,fx_history_done,fx_quiet,fx_fault,fx_rate;
   logic pending, frame_inflight;
   logic [31:0] allocated;

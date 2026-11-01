@@ -9,6 +9,7 @@ from pathlib import Path
 import argparse, hashlib, json, re, subprocess
 import z3
 from prove_effect_slot_admission import BooleanSV, equation, one
+import config_accept_receipt_sources as receipt
 
 ROOT=Path(__file__).resolve().parents[2]
 EVENT=ROOT/'rtl/audio/gw138k_event_workstation.sv'
@@ -58,7 +59,7 @@ def source_contract(event=None):
         config_ready_contract=readiness.source_contract(event)
         event=readiness.reference_view(event)
     assert sha(REFERENCE)==REFERENCE_SHA256,'pre-sample-admission fixture drift'
-    assert sha(SERVICE)==SERVICE_SHA256,'unchanged render-service reference drift'
+    assert hashlib.sha256(receipt.reference_view('rtl/audio/workstation_audio_render_service.sv').encode()).hexdigest()==SERVICE_SHA256,'render-service pre-receipt reference drift'
     base=REFERENCE.read_text();old=equation(base,'core_ce')
     assert event.count(NATIVE_BLOCK)==1,'native sample admission exact block drift'
     inverse=event.replace(NATIVE_BLOCK,'  assign core_ce='+old+';')
@@ -76,7 +77,7 @@ def reference_view(event):
 
 def contract_inputs():
     """Inputs consumed by the layered exact inverse, including newer hunks."""
-    inputs=[Path(__file__).resolve(),REFERENCE]
+    inputs=[Path(__file__).resolve(),REFERENCE]+receipt.contract_inputs()
     if 'logic public_rate_ready;' in EVENT.read_text():
         import prove_config_ready_cofactor as readiness
         inputs.extend([Path(readiness.__file__).resolve(),readiness.REFERENCE])

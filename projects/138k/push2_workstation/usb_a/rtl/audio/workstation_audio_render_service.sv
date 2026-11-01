@@ -13,7 +13,7 @@ module workstation_audio_render_service #(
 ) (
     input wire clk_i,rst_ni,
     input wire config_valid_i,config_rate_44100_i,history_clear_i,
-    output wire config_ready_o,config_applied_o,history_ready_o,history_done_o,
+    output wire config_ready_o,config_accepted_o,config_applied_o,history_ready_o,history_done_o,
     output wire quiescent_o,fault_o,applied_rate_44100_o,
     input wire delay_peer_heartbeat_i,delay_dma_fault_i,
     output wire delay_heartbeat_o,
@@ -60,7 +60,7 @@ module workstation_audio_render_service #(
 );
     reg active,response_sent;
     reg held_rate,external_busy,request_muted;
-    wire core_rate_ready,core_rate_applied,core_rate_busy,core_fault,core_rate;
+    wire core_rate_ready,core_rate_accepted,core_rate_applied,core_rate_busy,core_fault,core_rate;
     wire core_history_ready,core_history_done;
     wire external_free=!active && !external_busy && !core_fault;
     // Raw request forwarding keeps valid independent of ready. The event
@@ -96,6 +96,9 @@ module workstation_audio_render_service #(
     assign render_busy_o=active || (RUNTIME_EFFECTS_ENABLE && (external_busy || core_rate_busy));
     assign sample_ce_o=accepted && (RUNTIME_EFFECTS_ENABLE || !render_44k1_i);
     assign config_ready_o=RUNTIME_EFFECTS_ENABLE && external_free && core_rate_ready;
+    // Only the external request may acknowledge its caller; an automatic
+    // rate transaction is a different owner of the same broadcast edge.
+    assign config_accepted_o=external_config && core_rate_accepted;
     assign history_ready_o=RUNTIME_EFFECTS_ENABLE && external_free && core_history_ready;
     assign config_applied_o=RUNTIME_EFFECTS_ENABLE && core_rate_applied;
     assign history_done_o=RUNTIME_EFFECTS_ENABLE && core_history_done;
@@ -132,7 +135,7 @@ module workstation_audio_render_service #(
         .panic_epoch_o,.panic_accept_o(panic_accept),.panic_muted_o,.cancel_delivery_pending_o(cancel_delivery_pending),.render_idle_o(core_idle),
         .rate_commit_i(core_config),.rate_44100_i(requested_rate),
         .event_rate_commit_i(event_config_request),
-        .rate_ready_o(core_rate_ready),.applied_rate_44100_o(core_rate),
+        .rate_ready_o(core_rate_ready),.rate_accepted_o(core_rate_accepted),.applied_rate_44100_o(core_rate),
         .rate_applied_o(core_rate_applied),.rate_busy_o(core_rate_busy),.rate_fault_o(core_fault),
         .history_clear_i(external_history),.history_ready_o(core_history_ready),.history_done_o(core_history_done),
         .delay_peer_heartbeat_i,.delay_dma_fault_i,.delay_heartbeat_o,

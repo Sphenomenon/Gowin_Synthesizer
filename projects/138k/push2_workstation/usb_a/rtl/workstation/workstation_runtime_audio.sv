@@ -124,7 +124,7 @@ module workstation_runtime_audio #(
     wire signed [31:0] service_left,service_right;
     wire bridge_quiet,bridge_busy,router_quiet,router_ready,router_done,router_error;
     wire [31:0] router_pcm;
-    wire config_ready,config_applied;
+    wire config_ready,config_accepted,config_applied;
     reg integration_fault;
     wire pcm_hard_fault,pcm_history_request,pcm_history_ready,pcm_history_done,pcm_serial_hold;
     wire [21:0] pcm_cancel_epoch;
@@ -218,7 +218,7 @@ module workstation_runtime_audio #(
                 CFG_DRAIN:if(router_quiet && service_quiet && !bridge_busy)begin
                     config_state<=CFG_ACCEPT;config_accept_pending<=1;
                 end
-                CFG_ACCEPT:if(config_ready)begin
+                CFG_ACCEPT:if(config_accepted)begin
                     config_state<=CFG_ACK;config_accept_pending<=0;
                 end
                 CFG_ACK:if(config_applied && !integration_fault)begin
@@ -350,7 +350,7 @@ module workstation_runtime_audio #(
         .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE)) service(
         .clk_i(compute_clk_i),.rst_ni(compute_reset_n),
         .config_valid_i(config_valid),.config_rate_44100_i(pending_rate),.history_clear_i(pcm_history_request),
-        .config_ready_o(config_ready),.config_applied_o(config_applied),.history_ready_o(pcm_history_ready),.history_done_o(pcm_history_done),
+        .config_ready_o(config_ready),.config_accepted_o(config_accepted),.config_applied_o(config_applied),.history_ready_o(pcm_history_ready),.history_done_o(pcm_history_done),
         .quiescent_o(service_quiet),.fault_o(service_fault),.applied_rate_44100_o(service_rate),
         .delay_peer_heartbeat_i(memory_heartbeat),.delay_dma_fault_i(dma_fault),.delay_heartbeat_o(audio_heartbeat),
         .render_request_i(render_request),.render_44k1_i(render_rate),.render_ready_o(service_ready),

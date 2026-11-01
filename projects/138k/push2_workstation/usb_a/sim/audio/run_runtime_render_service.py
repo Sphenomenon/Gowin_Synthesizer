@@ -11,6 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'sim'))
 from test_workstation_runtime_effects import Effects
+import config_accept_receipt_sources as receipt
 
 
 def digest(path):
@@ -86,9 +87,12 @@ def main():
         reference_label = ('pre-sample-admission fixture' if args.sample_admission_miter else
                            'M13 service/event pair' if args.event_config_miter else 'M11 reference')
         for path, name, expected in references:
-            if expected is not None and digest(path) != expected:
-                raise ValueError('Exact consumed ' + reference_label + ' drift: ' + str(path))
             text = path.read_text()
+            if path == ROOT/'rtl/audio/workstation_audio_render_service.sv':
+                text = receipt.reference_view('rtl/audio/workstation_audio_render_service.sv',text)
+                miter_inputs.extend(receipt.contract_inputs())
+            if expected is not None and hashlib.sha256(text.encode()).hexdigest() != expected:
+                raise ValueError('Exact consumed ' + reference_label + ' drift: ' + str(path))
             for _, module, _ in references:
                 text = re.sub(r'\b' + module + r'\b', module + '_before_effect_slot', text)
             if name == 'workstation_runtime_stereo_effects':
@@ -109,20 +113,22 @@ def main():
         ports = [(direction, (signed or '') + (width or ''), name.strip())
                  for direction, signed, width, names in declarations
                  for name in names.rstrip().rstrip(',').split(',')]
-        if len(ports) != 72 or any(not re.fullmatch(r'\w+', name) for _, _, name in ports):
+        if len(ports) != 73 or any(not re.fullmatch(r'\w+', name) for _, _, name in ports):
             raise ValueError('Exact service miter port inventory drift: ' + str(len(ports)))
+        shared = [(d,w,n) for d,w,n in ports if n != 'config_accepted_o']
         actual_ports = ','.join('.' + name + '(' + name + ')' for _, _, name in ports)
         reference_ports = ','.join('.' + name + '(' + ('reference_' if direction == 'output' else '') + name + ')'
-                                   for direction, _, name in ports)
+                                   for direction, _, name in shared)
         propagated = '#(' + ','.join('.' + name + '(' + name + ')' for name in parameters) + ')'
-        outputs = [name for direction, _, name in ports if direction == 'output']
+        outputs = [name for direction, _, name in shared if direction == 'output']
         wrapper = header.replace('module workstation_audio_render_service', 'module effect_slot_service_miter').replace('output reg', 'output wire')
         wrapper += '\n' + '\n'.join('wire ' + width + 'reference_' + name + ';'
-                                    for direction, width, name in ports if direction == 'output')
+                                    for direction, width, name in shared if direction == 'output')
         wrapper += '\nworkstation_audio_render_service ' + propagated + ' actual(' + actual_ports + ');\n'
         wrapper += 'workstation_audio_render_service_before_effect_slot ' + propagated + ' reference(' + reference_ports + ');\n'
         wrapper += 'integer comparisons=0;\nalways @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
         wrapper += 'if({' + ','.join(outputs) + '} !== {' + ','.join('reference_' + name for name in outputs) + '})$fatal(1,"actual old/new full service public output differs");\n'
+        wrapper += 'if(config_accepted_o !== (config_valid_i && config_ready_o))$fatal(1,"configuration receipt differs from external transfer");\n'
         wrapper += 'if(actual.workstation.core_ce!==reference.workstation.core_ce)$fatal(1,"actual old/new core_ce sampling edge differs");comparisons=comparisons+1;end\n'
         if args.event_config_miter or args.sample_admission_miter:
             private_paths = ['accepted', 'core_config', 'requested_rate', 'active', 'response_sent',

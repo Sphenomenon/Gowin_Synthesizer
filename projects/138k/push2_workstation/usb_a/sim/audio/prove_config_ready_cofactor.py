@@ -8,6 +8,7 @@ from pathlib import Path
 import argparse,hashlib,json,re
 import z3
 from prove_effect_slot_admission import one,equation,parse
+import config_accept_receipt_sources as receipt
 ROOT=Path(__file__).resolve().parents[2]
 EVENT=ROOT/'rtl/audio/gw138k_event_workstation.sv'
 REFERENCE=Path(__file__).with_name('fixtures')/'gw138k_event_workstation_before_config_ready_cofactor.sv'
@@ -22,15 +23,17 @@ NATIVE_BLOCK="    logic public_rate_ready;\n    assign rate_ready_o=public_rate_
 
 def source_contract(event=None):
     event=EVENT.read_text() if event is None else event
+    maintained_digest=hashlib.sha256(event.encode()).hexdigest()
+    event=receipt.reference_view('rtl/audio/gw138k_event_workstation.sv',event)
     assert sha(REFERENCE)==REFERENCE_SHA256,'pre-config-ready fixture drift'
-    assert sha(SERVICE)==SERVICE_SHA256,'unchanged render-service reference drift'
+    assert hashlib.sha256(receipt.reference_view('rtl/audio/workstation_audio_render_service.sv').encode()).hexdigest()==SERVICE_SHA256,'render-service pre-receipt reference drift'
     assert event.count(NATIVE_BLOCK)==1,'public config-ready exact block drift'
     base=REFERENCE.read_text()
     assert event.replace(NATIVE_BLOCK,OLD_BLOCK)==base,'public config-ready edits escape exact original source'
     assert re.findall(r'\b(\w+(?:\[[^]]+\])?)\s*<=\s*([^;]+);',event)==re.findall(r'\b(\w+(?:\[[^]]+\])?)\s*<=\s*([^;]+);',base),'sequential assignment order/RHS drift'
-    return {'reference_sha256':REFERENCE_SHA256,'maintained_source_sha256':hashlib.sha256(event.encode()).hexdigest(),
+    return {'reference_sha256':REFERENCE_SHA256,'maintained_source_sha256':maintained_digest,
             'exact_whole_source_inverse':True,'all_NBA_targets_rhs_and_order_unchanged':True,
-            'service_reference_sha256':SERVICE_SHA256}
+            'service_reference_sha256':SERVICE_SHA256,'configuration_receipt_inverse':True}
 
 def reference_view(event):
     source_contract(event)
@@ -71,7 +74,7 @@ def binary_proof():
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
-    inputs=[EVENT,REFERENCE,SERVICE,Path(__file__).resolve(),Path(__file__).with_name('prove_effect_slot_admission.py')]
+    inputs=list(dict.fromkeys([EVENT,REFERENCE,SERVICE,Path(__file__).resolve(),Path(__file__).with_name('prove_effect_slot_admission.py')]+receipt.contract_inputs()))
     before={str(p):sha(p)for p in inputs};contract=source_contract();negatives=[];actual=EVENT.read_text()
     for name,mutant in [('missing_event_fence',actual.replace(NATIVE_BLOCK,NATIVE_BLOCK.replace('case ({rate_commit_i,busy,event_rate_commit_i})', 'case ({rate_commit_i,busy,event_rate_commit_i || 1\x27b1})'))),
                         ('outside_ready_commit',actual.replace('wire parameter_commit=event_valid','wire parameter_commit=1\x27b0 && event_valid',1))]:

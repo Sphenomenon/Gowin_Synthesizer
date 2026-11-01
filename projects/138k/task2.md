@@ -420,6 +420,8 @@ M 的[TF epoch比较分组](push2_workstation/usb_a/reports/DUAL138K_TF_EPOCH_GR
 
 W 的[PCM bitmap最终context判定](push2_workstation/usb_a/reports/DUAL138K_PCM_BITMAP_CONTEXT_20261101.md)已落维护：已知context在最终写入选择，X-Z保留原顺序NBA，其他字节不改，不含live_matches新修改。实际模块52224四态、8依赖关系UNSAT／2错误SAT、7217全owner周期、4实际／4来源负控、原owner八项与四种576000帧频差通过；旧window／descriptor／control／output及bitmap来源链保留。正式通用PCM1454重建串行帧、D1918帧／1917显示快照／12PANIC通过，绑定同批回执修复。主线程复验462封存文件／132当前输入及Git严格inverse；未新EDA／上板，不记物理收益。
 
+M／W 的[配置实际接受回执](push2_workstation/usb_a/reports/DUAL138K_CONFIG_ACCEPT_RECEIPT_20261101.md)已修复：runtime CFG_ACCEPT不再因ready独立为1而虚假ACK，直接等待原engine_rate_commit广播回执，故障／valid撤销同拍禁止ACK，无新状态或延迟。完整M／W33280四态、实际FSM及旧ready负控、原config-ready／sample／effect证明和完整service对照通过；M22532帧、生产启动1028帧、48645独立定点模型帧／31边界／115929947 effect对照通过。主线程独立核对十一份变更及797封存文件／220当前输入；未更新profile或新EDA／上板，不记物理收益。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

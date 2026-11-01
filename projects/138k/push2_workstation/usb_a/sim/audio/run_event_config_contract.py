@@ -11,6 +11,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'sim/audio'))
 from run_runtime_controlled import runtime_sources
+import config_accept_receipt_sources as receipt
 
 REFERENCES=(('src/ae350/gw138k_event_workstation.sv','gw138k_event_workstation',
              '5d02329a6b7f08ec30d79552a4814436b7c01611f4e4bed83c1514d154ef3fd1'),
@@ -32,15 +33,17 @@ def wrapper(service):
     parameters=re.findall(r'parameter (?:bit|integer) (\w+)=',header)
     decl=re.findall(r'\b(input|output)\s+(?:wire|reg)\s+(signed\s+)?(\[[^\]]+\]\s+)?(.*?)(?=\binput\b|\boutput\b|\)\s*;)',header,re.S)
     ports=[(direction,(signed or '')+(width or ''),n.strip())for direction,signed,width,names in decl for n in names.rstrip().rstrip(',').split(',')]
-    assert len(ports)==72 and all(re.fullmatch(r'\w+',n)for _,_,n in ports),'service public port inventory drift'
+    assert len(ports)==73 and all(re.fullmatch(r'\w+',n)for _,_,n in ports),'service public port inventory drift'
+    shared=[(d,w,n)for d,w,n in ports if n!='config_accepted_o']
     args='#('+','.join('.'+n+'('+n+')'for n in parameters)+')'
-    public=[n for d,_,n in ports if d=='output'];assert len(public)==50
+    public=[n for d,_,n in shared if d=='output'];assert len(public)==50
     text=header.replace('module workstation_audio_render_service','module event_config_contract_miter').replace('output reg','output wire')+'\n'
-    text+='\n'.join('wire '+w+'reference_'+n+';'for d,w,n in ports if d=='output')+'\n'
+    text+='\n'.join('wire '+w+'reference_'+n+';'for d,w,n in shared if d=='output')+'\n'
     text+='workstation_audio_render_service '+args+' actual('+','.join('.'+n+'('+n+')'for _,_,n in ports)+');\n'
-    text+='workstation_audio_render_service_before_event_config '+args+' reference('+','.join('.'+n+'('+('reference_'if d=='output'else'')+n+')'for d,_,n in ports)+');\n'
+    text+='workstation_audio_render_service_before_event_config '+args+' reference('+','.join('.'+n+'('+('reference_'if d=='output'else'')+n+')'for d,_,n in shared)+');\n'
     text+='integer comparisons=0;always @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
     text+='if({'+','.join(public)+'} !== {'+','.join('reference_'+n for n in public)+'})$fatal(1,"M13/current full service output differs");\n'
+    text+='if(config_accepted_o !== (config_valid_i && config_ready_o))$fatal(1,"configuration receipt differs from external transfer");\n'
     text+=''.join('if(actual.'+n+' !== reference.'+n+')$fatal(1,"M13/current boundary differs: '+n+'");\n'for n in COMMON)
     text+='comparisons=comparisons+1;end\n'
     text+='generate if(RUNTIME_EFFECTS_ENABLE)begin: native_boundaries\nalways @(posedge clk_i or negedge clk_i)if(rst_ni)begin\n'
@@ -88,8 +91,11 @@ def main():
         assert all(p.is_file()for p in changes.values()),'complete mutant source pair missing'
         sources=[changes.get(p,p)for p in sources];service=changes[service]
     for relative,module,expected in references:
-        source=project/relative;assert sha(source)==expected,'exact service/event reference drift: '+str(relative)
-        text=source.read_text()
+        source=project/relative;text=source.read_text()
+        if source==receipt.ROOT/'rtl/audio/workstation_audio_render_service.sv':
+            text=receipt.reference_view('rtl/audio/workstation_audio_render_service.sv',text)
+            source_gate_inputs.extend(receipt.contract_inputs())
+        assert hashlib.sha256(text.encode()).hexdigest()==expected,'exact service/event reference drift: '+str(relative)
         for _,name,_ in references:text=re.sub(r'\b'+name+r'\b',name+'_before_event_config',text)
         target=out/(module+'_before_event_config.sv');target.write_text(text);sources.append(target);refs.append(source)
     target=out/'event_config_contract_miter.sv';miter=wrapper(service.read_text())
