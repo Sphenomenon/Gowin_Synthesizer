@@ -1,0 +1,115 @@
+{
+  "schema": "dual138k-W18-synthesis-rejected-checkpoint-v1",
+  "captured_utc": "2026-11-01T08:40:03.099408+00:00",
+  "VG_sha256": "c016fb99fdd1dbd1fecfb036203ec0803b161a4b46864f3c6b1c4a675af9327b",
+  "actual_generation_closure_endpoints": 333,
+  "direct_generation_payload_D": 32,
+  "actual_qualification_endpoints": 301,
+  "old_selector_endpoints": 301,
+  "missing": [
+    "recording_ble_store/unpack_active_s4/D",
+    "recording_ble_store/unpack_index_0_s1/CE"
+  ],
+  "extra": [
+    "recording_ble_store/unpack_active_s4/CE",
+    "recording_ble_store/unpack_index_0_s1/D"
+  ],
+  "missing_cells": {
+    "recording_ble_store/unpack_active_s4": {
+      "kind": "DFFCE",
+      "ports": {
+        "Q": "unpack_active",
+        "D": "n1340_10",
+        "CLK": "clk_50m_d",
+        "CLEAR": "n20_6",
+        "CE": "VCC"
+      },
+      "parameters": {
+        "INIT": "1'b0"
+      }
+    },
+    "recording_ble_store/unpack_index_0_s1": {
+      "kind": "DFFCE",
+      "ports": {
+        "Q": "unpack_index[0]",
+        "D": "n1642_4",
+        "CLK": "clk_50m_d",
+        "CLEAR": "n20_6",
+        "CE": "unpack_index_2_8"
+      },
+      "parameters": {
+        "INIT": "1'b0"
+      }
+    }
+  },
+  "extra_cells": {
+    "recording_ble_store/unpack_active_s4": {
+      "kind": "DFFCE",
+      "ports": {
+        "Q": "unpack_active",
+        "D": "n1340_10",
+        "CLK": "clk_50m_d",
+        "CLEAR": "n20_6",
+        "CE": "VCC"
+      },
+      "parameters": {
+        "INIT": "1'b0"
+      }
+    },
+    "recording_ble_store/unpack_index_0_s1": {
+      "kind": "DFFCE",
+      "ports": {
+        "Q": "unpack_index[0]",
+        "D": "n1642_4",
+        "CLK": "clk_50m_d",
+        "CLEAR": "n20_6",
+        "CE": "unpack_index_2_8"
+      },
+      "parameters": {
+        "INIT": "1'b0"
+      }
+    }
+  },
+  "old_constraints": "set_max_delay 10.000 -from [get_pins {recording_ble_store/return_generation_*_s*/Q}] -to [get_pins {recording_ble_store/return_ack_s0/CE recording_ble_store/unpack_active_s*/CE recording_ble_store/unpack_data_*_s*/CE recording_ble_store/unpack_generation_*_s*/CE recording_ble_store/unpack_word_*_s*/CE recording_ble_store/unpack_index_0_s*/D recording_ble_store/unpack_index_1_s*/CE recording_ble_store/unpack_index_2_s*/CE}]\nset_false_path -hold -from [get_pins {recording_ble_store/return_generation_*_s*/Q}] -to [get_pins {recording_ble_store/return_ack_s0/CE recording_ble_store/unpack_active_s*/CE recording_ble_store/unpack_data_*_s*/CE recording_ble_store/unpack_generation_*_s*/CE recording_ble_store/unpack_word_*_s*/CE recording_ble_store/unpack_index_0_s*/D recording_ble_store/unpack_index_1_s*/CE recording_ble_store/unpack_index_2_s*/CE}]\n",
+  "source_only_read": true,
+  "hardware_tested": false,
+  "diagnosis_verified": true,
+  "strict_synthesis_accepted": false,
+  "PNR_started": false,
+  "inventory_record_sha256": "cf5c7dfab65ae09b7654b2da9ef39fe6ae2c27d572f69d2af89766ccf9da1c97",
+  "resources_record": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w18-synthesis-resources-only-v1.json",
+    "sha256": "bf70c99dcf49fb286a996551cd2c5e26d0a82d8a689b9b5fe925f1b86726e52d",
+    "values": {
+      "stage": "W18_actual_synthesis_resource_measurement_only",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-dee2666eaf545e40",
+      "resource_report_sha256": "95968ebb7dd8516496699cb8ed352efd01e569a9dc41fbd41a2298c0d4fcc640",
+      "resources": {
+        "Register": 45180,
+        "Lut": 61247,
+        "Alu": 19772,
+        "Bsram": 257,
+        "Ssram": 308,
+        "MULTALU27X18": 8,
+        "MULT12X12": 1,
+        "MULT27X36": 29
+      },
+      "hierarchy_count": 216,
+      "LUT_plus_ALU": 81019,
+      "strict_VG_gate_passed": false,
+      "strict_VG_rejection": "W return mailbox CDC: qualification selector misses or adds actual consumers",
+      "physical_resource_measured": false,
+      "hardware_tested": false
+    }
+  },
+  "hardware_inventory": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/hardware-inventory-20261101-readonly-v2/verification.json",
+    "sha256": "e0c5b69f23fb5bb95690743ed816cf07baf8b597b2d846ae6aad1d7e19f4c732",
+    "valid_138k_devices": 1,
+    "UserCode": "0xC11028E5",
+    "StatusCode": "0x00022020",
+    "no_SRAM_or_Flash_write": true
+  },
+  "boundary_regression": "Actual positive inventory passes; wptr0 D/CE negative rejected by earlier watchdog consumer-closure gate, failing the expected reason assertion. No bypass.",
+  "release_ready": false
+}

@@ -426,6 +426,10 @@ M／W 的[配置实际接受回执](push2_workstation/usb_a/reports/DUAL138K_CON
 
 [M20／W18新整机prepare](push2_workstation/usb_a/reports/DUAL138K_M20_W18_PREPARE_20261101.json)及profile verify通过：M身份`908c9fa1f158b21a`、588 staged／261编译输入；W身份`dee2666eaf545e40`、646 staged／284编译输入。主线程复验全部1234 staged文件与1647来源锁，明确新修复实际暂存身份；模块是否退出仍由综合网表门验证，不以文件在目录中推断实例。M仍为无CNN基础声画、W录音仍16384帧，未修改容量／业务范围。已转入两份全量综合，后续默认P&R使用D2110125／D2110126；当前prepare不代表综合、物理或硬件通过。
 
+M20 的[完整综合及实际VG门](push2_workstation/usb_a/reports/DUAL138K_M20_SYNTHESIS_20261101.json)通过：FF46932／LUT54342／ALU12554／综合BSRAM equivalent195；较M19 LUT+432、ALU+4，不记资源收益。新TF比较已在实际VG形成4条独立8级ALU链；native58项52过／6映射不适用、67负控全拒，APB实际改为unconditional toggle XOR LUT4分支并完整覆盖，未跳过真实边界；boundary7／69通过。主线程重验3753绑定文件。默认D2110125已进入全量P&R，物理BSRAM、完整STA和声画未接受。
+
+W18 的[全量综合与严格门拒绝](push2_workstation/usb_a/reports/DUAL138K_W18_SYNTHESIS_REJECTED_20261101.json)分别记录：FF45180／LUT61247／ALU19772／综合BSRAM equivalent257，LUT／ALU明显增加，未预记收益。actual VG `c016fb99…9327b`的generation闭包仍333／资格301端点，但旧选择器对unpack_active与index0的D／CE各漏一项、多选相反引脚；主线程独立全闭包核对相同。strict门拒绝后未P&R，旧W18固定输入不改，下一独立候选精确修正覆盖；boundary实际正向通过但一项D／CE变异在更早closure门拒绝，原预期归因断言失败也保留。当前只读JTAG仍一块有效138K／C11028E5，未写SRAM／Flash，无专用HDMI采集或线路音频输入；不转授为实板声画接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

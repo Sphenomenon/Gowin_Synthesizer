@@ -1,0 +1,151 @@
+{
+  "schema": "dual138k-M20-synthesis-checkpoint-v1",
+  "stage": "M20_complete_DEMO_synthesis_actual_VG_and_physical_prepare_checkpoint",
+  "captured_utc": "2026-11-01T08:40:18.509148+00:00",
+  "passed": true,
+  "candidate_identity": "custom138k-workstation-m-demo-v1-908c9fa1f158b21a",
+  "integration_manifest_sha256": "23f82b20363bd6373f1ceab420f55f4902491066fb889e2fb96e0c33a7784246",
+  "source_tools_seal_sha256": "d23f288c7ac4f4929f9173410cab843473940780ba22958f405b0eb43cc590db",
+  "source_tools_count": 1415,
+  "prepare_source_snapshot_count": 876,
+  "staged_input_count": 588,
+  "enabled_input_count": 261,
+  "profile_locked_source_count": 823,
+  "synthesis": {
+    "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-synthesis-run-v1.json",
+    "run_json_sha256": "46ae2df7d6f5c093fa9f910b9d3109030f2092466d9f81862a9bb000337ee097",
+    "elapsed_seconds": 190.35876662516966,
+    "exit_code": 0,
+    "resources": {
+      "Register": 46932,
+      "Lut": 54342,
+      "Alu": 12554,
+      "Bsram": 195,
+      "Ssram": 141,
+      "MULTALU27X18": 33,
+      "MULT12X12": 4,
+      "MULT27X36": 42
+    },
+    "BSRAM_measurement_scope": "synthesis equivalent only; physical P&R measured separately",
+    "netlist_sha256": "1d13fb77c94c4debd0a66c47410b9eadca0036e7f452a8445b044e7da28d33a8",
+    "source_and_staged_bytes_unchanged": true
+  },
+  "actual_VG_native": {
+    "tests": 58,
+    "passed": 52,
+    "skipped": 6,
+    "skips": [
+      "test_shared_selected_entry_checks_actual_source_slice (__main__.ActualDemoHeldHandshakes.test_shared_selected_entry_checks_actual_source_slice) ... skipped 'actual physical parent identity required for entry source slice'",
+      "test_routed_added_ram_fragment_must_use_the_same_acceptance (__main__.ActualNativeProtocol.test_routed_added_ram_fragment_must_use_the_same_acceptance) ... skipped 'routed 18-bit split only'",
+      "test_apb_ce_toggle_cannot_bypass_payload_capture (__main__.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture) ... skipped 'reviewed CE-factored request mapping not present'",
+      "test_apb_ce_toggle_feedback_must_invert_its_own_q (__main__.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q) ... skipped 'reviewed CE-factored request mapping not present'",
+      "test_apb_routed_inverse_lut_truth_table_is_exact (__main__.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact) ... skipped 'reviewed routed LUT1 inverse mapping not present'",
+      "test_apb_split_launch_combined_and_is_exact (__main__.ActualTimingBoundaries.test_apb_split_launch_combined_and_is_exact) ... skipped 'reviewed split launch AND mapping not present'"
+    ],
+    "negative_controls": 67,
+    "all_negative_controls_rejected": true,
+    "negative_controls_by_class": {
+      "ActualControlBoundaries": 11,
+      "ActualDemoHeldHandshakes": 23,
+      "ActualNativeProtocol": 12,
+      "ActualTimingBoundaries": 21
+    }
+  },
+  "actual_VG_boundary": {
+    "tests": 7,
+    "passed": 7,
+    "negative_controls": 69,
+    "all_negative_controls_rejected": true,
+    "baseline": {
+      "passed": true,
+      "inventory_role": "M",
+      "fault_ff_consumers": 663,
+      "fault_ram_consumers": 4,
+      "queue_ff_consumers": 140,
+      "queue_ram_consumers": 2
+    }
+  },
+  "jobs": [
+    {
+      "name": "strict-synthesis",
+      "returncode": 0,
+      "elapsed_seconds": 28.951334416866302,
+      "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-audits-v1/strict-synthesis-run.json",
+      "run_sha256": "670e2fc981f40a6fff17a4745ecb3222633127bd34f21fd0893bf66baec93cdc"
+    },
+    {
+      "name": "native-vg-cli",
+      "returncode": 0,
+      "elapsed_seconds": 3.964238792192191,
+      "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-audits-v1/native-vg-cli-run.json",
+      "run_sha256": "492bc3fc0ed45714e14c052229031f5d6793e32ef37d9ca54c3903718c5f4b1a"
+    },
+    {
+      "name": "native-vg-regression",
+      "returncode": 0,
+      "elapsed_seconds": 132.94027337501757,
+      "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-audits-v1/native-vg-regression-run.json",
+      "run_sha256": "fbe5efd73bbeccdc3ce00b2f235904247e8c62d4d66b4114e8184df9cceab2d5"
+    },
+    {
+      "name": "boundary-vg-regression",
+      "returncode": 0,
+      "elapsed_seconds": 167.41934566688724,
+      "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-audits-v1/boundary-vg-regression-run.json",
+      "run_sha256": "047470b369adbb8c90eee32012219f9bd529aa4bfa313c6a4d4178a4eaa97513"
+    },
+    {
+      "name": "physical-prepare",
+      "returncode": 0,
+      "elapsed_seconds": 30.31405175011605,
+      "run_json": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-audits-v1/physical-prepare-run.json",
+      "run_sha256": "ea0587183b6fa012b7429c527010c2c15f937005120787a543878fedfd26e62c"
+    }
+  ],
+  "physical_prepare": {
+    "user_code": "0xD2110125",
+    "manifest_sha256": "be3f712f9b5c0b0ba59941d381c0e07a61e4ab142a2fe678aed6f124b36b2b5a",
+    "physical_input_count": 8,
+    "PNR_completion_claimed": false
+  },
+  "all_frozen_source_tools_and_staged_bytes_reverified": true,
+  "all_evidence_bytes_reverified": true,
+  "evidence_file_count": 3752,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "full_STA_passed": false,
+  "physical_CDC_accepted": false,
+  "release_ready": false,
+  "limitations": [
+    "M base omits CNN guidance pending later integration",
+    "Actual VG and prepare gates do not establish routed timing or physical BSRAM",
+    "No HDMI/DAC/Push/25K/TF hardware or dual-board concurrent acceptance"
+  ],
+  "APB_actual_mapping_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-apb-vg-mapping-review-v1.json",
+    "sha256": "013599e6197020605eac916356afb7fb8ebb14e249fa6afb03ef1cec45d2ce94",
+    "mapping": "unconditional_toggle_xor_lut4",
+    "functional_boundary_omitted": false
+  },
+  "TF_actual_group_mapping_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-TF-actual-VG-epoch-groups-root-v1.json",
+    "sha256": "04367133b63c32d6b2b4c95eaf88d2148cd5ede02459ff77ba386366a971f0ba",
+    "independent_groups": 4,
+    "max_serial_ALUs": 8,
+    "physical_gain_claimed": false
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m20-synthesis-root-review-v1.json",
+    "sha256": "fccff269e3c2f1d98522960010efa0307507c71c0b2f9dd7828886944be56e8b",
+    "schema": "dual138k-M20-synthesis-root-review-v1",
+    "passed": true,
+    "captured_utc": "2026-11-01T08:41:56.265561+00:00",
+    "summary_sha256": "39d83606517f51d32818bc1edc832d337a45d8f5682b1cacbd32454c7c6afb02",
+    "seal_sha256": "eeca703680126be729bdda3ff653b3701857d369084d594e3a391236911420dc",
+    "sealed_files_verified": 3753,
+    "scope": "New complete M synthesis, actual VG audits, exact group mapping and physical preparation; P&R remains running.",
+    "hardware_tested": false,
+    "full_STA_passed": false
+  }
+}
