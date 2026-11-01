@@ -1,0 +1,177 @@
+{
+  "schema": "dual138k_W_audio_only_firmware_20261101_v1",
+  "stage": "actual maintained RV32 firmware link, callback stack and retired-code exclusion; FPGA integration/synthesis/PnR/hardware still pending",
+  "policy": "ae350_worker_audio_only_classic_runtime_v1",
+  "source_sha256": {
+    "firmware/ae350/worker_audio_main.c": "c2dcffe194b027142044b7e4bcab77e3bbda6235b1f6ffc9c3da939dfb94dcf0",
+    "firmware/ae350/classic_runtime.c": "382aa82e2856ad5a48319a22191a3e960eed966aa455e000d0d948cd3e9e3476",
+    "tools/stage_ae350_firmware.py": "1ec1486a3821e32da8339142507d0066d36a8213cb9891ecf0da66fc8b1b423f",
+    "tools/experiment_ae350_rom_split.py": "9bf7460a3fb34121097fcc9c9ab4d00dbb1696eb15177aaf0311e5a6cc66861d",
+    "tools/ae350_rom_split.py": "08e7c454b9f03196fdc068b4600a35e85d560c25308c3a544a7e71d201b86bbf",
+    "tools/workstation_classic_runtime.py": "7e268b6f4d67679a61d5c9d4703e11750f26fc17b3adddb688447ad81bad133c",
+    "tools/ae350_classic_runtime_audit.py": "a788daf1d33ff78925e6e5b0fb9f5fe65039caed03a3e98bb064ce25241b5647",
+    "tools/ae350_worker_audio_audit.py": "5af89d0c57e66f3edd08f6c1d5d2477a8192758322b079da87d3dad7d65494e4",
+    "sim/run_ae350_worker_audio.py": "c27a588a83571f4d9a7a2aa63199a8e461371715f8dcb36f42eaadd995def99d"
+  },
+  "compiled_sources": [
+    "start.S",
+    "worker_audio_main.c",
+    "ui_runtime.c",
+    "audio_clock_service.c",
+    "classic_service.c",
+    "sbc_decoder_service.c",
+    "classic_security.c",
+    "hci_transport.c",
+    "classic_runtime.c",
+    "pcm_media.c",
+    "adapted/decoder/srce/alloc.c",
+    "adapted/decoder/srce/bitalloc-sbc.c",
+    "adapted/decoder/srce/bitalloc.c",
+    "adapted/decoder/srce/bitstream-decode.c",
+    "adapted/decoder/srce/decoder-oina.c",
+    "adapted/decoder/srce/decoder-private.c",
+    "adapted/decoder/srce/decoder-sbc.c",
+    "adapted/decoder/srce/dequant.c",
+    "adapted/decoder/srce/framing-sbc.c",
+    "adapted/decoder/srce/framing.c",
+    "adapted/decoder/srce/oi_codec_version.c",
+    "adapted/decoder/srce/synthesis-8-generated.c",
+    "adapted/decoder/srce/synthesis-dct8.c",
+    "adapted/decoder/srce/synthesis-sbc.c"
+  ],
+  "selected": {
+    "headless_worker": true,
+    "worker_demo": true,
+    "recording_api": false,
+    "business_protocol_compiled": false,
+    "native_HCI_provider": true,
+    "graph_ui_compiled": false,
+    "local_recording_proxy": false
+  },
+  "identity": {
+    "rom_sha256": "266cf95629ae746567ef2be5f18847c3ea276374c5b0d81720c903f1fc349d18",
+    "elf_sha256": "0120e1c93076dcb7d4159d3ccbab135448c6ff2e785610bdaddd889b30e8d825",
+    "binary_sha256": "0b21d87985fce0b8e40bdafafacc0b674b7375c906f13317e45ece4d1ca7a601"
+  },
+  "capacity": {
+    "rom_capacity_bytes": 131072,
+    "binary_bytes": 90800,
+    "payload_bytes": 57616,
+    "padding_hole_bytes": 33184,
+    "upper_rom_code_bytes": 25264,
+    "cold_code_unallocated_bytes": 40272,
+    "hot_load_bank_bytes": 32352,
+    "hot_load_unallocated_bytes": 33184,
+    "ilm_capacity_bytes": 65536,
+    "ilm_runtime_bytes": 31744,
+    "ilm_reserved_final_word_bytes": 4,
+    "ilm_usable_remaining_bytes": 33788,
+    "dlm_capacity_bytes": 65536,
+    "static_ram_span_bytes": 7008,
+    "ram_reserved_prefix_bytes": 256,
+    "stack_capacity_bytes": 16384,
+    "unallocated_dlm_bytes": 41888,
+    "heap_bytes": 0,
+    "selected_in_production": false,
+    "hardware_acceptance": false
+  },
+  "stack_conservative_bytes": 896,
+  "reviewed_actual_JALR": 93,
+  "callback_negative_controls": 4,
+  "actual_RV32_fault_scenarios": [
+    {
+      "case": "disconnected_controller",
+      "actual_instructions_after_loader": 41875,
+      "heartbeat": 8,
+      "HCI_reads": 96,
+      "retired_MMIO_or_DDR_accesses": 0,
+      "traps": 0
+    },
+    {
+      "case": "invalid_HCI_identity",
+      "actual_instructions_after_loader": 41507,
+      "heartbeat": 8,
+      "HCI_reads": 6,
+      "retired_MMIO_or_DDR_accesses": 0,
+      "traps": 0
+    }
+  ],
+  "composition_negative_controls": [
+    {
+      "name": "retired_translation_unit",
+      "rejected": true,
+      "error": "audio-only worker translation unit inventory drift"
+    },
+    {
+      "name": "missing_audio_only_define",
+      "rejected": true,
+      "error": "audio-only worker compile flags changed"
+    },
+    {
+      "name": "recording_claim",
+      "rejected": true,
+      "error": "audio-only worker reports retired backend enabled"
+    },
+    {
+      "name": "source_drift",
+      "rejected": true,
+      "error": "audio-only worker source changed: firmware/ae350/worker_audio_main.c"
+    },
+    {
+      "name": "retired_ELF_symbol",
+      "rejected": true,
+      "error": "retired UI/recording/business function or storage linked"
+    },
+    {
+      "name": "relabel_as_recording_worker",
+      "rejected": true,
+      "error": "Classic runtime linked role evidence changed: headless_worker"
+    },
+    {
+      "name": "relabel_as_default_runtime",
+      "rejected": true,
+      "error": "Classic runtime linked role evidence changed: worker_demo"
+    },
+    {
+      "name": "metadata_compile_commands_drift",
+      "rejected": true,
+      "error": "Classic runtime actual compile commands changed"
+    }
+  ],
+  "shared_default_and_recording_preprocessed_branches_equal": [
+    "default",
+    "recording_worker"
+  ],
+  "default_runtime_regression": {
+    "real_SBC_vectors": 11,
+    "native_and_sanitized_checks_each": 3467,
+    "runtime_mutants_rejected": 15,
+    "PCM_mutants_rejected": 9,
+    "maximum_PCM_error_lsb": 5
+  },
+  "source_tests": 17,
+  "independent_review": {
+    "mode_relabel_vulnerability": "Found and fixed: linked selection bits/commands and actual role source composition now cross-checked; actual old v4 ELF was correct.",
+    "remaining_blocking_findings": 0
+  },
+  "verified_firmware_files": 177,
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-firmware-root-v5/verification.json": "3fff4e25007ff771c433960033d8025b3d82f73f0dab6b836896278ad710c847",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-firmware-root-v5/build_metadata.json": "24e31cd493e61b4c2224cdea995deb6679d89b9dd5fe772517665c8b3319a8bf",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-firmware-root-v5/runtime_callgraph_verification.json": "27eadefe9d271900c93ee508dbb098fbc3b0bbf202e49d7f85d5b53c42c85d78",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-firmware-check-v3/verification.json": "778488900d63fe5236ea6dabacfe6bf117b8980dece5a3837a034af0262e3c7e",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-default-runtime-regression-v1/verification.json": "9877be4bc8cdeee3e937d7588d41c6b0b40a84c95fc800d2a87ac5cded745383",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-firmware-independent-review-v1/handoff.json": "cd45a502509f725824798406286c3b37998ecfe8f89478cc9639a529b2d137b0",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-source17-final.log": "7eecc9251f4a43ae8160718b661d12e52e0818eea935069980fe63697dad3a74"
+  },
+  "failed_attempts_preserved": [
+    "w21-audio-firmware-root-v1: PATH compiler executable was not absolute for hashing",
+    "w21-audio-firmware-root-v2: old split capacity gate required retired UI/business symbols",
+    "w21-audio-firmware-check-v1: preprocess fixture lacked adapted SBC header include"
+  ],
+  "no_synthesis_or_physical_gain_claimed": true,
+  "phone_or_audio_acceptance": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "rollback": "Only explicit W headless selection chooses worker_audio_main; default UI/recording branches retain preprocessed semantics and legacy checks. Frozen M23 inputs unchanged."
+}

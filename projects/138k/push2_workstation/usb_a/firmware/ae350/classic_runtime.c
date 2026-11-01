@@ -1,5 +1,7 @@
 #include "classic_runtime.h"
+#ifndef A138_WORKER_AUDIO_ONLY
 #include "ble_business_owner.h"
+#endif
 #include "pcm_media.h"
 #include <string.h>
 
@@ -221,11 +223,15 @@ void a138_classic_runtime_firmware_init(void) {
     a138_classic_runtime_init(&firmware_runtime,a138_hci_mmio_bus(A138_HCI_BASE),&unavailable,&media);
     firmware_runtime.enabled=0; /* No durable backend has been implemented. */
 #endif
+#ifndef A138_WORKER_AUDIO_ONLY
     a138_ble_business_firmware_init();
+#endif
 }
 void a138_classic_runtime_firmware_pump(void) {
     /* Four fixed transport slices between UI jobs, one decode in total.
      * This is a work bound, not a measured CPU/DDR service-period guarantee. */
     for(unsigned i=0;i<4u;i++)runtime_pass(&firmware_runtime,i==0u);
+#ifndef A138_WORKER_AUDIO_ONLY
     a138_ble_business_firmware_pump();
+#endif
 }

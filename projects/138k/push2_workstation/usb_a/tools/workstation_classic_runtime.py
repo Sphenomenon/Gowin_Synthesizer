@@ -4,15 +4,16 @@ import copy,hashlib,json,re,struct,subprocess,shutil
 from tools.ae350_local_memory import call_chain_report
 POLICY='ae350_classic_runtime_failclosed_v1'
 WORKER_POLICY='ae350_worker_session_classic_runtime_v1'
+WORKER_AUDIO_POLICY='ae350_worker_audio_only_classic_runtime_v1'
 PROVIDER='rtl/workstation/workstation_profile_classic_runtime_v1.sv'
 ROM96_POLICY='ae350_classic_runtime_rom96_failclosed_v1'
 ROM96_PROVIDER='rtl/workstation/workstation_profile_classic_runtime_rom96_v1.sv'
 ROM96_REFERENCE='tools/ae350_rom96_reference.json'
 ROM96_DEPENDENCIES=(ROM96_REFERENCE,)
 DEPENDENCIES=('tools/workstation_classic_runtime.py','tools/experiment_ae350_rom_split.py',
-    'tools/ae350_classic_runtime_audit.py','firmware/ae350/boot_ilm_dlm_rom128_split.ld')
+    'tools/ae350_classic_runtime_audit.py','tools/ae350_worker_audio_audit.py','firmware/ae350/boot_ilm_dlm_rom128_split.ld')
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
-def firmware_inputs(root):
+def firmware_inputs(root,*,headless_worker=False):
     # Explicit new profile alone locks this entire maintained/vendor inventory.
     return sorted(str(p.relative_to(root))for p in (Path(root)/'firmware/ae350').rglob('*')if p.is_file())
 def composition(physical_rom_bytes):
@@ -122,14 +123,15 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
         if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
             raise ValueError("unreviewed Classic demo compilation provider")
         provider=selected_provider
-        policy=WORKER_POLICY
+        policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
+    if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
     installed=shutil.which('iverilog')
     if not installed:raise ValueError('Classic runtime actual preprocessing requires iverilog')
     tool=Path(installed).resolve();enabled,hdl=_selected_hdl(stage)
@@ -138,11 +140,11 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     target.write_bytes(payload);log.write_text(diagnostic)
     from tools.workstation_ae350_pcm import source_bundle
     record=dict(policy=policy,pcm=dict(source_bundle(root),profile_selected=True),
-        provider=provider,preprocessed_sha256=sha(target),command=argv,
+        provider=provider,headless_worker=headless_worker,preprocessed_sha256=sha(target),command=argv,
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider)
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker)
     return record
 def verify_cdc_selection(text,record,*,worker_demo=False):
     """Check the exact final scoped lines for the explicitly selected role."""
@@ -155,14 +157,16 @@ def verify_cdc_selection(text,record,*,worker_demo=False):
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
         if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
             raise ValueError("unreviewed Classic demo compilation provider")
         provider=selected_provider
-        policy=WORKER_POLICY
+        policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
+    if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
+    if record.get('headless_worker',False)!=headless_worker:raise ValueError('audio-only worker selection drift')
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -190,15 +194,16 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False):
     from tools.experiment_ae350_rom_split import build as link
     from tools.ae350_classic_runtime_audit import analyze
     root,evidence=Path(root),Path(evidence)
     policy,_=composition(physical_rom_bytes)
     if worker_demo:
         if physical_rom_bytes!=131072:raise ValueError('W DEMO selects the reviewed ROM128 composition')
-        policy=WORKER_POLICY
-    linked=link(evidence,prefix,root,runtime_owner=True,worker_demo=worker_demo)
+        policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
+    if headless_worker and not worker_demo:raise ValueError('audio-only worker requires explicit W runtime')
+    linked=link(evidence,prefix,root,runtime_owner=True,worker_demo=worker_demo,headless_worker=headless_worker)
     if linked['link_returncode']:raise ValueError('Classic runtime actual ROM128 link failed')
     graph=analyze(evidence,root)
     physical=None
@@ -213,7 +218,7 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=Fals
         linked['capacity']=capacity
     linked.update(callback_call_chain_audit=True,runtime_callgraph_report_sha256=sha(evidence/'runtime_callgraph_verification.json'))
     (evidence/'verification.json').write_text(json.dumps(linked,indent=2)+'\n')
-    record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,
+    record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=not headless_worker,business_owner_enabled=True,
         runtime_policy=policy,worker_demo=worker_demo,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
         binary_sha256=sha(evidence/'firmware.bin'),call_chain_stack=graph['stack'],
         reviewed_JALR_sites=graph['reviewed_JALR_sites'],tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
@@ -229,10 +234,36 @@ def verify_build(root,evidence,record,physical_rom_bytes=131072):
     policy,_=composition(physical_rom_bytes)
     if record.get('worker_demo',False):
         if physical_rom_bytes!=131072:raise ValueError('W DEMO physical ROM changed')
-        policy=WORKER_POLICY
+        policy=WORKER_AUDIO_POLICY if record.get('headless_worker',False) else WORKER_POLICY
+    if record.get('headless_worker',False):
+        if not record.get('worker_demo') or record.get('recording_api_enabled') or not record.get('business_owner_enabled'):
+            raise ValueError('audio-only worker firmware selection drift')
     if record.get('runtime_policy')!=policy or not record.get('runtime_owner') or record.get('source_text_overlay')is not False:
         raise ValueError('Classic runtime actual source root omitted')
     linked=json.loads((evidence/'verification.json').read_text())
+    for key in ['worker_demo','headless_worker','runtime_owner','source_text_overlay',
+                'single_recording_owner','local_recording_proxy','graph_ui_compiled',
+                'recording_compiled','business_protocol_compiled','session_only_pairing']:
+        if record.get(key)!=linked.get(key):
+            raise ValueError('Classic runtime linked role evidence changed: '+key)
+    if record.get('commands')!=linked.get('commands'):
+        raise ValueError('Classic runtime actual compile commands changed')
+    if record.get('recording_api_enabled')is not (not bool(linked.get('headless_worker'))):
+        raise ValueError('Classic runtime recording API does not match linked role')
+    if record.get('business_owner_enabled')is not True:
+        raise ValueError('Classic runtime native HCI provider omitted')
+    if linked.get('headless_worker'):
+        from tools.ae350_worker_audio_audit import verify_composition
+        verify_composition(evidence,root,record)
+    else:
+        from tools.stage_ae350_firmware import selected_sources
+        if not set(selected_sources(True,True))<=set(record['compiled_sources']):
+            raise ValueError('Classic runtime legacy UI/recording composition omitted')
+        for command in record['commands']:
+            if command['name'].startswith('compile-'):
+                flags=command['argv']
+                if '-DA138_WORKER_AUDIO_ONLY' in flags or '-DA138_BLE_BUSINESS' not in flags or ('-DA138_SINGLE_BLE_RECORDING' in flags)!=bool(linked.get('worker_demo')):
+                    raise ValueError('Classic runtime legacy compile role changed')
     if not linked['callback_call_chain_audit'] or linked['input_sha256']!=record['input_sha256']:
         raise ValueError('Classic runtime actual link/audit evidence drift')
     for name,h in record['input_sha256'].items():

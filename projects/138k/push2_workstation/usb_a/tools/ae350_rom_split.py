@@ -9,7 +9,7 @@ ROM_BYTES = 131072
 COLD_BASE = ROM_BASE + 65536
 
 
-def split_memory_report(size_text, symbols_text, binary, elf_path, rom_bytes=ROM_BYTES):
+def split_memory_report(size_text, symbols_text, binary, elf_path, rom_bytes=ROM_BYTES,*,headless_worker=False):
     if rom_bytes != ROM_BYTES:
         raise ValueError('split experiment requires explicit 128 KiB ROM; 96 KiB is unsupported')
     s = symbol_values(symbols_text)
@@ -21,19 +21,24 @@ def split_memory_report(size_text, symbols_text, binary, elf_path, rom_bytes=ROM
         'local_data_probe', 'local_bss_probe', 'a138_classic_init', 'a138_classic_acl',
         'ui_render_rows', 'a138_sbc_decode', 'OI_CODEC_SBC_DecodeFrame',
         'a138_ble_business_firmware_init', 'a138_ble_business_firmware_pump')
+    if headless_worker:
+        required=tuple(n for n in required if n not in ('ui_render_rows','a138_ble_business_firmware_init','a138_ble_business_firmware_pump'))+(
+            'a138_classic_runtime_firmware_init','a138_classic_runtime_firmware_pump','a138_classic_runtime_init_session')
     if any(name not in s for name in required):
         raise ValueError('split linker or retained business symbols missing')
     if not (s['_start'] == ROM_BASE <= s['local_trap'] < s['__ilm_load_start']):
         raise ValueError('reset/trap must remain in lower ROM bank')
     if not (ILM_BASE == s['__ilm_start'] <= s['local_memory_entry'] < s['__ilm_end'] <= ILM_BASE + 65532):
         raise ValueError('ILM span or reserved final word invalid')
-    for name in ('services_main', 'a138_sbc_decode', 'OI_CODEC_SBC_DecodeFrame',
-                 'a138_ble_business_firmware_init', 'a138_ble_business_firmware_pump'):
+    hot=('services_main', 'a138_sbc_decode', 'OI_CODEC_SBC_DecodeFrame')+(
+         ('a138_classic_runtime_firmware_init','a138_classic_runtime_firmware_pump') if headless_worker else
+         ('a138_ble_business_firmware_init', 'a138_ble_business_firmware_pump'))
+    for name in hot:
         if not ILM_BASE <= s[name] < s['__ilm_end']:
             raise ValueError('retained hot business escaped ILM: ' + name)
     if not (COLD_BASE == s['__rom_text_start'] < s['__rom_text_end'] <= ROM_BASE + ROM_BYTES):
         raise ValueError('cold executable bank invalid')
-    for name in ('a138_classic_init', 'a138_classic_acl', 'ui_render_rows'):
+    for name in (('a138_classic_init','a138_classic_acl') if headless_worker else ('a138_classic_init', 'a138_classic_acl', 'ui_render_rows')):
         if not COLD_BASE <= s[name] < s['__rom_text_end']:
             raise ValueError('cold function not placed in upper ROM: ' + name)
     if not (DLM_BASE + 256 == s['__data_start'] <= s['local_data_probe'] < s['__data_end'] <=

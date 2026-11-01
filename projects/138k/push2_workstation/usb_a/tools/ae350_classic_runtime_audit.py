@@ -9,19 +9,34 @@ def analyze(output,root):
  out,root=Path(output),Path(root);d=json.loads((out/'verification.json').read_text())
  if d.get('runtime_owner')is not True or d.get('source_text_overlay')is not False:
   raise ValueError('actual versioned runtime required')
- worker=d.get('worker_demo')is True
+ headless=d.get('headless_worker')is True
+ worker=d.get('worker_demo')is True and not headless
+ if headless:
+  from tools.ae350_worker_audio_audit import verify_composition
+  verify_composition(out,root,d)
  worker_review=json.loads((root/'tools/ae350_worker_recording_indirect_review.json').read_text())if worker else None
  if worker:
   for rel,h in worker_review['input_sha256'].items():
-   if d['input_sha256'].get(rel)!=h or sha(root/rel)!=h:raise ValueError('worker recording callback source changed: '+rel)
+   actual=sha(root/rel)
+   if rel=='firmware/ae350/classic_runtime.c' and actual!=h:
+    # The default and historical recording branch are byte-identical after
+    # removing only three explicit audio-only guards; machine sites stay exact.
+    text=(root/rel).read_text()
+    for body in ['#include "ble_business_owner.h"','    a138_ble_business_firmware_init();','    a138_ble_business_firmware_pump();']:
+     guarded='#ifndef A138_WORKER_AUDIO_ONLY\n'+body+'\n#endif'
+     if text.count(guarded)!=1:raise ValueError('worker audio-only guard drift')
+     text=text.replace(guarded,body,1)
+    actual=hashlib.sha256(text.encode()).hexdigest()
+   if d['input_sha256'].get(rel)!=sha(root/rel) or actual!=h:raise ValueError('worker recording callback source changed: '+rel)
   compilers=[h for name,h in d['tool_sha256'].items()if name.endswith('-gcc')]
   variants=[v for v in worker_review['machine_reviews']if compilers==[v['compiler_sha256']]]
   if len(variants)!=1:raise ValueError('worker callback compiler binary is not reviewed')
   worker_machine=variants[0]['prior_machine_sites']
  dis=(out/'firmware.dis').read_text();legacy=json.loads((root/'tools/ae350_ble_business_indirect_review.json').read_text())
  prior={}
- for site in legacy['sites']:prior.setdefault(site['caller'],[]).append(site)
- for name in ['audio_clock_service.c','recording_service.c','business_mailbox.c','ble_business_owner.c']:
+ if not headless:
+  for site in legacy['sites']:prior.setdefault(site['caller'],[]).append(site)
+ for name in (['audio_clock_service.c'] if headless else ['audio_clock_service.c','recording_service.c','business_mailbox.c','ble_business_owner.c']):
   rel='firmware/ae350/'+name
   if legacy['input_sha256'][rel]!=d['input_sha256'][rel]:
    # The opt-in additions do not alter a single byte of the inherited owner.
@@ -42,7 +57,7 @@ def analyze(output,root):
   'OI_SBC_ComputeBitAllocation':['monoBitAllocation','dualBitAllocation','stereoBitAllocation'],
   'DecodeBody.part.0':['OI_SBC_ReadSamplesJoint4','OI_SBC_ReadSamplesJoint8'],
   'OI_SBC_SynthFrame':['OI_SBC_SynthFrame_4SB','OI_SBC_SynthFrame_80']})
- if worker:
+ if worker or headless:
   # The session-only source branch contains no durable-store callbacks at all.
   targets.pop('a138_security_pump');targets.pop('a138_security_event')
  long=direct_long_calls(dis);sites=[];all_sites=[];caller=None
@@ -64,6 +79,8 @@ def analyze(output,root):
   source_target_review='''Actual source roots are versioned ui_main services_main -> background init/pump -> classic_runtime firmware init/pump and the retained BLE owner. There is one static firmware_runtime and one static firmware_media. hci_transport's sole installed bus is a138_hci_mmio_bus; PCM's bus is the same constructor at F806. Each bus callback site is conservatively given both hci_mmio_read/write targets even when its source member fixes one. PCM clock bus is the retained a138_clock_mmio_bus, whose actual constructor installs the static mmio_read/mmio_write in audio_clock_service.c. The newly reachable clock probe/submit/poll sites are conservatively given both targets; their source hash is unchanged from the reviewed legacy clock source. The sole actual media constructor installs pcm_poll,pcm_submit,pcm_cancel, never the host-test callbacks. runtime_pass's two sites conservatively include both poll and submit. cancel_media fixes pcm_cancel. fail_runtime's exact-epoch write fixes hci_mmio_write. The actual firmware installs unavailable_load/replace/delete, all bounded functions returning ERROR, and then explicitly disables GeneralBonding because no durable backend exists. No runtime method changes those pointer values after init; the security owner copies that exact store on start. Their union conservatively bounds each security-pump store site, including disabled branches, and event load fixes unavailable_load. This is NOT a persistent backend claim. Public caller-configurable test constructors are not additional actual firmware roots. Existing clock/recording/business callback source identities and previously reviewed ordered machine JALR bytes remain equal to the prior reviewed owners. SBC balloc/SpecializedReadSamples/SynthFrame tables are checked word-for-word in this ELF; format/channel/subband bounds remain checked by the SBC service. All other reachable unresolved JALR, missing/dynamic frames, recursion and overflow fail closed. Interrupts remain disabled. Memory corruption, arbitrary replacement of configuration pointers, actual CPU cycles/DDR waits and physical watermark are outside this conservative source/machine stack bound.''',sites=sites)
  if worker:
   review['source_target_review']='''Worker source selects one actual ui_main root, one static Classic runtime/media and one static BLE business owner. Session-only constructor binds actual PCM poll/submit/cancel callbacks and no durable-store callback. Its preprocessor branch removes durable load/replace/delete calls; the actual security firmware advertises NoBonding and does not claim persistent keys. hci_transport/PCM bus sites conservatively include hci_mmio_read/write; clock sites conservatively include mmio_read/write. Existing recording callbacks retain record_mmio_read/write and business callbacks retain business_mmio_read/write, as installed by their exact static firmware constructors. CPU/UI REC requests share the BLE owner's sequence, object/task IDs and physical descriptor slot; no new PCM storage or callback constructor is introduced. All worker source identities and ordered original-family callback instructions are pinned in ae350_worker_recording_indirect_review.json. Default owner bytes after removing opt-in blocks must still equal the original reviewed SHA. SBC tables are checked word-for-word in this ELF. Missing or unknown reachable JALR sites, unknown targets, dynamic stack frames, recursion and reserved-stack overflow fail closed. Interrupts remain disabled. No measured CPU-cycle, DDR-wait, hardware-watermark, radio, audio or deployment acceptance is inferred.'''
+ if headless:
+  review['source_target_review']='''Explicit worker_audio_main services_main calls only one static Classic runtime/media init and fixed-work pump. No graph UI, recording or BLE business translation unit is compiled. The session-only constructor installs PCM poll/submit/cancel and no durable-store callback. HCI/PCM bus sites conservatively include both hci_mmio_read/write, as installed by their sole actual constructor; clock sites include mmio_read/write from unchanged audio_clock_service.c. runtime_pass sites include poll/submit, cancel_media fixes pcm_cancel, and fail_runtime fixes hci_mmio_write. SBC callback arrays are verified word-for-word against this actual ELF and supported decoder formats retain their bounds. Actual compiled-source inventory, flags and source identities are checked by ae350_worker_audio_audit; unrecognized reachable indirect calls, unknown targets, dynamic stack, recursion and stack overflow fail closed. No radio, CPU-cycle, physical watermark or audio acceptance is inferred.'''
  (out/'runtime_indirect_review.json').write_text(json.dumps(review,indent=2)+'\n')
  frames=[]
  for f in sorted(out.glob('*.su')):
@@ -85,10 +102,11 @@ def analyze(output,root):
    'a138_security_pump','a138_security_event','a138_security_response','a138_classic_acl',
    'a138_sbc_begin','a138_sbc_decode','OI_CODEC_SBC_DecodeFrame','a138_ble_business_firmware_pump',
    'pcm_poll','pcm_submit','pcm_cancel','a138_clock_submit','a138_clock_poll']
- if worker:
+ if worker or headless:
   required+=['a138_classic_runtime_init_session','a138_security_start_session',
-   'a138_ble_record_firmware_submit','a138_ble_record_firmware_poll','a138_ble_record_firmware_facts']
+   *([] if headless else ['a138_ble_record_firmware_submit','a138_ble_record_firmware_poll','a138_ble_record_firmware_facts'])]
   required.remove('a138_security_start')
+ if headless:required.remove('a138_ble_business_firmware_pump')
  missing=set(required)-set(stack['reachable_functions'])
  if missing:raise ValueError('actual runtime roots missing: '+str(sorted(missing)))
  if(out/'undefined.log').read_text().strip():raise ValueError('linked undefined symbols')
@@ -97,6 +115,6 @@ def analyze(output,root):
    required_actual_roots=required,actual_callback_tables=tables,audit_negative_controls=controls,all_nonreturn_JALR_sites=len(all_sites),
    reviewed_JALR_sites=len(sites),compiler_stack_frames=frames,
    ELF_sha256=sha(out/'firmware.elf'),BIN_sha256=sha(out/'firmware.bin'),
-   worker_recording_proxy=worker,source_text_overlay=False,no_GC=True,no_LTO=True,durable_backend=False,physical_watermark=False,
+   worker_recording_proxy=worker,headless_worker=headless,source_text_overlay=False,no_GC=True,no_LTO=True,durable_backend=False,physical_watermark=False,
    CPU_cycles_measured=False,native_candidate_selected=False,hardware_acceptance=False)
  (out/'runtime_callgraph_verification.json').write_text(json.dumps(result,indent=2)+'\n');return result

@@ -15,14 +15,20 @@ from tools.prepare_ae350_sbc import prepare
 from tools.ae350_rom_split import split_memory_report
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
-def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
+def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False,headless_worker=False):
     if worker_demo and not runtime_owner:raise ValueError('worker demo requires actual runtime owner')
+    if headless_worker and not (runtime_owner and worker_demo):
+        raise ValueError('audio-only worker requires actual worker runtime')
     out=Path(output).resolve()
     if out.exists():raise ValueError('experiment output must not exist')
     out.mkdir(parents=True)
     prefix=prefix or compiler_prefix()
+    if not Path(prefix).is_absolute():
+        executable=shutil.which(prefix+'-gcc')
+        if executable is None:raise ValueError('RISC-V compiler not found: '+prefix+'-gcc')
+        prefix=executable.removesuffix('-gcc')
     source=root/'firmware/ae350';inputs={};commands=[]
-    for name in selected_inputs(True,'ilm64k_dlm64k',True):
+    for name in selected_inputs(not headless_worker,'ilm64k_dlm64k',True,headless_worker=headless_worker):
         shutil.copyfile(source/name,out/name);inputs['firmware/ae350/'+name]=sha(source/name)
     extra=['classic_service.c','classic_service.h','sbc_decoder_service.c','sbc_decoder_service.h']
     if runtime_owner:extra += ['classic_security.c','classic_security.h','hci_transport.c','hci_transport.h',
@@ -47,12 +53,15 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
             'tools/workstation_baselines.py', 'tools/ae350_ble_business_indirect_review.json']:
         inputs[name]=sha(root/name)
     if runtime_owner:inputs['tools/ae350_classic_runtime_audit.py']=sha(root/'tools/ae350_classic_runtime_audit.py')
-    if worker_demo:inputs['tools/ae350_worker_recording_indirect_review.json']=sha(root/'tools/ae350_worker_recording_indirect_review.json')
+    if headless_worker:inputs['tools/ae350_worker_audio_audit.py']=sha(root/'tools/ae350_worker_audio_audit.py')
+    if worker_demo and not headless_worker:inputs['tools/ae350_worker_recording_indirect_review.json']=sha(root/'tools/ae350_worker_recording_indirect_review.json')
     shutil.copyfile(source/'boot_ilm_dlm_rom128_split.ld',out/'boot_ilm_dlm_rom128_split.ld')
-    main=out/'ui_main.c'
+    main=out/('worker_audio_main.c' if headless_worker else 'ui_main.c')
     if runtime_owner:
-        overlay=dict(source='firmware/ae350/ui_main.c',source_sha256=inputs['firmware/ae350/ui_main.c'],
+        main_source='firmware/ae350/'+main.name
+        overlay=dict(source=main_source,source_sha256=inputs[main_source],
             output_sha256=sha(main),changes=[],policy=(
+                'No source text overlay: explicit audio-only W root; Classic/HCI/SBC/PCM only, no graph UI or recording business.' if headless_worker else
                 'No source text overlay: explicit worker selects actual session-only Classic and unique CPU/BLE recording owner; physical radio/audio acceptance remains separate.' if worker_demo else
                 'No source text overlay: versioned A138_CLASSIC_RUNTIME composition calls the actual cooperative owner; durable bond and physical media backends absent, BR/EDR fail-closed.'))
     else:
@@ -76,6 +85,9 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
         '-I'+str(out/'adapted/decoder/srce')]
     if runtime_owner:flags += ['-DA138_CLASSIC_RUNTIME']
     if worker_demo:flags += ['-DA138_SINGLE_BLE_RECORDING']
+    if headless_worker:
+        flags.remove('-DA138_BLE_BUSINESS')
+        flags += ['-DA138_WORKER_AUDIO_ONLY']
     def run(argv,name,check=True):
         p=subprocess.run(list(map(str,argv)),cwd=out,text=True,capture_output=True)
         (out/(name+'.log')).write_text(p.stdout+p.stderr)
@@ -83,7 +95,7 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
         if check:assert p.returncode==0,(name,p.stdout,p.stderr)
         return p
     objects=[]
-    sources=[out/name for name in selected_sources(True,True)]
+    sources=[out/name for name in selected_sources(not headless_worker,True,headless_worker=headless_worker)]
     sources += [out/'classic_service.c',out/'sbc_decoder_service.c']
     sources += [out/name for name in ['classic_security.c','hci_transport.c','classic_runtime.c','pcm_media.c']] if runtime_owner else [out/'combined_budget_adapter.c']
     sources += sorted((out/'adapted/decoder/srce').glob('*.c'))
@@ -102,7 +114,7 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
     record=dict(schema=1,scope='isolated ROM128 split executable placement experiment; not production/runtime closure',
         input_sha256=inputs,overlay=overlay,commands=commands,compiled_sources=[str(p.relative_to(out)) for p in sources],
         no_gc_sections=True,no_LTO=True,selected_in_production=False,hardware_operated=False,cache_enabled=False,
-        worker_demo=worker_demo,single_recording_owner=worker_demo,
+        worker_demo=worker_demo,headless_worker=headless_worker,single_recording_owner=worker_demo and not headless_worker,
         linked_translation_units=len(sources),unlinked_abi_witness='ae350_budget_abi_witness.o',
         link_returncode=linked.returncode,tool_sha256={str(Path(prefix+'-'+x)):sha(prefix+'-'+x) for x in ['gcc','objcopy','size','nm','objdump']})
     if runtime_owner:
@@ -113,6 +125,10 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
         record.update(scope='actual W session-only Classic/PCM and unique CPU/BLE recording root; no durable bond claim, no radio/audio/hardware acceptance',
             session_only_pairing=True,GeneralBonding_enabled=False,br_edr_runtime_enabled_in_source=True,
             source_media_backend_bound=True,local_recording_proxy=True)
+    if headless_worker:
+        record.update(scope='actual W audio-only Classic/HCI/SBC/PCM root; no graphics or recording backend; not radio/audio/hardware acceptance',
+            local_recording_proxy=False,graph_ui_compiled=False,recording_compiled=False,
+            business_protocol_compiled=False,session_only_pairing=True)
     if linked.returncode==0:
         run([prefix+'-objcopy','-O','binary','firmware.elf','firmware.bin'],'objcopy')
         size=run([prefix+'-size','firmware.elf'],'size').stdout
@@ -121,7 +137,7 @@ def build(output,prefix=None,root=ROOT,*,runtime_owner=False,worker_demo=False):
         dis=run([prefix+'-objdump','-d','firmware.elf'],'objdump').stdout
         (out/'firmware.dis').write_text(dis)
         raw=(out/'firmware.bin').read_bytes()
-        capacity=split_memory_report(size,syms,raw,out/'firmware.elf')
+        capacity=split_memory_report(size,syms,raw,out/'firmware.elf',headless_worker=headless_worker)
         record.update(capacity=capacity)
         padded=raw.ljust(131072,b'\0')
         (out/'boot.mem').write_text(''.join(f'{int.from_bytes(padded[i:i+4], "little"):08x}\n' for i in range(0,131072,4)))
@@ -139,8 +155,9 @@ def main():
     p.add_argument('--riscv-prefix')
     p.add_argument('--runtime-owner',action='store_true',help='link the actual versioned fail-closed CPU root; no budget text overlay')
     p.add_argument('--worker-demo',action='store_true',help='opt in to the unique CPU/BLE recording object and retire unavailable local engines')
+    p.add_argument('--headless-worker',action='store_true',help='explicit W streaming-only root without graphics or recording')
     a=p.parse_args()
-    r=build(a.output,a.riscv_prefix,runtime_owner=a.runtime_owner,worker_demo=a.worker_demo)
+    r=build(a.output,a.riscv_prefix,runtime_owner=a.runtime_owner,worker_demo=a.worker_demo,headless_worker=a.headless_worker)
     if r['link_returncode']:
         raise ValueError('explicit ROM128 link failed; immutable diagnostics in '+str(a.output/'link.log'))
     if a.runtime_owner:
@@ -151,7 +168,7 @@ def main():
         (a.output/'verification.json').write_text(json.dumps(r,indent=2)+'\n')
         print(json.dumps({k:v for k,v in r['capacity'].items() if k not in ('symbols','elf_image_validation')},indent=2))
         print(json.dumps(dict(conservative_stack_bytes=graph['stack']['conservative_peak_bytes'],reviewed_JALR_sites=graph['reviewed_JALR_sites']),indent=2))
-        print('Actual worker session-only Classic and unique recording roots linked; radio/audio/cycles/hardware acceptance remain incomplete.'if a.worker_demo else 'Actual cooperative runtime linked; native/backend/cycles/hardware acceptance remain incomplete.')
+        print('Actual audio-only worker Classic/HCI/SBC/PCM linked; no graph UI or recording; radio/audio/cycles/hardware acceptance remain incomplete.' if a.headless_worker else 'Actual worker session-only Classic and unique recording roots linked; radio/audio/cycles/hardware acceptance remain incomplete.'if a.worker_demo else 'Actual cooperative runtime linked; native/backend/cycles/hardware acceptance remain incomplete.')
         return
     from tools.ae350_rom_split_audit import analyze,verify_tables
     sys.path.insert(0,str(ROOT/'sim'))

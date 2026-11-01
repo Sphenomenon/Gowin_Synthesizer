@@ -464,6 +464,8 @@ M23的[完整物理D2110130](push2_workstation/usb_a/reports/DUAL138K_M23_DIRECT
 
 手机App新版[0.3.1-demo-d3](../../clients/android/docs/DEMO_D3_20261101.md)已实现真实SAF文件选择、本机／具体A2DP设备选择与实际routedDevice核对、播放／暂停／seek，及独立标准BLE MIDI手机→25K单事件发送／16键／力度／通道／NoteOff／PANIC／会话清理。83项单测零失败（2原硬件项跳过）、lint零错误／7依赖提示，隔离模拟器5项UI全过及最终同APK真实文件选择通过；主线程复验102来源／APK／证据文件，APK SHA c19645ec…9c5be。当前25K维护固件只将手机MIDI用于remote LED，无BLE→USB→138K发声转发；App明确显示，真手机无线／25K反馈／W DAC及断连实测均待验，不能据此勾选T2-D1／D2。
 
+W的[显式无图形／无录音AE350固件](push2_workstation/usb_a/reports/DUAL138K_W_AUDIO_ONLY_FIRMWARE_20261101.json)已完成真实RV32链接：24编译单元仅维护startup／libc／Classic／HCI／SBC／PCM／clock，ui_main／ui_render及录音／business C未编译且ELF无其符号；源实现保留。保守栈896／16384、93实际JALR闭包及4回调负控，实际loader后断连／坏ID两场景持续pump且零UI／录音／DDR访问；8组成／误标负控、默认分支预处理等价、原11SBC双版本／15runtime＋9PCM负控和17来源测试通过。独立review发现的证据角色误标漏洞已修，v5 ELF与v4逐字一致；FPGA实际编译／VG／物理退出仍由新W21另验，不把固件通过当整机／手机／DAC通过。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

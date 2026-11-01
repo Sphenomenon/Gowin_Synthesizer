@@ -34,15 +34,25 @@ ROM_BASE, ROM_BYTES = 0x80000000, 16384
 RAM_START, RAM_END, MIN_STACK_BYTES = 0x200, 0x2000, 4096
 
 
-def selected_sources(recording_api=False,business_owner=False):
+def selected_sources(recording_api=False,business_owner=False,*,headless_worker=False):
+    if headless_worker:
+        if recording_api or not business_owner:
+            raise ValueError('audio-only worker requires HCI selection without recording')
+        # ui_runtime.c contains only freestanding memset/memcpy/memcmp, no UI.
+        return ('start.S','worker_audio_main.c','ui_runtime.c',*FIRST_PARTY_SOURCES)
     if business_owner and not recording_api:raise ValueError('CPU business requires the recording service')
     sources=(*SOURCES,*RECORDING_SOURCES) if recording_api else SOURCES
     return (*sources,*BUSINESS_SOURCES) if business_owner else sources
 
 
-def selected_inputs(recording_api=False, memory_profile='pl16k_8k', business_owner=False):
+def selected_inputs(recording_api=False, memory_profile='pl16k_8k', business_owner=False,*,headless_worker=False):
     if memory_profile not in MEMORY_PROFILES:
         raise ValueError('unknown AE350 memory profile: ' + memory_profile)
+    if headless_worker:
+        if memory_profile!='ilm64k_dlm64k':
+            raise ValueError('audio-only worker requires explicit local memory')
+        return (*selected_sources(recording_api,business_owner,headless_worker=True),
+                'audio_services.h',*FIRST_PARTY_HEADERS,'boot.ld','provenance.json',*LOCAL_MEMORY_INPUTS)
     inputs = (*INPUTS, *RECORDING_SOURCES, *RECORDING_HEADERS) if recording_api else INPUTS
     if business_owner:
         if not recording_api:raise ValueError('CPU business requires the recording service')
