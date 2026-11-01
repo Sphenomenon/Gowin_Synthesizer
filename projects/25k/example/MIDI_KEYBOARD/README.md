@@ -18,7 +18,7 @@ USB2 可选独立 JTAG 观察配置见 [USB2_DEBUG.md](docs/USB2_DEBUG.md)：保
 
 2026-10-17用户已补全键序：A–P依次对应QT2160原始0基位`5 3 1 7 13 11 9 15 4 2 0 6 12 10 8 14`。GPIO与原理图一致，当前源码在顶层将原始快照经`midi_key_layout`统一重排，再交给MIDI、显示、WS2812和主机按键反馈。WS链序保持`ABCDHGFEIJKLPONM`；PCA9685仍指示滑条位置，屏幕保持反向横屏、滑条在右侧。见 [键序核对](docs/KEY_ORDER_AUDIT.md)。
 
-针对实板过于灵敏的反馈，当前源码分别设置按键NTHR=12、NDIL=7、BL=4，以及滑条NTHR=12、NDIL=3、BL=8；两颗均写入并读回LP=1、BREP=1。按键以新按差值≥12、保持差值≥10形成迟滞；滑条加入3 counts死区及大跳变连续读样确认。这些是分别可调的编译期参数，USB协议不提供运行时灵敏度设置，详见 [触摸驱动](docs/TOUCH_DRIVER.md)。完整键序、迟滞与滑条滤波此前已经回归、构建并烧入基线版本；实际误触率与快速滑动响应仍需在板上观察。
+当前源码设置按键NTHR=12、NDIL=1、BL=4，以及滑条NTHR=12、NDIL=3、BL=8；两颗均写入并读回LP=1、BREP=1。2026-11-02为降低触摸到灯亮的延迟，按键NDIL由7降至芯片允许的最小值1，即从连续8次采集确认降为2次；前后状态复核、新按差值≥12与保持差值≥10的迟滞保留。滑条仍使用3 counts死区及大跳变连续读样确认。这些是分别可调的编译期参数，USB协议不提供运行时灵敏度设置，详见 [触摸驱动](docs/TOUCH_DRIVER.md)。历史基线的构建和烧录记录不覆盖本次调参；新版实际延迟与误触率待实板验证，未下载SRAM或写Flash。
 
 导入的历史固件、回归、时序和实板记录见 [BUILD_VALIDATION.md](docs/BUILD_VALIDATION.md) 与 [FLASH_PROGRAMMING.md](docs/FLASH_PROGRAMMING.md)。Android系统配对及BLE MIDI应用连接已在`0x00005A52`确认；该历史版本新增外部输入画面与E1长按设置；当前默认138K面板路径不分配长按，按 [PL local-v1接口](docs/PANEL_DISPLAY_PROTOCOL.md) 接收RGB565像素。
 

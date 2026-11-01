@@ -12,7 +12,8 @@ module midi_touch_frontend #(
     parameter integer BUS_FREE_CYCLES = CLK_HZ / 10_000,
     parameter integer TIMEOUT_CYCLES = CLK_HZ / 50,
     parameter integer KEY_NEGATIVE_THRESHOLD = 12,
-    parameter integer KEY_DETECT_INTEGRATOR = 7,
+    // QT2160 NDIL minimum is 1 (two acquisitions); retain per-snapshot filtering.
+    parameter integer KEY_DETECT_INTEGRATOR = 1,
     parameter integer KEY_BURST_LENGTH = 4,
     parameter integer SLIDER_NEGATIVE_THRESHOLD = 12,
     parameter integer SLIDER_DETECT_INTEGRATOR = 3,
@@ -103,7 +104,7 @@ module midi_qt2160_client #(
     parameter integer TIMEOUT_CYCLES = CLK_HZ / 50,
     parameter integer NEGATIVE_THRESHOLD = 12,
     parameter integer BURST_LENGTH = 4,
-    parameter integer DETECT_INTEGRATOR = 7
+    parameter integer DETECT_INTEGRATOR = 1
 ) (
     input wire clk, input wire reset, input wire change_n,
     input wire scl_in, input wire sda_in, output wire scl_low, output wire sda_low,
@@ -113,7 +114,9 @@ module midi_qt2160_client #(
     output reg [7:0] general_status = 0, output reg overrun_seen = 0,
     output reg [7:0] sample_count = 0,
     output reg [511:0] diagnostic_levels = 0,
-    output reg [31:0] diagnostic_status = 0, diagnostic_detect = 0, frame_count = 0
+    output reg [31:0] diagnostic_status = 0,
+    output reg [31:0] diagnostic_detect = 0,
+    output reg [31:0] frame_count = 0
 );
     localparam [3:0] STARTUP=0, IDENTIFY=1, CONFIGURE=2, CAL_WAIT=3,
         STATUS_BEFORE=4, SIGNAL_A=5, SIGNAL_B=6, REFERENCE_A=7,
