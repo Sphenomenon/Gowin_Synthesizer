@@ -385,6 +385,39 @@ module workstation_ble_raw_ddr_store #(
     wire [8:0] memory_fetch_beats=9'(({10'd0,command_offset[4:0]}+{1'b0,command_length}+15'd31)>>5);
     wire publish_pack=pack_frames==8 || (memory_closed && pack_frames!=0 && !fifo_read_valid);
 
+    // A known bridge fault publishes the transport code directly. Keep the
+    // immediate fault, first-fault sticky guard and exact X/Z ternary semantics.
+    // This write retains its last priority after every protocol failure.
+    reg global_failure_write;
+    reg [3:0] global_failure_value;
+    always @* begin
+        global_failure_write=0;global_failure_value=F_PROTOCOL;
+        case(bridge_fault)
+            1'b1:begin
+                if(!memory_channel_fault)begin
+                    global_failure_write=1;global_failure_value=F_TRANSPORT;
+                end
+            end
+            1'b0:begin
+                if(command_expired || read_expired || response_bad)begin
+                    if(!memory_channel_fault)begin
+                        global_failure_write=1;
+                        global_failure_value=command_expired ? F_COMMAND_TIMEOUT :
+                            read_expired ? F_READ_TIMEOUT : F_PROTOCOL;
+                    end
+                end
+            end
+            default:begin
+                if(memory_fault_now)begin
+                    if(!memory_channel_fault)begin
+                        global_failure_write=1;
+                        global_failure_value=bridge_fault ? F_TRANSPORT :
+                            command_expired ? F_COMMAND_TIMEOUT : read_expired ? F_READ_TIMEOUT : F_PROTOCOL;
+                    end
+                end
+            end
+        endcase
+    end
     // Retire one previously admitted FIFO word through a fixed lane enable.
     // Native fault/acceptance feedback terminates at the one-bit valid strobe;
     // it never controls a256-bit variable-part-select or whole-pack clear.
@@ -567,9 +600,8 @@ module workstation_ble_raw_ddr_store #(
             end
             if(memory_fault_now)begin
                 memory_channel_fault<=1;memory_fetch_cancel<=1;
-                if(!memory_channel_fault)memory_failure<=bridge_fault ? F_TRANSPORT :
-                    command_expired ? F_COMMAND_TIMEOUT : read_expired ? F_READ_TIMEOUT : F_PROTOCOL;
             end
+            if(global_failure_write)memory_failure<=global_failure_value;
         end
     end
 endmodule

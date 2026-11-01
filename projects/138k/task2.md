@@ -354,6 +354,8 @@ W14 `D211010F` 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL13
 
 TF 的[available响应计算维护阶段](push2_workstation/usb_a/reports/DUAL138K_TF_AVAILABLE_RESPONSE_20261101.md)已完成：仅提前计算delayed／full／partial占用结果，原周期、所有NBA及accepted cofactor保持；未知值回原helper，不假设pending等于32或available。三项48自由位UNSAT、2,097,152四态及三新负控，旧response7／occupancy14／threshold8和真实service／clear／stop、来源17项通过；309产物及四维护文件由主线程逐项重验。新源`1baa7146…25e7`已进入独立M17／W15准备输入，旧M16／W14不改；综合／物理收益待测，未上板。
 
+W 的[global failure末级选择维护阶段](push2_workstation/usb_a/reports/DUAL138K_RAW_GLOBAL_FAILURE_CASE_20261101.md)已完成：仅最后memory_failure同位置NBA使用精确cofactor，保留即时owner8故障、sticky guard、错误优先级及X/Z合并；lower写入、channel／cancel和32bit completion不变。任意prior nextQ证明、1024／262144四态、661577旧新twin、35定向＋4096任意状态及6负控通过；原CLEAR／两START和raw／BLE／DDR／owner／authority／来源回归保持。主线程重验526证据与7维护源，首轮负控构造失败和格式版本区别保留；新raw`b654b55a…3809`及唯一pin已进入W15独立输入，不预记物理收益，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

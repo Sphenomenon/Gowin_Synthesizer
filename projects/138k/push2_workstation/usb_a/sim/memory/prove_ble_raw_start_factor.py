@@ -450,12 +450,20 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args(); output = args.output.resolve(); output.mkdir(parents=True, exist_ok=False)
     require(sha(REFERENCE) == OLD_SHA, 'complete W11 reference identity')
+    global_proof = Path(__file__).with_name('prove_ble_raw_global_failure_case.py')
+    global_fixture = (Path(__file__).with_name('fixtures') /
+                      'workstation_ble_raw_ddr_store_before_global_failure_case.sv')
+    global_spec = importlib.util.spec_from_file_location('global_failure_inverse', global_proof)
+    global_failure = importlib.util.module_from_spec(global_spec)
+    global_spec.loader.exec_module(global_failure)
+    assert sha(global_fixture) == global_failure.BASELINE_SHA256
+
     clear_proof = Path(__file__).with_name('prove_ble_raw_clear_quiescent_case.py')
     clear_baseline = Path(__file__).with_name('fixtures') / 'workstation_ble_raw_ddr_store_before_clear_case.sv'
     clear_spec = importlib.util.spec_from_file_location('clear_inverse', clear_proof)
     clear = importlib.util.module_from_spec(clear_spec); clear_spec.loader.exec_module(clear)
     require(sha(clear_baseline) == clear.BASELINE_SHA256, 'immutable pre-CLEAR reference identity')
-    old, new = REFERENCE.read_text(), clear.restore_before_clear(SOURCE.read_text())
+    old, new = REFERENCE.read_text(), clear.restore_before_clear(global_failure.restore_before_global_failure(SOURCE.read_text()))
     require(new == clear_baseline.read_text(), 'exact CLEAR inverse equals immutable W13 source')
     normalized = output / 'normalized-before-clear.sv'; normalized.write_text(new)
     structure = source_equations(old, new)
@@ -469,12 +477,12 @@ def main():
     (output / 'directed.sv').write_text(directed)
     (output / 'four-state.sv').write_text(four_state_bench(structure['source_equations'], new))
     deps = [ROOT / 'rtl/memory/workstation_sdp.sv', ROOT / 'rtl/music/music_async_fifo.sv', BRIDGE]
-    source_paths = (SOURCE, REFERENCE, TB, BRIDGE, *deps[:2], Path(__file__).resolve(), clear_proof, clear_baseline)
+    source_paths = (SOURCE, REFERENCE, TB, BRIDGE, *deps[:2], Path(__file__).resolve(), clear_proof, clear_baseline, global_proof, global_fixture)
     hashes = {str(path.relative_to(ROOT)):sha(path) for path in source_paths}
     result = dict(passed=False, complete_W11_source_structure=structure, full_domain_two_state=proof,
                   whole_twin_inventory=inventory, directed_cases=directed_cases, inputs_sha256=hashes,
                   maintained_source_sha256=sha(SOURCE), normalized_pre_CLEAR_sha256=sha(normalized),
-                  exact_reviewed_CLEAR_inverse=True, source_implementation=True,
+                  exact_reviewed_CLEAR_inverse=True, exact_reviewed_global_failure_inverse=True, source_implementation=True,
                   synthesis=False, pnr=False, hardware_tested=False, sram_programmed=False, flash_written=False,
                   timing_or_resource_improvement_claimed=False, cases={})
     try:

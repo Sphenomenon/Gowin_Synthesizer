@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "Maintained final global memory_failure cofactor only, with strict inverse before all original CLEAR/START gates",
+  "base_commit": "096b544137c555c4ec5332837c8c9b3a596c0efe",
+  "maintained_source_sha256": "b654b55a47e017aec5f3c386f26cb2aac34f311bdb564852cf047c24dc1c3809",
+  "immutable_pre_global_source_sha256": "39ae3b918a4674f849eb0663bb193e2890881f164063f22b473b5dbb61df290b",
+  "cache_proposal_sha256": "c40253e50056cffd9fff523983c8905138dd539df6ffa0c100a88f5ae1b607ca",
+  "cache_to_maintained_change": "normal explanatory comment only; stripped complete source byte-identical",
+  "maintained_input_sha256": {
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": "b654b55a47e017aec5f3c386f26cb2aac34f311bdb564852cf047c24dc1c3809",
+    "sim/memory/fixtures/workstation_ble_raw_ddr_store_before_global_failure_case.sv": "39ae3b918a4674f849eb0663bb193e2890881f164063f22b473b5dbb61df290b",
+    "sim/memory/prove_ble_raw_global_failure_case.py": "fa7d1e118fbd4133ee409645e3287577f482ba3483271162bb861caa748986b4",
+    "sim/memory/prove_ble_raw_clear_quiescent_case.py": "b82017eb9db6d4cce71d872a4f7a573a5019fb4ae45704146c62764baac7aa1f",
+    "sim/memory/prove_ble_raw_start_factor.py": "12b5d7318559e0924f0fd46411a9c28b7b8116971f7b82f4303f53dc6070bf7a",
+    "sim/memory/prove_ble_raw_start_quiescent_case.py": "b6b4e0a0f1fec5e48e26df975ebc6d5d8f54df1be693aa1f476ed53886955f2f",
+    "tools/workstation_bluetooth_ddr.py": "01d3e10f3af9db5d802bc0cb1af48604c95ec4e4623c0e856d31bf6bf1be80f7"
+  },
+  "original_helper_functions_AST_identical": [
+    "sha",
+    "require",
+    "replace_once",
+    "expression",
+    "source_equations",
+    "symbolic",
+    "stripped",
+    "split_top",
+    "inventories",
+    "checks_text",
+    "reference_instance",
+    "memory_checks",
+    "twin_bench",
+    "four_state_bench",
+    "directed_bench",
+    "simulate"
+  ],
+  "source_implementation": true,
+  "synthesis": false,
+  "pnr": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "timing_or_resource_gain_claimed": false,
+  "cache_main_seal": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-global-failure-cofactor-proposal-v1/main-seal-v1.json",
+    "sha256": "3c171a8c32f6190b194dc233f36e47e7ea84e6cb04e35956e7f5ef26a3613c30"
+  },
+  "input_snapshot": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-final-seal-v1/input-snapshot.json",
+    "sha256": "5b0fba5753fe65c0bee9942341e90177b2be9d51f4dacad6692966b9b8540947"
+  },
+  "validation": {
+    "global": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-proof-v2/verification.json",
+      "sha256": "69aa886354d8b8c986ffcaac55f2690016275b6a0e4ddb66c9f7013a6b401044",
+      "passed": true
+    },
+    "CLEAR": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-clear-proof-v1/verification.json",
+      "sha256": "122a65cc175061662fef809e8926517cc8f659fc13646a6f6753efa2058f3a38",
+      "passed": true
+    },
+    "START_case": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-start-case-proof-v1/verification.json",
+      "sha256": "fc21bd7f55540476f52a2b7d1d8a98d1b0f3631a21541a3010d282ce1703e3a6",
+      "passed": true
+    },
+    "START_factor": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-start-factor-proof-v1/verification.json",
+      "sha256": "2f5d72b9b4eeb31cc26bce843c0322fcb14834a6fdd8306a46ebed295d390b59",
+      "passed": true
+    },
+    "raw": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-raw-v1/verification.json",
+      "sha256": "7315637823b00a4ef5aeadbe1a160737118b31fca47bac5e95a80c42ce85b9f8",
+      "passed": true
+    },
+    "BLE": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-ble-v1/verification.json",
+      "sha256": "ea8d46350c272b83964bd786aea7f81f5d1cd02a2bffeebebb1fd5bfa0487305",
+      "passed": true
+    },
+    "native_DDR": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-native-ddr-v1/verification.json",
+      "sha256": "f7d07eb8e3e13d446e1ad1520bcb5ca3a161a6ca4b5d3df57b8bf0ef454a44fd",
+      "passed": true
+    },
+    "authority": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-authority-v1/verification.json",
+      "sha256": "2df4f80b4da711a70703790125e8878179beb7041e864725e5a5d079d0c6a434",
+      "passed": true
+    },
+    "owner_source": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-system-checks-v1/verification.json",
+      "sha256": "29d90142a0603943544f3c83f161d98343c427a73153ab34ae7fb7a51ecb313f",
+      "passed": true
+    }
+  },
+  "style_and_negative_repair": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-final-style-evidence-v1/style-and-negative-repair.json",
+    "sha256": "762ec8ff38e2e422be6840a64b2176d3b18088e42d750ea54bc7ff00949eb0cb",
+    "old_CLEAR_START_input_versions_preserved": true,
+    "START_factor_only_rstrip_after_passed_run": true,
+    "old_CLEAR_START_no_repeat_16m": true,
+    "global_final_full_rerun": true
+  },
+  "failed_global_first_run": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w15-global-maintained-proof-v1/verification.json",
+    "sha256": "aa5408ae9b2d62e0fc717a098d57e070d148f74e49960d871ceec025429b4c37",
+    "reason": "negative-control multiline string gained indentation while wrapping cache runner in main; strict anchor rejected before second negative; corrected with byte-exact original six literals"
+  },
+  "physical_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w14-raw-failure-completion-review-v1/physical-readonly-v2/analysis.json",
+    "sha256": "627c7b73e068ba0bea2093f74687049a93d4990bd31d44b40cbb358e8cbe3177",
+    "specific_CST_region_recommended": false,
+    "scope": "W14 prior actual map only; no new EDA or gain proof"
+  },
+  "unchanged": [
+    "lower failure writes and their RHS/order",
+    "all other target NBAs and global order",
+    "immediate owner8/transport veto",
+    "channel/cancel sticky behavior",
+    "32-bit completion_generation and its priority",
+    "raw public interface and contract",
+    "DDR allocations and all timing/physical constraints"
+  ],
+  "remaining": "32-bit completion/initialization wide enables and immediate owner8/tag prefix remain; W15 requires separately identified actual synthesis/P&R and board evidence",
+  "rollback": "Reverse this seven-file maintained diff and restore the unique raw pin to39ae; preserve all historical and cache evidence; no board action is implied"
+}
