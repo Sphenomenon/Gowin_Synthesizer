@@ -378,6 +378,8 @@ M18/W16 的[完整prepare／综合及VG检查点](push2_workstation/usb_a/report
 
 W16 的[实际返回邮箱CDC覆盖缺口](push2_workstation/usb_a/reports/DUAL138K_W16_RETURN_MAILBOX_CDC_GAP_20261101.md)已确认：296实际payload CE冻结、pending／ACK／同步链及9项真实布尔关系通过，但原SDC只覆盖296直接D对，漏32×301＝9632资格路径，完整覆盖明确失败。cache精确10ns＋匹配held hold候选覆盖9928／9928、13负控全拒，尚未安装；主线程独立复验。正维护显式W新政策与实际网表门，冻结W16及其P&R仅保留测量身份，不转授CDC／硬件接受，未上板。
 
+W16 `D2110118` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W16_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53289，setup4489／−4.472ns、hold3／−3.683ns、recovery+1.869／removal+.278ns。最差DDR read_pointer→raw pack_frames及HCI tx_header→generations WRE，另有48k参考hold−.002ns；四张clk50−4.442／+.175／−4.442／−3.683ns。原生VO58项44通过14跳过／60负控、边界7／69、官方六PLL／7负控及held-v2通过；主线程重验30物理／3264证据。专门实际VO也确认缺9632资格约束，整机STA／完整CDC均未接受；同VG／SDC／DDR3.500ns的`D2110119` far已全量P&R，未预记结果，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
