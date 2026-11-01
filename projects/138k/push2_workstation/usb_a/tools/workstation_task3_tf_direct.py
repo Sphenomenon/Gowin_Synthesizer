@@ -36,6 +36,9 @@ DEPENDENCIES = (TOOL, LEGACY,
     'tools/workstation_task3_tf_startup_audit.py',
     'tools/workstation_task3_receipt_audit.py',
     'tools/workstation_task3_tf_sdc_audit.py',
+    'tools/workstation_task3_clock_release_audit.py',
+    'tools/workstation_task3_tf_frame_cdc_audit.py',
+    'tools/workstation_task3_tf_tail_cdc_audit.py',
     *tuple('rtl/tf_audio/' + name for name in (
     'WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md',
     'WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md',
@@ -146,8 +149,8 @@ def legacy(root):
     return record
 
 
-def new_constraints(*, revision=2):
-    if revision not in (1, 2):
+def new_constraints(*, revision=3):
+    if revision not in (1, 2, 3):
         raise ValueError('unsupported direct TF constraint revision')
     lines = []
 
@@ -160,7 +163,7 @@ def new_constraints(*, revision=2):
 
     def level(source, scope, first, second):
         # Do not let producer foo_s* also match foo_sync_* receivers.
-        suffix = '_s[0-9]*/Q' if revision == 2 else '_s*/Q'
+        suffix = '_s[0-9]*/Q' if revision >= 2 else '_s*/Q'
         lines.extend(('set_false_path ' + path(source + suffix, scope + '/' + first + '_s*/D'),
                       'set_max_delay 2.000 ' + path(scope + '/' + first + '_s*/Q', scope + '/' + second + '_s*/D')))
 
@@ -173,7 +176,7 @@ def new_constraints(*, revision=2):
     # The real-root revision captures the complete held reply before local
     # business processing. Legacy candidates preserve their original bundle
     # and are recorded as rejected until that complete remote cone is bounded.
-    receipt_sinks = (tf + '/receipt_local_*_s*/D' if revision == 2 else
+    receipt_sinks = (tf + '/receipt_local_*_s*/D' if revision >= 2 else
         ' '.join(tf + '/' + stem + '_s*/D' for stem in (
             'state_*', 'failed', 'pending_start',
             'session_applied', 'quiet_wait_*', 'native_quiet', 'stop_pending_o',
@@ -183,7 +186,7 @@ def new_constraints(*, revision=2):
                          ('status_ack', tf + '/status_ack'),
                          ('receipt_request', tf + '/receipt_request'),
                          ('receipt_ack', tf + '/receipt_ack')):
-        if revision == 2 and name == 'receipt_ack':
+        if revision >= 2 and name == 'receipt_ack':
             source = tf + '/receipt_seen'
         level(source, tf, name + '_sync_0', name + '_sync_1')
     level(generated + 'quiet_published', tf, 'physical_quiet_sync_0', 'physical_quiet_sync_1')
@@ -192,7 +195,7 @@ def new_constraints(*, revision=2):
                          ('quiesce', tf + '/source_quiesce_level'),
                          ('quiet', bridge + '/quiet_published'),
                          ('quiesce_return', bridge + '/quiesce_sync_1')):
-        if revision == 2 and name == 'source_alive':
+        if revision >= 2 and name == 'source_alive':
             # source_seen_edge is exactly the first root-released clk50 edge;
             # Gowin coalesces it with the PLL enable shift register's first FF.
             source = 'u_usb_pll/u_pll_init/enable_r_0'
@@ -206,11 +209,31 @@ def new_constraints(*, revision=2):
     # combinational acknowledgement. Bound only actual compute reply consumers.
     sinks = ('arm_pending', 'armed_o', 'baseline_drops_o_*', 'failed_o',
              'failure_code_o_*', 'tail_drops_o_*', 'tail_receipted')
-    if revision == 2:
+    if revision >= 2:
         # These diagnostic outputs have no top-level consumers. Do not retain
         # phantom endpoints; all functional reply-dependent state stays bounded.
         sinks = tuple(stem for stem in sinks if stem not in ('failure_code_o_*', 'tail_drops_o_*'))
-    held(tail + '/held_reply_*_s*/Q', ' '.join(tail + '/' + stem + '_s*/D' for stem in sinks), 13.020)
+    if revision >= 3:
+        # Real v11/v13 consumer closure: 32 data plus 36 enables. The four
+        # scalar D pins in r2 do not consume held_reply; keep every real CE.
+        reply_sinks = ' '.join([tail + '/baseline_drops_o_*_s*/D',
+            tail + '/baseline_drops_o_*_s*/CE',
+            *(tail + '/' + stem + '_s*/CE' for stem in
+              ('arm_pending', 'armed_o', 'failed_o', 'tail_receipted'))])
+    else:
+        reply_sinks = ' '.join(tail + '/' + stem + '_s*/D' for stem in sinks)
+    held(tail + '/held_reply_*_s*/Q', reply_sinks, 13.020)
+    if revision >= 3:
+        # These are finite data bounds, with ordinary hold checks retained.
+        # Physical RAM vector-pin/arc resolution and FIFO ownership are still
+        # explicit acceptance gates; lexical resolution is not STA evidence.
+        ram = bridge + '/frames_0/g_small_head.memory_g_small_head.memory_0_*_s'
+        captures = ' '.join(bridge + '/' + stem + '_s*/' + pin
+            for stem in ('held_packet_*', 'held_valid') for pin in ('D', 'CE'))
+        lines.append('set_max_delay 13.020 ' + path(ram + '/DO', captures))
+        read_address = ' '.join(bridge + '/frames_0/read_binary_' + str(bit) + '_s*/Q'
+                                for bit in range(4))
+        lines.append('set_max_delay 13.020 ' + path(read_address, ram + '/RAD'))
     level(tail + '/request_toggle', tail, 'request_sync_0', 'request_sync_1')
     level(tail + '/reply_toggle', tail, 'reply_sync_0', 'reply_sync_1')
     held(tail + '/fence_gray_*_s*/Q', tail + '/fence_meta_*_s*/D', 13.020)
@@ -233,7 +256,7 @@ def new_constraints(*, revision=2):
     return ''.join(line + '\n' for line in lines)
 
 
-def adapt_constraints(root, sdc, *, revision=2):
+def adapt_constraints(root, sdc, *, revision=3):
     record = legacy(root)
     old = record['lines']
     actual = [row for row in sdc.splitlines(keepends=True) if 'u_tf_audio/' in row]
@@ -241,7 +264,7 @@ def adapt_constraints(root, sdc, *, revision=2):
         raise ValueError('direct TF requires the exact complete legacy TF CDC subset')
     selected = sdc
     retired = list(old)
-    if revision == 2:
+    if revision >= 2:
         for before, after in root_constraint_mappings():
             if selected.splitlines().count(before) != 1:
                 raise ValueError('direct TF root constraint anchor changed: ' + before)
@@ -258,8 +281,8 @@ def adapt_constraints(root, sdc, *, revision=2):
         retired=[dict(line=row, line_number=index + 1) for index, row in enumerate(sdc.splitlines(keepends=True)) if row in retired],
         added=added, added_sha256=digest(added), retained_fifo_gray_lines=8,
         non_tf_constraints_unchanged=revision == 1, synthesis_queries_verified=False, physical_cdc_verified=False)
-    if revision == 2:
-        evidence.update(constraint_revision=2,
+    if revision >= 2:
+        evidence.update(constraint_revision=revision,
             root_reset_mappings=[dict(before=before, after=after) for before, after in root_constraint_mappings()],
             display_RAM_direct_capture_retired=list(root_display_retired_constraints()),
             actual_alias_and_consumer_proof_required=True,
@@ -279,7 +302,7 @@ def restore_constraints(root, sdc, evidence):
         original.insert(index, row['line'])
     restored = ''.join(original)
     revision = evidence.get('constraint_revision', 1)
-    if revision == 2:
+    if revision >= 2:
         for before, after in root_constraint_mappings():
             if restored.splitlines().count(after) != 1:
                 raise ValueError('direct TF root constraint mapping changed: ' + after)

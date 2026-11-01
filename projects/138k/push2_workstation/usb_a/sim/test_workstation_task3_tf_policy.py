@@ -86,7 +86,10 @@ class Task3TFPolicy(unittest.TestCase):
         self.assertNotIn('u_runtime/u_performance_cdc/source_release_', selected)
         for row in direct.root_display_retired_constraints():
             self.assertNotIn(row, selected)
-        self.assertEqual(evidence['constraint_revision'], 2)
+        self.assertEqual(evidence['constraint_revision'], 3)
+        self.assertIn('g_small_head.memory_0_*_s/DO', selected)
+        self.assertIn('baseline_drops_o_*_s*/CE', selected)
+        self.assertNotIn('tail/armed_o_s*/D', selected)
         self.assertFalse(evidence['non_tf_constraints_unchanged'])
         self.assertFalse(evidence['physical_cdc_verified'])
         for row in rows:
@@ -102,6 +105,9 @@ class Task3TFPolicy(unittest.TestCase):
         for old in direct.root_display_retired_constraints():
             with self.subTest(display_anchor=old[:80]), self.assertRaises(ValueError):
                 direct.adapt_constraints(ROOT, before.replace(old + '\n', old + ' \n'))
+        revision2, prior = direct.adapt_constraints(ROOT, before, revision=2)
+        self.assertEqual(direct.restore_constraints(ROOT, revision2, prior), before)
+        self.assertNotIn('g_small_head.memory_0_*_s/DO', revision2)
         historical, original = direct.adapt_constraints(ROOT, before, revision=1)
         self.assertEqual(direct.restore_constraints(ROOT, historical, original), before)
         self.assertTrue(original['non_tf_constraints_unchanged'])

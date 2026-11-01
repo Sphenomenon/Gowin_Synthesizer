@@ -103,9 +103,12 @@ def audit_runtime_clocks(root, stage, netlist_text):
     profile_path = stage.parents[1] / 'workstation_profile.json'
     if profile_path.is_file():
         from tools.workstation_profile import prepared_specification
-        hdmi_enabled = not prepared_specification(json.loads(profile_path.read_text())).get('worker_audio_only', False)
+        selected_spec = prepared_specification(json.loads(profile_path.read_text()))
+        hdmi_enabled = not selected_spec.get('worker_audio_only', False)
+        task3_direct = selected_spec.get('tf_direct_enabled', False)
     else:
         hdmi_enabled = True
+        task3_direct = False
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     bundle = clock_bundle(root, local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled)
     require(sdc.startswith(bundle['sdc']), 'selected base-clock SDC prefix changed')
@@ -162,6 +165,13 @@ def audit_runtime_clocks(root, stage, netlist_text):
     require(serializer_registers and all(n.pin(p, 'CLK') == selected for p in serializer_registers),
             'serializer consumer clock differs from selected MCLK')
     monitor_groups = {}
+    direct_n = direct_root = None
+    if task3_direct:
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        from tools.workstation_task3_root_reset_audit import audit_root_startup
+        from tools.workstation_task3_clock_release_audit import audit_clock_monitor_release
+        direct_n = protocol_netlist(netlist_text, mapping='synthesis')
+        direct_root = audit_root_startup(direct_n, stage=stage)
     for name, source in (('reference_48_monitor', 'clk_12m288'),
                          ('reference_44_monitor', 'clk_16m9344'), ('selected_monitor', selected)):
         prefix = 'u_managed/runtime/clocks/' + name + '/'
@@ -188,15 +198,21 @@ def audit_runtime_clocks(root, stage, netlist_text):
                          n.pin(q, 'O') == inverted]
             require(len(inverters) == 1 and n.pin(inverters[0], 'I') == source and inverted != source,
                     'opposite-edge monitor release clock changed: ' + name)
-            require(registers[p]['kind'] in ('DFFCE', 'DFFRE') and
-                    n.pin(p, 'CE') in one_nets and n.pin(p, 'D') == n.pin(pre[2], 'Q') and
-                    all(n.pin(pre[i], 'CE') in one_nets for i in range(3)) and
-                    all(n.pin(pre[i], 'D') == n.pin(pre[i-1], 'Q') for i in (1, 2)),
-                    'opposite-edge monitor release data chain changed: ' + name)
+            if task3_direct:
+                direct_release = audit_clock_monitor_release(direct_n, stage=stage,
+                    name=name, source_clock=source, root=direct_root)
+            else:
+                require(registers[p]['kind'] in ('DFFCE', 'DFFRE') and
+                        n.pin(p, 'CE') in one_nets and n.pin(p, 'D') == n.pin(pre[2], 'Q') and
+                        all(n.pin(pre[i], 'CE') in one_nets for i in range(3)) and
+                        all(n.pin(pre[i], 'D') == n.pin(pre[i-1], 'Q') for i in (1, 2)),
+                        'opposite-edge monitor release data chain changed: ' + name)
             negative_release = release
             release_evidence = dict(policy='three_positive_pre_stages_then_single_inverted_clock_release',
                 register=p, clock_inverter=inverters[0], inverted_clock=inverted,
                 pre_registers=[pre[i] for i in range(3)], no_clock_exception_added=True)
+            if task3_direct:
+                release_evidence['actual_direct_startup_qualified_next_q'] = direct_release
         require(source_regs and control_regs and
                 all(n.pin(p, 'CLK') == source for p in source_regs if p not in negative_release) and
                 all(n.pin(p, 'CLK') == 'clk_50m' for p in control_regs),

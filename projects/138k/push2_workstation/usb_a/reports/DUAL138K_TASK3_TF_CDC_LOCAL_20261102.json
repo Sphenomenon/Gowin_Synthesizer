@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "report": "DUAL138K_TASK3_TF_CDC_LOCAL_20261102",
+  "stage": "actual_synthesis_local_audits_and_proposed_revision3_constraints",
+  "status": "LOCAL_PROOFS_PASS_COMPLETE_TF_GATE_REJECTED",
+  "source_parent_commit": "f13af5e2",
+  "M_candidates": [
+    {
+      "identity": "custom138k-workstation-task3-m-direct-tf-v1-444ac11b5f138844",
+      "VG_sha256": "89360cff8b2cc3658ce655ca7ed24810705015b3ca1d9b8461f42fd3520d1c73",
+      "preserved_unchanged": true
+    },
+    {
+      "identity": "custom138k-workstation-task3-m-direct-tf-v1-188b183ce57d22fe",
+      "VG_sha256": "3579feb4ead0bc77645608a1702b9d607bf0d67caf9d4d0f75b9351c9f09c3bc",
+      "preserved_unchanged": true
+    }
+  ],
+  "clock_release": {
+    "actual_candidate": "v13",
+    "tests": 2,
+    "destructive_controls_rejected": 18,
+    "actual_monitors": 3,
+    "arbitrary_assignments_per_six_FF_monitor": 256,
+    "scope": "exact startup-qualified next-Q including INIT, CE, actual root CLEAR and opposite-edge inverter; root 35-state proof reused",
+    "default_legacy_chain_check_retained": true,
+    "reset_recovery_removal_accepted": false
+  },
+  "local_CDC": {
+    "v11_tests_reported": 33,
+    "v11_explicit_skips": 2,
+    "v11_destructive_controls_rejected": 369,
+    "v13_independent_positives": true,
+    "v13_destructive_controls_repeated": false,
+    "frame": {
+      "tests": 3,
+      "destructive_controls": 43,
+      "actual_RAM16SDP4": 27,
+      "actual_DO_nets": 108,
+      "actual_D_CE_capture_endpoints": 218,
+      "scope": "actual synchronizer topology/reset-inclusive next-Q and complete RAM consumer inventory; protected producers reject source-only/through/get_regs timing cuts",
+      "arithmetic_ownership_and_RAM_timing_proven": false
+    },
+    "tail_local": {
+      "tests": 4,
+      "destructive_controls": 51,
+      "actual_FF": 698,
+      "local_next_Q_proofs": 395,
+      "actual_reply_consumers": 68
+    },
+    "tail_serial_retirement": {
+      "tests": 4,
+      "destructive_controls": 89,
+      "actual_FF_shape": 592,
+      "exact_32_bit_NE_groups": 7,
+      "reset_inclusive_serial_next_Q": 233,
+      "held_reply_hold_without_retire_checks": 229,
+      "scope": "actual serial state/sequence comparisons and held replies; serial-context/compute-business transitions still pending"
+    }
+  },
+  "proposed_constraints_revision3": {
+    "new_prepare_or_synthesis_done": false,
+    "old_v11_v13_SDC_modified": false,
+    "historical_revision1_revision2_outputs_byte_identical": true,
+    "held_reply": "32 baseline D, 32 baseline CE, 4 scalar CE; removes 4 phantom scalar D; finite13.020ns with existing scoped hold policy",
+    "new_FIFO_rows": "finite13.020ns RAM DO -> all218 capture D/CE; read_binary[3:0] Q -> actual27 RAM RAD ports; no new false path",
+    "actual_v13_text_endpoint_probe": "PASS",
+    "RAM_vector_pin_physical_STA_model_verified": false,
+    "SDC_sha256": "035f21c1f53b61c1acd4b6e813ddf0d953fe0ee42255da7f18f25c4ec0d733dd"
+  },
+  "root_review": {
+    "sealed_paths_hash_verified": 39,
+    "TF_policy_tests": 7,
+    "runtime_clock_default_tests": 2,
+    "runtime_clock_environment_skip": 1,
+    "diff_check": "PASS"
+  },
+  "complete_profile_audit": {
+    "status": "REJECTED",
+    "clock_release_gate_passed": true,
+    "next_failure": "DIRECT TF dedicated CDC gate pending",
+    "forced_full_TF_rejection_retained": true
+  },
+  "evidence": {
+    "direct-v11-v13-local-audit-summary-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v11-v13-local-audit-summary-v2.json",
+      "sha256": "f3516e8f4c4c8d47a3a41478bb71455c9d7124fc331bf6ef4d8f74c96acf4ebb"
+    },
+    "direct-tf-frame-partial-audit-seal-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-tf-frame-partial-audit-seal-v2.json",
+      "sha256": "8a0a245329ad6cdfc478184e74cdab1ae2ba28845a9a25a86618be7e0664cd1c"
+    },
+    "direct-tf-tail-local-audit-seal-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-tf-tail-local-audit-seal-v2.json",
+      "sha256": "a29b7d37d72f9bc845fc3ed1665bdd98064e20795c2ffb3914b1b64043927d46"
+    },
+    "direct-tf-tail-retirement-actual-v11-v2.seal.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-tf-tail-retirement-actual-v11-v2.seal.json",
+      "sha256": "fee89f0b3dca63a85ae76db9d1543bc23e229734cc3454aa2c27f98c4731ecfb"
+    },
+    "direct-tf-tail-retirement-actual-v13-positive.seal.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-tf-tail-retirement-actual-v13-positive.seal.json",
+      "sha256": "e4daf9dcb91c65baf38ade0fd35eab1e281225f71efb5e388d4fd99eba2a2a1f"
+    },
+    "direct-v13-clock-release-actual-v3.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-clock-release-actual-v3.json",
+      "sha256": "ab36fda59bdf7fd546959c92495443309f1018cfdf79b13f5536e3fedc1afb92"
+    },
+    "direct-r3-constraints-actual-v13-text-probe-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-r3-constraints-actual-v13-text-probe-v2.json",
+      "sha256": "e2c76aa24a174ff24c8ee026ef0bc5d3ad290569ccdff03b0a8577a84125cf1c"
+    },
+    "direct-v13-full-audit-root-attempt-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/direct-v13-full-audit-root-attempt-v2.json",
+      "sha256": "79d1498b59652b09e3660b5b6c8d0e7c86886e4f05dd5ef0f5a94f4513d39a44"
+    }
+  },
+  "source_and_test_sha256": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": "3a9872ebd73628edd20e9a3470916c8a8b83bfbd62a4f410a86fb5339bf785e9",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_direct.py": "ae29c7625eb044397455e273d7109a61ce1b08eb1de233ac0a82fe86d77c766d",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_tf_policy.py": "a736911c19667473d2ea580491142932122703d86208c5e1939a6e7a0ae37c67",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_task3_clock_release_audit.py": "5c422ecd29d8ccc50df0d997a837d399d757b07ded8777d841258c3e3280b9b5",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_clock_release.py": "31517a38aaaefad5abca5f2fbf86467517b7f61a7bd72724e59ad4bf514b4177",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_frame_cdc_audit.py": "4c83294c078e29b0fb16130eb67574ac8e61888681bd7d615877cc96043490d2",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_tf_frame_cdc.py": "0a9d08aa3914d1cc2fc7288148c228fd262a9a55dfd305a077323d9a6aebcfc9",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_tail_cdc_audit.py": "b0e89fbb1e1944e70d6139807f5ff158b00749a23a2dae4d21446d109f762ea4",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_tf_tail_cdc.py": "9efa5a438f493e0cbe1eb49dadedd7822a79ddf860f4bb882c3d24690bcd59c6",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_tail_retirement_audit.py": "ab3d9d9f18aa3a373cf43cd4f467b0a98bf87a0ea3c3bb04f3e250e464613409",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_tf_tail_retirement.py": "b86095ad6eb0cdb48ccd71a0ed2d95a1e81be4e2668f6953ecd853663632136a"
+  },
+  "remaining": [
+    "Prepare a new explicit identity with revision3; actual tool resolution of RAM vector pins/arcs and routed STA required.",
+    "Frame binary/Gray arithmetic, generation/FIFO ownership and RAM read/write overwrite stability remain unproved.",
+    "Serial context-register and compute reply-business transitions remain unproved.",
+    "Complete reset recovery/removal, physical clocks/CDC, PLL and feature-preserving full P&R pending.",
+    "Production FAST12 sustained supply, SD data CRC validation and explicit file-owner remount recovery pending.",
+    "Correct target boards absent; reverse LCD cable electrical checks, real card/DAC/HDMI/control-to-sound latency not measured."
+  ],
+  "rollback": "Use immutable v11/v13 directories/source-seal-v5 for their original inputs; revert this tool stage if needed. No default/task2/frozen inputs refreshed.",
+  "bitstream": null,
+  "W_bitstream": null,
+  "routed_resources": null,
+  "routed_timing": null,
+  "full_tf_cdc_accepted": false,
+  "hardware_tested": false,
+  "release_ready": false,
+  "deployment_allowed": false
+}
