@@ -550,3 +550,6 @@ W22的[独立定向布局D2110135](push2_workstation/usb_a/reports/DUAL138K_W22_
 
 
 W的[普通合成MIDI遗留链退出](push2_workstation/usb_a/reports/DUAL138K_W_SYNTH_MIDI_RETIREMENT_20261101.json)已落实际维护源码：显式W revision4／`disabled_unused_synth_uart_v1`通过专用wrapper退出midi_uart／midi_bytes／midi_drops三实例、零绑字节／valid／drop／framing；PC UART、真实USB25K与CPU-session／PANIC独立路径保留，默认M预处理文本／实例层次一致。实际W134 VO确认UART valid恒0、payload/valid已sweep而空握手及drop诊断仍在；142bit唯一参数反馈专项通过。仅移除两条已退休Gray约束，旧W1/2/3合同及三memory特征严格保持，39独立负控拒绝。实际Wwrapper经生产C／MMIO／USB FIFO／CDC／生命周期／唯一参数／完整D与DDR／反馈通过28716帧、559事件、378点与9生命周期，来源17／demo18／audio-only5入口通过；主线程重验1201文件和88执行输入、11项源前后快照及严格patch逆向。两profile只提升M5／W8既有来源项，M显示两owner未提交改动与其旧HEAD锁保留。新prepare待M显示单独验证／刷新锁，未预记新VG、资源／时序或硬件收益；M22继续留板。
+
+
+M的[实际显示组合路径平衡](push2_workstation/usb_a/reports/DUAL138K_M_DISPLAY_BALANCE_20261101.json)已落维护源码：producer把32bit epoch／sequence比较改为2bit XOR pair＋两级OR，原source_valid／context_break和同周期撤销保持；dashboard将文字word从坐标优先链拆为互斥并行选择＋平衡OR，保留if-X跳过、HMI最终优先级、metadata／hex／effect覆盖、四级使能与几何。完整producer21输出／5645819边沿与真实FFT／XY／wave publication对照通过；源抽取四态9472及漏bit负控通过。冻结M25整dashboard四配置×4194304完整11bit坐标、65536固定seed合法参数、48282 stalls及18354 X/Z向量逐像素／word／77bit metadata等价，两个执行负控拒绝，来源17项通过。主线程复核1156文件及严格before／after／patch逆向，两profile只更新两owner并新增定向回归锁，M867／W1114的1981来源全匹配且实际load通过；保留刚提交W revision4功能与全部source locks。此阶段不记物理收益、不操作板；新M137／W136后续各自全量综合及P&R，M22留板。

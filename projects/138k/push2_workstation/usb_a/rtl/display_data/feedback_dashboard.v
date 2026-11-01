@@ -203,7 +203,7 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
     // One enabled ROM cycle coincides with stage A below.
     workstation_contest_brand brand(.clk(clk),.enable(enable),.pixel_x(pixel_x),.pixel_y(pixel_y),
         .hit(brand_hit),.pixel_rgb(brand_rgb));
-    reg [255:0] text_line;
+    wire [255:0] text_line;
     // Coordinates belong to effect identities, not to numbered slots. Move
     // once per rendered frame; DDR stalls cannot accelerate the animation.
     reg [10:0] effect_x0, effect_x1, effect_x2;
@@ -424,111 +424,264 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
         endcase
     end
 
+    // Spatial word regions are disjoint, including the final HMI region.
+    // Select words in parallel instead of carrying 256 bits through the
+    // coordinate/metadata priority chain. An unknown condition is skipped,
+    // exactly as in the original procedural if (not a ternary X merge).
+    // Text/hex/effect priority and stages A/B/C/D below remain unchanged.
+    function text_selected;
+        input condition;
+        begin text_selected=1'b0; if(condition)text_selected=1'b1; end
+    endfunction
+    reg [255:0] wave_heading,image_heading,hmi_text_line;
     always @* begin
-        text_line = 0; text_x = 64; text_y = 0;
+        wave_heading=0;
+        case(wave_gain)
+                        0:wave_heading="MID WAVEFORM / AUTO X1          ";
+                        1:wave_heading="MID WAVEFORM / AUTO X2          ";
+                        2:wave_heading="MID WAVEFORM / AUTO X4          ";
+                        3:wave_heading="MID WAVEFORM / AUTO X8          ";
+                        4:wave_heading="MID WAVEFORM / AUTO X16         ";
+                        5:wave_heading="MID WAVEFORM / AUTO X32         ";
+                        default:wave_heading="MID WAVEFORM / AUTO X64         ";
+                    endcase
+        image_heading=0;
+        case(image_gain)
+                    0:image_heading="AUTO X1 / MID-SIDE              ";
+                    1:image_heading="AUTO X2 / MID-SIDE              ";
+                    2:image_heading="AUTO X4 / MID-SIDE              ";
+                    3:image_heading="AUTO X8 / MID-SIDE              ";
+                    4:image_heading="AUTO X16 / MID-SIDE             ";
+                    5:image_heading="AUTO X32 / MID-SIDE             ";
+                    6:image_heading="AUTO X64 / MID-SIDE             ";
+                    7:image_heading="AUTO X128 / MID-SIDE            ";
+                endcase
+        hmi_text_line=0;
+        case(pixel_y[7:5])
+                3: hmi_text_line=applied_source; // 864
+                4: hmi_text_line={"MASTER ",decimal3(applied_volume)," / VOICES ",decimal3({1'b0,applied_state[15:10]}),"         "};
+                5: begin // 928: the committed Q20 pitch ratio, in exact hex units
+                    hmi_text_line="PITCH Q20                       ";
+
+                end
+                6: hmi_text_line=(HMI_D_ONLY!=0) ? {"CRUSH ",decimal3(applied_options[6:0])," DRIVE ",decimal3(applied_options[13:7])," SEND ",decimal3(applied_options[20:14]),"    "} :
+                    {"GLIDE ",decimal3(applied_options[17:11])," VIB ",decimal3(applied_options[10:4])," SUSTAIN ",applied_options[3] ? "ON " : "OFF","   "};
+                7: hmi_text_line=applied_parameters[128] ? "OUTPUT   44100 HZ / STEREO      " : "OUTPUT   48000 HZ / STEREO      ";
+                default: hmi_text_line={"PROFILE ",8'h30+{5'd0,applied_state[9:7]}," / ROUTE ",8'h30+{6'd0,applied_state[6:5]},"             "};
+            endcase
+    end
+    wire [31:0] text_word_selected;
+    wire [255:0] text_word_terms [0:31];
+    generate if(ENABLE_ANALYSIS)begin:analysis_text_words
+        assign text_word_selected[0]=text_selected(pixel_y>=168 && pixel_y<184 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[0]={256{text_word_selected[0]}} & (wave_heading);
+        assign text_word_selected[1]=text_selected(pixel_y>=168 && pixel_y<184 && pixel_x>=1248 && pixel_x<1760);
+        assign text_word_terms[1]={256{text_word_selected[1]}} & ("STEREO IMAGE / FINAL DAC PCM    ");
+        assign text_word_selected[2]=text_selected(pixel_y>=200 && pixel_y<216 && pixel_x>=1280 && pixel_x<1312);
+        assign text_word_terms[2]={256{text_word_selected[2]}} & ("L                               ");
+        assign text_word_selected[3]=text_selected(pixel_y>=200 && pixel_y<216 && pixel_x>=1472 && pixel_x<1536);
+        assign text_word_terms[3]={256{text_word_selected[3]}} & ("MONO                            ");
+        assign text_word_selected[4]=text_selected(pixel_y>=200 && pixel_y<216 && pixel_x>=1712 && pixel_x<1744);
+        assign text_word_terms[4]={256{text_word_selected[4]}} & ("R                               ");
+        assign text_word_selected[5]=text_selected(pixel_y>=480 && pixel_y<496 && pixel_x<1152 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[5]={256{text_word_selected[5]}} & (applied_parameters[128] ? "512 SAMPLES / 11.61 MS          " : "512 SAMPLES / 10.67 MS          ");
+        assign text_word_selected[6]=text_selected(pixel_y>=480 && pixel_y<496 && pixel_x<1152 && pixel_x>=640);
+        assign text_word_terms[6]={256{text_word_selected[6]}} & (waveform_held ? "HOLD / WAITING FOR MATCH        " : "TRIGGERED                       ");
+        assign text_word_selected[7]=text_selected(pixel_y>=528 && pixel_y<544 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[7]={256{text_word_selected[7]}} & ("FFT / 2048 HANN / DBFS          ");
+        assign text_word_selected[8]=text_selected(pixel_y>=528 && pixel_y<544 && pixel_x>=640 && pixel_x<1152);
+        assign text_word_terms[8]={256{text_word_selected[8]}} & ("L BLUE / R ORANGE               ");
+        assign text_word_selected[9]=text_selected(pixel_y>=568 && pixel_y<776 && pixel_x>=8 && pixel_x<56 && pixel_y>=568 && pixel_y<584);
+        assign text_word_terms[9]={256{text_word_selected[9]}} & ("0                               ");
+        assign text_word_selected[10]=text_selected(pixel_y>=568 && pixel_y<776 && pixel_x>=8 && pixel_x<56 && pixel_y>=632 && pixel_y<648);
+        assign text_word_terms[10]={256{text_word_selected[10]}} & ("-24                             ");
+        assign text_word_selected[11]=text_selected(pixel_y>=568 && pixel_y<776 && pixel_x>=8 && pixel_x<56 && pixel_y>=696 && pixel_y<712);
+        assign text_word_terms[11]={256{text_word_selected[11]}} & ("-48                             ");
+        assign text_word_selected[12]=text_selected(pixel_y>=568 && pixel_y<776 && pixel_x>=8 && pixel_x<56 && pixel_y>=760 && pixel_y<776);
+        assign text_word_terms[12]={256{text_word_selected[12]}} & ("-72                             ");
+        assign text_word_selected[13]=text_selected(pixel_y>=752 && pixel_y<768 && pixel_x>=1248 && pixel_x<1760);
+        assign text_word_terms[13]={256{text_word_selected[13]}} & (image_heading);
+        assign text_word_selected[14]=text_selected(pixel_y>=804 && pixel_y<820 && pixel_x<1104 && pixel_x>=64 && pixel_x<96);
+        assign text_word_terms[14]={256{text_word_selected[14]}} & (applied_parameters[128] ? "44                              " : "48                              ");
+        assign text_word_selected[15]=text_selected(pixel_y>=804 && pixel_y<820 && pixel_x<1104 && pixel_x>=282 && pixel_x<330);
+        assign text_word_terms[15]={256{text_word_selected[15]}} & (applied_parameters[128] ? "184                             " : "200                             ");
+        assign text_word_selected[16]=text_selected(pixel_y>=804 && pixel_y<820 && pixel_x<1104 && pixel_x>=562 && pixel_x<626);
+        assign text_word_terms[16]={256{text_word_selected[16]}} & (applied_parameters[128] ? "0.9K                            " : "1K                              ");
+        assign text_word_selected[17]=text_selected(pixel_y>=804 && pixel_y<820 && pixel_x<1104 && pixel_x>=834 && pixel_x<898);
+        assign text_word_terms[17]={256{text_word_selected[17]}} & (applied_parameters[128] ? "4.6K                            " : "5K                              ");
+        assign text_word_selected[18]=text_selected(pixel_y>=804 && pixel_y<820 && pixel_x<1104 && pixel_x>=1040 && pixel_x<1104);
+        assign text_word_terms[18]={256{text_word_selected[18]}} & (applied_parameters[128] ? "18K                             " : "20K                             ");
+        assign text_word_selected[19]=text_selected(pixel_x>=1216 && pixel_x<1248 && pixel_y>=784 && pixel_y<832 && pixel_y<800);
+        assign text_word_terms[19]={256{text_word_selected[19]}} & ("L                               ");
+        assign text_word_selected[20]=text_selected(pixel_x>=1216 && pixel_x<1248 && pixel_y>=784 && pixel_y<832 && pixel_y>=816);
+        assign text_word_terms[20]={256{text_word_selected[20]}} & ("R                               ");
+        assign text_word_selected[21]=text_selected(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[21]={256{text_word_selected[21]}} & (EFFECT_TITLE);
+    end else begin:plain_text_words
+        assign text_word_selected[0]=text_selected(pixel_y>=168 && pixel_y<184 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[0]={256{text_word_selected[0]}} & (WAVE);
+        assign text_word_selected[1]=text_selected(pixel_y>=768 && pixel_y<784 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[1]={256{text_word_selected[1]}} & (WINDOW);
+        assign text_word_selected[2]=text_selected(pixel_y>=768 && pixel_y<784 && pixel_x>=640 && pixel_x<1152);
+        assign text_word_terms[2]={256{text_word_selected[2]}} & (waveform_held ? "HOLD / WAITING FOR MATCH        " : "TRIGGERED                       ");
+        assign text_word_selected[3]=text_selected(pixel_y>=168 && pixel_y<184 && pixel_x>=1216 && pixel_x<1728);
+        assign text_word_terms[3]={256{text_word_selected[3]}} & (LEVEL);
+        assign text_word_selected[4]=text_selected(pixel_y>=352 && pixel_y<368 && pixel_x>=1216 && pixel_x<1728);
+        assign text_word_terms[4]={256{text_word_selected[4]}} & (SOURCE);
+        assign text_word_selected[5]=text_selected(pixel_y>=432 && pixel_y<448 && pixel_x>=1216 && pixel_x<1728);
+        assign text_word_terms[5]={256{text_word_selected[5]}} & (DDR);
+        assign text_word_selected[6]=text_selected(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[6]={256{text_word_selected[6]}} & (VOICES);
+        assign text_word_selected[7]=text_selected(pixel_y>=1024 && pixel_y<1040 && pixel_x>=64 && pixel_x<576);
+        assign text_word_terms[7]={256{text_word_selected[7]}} & (FOOTER);
+        assign text_word_selected[8]=text_selected(1'b0);
+        assign text_word_terms[8]={256{text_word_selected[8]}} & (256'd0);
+        assign text_word_selected[9]=text_selected(1'b0);
+        assign text_word_terms[9]={256{text_word_selected[9]}} & (256'd0);
+        assign text_word_selected[10]=text_selected(1'b0);
+        assign text_word_terms[10]={256{text_word_selected[10]}} & (256'd0);
+        assign text_word_selected[11]=text_selected(1'b0);
+        assign text_word_terms[11]={256{text_word_selected[11]}} & (256'd0);
+        assign text_word_selected[12]=text_selected(1'b0);
+        assign text_word_terms[12]={256{text_word_selected[12]}} & (256'd0);
+        assign text_word_selected[13]=text_selected(1'b0);
+        assign text_word_terms[13]={256{text_word_selected[13]}} & (256'd0);
+        assign text_word_selected[14]=text_selected(1'b0);
+        assign text_word_terms[14]={256{text_word_selected[14]}} & (256'd0);
+        assign text_word_selected[15]=text_selected(1'b0);
+        assign text_word_terms[15]={256{text_word_selected[15]}} & (256'd0);
+        assign text_word_selected[16]=text_selected(1'b0);
+        assign text_word_terms[16]={256{text_word_selected[16]}} & (256'd0);
+        assign text_word_selected[17]=text_selected(1'b0);
+        assign text_word_terms[17]={256{text_word_selected[17]}} & (256'd0);
+        assign text_word_selected[18]=text_selected(1'b0);
+        assign text_word_terms[18]={256{text_word_selected[18]}} & (256'd0);
+        assign text_word_selected[19]=text_selected(1'b0);
+        assign text_word_terms[19]={256{text_word_selected[19]}} & (256'd0);
+        assign text_word_selected[20]=text_selected(1'b0);
+        assign text_word_terms[20]={256{text_word_selected[20]}} & (256'd0);
+        assign text_word_selected[21]=text_selected(1'b0);
+        assign text_word_terms[21]={256{text_word_selected[21]}} & (256'd0);
+    end endgenerate
+    assign text_word_selected[22]=text_selected(pixel_y>=888 && pixel_y<904 && ((pixel_x>=80 && pixel_x<352) || (pixel_x>=416 && pixel_x<688) || (pixel_x>=752 && pixel_x<1024)));
+    assign text_word_terms[22]={256{text_word_selected[22]}} & ("EMPTY                           ");
+    assign text_word_selected[23]=text_selected(pixel_y>=968 && pixel_y<984 && pixel_x>=200 && pixel_x<216);
+    assign text_word_terms[23]={256{text_word_selected[23]}} & ("1                               ");
+    assign text_word_selected[24]=text_selected(pixel_y>=968 && pixel_y<984 && pixel_x>=536 && pixel_x<552);
+    assign text_word_terms[24]={256{text_word_selected[24]}} & ("2                               ");
+    assign text_word_selected[25]=text_selected(pixel_y>=968 && pixel_y<984 && pixel_x>=872 && pixel_x<888);
+    assign text_word_terms[25]={256{text_word_selected[25]}} & ("3                               ");
+    assign text_word_selected[26]=text_selected(pixel_x>=1248 && pixel_x<1760 && pixel_y>=864 && pixel_y<1040);
+    assign text_word_terms[26]={256{text_word_selected[26]}} & (hmi_text_line);
+    for(genvar text_padding=27;text_padding<32;text_padding=text_padding+1)begin:text_word_padding
+        assign text_word_selected[text_padding]=1'b0;
+        assign text_word_terms[text_padding]=256'd0;
+    end
+    wire [255:0] text_word_or1 [0:15];
+    wire [255:0] text_word_or2 [0:7];
+    wire [255:0] text_word_or3 [0:3];
+    wire [255:0] text_word_or4 [0:1];
+    for(genvar word_pair=0;word_pair<16;word_pair=word_pair+1)begin:text_word_level1
+        assign text_word_or1[word_pair]=text_word_terms[word_pair*2] | text_word_terms[word_pair*2+1];
+    end
+    for(genvar word_pair=0;word_pair<8;word_pair=word_pair+1)begin:text_word_level2
+        assign text_word_or2[word_pair]=text_word_or1[word_pair*2] | text_word_or1[word_pair*2+1];
+    end
+    for(genvar word_pair=0;word_pair<4;word_pair=word_pair+1)begin:text_word_level3
+        assign text_word_or3[word_pair]=text_word_or2[word_pair*2] | text_word_or2[word_pair*2+1];
+    end
+    for(genvar word_pair=0;word_pair<2;word_pair=word_pair+1)begin:text_word_level4
+        assign text_word_or4[word_pair]=text_word_or3[word_pair*2] | text_word_or3[word_pair*2+1];
+    end
+    assign text_line=text_word_or4[0] | text_word_or4[1];
+
+    always @* begin
+        text_x = 64; text_y = 0;
         text_enable = 0; large_text = 0;
         hex_word = 0; hex_enable = 0; hex_x = 0; voice_enable = 0; voice_character = 0;
         if (1'b0 && pixel_y >= 48 && pixel_y < 80 && pixel_x >= 64 && pixel_x < 1088) begin
-            text_line = TITLE; text_y = 48; text_enable = 1; large_text = 1;
+            text_y = 48; text_enable = 1; large_text = 1;
         end else if (1'b0 && pixel_y >= 64 && pixel_y < 80 && pixel_x >= 1216 && pixel_x < 1728) begin
-            text_line = RATE; text_x = 1216; text_y = 64; text_enable = 1;
+            text_x = 1216; text_y = 64; text_enable = 1;
         end else if (pixel_y >= 168 && pixel_y < 184 && pixel_x >= 64 && pixel_x < 576) begin
-            text_line = WAVE; text_y = 168; text_enable = 1;
+            text_y = 168; text_enable = 1;
         end else if (pixel_y >= 768 && pixel_y < 784 && pixel_x >= 64 && pixel_x < 576) begin
-            text_line = WINDOW; text_y = 768; text_enable = 1;
+            text_y = 768; text_enable = 1;
         end else if (pixel_y >= 768 && pixel_y < 784 && pixel_x >= 640 && pixel_x < 1152) begin
-            text_line = waveform_held ? "HOLD / WAITING FOR MATCH        " : "TRIGGERED                       ";
             text_x = 640; text_y = 768; text_enable = 1;
         end else if (pixel_y >= 168 && pixel_y < 184 && pixel_x >= 1216 && pixel_x < 1728) begin
-            text_line = LEVEL; text_x = 1216; text_y = 168; text_enable = 1;
+            text_x = 1216; text_y = 168; text_enable = 1;
         end else if (pixel_y >= 352 && pixel_y < 368 && pixel_x >= 1216 && pixel_x < 1728) begin
-            text_line = SOURCE; text_x = 1216; text_y = 352; text_enable = 1;
+            text_x = 1216; text_y = 352; text_enable = 1;
         end else if (pixel_y >= 432 && pixel_y < 448 && pixel_x >= 1216 && pixel_x < 1728) begin
-            text_line = DDR; text_x = 1216; text_y = 432; text_enable = 1;
+            text_x = 1216; text_y = 432; text_enable = 1;
         end else if (pixel_y >= 840 && pixel_y < 856 && pixel_x >= 64 && pixel_x < 576) begin
-            text_line = VOICES; text_y = 840; text_enable = 1;
+            text_y = 840; text_enable = 1;
         end else if (pixel_y >= 1024 && pixel_y < 1040 && pixel_x >= 64 && pixel_x < 576) begin
-            text_line = FOOTER; text_y = 1024; text_enable = 1;
+            text_y = 1024; text_enable = 1;
         end
         if(ENABLE_ANALYSIS) begin
-            text_line=0; text_x=64; text_y=0; text_enable=0; large_text=0; hex_enable=0;
+            text_x=64; text_y=0; text_enable=0; large_text=0; hex_enable=0;
             if(1'b0 && pixel_y>=48 && pixel_y<80 && pixel_x>=64 && pixel_x<1088) begin
-                text_line=TITLE;text_y=48;text_enable=1;large_text=1;
+                text_y=48;text_enable=1;large_text=1;
             end else if(1'b0 && pixel_y>=64 && pixel_y<80 && pixel_x>=1216 && pixel_x<1728) begin
-                text_line=RATE;text_x=1216;text_y=64;text_enable=1;
+                text_x=1216;text_y=64;text_enable=1;
             end else if(pixel_y>=168 && pixel_y<184) begin
                 if(pixel_x>=64 && pixel_x<576) begin
-                    case(wave_gain)
-                        0:text_line="MID WAVEFORM / AUTO X1          ";
-                        1:text_line="MID WAVEFORM / AUTO X2          ";
-                        2:text_line="MID WAVEFORM / AUTO X4          ";
-                        3:text_line="MID WAVEFORM / AUTO X8          ";
-                        4:text_line="MID WAVEFORM / AUTO X16         ";
-                        5:text_line="MID WAVEFORM / AUTO X32         ";
-                        default:text_line="MID WAVEFORM / AUTO X64         ";
-                    endcase
+
                     text_y=168;text_enable=1;
                 end
-                if(pixel_x>=1248 && pixel_x<1760) begin text_line="STEREO IMAGE / FINAL DAC PCM    ";text_x=1248;text_y=168;text_enable=1;end
+                if(pixel_x>=1248 && pixel_x<1760) begin text_x=1248;text_y=168;text_enable=1;end
             end else if(pixel_y>=200 && pixel_y<216) begin
                 text_y=200;
-                if(pixel_x>=1280 && pixel_x<1312) begin text_line="L                               ";text_x=1280;text_enable=1;end
-                if(pixel_x>=1472 && pixel_x<1536) begin text_line="MONO                            ";text_x=1472;text_enable=1;end
-                if(pixel_x>=1712 && pixel_x<1744) begin text_line="R                               ";text_x=1712;text_enable=1;end
+                if(pixel_x>=1280 && pixel_x<1312) begin text_x=1280;text_enable=1;end
+                if(pixel_x>=1472 && pixel_x<1536) begin text_x=1472;text_enable=1;end
+                if(pixel_x>=1712 && pixel_x<1744) begin text_x=1712;text_enable=1;end
             end else if(pixel_y>=480 && pixel_y<496 && pixel_x<1152) begin
                 text_y=480;
-                if(pixel_x>=64 && pixel_x<576) begin text_line=applied_parameters[128] ? "512 SAMPLES / 11.61 MS          " : "512 SAMPLES / 10.67 MS          ";text_enable=1;end
-                if(pixel_x>=640) begin text_line=waveform_held ? "HOLD / WAITING FOR MATCH        " : "TRIGGERED                       ";text_x=640;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<576) begin text_enable=1;end
+                if(pixel_x>=640) begin text_x=640;text_enable=1;end
             end else if(pixel_y>=528 && pixel_y<544) begin
                 text_y=528;
-                if(pixel_x>=64 && pixel_x<576) begin text_line="FFT / 2048 HANN / DBFS          ";text_enable=1;end
-                if(pixel_x>=640 && pixel_x<1152) begin text_line="L BLUE / R ORANGE               ";text_x=640;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<576) begin text_enable=1;end
+                if(pixel_x>=640 && pixel_x<1152) begin text_x=640;text_enable=1;end
             end else if(pixel_y>=568 && pixel_y<776 && pixel_x>=8 && pixel_x<56) begin
                 text_x=8;
-                if(pixel_y>=568 && pixel_y<584) begin text_line="0                               ";text_y=568;text_enable=1;end
-                if(pixel_y>=632 && pixel_y<648) begin text_line="-24                             ";text_y=632;text_enable=1;end
-                if(pixel_y>=696 && pixel_y<712) begin text_line="-48                             ";text_y=696;text_enable=1;end
-                if(pixel_y>=760 && pixel_y<776) begin text_line="-72                             ";text_y=760;text_enable=1;end
+                if(pixel_y>=568 && pixel_y<584) begin text_y=568;text_enable=1;end
+                if(pixel_y>=632 && pixel_y<648) begin text_y=632;text_enable=1;end
+                if(pixel_y>=696 && pixel_y<712) begin text_y=696;text_enable=1;end
+                if(pixel_y>=760 && pixel_y<776) begin text_y=760;text_enable=1;end
             end else if(pixel_y>=752 && pixel_y<768 && pixel_x>=1248 && pixel_x<1760) begin
                 text_x=1248;text_y=752;text_enable=1;
-                case(image_gain)
-                    0:text_line="AUTO X1 / MID-SIDE              ";
-                    1:text_line="AUTO X2 / MID-SIDE              ";
-                    2:text_line="AUTO X4 / MID-SIDE              ";
-                    3:text_line="AUTO X8 / MID-SIDE              ";
-                    4:text_line="AUTO X16 / MID-SIDE             ";
-                    5:text_line="AUTO X32 / MID-SIDE             ";
-                    6:text_line="AUTO X64 / MID-SIDE             ";
-                    7:text_line="AUTO X128 / MID-SIDE            ";
-                endcase
+
             end else if(pixel_y>=804 && pixel_y<820 && pixel_x<1104) begin
                 text_y=804;
-                if(pixel_x>=64 && pixel_x<96) begin text_line=applied_parameters[128] ? "44                              " : "48                              ";text_x=64;text_enable=1;end
-                if(pixel_x>=282 && pixel_x<330) begin text_line=applied_parameters[128] ? "184                             " : "200                             ";text_x=282;text_enable=1;end
-                if(pixel_x>=562 && pixel_x<626) begin text_line=applied_parameters[128] ? "0.9K                            " : "1K                              ";text_x=562;text_enable=1;end
-                if(pixel_x>=834 && pixel_x<898) begin text_line=applied_parameters[128] ? "4.6K                            " : "5K                              ";text_x=834;text_enable=1;end
-                if(pixel_x>=1040 && pixel_x<1104) begin text_line=applied_parameters[128] ? "18K                             " : "20K                             ";text_x=1040;text_enable=1;end
+                if(pixel_x>=64 && pixel_x<96) begin text_x=64;text_enable=1;end
+                if(pixel_x>=282 && pixel_x<330) begin text_x=282;text_enable=1;end
+                if(pixel_x>=562 && pixel_x<626) begin text_x=562;text_enable=1;end
+                if(pixel_x>=834 && pixel_x<898) begin text_x=834;text_enable=1;end
+                if(pixel_x>=1040 && pixel_x<1104) begin text_x=1040;text_enable=1;end
             end else if(pixel_x>=1216 && pixel_x<1248 && pixel_y>=784 && pixel_y<832) begin
                 text_x=1216;
-                if(pixel_y<800) begin text_line="L                               ";text_y=784;text_enable=1;end
-                if(pixel_y>=816) begin text_line="R                               ";text_y=816;text_enable=1;end
+                if(pixel_y<800) begin text_y=784;text_enable=1;end
+                if(pixel_y>=816) begin text_y=816;text_enable=1;end
             end else if(pixel_y>=840 && pixel_y<856 && pixel_x>=64 && pixel_x<576) begin
-                text_line=EFFECT_TITLE;text_x=64;text_y=840;text_enable=1;
+                text_x=64;text_y=840;text_enable=1;
             end
         end
         // Static numbered positions remain left-to-right 1, 2, 3. Effects
         // entering/leaving the queue slide between these positions and the
         // clipped right-hand parking position, carrying their labels.
         if(pixel_y>=888 && pixel_y<904) begin
-            if(pixel_x>=80 && pixel_x<352) begin text_line="EMPTY                           ";text_x=80;text_y=888;text_enable=1;end
-            if(pixel_x>=416 && pixel_x<688) begin text_line="EMPTY                           ";text_x=416;text_y=888;text_enable=1;end
-            if(pixel_x>=752 && pixel_x<1024) begin text_line="EMPTY                           ";text_x=752;text_y=888;text_enable=1;end
+            if(pixel_x>=80 && pixel_x<352) begin text_x=80;text_y=888;text_enable=1;end
+            if(pixel_x>=416 && pixel_x<688) begin text_x=416;text_y=888;text_enable=1;end
+            if(pixel_x>=752 && pixel_x<1024) begin text_x=752;text_y=888;text_enable=1;end
         end
         if(pixel_y>=968 && pixel_y<984) begin
             text_y=968;
-            if(pixel_x>=200 && pixel_x<216) begin text_line="1                               ";text_x=200;text_enable=1;end
-            if(pixel_x>=536 && pixel_x<552) begin text_line="2                               ";text_x=536;text_enable=1;end
-            if(pixel_x>=872 && pixel_x<888) begin text_line="3                               ";text_x=872;text_enable=1;end
+            if(pixel_x>=200 && pixel_x<216) begin text_x=200;text_enable=1;end
+            if(pixel_x>=536 && pixel_x<552) begin text_x=536;text_enable=1;end
+            if(pixel_x>=872 && pixel_x<888) begin text_x=872;text_enable=1;end
         end
         if(effect_hit) begin
             text_enable=0; hex_enable=0; voice_enable=0; large_text=0;
@@ -546,20 +699,11 @@ module feedback_dashboard #(parameter integer ENABLE_ANALYSIS=0, parameter integ
         if(pixel_x>=1248 && pixel_x<1760 && pixel_y>=864 && pixel_y<1040) begin
             text_x=1248;text_y={pixel_y[10:5],5'd0};text_enable=pixel_y[4:0]<16;
             hex_enable=0;voice_enable=0;large_text=0;
-            case(pixel_y[7:5])
-                3: text_line=applied_source; // 864
-                4: text_line={"MASTER ",decimal3(applied_volume)," / VOICES ",decimal3({1'b0,applied_state[15:10]}),"         "};
-                5: begin // 928: the committed Q20 pitch ratio, in exact hex units
-                    text_line="PITCH Q20                       ";
+            if(pixel_y[7:5]==3'd5) begin
                     if(pixel_x>=1440 && pixel_x<1568) begin
                         hex_enable=1;hex_word={10'd0,applied_parameters[53:32]};hex_x=pixel_x-11'd1440;
                     end
-                end
-                6: text_line=(HMI_D_ONLY!=0) ? {"CRUSH ",decimal3(applied_options[6:0])," DRIVE ",decimal3(applied_options[13:7])," SEND ",decimal3(applied_options[20:14]),"    "} :
-                    {"GLIDE ",decimal3(applied_options[17:11])," VIB ",decimal3(applied_options[10:4])," SUSTAIN ",applied_options[3] ? "ON " : "OFF","   "};
-                7: text_line=applied_parameters[128] ? "OUTPUT   44100 HZ / STEREO      " : "OUTPUT   48000 HZ / STEREO      ";
-                default: text_line={"PROFILE ",8'h30+{5'd0,applied_state[9:7]}," / ROUTE ",8'h30+{6'd0,applied_state[6:5]},"             "};
-            endcase
+            end
         end
         // Piano-key voice cards removed; this area is reserved for effect-chain status.
     end

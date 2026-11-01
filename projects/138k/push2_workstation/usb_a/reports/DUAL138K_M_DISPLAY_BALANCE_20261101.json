@@ -1,0 +1,208 @@
+{
+  "schema": "dual138k_M_display_combinational_balance_20261101_v1",
+  "stage": "Two maintained display owners changed and tested; next source identities require new full synthesis and routing",
+  "utc": "2026-11-01T15:32:33.756289+00:00",
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/handoff.json",
+    "sha256": "28983424388a753ed795e9767f47aecdf4a09d6c9c12283ae036e8f351e2ce6e"
+  },
+  "source_origin_commit": "fe3f70cc54e41a87fea00c6e2ff1024e862f6d92",
+  "owners": {
+    "rtl/display_data/display_data_analysis_source.sv": {
+      "before": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/display_data_analysis_source.sv.before",
+        "sha256": "426ce88dae9e7a62e98b4e2441b3e1f7050d29fb6ff100317223467f6e5f8ef6"
+      },
+      "after": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/display_data_analysis_source.sv.after",
+        "sha256": "520d03b4b4e06f821c3719e1ddba36963f6f61b31256a96ec1e2939179186744"
+      },
+      "live_sha256": "520d03b4b4e06f821c3719e1ddba36963f6f61b31256a96ec1e2939179186744",
+      "frozen_M25_binding": {
+        "enabled": true,
+        "staged_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v25/workstation/Prj1/rtl/display_data/display_data_analysis_source.sv",
+        "staged_sha256": "426ce88dae9e7a62e98b4e2441b3e1f7050d29fb6ff100317223467f6e5f8ef6",
+        "manifest_sha256": "426ce88dae9e7a62e98b4e2441b3e1f7050d29fb6ff100317223467f6e5f8ef6"
+      },
+      "policy_owner": "tools/workstation_runtime_profile.py:SOURCES"
+    },
+    "rtl/display_data/feedback_dashboard.v": {
+      "before": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/feedback_dashboard.v.before",
+        "sha256": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375"
+      },
+      "after": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/feedback_dashboard.v.after",
+        "sha256": "96b44c89358fa53714f8453bca43b120ad7b2da632c4b941f592db220f1016d9"
+      },
+      "live_sha256": "96b44c89358fa53714f8453bca43b120ad7b2da632c4b941f592db220f1016d9",
+      "frozen_M25_binding": {
+        "enabled": true,
+        "staged_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v25/workstation/Prj1/rtl/display_data/feedback_dashboard.v",
+        "staged_sha256": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375",
+        "manifest_sha256": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375"
+      },
+      "policy_owner": "tools/workstation_runtime_profile.py:SOURCES"
+    },
+    "sim/display/run_display_word_balance.py": {
+      "before": null,
+      "after": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/run_display_word_balance.py.after",
+        "sha256": "5e1bda8c1b3c1f0a8456a793e93af77e8de494d689313cc9002493b893c3a039"
+      },
+      "live_sha256": "5e1bda8c1b3c1f0a8456a793e93af77e8de494d689313cc9002493b893c3a039",
+      "build_compiled": false,
+      "purpose": "Focused immutable-M25 whole-dashboard equivalence including procedural four-state skip and priority"
+    }
+  },
+  "problem": {
+    "producer": "M25 sequence comparison still used a four-bit ALU carry chain before framewriter CE; worst−0.203ns.",
+    "dashboard": "M25 read_x3 drove text priority through11LUTs/fanout301; worst−0.201ns."
+  },
+  "changes": [
+    "Expose2bit XOR pairs and balanced OR levels for full32bit epoch/sequence change; preserve original source_valid/context_break and all producer state.",
+    "Select spatially disjoint text words in parallel with a balanced OR; preserve original procedural if-X skip, final HMI priority, metadata/hex/effect overrides, four enabled stages and geometry."
+  ],
+  "validation": {
+    "current_workstation_sources": {
+      "tests": 17,
+      "passed": true
+    },
+    "producer_external_equivalence": {
+      "edges": 5645819,
+      "ports": 21,
+      "publications": 4,
+      "identity_cases": 79,
+      "epoch_bits": 32,
+      "wrap_frames": 4,
+      "real_wave_samples": 2048,
+      "real_xy_pixels": 262144,
+      "real_fft_columns": 2048,
+      "wrong_sequence_negative_rejected": true
+    },
+    "producer_exact_source_cone_four_state": {
+      "checks": 9472,
+      "pair_truth_vectors": 8192,
+      "guard_vectors": 1280,
+      "missing_odd_bit_rejected": true
+    },
+    "dashboard": {
+      "configurations": 4,
+      "coordinates_per_configuration": 4194304,
+      "random_parameter_vectors": 65536,
+      "random_seed": "138d25a7",
+      "enabled_stalls": 48282,
+      "four_state_vectors": 18354,
+      "word_and_metadata_in_invisible_regions_compared": true,
+      "pipeline_latency_changed": false,
+      "word_negative_rejected": true,
+      "if_x_skip_negative_rejected": true
+    }
+  },
+  "unchanged_boundaries": [
+    "immediate context break/source valid formula",
+    "modulo-2^32 prediction and producer state",
+    "four enabled raster stages and geometry",
+    "metadata/hex/effect label priority",
+    "baseline framebuffer writer and immediate raster ready",
+    "frozen baselines and all constraints",
+    "runtime/profile source selection"
+  ],
+  "verification": {
+    "producer-equivalence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/producer-equivalence/verification.json",
+      "sha256": "16e14ce3ad97e82be2578bfe84d57f688a5192bf6bb4b112925aa14a05dedef3"
+    },
+    "identity-four-state": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/identity-four-state/verification.json",
+      "sha256": "ddd63396b9ea23bb615020c1cb79fe34ed31a6c4dfd8304cec18ccbb1c0b04af"
+    },
+    "words-v3": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/words-v3/verification.json",
+      "sha256": "accdbb3343e9e2242c46c1c86fd96a78cc36b793a61be5f9255d042c29558fd8"
+    },
+    "negative-word-v3": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/negative-word-v3/verification.json",
+      "sha256": "6860503d9f17f0c53fb2877229097d12e37907416aa56d6b5bc1f252a7947c7b"
+    },
+    "negative-x-v3": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/negative-x-v3/verification.json",
+      "sha256": "6898e20edd47ab150747ad94cbbe29af8eb8f342452560526464ccc492816333"
+    }
+  },
+  "source_patch": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m25-display-balance-v1/source.patch",
+    "sha256": "dc6770c7b9747c70393349aad03354efd1eadb8158274fb8f885e14a1b9a3b3e"
+  },
+  "profiles": {
+    "m": {
+      "before_sha256": "d9e86e24e16c754193514ce33e43347de6ddf67c31cd5b3b9da6c3d99a889c35",
+      "after_sha256": "aa2fd6df6761059c1ac5578764d2fa60aeef0f281f9e668efdd825ca6d5f29c3",
+      "source_count": 867,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": {
+          "before": "426ce88dae9e7a62e98b4e2441b3e1f7050d29fb6ff100317223467f6e5f8ef6",
+          "after": "520d03b4b4e06f821c3719e1ddba36963f6f61b31256a96ec1e2939179186744"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": {
+          "before": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375",
+          "after": "96b44c89358fa53714f8453bca43b120ad7b2da632c4b941f592db220f1016d9"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/run_display_word_balance.py": {
+          "before": null,
+          "after": "5e1bda8c1b3c1f0a8456a793e93af77e8de494d689313cc9002493b893c3a039"
+        }
+      }
+    },
+    "w": {
+      "before_sha256": "5e8c548581b7d719aad5da35aad26520e47d41ad401fa6c46e8f4d2da41658d0",
+      "after_sha256": "2ed135d2625d100095595e57654c352b2c64454006ec6898f3b418ed40e00b22",
+      "source_count": 1114,
+      "changes": {
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/display_data_analysis_source.sv": {
+          "before": "426ce88dae9e7a62e98b4e2441b3e1f7050d29fb6ff100317223467f6e5f8ef6",
+          "after": "520d03b4b4e06f821c3719e1ddba36963f6f61b31256a96ec1e2939179186744"
+        },
+        "projects/138k/push2_workstation/usb_a/rtl/display_data/feedback_dashboard.v": {
+          "before": "3fc70e8330543570cd4e5a5924b69ae4d28fb53e7789a505bfee18e138154375",
+          "after": "96b44c89358fa53714f8453bca43b120ad7b2da632c4b941f592db220f1016d9"
+        },
+        "projects/138k/push2_workstation/usb_a/sim/display/run_display_word_balance.py": {
+          "before": null,
+          "after": "5e1bda8c1b3c1f0a8456a793e93af77e8de494d689313cc9002493b893c3a039"
+        }
+      }
+    }
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-M-display-balance-review-v1.json",
+    "sha256": "134438d3921edf8ee45bb9b70fc6bdc5286a440caf2f4048f77d835facf7afae",
+    "verified_files": 1156,
+    "exact_before_equals_HEAD_and_M25_staged": true,
+    "after_equals_live_and_sealed": true,
+    "reverse_patch_check": true,
+    "all1981_live_source_locks_match": true,
+    "actual_profile_loads": 2,
+    "only2_owner_locks_and1_new_regression_lock_per_profile_changed": true
+  },
+  "independent_readonly_review_at_capture": "No concrete functional issue found; exact before/after and all five verification inputs independently rehashed; immutable old pixel oracle confirmed. Final spatial/suffix check pending separate evidence.",
+  "limits": [
+    "No new prepare, synthesis, P&R, resource or timing benefit measured",
+    "No board/JTAG/SRAM/Flash operation",
+    "New bytes remain in same selected maintenance owners; next prepare must bind their updated profile locks",
+    "W audio-only profile retains common source closure but does not instantiate HDMI; no W physical resource claim",
+    "Existing historical M23 predicate inverse is unchanged and does not normalize this new source layer; use focused immutable M25 whole-dashboard miter for this layer"
+  ],
+  "new_prepare": false,
+  "new_synthesis": false,
+  "new_PnR": false,
+  "physical_resource_or_timing_benefit_claimed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "rollback": "Revert these two owners, focused regression and three profile entries together. Frozen M25/W134/W135 artifacts unchanged. Board remains M22 D211012F.",
+  "next_physical_candidates": {
+    "M": "D2110137",
+    "W": "D2110136"
+  }
+}

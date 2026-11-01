@@ -36,19 +36,33 @@ module display_data_analysis_source (
     // followed by the complete admission cone. Predict the following sequence
     // on receipt of each frame, outside the immediate loss/revocation path;
     // the addition keeps the original modulo-2^32 continuity rule.
-    (* syn_keep=1 *) wire [7:0] epoch_changed_groups,sequence_changed_groups;
+    // A pair needs four LUT inputs. The former four-bit groups still mapped
+    // to short ALU carry chains in M25; expose the XOR pairs and both OR
+    // levels without changing any same-cycle revocation or four-state rule.
+    (* syn_keep=1 *) wire [15:0] epoch_changed_pairs,sequence_changed_pairs;
+    (* syn_keep=1 *) wire [3:0] epoch_changed_groups,sequence_changed_groups;
     (* syn_keep=1 *) wire [7:0] waveform_changed_groups,analysis_changed_groups;
-    for(genvar identity_group=0;identity_group<8;identity_group=identity_group+1)begin:context_identity
+    for(genvar identity_pair=0;identity_pair<16;identity_pair=identity_pair+1)begin:context_identity_pair
+        assign epoch_changed_pairs[identity_pair]=
+            (frame_epoch_i[identity_pair*2]^epoch_q[identity_pair*2]) |
+            (frame_epoch_i[identity_pair*2+1]^epoch_q[identity_pair*2+1]);
+        assign sequence_changed_pairs[identity_pair]=
+            (frame_sequence_i[identity_pair*2]^expected_sequence[identity_pair*2]) |
+            (frame_sequence_i[identity_pair*2+1]^expected_sequence[identity_pair*2+1]);
+    end
+    for(genvar identity_group=0;identity_group<4;identity_group=identity_group+1)begin:context_identity
         assign epoch_changed_groups[identity_group]=
-            |(frame_epoch_i[identity_group*4+:4]^epoch_q[identity_group*4+:4]);
+            |epoch_changed_pairs[identity_group*4+:4];
         assign sequence_changed_groups[identity_group]=
-            |(frame_sequence_i[identity_group*4+:4]^expected_sequence[identity_group*4+:4]);
-        assign waveform_changed_groups[identity_group]=
-            |(waveform_epoch_o[identity_group*4+:4]^epoch_q[identity_group*4+:4]) |
-            |(waveform_generation_o[identity_group*4+:4]^generation_q[identity_group*4+:4]);
-        assign analysis_changed_groups[identity_group]=
-            |(analysis_epoch_o[identity_group*4+:4]^epoch_q[identity_group*4+:4]) |
-            |(analysis_generation_o[identity_group*4+:4]^generation_q[identity_group*4+:4]);
+            |sequence_changed_pairs[identity_group*4+:4];
+    end
+    for(genvar snapshot_group=0;snapshot_group<8;snapshot_group=snapshot_group+1)begin:snapshot_identity
+        assign waveform_changed_groups[snapshot_group]=
+            |(waveform_epoch_o[snapshot_group*4+:4]^epoch_q[snapshot_group*4+:4]) |
+            |(waveform_generation_o[snapshot_group*4+:4]^generation_q[snapshot_group*4+:4]);
+        assign analysis_changed_groups[snapshot_group]=
+            |(analysis_epoch_o[snapshot_group*4+:4]^epoch_q[snapshot_group*4+:4]) |
+            |(analysis_generation_o[snapshot_group*4+:4]^generation_q[snapshot_group*4+:4]);
     end
     wire context_changed=frame_valid_i && (!have_context || frame_44k1_i!=rate_q || |epoch_changed_groups);
     // context_changed already independently revokes the same sample below;
