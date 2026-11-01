@@ -88,6 +88,7 @@ module workstation_observation_consumers #(
       assign fifo_valid=0;assign fifo_drop=0;assign record_captured=0;assign record_packet_o=0;
     end endgenerate
     wire raw_fft_valid;
+`ifndef WORKSTATION_RUNTIME_NO_DISPLAY
     spectrum_fft256 spectrum(
         .clk_i,.rst_ni(fft_reset_n),.sample_valid_i(good_sample && fft_reset_n),
         .sample_i(left_i),.bin_valid_o(raw_fft_valid),.bin_o(fft_bin_o),
@@ -96,6 +97,10 @@ module workstation_observation_consumers #(
     assign fft_44k1_o=current_rate;
     assign fft_epoch_o=current_epoch;
     assign fft_context_valid_o=have_context && fft_reset_n && !context_break;
+`else
+    assign raw_fft_valid=0,fft_valid_o=0,fft_bin_o=0,fft_real_o=0,fft_imag_o=0;
+    assign fft_frame_o=0,fft_44k1_o=0,fft_epoch_o=0,fft_context_valid_o=0;
+`endif
     // Cues remain resident across discontinuities. A broken physical timebase
     // stops playback and cannot assert successful completion on the same edge.
     wire raw_score_done;

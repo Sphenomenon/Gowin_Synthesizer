@@ -67,17 +67,23 @@ PROFILE_REGISTRY = {
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
         integration_identity='custom138k-native-m-demo-base-revision1'),
-    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=1,
+    W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=2,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
-            ae350_firmware_policy='ae350_worker_session_classic_runtime_v1',ae350_boot_rom_bytes=131072,
+            ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
+            hdmi_mode='disabled_worker_audio_only',display_policy='disabled_worker_audio_only_v1',
+            scan_window_policy='disabled_worker_audio_only_v1',
+            recording_policy='disabled_worker_audio_only_v1',
+            ble_recording_storage_policy='disabled_worker_audio_only_v1',
+            business_owner_policy='native_hci_only_no_recording_v1',
+            media_preparation_policy='runtime_only_no_recording_or_display_v1',
             ae350_pcm_policy='ae350_decoded_pcm_source_v1',demo_role='W',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
             synth_policy='disabled_d_pcm_only_v1',tf_policy='disabled_worker_demo_v1',
-            recording_owner_policy='single_ble_ddr_object_v1',usb_adapter_policy='worker_25k_v1'),
+            recording_owner_policy='disabled_worker_audio_only_v1',usb_adapter_policy='worker_25k_v1'),
         provider='rtl/workstation/workstation_profile_w_demo.sv',recognition_enabled=False,
-        recording_enabled=True,local_panel_enabled=False,ble_recording_storage_enabled=True,
+        recording_enabled=False,local_panel_enabled=False,ble_recording_storage_enabled=False,
         business_owner_enabled=True,hci_shared_owner_enabled=True,classic_runtime_enabled=True,demo_role='W',
-        integration_identity='custom138k-native-w-demo-d-only-revision1'),
+        worker_audio_only=True,integration_identity='custom138k-native-w-audio-only-revision2'),
     CLASSIC_ROM96_NAME:dict(config=CLASSIC_ROM96_CONFIG,revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_classic_runtime_rom96_failclosed_v1',ae350_boot_rom_bytes=98304,
@@ -140,6 +146,29 @@ def specification(name):
     return PROFILE_REGISTRY[name]
 
 
+def prepared_specification(prepared):
+    """Select a sealed revision without promoting it to today's build policy."""
+    spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 1:
+        # Revision 1 had a real display and one BLE recording owner. Its
+        # immutable candidates continue to be audited against that contract.
+        spec = dict(spec, revision=1, worker_audio_only=False,
+            integration_identity='custom138k-native-w-demo-d-only-revision1',
+            configuration=dict(CPU_BUSINESS_CONFIGURATION,
+                hci_transport_policy='native_shared_hci_owner_v1',
+                ae350_firmware_policy='ae350_worker_session_classic_runtime_v1',
+                ae350_boot_rom_bytes=131072, ae350_pcm_policy='ae350_decoded_pcm_source_v1',
+                demo_role='W', usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
+                synth_policy='disabled_d_pcm_only_v1', tf_policy='disabled_worker_demo_v1',
+                recording_owner_policy='single_ble_ddr_object_v1', usb_adapter_policy='worker_25k_v1'))
+    legacy = dict(spec['configuration'])
+    legacy.pop('usb_fifo_reset_policy', None)
+    if (prepared.get('revision') != spec['revision'] or prepared.get('profile_source') != spec['config'] or
+            prepared.get('configuration') not in (spec['configuration'], legacy)):
+        raise ValueError('prepared workstation revision/configuration identity changed')
+    return spec
+
+
 def recognition_metadata(profile):
     enabled = specification(profile['name'])['recognition_enabled']
     return dict(policy='enabled_cnn_and_follow_v1' if enabled else 'disabled_cnn_and_follow_v1',
@@ -173,7 +202,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
             type(profile.get('revision')) is not int or profile['revision'] != spec['revision']):
         raise ValueError('workstation profile identity changed')
     if (profile.get('configuration') != spec['configuration'] or
-            hdmi_mode != '1080p60' or allow_high_speed is not True):
+            hdmi_mode not in (('1080p60','disabled_worker_audio_only') if spec.get('worker_audio_only',False) else ('1080p60',)) or allow_high_speed is not True):
         raise ValueError('workstation profile configuration mismatch')
     if not profile.get('source_sha256') or not profile.get('features') or not profile.get('references'):
         raise ValueError('incomplete workstation profile')
@@ -203,7 +232,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False,headless_worker=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -215,10 +244,10 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     evidence = output / AE350_DIRECTORY
     policy=AE350_POLICY
     if classic_runtime:
-        if not recording_api or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072):
+        if (not recording_api and not headless_worker) or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072) or (headless_worker and (recording_api or not worker_demo)):
             raise ValueError('Classic runtime requires explicit local64/ROM96-or-ROM128/business composition')
         from tools.workstation_classic_runtime import build as build_runtime
-        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo);policy=build['runtime_policy']
+        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo,headless_worker=headless_worker);policy=build['runtime_policy']
     else:
         build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
             memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
@@ -316,6 +345,10 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    audio_only=spec.get('worker_audio_only',False)
+    if audio_only:
+        from tools.workstation_worker_audio_only import restore_constraints
+        installed_sdc=restore_constraints(installed_sdc,metadata['worker_audio_only']['constraints'])
     # Check the original complete bundles as well as the exact role-specific
     # retirement. Mixed queries retain every surviving endpoint in the output.
     if spec.get('demo_role') is not None:
@@ -342,7 +375,7 @@ def _artifact(root, output, metadata, profile):
             raise ValueError('workstation profile retired LCD output behavior changed')
         if (any('u_lcd' in line or 'lcd_pixel31m5' in line for line in staged_sdc) or
                 'rtl/display_data/workstation_lcd.sv' in metadata['enabled_inputs'] or
-                not (stage / 'constraints/custom_138k.sdc').read_text().startswith(
+                not installed_sdc.startswith(
                     clock_bundle(root, local_panel_enabled=False)['sdc'])):
             raise ValueError('workstation profile retired LCD source or clock remains')
     if (any(row['constraint'] in staged_sdc for row in bluetooth['evidence']['omitted']) or
@@ -378,14 +411,16 @@ def _artifact(root, output, metadata, profile):
     from tools.workstation_custom_board import source_snapshot
     if source_snapshot(root, metadata['source_snapshot_extra_inputs']) != metadata['source_snapshot_sha256']:
         raise ValueError('workstation profile complete source snapshot drift')
-    if metadata.get('scan_window') != dict(policy='native_admission_v1', enabled=True,
+    expected_scan_window = dict(policy='native_admission_v1', enabled=True,
             provider='rtl/workstation/workstation_profile_hdmi.sv',
             compilation_provider=spec['provider'],
             provider_selection='included_with_runtime_macro',
             implementation='rtl/workstation/workstation_hdmi_display.sv',
             admission='rtl/display_data/workstation_ddr_scan_window.sv',
             provenance_sha256=sha(stage / 'rtl/workstation/workstation_hdmi_display.provenance.json'),
-            physical_deadlines_verified=False, d01_complete=False, d04_complete=False):
+            physical_deadlines_verified=False, d01_complete=False, d04_complete=False)
+    if audio_only:expected_scan_window=dict(policy='disabled_worker_audio_only_v1',enabled=False)
+    if metadata.get('scan_window') != expected_scan_window:
         raise ValueError('workstation profile scan window source policy changed')
 
     def bind(destination, source):
@@ -414,6 +449,10 @@ def _artifact(root, output, metadata, profile):
         else:verify_ble_raw(root, stage, ble_raw_adaptation)
     elif 'ble_recording_storage' in metadata:
         raise ValueError('unselected profile cannot claim raw BLE DDR storage')
+    if audio_only:
+        from tools.workstation_cpu_business import verify_prepared as verify_hci_audio
+        ble_raw_adaptation=metadata['worker_audio_only']['hci']
+        verify_hci_audio(root,stage,ble_raw_adaptation,shared_hci=True,audio_only=True)
     if spec.get('recording_enabled',False):
         from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
         selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
@@ -512,7 +551,7 @@ def _artifact(root, output, metadata, profile):
     ae350 = _ae350_evidence(root, output, metadata, profile)
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
-        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None)
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only)
     elif 'classic_runtime'in metadata:
         raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']

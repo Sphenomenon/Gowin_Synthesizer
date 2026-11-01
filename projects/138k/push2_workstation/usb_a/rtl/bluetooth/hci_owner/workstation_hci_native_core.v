@@ -129,6 +129,7 @@ module workstation_hci_native_core #(
     assign business_command_ready_o=hci_select ? hci_bus_ready : business_app_ready;
     assign business_response_error_o=hci_select ? hci_bus_error : business_app_error;
     assign business_response_data_o=hci_select ? hci_bus_data : business_app_data;
+`ifndef WORKSTATION_HCI_AUDIO_ONLY
     workstation_hci_ble_bridge #(.CLK_HZ(CLK_HZ)) acl_bridge (
         .clk(clk),.resetn(sub_resetn),.enable(initialized && outputs_active),
         .connected(connected),.connection_handle(handle),.acl_data_limit_i(ble_acl_limit),
@@ -143,6 +144,12 @@ module workstation_hci_native_core #(
         .h5_rx_valid(bridge_rx_valid),.h5_rx_type(bridge_rx_type),.h5_rx_length(bridge_rx_length),
         .h5_rx_addr(bridge_rx_addr),.h5_rx_data(bridge_rx_data),.h5_rx_consume(bridge_rx_consume)
     );
+`else
+    // This provider has no GATT/recording/download application. Host HCI and
+    // Classic ACL ownership remain in the same native transport below.
+    assign bridge_tx_start=0,bridge_tx_type=0,bridge_tx_length=0,bridge_tx_data=0;
+    assign bridge_rx_addr=0,bridge_rx_consume=1'b1;
+`endif
     workstation_hci_native_transport #(.CLK_HZ(CLK_HZ),.SESSION_ONLY_PAIRING(SESSION_ONLY_PAIRING)) owner (
         .clk_i(clk),.reset_ni(sub_resetn),.enable_i(start_ready && outputs_active),.observer_reset_ni(business_owner_reset_ni),
         .link_up_i(link_up),.physical_fault_i(init_failed),.boot_id_i(boot_id),
@@ -194,6 +201,7 @@ module workstation_hci_native_core #(
         .command_count(command_count),.patch_fragments(patch_fragments),
         .hci_valid_mask(hci_valid_mask),.bd_addr(bd_addr),.boot_id(boot_id),.acl_packet_count(acl_packet_count)
     );
+`ifndef WORKSTATION_HCI_AUDIO_ONLY
     bt_gatt #(.SHARED_HCI_OWNER(1),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.SINGLE_BLE_RECORDING(SINGLE_BLE_RECORDING),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.NOTIFY_MS(NOTIFY_MS),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME(DEVICE_NAME),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) application (
         .business_owner_reset_ni(business_owner_reset_ni),
         .business_command_valid_i(business_command_valid_i && !hci_select),
@@ -249,6 +257,18 @@ module workstation_hci_native_core #(
         .acl_rx_count(acl_rx_count),.att_request_count(att_request_count),.completed_packets(completed_packets),
         .debug_state(app_state),.error_count(app_errors),.elapsed_ms(app_elapsed)
     );
+`else
+    // Only F8050 + 0x200 HCI commands exist. Retired business pages fail.
+    assign business_app_ready=1'b1,business_app_error=1'b1,business_app_data=32'd0;
+    assign connected=0,subscribed=0,handle=0,notification_count=0,acl_rx_count=0;
+    assign att_request_count=0,completed_packets=0,app_errors=0,app_elapsed=0,app_state=0;
+    assign seal_ready_o=1'b1,seal_pending_o=0,seal_done_o=0,seal_failed_o=0;
+    assign seal_failure_code_o=0,seal_record_state_o=0,seal_recording_id_o=0;
+    assign seal_frames_o=0,seal_crc_o=0;
+    assign raw_start_valid_o=0,raw_clear_valid_o=0,raw_capture_valid_o=0;
+    assign raw_capture_index_o=0,raw_capture_pcm_o=0,raw_close_valid_o=0;
+    assign raw_fetch_valid_o=0,raw_fetch_offset_o=0,raw_fetch_length_o=0,raw_sample_addr_o=0;
+`endif
     assign debug[0*32+:32]=32'h42545647;
     assign debug[1*32+:32]=32'd1;
     assign debug[2*32+:32]={20'd0,hci_valid_mask,2'd0,session_ended,failed,subscribed,connected,initialized,link_up,outputs_active};

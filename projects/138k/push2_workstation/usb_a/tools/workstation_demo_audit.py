@@ -98,8 +98,9 @@ def verify_prepared(output, metadata):
     require(selected.get('artifact') == 'workstation_profile.json' and
             sha(artifact_path) == selected.get('artifact_sha256'), 'profile artifact identity changed')
     profile = json.loads(artifact_path.read_text())
-    from tools.workstation_profile import specification
-    spec = specification(selected['name'])
+    from tools.workstation_profile import prepared_specification
+    spec = prepared_specification(profile)
+    identity = spec['integration_identity']
     require(metadata.get('identity') == identity and profile.get('profile') == selected['name'] and
             profile.get('configuration', {}).get('demo_role') == role and
             profile.get('profile_source') == spec['config'] and
@@ -139,11 +140,15 @@ def verify_prepared(output, metadata):
     from tools.workstation_usb_fifo_reset import verify_demo_selection
     verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
         selected_inputs, expected_configuration=spec['configuration'])
+    installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    if spec.get('worker_audio_only', False):
+        from tools.workstation_worker_audio_only import restore_constraints
+        installed_sdc = restore_constraints(installed_sdc, metadata['worker_audio_only']['constraints'])
     from tools.workstation_performance_reset import verify_demo_timing
-    verify_demo_timing(stage, (stage / 'constraints/custom_138k.sdc').read_text(), role,
+    verify_demo_timing(stage, installed_sdc, role,
         metadata.get('demo_runtime_timing'))
     from tools.workstation_demo_boundary_cdc import verify_demo_boundary
-    verify_demo_boundary(stage, (stage / 'constraints/custom_138k.sdc').read_text(), role,
+    verify_demo_boundary(stage, installed_sdc, role,
         metadata.get('demo_boundary_cdc'))
     providers = {entry['provider'] for entry in __import__(
         'tools.workstation_profile', fromlist=['PROFILE_REGISTRY']).PROFILE_REGISTRY.values()}
@@ -192,15 +197,22 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist, *, tf_enabled=True):
+def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False):
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
     features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
+    if worker_audio_only:
+        require(role == 'W', 'audio-only selection on non-W role')
+        features = {k: p for k, p in features.items() if not k.startswith('hdmi')}
+        features.update(audio_memory='u_audio_memory', audio_memory_bist='u_audio_memory/u_bist',
+                        audio_memory_queues='u_audio_memory/u_arbiter')
     require(not any(p not in rows for p in features.values()),
             'retained features missing: ' + ', '.join(k for k, p in features.items() if p not in rows))
     require(rows['u_native_usb/host']['Bsram'] >= 38 and
             rows['u_native_usb/input_owner']['Bsram'] >= 1, 'USB CPU ROM/event storage swept')
     for name, minimum in (('delay', 8), ('chorus', 4), ('reverb', 20), ('hdmi_live_analysis', 32),
                           ('hdmi_waveform', 1), ('hdmi_xy_alignment', 1), ('hdmi_spectrum', 30)):
+        if name not in features:
+            continue
         require(rows[features[name]]['Bsram'] >= minimum, 'retained storage swept: ' + name)
     retired = ['u_music', 'u_recording', 'u_lcd', 'u_usb_host', 'u_push']
     if role == 'M':
@@ -218,21 +230,34 @@ def audit_features(role, rows, netlist, *, tf_enabled=True):
     else:
         retired += ['u_tf_audio', 'u_tf_control_cdc', ENGINES, WS + '/instrument_cue.cue_player']
         kinds = {c['kind'] for c in netlist.cells.values()}
-        for required in ('workstation_ae350_pcm_owner', 'workstation_ble_record_data_engine',
-                         'workstation_ble_raw_ddr_store', 'workstation_hci_native_transport'):
+        required_kinds = ['workstation_ae350_pcm_owner', 'workstation_hci_native_transport']
+        if not worker_audio_only:
+            required_kinds += ['workstation_ble_record_data_engine', 'workstation_ble_raw_ddr_store']
+        for required in required_kinds:
             require(required in kinds, 'W real PCM/recording/transport primitive missing: ' + required)
         for forbidden in ('workstation_recording_backend', 'workstation_recording_ddr_backend',
                           'workstation_recording_service', 'ble_recording', 'workstation_runtime_oscillator_engine',
                           'workstation_runtime_scope_vec'):
             require(forbidden not in kinds, 'W retired implementation remains: ' + forbidden)
         for unique in ('workstation_ble_record_data_engine', 'workstation_ble_raw_ddr_store'):
-            require(sum(c['kind'] == unique for c in netlist.cells.values()) == 1,
-                    'W recording owner is not unique: ' + unique)
+            require(sum(c['kind'] == unique for c in netlist.cells.values()) == (0 if worker_audio_only else 1),
+                    'W recording owner inventory changed: ' + unique)
+        if worker_audio_only:
+            retired += ['u_video', 'u_ui_control', 'u_ui_services', 'u_cpu_ddr', 'u_ble_pcm_cdc',
+                        'u_managed/display', 'u_managed/display_observation_health',
+                        'u_bluetooth/u_core/application', 'u_bluetooth/u_core/acl_bridge']
+            for forbidden in ('workstation_ble_record_data_engine', 'workstation_ble_raw_ddr_store',
+                              'workstation_recording_top', 'bt_gatt', 'bt_acl_bridge',
+                              'gw138k_ui_services', 'gw138k_ui_workstation_top', 'gw138k_ahb_ddr',
+                              'workstation_display_data_runtime', 'workstation_audio_spectrum',
+                              'workstation_observation_display_health', 'dvi_tx'):
+                require(forbidden not in kinds, 'W audio-only retired kind remains: ' + forbidden)
     for prefix in retired:
         require(not any(p == prefix or p.startswith(prefix + '/') for p in (*rows, *netlist.cells)),
                 'retired hierarchy remains: ' + prefix)
     return dict(retained={k: dict(instance=p, **rows[p]) for k, p in features.items()},
                 retired_prefixes=retired, role_retirement_verified=True,
+                worker_audio_only=worker_audio_only,
                 synthesis_storage_only=True, hardware_functionality_verified=False)
 
 
@@ -321,13 +346,17 @@ def audit_worker_feedback(netlist, clocks):
                 unused_Push_destination_valid_swept=True, physical_timing_verified=False)
 
 
-def audit_constraint_retirement(sdc, evidence, role, netlist):
+def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None):
     from tools.workstation_demo_policy import verify_constraints, W_SCOPE_BINDINGS
-    original = verify_constraints(sdc, evidence, role)
+    selected = sdc
+    if worker_evidence is not None:
+        from tools.workstation_worker_audio_only import restore_constraints, REBIND, RETIRED_SELECTORS, RETIRED_CLOCKS
+        selected = restore_constraints(sdc, worker_evidence)
+    original = verify_constraints(selected, evidence, role)
     universes = dict(get_regs=sorted(p for p, c in netlist.cells.items() if c['kind'].startswith('DFF')),
         get_pins=sorted(p + '/' + pin for p, c in netlist.cells.items() for pin in c['ports']),
         get_ports=sorted(netlist.directions[TOP]),
-        get_clocks=sorted(set(re.findall(r'^create_(?:generated_)?clock -name (\S+)', original, re.M))))
+        get_clocks=sorted(set(re.findall(r'^create_(?:generated_)?clock -name (\S+)', sdc, re.M))))
     query = re.compile(r'\[(get_pins|get_regs|get_ports|get_clocks)\s+\{([^{}]+)\}\]')
     absent, rebound = {}, {}
     def matches(kind, member):
@@ -355,14 +384,43 @@ def audit_constraint_retirement(sdc, evidence, role, netlist):
         for binding in change.get('rebound_selectors', []):
             kind, old, new = binding['query'], binding['original'], binding['selected']
             require(not matches(kind, old), 'rebound SDC source selector still has live endpoints: ' + old)
+            if worker_evidence is not None:
+                for before, after in REBIND:
+                    if new.startswith(before):
+                        new = after + new[len(before):]
+                        break
+                if new.startswith(RETIRED_SELECTORS):
+                    require(not matches(kind, new), 'W retired rebound selector remains: ' + new)
+                    absent[kind + ' ' + old] = dict(matches=0, canonical_selector=new,
+                        reason='explicit_worker_audio_only_retirement')
+                    continue
             actual = matches(kind, new)
             require(bool(actual), 'rebound SDC replacement has no live endpoints: ' + new)
             rebound[kind + ' ' + old] = dict(selected=new, matched=len(actual),
                 endpoints_sha256=digest(actual), original_line_index=change['line_index'])
+    worker_retirement = None
+    if worker_evidence is not None:
+        worker_absent, worker_rebound = {}, {}
+        for change in worker_evidence['changes']:
+            for kind, body in query.findall(change['original']):
+                for member in body.split():
+                    if member in change['removed_selectors']:
+                        require(not matches(kind, member), 'W retired selector still live: ' + member)
+                        worker_absent[kind + ' ' + member] = dict(matches=0)
+            for binding in change['rebound_selectors']:
+                kind, old, new = binding['query'], binding['original'], binding['selected']
+                require(not matches(kind, old), 'W rebound source still live: ' + old)
+                actual = matches(kind, new)
+                require(bool(actual), 'W rebound target missing: ' + new)
+                worker_rebound[kind + ' ' + old] = dict(selected=new, matched=len(actual), endpoints_sha256=digest(actual))
+        worker_retirement = dict(policy=worker_evidence['policy'], retired_selectors=worker_absent,
+            rebound_selectors=worker_rebound, exact_inverse_verified=True,
+            every_retired_selector_proven_absent=True, every_rebound_selector_verified=True)
     return dict(policy=evidence['policy'], role=role, input_sha256=evidence['input_sha256'],
                 output_sha256=evidence['output_sha256'], retired_selectors=absent,
                 rebound_selectors=rebound, every_rebound_selector_verified=True,
-                every_retired_selector_proven_absent=True, clocks_or_live_exceptions_relaxed=False)
+                every_retired_selector_proven_absent=True, worker_audio_only=worker_retirement,
+                clocks_or_live_exceptions_relaxed=False)
 
 
 def audit_w_recording_diagnostic_retirement(stage, netlist):
@@ -492,6 +550,7 @@ def audit(root, output, metadata):
                                'tools/workstation_bluetooth_ddr.py')
     audit_sources = {relative: sha(root / relative) for relative in audit_source_names}
     role, profile, stage = verify_prepared(output, metadata)
+    worker_audio_only = profile['configuration'].get('display_policy') == 'disabled_worker_audio_only_v1'
     require(metadata.get('top_module') == TOP and metadata.get('validation_stage') == 'integration_prepare_only' and
             metadata.get('source_policy') == 'explicit_native_board_on_resource_timing' and
             metadata.get('synthesis_allowed') is True and metadata.get('native_usb') is True and
@@ -502,7 +561,8 @@ def audit(root, output, metadata):
         require(metadata.get(flag) is False, 'synthesis cannot promote ' + flag)
     require(metadata.get('audio_pin_behavior') == 'ak4493s_i2s32_dual_rate_output_paced_final_pcm' and
             metadata.get('audio_clock_policy') == 'qualified_12m288_or_16m9344_native_DCS' and
-            metadata.get('volume_application') == 'once_in_runtime_final_pcm_before_I2S_display_and_BLE',
+            metadata.get('volume_application') == ('once_in_runtime_final_pcm_before_I2S' if worker_audio_only else
+                                                  'once_in_runtime_final_pcm_before_I2S_display_and_BLE'),
             'real runtime DAC/volume selection changed')
     log = checked(output, 'synthesis.log')
     log_text = log.read_text()
@@ -516,7 +576,8 @@ def audit(root, output, metadata):
     netlist = SynthesisNetlist(vg_text, TOP)
     totals, rows = hierarchy_counts(ET.parse(report).getroot())
     features = audit_features(role, rows, netlist,
-        tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1')
+        tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
+        worker_audio_only=worker_audio_only)
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -545,7 +606,8 @@ def audit(root, output, metadata):
     feedback = (audit_worker_feedback(netlist, base_clocks) if role == 'W' else
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
-    retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist)
+    retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist,
+        metadata['worker_audio_only']['constraints'] if worker_audio_only else None)
     performance_release = None
     demo_held_handshakes = None
     demo_boundary_cdc = None
@@ -573,7 +635,7 @@ def audit(root, output, metadata):
         performance_release['installed_sdc'] = validate_performance(sdc, performance_n, performance_release)
     from tools.workstation_demo_policy import POLICY, V3_POLICY
     recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
-        if role == 'W' and retirement['policy'] in (V3_POLICY, POLICY) else None)
+        if role == 'W' and not worker_audio_only and retirement['policy'] in (V3_POLICY, POLICY) else None)
     selectors = audit_sdc_selectors(sdc, netlist)
     rom_words = check_rom(stage, vg_text, metadata['firmware']['rom_sha256'])
     # Rehash the frozen closure after all source/netlist checks.

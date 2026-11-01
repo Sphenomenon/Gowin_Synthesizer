@@ -86,9 +86,11 @@ def audit_shared_cdc(stage, netlist_text):
                 physical_timing_verified=False)
 
 
-def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
+def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True, hdmi_enabled=True):
     if type(local_panel_enabled) is not bool:
         raise ValueError('native local-panel selection must be boolean')
+    if type(hdmi_enabled) is not bool:
+        raise ValueError('native HDMI selection must be boolean')
     source = Path(root) / PLAN_SOURCE
     plan = json.loads(source.read_text())
     if plan.get('schema') != 1 or plan.get('identity') != 'custom138k-native-clocks-20261031-v5':
@@ -108,6 +110,8 @@ def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
     # The original plan and every surviving clock retain their exact frequency.
     if not local_panel_enabled:
         plan['generated'] = [entry for entry in plan['generated'] if entry['name'] != 'lcd_pixel31m5']
+    if not hdmi_enabled:
+        plan['generated'] = [entry for entry in plan['generated'] if not entry['name'].startswith('video_')]
     pixel_clock_name = 'video_pixel148'
     if hdmi_mode in ('720p30', '720p60'):
         renames = dict(video_serial742='video_serial371', video_pixel148='video_pixel74')
@@ -144,14 +148,19 @@ def clock_bundle(root, hdmi_mode='1080p60', local_panel_enabled=True):
     return dict(source=PLAN_SOURCE, source_sha256=sha(source), plan=plan, sdc='\n'.join(lines) + '\n')
 
 
-def audit_clocks(root, stage, netlist_text, extra_sdc='', hdmi_mode='1080p60', local_panel_enabled=True):
-    bundle = clock_bundle(root, hdmi_mode, local_panel_enabled)
+def audit_clocks(root, stage, netlist_text, extra_sdc='', hdmi_mode='1080p60', local_panel_enabled=True, hdmi_enabled=True):
+    bundle = clock_bundle(root, hdmi_mode, local_panel_enabled, hdmi_enabled)
     if not local_panel_enabled and ('u_lcd/' in extra_sdc or 'lcd_pixel31m5' in extra_sdc):
         raise ValueError('disabled native local-panel constraint remains in SDC')
     if (Path(stage) / 'constraints/custom_138k.sdc').read_text() != bundle['sdc'] + extra_sdc:
         raise ValueError('native staged SDC differs from the explicit clock plan')
     netlist = SynthesisNetlist(netlist_text, 'workstation_custom_138k_top')
     cells, canonical = netlist.cells, netlist.canonical
+    if not hdmi_enabled and ('u_video/' in extra_sdc or any('video_' in line for line in extra_sdc.splitlines())):
+        raise ValueError('disabled native HDMI constraint remains in SDC')
+    if not hdmi_enabled and any(name == 'u_video' or name.startswith('u_video/')
+                                for name in (*netlist.frames, *cells)):
+        raise ValueError('disabled native HDMI hierarchy remains in synthesis')
     if not local_panel_enabled and any(name == 'u_lcd' or name.startswith('u_lcd/')
                                        for name in (*netlist.frames, *cells)):
         raise ValueError('disabled native local-panel hierarchy remains in synthesis')

@@ -415,6 +415,7 @@ module workstation_runtime_controlled #(
         .record_object_epoch_o(record_object_epoch),.record_object_frames_o(record_object_frames),
         .record_object_status_o(record_object_status),.record_object_failure_o(record_object_failure),
         .record_seal_status_o(record_seal_status),.record_seal_count_o(record_seal_count),.score_cancelled_o(score_cancelled));
+`ifndef WORKSTATION_RUNTIME_NO_DISPLAY
     reg [23:0] revision;
     always @(posedge compute_clk_i or negedge reset_compute_n)
         if(!reset_compute_n)revision<=0;
@@ -434,7 +435,13 @@ module workstation_runtime_controlled #(
     workstation_display_observation_health #(.SEPARATE_DOMAIN_RESETS(SEPARATE_COMMON_RESET)) display_observation_health(
         .control_reset_ni(reset_50_n),.compute_reset_ni(reset_compute_n),.reset_ni(common_reset_n),.compute_clk_i(compute_clk_i),.clk_50m_i(clk_50m_i),
         .physical_observation_drop_i(observation_drop_o),.display_mailbox_drop_i(display_drop),
-        .fault_50_o(display_observation_fault_o));
+        .fault_50_o(display_observation_fault_o));`else
+    assign display_valid_o=0,display_pcm_o=0,display_reference_o=0;
+    assign display_voices_o=0,display_status_o=0,display_parameters_o=0;
+    assign display_44k1_o=0,display_error_o=0,display_epoch_o=0,display_sequence_o=0;
+    assign effect_mask_o=0,effect_order_o=0,display_observation_fault_o=0;
+`endif
+
 endmodule
 
 // The physical count has ALREADY crossed from selected MCLK into compute and

@@ -54,6 +54,7 @@ module workstation_bluetooth #(
 );
     wire reset_n;
     reset_release_sync u_reset (.clk(clk_i),.arstn(rst_ni),.resetn(reset_n));
+`ifndef WORKSTATION_HCI_AUDIO_ONLY
     reg sample_seen;
     reg [31:0] sample_age, previous_sequence;
     wire source_fault = pcm_valid_i && sample_seen && pcm_sequence_i != previous_sequence+1'b1;
@@ -65,6 +66,10 @@ module workstation_bluetooth #(
             else if(sample_age<CLK_HZ/250) sample_age<=sample_age+1'b1;
         end
     end
+`else
+    wire sample_seen=1'b0,source_fault=1'b0;
+    wire [31:0] sample_age=32'd0;
+`endif
     wire core_active;
     workstation_hci_native_core #(
         .CLK_HZ(CLK_HZ),.EXTERNAL_PCM(1),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.SINGLE_BLE_RECORDING(SINGLE_BLE_RECORDING),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CAPACITY_FRAMES(CAPACITY_FRAMES),.DEVICE_NAME("GW138K-MAIN"),

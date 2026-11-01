@@ -470,6 +470,8 @@ M24的[同拍dispatch与HDMI既有级坐标修复](push2_workstation/usb_a/repor
 
 M24的[实际生产来源逆链](push2_workstation/usb_a/reports/DUAL138K_M24_DISPATCH_PRODUCTION_PROVENANCE_20261101.json)已接入：同一tools helper唯一维护3源完整inverse，verification薄导入；只有精确新oscillator可逆回原release／expression链，旧3份manifest逐字节不变，混合新旧owner与越界修改严格拒绝。7来源正例／18负控、绑定新helper的147456四态＋3实际负控和M／W／legacy完整miter通过；主线程重验106绑定／94文件并重跑来源与17入口测试。仅解除新源码构建来源门，不把来源通过当综合、物理或硬件接受。
 
+W21的[显式无显示／无录音源码及双方来源锁](push2_workstation/usb_a/reports/DUAL138K_W21_AUDIO_ONLY_SOURCE_20261101.json)已落实际provider：W revision2退出HDMI／图形UI／FFT／XY／framebuffer、录音下载及配套CDC／等待，保留USB Host／25K必要反馈、真实H5／HCI／SBC／PCM与D效果；复用原生BIST／队列／owner6延迟DDR，退出CPU／显示／录音事务。默认M角色／配置／feature／baseline不改，macro-off默认预处理逐字节保全；维护源码及旧W revision1证据保留。M857／W1106锁经主线程逐项load／hash核对，W3定向、17来源／17审计、clock2项（1具名skip）通过；真实memory 64 BIST＋256 D事务、停顿BL8／有序返回／故障隔离通过。新131／132各自全量prepare／综合／P&R另记，退出VG与真实手机／DAC未预记通过；unfinished raw8未提交、不消费、不冒记验证，真正流式Pitch另补。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

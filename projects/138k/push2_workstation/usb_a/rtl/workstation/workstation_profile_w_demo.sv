@@ -1,12 +1,25 @@
-// W-DEMO: real Classic/SBC media, one BLE DDR object, 25K and full HDMI/DAC.
+// Explicit W21 audio-only DEMO: real A2DP/SBC -> D FX -> continuous I2S/DAC.
+// Graphics and capture/download are absent from this compilation provider.
+`define WORKSTATION_WORKER_AUDIO_ONLY
 `define WORKSTATION_DEMO_D_ONLY
 `define WORKSTATION_DEMO_NO_TF
 `define WORKSTATION_DEMO_NO_LOCAL_RECORD
 `define WORKSTATION_DEMO_NO_LOCAL_SCORE
-`define WORKSTATION_SINGLE_BLE_RECORDING
-`include "rtl/workstation/workstation_profile_classic_runtime_v1.sv"
-`undef WORKSTATION_SINGLE_BLE_RECORDING
+`define WORKSTATION_NO_CNN
+`define WORKSTATION_NO_LOCAL_PANEL
+`define WORKSTATION_SHARED_HCI_OWNER
+`define WORKSTATION_CPU_BLE_BUSINESS
+`define WORKSTATION_AE350_PCM
+`define WORKSTATION_AE350_ROM128
+`include "rtl/workstation/workstation_profile_runtime.sv"
+`undef WORKSTATION_AE350_ROM128
+`undef WORKSTATION_AE350_PCM
+`undef WORKSTATION_CPU_BLE_BUSINESS
+`undef WORKSTATION_SHARED_HCI_OWNER
+`undef WORKSTATION_NO_LOCAL_PANEL
+`undef WORKSTATION_NO_CNN
 `undef WORKSTATION_DEMO_NO_LOCAL_SCORE
 `undef WORKSTATION_DEMO_NO_LOCAL_RECORD
 `undef WORKSTATION_DEMO_NO_TF
 `undef WORKSTATION_DEMO_D_ONLY
+`undef WORKSTATION_WORKER_AUDIO_ONLY

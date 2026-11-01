@@ -1,0 +1,182 @@
+{
+  "schema": "dual138k_W21_audio_only_M24_locks_20261101_v1",
+  "stage": "actual source/configuration changes and targeted offline tests; full prepare/synthesis/PnR still pending",
+  "W_source_sha256": {
+    "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json": "8493f009b7a2ebae0fc9d52dd67f396bcce210eafa5b33e7127247d282ffe0ea",
+    "projects/138k/push2_workstation/usb_a/rtl/audio/workstation_observation_consumers.sv": "17c64befcc28d3953582eb08fa761d5fdb304cc099d944e4e640d6f937ce0ee6",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_bluetooth.sv": "437bed0ec81836d916218be14e0bc8e97821a243449118a682a16b53da1845da",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_native_core.v": "6fb4808c2a7a3de90682d6187e110cd6ef07594031728fb371e6fd2ef3d77c60",
+    "projects/138k/push2_workstation/usb_a/rtl/bluetooth/hci_owner/workstation_hci_audio_provider.sv": "d556425c2ef7408f81e855dd154f3ddc1891bbd0dd0220c8aabeac1d00fad3c1",
+    "projects/138k/push2_workstation/usb_a/rtl/memory/workstation_audio_memory.sv": "7ea62ad4c8b5b4af50ac27b65649c6ecbf05585449266406adf7a3082854c698",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v": "2c4376b7754a9b98486501fb91e258f5b70b4183b4ec5f687b2a588132ba7007",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_runtime.sv": "31b1483485ccf454c1c8eeabe8c37198e0975da750a36f850fb91244927a0b3f",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_w_demo.sv": "fd5de4058d2e5345b6e4e9312ede6b40b37d2098d5ce2a53041243f2def2cd05",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_runtime_controlled.sv": "49d54798d2240874d4b6528fac1f298794e61a31558ad02097188235f768bcb0",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_worker_audio_primitives.sv": "695cd1342e9a0e80e080d7fb422603a94f6b22975956629b82f388c565559d1f",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_worker_runtime_controlled.sv": "40fa5c3201823063a4498a838d7af67b04ee84c7c6b28d4d834c4c63a6526d56",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_worker_audio_only.py": "4e25028c2cc6f1f7180c5c6eb51b1824cec43553f1648dde0fc9bc10aab7d154",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_ae350_memory.py": "51a17f4f43717287c4f610e104de4ec2cca37c3053d7795168032ef0dad13870",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "9b8a84f0d1fb2f23d8f442e91474f9f50c720c5078cb81b785b871e6e28a1c5d",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "c6ac11184588f5c6b9ff732b3dc8e3d7693a1cbffd3bf2c0c905dba2feedbe0a",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "2dda3707c0ffcc6444d702d3710f306413bd9ad8e16fd76f61663ababd185098",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": "db00c7cbc1331d4a0e5bcc64306cc0d6b7c83c8afc3e77dfc4594f77381b2e66",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "1452b759a520bc134f887b3ee38074c6c51af87617c9cc117b5305aedbb36d4c",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "19aba426e6e63bbc1f45d7d17c39d766b28b4bd5022606dfcb4aeb166fab4ccc",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_runtime_clock_audit.py": "cac6b395fdf9c0930211d2a01b3231d066d2c181d566961c7032eafdba26521c",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_worker_audio_only.py": "1be4d2f6bdf054eca49a124039b8f99b8b406c6d19872aa222897b37b46eace3"
+  },
+  "profiles": {
+    "m": {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_m_demo_v1.json",
+      "sha256": "2d34572201fb50c39b2750a9b7b9515f266e1733a38895b802bcc87b061b7d00",
+      "source_lock_entries": 857,
+      "revision": 1,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "bluetooth_policy": "retired_for_independent_m_demo_v1",
+        "recording_policy": "disabled_m_demo_v1",
+        "tf_policy": "disabled_first_m_core_demo_v1"
+      }
+    },
+    "w": {
+      "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_w_demo_v1.json",
+      "sha256": "8493f009b7a2ebae0fc9d52dd67f396bcce210eafa5b33e7127247d282ffe0ea",
+      "source_lock_entries": 1106,
+      "revision": 2,
+      "configuration": {
+        "hdmi_mode": "disabled_worker_audio_only",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "ae350_worker_audio_only_classic_runtime_v1",
+        "scan_window_policy": "disabled_worker_audio_only_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "runtime_only_no_recording_or_display_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "recording_policy": "disabled_worker_audio_only_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "disabled_worker_audio_only_v1",
+        "business_owner_policy": "native_hci_only_no_recording_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 131072,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_audio_only_v1",
+        "ae350_pcm_policy": "ae350_decoded_pcm_source_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_demo_v1",
+        "recording_owner_policy": "disabled_worker_audio_only_v1",
+        "usb_adapter_policy": "worker_25k_v1"
+      }
+    }
+  },
+  "composition": {
+    "W": "Explicit revision2 compile provider removes HDMI/graph UI/FFT/XY/framebuffers/recording/download/cue/TF/CNN, keeps USB Host/25K feedback, H5/HCI/Classic/SBC/PCM, complete existing D effects and real memory BIST/delay native owner6",
+    "M": "Existing role/configuration/features/baseline/references unchanged; default macro-off runtime and observation modules preprocess identically; complete HDMI and engines remain selected",
+    "retired_sources": "Maintenance sources retained; actual enabled/preprocessed/VG retirement is a separate prepare/synthesis gate",
+    "DDR": "Retired display/CPU/recording clients tied absent; existing native BIST/bounded queues and actual delay client retained; AE350 external DDR requests terminate with AHB error"
+  },
+  "validation": {
+    "tests": [
+      {
+        "command": [
+          "python3",
+          "-B",
+          "sim/test_workstation_worker_audio_only.py"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-only-source-handoff-v1/test_workstation_worker_audio_only.log",
+        "sha256": "07576d731fe4cd458339fe02e14d4f9e0e12cd140172521a438bbf3ff2d186af"
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "sim/test_current_workstation_sources.py"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-only-source-handoff-v1/test_current_workstation_sources.log",
+        "sha256": "181a9286e7194271c150164e91a20935e6f709de9ddc47412dd1c421e1f683fa"
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "sim/test_workstation_demo_audit.py"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-only-source-handoff-v1/test_workstation_demo_audit.log",
+        "sha256": "13f278c6c16e81c92f79c408c721d00eeda426d6e2e4990d95f7a4c952a26687"
+      },
+      {
+        "command": [
+          "python3",
+          "-B",
+          "sim/test_workstation_runtime_clocks.py"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-only-source-handoff-v1/test_workstation_runtime_clocks.log",
+        "sha256": "058a5ff19278f8f660edd865dd5e076539464b1615a39316092ee74fc88d2759"
+      }
+    ],
+    "real_memory": "64 BIST and 256 native delay commands, stalled BL8 writes, ordered reads, readiness/fault quarantine",
+    "source_tests": 17,
+    "root_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-m24-root-source-config-review-v1.json",
+      "sha256": "11eba7757deac28e40e8d02f0cd833ec75461c3cec3add6ef0317a9b90aaa6ee",
+      "passed": true,
+      "hash_binding_checks": 1989,
+      "unique_inputs": 1133,
+      "actual_profiles_load_passed": true,
+      "M_noninventory_fields_exact_to_HEAD": true,
+      "rerun_worker_targeted_tests": 3,
+      "rerun_demo_audit_tests": 17,
+      "rerun_clock_tests": 2,
+      "clock_named_skips": 1,
+      "prepare_completed": false,
+      "hardware_tested": false
+    }
+  },
+  "handoffs": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/w21-audio-only-source-handoff-v1/handoff.json": "ead8417e4dbfd1ad1a34300c8d16ebcd267baa85c17fd3fe1ec7be0e66c6435d",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m24-profile-lock-refresh-v2.json": "6e14475a03d4fc2ec08b1623a1f388d7ae0c27cc813c3b551ca3995be79fe2d2"
+  },
+  "limitations": [
+    "No new full synthesis/PnR/resource or timing result at this source stage",
+    "Streaming PCM Pitch remains separate unimplemented integration; current 131 is a candidate for existing D effects",
+    "Only emulator available; no real-phone A2DP/MIDI or DAC/25K physical acceptance",
+    "Unfinished raw pack_frames changes retained uncommitted, outside W21 enabled compilation, not validated or claimed",
+    "Historical W revision1 and failed prepare attempts remain sealed with original identities"
+  ],
+  "new_user_codes": {
+    "M": "D2110132",
+    "W": "D2110131"
+  },
+  "resource_gain_claimed": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false
+}

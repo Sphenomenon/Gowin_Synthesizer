@@ -229,6 +229,11 @@ module gw138k_push_workstation_top #(
     wire [3:0] ui_command_strobes;
     wire ui_pending,ui_visible,ui_next_visible,ui_frame_commit;
     wire [28:0] ui_front_base,ui_next_base;
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    // Retired graphics APB page fails explicitly; no UI CDC or framebuffer owner.
+    assign ui_ready=1'b1,ui_error=ui_select,ui_read_data=32'd0;
+    assign ui_pending=0,ui_visible=0,ui_next_visible=0,ui_front_base=0,ui_next_base=0;
+`else
     gw138k_apb_cdc u_ui_control(.reset_n(preset_n && memory_reset_n),.pclk(pclk),.audio_clk(memory_clk),
         .psel(ui_select),.penable(penable),.pwrite(pwrite),.paddr(paddr[11:0]),.pwdata(pwdata),.pstrb(pstrb),
         .pready(ui_ready),.pslverr(ui_error),.prdata(ui_read_data),.command_reset_n(ui_command_reset_n),
@@ -243,6 +248,7 @@ module gw138k_push_workstation_top #(
         .command_address(ui_command_address),.command_data(ui_command_data),.command_strobes(ui_command_strobes),
         .response_data(ui_response_data),.response_error(ui_response_error),.frame_commit(ui_frame_commit),
         .pending(ui_pending),.visible(ui_visible),.next_visible(ui_next_visible),.front_base(ui_front_base),.next_base(ui_next_base));
+`endif
     wire service_select=psel && paddr[31:12]==20'hf8010;
 `ifdef WORKSTATION_RUNTIME_NATIVE
 `ifdef WORKSTATION_AE350_PCM
@@ -319,8 +325,6 @@ module gw138k_push_workstation_top #(
     wire [31:0] display_frame_epoch,display_frame_sequence;
     wire [31:0] runtime_observation_drop;
     wire runtime_display_observation_fault;
-`ifdef WORKSTATION_RECORDING_DDR
-    wire recording_select=psel && paddr[31:12]==20'hf8040;
 `ifdef WORKSTATION_CPU_BLE_BUSINESS
     wire business_select=psel && paddr[31:12]==20'hf8050;
     wire business_bus_ready,business_bus_error,business_owner_reset;
@@ -342,6 +346,8 @@ module gw138k_push_workstation_top #(
     wire [31:0] business_bus_data=0;
 `endif
 
+`ifdef WORKSTATION_RECORDING_DDR
+    wire recording_select=psel && paddr[31:12]==20'hf8040;
     wire recording_bus_ready,recording_bus_error;
     wire [31:0] recording_bus_data;
     wire recording_req,recording_write,recording_ready,recording_response,recording_native_accept,recording_transport_fault;
@@ -505,7 +511,9 @@ module gw138k_push_workstation_top #(
         .media_stop_done_i(clock_media_done),.media_stop_failed_i(clock_media_failed),
         .media_stop_failure_code_i(clock_media_failure));
     workstation_media_preparation #(
-`ifdef WORKSTATION_NO_BLUETOOTH
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+        .ENABLE_BLE(0)
+`elsif WORKSTATION_NO_BLUETOOTH
         .ENABLE_BLE(0)
 `else
         .ENABLE_BLE(1)
@@ -584,15 +592,20 @@ module gw138k_push_workstation_top #(
         .read_valid_o(score_usb_valid),.read_ready_i(score_usb_ready),
         .read_data_o(score_usb_note));
 `endif
+    wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    assign service_state_usb=0,service_state_usb_valid=0;
+    assign display_summary_usb=0,display_summary_usb_valid=0;
+`else
     gw138k_stream_cdc #(.WIDTH(34)) u_service_push_cdc(
         .reset_n(reset_n && audio_reset_n && usb_reset_n),.source_clk(audio_clk),.destination_clk(usb_clk),
         .source_valid(audio_sample_valid),.source_data({record_enabled,score_running,score_led_mask}),
         .destination_valid(service_state_usb_valid),.destination_data(service_state_usb));
-    wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
     gw138k_stream_cdc #(.WIDTH(64)) u_display_push_cdc(
         .reset_n(reset_n && memory_reset_n && usb_reset_n),.source_clk(memory_clk),.destination_clk(usb_clk),
         .source_valid(display_summary_valid),.source_data(display_summary),
         .destination_valid(display_summary_usb_valid),.destination_data(display_summary_usb));
+`endif
     wire usb_lifecycle,usb_cancel;
 `ifdef WORKSTATION_CUSTOM_138K
     wire [7:0] native_usb_data;
@@ -767,7 +780,11 @@ module gw138k_push_workstation_top #(
 `else
         .cpu_words({trap_cause,heartbeat,ram_result,signature,last_fetch,fetch_count,ui_report}));
 `endif
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    assign hdmi_tx_en=1'b0;
+`else
     assign hdmi_tx_en = 1'b1;
+`endif
     wire [2:0] app_cmd;
     wire app_en,app_rdy,app_wren,app_wend,app_wrdy,app_rvalid;
     wire [28:0] app_addr;
@@ -1044,7 +1061,12 @@ module gw138k_push_workstation_top #(
     assign ble_debug_uart=1'b1;
     assign ble_seal_ready=1'b1,ble_seal_done=1'b0,ble_seal_failed=1'b0,ble_seal_failure=4'd0;
 `else
-`ifdef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    // Capture/download is absent, so final audio is not crossed to the radio owner.
+    assign ble_pcm_valid=0,ble_pcm=0,ble_sequence=0;
+    wire ble_frame44=1'b0,ble_frame_error=1'b0;
+    wire [31:0] ble_frame_epoch=0;
+`elsif WORKSTATION_RUNTIME_NATIVE
     wire ble_frame44,ble_frame_error;
     wire [31:0] ble_frame_epoch;
     gw138k_stream_cdc #(.WIDTH(98)) u_ble_pcm_cdc (
@@ -1063,7 +1085,9 @@ module gw138k_push_workstation_top #(
 `endif
     wire [767:0] ble_status;
 `ifdef WORKSTATION_RUNTIME_NATIVE
-`ifdef WORKSTATION_BLE_RAW_DDR
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    workstation_bluetooth #(.SESSION_ONLY_PAIRING(1)) u_bluetooth (
+`elsif WORKSTATION_BLE_RAW_DDR
     workstation_bluetooth #(.EXTERNAL_SEAL_PROTOCOL(1),.EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)
 `ifdef WORKSTATION_SINGLE_BLE_RECORDING
         ,.SINGLE_BLE_RECORDING(1),.SESSION_ONLY_PAIRING(1)
@@ -1145,6 +1169,24 @@ module gw138k_push_workstation_top #(
     wire [28:0] cpu_mem_address;
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    workstation_audio_memory u_audio_memory(
+        .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
+        .memory_reset_ni(memory_reset_n),.memory_calibrated_i(memory_calibrated),
+        .memory_pll_locked_i(memory_pll_locked),.client_reset_no(ddr_client_reset_n),
+        .client_ready_o(ddr_client_ready),.delay_valid_i(delay_ddr_req),
+        .delay_write_i(delay_ddr_write),.delay_address_i(delay_ddr_address),.delay_data_i(delay_ddr_data),
+        .delay_ready_o(delay_ddr_ready),.delay_response_o(delay_ddr_response),
+        .app_cmd_o(app_cmd),.app_en_o(app_en),.app_address_o(app_addr),.app_ready_i(app_rdy),
+        .app_data_o(app_wdata),.app_mask_o(app_wmask),.app_wren_o(app_wren),.app_wend_o(app_wend),
+        .app_write_ready_i(app_wrdy),.app_response_data_i(app_rdata),.app_response_i(app_rvalid),
+        .response_data_o(client_rdata),.memory_flags_o(memory_flags));
+    assign video_diagnostics=0,display_observation_drop=0;
+    assign display_summary=0,display_summary_valid=0,ui_frame_commit=0;
+    assign audio_queued_ready=0,audio_ddr_response=0,music_ddr_ready=0,music_ddr_response=0;
+    assign cpu_mem_ready=0,cpu_mem_response=0;
+    assign tmds_clk_p=0,tmds_clk_n=0,tmds_data_p=0,tmds_data_n=0;
+`else
     hdmi_display u_video (
 `ifdef WORKSTATION_RECORDING_DDR
         .recording_req(recording_req),.recording_write(recording_write),.recording_address(recording_address),
@@ -1191,6 +1233,7 @@ module gw138k_push_workstation_top #(
         .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n),
         .tmds_data_p(tmds_data_p), .tmds_data_n(tmds_data_n)
     );
+`endif
     wire core_clk,bus_clk,pll_locked;
     wire system_reset_n=reset_n;
 `ifdef WORKSTATION_CUSTOM_138K
@@ -1236,12 +1279,23 @@ module gw138k_push_workstation_top #(
     always @(posedge ram_clk or negedge ram_reset_n)
         if(!ram_reset_n) local_data_phase<=1;
         else if(cpu_bus_ready) local_data_phase<=local_address;
+`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+    // Only the local scratch window is present. Retired external DDR accesses
+    // terminate with AHB error instead of issuing an unowned memory request.
+    reg external_rejected;
+    always @(posedge ram_clk or negedge ram_reset_n)
+        if(!ram_reset_n)external_rejected<=0;
+        else external_rejected<=ram_transfer[1] && !local_address;
+    assign cpu_bus_ready=1'b1,cpu_bus_error=external_rejected,external_read_data=64'd0;
+    assign cpu_mem_req=0,cpu_mem_write=0,cpu_mem_address=0,cpu_mem_data=0,cpu_mem_mask=0;
+`else
     gw138k_ahb_ddr u_cpu_ddr(.reset_n(ram_reset_n),.hclk(ram_clk),.memory_clk(memory_clk),
         .haddr(ram_address),.htrans(local_address?2'b00:ram_transfer),.hsize(ram_size),
         .hwrite(ram_write),.hwdata(ram_write_data),.hrdata(external_read_data),.hready(cpu_bus_ready),.hresp(cpu_bus_error),
         .req_valid(cpu_mem_req),.req_write(cpu_mem_write),.req_address(cpu_mem_address),
         .req_data(cpu_mem_data),.req_mask(cpu_mem_mask),.req_ready(cpu_mem_ready),
         .rsp_valid(cpu_mem_response),.rsp_data(client_rdata));
+`endif
 `ifndef WORKSTATION_RUNTIME_NATIVE
     reg [31:0] signature,ram_result,heartbeat,trap_cause,trap_pc,ui_report;
 `endif
@@ -1291,6 +1345,10 @@ module gw138k_push_workstation_top #(
         .APB_PRDATA(pcm_select?pcm_bus_data:business_select?business_bus_data:recording_select?recording_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
         .APB_PREADY(pcm_select?pcm_bus_ready:business_select?business_bus_ready:recording_select?recording_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
         .APB_PSLVERR(pcm_select?pcm_bus_error:business_select?business_bus_error:recording_select?recording_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
+        .APB_PRDATA(pcm_select?pcm_bus_data:business_select?business_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
+        .APB_PREADY(pcm_select?pcm_bus_ready:business_select?business_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),
+        .APB_PSLVERR(pcm_select?pcm_bus_error:business_select?business_bus_error:clock_service_select?clock_service_error:service_select?service_error:ui_select?ui_error:!valid_word),.APB_PADDR(paddr),
 `elsif WORKSTATION_RUNTIME_NATIVE
         .APB_PRDATA(pcm_select?pcm_bus_data:clock_service_select?clock_service_data:service_select?service_data:ui_select?ui_read_data:32'h41313338),
         .APB_PREADY(pcm_select?pcm_bus_ready:clock_service_select?clock_service_ready:service_select?service_ready:ui_select?ui_ready:1'b1),

@@ -23,7 +23,11 @@ def selection(configuration):
     worker=(joint and capacity==131072 and configuration.get('demo_role')=='W' and
         configuration.get('ae350_firmware_policy')=='ae350_worker_session_classic_runtime_v1' and
         configuration.get('recording_owner_policy')=='single_ble_ddr_object_v1')
-    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not (runtime or worker):
+    audio_worker=(joint and capacity==131072 and configuration.get('demo_role')=='W' and
+        configuration.get('ae350_firmware_policy')=='ae350_worker_audio_only_classic_runtime_v1' and
+        configuration.get('display_policy')=='disabled_worker_audio_only_v1' and
+        configuration.get('recording_owner_policy')=='disabled_worker_audio_only_v1')
+    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not (runtime or worker or audio_worker):
         raise ValueError('unsupported workstation AE350 memory/storage composition')
     return dict(memory_profile=memory, boot_rom_bytes=capacity)
 

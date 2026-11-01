@@ -125,10 +125,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     hci_selected=business_selected and specification(profile['name']).get('hci_shared_owner_enabled',False)
     classic_selected=hci_selected and specification(profile['name']).get('classic_runtime_enabled',False)
     demo_role=specification(profile['name']).get('demo_role') if runtime else None
+    audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
-        if demo_role == 'W':
+        if demo_role == 'W' and not audio_only:
             from tools.workstation_w_return_mailbox_cdc import TOOL as RETURN_MAILBOX_TOOL
             profile_dependencies += (RETURN_MAILBOX_TOOL,)
         from tools.workstation_usb_fifo_reset import POLICY as FIFO_RESET_POLICY
@@ -152,7 +153,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile_dependencies += BLE_RAW_DEPENDENCIES
     if business_selected:
         from tools.workstation_cpu_business import selection as cpu_selection
-        _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected)
+        _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected,audio_only=audio_only)
         native_sources += cpu_sources
         profile_dependencies += cpu_dependencies
     if classic_selected:
@@ -175,6 +176,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_usb_fifo_reset import SOURCE as FIFO_RESET_SOURCE, TOOL as FIFO_RESET_TOOL
         native_sources += (FIFO_RESET_SOURCE,)
         profile_dependencies += (FIFO_RESET_TOOL,)
+    if audio_only:
+        from tools.workstation_worker_audio_only import SOURCES as AUDIO_SOURCES, DEPENDENCIES as AUDIO_DEPENDENCIES, retired_source
+        native_sources=tuple(x for x in native_sources if not retired_source(x))+AUDIO_SOURCES
+        profile_dependencies+=AUDIO_DEPENDENCIES
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -188,10 +193,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise FileNotFoundError('missing native-board source: ' + relative)
     if workstation_profile is not None:
         from tools.stage_ae350_firmware import selected_inputs
-        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'], business_selected)]
+        extra_inputs += ['firmware/ae350/' + name for name in selected_inputs(recording_selected, ae350_memory['memory_profile'], business_selected,headless_worker=audio_only)]
         if classic_selected:
             from tools.workstation_classic_runtime import firmware_inputs
-            extra_inputs += firmware_inputs(root)
+            extra_inputs += firmware_inputs(root,headless_worker=audio_only)
     snapshot = source_snapshot(root, extra_inputs)
     pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
@@ -202,7 +207,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W', **ae350_memory)
+            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only, **ae350_memory)
     native_timing = adapt_timing(stage)
     demo_fifo_reset = None
     if demo_role is not None:
@@ -218,7 +223,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     project = stage / 'Prj1.gprj'
     tree = ElementTree.parse(project)
     files = tree.find('FileList')
-    video_mode = apply_video_mode(root, stage, files, hdmi_mode)
+    video_mode=(dict(mode='disabled_worker_audio_only',display_elaborated=False) if audio_only else apply_video_mode(root, stage, files, hdmi_mode))
     paths = [entry.get('path') for entry in files]
     if len(paths) != len(set(paths)):
         raise ValueError('duplicate native-board parent compilation inputs')
@@ -285,7 +290,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     ble_raw_adaptation=None
     if business_selected:
         from tools.workstation_cpu_business import prepare as prepare_cpu_business
-        ble_raw_adaptation=prepare_cpu_business(root,stage,shared_hci=hci_selected)
+        ble_raw_adaptation=prepare_cpu_business(root,stage,shared_hci=hci_selected,audio_only=audio_only)
         bluetooth['sources'].remove('native_bluetooth/ble_recording.v')
     elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
@@ -294,8 +299,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if not local_panel_enabled:
         peripherals['local_panel_enabled'] = False
     model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
+    audio_source_selection=None
+    if audio_only:
+        from tools.workstation_worker_audio_only import select_sources,retired_source
+        bluetooth['sources']=[x for x in bluetooth['sources'] if not retired_source(x)]
     for relative in bluetooth['sources']:
         ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
+    if audio_only:
+        audio_source_selection=select_sources(stage,files)
     shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
     shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
     shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
@@ -326,9 +337,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     demo_boundary_cdc = None
     if demo_role is not None:
         from tools.workstation_performance_reset import (
-            select_demo_timing, M_RELEASE_TIMING_POLICY, W_RETURN_TIMING_POLICY)
+            select_demo_timing, M_RELEASE_TIMING_POLICY, W_RETURN_TIMING_POLICY, DEMO_TIMING_POLICY)
         selected_sdc, demo_runtime_timing = select_demo_timing(stage, selected_sdc, demo_role,
-            policy=W_RETURN_TIMING_POLICY if demo_role == 'W' else M_RELEASE_TIMING_POLICY)
+            policy=DEMO_TIMING_POLICY if audio_only else W_RETURN_TIMING_POLICY if demo_role == 'W' else M_RELEASE_TIMING_POLICY)
         from tools.workstation_demo_boundary_cdc import select_demo_boundary
         selected_sdc, demo_boundary_cdc = select_demo_boundary(stage, selected_sdc, demo_role)
     if runtime:
@@ -339,6 +350,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if demo_role is not None:
         from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
         selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role)
+    audio_constraints=None
+    if audio_only:
+        from tools.workstation_worker_audio_only import constraints as audio_sdc,cst as audio_cst
+        selected_sdc,audio_constraints=audio_sdc(selected_sdc)
+        combined_cst=audio_cst(combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
@@ -410,6 +426,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if business_selected:
             from tools.workstation_cpu_business import metadata as ble_recording_metadata
         metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
+    if audio_only:
+        from tools.workstation_worker_audio_only import POLICY as AUDIO_POLICY
+        metadata['worker_audio_only']=dict(policy=AUDIO_POLICY,sources=audio_source_selection,
+            constraints=audio_constraints,hci=ble_raw_adaptation,recording_enabled=False,display_enabled=False)
     if business_telemetry_alias_selected:
         metadata['business_cpu_telemetry_reset_cdc']=business_telemetry_reset
     if demo_fifo_reset is not None:
@@ -430,6 +450,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if runtime:
             metadata['scan_window'].update(compilation_provider=selected_provider,
                                             provider_selection='included_with_runtime_macro')
+    if audio_only:
+        metadata['scan_window']=dict(policy='disabled_worker_audio_only_v1',enabled=False)
+        metadata['bluetooth']['capture_source']='absent_audio_only_no_recording'
+        metadata['remaining_gaps']=['physical A2DP/SBC/D/25K/DAC acceptance','complete IO/CDC/timing/PLL/P&R gates','streaming Pitch remains unimplemented']
     if runtime:
         from tools.workstation_runtime_counter import metadata as counter_metadata
         metadata['runtime_audio'] = {key: value for key, value in runtime_constraints.items()
@@ -437,19 +461,19 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['runtime_audio'].update(reserve_zero_epoch=True, initial_stream_epoch=1,
             top_provider=selected_provider,
             common_parameter_owner='u_managed/runtime/service/workstation/parameters',
-            clock_service_address='0xf8030000', legacy_capture_rate_hz=48000,
+            clock_service_address='0xf8030000', legacy_capture_rate_hz=None if audio_only else 48000,
             tf_policy=profile['configuration'].get('tf_policy',
                 'manual_matching_rate_no_resampling_no_automatic_clock_request'),
-            media_preparation_policy='seal_record_stop_score_tf_ble_v1',
+            media_preparation_policy=profile['configuration'].get('media_preparation_policy','seal_record_stop_score_tf_ble_v1'),
             media_preparation_owner='u_media_preparation',
             held_notes_policy='preserve; no implicit MIDI/PANIC',
-            media_failure_categories=dict(local_recording=9,ble_seal=10,backend_admission=11,
+            media_failure_categories=dict(**({} if audio_only else dict(local_recording=9,ble_seal=10)),backend_admission=11,
                 **({'ddr_recording_seal':12} if recording_selected else {})),
             display_metadata_minor=1, counter_cdc=counter_metadata(root))
         metadata['recognition'] = recognition
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
         metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'
-        metadata['volume_application']='once_in_runtime_final_pcm_before_I2S_display_and_BLE'
+        metadata['volume_application']=('once_in_runtime_final_pcm_before_I2S' if audio_only else 'once_in_runtime_final_pcm_before_I2S_display_and_BLE')
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
         candidate=metadata['identity'],source_policy=metadata['source_policy'],
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,
@@ -462,7 +486,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['demo_constraint_retirement'] = demo_constraints
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None)
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only)
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata
