@@ -1,0 +1,406 @@
+{
+  "schema": "dual138k_w22_D2110135_directed_full_physical_20261101_v1",
+  "stage": "Independent same-VG DDRfar+128reference physical experiment; full STA failed",
+  "utc": "2026-11-01T15:15:51.472597+00:00",
+  "handoff": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-full-physical-handoff-v1.json",
+    "sha256": "ba65591995c1cc07b773dc9bf2acb378d26985c8edec8140099c26df02920098"
+  },
+  "candidate_identity": "custom138k-workstation-w-demo-v1-187bb0b3d2cab14f",
+  "physical": {
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-stream-pitch-v22-physical-D2110135",
+    "manifest_sha256": "d596f5cb50c29b2ef5c99c7c7bdc048dc618deb2bfd6a6eb6d2d5576f66cc9d2",
+    "UserCode": "D2110135",
+    "process": {
+      "schema": "dual138k-build-run-v1",
+      "stage": "pnr",
+      "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-stream-pitch-v22-physical-D2110135",
+      "candidate_identity": "custom138k-workstation-w-demo-v1-187bb0b3d2cab14f",
+      "manifest_sha256": "d596f5cb50c29b2ef5c99c7c7bdc048dc618deb2bfd6a6eb6d2d5576f66cc9d2",
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "run.tcl"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-stream-pitch-v22-physical-D2110135",
+      "environment": {
+        "DYLD_LIBRARY_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+        "DYLD_FRAMEWORK_PATH": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib"
+      },
+      "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "runner_sha256": "98366d7b167a587195ce9c90cba9f3835180a83f10105ec7c204581321184c3d",
+      "sealed_input_count": 12,
+      "started_utc": "2026-11-01T14:54:11.406928+00:00",
+      "exit_code": 0,
+      "child_pid": 59129,
+      "finished_utc": "2026-11-01T14:58:00.496197+00:00",
+      "elapsed_seconds": 229.0907433750108,
+      "log_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-demo-stream-pitch-v22-physical-D2110135/pnr.log",
+      "log_sha256": "2229cdbcf2475fefa1cd0b839583251be1b3ef266b543d417d157b38c7672f7f",
+      "sealed_inputs_reverified_after_run": true
+    },
+    "bitstream": {
+      "user_code": "D2110135",
+      "FS_sha256": "155020ff15a8ee67496866379dfb590545b9a2bda41d4c3a062f88f397822207",
+      "generated": true,
+      "hardware_readback": false
+    },
+    "resources": {
+      "Logic": {
+        "used": 43515,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 27210,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 32576,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 218,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 59,
+        "capacity": 298
+      },
+      "LUT": 30740,
+      "ALU": 11653,
+      "ROM16": 0,
+      "SSRAM": 187
+    },
+    "timing": {
+      "setup_violated_endpoints": 1,
+      "hold_violated_endpoints": 2,
+      "global_worst_ns": {
+        "setup": -2.572,
+        "hold": -1.004,
+        "recovery": 1.089,
+        "removal": 0.278
+      },
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 50.026
+        },
+        "ulpi_60m": {
+          "required_mhz": 60.0,
+          "actual_mhz": 89.265
+        },
+        "dac_ref12m288": {
+          "required_mhz": 12.288,
+          "actual_mhz": 177.888
+        },
+        "dac_ref16m9344": {
+          "required_mhz": 16.934,
+          "actual_mhz": 181.422
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 76.813
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 64.056
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2338.897
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 191.662
+        },
+        "cpu_ram50": {
+          "required_mhz": 50.0,
+          "actual_mhz": 72.5
+        },
+        "cpu_core100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 1377.41
+        },
+        "selected48": {
+          "required_mhz": 12.288,
+          "actual_mhz": 96.546
+        },
+        "selected44": {
+          "required_mhz": 16.934,
+          "actual_mhz": 96.546
+        }
+      },
+      "checks": {
+        "clk_50m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ulpi_60m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref12m288": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref16m9344": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_ram50": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_core100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "cpu_rtc_bound": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected48": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "selected44": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "top_negative_paths": {
+        "setup": [
+          {
+            "kind": "setup",
+            "slack_ns": -2.572,
+            "source": "u_managed/midi_bytes/request_toggle_s2/Q",
+            "destination": "u_managed/midi_bytes/req_meta_s0/D",
+            "source_clock": "clk_50m:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 0.104,
+            "skew_ns": 1.748,
+            "data_delay_ns": 0.844,
+            "command": "report_timing -setup -max_paths 2000 -max_common_paths 1"
+          }
+        ],
+        "hold": [
+          {
+            "kind": "hold",
+            "slack_ns": -1.004,
+            "source": "u_managed/midi_bytes/acknowledge_toggle_s0/Q",
+            "destination": "u_managed/midi_bytes/ack_meta_s0/D",
+            "source_clock": "audio_76m8:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": -0.0,
+            "skew_ns": -1.342,
+            "data_delay_ns": 0.386,
+            "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+          },
+          {
+            "kind": "hold",
+            "slack_ns": -0.181,
+            "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+            "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+            "source_clock": "ddr_ui100:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 3.5,
+            "skew_ns": -1.41,
+            "data_delay_ns": 4.777,
+            "command": "report_timing -hold -max_paths 2000 -max_common_paths 1"
+          }
+        ],
+        "recovery": [],
+        "removal": []
+      }
+    },
+    "exact_DDR_hold": {
+      "slack_ns": -0.181,
+      "arrival_ns": 6.173,
+      "required_ns": 6.354,
+      "relationship_ns": 3.5,
+      "clock_skew_report_ns": 1.41,
+      "launch_location": "R104C175[0][A]",
+      "capture_location": "R2C2[0][A]",
+      "launch_within_requested_region": true,
+      "capture_within_requested_region": true
+    },
+    "input_count_including_manifest": 12,
+    "raw_file_count": 33,
+    "all_inputs_and_outputs_reverified": true
+  },
+  "source_policy": {
+    "full_synthesis_VG_equal_to_W134": true,
+    "VG_sha256": "6d13c15e9a25e359c8543977df9023788f0177d586771489b78cfeda939d85cf",
+    "same_parent_actual_VO_witness_sha256": "6cc58ee3c44185688b1b88e05511d32d2e56d9ea994c336ad3321ba951529889",
+    "entire_SDC_equal_to_W134": true,
+    "SDC_sha256": "895a97e8f427db8993ab8275b9ebb57ba4fc5dbe2c8adcc5cdc22d4cfdb47952",
+    "DDR_min_delay_ns": 3.5,
+    "entire_parent_CST_prefix_exact": true,
+    "exact_130_appended_INS_LOC_bytes_verified": true,
+    "reference_128_cells_kind_ports_parameters_equal_parent_actual_VO": true,
+    "no_vendor_RTL_changed": true,
+    "no_opaque_memory_equivalence_claimed": true
+  },
+  "comparison_to_W134": {
+    "DDR_hold_ns": [
+      -4.357,
+      -0.181
+    ],
+    "setup_worst_ns": [
+      -2.595,
+      -2.572
+    ],
+    "global_hold_worst_ns": [
+      -4.357,
+      -1.004
+    ],
+    "physical_BSRAM": [
+      218,
+      218
+    ],
+    "physical_DSP": [
+      59,
+      59
+    ],
+    "comment": "Measured route result; DDR hold remains negative, other MIDI CDC violations remain."
+  },
+  "root_review": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/root-w135-review-v1.json",
+    "sha256": "4810981bd3891806a6ba89ea62e050c2ca3879db0b493ed96c4f421ff055674e",
+    "verified_file_count": 41
+  },
+  "evidence": {
+    "w23-pnr-process-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-pnr-process-v1.json",
+      "sha256": "3a7ae57413f638d96b3f1cb1486c9b04bfe9b533c8e073889c26b8a9265869d1"
+    },
+    "w23-physical-measurement-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-physical-measurement-v1.json",
+      "sha256": "a4811753b5db41c0e74603ad782671aec9dc0c816efaa4eac71fb1ec45ba935b"
+    },
+    "w23-build-runner-v1.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w23-build-runner-v1.py",
+      "sha256": "98366d7b167a587195ce9c90cba9f3835180a83f10105ec7c204581321184c3d"
+    },
+    "w22-directed-physical-prepare-v4.py": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w22-directed-physical-prepare-v4.py",
+      "sha256": "6cb4939f488ab79f4d58e2fb9be4697ce19af14bac08b3e7d2c78bdcc2d6635f"
+    },
+    "w22-full-physical-handoff-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w22-full-physical-handoff-v2.json",
+      "sha256": "5974847cfeb8797e8dad61f70b9607e3b92b9f1f9b238ef74ca5408272c2af52"
+    },
+    "w22-ddr-ref-independent-review-v1/review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w22-ddr-ref-independent-review-v1/review.json",
+      "sha256": "db04c5f1a57101696d347b19377c85ca8d9d15c4255da9609ef25c4a067bf80f"
+    }
+  },
+  "new_VO_native_boundary_PLL_subgates_executed": false,
+  "prior_W134_audit_acceptance_inherited": false,
+  "timing_closed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "remaining_gaps": [
+    "MIDI inactive UART mailbox setup andACKhold still retained; actual source retirement progresses separately",
+    "DDRfar exact3.500ns hold remains−0.181ns even atR104C175→R2C2; preserve measuredfailure, do not relax constraint",
+    "W135 newVO subgates not run; full timing rejection already prevents acceptance",
+    "Real phone/25K/DAC anddual-board acceptance not claimed"
+  ],
+  "rollback": "No W programming. W134 and135 immutable; M22 D211012F remains SRAM image. Next revised W will use fresh source and physical identities."
+}

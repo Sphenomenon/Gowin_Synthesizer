@@ -544,3 +544,6 @@ M24最差实测glyph地址路径的[最小维护修复](push2_workstation/usb_a/
 
 
 W22／D2110134 的[完整P&R与实际VO审计](push2_workstation/usb_a/reports/DUAL138K_W22_PHYSICAL_20261101.json)已完成：普通template、原DDR3.500ns保持，328.265s／exit0且9输入前后不变，FS `b6582caa…56163ec`。真实资源为BSRAM218／DSP59／CLS32346／FF27210／LUT30740／ALU11660／SSRAM187；完整STA仍setup1／−2.595ns、hold2／−4.357ns，recovery+2.214／removal+.278ns。唯一setup为普通MIDI request→req_meta第一同步级，另hold为ACK返回−1.010ns及DDR init→wloadn−4.357ns；未增加false path。实际VO native60项37过／23具名映射skip、64负控，boundary7／69及四PLL／三shared tuple／六grant／六main负控通过；原始SDF保持，仅折叠649组逐字相同GND弧。主线程复核3286来源／编译／物理／证据文件；v1摘要误计0grant由v2按真实six-grant字段更正并保留原记录。完整STA拒绝、反馈实际VO专项另列待验，未上板；独立D2110135只做DDR定向新布局，不改134身份。
+
+
+W22的[独立定向布局D2110135](push2_workstation/usb_a/reports/DUAL138K_W22_DIRECTED_PHYSICAL_20261101.json)已完成：同134完整VG与新实际VO witness，CST仅追加130条精确INS_LOC（DDR2＋reference128），完整原CST与SDC／DDR3.500ns保持；229.091s／exit0，12输入与33产物重新核验。实测BSRAM218／DSP59／CLS32576／LUT30740／ALU11653／SSRAM187；setup1／−2.572ns、hold2／−1.004ns，recovery+1.089／removal+.278ns。指定DDR hold由−4.357变为−.181ns，仍不通过；launch／capture确在请求区域，不以局部改善授予放行。主线程独立核41证据及128完整FF连接／参数、全部130追加字节；新135实际VO子门未跑，不继承134通过。未上板，原134冻结输入不改；下一W使用新源码与新身份退出无用MIDI链。
