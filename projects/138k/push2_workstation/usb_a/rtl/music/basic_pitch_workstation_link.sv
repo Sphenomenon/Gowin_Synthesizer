@@ -8,6 +8,7 @@ module basic_pitch_workstation_link #(
     // Opt in only for a task owner which waits for restart_done_o. The
     // default retains the accepted single-board restart contract.
     parameter bit DRAIN_RESTART_ENABLE = 1'b0,
+    parameter bit BOUNDED_EOF_PADDING = 1'b0,
     parameter integer RESTART_TIMEOUT_CYCLES = 50000000
 ) (
     input wire clk_50m, reset_n,
@@ -83,6 +84,7 @@ module basic_pitch_workstation_link #(
         .WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),
         .USE_EXTERNAL_STATE(1'b1),.USE_EXTERNAL_PLANE(1'b1),
         .USE_EXTERNAL_WEIGHTS(1'b1),.USE_FLASH_WEIGHTS(USE_FLASH_WEIGHTS),.USE_EXTERNAL_FEATURES(1'b1),
+        .BOUNDED_EOF_PADDING(BOUNDED_EOF_PADDING),
         .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(1'b1),
         .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(1'b1)
     ) u_basic_pitch (

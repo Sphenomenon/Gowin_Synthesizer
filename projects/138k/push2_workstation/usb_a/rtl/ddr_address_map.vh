@@ -158,4 +158,18 @@
 `define PRJ1_DDR_TASK3_W_RECORDING_APP_LAST       29'h0c43_f1ff
 `define PRJ1_DDR_TASK3_W_RECORDING_LAST_BEAT      29'h0c43_f1f8
 
+// Task3 W CNN input is a separate bounded task object, never the recording
+// object's raw fetch cache. A two-second stereo16/48k clip uses 384,000B
+// inside one exclusive 1-MiB granule. Remaining pool bytes are inaccessible.
+`define PRJ1_DDR_TASK3_W_CNN_PCM_POOL_BYTE_BASE 32'h3110_0000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_POOL_BYTE_LAST 32'h311f_ffff
+`define PRJ1_DDR_TASK3_W_CNN_PCM_POOL_BYTES     32'h0010_0000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES 32'd96_000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_BYTES          32'd384_000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_BYTE_BASE      32'h3110_0000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_BYTE_LAST      32'h3115_dbff
+`define PRJ1_DDR_TASK3_W_CNN_PCM_APP_BASE       29'h0c44_0000
+`define PRJ1_DDR_TASK3_W_CNN_PCM_APP_LAST       29'h0c45_76ff
+`define PRJ1_DDR_TASK3_W_CNN_PCM_LAST_BEAT      29'h0c45_76f8
+
 `endif

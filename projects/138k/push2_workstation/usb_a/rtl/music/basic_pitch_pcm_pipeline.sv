@@ -19,6 +19,9 @@ module basic_pitch_pcm_pipeline #(
     parameter bit USE_EXTERNAL_PLANE = 1'b0,
     parameter bit USE_EXTERNAL_WEIGHTS = 1'b0,
     parameter bit USE_FLASH_WEIGHTS = 1'b0,
+    // Task owners opt in to a finite final window. Legacy continuous-file
+    // profiles retain their existing padding behavior by default.
+    parameter bit BOUNDED_EOF_PADDING = 1'b0,
     parameter bit USE_EXTERNAL_FEATURES = 1'b0,
     parameter bit USE_ALL_DDR = 1'b0,
     parameter bit USE_DDR_SIGNAL = USE_ALL_DDR,
@@ -203,7 +206,13 @@ module basic_pitch_pcm_pipeline #(
     // ------------------------------------------------------------------
     logic front_res_valid, front_win_we, front_win_full, front_ready, front_drained;
     logic front_window_started;
-    wire pad_sample = pcm_end_i && front_window_started && !pcm_valid_i;
+    // Feeding ahead while padding can leave zeros queued behind the final
+    // full window. next_window_i preserves that resampler history, so those
+    // zeros would start another window and cause an unbounded EOF loop.
+    // An opted-in task supplies only the next necessary zero after the
+    // genuine input/history has drained; its final window leaves no pad lag.
+    wire pad_sample = pcm_end_i && front_window_started && !pcm_valid_i &&
+                      (!BOUNDED_EOF_PADDING || front_drained);
     logic signed [15:0] front_res_q, front_win_data;
     logic [15:0] front_win_addr;
     logic [13:0] front_coeff_addr;

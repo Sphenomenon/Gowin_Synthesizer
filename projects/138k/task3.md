@@ -1,6 +1,6 @@
 # Task3：最终双138K工作站
 
-修订：2026-11-01，Asia/Shanghai。本文取代原未跟踪规划中“全部效果和可视化计算必须留在M”“先恢复完整M再加TF/CNN”的限制。目标是两板承担实际计算和存储，降低M资源、关键路径与布线压力。阶段状态只按本候选证据更新；源码、子系统综合、整机P&R和实板验收分开。
+修订：2026-11-02，Asia/Shanghai。本文取代原未跟踪规划中“全部效果和可视化计算必须留在M”“先恢复完整M再加TF/CNN”的限制。目标是两板承担实际计算和存储，降低M资源、关键路径与布线压力。阶段状态只按本候选证据更新；源码、子系统综合、整机P&R和实板验收分开。
 
 ## 1. 独立工作与回退
 
@@ -102,6 +102,8 @@ CNN首工作流为M选TF→明确分析PCM任务→W CQT/真实模型/CNN/Viterb
 
 W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_link.sv`内显式可选实现（`DRAIN_RESTART_ENABLE=1`）；实际FIFO/DDR读返回与写接受排空后才重启推理，超时/内存复位/校准丢失隔离。真实模型、小窗口/2帧回归覆盖7种生命周期场景，取消后六层hash/写数/score与全新默认实例相同，跳过排空的负控失败，见[CNN任务证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_CNN_RESTART_20261101.json)。默认保持旧行为；W21未因此接回CNN，完整W装配/loader/质量与实板仍待验。
 
+[W真实CNN任务组件](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_TASK_20261102.json)已贯通完整只读SPI模型加载、payload及DDR读回CRC、独立PCM对象写入/读回CRC、实际CQT/六层CNN/Viterbi及取消排空。PCM池为`0x31100000..0x311fffff`，首档只接受48k stereo16、最多96,000帧（2秒）；不借用唯一录音对象。owner5 broker仅以真实native接受回执确认写入，不能把本地入队当存储完成。57项实际任务检查使用受校验的2048/2测试维度、每任务4096输入帧；两次完整推理的六层hash、正写数及完整一音符谱面相同。生产43844/172维度保持，尚未用生产维度/2秒上限或整曲验收；owner6/8竞争来自native探针，不是同时运行真实Delay和60秒录音。新增有限EOF补零仅在该任务启用，旧默认与既有推理hash/7种生命周期结果相同；broker51项、3突变及地址图4突变通过，主线程复跑相同。**组件尚未选入W整机，没有物理资源、时序、LCD、Push完整指导或识别质量结论。** 故障隔离需service/FIFO/client/controller共同复位，不能仅ACK终态后重新接单。
+
 [统一录音审计](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORDING_AUDIT_20261101.json)已确认可复用现有`ble_business_owner`与真实CRC/rawDDR后端：CPU本地代理与BLE可操作同一对象。既有联调1765检查/136条历史报文及15负控、rawDDR188004检查/5负控通过；当前仍为16384帧（约0.341s）。W21明确退出该后端；后续新增W媒体角色，不恢复R00独立对象。60秒需要同时扩大对象容量、物理engine/策略与DDR分配，不能只放宽一个常量；LCD突发PCM还须有界解包/节拍后喂给现有CRC录音端。
 
 [60秒容量组件](push2_workstation/usb_a/reports/DUAL138K_TASK3_LONG_RECORDING_20261101.json)已完成：C的GET/外部START/CPU START共用显式容量，非默认配置须核对真实physical容量；engine/service/rawDDR同时支持2,880,000帧。独立W地址池为`0x30600000..0x310fffff`，真实对象只到`0x310fc7ff`，不把池尾14,336B填充区提供给下载。真实C/APB/解析器/CRC/nativeDDR联调采满2,880,000帧并逐字节下载11,520,000B，CRC `3ddb23ec`，1421块；主线程完整复跑相同。第二对象由BLE START、CPU STOP，在native写暂停时保持WAIT，排空后封存13帧并下载52B。默认136条wire golden与15负控保留，另验容量不匹配、地址/尾BL8和上限拒绝。**这是加速仿真的60秒容量证明，尚未选入W整机、没有实测60秒录音或手机验收；44.1k和长对象重连仍待验。** 长对象重连试验的OPEN失败未隔离，未用保持会话的容量结果覆盖该缺口。
@@ -123,7 +125,7 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 独立菜单与显式262输入整机prepare检查点已通过，详见TF入口证据；仍为旧DDR播放，原生直读/真实尾帧正在装配。保留32声部/普通矢量；完整P&R与实体DAC/HDMI/控制延迟待验 |
-| T3-05 W CNN/分析/长录音 | 真实CNN安全排空/重启源码与小窗口模型回归通过；同一CPU/BLE对象60秒容量/独立地址池及完整逐字节下载组件通过，默认wire保留，详见60秒容量证据。W媒体owner5/6/8与真实BIST组件已通过，尚未装配实际负载；W角色装配、长对象重连、44.1k、loader/推理质量、BSRAM/DDR并发及综合仍待实现；按LCD实测额度接M |
+| T3-05 W CNN/分析/长录音 | 真实SPI模型/DDR CRC→独立短PCM任务→CQT/六层CNN/Viterbi及取消组件57项通过；同一CPU/BLE对象60秒容量/完整逐字节下载组件通过，默认wire保留。W媒体owner5/6/8与真实BIST组件已通过，尚未选入W整机；W角色装配、生产维度/整曲识别、长对象重连、44.1k、识别质量、BSRAM/DDR真实并发及综合仍待实现；按LCD实测额度接M |
 | T3-06 同对候选集成 | TF→W CNN→Push、真实手机D→M DAC、CPU/BLE同一长录音、下载/重连/取消/PANIC；分别测两板并发资源/时序/吞吐/延迟 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 

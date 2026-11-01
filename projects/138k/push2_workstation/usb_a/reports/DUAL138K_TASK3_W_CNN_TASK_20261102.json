@@ -1,0 +1,329 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "created_utc": "2026-11-01T16:39:50.725808+00:00",
+  "stage": "task3_unselected_W_actual_CNN_task_and_native_owner5_integration",
+  "status": "COMPONENT_VERIFICATION_PASS_W_PROFILE_NOT_SELECTED",
+  "source": {
+    "repository": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer",
+    "branch": "codex/dual-138k-task3",
+    "head_at_report": "b96d477999858b804bb4c10dd3fc95be803ea152",
+    "changed_source_files_uncommitted_at_report": true,
+    "frozen_changed_sources_sha256": {
+      "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh": "ca1a4fdedc699d97cd1bcb52541b0ff8544c88e9599f137e7896ef03a6fb13b8",
+      "projects/138k/push2_workstation/usb_a/rtl/ddr_address_map_guard.v": "a7acb164b0a28390443ebf11f19d75524cceb72884102abfb301d64e7881c1ad",
+      "projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_pcm_pipeline.sv": "c28cc43b1a6ca4e5eb8ba9524d3dd48c159aad1246f222a62f489920d94ba485",
+      "projects/138k/push2_workstation/usb_a/rtl/music/basic_pitch_workstation_link.sv": "5334523e69ea18778735ad338bd2ada6850a15a8e749c23093076ed5c13c3ac5",
+      "projects/138k/push2_workstation/usb_a/rtl/music/workstation_cnn_ddr_broker.sv": "5245141c6444f5d484924831ee50161409857060d589671441771d9c04e0545b",
+      "projects/138k/push2_workstation/usb_a/rtl/music/workstation_cnn_task_service.sv": "5757beaf3da5dc3653429d21b4502aa1fa06118e5de2235b5650262cc7f9b04d",
+      "projects/138k/push2_workstation/usb_a/rtl/music/WORKSTATION_CNN_TASK_SERVICE_CONTRACT.md": "d0214fa881d64a1d2f98e19f07d6f6ebf48f67989fcf1873d1488c476c48acec",
+      "projects/138k/push2_workstation/usb_a/sim/music/run_workstation_cnn_broker.py": "266248f684a2956619843342943702ba85484ad165c09ee491e764b89a62efdc",
+      "projects/138k/push2_workstation/usb_a/sim/music/run_workstation_cnn_task.py": "b23715715d4ecbd9c1c243bcf548e091222ba3d68f99f68ae41a0780a026c950",
+      "projects/138k/push2_workstation/usb_a/sim/music/tb_workstation_cnn_broker.sv": "8551a7c021d6c3bb6676f65b78b83c16af777e2da20ff0b4af3e55fe34ca27fe",
+      "projects/138k/push2_workstation/usb_a/sim/music/tb_workstation_cnn_task.sv": "65d11f9dbdce5bad5803e7355e12aa6abbf7d9b1c3125124e04ce31b808a992c"
+    },
+    "model_and_initialization_files_unchanged_from_head": true,
+    "initialization_mem_sha256_at_report": {
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cnn_ddr_blob.mem": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour.mem": "1b13c086185dc64d6b6470442e4113282803e4799f47e5cae411951146b32d01",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour_b.mem": "e72a0675782d6a83723785bab96e0c5204ca0794dfc202a6789005db03c5ecf5",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour_bq.mem": "0cf8d352051169301e54c073aa2ac8a6a71fc230717966677659a1ba6606068d",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour_reduce.mem": "19c889072033787b56181b9d29338dfa98b957f4fa5668b2a2aa98120f410799",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour_reduce_b.mem": "05f7d6fbf8de4fdd2a571d8a67ebfe02c9dba1d4a33438473a4f1c953eb0d9d0",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/contour_reduce_bq.mem": "615790b2bee32f3ee7f041ed8ef693e562ebfa79ff0cf769897d3bff2bfbdbed",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_imag.mem": "db17cd021f82094b1b19e01731889ebcb5c56452cb55443826b3302eda17d102",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_imag_b.mem": "59c3f435266bfe2f5dcc33ec84925d24f619f0ee846b6aee2cbecade914bb6a3",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_imag_bq.mem": "9436eecbd04e25626651cd1d118813a044dbba87be1d23b032e906b9c6203270",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass.mem": "07c15b17f876ab786f3971bb6f8c8baf50e5c2c389773b8ff3e25e1a4b136628",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass_b.mem": "8982b0e36eb1bacbb400dea0997b13cce756d7a48dbe0b05c560a13c1973afd0",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_lowpass_bq.mem": "22dbe6b7b70a64966e31813e597db3e863492d341bee2fb05c0e8864773387af",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_norm.mem": "50c5afb47def4eed0615c639b3e78a434b45444bd6582257032a1c6f8683e652",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_norm_log.mem": "9de3bf859baf21e9c5e9bac875ebc69310d97e5036e06b9149b3133f99862e61",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_real.mem": "cfc0ed55f3368221acd3921b92bc8ee7a3e7e4569f2db82a5154c5561781e0d0",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_real_b.mem": "59c3f435266bfe2f5dcc33ec84925d24f619f0ee846b6aee2cbecade914bb6a3",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/cqt_real_bq.mem": "9436eecbd04e25626651cd1d118813a044dbba87be1d23b032e906b9c6203270",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/log2_lut.mem": "43931c5fa53fc26be072283149eb840f7f041cbcefd6cce96aef2ed27e30ad5a",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/note_out.mem": "317fafc20f1a34e98a1c1bc9d274346db37a29e3ea9f33f49ff47ae8cc7b0acf",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/note_out_b.mem": "05f7d6fbf8de4fdd2a571d8a67ebfe02c9dba1d4a33438473a4f1c953eb0d9d0",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/note_out_bq.mem": "105d32dff71111287dbb6ae96495c420d061e96459ebd3ced886fbaa8b376d0e",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/notes.mem": "be9f20f1b4eeefed369b7d20cad0775b02f7282181d30ab446ba39a0ac99ecc3",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/notes_b.mem": "85a7ad80aeaf0be329aa479c1581cbdd9e02bfb1fd578c193613b5849c1ad5e6",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/notes_bq.mem": "1cde079d20b574c1b952563e59c0898d424762b94fa8e9a4fded6946ca28d1e9",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset.mem": "9ccbc6ed1e15e8682ecc693797c5edf07a7818ec542ad6b9a39ce5800f4ca1da",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset_b.mem": "3198abca0d7c8bce387cc613033874388c060fd3f4206cc5dc65e53718c1d6be",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset_bq.mem": "d1572a3714c07cfeb3f9cb46a453d0542dfb5a9889f17be90c0f2c1fbb2a3b6d",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset_out.mem": "ec0ad033e80284b566e9d9eb6bd3b933b9464708fab54420de362ba1aae5189f",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset_out_b.mem": "05f7d6fbf8de4fdd2a571d8a67ebfe02c9dba1d4a33438473a4f1c953eb0d9d0",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/onset_out_bq.mem": "41c372a4d43d49d719ee446b881417902a97d1a170df92747e9a5e79a4daeb53",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/resampler_poly.mem": "4e10b699f05186681d9216db5f71336f9820f28cead50e4be3f76bc17dc6e2a3",
+      "projects/138k/push2_workstation/usb_a/rtl/music/weights/sigmoid_lut.mem": "828f2ac37c26d8fdaed53b2046c84ba709dd6255fd6f83c2f9cb2346843634a6"
+    }
+  },
+  "scope": "Actual maintained SPI BPF1 loader, model CRC and DDR readback, staging CRC, CQT/six CNN layers/Viterbi and cancellation over real media owner5 broker with behavioral native DDR. Small checked simulation dimensions; not whole-song/musical-quality/physical acceptance.",
+  "component": {
+    "production_profile_selected": false,
+    "production_dimensions": {
+      "WIN_LEN": 43844,
+      "FRAME_LIMIT": 172,
+      "capacity_frames": 96000
+    },
+    "simulation_dimensions": {
+      "WIN_LEN": 2048,
+      "FRAME_LIMIT": 2,
+      "input_clip_frames": 4096
+    },
+    "format": {
+      "id": 1,
+      "rate_hz": 48000,
+      "pcm": "stereo S16LE"
+    },
+    "pcm_capacity_frames": 96000,
+    "pcm_capacity_bytes": 384000,
+    "pcm_byte_range": [
+      "0x31100000",
+      "0x3115dbff"
+    ],
+    "exclusive_pool_byte_range": [
+      "0x31100000",
+      "0x311fffff"
+    ],
+    "recording_object_reused_as_cnn_staging": false,
+    "committed_meaning": "actual owner5 native_accept; local slot/FIFO acceptance is not completion",
+    "storage_seal": "input CRC32 and full actual DDR readback CRC32 before CNN replay",
+    "bounded_queue": {
+      "packing_frames": 8,
+      "staging_commands_in_flight": 1,
+      "command_cdc_depth": 4,
+      "completion_cdc_depth": 4,
+      "owner5_producers": 2
+    },
+    "eof_padding": {
+      "parameter": "BOUNDED_EOF_PADDING",
+      "pipeline_and_link_default": false,
+      "new_task_service_enabled": true,
+      "rule": "pad only when real frontend is drained; no padded lag may survive final window"
+    },
+    "cancel": "immediately fence score/PCM, wait actual staging and real CNN native/CDC drain before terminal",
+    "fault": "coherent common service/FIFO/client/controller reset required; fault terminal accepts once but acknowledgement cannot reopen task"
+  },
+  "real_model": {
+    "words": 52239,
+    "payload_bytes": 104478,
+    "payload_crc32": "AF01A61B",
+    "text_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+    "model_image_sha256": "b02e5d33473fd0e8ee10fe74125ccd0cf5bb3c2467505912dee90abe60e0bbc6",
+    "actual_flash_boot_readback_crc_validated": true,
+    "forced_loader_done_or_preloaded_model": false,
+    "simulation_flash_is_read_only": true
+  },
+  "actual_task_verification": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-task-bounded-eof-v6/verification.json",
+      "sha256": "705f5c61f4bedc3602a51c66f42ec76e7a1bed0dcc13a70ed4427f9e8ae2232e"
+    },
+    "command": "python3 -B projects/138k/push2_workstation/usb_a/sim/music/run_workstation_cnn_task.py --output /Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-task-bounded-eof-v6",
+    "passed": true,
+    "source_unchanged_during_run": true,
+    "metrics": {
+      "clocks": 75717771,
+      "task": 7,
+      "state": 10,
+      "cnn": 6,
+      "replayed": 4096,
+      "reads": 2486253,
+      "writes": 724800,
+      "front_started": 1,
+      "full": 1,
+      "drained": 1,
+      "score": 0,
+      "notes": 0,
+      "words": 52239,
+      "native_reads": 52247,
+      "native_writes": 115093,
+      "first": 32,
+      "checks": 57,
+      "model_commands": 1,
+      "owner5_native": 2582533,
+      "owner6_native": 420888,
+      "owner8_native": 207616,
+      "stage_writes": 1543,
+      "stage_reads": 2567
+    },
+    "successful_real_inference_completions": 2,
+    "successful_task_input_frames_each": 4096,
+    "complete_score_notes_each": 1,
+    "first_note": 32,
+    "fresh_and_post_cancel_six_layer_hashes": "ed2ef522fbd165fdcc872f9ccd1b72333f716918e9e4b201",
+    "all_six_layer_write_counts_positive_and_equal": true,
+    "cases": [
+      "CASE staged_write_cancel PASS",
+      "CASE input_crc_reject PASS",
+      "CASE ddr_crc_reject PASS",
+      "CASE delayed_staging_return_cancel PASS",
+      "CASE delayed_cnn_return_cancel PASS",
+      "CASE stale_ingress_reject PASS",
+      "CASE unowned_native_return_quarantine PASS"
+    ],
+    "coverage": [
+      "real full SPI model image boot and payload/DDR CRC",
+      "old generation/oversized descriptor rejection before allocation",
+      "staged tail write mask and full PCM input/readback CRC",
+      "cancel with actual uncommitted staging write",
+      "input CRC and actual DDR readback corruption rejection before any CNN PCM",
+      "cancel with actual delayed staging read return",
+      "real CQT/six CNN layers/Viterbi complete bounded EOF",
+      "score ready backpressure and sequence ordinal",
+      "cancel with actual delayed CNN native read return",
+      "fresh task versus post-cancel exact six-layer hashes, positive write counts and complete score",
+      "late old cancellation and stale ingress identity rejection",
+      "actual native owner5/6/8 memory contention",
+      "actual unowned native read response quarantine and one-shot terminal acknowledgement"
+    ],
+    "elapsed_wall_seconds": 178.23
+  },
+  "broker_and_address_map": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-broker-and-map-v2/verification.json",
+      "sha256": "55e9ab098814aaa85afdd2091297420f8b19fdc140820c05691f54ada68916b0"
+    },
+    "passed": true,
+    "broker_checks": 51,
+    "broker_mutations_rejected": [
+      "ack_local_slot",
+      "route_wrong_return",
+      "disable_timeout"
+    ],
+    "address_map_mutations_rejected": [
+      "overlap_recording_pool",
+      "native_unit_mismatch",
+      "capacity_mismatch",
+      "invalid_tail_alignment"
+    ],
+    "traffic_scope": "owner6 and owner8 periodic native writes are contention probes, not actual simultaneous Delay DSP and 60-second recording engine acceptance"
+  },
+  "default_compatibility": {
+    "comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-default-after-bounded-eof-v5/default_compatibility.json",
+      "sha256": "2acf42b62e190aef4f4491e6a78dd0691f5699a976a28c9c98c5cd71390da594"
+    },
+    "passed": true,
+    "inference": [
+      [
+        "INFERENCE hashes=a03d33094c74c58c2d3900167980a8bf34a5acbde7e6ee0a notes=1",
+        "NOTE 0 44",
+        "LAYER 0 writes=4224",
+        "LAYER 1 writes=528",
+        "LAYER 2 writes=5632",
+        "LAYER 3 writes=176",
+        "LAYER 4 writes=5632",
+        "LAYER 5 writes=176"
+      ],
+      [
+        "INFERENCE hashes=a03d33094c74c58c2d3900167980a8bf34a5acbde7e6ee0a notes=1",
+        "NOTE 0 44",
+        "LAYER 0 writes=4224",
+        "LAYER 1 writes=528",
+        "LAYER 2 writes=5632",
+        "LAYER 3 writes=176",
+        "LAYER 4 writes=5632",
+        "LAYER 5 writes=176"
+      ]
+    ],
+    "lifecycle_cases": [
+      [
+        "CASE 1 drain PASS clocks=5",
+        "CASE 2 drain PASS clocks=14",
+        "CASE 3 drain PASS clocks=6",
+        "CASE 4 timeout PASS",
+        "CASE 5 memory reset PASS",
+        "CASE 6 calibration loss PASS",
+        "CASE 7 stopped memory clock PASS"
+      ],
+      []
+    ],
+    "default_padding_unchanged": true,
+    "model_or_frozen_baseline_bytes_changed": false
+  },
+  "preserved_failed_evidence": [
+    {
+      "verification": {
+        "path": "/tmp/task3-w-cnn-task-v1/verification.json",
+        "sha256": "45390d1715517fd1c558edeaa3b0ce7bb21b34a504a9422f0f2946a60dd3f74f"
+      },
+      "status": "PRESERVED_FAILURE",
+      "reason": "Initial legacy EOF loop reached 350M-clocks fixture deadline; not accepted."
+    },
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-task-diagnostic-v2/verification.json",
+        "sha256": "5366352683c55c973350497525886e9b8daad0869a0e6dfcc8ab0edd7a3a0e70"
+      },
+      "status": "PRESERVED_FAILURE",
+      "reason": "Unbounded legacy EOF padding creates repeated zero windows; after 120M clocks three CNN windows emitted and frontend retained 159 padded input frames.",
+      "run_exit": 1,
+      "log": "PROGRESS clocks=0 task=0 state=0 cnn=0 replayed=0 reads=0 writes=0 front_started=0 full=0 drained=1 score=0 notes=0\nMODEL real_spi_crc=af01a61b words=52239 native_reads=52247 native_writes=115093\nCASE staged_write_cancel PASS\nCASE input_crc_reject PASS\nCASE ddr_crc_reject PASS\nCASE delayed_staging_return_cancel PASS\nPROGRESS clocks=10000000 task=5 state=9 cnn=0 replayed=3591 reads=191065 writes=137337 front_started=1 full=0 drained=0 score=0 notes=0\nPROGRESS clocks=20000000 task=5 state=10 cnn=2 replayed=4096 reads=738576 writes=222527 front_started=1 full=1 drained=0 score=0 notes=0\nPROGRESS clocks=30000000 task=5 state=10 cnn=6 replayed=4096 reads=1209518 writes=307950 front_started=1 full=1 drained=0 score=0 notes=0\nPROGRESS clocks=40000000 task=5 state=10 cnn=39 replayed=4096 reads=1252474 writes=402786 front_started=1 full=1 drained=0 score=0 notes=0\nPROGRESS clocks=50000000 task=5 state=10 cnn=2 replayed=4096 reads=1736464 writes=491964 front_started=1 full=1 drained=0 score=0 notes=1\nPROGRESS clocks=60000000 task=5 state=10 cnn=2 replayed=4096 reads=2291988 writes=576605 front_started=1 full=1 drained=0 score=0 notes=1\nPROGRESS clocks=70000000 task=5 state=10 cnn=6 replayed=4096 reads=2433343 writes=664179 front_started=1 full=1 drained=0 score=0 notes=1\nPROGRESS clocks=80000000 task=5 state=10 cnn=2 replayed=4096 reads=2738281 writes=761441 front_started=1 full=1 drained=0 score=0 notes=2\nPROGRESS clocks=90000000 task=5 state=10 cnn=2 replayed=4096 reads=3281803 writes=846404 front_started=1 full=1 drained=0 score=0 notes=2\nPROGRESS clocks=100000000 task=5 state=10 cnn=6 replayed=4096 reads=3640956 writes=932515 front_started=1 full=1 drained=0 score=0 notes=2\nPROGRESS clocks=110000000 task=5 state=10 cnn=0 replayed=4096 reads=3724165 writes=1029861 front_started=1 full=0 drained=0 score=0 notes=3\nPROGRESS clocks=120000000 task=5 state=10 cnn=2 replayed=4096 reads=4279727 writes=1115837 front_started=1 full=1 drained=0 score=0 notes=3\n[2400000230000] %Fatal: tb_workstation_cnn_task.sv:173: Assertion failed in tb_workstation_cnn_task: task fixture deadline model=14 state=10 cnn=2 frontend_n=18013 base=17854 busy=0\n%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/music/tb_workstation_cnn_task.sv:173: Verilog $stop\nAborting...\n"
+    },
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-task-bounded-eof-v4/verification.json",
+        "sha256": "230b6d99923ca4c9580e553022e84fa2b7c2173f88ac500ba7db79a200482ac0"
+      },
+      "status": "PRESERVED_FAILURE",
+      "reason": "Fixture paused responses before observing a CNN read and could block staging read instead. Correct native timeout quarantined the task. Fixed fixture pauses only an already-observed actual CNN read.",
+      "run_exit": 1,
+      "log": "PROGRESS clocks=0 task=0 state=0 cnn=0 replayed=0 reads=0 writes=0 front_started=0 full=0 drained=1 score=0 notes=0\nMODEL real_spi_crc=af01a61b words=52239 native_reads=52247 native_writes=115093\nCASE staged_write_cancel PASS\nCASE input_crc_reject PASS\nCASE ddr_crc_reject PASS\nCASE delayed_staging_return_cancel PASS\nPROGRESS clocks=10000000 task=5 state=9 cnn=0 replayed=3591 reads=191065 writes=137337 front_started=1 full=0 drained=0 score=0 notes=0\nPROGRESS clocks=20000000 task=5 state=10 cnn=2 replayed=4096 reads=738576 writes=222527 front_started=1 full=1 drained=1 score=0 notes=0\nPROGRESS clocks=30000000 task=5 state=10 cnn=6 replayed=4096 reads=1209518 writes=307950 front_started=1 full=1 drained=1 score=0 notes=0\nPROGRESS clocks=40000000 task=5 state=10 cnn=39 replayed=4096 reads=1252474 writes=402786 front_started=1 full=1 drained=1 score=0 notes=0\nINFERENCE fresh hashes=ed2ef522fbd165fdcc872f9ccd1b72333f716918e9e4b201 notes=1 first=32\n[833476590000] %Fatal: tb_workstation_cnn_task.sv:169: Assertion failed in tb_workstation_cnn_task: unexpected actual transport/restart fault task=6 state=12 model=14 broker=1 broker_state=3 broker_timer=4095 media=0 restart=0 restart_code=0 stage=1 allow_response=0 pending=1\n%Error: /Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/music/tb_workstation_cnn_task.sv:169: Verilog $stop\nAborting...\n"
+    }
+  ],
+  "interrupted_duplicate": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-task-v1/verification.json",
+      "sha256": "a4879bc2f5d93e9269735945749ca4dd53c0e1dd0909ac8d4e1969e6843d0b28"
+    },
+    "status": "INTERRUPTED_DUPLICATE",
+    "reason": "A duplicate post-compaction run was terminated; not a functional result."
+  },
+  "remaining_gaps": [
+    "No selected complete W profile, W compilation/source closure or physical resource/timing result.",
+    "No hardware pin/electrical/LCD throughput, RTT, congestion, clock-drift or end-to-end latency acceptance.",
+    "Production dimensions 43844/172 and full 96000-frame capacity not exercised by this small lifecycle inference fixture.",
+    "No whole-song/chunked TF analysis, cross-board framed PCM ingress or returned complete Push guidance integration.",
+    "No BSRAM acceleration experiment or guaranteed production inference budget yet.",
+    "No actual concurrent long-recording/Delay/phone audio load or memory service-time bound established.",
+    "Only 48k stereo16 format1 task ingress supported; 44.1k task service contract remains separate.",
+    "Native bus has no response epoch; safe recovery still requires coherent old-transaction reset."
+  ],
+  "boards": {
+    "M": {
+      "source_policy_changed_or_profile_selected_by_this_component": false,
+      "bitstream_identity": null,
+      "physical_resources": null,
+      "routed_timing": null,
+      "hardware_latency": null
+    },
+    "W": {
+      "source_profile_selected": false,
+      "bitstream_identity": null,
+      "physical_resources": null,
+      "routed_timing": null,
+      "hardware_latency": null
+    }
+  },
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_written": false,
+  "rollback": "Keep component unselected; use frozen task2 M/W candidates. Existing link/pipeline BOUNDED_EOF_PADDING defaults to 0 and the default outputs were checked against prior evidence.",
+  "root_review": {
+    "source_hashes_matched": true,
+    "reported_actual_task_and_broker_evidence_hashes_matched": true,
+    "broker_and_address_map_replay": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-cnn-broker-root-review-v1/verification.json",
+      "sha256": "55e9ab098814aaa85afdd2091297420f8b19fdc140820c05691f54ada68916b0",
+      "passed": true
+    },
+    "recording_capacity_guard_replay": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/recording-capacity-guard-root-v1/verification.json",
+      "sha256": "219b44bd3f3bc4c977a4e38bf1158efaafc87d7cecbc8a9022a160f817cc30dc",
+      "passed": true
+    }
+  }
+}
