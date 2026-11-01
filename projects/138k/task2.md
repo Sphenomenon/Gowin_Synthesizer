@@ -457,6 +457,8 @@ W 的[25K真实momentary闭环](push2_workstation/usb_a/reports/DUAL138K_W_TOUCH
 
 [M22／W20新整机prepare及来源冻结](push2_workstation/usb_a/reports/DUAL138K_M22_W20_PREPARE_20261101.json)已完成：M `8624239a297667b1`／891来源／603暂存／262编译／845锁；W `49dc4695ee6881cb`／967来源／661暂存／285编译／846锁，分别冻结1440工具文件。主线程重新核对全部来源／工具及1264暂存文件。两份均由`a33f4115`源码全量新综合，不复用旧VG；此阶段不预记TF退出的资源收益，不代表实际网表／物理或声画接受。
 
+M22的[全量综合及默认物理准备](push2_workstation/usb_a/reports/DUAL138K_M22_SYNTHESIS_20261101.json)已通过：FF43046／LUT48124／ALU11476／综合BSRAM等价203，实际VG `4b3da766…9b0b6`。旧协议库存门先拒绝，独立v2审计快照才按实际display132FF／230接收FF＋98注册RAM位、新参数邮箱60FF及本域queue tail CE→D映射通过，M22源码／VG／SDC未改；失败保留。默认D211012D已启动全量P&R，未派生far。新HMI逐位source origin、常量／alias闭包、后级SDC及破坏负控仍单列pending，不能将基础握手通过转为物理CDC／声画接受。主线程独立复验关键报告、VG／资源XML及两项新审计工具身份；不把综合BSRAM203当物理资源。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |

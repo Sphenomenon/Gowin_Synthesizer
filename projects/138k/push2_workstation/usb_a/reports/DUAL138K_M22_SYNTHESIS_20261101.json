@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "stage": "M22_full_synthesis_and_default_physical_prepare_handoff",
+  "created_utc": "2026-11-01T10:19:00.713894+00:00",
+  "source_commit": "a33f4115207ad8bddcc1fb9be77b5383507a6aff",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-8624239a297667b1",
+  "integration_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/integration_inputs.json",
+    "sha256": "dc99d73eb0b21fefcd6251b57213c27070937aa5d5a2192eff3b9a10bf3f3fc6"
+  },
+  "configuration_sha256": "278dc6fc2123f3b81a8e6a5fd945653a7154d99bc573bffcc65c2fd5d8995411",
+  "counts": {
+    "profile_locked_sources": 845,
+    "source_snapshots": 891,
+    "staged_inputs": 603,
+    "enabled_inputs": 262,
+    "original_audit_tools": 1440
+  },
+  "synthesis": {
+    "exit_code": 0,
+    "elapsed_seconds": 168.009879375,
+    "resources": {
+      "Register": 43046,
+      "Lut": 48124,
+      "Alu": 11476,
+      "Bsram": 203,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 6,
+      "MULT27X36": 41
+    },
+    "BSRAM_scope": "synthesis equivalent only; no physical saving claimed",
+    "netlist_sha256": "4b3da76631cf6e84dec07b079770360eb4a827e7e25c6cfd7ac84120a869b0b6",
+    "resource_xml_sha256": "ed069f8babb83d81d3e90aefe2de2e00313e228ae682669c8fc43ad21360f9ba",
+    "all_staged_inputs_verified_after_run": true
+  },
+  "strict_synthesis": {
+    "passed": true,
+    "tool_snapshot": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audit-tools-v2",
+    "tool_seal_sha256": "b32971a34b522a4a5243a3ecdfe9451e772fa423556d0140d5a73229a5c5e56b",
+    "changes": {
+      "tools/workstation_demo_boundary_cdc.py": {
+        "original_sha256": "bd45e3dbe5a8ecbff4bac1d8fdd2603e9280b713e98549f968032757982544e8",
+        "selected_sha256": "1d514003ede6e6d344a46a73583a0462df35b17725b2df94126064dd7072dff7"
+      },
+      "tools/workstation_native_protocol_audit.py": {
+        "original_sha256": "01317b76a0cfc2821b5f6d85da29fcfec74013021e0c68d41241d6a8cceec117",
+        "selected_sha256": "ddeaaedab73d286a32bcf056042cb89e31b14aef0abad4ab1c7d6ef89f6771d1"
+      }
+    },
+    "mapped_storage_and_handshakes": "managed display132 heldFF/230 destinationFF plus98 registered RAM bits; separate applied129 mailbox60 held/captureFF; exact common CE, clocks, third request stage, toggle/ACK Boolean proof preserved",
+    "local_queue_mapping": "exact M140 complete consumer closure; local tail CE high and D feedback replaces legacy tailCE endpoint; all domains and actual remote receivers unchanged"
+  },
+  "physical_prepare": {
+    "passed": true,
+    "directory": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22-physical-v1",
+    "manifest_sha256": "d5509851ac35bc513cdd96d363cbf7fd5e042c8577521b2abe039267b261dca6",
+    "user_code": "0xD211012D",
+    "place_option": 2,
+    "route_option": 0,
+    "replicate_resources": false,
+    "input_count": 8,
+    "PNR_started": true,
+    "PNR_metadata": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-pnr-run-v1.json"
+  },
+  "key_evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-prepare-source-seal-v1.json": "ac94846105abbc56665ab9d500b837b166b1134091d8fc79e2fd77c2a05356ab",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-synthesis-run-v1.json": "bae48769352159f6570009c001eddf525223cb4029e53e36c8d946849f6b2486",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "4b3da76631cf6e84dec07b079770360eb4a827e7e25c6cfd7ac84120a869b0b6",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml": "ed069f8babb83d81d3e90aefe2de2e00313e228ae682669c8fc43ad21360f9ba",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audit-tools-v2-seal.json": "b32971a34b522a4a5243a3ecdfe9451e772fa423556d0140d5a73229a5c5e56b",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audits-v2/strict-synthesis-run.json": "ae19dd51484f989245e67869c19e0c9b6efc869f7bd3d636e6c78a3e303d0387",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audits-v2/physical-prepare-run.json": "d654f15b647b5773f4989cda94bccf47a17cfb3b130e3f02548d44b904a4acce",
+    "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-inventory-vg-v1.json": "00cf23ab296cce74653e0426ebe24d9506290692335bd5ccdb7d55ae8230b19e"
+  },
+  "additional_evidence": {
+    "original_strict_failure": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-audits-v1/strict-synthesis-run.json",
+    "first_inventory_extension_boundary_failure": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-hmi-audits-v1/strict-synthesis-run.json",
+    "queue_mapping_diagnostic": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-boundary-queue-VG-mapping-diagnostic-v1.json"
+  },
+  "remaining_gates": [
+    "HMI exact applied-parameter source/consumer semantic origin and all unused/constant/alias accounting",
+    "HMI129 exact SDC source/capture selector closure and finite second-stage/functional-reset protection",
+    "new HMI actual-VG destructive negative controls and independent review",
+    "PNR completion, actual routed resources/STA/CDC/PLL and VO mapping",
+    "physical HDMI/DAC/Push/25K acceptance"
+  ],
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "physical_cdc_accepted": false,
+  "release_ready": false,
+  "root_independent_verification": {
+    "key_reports": 8,
+    "selected_changed_audit_tools": 2,
+    "all_hashes_match": true
+  },
+  "handoff_path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m22-synthesis-handoff-v1.json",
+  "handoff_sha256": "ef464016f6386d1aaa39e582bdddee0c931d2953acc2b30a4e46ad848d989396"
+}
