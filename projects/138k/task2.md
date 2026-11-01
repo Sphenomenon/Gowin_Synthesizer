@@ -460,6 +460,8 @@ M23的[新全量综合与定向物理准备](push2_workstation/usb_a/reports/DUA
 
 [PCM逐槽清理许可](push2_workstation/usb_a/reports/DUAL138K_PCM_BITMAP_SLOTS_20261101.json)已落维护源码：实际完整owner7217拍／6000随机命令、52224四态及3负控通过，旧context严格inverse后4负控与8项PCM suite通过（双率±2000ppm／jitter／stereo各576000帧）。主线程重验67文件与Git逐字节inverse；无新增状态或周期，不预记物理收益。W无显示／无录音新候选将显式消费，M23冻结输入不变；已中断的raw录音proof另保留且不宣称完整通过。
 
+M23的[完整物理D2110130](push2_workstation/usb_a/reports/DUAL138K_M23_DIRECTED_PHYSICAL_20261101.json)已封存：全量P&R623.863s，物理BSRAM246／DSP116／CLS46460；setup599／最差−0.556ns（audio477、DDR UI122），hold0／+0.143ns，recovery+2.462／removal+0.275ns，DDR原3.500ns保持且指定hold+0.453ns。native45过／14具名不适用／61负控、boundary7／69、六PLL／7负控、performance17／8负控，以及新VG／VO实际HMI来源60有效／8消费常量／61未用及各8负控均通过；完整STA仍严格失败，不下载。主线程重新核验4475冻结文件；新M最小修复另用D2110132，W无显示配置独立推进。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
