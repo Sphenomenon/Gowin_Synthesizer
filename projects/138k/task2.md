@@ -364,6 +364,8 @@ M17 `D2110112` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUA
 
 W15 `D2110114` 的[默认完整物理结果](push2_workstation/usb_a/reports/DUAL138K_W15_DEFAULT_PHYSICAL_20261101.md)已封存：物理BSRAM293／DSP66.5／CLS53,325，setup5935／−4.089ns、hold1／−3.454ns、recovery+1.685／removal+.278ns。最差已变为DDR复位反馈至raw failure／return_data及delay欠载至PCM written；四张clk50报告−3.340／+.132／−3.340／−3.454ns。原生VO58项44通过14跳过及60负控、边界7／69、官方六PLL／7负控与held-v2实际入口通过；主线程逐30物理／3253证据重验，整机仍不可部署。原VG／完整SDC／DDR3.500ns的`D2110115` far另测；唯一对象仍64KiB，未上板，声画／无线／双板均未验收。
 
+M17／W15 的[far完整物理对照](push2_workstation/usb_a/reports/DUAL138K_M17_W15_FAR_PHYSICAL_20261101.md)已封存：`D2110113`／`D2110115`保持原VG／完整SDC／DDR3.500ns，仅两远区CST；目标hold+.565／+.679ns，全局hold0／+.134和0／+.151ns。setup仍2614／−1.767ns及6813／−4.798ns；M最差配置反馈／TF read_buf，W最差raw failure／token及PCM written，完整STA未闭合。各58项原生回归及71／60负控、边界7／69、官方六PLL／7负控与held-v2入口通过；主线程分别逐32物理／2949及3255证据重验。W far的setup比默认更差，未预记整体收益；未上板，不转授声画／双板接受。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
