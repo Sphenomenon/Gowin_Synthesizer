@@ -374,6 +374,8 @@ W 的[PCM位图清理维护阶段](push2_workstation/usb_a/reports/DUAL138K_PCM_
 
 M 的[TF私有读缓冲预装维护阶段](push2_workstation/usb_a/reports/DUAL138K_TF_PRIVATE_READ_PRELOAD_20261101.md)已完成：仅非valid时预装read_buf，原response发布／指针／周期及其余NBA保持；X/Z回原分支。pending/valid互斥等6项源绑定二态归纳、双容量各737280实际模块四态边沿／4源码负控、旧cofactor→occupancy／threshold及真实service／clear／stop全链通过；有效payload边界明确，旧逆变换门不放宽。主线程重验288维护产物／54输入／10源及3696提案产物，三次历史fixture失败保留；DMA `5fc0fd09…ef3f`已被M18/W16 prepare实际消费，综合与物理另记，不预记收益，未上板。
 
+M18/W16 的[完整prepare／综合及VG检查点](push2_workstation/usb_a/reports/DUAL138K_M18_W16_PREPARE_20261101.md)已完成：各822项锁仅更新6条hash，875／951原始来源、588／645staged及各1395冻结工具逐项复验，实际消费四项维护RTL。综合FF46932／45092、LUT53840／57259、ALU12537／13802、BSRAM equivalent195／257；原生58项分别53／42通过、68／57负控，边界各7／69通过。主线程重读4680证据；M实际VG确认available→256 read_buf CE闭包退出、深度14→2，但CE扇出仍256，routed收益另测。`D2110116`／`D2110118`默认全量P&R已启动；W专门返回邮箱CDC覆盖仍另查，不转授完整CDC／声画或硬件接受，未上板。
+
 除起点事实和T2-D0的文档分配外，下面完整工程任务仍未结项。每项只在对应来源、回归和要求的实测证据齐全后勾选；任务记录链接到 reports，不在此堆积工具日志。
 
 | 完成 | ID | 工作与明确退出条件 |
