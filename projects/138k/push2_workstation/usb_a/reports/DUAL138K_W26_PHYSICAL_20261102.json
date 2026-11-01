@@ -1,0 +1,420 @@
+{
+  "schema": 1,
+  "stage": "W26 fresh complete synthesis and independent physical implementation; offline gates only",
+  "source_commit": "c7818498cf7662581c6eee804376566f3a639df6",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-0a6b1eb610b17895",
+  "candidate_manifest_sha256": "b061b3adc5fbdce875bbab2bbaefba62795247247a295b874df9115fcbeff3a3",
+  "profile_revision": 5,
+  "profile_locked_source_count_at_prepare": 1140,
+  "physical_identity": "custom138k-native-physical-D2110143",
+  "physical_manifest_sha256": "02b1d74d9e00a91b3d7159ab154963530f5960e6a83787ecf5821563b01fd26c",
+  "source_policy": "new W26 actual installed xPack15.2 ROM and fresh VG/PnR; W142 CST placement recipe only",
+  "synthesis": {
+    "elapsed_seconds": 113.56171066686511,
+    "exit_code": 0,
+    "sealed_input_count": 615,
+    "input_bytes_unchanged": true,
+    "VG_sha256": "39401fc44288ecb3d2f22e4ecc210653a578b517c257c6cdbedc658526ced6a6",
+    "strict_passed": true
+  },
+  "physical": {
+    "elapsed_seconds": 437.4290809580125,
+    "exit_code": 0,
+    "VO_sha256": "d368f4ae1a79327cdfcb60774b1b01bb1c4f0ea44998d9f40a13b1d6adcf8f1a",
+    "SDF_sha256": "9d8fa04e8e0f772b72a67f86bee8c2c1d29261449636c2995623e9c81700195e",
+    "CST_sha256": "a017853f8cafee8a212f2818a6828773808813242dbba8c78ad4b608bde22b58",
+    "SDC_sha256": "d55a6e57a6a6e2da216666f168ca39af46e6794ce526882cddcfaed26e15c9a2"
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-physical-D2110143/impl/pnr/custom_138k_integration.fs",
+    "sha256": "4b76a2c5b991cbd268b2e72f2cc9f8538e7ad8ea23fbac677b82372e30b755af",
+    "user_code": "D2110143",
+    "checksum": "3575"
+  },
+  "resource_usage": {
+    "Logic": {
+      "used": 43324,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 27030,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 32197,
+      "capacity": 69120
+    },
+    "BSRAM": {
+      "used": 218,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 59,
+      "capacity": 298
+    },
+    "LUT": 30655,
+    "ALU": 11607,
+    "ROM16": 0,
+    "SSRAM": 177
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "global_worst_ns": {
+      "setup": 0.013,
+      "hold": 0.14,
+      "recovery": 2.376,
+      "removal": 0.281
+    },
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 50.114
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 104.031
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 225.453
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 231.722
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 76.875
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 58.252
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 202.778
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 81.047
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1071.811
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 109.31
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 109.31
+      }
+    },
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_rtc_bound": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "top_negative_paths": {
+      "setup": [],
+      "hold": [],
+      "recovery": [],
+      "removal": []
+    }
+  },
+  "minimum_pulse_width_worst_ns": 2.851,
+  "exact_DDR_hold": {
+    "slack_ns": 0.626,
+    "arrival_ns": 6.044,
+    "required_ns": 5.418,
+    "relationship_ns": 3.5,
+    "clock_skew_report_ns": 0.474,
+    "launch_location": "R104C175[0][A]",
+    "capture_location": "R2C2[0][A]",
+    "launch_within_requested_region": true,
+    "capture_within_requested_region": true
+  },
+  "actual_clock_distribution": {
+    "clk_16m9344_d": {
+      "type": "PRIMARY",
+      "locations": "PTR1 PTR3 PBR1"
+    },
+    "usb2_ulpi_clk_d": {
+      "type": "PRIMARY",
+      "locations": "PBR3"
+    },
+    "audio_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR0 PTR1 PTR2 PBR0 PBR1 PBR2"
+    },
+    "usb_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2 PTR3 PBR2 PBR3"
+    },
+    "dac_mclk_d": {
+      "type": "PRIMARY",
+      "locations": "PTR1 PTR2 PTR3 PBR1 PBR2"
+    },
+    "memory_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR0 PTR1 PBR0 PBR1 PBR3"
+    },
+    "ram_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2 PTR3 PBR2 PBR3"
+    },
+    "core_clk": {
+      "type": "PRIMARY",
+      "locations": "PTR2"
+    },
+    "clk_50m_d": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "clk_12m288_d": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "reset_n": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "enable_r[1]": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/n4069_5": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/compute_release[2]": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_managed/runtime/clocks/control_reset_n": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_memory/controller_reset": {
+      "type": "LW",
+      "locations": "-"
+    },
+    "u_memory/memory_clk_1426": {
+      "type": "HCLK",
+      "locations": "BANK6_HCLK0 BANK7_HCLK0"
+    }
+  },
+  "firmware": {
+    "installed_rom_sha256": "9f15d5390b97dbd2aa7ede0ed3019b93aba14ad76e11845fee4796696ae487ea",
+    "actual_ELF_sha256": "5c8c422f6dd3840dcf3459633e3b79e018c4b41f4f604859adbaab0cd149e6b9",
+    "all32768_AE350_words_verified_in_new_VG_and_actual_VO": true,
+    "pROM_cells": 64,
+    "source_stage_Homebrew_ROM_used": false
+  },
+  "gates": {
+    "strict_complete_profile_synthesis": true,
+    "registered_epoch_source_Q_bits": 32,
+    "synthesis_epoch_negative_controls": 33,
+    "actual_routed_epoch_negative_controls": 33,
+    "actual_routed_feedback_bits": 142,
+    "actual_routed_feedback_negative_controls": 110,
+    "actual_routed_native_tests": 60,
+    "actual_routed_native_condition_skips": 24,
+    "actual_routed_native_negative_controls": 64,
+    "supplemental_vendor_registered_RAM_test_passed": true,
+    "supplemental_vendor_test_closes_one_prior_condition_skip": true,
+    "actual_routed_boundary_tests": 7,
+    "actual_routed_boundary_negative_controls": 69,
+    "actual_PLL_passed": true,
+    "actual_PLL_negative_controls": 6,
+    "actual_full_STA_reexecuted": true,
+    "all13_clock_TNS_and_violation_counts_zero": true,
+    "semantic_gates_reexecuted_on143": true,
+    "old_semantic_gate_results_reused": false,
+    "retired_synth_MIDI_inventory_zero": true
+  },
+  "native_matrix_counts": {
+    "tests_reported": 60,
+    "actual_passed": 36,
+    "condition_skipped": 24,
+    "supplemental_vendor_RAM_actual_passed": 1,
+    "negative_controls": 64
+  },
+  "adaptations": {
+    "synthesis_omitted_INIT0_exact_vendor_model_only": true,
+    "route_still_requires_explicit_INIT0": true,
+    "new_VG_DDR_and128_reference_complete_visible_boundary_checked": true,
+    "placement_negative_controls": 20,
+    "CST_and_SDC_bytes_equal_W142": true,
+    "DDR_minimum_ns_unchanged": 3.5,
+    "requested_BUFG8_actual_clk50_type": "LW"
+  },
+  "failed_attempts_preserved": {
+    "strict_prepare_v1": "synthesis omitted INIT0 representation rejected by original frozen auditor; no RTL failure",
+    "PLL_v1": "GOWIN_SIMLIB unset; source-proof lookup failed; v2 used explicit installed simlib with unchanged tools and route"
+  },
+  "evidence": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-full-physical-handoff-v1.json",
+      "sha256": "1dc476c541e6eea77c5ea09528f106f3a849db42870bbff08210216e34f6979e"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-root-readonly-recheck-v1.json",
+      "sha256": "111a40ce7b58b9c22b1912b24f2d864af3595072fd434a5949e8978e524fabc5"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w26-complete-physical-inventory-v1.json",
+      "sha256": "c86160509eb39bdbb4b374a8d7d4fd2cb541f50033a73aaa580f0dc8a90ecd78"
+    }
+  ],
+  "root_recheck_unique_files": 4827,
+  "original_frozen_inputs_and_tools_unchanged": true,
+  "actual_semantic_gates_reexecuted": true,
+  "old_routed_timing_or_semantic_acceptance_reused": false,
+  "timing_closed": true,
+  "physical_CDC_accepted": false,
+  "IO_and_electrical_acceptance_complete": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "remaining_gaps": [
+    "No phone A2DP/25K parameter/DAC hardware acceptance",
+    "HDMI and recording absent from this audio-only W candidate",
+    "Complete all-IO/electrical/CDC and dual-board concurrent acceptance remain separate"
+  ],
+  "rollback": "No board operation. Last recorded M26-1 r2 D211013A SRAM was not changed. New M stereo source commit 1cf5bf83 has no new VG/bitstream and was not consumed by this frozen W26 run."
+}
