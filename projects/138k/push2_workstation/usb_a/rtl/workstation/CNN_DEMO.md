@@ -23,7 +23,15 @@ compiled/retired sources, the transform, and exact constraint retirements.
 Frozen baselines and historical acceptance evidence are never edited.
 
 The carrier pin authority remains `boards/custom_138k/pinout.json`, including
-the locked `Netlist_my_138k_2026-10-21.tel` and amplifier netlist. This is **not**
+the locked `Netlist_my_138k_2026-10-21.tel` and amplifier netlist. CNN-DEMO alone
+corrects the inherited TF contact interpretation through
+`boards/custom_138k/cnn_demo_tf_spi.json`: U16 DAT0.7→V15 (MISO), CMD.3→Y16
+(MOSI), CLK.5→W15 (SCK), DAT3.2→AB15 (CS_n). The original U16 symbol and
+carrier hashes, endpoint/ball resolution and exact old/new constraints are
+recorded. The inherited plan had assigned DAT2/DAT1/DAT0/CLK to those four
+signals; D6's user-observed empty list is a failed hardware result. The shared
+native plan and frozen M/W/BLE inputs remain unchanged by this demo correction.
+This is **not**
 the official carrier's bitstream or pins. Native USB Host, TF/MP3, DDR BIST and
 bounded TF/CNN requests, CQT/CNN/BSRAM caches/Viterbi, original Push interaction,
 fixed basic instrument, final output router and native FPC DAC remain.
@@ -117,6 +125,9 @@ actual note counts. A failed source clears the guidance queue. Selecting a new
 song retains the existing flush/restart policy and clears the old target.
 Analysis does not stop the audio sample schedule. TF playback retains the
 original media controls; the dry basic instrument sounds actual pressed notes.
+An empty list displays TF scanning or a completed scan with no MP3 in the root,
+plus actual filesystem/card FSM values. These statuses use the existing coherent
+Push mailbox; the audio schedule never waits for feedback.
 
 New routed resource, PLL, full STA and CDC gates must pass before SRAM use.
 SRAM testing is user-authorized for this task and must run under the shared

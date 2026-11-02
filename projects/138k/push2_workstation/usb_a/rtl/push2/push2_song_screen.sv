@@ -70,12 +70,16 @@ module push2_song_screen #(parameter PIPELINED=0,parameter bit CNN_DEMO_STATUS_E
             if(cnn_status_i[3])state_text="MODEL FAILED    ";
             else if(cnn_status_i[6])state_text="TF CARD LOST    ";
             else if(cnn_status_i[5])state_text="TF DDR FAILED   ";
-            else if(cnn_status_i[4])state_text="WAV UNSUPPORTED ";
-            else if(!cnn_status_i[0])state_text="LOAD MODEL UART ";
+            else if(cnn_status_i[4])state_text="MP3 UNSUPPORTED ";
+            else if(!cnn_status_i[0])state_text="AUTO MODEL LOAD ";
             else if(analysis_done)state_text="SONG READY      ";
             else if(score_count!=0)state_text="GUIDE READY     ";
             else state_text="CNN ANALYZING   ";
-            effect_text="48K WAV MODEL E ";
+            effect_text="MP3 CNN MODEL E ";
+            if(!chosen && track_count==0)begin
+                if(cnn_status_i[14])state_text="NO MP3 IN ROOT  ";
+                else state_text="TF SCANNING     ";
+            end
         end
         progress={digit({4'b0,cursor_digits[19:16]}),digit({4'b0,cursor_digits[15:12]}),digit({4'b0,cursor_digits[11:8]}),digit({4'b0,cursor_digits[7:4]}),digit({4'b0,cursor_digits[3:0]}),8'h2f,
                   digit({4'b0,score_digits[19:16]}),digit({4'b0,score_digits[15:12]}),digit({4'b0,score_digits[11:8]}),digit({4'b0,score_digits[7:4]}),digit({4'b0,score_digits[3:0]}),40'h2020202020};
@@ -99,6 +103,25 @@ module push2_song_screen #(parameter PIPELINED=0,parameter bit CNN_DEMO_STATUS_E
             if(y>=28 && y<156 && list_track=={1'b0,browse_index} &&
                list_local_x>=16 && list_local_x<224)
                 background=16'h18e4;
+            if(CNN_DEMO_STATUS_ENABLE && track_count==0)begin
+                if(y>=58 && y<72 && x>=96 && x<288)begin
+                    charpos=(x-96)/12;
+                    character=state_text[127-charpos*8 -:8];
+                    row=(y-58)/2;col=((x-96)%12)/2;draw=1;
+                end else if(y>=82 && y<96 && x>=96 && x<288)begin
+                    // Actual TF filesystem/card FSM values, not a timer.
+                    charpos=(x-96)/12;
+                    case(charpos)
+                        0:character="F";1:character="S";2:character=" ";
+                        3:character=digit({5'd0,cnn_status_i[23:21]});
+                        5:character="C";6:character="A";7:character="R";8:character="D";
+                        10:character=cnn_status_i[20:17]<10 ?
+                            8'd48+{4'd0,cnn_status_i[20:17]} : 8'd55+{4'd0,cnn_status_i[20:17]};
+                        default:character=" ";
+                    endcase
+                    row=(y-82)/2;col=((x-96)%12)/2;draw=1;
+                end
+            end
         end else begin
             if(y>=32 && y<46 && x>=96 && x<240 && song_char<12) begin
                 character=names[song_addr];

@@ -28,6 +28,42 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def adapt_tf_pins(root, netlists, stage):
+    """Resolve U16 by its schematic pin functions and the locked carrier nets.
+
+    Preserve the inherited native plan as historical input. Only the explicit
+    demo compiler constraints consume this separately recorded correction.
+    """
+    from tools.workstation_pinout import Netlist, parse_locations
+    profile = Path(root) / 'boards/custom_138k/cnn_demo_tf_spi.json'
+    data = json.loads(profile.read_text())
+    carrier = Path(netlists) / data['carrier_filename']
+    if sha(carrier) != data['carrier_sha256']:
+        raise ValueError('CNN-DEMO TF carrier source drift')
+    nets = Netlist(carrier.read_bytes())
+    for port, pin in data['ports'].items():
+        if nets.ball(pin['node'], 5) != pin['ball']:
+            raise ValueError('CNN-DEMO TF endpoint drift: ' + port)
+    evidence = dict(profile=profile.relative_to(root).as_posix(), profile_sha256=sha(profile),
+                    **data, constraints={})
+    for name in ('custom_138k.cst', 'custom_138k.locations.cst'):
+        path = Path(stage) / 'constraints' / name
+        text = path.read_text()
+        before = sha(path)
+        for port, pin in data['ports'].items():
+            anchor = f'IO_LOC "{port}" {pin["inherited_ball"]};'
+            if text.count(anchor) != 1:
+                raise ValueError('CNN-DEMO TF constraint anchor drift: ' + port)
+            text = text.replace(anchor, f'IO_LOC "{port}" {pin["ball"]};', 1)
+        locations = parse_locations(text)
+        balls = [ball for members in locations.values() for ball in members]
+        if len(balls) != len(set(balls)):
+            raise ValueError('CNN-DEMO TF correction collides with another IO')
+        path.write_text(text)
+        evidence['constraints'][name] = dict(before_sha256=before, after_sha256=sha(path))
+    return evidence
+
+
 def retained(name, accepted_music):
     if name.startswith('rtl/music/'):
         if Path(name).name in ('basic_pitch_uart_model_loader.sv', 'basic_pitch_uart_rx.sv'):
@@ -130,6 +166,7 @@ def prepare(root, netlists, output, riscv_prefix=None):
     # preparation is not this candidate's final compiler source selection.
     output, parent = native_prepare(root, netlists, output, riscv_prefix)
     stage = output / 'workstation/Prj1'
+    tf_pin_correction = adapt_tf_pins(root, netlists, stage)
     accepted = load_baseline(root, 'accepted_full83')
     for name in accepted.music:
         accepted.copy_file(name, stage / name)
@@ -200,7 +237,7 @@ def prepare(root, netlists, output, riscv_prefix=None):
     blob = struct.pack('<52239H', *[int(x,16) for x in model.read_text().splitlines()])
     if binascii.crc32(blob)&0xffffffff != 0xAF01A61B:
         raise ValueError('CNN-DEMO model differs from accepted model E')
-    data = dict(schema=1, name=NAME, revision=4, parent_native_identity=parent['identity'],
+    data = dict(schema=1, name=NAME, revision=5, parent_native_identity=parent['identity'],
         source_policy='accepted_full83_locked_timing85_six_files_synchronized_diagnostics_embedded_model_custom_carrier_minimal_audio',
         configuration=dict(song='travelers.mp3',historical_song_label='TRAVLER',format='mp3',
             directory_extension='MP3',sample_rate_hz=48000,analysis_44100_resampler_retained=True,
@@ -222,6 +259,7 @@ def prepare(root, netlists, output, riscv_prefix=None):
             scope='startup only; unchanged inference and DDR allocation',
             exit_plan='retain explicit demo loader selection; promote pipeline composition when CNN maintenance sources migrate'),
         board_source_inputs=json.loads((output/'pinout/pinout.json').read_text())['source_inputs'],
+        tf_pin_correction=tf_pin_correction,
         compiled_sha256=compiled,retired_compilation_sha256=retired,
         constraint_retirement=constraint_retirement,
         staged_sha256=manifest,hardware_tested=False,sram_deployed=False,flash_deployed=False,

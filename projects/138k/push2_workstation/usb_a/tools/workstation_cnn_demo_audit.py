@@ -137,7 +137,7 @@ def shared_plls(design):
     return result
 
 
-def routed_cdc(design, vo, native_source):
+def routed_cdc(design, vo, native_source, status_bits=(0,1,3,4,5,6)):
     """Check real retained mailbox, level and Gray receivers and route delays."""
     from tools.audit_clk50_cdc_routes import pointer_source
     result = dict(mailboxes={}, levels={}, gray={}, native_controls={}, native_input={})
@@ -157,7 +157,7 @@ def routed_cdc(design, vo, native_source):
         return flight
     for prefix,width,bound in (('u_song_command_cdc',4,20),('u_tf_control_cdc',24,20),
             ('u_fpc_audio/u_samples',41,10),('u_native_usb/input_owner/feedback',93,20),
-            ('u_cnn_status_push_cdc',6,20)):
+            ('u_cnn_status_push_cdc',len(status_bits),20)):
         chains=[]
         for first,second,source in (('req_meta','req_sync','request_toggle'),('ack_meta','ack_sync','acknowledge_toggle')):
             a,ap=one(prefix,first);b,bp=one(prefix,second);s,sp=one(prefix,source)
@@ -166,6 +166,9 @@ def routed_cdc(design, vo, native_source):
         settled,_=one(prefix,'req_settled');sync,_=one(prefix,'req_sync');pair(sync,settled)
         payload=regs(prefix,'destination_data')
         assert len(payload)==width, f'{prefix}: payload width changed {len(payload)} != {width}'
+        if prefix=='u_cnn_status_push_cdc':
+            actual={int(re.fullmatch(re.escape(prefix)+r'/destination_data_(\d+)_s\d+',name)[1]) for name in payload}
+            assert actual==set(status_bits), 'CNN/TF status payload fields changed'
         flights=[]
         for target,tp in payload.items():
             source,pin=design.drivers[tp['D']];kind,sp=cells[source]
@@ -321,6 +324,16 @@ def audit(candidate, physical, output):
     assert all(sha(stage/name)==value for name,value in manifest['staged_sha256'].items()), 'prepared source drift'
     assert all(sha(physical/name)==value for name,value in inputs['input_sha256'].items()), 'physical input drift'
     base=physical/'impl/pnr/custom_138k_integration'
+    tf_pins = None
+    if manifest['revision']>=5:
+        from tools.workstation_pinout import parse_locations
+        expected={'sd_miso':'V15','sd_mosi':'Y16','sd_sck':'W15','sd_cs_n':'AB15'}
+        locations=parse_locations((physical/'physical.cst').read_text())
+        pin_report=base.with_suffix('.pin.html').read_text()
+        for port,ball in expected.items():
+            assert locations[port]==[ball], 'CNN TF compiler pin changed: '+port
+            assert re.search(r'<td class="label">'+port+r'</td>\s*<td>-</td>\s*<td>'+ball+r'/5</td>',pin_report), 'CNN TF physical pin changed: '+port
+        tf_pins=dict(compiler_and_routed_pins=expected,source=manifest['tf_pin_correction'])
     snapshot={str(p):sha(p) for p in physical.rglob('*') if p.is_file()}
     snapshot.update({str(stage/name):value for name,value in manifest['staged_sha256'].items()})
     sys.path.insert(0,str(stage/'scripts'));sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -342,7 +355,8 @@ def audit(candidate, physical, output):
     clocks={'clocks':{name:{'net':net} for name,net in dict(clk_50m='clk_50m',usb_48m='usb_clk',
         ulpi_60m='usb2_ulpi_clk',audio_76m8='audio_clk').items()}}
     native=dict(usb2=audit_usb2_cdc(root,vg,clocks),input_fifo=audit_input_fifo(root,vg,clocks))
-    additional=routed_cdc(design,vo,native)
+    status_bits=(0,1,3,4,5,6,14,17,18,19,20,21,22,23) if manifest['revision']>=5 else (0,1,3,4,5,6)
+    additional=routed_cdc(design,vo,native,status_bits)
     view=output/'historical/Prj1'
     (view/'impl/pnr').mkdir(parents=True);(view/'constraints').mkdir();(view/'src/migration').mkdir(parents=True)
     (view/'scripts').symlink_to(stage/'scripts')
@@ -351,7 +365,7 @@ def audit(candidate, physical, output):
     (view/'src/migration/gw138k_stream_cdc.sv').symlink_to(stage/'src/migration/gw138k_stream_cdc.sv')
     historical=historical_cdc(output/'historical',pre_synchronized_diagnostics=True)
     negatives={}
-    mutations=(('CNN_request_bypass','u_cnn_status_push_cdc/req_meta_s0','D','GND',lambda:routed_cdc(design,vo,native)),
+    mutations=(('CNN_request_bypass','u_cnn_status_push_cdc/req_meta_s0','D','GND',lambda:routed_cdc(design,vo,native,status_bits)),
         ('PLL_reset_high','u_usb_pll/PLL_inst','RESET','VCC',lambda:shared_plls(design)),
         ('DAC_reference_bypass','dac_mclk_obuf','I','GND',lambda:inspect_retirement(design.cells,design.parameters,(physical/'physical.sdc').read_text())))
     for label,cell,pin,bad,check in mutations:
@@ -366,7 +380,7 @@ def audit(candidate, physical, output):
         if getattr(m,'__file__',None) and Path(m.__file__).suffix=='.py' and Path(m.__file__).resolve().is_relative_to(root)}
     result=dict(schema=1,profile=manifest['name'],candidate_identity=manifest['identity'],user_code=inputs['user_code'],
         passed=timing['timing_closed'] and historical['passed'],timing=timing,pll=pll,ddr=ddr,startup=startup,
-        constraints=constraints,native_source=native,historical_CDC=historical,additional_CDC=additional,embedded_model=model,
+        constraints=constraints,native_source=native,historical_CDC=historical,additional_CDC=additional,embedded_model=model,tf_pins=tf_pins,
         negative_controls=negatives,sdf_normalization=normalization,input_sha256=snapshot,auditor_sha256=dependencies,
         hardware_tested=False,sram_deployed=False,flash_written=False)
     (output/'result.json').write_text(json.dumps(result,indent=2)+'\n')

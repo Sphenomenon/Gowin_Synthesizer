@@ -632,7 +632,7 @@ module gw138k_push_workstation_top #(
         .clk(clk_50m),.reset_n(reset_n),.data_i({tf_ddr_error,tf_unsupported}),.data_o(cnn_error_sync));
     gw138k_stream_cdc #(.WIDTH(64)) u_cnn_status_push_cdc(
         .reset_n(reset_n && usb_reset_n),.source_clk(clk_50m),.destination_clk(usb_clk),
-        .source_valid(1'b1),.source_data({32'h434e4e31,24'd0,
+        .source_valid(1'b1),.source_data({32'h434e4e31,8'd0,tf_hotplug_debug,tf_track_count,
             music_analysis_enable,tf_card_lost,cnn_error_sync[1],cnn_error_sync[0],
             music_model_status==4'd15,music_analysis_enable,
             music_model_status==4'd15 || tf_card_lost || (|cnn_error_sync),

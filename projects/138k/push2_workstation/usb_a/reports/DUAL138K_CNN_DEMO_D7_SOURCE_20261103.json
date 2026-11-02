@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "stage": "source_and_targeted_regression",
+  "candidate_identity": "749cb74b2b552392",
+  "candidate_path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v11",
+  "user_feedback": {
+    "candidate": "D21103D6",
+    "text": "没看见，只显示一个SEKECT SONG",
+    "accepted": false
+  },
+  "root_cause": "Inherited TF SPI interpretation used U16 DAT2/DAT1/DAT0/CLK instead of DAT0/CMD/CLK/DAT3. Confirmed against U16 symbol functions and locked latest carrier netlist. Physical recovery pending.",
+  "tf_pin_correction": {
+    "profile": "boards/custom_138k/cnn_demo_tf_spi.json",
+    "profile_sha256": "89e18c20b7dcfd175a5e69617b4899a4e7c347dd8ec02efa8a69beff88133afa",
+    "schema": 1,
+    "scope": "CNN-DEMO only; supersedes the inherited TF SPI pin interpretation",
+    "carrier_filename": "Netlist_my_138k_2026-10-21.tel",
+    "carrier_sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+    "symbol_evidence": {
+      "source": "ProPrj_138K（这个有效）_2026-10-16.epro2.zip/138K（这个有效）.epru",
+      "sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
+      "symbol": "XDFP-0090-012.1",
+      "component": "U16",
+      "pin_names": {
+        "1": "DAT2",
+        "2": "CD/DAT3",
+        "3": "CMD",
+        "4": "VDD",
+        "5": "CLX",
+        "6": "VSS",
+        "7": "DAT0",
+        "8": "DAT1",
+        "9": "CS",
+        "10": "EH"
+      },
+      "interpretation": "SPI uses DAT0=MISO, CMD=MOSI, CLK=SCK and CD/DAT3=CS_n; shell pins 9/10 are grounded in the carrier netlist"
+    },
+    "ports": {
+      "sd_miso": {
+        "node": "U16.7",
+        "ball": "V15",
+        "inherited_ball": "AA15"
+      },
+      "sd_mosi": {
+        "node": "U16.3",
+        "ball": "Y16",
+        "inherited_ball": "W14"
+      },
+      "sd_sck": {
+        "node": "U16.5",
+        "ball": "W15",
+        "inherited_ball": "V15"
+      },
+      "sd_cs_n": {
+        "node": "U16.2",
+        "ball": "AB15",
+        "inherited_ball": "W15"
+      }
+    },
+    "unused_data_nodes": [
+      "U16.1",
+      "U16.8"
+    ],
+    "hardware_verified": false,
+    "constraints": {
+      "custom_138k.cst": {
+        "before_sha256": "3d29f916c7aa08322cb256e4c859388a4429100bdd2ddbc81ec7e6ca285971a2",
+        "after_sha256": "3903e35971aacd2873ea92c46243a5391d5af67dd0e8bdb80dc2180e7dc43cb4"
+      },
+      "custom_138k.locations.cst": {
+        "before_sha256": "c2fff9310a197946b746d5664dcf44cf8d24a89d5ad460bb68d99d76e554235e",
+        "after_sha256": "6ec47851620d18a89c22efb0a1e797dda3b15e995d8b3200ac0357a2b57ed5dc"
+      }
+    }
+  },
+  "tests": {
+    "source_boundary": 17,
+    "tf_pin_guards": 4,
+    "empty_list_and_automatic_model_screen": "PASS",
+    "original_song_filename_screen": "PASS",
+    "mp3_joined": {
+      "passed": true,
+      "frames": 12,
+      "decoded_PCM": 95625,
+      "model_reads": 6105969,
+      "actual_inferred_notes": 3,
+      "wrong_key_and_fresh_correct_key": true,
+      "restart_clears_target": true,
+      "model_preloaded": false,
+      "model_ready_forced": false,
+      "fixture": "generated 2-second validation MP3; not physical travelers",
+      "physical_TF_tested": false,
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/mp3-inference-v3",
+      "inputs_sha256": "578799e5b7b3e0db8b0abfa2e2049d244bfb1b061a4544d55ca77822c8399b7c",
+      "log_sha256": "3a8512cf5563a4146df9c4ac9412a4ef8eb322605834740ada499cdbe67eb2a9"
+    }
+  },
+  "model_crc32": "AF01A61B",
+  "model_load": "automatic_configuration_ROM_to_DDR_readback_CRC",
+  "UART_required": false,
+  "source_sha256": {
+    "tools/workstation_cnn_demo.py": "a4960675c58d13f7369768071b12ea1cb2e3cd233ac519915e6dd6d292c44ee1",
+    "tools/workstation_cnn_demo_audit.py": "dc568a1a95460b6df8e8540888bc06d7053255206a8c1744986d0d32b6e766eb",
+    "boards/custom_138k/cnn_demo_tf_spi.json": "89e18c20b7dcfd175a5e69617b4899a4e7c347dd8ec02efa8a69beff88133afa",
+    "rtl/push2/push2_song_screen.sv": "0e6165261e1dd0eda46bbb6e1c6b04148659ca668b232b6b895026979efc7048",
+    "rtl/workstation/gw138k_push_workstation_top.v": "f915f1fdfb351c52df3a361366ead4240ebc71fba277b44cc50722da64f3f2eb",
+    "sim/test_cnn_demo_tf_pins.py": "2c8210da2689613569ce27dceb18c61902d0fbc75452191ec4beea976b9f7137",
+    "sim/cnn_demo/tb_cnn_demo_song_screen.sv": "4e83d9839b4a815bb694882f5bdaaade707a8af1c86ec885aa98c6ea0f01a8e2"
+  },
+  "verification_logs": {
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/tf-pin-screen-v1/tb_song_screen.log": "83d577d972d4ed2e7933745122c8da34e1da166b0283c2338d5d1d47ca250eca",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/tf-pin-screen-v1/tb_cnn_demo_song_screen.log": "33de4429d4edc8824944ee01b4d08084a31a5206879e6c59a7563172be636e4c",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/tf-pin-screen-v1/tb_song_screen-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/tf-pin-screen-v1/tb_cnn_demo_song_screen-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "synthesis_passed": true,
+  "PnR": "running_independent_D21103D7",
+  "hardware_functional_acceptance": false,
+  "Flash_written": false,
+  "remaining": [
+    "routed resources/full STA/PLL/CDC and TF physical pin gate",
+    "authorized SRAM download and independent identity readback",
+    "physical travelers visibility/selection, model ready, actual inference/guide, correct key, DAC, reselection cleanup"
+  ],
+  "rollback": "Original Flash unchanged; M26 D2110137 FS SHA256 97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75"
+}
