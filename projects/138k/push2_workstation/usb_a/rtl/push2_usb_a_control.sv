@@ -21,7 +21,8 @@ module push2_usb_a_control(
     input wire select,write,input wire [7:0] address,
     input wire [31:0] wdata,output wire ready,output reg [31:0] rdata,
     output wire audio_valid,input wire audio_ready,output wire [17:0] audio_event,
-    output wire [223:0] telemetry
+    output wire [223:0] telemetry,
+    output wire [2:0] device_state_o
 );
     reg [11:0] feedback_divider;
     always @(posedge feedback_clk or negedge feedback_reset_n)
@@ -47,6 +48,8 @@ module push2_usb_a_control(
     // Bit 2 qualifies the existing generic route as this GW25K panel. Bits
     // 0/1 and all existing event/register layouts retain their meanings.
     reg connected,generic_midi,gw25k;
+    // Read-only projection of the same state returned by MMIO 0x00.
+    assign device_state_o={gw25k,generic_midi,connected};
     wire rst,push_connected,lifecycle_pending;
     reg audio_online,panic_seen,settle_wait;
     reg [1:0] panic_buttons;

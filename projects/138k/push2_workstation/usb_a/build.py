@@ -46,6 +46,7 @@ def main():
     ap.add_argument('--usb2-firmware-profile',choices=['probe','workstation'],help='Explicit USB2 CPU firmware; default probe, never changes accepted workstation profiles')
     ap.add_argument('--usb2-component',choices=['soc','workstation-input','workstation-audio','workstation-hotplug'],help='Explicit component composition; input/audio/hotplug require workstation firmware')
     ap.add_argument('--usb2-hdmi-baseline',type=Path,help='Compose workstation-hotplug with the explicitly checked accepted C11028D5 HDMI baseline')
+    ap.add_argument('--usb2-hdmi-status',action='store_true',help='Add a live USB connection/device panel to the right of the checked D5 UI')
     ap.add_argument('--usb2-observer-profile',choices=['owner','phy','port'],help='Explicit combined HDMI/USB observer; port retains attempt history and packet counters')
     ap.add_argument('--usb2-observer-trigger',choices=['reset','clock-failure'],help='Combined observer trigger; clock-failure requires the phy profile')
     ap.add_argument('--usb2-full-speed-only',action='store_true',help='Explicit native workstation diagnostic policy; HS remains enabled by default')
@@ -119,6 +120,8 @@ def main():
         ap.error('--ulpi-clock-pull requires --ulpi-selftest')
     if args.ulpi_clock_probe:
         ap.error('--ulpi-clock-probe requires --ulpi-selftest')
+    if args.usb2_hdmi_status and args.usb2_hdmi_baseline is None:
+        ap.error('--usb2-hdmi-status requires --usb2-hdmi-baseline')
     if (args.usb2_observer_profile is not None or args.usb2_observer_trigger is not None) and args.usb2_hdmi_baseline is None:
         ap.error('--usb2-observer-profile/--usb2-observer-trigger requires --usb2-hdmi-baseline')
     if args.usb2_hdmi_baseline is not None and not (args.prepare_usb2_soc and args.usb2_component=='workstation-hotplug'):
@@ -198,7 +201,8 @@ def main():
                     from tools.workstation_usb2_hdmi import prepare as prepare_usb2_hdmi
                     output,metadata=prepare_usb2_hdmi(ROOT,args.usb2_soc_output,args.netlist_dir,args.user_code,
                                                     args.usb2_hdmi_baseline,args.riscv_prefix,not args.usb2_full_speed_only,
-                                                    args.usb2_observer_profile or 'owner',args.usb2_observer_trigger or 'reset')
+                                                    args.usb2_observer_profile or 'owner',args.usb2_observer_trigger or 'reset',
+                                                    usb_status=args.usb2_hdmi_status)
                 else:
                     from tools.workstation_usb2_hotplug import prepare as prepare_hotplug
                     output,metadata=prepare_hotplug(ROOT,args.usb2_soc_output,args.netlist_dir,args.user_code,
