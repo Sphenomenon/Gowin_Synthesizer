@@ -739,3 +739,12 @@ The first new full P&R D21102D2 completed with 42031 logic / 145 physical BSRAM,
 实际3个PLL参数／频率与完整动态控制链通过，10ns控制预算下 audio7.600／USB7.244／DDR5.240ns。官方DDR启动／重校准／失锁／配置路径证据重新执行，路由的PHY停止时钟复位、固定12.288MHz DAC及静态TMDS退休通过。172条实际SDC命令生效、全部成员在展开VO解析；原选歌／PCM／曲谱／目录CDC与新增CNN请求／回复、TF字节FIFO、状态／错误层级和USB输入接收链均通过。请求链旁路、PLL复位高和DAC参考旁路三项实际网表负控全部拒绝。新增独立审计只选择CNN配置；原M/W完整特性门及默认审计行为保持。
 
 FS SHA256 `48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c`，文件头身份D21102D4；新门禁结果与完整输入／工具／物理输出hash绑定。D2时序失败、D3空／合并selector拒绝及初始审计环境错误均保留，未改冻结输入。模型E／AF01A61B仍需人工BPN1串口装入DDR并等待读回CRC状态E；实际TF的TRAVLER内容hash与完整172帧实测仍待板卡连接。本阶段尚未操作JTAG、下载SRAM或写Flash，不能作为拍摄闭环验收；连接后按已有授权串行SRAM，并验证选歌、真实CNN结果、按键推进、DAC及重新选歌清理。回退保留W B6独立FS及M26原Flash，实际当前板身份必须先重读。
+
+
+### 2026-11-03：CNN-DEMO D4 已授权 SRAM 下载与独立身份读回
+
+[实板下载阶段证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_SRAM_20261103.json)：用户最新确认仅连接JTAG。本次实际下载器是USB Debugger A／index4／location8337；旧FT2CH／8257打开失败虽返回exit0，已据正文判失败并保留日志，没有把退出码当成功。新扫描后独立读得实际当前M26 `D2110137`／ID0001081B，已核对M26回退FS `97ee9868…436419f75`；没有沿用上轮W B6历史指针冒称当前板身份。
+
+封存D4位流 `48f097c7…fcb2120c`、原物理报告／门禁及完整候选输入hash复核后，在共享JTAG锁下串行执行op0→op2→op0→op74。SRAM下载约6.82秒，随后独立读回 `D21102D4`／状态00022230，全部输入保持；未做逐bit SRAM读回，未发任何Flash操作，原M26固化内容保留。当前板SRAM以D4为准，掉电仍回原Flash。
+
+JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它尚不能证明模型UART接通，也不能作为DDR就绪或故障判定。模型E／AF01A61B仍未在本次实板装载，已请求补接实际模型／遥测串口并反馈Push屏幕。实际TF文件hash、TRAVLER完整CNN分析、计算结果进入原指导、正确按键推进、DAC和重新选歌清理均尚未验收，不将身份／状态码读回当作整机闭环成功。

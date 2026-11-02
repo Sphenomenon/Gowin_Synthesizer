@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "phase": "authorized_CNN_DEMO_D4_SRAM_and_independent_identity_readback",
+  "source_git_head": "ce2f493e7c9f98263da7edcf76d953f951937d90",
+  "candidate_identity": "ad205f0df5065543",
+  "user_code": "D21102D4",
+  "bitstream": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/impl/pnr/custom_138k_integration.fs",
+  "bitstream_sha256": "48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c",
+  "physical_report": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_PHYSICAL_20261102.json",
+    "sha256": "a459086e8e77ae7495b3e43275566f36783138a7d4afa55270fcd55eca6afd1e"
+  },
+  "physical_gate_sha256": "ba946d3b4a29a556f49baa99faaf0ed70de7526609156c6d121e84e1f4fb2a12",
+  "runner": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/deploy-D4-sram-20261103-v1.py",
+    "sha256": "363fb5bc21603dfcc97f045069279699c65867a7c4e6df1096e11e0e9f4fd620"
+  },
+  "programmer_sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+  "actual_cable": {
+    "type": "USB Debugger A",
+    "cable_index": 4,
+    "location": 8337,
+    "channel": 0
+  },
+  "device_ID": "0001081B",
+  "before_user_code": "D2110137",
+  "after_user_code": "D21102D4",
+  "before_status": "00022020",
+  "after_status": "00022230",
+  "operations": [
+    {
+      "label": "sram-precheck",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "4",
+        "--location",
+        "8337",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.46405316703021526,
+      "log_sha256": "860615659d8ad5cf19072211edb637c79ea4df78ed6a758e3adf9425c98275eb"
+    },
+    {
+      "label": "sram-program",
+      "operation_index": 2,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "4",
+        "--location",
+        "8337",
+        "--operation_index",
+        "2",
+        "--fsFile",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/impl/pnr/custom_138k_integration.fs"
+      ],
+      "exit_code": 0,
+      "seconds": 7.188359207939357,
+      "log_sha256": "87c091614f2015ed053d05eab637e6fd6e24ee80f053fa78e774ff306757b7cf"
+    },
+    {
+      "label": "sram-readback",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "4",
+        "--location",
+        "8337",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.36579441698268056,
+      "log_sha256": "be9c2d9c0a7febbaf1eec3ae732c777c71a92a5e15b02bc127447a2e9922dd5b"
+    },
+    {
+      "label": "sram-status",
+      "operation_index": 74,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "4",
+        "--location",
+        "8337",
+        "--operation_index",
+        "74"
+      ],
+      "exit_code": 0,
+      "seconds": 0.3812622078694403,
+      "log_sha256": "39520c4f01f6781ad2174dcf566618bf66306c652774c34e5e5c0b35cba0c3ff"
+    }
+  ],
+  "inputs_unchanged": true,
+  "independent_identity_readback": true,
+  "bitwise_SRAM_readback": false,
+  "evidence": {
+    "result.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/result.json",
+      "sha256": "a6f5cb6fe995bf7c1cff899b4e357f4e525184c4ae47e110cfc036429d8b3661"
+    },
+    "precheck.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/precheck.log",
+      "sha256": "f300e6ef39efbc9970402e0747427b3e9ad9a1cba46ddaf846c46537b28cb4dc"
+    },
+    "precheck.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/precheck.json",
+      "sha256": "ae77f2305893123df007f8b3d59fc6d585e9d1339b738f58c86a94a6d66e9e6d"
+    },
+    "cable-scan.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/cable-scan.log",
+      "sha256": "a235fb0f24a12263442b2a040d17cb561e3de3e72e8aad6c196b27ba5c149e47"
+    },
+    "precheck-current-cable.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/precheck-current-cable.log",
+      "sha256": "860615659d8ad5cf19072211edb637c79ea4df78ed6a758e3adf9425c98275eb"
+    },
+    "precheck-current-cable.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/precheck-current-cable.json",
+      "sha256": "c8c0af869b11351be9b24764c3569929beafbd7c28ff6a168e9d11a493b87dd3"
+    },
+    "sram-precheck.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/sram-precheck.log",
+      "sha256": "860615659d8ad5cf19072211edb637c79ea4df78ed6a758e3adf9425c98275eb"
+    },
+    "sram-program.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/sram-program.log",
+      "sha256": "87c091614f2015ed053d05eab637e6fd6e24ee80f053fa78e774ff306757b7cf"
+    },
+    "sram-readback.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/sram-readback.log",
+      "sha256": "be9c2d9c0a7febbaf1eec3ae732c777c71a92a5e15b02bc127447a2e9922dd5b"
+    },
+    "sram-status.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/sram-status.log",
+      "sha256": "39520c4f01f6781ad2174dcf566618bf66306c652774c34e5e5c0b35cba0c3ff"
+    },
+    "passive-E1-uart.bin": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/passive-E1-uart.bin",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "passive-E1-uart.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-v1/passive-E1-uart.json",
+      "sha256": "9cacacb29af584a73dabf20f97c4300b1910d977fec5a14333a11350b5e4006f"
+    }
+  },
+  "initial_failed_precheck": {
+    "cable_type": "Gowin USB Cable FT2CH",
+    "location": 8257,
+    "tool_exit_code": 0,
+    "actual_success": false,
+    "message": "Cable failed to open via the location; no board write. Fresh cable scan selected actual USB Debugger A 8337 before successful independent read."
+  },
+  "UART": {
+    "user_report": "Only JTAG connected",
+    "passive_check": {
+      "port": "/dev/cu.usbserial-210357A7D00E1",
+      "baud": 115200,
+      "duration_seconds": 4,
+      "bytes": 0,
+      "transmitted_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "B138_records": 0,
+      "connected_model_UART_proven": false
+    },
+    "interpretation": "The enumerated second JTAG serial node produced zero bytes in this short read. This does not establish the model UART connection or hardware readiness.",
+    "model_UART_received": false,
+    "model_uploaded": false,
+    "model_E_DDR_ready": false
+  },
+  "model": {
+    "name": "E",
+    "crc32": "AF01A61B",
+    "bytes": 104478,
+    "load_method": "Manual BPN1 UART to DDR",
+    "ready_condition": "Status E after DDR readback CRC",
+    "loaded_this_trial": false
+  },
+  "SRAM_deployed": true,
+  "Flash_written": false,
+  "hardware_functional_acceptance": false,
+  "real_TF_inference_accepted": false,
+  "Push_guidance_accepted": false,
+  "DAC_audio_accepted": false,
+  "reselection_cleanup_accepted": false,
+  "filming_loop_accepted": false,
+  "release_ready": false,
+  "remaining": [
+    "Connect the actual model/telemetry UART and identify its serial port",
+    "Load model E and observe DDR readback CRC status E",
+    "User observation of Push status and actual TF TRAVLER selection",
+    "Complete real CNN/Viterbi, computed targets, wrong/held/correct-key behavior, real audio and reselection cleanup",
+    "Hash the actual selected TF song file and record physical video/audio evidence"
+  ],
+  "rollback": {
+    "user_code": "D2110137",
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "sha256": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75",
+    "Flash_not_modified": true
+  },
+  "jtag_lock": "/tmp/gw138k-dual-root-jtag.lock",
+  "started_utc": "2026-11-02T16:42:01.978881+00:00",
+  "finished_utc": "2026-11-02T16:42:10.704498+00:00"
+}
