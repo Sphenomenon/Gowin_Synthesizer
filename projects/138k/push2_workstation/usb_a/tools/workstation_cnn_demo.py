@@ -205,6 +205,54 @@ def prepare(root, netlists, output, riscv_prefix=None):
     return output,data
 
 
+def physical_reset_constraints(sdc, netlist):
+    """Resolve only the reset merging observed in this minimal composition.
+
+    The status mailbox shares the song mailbox's release chains in reverse
+    clock order. Check actual reset connectivity before selecting those cells;
+    missing or newly changed topology must fail rather than waive a constraint.
+    """
+    retired = 'u_managed/u_audio/reset_50_pipe'
+    if any(name.startswith(retired) for name in netlist.cells):
+        raise ValueError('retired PC reset chain remains in CNN demo')
+    token = retired + '*/CLEAR'
+    if sdc.count(token) != 1:
+        raise ValueError('retired PC reset selector anchor drift')
+    sdc = sdc.replace(token + ' ', '', 1)
+    aliases = {}
+    for source, target, first, clock in (
+        ('source_release', 'destination_release', 'ack_meta', 'clk_50m'),
+        ('destination_release', 'source_release', 'req_meta', 'usb_clk'),
+    ):
+        old = 'u_cnn_status_push_cdc/' + source
+        new = 'u_song_command_cdc/' + target
+        if any(name.startswith(old) for name in netlist.cells):
+            raise ValueError('CNN status release merging changed: ' + old)
+        clear = netlist.pin('u_cnn_status_push_cdc/' + first + '_s0', 'CLEAR')
+        drivers = [name for name, cell in netlist.cells.items()
+                   if cell['kind'] == 'INV' and netlist.pin(name, 'O') == clear]
+        last = new + '_2_s0'
+        if len(drivers) != 1 or netlist.pin(drivers[0], 'I') != netlist.pin(last, 'Q'):
+            raise ValueError('CNN status release alias connectivity changed: ' + old)
+        for stage in range(3):
+            cell = new + '_' + str(stage) + '_s0'
+            if netlist.pin(cell, 'CLK') != clock:
+                raise ValueError('CNN status release alias clock changed: ' + cell)
+            if stage and netlist.pin(cell, 'D') != netlist.pin(new + '_' + str(stage-1) + '_s0', 'Q'):
+                raise ValueError('CNN status release alias chain changed: ' + cell)
+        old_token = old + '*/CLEAR'
+        if sdc.count(old_token) != 1:
+            raise ValueError('CNN status reset selector anchor drift')
+        sdc = sdc.replace(old_token, new + '*/CLEAR', 1)
+        for stage in range(2):
+            sdc += f'set_max_delay 2.000 -from [get_regs {{{new}_{stage}_s*}}] -to [get_regs {{{new}_{stage+1}_s*}}]\n'
+        aliases[old] = dict(actual=new, clock=clock, clear_driver=drivers[0])
+    for first, second in (('req_meta', 'req_sync'), ('req_sync', 'req_settled'),
+                          ('ack_meta', 'ack_sync')):
+        sdc += f'set_max_delay 2.000 -from [get_regs {{u_cnn_status_push_cdc/{first}*}}] -to [get_regs {{u_cnn_status_push_cdc/{second}*}}]\n'
+    return sdc, dict(retired_absent_selector=token, merged_release_aliases=aliases)
+
+
 def prepare_physical(candidate, output, user_code, ddr_reference=None):
     """Run the explicit demo source/resource gate and prepare a fresh P&R.
 
@@ -266,7 +314,8 @@ def prepare_physical(candidate, output, user_code, ddr_reference=None):
     retired = ('u_final_output_cdc/', 'u_managed/u_audio/u_display_cdc/',
                'u_managed/effect_mask_meta', 'u_managed/effect_order_meta')
     lines = [line for line in sdc.splitlines() if not any(x in line for x in retired)]
-    (output/'physical.sdc').write_text('\n'.join(lines)+'\n')
+    physical_sdc, reset_aliases = physical_reset_constraints('\n'.join(lines)+'\n', netlist)
+    (output/'physical.sdc').write_text(physical_sdc)
     ddr_placement = None
     if ddr_reference is not None:
         from tools.workstation_custom_board_implementation import ddr_launch_capture_region_constraints
@@ -289,7 +338,7 @@ def prepare_physical(candidate, output, user_code, ddr_reference=None):
         required_features={x:rows[x] for x in required},retired_features=list(forbidden),
         synthesis_resources=rows[''],pll_instances=plls,ulpi_adaptation=ulpi,
         ddr_placement=ddr_placement,clock_50m_global_buffer=8,
-        visible_sdc_selector_audit=selector_audit,
+        visible_sdc_selector_audit=selector_audit,reset_selector_adaptation=reset_aliases,
         cst_retirement=removed.decode(),sdc_retired_display_observers=list(retired),
         pnr_passed=False,static_timing_closed=False,cdc_passed=False,hardware_tested=False,
         sram_deployed=False,flash_deployed=False)

@@ -274,11 +274,15 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
             assert len(names) == 1, f"expected one routed cell for {pattern}, found {len(names)}"
             return names[0]
 
-        audio_only = startup_grant_role == 'W-audio'
+        audio_only = startup_grant_role in ('W-audio', 'CNN-DEMO')
         retirement = None
         if audio_only:
             assert ddr_audit is not None, 'W-audio requires the complete official DDR source proof'
-            retirement = inspect_audio_only_retirement(cells, parameters, sdc)
+            if startup_grant_role == 'CNN-DEMO':
+                from tools.workstation_cnn_demo_audit import inspect_retirement
+                retirement = inspect_retirement(cells, parameters, sdc)
+            else:
+                retirement = inspect_audio_only_retirement(cells, parameters, sdc)
             source = 'u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_rsti_reg_2_s0'
             src_type, src = cells[source]
             assert src_type == 'DFFCE', 'W-audio DDR reset source primitive changed'
@@ -536,7 +540,7 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                                      "dll_step_capture": {"enable_equation": "!ddr_init_st_rrr && ddr_init_st_rr && dll_lock",
                                                           "budget_ns": 40.0, "paths": step_paths}})
         grant_inputs = []
-        if startup_grant_role is not None:
+        if startup_grant_role is not None and startup_grant_role != 'CNN-DEMO':
             grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role)
             for row in grant_inputs:
                 first, second = row['first'], row['second']

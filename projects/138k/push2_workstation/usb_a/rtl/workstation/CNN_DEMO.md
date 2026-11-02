@@ -48,6 +48,22 @@ It preserves clock budgets and the encrypted DDR 3.500 ns minimum-delay policy.
 A prior routed DDR boundary may supply checked placement structure; its timing
 or hardware acceptance is never inherited.
 
+Run `tools.workstation_cnn_demo_audit.audit(candidate, physical, new_output)`
+after P&R. This profile-specific gate rechecks the sealed source/physical
+inputs, all seven retained clock requirements, all three actual PLL tuples and
+their unchanged 10 ns control budgets, official DDR sequence/configuration
+proofs, stopped-clock PHY resets, fixed-reference DAC pins, expanded SDC members,
+active constraints, original song/PCM/score/playlist CDC, additional CNN/TF
+queues, status/diagnostic levels and native USB/input receivers. The original
+complete-workstation auditor keeps its feature requirements. The new gate also
+rejects actual-netlist request, PLL-reset and DAC-reference mutations.
+
+The measured filming candidate is `D21102D4`, source candidate
+`ad205f0df5065543`. Its routed BSRAM is 145/340; setup/hold/recovery/removal
+worst slacks are +0.017/+0.140/+1.096/+0.287 ns. These are offline physical
+results. The dated physical report records exact hashes and remaining hardware
+acceptance; this paragraph does not establish that the board runs this image.
+
 The dedicated `sim/cnn_demo/run_audio.py` checks continuous 48 kHz scheduling,
 actual reference serialization to FPC DAC, PANIC and detach. The inference
 runner consumes selected unmodified algorithm sources and parses WAV bytes

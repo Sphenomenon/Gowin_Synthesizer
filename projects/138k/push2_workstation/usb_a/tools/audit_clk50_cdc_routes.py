@@ -77,7 +77,7 @@ def pointer_source(design, vo, net, receiver_clock, instance):
     return data[0][1], data[0][2], [source]
 
 
-def audit(build):
+def audit(build, *, pre_synchronized_diagnostics=False):
     stage = build / 'Prj1'
     sys.path.insert(0, str(stage / 'scripts'))
     from check_video_pll_init import RoutedDesign
@@ -211,7 +211,20 @@ def audit(build):
             b_name, b = level(second)
             source, pin = design.drivers[a['D']]
             _, origin = design.cells[source]
-            if (pin != 'Q' or origin['CLK'] == a['CLK'] or a['Q'] != b['D'] or
+            origin_clock_ok = origin['CLK'] != a['CLK']
+            if pre_synchronized_diagnostics:
+                stem = 'tf_' + first.removesuffix('_meta')
+                if source != stem + '_sync50_s0':
+                    raise ValueError('unexpected diagnostic input alias: ' + source)
+                upstream_name = stem + '_meta50_s0'
+                _, upstream = design.cells[upstream_name]
+                raw_name, raw_pin = design.drivers[upstream['D']]
+                _, raw = design.cells[raw_name]
+                if (upstream['Q'] != origin['D'] or upstream['CLK'] != origin['CLK'] or
+                        origin['CLK'] != a['CLK'] or raw_pin != 'Q' or raw['CLK'] == upstream['CLK']):
+                    raise ValueError('diagnostic upstream two-stage crossing changed: ' + stem)
+                origin_clock_ok = True
+            if (pin != 'Q' or not origin_clock_ok or a['Q'] != b['D'] or
                     a['CLK'] != b['CLK'] or a['CLK'] != clocks['destination']):
                 raise ValueError(f'{first}/{second}: broken audio->clk50 diagnostic crossing')
             consumers = [n for n, (kind, port) in design.cells.items()
@@ -225,10 +238,30 @@ def audit(build):
         from build_full_song_85_clk50_timing import CDC_CONSTRAINTS
         sdc = files[2].read_text()
         commands = [line for line in CDC_CONSTRAINTS.splitlines() if line.startswith('set_')]
+        constraints_ok = all(line in sdc for line in commands)
+        if pre_synchronized_diagnostics:
+            # Native composition already synchronizes these two levels. Its
+            # mailbox first-stage/reset selectors may share one command;
+            # verify every member without adding a redundant async exception.
+            false_targets = set()
+            for line in sdc.splitlines():
+                if line.startswith('set_false_path -to '):
+                    for body in re.findall(r'\[get_pins \{([^}]+)\}\]', line):
+                        false_targets.update(body.split())
+            required = set()
+            for line in commands:
+                if line.startswith('set_false_path -to '):
+                    for body in re.findall(r'\[get_pins \{([^}]+)\}\]', line):
+                        required.update(body.split())
+            required -= {'u_music/format_meta*/D', 'u_music/source_meta*/D'}
+            required |= {'tf_format_meta50*/D', 'tf_source_meta50*/D'}
+            constraints_ok = required <= false_targets and all(
+                line in sdc for line in commands if not line.startswith('set_false_path -to '))
         result.update(structure_passed=True, local_release_chains=chains,
                       synchronizers=synchronizers, extra_request_settling_stage=True,
                       payload_bits=len(payload), maximum_payload_flight_ns=max(flights),
-                      required_constraints_present=all(line in sdc for line in commands))
+                      pre_synchronized_diagnostics=pre_synchronized_diagnostics,
+                      required_constraints_present=constraints_ok)
         result['evidence_sha256'] = {str(p.relative_to(build)): hashlib.sha256(p.read_bytes()).hexdigest()
                                      for p in files}
         result['passed'] = result['structure_passed'] and result['required_constraints_present']

@@ -730,3 +730,12 @@ C1首次PLL子门错误已独立定位为macOS未自动找到官方gw5a模型；
 Selected-source offline checks passed: source boundary 17, original Push/lights 2, uninterrupted 1340 sample ticks with actual serialized nonzero DAC PCM and PANIC/detach, and full 172-frame Viterbi oracle with 28 notes. The joined WAV->CQT->six CNN layers->Viterbi->original guide test decoded 95625 PCM samples, made 4407158 actual model reads, emitted one computed target, blocked the wrong key, advanced the correct key, and cleared old guidance on restart. Its generated audio and behavioural model preload are explicitly simulation-only; they do not establish physical TF/TRAVLER or UART acceptance.
 
 The first new full P&R D21102D2 completed with 42031 logic / 145 physical BSRAM, but failed STA (setup -3.137 ns, hold -4.548 ns); it was not deployed. Measured follow-up fixes isolate the model UART from performance events, buffer basic-instrument event fanout, synchronize diagnostic/error levels, restore actual Push model/TF failure status, and use the locked timing85 changes. Candidate-v8 ad205f0df5065543 is undergoing fresh synthesis/P&R/PLL/STA/CDC; no gate is inherited or waived. User confirms Push/TF are present but the board is not connected to the computer. No JTAG/SRAM/Flash action occurred; current W SRAM and M Flash remain the rollback pending actual identity readback.
+
+
+### 2026-11-02：CNN-DEMO D4 全量 P&R 与当前候选物理门禁通过
+
+[新候选物理证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_PHYSICAL_20261102.json)：独立候选 `ad205f0df5065543`／UserCode `D21102D4` 已完成新全量 P&R（工具报告172秒、exit0），使用自制底板 `Netlist_my_138k_2026-10-21.tel`，没有使用官方底板位流。实际 Logic42597／FF26714／CLS32884／BSRAM145/340／DSP91；综合 BSRAM等价123单列。7个保留时钟完整 STA 无负端点／详细负路径，最差 setup+0.017／hold+0.140／recovery+1.096／removal+0.287ns；未放宽时钟或原DDR3.500ns关系。
+
+实际3个PLL参数／频率与完整动态控制链通过，10ns控制预算下 audio7.600／USB7.244／DDR5.240ns。官方DDR启动／重校准／失锁／配置路径证据重新执行，路由的PHY停止时钟复位、固定12.288MHz DAC及静态TMDS退休通过。172条实际SDC命令生效、全部成员在展开VO解析；原选歌／PCM／曲谱／目录CDC与新增CNN请求／回复、TF字节FIFO、状态／错误层级和USB输入接收链均通过。请求链旁路、PLL复位高和DAC参考旁路三项实际网表负控全部拒绝。新增独立审计只选择CNN配置；原M/W完整特性门及默认审计行为保持。
+
+FS SHA256 `48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c`，文件头身份D21102D4；新门禁结果与完整输入／工具／物理输出hash绑定。D2时序失败、D3空／合并selector拒绝及初始审计环境错误均保留，未改冻结输入。模型E／AF01A61B仍需人工BPN1串口装入DDR并等待读回CRC状态E；实际TF的TRAVLER内容hash与完整172帧实测仍待板卡连接。本阶段尚未操作JTAG、下载SRAM或写Flash，不能作为拍摄闭环验收；连接后按已有授权串行SRAM，并验证选歌、真实CNN结果、按键推进、DAC及重新选歌清理。回退保留W B6独立FS及M26原Flash，实际当前板身份必须先重读。

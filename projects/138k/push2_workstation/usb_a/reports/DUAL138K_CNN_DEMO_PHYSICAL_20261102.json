@@ -1,0 +1,347 @@
+{
+  "schema": 1,
+  "phase": "independent_CNN_DEMO_new_full_PnR_and_selected_physical_gates_passed_hardware_pending",
+  "source_git_head": "dac3b08236ac33169c254da90fb9cbc1642dbc0b",
+  "profile": "custom138k-workstation-cnn-demo-v1",
+  "candidate_identity": "ad205f0df5065543",
+  "physical_identity": "cnn-demo-D21102D4",
+  "user_code": "D21102D4",
+  "provenance": {
+    "candidate_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v8/cnn_demo.json",
+      "sha256": "7cb84019b7cf226dde8da664bad50331b31ff77633ace401db45dd0bd1fd1822"
+    },
+    "physical_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/physical_inputs.json",
+      "sha256": "66e50dc116ccb5e381bfd94ae1cea1bc5f43c95db9fb4e2d79fb5477f680437a"
+    },
+    "source_policy": "accepted_full83_with_locked_timing85_six_files_and_synchronized_model_diagnostics_custom_carrier_minimal_audio",
+    "staged_inputs": 521,
+    "compiled_inputs": 121,
+    "retired_compilation_inputs": 118,
+    "complete_staged_closure_verified": true,
+    "source_working_tree": "Shared worktree has unrelated uncommitted W/BLE edits; exact candidate inputs are sealed by manifest, and only this task changes are committed."
+  },
+  "board_source_inputs": {
+    "carrier": {
+      "filename": "Netlist_my_138k_2026-10-21.tel",
+      "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+      "networks": 185,
+      "nodes": 737
+    },
+    "amplifier": {
+      "filename": "\u529f\u653e.tel",
+      "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+      "networks": 100,
+      "nodes": 492
+    },
+    "bluetooth": {
+      "filename": "\u84dd\u7259.tel",
+      "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+      "networks": 21,
+      "nodes": 88
+    }
+  },
+  "configuration": {
+    "song": "TRAVLER",
+    "format": "wav",
+    "sample_rate_hz": 48000,
+    "model_crc32": "AF01A61B",
+    "model_bytes": 104478,
+    "model_load": "manual_BPN1_UART_to_DDR",
+    "model_ready": "status_E_after_DDR_readback_CRC",
+    "hdmi": false,
+    "ae350": false,
+    "visualization_fft": false,
+    "cnn_cqt": true,
+    "effects": false,
+    "bluetooth": false,
+    "recording": false
+  },
+  "model": {
+    "name": "E",
+    "crc32": "AF01A61B",
+    "bytes": 104478,
+    "binary_sha256": "18b55a4076c4670d228a205ee97f1f659ccffab4530b60bde45837597eab5fd6",
+    "mem_sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+    "load_method": "manual BPN1 UART to DDR",
+    "ready_condition": "status E only after DDR readback CRC; no current physical load"
+  },
+  "real_TF_input": {
+    "target_song": "TRAVLER",
+    "format": "PCM WAV",
+    "sample_rate_hz": 48000,
+    "TF_file_sha256": null,
+    "physical_file_read_verified": false,
+    "reason": "User confirms board TF and Push are attached; board is not yet connected to Mac. The actual TF file has not been host-hashed or read on this candidate."
+  },
+  "synthesis_resources": {
+    "name": "workstation_custom_138k_top",
+    "Register": "15",
+    "Alu": "4",
+    "Lut": "30",
+    "T_Register": "26714(15)",
+    "T_Alu": "5723(4)",
+    "T_Lut": "34572(30)",
+    "T_MULTALU27X18": "24(0)",
+    "T_MULT12X12": "38(0)",
+    "T_MULT27X36": "24(0)",
+    "T_Bsram": "123(0)",
+    "T_Ssram": "344(0)"
+  },
+  "physical_resources": {
+    "Logic": {
+      "used": 42597,
+      "capacity": 138240
+    },
+    "Register": {
+      "used": 26714,
+      "capacity": 139095
+    },
+    "CLS": {
+      "used": 32884,
+      "capacity": 69120
+    },
+    "I/O Port": {
+      "used": 142,
+      "capacity": 297
+    },
+    "BSRAM": {
+      "used": 145,
+      "capacity": 340
+    },
+    "DSP": {
+      "used": 91,
+      "capacity": 298
+    }
+  },
+  "pnr": {
+    "executed": true,
+    "tool_exit_code": 0,
+    "tool_report_elapsed_seconds": 172,
+    "official_board_image_reused": false,
+    "physical_BSRAM_distinct_from_synthesis_equivalent": true
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/impl/pnr/custom_138k_integration.fs",
+    "sha256": "48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c",
+    "UserCode": "D21102D4"
+  },
+  "timing": {
+    "closed": true,
+    "global_worst_ns": {
+      "setup": 0.017,
+      "hold": 0.14,
+      "recovery": 1.096,
+      "removal": 0.287
+    },
+    "pulse_width_worst_ns": 2.731,
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 50.211
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 73.926
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 95.772
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 76.9
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 60.906
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2338.897
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 167.378
+      }
+    },
+    "negative_paths": 0,
+    "clock_budgets_relaxed": false,
+    "DDR_minimum_delay_ns": 3.5
+  },
+  "pll": {
+    "passed": true,
+    "actual_count": 3,
+    "maximum_control_flights_ns": {
+      "u_audio_clock/g_hardware.u_pll": 7.6000000000000005,
+      "u_usb_pll": 7.244,
+      "u_memory/u_pll": 5.24
+    },
+    "control_bound_ns": 10,
+    "DDR_sequence_configuration_and_stopped_clock_reset_passed": true
+  },
+  "cdc": {
+    "selected_gate_passed": true,
+    "all_retained_SDC_members_resolved_on_expanded_VO": true,
+    "active_constraint_commands": 172,
+    "mailbox_payload_bits": {
+      "u_song_command_cdc": 4,
+      "u_tf_control_cdc": 24,
+      "u_fpc_audio/u_samples": 41,
+      "u_native_usb/input_owner/feedback": 93,
+      "u_cnn_status_push_cdc": 6
+    },
+    "level_synchronizers": {
+      "u_music/u_trace_cdc": 7,
+      "u_cnn_error_sync": 2
+    },
+    "additional_CNN_TF_Gray_buses": 8,
+    "historical_song_PCM_score_playlist_gate": true,
+    "native_USB_input_source_and_routed_receivers": true,
+    "scope": "Selected minimal composition and retained exceptions; not a metastability probability or analog model."
+  },
+  "negative_controls": {
+    "CNN_request_bypass": {
+      "rejected": true,
+      "reason": "broken async mailbox input: u_cnn_status_push_cdc"
+    },
+    "PLL_reset_high": {
+      "rejected": true,
+      "reason": "PLL control constant changed: u_usb_pll/PLL_inst/RESET"
+    },
+    "DAC_reference_bypass": {
+      "rejected": true,
+      "reason": "CNN serial pin changed: dac_mclk"
+    }
+  },
+  "reset_selector_adaptation": {
+    "retired_absent_selector": "u_managed/u_audio/reset_50_pipe*/CLEAR",
+    "merged_release_aliases": {
+      "u_cnn_status_push_cdc/source_release": {
+        "actual": "u_song_command_cdc/destination_release",
+        "clock": "clk_50m",
+        "clear_driver": "u_song_command_cdc/n172_s2"
+      },
+      "u_cnn_status_push_cdc/destination_release": {
+        "actual": "u_song_command_cdc/source_release",
+        "clock": "usb_clk",
+        "clear_driver": "u_song_command_cdc/n20_s2"
+      }
+    }
+  },
+  "gates": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-gates-D4-v2/result.json",
+    "sha256": "ba946d3b4a29a556f49baa99faaf0ed70de7526609156c6d121e84e1f4fb2a12",
+    "immutable_input_hashes": 556,
+    "auditor_source_hashes": {
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_cnn_demo_audit.py": "e2523382ddc62c7b90c4e75dfde7457e8852bb38e1903c045c6189da5cd6430e",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_cnn_demo.py": "d7708c1d61a1ea4d03cc935bc5751541d1d14fd3b605e590d59f62705e0d8b50",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_serializer_startup_audit.py": "8bfa5c730bbfc4af0ac7cb2c3a78424716d18833229f3f4c82c9f70e926686e3",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_workstation_timing.py": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_cdc_routes.py": "e679f424f60fdc7a5f496ada232672660bd0e905cade7c64b298e9e39410e26c",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "a6fa68f11dc363cd223ad3f59e65d4405a8f349d5cd3d555838ef4981d6512d2",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": "118b02e7c9eee44c5080ccbc5d7dd88455579d4319350c126da89f520826503b",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "2dda3707c0ffcc6444d702d3710f306413bd9ad8e16fd76f61663ababd185098",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/build_full_song_83_bp_ddr_isolation.py": "259f04d69da74a691cc1f95160afc1c7458bb584d29518b78f888226a6663993",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/build_full_song_85_clk50_timing.py": "ebffca9eb6eb6d136189098dde3ceebee1bbb6f9392a7fe632038322c7585795"
+    }
+  },
+  "evidence": {
+    "pnr.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/pnr.log",
+      "sha256": "8f8a2a77ba6f9dd37cb0c8591fbb724137321007ae9f9d6599731e937c67f1db"
+    },
+    "timing-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/timing-audit.json",
+      "sha256": "2b68c49a96a5d4f07cbba89b7313fb7d37574bc4c35218a7c63dd983bb323a2f"
+    },
+    "pll-complete.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/pll-complete.json",
+      "sha256": "4f6defe68630e20dcf9d31921e8a2f858617e6613d5798fd5009a75eb8a965cd"
+    },
+    "resources-identity.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/resources-identity.json",
+      "sha256": "4577a48b56b42e71d01c904fd727cfd1e89c4e5b41bf5a3a4b406540922e1026"
+    },
+    "routed-sdc-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/routed-sdc-audit.json",
+      "sha256": "8936efbabf13bdc03218005b0258114b0ce74c2e116ac07eab916b47d392dc99"
+    },
+    "cdc-historical-targets-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/cdc-historical-targets-v2.json",
+      "sha256": "fda7bc03ce3a75a3ff3eb2101577497b4b7074960b266756287623c1981c9793"
+    },
+    "cdc-additional.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/cdc-additional.json",
+      "sha256": "f1ba61b15101d5a6177560ebf81fffd562da9cbf70a79a9a5229d4c8df16d16a"
+    }
+  },
+  "physical_artifacts_sha256": {
+    "impl/pnr/custom_138k_integration.vo": "5ace4014d6ccee6bddb4d7ad1457b7757168ad8a6024130b36a3e57fdd607414",
+    "impl/pnr/custom_138k_integration.sdf": "7c99ded99d1edb3582b8695a1f4b33028f8f53082e0e1757f05139e0c67f10f6",
+    "impl/pnr/cmd.do": "6d2527b8f9337e6fdf415000d67f39a9b6bffa06bc169649bff3514b9253c4fe",
+    "impl/pnr/custom_138k_integration.bin": "c745cedac2d02a10d61eed4d53c883b12eede3b77affe4aebc8e921a040a485e",
+    "impl/pnr/custom_138k_integration.p": "7ebc02291ab7030bddad5f6be5a3fe058db042cdf1fb457eabee085dcdef8a45",
+    "impl/pnr/custom_138k_integration.rpt.html": "a614af77c1248768d823f832510fb900aa771b5549df5988e0256633c2cbd979",
+    "impl/pnr/custom_138k_integration.timing_paths": "0c414414ada4a53aac5571c4e92ac6951f77a84dabb8d2d0e190cfc72fc94059",
+    "impl/pnr/custom_138k_integration.tr.html": "6cec34e8cbcb38c7f6f0ba6af30a8299078bf6fb9849fb6ace2d39eec7c0f6f7",
+    "impl/pnr/custom_138k_integration.pr": "32d5d10c035ffd90457229ccbc68424e90f886d6a33b88d8ebb0c31f4f785125",
+    "impl/pnr/custom_138k_integration.log": "872f177bde2e19a541b6963baacee64ce326825332939265826bf8095ef3d6ee",
+    "impl/pnr/custom_138k_integration.pin.html": "507efa7bcc591afb412e6f1bb7526b52f857fbec5d8f267108bc00ab8ede8f34",
+    "impl/pnr/custom_138k_integration.binx": "c68fa36772e9b5debf512b635e54b676730ca3400caa364cb735ab73f57e9f5e",
+    "impl/pnr/custom_138k_integration.db": "744d147f1f57ad7d7b6ceda9ed6d653f9a8bf7671240160e3bc02a886ad158ff",
+    "impl/pnr/device.cfg": "6fa6f1397d9bde8f7cc9bedab1d4b9196f98f62ac799756890b5628658e02b45",
+    "impl/pnr/custom_138k_integration_tr_cata.html": "f46244c01dd865a2e3b1dda5d315ef04fee09c4aeda01a7282b35f91ad9a6e7d",
+    "impl/pnr/custom_138k_integration.fs": "48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c",
+    "impl/pnr/custom_138k_integration.rpt.txt": "6f6b3a59d062287ff49c5fae0658b3fa0ab4aee88f2be2792e007b3d97976c89",
+    "impl/pnr/custom_138k_integration.power.html": "6769dad7690ae70dc5c05ced9f5c88d6ab6897f005df91c1b161be46812cc78d",
+    "impl/pnr/custom_138k_integration_tr_content.html": "858cb7ebae35fd6a60a1b1f7a445623cfef2f31b3d696e66f4e1cff227bb9b31",
+    "impl/pnr/custom_138k_integration.tr": "19b21adec09b54e880e778ef338125653229b9bf1b422f3023467d9ccadb3474"
+  },
+  "preserved_failures": [
+    "D21102D2: first full P&R generated bitstream but setup -3.137ns / hold -4.548ns; never deployed",
+    "D21102D3: preparation rejected swept/merged reset selectors; P&R not run",
+    "Initial DDR source view missing explicit installed model/reference environment; original logs retained; fresh corrected proof passed",
+    "Historical clk50 CDC checker initially rejected already synchronized native diagnostics; explicit opt-in now proves both upstream stages; defaults unchanged"
+  ],
+  "validation": {
+    "source_boundary_tests": 17,
+    "serializer_startup_tests": 9,
+    "physical_PLL_tests": {
+      "run": 23,
+      "skipped": 1
+    },
+    "historical_clk50_CDC_tests": 5,
+    "offline_real_inference": "See source-stage report: test WAV, not physical TRAVLER; no CNN/score result forced"
+  },
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "filming_loop_accepted": false,
+  "release_ready": false,
+  "remaining_gaps": [
+    "Connect JTAG and model UART to Mac; reread actual board/cable identity under shared serial JTAG lock",
+    "Authorized SRAM program and independent UserCode/status readback",
+    "Actual BPN1 model upload and DDR readback CRC status E",
+    "Actual Push selection of TF TRAVLER and complete 172-frame CNN/Viterbi analysis",
+    "Computed target guidance, wrong/held key blocking, fresh correct key advance and real audio output",
+    "Reselection clears prior result and guidance",
+    "Actual selected TF input content hash and physical audio/video evidence"
+  ],
+  "rollback": {
+    "prior_recorded_SRAM": "W B6 D21102B6; actual current board identity must be reread",
+    "bitstream": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-physical-D21102B6/impl/pnr/ao_0.fs",
+    "sha256": "6105a594d45847519c03fb5e3fa9d70aa54ebcaf1dfd19ddf82e4da427de29fd",
+    "flash": "Original M26 D2110137 configuration Flash remains untouched by this task",
+    "procedure": "Under shared lock, program the separately identified rollback image to SRAM only; never assume historical UserCode is current."
+  },
+  "jtag_lock": "/tmp/gw138k-dual-root-jtag.lock"
+}
