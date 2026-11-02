@@ -629,3 +629,8 @@ M26-1新普通立体声XY的[正式prepare与原检查点增量输入准备](pus
 
 
 M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_workstation/usb_a/reports/DUAL138K_M26_1_STEREO_SYNTHESIS_20261102.json)已完成：170.488s／exit0，610封存输入前后保持；新VG `eaac0fa2…76a16f7`，FF43632／LUT48626／ALU11495／综合BSRAM等价211／SSRAM99，非物理资源。原strict因新增observation bit204库存拒绝的失败保持，独立v2仅对显式M revision4／精确axes policy增加同tuple位检查，默认／旧M／W不放宽；1496原工具不改，临时3文件完整精确patch和退出计划入报告。strict原有角色／32声部／完整效果／HDMI／时钟／CDC／SDC门通过，主线程独立重验4512来源及工具／网表／证据文件；新bit204实际来源和算术消费、完整native等附加门另验。正式增量输出仅允许引用原D211013A .pr，检测匹配不足或自动default/full即终止；尚无新P&R／位流／时序结果，本阶段未操作板卡，不继承旧余量。
+
+
+新M26-1的[实际VG语义／完整附加门与首次增量停止记录](push2_workstation/usb_a/reports/DUAL138K_M26_1_STEREO_VG_INCREMENTAL_STOP_20261102.json)已封存：新增bit204从权威矢量提交点经同PCM held tuple进入模式／context；33bit输入全部2^33算术赋值、8gain归一化／clamp／真实屏幕Y消费、模式撤销及history/front复位闭包通过，16真实cell＋11配置＋25原PANIC/history负控拒绝，独立审计复跑通过。native60项44过／16具名skip及66负控；boundary7／69、performance17／8、新VG三Push mailbox共69bit及17业务复位／308＋26负控通过。早期fixture库存失败及精确修正保留，主线程重验3727文件。
+
+首次正式`inc_pnr`调用虽在实际cmd.do携带原.pr，但未取得CT2074或matching/reuse正证，工具进入placement及部分routing后已人工SIGTERM（578.224s／child−15），无新FS／VO／TR／PR，不构成新时序或增量成功。监控器`\bRunning placement`被工具实际`$数字`前缀粘连绕过的缺陷如实保留；独立v2以真实日志／碎片／无换行／CR等18实际子进程回归通过，未改原runner或重跑EDA。3653封存输入及原BASE32文件集合／字节全同，原回退位流和板上记录不变。未证明工具自动full回退，也未调度额外full；继续核实安装版后端正式增量接口，不自动全量P&R，不借密文checkpoint差异推断布局复用。

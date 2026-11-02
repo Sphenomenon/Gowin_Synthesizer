@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "stage": "M26-1 stereo actual synthesized semantics, regressions and stopped unproven incremental trial",
+  "recorded_utc": "2026-11-02T02:46:53.440559+00:00",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-cf7678174e8941a7",
+  "manifest_sha256": "f70912357d577f63f9cca93a93ef920696ec31f5c31b76ed433a27522d3a7592",
+  "netlist_sha256": "eaac0fa2dd534fa96905989f7f7dcc18e0c7582af73f91f6b4168999876a16f7",
+  "source_report": "DUAL138K_M26_1_STEREO_XY_SOURCE_20261102.json",
+  "synthesis_report": "DUAL138K_M26_1_STEREO_SYNTHESIS_20261102.json",
+  "actual_stereo_semantics": {
+    "passed": true,
+    "mode_bit": 204,
+    "source": "actual committed scope_enable -> display tuple bit307 -> applied_parameters[104] -> held204 -> destination204 -> producer vector_xy_q",
+    "mode_transport_same_CE_and_handshake_as_PCM": true,
+    "signed_arithmetic_input_bits": 33,
+    "covered_assignments": 8589934592,
+    "ordinary_axes": "signed17(R-L) arithmetic>>1; signed17(L+R) arithmetic>>1",
+    "screen_x": "128 + signed normalized difference shifted by existing common gain, clamp0..255",
+    "screen_y": "128 - signed normalized sum shifted by existing common gain, clamp0..255",
+    "all_gain_values_checked": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "vector_axes": "original direct L and screen -R",
+    "context_revoke": "exact Boolean local reset, history_valid and front_valid actual FF consumers",
+    "new_actual_cell_negative_controls": 16,
+    "policy_provider_negative_controls": 11,
+    "old_PANIC_history_controls": 25,
+    "all_negative_controls_rejected": true,
+    "independent_semantic_rerun": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-incremental-audit-v1/independent-stereo-semantic-v1.json",
+      "sha256": "192d351f3b11f226c21397c7cfc7e567b48089c54e3c51bb64c2d1631c2563b4"
+    }
+  },
+  "native": {
+    "test_count": 60,
+    "passed_test_count": 44,
+    "skipped": 16,
+    "mutation_count": 66,
+    "mutation_report": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-netlist-gates-v1/native-vg-v3-mutations.json",
+    "mutation_report_sha256": "2d8b61aee36dcc209332c5189ffd5420bd61c8c433cc162cce1346406cdd7e9e",
+    "stderr": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-netlist-gates-v1/native-vg-v3.stderr.log",
+    "stderr_sha256": "ab8fe10585870bc7e46d6e9d06e8d1494709422c4517e013a37d364e3dc12249",
+    "fixture_adapter": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-netlist-gates-v1/native-fixture-v3-adapter.json",
+    "fixture_adapter_sha256": "efda5b8dc0356004f8e832a1ac32f652339ef78ba2981fea30ef670a715511a4",
+    "original_failure_preserved": "native-vg-v2.stderr.log: two pre-connected-XY fixture inventory expectations, 58 remaining negative mutations rejected"
+  },
+  "boundary": {
+    "tests": 7,
+    "passed": true,
+    "negative_controls": 69,
+    "all_rejected": true,
+    "run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-root-additional-gates-v1/boundary-vg/run.json",
+      "sha256": "b3adf4e9275c818349c0b5287726e8f2f2fc2e730a19aaca99b1d5c398677413"
+    }
+  },
+  "performance": {
+    "tests": 17,
+    "passed": true,
+    "negative_controls": 8,
+    "all_rejected": true,
+    "run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-root-additional-gates-v1/performance-vg/run.json",
+      "sha256": "8f74d994a6f45821d63189e3cb26383b0148d278d05dc2a4da5c6e3c577285b6"
+    }
+  },
+  "push_and_status_reset": {
+    "mailboxes": 3,
+    "payload_bits": 69,
+    "status_business_clear_consumers": 17,
+    "original_suite_negative_controls": 308,
+    "additional_reset_negative_controls": 26,
+    "all_rejected": true,
+    "handoff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-push-VG-handoff-v1/handoff.json",
+      "sha256": "7a031a7872185ebf63e45c01744b46410faa39481185de9fac317f99ec6fc4c1"
+    },
+    "new_VG_explicit_clock_audit_used": true
+  },
+  "stopped_incremental_trial": {
+    "status": "failed_formal_incremental_unproven_and_guard_defect",
+    "reserved_user_code": "D2110144",
+    "explicit_original_checkpoint": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-r2-physical-D211013A/impl/pnr/custom_138k_integration.pr",
+    "checkpoint_sha256": "c1f849c1bda790fdd3a1d2a860771b7e2a1ea75083e2a5015615e3b8bb23b3d8",
+    "actual_cmd_do_has_inc_pnr": true,
+    "checkpoint_parse_or_reuse_verified": false,
+    "automatic_tool_full_fallback_proven": false,
+    "runner_dispatched_extra_full_PnR": false,
+    "actual_placement_and_partial_routing_did_run": true,
+    "manual_termination": "SIGTERM isolated process group62803",
+    "child_exit_code": -15,
+    "elapsed_seconds": 578.2241237908602,
+    "guard_defect": {
+      "pattern": "\\bRunning placement\\b",
+      "actual_placement_line": "$5$10$5$1$39$39$39$39$98$98$98$98$98$2$2$2$2$4$4$4$4$4$1$39$98$98$4$1$1$1$1$1$1$39$39$2$98$98$2$98$98$1$39$2$39$4$4Running placement......",
+      "misses_because": "word boundary absent between final progress digit and R in Running",
+      "old_pattern_matches_actual_line": false,
+      "offline_corrected_pattern": "Running[ \\t]+placement",
+      "offline_corrected_pattern_matches_actual_line": true,
+      "frozen_runner_not_modified": true
+    },
+    "original_runner_and_log_retained": true,
+    "new_bitstream_produced": false,
+    "new_VO_TR_PR_produced": false,
+    "original_baseline_file_count": 32,
+    "original_baseline_file_set_and_bytes_unchanged": true,
+    "sealed_input_count": 3653,
+    "sealed_inputs_before_after_unchanged": true,
+    "incident": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-incremental-stop-incident-v1.json",
+      "sha256": "3c0204efc861472626e85678623aacec5ee497502153e6328451f64df8877bd5"
+    },
+    "run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-physical-D2110144/incremental-run.json",
+      "sha256": "35d930a76623f86eed09fe18bf3a78e053d6a94089153fe80a2e009f54cc8e80"
+    },
+    "monitor_v2": {
+      "validation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-incremental-monitor-v2-validation.json",
+        "sha256": "eb147cbb90eab953d2ac690632f3dbd3ab969f1180b06547b5abdf747f4cb9c6"
+      },
+      "actual_child_process_cases": 18,
+      "all_passed": true,
+      "new_EDA_run_performed": false,
+      "frozen_v1_not_edited": true
+    },
+    "interpretation": "The real command included inc_pnr, but no positive checkpoint parsing/matching/reuse evidence was observed before placement. The conservative stop monitor missed the progress-prefix boundary; manually stopped after partial routing. This does not prove a tool fallback or incrementality, and is not a completed physical result."
+  },
+  "checkpoint_readonly_limits": {
+    "handoff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-netlist-gates-v1/checkpoint-supplement-handoff-v1.json",
+      "sha256": "c176788785c15fb2029e2a3635f76350d22871f4554f14da450f42e83620507b"
+    },
+    "all_checkpoint_blocks_protected": true,
+    "public_LOC_or_reuse_schema_available": false,
+    "ciphertext_changes_are_not_placement_evidence": true
+  },
+  "evidence": {
+    "synthesis_handoff": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-netlist-gates-v1/final-handoff-v2.json",
+      "sha256": "fb5a4f0c7949e4d8d81e332a297d38c575a23997cab80a1fda31a523a1d772d9"
+    },
+    "root_recheck": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-VG-gates-stop-root-recheck-v1.json",
+      "sha256": "860912e953f7a7e09036d6aaf935ceb8c2af29bb454839ef4218f225fb66e450"
+    },
+    "independent_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-incremental-audit-v1/independent-strict-adapter-semantic-review-v1.json",
+      "sha256": "c17a104fa5b68a8825b84afc209546848a8eea3ece65b69af26d660533c30580"
+    }
+  },
+  "root_independently_rehashed_files": 3727,
+  "timing_closed": false,
+  "new_physical_result_accepted": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "release_ready": false,
+  "remaining": "Resolve actual installed backend support for official incremental implementation. No automatic full P&R. New routed timing, PLL/CDC and actual sound/display tests remain unverified.",
+  "rollback": "Original M26-1 r2 D211013A source/checkpoint/FS retained and no board operation. Last recorded SRAM remains D211013A."
+}
