@@ -318,21 +318,30 @@ def audit_ble_business(netlist, rows, clocks):
     scope = 'u_ble_pcm_cdc'
     require(scope in netlist.frames and 'u_managed' in netlist.frames,
             'independent BLE completed-frame CDC or real output source missing')
-    src_clock = netlist.canonical('u_managed', 'mclk_o')
     dst_clock = clocks['clocks']['clk_50m']['net']
-    require(netlist.pin(scope, 'source_clk') == src_clock and
-            netlist.pin(scope, 'destination_clk') == dst_clock,
+    mapped = 'source_data' not in netlist.cells[scope]['ports']
+    src_clock = (netlist.pin('dac_mclk_obuf', 'I') if mapped else
+                 netlist.canonical('u_managed', 'mclk_o'))
+    require(netlist.pin(scope, 'dac_mclk_d' if mapped else 'source_clk') == src_clock and
+            netlist.pin(scope, 'clk_50m_d' if mapped else 'destination_clk') == dst_clock,
             'independent BLE PCM CDC clock domain changed')
-    expected = [('frame_pcm_o', bit) for bit in range(32)] + [
-        ('frame_sequence_o', bit) for bit in range(32)] + [
-        ('frame_epoch_o', bit) for bit in range(32)] + [('frame_error_o', None), ('frame_44k1_o', None)]
+    fields = (('physical_frame_pcm', 'physical_frame_sequence', 'physical_frame_epoch',
+               'physical_frame_error', 'physical_frame44', 'physical_frame_valid') if mapped else
+              ('frame_pcm_o', 'frame_sequence_o', 'frame_epoch_o', 'frame_error_o', 'frame_44k1_o', 'frame_valid_o'))
+    require(all(port in netlist.cells['u_managed']['ports'] and
+                netlist.directions[netlist.frames['u_managed']['kind']].get(port) == 'output'
+                for port in fields), 'independent BLE real completed-frame output ports missing')
+    expected = [(port, bit) for port in fields[:3] for bit in range(32)] + [
+        (port, None) for port in fields[3:5]]
     expected_bits = [netlist.canonical('u_managed', port if bit is None else f'{port}[{bit}]')
                      for port, bit in expected]
-    actual = [netlist.canonical(scope, f'source_data[{bit}]') for bit in range(98)]
-    require(actual == expected_bits and netlist.pin(scope, 'source_valid') ==
-            netlist.canonical('u_managed', 'frame_valid_o'),
+    actual = ([netlist.canonical(scope, port if bit is None else f'{port}[{bit}]')
+               for port, bit in expected] if mapped else
+              [netlist.canonical(scope, f'source_data[{bit}]') for bit in range(98)])
+    require(actual == expected_bits and netlist.pin(scope, fields[5] if mapped else 'source_valid') ==
+            netlist.canonical('u_managed', fields[5]),
             'independent BLE capture does not use actual completed serial PCM/identity')
-    inventory = {}
+    inventory, payload_registers = {}, {}
     for stem, clock in (('held_data', src_clock), ('destination_data', dst_clock)):
         registers = {}
         for path, cell in netlist.cells.items():
@@ -345,10 +354,16 @@ def audit_ble_business(netlist, rows, clocks):
         require(set(registers) == set(range(98)), 'independent BLE 98-bit PCM CDC inventory changed: ' + stem)
         require(all(netlist.pin(path, 'CLK') == clock for path in registers.values()),
                 'independent BLE PCM CDC payload clock changed: ' + stem)
+        payload_registers[stem] = registers
         inventory[stem] = dict(bits=98, clock=clock, registers_sha256=digest(registers))
+    held, delivered = payload_registers['held_data'], payload_registers['destination_data']
+    require(all(netlist.pin(held[bit], 'D') == expected_bits[bit] and
+                netlist.pin(delivered[bit], 'D') == netlist.pin(held[bit], 'Q') for bit in range(98)),
+            'independent BLE actual PCM CDC D/Q bit delivery changed')
     return dict(unique_owners=owners, capacity_frames=16384, real_pcm_ram_bsram=rows[recorder]['Bsram'],
         completed_serial_frame_source='u_managed', exact_completed_frame_payload_verified=True,
-        payload=inventory, hardware_non_silent_capture_verified=False)
+        payload=inventory, mapped_port_inventory=mapped, exact_payload_D_Q_delivery_verified=True,
+        hardware_non_silent_capture_verified=False)
 
 
 def audit_m_voice_storage(netlist):

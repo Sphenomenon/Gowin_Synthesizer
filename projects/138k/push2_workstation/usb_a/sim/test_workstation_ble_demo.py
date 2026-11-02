@@ -47,7 +47,8 @@ input [97:0] source_data;
 '''
     for stem, clock in (('held_data', 'source_clk'), ('destination_data', 'destination_clk')):
         for bit in range(98):
-            text += f'DFFCE {stem}_{bit}_s0 (.CLK({clock}),.D(source_data[{bit}]),.Q(q_{stem}_{bit}));\n'
+            data = f'source_data[{bit}]' if stem == 'held_data' else f'q_held_data_{bit}'
+            text += f'DFFCE {stem}_{bit}_s0 (.CLK({clock}),.D({data}),.Q(q_{stem}_{bit}));\n'
     text += '''endmodule
 module workstation_bluetooth ();
 bt_verilog_core u_core ();
@@ -172,6 +173,60 @@ class ActualBleStereoQualification(unittest.TestCase):
                 ('missing axes policy', dict(xy_axes_policy=None))):
             with self.subTest(case=label), self.assertRaises(ValueError):
                 audit_native_protocol(netlist, **dict(selected, **changed))
+
+
+@unittest.skipUnless(os.environ.get('GW138K_BLE_ACTUAL_VG'),
+                     'Set GW138K_BLE_ACTUAL_VG for the actual BLE implementation controls')
+class ActualBleMappedPcm(unittest.TestCase):
+    def test_actual_mapped_completed_pcm_bit_delivery_and_negative_controls(self):
+        import xml.etree.ElementTree as ET
+        from tools.workstation_demo_audit import hierarchy_counts
+        vg = Path(os.environ['GW138K_BLE_ACTUAL_VG'])
+        netlist = SynthesisNetlist(vg.read_text(), 'workstation_custom_138k_top')
+        _, rows = hierarchy_counts(ET.parse(vg.with_name('custom_138k_integration_syn_rsc.xml')).getroot())
+        clocks = {'clocks': {'clk_50m': {'net': netlist.pin('clk_50m_ibuf', 'I')}}}
+        def gate():
+            return audit_ble_business(netlist, rows, clocks)
+        proof = gate()
+        self.assertTrue(proof['mapped_port_inventory'])
+        self.assertTrue(proof['exact_payload_D_Q_delivery_verified'])
+        for label, path, port, value in (
+                ('wrong source PCM bit', 'u_ble_pcm_cdc/held_data_0_s0', 'D', 'physical_frame_pcm[1]'),
+                ('wrong delivered PCM bit', 'u_ble_pcm_cdc/destination_data_0_s0', 'D', 'held_data[1]'),
+                ('wrong source clock', 'u_ble_pcm_cdc/held_data_0_s0', 'CLK', 'clk_50m_d'),
+                ('wrong epoch identity', 'u_managed', 'physical_frame_epoch', 'physical_frame_sequence[31:0]'),
+                ('wrong source valid', 'u_ble_pcm_cdc', 'physical_frame_valid', 'physical_frame_error')):
+            ports = netlist.cells[path]['ports']
+            original = ports[port]
+            try:
+                ports[port] = value
+                with self.subTest(case=label), self.assertRaises(ValueError):
+                    gate()
+            finally:
+                ports[port] = original
+        owner = 'u_bluetooth/u_core/initializer'
+        netlist.cells['shadow_initializer'] = copy.deepcopy(netlist.cells[owner])
+        try:
+            with self.assertRaisesRegex(ValueError, 'unique owner'):
+                gate()
+        finally:
+            del netlist.cells['shadow_initializer']
+        path = 'u_ble_pcm_cdc/held_data_97_s0'
+        missing = netlist.cells.pop(path)
+        try:
+            with self.assertRaisesRegex(ValueError, 'inventory changed'):
+                gate()
+        finally:
+            netlist.cells[path] = missing
+        recorder = 'u_bluetooth/u_core/application/command_endpoint/recording'
+        original = rows[recorder]['Bsram']
+        try:
+            rows[recorder]['Bsram'] = 31
+            with self.assertRaisesRegex(ValueError, 'PCM RAM missing'):
+                gate()
+        finally:
+            rows[recorder]['Bsram'] = original
+        self.assertEqual(gate(), proof)
 
 
 if __name__ == '__main__':

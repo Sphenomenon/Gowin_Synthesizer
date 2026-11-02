@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "phase": "independent_ble_business_new_full_synthesis_and_exact_mapped_PCM_gate_v3",
+  "source_git_head": "4b964e0de31e33af4243cdadf7cc45e6795277c7",
+  "profile": "custom138k-workstation-ble-demo-v1",
+  "revision": 1,
+  "candidate_identity": "custom138k-workstation-ble-demo-v1-e06ff364b0467886",
+  "user_code_reserved": "0xD21102C1",
+  "evidence": {
+    "prepare_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-prepare-source-seal-v1.json",
+      "sha256": "5c553182564b612f7662b7f941a080f2e61a57f5389a7d6af138e26f5d8cae37"
+    },
+    "prepare_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-candidate/integration_inputs.json",
+      "sha256": "2b25f001236456f8e0ce52d00b8f16b670ed8f85becda58b7a7fe13b63504284"
+    },
+    "profile_artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-candidate/workstation_profile.json",
+      "sha256": "9a21f6fc478d75f073793f55d95d1c738209357a888b87dc82e76b09e2c926ce"
+    },
+    "synthesis_run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-synthesis-run-v1.json",
+      "sha256": "4f1b98e25d7d6f4f99f406ed564c516c8b609b2718ebc3233fae5b531a634866"
+    },
+    "synthesis_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-candidate/synthesis.log",
+      "sha256": "ecfe0030b0b62f5178e54ea034843e01d8653a455bc64a450324db6dfd005e8c"
+    },
+    "VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "3e6987fff31893cfcb1786fcb18dfb46312a3b353af07a60d5691dee0fbd5cb3"
+    },
+    "resource_xml": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+      "sha256": "bb4cc875235ebdb43d95f86033ab58bef66b6c343afe545ed1834abef8c552f4"
+    },
+    "strict_synthesis": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-strict-synthesis-v3.json",
+      "sha256": "4b5d44f79165675a452852cf905f5a3446b0c4895576eb3c77284635a53c8d31"
+    },
+    "v3_audit_tools_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-audits-v3/source-tools-seal.json",
+      "sha256": "f525c1a3c3b3a7d335e80d906ed21a396e03d4c07db3c4324f73d168489d270d"
+    },
+    "new_mapped_source_tests": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-actual-mapped-gates-v3.log",
+      "sha256": "cc840f2a86107d931fde3d90f0fe926c98c209793d3d0e9fad0795ace147d97b"
+    },
+    "existing_demo_audit_tests": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-demo-audit-regression-v3.log",
+      "sha256": "154228f70084f61658a645732f5095c45d529f2622e464ebf90e3c4d6239aa95"
+    },
+    "independent_DDR_boundary": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/independent-ble-DDR-boundary-review-v1/review.json",
+      "sha256": "8725777bb2f6689da599cdd7ded6ff328b2923470c7aa7b235720b4ad1eafb2d"
+    }
+  },
+  "resources_synthesis": {
+    "Register": 50329,
+    "Lut": 63860,
+    "Alu": 13590,
+    "Bsram": 274,
+    "Ssram": 151,
+    "MULTALU27X18": 33,
+    "MULT12X12": 2,
+    "MULT27X36": 41
+  },
+  "BSRAM_is_synthesis_equivalent_not_physical": true,
+  "prepare": {
+    "staged": 608,
+    "compiled": 263,
+    "original_source_count": 907,
+    "audit_tool_count": 1499,
+    "source_captured_before_prepare": true
+  },
+  "new_full_synthesis": {
+    "elapsed_seconds": 299.855904708,
+    "exit_code": 0,
+    "sealed_inputs_reverified_after_run": true
+  },
+  "strict": {
+    "passed": true,
+    "unique_BLE_owner_count": 7,
+    "capacity_frames": 16384,
+    "recording_synthesis_BSRAM": 36,
+    "actual_held_and_delivered_payload_bits": 98,
+    "exact_98_actual_D_to_Q_bits_verified": true,
+    "native_held_gate": true,
+    "all_visible_SDC_selectors_resolved": true,
+    "M32_voice_storage": 32,
+    "full_HDMI_and_effects_preserved": true
+  },
+  "auditor_correction": {
+    "changed_maintenance_files": {
+      "tools/workstation_demo_audit.py": "54d4459c2f3058c222c54d5cc288496235d6370b398e83c02ef065c18482169d",
+      "sim/test_workstation_ble_demo.py": "8e2e86fbf3334b5cfe86c9fcb01df2f6b5fb2e5694559e2d1732b0afc3ff49f8"
+    },
+    "reason": "Gowin rewrites public source ports into physical_frame_* ports; exact mapped branch checks actual D/Q connectivity and clocks instead of assuming source port names",
+    "original_v1_checker_and_candidate_untouched": true,
+    "compiled_RTL_and_constraints_unchanged": true,
+    "separate_v3_snapshot": true,
+    "actual_and_reference_tests_passed": 6,
+    "skipped": 0,
+    "actual_VG_negative_controls": 8,
+    "legacy_demo_audit_tests_passed": 18
+  },
+  "failed_attempts": [
+    {
+      "scope": "CLI import environment",
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-strict-synthesis-v1.stderr.log",
+      "sha256": "9e8ce94a37a9bae3567c5b7d7584cd663b6ff77507179127c6d80f669c2ffd85",
+      "reason": "PYTHONPATH omitted; no source or compiled-input change"
+    },
+    {
+      "scope": "source-form checker on actual Gowin mapped VG",
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-strict-synthesis-v2.stderr.log",
+      "sha256": "08908131a96b8b3d19b57316142b39635c2d02b757d964f51a2d7341d6c75188",
+      "reason": "KeyError source_clk; original failure kept, replaced only by explicit mapped-port audit with negative controls"
+    }
+  ],
+  "live_tree_reproducibility_after_W_B6_edits_claimed": false,
+  "W_B6_new_changes_included_in_BLE": false,
+  "physical_PnR_complete": false,
+  "physical_resources_verified": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "remaining": [
+    "new full independent PnR, all physical timing/CDC/PLL/resource gates",
+    "real BLE connection/status on board",
+    "non-silent formal musical PCM short recording and complete reliable download CRC"
+  ],
+  "rollback": "No board operation in BLE line; root owns W SRAM and existing M26 Flash"
+}

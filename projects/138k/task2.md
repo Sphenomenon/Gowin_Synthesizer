@@ -662,3 +662,10 @@ M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_worksta
 新增显式 custom138k-workstation-ble-demo-v1/revision1，复用维护 M 基础乐器及最终串行 PCM，以原 C1 的 EXTERNAL_PCM=1 RAM 路径接通独占 UART/H5/HCI/GATT 与16384帧短录音对象。保留原 A25D/C1 的 UUID、状态、CRC和可靠下载协议；不修改25K，不启用已退出的CPU录音后端、cue、TF或CNN。W音频配置不增加业务GATT或录音，M/W默认配置和冻结输入不变，共享工具仅追加显式BLE选择。该候选仅为短录音验证，不代替最终唯一DDR长录音后端目标。
 
 [来源、配置与回归](push2_workstation/usb_a/reports/DUAL138K_BLE_DEMO_SOURCE_20261102.json)：来源锁899项逐hash核对；新配置及保留策略5项、原UART/H5/GATT／真实立体PCM CRC及下载8项、既有DEMO策略8项、DEMO审计18项、performance7项及当前来源17项通过。独立只读复核无重大问题。既有stereo VG仅用于资格检查，不冒称新BLE综合网表。新候选仍需全量综合、P&R、PLL／时序／真实CDC与资源门，预留物理身份D21102C1；连接／状态／非零乐音录音／CRC下载均待实板。SRAM由root串行，不写Flash。
+
+
+### 2026-11-02：BLE 独立候选全量综合与实际网表门通过
+
+[新全量综合证据](push2_workstation/usb_a/reports/DUAL138K_BLE_DEMO_SYNTHESIS_20261102.json)：源HEAD4b964e0d，候选e06ff364b0467886，正规prepare封存608项staged、263项compiled和1499项工具；新全量综合299.856s／exit0，所有封存输入保持。实际综合FF50329／LUT63860／ALU13590／BSRAM等价274／SSRAM151，非物理BSRAM计数，未预记资源收益。新VG严格门核32声部、完整HDMI／效果、7个唯一BLE owner、16384帧真实PCM RAM36、98bit实际源D／目标D／heldQ及两侧时钟、native held与实际SDC选择器；未使用旧VG冒称新实现。
+
+首次检查器因Gowin映射端口拆名而拒绝，错误保留；v3仅按实际PCM源／目标逐位D/Q及原时钟关系补精确mapped审计，新增8个实际VG反例全部拒绝，6项新回归和18项原审计通过，新checker独立封存。独立DDR加密模块与128参考FF控制复核只允许复用定位配方，不能继承M26的路由／时序。新PnR随后独立运行；PLL、完整STA、实际routed CDC、实板录音及下载均待通过。W B6开始后的改动未混入该封存候选。

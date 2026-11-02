@@ -1132,7 +1132,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_timing.py": "6b95fcd680f0fe6c90cb8f1434af66490c5a33acf014ef902c7d3589675ccabe",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
     "projects/138k/push2_workstation/usb_a/tools/workstation_delay_storage_provenance.py": "5f861dec5be8d28c43da5c5d858dd846b245a18a0a7c53c566f4e3025dc65520",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "d0fc6852868ea6467132912fed4321878f462aba337a547b3cb420a4c543c792",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py": "54d4459c2f3058c222c54d5cc288496235d6370b398e83c02ef065c18482169d",
     "projects/138k/push2_workstation/usb_a/tools/workstation_demo_boundary_cdc.py": "1e161c9ad1668012570c6876a626be98556773862f009c854a83e4f7fb166195",
     "projects/138k/push2_workstation/usb_a/tools/workstation_demo_policy.py": "2ecb023aa16cd58890b1962262d10581bf13885c761ff0ef99d637d6218c3b42",
     "projects/138k/push2_workstation/usb_a/tools/workstation_dispatch_slot_provenance.py": "3941dfca4a49b7ef5eeb3f748baefb1ea0385048b833a32221856a3a8a859aaf",
