@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "phase": "authorized_W_B6_SRAM_deployment_and_first_real_phone_attempt",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-0d623a4cb68e2b0d",
+  "user_code": "D21102B6",
+  "bitstream": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-physical-D21102B6/impl/pnr/ao_0.fs",
+  "bitstream_sha256": "6105a594d45847519c03fb5e3fa9d70aa54ebcaf1dfd19ddf82e4da427de29fd",
+  "before": "D21102B5",
+  "after": "D21102B6",
+  "status": "00022230",
+  "operations": [
+    0,
+    2,
+    0,
+    74
+  ],
+  "inputs_unchanged": true,
+  "bitwise_SRAM_readback": false,
+  "evidence": {
+    "result.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-hardware-v1/result.json",
+      "sha256": "55dcb211d6688a94fc792dbcc4f79e21e28ff756af2f66337764361671f8d31c"
+    },
+    "precheck.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-hardware-v1/precheck.log",
+      "sha256": "993149c882689308d008347923c9c2046c7bf9c4ba8748799bb52a91439955a2"
+    },
+    "program.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-hardware-v1/program.log",
+      "sha256": "776f8408663e0ecc4a960b782bbf2c6139975461bb28689f16bef5ea60cdd816"
+    },
+    "readback.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-hardware-v1/readback.log",
+      "sha256": "1da3abe1c4de5b1ab6a159305f9df0d9163337df2f0e479b350969a4fa5dfaf3"
+    },
+    "status.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-hardware-v1/status.log",
+      "sha256": "58955d60ef93c9ceab05f5403d2c263a9c6bcdb6c238ca8756f9a3b0832ce895"
+    },
+    "boot_capture": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/boot/result.json",
+      "sha256": "7cbb61a4e283c937947619fa0847f0f852e4e37ba05d8bd71b71e572f2b6b16b"
+    },
+    "boot_before": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/boot/before.log",
+      "sha256": "9b8c105e15591bc24e1dd516ccfc49d5f02c29907343b088b1255e3f01d0ecef"
+    },
+    "boot_after": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/boot/after.log",
+      "sha256": "9b8c105e15591bc24e1dd516ccfc49d5f02c29907343b088b1255e3f01d0ecef"
+    },
+    "pair1_capture": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/pair1/result.json",
+      "sha256": "f5e47037d09aaf2ba6f10a845420e3c8ea8601fbb20556d0bc5041ab0228886f"
+    },
+    "pair1_before": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/pair1/before.log",
+      "sha256": "e422b6df6a7789914c72217b041561d1712db3e66d859587903a01c4a893e6ca"
+    },
+    "pair1_after": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/pair1/after.log",
+      "sha256": "9b8c105e15591bc24e1dd516ccfc49d5f02c29907343b088b1255e3f01d0ecef"
+    },
+    "phone_pair1_target": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/phone-b6-session-v1/pair1-target.json",
+      "sha256": "aeefa15099367e16abd2008ba57b22d38b1ca8ffe5011235c298de93f4136eb4"
+    }
+  },
+  "controller": {
+    "actual_BD_ADDR": "34:20:03:3D:8A:62",
+    "read_scan_enable_value": 3,
+    "ready_only_after_address_and_scan_readback": true,
+    "last_opcode": "0x0c19",
+    "last_status": 0,
+    "observed_native_owner_faults": 0,
+    "observed_ACL_received": false,
+    "coherent_atomic_GAO_snapshot": false
+  },
+  "phone": {
+    "model": "vivo Y77 V2219A",
+    "android": 12,
+    "real_ADB_device": true,
+    "target_only_HCI_decoded": true,
+    "pairing_attempt": "page timeout 0x04; no ACL established",
+    "SSP_accepted": false,
+    "A2DP_accepted": false
+  },
+  "SRAM_deployed": true,
+  "Flash_written": false,
+  "release_ready": false,
+  "physical_DAC_and_25K_acceptance": false,
+  "rollback": "Frozen W B5 SRAM candidate kept; original M26 D2110137 configuration Flash untouched; board presently B6 SRAM"
+}

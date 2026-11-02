@@ -699,3 +699,10 @@ FS SHA256 `c5136b47854046b634fe5c8ef3fefb581be1d36f6a20fba9ccc4ff8af8de6d92`，�
 [W B6新物理证据](push2_workstation/usb_a/reports/DUAL138K_W_B6_PHYSICAL_20261102.json)：新候选0d623a4cb68e2b0d／D21102B6独立全量P&R313.956s、exit0，全部输入保持；FS6105a594…7de29fd。实际功能FF27030／LUT30851／ALU11611／CLS32561／BSRAM218／DSP59／SSRAM177；GAO另9 BSRAM，合计227/340，综合等价192单列。14域setup／hold端点均0，最差setup+.004／hold+.092／recovery+1.901／removal+.301ns，pulse-width门通过；未放宽时钟／例外。原DDR3.500ns关系及实际定位保持，本次指定hold路径单列于报告。PLL／启动及6执行负控、四项实际VO／SDC正向CDC门全部通过，CDC旧负控未冒称本轮重跑。
 
 实际AE350新VG和VO各64颗pROM全部32768word重建等于生产ROM3eeae0aa…b59984，非USB固件校验替代。160bit既有GAO仅精确修正5个新别名并核唯一FF／consumer；48bit CPU源于ram_clk、其余112bit源于clk50，诊断抓取不宣称原子快照。cache准备的错误同域假设、PLL调用缺import路径和非GAO测量器旧FS文件名三次前置失败保留，分别精确修正，没有改电路／约束／门限。新位流随后按已授权流程串行SRAM；本阶段尚未部署、不继承手机A2DP或D／25K／DAC硬件接受，Flash未写。
+
+
+### 2026-11-02：W B6 已授权 SRAM 下载与真实手机首轮
+
+[W B6 SRAM与首轮手机证据](push2_workstation/usb_a/reports/DUAL138K_W_B6_SRAM_20261102.json)：原D21102B5核实后，使用新FS6105a594…7de29fd执行op2，随后独立op0读回D21102B6／00022230，op74再次确认；全部输入保持，未进行逐bit SRAM读回。当前138K SRAM以B6为准，Flash未写，原M26 D2110137固化镜像及B5 SRAM回退文件保留。
+
+既有正式HCI服务已真实读出本板BD_ADDR34:20:03:3D:8A:62，回读ScanEnable3并完成0c19/0，现有诊断所有观察到的owner fault为0。真实vivo手机向此地址首轮配对仍返回ConnectionComplete status0x04/page timeout，未建立ACL；板端地址诊断保持，无首ACL／close。不把静态名称、旧手机环或身份读回当作SSP/A2DP通过。继续核对fresh inquiry与空口接入前原因；D实时效果、25K按下／释放／断连及持续DAC均待真实流式输入后验收。
