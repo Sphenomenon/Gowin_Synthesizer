@@ -793,3 +793,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [物理封存](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D7_PHYSICAL_20261103.json)：独立749cb74b2b552392／D21103D7全量综合、P&R及新门禁通过。实际Logic51569／FF30033／CLS38509／BSRAM249/340／DSP104；7时钟完整setup+0.054／hold+0.012／recovery+1.476／removal+0.281ns，无负路径或端点。3 PLL／官方DDR序列与配置／stopped-clock reset／DAC启动／路由CDC／SDC及三个故障负控通过；新增TF反馈的14个实际mailbox有效位逐个核FF／跨域连接与路径。模型64颗ROM全部52239word重建与E／AF01A61B一致。
 
 编译CST与路由后pin报告独立核实MISO V15／MOSI Y16／SCK W15／CS_n AB15，四根符合U16真实功能。新版含TF扫描状态反馈，未更改历史读卡／CNN算术。当前Mac三次扫描（默认／FT／libusb）均未枚举JTAG，已请求重接；此刻尚未下载D7，更未宣称真实TF／Push／CNN／DAC接受。保持已授权串行SRAM流程与Flash不写边界。
+
+
+### 2026-11-03：TF 引脚修正版 D7 已下载 SRAM 并独立读回
+
+[部署证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D7_SRAM_20261103.json)：用户确认重接JTAG后，在共享锁下重新枚举FT2CH／8321，核实门禁／源码／位流／工具与M26回退hash，先独立读回掉电后M26 `D2110137`／状态00022020，再仅执行op2 SRAM下载D7。工具报告7.39秒，随后另行op0独立读回 `D21103D7`，op74状态00022230；未逐bit读取SRAM，Flash未写。实际下载位流SHA256 `6b3d68d0ebaa190dfdec300ad19cc36f3d72285bc6053e6d58b439c34cd99cb2`，输入保持封存不变。
+
+新版四根TF SPI已修正且模型自动装载，无需UART。已请用户确认真实TF中travelers的可见／可选及必要FS／CARD状态，尚未拿到本次Push反馈；物理model-ready／CRC、实际歌曲CNN／指导、正确按键推进、DAC有效和重选清旧状态仍未验收。身份下载与读回不冒充功能闭环。
