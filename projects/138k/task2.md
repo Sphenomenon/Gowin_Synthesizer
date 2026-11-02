@@ -807,3 +807,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [源级与定向复现证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SOURCE_20261103.json)：用户确认歌曲列表恢复，进入后显示MODEL FAILED，不能算CNN闭环通过。定位CNN-DEMO独立memory owner：BIST未完成时屏蔽music／audio valid，却把空slot的ready回给上游，自动装载早发请求被当作接收但未入队。现在valid与ready使用同一真实client-ready条件，校准／BIST／故障未满足时都不接受；仅CNN-DEMO维护源码变化，M/W/BLE及冻结基线不改。
 
 新回归串起真实自动loader→请求CDC→command buffer→DDR16→真实slot／arbiter／BIST→返回CDC，仅原生DDR是行为模型。D7原文件负控确实丢138次写入（52101/52239），false-ready790次，最终CRC929A0F8F／F／stage3；修正后52239次原生写入与读回、逐word一致、CRC AF01A61B和BIST成功、false-ready为0。无模型预装或force-ready；来源边界17项、TF引脚4项保持通过。新候选f9eab12c021b9713相较D7实际编译输入仅memory owner这一份变化，模型／TF／CNN／指导字节保持；全量综合运行中，将以独立D21103D8做完整物理门禁与SRAM，不预报板端模型ready。
+
+
+### 2026-11-03：D8 自动模型启动修复，完整物理门禁通过
+
+[物理封存](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_PHYSICAL_20261103.json)：独立f9eab12c021b9713／D21103D8通过全量综合／P&R／完整7时钟STA，setup+0.023／hold+0.085／recovery+2.656／removal+0.281ns，无负路径／端点。实际Logic51571／FF30033／CLS38355／BSRAM249/340／DSP104；综合等价资源另列。3 PLL／官方DDR序列配置／stopped-clock reset／DAC启动／完整SDC和路由CDC／故障负控全通过。模型64颗ROM逐word重建仍等于E／AF01A61B，TF四根正确球位再次独立核对。
+
+补测实际生产262144个BIST突发及250000000个clk50周期超时参数，真实BIST／CDC／DDR16／队列／仲裁链路完成52239次模型原生写与读、逐word一致和AF01A61B，false-ready为0；只有原生DDR为行为模型，81ms为仿真时间，不是实板测量。新物理封存后按已有授权串行SRAM；此时D8尚未部署，D7的实际歌曲可见不升级为模型／CNN／指导接受。Flash不写。
