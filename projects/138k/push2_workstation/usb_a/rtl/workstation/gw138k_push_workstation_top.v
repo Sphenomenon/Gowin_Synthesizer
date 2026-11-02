@@ -83,6 +83,9 @@ module gw138k_push_workstation_top #(
     localparam bit RECOGNITION_ENABLED=1'b1;
 `endif
 `endif
+`ifdef WORKSTATION_CNN_DEMO
+    wire [31:0] fetch_count,last_fetch,signature,ram_result,heartbeat,trap_cause,trap_pc,ui_report;
+`endif
 `ifdef WORKSTATION_RUNTIME_NATIVE
     wire ble_debug_uart,song_cmd_valid,playlist_scan_done,tf_card_lost;
     wire [3:0] song_cmd_index;
@@ -229,7 +232,11 @@ module gw138k_push_workstation_top #(
     wire [3:0] ui_command_strobes;
     wire ui_pending,ui_visible,ui_next_visible,ui_frame_commit;
     wire [28:0] ui_front_base,ui_next_base;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_CNN_DEMO
+    assign ui_ready=1,ui_error=0,ui_read_data=0;
+    assign ui_pending=0,ui_visible=0,ui_next_visible=0,ui_front_base=0,ui_next_base=0;
+    assign ui_frame_commit=0;
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
     // Retired graphics APB page fails explicitly; no UI CDC or framebuffer owner.
     assign ui_ready=1'b1,ui_error=ui_select,ui_read_data=32'd0;
     assign ui_pending=0,ui_visible=0,ui_next_visible=0,ui_front_base=0,ui_next_base=0;
@@ -612,7 +619,22 @@ module gw138k_push_workstation_top #(
         .read_data_o(score_usb_note));
 `endif
     wire [63:0] display_summary,display_summary_usb;wire display_summary_valid,display_summary_usb_valid;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_CNN_DEMO
+    assign service_state_usb=0,service_state_usb_valid=0;
+    // Coherent CNN-only status uses the existing Push metadata mailbox.
+    // These levels report the real model/TF owners, never a progress timer.
+    wire [1:0] cnn_error_sync;
+    gw138k_level_cdc #(.WIDTH(2)) u_cnn_error_sync(
+        .clk(clk_50m),.reset_n(reset_n),.data_i({tf_ddr_error,tf_unsupported}),.data_o(cnn_error_sync));
+    gw138k_stream_cdc #(.WIDTH(64)) u_cnn_status_push_cdc(
+        .reset_n(reset_n && usb_reset_n),.source_clk(clk_50m),.destination_clk(usb_clk),
+        .source_valid(1'b1),.source_data({32'h434e4e31,24'd0,
+            music_analysis_enable,tf_card_lost,cnn_error_sync[1],cnn_error_sync[0],
+            music_model_status==4'd15,music_analysis_enable,
+            music_model_status==4'd15 || tf_card_lost || (|cnn_error_sync),
+            music_model_status==4'd14}),
+        .destination_valid(display_summary_usb_valid),.destination_data(display_summary_usb),.drop_count());
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
     assign service_state_usb=0,service_state_usb_valid=0;
     assign display_summary_usb=0,display_summary_usb_valid=0;
 `else
@@ -631,6 +653,9 @@ module gw138k_push_workstation_top #(
     wire native_usb_oe;
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
+`ifdef WORKSTATION_CNN_DEMO
+        ,.CNN_DEMO_STATUS_ENABLE(1'b1)
+`endif
 `ifdef WORKSTATION_PUSH_RATE_CONTROL
         ,.PUSH_RATE_CONTROL_ENABLE(1'b1)
 `endif
@@ -646,6 +671,8 @@ module gw138k_push_workstation_top #(
     ) u_native_usb (
 `ifdef WORKSTATION_PUSH_RATE_CONTROL
         .rate_control_ready_i(push_rate_usb_ready),.rate_toggle_o(push_rate_usb_toggle),.rate_rejected_o(),
+`elsif WORKSTATION_CNN_DEMO
+        .rate_control_ready_i(1'b0),.rate_toggle_o(),.rate_rejected_o(),
 `endif
         .clk_cpu(usb_clk),.clk_ref(clk_50m),.clk_ulpi(usb2_ulpi_clk),.clk_audio(audio_clk),
 `ifdef WORKSTATION_RUNTIME_NATIVE
@@ -758,9 +785,15 @@ module gw138k_push_workstation_top #(
 `else
 `ifdef WORKSTATION_CUSTOM_138K
     wire [15:0] master_volume;
+`ifndef WORKSTATION_CNN_DEMO
     defparam u_managed.u_audio.u_workstation.effects.delay_stage.u_write_fifo.RAM_STYLE="block_ram";
     defparam u_managed.u_audio.u_workstation.effects.delay_stage.u_read_fifo.RAM_STYLE="block_ram";
+`endif
+`ifdef WORKSTATION_CNN_DEMO
+    workstation_cnn_demo_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed(
+`else
     gw138k_usb_controlled_audio #(.EXTERNAL_MASTER_VOLUME(1)) u_managed(
+`endif
         .master_volume_o(master_volume),
 `else
     gw138k_usb_controlled_audio u_managed(
@@ -787,6 +820,9 @@ module gw138k_push_workstation_top #(
     wire signed [31:0] output_mid={output_mid_pcm,15'd0};
     wire [7:0] memory_flags;
     wire [127:0] video_diagnostics;
+`ifdef WORKSTATION_CNN_DEMO
+    assign runtime_serial=1,push_snapshot=performance_words;
+`else
 `ifdef WORKSTATION_RUNTIME_NATIVE
     gw138k_push_performance_uart #(.USB_CDC_SEPARATE_RESET(1)) u_runtime(
         .usb_cdc_assert_ni(button1_n),
@@ -804,6 +840,7 @@ module gw138k_push_workstation_top #(
         .cpu_words({trap_cause,heartbeat,ram_result,signature,business_diagnostic_data,business_diagnostic_meta,ui_report}));
 `else
         .cpu_words({trap_cause,heartbeat,ram_result,signature,last_fetch,fetch_count,ui_report}));
+`endif
 `endif
 `ifdef WORKSTATION_WORKER_AUDIO_ONLY
     assign hdmi_tx_en=1'b0;
@@ -834,6 +871,10 @@ module gw138k_push_workstation_top #(
     wire [7:0] delay_ddr_debug;
     // P10 delay ring DMA: arbiter owner 6, BULK_POOL first granule (128 KiB).
 `ifndef WORKSTATION_RUNTIME_NATIVE
+`ifdef WORKSTATION_CNN_DEMO
+    assign delay_ddr_req=0,delay_ddr_write=0,delay_ddr_address=0,delay_ddr_data=0;
+    assign delay_dwr_pop=0,delay_drd_push=0,delay_drd_data=0,delay_ddr_debug=0;
+`else
     delay_ddr_dma #(.DELAY_BITS(14),.ECHO_SAMPLES(9600)) u_delay_ddr_dma(
         .clk_i(memory_clk),.rst_ni(memory_reset_n),
         .dwr_valid_i(delay_dwr_valid),.dwr_data_i(delay_dwr_data),.dwr_pop_o(delay_dwr_pop),
@@ -842,6 +883,7 @@ module gw138k_push_workstation_top #(
         .ddr_data_o(delay_ddr_data),.ddr_mask_o(),
         .ddr_ready_i(delay_ddr_ready),.ddr_response_i(delay_ddr_response),.ddr_read_data_i(client_rdata),
         .debug_status_o(delay_ddr_debug));
+`endif
 `endif
 `ifdef WORKSTATION_DEMO_NO_TF
     assign audio_ddr_ready=0,audio_queued_req=0,audio_queued_write=0;
@@ -980,8 +1022,13 @@ module gw138k_push_workstation_top #(
 `endif
 `ifndef WORKSTATION_NO_CNN
 `ifdef WORKSTATION_CUSTOM_138K
+`ifdef WORKSTATION_CNN_DEMO
+    assign model_flash_cs_n=1,model_flash_clk=0,model_flash_mosi=0;
+    basic_pitch_workstation_link u_music (
+`else
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1'b1)) u_music (
         .flash_miso(flash_miso),.flash_cs_n(model_flash_cs_n),.flash_clk(model_flash_clk),.flash_mosi(model_flash_mosi),
+`endif
 `else
     basic_pitch_workstation_link u_music (
 `endif
@@ -1194,7 +1241,20 @@ module gw138k_push_workstation_top #(
     wire [28:0] cpu_mem_address;
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
-`ifdef WORKSTATION_WORKER_AUDIO_ONLY
+`ifdef WORKSTATION_CNN_DEMO
+    workstation_cnn_demo_memory u_video(
+        .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),.memory_reset_ni(memory_reset_n),
+        .memory_calibrated_i(memory_calibrated),.memory_pll_locked_i(memory_pll_locked),
+        .audio_valid_i(audio_queued_req),.audio_write_i(audio_queued_write),.audio_address_i(audio_queued_address),.audio_data_i(audio_queued_data),
+        .audio_ready_o(audio_queued_ready),.audio_response_o(audio_ddr_response),
+        .music_valid_i(music_ddr_req),.music_write_i(music_ddr_write),.music_address_i(music_ddr_address),.music_data_i(music_ddr_data),
+        .music_mask_i(music_ddr_mask),.music_ready_o(music_ddr_ready),.music_response_o(music_ddr_response),
+        .app_cmd_o(app_cmd),.app_en_o(app_en),.app_wren_o(app_wren),.app_wend_o(app_wend),.app_address_o(app_addr),.app_data_o(app_wdata),.app_mask_o(app_wmask),
+        .app_ready_i(app_rdy),.app_write_ready_i(app_wrdy),.app_response_i(app_rvalid),.app_response_data_i(app_rdata),.response_data_o(client_rdata),.memory_flags_o(memory_flags));
+    assign tmds_clk_p=0,tmds_clk_n=0,tmds_data_p=0,tmds_data_n=0;
+    assign display_summary=0,display_summary_valid=0,video_diagnostics=0;
+    assign cpu_mem_ready=0,cpu_mem_response=0,delay_ddr_ready=0,delay_ddr_response=0;
+`elsif WORKSTATION_WORKER_AUDIO_ONLY
     workstation_audio_memory u_audio_memory(
         .reset_ni(reset_n),.clk_50m_i(clk_50m),.memory_clk_i(memory_clk),
         .memory_reset_ni(memory_reset_n),.memory_calibrated_i(memory_calibrated),
@@ -1265,6 +1325,11 @@ module gw138k_push_workstation_top #(
         .tmds_data_p(tmds_data_p), .tmds_data_n(tmds_data_n)
     );
 `endif
+`ifdef WORKSTATION_CNN_DEMO
+    assign pclk=clk_50m,preset_n=reset_n,psel=0,penable=0,pwrite=0,paddr=0,pwdata=0,pstrb=0;
+    assign fetch_count=0,last_fetch=0,signature=0,ram_result=0,heartbeat=0,trap_cause=0,trap_pc=0,ui_report=0;
+    assign cpu_mem_req=0,cpu_mem_write=0,cpu_mem_address=0,cpu_mem_data=0,cpu_mem_mask=0;
+`else
     wire core_clk,bus_clk,pll_locked;
     wire system_reset_n=reset_n;
 `ifdef WORKSTATION_CUSTOM_138K
@@ -1398,4 +1463,5 @@ module gw138k_push_workstation_top #(
         .RTC_CLK(clk_50m),
 `endif
         .POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));
+`endif
 endmodule

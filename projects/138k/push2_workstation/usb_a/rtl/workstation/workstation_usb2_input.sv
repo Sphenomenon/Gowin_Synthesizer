@@ -6,6 +6,7 @@ module workstation_usb2_input #(
     parameter integer FEEDBACK_AUDIO_DOMAIN = 0,
     parameter integer STOP_CLOCK_QUEUE_FENCE = 0,
     parameter bit CNN_FOLLOW_ENABLE = 1'b1,
+    parameter bit CNN_DEMO_STATUS_ENABLE = 1'b0,
     parameter bit MEDIA_CONTROLS_ENABLE = 1'b1,
     parameter bit PUSH_RATE_CONTROL_ENABLE = 1'b0,
     parameter bit WORKER_DEMO = 1'b0,
@@ -103,6 +104,7 @@ module workstation_usb2_input #(
     wire feedback_clk = FEEDBACK_AUDIO_DOMAIN != 0 ? clk_audio : clk_ref;
     wire feedback_reset_n = FEEDBACK_AUDIO_DOMAIN != 0 ? owner_audio_reset_n : feedback_release_q[1];
     push2_usb_a_control #(.STOP_CLOCK_QUEUE_FENCE(STOP_CLOCK_QUEUE_FENCE),
+                         .CNN_DEMO_STATUS_ENABLE(CNN_DEMO_STATUS_ENABLE),
                          .CNN_FOLLOW_ENABLE(CNN_FOLLOW_ENABLE),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
                          .PUSH_RATE_CONTROL_ENABLE(PUSH_RATE_CONTROL_ENABLE),
                          .WORKER_DEMO(WORKER_DEMO)) input_owner (

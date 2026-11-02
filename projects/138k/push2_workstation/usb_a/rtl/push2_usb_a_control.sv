@@ -3,6 +3,7 @@
 module push2_usb_a_control #(
     parameter integer STOP_CLOCK_QUEUE_FENCE=0,
     parameter bit CNN_FOLLOW_ENABLE=1'b1,
+    parameter bit CNN_DEMO_STATUS_ENABLE=1'b0,
     parameter bit MEDIA_CONTROLS_ENABLE=1'b1,
     parameter bit WORKER_DEMO=1'b0,
     parameter bit PUSH_RATE_CONTROL_ENABLE=1'b0,
@@ -277,7 +278,8 @@ module push2_usb_a_control #(
     push2_score_guide u_guide(.clk(clk),.rst(!reset_n),
         .score_valid(score_valid && !score_flushing && !track_launch),
         .score_ready(guide_score_ready),.score_note(score_note),
-        .toggle(guide_toggle),.selected_i(guide_chosen),.clear_i(track_launch || playlist_invalid),
+        .toggle(guide_toggle),.selected_i(guide_chosen && !(CNN_DEMO_STATUS_ENABLE && display_meta_q[1])),
+        .clear_i(track_launch || playlist_invalid || (CNN_DEMO_STATUS_ENABLE && display_meta_q[1])),
         .played_valid((mapped_valid && mapped_ready &&
                        mapped_event[17:14]==4'd1 && mapped_event[6:0]!=7'd0) ||
                       generic_played),
@@ -390,7 +392,8 @@ module push2_usb_a_control #(
         .packet_valid(packet_valid),.packet_length(packet_length),.packet_index(packet_index),
         .packet_data(packet_data),.packet_acked(packet_ack),.commands_acked(commands),.commands_rejected());
     wire frame_capture=accepted && write && address==8'h08;
-    push2_surface_pixels #(.PIPELINED(1),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
+    push2_surface_pixels #(.PIPELINED(1),.MEDIA_CONTROLS_ENABLE(MEDIA_CONTROLS_ENABLE),
+        .CNN_DEMO_STATUS_ENABLE(CNN_DEMO_STATUS_ENABLE)) pixels(.clk(clk),.rst(!reset_n || !push_connected),
         .frame_ready(frame_capture),.frame_start(),.x(pixel_index[9:0]),.y(pixel_index[17:10]),
         .pixel_valid(),.pixel(pixel),.control(control),.options(options),.held(actual_held),
         .note(note),.velocity(velocity),.display_meta(display_meta_q),

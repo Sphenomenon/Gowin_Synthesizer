@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "stage": "explicit_CNN_DEMO_source_synthesis_and_directed_regressions",
+  "source_head": "e0b812262b3b6d1c440c7c1a259dfd77d094c494",
+  "candidate_identity": "ad205f0df5065543",
+  "candidate_manifest": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v8/cnn_demo.json",
+  "source_policy": "accepted_full83_with_locked_timing85_six_files_and_synchronized_model_diagnostics_custom_carrier_minimal_audio",
+  "configuration": {
+    "song": "TRAVLER",
+    "format": "wav",
+    "sample_rate_hz": 48000,
+    "model_crc32": "AF01A61B",
+    "model_bytes": 104478,
+    "model_load": "manual_BPN1_UART_to_DDR",
+    "model_ready": "status_E_after_DDR_readback_CRC",
+    "hdmi": false,
+    "ae350": false,
+    "visualization_fft": false,
+    "cnn_cqt": true,
+    "effects": false,
+    "bluetooth": false,
+    "recording": false
+  },
+  "board_source_inputs": {
+    "carrier": {
+      "filename": "Netlist_my_138k_2026-10-21.tel",
+      "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+      "networks": 185,
+      "nodes": 737
+    },
+    "amplifier": {
+      "filename": "功放.tel",
+      "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+      "networks": 100,
+      "nodes": 492
+    },
+    "bluetooth": {
+      "filename": "蓝牙.tel",
+      "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+      "networks": 21,
+      "nodes": 88
+    }
+  },
+  "baseline": {
+    "name": "accepted_full83",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/accepted_full83.json",
+    "manifest_sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717",
+    "origin": {
+      "build": "results/song_guide_full83_20261006_203125_607466",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/accepted_full83.inputs.json",
+      "input_manifest_sha256": "a8caece577521b28196175f25d468ec7845d12a2f0fe29c6cbadfa246e67de28"
+    },
+    "source_files": 414,
+    "excluded_files": 180
+  },
+  "timing_baseline": {
+    "name": "timing85",
+    "manifest": "projects/138k/push2_workstation/usb_a/baselines/timing85.json",
+    "manifest_sha256": "1a12086acbfa39909570e21c704007adfccac5a6a2fbe0b8b552969c97116029",
+    "origin": {
+      "build": "results/song_guide_full85_clk50_20261007_084539_884006_route1",
+      "input_manifest": "projects/138k/push2_workstation/usb_a/baselines/origins/timing85.inputs.json",
+      "input_manifest_sha256": "c5aef03165e18b7f71119e6b563516feb00c88de86a156a2715f32a183ddef2c"
+    },
+    "source_files": 417,
+    "excluded_files": 180
+  },
+  "temporary_overlay": {
+    "file": "rtl/music/basic_pitch_workstation_link.sv",
+    "before_sha256": "b45ea2c84e99ec697554aad54b7803830c067335f653a2faef558f9d9cbbcfe4",
+    "after_sha256": "0ef34913bdcaf452935b6762d164215a9171ca47926ad23f3bca35c922f935a0",
+    "owner": "tools/workstation_cnn_cdc.py",
+    "owner_sha256": "b6abf223750bc701aa34cd6373cb2756c6abd4510f641aa343a0d576391369ef",
+    "exit_plan": "promote synchronized diagnostics into versioned full83 maintenance source after demo validation; preserve locked baselines"
+  },
+  "validation": {
+    "source_boundary_tests": 17,
+    "original_Push_guidance_and_lights_tests": 2,
+    "selected_audio": "PASS 1340 uninterrupted 48k ticks; 222 nonzero DAC frames; PANIC/detach; retired mode controls cannot silence",
+    "selected_inference": {
+      "passed": true,
+      "fixture": "generated 48k PCM WAV validation audio only, never embedded in candidate",
+      "windows_frames": 3,
+      "window_length": 43844,
+      "decoded_PCM": 95625,
+      "model_reads": 4407158,
+      "actual_CNN_score_notes": 1,
+      "layer_hashes": "1209e98c713a55e61e3893442fbf71e54ed88666ca752e6e",
+      "model_preloaded_in_behavioural_DDR": true,
+      "UART_tested": false,
+      "physical_TF_tested": false,
+      "original_wrong_correct_key_and_reselection_cleanup": true
+    },
+    "selected_Viterbi": "PASS 172 frames x89 states, all scores/backpointers/ties/silence/stalls/28 notes; old-map negative control failed as expected"
+  },
+  "first_full_synthesis": {
+    "candidate": "0abf8ec14a2b1794",
+    "passed": true,
+    "logic": 41739,
+    "registers": 22693,
+    "synthesis_equivalent_BSRAM": 123
+  },
+  "first_full_PnR": {
+    "identity": "D21102D2",
+    "completed": true,
+    "physical_BSRAM": 145,
+    "logic": 42031,
+    "static_timing_closed": false,
+    "global_worst_ns": {
+      "setup": -3.137,
+      "hold": -4.548,
+      "recovery": 2.411,
+      "removal": 0.278
+    },
+    "problems": [
+      "Fmax below requirement: clk_50m",
+      "Fmax below requirement: audio_76m8",
+      "negative endpoints: clk_50m/setup",
+      "negative endpoints: audio_76m8/setup",
+      "negative endpoints: ddr_ui100/setup",
+      "negative detailed timing paths"
+    ],
+    "deployed": false
+  },
+  "followup": "Locked timing85 six-file fixes, diagnostic CDC, isolated model UART, buffered basic-instrument events, true Push failure state; candidate-v8 synthesis in progress; fresh PnR required",
+  "rollback": "No board operation performed; retain currently deployed W B6 SRAM and M Flash, reread actual identity under JTAG lock before any future SRAM change",
+  "hardware_user_state": "Push and historical TF present; board currently not connected to computer",
+  "evidence": {
+    "candidate-v8/cnn_demo.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v8/cnn_demo.json",
+      "sha256": "7cb84019b7cf226dde8da664bad50331b31ff77633ace401db45dd0bd1fd1822"
+    },
+    "candidate-v6/cnn_demo.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v6/cnn_demo.json",
+      "sha256": "d549ece150c162886980180c3bbbf7cca77388b11a1cdbde8b6e4d8e72902d64"
+    },
+    "physical-D21102D2/physical_inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D2/physical_inputs.json",
+      "sha256": "64372eb938be529827bd9c779c220c6ea21809772dd6968bd7e6d500fcc57720"
+    },
+    "physical-D21102D2/timing-audit.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D2/timing-audit.json",
+      "sha256": "b9fedcc4799db54a249f2884d23be1033d661e093b85ac1890c86177cddd5921"
+    },
+    "regression/minimal-audio-v7/inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/minimal-audio-v7/inputs.json",
+      "sha256": "f3668af69d4af48c163b3f0d83551a0faf4c6b0dd25da2c2920478cc7ed939af"
+    },
+    "regression/minimal-audio-v7/1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/minimal-audio-v7/1.log",
+      "sha256": "8eb9d19aa04ffd8ea0baa72965de927e9d42387c0003a6e044d7f26a5e2251a0"
+    },
+    "regression/inference-v7/inputs.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/inference-v7/inputs.json",
+      "sha256": "340194add1e2d72db2187d193a8656140b17aa0f1174b6959942597a86ad272b"
+    },
+    "regression/inference-v7/1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/inference-v7/1.log",
+      "sha256": "f5e621ad1bf42cf17c8f5ba4b25d3fadd4d40d86f33395f7a550a2553292a76b"
+    },
+    "regression/ddr-isolation-v7/summary.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/ddr-isolation-v7/summary.json",
+      "sha256": "ccf41b7b38cbb7dc9feac44bab16b887c33a504ce1e99371e30e6a804810a62e"
+    },
+    "source-gates-v7.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/source-gates-v7.log",
+      "sha256": "1aed8221977c2de4228d24b05533e28e84370d309988d3fdfa913a87264b460d"
+    },
+    "push-guide-v7.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/push-guide-v7.log",
+      "sha256": "bc1f6badc14dca48e6c04e34fe7d8e5053e65e90cd0336e4049562ec60021dd4"
+    }
+  },
+  "static_timing_closed": false,
+  "PLL_passed": false,
+  "CDC_passed": false,
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "remaining": [
+    "candidate-v8 full synthesis/PnR and physical resource/PLL/STA/CDC gates",
+    "connect custom board to computer",
+    "actual TRAVLER TF/CNN/Push/fresh-correct-key/DAC/reselection filming acceptance"
+  ]
+}

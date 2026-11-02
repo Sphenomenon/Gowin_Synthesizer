@@ -5,7 +5,8 @@
 
 module workstation_parameters #(
     parameter bit D_ONLY_ENABLE=0,
-    parameter bit TF_CONTROL_ENABLE=1
+    parameter bit TF_CONTROL_ENABLE=1,
+    parameter bit CNN_DEMO_MINIMAL=0
 ) (
     input wire clk_i, rst_ni, commit_i, lifecycle_i, mode_applied_i,
     input wire [3:0] kind_i,
@@ -90,6 +91,13 @@ module workstation_parameters #(
                 default: rejected_o = 0;
             endcase
         end
+        // The filming profile has one basic instrument and a dry output. Keep
+        // unsupported controls out of this sole committed parameter state.
+        if (CNN_DEMO_MINIMAL && commit_i) begin
+            if (kind_i == 3 || kind_i == 4) rejected_o = 1;
+            if (kind_i == 2 && (address_i == 1 || address_i == 5 ||
+                (address_i >= 80 && address_i <= 103))) rejected_o = 1;
+        end
     end
 
     always_ff @(posedge clk_i or negedge rst_ni) begin
@@ -142,7 +150,7 @@ module workstation_parameters #(
                 end
             end
             if (rejected_o) scope_error_o <= 1;
-            if (commit_i) begin
+            if (commit_i && !(CNN_DEMO_MINIMAL && rejected_o)) begin
                 case (kind_i)
                     2: case (address_i)
                         1: vibrato_depth_o <= value_i;

@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // Push 2's 960x160 guide page. Names are the FAT scanner's 8.3 entries.
-module push2_song_screen #(parameter PIPELINED=0)(
+module push2_song_screen #(parameter PIPELINED=0,parameter bit CNN_DEMO_STATUS_ENABLE=1'b0)(
     input wire clk,rst,
     input wire name_write_valid,
     input wire [7:0] name_write_addr,name_write_data,
@@ -9,6 +9,7 @@ module push2_song_screen #(parameter PIPELINED=0)(
     input wire [4:0] track_count,
     input wire [15:0] score_count,cursor,
     input wire analysis_done,
+    input wire [31:0] cnn_status_i,
     input wire [2:0] effect_mask,
     input wire [9:0] x,
     input wire [7:0] y,
@@ -65,6 +66,17 @@ module push2_song_screen #(parameter PIPELINED=0)(
         hint=chosen ? "SELECT: LIST    " : "L/R SEL PLAY    ";
         state_text=analysis_done ? "SONG READY      " : "SCANNING SONG   ";
         effect_text="DELAY CHORUS RVB";
+        if(CNN_DEMO_STATUS_ENABLE)begin
+            if(cnn_status_i[3])state_text="MODEL FAILED    ";
+            else if(cnn_status_i[6])state_text="TF CARD LOST    ";
+            else if(cnn_status_i[5])state_text="TF DDR FAILED   ";
+            else if(cnn_status_i[4])state_text="WAV UNSUPPORTED ";
+            else if(!cnn_status_i[0])state_text="LOAD MODEL UART ";
+            else if(analysis_done)state_text="SONG READY      ";
+            else if(score_count!=0)state_text="GUIDE READY     ";
+            else state_text="CNN ANALYZING   ";
+            effect_text="48K WAV MODEL E ";
+        end
         progress={digit({4'b0,cursor_digits[19:16]}),digit({4'b0,cursor_digits[15:12]}),digit({4'b0,cursor_digits[11:8]}),digit({4'b0,cursor_digits[7:4]}),digit({4'b0,cursor_digits[3:0]}),8'h2f,
                   digit({4'b0,score_digits[19:16]}),digit({4'b0,score_digits[15:12]}),digit({4'b0,score_digits[11:8]}),digit({4'b0,score_digits[7:4]}),digit({4'b0,score_digits[3:0]}),40'h2020202020};
         background=16'h0841;

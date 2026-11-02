@@ -12,6 +12,7 @@ module gw138k_event_workstation #(
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
     parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
+    parameter bit CNN_DEMO_MINIMAL=0,
     parameter bit D_ONLY_ENABLE=0,
     parameter bit TF_CONTROL_ENABLE=1,
     parameter integer DELAY_BITS=14,
@@ -107,7 +108,7 @@ module gw138k_event_workstation #(
   wire arbiter_cpu_ready;
   wire cue_start=event_valid && event_ready && kind==2 && a==96 && b==127 && !tf_scope_control_o[12] && (scope_enable || legacy_active_mask==0);
   wire cue_stop=usb_lifecycle || (event_valid && event_ready && kind==2 && ((a==96 && b==0) || a==120 || a==123));
-  generate if(SYNTH_ENGINES_ENABLE)begin: instrument_cue
+  generate if(SYNTH_ENGINES_ENABLE && !CNN_DEMO_MINIMAL)begin: instrument_cue
   scope_control_player cue_player(
       .clk_i,.rst_ni,.sample_ce_i(core_ce),.start_i(cue_start),.stop_i(cue_stop),
       .speed_q8_i(cue_speed==127 ? 10'd512 : {cue_speed,2'b00}),
@@ -223,7 +224,8 @@ module gw138k_event_workstation #(
       .initialization_step_o(attach_step)
   );
   wire [6:0] d_crush,d_drive,d_delay_send;
-  workstation_parameters #(.D_ONLY_ENABLE(D_ONLY_ENABLE),.TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)) parameters (
+  workstation_parameters #(.D_ONLY_ENABLE(D_ONLY_ENABLE),.TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),
+      .CNN_DEMO_MINIMAL(CNN_DEMO_MINIMAL)) parameters (
       .clk_i(clk_i),
       .rst_ni(rst_ni),
       .commit_i(parameter_commit),
@@ -527,6 +529,45 @@ module gw138k_event_workstation #(
     assign allocated=0;assign legacy_active_mask=0;assign legacy_active_count=0;
     assign load_busy=0;assign mix_busy=0;assign issued=0;assign pitch_q20_o=D_ONLY_ENABLE ? target_ratio : 22'd1048576;
     assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? 2'd3 : 2'd2;
+  end else if(CNN_DEMO_MINIMAL) begin: cnn_demo_instrument
+    // Fixed historical basic instrument; no vector, cue or rate switching.
+    assign pitch_q20_o=22'd1048576;
+    assign runtime_quiescent=1'b0,runtime_rate_ready=1'b0,engine_rate=1'b0;
+    assign core_event_slot_ready=core_event_ready,core_expression_slot_ready=core_expression_ready;
+    assign vec_event_ready=1'b1,vec_ready=1'b1,vec_busy=1'b0;
+    assign vec_valid=synth_valid_o,vec_left=0,vec_right=0,vec_active=0,vec_count=0;
+    assign vec_rejected=0,vec_config_error=0,vec_frequency_error=0,vec_clip=0;
+    // Mode application still drains the original session initialization.
+    assign mode_ready=1'b1,mode_o=2'd2;
+    reg pending;
+    reg pending_on;
+    reg [6:0] pending_note,pending_off,pending_velocity;
+    wire engine_ready,engine_sample_ready;
+    assign core_event_ready=!pending;
+    assign core_sample_ready=engine_sample_ready && !pending;
+    assign core_expression_ready=1'b1;
+    always_ff @(posedge clk_i or negedge rst_ni)
+      if(!rst_ni)begin pending<=0;pending_on<=0;pending_note<=0;pending_off<=0;pending_velocity<=0;end
+      else if(panic_accept)pending<=0;
+      else if(core_event_valid && core_event_ready)begin
+        pending<=1;pending_on<=core_note_on;pending_note<=a;
+        pending_off<=core_note;pending_velocity<=core_velocity;
+      end else if(pending && engine_ready)pending<=0;
+    workstation_runtime_oscillator_engine #(.EXPRESSION_ENABLE(0),.SAMPLE_RATE_HZ(48000),
+        .SEPARATE_OFF_NOTE(1),.PIPELINED_ENVELOPE(1)) engine(
+        .clk_i,.rst_ni,.mode_set_valid_i(1'b0),.mode_set_ready_o(),
+        .mode_i(2'd2),.current_mode_o(),.panic_i(panic_accept),
+        .event_valid_i(pending),.event_ready_o(engine_ready),
+        .event_slot_ready_o(),.expression_slot_ready_o(),
+        .event_note_on_i(pending_on),.event_profile_i(3'd0),
+        .event_midi_note_i(pending_note),.event_off_note_i(pending_off),.event_velocity_i(pending_velocity),
+        .expression_valid_i(1'b0),.expression_ready_o(),
+        .expression_note_i(7'd0),.expression_value_i(7'd0),
+        .pitch_ratio_q20_i(22'd1048576),.sample_ce_i(core_ce),
+        .sample_ready_o(engine_sample_ready),.sample_valid_o(synth_valid_o),.sample_o(synth_o),
+        .allocated_mask_o(allocated),.active_mask_o(legacy_active_mask),.active_voice_count_o(legacy_active_count),
+        .load_busy_o(load_busy),.mix_busy_o(mix_busy),.issued_slot_count_o(issued),
+        .rate_commit_i(1'b0),.rate_44100_i(1'b0),.rate_ready_o(),.applied_rate_44100_o(),.quiescent_o());
   end else if(RUNTIME_RATE_ENABLE) begin: runtime_engines
     workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
       .clk_i,.rst_ni,.panic_i(engine_clear),.sample_ce_i(core_ce),
@@ -641,7 +682,23 @@ module gw138k_event_workstation #(
       if(effects_valid && fx_ready) begin synth_joined<=0;vec_joined<=0;end
     end
   end
-  generate if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
+  generate if(CNN_DEMO_MINIMAL)begin: cnn_demo_dry_audio
+    // Preserve the joined render handshake and expression gain; effects and
+    // their DDR/CDC are absent in this explicit candidate.
+    wire signed [48:0] scaled=$signed(panic_muted ? 32'sd0 : held_synth)*$signed({1'b0,expression_gain});
+    reg signed [31:0] dry_sample;
+    always_ff @(posedge clk_i or negedge rst_ni)
+      if(!rst_ni)begin sample_valid_o<=0;dry_sample<=0;end
+      else begin
+        sample_valid_o<=effects_valid && !panic_accept;
+        if(effects_valid)dry_sample<=scaled[46:15];
+      end
+    assign effect_left=dry_sample,effect_right=dry_sample;
+    assign fx_ready=1'b1,fx_sample_slot_ready=1'b1,fx_clip=1'b0;
+    assign fx_config_ready=0,fx_config_applied=0,fx_history_ready=0,fx_history_done=0;
+    assign fx_quiet=1,fx_fault=0,fx_rate=0,delay_heartbeat_o=0;
+    assign delay_dwr_valid_o=0,delay_dwr_data_o=0,delay_drd_ready_o=0;
+  end else if(RUNTIME_EFFECTS_ENABLE) begin: runtime_effects
     workstation_runtime_stereo_effects #(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.RELEASE_TAILS_ENABLE(!D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) effects(
       .clk_i,.rst_ni,.clear_i(engine_clear),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),
       .vector_left_i(panic_muted?32'sd0:held_vec_l),.vector_right_i(panic_muted?32'sd0:held_vec_r),

@@ -30,6 +30,7 @@ def replace_between(s,start,end,a,b):
 def main():
     from tools.workstation_profile import PROFILE_REGISTRY
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
+    ap.add_argument('--cnn-demo',action='store_true',help='Independent custom-board full83 CNN filming candidate; no graphics/effects/AE350')
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
@@ -76,6 +77,15 @@ def main():
     ap.add_argument('--ae350-probe-gao',choices=('full64','banked4','bsram4','bsram8'),help='Explicit GAO transport for the standalone AE350 probe; default full64')
     ap.add_argument('--ae350-probe-program',choices=('local-memory','cache-pma-v1'),help='Explicit standalone probe program; default local-memory')
     args=ap.parse_args()
+    if args.cnn_demo:
+        allowed={'cnn_demo','custom_board_output','netlist_dir','riscv_prefix','tf_audio_kind'}
+        if args.custom_board_output is None or args.netlist_dir is None or args.tf_audio_kind!='wav' or any(value for key,value in vars(args).items() if key not in allowed):
+            ap.error('--cnn-demo requires --custom-board-output and --netlist-dir; fixed WAV/48k, cannot mix profiles')
+        from tools.workstation_cnn_demo import prepare as prepare_cnn_demo
+        output,metadata=prepare_cnn_demo(ROOT,args.netlist_dir,args.custom_board_output,args.riscv_prefix)
+        print(output)
+        print(json.dumps(dict(identity=metadata['identity'],name=metadata['name'],compiled=len(metadata['compiled_sha256']),hardware_tested=False)))
+        return
     if args.ae350_local_memory_probe:
         allowed={'ae350_local_memory_probe','ae350_probe_output','ae350_probe_gao','ae350_probe_program','prepare_only','netlist_dir','user_code','riscv_prefix','tf_audio_kind'}
         if (args.tf_audio_kind!='wav' or not args.prepare_only or args.ae350_probe_output is None or
