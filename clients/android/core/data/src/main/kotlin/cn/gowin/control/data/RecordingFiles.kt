@@ -8,7 +8,7 @@ import java.nio.file.StandardCopyOption
 import java.util.Properties
 import java.util.zip.CRC32
 
-data class SavedRecording(val key: String,val name: String,val file: File,val bytes: Long,val savedAt: Long,val incomplete: Boolean,val demo: Boolean,val source: String=if(demo)"demo"else"workstation")
+data class SavedRecording(val key: String,val name: String,val file: File,val bytes: Long,val savedAt: Long,val incomplete: Boolean,val demo: Boolean,val source: String=if(demo)"demo"else"workstation",val sampleRate: Long=48000)
 data class DownloadCheckpoint(val offset: Long,val prefixCrc: Long)
 
 /** File bytes are synced before checkpoint publication; checkpoint is authoritative, not UI state. */
@@ -48,13 +48,14 @@ class RecordingFiles(private val root: File) {
         atomicProperties(checkpoint(info),p)
     }
     fun discard(info: RecordingInfo) { taskDir(info).deleteRecursively() }
-    fun packageWav(info: RecordingInfo,demo: Boolean,source: String=if(demo)"demo"else"workstation"): SavedRecording {
+    fun packageWav(info: RecordingInfo,demo: Boolean,source: String=if(demo)"demo"else"workstation",formats: RecordingFormats=RecordingFormats.LEGACY): SavedRecording {
+        formats.validate(info,requireReady=true)
         val pcm=part(info)
         check(pcm.length()==info.bytes && fileCrc(pcm)==info.crc){"完整 PCM 校验失败"}
-        check(info.bytes<=0xffffffffL-36 && info.format==1 && info.channels==2 && info.sampleRate==48000L && info.bytes==info.frames*4)
+        check(info.bytes<=0xffffffffL-36)
         val key=key(info);val tmp=File(recordings,"$key.wav.part");val target=File(recordings,"$key.wav")
         FileOutputStream(tmp).use { out ->
-            out.write(wavHeader(info.bytes));pcm.inputStream().use{it.copyTo(out)};out.fd.sync()
+            out.write(wavHeader(info.bytes,info.sampleRate));pcm.inputStream().use{it.copyTo(out)};out.fd.sync()
         }
         check(tmp.length()==44+info.bytes && fileCrc(tmp,44,info.bytes)==info.crc){"WAV 文件校验失败"}
         atomicMove(tmp,target)
@@ -63,6 +64,7 @@ class RecordingFiles(private val root: File) {
             setProperty("name",(if(source=="builtin")"内置测试录音 "else if(demo)"模拟录音 " else "工作站录音 ")+info.id)
             setProperty("saved",saved.toString());setProperty("bytes",info.bytes.toString())
             setProperty("incomplete",info.incomplete.toString());setProperty("demo",demo.toString());setProperty("source",source)
+            setProperty("rate",info.sampleRate.toString());setProperty("format",info.format.toString());setProperty("channels",info.channels.toString());setProperty("frames",info.frames.toString())
         })
         return library().first{it.key==key}
     }
@@ -70,7 +72,8 @@ class RecordingFiles(private val root: File) {
         runCatching {
             val p=load(meta);val wav=File(recordings,"${meta.nameWithoutExtension}.wav")
             val size=p.getProperty("bytes").toLong();check(wav.length()==size+44)
-            SavedRecording(meta.nameWithoutExtension,p.getProperty("name"),wav,size,p.getProperty("saved").toLong(),p.getProperty("incomplete").toBoolean(),p.getProperty("demo").toBoolean(),p.getProperty("source",if(p.getProperty("demo").toBoolean())"demo"else"workstation"))
+            val rate=p.getProperty("rate","48000").toLong();check(rate==48000L || rate==44100L)
+            SavedRecording(meta.nameWithoutExtension,p.getProperty("name"),wav,size,p.getProperty("saved").toLong(),p.getProperty("incomplete").toBoolean(),p.getProperty("demo").toBoolean(),p.getProperty("source",if(p.getProperty("demo").toBoolean())"demo"else"workstation"),rate)
         }.getOrNull()
     }.sortedByDescending{it.savedAt}
     fun rename(entry: SavedRecording,name: String) {
@@ -88,10 +91,10 @@ class RecordingFiles(private val root: File) {
             }
             return crc.value
         }
-        fun wavHeader(bytes: Long): ByteArray {
-            require(bytes in 0..0xffffffffL-36 && bytes%4==0L)
+        fun wavHeader(bytes: Long,sampleRate: Long=48000): ByteArray {
+            require(bytes in 0..0xffffffffL-36 && bytes%4==0L && sampleRate in listOf(48000L,44100L))
             return Writer().bytes("RIFF".toByteArray()).u32(36+bytes).bytes("WAVEfmt ".toByteArray()).u32(16)
-                .u16(1).u16(2).u32(48000).u32(192000).u16(4).u16(16).bytes("data".toByteArray()).u32(bytes).build()
+                .u16(1).u16(2).u32(sampleRate).u32(sampleRate*4).u16(4).u16(16).bytes("data".toByteArray()).u32(bytes).build()
         }
         private fun load(file: File)=Properties().apply{file.inputStream().use{load(it)}}
         private fun atomicProperties(file: File,p: Properties) {

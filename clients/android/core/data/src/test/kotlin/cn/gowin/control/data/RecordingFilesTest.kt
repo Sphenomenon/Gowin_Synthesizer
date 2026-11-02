@@ -39,4 +39,29 @@ class RecordingFilesTest {
             assertThrows(IllegalStateException::class.java){files.packageWav(info,false)}
         }finally{root.deleteRecursively()}
     }
+    @Test fun negotiated44100WavUsesActualRateAndRejectsUnnegotiatedPackaging() {
+        val root=Files.createTempDirectory("recording-44100").toFile()
+        try {
+            val files=RecordingFiles(root);val info=info().copy(format=2,sampleRate=44100)
+            RandomAccessFile(files.part(info),"rw").use{it.write(pcm)}
+            assertThrows(ProtocolException::class.java){files.packageWav(info,false)}
+            val formats=RecordingFormats.decodeResponse(Message(Op.RECORDING_FORMATS,0,2,1uL,
+                Writer().u16(1).u16(0).u32(3).u64(info.boot).build()),info.boot)
+            val saved=files.packageWav(info,false,formats=formats)
+            val r=Reader(saved.file.readBytes().copyOfRange(24,44))
+            assertEquals(44100,r.u32());assertEquals(176400,r.u32());assertEquals(4,r.u16());assertEquals(16,r.u16())
+            assertEquals("data",String(r.bytes(4)));assertEquals(info.bytes,r.u32())
+            assertEquals(44100,saved.sampleRate);assertEquals(44100,files.library().single().sampleRate)
+            assertEquals(info.crc,RecordingFiles.fileCrc(saved.file,44,info.bytes))
+        }finally{root.deleteRecursively()}
+    }
+    @Test fun changedFormatOrRateCannotResumeAnOldDurablePrefix() {
+        val root=Files.createTempDirectory("recording-format-identity").toFile()
+        try {
+            val files=RecordingFiles(root);val original=info()
+            RandomAccessFile(files.part(original),"rw").use{it.write(pcm);files.persist(original,it,1024,crc32(pcm))}
+            assertEquals(0,files.recover(original.copy(format=2,sampleRate=44100)).offset)
+            assertEquals(0,files.part(original).length())
+        }finally{root.deleteRecursively()}
+    }
 }

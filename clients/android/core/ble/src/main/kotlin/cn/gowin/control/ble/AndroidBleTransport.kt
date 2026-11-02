@@ -18,6 +18,8 @@ import java.util.UUID
 
 class AndroidBleTransport(private val context: Context) : BleTransport {
     private val manager = context.getSystemService(BluetoothManager::class.java)
+    private val recovery = AndroidConnectionRecovery(context)
+    override val connectionProgress = recovery.progress
     private var gatt: BluetoothGatt? = null
     private var epoch = 0L
     private var commandWriteType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
@@ -56,18 +58,25 @@ class AndroidBleTransport(private val context: Context) : BleTransport {
     private fun characteristic(uuid: UUID): BluetoothGattCharacteristic =
         gatt?.getService(GattIds.service)?.getCharacteristic(uuid) ?: throw IOException("设备缺少业务特征 $uuid")
 
-    private class RejectedOperation(message:String):IOException(message)
+    private class RejectedOperation(kind: String): GattFailure(kind, detail = "系统未接受请求")
     private suspend fun operation(kind: String, uuid: UUID? = null, timeout: Long = 5000, optional:Boolean=false, start: () -> Boolean): ByteArray = mutex.withLock {
         withContext(Dispatchers.Main.immediate) {
+            recovery.progress(kind)
             val p = Pending(kind, uuid, CompletableDeferred())
             check(pending == null)
             pending = p
             try {
-                if (!start()) throw RejectedOperation("系统未接受 GATT $kind")
+                if (!start()) throw RejectedOperation(kind)
                 withTimeout(timeout) { p.result.await() }
+            } catch (error: TimeoutCancellationException) {
+                currentCoroutineContext().ensureActive()
+                val failure = GattFailure(kind, detail = "操作超时", cause = error)
+                closeGatt(failure)
+                throw failure
             } catch (e: Exception) {
-                if(optional && e is RejectedOperation && connected.value) byteArrayOf()
-                else { close(); throw e }
+                if(optional && connected.value && (e is RejectedOperation ||
+                    (e is GattFailure && e.status != null && e.status != 5 && e.status != 15))) byteArrayOf()
+                else { closeGatt(); throw e }
             }
             finally { if (pending === p) pending = null }
         }
@@ -76,10 +85,16 @@ class AndroidBleTransport(private val context: Context) : BleTransport {
         val p = pending ?: return
         if (p.kind != kind || p.uuid != uuid) return
         if (status == BluetoothGatt.GATT_SUCCESS) p.result.complete(bytes)
-        else p.result.completeExceptionally(RejectedOperation("GATT $kind 失败 ($status)"))
+        else p.result.completeExceptionally(GattFailure(kind, status))
     }
     override suspend fun connect(address: String) {
-        withContext(Dispatchers.Main.immediate) { stopScan(); close() }
+        recovery.run(address, { closeGatt() }) { connectOnce(address) }
+    }
+    override suspend fun <Result> establish(address: String, handshake: suspend () -> Result): Result =
+        recovery.run(address, { closeGatt() }) { connectOnce(address); handshake() }
+
+    private suspend fun connectOnce(address: String) {
+        withContext(Dispatchers.Main.immediate) { stopScan(); closeGatt() }
         val generation = epoch
         val callback = object : BluetoothGattCallback() {
             private fun current(g: BluetoothGatt) = generation == epoch && g === gatt
@@ -87,7 +102,8 @@ class AndroidBleTransport(private val context: Context) : BleTransport {
                 if (!current(g)) return
                 if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
                     _connected.value = true; finish("connect", null, status)
-                } else if (newState == BluetoothProfile.STATE_DISCONNECTED || status != 0) close()
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED || status != 0)
+                    closeGatt(GattFailure(pending?.kind ?: "connection", status, "连接已断开"))
             }
             override fun onMtuChanged(g:BluetoothGatt,mtu:Int,status:Int) { if(current(g))finish("mtu",null,status) }
             override fun onServicesDiscovered(g: BluetoothGatt, status: Int) { if (current(g)) finish("discover",null,status) }
@@ -123,7 +139,7 @@ class AndroidBleTransport(private val context: Context) : BleTransport {
         // GATT operation rather than racing service/characteristic requests.
         operation("mtu",optional=true) { gatt?.requestMtu(247)==true }
         withContext(Dispatchers.Main.immediate) {
-            if (gatt?.getService(GattIds.service) == null) { close(); throw IOException("设备尚未提供 GW138K 业务服务") }
+            if (gatt?.getService(GattIds.service) == null) { closeGatt(); throw IOException("设备尚未提供 GW138K 业务服务；25K MIDI 请使用独立的 MIDI 连接页") }
             // The declaration advertises this optional transport independently
             // of v1 logical capabilities. Old firmware continues using requests.
             commandWriteType=if(characteristic(GattIds.command).properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE!=0)
@@ -157,10 +173,14 @@ class AndroidBleTransport(private val context: Context) : BleTransport {
     override fun useAcknowledgedWrites() { commandWriteType=BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT }
     override fun priority(high: Boolean) { runCatching { gatt?.requestConnectionPriority(if(high) BluetoothGatt.CONNECTION_PRIORITY_HIGH else BluetoothGatt.CONNECTION_PRIORITY_BALANCED) } }
     override fun close() {
+        recovery.cancel()
+        closeGatt()
+    }
+    private fun closeGatt(error: Exception = IOException("蓝牙连接已断开")) {
         epoch++; _connected.value=false
         commandWriteType=BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
         val old=gatt; gatt=null
-        pending?.result?.completeExceptionally(IOException("蓝牙连接已断开"))
+        pending?.result?.completeExceptionally(error)
         runCatching { old?.disconnect() }; runCatching { old?.close() }
     }
 }

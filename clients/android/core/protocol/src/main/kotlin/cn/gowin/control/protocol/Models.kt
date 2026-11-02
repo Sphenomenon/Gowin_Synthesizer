@@ -78,11 +78,12 @@ data class RecordingInfo(
     val ready get() = state == 4 && flags and 2 != 0
     val incomplete get() = flags and 1 != 0
     companion object {
-        fun decode(raw: ByteArray): RecordingInfo {
+        fun decode(raw: ByteArray, formats: RecordingFormats = RecordingFormats.LEGACY): RecordingInfo {
             checkWire(raw.size == 48, "录音信息长度错误")
             val r=Reader(raw)
             val info=RecordingInfo(r.u64(),r.u32(),r.u8(),r.u8(),r.u8(),r.u8(),r.u32(),r.u32(),r.u32(),r.u32(),r.u32(),r.u16(),r.u16(),r.u32())
             r.zero(4); checkWire(info.state in 0..5 && info.flags and 0xf8 == 0, "录音状态错误")
+            formats.validate(info)
             return info
         }
     }

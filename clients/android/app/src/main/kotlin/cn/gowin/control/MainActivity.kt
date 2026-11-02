@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val model:ControlViewModel=viewModel(factory=object:ViewModelProvider.Factory{
                 override fun <T:ViewModel> create(modelClass:Class<T>):T {
-                    @Suppress("UNCHECKED_CAST") return ControlViewModel((application as ControlApplication).workstation) as T
+                    @Suppress("UNCHECKED_CAST") return ControlViewModel((application as ControlApplication).workstation, (application as ControlApplication).musicPlayback, (application as ControlApplication).midiKeyboard) as T
                 }
             })
             MaterialTheme(colorScheme=darkColorScheme(primary=Color(0xFF77DFBE),secondary=Color(0xFFA5B9F1),background=Color(0xFF10141D),surface=Color(0xFF191F2B))) {
@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
     }
     private fun stopConnection(){stopService(Intent(this,ConnectionService::class.java));(application as ControlApplication).workstation.disconnect()}
     private fun play(file:File){
+        (application as ControlApplication).musicPlayback.pause()
         player?.release();player=null
         try{player=MediaPlayer().apply{setDataSource(file.absolutePath);prepare();start();setOnCompletionListener{it.release();if(player===it)player=null}}}
         catch(e:Exception){player?.release();player=null;(application as ControlApplication).workstation.error("试听失败：${e.message}")}
@@ -67,11 +68,11 @@ class MainActivity : ComponentActivity() {
         val uri=FileProvider.getUriForFile(this,"$packageName.files",entry.file)
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply{type="audio/wav";putExtra(Intent.EXTRA_STREAM,uri);clipData=ClipData.newRawUri("WAV",uri);addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)},"分享录音"))
     }
-    override fun onStop(){player?.pause();super.onStop()}
+    override fun onStop(){(application as ControlApplication).midiKeyboard.releaseControls();player?.pause();(application as ControlApplication).musicPlayback.pause();super.onStop()}
     override fun onDestroy(){player?.release();super.onDestroy()}
 }
 
-class ControlViewModel(val repo:Workstation):ViewModel(){
+class ControlViewModel(val repo:Workstation,val music:MusicPlayback,val midi:MidiKeyboard?=null):ViewModel(){
     val state=repo.state
     val devices=repo.scanner.devices
     fun action(block:suspend ()->Unit){
@@ -89,6 +90,7 @@ class ControlViewModel(val repo:Workstation):ViewModel(){
 private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()->Unit,play:(File)->Unit,share:(SavedRecording)->Unit,pausePlayback:()->Unit){
     val s by vm.state.collectAsStateWithLifecycle()
     val devices by vm.devices.collectAsStateWithLifecycle()
+    val midiState = vm.midi?.state?.collectAsStateWithLifecycle()?.value
     val context=androidx.compose.ui.platform.LocalContext.current
     val scope=rememberCoroutineScope()
     var tab by rememberSaveable{mutableIntStateOf(0)}
@@ -118,19 +120,26 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     var clock by remember{mutableLongStateOf(SystemClock.elapsedRealtime())}
     LaunchedEffect(Unit){while(true){delay(1000);clock=SystemClock.elapsedRealtime()}}
     Scaffold(topBar={TopAppBar(title={Column{Text("GOWIN",fontWeight=FontWeight.Bold);Text("SYNTHESIZER CONTROL",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.primary)}},actions={
-        TextButton(onClick={showDevices=true}){Text(if(s.ready)s.name else "连接设备")}
+        TextButton(onClick={showDevices=true}){Text(if(s.ready)s.name else "连接工作站")}
     })},bottomBar={NavigationBar{
-        listOf("控制","录音","作品").forEachIndexed{i,title->NavigationBarItem(selected=tab==i,onClick={if(tab==2&&i!=2)pausePlayback();tab=i},icon={Text(listOf("◉","●","♫")[i])},label={Text(title)})}
+        listOf("控制","录音","作品","音乐").forEachIndexed{i,title->NavigationBarItem(selected=tab==i,onClick={if(tab==2&&i!=2)pausePlayback();tab=i},icon={Text(listOf("◉","●","♫","▷")[i])},label={Text(title)})}
     }}){padding->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)){
             Card(Modifier.fillMaxWidth()){
                 Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){
-                    Text(if(s.demo)"模拟设备 · 不代表实板结果"else "设备连接",color=MaterialTheme.colorScheme.primary,style=MaterialTheme.typography.labelLarge)
+                    Text(if(s.demo)"模拟工作站 · 不代表实板结果"else "工作站业务连接",color=MaterialTheme.colorScheme.primary,style=MaterialTheme.typography.labelLarge)
                     Text(s.connection,style=MaterialTheme.typography.titleMedium)
                     if(s.updatedAt>0)Text(if(clock-s.updatedAt>3000)"状态已陈旧，请刷新或重连"else "状态已同步",style=MaterialTheme.typography.bodySmall)
                     if(!s.ready) Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
                         Button(enabled=!s.busy,onClick={showDevices=true}){Text("查找工作站")}
                         OutlinedButton(enabled=!s.busy,onClick={vm.demo()}){Text("体验模拟设备")}
+                    }
+                    midiState?.let { midi ->
+                        HorizontalDivider()
+                        Text("25K MIDI · 独立连接", color=MaterialTheme.colorScheme.primary, style=MaterialTheme.typography.labelLarge)
+                        Text(midi.connection, style=MaterialTheme.typography.bodyMedium)
+                        Text("切页或切到后台仅停音，不主动断开 MIDI。", style=MaterialTheme.typography.bodySmall)
+                        midi.error?.let { Text(it, color=MaterialTheme.colorScheme.error, style=MaterialTheme.typography.bodySmall) }
                     }
                 }
             }
@@ -139,12 +148,13 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
             }}
             if(s.busy)LinearProgressIndicator(Modifier.fillMaxWidth())
             when(tab){
-                0->Controls(s,vm)
+                0->Controls(s,vm){tab=3}
                 1->Recording(s,vm){
                     if(Build.VERSION.SDK_INT>=33&&!s.demo&&ContextCompat.checkSelfPermission(context,Manifest.permission.POST_NOTIFICATIONS)!=PackageManager.PERMISSION_GRANTED)notifyPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
                     vm.repo.download()
                 }
                 2->Library(s,vm,play,share){pendingExport=it;export.launch(it.name+".wav")}
+                3->Music(vm.music,vm.midi,pausePlayback)
             }
             Spacer(Modifier.height(16.dp))
         }
@@ -180,7 +190,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     Slider(value=value,onValueChange={value=it},valueRange=0f..127f,enabled=s.ready&&!s.busy&&s.capability?.has(1)==true&&id in s.parameters,
         onValueChangeFinished={vm.action{vm.repo.setParameter(id,value.toLong())}})
 }
-@Composable private fun Controls(s:WorkstationState,vm:ControlViewModel){
+@Composable internal fun Controls(s:WorkstationState,vm:ControlViewModel,openMusic:()->Unit){
     val capability=s.capability
     if(capability?.protocolTestOnly==true || s.builtInAudioTest) {
         Section(if(s.builtInAudioTest)"25K 内置音频测试"else"25K 最小协议联调") {
@@ -190,6 +200,21 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
             Text("快照 ${s.snapshot.id} · 设备时间 ${s.snapshot.time} ms")
             Text("有效组 0x${s.snapshot.valid.toString(16)} · 控制窗口${if(s.snapshot.flags and 8L!=0L)"开启"else"关闭"}")
             OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refreshStatus()}}){Text("发送 GET_STATUS")}
+        }
+        return
+    }
+    if(!s.demo && capability!=null && !capability.has(0) && !capability.has(1)) {
+        Section("设备业务") {
+            Text("当前设备未开放手机参数控制。")
+            Text("参数请在工作站或25K面板上调整。")
+            Text("设备录音：${if(capability.has(3)||capability.has(4))"已开放"else"未开放"}")
+            Text("录音下载：${if(capability.has(5))"已开放"else"未开放"}")
+            if(capability.has(3)||capability.has(4)||capability.has(5)) {
+                Text("在录音页操作设备录音和下载；录音状态以设备读取结果为准。")
+            }
+            Text("音乐页可选择手机音频，通过系统蓝牙媒体连接播放到工作站。")
+            Button(onClick=openMusic){Text("前往音乐")}
+            OutlinedButton(enabled=s.ready&&!s.busy,onClick={vm.action{vm.repo.refresh()}}){Text("刷新状态")}
         }
         return
     }
@@ -238,7 +263,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     Section(if(s.builtInAudioTest)"内置测试音频录音槽"else"设备录音槽"){
         Text("48 kHz · 双声道 · PCM16",color=MaterialTheme.colorScheme.secondary)
         Text("状态：${listOf("空闲","正在启动","正在录音","正在封存","可下载","错误").getOrElse(rec?.state ?: -1){"等待读取"}}")
-        Text("${duration(rec?.frames ?: 0)} / 容量 ${duration(rec?.capacity ?: 0)}")
+        Text("${duration(rec?.frames ?: 0,rec?.sampleRate ?: 48000)} / 容量 ${duration(rec?.capacity ?: 0,rec?.sampleRate ?: 48000)}")
         if(rec?.incomplete==true)Text("录音曾中断（原因 ${rec.reason}），下载的是已封存片段",color=MaterialTheme.colorScheme.error)
         OutlinedTextField(seconds,{seconds=it.filter(Char::isDigit).take(5)},label={Text("最大时长（秒，0 为容量上限）")},singleLine=true,enabled=rec?.state==0&&!s.busy)
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
@@ -274,7 +299,7 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     var remove by remember{mutableStateOf<SavedRecording?>(null)}
     if(s.library.isEmpty())Section("本地作品"){Text("尚无录音。连接工作站或体验模拟设备后，录音并下载即可在此试听和导出。")}
     s.library.forEach{entry->Section(entry.name){
-        Text("${duration(entry.bytes/4)} · ${entry.bytes/1024} KiB · WAV")
+        Text("${duration(entry.bytes/4,entry.sampleRate)} · ${entry.bytes/1024} KiB · WAV")
         Text(SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.getDefault()).format(Date(entry.savedAt))+" 保存",style=MaterialTheme.typography.bodySmall)
         if(entry.source=="builtin")Text("FPGA 内置测试音频",color=MaterialTheme.colorScheme.secondary)
         if(entry.demo)Text("模拟测试音频",color=MaterialTheme.colorScheme.secondary)
@@ -285,4 +310,58 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     if(rename!=null)AlertDialog(onDismissRequest={rename=null},title={Text("重命名作品")},text={OutlinedTextField(name,{name=it.take(80)},singleLine=true)},confirmButton={TextButton(enabled=name.isNotBlank(),onClick={val e=rename!!;rename=null;vm.action{vm.repo.rename(e,name)}}){Text("保存")}},dismissButton={TextButton(onClick={rename=null}){Text("取消")}})
     if(remove!=null)AlertDialog(onDismissRequest={remove=null},title={Text("删除本地作品？")},text={Text("仅删除手机上的文件，不影响设备录音。")},confirmButton={TextButton(onClick={val e=remove!!;remove=null;vm.action{vm.repo.delete(e)}}){Text("删除")}},dismissButton={TextButton(onClick={remove=null}){Text("取消")}})
 }
-private fun duration(frames:Long):String{val seconds=frames/48000;return "%02d:%02d".format(seconds/60,seconds%60)}
+private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/sampleRate;return "%02d:%02d".format(seconds/60,seconds%60)}
+
+
+@Composable internal fun Music(music:MusicPlayback,midi:MidiKeyboard?,pauseLibrary:()->Unit){
+    val state by music.state.collectAsStateWithLifecycle()
+    val context=androidx.compose.ui.platform.LocalContext.current
+    val choose=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->
+        if(uri!=null){
+            runCatching{context.contentResolver.takePersistableUriPermission(uri,Intent.FLAG_GRANT_READ_URI_PERMISSION)}
+            pauseLibrary();music.select(uri)
+        }
+    }
+    val pair={
+        runCatching{context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))}
+            .onFailure{music.reportError("无法打开系统蓝牙设置：${it.message}")}
+        Unit
+    }
+    Section("手机音频播放"){
+        Text("先选择实际输出。手机本地播放可用扬声器或耳机；发送至138K时，在系统连接其蓝牙媒体音频，再选择对应设备。")
+
+        OutlinedButton(onClick=pair){Text("连接蓝牙媒体音频")}
+        Text(if(state.a2dpAvailable)"已检测到蓝牙媒体设备"else "蓝牙媒体未连接",color=if(state.a2dpAvailable)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+        state.outputs.forEach { output ->
+            FilterChip(selected=state.selectedOutputId==output.id,onClick={music.selectOutput(output.id)},
+                label={Text((if(output.a2dp) "蓝牙媒体 · " else "本地 · ")+output.name)})
+        }
+        Text("实际输出：${state.output}",style=MaterialTheme.typography.bodySmall)
+        Text(if(state.routeConfirmed) "已确认实际路由与选择一致" else "实际路由尚未确认",style=MaterialTheme.typography.bodySmall)
+        Button(onClick={choose.launch(arrayOf("audio/*"))}){Text(if(state.name==null)"选择音频文件"else "更换音频文件")}
+        state.name?.let{Text(it,style=MaterialTheme.typography.titleSmall)}
+        if(state.preparing)LinearProgressIndicator(Modifier.fillMaxWidth())
+        if(state.ready){
+            var position by remember(state.name){mutableFloatStateOf(state.positionMs.toFloat())}
+            var dragging by remember{mutableStateOf(false)}
+            LaunchedEffect(state.positionMs){if(!dragging)position=state.positionMs.toFloat()}
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){
+                Text(playbackTime(position.toInt()));Text(playbackTime(state.durationMs))
+            }
+            Slider(value=position.coerceIn(0f,state.durationMs.coerceAtLeast(1).toFloat()),
+                valueRange=0f..state.durationMs.coerceAtLeast(1).toFloat(),
+                onValueChange={dragging=true;position=it},onValueChangeFinished={music.seek(position.toInt());dragging=false})
+            Button(enabled=state.playing||state.outputs.any{it.id==state.selectedOutputId},onClick={pauseLibrary();if(state.playing)music.pause()else music.play()}){
+                Text(if(state.playing)"暂停"else "播放所选音频")
+            }
+        }
+        state.error?.let{Text(it,color=MaterialTheme.colorScheme.error)}
+        Text("选择设备只是向系统提出路由请求；播放后根据实际路由确认，输出丢失或不符会暂停。BLE MIDI／业务连接不代表蓝牙媒体已连接。进入后台暂停。",style=MaterialTheme.typography.bodySmall)
+    }
+    if(midi!=null) MidiKeyboardPanel(midi)
+}
+
+private fun playbackTime(milliseconds:Int):String{
+    val seconds=milliseconds.coerceAtLeast(0)/1000
+    return "${seconds/60}:${(seconds%60).toString().padStart(2,'0')}"
+}
