@@ -8,6 +8,10 @@ module basic_pitch_workstation_link #(
     // Placement only: the default preserves the existing DDR arithmetic path.
     parameter bit USE_DDR_SIGNAL = 1'b1,
     parameter bit USE_DDR_CQT_COEFF = 1'b1,
+    parameter integer WIN_LEN=43844,FRAME_LIMIT=172,OCTAVE_LIMIT=9,
+    parameter integer CQT_HOP_NUMERATOR=256,CQT_HOP_DENOMINATOR=1,
+    parameter integer FEATURE_TILE_COLS=0,
+    parameter bit COARSE_GUIDANCE=1'b0,
     // Opt in only for a task owner which waits for restart_done_o. The
     // default retains the accepted single-board restart contract.
     parameter bit DRAIN_RESTART_ENABLE = 1'b0,
@@ -84,7 +88,9 @@ module basic_pitch_workstation_link #(
     wire [31:0] bp_mem_byte_addr;
     wire [15:0] bp_mem_wdata,bp_mem_rdata;
     basic_pitch_pcm_pipeline #(
-        .WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),
+        .WIN_LEN(WIN_LEN),.FRAME_LIMIT(FRAME_LIMIT),.OCTAVE_LIMIT(OCTAVE_LIMIT),
+        .CQT_HOP_NUMERATOR(CQT_HOP_NUMERATOR),.CQT_HOP_DENOMINATOR(CQT_HOP_DENOMINATOR),
+        .FEATURE_TILE_COLS(FEATURE_TILE_COLS),.COARSE_GUIDANCE(COARSE_GUIDANCE),
         .USE_EXTERNAL_STATE(1'b1),.USE_EXTERNAL_PLANE(1'b1),
         .USE_EXTERNAL_WEIGHTS(1'b1),.USE_FLASH_WEIGHTS(USE_FLASH_WEIGHTS),.USE_EXTERNAL_FEATURES(1'b1),
         .BOUNDED_EOF_PADDING(BOUNDED_EOF_PADDING),

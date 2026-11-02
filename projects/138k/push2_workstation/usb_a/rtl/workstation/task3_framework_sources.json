@@ -1,0 +1,437 @@
+{
+  "schema": 1,
+  "kind": "task3_logical_framework_sources",
+  "source_policy": "Maintenance RTL and explicit locked baseline member; no historical private staging, text overlay or dimension overlay.",
+  "entry_tops": [
+    "workstation_task3_tf_cnn_framework",
+    "workstation_task3_audio_exchange",
+    "workstation_task3_channel_mux"
+  ],
+  "include_dirs": [
+    ".",
+    "rtl/music"
+  ],
+  "sources": [
+    {
+      "path": "rtl/music/basic_pitch_nn_ddr.sv",
+      "sha256": "f3ec8ec800f28bbd6ccd02ece29a6843635e81d0bd7cd280f59da50c653412a1",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_tf_cnn_framework.sv",
+      "sha256": "e9403edd3c5a3d5176ded892bed51072f305c0eca0c46deab6c91d46c8836132",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/workstation_task3_tf_route.sv",
+      "sha256": "3b65217edd51f473e4565f5edb01b24e7e978f4fb3e9d34ab3aa933ff015b773",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_native_v1.sv",
+      "sha256": "3e64b6faf85669d7e924f74aef6d813860326f8e3c09a56367ccbfe92c432c9c",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/workstation_tf_direct_ingress_v1.sv",
+      "sha256": "c9e85a343344e0049bede8653be44c851db72ecc63626d9190e62f058f3c21ec",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+      "sha256": "28d741287dc8751a57130a518af1b4fabf7bac1aca66406c00b9cc1b017e6dcb",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_sd_sector_reader.sv",
+      "sha256": "115626c37c9db0e3289c7733efc1d4fd2468cd612f776d852d128ebb1fe384df",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_spi_session.sv",
+      "sha256": "704e9b62caa4ef79c01f1d2b4c1c61b2e2bd55f93c83ae90bb573c9e71c0a6c8",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_wav_pcm_decoder_v1.sv",
+      "sha256": "49809913fed1fde8eec4716286f9243f60ced4cb82eaee4b45e04e428c015d52",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv",
+      "sha256": "9dd382d4b5e8af87c02584105733fddf1a5cce38fd6e11d66acf92c75e7dfb8d",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.sv",
+      "sha256": "2ecddf90daced12e62c64a1bd8f98804cb86a1399c7429924522694a5b40f88d",
+      "compile": true
+    },
+    {
+      "path": "rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.sv",
+      "sha256": "b7a6cf37d399c49f1ba9a49b04c090865909cb6a793509491e2cd7ab94a97b76",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/workstation_task3_tf_analysis_source.sv",
+      "sha256": "cfdfb470148f39bc1a9a61995763764fbdc70b35debba04150789a74a39fd326",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/workstation_task3_score_commit_m.sv",
+      "sha256": "e52594ed17fe58a3696aa04ffa3ce7204ee79b65a6b3b45c155d9425afa76c8a",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/workstation_task3_cnn_stream_w.sv",
+      "sha256": "ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/workstation_cnn_task_service.sv",
+      "sha256": "f9fd9b1a07bb500dbd45ed49bfca588d28ed8324c89f37ebed3e6e7e328492fa",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/workstation_cnn_ddr_broker.sv",
+      "sha256": "5245141c6444f5d484924831ee50161409857060d589671441771d9c04e0545b",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/music_async_fifo.sv",
+      "sha256": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_workstation_link.sv",
+      "sha256": "4e4cf079b3e0cf6fde20fbe5e92661ae671116536ecea8765a34b62b91af9227",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_link_uart.sv",
+      "sha256": "2769cae5a4bf6665bf278564511ee834ef22f6a7b6372dd8dedf7dbf42a7ad92",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_ddr16_port.sv",
+      "sha256": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_ddr_command_buffer.sv",
+      "sha256": "dc4507d6ac3f2bbe54b46ab334124ff26e67e525e5c8f63f7a2a9759263fbd99",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_pcm_pipeline.sv",
+      "sha256": "c28cc43b1a6ca4e5eb8ba9524d3dd48c159aad1246f222a62f489920d94ba485",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_uart_model_loader.sv",
+      "sha256": "929e4f9a702fe06731a651817ff9217f6ff7cd7e553b642d3dda7b2b53393fd5",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_uart_rx.sv",
+      "sha256": "28f403ca014eadb6141beb6f293a52266962326de8e15d44f7115d1745310b7c",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_model_loader.sv",
+      "sha256": "3543f943144627993d0f35aa39cf4e89605dcc934af9de835e6e372d09a3725b",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_weight_cache.sv",
+      "sha256": "0f363e94427a404a55e6ff2ba52ad7dd485f7313173b52ccf8688d02eeb2d0e6",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_boot_model_loader.sv",
+      "sha256": "52744252107954c913aebdacce73c3788901f899c544a1e61a55ddfa0a80c3e2",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_flash_model_loader.sv",
+      "sha256": "3f45c816e2bf5a994a9e336b839ccca35685b2e3f89db908f5f9ab8ad6488805",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_feature_ddr.sv",
+      "sha256": "fd30dc6e4099fd07ab43c8b6df5a35565a360af1aac4fbcd3f0020e0de64fcaf",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_plane_cache.sv",
+      "sha256": "2c1d4936e3e3f0a400dad67096cad5a063a5e3a4c8f3f966d2cd8f263a8f7991",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_normlog_ddr.sv",
+      "sha256": "d140dd83ae28b451d472a8f4892eac22eb952d55ea9385f9b14af4929fa46fd2",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_normlog.sv",
+      "sha256": "45d599c8dafd47dc9c9c8bab321886a023ed35c39d3473883b8d1009dd3ac5ee",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_ddr_coeff_pair.sv",
+      "sha256": "8f4310bf64a962dba8045cf966e2d4db3be1264cdf7550b9cb08237706452f05",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_cqt_engine.sv",
+      "sha256": "68eb2222d752fd908bed1d51eb3640917779aeab36a3d6d23dc38b600f115da4",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_cqt_frontend.sv",
+      "sha256": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_conv2d.sv",
+      "sha256": "b8305c6219b1152130f6fb1ed8619296879abea1f9d329f6c55cca3934286ab0",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_activation.sv",
+      "sha256": "0fc5a3c6f9899234c9ea8404e02ba63388dab7bb820b45c04de2dc7892af9a49",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_requant.sv",
+      "sha256": "6d18a173500d513e9f7c9771ae2edd4322575c72bde7a400cccd5b8e7eee25e2",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_row_buffer.sv",
+      "sha256": "bc1c94dafa85f61b4f625642de10a00d748f4742dc6fb64c9383bf4447f5278c",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_cnn_streaming.sv",
+      "sha256": "fd2318fa10c63aac0c11eab87e4d24e23f4a3dc0351586c11361e8b93483d423",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_viterbi.sv",
+      "sha256": "83a5a0e66062fe66ad37dfa6b30bf6d87023e6d887119a746f0b90d11afaab1d",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_shared_sigmoid.sv",
+      "sha256": "b42cfa2b37a29f4f99409a97619c0330fba124a843cbb3d235db5b8a335c4779",
+      "compile": true
+    },
+    {
+      "path": "rtl/music/basic_pitch_44100_to_48000.sv",
+      "sha256": "cea1bb76b5e6fa18ed606899fc9d821195fb3d25c07a8a92b236de9c73844347",
+      "compile": true
+    },
+    {
+      "path": "rtl/memory/workstation_sdp.sv",
+      "sha256": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+      "compile": true
+    },
+    {
+      "path": "rtl/timing/gw138k_level_cdc.sv",
+      "sha256": "48317ce8545ff7f5ed309b685bf23de814f168ccdbac6a59c51ab517c0cf176c",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_audio_exchange.sv",
+      "sha256": "dadb455a04401dc246f25fce7c72618c7efc91a9325e7aaecf29a12f4f01792f",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_final_tap_export.sv",
+      "sha256": "3273cf60e44c6980ef3397f754d9a502fe95a435b7bb4594c46511f71edb5233",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_record_ingress.sv",
+      "sha256": "e19624ec76d687264acdce50bc4e06074cee47579b6dff3930b5839f1c354f03",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_phone_command_mux.sv",
+      "sha256": "9bcb80093ebaa56a4a0d1036d7fdfa551cec8965d94d20630ea5fbc05fe74c22",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_phone_command_proxy.sv",
+      "sha256": "7c46143032faff439767c7660c60e6e9a17ae7cbfab0b63cdbbfb4b420321431",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_phone_command_ingress.sv",
+      "sha256": "7c8a840a7c42301595c367d16179985dd5d1faa2a202fd98d9abd14b5f19bd73",
+      "compile": true
+    },
+    {
+      "path": "rtl/workstation/workstation_task3_channel_mux.sv",
+      "sha256": "eca9d610432109f16d1fea8b086b29f530229680caa919bc2646511d5713584f",
+      "compile": true
+    },
+    {
+      "path": "rtl/ddr_address_map.vh",
+      "sha256": "ca1a4fdedc699d97cd1bcb52541b0ff8544c88e9599f137e7896ef03a6fb13b8",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/basic_pitch_ddr_map.svh",
+      "sha256": "49b7b954e3d6b45b305d443e408045889f7a8ce25138f81ccdd859dd39c163af",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/basic_pitch_fixed_pkg.svh",
+      "sha256": "4ac26ded20a26444a3f422909ec38e814e4551ccaaefe21ca040989e73b379c9",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/basic_pitch_flash_map.svh",
+      "sha256": "a9c65b066fffd2dc7f6363d1c0da725313c3d2c8b565d35955b76468d2a1a832",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/cnn_ddr_blob.mem",
+      "sha256": "b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/contour.mem",
+      "sha256": "1b13c086185dc64d6b6470442e4113282803e4799f47e5cae411951146b32d01",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/contour_bq.mem",
+      "sha256": "0cf8d352051169301e54c073aa2ac8a6a71fc230717966677659a1ba6606068d",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/contour_reduce.mem",
+      "sha256": "19c889072033787b56181b9d29338dfa98b957f4fa5668b2a2aa98120f410799",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/contour_reduce_bq.mem",
+      "sha256": "615790b2bee32f3ee7f041ed8ef693e562ebfa79ff0cf769897d3bff2bfbdbed",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/cqt_imag.mem",
+      "sha256": "db17cd021f82094b1b19e01731889ebcb5c56452cb55443826b3302eda17d102",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/cqt_lowpass.mem",
+      "sha256": "07c15b17f876ab786f3971bb6f8c8baf50e5c2c389773b8ff3e25e1a4b136628",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/cqt_norm_log.mem",
+      "sha256": "9de3bf859baf21e9c5e9bac875ebc69310d97e5036e06b9149b3133f99862e61",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/cqt_real.mem",
+      "sha256": "cfc0ed55f3368221acd3921b92bc8ee7a3e7e4569f2db82a5154c5561781e0d0",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/log2_lut.mem",
+      "sha256": "43931c5fa53fc26be072283149eb840f7f041cbcefd6cce96aef2ed27e30ad5a",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/note_out.mem",
+      "sha256": "317fafc20f1a34e98a1c1bc9d274346db37a29e3ea9f33f49ff47ae8cc7b0acf",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/note_out_bq.mem",
+      "sha256": "105d32dff71111287dbb6ae96495c420d061e96459ebd3ced886fbaa8b376d0e",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/notes.mem",
+      "sha256": "be9f20f1b4eeefed369b7d20cad0775b02f7282181d30ab446ba39a0ac99ecc3",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/notes_bq.mem",
+      "sha256": "1cde079d20b574c1b952563e59c0898d424762b94fa8e9a4fded6946ca28d1e9",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/onset.mem",
+      "sha256": "9ccbc6ed1e15e8682ecc693797c5edf07a7818ec542ad6b9a39ce5800f4ca1da",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/onset_bq.mem",
+      "sha256": "d1572a3714c07cfeb3f9cb46a453d0542dfb5a9889f17be90c0f2c1fbb2a3b6d",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/onset_out.mem",
+      "sha256": "ec0ad033e80284b566e9d9eb6bd3b933b9464708fab54420de362ba1aae5189f",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/onset_out_bq.mem",
+      "sha256": "41c372a4d43d49d719ee446b881417902a97d1a170df92747e9a5e79a4daeb53",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/resampler_poly.mem",
+      "sha256": "4e10b699f05186681d9216db5f71336f9820f28cead50e4be3f76bc17dc6e2a3",
+      "compile": false
+    },
+    {
+      "path": "rtl/music/weights/sigmoid_lut.mem",
+      "sha256": "828f2ac37c26d8fdaed53b2046c84ba709dd6255fd6f83c2f9cb2346843634a6",
+      "compile": false
+    }
+  ],
+  "baseline_sources": [
+    {
+      "path": "src/control/uart_tx.v",
+      "baseline": "resource_rework_route0",
+      "source": "src/control/uart_tx.v",
+      "sha256": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+      "compile": true
+    }
+  ],
+  "configuration": {
+    "tf_cnn_framework": {
+      "CNN_USE_DDR_SIGNAL": 0,
+      "CNN_USE_DDR_CQT_COEFF": 0,
+      "WIN_LEN": 44100,
+      "FRAME_LIMIT": 8,
+      "OCTAVE_LIMIT": 9,
+      "CQT_HOP_NUMERATOR": 22050,
+      "CQT_HOP_DENOMINATOR": 4,
+      "FEATURE_TILE_COLS": 16,
+      "COARSE_GUIDANCE": 1
+    },
+    "audio_exchange": {
+      "RECORD_FIFO_ADDRESS_BITS": 8,
+      "RECORD_SOURCE_LEASE_CYCLES": 200000,
+      "OWNER_TIMEOUT_CYCLES": 10000,
+      "ROUND_TRIP_TIMEOUT_CYCLES": 50000
+    },
+    "channel_mux": {
+      "CHANNELS": 8,
+      "WIDTH": 256,
+      "DEPTH": 4
+    }
+  },
+  "scope": "Offline executable logical compositions only. Physical LCD/CDC, M final audio scheduler and W DDR owner6/8 composition remain outside these entry tops.",
+  "hardware_tested": false,
+  "bitstream": null
+}

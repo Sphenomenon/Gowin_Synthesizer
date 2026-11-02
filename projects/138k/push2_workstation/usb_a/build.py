@@ -32,6 +32,8 @@ def main():
     ap=argparse.ArgumentParser();ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--reuse-synthesis',type=Path)
     ap.add_argument('--synthesis-only',action='store_true',help='Offline synthesis only; no place/route or programming')
     ap.add_argument('--no-update-latest',action='store_true',help='Keep the local latest-build pointer unchanged')
+    ap.add_argument('--prepare-task3-framework',action='store_true',help='Prepare an offline logical dual-138K source snapshot only; no board profile, physical flow or deployment')
+    ap.add_argument('--task3-framework-output',type=Path,help='Required new output directory for --prepare-task3-framework')
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
@@ -76,6 +78,23 @@ def main():
     ap.add_argument('--ae350-probe-gao',choices=('full64','banked4','bsram4','bsram8'),help='Explicit GAO transport for the standalone AE350 probe; default full64')
     ap.add_argument('--ae350-probe-program',choices=('local-memory','cache-pma-v1'),help='Explicit standalone probe program; default local-memory')
     args=ap.parse_args()
+    if args.prepare_task3_framework:
+        allowed={'prepare_task3_framework','task3_framework_output','prepare_only','tf_audio_kind'}
+        explicit_options={'--prepare-task3-framework','--prepare-only','--task3-framework-output'}
+        if (not args.prepare_only or args.task3_framework_output is None or args.tf_audio_kind!='wav' or
+                any(option.split('=',1)[0] not in explicit_options for option in sys.argv[1:] if option.startswith('--')) or
+                any(value is not None and value is not False for key,value in vars(args).items() if key not in allowed)):
+            ap.error('--prepare-task3-framework requires --prepare-only and --task3-framework-output; cannot mix profiles, synthesis or hardware parameters')
+        from tools.workstation_task3_framework import prepare as prepare_task3_framework
+        try:
+            output,result=prepare_task3_framework(ROOT,args.task3_framework_output)
+            print(output,flush=True)
+            print(json.dumps(result),flush=True)
+        except (ValueError,OSError,KeyError,subprocess.CalledProcessError) as error:
+            ap.error(str(error))
+        return
+    if args.task3_framework_output is not None:
+        ap.error('--task3-framework-output requires --prepare-task3-framework')
     if args.ae350_local_memory_probe:
         allowed={'ae350_local_memory_probe','ae350_probe_output','ae350_probe_gao','ae350_probe_program','prepare_only','netlist_dir','user_code','riscv_prefix','tf_audio_kind'}
         if (args.tf_audio_kind!='wav' or not args.prepare_only or args.ae350_probe_output is None or

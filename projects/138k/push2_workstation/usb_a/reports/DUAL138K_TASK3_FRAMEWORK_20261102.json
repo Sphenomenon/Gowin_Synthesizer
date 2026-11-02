@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "timezone": "Asia/Shanghai",
+  "status": "LOGICAL_FRAMEWORK_ASSEMBLED_TARGETED_VALIDATION_AND_FULL_ELABORATION_PASSED_BOARD_BINDING_PENDING",
+  "source_base_commit": "8d2cd0f1b2d1ee551865aa2fd106c2732e66050c",
+  "branch": "codex/dual-138k-task3",
+  "request_priority": "Assemble complete logical flows before physical validation and resource/timing iteration; preserve old candidates and other branches.",
+  "source_manifest": {
+    "path": "projects/138k/push2_workstation/usb_a/rtl/workstation/task3_framework_sources.json",
+    "sha256": "121a5f39a7aa3cf9fa73d8f5632a1bee02f152503636865d5e35d392ca26d35a"
+  },
+  "entry_tops": [
+    "workstation_task3_tf_cnn_framework",
+    "workstation_task3_audio_exchange",
+    "workstation_task3_channel_mux"
+  ],
+  "configuration": {
+    "tf_cnn_framework": {
+      "CNN_USE_DDR_SIGNAL": 0,
+      "CNN_USE_DDR_CQT_COEFF": 0,
+      "WIN_LEN": 44100,
+      "FRAME_LIMIT": 8,
+      "OCTAVE_LIMIT": 9,
+      "CQT_HOP_NUMERATOR": 22050,
+      "CQT_HOP_DENOMINATOR": 4,
+      "FEATURE_TILE_COLS": 16,
+      "COARSE_GUIDANCE": 1
+    },
+    "audio_exchange": {
+      "RECORD_FIFO_ADDRESS_BITS": 8,
+      "RECORD_SOURCE_LEASE_CYCLES": 200000,
+      "OWNER_TIMEOUT_CYCLES": 10000,
+      "ROUND_TRIP_TIMEOUT_CYCLES": 50000
+    },
+    "channel_mux": {
+      "CHANNELS": 8,
+      "WIDTH": 256,
+      "DEPTH": 4
+    }
+  },
+  "source_policy": "Maintenance RTL and explicit locked baseline member; no historical private staging, text overlay or dimension overlay.",
+  "evidence": {
+    "whole_actual_elaboration": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/task3-framework-final-review-v1/review.json",
+      "sha256": "da8df6b8459862fc9a6335f0bd5ba36f9fae7d2be9ecf2700f99f418afc1b277"
+    },
+    "actual_parameter_proof": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/task3-framework-final-review-v1/actual_parameter_proof.json",
+      "sha256": "5c3121f8e5138aeb7b4dad6a89114cf0551fb1f6d7a7b37f455df73e3d6b7f2d"
+    },
+    "deferred_seal_lifecycle": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/cnn-deferred-seal-lifecycle-v2/verification.json",
+      "sha256": "3261286f796d10538c1471baf1c3a32aed86fa333f1fd7d3840a226d68367497"
+    },
+    "M_source_score_lifecycle": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-analysis-source-score-lifecycle-v1/verification.json",
+      "sha256": "d555c937b4140acae7f51d06226be4f5a6602788aed2e4ddb034a804b5d64753"
+    },
+    "audio_actual_owner_composition": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/audio-framework-composition-v2/verification.json",
+      "sha256": "2bbbc39975e18f8e700f392bd08b0c652471b18ceb647cb23d065adb9aa28938"
+    },
+    "channel_mux": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/channel-mux-v2/verification.json",
+      "sha256": "bd24d2f773afa709bc78419a3fe4886175acaf3072f0ce3f5231041ea4f36a2d"
+    },
+    "prepare_and_negative_controls": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/task3-framework-prepare-review-v1/verification.json",
+      "sha256": "de63d9b3651891880fe7be2a689ec21ebf63cbb7b4543578027e9eda9d9e9bd5"
+    },
+    "independent_staged_lints": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/full-framework-staged-root-review-v1/verification.json",
+      "sha256": "a387b1ba4e24091ade4260cf7a9607fd32ba36929a2d23714f41b2b40ac00571"
+    }
+  },
+  "implemented_flows": [
+    "One real M SD/FAT/WAV owner exclusively routes playback or backpressurable offline analysis. Basic synth scheduling remains independent.",
+    "M bounded source automatically partitions a file into <=96000-frame clips without losing the decode cursor, sends ordered descriptor/PCM/seal, and waits for each validated terminal.",
+    "W real task service accepts deferred final CRC only in explicit new mode; actual native writes and full readback CRC precede real model/CQT/CNN/Viterbi replay.",
+    "M accumulates ordered complete clip scores in a bounded2048-note image and publishes Push notes only after actual file-final success.",
+    "W PCM1 and clock callers use one command proxy with identity/sequence/timeout; M routes application to its existing PCM owner or clock service.",
+    "M pulse-only final serializer-completion tap uses a bounded queue and explicit W arm-result acknowledgement before delivery to maintained recording ingress.",
+    "Recording ingress is the existing HCI single-object source boundary, not a second recorder. Unique raw DDR backend/CPU/BLE download remain the maintained W services.",
+    "Bounded independent queues preserve ready/valid stability and order; cancellation/link loss/PANIC revoke stale work without waiting for base sample credit."
+  ],
+  "checks": {
+    "current_workstation_source_tests": 17,
+    "deferred_seal_checks": 26,
+    "deferred_seal_scenarios": 8,
+    "M_source_score_checks": 8,
+    "M_source_score_scenarios": 4,
+    "audio_actual_boundary_checks": 564,
+    "channel_mux_checks": 189766,
+    "full_dependency_entry_lints": 3,
+    "actual_tf_cnn_instance_count": 61,
+    "prepare_negative_controls_rejected": 22,
+    "independent_staged_entry_lints": 3
+  },
+  "review_fixes": [
+    "Prevent actual task acceptance on a same-cycle START cancellation.",
+    "Wait for native track application before evaluating old decoder state; treat empty playback as explicit failure.",
+    "Only cancel a currently selected analysis cursor on source failure; a late old result cannot cancel a later playback cursor.",
+    "Separate link cancellation from native DDR fatal transport fault.",
+    "Hold remote PCM/clock address through PREPARE before command valid for real clock predecode.",
+    "Convert held recording frame valid to registered pulse/credit delivery; wait for explicit remote arm result."
+  ],
+  "communication_budget": {
+    "analysis_format": "48k stereo16",
+    "analysis_net_pcm_bytes_per_second": 192000,
+    "internal_analysis_lane_bits": 202,
+    "raw_per_frame_internal_fields_if_serialized_bytes_per_second": 1212000,
+    "byte_aligned26B_per_frame_bytes_per_second": 1248000,
+    "scope": "Internal transaction costs only; no physical LCD framing/clock/CRC/credit or measured bandwidth is selected."
+  },
+  "preservation": {
+    "old_profile_locks_unchanged": true,
+    "accepted_and_vendor_inputs_unchanged": true,
+    "task2_and_single_board_worktrees_untouched": true,
+    "new_source_policy_does_not_refresh_old_profile_locks": true,
+    "rollback_commit": "8d2cd0f1",
+    "physical_LCD_enable": false,
+    "old_profile_locks_unchanged_count": 16
+  },
+  "limits": [
+    "The new roots are same-clock logical pair compositions, not physical M/W board tops or a CDC acceptance.",
+    "New paired profiles still need actual W owner5/6/8 DDR/HCI single-object and M final-owner/display composition bindings. Existing accepted candidates do not select this framework.",
+    "Source/collector and deferred lifecycle fixtures use explicit deterministic response sinks where stated; they do not prove real CNN quality. Full actual-model evidence belongs to the prior immutable BSRAM candidate.",
+    "No complete real SD-to-LCD-to-CNN-to-Push integration run, real HCI/SBC/D DSP concurrency, long recording/download concurrency or measured physical output is covered.",
+    "The TF route was fully elaborated with actual dependencies; the newly added route lifecycle is not a full SPI behavioral or physical-card acceptance.",
+    "Recognition currently accepts48k stereo16 only. Clip concatenation lacks cross-window musical-context stitching; score capacity2048 fails explicitly on overflow.",
+    "No new whole-board resource count, routed STA, PLL/CDC acceptance, bitstream, physical latency, SRAM or Flash operation. Prior308BSRAM/3.225s evidence is not inherited.",
+    "The reverse LCD cable requires continuity, power isolation, voltage, direction and clock verification before any physical IO selection."
+  ],
+  "acceptance": {
+    "release_ready": false,
+    "hardware_accepted": false,
+    "deployment_allowed": false,
+    "bitstream": null,
+    "physical_resources": null,
+    "routed_timing": null,
+    "control_to_sound_latency": null,
+    "LCD_effective_throughput": null,
+    "LCD_RTT": null,
+    "SRAM_programmed": false,
+    "Flash_written": false
+  },
+  "prepared_snapshot": {
+    "identity": "task3-framework-logical-v1-841ec6407a831645",
+    "input_sha256": "841ec6407a831645bbd0e8f812bac2412bcee8ec4fb7e8cbf727a16262333cab",
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/full-framework-source-prepare-v2/task3_framework.json",
+    "sha256": "c31950347f17c72600218518ef0244cef3b580c45952d7a03fb96923f134b12a",
+    "sources": 78,
+    "compile_inputs": 54,
+    "deployment_allowed": false
+  }
+}

@@ -7,6 +7,13 @@ module workstation_cnn_task_service #(
     parameter integer CAPACITY_FRAMES=`PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES,
     parameter bit CNN_USE_DDR_SIGNAL=1'b1,
     parameter bit CNN_USE_DDR_CQT_COEFF=1'b1,
+    // Default keeps the frozen descriptor-CRC contract. Explicit logical TF
+    // stream compositions may seal the actual finite clip after its last PCM.
+    parameter bit DEFERRED_SEAL_ENABLE=1'b0,
+    parameter integer CNN_WIN_LEN=43844,CNN_FRAME_LIMIT=172,CNN_OCTAVE_LIMIT=9,
+    parameter integer CNN_CQT_HOP_NUMERATOR=256,CNN_CQT_HOP_DENOMINATOR=1,
+    parameter integer CNN_FEATURE_TILE_COLS=0,
+    parameter bit CNN_COARSE_GUIDANCE=1'b0,
     parameter integer IO_TIMEOUT_CYCLES=50000000,
     parameter [31:0] TASK_TIMEOUT_CYCLES=32'd3600000000
 ) (
@@ -21,6 +28,9 @@ module workstation_cnn_task_service #(
     output wire frame_ready_o,
     input wire [31:0] frame_task_id_i,frame_generation_i,frame_index_i,frame_pcm_i,
     input wire ingress_fault_i,
+    input wire seal_valid_i,
+    output wire seal_ready_o,
+    input wire [31:0] seal_task_id_i,seal_generation_i,seal_frames_i,seal_crc_i,
     input wire cancel_valid_i,
     input wire [31:0] cancel_task_id_i,cancel_generation_i,
     output reg seal_valid_o,
@@ -48,7 +58,7 @@ module workstation_cnn_task_service #(
     input wire [255:0] memory_read_data_i
 );
     localparam [3:0] IDLE=0,ARM=1,CAPTURE=2,WRITE_WAIT=3,VERIFY_REQ=4,VERIFY_WAIT=5,
-        VERIFY_DATA=6,RUN_REQ=7,RUN_WAIT=8,RUN_DATA=9,ENDING=10,DRAIN=11,TERMINAL=12;
+        VERIFY_DATA=6,RUN_REQ=7,RUN_WAIT=8,RUN_DATA=9,ENDING=10,DRAIN=11,TERMINAL=12,SEAL_WAIT=13;
     // Terminal0 success,1 cancel,2 input identity/index/overflow,3 length,
     // 4 input CRC,5 DDR readback CRC,6 task timeout,15 transport/reset fault.
     reg [3:0] state;
@@ -58,7 +68,7 @@ module workstation_cnn_task_service #(
     reg [2:0] beat_frame;
     reg [31:0] crc,crc_word;
     reg [1:0] crc_phase;
-    reg crc_busy,stage_inflight,restart_pending,cnn_restart,previous_result;
+    reg crc_busy,stage_inflight,restart_pending,cnn_restart,previous_result,sealed;
     (* ASYNC_REG="TRUE" *) reg backend_meta,backend_sync,broker_fault_meta,broker_fault_sync;
     reg backend_seen;
     wire broker_fault;
@@ -73,9 +83,14 @@ module workstation_cnn_task_service #(
     wire running=state==RUN_REQ || state==RUN_WAIT || state==RUN_DATA || state==ENDING;
     assign start_ready_o=live && state==IDLE && model_status_o==4'd14 && restart_ready;
     assign frame_ready_o=live && state==CAPTURE && !cancel_match && !ingress_fault_i && !crc_busy &&
-        pack_frames<8 && accepted_frames_o<expected_frames;
+        pack_frames<8 && accepted_frames_o<expected_frames && !(DEFERRED_SEAL_ENABLE && seal_valid_i);
     assign score_valid_o=live && running && !cancel_match && cnn_score_valid;
     assign terminal_valid_o=state==TERMINAL;
+    assign seal_ready_o=DEFERRED_SEAL_ENABLE && live && !cancel_match && !ingress_fault_i &&
+        !sealed && !crc_busy && (state==CAPTURE || state==SEAL_WAIT);
+    wire seal_fire=seal_valid_i && seal_ready_o;
+    wire seal_invalid=seal_task_id_i!=task_id_o || seal_generation_i!=generation_o ||
+        seal_frames_i==0 || seal_frames_i!=accepted_frames_o || seal_frames_i>expected_frames || seal_crc_i!=(~crc);
     wire frame_fire=frame_valid_i && frame_ready_o;
     wire cnn_pcm_valid=live && state==RUN_DATA && !cancel_match;
     wire [31:0] cnn_pcm=read_beat[beat_frame*32+:32];
@@ -93,7 +108,7 @@ module workstation_cnn_task_service #(
     // At most one staging command is in flight. Native commitment/read return
     // creates the completion; enqueue into either FIFO is not commitment.
     wire flush_pack=state==CAPTURE && !crc_busy && pack_frames!=0 &&
-        (pack_frames==8 || accepted_frames_o==expected_frames);
+        (pack_frames==8 || accepted_frames_o==expected_frames || (DEFERRED_SEAL_ENABLE && sealed));
     wire command_valid=live && !cancel_match && !ingress_fault_i && !stage_inflight &&
         (flush_pack || state==VERIFY_REQ || state==RUN_REQ);
     wire command_write=flush_pack;
@@ -141,6 +156,9 @@ module workstation_cnn_task_service #(
         .data_o(memory_data_o),.mask_o(memory_mask_o),.slot_ready_i(memory_slot_ready_i),
         .native_accept_i(memory_native_accept_i),.response_i(memory_response_i),.idle_o(),.fault_o(broker_fault));
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1),.DRAIN_RESTART_ENABLE(1),.BOUNDED_EOF_PADDING(1),
+        .WIN_LEN(CNN_WIN_LEN),.FRAME_LIMIT(CNN_FRAME_LIMIT),.OCTAVE_LIMIT(CNN_OCTAVE_LIMIT),
+        .CQT_HOP_NUMERATOR(CNN_CQT_HOP_NUMERATOR),.CQT_HOP_DENOMINATOR(CNN_CQT_HOP_DENOMINATOR),
+        .FEATURE_TILE_COLS(CNN_FEATURE_TILE_COLS),.COARSE_GUIDANCE(CNN_COARSE_GUIDANCE),
         .USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF),
         .RESTART_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES)) cnn(
         .clk_50m(clk_i),.reset_n(reset_ni),.memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),
@@ -168,7 +186,7 @@ module workstation_cnn_task_service #(
         if(!reset_ni)begin
             state<=IDLE;expected_frames<=0;expected_crc<=0;last_generation<=0;elapsed<=0;cursor<=0;
             pack<=0;read_beat<=0;pack_frames<=0;write_frames<=0;beat_frame<=0;crc<=32'hffffffff;crc_word<=0;
-            crc_phase<=0;crc_busy<=0;stage_inflight<=0;restart_pending<=0;cnn_restart<=0;previous_result<=0;
+            crc_phase<=0;crc_busy<=0;stage_inflight<=0;restart_pending<=0;cnn_restart<=0;previous_result<=0;sealed<=0;
             backend_meta<=0;backend_sync<=0;backend_seen<=0;broker_fault_meta<=0;broker_fault_sync<=0;
             task_id_o<=0;generation_o<=0;start_accepted_o<=0;start_rejected_o<=0;rejection_code_o<=0;
             terminal_code_o<=0;seal_valid_o<=0;seal_crc_o<=0;accepted_frames_o<=0;committed_frames_o<=0;
@@ -179,6 +197,12 @@ module workstation_cnn_task_service #(
             if(backend_sync)backend_seen<=1;
             start_accepted_o<=0;start_rejected_o<=0;seal_valid_o<=0;cnn_restart<=0;
             previous_result<=cnn_result_valid;
+            if(seal_fire && !seal_invalid)begin
+                    sealed<=1;expected_frames<=seal_frames_i;expected_crc<=seal_crc_i;
+                    if(state==SEAL_WAIT || (state==CAPTURE && pack_frames==0))begin
+                        crc<=32'hffffffff;cursor<=0;state<=VERIFY_REQ;
+                    end
+            end
             if(restart_done)restart_pending<=0;
             if(completion_valid && completion_ready)stage_inflight<=0;
             if(command_fire)stage_inflight<=1;
@@ -196,8 +220,8 @@ module workstation_cnn_task_service #(
                 if(active)begin state<=TERMINAL;terminal_code_o<=15;crc_busy<=0;end
                 else if(state==TERMINAL && terminal_ready_i)state<=IDLE;
             end else if(!fatal_o)begin
-                if(active && state!=DRAIN && (cancel_match || ingress_fault_i || elapsed==TASK_TIMEOUT_CYCLES))begin
-                    abort_task(cancel_match?4'd1:ingress_fault_i?4'd2:4'd6);
+                if(active && state!=DRAIN && (cancel_match || ingress_fault_i || elapsed==TASK_TIMEOUT_CYCLES || (seal_fire && seal_invalid)))begin
+                    abort_task(cancel_match?4'd1:ingress_fault_i?4'd2:elapsed==TASK_TIMEOUT_CYCLES?4'd6:4'd4);
                 end else case(state)
                     IDLE:if(start_valid_i && start_ready_o)begin
                         if(start_task_id_i==0 || start_generation_i==0 || start_generation_i<=last_generation ||
@@ -208,7 +232,7 @@ module workstation_cnn_task_service #(
                             expected_frames<=start_frames_i;expected_crc<=start_crc_i;elapsed<=0;
                             accepted_frames_o<=0;committed_frames_o<=0;replayed_frames_o<=0;score_index_o<=0;
                             pack<=0;pack_frames<=0;crc<=32'hffffffff;crc_busy<=0;cursor<=0;beat_frame<=0;
-                            terminal_code_o<=0;seal_crc_o<=0;first_result_valid_o<=0;previous_result<=0;
+                            terminal_code_o<=0;seal_crc_o<=0;first_result_valid_o<=0;previous_result<=0;sealed<=0;
                             start_accepted_o<=1;cnn_restart<=1;restart_pending<=1;state<=ARM;
                         end
                     end
@@ -229,7 +253,8 @@ module workstation_cnn_task_service #(
                         else begin
                             committed_frames_o<=committed_frames_o+{28'd0,write_frames};pack_frames<=0;pack<=0;
                             if(accepted_frames_o==expected_frames)begin
-                                if((~crc)!=expected_crc)abort_task(4);
+                                if(DEFERRED_SEAL_ENABLE && !sealed)state<=SEAL_WAIT;
+                                else if((~crc)!=expected_crc)abort_task(4);
                                 else begin crc<=32'hffffffff;cursor<=0;state<=VERIFY_REQ;end
                             end else state<=CAPTURE;
                         end
@@ -263,6 +288,7 @@ module workstation_cnn_task_service #(
                         else beat_frame<=beat_frame+1'b1;
                     end
                     ENDING:if(cnn_analysis_done)abort_task(0);
+                    SEAL_WAIT:begin end
                     DRAIN:if(!restart_pending && !stage_inflight)state<=TERMINAL;
                     TERMINAL:if(terminal_ready_i)state<=IDLE;
                     default:state<=IDLE;
