@@ -762,3 +762,8 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 当前输入边界17项、52239word全模型自动启动／DDR背压／CRC损坏拒绝／超时／reset通过；整链从空行为DDR开始，无预装模型或force-ready，真实WAV解码95625 PCM，4459397次模型读取，经六层CNN及Viterbi生成1个实际指导音符，错键阻止、正确键推进、重新选歌清除旧状态并保留模型ready。生成WAV仅用于离线测试，不是TF或TRAVLER实板验收。首次测试误在ready前喂歌的失败保留，按生产playback已有model-ready fence修正测试输入顺序后通过；首次工具dylib环境失败也保留。
 
 新全量综合与P&R exit0，实际Logic42676／FF26622／CLS32704／BSRAM209/340／DSP91（综合等价BSRAM187单列）；7时钟完整STA最差setup+0.060／hold+0.139／recovery+1.884／removal+0.287ns，无负端点或负路径，未放宽预算／DDR3.500ns。3 PLL／官方DDR源序列与配置／停止时钟PHY reset／DAC启动／全部实际SDC selector及路由CDC门禁通过；64颗真实物理ROM重建全部52239word，SHA256 `18b55a40…eab5fd6` 与模型E逐字一致。独立FS和输入／输出／验证hash在报告封存；本记录阶段尚未SRAM部署或写Flash，随后按原授权串行下载。真实TF文件hash、Push／TRAVLER推理／指导按键／DAC／重选清理由实板验收，不继承仿真或历史验收。
+
+
+### 2026-11-03：D5 SRAM 身份读回；因实际 MP3 输入不符撤出交付
+
+[独立下载证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D5_SRAM_20261103.json)：共享锁下重新扫描8321，当前板先读回M26 `D2110137`；原门禁及源hash复核后op0→op2→op0→op74仅SRAM下载D5，随后独立读回 `D21103D5`／状态00022230，Flash未写。D5自动模型已实现并通过离线／物理门禁，但未读到板端ready或实际TF／CNN／DAC验收。用户指出TF实际是 `travelers.mp3`；本候选错误固定WAV、编译退出MP3，所以撤出拍摄交付，不能要求用户转换歌曲。后续显式CNN-DEMO恢复原有MP3根目录筛选／Tang MP3解码、保持自动模型，重新回归与全量物理门禁；此前报告不改写为MP3成功。
