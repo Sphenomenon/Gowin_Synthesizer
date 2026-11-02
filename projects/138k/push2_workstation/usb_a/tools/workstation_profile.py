@@ -57,6 +57,7 @@ LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
+BLE_DEMO_NAME='custom138k-workstation-ble-demo-v1'
 PROFILE_REGISTRY = {
     M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=4,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
@@ -145,6 +146,18 @@ PROFILE_REGISTRY = {
         provider=NO_CNN_PROVIDER, recognition_enabled=False,
         integration_identity='custom138k-native-dual-rate-no-cnn-revision1'),
 }
+
+# Independent BLE business image.  Its instrument/display composition is M's;
+# the original BLE owner alone owns this image's UART/H5/HCI and PCM RAM.
+# W's Classic/audio-only source policy is deliberately not selected here.
+PROFILE_REGISTRY[BLE_DEMO_NAME] = dict(PROFILE_REGISTRY[M_DEMO_NAME],
+    config='boards/custom_138k/workstation_profile_ble_demo_v1.json', revision=1,
+    configuration=dict(PROFILE_REGISTRY[M_DEMO_NAME]['configuration'],
+        bluetooth_policy='independent_ble_business_final_pcm_v1',
+        recording_policy='ble_short_pcm_ram_only_v1'),
+    provider='rtl/workstation/workstation_profile_ble_demo.sv',
+    retain_bluetooth=True,
+    integration_identity='custom138k-native-ble-business-final-pcm-revision1')
 
 
 def specification(name):
@@ -408,7 +421,8 @@ def _artifact(root, output, metadata, profile):
     if spec.get('demo_role') is not None:
         from tools.workstation_demo_policy import verify_constraints as verify_demo_constraints
         original_sdc = verify_demo_constraints(installed_sdc,
-            metadata.get('demo_constraint_retirement'), spec['demo_role'])
+            metadata.get('demo_constraint_retirement'), spec['demo_role'],
+            retain_bluetooth=spec.get('retain_bluetooth', False))
     else:
         original_sdc = installed_sdc
     if spec.get('push_rate_control',False):

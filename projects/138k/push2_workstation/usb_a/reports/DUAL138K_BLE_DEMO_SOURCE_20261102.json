@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "phase": "independent_ble_business_source_v1",
+  "profile": "custom138k-workstation-ble-demo-v1",
+  "revision": 1,
+  "profile_sha256": "791a2127c2e9f1e329faaf9a3e150247f67c92475ebef977134ac38f1b742d10",
+  "git_head": "3d50c0566cc89e318b648cd0360492928c937ace",
+  "modified_owner_files": {
+    "tools/workstation_custom_board.py": "6c8ce81dfab695b335856110070ade3bad52dee3aa669c48b9b6f2d2baf08a8e",
+    "tools/workstation_demo_audit.py": "d0fc6852868ea6467132912fed4321878f462aba337a547b3cb420a4c543c792",
+    "tools/workstation_demo_policy.py": "2ecb023aa16cd58890b1962262d10581bf13885c761ff0ef99d637d6218c3b42",
+    "tools/workstation_native_protocol_audit.py": "162899dccae92c45476a1e4a3599c89e10da01ee41cb691ae77d360fed057530",
+    "tools/workstation_performance_reset.py": "3fb35f9ce5254561805bb9691bd6433898ddc37c54429f65829805ce38bb0162",
+    "tools/workstation_physical_pll_audit.py": "826f923657ed5e96d6dacda59e4a243639a557315e74ada2a45e598757ec92e1",
+    "tools/workstation_profile.py": "bcbcd93b7c4d31297fa1dd75f82ee405aa815c7cba519a5f3379fcee15f33ebb",
+    "boards/custom_138k/workstation_profile_ble_demo_v1.json": "791a2127c2e9f1e329faaf9a3e150247f67c92475ebef977134ac38f1b742d10",
+    "rtl/workstation/workstation_profile_ble_demo.sv": "f42173a9e9f0c15500db9e520f3f86a9c54ec8f6a3231075ea10048c12c50a80",
+    "sim/test_workstation_ble_demo.py": "3266dff82051c09bc5a731f16c840488fe887e79ccce7028996980f905da85e1"
+  },
+  "locked_input_count": 899,
+  "m_w_behavior_unchanged": true,
+  "existing_dirty_user_test_preserved": true,
+  "checks": [
+    {
+      "name": "independent BLE source/retention/owner PCM gate and negatives plus real stereo VG identity qualification",
+      "passed": 5,
+      "skipped": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-source-gates-v1.log",
+      "log_sha256": "be27226c5b58954d72d82dba7cef0a43bedc74412366f15c6c18163dcbf63111"
+    },
+    {
+      "name": "original UART/H5 patch/GATT/live PCM stereo CRC and reliable download",
+      "passed": 8,
+      "skipped": 0,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-original-business-tests-v1.log",
+      "log_sha256": "0245e27b3b6cd4c5506ae7fb750d5e3d9db2c2121c40b86c84379ed1c20f9899"
+    },
+    {
+      "name": "existing DEMO endpoint policy",
+      "passed": 8
+    },
+    {
+      "name": "existing DEMO synthesis gate",
+      "passed": 18
+    },
+    {
+      "name": "existing performance source selection",
+      "passed": 7
+    },
+    {
+      "name": "current workstation source boundary",
+      "passed": true,
+      "log": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-current-source-regression-v1.log",
+      "log_sha256": "6e86f8b527d49822bbb78eb327ca1cbc20c75d7c78ad64dccd1a19249e7f50fa"
+    }
+  ],
+  "reference_qualification_only_VG": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m26-1-stereo-r1-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+  "reference_VG_is_not_new_BLE_implementation": true,
+  "prepare_complete": false,
+  "full_synthesis_complete": false,
+  "pnr_complete": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "remaining": [
+    "new prepared closure/source seal",
+    "new full syn/PnR and all routed gates",
+    "physical original BLE connection/status",
+    "real musical final PCM non-silent recording and reliable download"
+  ],
+  "rollback": "Source profile is opt-in; M/W and existing deployed image are unchanged",
+  "review_evidence": {
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/independent-ble-source-review-v1/review.json",
+    "sha256": "eb0f6851c6a10dd6775dfaf2dbcbc69c94f02e6764c99c9b012b6dfd02b42691",
+    "major_findings": []
+  }
+}

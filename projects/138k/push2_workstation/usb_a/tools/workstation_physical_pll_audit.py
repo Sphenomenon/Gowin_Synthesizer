@@ -146,6 +146,16 @@ def demo_source_context(physical, inputs, snapshot):
             audit.get('visible_sdc_selector_audit', {}).get('all_visible_selector_members_resolved') is not True or
             audit.get('constraint_retirement_audit', {}).get('every_retired_selector_proven_absent') is not True):
         raise ValueError('DEMO PLL candidate/synthesis source linkage differs')
+    if selected['name'] == 'custom138k-workstation-ble-demo-v1':
+        ble = audit.get('independent_ble_business_audit', {})
+        if (audit.get('features', {}).get('retain_bluetooth') is not True or
+                ble.get('exact_completed_frame_payload_verified') is not True or
+                ble.get('capacity_frames') != 16384 or ble.get('real_pcm_ram_bsram', 0) < 32 or
+                set(ble.get('unique_owners', {})) != {'workstation_bluetooth', 'bt_verilog_core',
+                    'bt_h5_transport', 'bt_hci_init', 'bt_gatt', 'ble_protocol_command', 'ble_recording'} or
+                any(ble.get('payload', {}).get(stem, {}).get('bits') != 98
+                    for stem in ('held_data', 'destination_data'))):
+            raise ValueError('Independent BLE PLL source lacks real PCM/unique owner synthesis evidence')
     outputs = {'integration_inputs_sha256': source / 'integration_inputs.json',
                'netlist_sha256': stage / 'impl/gwsynthesis/custom_138k_integration.vg',
                'synthesis_log_sha256': source / 'synthesis.log',

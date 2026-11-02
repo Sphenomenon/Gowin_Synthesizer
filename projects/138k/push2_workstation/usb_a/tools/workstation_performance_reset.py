@@ -207,9 +207,13 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
             'DEMO PC source common-reset selection changed')
     from tools.workstation_native_protocol_audit import (
         audit_native_protocol, audit_demo_held_boundaries, validate_native_protocol_sdc)
+    profile_path = Path(stage).parents[1] / 'workstation_profile.json'
+    sealed_profile = json.loads(profile_path.read_text()) if profile_path.is_file() else {}
+    ble_demo = sealed_profile.get('profile') == 'custom138k-workstation-ble-demo-v1'
     profile = 'm-demo-base' if role == 'M' else 'w-demo-d'
     if role == 'M':
-        provider = Path(stage) / 'rtl/workstation/workstation_profile_m_demo.sv'
+        provider = Path(stage) / ('rtl/workstation/workstation_profile_ble_demo.sv' if ble_demo else
+                                  'rtl/workstation/workstation_profile_m_demo.sv')
         if '`define WORKSTATION_DEMO_NO_TF' in provider.read_text().splitlines():
             profile = 'm-demo-core'
     else:
@@ -218,20 +222,21 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
             profile = 'w-demo-audio'
     connected_xy = role == 'M' and '`define WORKSTATION_XY_TRACE' in provider.read_text().splitlines()
     stereo_xy = role == 'M' and '`define WORKSTATION_XY_STEREO' in provider.read_text().splitlines()
-    profile_path = Path(stage).parents[1] / 'workstation_profile.json'
     # Legacy/non-stereo source-slice callers never required a profile artifact.
     # A stereo provider must carry its sealed role/revision/policy qualification.
     require(not stereo_xy or profile_path.is_file(), 'explicit stereo profile artifact missing')
-    sealed_profile = json.loads(profile_path.read_text()) if profile_path.is_file() else {}
     axes_policy = sealed_profile.get('configuration', {}).get('xy_axes_policy')
     require(stereo_xy == (axes_policy == 'ordinary_mid_side_vector_direct_v1'),
             'sealed explicit stereo profile/provider disagreement')
     require(not stereo_xy or (role == 'M' and
-            sealed_profile.get('profile') == 'custom138k-workstation-m-demo-v1' and
+            (sealed_profile.get('profile'), sealed_profile.get('revision')) in (
+                ('custom138k-workstation-m-demo-v1', 4),
+                ('custom138k-workstation-ble-demo-v1', 1)) and
             sealed_profile.get('configuration', {}).get('demo_role') == 'M'),
             'explicit stereo profile requires sealed M role')
     result = audit_native_protocol(n, profile=profile, mapping=mapping, connected_xy=connected_xy,
-        stereo_xy=stereo_xy, profile_revision=sealed_profile.get('revision'), xy_axes_policy=axes_policy)
+        stereo_xy=stereo_xy, profile_revision=sealed_profile.get('revision'), xy_axes_policy=axes_policy,
+        **(dict(profile_identity=sealed_profile['profile']) if ble_demo else {}))
     result['stereo_axes_inventory_reviewed'] = stereo_xy
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,

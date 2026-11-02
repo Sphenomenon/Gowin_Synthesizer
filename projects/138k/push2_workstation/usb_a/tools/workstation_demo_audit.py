@@ -28,6 +28,8 @@ PROFILES = {
                                       'rtl/workstation/workstation_profile_m_demo.sv'),
     'custom138k-workstation-w-demo-v1': ('W', 'custom138k-native-w-demo-d-only-revision1',
                                       'rtl/workstation/workstation_profile_w_demo.sv'),
+    'custom138k-workstation-ble-demo-v1': ('M', 'custom138k-native-ble-business-final-pcm-revision1',
+                                        'rtl/workstation/workstation_profile_ble_demo.sv'),
 }
 AUDIT_SOURCES = (
     'tools/workstation_demo_audit.py', 'tools/workstation_demo_policy.py',
@@ -198,7 +200,8 @@ def hierarchy_counts(root):
 
 
 def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, stream_pitch_enabled=False,
-                   synth_midi_retired=False):
+                   synth_midi_retired=False, retain_bluetooth=False):
+    require(not retain_bluetooth or role == 'M', 'independent BLE requires instrument/display composition')
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
     features = dict(COMMON_FEATURES, **(selected_m if role == 'M' else {}))
     if worker_audio_only:
@@ -233,7 +236,14 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
     else:
         retired += [pitch_scope]
     if role == 'M':
-        retired += ['u_bluetooth', 'u_ble_pcm_cdc']
+        if not retain_bluetooth:
+            retired += ['u_bluetooth', 'u_ble_pcm_cdc']
+        else:
+            for name, path in (('ble_business', 'u_bluetooth'),
+                               ('ble_final_pcm_cdc', 'u_ble_pcm_cdc'),
+                               ('ble_live_pcm_recording', 'u_bluetooth/u_core/application/command_endpoint/recording')):
+                require(path in rows, 'independent BLE retained hierarchy missing: ' + name)
+                features[name] = path
         if not tf_enabled:
             retired += ['u_tf_audio', 'u_tf_control_cdc', 'u_tf_scope_transport',
                         'u_playback_service', 'u_audio_command_buffer', 'u_playlist_bridge',
@@ -279,7 +289,66 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
                 worker_audio_only=worker_audio_only,
                 stream_pitch_enabled=stream_pitch_enabled,
                 **(dict(synth_midi_retired=True) if synth_midi_retired else {}),
+                **(dict(retain_bluetooth=True) if retain_bluetooth else {}),
                 synthesis_storage_only=True, hardware_functionality_verified=False)
+
+
+def audit_ble_business(netlist, rows, clocks):
+    """One real BLE owner, PCM RAM and all 98 completed-frame CDC payload bits."""
+    owners = {
+        'workstation_bluetooth': 'u_bluetooth',
+        'bt_verilog_core': 'u_bluetooth/u_core',
+        'bt_h5_transport': 'u_bluetooth/u_core/transport',
+        'bt_hci_init': 'u_bluetooth/u_core/initializer',
+        'bt_gatt': 'u_bluetooth/u_core/application',
+        'ble_protocol_command': 'u_bluetooth/u_core/application/command_endpoint',
+        'ble_recording': 'u_bluetooth/u_core/application/command_endpoint/recording',
+    }
+    for kind, path in owners.items():
+        found = [p for p, c in netlist.cells.items()
+                 if c['kind'] == kind or c['kind'].startswith(kind + '_')]
+        require(found == [path], 'independent BLE unique owner missing or duplicated: ' + kind)
+    recorder = owners['ble_recording']
+    require(rows.get(recorder, {}).get('Bsram', 0) >= 32,
+            'independent BLE real 16384-frame PCM RAM missing')
+    require(not any(c['kind'].startswith(('workstation_hci_native_transport',
+            'workstation_ble_record_data_engine', 'workstation_recording_backend',
+            'workstation_recording_ddr_backend')) for c in netlist.cells.values()),
+            'independent BLE contains competing HCI/recording owner')
+    scope = 'u_ble_pcm_cdc'
+    require(scope in netlist.frames and 'u_managed' in netlist.frames,
+            'independent BLE completed-frame CDC or real output source missing')
+    src_clock = netlist.canonical('u_managed', 'mclk_o')
+    dst_clock = clocks['clocks']['clk_50m']['net']
+    require(netlist.pin(scope, 'source_clk') == src_clock and
+            netlist.pin(scope, 'destination_clk') == dst_clock,
+            'independent BLE PCM CDC clock domain changed')
+    expected = [('frame_pcm_o', bit) for bit in range(32)] + [
+        ('frame_sequence_o', bit) for bit in range(32)] + [
+        ('frame_epoch_o', bit) for bit in range(32)] + [('frame_error_o', None), ('frame_44k1_o', None)]
+    expected_bits = [netlist.canonical('u_managed', port if bit is None else f'{port}[{bit}]')
+                     for port, bit in expected]
+    actual = [netlist.canonical(scope, f'source_data[{bit}]') for bit in range(98)]
+    require(actual == expected_bits and netlist.pin(scope, 'source_valid') ==
+            netlist.canonical('u_managed', 'frame_valid_o'),
+            'independent BLE capture does not use actual completed serial PCM/identity')
+    inventory = {}
+    for stem, clock in (('held_data', src_clock), ('destination_data', dst_clock)):
+        registers = {}
+        for path, cell in netlist.cells.items():
+            match = re.fullmatch(re.escape(scope + '/' + stem) + r'_(\d+)_s\d+', path)
+            if match:
+                bit = int(match[1])
+                require(bit not in registers and cell['kind'].startswith('DFF'),
+                        'independent BLE duplicated/non-register PCM CDC payload bit')
+                registers[bit] = path
+        require(set(registers) == set(range(98)), 'independent BLE 98-bit PCM CDC inventory changed: ' + stem)
+        require(all(netlist.pin(path, 'CLK') == clock for path in registers.values()),
+                'independent BLE PCM CDC payload clock changed: ' + stem)
+        inventory[stem] = dict(bits=98, clock=clock, registers_sha256=digest(registers))
+    return dict(unique_owners=owners, capacity_frames=16384, real_pcm_ram_bsram=rows[recorder]['Bsram'],
+        completed_serial_frame_source='u_managed', exact_completed_frame_payload_verified=True,
+        payload=inventory, hardware_non_silent_capture_verified=False)
 
 
 def audit_m_voice_storage(netlist):
@@ -441,13 +510,13 @@ def audit_worker_feedback(netlist, clocks, *, stream_pitch_enabled=False, allow_
                 **(dict(unconditional_request_mapping=request_mapping) if request_mapping is not None else {}))
 
 
-def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None):
+def audit_constraint_retirement(sdc, evidence, role, netlist, worker_evidence=None, *, retain_bluetooth=False):
     from tools.workstation_demo_policy import verify_constraints, W_SCOPE_BINDINGS
     selected = sdc
     if worker_evidence is not None:
         from tools.workstation_worker_audio_only import restore_constraints, REBIND, RETIRED_SELECTORS, RETIRED_CLOCKS
         selected = restore_constraints(sdc, worker_evidence)
-    original = verify_constraints(selected, evidence, role)
+    original = verify_constraints(selected, evidence, role, retain_bluetooth=retain_bluetooth)
     universes = dict(get_regs=sorted(p for p, c in netlist.cells.items() if c['kind'].startswith('DFF')),
         get_pins=sorted(p + '/' + pin for p, c in netlist.cells.items() for pin in c['ports']),
         get_ports=sorted(netlist.directions[TOP]),
@@ -648,6 +717,7 @@ def audit(root, output, metadata):
                                'tools/workstation_bluetooth_ddr.py')
     audit_sources = {relative: sha(root / relative) for relative in audit_source_names}
     role, profile, stage = verify_prepared(output, metadata)
+    retain_bluetooth = profile['profile'] == 'custom138k-workstation-ble-demo-v1'
     require(registered_epoch_selected == (profile['configuration'].get('w_hci_epoch_policy') ==
             'registered_controller_epoch_v1') and (not registered_epoch_selected or role == 'W'),
             'registered HCI epoch role/policy drift')
@@ -680,7 +750,8 @@ def audit(root, output, metadata):
         tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
         worker_audio_only=worker_audio_only,
         stream_pitch_enabled=profile['configuration'].get('w_stream_pitch_policy') == 'continuous_pcm_dual_head_v1',
-        synth_midi_retired=profile['configuration'].get('w_midi_input_policy') == 'disabled_unused_synth_uart_v1')
+        synth_midi_retired=profile['configuration'].get('w_midi_input_policy') == 'disabled_unused_synth_uart_v1',
+        retain_bluetooth=retain_bluetooth)
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -696,6 +767,7 @@ def audit(root, output, metadata):
     rtc = verify_rtc(stage, stage, metadata.get('ae350_rtc'))
     clocks = audit_runtime_clocks(root, stage, vg_text)
     base_clocks = clocks['base_clock_audit']
+    ble_business = audit_ble_business(netlist, rows, base_clocks) if retain_bluetooth else None
     registered_hci_epoch = None
     if registered_epoch_selected:
         from tools.workstation_hci_epoch import audit_registered_epoch
@@ -719,7 +791,8 @@ def audit(root, output, metadata):
                 audit_native_feedback(vg_text, base_clocks))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     retirement = audit_constraint_retirement(sdc, metadata.get('demo_constraint_retirement'), role, netlist,
-        metadata['worker_audio_only']['constraints'] if worker_audio_only else None)
+        metadata['worker_audio_only']['constraints'] if worker_audio_only else None,
+        retain_bluetooth=retain_bluetooth)
     performance_release = None
     demo_held_handshakes = None
     demo_boundary_cdc = None
@@ -773,6 +846,7 @@ def audit(root, output, metadata):
         demo_performance_release_audit=performance_release,
         demo_held_handshake_audit=demo_held_handshakes,
         demo_boundary_cdc_audit=demo_boundary_cdc,
+        **(dict(independent_ble_business_audit=ble_business) if retain_bluetooth else {}),
         **(dict(registered_hci_epoch_audit=registered_hci_epoch) if registered_epoch_selected else {}),
         bridge_reset_audit=bridge, native_usb_reset_audit=resets, native_feedback_clock_audit=feedback,
         visible_sdc_selector_audit=selectors, constraint_retirement_audit=retirement,

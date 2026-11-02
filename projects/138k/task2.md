@@ -655,3 +655,10 @@ M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_worksta
 精确迁入 origin/main f1839911 的 v18 生命周期修复，保留 app→data→ble→protocol、本分支原 DELIVERY_CHECK 文档、原 UUID 和录音下载协议。新候选 0.3.4-recording-duration/code19 补真实采样率下的毫秒时长显示：4800/48000 显示 00:00.100，16384/48000 显示 00:00.341，避免短录音显示为零秒。工作站和25K MIDI连接独立，本地音乐和选文件流式入口保留；25K转发由用户自行修改。
 
 [源码和离线验证](../../clients/android/reports/RECORDING_DURATION_20261102.md)：31项定向通过，完整111项中109通过、2项既有无线项跳过；APK和测试APK编译通过，lint零错误。真手机导出的现装v18 APK SHA256实测 d3160a8e539cb357bd25bfe75c7a8defc84f84c84cf1b656299a2631008bf0af，实际证书6aedebb7…；本机新debug包证书be0b935e…不匹配。v19先归档，不卸载、清数据或降级手机；现装v18继续实测。本阶段未声明v19实机或非静音BLE录音通过。
+
+
+### 2026-11-02：独立 BLE 真实短录音候选源码阶段
+
+新增显式 custom138k-workstation-ble-demo-v1/revision1，复用维护 M 基础乐器及最终串行 PCM，以原 C1 的 EXTERNAL_PCM=1 RAM 路径接通独占 UART/H5/HCI/GATT 与16384帧短录音对象。保留原 A25D/C1 的 UUID、状态、CRC和可靠下载协议；不修改25K，不启用已退出的CPU录音后端、cue、TF或CNN。W音频配置不增加业务GATT或录音，M/W默认配置和冻结输入不变，共享工具仅追加显式BLE选择。该候选仅为短录音验证，不代替最终唯一DDR长录音后端目标。
+
+[来源、配置与回归](push2_workstation/usb_a/reports/DUAL138K_BLE_DEMO_SOURCE_20261102.json)：来源锁899项逐hash核对；新配置及保留策略5项、原UART/H5/GATT／真实立体PCM CRC及下载8项、既有DEMO策略8项、DEMO审计18项、performance7项及当前来源17项通过。独立只读复核无重大问题。既有stereo VG仅用于资格检查，不冒称新BLE综合网表。新候选仍需全量综合、P&R、PLL／时序／真实CDC与资源门，预留物理身份D21102C1；连接／状态／非零乐音录音／CRC下载均待实板。SRAM由root串行，不写Flash。

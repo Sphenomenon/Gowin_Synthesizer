@@ -361,7 +361,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         push_rate_control = push_rate_evidence()
     if demo_role is not None:
         from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
-        selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role)
+        selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role,
+            retain_bluetooth=specification(profile['name']).get('retain_bluetooth', False))
     audio_constraints=None
     if audio_only:
         from tools.workstation_worker_audio_only import constraints as audio_sdc,cst as audio_cst
