@@ -774,3 +774,8 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [新候选证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_MP3_20261103.json)：明确修正前候选固定WAV的错误。仅CNN-DEMO顶层默认 `TF_AUDIO_KIND=1`，原FAT根目录按MP3扩展名扫描，恢复真实Tang MP3解码／PCM drain与FIFO／频域查表的实际编译输入；保持TF直读、原CNN和指导以及同一模型E自动装载。50项相关源／header／table与accepted full83逐字hash相同，M／W默认和冻结基线不改。用户实际歌曲名 `travelers.mp3`，尚未取得TF文件内容hash，不替用户转换WAV。
 
 独立身份 `407a539c5b27e6e3`／`D21103D6` 全量综合和P&R exit0，实际Logic51479／FF30008／CLS38417／BSRAM249/340／DSP104（综合BSRAM等价222单列）。7时钟完整STA无负端点／路径，setup+0.022／hold+0.125／recovery+0.975／removal+0.281ns；3 PLL／官方DDR源序列配置／PHY reset／DAC启动／SDC selector／路由CDC全部通过，模型64颗物理ROM重建字节与AF01A61B一致。17项来源边界及原MP3文件解码回归通过。MP3整链测试首轮连续字节喂入不符原DDR分离脉冲节拍，修正后能解码；3帧生成MP3未产指导音符，保留失败并运行12帧窗口，不把该整链宣称通过。此阶段封存后按已有授权SRAM，让用户先确认实际MP3歌曲目录；真实选歌／CNN结果／正确按键推进／音频／重选清理仍待实板验收。Flash不写。
+
+
+### 2026-11-03：MP3 D6 已 SRAM 下载及独立身份读回，等待实际 Push 反馈
+
+[部署证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D6_SRAM_20261103.json)：重新扫描FT2CH／8321，在共享锁及全部封存输入／门禁hash核实后，读回前态D5 `D21103D5`，仅执行op0→op2→op0→op74下载MP3 D6。SRAM编程工具报告6.82秒，独立读回 `D21103D6`／状态00022230，未逐bit SRAM读回，Flash未写。D6目录按MP3、模型自动装载无需UART；已请用户用原Push操作确认 `travelers.mp3` 可见／可选与当前屏幕文字。板端模型ready／CRC、歌曲实际推理／指导推进／DAC／重选清理尚无证据，未宣称拍摄闭环验收；较长MP3离线窗口继续运行。M26原Flash及独立FS回退保持。
