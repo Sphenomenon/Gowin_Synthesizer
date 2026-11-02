@@ -706,3 +706,10 @@ FS SHA256 `c5136b47854046b634fe5c8ef3fefb581be1d36f6a20fba9ccc4ff8af8de6d92`，�
 [W B6 SRAM与首轮手机证据](push2_workstation/usb_a/reports/DUAL138K_W_B6_SRAM_20261102.json)：原D21102B5核实后，使用新FS6105a594…7de29fd执行op2，随后独立op0读回D21102B6／00022230，op74再次确认；全部输入保持，未进行逐bit SRAM读回。当前138K SRAM以B6为准，Flash未写，原M26 D2110137固化镜像及B5 SRAM回退文件保留。
 
 既有正式HCI服务已真实读出本板BD_ADDR34:20:03:3D:8A:62，回读ScanEnable3并完成0c19/0，现有诊断所有观察到的owner fault为0。真实vivo手机向此地址首轮配对仍返回ConnectionComplete status0x04/page timeout，未建立ACL；板端地址诊断保持，无首ACL／close。不把静态名称、旧手机环或身份读回当作SSP/A2DP通过。继续核对fresh inquiry与空口接入前原因；D实时效果、25K按下／释放／断连及持续DAC均待真实流式输入后验收。
+
+
+### 2026-11-02：近距离手机复核与 C1 PLL 补充
+
+[本次补充证据](push2_workstation/usb_a/reports/DUAL138K_B6_NEAR_PHONE_C1_PLL_ADDENDUM_20261102.json)：用户已将手机靠近并确认天线连接，且只有138K蓝牙模块供电。BT重开后的真实fresh inquiry含本板地址，近距记录RSSI约−76…−74dBm；再次配对仍page timeout0x04／无ACL，B6正式地址／Scan3诊断保持，未观察到owner fault。不将无第二模块与无软件fault推断为空口或射频正常；开始显式W正式startup的无用LE广播退出及唯一Classic名称受控对照，不先认定因果，默认M／durable及独立BLE保持。
+
+C1首次PLL子门错误已独立定位为macOS未自动找到官方gw5a模型；显式GOWIN_SIMLIB后在新workspace复跑原完整门通过，6 PLL／7负控／held门均通过，708项独立依赖与输出hash复核，原失败日志和已提交报告历史不改。C1完整STA仍1567 setup／−1.209ns，仍拒绝部署、未烧录。此补充不产生新位流，不写Flash；当前SRAM仍B6。

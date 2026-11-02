@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "scope": "Supplemental measurements; no new candidate acceptance",
+  "evidence": {
+    "C1_PLL_v2": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/ble-demo-business-r1-physical-pll-v2.json",
+      "sha256": "d03881d5edf699a2b41c190799bfacbb445a23c399b208fe39e407760713838e"
+    },
+    "near_radio": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/phone-b6-session-v1/near-search-target-radio.json",
+      "sha256": "6aa965ed0dda56a83076d12bc16116ffcc938ff0bef0b6830e26aa86fcc98f20"
+    },
+    "near_phone_target": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/phone-b6-session-v1/near-pair-result-target.json",
+      "sha256": "04746727b4bf571b3eaedb98e0460fcf9469724260d7fb6ff59edc710e333548"
+    },
+    "near_GAO": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-captures/near-pair/result.json",
+      "sha256": "f6d6d5dba95b633f55e2b85bce68fd6d9def880ea846e82bf60f6c4dcf87e216"
+    },
+    "page_source_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-b6-page-timeout-source-review-v1/review.json",
+      "sha256": "47faa2a8d4dfb68b03447030898ff72198cc3225ea73e4352f1c4c68e5996210"
+    },
+    "formal_startup_notes": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-b6-page-timeout-source-review-v1/formal_service_readbacks.json",
+      "sha256": "e6746f34899a0a8cd59a80ac543024c6d4b8b422590b636289e653f4c7ced26f"
+    }
+  },
+  "C1_PLL": {
+    "passed": true,
+    "negative_checks": 7,
+    "expected_PLLs": 6,
+    "unique_dependency_hashes_reverified": 708,
+    "change": "Explicit installed official GOWIN_SIMLIB path; frozen tools and candidate unchanged",
+    "original_failure_preserved": true,
+    "STA_still_rejected": true,
+    "setup_violated_endpoints": 1567,
+    "WNS_ns": -1.209,
+    "SRAM_deployed": false
+  },
+  "W_B6": {
+    "user_confirmed_near_phone_and_antenna": true,
+    "user_confirmed_only_138K_BT_powered": true,
+    "target_fresh_inquiry_RSSI_range_dBm": [
+      -76,
+      -74
+    ],
+    "near_pair_result": "page timeout status0x04/no ACL",
+    "actual_controller_address": "34:20:03:3D:8A:62",
+    "actual_scan_enable": 3,
+    "observed_owner_faults": 0,
+    "SRAM_identity": "D21102B6",
+    "A2DP_accepted": false
+  },
+  "new_EDA_or_programming_in_addendum": false,
+  "Flash_written": false,
+  "release_ready": false
+}
