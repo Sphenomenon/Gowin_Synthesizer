@@ -786,3 +786,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [来源与回归证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D7_SOURCE_20261103.json)：用户明确反馈 D6 只有 SELECT SONG，没有歌曲，功能验收失败。逐脚核对原理图 XDFP-0090-012.1 的 U16 定义与最新锁定自制底板网标，发现继承配置四根 TF SPI 全部误配；CNN-DEMO 独立修正为 DAT0.7→V15/MISO、CMD.3→Y16/MOSI、CLK.5→W15/SCK、DAT3.2→AB15/CS_n。使用有来源 hash 的独立配置和精确旧约束锚点，并核端点／球位和冲突；不修改冻结基线、共享原生引脚计划或 M/W/BLE 输入。原 TF 读卡、MP3 解码、CNN 和指导算法不变。
 
 来源边界17项、TF来源漂移／锚点／球位冲突等4项、空列表实际状态渲染及原歌曲名渲染通过。Push 空列表现在显示实际 TF 扫描／扫描完成无MP3及文件系统／卡状态；去掉过期 WAV／UART 提示，模型仍自动装载。D6此前运行的12帧MP3整链现已通过：真实解码95625 PCM、6105969模型读取、六层CNN／Viterbi产生3个实际音符，错键阻止／新正确键推进／重启清旧目标；从空行为DDR自动模型启动，无预装或强制ready。生成MP3仅为离线测试，不是TF旅行者实板验收。新候选749cb74b2b552392已全量综合，独立D21103D7 P&R运行中；实板闭环仍待验证，不预报成功。Flash不写，原M26回退保持。
+
+
+### 2026-11-03：TF 引脚修正版 D7 完整物理门禁通过，等待 JTAG 重接
+
+[物理封存](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D7_PHYSICAL_20261103.json)：独立749cb74b2b552392／D21103D7全量综合、P&R及新门禁通过。实际Logic51569／FF30033／CLS38509／BSRAM249/340／DSP104；7时钟完整setup+0.054／hold+0.012／recovery+1.476／removal+0.281ns，无负路径或端点。3 PLL／官方DDR序列与配置／stopped-clock reset／DAC启动／路由CDC／SDC及三个故障负控通过；新增TF反馈的14个实际mailbox有效位逐个核FF／跨域连接与路径。模型64颗ROM全部52239word重建与E／AF01A61B一致。
+
+编译CST与路由后pin报告独立核实MISO V15／MOSI Y16／SCK W15／CS_n AB15，四根符合U16真实功能。新版含TF扫描状态反馈，未更改历史读卡／CNN算术。当前Mac三次扫描（默认／FT／libusb）均未枚举JTAG，已请求重接；此刻尚未下载D7，更未宣称真实TF／Push／CNN／DAC接受。保持已授权串行SRAM流程与Flash不写边界。
