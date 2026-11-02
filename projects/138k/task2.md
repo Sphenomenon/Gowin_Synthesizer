@@ -767,3 +767,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 ### 2026-11-03：D5 SRAM 身份读回；因实际 MP3 输入不符撤出交付
 
 [独立下载证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D5_SRAM_20261103.json)：共享锁下重新扫描8321，当前板先读回M26 `D2110137`；原门禁及源hash复核后op0→op2→op0→op74仅SRAM下载D5，随后独立读回 `D21103D5`／状态00022230，Flash未写。D5自动模型已实现并通过离线／物理门禁，但未读到板端ready或实际TF／CNN／DAC验收。用户指出TF实际是 `travelers.mp3`；本候选错误固定WAV、编译退出MP3，所以撤出拍摄交付，不能要求用户转换歌曲。后续显式CNN-DEMO恢复原有MP3根目录筛选／Tang MP3解码、保持自动模型，重新回归与全量物理门禁；此前报告不改写为MP3成功。
+
+
+### 2026-11-03：D6 恢复实际 MP3 歌曲路径，完整物理门禁通过
+
+[新候选证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_MP3_20261103.json)：明确修正前候选固定WAV的错误。仅CNN-DEMO顶层默认 `TF_AUDIO_KIND=1`，原FAT根目录按MP3扩展名扫描，恢复真实Tang MP3解码／PCM drain与FIFO／频域查表的实际编译输入；保持TF直读、原CNN和指导以及同一模型E自动装载。50项相关源／header／table与accepted full83逐字hash相同，M／W默认和冻结基线不改。用户实际歌曲名 `travelers.mp3`，尚未取得TF文件内容hash，不替用户转换WAV。
+
+独立身份 `407a539c5b27e6e3`／`D21103D6` 全量综合和P&R exit0，实际Logic51479／FF30008／CLS38417／BSRAM249/340／DSP104（综合BSRAM等价222单列）。7时钟完整STA无负端点／路径，setup+0.022／hold+0.125／recovery+0.975／removal+0.281ns；3 PLL／官方DDR源序列配置／PHY reset／DAC启动／SDC selector／路由CDC全部通过，模型64颗物理ROM重建字节与AF01A61B一致。17项来源边界及原MP3文件解码回归通过。MP3整链测试首轮连续字节喂入不符原DDR分离脉冲节拍，修正后能解码；3帧生成MP3未产指导音符，保留失败并运行12帧窗口，不把该整链宣称通过。此阶段封存后按已有授权SRAM，让用户先确认实际MP3歌曲目录；真实选歌／CNN结果／正确按键推进／音频／重选清理仍待实板验收。Flash不写。

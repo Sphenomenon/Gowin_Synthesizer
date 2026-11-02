@@ -5,7 +5,11 @@
 `endif
 `ifdef WORKSTATION_CUSTOM_138K
 module workstation_custom_138k_top #(
+`ifdef WORKSTATION_CNN_DEMO
+    parameter integer TF_AUDIO_KIND=1,
+`else
     parameter integer TF_AUDIO_KIND=2,
+`endif
     parameter integer USB2_DIAGNOSTIC_UART=0,
     parameter integer BLUETOOTH_DIAGNOSTIC_UART=0
 ) (

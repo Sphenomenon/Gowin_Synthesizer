@@ -34,7 +34,9 @@ def retained(name, accepted_music):
             return False
         return name in accepted_music and not Path(name).name.startswith(('blocking_', 'music_ddr_engine', 'music_upload_', 'basic_pitch_tf_board'))
     if name.startswith('src/storage/'):
-        return '/mp3/' not in name and '/tang_mp3/audio/' not in name and not any(x in name for x in ('tf_mp3_', 'tf_flac_', 'tf_sd_audio_pcm_player', 'common/sync_rom'))
+        if '/tang_mp3/audio/' in name:
+            return Path(name).name in ('pcm_drain.v', 'pcm_fifo.v')
+        return not any(x in name for x in ('tf_flac_', 'tf_sd_audio_pcm_player'))
     if name.startswith('src/audio/'):
         return True
     if name.startswith('src/usb_a/'):
@@ -198,9 +200,10 @@ def prepare(root, netlists, output, riscv_prefix=None):
     blob = struct.pack('<52239H', *[int(x,16) for x in model.read_text().splitlines()])
     if binascii.crc32(blob)&0xffffffff != 0xAF01A61B:
         raise ValueError('CNN-DEMO model differs from accepted model E')
-    data = dict(schema=1, name=NAME, revision=3, parent_native_identity=parent['identity'],
+    data = dict(schema=1, name=NAME, revision=4, parent_native_identity=parent['identity'],
         source_policy='accepted_full83_locked_timing85_six_files_synchronized_diagnostics_embedded_model_custom_carrier_minimal_audio',
-        configuration=dict(song='TRAVLER',format='wav',sample_rate_hz=48000,
+        configuration=dict(song='travelers.mp3',historical_song_label='TRAVLER',format='mp3',
+            directory_extension='MP3',sample_rate_hz=48000,analysis_44100_resampler_retained=True,
             model_crc32='AF01A61B',model_bytes=len(blob),model_sha256=hashlib.sha256(blob).hexdigest(),
             model_load='configuration_BSRAM_ROM_to_DDR_automatic',model_UART_required=False,
             model_ready='status_E_after_DDR_readback_CRC',hdmi=False,ae350=False,
@@ -303,7 +306,7 @@ def prepare_physical(candidate, output, user_code, ddr_reference=None):
         for child in node: walk(child, (path+'/' if path else '')+child.get('name'))
     walk(xml)
     required = ('u_native_usb/host', 'u_native_usb/input_owner',
-        'u_tf_audio/u_path/u_file_reader', 'u_tf_audio/u_path/u_decoder/g_wav.u_wav',
+        'u_tf_audio/u_path/u_file_reader', 'u_tf_audio/u_path/u_decoder/g_mp3.u_mp3/u_decoder',
         'u_music/u_basic_pitch/u_cqt', 'u_music/u_basic_pitch/g_ddr_weights.u_weight_cache',
         'u_music/u_basic_pitch/g_ddr_weights.u_model_loader',
         'u_music/u_basic_pitch/g_ddr_plane.g_plane_cache.u_plane_cache',

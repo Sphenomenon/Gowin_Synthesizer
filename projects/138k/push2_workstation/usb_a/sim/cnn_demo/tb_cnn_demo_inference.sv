@@ -5,6 +5,7 @@
 // No model preload, forced readiness, CNN output, layer state or score.
 module tb_cnn_demo_inference #(
     parameter integer FILE_BYTES=384044,
+    parameter integer AUDIO_KIND=2,
     parameter integer FRAMES=3,
     parameter integer MAX_CYCLES=200000000
 );
@@ -12,17 +13,28 @@ module tb_cnn_demo_inference #(
     always #10 clk=~clk;
     reg [7:0] wav[0:FILE_BYTES-1];
     integer byte_index=0,pcm_count=0,cycles=0,model_reads=0;
-    wire in_ready,pcm_valid,pcm_ready,header,unsupported;
+    wire in_ready,pcm_valid,pcm_ready,header,unsupported,decode_error;
     wire signed [15:0] pcm_l,pcm_r;
     wire [19:0] rate;
     // The user selects a song after the Push model-ready state. Do not send
     // WAV bytes during boot, when the analysis owner is not ready to accept.
-    wire in_valid=rstn && model_status==14 && byte_index<FILE_BYTES;
+    // Match the historical DDR byte FIFO's separated read pulses. In
+    // particular, the legacy MP3 framer uses an internal header-size cycle.
+    wire in_valid=rstn && model_status==14 && !cycles[0] && byte_index<FILE_BYTES;
     always @(posedge clk)if(in_valid && in_ready)byte_index<=byte_index+1;
-    tf_wav_pcm_decoder decoder(.clk,.rst_n(rstn),.restart(1'b0),
-        .in_valid,.in_byte(byte_index<FILE_BYTES ? wav[byte_index] : 8'd0),.in_ready,
-        .header_valid(header),.sample_rate_hz(rate),.stereo(),.bits_per_sample(),
-        .pcm_valid,.pcm_ready,.pcm_left(pcm_l),.pcm_right(pcm_r),.unsupported);
+    tf_audio_decoder_ip #(.FORMAT(AUDIO_KIND)) decoder(.clk_i(clk),.rst_ni(rstn),.restart_i(1'b0),
+        .byte_valid_i(in_valid),.byte_data_i(byte_index<FILE_BYTES ? wav[byte_index] : 8'd0),
+        .byte_ready_o(in_ready),.byte_last_i(byte_index==FILE_BYTES-1),
+        .format_ready_o(header),.sample_rate_hz_o(rate),.format_o(),.channels_o(),.bits_per_sample_o(),
+        .pcm_valid_o(pcm_valid),.pcm_ready_i(pcm_ready),.pcm_left_o(pcm_l),.pcm_right_o(pcm_r),
+        .unsupported_o(unsupported),.error_o(decode_error),.eof_seen_o(),.bytes_seen_o(),
+        .frame_count_o(),.resync_count_o(),.stuck_frames_o(),.pcm_fifo_parity_errors_o());
+    integer eof_quiet=0;
+    // Compressed input may finish while a decoded granule is still in flight.
+    always @(posedge clk) begin
+        if(byte_index<FILE_BYTES || pcm_valid)eof_quiet<=0;
+        else if(eof_quiet<500000)eof_quiet<=eof_quiet+1;
+    end
     function automatic [3:0] gmap(input [11:0] g);
         case(g)
             12'h100:gmap=0;12'h101:gmap=1;12'h102:gmap=2;12'h103:gmap=3;
@@ -59,7 +71,7 @@ module tb_cnn_demo_inference #(
         .USE_DDR_FRONT_COEFF(1),.USE_DDR_CQT_COEFF(1)) dut(
         .clk_i(clk),.rst_ni(rstn),.analysis_restart_i(restart),.model_serial_i(1'b1),
         .model_status_o(model_status),.debug_model_actual_crc_o(model_crc),
-        .pcm_valid_i(pcm_valid && !restart),.pcm_end_i(byte_index==FILE_BYTES && !pcm_valid),
+        .pcm_valid_i(pcm_valid && !restart),.pcm_end_i(eof_quiet==500000),
         .pcm_ready_o(pcm_ready),.pcm_left_i(pcm_l),.pcm_right_i(pcm_r),
         .score_valid_o(score_valid),.score_ready_i(score_ready),.score_note_o(score_note),
         .debug_layer_hashes_o(hashes),.debug_stream_wave_o(wave),.debug_progress_o(progress),
@@ -76,7 +88,7 @@ module tb_cnn_demo_inference #(
     always @(posedge clk)if(rstn)begin
         cycles=cycles+1;
         if(pcm_valid && pcm_ready)pcm_count=pcm_count+1;
-        if(unsupported || (header && rate!=48000))$fatal(1,"WAV format changed");
+        if(unsupported || decode_error || (header && rate!=48000))$fatal(1,"unsupported/error audio rate=%0d",rate);
         if(dut.contour_act_valid)writes[0]=writes[0]+1;
         if(dut.reduce_act_valid)writes[1]=writes[1]+1;
         if(dut.notes_act_valid)writes[2]=writes[2]+1;

@@ -1,0 +1,509 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-02T17:45:41.012989+00:00",
+  "candidate_identity": "407a539c5b27e6e3",
+  "user_code": "D21103D6",
+  "source_head_before_commit": "df9304ab5c470f323081bfe4e3666c9093d9ad4e",
+  "configuration": {
+    "song": "travelers.mp3",
+    "historical_song_label": "TRAVLER",
+    "format": "mp3",
+    "directory_extension": "MP3",
+    "sample_rate_hz": 48000,
+    "analysis_44100_resampler_retained": true,
+    "model_crc32": "AF01A61B",
+    "model_bytes": 104478,
+    "model_sha256": "18b55a4076c4670d228a205ee97f1f659ccffab4530b60bde45837597eab5fd6",
+    "model_load": "configuration_BSRAM_ROM_to_DDR_automatic",
+    "model_UART_required": false,
+    "model_ready": "status_E_after_DDR_readback_CRC",
+    "hdmi": false,
+    "ae350": false,
+    "visualization_fft": false,
+    "cnn_cqt": true,
+    "effects": false,
+    "bluetooth": false,
+    "recording": false
+  },
+  "source_policy": "accepted_full83_locked_timing85_six_files_synchronized_diagnostics_embedded_model_custom_carrier_minimal_audio",
+  "maintenance_sources": {
+    "projects/138k/push2_workstation/usb_a/tools/workstation_cnn_demo.py": "c3071ae6b85505d043fdd37bf8d48b3c5d0a960a84707287f543ea1ee8194962",
+    "projects/138k/push2_workstation/usb_a/rtl/workstation/CNN_DEMO.md": "fe9b7620a11dbb15c7f6bafccd1763b68b7af6fbb8e74cabecf8c683bab633c7",
+    "projects/138k/push2_workstation/usb_a/sim/cnn_demo/run_inference.py": "9497b07bb61653773502e3a23378fee16e33df86f921ba5918b1f00d95552cc3",
+    "projects/138k/push2_workstation/usb_a/sim/cnn_demo/tb_cnn_demo_inference.sv": "824813e5d03160e43066eee5928b1c84d49f6d3322baf6de78f330879c8f89e0"
+  },
+  "compiled_sha256": {
+    "rtl/workstation/workstation_cnn_demo_primitives.sv": "ab56e42b0e7ef9eb1965f2168454895b4ba5807b761182090767b47e519dee50",
+    "src/audio/pt8211_observer.v": "b0df5cc235784579ef61a575d46b55961509c502b4175cb7bdcbc50401cf0dcb",
+    "src/audio/pt8211_tx.v": "82e479874e26cb65a4c5a382f153f5fa0a680f091eb5cba3bf198cddc822d732",
+    "src/control/uart_tx.v": "3513207cae9e529b0dabd45040a33012440ad4c1fc842571b4cb70ece5d09e8f",
+    "src/memory/ddr3_platform.v": "46a34b9de9e348b17b3f915fbbe84e608caa6b407d616b7386ca5c881bd8a75b",
+    "src/memory/ddr_recovery_guard.v": "bac29186ea6a5d33826b6799ae088043d7661067a9b9e9c1d60f702d85dd1c96",
+    "src/platform/reset_release.v": "b5d153b9b0660e3ea9db722d41662a4a7f6f151bc40275b81bfedb15c4e9eac1",
+    "src/video/video_font_5x7.v": "f8db5962cd395d8f6d13727a853d4bf2a6994a2ec8b9ac8d880ab11449ee896b",
+    "vendor/gowin_ddr3/ddr3_memory_interface.v": "4a6e26d2ccb8d01221103df4cdf71f3517d2700614020e0c414aafec04a495bc",
+    "vendor/gowin_ddr3/ddr3_pll.v": "07279cab90c43bfd60e73da82af5877358e8ebfdb744ca7262b12394a636449d",
+    "vendor/gowin_ddr3/ddr3_pll_init.v": "3e55b1cf5b4cbab9d88a9b7b0924f399ed9aaed469def761b7f73998ab69ea45",
+    "vendor/gowin_ddr3/ddr3_pll_primitive.v": "2948417296392e0ba0306aa17e48b4332a38aa00e6c763b7ef53c5180652aef7",
+    "vendor/sipeed_dvi/video_pll_init.v": "ca1e667fe6f5e9c67e566a8acbd215039b027743bd105d32e1bf91ac380e0453",
+    "src/migration/gw138k_audio_clock.v": "580554c6a94b18529ac32f76e1a54ac2a2fe568ef24b843b93a025da3dc2ff1a",
+    "src/migration/gw138k_counter_cdc.sv": "1b6ff697ccd951995b7331ac483f3c7672a959a9a767465eb57d92d80f3afa8c",
+    "src/migration/gw138k_stream_cdc.sv": "90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376",
+    "src/ae350/gw138k_cpu_pll_cell.v": "f926a80a328df0c038af3d86cde9d641f14d8b7b7014ea257544179d33a60e14",
+    "src/ae350/gw138k_event_arbiter.sv": "149d5d84c1823898c8aed434f34a6da9f5ffbd974fab98256eb1e223b3a64e30",
+    "src/ae350/gw138k_three_event_arbiter.sv": "c3690947d2b9a0e75ba56cd73982c1291d2a452d4ae3a20adaf753c306f25b7a",
+    "src/usb_host/gw138k_usb_event_fifo.v": "2084bead34bf421610fd20489ece66601823b87f72887228be25de5374a956c6",
+    "src/push2/gw138k_push_performance_uart.sv": "871f28af8f26e3b2d6b83308612a1693896f82a18673dffd14a2038a4bbb2cc2",
+    "src/push2/push2_midi_rx.sv": "4588f7c614351b113f89f4e967c95657c1f216b0a0328e96f669ced31f55d3e3",
+    "src/memory/ddr_address_map_guard.v": "ba7bd18eb264342e9530b9128f67d29eb769d63dc13688d2536be33957e4a2a7",
+    "src/audio/tf_rate_pt8211_tx.v": "18ff683654d4c836dd924ee008caedcf8f75d02367118f34204aeecec2207a06",
+    "src/storage/tang_mp3/audio/pcm_drain.v": "e0b0bd203f3cdf22aed2e10991c349167a324d4c5e200631ff10c802d45f29b0",
+    "src/storage/tang_mp3/audio/pcm_fifo.v": "5c06754f375c2a70ceedd0f68e62f28cc2706dd03141cd8a67874d6ce8190568",
+    "src/storage/tang_mp3/common/sync_rom.v": "c3394fb5f2365212508ac313836f9dcb7368b4ae98b2bd94b10f3fd553c1f0bd",
+    "src/storage/tang_mp3/mp3/huff_tabs_tail.v": "bce3207bbdebeb15ea16f5477f8118ebe2aedc5f68548bdad30d2b9f782ee753",
+    "src/storage/tang_mp3/mp3/mp3_antialias.v": "99fbd3ca41737f3b27f01c461988162c79d4251743fd4da4ed34cce217b34db8",
+    "src/storage/tang_mp3/mp3/mp3_bitstream.v": "11d31c139be376b045218d60775eb11db5b84435f9931c95403fa9abad778367",
+    "src/storage/tang_mp3/mp3/mp3_decoder.v": "aeb41e8202ceccd573c458ca626469d8f601572cf8349427cc1452aab53dfc21",
+    "src/storage/tang_mp3/mp3/mp3_huffman.v": "221c94b4bf8f614372b166dff99e0b034233165dda261f6d32622381b4113b0d",
+    "src/storage/tang_mp3/mp3/mp3_imdct.v": "5850eb72af47eba9f00240354ccbbcb58cdd58ad20ceca89581d399e17d67033",
+    "src/storage/tang_mp3/mp3/mp3_reorder.v": "4167e465c3fe498b87be0f2d6bde8333ec8c77d56b147435e03d5cbccd5fd638",
+    "src/storage/tang_mp3/mp3/mp3_requant.v": "7301d9c7f459ed37971f0f39f16d1d878c3cbcc5f767c006d840caa08228f06f",
+    "src/storage/tang_mp3/mp3/mp3_reservoir.v": "149494a460318ab557bcc0330f448b27352a950979e8df28e94dba72771dfa66",
+    "src/storage/tang_mp3/mp3/mp3_scalefac.v": "f9a982595fdcd5751728f27ecbec60a3079495a6d4d3ecac8fbe0b97ec3bfed4",
+    "src/storage/tang_mp3/mp3/mp3_sfbtab.v": "644d881a2310197b894c5b68947dd91d85f23903eb173b9cfbeb25030606944b",
+    "src/storage/tang_mp3/mp3/mp3_sideinfo.v": "6a7de79683540a0d2da30a709d64096dd227619e14f6dcca399175f41d419c0e",
+    "src/storage/tang_mp3/mp3/mp3_spectra.v": "05f426d1d8082be7fea4f150e44049cfde1ade3dec5da22404d6f2631040a182",
+    "src/storage/tang_mp3/mp3/mp3_stereo.v": "2a0fc9db5d9ccdbbb8f98db172babf2e75ec479b12ef1013be1a5c6fae162519",
+    "src/storage/tang_mp3/mp3/mp3_synth.v": "bd5df0a4229150bb7aba6ffb57c2dcaec7e6ae4061f892485470d2ff2e64bb1c",
+    "src/storage/tang_mp3/sd/tf_sd_file_reader.v": "57ee8873418fe2fa00e40782e1509495c8eb779e11d4175884a79f741fcc0441",
+    "src/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": "259bedb80a6a54cf2048ae6cb2f40ec384108ae2743acb49b8acb70abf126504",
+    "src/storage/tang_mp3/vendor/tf_spi_session.v": "69af9d24a02f8472b87f114dce58e05d5032daeea21f7aca201ef08ea6ac1cbc",
+    "src/storage/tf_async_byte_fifo.v": "e9a7c01f7e5a13569de361b4615099f56706e4bcb93701005938639b45c28148",
+    "src/storage/tf_async_pcm_fifo.v": "1345cda1993fd074ce7286e8ebd928fdc61a4b92a2987a8aabf0a3591680499a",
+    "src/storage/tf_audio_ddr_dma.v": "42252d83a5088fd7393557bdd5c4e44b41ef5a52b179606eb4a5332e32793e19",
+    "src/storage/tf_audio_ddr_path.v": "ebbf714a3e1670378fcdfce7b9eae34b6841ae82be37c0e5d7bccf5dd176291f",
+    "src/storage/tf_audio_decoder_ip.v": "52cc02883361b0d76a35ee1d9d0a1252ed718daf8c60ed83052afb280bc6960a",
+    "src/storage/tf_audio_file_reader.v": "e810a5a6aed1a75ba7ac6625ace8ed12a12f66f0e16a156fb0bb275355c35529",
+    "src/storage/tf_mp3_pcm_decoder.v": "78cb9a79a2f4c62eb19f2eef4376ea7e9886ef07f0aed7811e920335383a0d1d",
+    "src/storage/tf_pcm_bram_fifo.v": "2bb2c53041a2b5a00737cf0d4bae6fa38a5093a6e2cc33822a5173db7c200b52",
+    "src/storage/tf_wav_chunk_parser.v": "c71e9860c5e988d97f1dd9840f643a68f60e6efef74d96b216013e816fb86ee1",
+    "src/storage/tf_wav_pcm_decoder.v": "ebf34a426e1bb53e1e002fc78723a8e501b5892c5b061b72fc46a14644c1e68a",
+    "src/storage/tf_workstation_audio_bridge.v": "6f4957f4c460edbbd536dfd04f71359c3665d3c86eb4d8869bcd38743c5dc51e",
+    "src/storage/third_party_sd_spi_file_reader.v": "e86577b2985bd8ec4750ca4cd317e14ded30a2dcc465e22aa4114dc82cd54660",
+    "src/storage/third_party_sd_spi_sector_reader.v": "c1f8755b0f202a86f92b5212f036f904098537066e80b5ef7420360622a40b73",
+    "src/storage/third_party_spi_session.v": "d64f0e41bdf785af517f30f6aa454c83a4e6a0cfc72d60650b45f99e6361288b",
+    "rtl/music/basic_pitch_activation.sv": "0fc5a3c6f9899234c9ea8404e02ba63388dab7bb820b45c04de2dc7892af9a49",
+    "rtl/music/basic_pitch_cnn_streaming.sv": "5aa2f1e9d568c4c4dd8ef65bc298f9005c7a64991d18c9d82dbcf749af0efabf",
+    "rtl/music/basic_pitch_conv2d.sv": "086d159ee1737c6470481ffdd45b377e43351c8f495ed6dde6617c80f6404537",
+    "rtl/music/basic_pitch_cqt_engine.sv": "8a3913c7def13ddff692f226ba1c623bb928d67be06af5f5f6f2380ee9eb6028",
+    "rtl/music/basic_pitch_cqt_frontend.sv": "0c92ab77430815c6edad91791479b1f81afe3121a710093f1681b63ed00ed6ae",
+    "rtl/music/basic_pitch_ddr16_port.sv": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+    "rtl/music/basic_pitch_ddr_coeff_pair.sv": "8f4310bf64a962dba8045cf966e2d4db3be1264cdf7550b9cb08237706452f05",
+    "rtl/music/basic_pitch_feature_ddr.sv": "691cdefab79a6f1da81116f9712cf14cb2df76404ddbf17a9af5af919015784b",
+    "rtl/music/basic_pitch_link_uart.sv": "2769cae5a4bf6665bf278564511ee834ef22f6a7b6372dd8dedf7dbf42a7ad92",
+    "rtl/music/basic_pitch_model_loader.sv": "3543f943144627993d0f35aa39cf4e89605dcc934af9de835e6e372d09a3725b",
+    "rtl/music/basic_pitch_nn_ddr.sv": "f3ec8ec800f28bbd6ccd02ece29a6843635e81d0bd7cd280f59da50c653412a1",
+    "rtl/music/basic_pitch_normlog.sv": "45d599c8dafd47dc9c9c8bab321886a023ed35c39d3473883b8d1009dd3ac5ee",
+    "rtl/music/basic_pitch_normlog_ddr.sv": "d140dd83ae28b451d472a8f4892eac22eb952d55ea9385f9b14af4929fa46fd2",
+    "rtl/music/basic_pitch_pcm_pipeline.sv": "7c3b82eb17f107309336cd657390d3a4e00bc2b11ed6d04b705d9e2dc1dda0c9",
+    "rtl/music/basic_pitch_plane_cache.sv": "2c1d4936e3e3f0a400dad67096cad5a063a5e3a4c8f3f966d2cd8f263a8f7991",
+    "rtl/music/basic_pitch_requant.sv": "6d18a173500d513e9f7c9771ae2edd4322575c72bde7a400cccd5b8e7eee25e2",
+    "rtl/music/basic_pitch_row_buffer.sv": "bc1c94dafa85f61b4f625642de10a00d748f4742dc6fb64c9383bf4447f5278c",
+    "rtl/music/basic_pitch_shared_sigmoid.sv": "b42cfa2b37a29f4f99409a97619c0330fba124a843cbb3d235db5b8a335c4779",
+    "rtl/music/basic_pitch_viterbi.sv": "7891c1294aaa5f75a32a86e8fc5a1a7d1c95d8579238cb3e85700102482f0154",
+    "rtl/music/basic_pitch_weight_cache.sv": "55b9e861729e65182f6e6ca347476e4812d911d7699eaa7a6378eabdc962a2d0",
+    "rtl/music/basic_pitch_workstation_link.sv": "0ef34913bdcaf452935b6762d164215a9171ca47926ad23f3bca35c922f935a0",
+    "rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+    "src/usb_a/push2_screen_fifo_streamer.sv": "fecbb43b073d0d471fb5597613111e1909c81fdeacfb4e37d78818624799a265",
+    "src/usb_a/push2_screen_packet_loader.sv": "748e9af4712d063ded416f9dea9e392f3b4e9f301e7458ecdd63d44129fb09fb",
+    "rtl/music/tf_playlist_bridge.sv": "d573cde31a7a6dec140d1ad554cdf43326725fc3e7b3d3be8f1d48a8a826b85f",
+    "rtl/music/basic_pitch_44100_to_48000.sv": "cea1bb76b5e6fa18ed606899fc9d821195fb3d25c07a8a92b236de9c73844347",
+    "src/memory/tf_audio_ddr_command_buffer.sv": "97cbec2d6c5123b33a5e7d01276d6e3a7f469684092fbf94583254bcf32cd140",
+    "rtl/music/basic_pitch_ddr_command_buffer.sv": "dc4507d6ac3f2bbe54b46ab334124ff26e67e525e5c8f63f7a2a9759263fbd99",
+    "rtl/audio/scope_vec/scope_dac_select.sv": "c9b2984fbe5935e51f398fb89de183c740fadcc6552796a98f43e2662c579886",
+    "rtl/audio/scope_vec/scope_tf_control.sv": "1f7e8f9780c900925fc4a4e2d65fd9ed2eba5908d65576cdd8293e7875bb400d",
+    "rtl/audio/scope_vec/scope_tf_transport.sv": "d649b7d52cf39ec2bf28da3a0d54925a2ca4a953f3f03e39f0b3f0c0d12f4a50",
+    "src/usb_a/gw138k_usb_lifecycle_merge.sv": "d62230a347cf5e1179784a72ae53050a9109c27f95eb8e1a657e6c6f7ca8e19d",
+    "rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+    "rtl/timing/basic_pitch_ddr_client_queues.sv": "4a1c49cbea79514d68a1d0c567f0cd5dfd6b1bdfad1c9cf5df1e1a9c4443d2ab",
+    "rtl/timing/gw138k_level_cdc.sv": "48317ce8545ff7f5ed309b685bf23de814f168ccdbac6a59c51ab517c0cf176c",
+    "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+    "rtl/memory/workstation_sdp_banked.sv": "edefe1108cdae09cffa7f55edffa69055bcebf8e556203a2f55571d531df553c",
+    "rtl/music/basic_pitch_flash_io_guard.sv": "be70cddf661fd231f4f187e8eecf8cf9a2ecbd1e2b0ad8d8041936c4938f5e58",
+    "rtl/audio/workstation_output_router.sv": "1f07d2ed632970d46d4e38284c2ceecdf760148e5a94dcd86cc683026f6a7ee9",
+    "rtl/audio/workstation_frame_delivery.sv": "5b38740ef9e073aec64ca45526f97a06d6e7d1c72a44c9599e345785d76534e2",
+    "rtl/control/workstation_session.sv": "2c0ec3843b8b71f4717262a50c8b780cfc1d6634b9d800b141b5e23e59ebea51",
+    "rtl/control/workstation_parameters.sv": "645227bc12731115194a879f2ed3d35ac7bd03e5bb4b0069267e8cb245c28c35",
+    "rtl/services/workstation_playback_service.sv": "583dd63a552f6865e8046d4f7fb1ee717e2cad077b29facc22c089998d600961",
+    "rtl/usb2/workstation_ulpi_link.sv": "85f8a7f332127c0e83f89a13d53eab62be97eec441544c92de9dcc0a44d3cc44",
+    "rtl/usb2/workstation_ulpi_supervisor.sv": "9741276485cc6393e7786bb7ca5886d719f120e810839fe9aa2078a723b2a840",
+    "rtl/usb2/workstation_usb2_host_controller.sv": "2d2d0c65e46708246a13c3baff02bb0ae4342ad9011d30ab6616779a5ca3af72",
+    "rtl/usb2/workstation_usb2_host_mac.sv": "43c07972703f95ac2345a0f00743170ff4e0c236d720e7bd4bad78ceca5510c6",
+    "rtl/usb2/workstation_usb2_host_phy.sv": "5554ecb0f0ac36aae5337e073f198162d4b1416bf7a1a6d2db0032bd615e0414",
+    "rtl/usb2/workstation_usb2_host_port.sv": "7cd0175e9993427393f2fec91a1cb8bdb75118cac15e6bc486cd682cd054b8df",
+    "rtl/usb2/workstation_usb3300_host_init.sv": "e190ab57339a2460f1e4e9e9245f2c00cc1bc7af7c8590bba061cf82c54f560f",
+    "rtl/usb2/workstation_usb3300_host_link.sv": "885af6d449f808439e3fe560ec187679c12148d2a8b4443080786ffcc5a2c98c",
+    "rtl/usb2/workstation_usb2_cpu_bridge.sv": "7c84c2093d12d8936ab9563b0e760d143cce64eb26a69e07db249c64bbc6110d",
+    "rtl/usb2/workstation_usb2_host_mmio.sv": "a8d9e0cc2a08ee5773f899c6a20623304b3d58c68064c629ae1d191a140b367d",
+    "rtl/usb2/workstation_usb2_cpu_bus.sv": "016fd241557399d2994697e784aae2fb55e5a2d847180ead9f49c31b9b851cba",
+    "rtl/usb2/workstation_usb2_soc.sv": "1181a4b32c3959ef4e6f6ea54abaf2b63677f43332eb87e7b4cd37b1135cbc21",
+    "vendor/usb_host_fs_8fc3/src/VexRiscv.v": "b4befdee132dbd5d8cf88991f24b69f1eef97cbad8a5656a745f0d69a7a31226",
+    "vendor/usb_host_fs_8fc3/src/simpleuart.v": "26bbed2ad964b75a40a6f7e72f3871cf2cc3457d8b7ac8136a947d5d65fd69fa",
+    "rtl/workstation/workstation_usb2_input.sv": "17ed73d79076c774e96f9cf461112a3792c298634ccb8ead0dcf1c967e152fcd",
+    "rtl/workstation/workstation_usb2_service_adapter.sv": "fd3ec8d244bb5f521bc3fdfe6dcb316bed08a86cb7b447a07da3dd40d1d6313b",
+    "rtl/push2_usb_a_control.sv": "672dac622f7e5cc7344b23d2c6fae2b6a56b4c9bdae1b0c396ba727bd4ce859f",
+    "rtl/audio/push2_controls.sv": "ce64961c58dcd372d911e7ef840858a77001a3bd71932228748b7c8047314ce8",
+    "rtl/push2/push2_lights.sv": "8fe74813499b6309d45609edad4478aba8acac703bb292e7eea85c72f21cec16",
+    "rtl/push2/push2_led_tx.sv": "add27dec44bb355c748850e5f66b9f04b4908093d8a30c6b16fdd8eb42812cb8",
+    "rtl/push2/push2_playlist_hold.sv": "f8b4e79c34440c5c5ea0dafea5ed0e767c25c72c2c23bfa1c09437bf381016e5",
+    "rtl/push2/push2_song_menu.sv": "34bdf2edc0cfa53a1fb7d8b7b4ea83666fb54d5de8f4452f3757c18ec179e025",
+    "rtl/push2/push2_score_guide.sv": "aedd96d346a1c3567781c3df54b9e53e464389c5fdde730df127056e69bbbb16",
+    "rtl/push2/push2_song_screen.sv": "17d14a9d8e5714c04bc5917c7eb9fad68c1cd15915e0bdea3c601ca00cec9761",
+    "rtl/display_data/push2_surface_pixels.sv": "e44643cb42326de2ec62f3ebfdc338569282d4778346de99080eb4053c53a064",
+    "rtl/audio/workstation_fpc_audio.sv": "53adaec050a44e9704e9b66c991ae22a76a2b7ea751824bb6ce8d0bc4a65793c",
+    "rtl/memory/workstation_ddr_bist.v": "d3737f42447cae6ddcf3c6939ffe9f937f4a2d72854fe3fbe549b3667031fb5c",
+    "constraints/custom_138k.cst": "3d29f916c7aa08322cb256e4c859388a4429100bdd2ddbc81ec7e6ca285971a2",
+    "constraints/custom_138k.sdc": "4f63226062411d508491a4b8265bb29365ac3f04e3243ae6cb9481bf9bd46180",
+    "rtl/workstation/workstation_profile_cnn_demo.sv": "a3c7867b92022abd8b8bc1c9eb02b7a41f42c78e5554b41b1bcdc2a5942d7a66",
+    "rtl/workstation/workstation_cnn_demo_audio.sv": "d8c2fbbc953aa246bab304a0ff76d54ce83627bd7bad1413640be7a033943d7e",
+    "rtl/workstation/workstation_cnn_demo_adapter.sv": "e404e0d7015a2145a1595ca8f7dc601ed0fa164a24476fbfa42cfe713fb56e3a",
+    "rtl/workstation/workstation_cnn_demo_model_loader.sv": "af89f09515d1179b1586bee40289f8d97d4af8ed29e44cb4688ca7fbdd5b95e0",
+    "rtl/memory/workstation_cnn_demo_memory.sv": "cbd37781c55456e233e7ecb2cf3042aa9cacf39ee440a31705c8efd627f5783f",
+    "rtl/audio/workstation_runtime_oscillator_engine.sv": "757e734ca7225f168b84ec161f2bb080d849ebed76b0878e337392e7efb493d3",
+    "rtl/audio/workstation_runtime_div147.sv": "baf45bdf6374bdaf96bd20cd15269653103130bf803e36e588c81e904f966bf9",
+    "rtl/audio/gw138k_event_workstation.sv": "e9e0beeddb85ca1af4538acdb62a06ddd64515e6ab6ae34b2b754e8f422b28e5"
+  },
+  "MP3_lineage": {
+    "accepted_full83_exact_matches": {
+      "src/storage/tf_audio_ddr_path.v": true,
+      "src/storage/tf_audio_decoder_ip.v": true,
+      "src/storage/tf_mp3_pcm_decoder.v": true,
+      "src/storage/tf_workstation_audio_bridge.v": true,
+      "src/storage/tang_mp3/LICENSE": true,
+      "src/storage/tang_mp3/audio/audio_fifo.v": true,
+      "src/storage/tang_mp3/audio/pcm_drain.v": true,
+      "src/storage/tang_mp3/audio/pcm_fifo.v": true,
+      "src/storage/tang_mp3/audio/wav_parser.v": true,
+      "src/storage/tang_mp3/common/sync_rom.v": true,
+      "src/storage/tang_mp3/mp3/huff_tabs_tail.v": true,
+      "src/storage/tang_mp3/mp3/mp3_antialias.v": true,
+      "src/storage/tang_mp3/mp3/mp3_bitstream.v": true,
+      "src/storage/tang_mp3/mp3/mp3_decoder.v": true,
+      "src/storage/tang_mp3/mp3/mp3_huffman.v": true,
+      "src/storage/tang_mp3/mp3/mp3_imdct.v": true,
+      "src/storage/tang_mp3/mp3/mp3_mul.vh": true,
+      "src/storage/tang_mp3/mp3/mp3_reorder.v": true,
+      "src/storage/tang_mp3/mp3/mp3_requant.v": true,
+      "src/storage/tang_mp3/mp3/mp3_reservoir.v": true,
+      "src/storage/tang_mp3/mp3/mp3_scalefac.v": true,
+      "src/storage/tang_mp3/mp3/mp3_sfbtab.v": true,
+      "src/storage/tang_mp3/mp3/mp3_sideinfo.v": true,
+      "src/storage/tang_mp3/mp3/mp3_spectra.v": true,
+      "src/storage/tang_mp3/mp3/mp3_stereo.v": true,
+      "src/storage/tang_mp3/mp3/mp3_synth.v": true,
+      "src/storage/tang_mp3/sd/tf_sd_file_reader.v": true,
+      "src/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v": true,
+      "src/storage/tang_mp3/vendor/tf_spi_session.v": true,
+      "src/storage/tang_mp3/mp3/tables/embed_mp3.memh": true,
+      "src/storage/tang_mp3/mp3/tables/font8x8.memh": true,
+      "src/storage/tang_mp3/mp3/tables/frame_size.memh": true,
+      "src/storage/tang_mp3/mp3/tables/huff_count1.memh": true,
+      "src/storage/tang_mp3/mp3/tables/huff_index.memh": true,
+      "src/storage/tang_mp3/mp3/tables/huff_linbits.memh": true,
+      "src/storage/tang_mp3/mp3/tables/huff_tabs.memh": true,
+      "src/storage/tang_mp3/mp3/tables/huff_tabs_2048.memh": true,
+      "src/storage/tang_mp3/mp3/tables/imdct.memh": true,
+      "src/storage/tang_mp3/mp3/tables/pow43.memh": true,
+      "src/storage/tang_mp3/mp3/tables/pow43_1024.memh": true,
+      "src/storage/tang_mp3/mp3/tables/pow43_full.memh": true,
+      "src/storage/tang_mp3/mp3/tables/preamp.memh": true,
+      "src/storage/tang_mp3/mp3/tables/scf_partitions.memh": true,
+      "src/storage/tang_mp3/mp3/tables/scfc_decode.memh": true,
+      "src/storage/tang_mp3/mp3/tables/sfb_long.memh": true,
+      "src/storage/tang_mp3/mp3/tables/sfb_mixed.memh": true,
+      "src/storage/tang_mp3/mp3/tables/sfb_short.memh": true,
+      "src/storage/tang_mp3/mp3/tables/sine256.memh": true,
+      "src/storage/tang_mp3/mp3/tables/synth_cos.memh": true,
+      "src/storage/tang_mp3/mp3/tables/synth_win.memh": true
+    },
+    "total": 50,
+    "passed": true
+  },
+  "candidate_manifest": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v10/cnn_demo.json",
+    "sha256": "a87dd4013239d7bd04cbf77aa6fc7f3b1b303910ff58d1a589fb2b447463bba0"
+  },
+  "board_source_inputs": {
+    "carrier": {
+      "filename": "Netlist_my_138k_2026-10-21.tel",
+      "sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+      "networks": 185,
+      "nodes": 737
+    },
+    "amplifier": {
+      "filename": "功放.tel",
+      "sha256": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75",
+      "networks": 100,
+      "nodes": 492
+    },
+    "bluetooth": {
+      "filename": "蓝牙.tel",
+      "sha256": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+      "networks": 21,
+      "nodes": 88
+    }
+  },
+  "synthesis": {
+    "process": {
+      "cmd": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v10/workstation/Prj1/scripts/custom_board_synthesis.tcl"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v10/workstation/Prj1",
+      "runtime_library_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "started_utc": "2026-11-02T17:35:58.551491+00:00",
+      "input_manifest_sha256": "a87dd4013239d7bd04cbf77aa6fc7f3b1b303910ff58d1a589fb2b447463bba0",
+      "pid": 30222,
+      "exit_code": 0,
+      "finished_utc": "2026-11-02T17:37:56.590739+00:00"
+    },
+    "equivalent_BSRAM": 222
+  },
+  "physical": {
+    "process": {
+      "cmd": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21103D6/run.tcl"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21103D6",
+      "runtime_library_path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib",
+      "started_utc": "2026-11-02T17:38:30.816548+00:00",
+      "physical_manifest_sha256": "befda19f8cde5daea9f17ae24c6ae1458cef108c7666204495e066f03af757c0",
+      "pid": 31125,
+      "exit_code": 0,
+      "finished_utc": "2026-11-02T17:42:31.148858+00:00"
+    },
+    "resources": {
+      "logic": 51479,
+      "registers": 30008,
+      "CLS": 38417,
+      "BSRAM": 249,
+      "BSRAM_capacity": 340,
+      "DSP": 104
+    },
+    "static_timing_closed": true,
+    "timing": {
+      "timing_closed": true,
+      "problems": [],
+      "frequencies": {
+        "clk_50m": {
+          "required_mhz": 50.0,
+          "actual_mhz": 50.055
+        },
+        "ulpi_60m": {
+          "required_mhz": 60.0,
+          "actual_mhz": 83.283
+        },
+        "dac_ref12m288": {
+          "required_mhz": 12.288,
+          "actual_mhz": 87.056
+        },
+        "audio_76m8": {
+          "required_mhz": 76.8,
+          "actual_mhz": 79.437
+        },
+        "usb_48m": {
+          "required_mhz": 48.0,
+          "actual_mhz": 57.18
+        },
+        "ddr_mem400": {
+          "required_mhz": 400.0,
+          "actual_mhz": 2338.897
+        },
+        "ddr_ui100": {
+          "required_mhz": 100.0,
+          "actual_mhz": 181.192
+        }
+      },
+      "global_worst_ns": {
+        "setup": 0.022,
+        "hold": 0.125,
+        "recovery": 0.975,
+        "removal": 0.281
+      },
+      "pulse_width_worst_ns": 2.731,
+      "pulse_width_violations": [],
+      "checks": {
+        "clk_50m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ulpi_60m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "dac_ref12m288": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "audio_76m8": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "usb_48m": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_mem400": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        },
+        "ddr_ui100": {
+          "setup": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          },
+          "hold": {
+            "tns_ns": 0.0,
+            "endpoints": 0
+          }
+        }
+      },
+      "global_reports": {
+        "setup": true,
+        "hold": true,
+        "recovery": true,
+        "removal": true
+      },
+      "reset_reports": {
+        "recovery": true,
+        "removal": true
+      },
+      "negative_paths": [],
+      "report_sha256": "da51ffce8b15a548474e714f8c7ac23c65eefa10291244317f94d6e690923bd1",
+      "hardware_tested": false
+    },
+    "PLL_maximum_ns": {
+      "u_audio_clock/g_hardware.u_pll": 7.5520000000000005,
+      "u_usb_pll": 7.433999999999999,
+      "u_memory/u_pll": 5.511
+    },
+    "CDC_passed": true,
+    "embedded_model": {
+      "physical_ROM_planes": 64,
+      "words": 52239,
+      "bytes": 104478,
+      "crc32": "AF01A61B",
+      "binary_sha256": "18b55a4076c4670d228a205ee97f1f659ccffab4530b60bde45837597eab5fd6",
+      "routed_INIT_matches_source": true
+    }
+  },
+  "bitstream": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21103D6/impl/pnr/custom_138k_integration.fs",
+    "sha256": "6e03d8aa47b3fa9a0dfbc080899e60c51271a6f1bac4af8801c52988995e5bd8",
+    "user_code": "D21103D6"
+  },
+  "gates": {
+    "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-gates-D6-v1/result.json",
+    "sha256": "80cf928137f3d57bfaf0572b532e9d57a55baa2a47f25c1e67b254efab2e2bac",
+    "passed": true,
+    "auditor_sha256": {
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_cnn_demo_audit.py": "5573590b8378300148c19873dbdd1278742f0a091e8caa21792425ca2fb36564",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_cnn_demo.py": "c3071ae6b85505d043fdd37bf8d48b3c5d0a960a84707287f543ea1ee8194962",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_synthesis_netlist.py": "03f5edaf619b7ce89dfd7a656ed72940aad657547ba713d807d71668e7e679c8",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_serializer_startup_audit.py": "8bfa5c730bbfc4af0ac7cb2c3a78424716d18833229f3f4c82c9f70e926686e3",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_workstation_timing.py": "78b20977de69f63ee91eccc1978b49eb377e6b2569898537c6f8033b3f328a6f",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_cdc_routes.py": "e679f424f60fdc7a5f496ada232672660bd0e905cade7c64b298e9e39410e26c",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/stage_usb_firmware.py": "a6fa68f11dc363cd223ad3f59e65d4405a8f349d5cd3d555838ef4981d6512d2",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_baselines.py": "96db9cf95c8747f68ffd4c9949f6774baa51eda6a43b8ff314d9a7aa14167ac0",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ae350_clock_placement.py": "118b02e7c9eee44c5080ccbc5d7dd88455579d4319350c126da89f520826503b",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ae350_rtc.py": "3e83c5b4e61e8d57df1787c87c66e6f93767f748d49d2d10c3c1f696db5cd99f",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "2dda3707c0ffcc6444d702d3710f306413bd9ad8e16fd76f61663ababd185098",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_usb2_cdc.py": "64f9096d97c1c3fc3b7787375549b584647d6ff9b6663c58d455ed400f5f6b37",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_custom_input_cdc.py": "cce2c4abdc0d31e81ae077597aa2104a94522986240586273c64be208f2f2f1b",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/build_full_song_83_bp_ddr_isolation.py": "259f04d69da74a691cc1f95160afc1c7458bb584d29518b78f888226a6663993",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_memory.py": "e413d7bd42d042ee62c615ac37575e6bde38fe7f09784d9617d74c7faef281ef",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/build_full_song_85_clk50_timing.py": "ebffca9eb6eb6d136189098dde3ceebee1bbb6f9392a7fe632038322c7585795"
+    }
+  },
+  "offline": {
+    "source_boundary_tests": 17,
+    "MP3_decode": {
+      "passed": true,
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/mp3-file-v1",
+      "input_hashes_sha256": "f1e9681245cf55fbee7feacdba9e50343fee62e76500bd00e09f9f69a356ca4e",
+      "log_sha256": "5dbf3e5e1c76fa645722c14e7a7f7488fd62a40b7cad5ae66fe51d8ada684f52"
+    },
+    "joined_MP3_inference": {
+      "status": "12_frame_test_running",
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/mp3-inference-v3",
+      "no_preload": true,
+      "no_forced_model_ready": true,
+      "physical_TF_tested": false
+    },
+    "previous_WAV_inference": "D5 auto-boot 3-frame pipeline and guidance regression passed; not MP3 acceptance"
+  },
+  "previous_test_failures": [
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/mp3-inference-v1",
+      "reason": "test producer continuously streamed into historical separated-pulse MP3 input; corrected fixture pacing to match actual DDR byte reader"
+    },
+    {
+      "path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/mp3-inference-v2",
+      "reason": "3-frame generated MP3 decoded valid PCM but emitted no guide notes; expanded unchanged algorithm window to 12 frames for investigation, not declared pass"
+    }
+  ],
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_written": false,
+  "actual_selected_TF_file_hash": null,
+  "remaining": [
+    "joined MP3 window result",
+    "physical automatic model ready",
+    "actual TF travelers selection/inference/guidance",
+    "wrong/fresh correct key and actual audio",
+    "reselection cleanup"
+  ],
+  "rollback": {
+    "Flash_unchanged": "M26 D2110137; power cycle reloads original image",
+    "M26_FS": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "M26_FS_sha256": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75"
+  }
+}

@@ -3,10 +3,14 @@
 `build.py --cnn-demo` selects an independent custom-carrier candidate. It does
 not select or change M, W, BLE, accepted full83, or the resource candidate.
 
-The intended shot is Push song selection from TF, real WAV preprocessing and
+The intended shot is Push song selection from TF, real MP3 decoding/preprocessing and
 model E inference, the original single-note Push guidance, and a fresh correct
 key advancing the current target with real DAC sound. Start with the historical
-TRAVLER PCM WAV at 48 kHz. No song score or MIDI is built into this configuration.
+TF `travelers.mp3` (historical display label TRAVLER). Historical analysis was
+48 kHz; the original 44.1-to-48 kHz analysis resampler remains. The actual file
+rate/hash must be recorded from the selected TF file. No song score or MIDI is
+built into this configuration. The earlier WAV-only D4/D5 candidates do not
+satisfy this MP3 input and are retired from filming delivery.
 
 ## Source and board identity
 
@@ -20,7 +24,7 @@ Frozen baselines and historical acceptance evidence are never edited.
 
 The carrier pin authority remains `boards/custom_138k/pinout.json`, including
 the locked `Netlist_my_138k_2026-10-21.tel` and amplifier netlist. This is **not**
-the official carrier's bitstream or pins. Native USB Host, TF/WAV, DDR BIST and
+the official carrier's bitstream or pins. Native USB Host, TF/MP3, DDR BIST and
 bounded TF/CNN requests, CQT/CNN/BSRAM caches/Viterbi, original Push interaction,
 fixed basic instrument, final output router and native FPC DAC remain.
 HDMI/LCD, AE350 graphics, framebuffer, visual FFT, effects, vector engines,
@@ -98,6 +102,13 @@ forced model-ready state. Song bytes begin after model readiness, matching the
 playback service's existing readiness fence. Neither test establishes physical
 DDR, TF, Push or DAC acceptance. The routed gate reconstructs all 52239 model
 words from the 64 physical ROM planes and compares their bytes and CRC with E.
+
+Only CNN-DEMO defaults `TF_AUDIO_KIND=1`, so the existing FAT root directory
+reader selects `MP3` and the existing `tf_audio_decoder_ip` elaborates the Tang
+MP3 branch. Decoder, PCM drain/FIFO, synchronous tables and the required MP3
+sources are compiler inputs. They retain the accepted full83 bytes, including
+GPL notices; no substitute decoder or converted song is used on the board.
+Other profiles retain their existing format defaults.
 
 Use the existing Push Play/list, Left/Right browse, Select song and pad guidance
 interaction. The song screen reports model loading/failure, TF failure,
