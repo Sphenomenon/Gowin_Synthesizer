@@ -692,3 +692,10 @@ B5定位配方已用新VG完整DDR模块、app_cmd完整cell及128参考FF逐一
 [新全量物理证据](push2_workstation/usb_a/reports/DUAL138K_BLE_DEMO_PHYSICAL_REJECTED_20261102.json)：冻结源 HEAD `4b964e0d`、候选 `e06ff364b0467886`，物理 `D21102C1`，新 VG／SDC 全量实现 694.926s／exit0并生成位流；这仅表示工具执行完成。真实物理 Logic78900／CLS57042／FF50329／BSRAM314／DSP116／LUT63734／ALU14260／SSRAM151，综合 BSRAM 等价274单列，未预记收益。完整 STA 有 setup1567端点、最差−1.209ns，hold0／最差+.143ns，recovery+2.129／removal+.275ns；audio1361、DDR UI121、video pixel44、50MHz15端点违例，因此拒绝时序及部署准入。原 DDR3.500ns关系与far／128 reference放置配方保持，指定DDR hold+.743ns。
 
 FS SHA256 `c5136b47854046b634fe5c8ef3fefb581be1d36f6a20fba9ccc4ff8af8de6d92`，全部32物理文件及16项measurement绑定复验。独立实际路由检查98+98个PCM CDC FF的D／Q／CLK／CE／CLEAR逐bit保持，绑定真实完成串行PCM／sequence／epoch／error／rate；7个owner类型唯一性来自实际VG，扁平VO只确认叶scope，不伪称重证层级。PLL子门因维护DDR configuration path审计exit1未通过，原失败日志保留，完整CDC亦未准入。C1未下载SRAM或写Flash，连接／状态／非静音录音／完整CRC下载均未验；下一轮仅为BLE显式选项修复实测glide与XY路径，默认M/W保持，其他多域违例仍需新全量P&R，不能预称两处修复即可闭合。
+
+
+### 2026-11-02：W B6 全量 P&R 与本次实际门禁通过
+
+[W B6新物理证据](push2_workstation/usb_a/reports/DUAL138K_W_B6_PHYSICAL_20261102.json)：新候选0d623a4cb68e2b0d／D21102B6独立全量P&R313.956s、exit0，全部输入保持；FS6105a594…7de29fd。实际功能FF27030／LUT30851／ALU11611／CLS32561／BSRAM218／DSP59／SSRAM177；GAO另9 BSRAM，合计227/340，综合等价192单列。14域setup／hold端点均0，最差setup+.004／hold+.092／recovery+1.901／removal+.301ns，pulse-width门通过；未放宽时钟／例外。原DDR3.500ns关系及实际定位保持，本次指定hold路径单列于报告。PLL／启动及6执行负控、四项实际VO／SDC正向CDC门全部通过，CDC旧负控未冒称本轮重跑。
+
+实际AE350新VG和VO各64颗pROM全部32768word重建等于生产ROM3eeae0aa…b59984，非USB固件校验替代。160bit既有GAO仅精确修正5个新别名并核唯一FF／consumer；48bit CPU源于ram_clk、其余112bit源于clk50，诊断抓取不宣称原子快照。cache准备的错误同域假设、PLL调用缺import路径和非GAO测量器旧FS文件名三次前置失败保留，分别精确修正，没有改电路／约束／门限。新位流随后按已授权流程串行SRAM；本阶段尚未部署、不继承手机A2DP或D／25K／DAC硬件接受，Flash未写。
