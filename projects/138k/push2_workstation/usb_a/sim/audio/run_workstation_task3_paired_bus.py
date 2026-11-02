@@ -23,6 +23,7 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     sources = ['rtl/workstation/' + name + '.sv' for name in (
         'workstation_task3_w_bus_endpoint', 'workstation_task3_m_bus_endpoint',
+        'workstation_task3_pcm_block_tx', 'workstation_task3_pcm_block_rx',
         'workstation_task3_record_ingress', 'workstation_task3_final_tap_export',
         'workstation_task3_phone_command_ingress', 'workstation_task3_phone_command_proxy',
         'workstation_task3_phone_command_mux', 'workstation_task3_record_source_gate')]

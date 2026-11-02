@@ -14,4 +14,15 @@ The final recording tap crosses the actual selected-MCLK serializer-completion t
 
 All typed payloads follow `task3_paired_channels.vh`. Analysis results, physical PCM observations, commands and observational status remain distinct. A normal LCD/link loss is not a fatal DDR memory fault. A changed committed runtime PANIC epoch fences remote jobs and recording. No cross-board credit enters the base audio sample schedule.
 
+The maintained paired board explicitly selects `BLOCK_PCM=1`, with the
+[PCM block contract](TASK3_PCM_BLOCK_CONTRACT.md). Complete descriptor/ARM
+contexts bind nonzero generation tokens; each block carries up to six PCM
+pairs and one first index. Separate absolute block credits and fair data
+arbitration isolate TF analysis from recording. A partial final analysis block
+must leave before SEAL. Cancel, link/context changes, PANIC and matching media
+faults clear buffered media and old credit. Peer capability must match before
+media ARM/start; timeout cannot enable the stream. Old per-sample endpoint
+mode remains the default for historical component callers. This change does
+not replace the phone PCM1 request/response path or authorize a physical budget.
+
 This source implementation is not physical board acceptance. Target boards are disconnected; electrical pin direction/level verification, measured LCD/Bluetooth budgets, whole-board synthesis/P&R/CDC/STA, firmware nonce provisioning and end-to-end DAC/Push/phone/TF/CNN/recording evidence are still required. Flash remains separately authorized.

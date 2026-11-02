@@ -55,6 +55,18 @@ the real stream/task service; terminal/score messages return to M. Actual
 model/backend readiness is reported, rather than the retired local TF stub.
 SIGNAL and CQT coefficient storage use BSRAM with unchanged algorithm geometry.
 
+The maintained paired board opts into `BLOCK_PCM=1` and the
+[PCM block contract](TASK3_PCM_BLOCK_CONTRACT.md). Analysis descriptors and
+SEAL have bounded pending slots, while analysis and recording PCM each have
+eight independent block slots and absolute credit. Shared RX never waits for
+the CNN consumer to free a media slot; accepted credit has already reserved
+space. Invalid/over-credit packets are consumed and revoke the affected
+stream, with a token-bound fault reported to M. Only complete block retirement
+returns a slot. SEAL waits for its stream's data drain; cancellation bypasses
+the slow consumer and clears pending media. Capability, full-context identity,
+monotonic token and old-DATA rejection prevent mixed-version media acceptance.
+The same original recording ingress and CPU/BLE object remain authoritative.
+
 Physical pin/framing CDC and business-budget enable are separate boundaries.
 No business exchange is enabled until the measured LCD budget is configured.
 Bluetooth remains on W for actual phone ingest and reliable recording download;

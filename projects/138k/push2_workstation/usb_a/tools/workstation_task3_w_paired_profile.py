@@ -320,7 +320,7 @@ def selected_source_evidence(stage, text):
                    '.clk_i(clk_50m),.reset_ni(reset_n),.link_ready_i(task3_pair_link_ready)',
                    'task3_pair_config_select?task3_pair_config_data:'):
         once(top, anchor)
-    once(top, 'workstation_task3_w_bus_endpoint u_task3_bus_endpoint(')
+    once(top, "workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1)) u_task3_bus_endpoint(")
     once(top, "workstation_task3_w_paired #(.CNN_USE_DDR_SIGNAL(1'b0),.CNN_USE_DDR_CQT_COEFF(1'b0)) u_task3_media(")
     for anchor in ('gw138k_apb_cdc u_task3_pcm_control(', '.psel(pcm_select)',
                    '.command_valid_i({clock_command_valid,task3_pcm_valid})',

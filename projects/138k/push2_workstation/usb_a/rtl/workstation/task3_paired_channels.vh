@@ -12,6 +12,25 @@
 `define TASK3_PAIR_CH_PHONE_ACK 4'd7
 `define TASK3_PAIR_CH_STATUS 4'd8
 `define TASK3_PAIR_CH_RECORD_DEMAND 4'd9
+`define TASK3_PAIR_CH_ANALYSIS_BLOCK 4'd10
+`define TASK3_PAIR_CH_RECORD_BLOCK 4'd11
+`define TASK3_PAIR_CH_BLOCK_CREDIT 4'd12
+`define TASK3_PAIR_CH_MEDIA_CAPS 4'd13
+`define TASK3_PAIR_CH_MEDIA_FAULT 4'd14
+// Block-v1 is explicitly negotiated; legacy typed DATA is then forbidden.
+// ch10/11 low {PCM[n-1]..PCM[0],first_index32,context_token32}; n=1..6,
+// length=8+4*n, unused bytes zero. Full identity remains in descriptor/ARM.
+// ch12 low65={record_stream1,absolute_block_limit32,context_token32}, len9.
+// ch13 low224={senderboot32,receiverboot32,session32,generation32,
+// magic32,version32,features32}; len28. Features=block6|credit8|strict-v1.
+`define TASK3_PAIR_CREDIT_BYTES 6'd9
+`define TASK3_PAIR_MEDIA_CAPS_BYTES 6'd28
+// ch14 low37={reason4,record_stream1,context_token32}, len5. It revokes
+// only the matching established stream; it cannot arm or grant credit.
+`define TASK3_PAIR_MEDIA_FAULT_BYTES 6'd5
+`define TASK3_PAIR_MEDIA_MAGIC 32'h33424c4b
+`define TASK3_PAIR_MEDIA_VERSION 32'd1
+`define TASK3_PAIR_MEDIA_FEATURES 32'h00080601
 `define TASK3_PAIR_KIND_ARM 2'd0
 `define TASK3_PAIR_KIND_DATA 2'd1
 `define TASK3_PAIR_KIND_CANCEL 2'd2

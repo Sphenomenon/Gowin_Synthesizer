@@ -198,6 +198,7 @@ for _name,_config,_provider,_policy,_identity in (
 # Explicit new pair policies keep every independent M/W lock and provider.
 _paired_configuration=dict(
     interboard_transport_policy='task3_lcd_reqack_crc_session_budget_gated_v1',
+    interboard_media_policy='task3_pcm_block6_credit8_capability_v1',
     paired_config_policy='task3_f808_nonzero_nonce_v1',
     interboard_business_default_enabled=False,
     interboard_physical_acceptance_required=True)
