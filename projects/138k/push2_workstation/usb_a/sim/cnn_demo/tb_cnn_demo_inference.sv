@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 `include "basic_pitch_fixed_pkg.svh"
 // Exact selected CQT/CNN/cache/Viterbi sources and real WAV byte decoding.
-// The host preloads the accepted model in behavioural DDR; UART and physical
-// TF/SPI are separate gates. No CNN output, layer state or score is forced.
+// Automatic configuration ROM -> DDR -> readback CRC precedes inference.
+// No model preload, forced readiness, CNN output, layer state or score.
 module tb_cnn_demo_inference #(
     parameter integer FILE_BYTES=384044,
     parameter integer FRAMES=3,
@@ -15,7 +15,9 @@ module tb_cnn_demo_inference #(
     wire in_ready,pcm_valid,pcm_ready,header,unsupported;
     wire signed [15:0] pcm_l,pcm_r;
     wire [19:0] rate;
-    wire in_valid=rstn && byte_index<FILE_BYTES;
+    // The user selects a song after the Push model-ready state. Do not send
+    // WAV bytes during boot, when the analysis owner is not ready to accept.
+    wire in_valid=rstn && model_status==14 && byte_index<FILE_BYTES;
     always @(posedge clk)if(in_valid && in_ready)byte_index<=byte_index+1;
     tf_wav_pcm_decoder decoder(.clk,.rst_n(rstn),.restart(1'b0),
         .in_valid,.in_byte(byte_index<FILE_BYTES ? wav[byte_index] : 8'd0),.in_ready,
@@ -29,7 +31,7 @@ module tb_cnn_demo_inference #(
             12'h303:gmap=12;default:gmap=15;
         endcase
     endfunction
-    reg [15:0] mem[0:13*524288-1],blob[0:52238];
+    reg [15:0] mem[0:13*524288-1];
     wire req,wr;
     wire [31:0] addr;
     wire [15:0] wdata;
@@ -49,11 +51,14 @@ module tb_cnn_demo_inference #(
     wire [191:0] hashes;
     wire [8:0] wave;
     wire [15:0] progress;
+    wire [3:0] model_status;
+    wire [31:0] model_crc;
     basic_pitch_pcm_pipeline #(.WIN_LEN(43844),.FRAME_LIMIT(FRAMES),.OCTAVE_LIMIT(9),
         .USE_EXTERNAL_STATE(1),.USE_EXTERNAL_PLANE(1),.USE_EXTERNAL_WEIGHTS(1),
         .USE_EXTERNAL_FEATURES(1),.USE_ALL_DDR(0),.USE_DDR_SIGNAL(1),
         .USE_DDR_FRONT_COEFF(1),.USE_DDR_CQT_COEFF(1)) dut(
         .clk_i(clk),.rst_ni(rstn),.analysis_restart_i(restart),.model_serial_i(1'b1),
+        .model_status_o(model_status),.debug_model_actual_crc_o(model_crc),
         .pcm_valid_i(pcm_valid && !restart),.pcm_end_i(byte_index==FILE_BYTES && !pcm_valid),
         .pcm_ready_o(pcm_ready),.pcm_left_i(pcm_l),.pcm_right_i(pcm_r),
         .score_valid_o(score_valid),.score_ready_i(score_ready),.score_note_o(score_note),
@@ -61,9 +66,6 @@ module tb_cnn_demo_inference #(
         .done_o(done),.song_done_o(song_done),
         .mem_req_o(req),.mem_write_o(wr),.mem_byte_addr_o(addr),.mem_wdata_o(wdata),
         .mem_ready_i(mem_ready),.mem_rsp_valid_i(rsp_valid),.mem_rdata_i(rdata));
-    // Emulate the completed host model upload only. Every subsequent weight,
-    // feature and posterior access traverses the real DUT and DDR protocol.
-    initial force dut.g_ddr_weights.u_model_loader.state=4'd14;
     reg toggle=0,played=0,clear=0;reg [6:0] played_note=0;
     wire mode,target_valid;wire [15:0] count,cursor,wrong;wire [63:0] mask;
     push2_score_guide guide(.clk,.rst(!rstn),.score_valid,.score_ready,.score_note,
@@ -89,13 +91,12 @@ module tb_cnn_demo_inference #(
     integer i,old_cursor;
     initial begin
         $readmemh("cnn_fixture.mem",wav);
-        $readmemh("rtl/music/weights/cnn_ddr_blob.mem",blob);
         for(i=0;i<13*524288;i=i+1)mem[i]=0;
-        for(i=0;i<52239;i=i+1)mem[524288+i]=blob[i];
         for(i=0;i<6;i=i+1)writes[i]=0;
         repeat(8)@(negedge clk);rstn=1;toggle=1;
         @(negedge clk);toggle=0;
         wait(done);repeat(100)@(negedge clk);
+        if(model_status!=14 || model_crc!=32'hAF01A61B)$fatal(1,"embedded model boot not verified");
         if(pcm_count<40000 || model_reads<100 || hashes==0)$fatal(1,"missing real model input or inference");
         for(i=0;i<6;i=i+1)if(writes[i]==0)$fatal(1,"missing real CNN layer %0d",i);
         if(count==0 || !target_valid)$fatal(1,"real inference emitted no guide target");
@@ -108,6 +109,7 @@ module tb_cnn_demo_inference #(
         $display("PASS CNN demo inference: decoded_PCM=%0d model_reads=%0d notes=%0d hashes=%048h correct/wrong-key",pcm_count,model_reads,count,hashes);
         clear=1;restart=1;
         repeat(4)@(negedge clk);clear=0;
+        if(model_status!=14 || model_crc!=32'hAF01A61B)$fatal(1,"song restart disturbed verified model");
         if(count!=0 || cursor!=0 || target_valid || mask!=0)$fatal(1,"reselection retained old guidance");
         $display("PASS CNN demo inference cleanup: no stale target after restart");
         $finish;

@@ -8,6 +8,40 @@ import json
 import re
 
 
+def embedded_model_identity(cells, parameters, model):
+    """Recover actual routed BSRAM INIT bits, rather than trusting readmemh."""
+    import hashlib
+    import binascii
+    import struct
+    prefix = 'u_music/u_basic_pitch/g_ddr_weights.u_model_loader/'
+    roms = {name:ports for name,(kind,ports) in cells.items()
+            if name.startswith(prefix) and kind=='pROM'}
+    assert len(roms)==64, 'embedded model must retain 64 physical ROM planes'
+    planes = {}
+    for name,ports in roms.items():
+        match = re.fullmatch(re.escape(prefix)+r'model_rom_model_rom_([0-3])_([0-9]+)_s',name)
+        assert match and int(match[2])<16, 'embedded ROM organization changed'
+        assert parameters[(name,'BIT_WIDTH')]=='1', 'embedded ROM width changed'
+        value=0
+        for (cell,key),encoded in parameters.items():
+            if cell==name and key.startswith('INIT_RAM_'):
+                index=int(key[9:],16)
+                bits=re.fullmatch(r"256'h([0-9a-fA-F]+)",encoded)
+                assert index<64 and bits, 'embedded ROM initialization malformed'
+                value |= int(bits[1],16) << (256*index)
+        planes[(int(match[1]),int(match[2]))]=value
+    words=[int(line,16) for line in Path(model).read_text().splitlines()]
+    assert len(words)==52239, 'model E word count changed'
+    reconstructed=[sum(((planes[(word//16384,bit)]>>(word%16384))&1)<<bit
+                       for bit in range(16)) for word in range(len(words))]
+    assert reconstructed==words, 'routed embedded model differs from model E'
+    blob=struct.pack('<52239H',*reconstructed)
+    crc=binascii.crc32(blob)&0xffffffff
+    assert crc==0xAF01A61B, 'embedded model E CRC changed'
+    return dict(physical_ROM_planes=64,words=len(words),bytes=len(blob),crc32=f'{crc:08X}',
+                binary_sha256=hashlib.sha256(blob).hexdigest(),routed_INIT_matches_source=True)
+
+
 def inspect_retirement(cells, parameters, sdc):
     retired = ('u_lcd/', 'u_cpu/', 'u_bluetooth/', 'u_runtime/',
                'u_video/u_renderer/', 'u_video/u_scanout/', 'u_video/u_dvi/',
@@ -294,6 +328,7 @@ def audit(candidate, physical, output):
     vo=base.with_suffix('.vo').read_text()
     sdf,normalization=normalize_audio_only_sdf(base.with_suffix('.sdf').read_text(),vo)
     design=RoutedDesign(sdf,vo)
+    model=embedded_model_identity(design.cells,design.parameters,stage/'rtl/music/weights/cnn_ddr_blob.mem')
     ddr=ddr_source_proofs(stage,output/'ddr-source')
     startup_errors,startup=inspect_serializer_startup(sdf,vo,ddr['reset'],(physical/'physical.sdc').read_text(),startup_grant_role='CNN-DEMO')
     assert not startup_errors,str(startup_errors)
@@ -331,7 +366,7 @@ def audit(candidate, physical, output):
         if getattr(m,'__file__',None) and Path(m.__file__).suffix=='.py' and Path(m.__file__).resolve().is_relative_to(root)}
     result=dict(schema=1,profile=manifest['name'],candidate_identity=manifest['identity'],user_code=inputs['user_code'],
         passed=timing['timing_closed'] and historical['passed'],timing=timing,pll=pll,ddr=ddr,startup=startup,
-        constraints=constraints,native_source=native,historical_CDC=historical,additional_CDC=additional,
+        constraints=constraints,native_source=native,historical_CDC=historical,additional_CDC=additional,embedded_model=model,
         negative_controls=negatives,sdf_normalization=normalization,input_sha256=snapshot,auditor_sha256=dependencies,
         hardware_tested=False,sram_deployed=False,flash_written=False)
     (output/'result.json').write_text(json.dumps(result,indent=2)+'\n')

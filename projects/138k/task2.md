@@ -753,3 +753,12 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 ### 2026-11-03：掉电后独立核实 M26 并恢复 D4 SRAM
 
 [恢复证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_SRAM_RESTORE_20261103.json)：用户报告断电重接。重新扫描为FT2CH／8321，先读回M26 `D2110137`，在共享JTAG锁下复核封存hash并执行op0→op2→op0→op74，仅SRAM下载同一D4，独立读回 `D21102D4`／状态00022230。前次线缆位置已失效且工具exit0伴随Error的失败保留，不据exit码判断成功。未写Flash，M26固化回退保持。21101串口被动读取0字节、发送0字节；模型未装载，TF／CNN／指导／DAC未验收。用户随后明确希望烧好后直接接Push验收，正制作将同一模型E随配置载入、自动拷贝并读回DDR CRC的新候选；D4不再作为无需串口的拍摄交付。
+
+
+### 2026-11-03：CNN-DEMO D5 自动模型启动，整链回归与完整物理门禁通过
+
+[封存证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_EMBEDDED_20261103.json)：新身份 `b771ae4289fd6cfb`／`D21103D5` 将历史模型E的52239word／104478byte随配置装入BSRAM ROM，自动通过原有顺序DDR请求写入原模型区域，再完整读回CRC `AF01A61B` 才置ready E，无需USB串口。CRC错或DDR单次等待超过5秒进入F；音频采样不等待模型／TF／分析。仅CNN-DEMO以hash与两处精确锚点选择维护的启动loader，CNN算术及冻结full83／timing85不改，M／W／BLE默认和输入保留。
+
+当前输入边界17项、52239word全模型自动启动／DDR背压／CRC损坏拒绝／超时／reset通过；整链从空行为DDR开始，无预装模型或force-ready，真实WAV解码95625 PCM，4459397次模型读取，经六层CNN及Viterbi生成1个实际指导音符，错键阻止、正确键推进、重新选歌清除旧状态并保留模型ready。生成WAV仅用于离线测试，不是TF或TRAVLER实板验收。首次测试误在ready前喂歌的失败保留，按生产playback已有model-ready fence修正测试输入顺序后通过；首次工具dylib环境失败也保留。
+
+新全量综合与P&R exit0，实际Logic42676／FF26622／CLS32704／BSRAM209/340／DSP91（综合等价BSRAM187单列）；7时钟完整STA最差setup+0.060／hold+0.139／recovery+1.884／removal+0.287ns，无负端点或负路径，未放宽预算／DDR3.500ns。3 PLL／官方DDR源序列与配置／停止时钟PHY reset／DAC启动／全部实际SDC selector及路由CDC门禁通过；64颗真实物理ROM重建全部52239word，SHA256 `18b55a40…eab5fd6` 与模型E逐字一致。独立FS和输入／输出／验证hash在报告封存；本记录阶段尚未SRAM部署或写Flash，随后按原授权串行下载。真实TF文件hash、Push／TRAVLER推理／指导按键／DAC／重选清理由实板验收，不继承仿真或历史验收。

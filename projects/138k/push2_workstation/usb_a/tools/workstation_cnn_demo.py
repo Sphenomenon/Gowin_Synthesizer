@@ -14,6 +14,7 @@ NAME = 'custom138k-workstation-cnn-demo-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_cnn_demo.sv'
 SOURCES = (PROVIDER, 'rtl/workstation/workstation_cnn_demo_audio.sv',
     'rtl/workstation/workstation_cnn_demo_adapter.sv',
+    'rtl/workstation/workstation_cnn_demo_model_loader.sv',
     'rtl/memory/workstation_cnn_demo_memory.sv',
     'rtl/audio/workstation_runtime_oscillator_engine.sv',
     'rtl/audio/workstation_runtime_div147.sv',
@@ -29,6 +30,8 @@ def sha(path):
 
 def retained(name, accepted_music):
     if name.startswith('rtl/music/'):
+        if Path(name).name in ('basic_pitch_uart_model_loader.sv', 'basic_pitch_uart_rx.sv'):
+            return False
         return name in accepted_music and not Path(name).name.startswith(('blocking_', 'music_ddr_engine', 'music_upload_', 'basic_pitch_tf_board'))
     if name.startswith('src/storage/'):
         return '/mp3/' not in name and '/tang_mp3/audio/' not in name and not any(x in name for x in ('tf_mp3_', 'tf_flac_', 'tf_sd_audio_pcm_player', 'common/sync_rom'))
@@ -141,6 +144,18 @@ def prepare(root, netlists, output, riscv_prefix=None):
     link = stage/'rtl/music/basic_pitch_workstation_link.sv'
     link_before = sha(link)
     link.write_text(synchronize_model_diagnostics(link.read_text()))
+    # Only this explicit configuration substitutes the startup loader. Keep
+    # the pinned pipeline arithmetic byte-for-byte apart from these two module
+    # references, and fail if the historical source or exact anchors drift.
+    pipeline = stage/'rtl/music/basic_pitch_pcm_pipeline.sv'
+    pipeline_before = sha(pipeline)
+    if pipeline_before != selected_music['rtl/music/basic_pitch_pcm_pipeline.sv']:
+        raise ValueError('CNN-DEMO startup pipeline input drift')
+    loader_anchor = 'basic_pitch_uart_model_loader u_model_loader ('
+    if pipeline.read_text().count(loader_anchor) != 2:
+        raise ValueError('CNN-DEMO startup loader anchor drift')
+    pipeline.write_text(pipeline.read_text().replace(loader_anchor,
+        'workstation_cnn_demo_model_loader u_model_loader ('))
     tree = ET.parse(stage / 'Prj1.gprj')
     files = tree.find('FileList')
     retired = {}
@@ -183,10 +198,11 @@ def prepare(root, netlists, output, riscv_prefix=None):
     blob = struct.pack('<52239H', *[int(x,16) for x in model.read_text().splitlines()])
     if binascii.crc32(blob)&0xffffffff != 0xAF01A61B:
         raise ValueError('CNN-DEMO model differs from accepted model E')
-    data = dict(schema=1, name=NAME, revision=2, parent_native_identity=parent['identity'],
-        source_policy='accepted_full83_with_locked_timing85_six_files_and_synchronized_model_diagnostics_custom_carrier_minimal_audio',
+    data = dict(schema=1, name=NAME, revision=3, parent_native_identity=parent['identity'],
+        source_policy='accepted_full83_locked_timing85_six_files_synchronized_diagnostics_embedded_model_custom_carrier_minimal_audio',
         configuration=dict(song='TRAVLER',format='wav',sample_rate_hz=48000,
-            model_crc32='AF01A61B',model_bytes=len(blob),model_load='manual_BPN1_UART_to_DDR',
+            model_crc32='AF01A61B',model_bytes=len(blob),model_sha256=hashlib.sha256(blob).hexdigest(),
+            model_load='configuration_BSRAM_ROM_to_DDR_automatic',model_UART_required=False,
             model_ready='status_E_after_DDR_readback_CRC',hdmi=False,ae350=False,
             visualization_fft=False,cnn_cqt=True,effects=False,bluetooth=False,recording=False),
         accepted_baseline=accepted.evidence(),accepted_music_sha256=accepted.music,
@@ -195,6 +211,13 @@ def prepare(root, netlists, output, riscv_prefix=None):
             before_sha256=link_before,after_sha256=sha(link),
             owner='tools/workstation_cnn_cdc.py',owner_sha256=sha(root/'tools/workstation_cnn_cdc.py'),
             exit_plan='promote synchronized diagnostics into versioned full83 maintenance source after demo validation; preserve locked baselines'),
+        startup_loader_overlay=dict(file='rtl/music/basic_pitch_pcm_pipeline.sv',
+            before_sha256=pipeline_before,after_sha256=sha(pipeline),anchor=loader_anchor,replacements=2,
+            replacement='workstation_cnn_demo_model_loader u_model_loader (',
+            implementation='rtl/workstation/workstation_cnn_demo_model_loader.sv',
+            owner_sha256=sha(root/'tools/workstation_cnn_demo.py'),
+            scope='startup only; unchanged inference and DDR allocation',
+            exit_plan='retain explicit demo loader selection; promote pipeline composition when CNN maintenance sources migrate'),
         board_source_inputs=json.loads((output/'pinout/pinout.json').read_text())['source_inputs'],
         compiled_sha256=compiled,retired_compilation_sha256=retired,
         constraint_retirement=constraint_retirement,
@@ -282,6 +305,7 @@ def prepare_physical(candidate, output, user_code, ddr_reference=None):
     required = ('u_native_usb/host', 'u_native_usb/input_owner',
         'u_tf_audio/u_path/u_file_reader', 'u_tf_audio/u_path/u_decoder/g_wav.u_wav',
         'u_music/u_basic_pitch/u_cqt', 'u_music/u_basic_pitch/g_ddr_weights.u_weight_cache',
+        'u_music/u_basic_pitch/g_ddr_weights.u_model_loader',
         'u_music/u_basic_pitch/g_ddr_plane.g_plane_cache.u_plane_cache',
         'u_music/u_basic_pitch/g_full_dp.u_cnn_stream/u_viterbi',
         'u_score_push_cdc', 'u_output_router', 'u_fpc_audio',

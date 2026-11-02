@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Selected full83 CNN on parsed PCM WAV; excludes physical TF/SPI and UART.
+"""Embedded model boot and selected full83 CNN on parsed PCM WAV; no TF/SPI.
 
 Without --wav, write an explicitly labelled 48k test audio fixture. This fixture
 is validation input only and is never compiled into the demonstration candidate.
@@ -22,13 +22,13 @@ raw=fixture.read_bytes();(out/'cnn_fixture.mem').write_text(''.join(f'{b:02x}\n'
 files=ET.parse(stage/'Prj1.gprj').find('FileList')
 names=[x.get('path') for x in files if x.get('enable')=='1' and x.get('path').startswith('rtl/music/') and x.get('path').endswith('.sv')]
 first='rtl/music/basic_pitch_nn_ddr.sv';names.remove(first);names.insert(0,first)
-names+=['rtl/timing/gw138k_level_cdc.sv','rtl/memory/workstation_sdp.sv','src/storage/tf_wav_pcm_decoder.v','src/storage/tf_wav_chunk_parser.v','src/usb_a/push2_score_guide.sv']
+names+=['rtl/workstation/workstation_cnn_demo_model_loader.sv','rtl/timing/gw138k_level_cdc.sv','rtl/memory/workstation_sdp.sv','src/storage/tf_wav_pcm_decoder.v','src/storage/tf_wav_chunk_parser.v','src/usb_a/push2_score_guide.sv']
 sources=[stage/n for n in names]+[Path(__file__).with_name('tb_cnn_demo_inference.sv')]
 # Keep all readmemh files relative to the selected stage, without copying or
 # altering the algorithm sources used by the simulation.
 for folder in ('rtl','sim'):
     if (stage/folder).exists():(out/folder).symlink_to(stage/folder,target_is_directory=True)
-metadata=dict(scope='WAV_bytes_to_CQT_CNN_Viterbi_actual_score_to_original_Push_guide',physical_TF_tested=False,UART_tested=False,
+metadata=dict(scope='embedded_model_DDR_CRC_then_WAV_bytes_to_CQT_CNN_Viterbi_actual_score_to_original_Push_guide',physical_TF_tested=False,UART_tested=False,model_preloaded=False,model_done_forced=False,
     fixture_kind='user_WAV' if a.wav else 'generated_audio_validation_only',wav_sha256=hashlib.sha256(raw).hexdigest(),
     parameters=dict(WIN_LEN=43844,FRAMES=3),sources={str(s):hashlib.sha256(s.read_bytes()).hexdigest() for s in sources})
 (out/'inputs.json').write_text(json.dumps(metadata,indent=2)+'\n')
