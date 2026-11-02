@@ -27,6 +27,16 @@ M_PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_phone_blo
 M_PHONE_PROVIDER_SHA256 = '799306fde1aa3e0e8fa026e6b23a194e445578208bb0c91bab4d5327255e3f05'
 W_PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'
 W_PHONE_PROVIDER_SHA256 = '9fe33e9ca0551b714882c5fee4018a791945cc80bfc131d8a16fd630111a3503'
+M_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'
+M_PHONE_BATCH_PROVIDER_SHA256 = 'a8b49bc23afa8eb0ee1424ec08ae88201143d7455d46c59043ddd6bc296fa56d'
+W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
+W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
+RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
+RUNTIME_PROVIDER_SHA256 = '31b1483485ccf454c1c8eeabe8c37198e0975da750a36f850fb91244927a0b3f'
+HDMI_PROVIDER = 'rtl/workstation/workstation_profile_hdmi.sv'
+HDMI_PROVIDER_SHA256 = '540bf918de8211f84e1394eafa60b653cf817c84b6c28a9e17e234562f36aa82'
+W_MEDIA_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_media.sv'
+W_MEDIA_PROVIDER_SHA256 = '2b18d6349c509ce8227e389618b96dffb58739b3efe9c2b04388a80f585e1920'
 # These aliases were resolved from the actual started FF in each reviewed VG.
 # A new provider cannot infer its role or root alias from a convenient net name.
 PROVIDER_POLICIES = {
@@ -38,6 +48,14 @@ PROVIDER_POLICIES = {
     # wrapper bytes would leave its consumed role/macro selection unbound.
     W_PHONE_PROVIDER: (W_PHONE_PROVIDER_SHA256, 'W', 'reset_n',
                        {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256}),
+    # Source registration only. No batch VG has established its mapped root
+    # alias yet; None deliberately prevents a successful root startup proof.
+    # Include all transitive composition providers until the covered top/HDL.
+    M_PHONE_BATCH_PROVIDER: (M_PHONE_BATCH_PROVIDER_SHA256, 'M', None,
+        {M_PHONE_PROVIDER: M_PHONE_PROVIDER_SHA256,
+         RUNTIME_PROVIDER: RUNTIME_PROVIDER_SHA256, HDMI_PROVIDER: HDMI_PROVIDER_SHA256}),
+    W_PHONE_BATCH_PROVIDER: (W_PHONE_BATCH_PROVIDER_SHA256, 'W', None,
+        {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256, W_MEDIA_PROVIDER: W_MEDIA_PROVIDER_SHA256}),
 }
 
 
@@ -132,6 +150,8 @@ def validate_root_publisher(n, g, root):
     require(provider in PROVIDER_POLICIES,
             'root publisher provider is not reviewed')
     provider_sha, _, alias, includes = PROVIDER_POLICIES[provider]
+    require(isinstance(alias, str) and bool(alias),
+            'mapped root alias requires actual synthesis review: ' + provider)
     source_identity = root.get('source_sha256', {})
     require(isinstance(source_identity, dict) and
             set(source_identity) == {'Prj1.gprj', TOP_SOURCE, ROOT_SOURCE, provider, *includes} and

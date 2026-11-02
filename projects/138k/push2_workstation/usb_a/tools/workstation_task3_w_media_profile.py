@@ -238,11 +238,11 @@ def raw_metadata(root):
     return dict(recording_metadata(root),policy='task3_w_single_C_BLE_raw_ddr_60s_v1',
         full_HCI_Classic_GATT=True,second_business_object=False,source_is_W_local_DAC=False)
 
-def build_firmware(root,evidence,prefix=None,paired_source=False):
+def build_firmware(root,evidence,prefix=None,paired_source=False,phone_batch=False):
     """Delegate to the separately reviewed media ELF builder, never old UI roots."""
     from tools.workstation_task3_w_media_firmware import build,audit
     root,evidence=Path(root),Path(evidence)
-    linked=build(evidence,prefix,root,paired_source=paired_source)
+    linked=build(evidence,prefix,root,paired_source=paired_source,phone_batch=phone_batch)
     graph=audit(evidence,root)
     if not linked['passed'] or not graph['passed']:raise ValueError('actual media firmware rejected')
     record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,

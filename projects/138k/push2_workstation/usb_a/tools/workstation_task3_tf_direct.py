@@ -179,6 +179,20 @@ def selected_direct_top(stage, text):
         if direct_enabled:raise ValueError('direct TF top branch missing')
         return text, False
     source=(stage/provider).read_text().splitlines() if direct_enabled else []
+    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv':
+        # This one reviewed wrapper delegates DIRECT macros to its immutable
+        # window provider. Bind every transitive provider before selecting the
+        # leaf; old providers retain their original direct-byte checks below.
+        from tools.workstation_task3_root_reset_audit import (
+            M_PHONE_BATCH_PROVIDER, M_PHONE_PROVIDER, PROVIDER_POLICIES)
+        expected,role,_,includes=PROVIDER_POLICIES[M_PHONE_BATCH_PROVIDER]
+        if role!='M' or M_PHONE_PROVIDER not in includes:
+            raise ValueError('direct TF batch provider registration drift')
+        for relative,wanted in {M_PHONE_BATCH_PROVIDER:expected,**includes}.items():
+            path=stage/relative
+            if not path.is_file() or digest(path.read_bytes())!=wanted:
+                raise ValueError('direct TF batch provider/include identity drift: '+relative)
+        source=(stage/M_PHONE_PROVIDER).read_text().splitlines()
     if direct_enabled and (source.count('`define WORKSTATION_TF_DIRECT_NATIVE')!=1 or
             source.count('`define WORKSTATION_NO_CNN')!=1 or
             '`define WORKSTATION_DEMO_NO_TF' in source):

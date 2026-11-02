@@ -1,5 +1,13 @@
 // M native board binding. Shared pair config + physical LCD adapter are owned
 // by the paired common include. No block here grants or guesses link readiness.
+`ifdef WORKSTATION_TASK3_PHONE_BATCH
+    localparam bit TASK3_PHONE_BATCH=1'b1;
+    // The exact paired top includes this file in the same module as u_managed.
+    // Bind only this new provider without changing its frozen top reference.
+    defparam u_managed.PCM_SNAPSHOT_ENABLE=1'b1;
+`else
+    localparam bit TASK3_PHONE_BATCH=1'b0;
+`endif
     wire task3_m_analysis_start,task3_m_analysis_ready,task3_m_analysis_cancel;
     wire task3_m_analysis_pcm_valid,task3_m_analysis_pcm_ready,task3_m_analysis_pcm_last;
     wire [31:0] task3_m_analysis_pcm;
@@ -29,9 +37,12 @@
         if(!runtime_common_reset_n)task3_m_owner_live_sync<=0;
         else task3_m_owner_live_sync<={task3_m_owner_live_sync[1:0],task3_m_phone_live};
     // One held transaction crosses into the existing compute-domain PCM1 owner.
-    // Even a link-fenced transaction receives an explicit error to drain CDC.
+    // The legacy RPC still drains link-fenced transactions with an error.
+    // Batch cancellation may drop valid before the observer sees COMPLETE;
+    // reset just this mailbox on lease loss before a fresh ARM can run.
+    // The real owner retains its common reset, retired keys and capture ID.
     gw138k_apb_cdc u_task3_m_pcm_commands(
-        .reset_n(runtime_common_reset_n),.pclk(clk_50m),.audio_clk(audio_clk),
+        .reset_n(runtime_common_reset_n && (!TASK3_PHONE_BATCH || task3_m_phone_live)),.pclk(clk_50m),.audio_clk(audio_clk),
         .psel(task3_m_phone_valid && !task3_m_phone_target),.penable(task3_m_phone_valid && !task3_m_phone_target),
         .pwrite(task3_m_phone_write),.paddr(task3_m_phone_address),.pwdata(task3_m_phone_data),.pstrb(task3_m_phone_strobes),
         .pready(task3_m_pcm_bus_ready),.pslverr(task3_m_pcm_bus_error),.prdata(task3_m_pcm_bus_data),
@@ -88,7 +99,7 @@
 `else
     localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b0;
 `endif
-    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)) u_task3_m_endpoint(
+    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK),.PHONE_BATCH(TASK3_PHONE_BATCH)) u_task3_m_endpoint(
         .clk_i(clk_50m),.reset_ni(runtime_common_reset_n),.link_ready_i(task3_pair_link_ready),
         .panic_i(task3_pair_panic || task3_m_panic),.local_boot_i(task3_pair_local_boot),.peer_boot_i(task3_pair_peer_boot),
         .session_i(task3_pair_session),.generation_i(task3_pair_generation),

@@ -312,6 +312,27 @@ M仍由原PCM1 owner拥有槽、bitmap、SRC、完整key、历史屏障和最终
 
 最大观察间隔仍超过128／48k的2.667ms；原256帧预填充没有加大，有限窗口靠既有缓冲完成，尚未得到最坏补充期限。恒定PCM也不证明不同块顺序或真实D效果。因此持续能力和物理预算继续关闭。下一阶段接入独立M／W batch profiles：显式传递M snapshot参数和observer复位，给W新增严格固件来源review／全TU编译宏／paired初始化，完成真实ELF、ROM、间接调用与栈审计，再clean prepare和整板综合。RF／SBC、真实TF／CNN／Push、长录音下载并发、D按住／松开至M DAC，以及目标板LCD吞吐／RTT／延迟仍待验。本阶段未操作板卡，SRAM／Flash均未写入。
 
+### 8.8 显式 batch 配置、真实固件与整板综合（2026-11-03）
+
+已将8.7的实现接入两份独立 `custom138k-workstation-task3-{m,w}-paired-phone-batch-v1` 配置，完成真实固件构建、clean prepare、独立闭包复核和两板整板综合，见[来源与综合证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_PHONE_BATCH_PROFILES_20261103.json)。新增配置分别锁定980／1,074份来源；24份旧配置、review及冻结参考逐字未变，旧配置继续拒绝当前源码漂移。task2、其他工作树与旧候选保持原身份；没有生成位流或操作板卡。
+
+M显式将snapshot参数传到原PCM1 owner；phone lease撤销只复位远端observer APB，原owner根复位、retired key和capture寿命保持。普通／矢量32声部、TF直读及菜单、HDMI和最终输出调度保留。W的27个真实编译单元均显式启用 `A138_TASK3_PHONE_BATCH`，实际调用paired初始化；CNN的signal＋CQT BSRAM及CPU／BLE同一60秒录音对象保留。TF来源检查只为这个已知包装文件核对完整包含链hash后读取原phone-window宏，不新增通用绕过规则。
+
+| 本轮实际产物 | M | W |
+|---|---|---|
+| candidate后缀 | `3bb41077d21baadc` | `cda40ccde09fd1ee` |
+| 配置SHA256 | `4818e7bbf0e511e1b92ddea2fbdeccc55ea3c22766ebd58e3c15c0dd36b458ac` | `c2f919997690990ce2caf3aede6ec8e2016901d6e8cf433b7a7015b1071e6fef` |
+| 编译输入／综合等效BSRAM | 287／209 | 200／308 |
+| 严格综合审计 | 12／19，未通过 | 11／17，未通过 |
+| 50MHz／76.8MHz综合估算 | 41.281／58.651MHz | 48.732／75.574MHz |
+| 位流／UserCode／物理资源／布线STA／实体延迟 | 均未生成或未验 | 均未生成或未验 |
+
+BSRAM等效数与旧phone-window候选相同，不代表物理BSRAM或时序通过。新provider的生产root审计仍登记未审阅的 `alias=None`，因此严格拒绝并阻断其下游时钟／CDC检查；不能把本轮未执行到的完整消费者封印和TF CDC算作通过。独立只读VG诊断确认实际根Q为M `terminal_ready`／W `reset_n`，两板各35位启动状态的全部 `2^35` 赋值方程及4项破坏控制通过，但未自动提升生产注册。M批量执行器保留1,357 FF及640位执行器快照，原owner快照保留414 FF；W保留969个批量FF及238位请求载荷。独立named FF清单不证明被合并／常量字段的读mux语义，也不替代功能或物理CDC验收。
+
+W真实ELF审计覆盖141个可达JALR，保守栈上界896B；热代码49,952B（增加3,632B），静态DLM 7,664B（增加64B），ROM仍128KiB，BIN仍90,416B。关闭新宏后，27个真实对象及ELF／BIN／ROM与冻结`6ebb5e41`逐字相同。M真实board／runtime／APB／owner定向检查43＋35项及6个变异通过；该fixture裁掉无关DSP／PLL／显示子模块，不冒充整机演奏。W来源3项、固件5项和审计7项回归及对应破坏检查通过；来源17项及三条干净检出prepare的23项通过，277份基线文件未变。旧16KiB AE350 recording API仍超容量760B，相关套件9／10，保留失败而不扩容放行。
+
+生产CAP3、实测延迟有效位及LCD probe／budget／business默认仍关闭，8.7有限理想线模型不能转授为真实固件持续期限或实体链路能力。下一阶段把新VG的root／batch结构证明纳入严格审计，继续逐项解决消费者与完整TF CDC，再做完整物理实现和最坏补充期限验证。目标板到位后才测LCD电气、吞吐／RTT／拥塞，以及真实手机D按下／松开至M DAC、TF／CNN／Push、长录音／下载并发和控制到声音延迟；当前连接板继续留给其他分支，SRAM／Flash均未写入。
+
 ## 9. 阶段、提交与证据
 
 每阶段完成针对性验证后commit、push并回写本节。输出固定目录、配置和来源；两板分别列源提交/输入hash、固件/模型、UserCode、位流SHA、物理资源、setup/hold/recovery/removal、PLL/CDC、LCD及控制到声音延迟、功能范围与回退。没有位流时明确`bitstream=null`，不复用已接受身份。
@@ -332,6 +353,7 @@ M仍由原PCM1 owner拥有槽、bitmap、SRC、完整key、历史屏障和最终
 | T3-06f 手机有界分块 | 新显式 phone-blocks 配置与原 M owner 接通，真实端点/CDC/owner 603 检查及两板实际综合完成；等效 BSRAM M209/W308，原19锁保留。root/ROM/provider 证明补齐；严格 M17/19、W16/17，消费者/held CE/TF CDC、时序、三流及物理门禁仍未通过，见8.5 |
 | T3-06g held／真实固件LCD负载 | M局部提交耦合7项／66破坏控制通过，历史消费者封印保留；真实固件＋LCD＋原owner的6组模型完成。生产能力继续关闭；4组测试注入均复现欠载，三流录音／分析继续，真实固件状态往返成为下一优化重点。没有新综合／位流／板测，见8.6 |
 | T3-06h 原子快照／批量控制 | 默认关闭的新RTL／C与真实LCD模型完成；200ms四组注入各75块、无欠载，生产CAP3仍关闭，取消后原owner归零；旧模式负例保留。新profile／真实ELF／整板资源时序和实板未验，见8.7 |
+| T3-06i batch生产来源配置 | 新显式M／W配置、真实W ELF、两板clean prepare与整板综合完成，等效BSRAM209／308；严格12／19、11／17，新的root生产注册及下游完整门禁未闭合。旧配置与回退保留，持续能力与实体链路仍关闭，见8.8 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 
 禁止用全量资源重写、放宽时钟/false path、删特性或报告字段代替门禁。子系统收益必须再经整机同条件P&R确认。新扩展配置进入现有`build.py`/显式profile；本轮子系统综合工具只用于分工验证，整机集成后收敛或退役，不成为新编号生产构建器。

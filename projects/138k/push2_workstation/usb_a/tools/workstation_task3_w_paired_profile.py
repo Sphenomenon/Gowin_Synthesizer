@@ -14,6 +14,9 @@ POLICY = 'task3_w_paired_exact_top_composition_v1'
 NAME = 'custom138k-workstation-task3-w-paired-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired.sv'
 PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'
+BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
+BATCH_MEDIA_POLICY = 'task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3'
+PHONE_BATCH_POLICY = 'full_key_atomic_owner_snapshot_command_v1'
 REFERENCE = 'rtl/workstation/workstation_task3_w_paired_top_reference.json'
 BOARD = 'rtl/workstation/workstation_task3_w_paired_board.svh'
 HCI_PROVIDER = 'rtl/workstation/workstation_task3_w_paired_hci.sv'
@@ -24,6 +27,7 @@ TOP = media.TOP
 PARENT_TOP_SHA256 = '4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f'
 REFERENCE_SHA256 = 'f268c0d8466513c5f59fe79dcda7580eb7cc37dd2031564c32250c66bc0f0e95'
 FIRMWARE_POLICY = 'task3_w_paired_media_single_recording_60s_v1'
+BATCH_FIRMWARE_POLICY = 'task3_w_paired_phone_batch_single_recording_60s_v1'
 SOURCES = tuple(s for s in media.SOURCES if s not in (
     'rtl/workstation/workstation_task3_w_media.sv', media.APB)) + (
     'rtl/workstation/workstation_task3_w_paired.sv',
@@ -31,18 +35,22 @@ SOURCES = tuple(s for s in media.SOURCES if s not in (
     'rtl/workstation/workstation_task3_phone_command_proxy.sv',
     'rtl/workstation/workstation_task3_phone_command_mux.sv',
     'rtl/workstation/workstation_task3_phone_window_tx.sv',
+    'rtl/workstation/workstation_task3_phone_batch_w.sv',
     'rtl/workstation/workstation_task3_record_source_gate.sv',
     HCI_PROVIDER,
     'rtl/music/workstation_task3_cnn_stream_w.sv')
 DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
-    'tools/workstation_task3_w_paired_profile.py', PROVIDER, REFERENCE, BOARD,
+    'tools/workstation_task3_w_paired_profile.py', PROVIDER, BATCH_PROVIDER, REFERENCE, BOARD,
     'tools/workstation_task3_w_paired_firmware.py',
     'tools/build_resource_rework.py',
     'tools/workstation_task3_w_paired_cdc_audit.py',
     'tools/workstation_task3_paired_board.py',
     'rtl/workstation/workstation_task3_paired_link_board.svh',
     'rtl/workstation/task3_paired_channels.vh',
+    'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md',
     'rtl/workstation/WORKSTATION_TASK3_W_PAIRED_CONTRACT.md')))
+# Only the explicitly selected new batch ELF consumes this separate review.
+BATCH_DEPENDENCIES = ('tools/workstation_task3_w_phone_batch_firmware_review.json',)
 RETIRED_SELECTORS = ('u_clock_service/', 'u_managed/runtime/cpu_pcm.',
     'u_task3_media_apb/',
     'u_managed/media_stop/request_toggle_s', 'u_managed/media_stop/hold_50_s',
@@ -242,7 +250,7 @@ def restore_constraints(selected, evidence):
 
 
 def cnn_memory_provider(provider=PROVIDER):
-    if provider not in (PROVIDER, PHONE_PROVIDER):
+    if provider not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER):
         raise ValueError('unregistered W paired CNN provider')
     return dict(policy='task3_w_signal_cqt_bsram_v1', USE_DDR_SIGNAL=0,
                 USE_DDR_CQT_COEFF=0, USE_DDR_FRONT_COEFF=1, USE_ALL_DDR=0, provider=provider)
@@ -252,10 +260,48 @@ def cnn_memory_configuration(configuration):
     phone_policy = configuration.get('phone_window_policy')
     if phone_policy not in (None, 'posted_window5_single_inflight_applied_barrier_v1'):
         raise ValueError('W paired phone-window configuration drift')
-    selected = cnn_memory_provider(PHONE_PROVIDER if phone_policy else PROVIDER)
+    selected_batch = phone_batch_configuration(configuration)
+    selected = cnn_memory_provider(BATCH_PROVIDER if selected_batch else PHONE_PROVIDER if phone_policy else PROVIDER)
     if configuration.get('cnn_memory_policy', selected['policy']) != selected['policy']:
         raise ValueError('W paired CNN memory configuration drift')
     return selected
+
+
+def phone_batch_configuration(configuration):
+    """An exact opt-in combination, never inferred from the old window policy."""
+    if 'phone_batch_policy' in configuration:
+        expected = dict(phone_batch_policy=PHONE_BATCH_POLICY,
+            phone_window_policy='posted_window5_single_inflight_applied_barrier_v1',
+            interboard_media_policy=BATCH_MEDIA_POLICY,
+            ae350_firmware_policy=BATCH_FIRMWARE_POLICY)
+        if any(configuration.get(key) != value for key, value in expected.items()):
+            raise ValueError('W paired phone-batch configuration drift')
+        return True
+    if (configuration.get('interboard_media_policy') == BATCH_MEDIA_POLICY or
+            configuration.get('ae350_firmware_policy') == BATCH_FIRMWARE_POLICY):
+        raise ValueError('W paired phone-batch policy omitted')
+    return False
+
+
+def verify_batch_provider(stage, provider):
+    """Bind the actual batch macro scope and included role to this one provider."""
+    if provider != BATCH_PROVIDER:
+        if provider not in (PROVIDER, PHONE_PROVIDER):
+            raise ValueError('unregistered W paired provider')
+        return dict(provider=provider, phone_batch=False)
+    stage = Path(stage)
+    expected = ['`define WORKSTATION_TASK3_PHONE_WINDOW_BLOCK',
+        '`define WORKSTATION_TASK3_PHONE_BATCH', '`include "' + PROVIDER + '"',
+        '`undef WORKSTATION_TASK3_PHONE_BATCH', '`undef WORKSTATION_TASK3_PHONE_WINDOW_BLOCK']
+    actual = [line.strip() for line in (stage / provider).read_text().splitlines()
+              if line.strip() and not line.lstrip().startswith('//')]
+    if actual != expected:
+        raise ValueError('W paired batch provider actual macro scope drift')
+    if not (stage / PROVIDER).is_file():
+        raise ValueError('W paired batch included provider absent')
+    return dict(provider=provider, provider_sha256=media.sha(stage / provider),
+        included_provider=PROVIDER, included_provider_sha256=media.sha(stage / PROVIDER),
+        phone_batch=True, phone_window=True, media_version=3, media_features='0xc0080601')
 
 
 def recording_metadata(root):
@@ -271,8 +317,8 @@ def raw_metadata(root):
         source_is_W_local_DAC=False)
 
 
-def build_firmware(root, evidence, prefix=None):
-    return media.build_firmware(root, evidence, prefix, paired_source=True)
+def build_firmware(root, evidence, prefix=None, phone_batch=False):
+    return media.build_firmware(root, evidence, prefix, paired_source=True, phone_batch=phone_batch)
 
 
 verify_firmware = media.verify_firmware
@@ -308,8 +354,9 @@ def selected_source_evidence(stage, text):
     enabled = [row.get('path') for row in ET.parse(stage / 'Prj1.gprj').find('FileList')
                if row.get('enable') == '1']
     providers = [path for path in enabled if path.startswith('rtl/workstation/workstation_profile_')]
-    if providers not in ([PROVIDER], [PHONE_PROVIDER]):
+    if providers not in ([PROVIDER], [PHONE_PROVIDER], [BATCH_PROVIDER]):
         raise ValueError('W paired actual provider must be unique')
+    batch_provider = verify_batch_provider(stage, providers[0])
     def module(name):
         rows = re.findall(r'\bmodule\s+' + re.escape(name) + r'\b.*?\bendmodule\b', text, re.S)
         if len(rows) != 1:
@@ -325,9 +372,30 @@ def selected_source_evidence(stage, text):
                    '.clk_i(clk_50m),.reset_ni(reset_n),.link_ready_i(task3_pair_link_ready)',
                    'task3_pair_config_select?task3_pair_config_data:'):
         once(top, anchor)
-    selected_phone=providers == [PHONE_PROVIDER]
+    selected_batch=providers == [BATCH_PROVIDER]
+    selected_phone=providers in ([PHONE_PROVIDER], [BATCH_PROVIDER])
     once(top, "localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b" + ('1' if selected_phone else '0') + ";")
-    once(top, "workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)) u_task3_bus_endpoint(")
+    once(top, "localparam bit TASK3_PHONE_BATCH=1'b" + ('1' if selected_batch else '0') + ";")
+    batch_parameter=',.PHONE_BATCH(TASK3_PHONE_BATCH)' if selected_batch else ''
+    once(top, "workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)" + batch_parameter + ") u_task3_bus_endpoint(")
+    if selected_batch:
+        if enabled.count('rtl/workstation/workstation_task3_phone_batch_w.sv') != 1:
+            raise ValueError('W paired batch adapter compilation owner absent/drifted')
+        endpoint=module('workstation_task3_w_bus_endpoint')
+        once(endpoint, "localparam [31:0] MEDIA_VERSION=PHONE_BATCH ? 32'd3:PHONE_WINDOW_BLOCK ? 32'd2:32'd1;")
+        once(endpoint, "localparam [31:0] MEDIA_FEATURES=PHONE_BATCH ? 32'hc0080601:PHONE_WINDOW_BLOCK ? 32'h80080601:32'h00080601;")
+        for anchor in ('generate if(PHONE_BATCH)begin:g_phone_batch',
+                       'workstation_task3_phone_batch_w batch_w(',
+                       '.local_valid_i(mux_valid && !mux_target)',
+                       '.live_i(live && hci_classic_ready_i && phone_owner_ready_i && media_current && phone_proxy_armed && !phone_proxy_fault && !phone_window_fault)',
+                       '.capability_i(media_current),.token_i(generation_i),.local_boot_i(local_boot_i),.peer_boot_i(peer_boot_i),.session_i(session_i),.generation_i(generation_i)',
+                       '.request_valid_o(phone_batch_valid)',
+                       '.response_valid_i(rx_valid_i && rx_ready_o && phone_batch_reply)',
+                       '.window_busy_i(phone_window_busy),.window_flush_o(phone_window_flush)',
+                       'workstation_task3_phone_window_tx #(.EXTERNAL_FLUSH_ENABLE(PHONE_BATCH)) window_tx(',
+                       '.flush_i(phone_window_flush)'):
+            once(endpoint, anchor)
+        module('workstation_task3_phone_batch_w')
     once(top, "workstation_task3_w_paired #(.CNN_USE_DDR_SIGNAL(1'b0),.CNN_USE_DDR_CQT_COEFF(1'b0)) u_task3_media(")
     for anchor in ('gw138k_apb_cdc u_task3_pcm_control(', '.psel(pcm_select)',
                    '.command_valid_i({clock_command_valid,task3_pcm_valid})',
@@ -389,6 +457,7 @@ def selected_source_evidence(stage, text):
     return dict(policy=POLICY, normalized_preprocessed_text_sha256=digest(text.replace('\r\n','\n').replace('\r','\n')),
         top_source_identity=top_identity, actual_common_link_and_F808=True,
         actual_HCI_scoped_compilation=hci_scope,
+        actual_phone_provider=batch_provider,
         single_memory_fabric=True, single_raw_store=True, single_C_BLE_recording_object=True,
         full_HCI_Classic_GATT=True, remote_PCM1_and_M_clock=True,
         actual_record_object_idle=True, software_injection_enabled=False,
@@ -404,7 +473,7 @@ def selected_source_evidence(stage, text):
 
 def source_negative_controls(stage, text):
     rows = []
-    for name, before, after in (
+    controls = [
         ('zero-recording-tap', '.record_pcm_o(task3_record_pcm)', '.record_pcm_o(disconnected_pcm)'),
         ('forged-empty-record-object', '.record_object_idle_i(task3_record_object_idle && raw_start_ready && !raw_fault)', ".record_object_idle_i(1'b1)"),
         ('drop-clock-proxy', '.command_valid_i({clock_command_valid,task3_pcm_valid})', ".command_valid_i({1'b0,task3_pcm_valid})"),
@@ -412,7 +481,20 @@ def source_negative_controls(stage, text):
         ('wrong-native-CNN-window', '.CNN_WIN_LEN(44100)', '.CNN_WIN_LEN(43844)'),
         ('drop-CNN-task-parameter', '.WIN_LEN(CNN_WIN_LEN)', '.WIN_LEN(43844)'),
         ('drop-CNN-pipeline-parameter', '.WIN_LEN(WIN_LEN)', '.WIN_LEN(43844)'),
-        ('missing-native-store', ') raw_store(', ') removed_store(')):
+        ('missing-native-store', ') raw_store(', ') removed_store(')]
+    if verify_batch_provider(stage, cnn_provider_from_stage(stage))['phone_batch']:
+        controls += [
+            ('batch-board-disabled', "localparam bit TASK3_PHONE_BATCH=1'b1;", "localparam bit TASK3_PHONE_BATCH=1'b0;"),
+            ('batch-endpoint-disabled', '.PHONE_BATCH(TASK3_PHONE_BATCH)', ".PHONE_BATCH(1'b0)"),
+            ('batch-window-disabled', "localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b1;", "localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b0;"),
+            ('batch-version-downgraded', "MEDIA_VERSION=PHONE_BATCH ? 32'd3:", "MEDIA_VERSION=PHONE_BATCH ? 32'd2:"),
+            ('batch-features-downgraded', "MEDIA_FEATURES=PHONE_BATCH ? 32'hc0080601:", "MEDIA_FEATURES=PHONE_BATCH ? 32'h80080601:"),
+            ('batch-clock-lane-captured', '.local_valid_i(mux_valid && !mux_target)', '.local_valid_i(mux_valid)'),
+            ('batch-flush-disabled', '.EXTERNAL_FLUSH_ENABLE(PHONE_BATCH)', ".EXTERNAL_FLUSH_ENABLE(1'b0)"),
+            ('batch-response-unconsumed', '.response_valid_i(rx_valid_i && rx_ready_o && phone_batch_reply)', '.response_valid_i(rx_valid_i && phone_batch_reply)'),
+            ('batch-identity-truncated', '.peer_boot_i(peer_boot_i),.session_i(session_i),.generation_i(generation_i)', '.peer_boot_i(peer_boot_i),.session_i(session_i),.generation_i(0)'),
+        ]
+    for name, before, after in controls:
         scope = text
         if name == 'drop-CNN-pipeline-parameter':
             modules = re.findall(r'\bmodule\s+basic_pitch_workstation_link\b.*?\bendmodule\b', text, re.S)
@@ -429,3 +511,12 @@ def source_negative_controls(stage, text):
         else:
             raise ValueError('W paired unsafe mutation survived: ' + name)
     return rows
+
+
+def cnn_provider_from_stage(stage):
+    from xml.etree import ElementTree as ET
+    providers = [row.get('path') for row in ET.parse(Path(stage) / 'Prj1.gprj').find('FileList')
+                 if row.get('enable') == '1' and row.get('path', '').startswith('rtl/workstation/workstation_profile_')]
+    if len(providers) != 1 or providers[0] not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER):
+        raise ValueError('W paired actual provider must be unique')
+    return providers[0]

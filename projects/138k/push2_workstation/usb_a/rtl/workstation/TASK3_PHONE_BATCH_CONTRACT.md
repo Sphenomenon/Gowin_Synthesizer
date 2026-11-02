@@ -6,9 +6,9 @@ features0xc0080601; no mixed ARM. Original M PCM1 remains the only queue/SRC/sou
 owner and final M history/sample application remains authoritative. Production
 PCM1 sustained capability stays false.
 
-This stage supplies opt-in RTL/firmware and the real-firmware ideal-wire model.
-It is not yet selected by a production profile. New M/W profiles require their
-own source closure, firmware review, observer-reset binding and physical audits;
+The explicit `custom138k-workstation-task3-{m,w}-paired-phone-batch-v1` profiles
+select this RTL/firmware under independent source locks. Their source closure,
+firmware review and observer-reset binding are separate from physical audits;
 old profile seals must not be refreshed to select this implementation silently.
 
 Request channel6 length30, low fields:

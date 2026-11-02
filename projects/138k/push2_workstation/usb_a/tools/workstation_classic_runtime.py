@@ -123,23 +123,26 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_worker=False,media_worker=False):
+def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_worker=False,media_worker=False,phone_batch=False):
     """An opt-in role, never inferred from old W media/demo selection."""
     from tools import workstation_task3_w_paired_profile as paired
+    providers=(None,paired.BATCH_PROVIDER)if phone_batch else (None,paired.PROVIDER,paired.PHONE_PROVIDER)
     if (not media_worker or headless_worker or physical_rom_bytes!=131072 or
-        selected_provider not in (None,paired.PROVIDER,paired.PHONE_PROVIDER)):
+        selected_provider not in providers):
         raise ValueError('paired W requires its explicit full media/ROM128 provider')
     return paired
 
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
+    if phone_batch and not paired_worker:raise ValueError('phone-batch requires explicit paired W runtime')
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
-            headless_worker=headless_worker,media_worker=media_worker)
-        if selected_provider not in (helper.PROVIDER,helper.PHONE_PROVIDER):raise ValueError('paired W actual provider omitted')
+            headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
+        providers=(helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
+        if selected_provider not in providers:raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
-        provider,policy=selected_provider,helper.FIRMWARE_POLICY
+        provider,policy=selected_provider,helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
     elif selected_provider is not None:
         from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
@@ -166,11 +169,12 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
     if paired_worker:record['worker_paired']=True
+    if phone_batch:record['phone_batch']=True
     if media_worker:
         if paired_worker:selected_source_evidence=helper.selected_source_evidence
         else:from tools.workstation_task3_w_media_profile import selected_source_evidence
         record['worker_media_source']=selected_source_evidence(stage,payload.decode())
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker,paired_worker=paired_worker)
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker,paired_worker=paired_worker,phone_batch=phone_batch)
     return record
 def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False):
     """Check the exact final scoped lines for the explicitly selected role."""
@@ -189,15 +193,17 @@ def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False):
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
+    if phone_batch and not paired_worker:raise ValueError('phone-batch requires explicit paired W runtime')
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
-            headless_worker=headless_worker,media_worker=media_worker)
-        if selected_provider not in (helper.PROVIDER,helper.PHONE_PROVIDER):raise ValueError('paired W actual provider omitted')
+            headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
+        providers=(helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
+        if selected_provider not in providers:raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
-        provider,policy=selected_provider,helper.FIRMWARE_POLICY
+        provider,policy=selected_provider,helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
     elif selected_provider is not None:
         from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
@@ -213,6 +219,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
     if record.get('headless_worker',False)!=headless_worker or record.get('worker_media',False)!=media_worker:raise ValueError('headless runtime role selection drift')
     if record.get('worker_paired',False)!=paired_worker:raise ValueError('paired runtime role selection drift')
+    if record.get('phone_batch',False)is not phone_batch:raise ValueError('phone-batch runtime selection drift')
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -245,15 +252,17 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False,media_worker=False,paired_worker=False):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False):
+    if phone_batch and not paired_worker:raise ValueError('phone-batch requires explicit paired W firmware')
     if paired_worker:
-        helper=_paired_media_helper(physical_rom_bytes,headless_worker=headless_worker,media_worker=media_worker)
+        helper=_paired_media_helper(physical_rom_bytes,headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
         if not worker_demo:raise ValueError('paired W firmware requires explicit worker role')
-        record=helper.build_firmware(root,evidence,prefix)
-        if record.get('runtime_policy')!=helper.FIRMWARE_POLICY:raise ValueError('paired W actual firmware policy drift')
+        record=helper.build_firmware(root,evidence,prefix,phone_batch=phone_batch)
+        policy=helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
+        if record.get('runtime_policy')!=policy:raise ValueError('paired W actual firmware policy drift')
         record['worker_paired']=True
         (Path(evidence)/'build_metadata.json').write_text(json.dumps(record,indent=2)+'\n')
-        verify_build(root,evidence,record,physical_rom_bytes,paired_worker=True)
+        verify_build(root,evidence,record,physical_rom_bytes,paired_worker=True,phone_batch=phone_batch)
         return record
     if media_worker:
         if physical_rom_bytes!=131072 or not worker_demo or headless_worker:raise ValueError('W-media ROM/runtime role drift')
@@ -293,13 +302,16 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=Fals
     (evidence/'build_metadata.json').write_text(json.dumps(record,indent=2)+'\n')
     verify_build(root,evidence,record,physical_rom_bytes)
     return record
-def verify_build(root,evidence,record,physical_rom_bytes=131072,*,paired_worker=None):
+def verify_build(root,evidence,record,physical_rom_bytes=131072,*,paired_worker=None,phone_batch=False):
     if paired_worker is None:paired_worker=record.get('worker_paired',False)
     if record.get('worker_paired',False)!=paired_worker:raise ValueError('paired W firmware selection drift')
+    if record.get('phone_batch',False)is not phone_batch or phone_batch and not paired_worker:
+        raise ValueError('phone-batch W firmware selection drift')
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,headless_worker=record.get('headless_worker',False),
-            media_worker=record.get('worker_media',False))
-        if (not record.get('worker_demo') or record.get('runtime_policy')!=helper.FIRMWARE_POLICY or
+            media_worker=record.get('worker_media',False),phone_batch=phone_batch)
+        policy=helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
+        if (not record.get('worker_demo') or record.get('runtime_policy')!=policy or
             record.get('source_text_overlay')is not True):
             raise ValueError('paired W actual source adaptation/role omitted')
         return helper.verify_firmware(root,evidence,record)

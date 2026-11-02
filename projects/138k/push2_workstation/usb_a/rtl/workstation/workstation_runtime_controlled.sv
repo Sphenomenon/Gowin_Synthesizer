@@ -20,7 +20,8 @@ module workstation_runtime_controlled #(
     parameter bit TF_CONTROL_ENABLE=1,
     parameter bit TF_DIRECT_ENABLE=0,
     parameter bit LOCAL_RECORD_ENABLE=1,
-    parameter bit LOCAL_SCORE_ENABLE=1
+    parameter bit LOCAL_SCORE_ENABLE=1,
+    parameter bit PCM_SNAPSHOT_ENABLE=0
 ) (
     input wire rst_ni,clk_50m_i,compute_clk_i,memory_clk_i,
     input wire reference_48_i,reference_44_i,midi_rx_i,pc_uart_rx_i,
@@ -350,7 +351,8 @@ module workstation_runtime_controlled #(
         .STARTUP_MUTE_FRAMES(STARTUP_MUTE_FRAMES),.DMA_TIMEOUT_CYCLES(DMA_TIMEOUT_CYCLES),
         .RESERVE_ZERO_EPOCH(RESERVE_ZERO_EPOCH),.INITIAL_STREAM_EPOCH(INITIAL_STREAM_EPOCH),.ENABLE_AE350_PCM(ENABLE_AE350_PCM),.SEPARATE_COMMON_RESET(SEPARATE_COMMON_RESET),
         .SYNTH_ENGINES_ENABLE(SYNTH_ENGINES_ENABLE),.D_ONLY_ENABLE(D_ONLY_ENABLE),
-        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),.TF_DIRECT_ENABLE(TF_DIRECT_ENABLE)
+        .TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),.TF_DIRECT_ENABLE(TF_DIRECT_ENABLE),
+        .PCM_SNAPSHOT_ENABLE(PCM_SNAPSHOT_ENABLE)
     ) runtime(
         .rst_ni,.common_reset_ni(common_reset_n),.clk_50m_i,.compute_clk_i,.memory_clk_i,.reference_48_i,.reference_44_i,
         .request_i(prepared_request),.request_44k1_i,.switch_permit_i(qualified_permit),.recover_i(prepared_recover),.media_quiescent_i,

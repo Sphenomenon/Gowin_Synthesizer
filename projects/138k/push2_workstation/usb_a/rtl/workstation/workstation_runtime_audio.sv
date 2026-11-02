@@ -16,7 +16,8 @@ module workstation_runtime_audio #(
     parameter bit TF_CONTROL_ENABLE=1,
     parameter bit TF_DIRECT_ENABLE=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
-    parameter bit SEPARATE_COMMON_RESET=0
+    parameter bit SEPARATE_COMMON_RESET=0,
+    parameter bit PCM_SNAPSHOT_ENABLE=0
 ) (
     input wire rst_ni, clk_50m_i, compute_clk_i, memory_clk_i,
     input wire reference_48_i, reference_44_i,
@@ -265,7 +266,7 @@ module workstation_runtime_audio #(
         always @(posedge compute_clk_i or posedge switch_inhibit_50 or negedge compute_reset_n)
             if(!compute_reset_n || switch_inhibit_50)switch_inhibit_compute<=3;
             else switch_inhibit_compute<={switch_inhibit_compute[0],1'b0};
-        workstation_ae350_pcm_owner #(.SUSTAINED_VERIFIED(D_ONLY_ENABLE)) owner(
+        workstation_ae350_pcm_owner #(.SUSTAINED_VERIFIED(D_ONLY_ENABLE),.SNAPSHOT_ENABLE(PCM_SNAPSHOT_ENABLE)) owner(
             .clk_i(compute_clk_i),.reset_ni(compute_reset_n),.cpu_ready_i(pcm_cpu_ready_i),
             .command_valid_i(pcm_command_valid_i),.command_write_i(pcm_command_write_i),
             .command_address_i(pcm_command_address_i),.command_data_i(pcm_command_data_i),

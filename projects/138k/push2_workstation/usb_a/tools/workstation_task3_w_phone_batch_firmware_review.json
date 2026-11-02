@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+  "parent_review_sha256": "270cb779c8b2eba7f7fa2655f611e784052c7269fbbd0d9eb9e9c4c31e8d34da",
+  "input_sha256": {
+    "firmware/ae350/start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
+    "firmware/ae350/worker_media_main.c": "44b592beb72e178cea23c4b5b393509a9a0d72299d3f954ef5ede829bc91aeef",
+    "firmware/ae350/ui_runtime.c": "eccdd362e3c2319379acdd2a5e8d7baf78cc4108e8d916ae0c4950e36e7f46f5",
+    "firmware/ae350/audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+    "firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+    "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+    "firmware/ae350/ble_business_owner.c": "e7d4b9dc032d2a4e494baf90364c13230f3550627d8658751c1ecd910ef15122",
+    "firmware/ae350/classic_service.c": "daff52b5e1c64f8be0d2152a9e2c9eee76f91a701ca062e38acf6b4232dc4075",
+    "firmware/ae350/sbc_decoder_service.c": "54c9c6d671cd2050c6aba4158037fa17cc6c870887919b3b28fd681dbace2d0d",
+    "firmware/ae350/classic_security.c": "83731776b626697d87c67a9f6a13985d4cb5a6ad9d220f4bb4005347c1865b9c",
+    "firmware/ae350/hci_transport.c": "8351884316773be44dd37d92af05f15564715f52b36668863e06f49fd9ae6fc6",
+    "firmware/ae350/classic_runtime.c": "f7c108c5527f7993a3d7513bb57502e779c226e2de9b206888a98f59dcb8dc04",
+    "firmware/ae350/pcm_media.c": "5d680c6dcf3cd3909a423caae5a84f541cc0028456d1b0282498fe98e753e811",
+    "firmware/ae350/audio_services.h": "d84a0450f5aab3a24bc323e86401566da87e3a46cc681860d2f0b902c1ff74ff",
+    "firmware/ae350/audio_clock_service.h": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551",
+    "firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+    "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+    "firmware/ae350/ble_business_owner.h": "1b2841938b24f06d6ea252ae1172c7611320438dfec089b36551fddaeb29659a",
+    "firmware/ae350/classic_service.h": "b31f32272d725398e87ceb0dd6b604e925d1882d738b1e44f999fb9dbec7f555",
+    "firmware/ae350/sbc_decoder_service.h": "90bb312346c9976e9a1ca30221ca2dd637887592ebeb3c7e1b638c67ecfeea8a",
+    "firmware/ae350/classic_security.h": "735361b456f4844e6236e387c7f00be947d46074a8d93b950eeaec556e3a0240",
+    "firmware/ae350/hci_transport.h": "6da8d7a50c3f4a041bf060895799cc2c7bd35d38f0e3acc005541a0309829090",
+    "firmware/ae350/classic_runtime.h": "a01ca3aba63accb6112a81230934877b0e3eed277e34fc1abf6c2fced34ee364",
+    "firmware/ae350/pcm_media.h": "7eebd1c499ff917227a0788c4178714f8161307e5c2fc62b5e74d01c09f86e53",
+    "firmware/ae350/start_ilm_dlm.inc": "e8f8f4b202cd2553d7a1a4e76a58895ea43508c061d7ae8d9e7b0ace2ccc3f73",
+    "firmware/ae350/boot_ilm_dlm_rom128_split.ld": "687daf3ac43d6efd4c6cc21c477392baf4356a00b4cde872b44c6ad537c8b5b5"
+  },
+  "callback_targets": {
+    "rx_identity": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "rx_retirement": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "a138_hci_step": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "a138_hci_tx_retire": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "a138_hci_rx_release": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "cancel_media": [
+      "paired_cancel"
+    ],
+    "a138_clock_probe": [
+      "mmio_read",
+      "mmio_write"
+    ],
+    "a138_clock_submit": [
+      "mmio_read",
+      "mmio_write"
+    ],
+    "a138_clock_poll": [
+      "mmio_read",
+      "mmio_write"
+    ],
+    "runtime_pass.part.0": [
+      "paired_poll",
+      "paired_submit"
+    ],
+    "fail_runtime": [
+      "hci_mmio_write"
+    ],
+    "OI_SBC_ComputeBitAllocation": [
+      "monoBitAllocation",
+      "dualBitAllocation",
+      "stereoBitAllocation"
+    ],
+    "DecodeBody.part.0": [
+      "OI_SBC_ReadSamplesJoint4",
+      "OI_SBC_ReadSamplesJoint8"
+    ],
+    "OI_SBC_SynthFrame": [
+      "OI_SBC_SynthFrame_4SB",
+      "OI_SBC_SynthFrame_80"
+    ],
+    "a138_ble_business_pump": [
+      "record_mmio_read"
+    ],
+    "paired_available": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "paired_transaction": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "paired_poll": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "paired_submit": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ],
+    "paired_cancel": [
+      "hci_mmio_read",
+      "hci_mmio_write"
+    ]
+  },
+  "source_target_review": "This is a separate review of the actual explicit paired-v3 W firmware, not a refresh of the immutable W-media or W demo review. services_main initializes the single classic_runtime firmware_runtime, whose A138_TASK3_PHONE_BATCH branch calls a138_pcm_media_init_paired on its sole static firmware_media. This sets paired once; no firmware root clears it. a138_pcm_media_callbacks therefore installs paired_poll, paired_submit, paired_cancel; public test constructors are not extra firmware roots. runtime_pass poll/submit and cancel_media use precisely these targets. The paired methods use only the unchanged a138_hci_mmio_bus F806 constructor, installing hci_mmio_read/write, and inherited a138_clock_mmio_bus callbacks mmio_read/write. Each paired bus site is conservatively bounded by both hci callbacks. The same single ble_business_owner firmware_owner services C and BLE recording, with the inherited real 2880000-frame capacity and paired REC_START source-gate adaptation. The existing recording, business, HCI, SBC and clock callback closures remain source-reviewed; the actual linked SBC tables are verified word-for-word. The complete current C/H inventory is pinned independently. Disabling only the exact batch guards reproduces the old immutable media C/H hashes for lineage; these reconstructed bytes are not compiled and do not admit changed sources into an old production profile. The actual new C is compiled in every translation unit with A138_TASK3_PHONE_BATCH and its own policy. Every reachable JALR, direct/indirect edge and compiler stack frame in this newly linked ELF is checked, including recursion, dynamic frames, unknown targets and 16KiB stack overflow rejection. Interrupts stay disabled. This establishes source and offline ELF bounds only: no RF/HCI/SBC workload cycles, sustained PCM capability, D effects, physical LCD timing, DAC acceptance, SRAM or Flash deployment is claimed."
+}

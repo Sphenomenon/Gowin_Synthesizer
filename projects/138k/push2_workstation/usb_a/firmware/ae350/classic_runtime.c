@@ -215,7 +215,11 @@ void a138_classic_runtime_firmware_init(void) {
 #ifndef A138_SINGLE_BLE_RECORDING
     struct a138_bond_store unavailable={0,unavailable_load,unavailable_replace,unavailable_delete};
 #endif
+#ifdef A138_TASK3_PHONE_BATCH
+    a138_pcm_media_init_paired(&firmware_media,a138_hci_mmio_bus(A138_PCM_BASE),a138_clock_mmio_bus(A138_CLOCK_BASE));
+#else
     a138_pcm_media_init(&firmware_media,a138_hci_mmio_bus(A138_PCM_BASE),a138_clock_mmio_bus(A138_CLOCK_BASE));
+#endif
     struct a138_runtime_media media=a138_pcm_media_callbacks(&firmware_media);
 #ifdef A138_SINGLE_BLE_RECORDING
     a138_classic_runtime_init_session(&firmware_runtime,a138_hci_mmio_bus(A138_HCI_BASE),&media);

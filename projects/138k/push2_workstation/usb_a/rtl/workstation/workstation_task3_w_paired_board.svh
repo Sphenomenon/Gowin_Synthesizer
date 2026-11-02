@@ -35,7 +35,13 @@
 `else
     localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b0;
 `endif
+`ifdef WORKSTATION_TASK3_PHONE_BATCH
+    localparam bit TASK3_PHONE_BATCH=1'b1;
+    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK),.PHONE_BATCH(TASK3_PHONE_BATCH)) u_task3_bus_endpoint(
+`else
+    localparam bit TASK3_PHONE_BATCH=1'b0;
     workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)) u_task3_bus_endpoint(
+`endif
         .clk_i(clk_50m),.reset_ni(reset_n),.link_ready_i(task3_pair_link_ready),.panic_i(task3_pair_panic),
         .local_boot_i(task3_pair_local_boot),.peer_boot_i(task3_pair_peer_boot),.session_i(task3_pair_session),.generation_i(task3_pair_generation),
         .rx_valid_i(task3_pair_rx_valid),.rx_ready_o(task3_pair_rx_ready),.rx_channel_i(task3_pair_rx_channel),.rx_payload_i(task3_pair_rx_payload),.rx_length_i(task3_pair_rx_length),

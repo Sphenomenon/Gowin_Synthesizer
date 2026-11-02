@@ -128,6 +128,20 @@ def prepared_selection(root,stage,configuration,*,captured_source_sha256=None):
     require(re.findall(r'\.(\w+)\s*\(\s*([^()]+)\s*\)',parameters[0])==expected_parameters,
         'actual native instance must select explicit CRC1/cache1')
     provider_text=(stage/provider).read_text().splitlines()
+    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv':
+        # Only this registered wrapper delegates DIRECT macros to the exact
+        # phone-window leaf. Bind its whole transitive provider closure first;
+        # other providers keep the original direct-byte selection check.
+        from tools.workstation_task3_root_reset_audit import (
+            M_PHONE_BATCH_PROVIDER,M_PHONE_PROVIDER,PROVIDER_POLICIES)
+        expected,role,_,includes=PROVIDER_POLICIES[M_PHONE_BATCH_PROVIDER]
+        require(role=='M' and M_PHONE_PROVIDER in includes,
+                'batch provider registration drift')
+        for relative,wanted in {M_PHONE_BATCH_PROVIDER:expected,**includes}.items():
+            path=stage/relative
+            require(path.is_file() and digest(path.read_bytes())==wanted,
+                    'batch provider/include identity drift: '+relative)
+        provider_text=(stage/M_PHONE_PROVIDER).read_text().splitlines()
     require(provider_text.count('`define WORKSTATION_TF_DIRECT_NATIVE')==1 and
             provider_text.count('`define WORKSTATION_NO_CNN')==1 and
             '`define WORKSTATION_DEMO_NO_TF' not in provider_text,'provider DIRECT/no-CNN selection drift')

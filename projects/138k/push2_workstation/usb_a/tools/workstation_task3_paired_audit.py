@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-phone-batch-v1': ('M', 'custom138k-native-task3-m-paired-phone-batch-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'),
+    'custom138k-workstation-task3-w-paired-phone-batch-v1': ('W', 'custom138k-native-task3-w-paired-phone-batch-revision1',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-phone-blocks-v1': ('M', 'custom138k-native-task3-m-paired-phone-blocks-revision1',
         'rtl/workstation/workstation_profile_task3_m_paired_phone_blocks.sv'),
     'custom138k-workstation-task3-w-paired-phone-blocks-v1': ('W', 'custom138k-native-task3-w-paired-phone-blocks-revision1',
@@ -123,6 +127,29 @@ def verify_prepared(output, metadata):
     restored = common.role_helper(role).inverse_top(stage, role_top)
     require(common.digest(restored) == common.role_helper(role).PARENT_TOP_SHA256,
             'common then role exact top inverse changed')
+    if spec.get('phone_batch', False):
+        # Only the explicitly selected batch profiles consume these proofs.
+        # root=stage keeps the immutable candidate independent of live sources.
+        if role == 'M':
+            from tools.workstation_task3_m_paired_profile import selected_batch_source_evidence
+            require(metadata.get('task3_phone_batch') == selected_batch_source_evidence(
+                stage, stage, profile['configuration'], provider),
+                'M phone batch prepared source evidence changed')
+        else:
+            from tools.workstation_task3_w_paired_profile import (
+                BATCH_PROVIDER, BATCH_FIRMWARE_POLICY, selected_source_evidence)
+            runtime = metadata.get('classic_runtime', {})
+            require(provider == BATCH_PROVIDER and runtime.get('provider') == provider and
+                    runtime.get('policy') == BATCH_FIRMWARE_POLICY and
+                    runtime.get('worker_paired') is True and
+                    runtime.get('worker_media') is True and runtime.get('phone_batch') is True,
+                    'W phone batch runtime selection changed')
+            preprocessed = checked(output, 'classic_runtime_preprocessed.v')
+            require(sha(preprocessed) == runtime.get('preprocessed_sha256'),
+                    'W phone batch preprocessed evidence changed')
+            require(runtime.get('worker_media_source') == selected_source_evidence(
+                stage, preprocessed.read_text()),
+                'W phone batch prepared source evidence changed')
     sdc = common.restore_constraints(stage, (stage / 'constraints/custom_138k.sdc').read_text(), metadata.get('task3_paired_sdc', {}))
     if role == 'M':
         from tools.workstation_task3_tf_direct import restore_constraints

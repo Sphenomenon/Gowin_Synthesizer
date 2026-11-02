@@ -149,6 +149,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     tf_direct=runtime and specification(profile['name']).get('tf_direct_enabled',False)
     paired_role=specification(profile['name']).get('paired_role') if runtime else None
     paired_worker=paired_role=='W'
+    phone_batch_worker=paired_worker and specification(profile['name']).get('phone_batch',False)
     if paired_role is not None:
         from tools import workstation_task3_paired_board as paired_board
         paired_helper=paired_board.role_helper(paired_role)
@@ -230,6 +231,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         role_sources=tuple(p for p in paired_helper.SOURCES if not p.startswith('rtl/music/')) if paired_role=='M' else ()
         native_sources=tuple(dict.fromkeys((*native_sources,*role_sources,*paired_board.SOURCES)))
         profile_dependencies+=(*paired_helper.DEPENDENCIES,*paired_board.DEPENDENCIES)
+        if phone_batch_worker:
+            profile_dependencies+=paired_helper.BATCH_DEPENDENCIES
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -262,7 +265,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker, **ae350_memory)
+            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker,
+            **({'phone_batch':True}if phone_batch_worker else{}), **ae350_memory)
     native_timing = adapt_timing(stage, resource_optimized=resource_optimization)
     demo_fifo_reset = None
     if demo_role is not None:
@@ -625,6 +629,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['remaining_gaps']+=['LCD cable power/VCCIO/continuity and physical CDC review',
             'measured LCD throughput/RTT/jitter/congestion before business grant',
             'cold-start nonce/session provisioning and complete paired hardware acceptance']
+        if paired_role=='M':
+            batch=paired_helper.selected_batch_source_evidence(root,stage,profile['configuration'],selected_provider)
+            if batch is not None:
+                metadata['task3_phone_batch']=batch
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
         candidate=metadata['identity'],source_policy=metadata['source_policy'],
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,
@@ -641,7 +649,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['task3_tf_direct_storage'] = prepared_selection(root,stage,profile['configuration'])
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker)
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker,
+                **({'phone_batch':True}if phone_batch_worker else{}))
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata
