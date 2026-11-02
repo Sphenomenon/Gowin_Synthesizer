@@ -62,7 +62,9 @@ def main():
             ('unlocked_window_preemption', [
                 ('else if(phone_window_overlap)phone_window_protocol_fault<=1;', "else if(1'b0)phone_window_protocol_fault<=1;"),
                 (' && (!phone_ingress_live || phone_window_eligible)', '')]),
-            ('accept_overlapping_RPC', [('phone_matches && !phone_window_busy)', 'phone_matches)')]),
+            ('accept_overlapping_RPC', [(
+                'phone_matches && !phone_window_busy && !phone_batch_busy && !phone_batch_fault)',
+                'phone_matches && !phone_batch_busy && !phone_batch_fault)')]),
         ]
         for name, edits in mutations:
             changed = original

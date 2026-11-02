@@ -50,7 +50,7 @@ def build_library(output, run_smoke=True):
     before = source_inputs()
     report = dict(schema='task3-phone-real-firmware-workload-v2', passed=False,
                   inputs=before, source_unchanged=False, adapted_unchanged=False,
-                  scope='Unmodified real four-pass runtime and PCM media; injected established session/decoded PCM and local idle HCI; checked-model smoke only')
+                  scope='Original four-pass runtime; original or explicit paired-v3 PCM adapter; injected established session/decoded PCM and local idle HCI; checked-model smoke only')
     adaptation = prepare(ROOT, out / 'adapted')
     # prepare checks the entire frozen upstream against its versioned manifest.
     # Also bind the exact separately adapted compilation tree, including the
@@ -63,7 +63,7 @@ def build_library(output, run_smoke=True):
     cc = Path(shutil.which('cc')).resolve()
     ar = Path(shutil.which('ar')).resolve()
     flags = ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror', '-Wno-unused-parameter',
-             '-DA138_WORKER_AUDIO_ONLY', '-DA138_SINGLE_BLE_RECORDING',
+             '-DA138_WORKER_AUDIO_ONLY', '-DA138_SINGLE_BLE_RECORDING', '-DA138_TASK3_PHONE_BATCH',
              '-I' + str(fw), '-I' + str(header.parent),
              '-I' + str(dec / 'include'), '-I' + str(dec / 'srce')]
     commands = []
@@ -79,7 +79,7 @@ def build_library(output, run_smoke=True):
     report.update(adaptation=adaptation, adapted_inputs=adapted_before, commands=commands,
                   compiler=dict(path=str(cc), sha256=sha(cc)),
                   archiver=dict(path=str(ar), sha256=sha(ar)),
-                  callback_lanes=dict(PCM1=0, audio_clock=1),
+                  callback_lanes=dict(PCM1=0, audio_clock=1), paired_batch_compiled=True,
                   production_capability_bit3=False, test_capability_read_injection=True,
                   maximum_new_decodes_per_pump=1, PCM_wait_timeout_ms=100,
                   maximum_private_pending_blocks=1, maximum_stereo_words_per_submit=16,
@@ -104,6 +104,50 @@ def build_library(output, run_smoke=True):
             if 'Sanitizer' in result.stderr or 'runtime error:' in result.stderr:
                 raise RuntimeError('sanitizer finding')
             summaries[tag] = result.stdout.strip()
+        if run_smoke:
+            legacy_flags = [arg for arg in flags if arg != '-DA138_TASK3_PHONE_BATCH']
+            for tag, extra in variants:
+                exe = out / ('smoke-' + tag + '-without-batch')
+                run([cc, *legacy_flags, *extra, smoke, *sources, '-o', exe], 'without-batch-' + tag + '-compile')
+                result = run([exe], 'without-batch-' + tag)
+                if 'Sanitizer' in result.stderr or 'runtime error:' in result.stderr:
+                    raise RuntimeError('legacy-without-batch sanitizer finding')
+                summaries[tag + '_without_batch'] = result.stdout.strip()
+            # Compare the disabled feature to the immutable pre-feature source,
+            # using the same compiler/flags/includes and copied old header.
+            # No debug paths enter these object bytes. This is host code/data
+            # equality, not a claim about an unbuilt AE350 ELF/ROM identity.
+            revision = '6ebb5e41233c78e6af7959fb350dd9661c402de4'
+            reference = out / 'legacy_reference';reference.mkdir()
+            for name in ('pcm_media.c', 'pcm_media.h'):
+                relative = (fw / name).relative_to(ROOT.parents[3])
+                result = run(['git', '-C', ROOT, 'show', revision + ':' + str(relative)], 'legacy-reference-' + name)
+                (reference / name).write_text(result.stdout)
+            preprocessed = {}
+            objects = {}
+            sizes = {}
+            for tag, source in (('current', fw / 'pcm_media.c'), ('reference', reference / 'pcm_media.c')):
+                result = run([cc, *legacy_flags, '-E', '-P', source], 'legacy-' + tag + '-preprocessed')
+                preprocessed[tag] = result.stdout
+                obj = out / ('pcm_media-legacy-' + tag + '.o')
+                run([cc, *legacy_flags, '-c', source, '-o', obj], 'legacy-' + tag + '-object')
+                objects[tag] = dict(sha256=sha(obj), bytes=obj.stat().st_size)
+                sizes[tag] = run(['size', obj], 'legacy-' + tag + '-size').stdout.strip()
+            if preprocessed['current'] != preprocessed['reference'] or objects['current'] != objects['reference']:
+                raise ValueError('disabled paired feature differs from Git reference preprocessing or object bytes')
+            size_source = out / 'adapter_size.c'
+            size_source.write_text('#include "pcm_media.h"\n#include <stdio.h>\n'
+                                   'int main(void){printf("%zu\\n",sizeof(struct a138_pcm_media));return 0;}\n')
+            struct_sizes = {}
+            for tag, size_flags in (('legacy', legacy_flags), ('paired', flags)):
+                exe = out / ('adapter-size-' + tag)
+                run([cc, *size_flags, size_source, '-o', exe], 'adapter-size-' + tag + '-compile')
+                struct_sizes[tag] = int(run([exe], 'adapter-size-' + tag).stdout)
+            report['legacy_disabled_equality'] = dict(reference_commit=revision,
+                reference_inputs={p.name: sha(p) for p in reference.iterdir()},
+                preprocessed_equal=True, preprocessed_sha256=hashlib.sha256(preprocessed['current'].encode()).hexdigest(),
+                object_equal=True, objects=objects, size_output=sizes, host_struct_bytes=struct_sizes,
+                AE350_ELF_or_ROM_built=False)
         report.update(summaries=summaries, library=dict(path=str(library), sha256=sha(library)))
         after, adapted_after = source_inputs(), adapted_inputs()
         report['source_unchanged'] = before == after

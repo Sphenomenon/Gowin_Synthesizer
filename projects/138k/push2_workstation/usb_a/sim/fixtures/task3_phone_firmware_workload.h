@@ -33,6 +33,11 @@ struct task3_phone_stats {
 struct task3_phone_workload *task3_phone_workload_create(
     struct task3_phone_callbacks,uint32_t epoch,uint32_t generation,
     uint32_t stream,uint32_t rate,int inject_cap3);
+/* Explicit paired-v3 variant; the original constructor remains legacy. The
+ * test-only capability injection applies only to reply word7/flag31 here. */
+struct task3_phone_workload *task3_phone_workload_create_paired(
+    struct task3_phone_callbacks,uint32_t epoch,uint32_t generation,
+    uint32_t stream,uint32_t rate,int inject_cap3);
 void task3_phone_workload_destroy(struct task3_phone_workload *);
 /* One private 128-frame stereo buffer, no overwrite or hidden software queue.
  * Returns 1 only when ready and empty; 0 leaves the caller's block untouched.

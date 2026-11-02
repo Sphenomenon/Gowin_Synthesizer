@@ -47,6 +47,7 @@ module tb_task3_phone_window_transport;
     integer total_words=0,total_blocks=0,total_proxies=0,negative_cases=0;
     reg check_owner=1;
     workstation_task3_phone_window_tx #(.TIMEOUT_CYCLES(256),.PARTIAL_FLUSH_CYCLES(16)) tx(
+        .flush_i(1'b0),
         .clk_i(clk),.reset_ni(reset_n),.session_live_i(session_live),.armed_i(armed),.token_i(token),
         .local_valid_i(local_valid),.local_target_i(local_target),.local_write_i(local_write),
         .local_address_i(local_address),.local_data_i(local_data),.local_strobes_i(local_strobes),

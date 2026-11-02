@@ -6,7 +6,8 @@ module workstation_ae350_pcm_owner #(
     parameter integer WINDOW_BITS=10,
     parameter integer PREFILL_FRAMES=256,
     parameter integer HISTORY_TIMEOUT_CYCLES=4000000,
-    parameter integer MAX_STEP_ERROR=33554 // +/-2000ppm in Q24
+    parameter integer MAX_STEP_ERROR=33554, // +/-2000ppm in Q24
+    parameter bit SNAPSHOT_ENABLE=0
 )(
     input wire clk_i,reset_ni,cpu_ready_i,
     input wire command_valid_i,command_write_i,
@@ -193,6 +194,46 @@ module workstation_ae350_pcm_owner #(
     wire [31:0] rate_hz=rate_44100_i ? 32'd44100:32'd48000;
     wire [31:0] status={24'd0,session_live_i,context_ready_i,history_state==H_REQUEST || history_state==H_WAIT,
         history_state!=H_IDLE,failed,prefilled,selected,armed};
+    wire [31:0] capabilities=32'h67|(SUSTAINED_VERIFIED ? 32'h8:32'h0);
+    wire snapshot_capture_ready,snapshot_read_valid;
+    wire [31:0] snapshot_read_data;
+    // A read-only observation of one compute edge. This observation logic never
+    // changes queue, source, bitmap, audio scheduling or retired keys.
+    // The capture ID belongs to the audio owner and cannot be reopened by CPU
+    // observer reset. Disabled builds elaborate no snapshot storage.
+    generate if(SNAPSHOT_ENABLE)begin:g_snapshot
+        reg [31:0] words[0:19];
+        reg [31:0] capture_id;
+        reg valid;
+        wire capture=accepted && !command_write_i && command_address_i==12'h090;
+        assign snapshot_capture_ready=capture_id!=32'hffffffff;
+        assign snapshot_read_valid=valid && cpu_ready_i;
+        assign snapshot_read_data=snapshot_read_valid ? words[command_address_i[6:2]]:32'd0;
+        integer s;
+        always @(posedge clk_i or negedge reset_ni)begin
+            if(!reset_ni)begin
+                capture_id<=0;valid<=0;
+                for(s=0;s<20;s=s+1)words[s]<=0;
+            end else if(!cpu_ready_i)begin
+                valid<=0;
+            end else if(capture)begin
+                if(!snapshot_capture_ready)valid<=0;
+                else begin
+                    capture_id<=capture_id+1'b1;valid<=1;
+                    words[0]<=controller_epoch_i;words[1]<=transport_generation_i;
+                    words[2]<=active_controller;words[3]<=active_generation;
+                    words[4]<=active_stream;words[5]<=active_rate;words[6]<=active_physical;
+                    words[7]<=physical_epoch_i;words[8]<=rate_hz;words[9]<=status;
+                    words[10]<={28'd0,~owned};words[11]<={22'd0,queued};words[12]<=failure;
+                    words[13]<=expected_sequence;words[14]<=command_id;words[15]<=applied_id;
+                    words[16]<=capabilities;words[17]<=capture_id+1'b1;
+                    words[18]<=0;words[19]<=0;
+                end
+            end
+        end
+    end else begin:g_no_snapshot
+        assign snapshot_capture_ready=0,snapshot_read_valid=0,snapshot_read_data=0;
+    end endgenerate
     // Validate each command in parallel. A specific accepted operation must
     // not traverse the response-data/error mux for unrelated commands before
     // reaching its queue/bitmap updates. The response uses the same predicates.
@@ -228,7 +269,7 @@ module workstation_ae350_pcm_owner #(
         case(command_address_i)
             12'h000:response_data_o=32'h50434d31;
             12'h004:response_data_o=32'h00010000;
-            12'h008:response_data_o=32'h67|(SUSTAINED_VERIFIED ? 32'h8:32'h0);
+            12'h008:response_data_o=capabilities;
             12'h00c:response_data_o=status;
             12'h010:response_data_o=failure;
             12'h014:response_data_o={28'd0,~owned};
@@ -272,8 +313,14 @@ module workstation_ae350_pcm_owner #(
             12'h080:response_data_o=active_stream;
             12'h088:response_data_o=underflows;
             12'h08c:response_data_o=overflows;
+            12'h090:begin
+                if(SNAPSHOT_ENABLE && snapshot_capture_ready)response_data_o=32'h50434d53;
+                else response_error_o=1;
+            end
             default:begin
-                if(!command_address_i[11] || !command_write_i)response_error_o=1;
+                if(SNAPSHOT_ENABLE && !command_write_i && command_address_i>=12'h100 && command_address_i<=12'h14c)begin
+                    response_data_o=snapshot_read_data;response_error_o=!snapshot_read_valid;
+                end else if(!command_address_i[11] || !command_write_i)response_error_o=1;
             end
         endcase
         if(command_address_i[1:0]!=0)response_error_o=1;

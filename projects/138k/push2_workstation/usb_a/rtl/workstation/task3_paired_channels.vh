@@ -21,6 +21,11 @@
 // Explicit phone-window v2 capability, never inferred from legacy block6.
 `define TASK3_PAIR_PHONE_WINDOW_VERSION 32'd2
 `define TASK3_PAIR_PHONE_WINDOW_FEATURES 32'h80080601
+// Explicit batch-control v3; original PCM1 sustained capability is separate.
+`define TASK3_PAIR_PHONE_BATCH_VERSION 32'd3
+`define TASK3_PAIR_PHONE_BATCH_FEATURES 32'hc0080601
+`define TASK3_PAIR_PHONE_BATCH_REQUEST_BYTES 6'd30
+`define TASK3_PAIR_PHONE_BATCH_REPLY_BYTES 6'd32
 `define TASK3_PAIR_KIND_WINDOW_ACK 2'd3
 // ch15 low96={base_address32,first_word_sequence32,context_token32},
 // followed by 1..5 stereo32 words; len12+4*n; unused high bytes zero.

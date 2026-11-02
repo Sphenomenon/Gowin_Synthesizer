@@ -3,7 +3,9 @@
 // Host workload model only. Actual endpoints/PHY/APB CDC/PCM1 owner, ideal wires.
 // Synthetic TF analysis/final-tap producers; no CPU instruction, RF/SBC, CNN,
 // DDR recording object, DSP/I2S/DAC, electrical or physical timing acceptance.
-module task3_phone_lcd_cosim(
+module task3_phone_lcd_cosim #(
+    parameter bit PHONE_BATCH=1'b0
+)(
     input wire mclk_i,wclk_i,audio_clk_i,reset_n,enable_i,budget_i,run_i,media_i,
     input wire analysis_start_i,analysis_stall_i,
     input wire [1:0] cpu_valid,cpu_write,
@@ -14,6 +16,7 @@ module task3_phone_lcd_cosim(
     output wire [7:0] owner_failure_o,
     output wire [31:0] queued_phone_o,analysis_received_o,record_received_o,
     output reg [31:0] sample_ticks_o=0,rendered_o=0,nonzero_o=0,applied_words_o=0,phone_blocks_o=0,rejected_window_commands_o=0,
+    output reg [31:0] owner_source_commands_o=0,batch_requests_o=0,batch_replies_o=0,
     output wire [31:0] m_packets_o,w_packets_o,m_probe_o,w_probe_o,m_rtt_o,w_rtt_o,
     output wire [31:0] max_analysis_queue_o,max_tf_queue_o,max_record_queue_o,
     output wire [7:0] fault_bits_o,
@@ -59,7 +62,7 @@ module task3_phone_lcd_cosim(
             .tx_packets_o(tx_packets[i]),.rx_packets_o(),.crc_errors_o(crc_errors[i]),.sequence_errors_o(sequence_errors[i]),.rejected_packets_o(),.overflow_count_o(overflows[i]),
             .congestion_cycles_o(),.last_rtt_cycles_o(),.max_rtt_cycles_o(max_rtt[i]),.probe_results_o(probes[i]),.link_timeouts_o());
     end
-    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.PHONE_WINDOW_BLOCK(W_PHONE_WINDOW),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) w(
+    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.PHONE_WINDOW_BLOCK(W_PHONE_WINDOW),.PHONE_BATCH(PHONE_BATCH),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) w(
         .clk_i(wclk_i),.reset_ni(reset_n),.link_ready_i(business[1]),.panic_i(panic),
         .local_boot_i(32'd22),.peer_boot_i(m_boot),.session_i(32'd33),.generation_i(generation),
         .rx_valid_i(rx_valid[1]),.rx_ready_o(rx_ready[1]),.rx_channel_i(rx_channel[1]),.rx_payload_i(rx_payload[1]),.rx_length_i(rx_length[1]),
@@ -90,7 +93,7 @@ module task3_phone_lcd_cosim(
     wire [31:0] mresponse=mcommand_target ? 32'hc10c0001:cb_response;
     wire merror=mcommand_target ? 1'b0:cb_error;
     gw138k_apb_cdc command_cdc(
-        .reset_n(reset_n && !m_observer_reset),.pclk(mclk_i),.audio_clk(audio_clk_i),
+        .reset_n(reset_n && !m_observer_reset && (!PHONE_BATCH || phone_live)),.pclk(mclk_i),.audio_clk(audio_clk_i),
         .psel(mcommand_valid && !mcommand_target),.penable(mcommand_valid && !mcommand_target),
         .pwrite(mcommand_write),.paddr(mcommand_address),.pwdata(mcommand_data),.pstrb(mcommand_strobes),
         .pready(cb_ready),.pslverr(cb_error),.prdata(cb_response),.command_reset_n(cb_reset),
@@ -120,7 +123,7 @@ module task3_phone_lcd_cosim(
             end
         end
     end
-    workstation_ae350_pcm_owner owner(
+    workstation_ae350_pcm_owner #(.SNAPSHOT_ENABLE(PHONE_BATCH)) owner(
         .clk_i(audio_clk_i),.reset_ni(reset_n),.cpu_ready_i(cb_reset),
         .command_valid_i(oc_valid),.command_ready_o(oc_ready),.command_write_i(oc_write),
         .command_address_i(oc_address),.command_data_i(oc_data),.command_strobes_i(oc_strobes),
@@ -137,10 +140,16 @@ module task3_phone_lcd_cosim(
             rejected_window_commands_o<=rejected_window_commands_o+1;
         end else applied_words_o<=applied_words_o+1;
     end
+    always @(posedge audio_clk_i)if(reset_n && oc_valid && oc_ready && oc_write && oc_address==12'h040)
+        owner_source_commands_o<=owner_source_commands_o+1;
+    always @(posedge wclk_i)if(tx_valid[1] && tx_ready[1] && tx_channel[1]==`TASK3_PAIR_CH_PHONE && tx_length[1]==`TASK3_PAIR_PHONE_BATCH_REQUEST_BYTES)
+        batch_requests_o<=batch_requests_o+1;
+    always @(posedge mclk_i)if(tx_valid[0] && tx_ready[0] && tx_channel[0]==`TASK3_PAIR_CH_PHONE_ACK && tx_length[0]==`TASK3_PAIR_PHONE_BATCH_REPLY_BYTES)
+        batch_replies_o<=batch_replies_o+1;
     always @(posedge wclk_i)if(tx_valid[1] && tx_ready[1] && tx_channel[1]==`TASK3_PAIR_CH_PHONE_WINDOW)phone_blocks_o<=phone_blocks_o+1;
     wire hci_ready;wire [31:0] hci_epoch,hci_generation;wire [3:0] model_status;
     wire analysis_ready,analysis_pcm_ready;
-    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(1'b1),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) m(
+    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(1'b1),.PHONE_BATCH(PHONE_BATCH),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) m(
         .clk_i(mclk_i),.reset_ni(reset_n && !m_observer_reset),.link_ready_i(business[0]),.panic_i(panic),
         .local_boot_i(m_boot),.peer_boot_i(32'd22),.session_i(32'd33),.generation_i(generation),
         .rx_valid_i(rx_valid[0]),.rx_ready_o(rx_ready[0]),.rx_channel_i(rx_channel[0]),.rx_payload_i(rx_payload[0]),.rx_length_i(rx_length[0]),

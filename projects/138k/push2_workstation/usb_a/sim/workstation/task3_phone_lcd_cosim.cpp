@@ -92,7 +92,11 @@ int main(int argc,char **argv) {
     uint32_t start_ticks=t.sample_ticks_o;
     if(concurrent) {m.stall_begin=begin+5000000000ULL;m.stall_end=m.stall_begin+3960000000ULL;}
     task3_phone_callbacks callbacks{&m,Model::rd,Model::wr,Model::now};
+#ifdef TASK3_MODEL_PHONE_BATCH
+    auto *work=task3_phone_workload_create_paired(callbacks,44,55,1,48000,inject);
+#else
     auto *work=task3_phone_workload_create(callbacks,44,55,1,48000,inject);
+#endif
     if(!work)throw std::runtime_error("firmware fixture allocation");
     task3_phone_stats s{};uint64_t max_commit_ps=0,last_commit_ps=0,max_submit_ps=0;
     uint64_t first_commit_ps=0,first_selected_ps=0,first_failure_ps=0,first_ready_ps=0;
@@ -140,6 +144,7 @@ int main(int argc,char **argv) {
     J(passes,s.passes);J(pumps,s.pumps);J(media_polls,s.media_polls);J(submit_calls,s.submit_calls);J(rejected_submits,s.rejected_submits);J(uncertain_submits,s.uncertain_submits);
     J(firmware_fault,s.fault);J(media_fault,s.media_fault);J(firmware_fences,s.fences);J(adapter_armed,s.armed);J(adapter_ready,s.ready);J(adapter_pending,s.pending);
     J(observed_caps,s.observed_caps);J(max_window_writes_per_submit,s.max_window_writes_per_submit);J(window_writes,s.window_writes);J(pcm_reads,s.pcm_reads);J(pcm_writes,s.pcm_writes);
+    J(owner_source_commands,t.owner_source_commands_o);J(batch_requests,t.batch_requests_o);J(batch_replies,t.batch_replies_o);
     J(clock_reads,s.clock_reads);J(clock_writes,s.clock_writes);J(local_hci_reads,s.local_hci_reads);J(local_hci_writes,s.local_hci_writes);
     J(mmio_reads,m.mmio_reads);J(mmio_writes,m.mmio_writes);J(mmio_errors,m.mmio_errors);J(max_mmio_ps,m.max_mmio_ps);J(mmio_total_ps,m.mmio_total_ps);
     J(mmio_errors_after_owner_underrun,m.mmio_errors_after_underrun);J(rejected_window_commands,t.rejected_window_commands_o);
@@ -151,6 +156,7 @@ int main(int argc,char **argv) {
     J(final_fault_bits,final_faults);J(malformed_packets,t.malformed_o);J(stale_packets,t.stale_o);
     J(record_at_first_failure,record_at_failure);J(analysis_at_first_failure,analysis_at_failure);J(ticks_at_first_failure,ticks_at_failure);
     J(sample_ticks,t.sample_ticks_o-start_ticks);J(ticks_before_cancel,ticks_before_cancel);J(ticks_after_cancel,ticks_after_cancel);J(cancel_end_ps,cancel_end);
+    J(owner_selected_after_cancel,uint32_t(t.selected_o));J(owner_queued_after_cancel,t.queued_phone_o);
     o<<"  \"hardware_tested\": false,\n  \"sustained_phone_audio_accepted\": false\n}\n";
     t.final();std::cout<<"MODEL_REPORT "<<argv[5]<<" accepted="<<s.accepted<<" owner_failure="<<owner_failure<<" nonzero="<<nonzero<<" faults="<<final_faults<<"\n";
     return 0;

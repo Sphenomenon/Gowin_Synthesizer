@@ -20,7 +20,7 @@ struct task3_phone_workload {
     struct a138_runtime_media actual;
     struct task3_phone_stats stats;
     uint32_t epoch;
-    int inject_cap3;
+    int inject_cap3,paired;
 };
 static int remote_read(struct task3_phone_workload *p,unsigned lane,uint32_t off,uint32_t *v) {
     if(lane)++p->stats.clock_reads;else ++p->stats.pcm_reads;
@@ -30,6 +30,13 @@ static int remote_read(struct task3_phone_workload *p,unsigned lane,uint32_t off
         if(p->inject_cap3) {
             if(*v!=UINT32_C(0x67))return 0;
             *v|=8u;
+        }
+    }
+    if(!lane&&p->paired&&off==0x15cu) {
+        p->stats.observed_caps=UINT32_C(0x67)|((*v>>31)*8u);
+        if(p->inject_cap3) {
+            if(*v&UINT32_C(0x80000000))return 0;
+            *v|=UINT32_C(0x80000000);
         }
     }
     return 1;
@@ -93,14 +100,21 @@ static void observed_cancel(void *ctx,uint32_t e,uint32_t g,uint32_t s) {
     struct task3_phone_workload *p=ctx;++p->stats.cancels;
     p->actual.cancel(p->actual.context,e,g,s);
 }
-struct task3_phone_workload *task3_phone_workload_create(struct task3_phone_callbacks cb,
-        uint32_t epoch,uint32_t generation,uint32_t stream,uint32_t rate,int inject_cap3) {
+static struct task3_phone_workload *create_workload(struct task3_phone_callbacks cb,
+        uint32_t epoch,uint32_t generation,uint32_t stream,uint32_t rate,int inject_cap3,int paired) {
     if(!cb.read||!cb.write||!cb.now_ms||!epoch||!generation||!stream||
        (rate!=44100u&&rate!=48000u))return 0;
     struct task3_phone_workload *p=calloc(1,sizeof *p);if(!p)return 0;
-    p->cb=cb;p->epoch=epoch;p->inject_cap3=!!inject_cap3;
-    a138_pcm_media_init(&p->pcm,(struct a138_hci_bus){p,pcm_read_callback,pcm_write_callback},
-        (a138_clock_bus){p,clock_read_callback,clock_write_callback});
+    p->cb=cb;p->epoch=epoch;p->inject_cap3=!!inject_cap3;p->paired=!!paired;
+    struct a138_hci_bus pcm_bus={p,pcm_read_callback,pcm_write_callback};
+    a138_clock_bus clock_bus={p,clock_read_callback,clock_write_callback};
+    if(paired) {
+#ifdef A138_TASK3_PHONE_BATCH
+        a138_pcm_media_init_paired(&p->pcm,pcm_bus,clock_bus);
+#else
+        free(p);return 0;
+#endif
+    }else a138_pcm_media_init(&p->pcm,pcm_bus,clock_bus);
     p->actual=a138_pcm_media_callbacks(&p->pcm);
     struct a138_runtime_media media={p,observed_poll,observed_submit,observed_cancel};
     a138_classic_runtime_init_session(&p->runtime,
@@ -119,6 +133,14 @@ struct task3_phone_workload *task3_phone_workload_create(struct task3_phone_call
     r->classic.format=(struct a138_classic_format){rate,2,8,16,0,2,53};
     r->observed_generation=generation;r->observed_stream=stream;
     return p;
+}
+struct task3_phone_workload *task3_phone_workload_create(struct task3_phone_callbacks cb,
+        uint32_t epoch,uint32_t generation,uint32_t stream,uint32_t rate,int inject_cap3) {
+    return create_workload(cb,epoch,generation,stream,rate,inject_cap3,0);
+}
+struct task3_phone_workload *task3_phone_workload_create_paired(struct task3_phone_callbacks cb,
+        uint32_t epoch,uint32_t generation,uint32_t stream,uint32_t rate,int inject_cap3) {
+    return create_workload(cb,epoch,generation,stream,rate,inject_cap3,1);
 }
 void task3_phone_workload_destroy(struct task3_phone_workload *p) {free(p);}
 int task3_phone_workload_enqueue128(struct task3_phone_workload *p,int16_t left,int16_t right) {

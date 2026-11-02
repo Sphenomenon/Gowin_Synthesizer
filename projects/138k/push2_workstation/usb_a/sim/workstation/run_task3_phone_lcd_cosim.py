@@ -20,7 +20,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def run(project, output, duration_ms):
+def run(project, output, duration_ms, phone_batch=False):
     project, output = project.resolve(), output.resolve()
     if duration_ms < 20 or duration_ms > 200:
         raise ValueError('diagnostic window must be 20..200 model milliseconds')
@@ -33,7 +33,7 @@ def run(project, output, duration_ms):
     apb = (project / relative).resolve()
     if relative.is_absolute() or '..' in relative.parts or not apb.is_relative_to(project) or sha(apb) != policy['prepared_APB_sha256']:
         raise ValueError('actual prepared APB source differs from locked policy')
-    names = ('m_bus_endpoint', 'w_bus_endpoint', 'phone_window_tx', 'phone_window_rx',
+    names = ('m_bus_endpoint', 'w_bus_endpoint', 'phone_batch_m', 'phone_batch_w', 'phone_window_tx', 'phone_window_rx',
              'pcm_block_tx', 'pcm_block_rx', 'record_ingress', 'final_tap_export',
              'phone_command_ingress', 'phone_command_proxy', 'phone_command_mux',
              'record_source_gate', 'lcd_transport', 'lcd_phy')
@@ -50,14 +50,16 @@ def run(project, output, duration_ms):
                *sorted((ROOT / 'firmware/ae350').glob('*.[ch]')),
                ROOT / 'tools/prepare_ae350_sbc.py']
     before = {str(p): sha(p) for p in tracked}
-    report = dict(schema='task3-real-firmware-ideal-LCD-workload-v1', passed=False,
+    report = dict(schema='task3-real-firmware-ideal-LCD-workload-v2', passed=False, phone_batch=phone_batch,
                   project=str(project), prepared_APB_sha256=sha(apb), inputs_sha256=before,
                   commands=[], cases=[], hardware_tested=False, bitstream=None,
                   sustained_phone_audio_accepted=False, physical_budget_authorized=False,
                   actual_RTL=['M/W endpoints', 'LCD transport and PHY with default maintenance',
-                              'policy-locked M APB held-command CDC', 'original PCM1 owner'],
+                              'policy-locked M APB held-command CDC', 'original PCM1 owner with optional frozen snapshot'],
                   actual_firmware=['unmodified runtime_pass four times per pump',
-                                   'unmodified PCM poll/submit/timeout/cancel/command checks'],
+                                   'explicit paired-v3 PCM poll/submit/cancel and original runtime timeout' if phone_batch else
+                                   'original PCM poll/submit/timeout/cancel/command checks'],
+                  observer_reset_policy='batch only: revoke phone lease resets observer APB CDC; owner root/retired stream/capture lifetime remains independent',
                   model_assumptions=['ideal zero-delay cross-wires; no electrical validation',
                      'M50MHz, W50MHz or45.45MHz phase3ns, audio average76.8MHz',
                      'synthetic TF analysis and final-tap sources each offered48k; TF may pause at256 frames',
@@ -107,7 +109,8 @@ def run(project, output, duration_ms):
         report['verilator'] = command('verilator_version', ['verilator', '--version']).strip()
         build_log = command('build', ['verilator', '--cc', '--exe', '--build', '-j', '4', '-Wno-fatal',
             '--top-module', 'task3_phone_lcd_cosim', '--Mdir', obj,
-            '-I' + str(snapshot), '-CFLAGS', '-std=c++17 -I' + str(ROOT / 'sim/fixtures'),
+            '-GPHONE_BATCH=' + str(int(phone_batch)),
+            '-I' + str(snapshot), '-CFLAGS', '-std=c++17 ' + ('-DTASK3_MODEL_PHONE_BATCH ' if phone_batch else '') + '-I' + str(ROOT / 'sim/fixtures'),
             '-LDFLAGS', str(library), snapshot / cpp.relative_to(ROOT),
             *[snapshot / p.relative_to(ROOT) for p in sources], cdc,
             snapshot / top.relative_to(ROOT)], cwd=snapshot)
@@ -138,17 +141,23 @@ def run(project, output, duration_ms):
                     raise ValueError('analysis/record source failed; independent progress not established')
                 if case['ticks_after_cancel'] < case['ticks_before_cancel'] + 40:
                     raise ValueError('audio schedule stopped during cancellation')
+                if case['owner_selected_after_cancel'] or case['owner_queued_after_cancel']:
+                    raise ValueError('actual owner did not retire source/queued PCM after cancellation')
                 if concurrent and (case['analysis_received'] < 100 or case['record_received'] < 100 or
                                    not case['stall_done'] or case['record_frames_during_analysis_stall'] < 100):
                     raise ValueError('missing independent stream/analysis congestion coverage')
-                if not inject and (case['observed_caps'] != 0x67 or case['pcm_writes'] or
+                if not inject and (case['observed_caps'] != 0x67 or case['window_writes'] or case['owner_source_commands'] or
                                    case['accepted_blocks'] or case['owner_selected'] or case['final_fault_bits']):
                     raise ValueError('production sustained-audio refusal failed')
                 if inject and (case['observed_caps'] != 0x67 or case['submit_calls'] < 8 or
                                case['window_writes'] < 128 or case['accepted_blocks'] < 1):
                     raise ValueError('missing real firmware submission workload')
-                if inject and (not case['owner_failed'] or case['owner_failure'] != 4):
+                if inject and not phone_batch and (not case['owner_failed'] or case['owner_failure'] != 4):
                     raise ValueError('expected actual owner underrun was not reproduced; re-evaluate model conclusions')
+                if inject and phone_batch and (case['owner_failed'] or case['firmware_fault'] or case['media_fault'] or case['final_fault_bits'] or
+                                              case['accepted_blocks'] < duration_ms * 3 // 8 - 1 or case['maximum_offer_backlog_blocks'] > 1 or
+                                              case['exact_nonzero_stereo_outputs'] < duration_ms * 48 - 512):
+                    raise ValueError('batch mode failed finite model refill coverage; not sustained acceptance')
                 case['observation'] = ('production capability refuses sustained phone startup' if not inject else
                     'injected capability only: sustained path fails in this optimistic model' if
                     case['owner_failed'] or case['firmware_fault'] or case['media_fault'] or case['final_fault_bits'] else
@@ -158,7 +167,9 @@ def run(project, output, duration_ms):
                       'owner_failure=', case['owner_failure'], 'nonzero=', case['exact_nonzero_stereo_outputs'], flush=True)
         report['source_unchanged'] = before == {str(p): sha(p) for p in tracked}
         report['prepared_APB_unchanged'] = sha(apb) == policy['prepared_APB_sha256']
-        if not report['source_unchanged'] or not report['prepared_APB_unchanged']:
+        report['firmware_artifacts_unchanged'] = (sha(library) == report['firmware_library']['sha256'] and
+            sha(output / 'firmware/verification.json') == report['firmware_library']['receipt_sha256'])
+        if not report['source_unchanged'] or not report['prepared_APB_unchanged'] or not report['firmware_artifacts_unchanged']:
             raise ValueError('inputs changed during cosimulation')
         report['passed'] = True
     finally:
@@ -170,5 +181,6 @@ if __name__ == '__main__':
     parser.add_argument('--project', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--duration-ms', type=int, default=40)
+    parser.add_argument('--phone-batch', action='store_true', help='explicit paired v3 RTL and firmware; production CAPS remains closed')
     args = parser.parse_args()
-    run(args.project, args.output, args.duration_ms)
+    run(args.project, args.output, args.duration_ms, args.phone_batch)

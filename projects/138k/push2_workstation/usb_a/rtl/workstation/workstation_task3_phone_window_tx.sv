@@ -3,9 +3,11 @@
 // bounded queue admission; all other operations retain remote-completion scope.
 module workstation_task3_phone_window_tx #(
     parameter integer TIMEOUT_CYCLES=50000,
-    parameter integer PARTIAL_FLUSH_CYCLES=12500
+    parameter integer PARTIAL_FLUSH_CYCLES=12500,
+    parameter bit EXTERNAL_FLUSH_ENABLE=1'b0
 )(
     input wire clk_i,reset_ni,session_live_i,armed_i,
+    input wire flush_i,
     input wire [31:0] token_i,
     input wire local_valid_i,local_target_i,local_write_i,
     input wire [11:0] local_address_i,
@@ -50,6 +52,7 @@ module workstation_task3_phone_window_tx #(
     wire contiguous={1'b0,held_address}==({1'b0,building_address}+13'(building_count*4));
     wire appendable=building_count<5 && (building_count==0 || contiguous);
     wire wants_flush=building_count!=0 && (building_count==5 ||
+        (EXTERNAL_FLUSH_ENABLE && flush_i) ||
         partial_timer>=32'(PARTIAL_FLUSH_CYCLES-1) ||
         (pending && (!held_posted || !appendable)));
     wire [32:0] expected_ack_next={1'b0,flight_first}+33'(flight_count);
