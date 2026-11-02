@@ -1,0 +1,80 @@
+{
+  "schema": "dual138k-w-controller-identity-source-v1",
+  "date": "2026-11-02",
+  "purpose": "Verify the real local BD_ADDR and actual inquiry/page scan state through the existing sole CPU/HCI command owner before continuing phone page-timeout investigation. Whole W audio-only profile retained.",
+  "source_sha256": {
+    "firmware/ae350/classic_security.c": "a55398cba5880665af19f55fc535a08c4ee2b171cf3ced106bf3ddf7d86a116a",
+    "firmware/ae350/classic_security.h": "8795b4249ed87c7671f89a7628b583ff2776f90db2630e1d76038e54273cdf4f",
+    "firmware/ae350/classic_runtime.c": "3409349812752e15bcfa15e1ddd1956346b7a57163f7e05db3d521bf0679b052",
+    "firmware/ae350/classic_runtime.h": "cd96aca374483c9113b75d073f805da4d4dd99cfd5e0fc7d823a5e7a8a0abbc9",
+    "sim/ae350_security_fixture.c": "32411471d750c79814106a6853b2fb2cad41263b0fe6ae63a18da188b98faeb5",
+    "sim/ae350_runtime_fixture.c": "5b7f61094a665e18a61d69b8f2539a6afe26ef7382e6c18b580de80f94d5ef6b",
+    "sim/tb_workstation_hci_native_transport.sv": "1e107254cc6174f4d1f119ed1976eefdfbe78d0ffc573fb8dd252b1be2d0dbc5",
+    "sim/run_workstation_hci_session.py": "36f5c64c9abcc51343ede9972f98a572abfb96ba99718dd835b9c3c1590ad598",
+    "rtl/bluetooth/hci_owner/workstation_hci_native_transport.sv": "1c6b81a56b566ff3586c2ab26112f25d5242dad39df4a76751c260d30ee5181a",
+    "rtl/bluetooth/hci_owner/NATIVE_TRANSPORT_CONTRACT.md": "5ad38971bfe7aeb634b09ba117a2cc708e9016edae8b9845fa6197b6d08d2d49"
+  },
+  "production_changes": {
+    "session_only_startup": [
+      "WriteScanEnable3 retains existing sequence",
+      "ReadBDADDR exact matching owner2 completion, 12-byte event, valid six-byte address",
+      "ReadScanEnable exact 7-byte event and value3 before ready"
+    ],
+    "default_durable_startup_unchanged": true,
+    "native_transport_new_opcodes": [
+      "1009",
+      "0c19"
+    ],
+    "native_allowlist": "SESSION_ONLY_PAIRING only, parameterless 3-byte commands; existing private copy/credit/epoch/generation/token remain",
+    "diagnostic": "Actual BD_ADDR low32/high16 only before first ACL, no close/fault and complete ready; runtime fault has FC prefix; original first close/ACL retained. No new RTL observer, queue, CPU storage bank or clock."
+  },
+  "offline_evidence": {
+    "w-local-identity-service-v1/security-full-v2/verification.json": {
+      "sha256": "c8fa50f6818e768ce560f59e4d9ecc80e02526a4b35cd86cbf85bd87b9f24215",
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-local-identity-service-v1/security-full-v2/verification.json"
+    },
+    "w-local-identity-service-v1/runtime-full-v2/verification.json": {
+      "sha256": "f3b0f2ce27c2ca81f3503f2625da7ba1d0f81e518f8a51f04025582f9995e1cb",
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-local-identity-service-v1/runtime-full-v2/verification.json"
+    },
+    "w-phone-b6-native-session-v3/verification.json": {
+      "sha256": "c718667a6fa261df23da2eb4f2cda12c1f7dd7efb3bfdad8a37c8b6352f37e3e",
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-b6-native-session-v3/verification.json"
+    },
+    "w-phone-b6-native-owner-v1/verification.json": {
+      "sha256": "76479a4be34324b74e49008754aad24e04af8ad1ef917fdf053216123b9f0860",
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-b6-native-owner-v1/verification.json"
+    }
+  },
+  "checks": {
+    "security_default_native_and_sanitizer_each": 52747,
+    "security_worker_native_and_sanitizer_each": 37736,
+    "security_mutants_rejected": 32,
+    "runtime_SBC_cases": 11,
+    "runtime_native_and_sanitizer_each": 4209,
+    "runtime_mutants_rejected": 15,
+    "PCM_mutants_rejected": 9,
+    "native_owner_checks": 268,
+    "native_owner_mutants_rejected": 11,
+    "session_cases_each_policy": 1315,
+    "session_mutants_rejected": 7
+  },
+  "incremental_object_budget": {
+    "security_owner_bytes_before": 548,
+    "security_owner_bytes_after": 556,
+    "rv32_security_text_rodata_before": 11484,
+    "rv32_security_text_rodata_after": 11768,
+    "max_security_function_stack_bytes": 64,
+    "host_runtime_bytes_before": 7024,
+    "host_runtime_bytes_after": 7032,
+    "aggregate_firmware_link_proved": false
+  },
+  "retained_failed_test": "native-session-v2 negative removed one of two independent policy gates and survived because the second correctly rejected it. v3 explicitly removes both for the default-policy negative; all seven then rejected. This was a test mutation scope correction, not a circuit relaxation.",
+  "full_synthesis_complete": false,
+  "PnR_complete": false,
+  "physical_UserCode_reserved": "D21102B6",
+  "phone_A2DP_accepted": false,
+  "hardware_tested": false,
+  "Flash_written": false,
+  "release_ready": false
+}

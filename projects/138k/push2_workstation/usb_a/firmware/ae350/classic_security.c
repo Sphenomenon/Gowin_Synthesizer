@@ -6,7 +6,8 @@
 enum { P_NONE,P_ACCEPT,P_BASIC,P_HOST,P_AUTH,P_ENCRYPT,P_SIZE,P_STORE,P_SECURE };
 enum { C_LOCAL_FEATURES=1,C_SSP,C_LOCAL_HOST,C_CLASS,C_SCAN,C_ACCEPT,C_REJECT,
     C_BASIC,C_HOST,C_AUTH,C_ENCRYPT,C_SIZE,C_KEY,C_KEY_NEG,C_IO,C_IO_NEG,
-    C_CONFIRM,C_CONFIRM_NEG,C_PIN_NEG,C_PASSKEY_NEG,C_OOB_NEG,C_DISCONNECT };
+    C_CONFIRM,C_CONFIRM_NEG,C_PIN_NEG,C_PASSKEY_NEG,C_OOB_NEG,C_DISCONNECT,
+    C_LOCAL_ADDRESS,C_READ_SCAN };
 enum { F_PROTOCOL=1,F_TIMEOUT,F_UNCERTAIN,F_STORAGE,F_POLICY,F_CLOCK,F_CAPACITY };
 
 static uint16_t le(const uint8_t *p) { return (uint16_t)(p[0]|(uint16_t)p[1]<<8); }
@@ -175,6 +176,12 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
         case 4:
             if(!s->session_only)return fence(s,F_PROTOCOL);
             p[0]=3;enqueue(s,C_SCAN,0x0c1a,p,1);break;
+        case 5:
+            if(!s->session_only)return fence(s,F_PROTOCOL);
+            enqueue(s,C_LOCAL_ADDRESS,0x1009,0,0);break;
+        case 6:
+            if(!s->session_only)return fence(s,F_PROTOCOL);
+            enqueue(s,C_READ_SCAN,0x0c19,0,0);break;
         default:return fence(s,F_PROTOCOL);
         }
         return s->fenced?A138_SECURITY_FENCED:A138_SECURITY_OK;
@@ -287,7 +294,7 @@ enum a138_security_result a138_security_response(struct a138_security *s,uint32_
      * generation either. Validate routing/kind/opcode first, then only retire. */
     if(c->generation&&(!s->active||c->generation!=s->generation)){retire(s);return A138_SECURITY_OK;}
     if(status){
-        if(c->kind<=C_SCAN)return fence(s,F_PROTOCOL);
+        if(c->kind<=C_SCAN||c->kind==C_LOCAL_ADDRESS||c->kind==C_READ_SCAN)return fence(s,F_PROTOCOL);
         if(c->kind==C_ACCEPT){
             if(s->active)return fence(s,F_PROTOCOL);
             s->request_pending=0;s->accept_sent=0;s->phase=P_NONE;retire(s);return A138_SECURITY_OK;
@@ -304,7 +311,18 @@ enum a138_security_result a138_security_response(struct a138_security *s,uint32_
         if(n!=16u||p[6]!=1u||p[7]<1u||!(p[8]&1u)||(p[8]&8u))return fence(s,F_POLICY);
         ++s->local_step;break;
     case C_CLASS:if(n!=6u||!s->session_only)return fence(s,F_PROTOCOL);++s->local_step;break;
-    case C_SCAN:if(n!=6u)return fence(s,F_PROTOCOL);s->ready=1;break;
+    case C_SCAN:
+        if(n!=6u)return fence(s,F_PROTOCOL);
+        if(s->session_only)++s->local_step;else s->ready=1;
+        break;
+    case C_LOCAL_ADDRESS:
+        if(n!=12u||!s->session_only)return fence(s,F_PROTOCOL);
+        if(!good_peer(p+6))return fence(s,F_POLICY);
+        memcpy(s->local_address,p+6,6);s->local_address_valid=1;++s->local_step;break;
+    case C_READ_SCAN:
+        if(n!=7u||!s->session_only)return fence(s,F_PROTOCOL);
+        if(!s->local_address_valid||p[6]!=3u)return fence(s,F_POLICY);
+        s->ready=1;break;
     case C_SIZE:
         if(n!=9u||le(p+6)!=s->handle||p[8]<7u||p[8]>16u||
            ((s->bond.revision||s->session_only)&&p[8]<s->bond.minimum_size)){close_link(s,0x05);break;}

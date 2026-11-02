@@ -62,10 +62,14 @@ void a138_classic_runtime_init_session(struct a138_classic_runtime *,struct a138
  * one SBC frame decode per pass. Tick is always before service observations.
  * Each downstream callback and bus access must itself be bounded. */
 void a138_classic_runtime_step(struct a138_classic_runtime *);
-/* Existing W diagnostic registers only. Header is the actual four HCI ACL
- * bytes in little-endian order, or CPU1 before the first ACL. Before any ACL,
- * an actual security close instead exposes its sticky D4/FC close_context.
- * Status is
+/* Existing W diagnostic registers only. A runtime fault takes precedence:
+ * header=FC/runtime_fault/transport_fault/security_failure, one byte each;
+ * status retains the ACL diagnostic. Otherwise header is the actual four HCI
+ * ACL bytes in little-endian order, or CPU1 before the first ACL. Before any
+ * ACL, an actual security close exposes its sticky D4/FC close_context. With
+ * no close, fully ready session-only startup exposes the verified local BD_ADDR
+ * as header=low32/status=high16 (HCI little-endian order). No command is issued
+ * by this reader. In the ordinary ACL case status is
  * [3:0] Classic result, [4] started, [5] active, [6] secure, [7] exact security
  * epoch/generation, [15:8] received packet count modulo256. BUSY retries do
  * not increment the count. Reading this snapshot has no transport effects. */

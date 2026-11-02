@@ -266,6 +266,20 @@ module tb_workstation_hci_native_transport #(parameter bit SESSION_ONLY_PAIRING=
                 bytes=0;bytes[15:0]=16'h0c1a;bytes[23:16]=8'(length-3);bytes[31:24]=3;
                 session_command(length,bytes,0);
             end
+            // Only the explicit session policy may verify the controller's
+            // actual identity and scan state, through the same physical owner.
+            for(integer read_kind=0;read_kind<2;read_kind=read_kind+1)begin
+                for(integer length=3;length<=8;length=length+1)begin
+                    bytes=0;bytes[15:0]=read_kind==0 ? 16'h1009 : 16'h0c19;
+                    bytes[23:16]=8'(length-3);
+                    session_command(length,bytes,SESSION_ONLY_PAIRING && length==3);
+                end
+                for(integer declared=1;declared<=5;declared=declared+1)begin
+                    bytes=0;bytes[15:0]=read_kind==0 ? 16'h1009 : 16'h0c19;
+                    bytes[23:16]=8'(declared);
+                    session_command(3,bytes,0);
+                end
+            end
             // Existing SSP/GeneralBonding prerequisites stay constrained, and
             // CPU cannot take controller reset/initializer ownership.
             for(integer value=0;value<256;value=value+1)begin

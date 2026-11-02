@@ -64,6 +64,9 @@ struct a138_security {
     uint8_t secure,closing,disconnect_queued,delete_pending,forget_pending,forget_peer[6];
     uint32_t forget_revision;
     uint8_t close_reason,close_cause,failure,session_only;
+    /* Actual ReadBDADDR result in HCI little-endian byte order. Validity does
+     * not grant readiness: session-only startup also verifies scan enable3. */
+    uint8_t local_address[6],local_address_valid;
     /* First close only, retained until init. D4/FC marker; bits25:18 cause,
      * bits17:12 host/basic/remoteIO/ioReplied/ioPending/keyLoaded,
      * bits11:8 phase, bits7:0 triggering HCI event (F0 tick/F1 pump/F2 ACL/F3 forget). */
@@ -81,6 +84,8 @@ void a138_security_init(struct a138_security *s);
 enum a138_security_result a138_security_start(struct a138_security *s,uint32_t epoch,
     uint16_t tx_limit,struct a138_classic_service *classic,const struct a138_bond_store *store);
 /* Explicit SRAM/demo policy: SSP JustWorks / NoBonding, with inquiry+page scan.
+ * Startup reads the actual local BD_ADDR and verifies ReadScanEnable==3 before
+ * granting ready; durable/default startup retains its original page-scan gate.
  * No persistent-store callbacks are installed or called. Every new ACL link
  * pairs again; the controller's current encryption is still checked through
  * AuthenticationComplete, EncryptionChange and ReadEncryptionKeySize. Host

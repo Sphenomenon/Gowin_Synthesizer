@@ -207,9 +207,22 @@ static void runtime_pass(struct a138_classic_runtime *r,uint8_t allow_decode) {
 }
 void a138_classic_runtime_step(struct a138_classic_runtime *r) {runtime_pass(r,1);}
 void a138_classic_runtime_diagnostic(const struct a138_classic_runtime *r,uint32_t *header,uint16_t *status) {
-    if(header)*header=r?(r->acl_header==UINT32_C(0x43505531)&&r->security.close_context?
-        r->security.close_context:r->acl_header):UINT32_C(0x43505531);
-    if(status)*status=r?r->acl_diagnostic:0;
+    uint32_t h=UINT32_C(0x43505531);uint16_t s=0;
+    if(r){
+        h=r->acl_header;s=r->acl_diagnostic;
+        if(r->fault)h=UINT32_C(0xfc000000)|((uint32_t)r->fault<<16)|
+            ((uint32_t)r->transport.fault<<8)|r->security.failure;
+        else if(h==UINT32_C(0x43505531)){
+            if(r->security.close_context)h=r->security.close_context;
+            else if(r->security.session_only&&r->security.ready&&r->security.local_address_valid){
+                const uint8_t *a=r->security.local_address;
+                h=(uint32_t)a[0]|(uint32_t)a[1]<<8|(uint32_t)a[2]<<16|(uint32_t)a[3]<<24;
+                s=(uint16_t)(a[4]|(uint16_t)a[5]<<8);
+            }
+        }
+    }
+    if(header)*header=h;
+    if(status)*status=s;
 }
 /* Actual firmware root. W-DEMO explicitly uses NoBonding/session-only SSP;
  * other profiles retain the disabled durable-backend gate. Neither policy

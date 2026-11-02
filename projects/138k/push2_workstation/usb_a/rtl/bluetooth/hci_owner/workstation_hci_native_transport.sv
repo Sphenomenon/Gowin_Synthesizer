@@ -304,13 +304,14 @@ module workstation_hci_native_transport #(
             16'h040b,16'h040c,16'h040e,16'h0411,16'h0413,16'h041b,16'h041c,
             16'h042b,16'h042c,16'h042d,16'h042f,16'h0433,16'h0434,16'h1408:
                 cpu_opcode_allowed=1;
-            16'h0c24:cpu_opcode_allowed=SESSION_ONLY_PAIRING;
+            16'h0c24,16'h1009,16'h0c19:cpu_opcode_allowed=SESSION_ONLY_PAIRING;
             default:cpu_opcode_allowed=0;
         endcase
     endfunction
     function automatic cpu_command_shape(input [15:0] opcode,input [8:0] length,input [7:0] byte3,byte4,byte5);
         case(opcode)
             16'h1003:cpu_command_shape=length==3;
+            16'h1009,16'h0c19:cpu_command_shape=SESSION_ONLY_PAIRING && length==3;
             16'h1004,16'h0c56:cpu_command_shape=length==4 && byte3==1;
             16'h0c1a:cpu_command_shape=length==4 && (byte3==2 || (SESSION_ONLY_PAIRING && byte3==3));
             16'h0c24:cpu_command_shape=SESSION_ONLY_PAIRING && length==6 && byte3==8'h14 && byte4==8'h04 && byte5==8'h24;

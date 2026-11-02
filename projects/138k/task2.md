@@ -669,3 +669,12 @@ M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_worksta
 [新全量综合证据](push2_workstation/usb_a/reports/DUAL138K_BLE_DEMO_SYNTHESIS_20261102.json)：源HEAD4b964e0d，候选e06ff364b0467886，正规prepare封存608项staged、263项compiled和1499项工具；新全量综合299.856s／exit0，所有封存输入保持。实际综合FF50329／LUT63860／ALU13590／BSRAM等价274／SSRAM151，非物理BSRAM计数，未预记资源收益。新VG严格门核32声部、完整HDMI／效果、7个唯一BLE owner、16384帧真实PCM RAM36、98bit实际源D／目标D／heldQ及两侧时钟、native held与实际SDC选择器；未使用旧VG冒称新实现。
 
 首次检查器因Gowin映射端口拆名而拒绝，错误保留；v3仅按实际PCM源／目标逐位D/Q及原时钟关系补精确mapped审计，新增8个实际VG反例全部拒绝，6项新回归和18项原审计通过，新checker独立封存。独立DDR加密模块与128参考FF控制复核只允许复用定位配方，不能继承M26的路由／时序。新PnR随后独立运行；PLL、完整STA、实际routed CDC、实板录音及下载均待通过。W B6开始后的改动未混入该封存候选。
+
+
+### 2026-11-02：W B6 实际控制器身份与扫描状态源码
+
+手机清理仅RTK旧绑定、蓝牙重开及B5同位流SRAM重载后，fresh inquiry可见通用RTK名，但本次手机HCI显示CreateConnection返回0x04 page timeout，无ACL，不能冒称SSP或A2DP通过。B5实际H5失链sticky fault为0；初始化controller epoch来自LE_Rand，重载后变化不能误报成重复复位。原ReadBDADDR结果因debug未被消费而在B5网表裁剪，当前手机目标地址尚不能证明就是本板。
+
+[W B6源码与回归](push2_workstation/usb_a/reports/DUAL138K_W_B6_IDENTITY_SOURCE_20261102.json)：session-only服务通过唯一CPU/HCI owner在既有WriteScanEnable3后读取真实BD_ADDR并回读ScanEnable3，两项成功后才ready；默认durable顺序保持。PL仅在显式SESSION_ONLY_PAIRING允许无参数1009/0c19，物理命令信用、私有副本、epoch和原owner2完成不变。既有48bit诊断在首ACL前显示实读地址，故障明确输出FC各层原因，保留首close／ACL，不再用永久CPU1掩盖runtime fault。
+
+Security default原生／sanitizer各52747检查，W session各37736检查、32变异拒绝；runtime 11用例各4209检查、15+9变异拒绝；原生HCI268检查和11变异、两策略各1315实际包／信用检查和7变异、来源17项通过。独立源码复审无重大问题；对象增量据实记录，尚无整机链接／新全量综合／P&R／实板结论。新物理身份预留D21102B6，保留冻结B5及BLE C1候选，随后独立全量实现；本轮Flash不写。

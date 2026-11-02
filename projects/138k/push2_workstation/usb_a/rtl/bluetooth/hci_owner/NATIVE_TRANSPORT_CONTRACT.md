@@ -59,6 +59,14 @@ another owner. Before a BR link commands use generation0; afterwards commands
 and ACL use the actual PL BR generation. ACL packet length must respect the
 actual BR data limit; L2CAP fragmentation/reassembly remains a CPU service.
 
+The explicit `SESSION_ONLY_PAIRING` policy also permits parameterless
+`Read_BD_ADDR` (1009) and `Read_Scan_Enable` (0c19), each exactly three HCI
+command bytes. The same CPU command owner, private packet copy, physical
+command credit and original owner2 completion apply. The session service
+checks its actual address and scan state before declaring startup ready;
+these reads do not grant reset, advertising or another producer's ownership.
+The default policy rejects both commands.
+
 BEGIN/staging/COMMIT never mean irreversible acceptance. TX states are0 EMPTY,
 1 STAGING,2 PENDING,3 ACCEPTED,4 TRANSPORT_DONE,5 REJECTED,6 UNCERTAIN.
 ACCEPTED occurs only after the entire payload is in a private PL RAM and the

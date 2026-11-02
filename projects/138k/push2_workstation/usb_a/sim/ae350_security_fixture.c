@@ -7,6 +7,7 @@ static unsigned checks;
 static struct a138_classic_service classic;
 static struct a138_security sec;
 static const uint8_t peer[6]={1,2,3,4,5,6},other[6]={7,8,9,10,11,12};
+static const uint8_t local_address[6]={0x21,0x43,0x65,0x87,0xa9,0xcb};
 static struct a138_bond durable;
 static unsigned present,loads,replaces,deletes,replace_busy,replace_error,delete_busy,delete_error,load_error,load_corrupt;
 static uint32_t now,generation;
@@ -81,13 +82,26 @@ static void respond(struct a138_security_command c,unsigned status,unsigned asyn
     CHECK(a138_security_transport_done(&sec,77,c.token)==A138_SECURITY_STALE);
 }
 static void command(unsigned op,unsigned async,const uint8_t *extra,unsigned n){struct a138_security_command c=take(op);respond(c,0,async,extra,n);}
-static void startup(void){
-    uint8_t f[10]={0};struct a138_security_command c;
+static void startup_before_identity(void){
+    uint8_t f[10]={0};struct a138_security_command c;uint32_t before=sec.next_token;
     pump();c=take(0x1003);f[6]=8;f[7]=128;respond(c,0,0,f,8);CHECK(!sec.ready);
     pump();command(0x0c56,0,0,0);CHECK(!sec.ready);
     pump();memset(f,0,sizeof f);f[0]=1;f[1]=1;f[2]=1;command(0x1004,0,f,10);CHECK(!sec.ready);
     if(sec.session_only){pump();c=take(0x0c24);CHECK(c.bytes==6&&c.data[3]==0x14&&c.data[4]==4&&c.data[5]==0x24);respond(c,0,0,0,0);}
-    pump();c=take(0x0c1a);CHECK(c.data[3]==(sec.session_only?3:2));respond(c,0,0,0,0);CHECK(sec.ready&&!sec.active&&!sec.secure);
+    pump();c=take(0x0c1a);CHECK(c.data[3]==(sec.session_only?3:2));respond(c,0,0,0,0);
+    CHECK(!sec.active&&!sec.secure&&!sec.local_address_valid);
+    CHECK(sec.ready==!sec.session_only);
+    if(!sec.session_only)CHECK(sec.next_token==before+4u);
+}
+static void startup(void){
+    uint8_t scan=3;
+    startup_before_identity();
+    if(sec.session_only){
+        pump();struct a138_security_command c=take(0x1009);CHECK(c.bytes==3u);
+        respond(c,0,0,local_address,6);CHECK(!sec.ready&&sec.local_address_valid&&!memcmp(sec.local_address,local_address,6));
+        pump();c=take(0x0c19);CHECK(c.bytes==3u&&!sec.ready);
+        respond(c,0,0,&scan,1);CHECK(sec.ready&&sec.local_address_valid);
+    }
 }
 static enum a138_security_result event(const uint8_t *p,unsigned n){return a138_security_event(&sec,77,generation,1,p,(uint16_t)n);}
 static void peer_event(unsigned code,const uint8_t *extra,unsigned n){
@@ -331,6 +345,58 @@ static void reset_session(void){
 #endif
     CHECK(sec.session_only&&!sec.store.load&&!sec.store.replace_atomic&&!sec.store.delete_atomic);
 }
+static void test_session_local_identity(void){
+    uint8_t b[24],extra[9],scan=3;
+    for(unsigned which=0;which<2u;++which){
+        for(unsigned bytes=0;bytes<9u;++bytes){
+            if(bytes==(which?1u:6u))continue;
+            reset_session();startup_before_identity();pump();
+            struct a138_security_command c=take(0x1009);
+            if(which){respond(c,0,0,local_address,6);CHECK(!sec.ready);pump();c=take(0x0c19);}
+            memset(b,0,sizeof b);b[0]=14;b[1]=(uint8_t)(4u+bytes);b[2]=1;le(b+3,c.opcode);
+            memcpy(b+6,local_address,6);if(which)b[6]=3;
+            CHECK(a138_security_response(&sec,77,2,b,(uint16_t)(6u+bytes))==A138_SECURITY_FENCED);
+            CHECK(sec.fenced&&!sec.ready&&!sec.secure);
+        }
+        for(unsigned failure=1;failure<=4u;++failure){
+            reset_session();startup_before_identity();pump();struct a138_security_command c=take(0x1009);
+            if(which){respond(c,0,0,local_address,6);pump();c=take(0x0c19);}
+            unsigned n=which?7u:12u;memset(b,0,sizeof b);b[0]=14;b[1]=(uint8_t)(n-2u);b[2]=1;
+            le(b+3,c.opcode);b[5]=(uint8_t)failure;memcpy(b+6,local_address,6);if(which)b[6]=3;
+            CHECK(a138_security_response(&sec,77,2,b,(uint16_t)n)==A138_SECURITY_FENCED&&!sec.ready);
+        }
+        /* Wrong owner/epoch cannot consume the unique accepted command. */
+        reset_session();startup_before_identity();pump();struct a138_security_command c=take(0x1009);
+        if(which){respond(c,0,0,local_address,6);pump();c=take(0x0c19);}
+        unsigned n=which?7u:12u;memset(b,0,sizeof b);b[0]=14;b[1]=(uint8_t)(n-2u);b[2]=1;
+        le(b+3,c.opcode);memcpy(b+6,local_address,6);if(which)b[6]=3;
+        CHECK(a138_security_response(&sec,78,2,b,(uint16_t)n)==A138_SECURITY_STALE);
+        CHECK(a138_security_response(&sec,77,1,b,(uint16_t)n)==A138_SECURITY_STALE);
+        CHECK(a138_security_transport_done(&sec,77,c.token+1u)==A138_SECURITY_STALE);
+        CHECK(!sec.ready&&!sec.queue[sec.head].response_done&&!sec.queue[sec.head].transport_done);
+        respond(c,0,0,which?&scan:local_address,which?1u:6u);CHECK(sec.ready==which);
+    }
+    for(unsigned fill=0;fill<2u;++fill){
+        reset_session();startup_before_identity();pump();struct a138_security_command c=take(0x1009);
+        memset(b,0,sizeof b);b[0]=14;b[1]=10;b[2]=1;le(b+3,c.opcode);memset(b+6,fill?255:0,6);
+        CHECK(a138_security_response(&sec,77,2,b,12)==A138_SECURITY_FENCED&&!sec.local_address_valid&&!sec.ready);
+    }
+    for(unsigned value=0;value<256u;++value){
+        if(value==3u)continue;
+        reset_session();startup_before_identity();pump();command(0x1009,0,local_address,6);CHECK(!sec.ready);
+        pump();struct a138_security_command c=take(0x0c19);
+        memset(b,0,sizeof b);b[0]=14;b[1]=5;b[2]=1;le(b+3,c.opcode);b[6]=(uint8_t)value;
+        CHECK(a138_security_response(&sec,77,2,b,7)==A138_SECURITY_FENCED&&!sec.ready);
+    }
+    reset_session();startup_before_identity();pump();command(0x1009,0,local_address,6);pump();
+    struct a138_security_command c=take(0x0c19);sec.local_address_valid=0;
+    memset(b,0,sizeof b);b[0]=14;b[1]=5;b[2]=1;le(b+3,c.opcode);b[6]=3;
+    CHECK(a138_security_response(&sec,77,2,b,7)==A138_SECURITY_FENCED&&!sec.ready);
+    /* Exact 48-bit identity is retained, including an interior zero byte. */
+    reset_session();startup_before_identity();pump();memcpy(extra,local_address,6);extra[2]=0;
+    command(0x1009,0,extra,6);CHECK(sec.local_address_valid&&!sec.ready&&!memcmp(sec.local_address,extra,6));
+    pump();command(0x0c19,0,&scan,1);CHECK(sec.ready&&!loads&&!replaces&&!deletes);
+}
 static void erased_key(void){for(unsigned i=0;i<16;i++)CHECK(sec.bond.key[i]==0);}
 static void early_io_features(void){
     uint8_t basic[13]={11,11,0,0x23,0},host[15]={0x23,13,0,0x23,0,1,1,1};
@@ -439,5 +505,6 @@ int main(void){
     test_session_only();
     test_io_before_key_request();
     test_session_phone_ssp();
+    test_session_local_identity();
     printf("classic security source-stage: %u checks passed\n",checks);return 0;
 }

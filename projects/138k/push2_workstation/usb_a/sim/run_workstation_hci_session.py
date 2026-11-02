@@ -33,10 +33,21 @@ def run(output):
            ('allow_wrong_cod_tail',"byte5==8'h24","1'b1",1),
            ('default_discovers',"(SESSION_ONLY_PAIRING && byte3==3)","(byte3==3)",0),
            ('scan_any_value',"(byte3==2 || (SESSION_ONLY_PAIRING && byte3==3))","1'b1",1),
-           ('cod_wrong_length',"length==6 && byte3==8'h14","length>=5 && byte3==8'h14",1)]
+           ('cod_wrong_length',"length==6 && byte3==8'h14","length>=5 && byte3==8'h14",1),
+           ('default_reads_controller_identity',"16'h0c24,16'h1009,16'h0c19:cpu_opcode_allowed=SESSION_ONLY_PAIRING;",
+             "16'h0c24,16'h1009,16'h0c19:cpu_opcode_allowed=1;",0),
+           ('controller_read_has_parameters',"16'h1009,16'h0c19:cpu_command_shape=SESSION_ONLY_PAIRING && length==3;",
+             "16'h1009,16'h0c19:cpu_command_shape=SESSION_ONLY_PAIRING && length>=3;",1)]
   for name,before,after,policy in mutants:
    assert original.count(before)==1,(name,'anchor drift')
-   folder=output/(name+'-source');folder.mkdir();path=folder/source.name;path.write_text(original.replace(before,after))
+   mutated=original.replace(before,after)
+   if name=='default_reads_controller_identity':
+    # Both independent policy gates must be removed for this negative to
+    # admit a default-policy packet. Keeping either gate still rejects it.
+    shape="16'h1009,16'h0c19:cpu_command_shape=SESSION_ONLY_PAIRING && length==3;"
+    assert mutated.count(shape)==1,(name,'shape anchor drift')
+    mutated=mutated.replace(shape,"16'h1009,16'h0c19:cpu_command_shape=length==3;")
+   folder=output/(name+'-source');folder.mkdir();path=folder/source.name;path.write_text(mutated)
    check(name,policy,path,True)
   assert identities=={str(p):sha(p) for p in inputs};result['passed']=True
  finally:

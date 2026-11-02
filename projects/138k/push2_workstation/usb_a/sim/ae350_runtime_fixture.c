@@ -15,6 +15,7 @@ struct model {
 };
 static struct model m;
 static struct a138_classic_runtime r;
+static const uint8_t local_address[6]={0x21,0x43,0x65,0x87,0xa9,0xcb};
 static unsigned media_mode,submits,cancels,media_polls;
 static uint8_t submitted_pcm[512];
 static void op(void){++m.operations;}
@@ -97,13 +98,28 @@ static void response(unsigned opcode,unsigned early_done,const uint8_t *extra,un
     if(!early_done){CHECK(m.acked==ack&&r.transport.tx_phase);m.state=4;step();}
     CHECK(m.acked==ack+1u&&!r.fault);
 }
-static void startup(void) {
+static void startup_before_identity(void) {
     uint8_t f[10]={0};pending(0x1003);f[6]=8;f[7]=128;response(0x1003,0,f,8);
     pending(0x0c56);response(0x0c56,1,0,0);
     pending(0x1004);memset(f,0,sizeof f);f[0]=f[1]=f[2]=1;response(0x1004,0,f,10);
     if(r.session_only){pending(0x0c24);CHECK(m.tx[3]==0x14&&m.tx[4]==4&&m.tx[5]==0x24);response(0x0c24,1,0,0);}
     pending(0x0c1a);CHECK(m.tx[3]==(r.session_only?3:2));response(0x0c1a,1,0,0);
-    CHECK(r.security.ready&&r.started&&!r.security.secure&&r.transport.next_token==(r.session_only?5u:4u));
+    CHECK(r.security.ready==!r.session_only&&r.started&&!r.security.secure&&!r.security.local_address_valid);
+    if(!r.session_only)CHECK(r.transport.next_token==4u);
+    else CHECK(r.transport.next_token>=5u&&r.transport.next_token<=6u);
+}
+static void startup(void) {
+    uint8_t scan=3;startup_before_identity();
+    if(r.session_only){
+        pending(0x1009);CHECK(m.count==3&&!r.security.ready);response(0x1009,0,local_address,6);
+        CHECK(r.security.local_address_valid&&!r.security.ready&&!memcmp(r.security.local_address,local_address,6));
+        pending(0x0c19);CHECK(m.count==3&&!r.security.ready);response(0x0c19,1,&scan,1);
+        CHECK(r.security.ready&&r.transport.next_token==7u);
+    }
+}
+static void reset_session(void){
+    reset(0,1);struct a138_runtime_media output={0,poll_media,submit_media,cancel_media};
+    a138_classic_runtime_init_session(&r,bus(),&output);
 }
 static void test_session_startup(void){
     reset(0,1);struct a138_runtime_media output={0,poll_media,submit_media,cancel_media};
@@ -196,6 +212,39 @@ static void test_acl_diagnostic(void) {
     CHECK(!m.present&&!r.fault&&!r.rx_waiting&&status==(512u|0xb0u|A138_CLASSIC_OK));
     CHECK(r.classic.tx_bytes&&r.transport.tx_phase); /* Valid InfoRequest still produces a response. */
 }
+static void test_local_identity_diagnostic(void) {
+    uint32_t header;uint16_t status;uint8_t scan=3;
+    reset_session();startup_before_identity();
+    a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531)&&status==0);
+    pending(0x1009);response(0x1009,0,local_address,6);
+    a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531)&&status==0);
+    pending(0x0c19);a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531));
+    response(0x0c19,1,&scan,1);CHECK(r.security.ready);
+    unsigned operations=m.operations;uint32_t token=m.token;
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(header==UINT32_C(0x87654321)&&status==0xcba9u&&m.operations==operations&&m.token==token);
+    r.security.local_address_valid=0;a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531));
+    r.security.local_address_valid=1;r.security.ready=0;
+    a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531));
+    r.security.ready=1;r.security.session_only=0;
+    a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0x43505531));
+    r.security.session_only=1;r.security.close_context=UINT32_C(0xd463c418);
+    a138_classic_runtime_diagnostic(&r,&header,&status);CHECK(header==UINT32_C(0xd463c418)&&status==0);
+    uint8_t info[14]={0x23,0,10,0,6,0,1,0,10,2,2,0,2,0};
+    rx(2,9,0,info,sizeof info);for(unsigned i=0;m.present&&i<10u;i++)step();
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(!m.present&&!r.fault&&header==UINT32_C(0x000a0023)&&status==r.acl_diagnostic);
+    /* A fault must never look like a valid local address, close or old ACL. */
+    r.fault=A138_RUNTIME_RESPONSE_FAULT;r.transport.fault=A138_HCI_FAULT_DESCRIPTOR;r.security.failure=5;
+    operations=m.operations;
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK((header&UINT32_C(0xff000000))==UINT32_C(0xfc000000));
+    CHECK(((header>>16)&255u)==A138_RUNTIME_RESPONSE_FAULT&&((header>>8)&255u)==A138_HCI_FAULT_DESCRIPTOR&&(header&255u)==5u);
+    CHECK(status==r.acl_diagnostic&&m.operations==operations);
+    operations=m.operations;a138_classic_runtime_diagnostic(&r,0,&status);a138_classic_runtime_diagnostic(&r,&header,0);
+    CHECK(m.operations==operations&&header>>24==0xfcu);
+    a138_classic_runtime_diagnostic(0,&header,&status);CHECK(header==UINT32_C(0x43505531)&&status==0);
+}
 static void test_actual_decoder_and_media(const uint8_t *data,unsigned bytes,FILE *pcm) {
     reset(1,1);startup();inject_frame(data,bytes);step();CHECK(r.pcm_pending&&r.decoded.valid&&r.classic.ready&&submits==0);
     unsigned samples=r.decoded.scalar_samples;step();CHECK(!r.pcm_pending&&r.pcm_blocks==1&&submits==1&&!r.fault);
@@ -213,7 +262,7 @@ int main(int argc,char **argv) {
     unsigned mode=(frame[1]>>2)&3u,sub=frame[1]&1u?8u:4u,blocks=4u+4u*((frame[1]>>4)&3u);
     unsigned bits=blocks*frame[2]*(mode<2u?(mode?2u:1u):1u)+(mode==3u?sub:0u);
     bytes=4u+sub*(mode?2u:1u)/2u+(bits+7u)/8u;
-    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();test_session_startup();test_acl_diagnostic();
+    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();test_session_startup();test_acl_diagnostic();test_local_identity_diagnostic();
     FILE *pcm=fopen(argv[2],"wb");CHECK(pcm);test_actual_decoder_and_media(frame,bytes,pcm);CHECK(fclose(pcm)==0);
     printf("classic runtime: %u checks passed; native RTL, durable store, phone and physical media absent\n",checks);return 0;
 }
