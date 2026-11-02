@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         val uri=FileProvider.getUriForFile(this,"$packageName.files",entry.file)
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply{type="audio/wav";putExtra(Intent.EXTRA_STREAM,uri);clipData=ClipData.newRawUri("WAV",uri);addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)},"分享录音"))
     }
-    override fun onStop(){(application as ControlApplication).midiKeyboard.panic();player?.pause();(application as ControlApplication).musicPlayback.pause();super.onStop()}
+    override fun onStop(){(application as ControlApplication).midiKeyboard.releaseControls();player?.pause();(application as ControlApplication).musicPlayback.pause();super.onStop()}
     override fun onDestroy(){player?.release();super.onDestroy()}
 }
 
@@ -90,6 +90,7 @@ class ControlViewModel(val repo:Workstation,val music:MusicPlayback,val midi:Mid
 private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()->Unit,play:(File)->Unit,share:(SavedRecording)->Unit,pausePlayback:()->Unit){
     val s by vm.state.collectAsStateWithLifecycle()
     val devices by vm.devices.collectAsStateWithLifecycle()
+    val midiState = vm.midi?.state?.collectAsStateWithLifecycle()?.value
     val context=androidx.compose.ui.platform.LocalContext.current
     val scope=rememberCoroutineScope()
     var tab by rememberSaveable{mutableIntStateOf(0)}
@@ -119,19 +120,26 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     var clock by remember{mutableLongStateOf(SystemClock.elapsedRealtime())}
     LaunchedEffect(Unit){while(true){delay(1000);clock=SystemClock.elapsedRealtime()}}
     Scaffold(topBar={TopAppBar(title={Column{Text("GOWIN",fontWeight=FontWeight.Bold);Text("SYNTHESIZER CONTROL",style=MaterialTheme.typography.labelSmall,color=MaterialTheme.colorScheme.primary)}},actions={
-        TextButton(onClick={showDevices=true}){Text(if(s.ready)s.name else "连接设备")}
+        TextButton(onClick={showDevices=true}){Text(if(s.ready)s.name else "连接工作站")}
     })},bottomBar={NavigationBar{
         listOf("控制","录音","作品","音乐").forEachIndexed{i,title->NavigationBarItem(selected=tab==i,onClick={if(tab==2&&i!=2)pausePlayback();tab=i},icon={Text(listOf("◉","●","♫","▷")[i])},label={Text(title)})}
     }}){padding->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal=20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)){
             Card(Modifier.fillMaxWidth()){
                 Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){
-                    Text(if(s.demo)"模拟设备 · 不代表实板结果"else "设备连接",color=MaterialTheme.colorScheme.primary,style=MaterialTheme.typography.labelLarge)
+                    Text(if(s.demo)"模拟工作站 · 不代表实板结果"else "工作站业务连接",color=MaterialTheme.colorScheme.primary,style=MaterialTheme.typography.labelLarge)
                     Text(s.connection,style=MaterialTheme.typography.titleMedium)
                     if(s.updatedAt>0)Text(if(clock-s.updatedAt>3000)"状态已陈旧，请刷新或重连"else "状态已同步",style=MaterialTheme.typography.bodySmall)
                     if(!s.ready) Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
                         Button(enabled=!s.busy,onClick={showDevices=true}){Text("查找工作站")}
                         OutlinedButton(enabled=!s.busy,onClick={vm.demo()}){Text("体验模拟设备")}
+                    }
+                    midiState?.let { midi ->
+                        HorizontalDivider()
+                        Text("25K MIDI · 独立连接", color=MaterialTheme.colorScheme.primary, style=MaterialTheme.typography.labelLarge)
+                        Text(midi.connection, style=MaterialTheme.typography.bodyMedium)
+                        Text("切页或切到后台仅停音，不主动断开 MIDI。", style=MaterialTheme.typography.bodySmall)
+                        midi.error?.let { Text(it, color=MaterialTheme.colorScheme.error, style=MaterialTheme.typography.bodySmall) }
                     }
                 }
             }
@@ -302,7 +310,12 @@ private fun ControlRoot(vm:ControlViewModel,connect:(String)->Unit,disconnect:()
     if(rename!=null)AlertDialog(onDismissRequest={rename=null},title={Text("重命名作品")},text={OutlinedTextField(name,{name=it.take(80)},singleLine=true)},confirmButton={TextButton(enabled=name.isNotBlank(),onClick={val e=rename!!;rename=null;vm.action{vm.repo.rename(e,name)}}){Text("保存")}},dismissButton={TextButton(onClick={rename=null}){Text("取消")}})
     if(remove!=null)AlertDialog(onDismissRequest={remove=null},title={Text("删除本地作品？")},text={Text("仅删除手机上的文件，不影响设备录音。")},confirmButton={TextButton(onClick={val e=remove!!;remove=null;vm.action{vm.repo.delete(e)}}){Text("删除")}},dismissButton={TextButton(onClick={remove=null}){Text("取消")}})
 }
-private fun duration(frames:Long,sampleRate:Long):String{val seconds=frames/sampleRate;return "%02d:%02d".format(seconds/60,seconds%60)}
+internal fun duration(frames:Long,sampleRate:Long):String {
+    if(frames<0 || sampleRate<=0)return "--:--.---"
+    val seconds=frames/sampleRate
+    val milliseconds=(frames%sampleRate)*1000/sampleRate
+    return String.format(Locale.ROOT,"%02d:%02d.%03d",seconds/60,seconds%60,milliseconds)
+}
 
 
 @Composable internal fun Music(music:MusicPlayback,midi:MidiKeyboard?,pauseLibrary:()->Unit){

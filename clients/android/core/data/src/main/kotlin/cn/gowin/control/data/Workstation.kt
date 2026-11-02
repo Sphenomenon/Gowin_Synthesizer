@@ -53,12 +53,18 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
         closeSession()
         lastAddress=address;lastDemo=demo
         _state.update{it.copy(ready=false,busy=true,connection="连接并发现服务…",demo=demo,name=if(demo)"模拟工作站"else scanner.devices.value.firstOrNull{it.address==address}?.name ?: "GOWIN · $address",error=null,capability=null,parameters=emptyMap(),snapshot=Snapshot(),updatedAt=0,record=null)}
+        var connectionProgress: Job? = null
         try {
             val t=if(demo) demoPeripheral ?: DemoTransport(scope).also{demoPeripheral=it} else AndroidBleTransport(appContext)
-            transport=t;t.connect(address)
-            _state.update{it.copy(connection="订阅通知与协议握手…")}
-            val s=ProtocolSession(t,scope);session=s
-            val cap=s.handshake();_state.update{it.copy(capability=cap)}
+            transport=t
+            connectionProgress=scope.launch { t.connectionProgress.filterNotNull().collect { progress -> _state.update{it.copy(connection=progress)} } }
+            val cap=t.establish(address) {
+                session?.close()
+                _state.update{it.copy(connection="订阅通知与协议握手…")}
+                ProtocolSession(t,scope).also{session=it}.handshake()
+            }
+            val s=checkNotNull(session)
+            _state.update{it.copy(capability=cap)}
             if(cap.has(3) || cap.has(4) || cap.has(5))s.negotiateRecordingFormats()
             events=scope.launch(start=CoroutineStart.UNDISPATCHED) {
                 s.events.collect { m -> if(m.opcode in 0xe1..0xe3) runCatching{acceptSnapshot(Snapshot.decode(m.payload))} }
@@ -93,7 +99,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
                 }
             }
         } catch(e:Exception) { closeSession();_state.update{it.copy(ready=false,connection="连接失败",error=e.message ?: "连接失败")};throw e }
-        finally { _state.update{it.copy(busy=false)} }
+        finally { connectionProgress?.cancel();_state.update{it.copy(busy=false)} }
     }
     // Retained application context only; never retain an Activity in GATT/service ownership.
     private val appContext=context.applicationContext

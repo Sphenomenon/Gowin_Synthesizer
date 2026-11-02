@@ -7,8 +7,8 @@ android {
         applicationId = "cn.gowin.control"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "0.3.1-demo-d3"
+        versionCode = 19
+        versionName = "0.3.4-recording-duration"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true }
@@ -26,6 +26,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test:runner:1.6.2")

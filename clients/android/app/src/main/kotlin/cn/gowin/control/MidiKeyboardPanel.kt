@@ -37,21 +37,26 @@ import cn.gowin.control.data.MidiKeyboard
         if (permissions.all { result[it] == true || ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) midi.scan()
         else midi.reportError("需要附近设备权限才能扫描25K MIDI；请在应用设置中授权。")
     }
-    DisposableEffect(midi) { onDispose { midi.panic(); midi.stopScan() } }
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+    DisposableEffect(midi) { onDispose { midi.releaseControls() } }
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("手机 → 25K MIDI 控制", style = MaterialTheme.typography.titleMedium)
-            Text("25K USB继续接138K Host；手机使用独立的 BLE MIDI 连接。当前25K固件将接收音符用于灯光反馈，尚未转发到138K发声。", style = MaterialTheme.typography.bodySmall)
-            Text(if (state.connecting) "连接及清理旧音符中…" else if (state.ready) "MIDI 已连接 · ${state.name}" else "MIDI 未连接 · ${state.name}")
+            Text("此页连接25K的BLE MIDI服务；工作站业务连接使用首页入口。USB转发及138K发声取决于板端固件和实际接线，不以App发送成功判定。", style = MaterialTheme.typography.bodySmall)
+            Text(state.connection)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(enabled = !state.connecting, onClick = {
                     if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) midi.scan()
                     else permission.launch(permissions)
                 }) { Text("扫描25K MIDI") }
-                if (state.ready || state.connecting) TextButton(onClick = midi::disconnect) { Text("断开MIDI") }
+                if (state.active) TextButton(enabled = !state.disconnecting, onClick = midi::disconnect) { Text("断开MIDI") }
             }
             if (!state.ready) devices.forEach { device ->
-                OutlinedButton(enabled = !state.connecting, onClick = { midi.connect(device.address, device.name) }) {
+                OutlinedButton(enabled = !state.active, onClick = {
+                    if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+                        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    midi.connect(device.address, device.name)
+                }) {
                     Text("${device.name} · ${device.address}")
                 }
             }
@@ -87,8 +92,9 @@ import cn.gowin.control.data.MidiKeyboard
                 }
             }
             Button(enabled = state.ready, onClick = midi::panic) { Text("PANIC · 全通道停音") }
-            Text("按住发送 Note On，松开或取消手势发送 Note Off。切页／后台发送PANIC，断开前清理，重连先清理再接受新按键。已发送 ${state.sentEvents} 个事件；发送完成不代表138K已发声。", style = MaterialTheme.typography.bodySmall)
+            Text("按住发送 Note On，松开或取消手势发送 Note Off。切页／后台只发送PANIC，不主动断开连接；返回后可继续演奏。主动断开前清理，重连先清理再接受新按键。已发送 ${state.sentEvents} 个事件；发送完成不代表138K已发声。", style = MaterialTheme.typography.bodySmall)
             state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+            TextButton(onClick = { context.startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS)) }) { Text("打开系统蓝牙设置 · 处理旧配对") }
             TextButton(onClick = { context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))) }) { Text("MIDI蓝牙权限设置") }
         }
     }

@@ -18,7 +18,17 @@ data class MidiKeyboardState(
     val heldNotes: Set<Int> = emptySet(),
     val sentEvents: Long = 0,
     val error: String? = null,
-)
+    val connectionProgress: String? = null,
+    val disconnecting: Boolean = false,
+) {
+    val active: Boolean get() = connecting || ready || disconnecting
+    val connection: String get() = when {
+        disconnecting -> "MIDI 正在停音并断开"
+        connecting -> connectionProgress ?: "MIDI 连接及清理旧音符中…"
+        ready -> "MIDI 已连接 · $name"
+        else -> "MIDI 未连接 · $name"
+    }
+}
 
 /** Ordered, bounded MIDI send queue. A new connection never replays old notes. */
 class MidiKeyboard(
@@ -37,6 +47,11 @@ class MidiKeyboard(
     private var scanTimeout: Job? = null
 
     init {
+        scope.launch {
+            transport.connectionProgress.collect { progress ->
+                mutableState.value = mutableState.value.copy(connectionProgress = progress)
+            }
+        }
         scope.launch {
             transport.connected.collect { connected ->
                 if (!connected && mutableState.value.ready) {
@@ -66,6 +81,7 @@ class MidiKeyboard(
         } catch (error: Exception) { reportError("无法扫描 MIDI 设备：${error.message}") }
     }
     fun stopScan() { scanTimeout?.cancel(); transport.stopScan() }
+    fun releaseControls() { panic(); stopScan() }
     fun connect(address: String, name: String) {
         connecting?.cancel()
         closeNow(null)
@@ -112,10 +128,11 @@ class MidiKeyboard(
         BleMidi.panic().forEach { enqueue(it) }
     }
     fun disconnect() {
+        if (mutableState.value.disconnecting) return
         if (mutableState.value.connecting) { connecting?.cancel(); closeNow(null); return }
         if (!mutableState.value.ready) { closeNow(null); return }
         panic()
-        mutableState.value = mutableState.value.copy(ready = false)
+        mutableState.value = mutableState.value.copy(ready = false, disconnecting = true)
         if (!queue.trySend(Event(epoch, null, disconnect = true)).isSuccess) closeNow("MIDI 队列已满，连接已关闭；请确认设备已停音。")
     }
     fun reportError(message: String) { mutableState.value = mutableState.value.copy(error = message) }
@@ -126,6 +143,6 @@ class MidiKeyboard(
         epoch++
         transport.close()
         while (queue.tryReceive().isSuccess) { /* discard retired session */ }
-        mutableState.value = mutableState.value.copy(connecting = false, ready = false, heldNotes = emptySet(), error = error)
+        mutableState.value = mutableState.value.copy(connecting = false, ready = false, disconnecting = false, heldNotes = emptySet(), error = error)
     }
 }

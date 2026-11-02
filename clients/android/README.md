@@ -1,8 +1,10 @@
 # GOWIN Control Android
 
-当前双138K演示配套为 **0.3.1-demo-d3 / versionCode16**，[安装 APK](artifacts/gowin-control-0.3.1-demo-d3-current-debug.apk)，包含手机音频文件选择、本地／A2DP播放和手机→25K MIDI发送。构建、模拟器与真实无线的验收范围见[当前交付复核](docs/DELIVERY_CHECK_20261102.md)。
+当前本分支候选为 **0.3.4-recording-duration / versionCode19**，精确复用提交 `f1839911` 的生命周期修复，并在录音槽和本地作品中显示毫秒时长，避免短录音被显示为 `00:00`。该身份与已安装版本分开记录；构建、验证及部署状态见[短录音显示报告](reports/RECORDING_DURATION_20261102.md)。此前双138K演示版本的复核保留在[原交付记录](docs/DELIVERY_CHECK_20261102.md)。
 
-此前独立25K录音联调版为 **0.2.10 / versionCode13**。优先协商OPEN_SECOND0x40，每个最多8112字节PCM块选择RAW、一阶/k9或二阶/k5的更短结果；逐字节无损恢复。APP完成逻辑/PCM CRC、对象与范围校验后交付PCM，可靠落盘后确认。仅明确UNSUPPORTED才40→3d→3c→3b→39→38→37→36→30回退。协议见[二阶扩展](../../projects/25k/example/RTL8723DS_PROTOCOL/docs/SECOND_TRANSFER_EXTENSION.md)，验收见[第十八轮](../../projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。
+已实装的生命周期版本为 **0.3.3-ble-lifecycle / versionCode18**，以0.3.1-demo-d3为基础，保留音乐／MIDI及工作站业务功能，包含单次、有证据的旧绑定恢复、独立MIDI前台连接服务，以及跨页面区分MIDI／工作站的连接状态。切页／后台只停音，不主动断开MIDI；只修改App，不要求FPGA综合或烧录。来源和边界见[连接恢复说明](docs/BLE_RECOVERY_20261102.md)，其手机安装、用户切换反馈、验证范围与剩余验收见[生命周期报告](reports/BLE_LIFECYCLE_20261102.md)。
+
+历史25K独立业务协议联调版为 **0.2.10 / versionCode13**，[APK](artifacts/gowin-control-0.2.10-gw25k-second-debug.apk)。优先协商OPEN_SECOND0x40，每个最多8112字节PCM块选择RAW、一阶/k9或二阶/k5的更短结果；逐字节无损恢复。APP完成逻辑/PCM CRC、对象与范围校验后交付PCM，可靠落盘后确认。仅明确UNSUPPORTED才40→3d→3c→3b→39→38→37→36→30回退。协议见[二阶扩展](../../projects/25k/example/RTL8723DS_PROTOCOL/docs/SECOND_TRANSFER_EXTENSION.md)，验收见[第十八轮](../../projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。
 
 电脑同一固件三组一阶/二阶交替，中位有效PCM吞吐14.11→22.09 KB/s（+56.6%）；同一APP核心完整音频流程18.65→14.15秒（耗时−24.1%），含固定检查点取消重开、重连续传、执行后DATA丢失重试和WAV保存。Flash固化后完整下载13.72秒，三份WAV均精确匹配参考。详见[APP联调](../../projects/25k/example/RTL8723DS_PROTOCOL/docs/APP_INTEGRATION.md)及[第十八轮](../../projects/25k/example/RTL8723DS_PROTOCOL/reports/speed18_20261020/README.md)。手机原生GATT/UI/后台和实际速率待测；板卡重启或重配置后先删除未完成下载，历史boot_id重复问题仍保留。
 
@@ -17,8 +19,6 @@ APK与签名密钥按仓库规则不进入Git；`artifacts/`链接指本机归�
 **当前25K维护固件收到BLE主机音符只更新远端灯光，不转发USB、不本地发声。** 因此本次 Android 实现不代表手机键盘能经25K驱动138K声音；后续转发由设备端另行实现和验收。用户已确认25K→138K的USB转发由用户自行实现，本分支本轮不修改25K源码或固件。GATT写入完成也不等于设备已应用或发声。现有业务连接、录音下载和25K内置音频测试分支保留。
 
 当前 W 设备工作目标是 headless A2DP→D实时效果→DAC，并保留USB Host／25K；HDMI、分析、录音和下载暂停。旧版全HDMI／录音共存说明保留在历史记录，不转授给本轮。Android构建、83项单测（2项硬件测试跳过）、5项模拟器UI检查、APK身份与待验范围见[2026-11-01记录](docs/DEMO_D3_20261101.md)；此前 demo-d1/d2 见[历史记录](docs/DEMO_D1_20261031.md)。
-
-2026-11-02已重新核对当前源码、强制重跑全部83项单测，并在新建的隔离API35模拟器上重跑5项UI检查与真实系统文件选择／本地输出路由确认；版本仍为`0.3.1-demo-d3`，未为复核改动业务源码。见[当前交付复核](docs/DELIVERY_CHECK_20261102.md)。模拟器不能证明真实手机A2DP或25K射频链路通过。
 
 ## 构建
 
