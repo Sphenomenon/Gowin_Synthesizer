@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "stage": "historical_source_and_custom_board_trace",
+  "source_head": "5f9c31636bbe74c3e753705979238ac19d0f21dd",
+  "source_commit": "8bc80e9bbfb285160ca0e5826af85d8b6a7995d9",
+  "acceptance_sha256": "7b1da01ee686f8d3a7ba3d325857e1b814530af8154bdc5ff9bd6587a9f4246f",
+  "accepted_by_user": true,
+  "song": "TRAVLER",
+  "sample_rate": 48000,
+  "model_crc32": "AF01A61B",
+  "historical_static_timing_closed": false,
+  "local_tag_present": false,
+  "board_netlists": {
+    "Netlist_my_138k_2026-10-21.tel": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+    "\u84dd\u7259.tel": "832e1eae56a744f8535899f57caea097f51419e2eb210186a492c182e5091eb2",
+    "\u529f\u653e.tel": "b0ae6b2be4b59a60244a98ea870fc701bb4e8186123b7cb54cf79e22ea628b75"
+  },
+  "validation": {
+    "current_sources_tests": 17,
+    "push_guidance_and_lights_tests": 2,
+    "tf_dma": "PASS",
+    "viterbi_ddr_isolation": [
+      {
+        "case": "old_map",
+        "expected_behavior_confirmed": true,
+        "exit_code": 1,
+        "seconds": 0.14
+      },
+      {
+        "case": "new_map",
+        "expected_behavior_confirmed": true,
+        "exit_code": 0,
+        "seconds": 11.49
+      }
+    ]
+  },
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "evidence_root": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102",
+  "model_load": "manual BPN1 UART to DDR; status E only after DDR CRC readback",
+  "remaining": [
+    "New synthesis not passed",
+    "New full P&R PLL STA CDC and resources",
+    "Real TF/CNN/Push/DAC hardware acceptance"
+  ]
+}
