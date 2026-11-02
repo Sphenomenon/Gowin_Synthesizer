@@ -5,7 +5,8 @@
 module music_async_fifo #(
     parameter integer WIDTH=309,
     parameter integer ADDRESS_BITS=4,
-    parameter RAM_STYLE="distributed_ram"
+    parameter RAM_STYLE="distributed_ram",
+    parameter bit SMALL_DISTRIBUTED=0
 )(
     input  logic write_clk_i,write_rst_ni,
     input  logic write_valid_i,
@@ -60,6 +61,13 @@ module music_async_fifo #(
                 odd_q<=odd_memory[read_binary[ADDRESS_BITS-1:1]];
                 head_odd<=read_binary[0]^read_fire;
             end
+        end
+    end else if(SMALL_DISTRIBUTED) begin:g_distributed_head
+        (* syn_ramstyle="distributed_ram" *) logic [WIDTH-1:0] memory[0:(1<<ADDRESS_BITS)-1];
+        assign write_ready_o=!full;
+        assign read_data_o=memory[read_binary[ADDRESS_BITS-1:0]];
+        always @(posedge write_clk_i)begin
+            if(write_rst_ni && write_fire)memory[write_binary[ADDRESS_BITS-1:0]]<=write_data_i;
         end
     end else begin:g_small_head
         logic [WIDTH-1:0] memory[0:(1<<ADDRESS_BITS)-1];

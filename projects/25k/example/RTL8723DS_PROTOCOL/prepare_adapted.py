@@ -55,8 +55,7 @@ for before, after in [
     ('reg [7:0] response [0:159];', 'reg [7:0] response [0:63];'),
     ('reg [7:0] active_tx [0:79];', 'reg [7:0] active_tx [0:31];'),
     ('tx_payload_addr < 80 ?', 'tx_payload_addr < 32 ?'),
-    ('for(i=0;i<80;i=i+1)', 'for(i=0;i<32;i=i+1)'),
-    ('response[80+i]', 'response[32+i]'),
+    ('(read_slot ? 80 : 0)+tx_copy_index', '(read_slot ? 32 : 0)+tx_copy_index'),
 ]:
     gatt = replace(gatt, before, after)
 

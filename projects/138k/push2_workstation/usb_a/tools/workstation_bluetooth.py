@@ -52,6 +52,16 @@ def prepare(root, directory, stage, pinout_output, plan):
     plan['constraints_sha256'] = workstation_pinout.digest(constraints.encode())
     (pinout_output / 'pinout.json').write_text(json.dumps(plan, ensure_ascii=False, indent=2)+'\n')
     (pinout_output / 'custom_138k.locations.cst').write_text(constraints)
+    result = stage_business(root, stage)
+    result['mapping'] = mapping
+    return result
+
+
+def stage_business(root, stage):
+    """Stage identical business RTL for board integration or logic-only synthesis."""
+    repository = root.parents[3]
+    protocol = repository / 'projects/25k/example/RTL8723DS_PROTOCOL'
+    vendor = repository / 'example/RTL8723DS/vendor/rtl8723ds_ble'
     sources = [protocol / name for name in (
         'prepare_adapted.py', 'adaptations/bt_hci_init.v', 'adaptations/bt_verilog_core.v',
         'adaptations/bt_gatt.v', 'adaptations/bt_h5_transport.v', 'adaptations/bt_uart_fast.v',
@@ -59,7 +69,7 @@ def prepare(root, directory, stage, pinout_output, plan):
         )]
     sources += [vendor / name for name in ('MANIFEST.json', 'rtl8723ds_patch.mem',
                                            'rtl/bt_uart.v', 'rtl/reset_release_sync.v')]
-    identities = {str(source.relative_to(repository)):sha(source) for source in sources}
+    identities = {source.relative_to(repository).as_posix():sha(source) for source in sources}
     manifest = json.loads((vendor / 'MANIFEST.json').read_text())['files']
     business_manifest = json.loads((protocol / 'vendor/rtl8723ds_ble/MANIFEST.json').read_text())['files']
     if manifest != business_manifest:
@@ -81,9 +91,9 @@ def prepare(root, directory, stage, pinout_output, plan):
     for relative, expected in identities.items():
         if sha(repository / relative) != expected:
             raise ValueError('BLE source changed during preparation: ' + relative)
-    return dict(source_snapshot_sha256=identities, mapping=mapping, capacity_frames=16384,
+    return dict(source_snapshot_sha256=identities, capacity_frames=16384,
                 transport_source='example/RTL8723DS/vendor/rtl8723ds_ble',
                 business_source='projects/25k/example/RTL8723DS_PROTOCOL',
                 source_policy='remote_138k_transport_with_existing_second40_business_adaptations',
-                capture_source='post_fpc_i2s_48k_stereo_pcm16', sources=[str(path.relative_to(stage))
+                capture_source='post_fpc_i2s_48k_stereo_pcm16', sources=[path.relative_to(stage).as_posix()
                     for path in sorted(destination.glob('*.v'))])

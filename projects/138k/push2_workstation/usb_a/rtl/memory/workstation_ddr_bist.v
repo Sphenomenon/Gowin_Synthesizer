@@ -1,6 +1,7 @@
 `include "src/memory/ddr_address_map.vh"
 
 module ddr3_bist #(
+    parameter integer ENABLE_BIST = 1,
     parameter integer BURSTS = `PRJ1_DDR_BIST_BEATS,
     parameter integer TIMEOUT_CYCLES = 10000000
 ) (
@@ -44,10 +45,10 @@ module ddr3_bist #(
         end
     endfunction
 
-    assign req_valid = rst_n && ((state == WRITE) || (state == READ_REQUEST));
-    assign req_write = (state == WRITE);
-    assign req_addr = address;
-    assign req_wdata = test_pattern(address, inverted);
+    assign req_valid = ENABLE_BIST && rst_n && ((state == WRITE) || (state == READ_REQUEST));
+    assign req_write = ENABLE_BIST && (state == WRITE);
+    assign req_addr = ENABLE_BIST ? address : 29'd0;
+    assign req_wdata = ENABLE_BIST ? test_pattern(address, inverted) : 256'd0;
 
     wire request_accepted = req_valid && req_ready;
     wire response_accepted = (state == READ_RESPONSE) && rsp_valid;
@@ -72,6 +73,10 @@ module ddr3_bist #(
             failed <= 1'b0;
             error_count <= 0;
             first_error_addr <= 0;
+        end else if (!ENABLE_BIST) begin
+            // Reset is released only after DDR calibration by the owning
+            // display/memory subsystem. No request or destructive test runs.
+            done <= 1'b1;
         end else if (state != FINISHED) begin
             if (request_accepted || response_accepted) begin
                 watchdog <= 0;

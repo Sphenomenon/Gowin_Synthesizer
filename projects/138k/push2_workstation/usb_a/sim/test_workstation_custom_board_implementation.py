@@ -31,7 +31,7 @@ class PhysicalPreparation(unittest.TestCase):
         self.netlist.write_text('audited native netlist\n')
         (stage / 'constraints').mkdir()
         for name in ('cst', 'sdc'):
-            (stage / f'constraints/custom_138k.{name}').write_text('unchanged ' + name + '\n')
+            (stage / f'constraints/custom_138k.{name}').write_bytes(('unchanged ' + name + '\n').encode())
         metadata = dict(staged_input_sha256={
             f'constraints/custom_138k.{name}': sha(stage / f'constraints/custom_138k.{name}')
             for name in ('cst', 'sdc')}, remaining_gaps=['electrical', 'physical gates'])

@@ -23,6 +23,13 @@ module ddr_address_map_guard;
         `PRJ1_DDR_NN_POOL_BYTE_LAST + 32'd1;
 
     generate
+        if (`PRJ1_DDR_BLE_PCM_APP_BASE != (`PRJ1_DDR_BLE_PCM_BYTE_BASE >> 2) ||
+            (`PRJ1_DDR_BLE_PCM_BYTE_BASE & 32'h000f_ffff) != 0 ||
+            `PRJ1_DDR_BLE_PCM_BYTE_BASE <= `PRJ1_DDR_DELAY_RING_BYTE_LAST ||
+            `PRJ1_DDR_BLE_PCM_BYTE_LAST > `PRJ1_DDR_BULK_POOL_BYTE_LAST ||
+            `PRJ1_DDR_BLE_PCM_BYTE_LAST - `PRJ1_DDR_BLE_PCM_BYTE_BASE != 65535) begin: g_bad_ble_pcm
+            PRJ1_DDR_MAP_ERROR_BLE_PCM_RESERVATION invalid();
+        end
         if (`PRJ1_DDR_NATIVE_WORD_COUNT !=
             (`PRJ1_DDR_TOTAL_BYTES >> 2)) begin : g_bad_capacity_ratio
             PRJ1_DDR_MAP_ERROR_CAPACITY_RATIO invalid();

@@ -10,7 +10,8 @@ module basic_pitch_boot_model_loader #(
     parameter logic [23:0] FLASH_BYTE_BASE = `BP_FLASH_MODEL_BYTE_BASE,
     parameter integer CLK_DIV = 4,
     parameter integer CLK_HZ = 50_000_000,
-    parameter integer UART_BAUD = 115200
+    parameter integer UART_BAUD = 115200,
+    parameter bit VERIFY_DDR = 1'b1
 ) (
     input wire clk_i, rst_ni, boot_ready_i, serial_i, flash_miso_i,
     output wire flash_cs_n_o, flash_clk_o, flash_mosi_o,
@@ -45,7 +46,7 @@ module basic_pitch_boot_model_loader #(
     assign mem_write_o = fallback ? u_write : f_write;
     assign mem_byte_addr_o = fallback ? u_addr : f_addr;
     assign mem_wdata_o = fallback ? u_data : f_data;
-    basic_pitch_flash_model_loader #(.WORDS(WORDS),.FLASH_BYTE_BASE(FLASH_BYTE_BASE),.CLK_DIV(CLK_DIV)) u_flash (
+    basic_pitch_flash_model_loader #(.WORDS(WORDS),.FLASH_BYTE_BASE(FLASH_BYTE_BASE),.CLK_DIV(CLK_DIV),.VERIFY_DDR(VERIFY_DDR)) u_flash (
         .clk_i(clk_i),.rst_ni(rst_ni),.boot_ready_i(boot_ready_i),.flash_miso_i(flash_miso_i),
         .flash_cs_n_o(flash_cs_n_o),.flash_clk_o(flash_clk_o),.flash_mosi_o(flash_mosi_o),
         .done_o(f_done),.status_o(f_status),.debug_expected_crc_o(f_expected),
@@ -53,7 +54,7 @@ module basic_pitch_boot_model_loader #(
         .mem_req_o(f_req),.mem_write_o(f_write),.mem_byte_addr_o(f_addr),.mem_wdata_o(f_data),
         .mem_ready_i(mem_ready_i && !fallback),.mem_rsp_valid_i(mem_rsp_valid_i && !fallback),
         .mem_rdata_i(mem_rdata_i));
-    basic_pitch_uart_model_loader #(.WORDS(WORDS),.CLK_HZ(CLK_HZ),.BAUD(UART_BAUD)) u_uart (
+    basic_pitch_uart_model_loader #(.WORDS(WORDS),.CLK_HZ(CLK_HZ),.BAUD(UART_BAUD),.VERIFY_DDR(VERIFY_DDR)) u_uart (
         .clk_i(clk_i),.rst_ni(rst_ni && fallback),.serial_i(serial_i),
         .done_o(u_done),.status_o(u_status),.debug_expected_crc_o(u_expected),
         .debug_actual_crc_o(u_actual),.debug_error_stage_o(u_error),

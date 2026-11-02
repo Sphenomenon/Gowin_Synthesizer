@@ -3,6 +3,7 @@
 // Absolute cue times are 48 kHz sample counts; Q8 speed changes time progression.
 module scope_control_player #(
     parameter integer CUE_COUNT=69,
+    parameter bit VALIDATE_ROM=1,
     parameter CUE_FILE="rtl/audio/scope_vec/data/scene_controls.mem"
 )(
     input wire clk_i,rst_ni,sample_ce_i,start_i,stop_i,
@@ -20,8 +21,8 @@ module scope_control_player #(
     reg [7:0] fraction;
     reg [10:0] advanced_fraction;
     reg [31:0] previous_time;
-    wire legal=cue[31:18]==0 && (cue[17:14]==0 || cue[17:14]==1 || cue[17:14]==2 || cue[17:14]==4)
-        && cue[63:32]>=previous_time && !(cue[17:14]==1 && cue[6:0]==0);
+    wire legal=!VALIDATE_ROM || (cue[31:18]==0 && (cue[17:14]==0 || cue[17:14]==1 || cue[17:14]==2 || cue[17:14]==4)
+        && cue[63:32]>=previous_time && !(cue[17:14]==1 && cue[6:0]==0));
     assign event_valid_o=running_o && state==2 && legal && time_samples_o>=cue[63:32];
     assign event_o=cue[17:0];
     initial begin
@@ -49,7 +50,7 @@ module scope_control_player #(
                     2:if(!legal) begin config_error_o<=1;running_o<=0;state<=0;end
                       else if(event_valid_o && event_ready_i) begin
                         if(time_samples_o>cue[63:32])late_events_o<=late_events_o+1'b1;
-                        previous_time<=cue[63:32];
+                        if(VALIDATE_ROM) previous_time<=cue[63:32];
                         if(32'(address)==CUE_COUNT-1) begin running_o<=0;done_o<=1;state<=0;end
                         else begin address<=address+1'b1;state<=1;end
                       end

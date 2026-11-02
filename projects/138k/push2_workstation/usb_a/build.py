@@ -34,6 +34,7 @@ def main():
     ap.add_argument('--prepare-pinout',choices=['custom-138k'],help='Offline custom-board locations only; not a workstation synthesis path')
     ap.add_argument('--netlist-dir',type=Path,help='Explicit directory containing the three locked custom-board netlists')
     ap.add_argument('--pinout-output',type=Path,help='New output directory for --prepare-pinout; refuses existing paths')
+    ap.add_argument('--logic-only', action='store_true', help='Native full RTL synthesis preparation without PCB netlists or pin constraints; never P&R')
     ap.add_argument('--prepare-custom-board',action='store_true',help='Prepare native 138K board integration for offline synthesis only; electrical and full physical gates remain blocked')
     ap.add_argument('--custom-board-output',type=Path,help='Required new output directory for --prepare-custom-board')
     ap.add_argument('--hdmi-mode',choices=['1080p60','720p30','720p60'],help='Explicit native-board HDMI mode; never changes accepted workstation profiles')
@@ -153,8 +154,10 @@ def main():
     if args.usb2_full_speed_only and not (args.prepare_custom_board or
             (args.prepare_usb2_soc and args.usb2_firmware_profile=='workstation')):
         ap.error('--usb2-full-speed-only requires explicit native workstation firmware preparation')
+    if args.logic_only and not args.prepare_custom_board:
+        ap.error('--logic-only requires --prepare-custom-board')
     if args.prepare_custom_board:
-        if args.custom_board_output is None or args.netlist_dir is None:
+        if args.custom_board_output is None or (args.netlist_dir is None and not args.logic_only):
             ap.error('--prepare-custom-board requires --custom-board-output and --netlist-dir')
         if (args.prepare_pinout or args.pinout_output is not None or args.prepare_usb2_soc or
                 args.usb2_soc_output is not None or args.usb2_firmware_profile is not None or args.usb2_component is not None or
@@ -166,12 +169,12 @@ def main():
         from tools.workstation_custom_board import prepare as prepare_custom_board
         try:
             output,metadata=prepare_custom_board(ROOT,args.netlist_dir,args.custom_board_output,
-                                                 args.riscv_prefix,not args.usb2_full_speed_only,args.hdmi_mode or '1080p60')
+                                                 args.riscv_prefix,not args.usb2_full_speed_only,args.hdmi_mode or '1080p60',logic_only=args.logic_only)
         except (ValueError,OSError,subprocess.CalledProcessError) as error:
             ap.error(str(error))
         print(output)
         print(json.dumps(dict(identity=metadata['identity'],validation_stage=metadata['validation_stage'],
-                              sources=len(metadata['enabled_inputs']),electrical_blocked=metadata['electrical_blocked'],
+                              sources=len(metadata['enabled_inputs']),electrical_status=metadata['electrical_status'],
                               deployment_allowed=False)))
         return
     if args.custom_board_output is not None:

@@ -4,8 +4,9 @@
 // Two response slots keep ACL reception independent of controller TX credit.
 module bt_gatt #(
     parameter [87:0] DEVICE_NAME="GW25K-PROTO",
-    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000, parameter STORAGE_DDR=0,
     parameter CACHE_METADATA_RAM_STYLE="block_ram",
+    parameter integer CACHE_ENTRIES=32, CACHE_EXPIRY_MS=60000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter integer CLK_HZ = 50000000,
     parameter integer NOTIFY_MS = 500
@@ -13,6 +14,14 @@ module bt_gatt #(
     input wire clk, input wire resetn, input wire enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
+    output wire pcm_store_write_o,
+    output wire [13:0] pcm_store_write_frame_o, pcm_store_read_frame_o,
+    output wire [31:0] pcm_store_write_data_o,
+    output wire pcm_store_fetch_o,
+    output wire [31:0] pcm_store_fetch_byte_o,
+    output wire [12:0] pcm_store_fetch_bytes_o,
+    input wire [31:0] pcm_store_read_data_i,
+    input wire pcm_store_fetched_i, pcm_store_ready_i, pcm_store_fault_i,
     input wire [63:0] boot_id,
     input wire [7:0] acl_packet_count,
     input wire rx_valid, input wire [3:0] rx_type,
@@ -34,8 +43,9 @@ module bt_gatt #(
     output reg [31:0] elapsed_ms
 );
     localparam integer MS_CYCLES = CLK_HZ / 1000;
-    localparam [2:0] IDLE=0, CAPTURE=1, PARSE=2, WAIT_DROP=3, COMPLETIONS=4, BIZ_BUILD=5, BIZ_COPY=6, BIZ_WAIT=7;
-    reg [2:0] state;
+    localparam [3:0] IDLE=0, CAPTURE=1, PARSE=2, WAIT_DROP=3, COMPLETIONS=4, BIZ_BUILD=5, BIZ_COPY=6, BIZ_WAIT=7, TX_COPY=8;
+    reg [3:0] state;
+    reg [6:0] tx_copy_index;
     reg [3:0] captured_type;
     reg [8:0] captured_length;
     reg [7:0] packet [0:31];
@@ -47,7 +57,9 @@ module bt_gatt #(
     reg [7:0] tx_credits;
     wire [7:0] credit_limit=acl_packet_count==0 ? 8'd1 : acl_packet_count;
     wire tx_credit=tx_credits!=0;
-    reg [31:0] ms_divider, notify_deadline;
+    localparam integer MS_BITS=MS_CYCLES<2 ? 1 : $clog2(MS_CYCLES);
+    reg [MS_BITS-1:0] ms_divider;
+    reg [31:0] notify_deadline;
     reg [11:0] completion_handle;
     reg [7:0] completion_count_low;
     reg [31:0] completion_sum;
@@ -68,7 +80,7 @@ module bt_gatt #(
     assign tx_type = active_hci ? 4'd1 : 4'd2;
     assign tx_payload_data = active_bulk ? bulk_data : tx_payload_addr < 80 ?
                              active_tx[tx_payload_addr] : 8'h00;
-    assign debug_state = {tx_busy, tx_credit, queued, 1'b0, state};
+    assign debug_state = {tx_busy, tx_credit, queued, state==TX_COPY, state[2:0]};
 
     function [15:0] word_at;
         input integer address;
@@ -202,9 +214,14 @@ module bt_gatt #(
     wire business_session;
     integer business_handle, business_decl, business_value, uuid_index;
     reg uuid_match;
-    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE)) command_endpoint (
+    ble_protocol_command #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.STORAGE_DDR(STORAGE_DDR),.CACHE_METADATA_RAM_STYLE(CACHE_METADATA_RAM_STYLE),.CACHE_ENTRIES(CACHE_ENTRIES),.CACHE_EXPIRY_MS(CACHE_EXPIRY_MS)) command_endpoint (
         .clk(clk),.resetn(resetn),.enable(enable && connected),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
+        .pcm_store_write_o(pcm_store_write_o),.pcm_store_write_frame_o(pcm_store_write_frame_o),
+        .pcm_store_write_data_o(pcm_store_write_data_o),.pcm_store_read_frame_o(pcm_store_read_frame_o),
+        .pcm_store_fetch_o(pcm_store_fetch_o),.pcm_store_fetch_byte_o(pcm_store_fetch_byte_o),
+        .pcm_store_fetch_bytes_o(pcm_store_fetch_bytes_o),.pcm_store_read_data_i(pcm_store_read_data_i),
+        .pcm_store_fetched_i(pcm_store_fetched_i),.pcm_store_ready_i(pcm_store_ready_i),.pcm_store_fault_i(pcm_store_fault_i),
         .boot_id(boot_id),.att_value_limit(att_value_limit),.boot_valid(boot_id!=0),
         .response_subscribed(response_subscribed),.control_open(enable),
         .recording_enable(enable),.transfer_subscribed(transfer_subscribed),
@@ -643,13 +660,12 @@ module bt_gatt #(
                         tx_length<=20;tx_start<=1;tx_busy<=1;tx_credits<=tx_credits-1'b1;
                     end else if(!tx_busy && tx_ready && tx_credit && queued!=0) begin
                         active_hci<=0;active_bulk<=0;
-                        for(i=0;i<80;i=i+1) begin
-                            if(read_slot) active_tx[i]<=response[80+i];
-                            else active_tx[i]<=response[i];
-                        end
-                        tx_length<=response_length[read_slot]; tx_start<=1;
-                        read_slot<=~read_slot; queued<=queued-1'b1;
-                        tx_busy<=1; tx_credits<=tx_credits-1'b1;
+                        // Copy one byte each clock; incoming UART/H5 holds its
+                        // packet until IDLE resumes. Keep ownership of read_slot
+                        // until the complete payload has been copied.
+                        tx_copy_index<=0;state<=TX_COPY;
+                        tx_length<=response_length[read_slot];
+                        tx_busy<=1;tx_credits<=tx_credits-1'b1;
                     end else if(!tx_busy && tx_ready && tx_credit && queued==0 &&
                                 connected && ((response_subscribed && reply_valid) || (transfer_subscribed && transfer_valid))) begin
                         response_base=write_slot ? 80 : 0;
@@ -689,6 +705,13 @@ module bt_gatt #(
                         notification_count<=notification_count+1'b1;
                         notify_deadline<=elapsed_ms+NOTIFY_MS;
                     end
+                end
+                TX_COPY: begin
+                    active_tx[tx_copy_index]<=response[(read_slot ? 80 : 0)+tx_copy_index];
+                    if(tx_copy_index+1==tx_length) begin
+                        read_slot<=~read_slot;queued<=queued-1'b1;
+                        tx_start<=1;state<=IDLE;
+                    end else tx_copy_index<=tx_copy_index+1'b1;
                 end
                 CAPTURE: begin
                     if(capture_wait) capture_wait<=0;

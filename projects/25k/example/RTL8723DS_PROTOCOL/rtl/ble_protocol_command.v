@@ -2,11 +2,21 @@
 // Fragment payloads stream through CRC32; accepted requests fit in 36 bytes.
 // Every byte of longer unsupported requests is still checked before rejection.
 module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="audio/test_tone.mem",
-    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
-    parameter CACHE_METADATA_RAM_STYLE="block_ram") (
+    parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000, parameter STORAGE_DDR=0,
+    parameter CACHE_METADATA_RAM_STYLE="block_ram",
+    parameter integer CACHE_ENTRIES=32,
+    parameter integer CACHE_EXPIRY_MS=60000) (
     input wire clk, resetn, enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
+    output wire pcm_store_write_o,
+    output wire [13:0] pcm_store_write_frame_o, pcm_store_read_frame_o,
+    output wire [31:0] pcm_store_write_data_o,
+    output wire pcm_store_fetch_o,
+    output wire [31:0] pcm_store_fetch_byte_o,
+    output wire [12:0] pcm_store_fetch_bytes_o,
+    input wire [31:0] pcm_store_read_data_i,
+    input wire pcm_store_fetched_i, pcm_store_ready_i, pcm_store_fault_i,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire boot_valid, response_subscribed, control_open,
@@ -47,14 +57,16 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [7:0] frag[0:19], previous[0:19], header[0:35];
     (* syn_ramstyle="distributed_ram" *) reg [7:0] reply[0:83];
     reg [7:0] reply_opcode, reply_result;
-    (* ram_style="block" *) reg [7:0] request_cache[0:2047];
-    (* ram_style="block" *) reg [7:0] reply_cache[0:4095];
-    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_id[0:31];
-    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_time[0:31];
-    reg [5:0] cache_req_length[0:31];
-    reg [6:0] cache_reply_length[0:31];
-    reg [31:0] cache_valid;
-    reg [4:0] cache_next, cache_slot, lookup_slot;
+    localparam integer CACHE_BITS=CACHE_ENTRIES<2 ? 1 : $clog2(CACHE_ENTRIES);
+    localparam CACHE_RAM_STYLE=CACHE_ENTRIES<4 ? "distributed_ram" : "block_ram";
+    (* syn_ramstyle=CACHE_RAM_STYLE *) reg [7:0] request_cache[0:CACHE_ENTRIES*64-1];
+    (* syn_ramstyle=CACHE_RAM_STYLE *) reg [7:0] reply_cache[0:CACHE_ENTRIES*128-1];
+    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_id[0:CACHE_ENTRIES-1];
+    (* syn_ramstyle=CACHE_METADATA_RAM_STYLE *) reg [31:0] cache_time[0:CACHE_ENTRIES-1];
+    reg [5:0] cache_req_length[0:CACHE_ENTRIES-1];
+    reg [6:0] cache_reply_length[0:CACHE_ENTRIES-1];
+    reg [CACHE_ENTRIES-1:0] cache_valid;
+    reg [CACHE_BITS-1:0] cache_next, cache_slot, lookup_slot;
     reg [7:0] request_cache_data, reply_cache_data;
     reg [6:0] index;
     reg [4:0] frag_size, prev_size;
@@ -112,9 +124,14 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     reg [31:0] snapshot_recording_id,snapshot_recorded_frames;
     wire [127:0] recording_payload={header[31],header[30],header[29],header[28],header[27],header[26],header[25],header[24],
         header[23],header[22],header[21],header[20],header[19],header[18],header[17],header[16]};
-    ble_recording #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
+    ble_recording #(.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES),.STORAGE_DDR(STORAGE_DDR)) recording (
         .clk(clk),.resetn(resetn),.enable(recording_enable),.connected(enable),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
+        .pcm_store_write_o(pcm_store_write_o),.pcm_store_write_frame_o(pcm_store_write_frame_o),
+        .pcm_store_write_data_o(pcm_store_write_data_o),.pcm_store_read_frame_o(pcm_store_read_frame_o),
+        .pcm_store_fetch_o(pcm_store_fetch_o),.pcm_store_fetch_byte_o(pcm_store_fetch_byte_o),
+        .pcm_store_fetch_bytes_o(pcm_store_fetch_bytes_o),.pcm_store_read_data_i(pcm_store_read_data_i),
+        .pcm_store_fetched_i(pcm_store_fetched_i),.pcm_store_ready_i(pcm_store_ready_i),.pcm_store_fault_i(pcm_store_fault_i),
         .transfer_subscribed(transfer_subscribed),.boot_id(boot_id),.att_value_limit(att_value_limit),.elapsed_ms(elapsed_ms),
         .command_start(recording_start),.command_replay(recording_replay),
         .opcode(header[0]),.request_id(request_id),.nonce(request_nonce),
@@ -278,12 +295,12 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                     else state<=DISPATCH;
                 end
                 LOOKUP: begin
-                    if(cache_valid[lookup_slot] && elapsed_ms-cache_time[lookup_slot]<60000 &&
+                    if(cache_valid[lookup_slot] && (CACHE_EXPIRY_MS==0 || elapsed_ms-cache_time[lookup_slot]<CACHE_EXPIRY_MS) &&
                        cache_id[lookup_slot]==request_id) begin
                         cache_slot<=lookup_slot; index<=0;
                         if(total!=cache_req_length[lookup_slot]) error_reply(8'h86,0);
                         else state<=COMPARE_ADDR;
-                    end else if(lookup_slot==31) error_reply(8'h87,0);
+                    end else if(lookup_slot==CACHE_ENTRIES-1) error_reply(8'h87,0);
                     else lookup_slot<=lookup_slot+1'b1;
                 end
                 COMPARE_ADDR: state<=COMPARE;
@@ -343,7 +360,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
                         if(accept_request) begin
                             cache_valid[cache_slot]<=1; cache_id[cache_slot]<=request_id;
                             cache_time[cache_slot]<=elapsed_ms; cache_req_length[cache_slot]<=total;
-                            cache_reply_length[cache_slot]<=response_length; cache_next<=cache_next+1'b1;
+                            cache_reply_length[cache_slot]<=response_length;
+                            cache_next<=cache_next==CACHE_ENTRIES-1 ? 0 : cache_next+1'b1;
                         end
                         if(accept_request) begin index<=0;state<=STORE_META;end
                         else state<=DONE;

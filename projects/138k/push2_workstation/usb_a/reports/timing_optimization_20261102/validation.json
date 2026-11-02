@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "baseline_commit": "4e636f375a35b9bc8e0110e1e69f9d426c4be195",
+  "branch": "codex/138k-resource-optimization",
+  "tests": {
+    "native_timing": {
+      "passed": true,
+      "count": 9,
+      "source": "sim/test_workstation_custom_timing.py",
+      "sha256": "4c2cd44be7958a9da71dd7ac0dca2696c9b41841842248b5f40cf7cf8c2fb914"
+    },
+    "reference_physical": {
+      "passed": true,
+      "count": 6,
+      "source": "sim/test_workstation_reference_physical.py",
+      "sha256": "c5a6f812e3adada56b5db1abc7d9f64d073f6e15c96d487be8fe2de731fb86fa"
+    },
+    "physical_preparation": {
+      "passed": true,
+      "count": 22,
+      "source": "sim/test_workstation_custom_board_implementation.py",
+      "sha256": "4fe4ecd9b06cf7463723f138c0b956ada02a7c47f2ccfd8cca5269d4b0c40c0b"
+    },
+    "accepted_source_selection": {
+      "passed": true,
+      "count": 10,
+      "source": "sim/test_current_workstation_sources.py",
+      "sha256": "e66ea588ca32b1f780aa0a2f0f9b34eea0e4013cd40b4868528a59c893be2fe2"
+    }
+  },
+  "native_timing_log": {
+    "path": "projects\\138k\\push2_workstation\\usb_a\\results\\timing_opt_20261102\\a29_native_timing_tests.log",
+    "sha256": "00676c7f9ccf044d2dae2cc43b6f644a013f5326eb8188d8d3da005baa40e51d"
+  },
+  "source_comparisons": {
+    "source_comparison.json": {
+      "changed_staged_inputs": [
+        "native_bluetooth/patch_path.vh",
+        "native_usb_firmware/build.log",
+        "src/storage/tf_audio_ddr_dma.v"
+      ],
+      "firmware_rom_identical": true,
+      "sdc_identical": true,
+      "staged_file_count": 513,
+      "patch_rom_identical": true,
+      "patch_rom_sha256": "f2e933d0ea9e997051e1ea78df47cbe166dbbf81f0a9161b1e3b2e49c3d2dd30",
+      "functional_RTL_change_only": "src/storage/tf_audio_ddr_dma.v",
+      "other_differences": "absolute ROM macro path and firmware build log paths"
+    },
+    "a29_source_comparison.json": {
+      "parents": [
+        "custom138k-native-integration-20261102-a28",
+        "custom138k-native-integration-20261102-a29"
+      ],
+      "added": [],
+      "removed": [],
+      "changed": {
+        "legacy/rtl/audio/unified_oscillator_engine.sv": {
+          "a28": "7afb67e8b92828b50e42fbdfa259bf5c5ec0b39d1104bc263c5072e93067859e",
+          "a29": "e7ab5260057c86b204d5484f28f8ddfc3135b3c0820d26b9f18956cbe32bc200"
+        },
+        "native_bluetooth/patch_path.vh": {
+          "a28": "0dfe202925572fd07f81f64eb8b8b3491f8ec9acb0b354e6041cc83f2c3b93c9",
+          "a29": "4e816ff3e54b894b6548f4223efd81a0cebc0c36ac424f4a1208c2d11670d433"
+        },
+        "native_usb_firmware/build.log": {
+          "a28": "e9ddb3baeb74ae6eae234f8a867944c7abc903e6b8f5002db6ed68307f92139c",
+          "a29": "c5d33cc58604973cde4fe46920a36f5de19eba5a6b10bf7d364c358f1060f0d0"
+        }
+      },
+      "sdc_identical": true
+    }
+  },
+  "hardware_tested": false,
+  "formal_proof_performed": false,
+  "deployment_allowed": false
+}

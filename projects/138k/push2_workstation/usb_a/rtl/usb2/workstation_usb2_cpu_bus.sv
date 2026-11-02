@@ -1,6 +1,7 @@
 module workstation_usb2_cpu_bus #(
     parameter ROM_FILE = "",
     parameter integer CPU_FREQUENCY_HZ = 48000000,
+    parameter integer RAM_BYTES = 65536,
     parameter integer BUS_TIMEOUT_CYCLES = 480000
 )(
     input wire clk_cpu,
@@ -44,8 +45,8 @@ module workstation_usb2_cpu_bus #(
     localparam integer TIMER_WIDTH = BUS_TIMEOUT_CYCLES < 2 ? 1 : $clog2(BUS_TIMEOUT_CYCLES);
     localparam integer MILLISECOND_CYCLES = CPU_FREQUENCY_HZ / 1000;
     localparam integer DIVIDER_WIDTH = MILLISECOND_CYCLES < 2 ? 1 : $clog2(MILLISECOND_CYCLES);
-    reg [31:0] memory [0:16383];
-    reg [31:0] memory_read_q, peripheral_read_q;
+    wire [31:0] memory_read_q;
+    reg [31:0] peripheral_read_q;
     reg memory_response_q, bootstrap_response_q;
     reg [2:0] state_q;
     reg [31:0] address_q, write_data_q;
@@ -55,7 +56,7 @@ module workstation_usb2_cpu_bus #(
     reg [DIVIDER_WIDTH-1:0] millisecond_divider_q;
     reg [31:0] milliseconds_q, cycles_q;
     wire data_accept = data_valid_i && data_ready_o;
-    wire data_memory = data_address_i[31:16] == 0;
+    wire data_memory = data_address_i < RAM_BYTES;
     wire data_usb = data_address_i[31:8] == 24'h020001;
     wire data_service = data_address_i[31:8] == 24'h020002;
     wire data_uart = data_address_i == 32'h02000014;
@@ -65,7 +66,7 @@ module workstation_usb2_cpu_bus #(
     wire data_memory_accept = data_accept && data_memory;
     wire instruction_accept = instruction_valid_i && instruction_ready_o;
     wire instruction_bootstrap = instruction_address_i[31:6] == 26'h2000000;
-    wire bad_instruction = instruction_accept && instruction_address_i[31:16] != 0 && !instruction_bootstrap;
+    wire bad_instruction = instruction_accept && instruction_address_i >= RAM_BYTES && !instruction_bootstrap;
     wire invalid_local_write = data_local && data_write_i && data_address_i != 32'h02000010 && data_address_i != 32'h02000058;
     wire invalid_data = data_accept && ((!data_memory && !data_usb && !data_service && !data_uart && !data_local) || invalid_local_write);
     wire [13:0] memory_address = data_memory_accept ? data_address_i[15:2] : instruction_address_i[15:2];
@@ -79,7 +80,6 @@ module workstation_usb2_cpu_bus #(
     wire clear_fault = data_accept && data_write_i && data_address_i == 32'h02000058 && data_mask_i[0];
     wire [3:0] fault_clear_mask = clear_fault ? data_write_data_i[3:0] : 4'd0;
 
-    initial if (ROM_FILE != "") $readmemh(ROM_FILE, memory);
     assign data_ready_o = reset_n && state_q == IDLE;
     assign instruction_ready_o = reset_n && !data_memory_accept;
     assign instruction_data_o = bootstrap_response_q ? 32'h00000067 : memory_read_q;
@@ -95,8 +95,39 @@ module workstation_usb2_cpu_bus #(
     assign service_write_data_o = write_data_q;
     assign service_mask_o = mask_q;
 
+    generate if(RAM_BYTES==49152) begin: g_ram48
+        // Three 16 KiB banks avoid a 12K-deep one-bit RAM mapping that would
+        // still consume the same 32 physical blocks as the old 64 KiB RAM.
+        wire [31:0] bank_data[0:2];
+        reg [1:0] read_bank;
+        always @(posedge clk_cpu) read_bank<=memory_address[13:12];
+        assign memory_read_q=bank_data[read_bank];
+        for(genvar bank=0;bank<3;bank=bank+1) begin: g_bank
+            reg [31:0] memory[0:4095];
+            reg [31:0] read_q;
+            initial if(ROM_FILE!="") begin
+                if(bank==0) $readmemh("usb2_cpu_bank0.hex",memory);
+                if(bank==1) $readmemh("usb2_cpu_bank1.hex",memory);
+                if(bank==2) $readmemh("usb2_cpu_bank2.hex",memory);
+            end
+            assign bank_data[bank]=read_q;
+            always @(posedge clk_cpu) begin
+                read_q<=memory[memory_address[11:0]];
+                if(data_memory_accept && data_write_i && data_address_i[15:14]==bank) begin
+                    if(data_mask_i[0]) memory[data_address_i[13:2]][7:0]<=data_write_data_i[7:0];
+                    if(data_mask_i[1]) memory[data_address_i[13:2]][15:8]<=data_write_data_i[15:8];
+                    if(data_mask_i[2]) memory[data_address_i[13:2]][23:16]<=data_write_data_i[23:16];
+                    if(data_mask_i[3]) memory[data_address_i[13:2]][31:24]<=data_write_data_i[31:24];
+                end
+            end
+        end
+    end else begin: g_ram64
+        reg [31:0] memory[0:RAM_BYTES/4-1];
+        reg [31:0] read_q;
+        initial if(ROM_FILE!="") $readmemh(ROM_FILE,memory);
+        assign memory_read_q=read_q;
     always @(posedge clk_cpu) begin
-        memory_read_q <= memory[memory_address];
+        read_q <= memory[memory_address];
         if (data_memory_accept && data_write_i) begin
             if (data_mask_i[0]) memory[data_address_i[15:2]][7:0] <= data_write_data_i[7:0];
             if (data_mask_i[1]) memory[data_address_i[15:2]][15:8] <= data_write_data_i[15:8];
@@ -104,6 +135,8 @@ module workstation_usb2_cpu_bus #(
             if (data_mask_i[3]) memory[data_address_i[15:2]][31:24] <= data_write_data_i[31:24];
         end
     end
+
+    end endgenerate
 
     simpleuart #(.DEFAULT_DIV(CPU_FREQUENCY_HZ / 115200)) uart (
         .clk(clk_cpu), .resetn(reset_n), .ser_rx(uart_rx_i), .ser_tx(uart_tx_o),

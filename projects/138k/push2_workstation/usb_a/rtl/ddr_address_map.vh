@@ -112,4 +112,10 @@
 `define PRJ1_DDR_DELAY_RING_BYTES        32'h0002_0000
 `define PRJ1_DDR_DELAY_RING_APP_BASE     29'h0c00_0000
 
+// Second 1 MiB bulk granule: BLE PCM capture. Only the first 64 KiB is
+// currently used (16384 stereo PCM16 frames); shared music owner arbitrates.
+`define PRJ1_DDR_BLE_PCM_BYTE_BASE      32'h3010_0000
+`define PRJ1_DDR_BLE_PCM_BYTE_LAST      32'h3010_ffff
+`define PRJ1_DDR_BLE_PCM_APP_BASE       29'h0c04_0000
+
 `endif

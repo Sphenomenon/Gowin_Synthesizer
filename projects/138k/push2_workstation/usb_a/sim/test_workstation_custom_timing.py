@@ -17,6 +17,66 @@ from tools.workstation_resource_timing import tf_dma, voice_count
 
 
 class NativeTiming(unittest.TestCase):
+    def test_envelope_lane_preserves_all_states_and_unsigned_boundaries(self):
+        original = self.original_sources()['legacy/rtl/audio/unified_oscillator_engine.sv'].decode()
+        adapted = timing.envelope_arithmetic(original)
+        inputs = ['level', 'attack', 'decay', 'sustain', 'release']
+        modules = []
+        for name, source in [('reference', original), ('adapted', adapted)]:
+            declarations = '\n'.join('input [23:0] envelope_update_'+stem+'_q24;' for stem in inputs)
+            arithmetic = source[source.index('  function automatic [24:0] envelope_add24;'):
+                                source.index('  assign updated_slot_phase')] if name == 'adapted' else source[
+                                    source.index('  assign envelope_update_attack_sum ='):
+                                    source.index('  assign updated_slot_phase')]
+            combinational = re.search(r'  always @\* begin\n    envelope_next_level_q24.*?\n  end', source, re.S)[0]
+            constants = '\n'.join(line for line in source.splitlines() if 'localparam logic' in line and
+                                  ('ENVELOPE_' in line or 'MAXIMUM_LEVEL_Q24' in line))
+            modules.append('module '+name+'(envelope_update_state,'+
+                           ','.join('envelope_update_'+s+'_q24' for s in inputs)+
+                           ',envelope_next_state,envelope_next_level_q24,envelope_next_level_q18);\n'+
+                           'input [2:0] envelope_update_state;\n'+declarations+'\n'+
+                           'output reg [2:0] envelope_next_state;\noutput reg [23:0] envelope_next_level_q24;\n'+
+                           'output reg [17:0] envelope_next_level_q18;\nwire [24:0] envelope_update_attack_sum;\n'+
+                           constants+'\n'+arithmetic+'\n'+combinational+'\nendmodule\n')
+        bench = '''module tb_envelope;
+reg [2:0] state;
+reg [23:0] level,attack,decay,sustain,release_step;
+reg [31:0] rng=32'h138a2901;
+wire [44:0] expected,actual;
+reference r(state,level,attack,decay,sustain,release_step,expected[44:42],expected[41:18],expected[17:0]);
+adapted a(state,level,attack,decay,sustain,release_step,actual[44:42],actual[41:18],actual[17:0]);
+integer i,j,k;
+task randomize_value;
+begin rng={rng[30:0],rng[31]^rng[21]^rng[1]^rng[0]}; end
+endtask
+task verify;
+begin #1;if(actual!==expected) $fatal(1,"ADSR mismatch state=%d level=%h attack=%h decay=%h sustain=%h release=%h actual=%h expected=%h",state,level,attack,decay,sustain,release_step,actual,expected);end
+endtask
+initial begin
+ for(i=0;i<200000;i=i+1)begin
+  randomize_value();state=rng[2:0];level=rng[31:8];
+  randomize_value();attack=rng[31:8];randomize_value();decay=rng[31:8];
+  randomize_value();sustain=rng[31:8];randomize_value();release_step=rng[31:8];verify();
+ end
+ for(k=0;k<8;k=k+1)for(i=0;i<128;i=i+1)for(j=0;j<8;j=j+1)begin
+  state=3'(k);level=24'hffff80+24'(i);sustain=level-24'(j);
+  attack=24'(j);decay=24'(j);release_step=level-24'(j);verify();
+  level=24'(i);sustain=level+24'(j);attack=24'hffffff-24'(j);release_step=0;verify();
+ end
+ $display("PASS ADSR lane: 216384 state/boundary vectors, unchanged combinational interface");$finish;
+end
+endmodule
+'''
+        with tempfile.TemporaryDirectory(prefix='native-envelope-') as directory:
+            source, executable = Path(directory)/'test.sv', Path(directory)/'simulation'
+            source.write_text('\n'.join(modules)+bench)
+            compilation = subprocess.run(['iverilog', '-g2012', '-s', 'tb_envelope', '-o', str(executable),
+                                          str(source)], capture_output=True, text=True, timeout=30)
+            self.assertEqual(compilation.returncode, 0, compilation.stderr)
+            simulation = subprocess.run(['vvp', str(executable)], capture_output=True, text=True, timeout=60)
+            self.assertEqual(simulation.returncode, 0, simulation.stdout+simulation.stderr)
+            print(simulation.stdout.strip())
+
     def test_vector_velocity_mapping_matches_every_midi_value(self):
         text = (ROOT / 'rtl/audio/scope_vec/scope_vec_engine.sv').read_text()
         expression = re.search(r'velocity\[j\]<=([^;]*event_velocity_i[^;]*);', text)[1]
@@ -140,6 +200,58 @@ endmodule
         self.assertNotIn('set_clock_groups', constraints)
         self.assertNotIn('get_clocks', constraints)
         self.assertIn('set_min_delay 0.800 -from [get_pins', constraints)
+
+    def test_ring_increment_matches_power_of_two_and_general_wrap(self):
+        original = self.original_sources()['src/storage/tf_audio_ddr_dma.v'].decode()
+        adapted = timing.byte_increment(original)
+        functions = '\n'.join(re.search(r'    function \[31:0\] '+name+r';.*?    endfunction',
+                                        adapted, re.S)[0] for name in ('add_byte_count', 'advance_ring'))
+        reference = re.search(r'    function \[31:0\] advance_ring;.*?    endfunction', original, re.S)[0]
+        reference = reference.replace('advance_ring', 'reference_ring')
+        bench = '''module ring_check #(parameter [31:0] AUDIO_TOTAL_BYTES=128);
+FUNCTIONS
+REFERENCE
+reg [31:0] rng=32'h138a2801,offset;
+integer i;
+task verify;
+begin
+    if(advance_ring(offset)!==reference_ring(offset))
+        $fatal(1,"ring advance changed capacity=%h offset=%h",AUDIO_TOTAL_BYTES,offset);
+end
+endtask
+initial begin
+    // Exercise every beat near both bank/ring boundaries, unaligned inputs,
+    // and 32-bit addition overflow as well as actual aligned DMA pointers.
+    for(i=0;i<256;i=i+1)begin
+        offset=AUDIO_TOTAL_BYTES-32'(i);verify();
+        offset=(AUDIO_TOTAL_BYTES>>1)-32'(i);verify();
+        offset=32'hffffffff-32'(i);verify();
+    end
+    for(i=0;i<100000;i=i+1)begin
+        rng={rng[30:0],rng[31]^rng[21]^rng[1]^rng[0]};offset=rng;verify();
+        offset=rng & 32'hffffffe0;verify();
+    end
+end
+endmodule
+module tb_ring;
+ring_check #(128) small_power();
+ring_check #(192) general_wrap();
+ring_check #(32'h08000000) hardware_capacity();
+ring_check #(0) zero_capacity();
+initial begin #1;$display("PASS ring increment: 803072 exact boundary/random/aligned vectors, four capacities");$finish;end
+endmodule
+'''.replace('FUNCTIONS', functions).replace('REFERENCE', reference)
+        with tempfile.TemporaryDirectory(prefix='native-ring-increment-') as directory:
+            source = Path(directory)/'test.sv'
+            executable = Path(directory)/'simulation'
+            source.write_text(bench)
+            compiled = subprocess.run(['iverilog', '-g2012', '-s', 'tb_ring', '-o', str(executable), str(source)],
+                                      capture_output=True, text=True, timeout=30)
+            self.assertEqual(compiled.returncode, 0, compiled.stderr)
+            simulation = subprocess.run(['vvp', str(executable)], capture_output=True, text=True, timeout=90)
+            self.assertEqual(simulation.returncode, 0, simulation.stdout+simulation.stderr)
+            self.assertIn('PASS ring increment', simulation.stdout)
+            print(simulation.stdout.strip())
 
     def test_parallel_voice_control_preserves_allocation_and_gain_cycles(self):
         original = self.original_sources()['legacy/rtl/audio/unified_oscillator_engine.sv'].decode()

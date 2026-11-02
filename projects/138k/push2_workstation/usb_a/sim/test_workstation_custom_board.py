@@ -92,9 +92,10 @@ class NativeBoard(unittest.TestCase):
             stage = base / f'hs_{high_speed}'
             stage.mkdir(exist_ok=False)
             parent_stage = parent / 'workstation/Prj1'
-            sources = (*SOC_SOURCE_PATHS, *integration.NATIVE_INPUT_SOURCES, *integration.LOCKED_INPUT_SOURCES)
+            sources = tuple(dict.fromkeys(integration.REPLACED_INPUTS.get(relative, relative) for relative in
+                (*SOC_SOURCE_PATHS, *integration.NATIVE_INPUT_SOURCES, *integration.LOCKED_INPUT_SOURCES)))
             selected = {}
-            for relative in (*sources, 'usb2_cpu.hex'):
+            for relative in (*sources, 'usb2_cpu.hex', *(f'usb2_cpu_bank{i}.hex' for i in range(3))):
                 if relative in sources:
                     self.assertIn(relative, metadata['enabled_inputs'])
                 source = parent_stage / relative
@@ -103,6 +104,15 @@ class NativeBoard(unittest.TestCase):
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, destination)
                 selected[relative] = digest(source)
+            # The component bench omits the board composition's hierarchical
+            # parameter overrides. Apply only its RAM capacity to the copy.
+            bus = stage / 'rtl/usb2/workstation_usb2_cpu_bus.sv'
+            before = digest(bus)
+            text = bus.read_text()
+            self.assertEqual(text.count('parameter integer RAM_BYTES = 65536'), 1)
+            bus.write_text(text.replace('parameter integer RAM_BYTES = 65536',
+                                       'parameter integer RAM_BYTES = 49152'))
+            selected['rtl/usb2/workstation_usb2_cpu_bus.sv'] = digest(bus)
             device, peer_sources = midi_sources()
             models = (*MODEL_INPUTS[:-1], 'sim/usb2/tb_workstation_usb2_input_25k.sv')
             originals = [*(ROOT / relative for relative in models), *peer_sources,
@@ -118,6 +128,7 @@ class NativeBoard(unittest.TestCase):
             evidence = dict(schema=1, high_speed=bool(high_speed), parent_stage=str(parent),
                             parent_manifest_sha256=digest(parent / 'integration_inputs.json'),
                             selected_parent_input_sha256=selected,
+                            component_ram_override=dict(before=before, after=digest(bus), ram_bytes=49152),
                             simulation_input_sha256={str(source.relative_to(ROOT.parents[3])): value
                                                      for source, value in identities.items()},
                             scope='actual_full_profile_frontend_with_resource_fifo_not_full_board_simulation',
@@ -170,7 +181,7 @@ class NativeBoard(unittest.TestCase):
             self.assertIn('.performance_words_i(performance_words),',
                           (stage / 'rtl/workstation/gw138k_push_workstation_top.v').read_text())
             self.assertEqual((stage / 'constraints/custom_138k.sdc').read_text(),
-                             clock_bundle(ROOT)['sdc'] + cdc_bundle(ROOT)['sdc'] + input_cdc_bundle(ROOT)['sdc'] + integration.FPC_AUDIO_SDC + integration.BLUETOOTH_SDC + integration.LCD_SDC + shared_cdc_bundle(stage)['sdc'] + integration.timing_constraints() + integration.MODEL_FLASH_SDC)
+                             clock_bundle(ROOT)['sdc'] + cdc_bundle(ROOT)['sdc'] + input_cdc_bundle(ROOT)['sdc'] + integration.FPC_AUDIO_SDC + integration.BLUETOOTH_SDC + integration.LCD_SDC + shared_cdc_bundle(stage)['sdc'] + integration.timing_constraints() + integration.MODEL_FLASH_SDC + integration.storage_constraints())
             shared_sdc = shared_cdc_bundle(stage)['sdc']
             self.assertIn('u_video/u_scanout/held_request*', shared_sdc)
             self.assertIn('u_managed/u_audio/u_workstation/effects/delay_stage/u_write_fifo/write_binary_9*', shared_sdc)
@@ -195,7 +206,7 @@ class NativeBoard(unittest.TestCase):
             self.assertEqual((stage / 'constraints/custom_138k.cst').read_text(), combined)
             self.assertEqual((stage / 'constraints/custom_138k.display.cst').read_bytes(),
                              (ROOT / integration.DISPLAY_CST).read_bytes())
-            self.assertEqual(metadata['identity'], 'custom138k-native-integration-20261027-a26')
+            self.assertEqual(metadata['identity'], integration.IDENTITY)
             self.assertEqual((stage / 'constraints/custom_138k.ddr.cst').read_bytes(),
                              (ROOT / integration.DDR_CST).read_bytes())
             for constraint in (
@@ -217,8 +228,9 @@ class NativeBoard(unittest.TestCase):
             for flag in ('place_route_allowed', 'io_electrical_complete', 'timing_constraints_complete',
                          'hardware_tested', 'deployment_allowed', 'release_ready'):
                 self.assertFalse(metadata[flag], flag)
-            self.assertEqual(metadata['firmware']['rom_sha256'],
-                             '31c4d7d58141ef0ec2b33f826a9c22251b7d4f23771cbaa189427b0f1277d457')
+            self.assertEqual(metadata['firmware']['rom_sha256'], digest(stage / 'usb2_cpu.hex'))
+            self.assertEqual(metadata['firmware']['ram_bytes'], 49152)
+            self.assertGreaterEqual(metadata['firmware']['stack_margin_bytes'], 8192)
             self.assertEqual(metadata['audio_pin_behavior'], 'ak4493_i2s32_48k_mclk256fs_final_master_volume')
             self.assertEqual(plan['ports']['dac_pdn_n']['balls'], ['C13'])
             self.assertEqual(plan['ports']['hp_bck']['balls'], ['A13'])

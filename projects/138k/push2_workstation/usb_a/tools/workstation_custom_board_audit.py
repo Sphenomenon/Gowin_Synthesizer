@@ -167,7 +167,9 @@ def check_files(base, identities, label):
             raise ValueError('native audit ' + label + ' changed: ' + relative)
 
 
-def hierarchy(root):
+def hierarchy(root, *, cpu_ram_bytes=65536):
+    if cpu_ram_bytes not in (49152, 65536):
+        raise ValueError('unsupported audited CPU RAM capacity')
     if root.tag != 'Module' or root.get('name') != TOP:
         raise ValueError('native synthesis report top mismatch')
     resources = ('Register', 'Lut', 'Alu', 'Bsram', 'Ssram', 'MULTALU27X18', 'MULT12X12', 'MULT27X36')
@@ -204,7 +206,7 @@ def hierarchy(root):
     if any(path in rows for path in ('u_usb_host', 'u_push')):
         raise ValueError('native synthesis retained legacy USB host')
     check_feature_storage(rows)
-    if rows[FEATURES['usb_host']]['Bsram'] < 38 or rows[FEATURES['push_surface']]['Bsram'] < 1:
+    if rows[FEATURES['usb_host']]['Bsram'] < cpu_ram_bytes//2048+6 or rows[FEATURES['push_surface']]['Bsram'] < 1:
         raise ValueError('native CPU ROM or event FIFO storage swept')
     if 'u_tf_audio/u_path/u_decoder/g_wav.u_wav' not in rows:
         raise ValueError('native requested WAV decoder missing')
@@ -269,6 +271,17 @@ def audit(output):
     output = Path(output).resolve()
     manifest = output / 'integration_inputs.json'
     metadata = json.loads(manifest.read_text())
+    if metadata.get('identity') in ('custom138k-native-integration-20261102-a27',
+            'custom138k-native-integration-20261102-a27-720p30',
+            'custom138k-native-integration-20261102-a27-720p60',
+            'custom138k-native-integration-20261102-a28',
+            'custom138k-native-integration-20261102-a28-720p30',
+            'custom138k-native-integration-20261102-a28-720p60',
+            'custom138k-native-integration-20261102-a29',
+            'custom138k-native-integration-20261102-a29-720p30',
+            'custom138k-native-integration-20261102-a29-720p60'):
+        from tools.workstation_resource_audit import audit as audit_resource
+        return audit_resource(output)
     if (metadata.get('identity') not in ('custom138k-native-integration-20261022-a2',
                                        'custom138k-native-integration-20261022-a3',
                                        'custom138k-native-integration-20261022-a4',

@@ -470,9 +470,17 @@ module gw138k_push_workstation_top #(
         .destination_valid(ble_pcm_valid),.destination_data({ble_sequence,ble_pcm})
     );
     wire [767:0] ble_status;
+    wire ble_memory_req,ble_memory_write,ble_memory_ready,ble_memory_response;
+    wire [28:0] ble_memory_address;
+    wire [255:0] ble_memory_data;
+    wire [31:0] ble_memory_mask;
     workstation_bluetooth u_bluetooth (
         .clk_i(clk_50m),.rst_ni(reset_n),.module_uart_tx_i(ble_uart_rx_i),
         .pcm_valid_i(ble_pcm_valid),.pcm_pair_i(ble_pcm),.pcm_sequence_i(ble_sequence),
+        .memory_clk_i(memory_clk),.memory_rst_ni(memory_reset_n),.memory_ready_i(memory_calibrated),
+        .memory_req_o(ble_memory_req),.memory_write_o(ble_memory_write),.memory_address_o(ble_memory_address),
+        .memory_data_o(ble_memory_data),.memory_mask_o(ble_memory_mask),
+        .memory_req_ready_i(ble_memory_ready),.memory_response_i(ble_memory_response),.memory_read_data_i(client_rdata),
         .source_allowed_i(1'b1),.module_uart_rx_o(ble_tx),.module_bt_dis_no(ble_bt_enable),
         .module_wl_dis_no(ble_wl_enable),.outputs_active_o(ble_active),
         .initialized_o(),.connected_o(),.subscribed_o(),.failed_o(),.status_o(ble_status)
@@ -487,6 +495,14 @@ module gw138k_push_workstation_top #(
     end endgenerate
 `endif
     ddr_address_map_guard u_ddr_address_map_guard();
+`ifdef WORKSTATION_CUSTOM_138K
+    // Calibration remains mandatory; production skips destructive startup BIST.
+    defparam u_video.u_bist.ENABLE_BIST=0;
+    defparam u_native_usb.host.bus.RAM_BYTES=49152;
+    defparam u_managed.u_audio.u_pc_cdc.COUNT_DROPS=0;
+    defparam u_managed.u_audio.u_workstation.cue_player.VALIDATE_ROM=0;
+    defparam u_music.u_basic_pitch.g_model_boot.g_flash.u_model_loader.VERIFY_DDR=0;
+`endif
     ddr3_platform u_memory (
         .clk_50m(clk_50m),.rst_n(reset_n),.ui_clk(memory_clk),.ui_rst_n(memory_reset_n),
         .calib_done(memory_calibrated),.pll_locked(memory_pll_locked),
@@ -502,6 +518,20 @@ module gw138k_push_workstation_top #(
     wire [28:0] cpu_mem_address;
     wire [255:0] cpu_mem_data;
     wire [31:0] cpu_mem_mask;
+`ifdef WORKSTATION_CUSTOM_138K
+    wire shared_music_req,shared_music_write,shared_music_ready,shared_music_response;
+    wire [28:0] shared_music_address;
+    wire [255:0] shared_music_data;
+    wire [31:0] shared_music_mask;
+    workstation_ddr_pair u_music_ble_memory (
+        .clk_i(memory_clk),.rst_ni(memory_reset_n),
+        .a_req_i(music_ddr_req),.a_write_i(music_ddr_write),.a_address_i(music_ddr_address),
+        .a_data_i(music_ddr_data),.a_mask_i(music_ddr_mask),.a_ready_o(music_ddr_ready),.a_response_o(music_ddr_response),
+        .b_req_i(ble_memory_req),.b_write_i(ble_memory_write),.b_address_i(ble_memory_address),
+        .b_data_i(ble_memory_data),.b_mask_i(ble_memory_mask),.b_ready_o(ble_memory_ready),.b_response_o(ble_memory_response),
+        .req_o(shared_music_req),.write_o(shared_music_write),.address_o(shared_music_address),
+        .data_o(shared_music_data),.mask_o(shared_music_mask),.ready_i(shared_music_ready),.response_i(shared_music_response));
+`endif
     hdmi_display u_video (
         .ui_pending(ui_pending),.ui_visible(ui_visible),.ui_next_visible(ui_next_visible),
         .ui_front_base(ui_front_base),.ui_next_base(ui_next_base),.ui_frame_commit(ui_frame_commit),
@@ -509,9 +539,15 @@ module gw138k_push_workstation_top #(
         .cpu_data(cpu_mem_data),.cpu_mask(cpu_mem_mask),.cpu_ready(cpu_mem_ready),.cpu_response(cpu_mem_response),
         .audio_req(audio_queued_req),.audio_write(audio_queued_write),.audio_address(audio_queued_address),
         .audio_data(audio_queued_data),.audio_ready(audio_queued_ready),.audio_response(audio_ddr_response),
+`ifdef WORKSTATION_CUSTOM_138K
+        .music_req(shared_music_req),.music_write(shared_music_write),.music_address(shared_music_address),
+        .music_data(shared_music_data),.music_mask(shared_music_mask),
+        .music_ready(shared_music_ready),.music_response(shared_music_response),
+`else
         .music_req(music_ddr_req),.music_write(music_ddr_write),.music_address(music_ddr_address),
         .music_data(music_ddr_data),.music_mask(music_ddr_mask),
         .music_ready(music_ddr_ready),.music_response(music_ddr_response),
+`endif
         .delay_req(delay_ddr_req),.delay_write(delay_ddr_write),.delay_address(delay_ddr_address),
         .delay_data(delay_ddr_data),
         .delay_ready(delay_ddr_ready),.delay_response(delay_ddr_response),
