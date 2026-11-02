@@ -678,3 +678,10 @@ M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_worksta
 [W B6源码与回归](push2_workstation/usb_a/reports/DUAL138K_W_B6_IDENTITY_SOURCE_20261102.json)：session-only服务通过唯一CPU/HCI owner在既有WriteScanEnable3后读取真实BD_ADDR并回读ScanEnable3，两项成功后才ready；默认durable顺序保持。PL仅在显式SESSION_ONLY_PAIRING允许无参数1009/0c19，物理命令信用、私有副本、epoch和原owner2完成不变。既有48bit诊断在首ACL前显示实读地址，故障明确输出FC各层原因，保留首close／ACL，不再用永久CPU1掩盖runtime fault。
 
 Security default原生／sanitizer各52747检查，W session各37736检查、32变异拒绝；runtime 11用例各4209检查、15+9变异拒绝；原生HCI268检查和11变异、两策略各1315实际包／信用检查和7变异、来源17项通过。独立源码复审无重大问题；对象增量据实记录，尚无整机链接／新全量综合／P&R／实板结论。新物理身份预留D21102B6，保留冻结B5及BLE C1候选，随后独立全量实现；本轮Flash不写。
+
+
+### 2026-11-02：W B6 新全量综合与严格网表门
+
+[W B6全量综合证据](push2_workstation/usb_a/reports/DUAL138K_W_B6_SYNTHESIS_20261102.json)：来源9bcb938b，新候选0d623a4cb68e2b0d，正规build.py显式W配置；613暂存／129编译／977来源及1499工具封存。新全量综合113.688s、exit0，615输入前后不变；实际VG4be691f0…5015e10，严格W音频／完整效果与流式Pitch／USB Host反馈／HCI epoch及源CDC门通过，HDMI与录音仍退出。综合FF27030／LUT30943／ALU11254／BSRAM等价192／SSRAM177，非物理资源，不预记收益。实际AE350 ROM3eeae0aa…b59984，ILM正文29856＋常量976＝30832字节，DLM静态7024字节，原16384字节栈未扩容；ROM与ILM分开统计。
+
+B5定位配方已用新VG完整DDR模块、app_cmd完整cell及128参考FF逐一核实，只允许复用CST／SDC定位，不继承route／时序。新物理身份D21102B6随后独立全量P&R及门禁，仍需读回真实本板蓝牙地址、手机A2DP与D／25K／连续DAC实测；本综合阶段未操作板卡、未写Flash，冻结B5及BLE C1输入保持。

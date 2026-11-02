@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "phase": "W_B6_new_full_synthesis_and_strict_mapped_gate",
+  "source_git_head": "9bcb938b095d9aaa362f24606ffbe60e91174ab2",
+  "candidate_identity": "custom138k-workstation-w-demo-v1-0d623a4cb68e2b0d",
+  "physical_user_code_reserved": "0xD21102B6",
+  "evidence": {
+    "prepare_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-prepare-source-seal-v1.json",
+      "sha256": "b78dfe37ffafc04cb242ff6eafdf1262f3d636c5057d5caa1b8e9c9df05fd675"
+    },
+    "manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/integration_inputs.json",
+      "sha256": "7e7ac99edd0add4aaef3d2b117a429e27817cad3462ddfe59efc13b0b2811ea9"
+    },
+    "profile": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/workstation_profile.json",
+      "sha256": "864886b7856cafb2bff9ab740dfd89da6083de000b30de156bffa9e6e5f8c51e"
+    },
+    "source_tools_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-audits-v1/source-tools-seal.json",
+      "sha256": "147c592faca08c6646cfb9dd4da56e79211307c22086928577429516cbca01c1"
+    },
+    "synthesis_run": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-synthesis-run-v1.json",
+      "sha256": "4cdb04360c48f02ba3c1776460bcd472718ab29738cfb17f01f2f974d71b75b3"
+    },
+    "strict_synthesis": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-strict-synthesis-v1.json",
+      "sha256": "7a392b45cefcbde29f6a159436dcc12cc205abd00f661d77ed710f3557491057"
+    },
+    "VG": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+      "sha256": "4be691f0da908bac34e93f0509c49ef48a7a2396f5d2f7257db952f2c5015e10"
+    },
+    "synthesis_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/synthesis.log",
+      "sha256": "bfd47bb5b0ecbd18f9527cf1d1b3f854640c710909fca1e476c0f34904a898fd"
+    },
+    "AE350_ELF": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/ae350_firmware/firmware.elf",
+      "sha256": "f1d7197ddd72935c87a750adc76b80d39c78ceda83e0bd25a9391114d1fe30c5"
+    },
+    "AE350_ROM": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/workstation/Prj1/firmware/boot.mem",
+      "sha256": "3eeae0aa8d663c5c7e97e62fd5e4f493882aa92b9337e8c92266579f41b59984"
+    },
+    "firmware_size": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-identity-b6-candidate/ae350_firmware/firmware.size",
+      "sha256": "992f23c298499bbbf5bb629f45f626bc28026391b75b9364d3108f6e291e8e86"
+    },
+    "DDR_recipe_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-b6-independent-DDR-boundary-review-v1/review.json",
+      "sha256": "97e50a6752bd99534b4a277aa2e2fe7803b1d38e12b493573ff422c7e61514aa"
+    }
+  },
+  "source_policy": "regular_build.py_explicit_W_profile; immutable_prepared_closure",
+  "staged_input_count": 613,
+  "enabled_input_count": 129,
+  "source_snapshot_count": 977,
+  "audit_tool_count": 1499,
+  "full_synthesis": {
+    "exit_code": 0,
+    "elapsed_seconds": 113.68828254099935,
+    "sealed_input_count": 615,
+    "all_inputs_unchanged": true
+  },
+  "synthesis_resources": {
+    "Register": 27030,
+    "Lut": 30943,
+    "Alu": 11254,
+    "Bsram": 192,
+    "Ssram": 177,
+    "MULTALU27X18": 3,
+    "MULT12X12": 0,
+    "MULT27X36": 28
+  },
+  "BSRAM_is_synthesis_equivalent_not_physical": true,
+  "strict_gate_passed": true,
+  "strict_scope": "W_audio_only_full_D_effects_stream_pitch_USB_Host_feedback_and_registered_HCI_epoch; HDMI_and_recording_absent",
+  "AE350_memory": {
+    "boot": 592,
+    "rom_text": 25152,
+    "ilm_text": 29856,
+    "ilm_rodata": 976,
+    "ilm_used": 30832,
+    "dlm_data": 16,
+    "dlm_bss": 7008,
+    "dlm_static": 7024,
+    "stack_reservation": 16384
+  },
+  "old_route_acceptance_inherited": false,
+  "physical_PnR_complete": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "SRAM_deployed": false,
+  "Flash_deployed": false,
+  "remaining": [
+    "new physical PnR and actual STA PLL CDC ROM/resource gates",
+    "actual controller address and scan state through existing real service",
+    "real phone pairing A2DP D effects 25K press/release and continuous DAC"
+  ],
+  "rollback": "Board untouched during B6 synthesis; W B5 SRAM and original M26 Flash remain"
+}
