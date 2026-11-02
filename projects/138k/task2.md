@@ -814,3 +814,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [物理封存](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_PHYSICAL_20261103.json)：独立f9eab12c021b9713／D21103D8通过全量综合／P&R／完整7时钟STA，setup+0.023／hold+0.085／recovery+2.656／removal+0.281ns，无负路径／端点。实际Logic51571／FF30033／CLS38355／BSRAM249/340／DSP104；综合等价资源另列。3 PLL／官方DDR序列配置／stopped-clock reset／DAC启动／完整SDC和路由CDC／故障负控全通过。模型64颗ROM逐word重建仍等于E／AF01A61B，TF四根正确球位再次独立核对。
 
 补测实际生产262144个BIST突发及250000000个clk50周期超时参数，真实BIST／CDC／DDR16／队列／仲裁链路完成52239次模型原生写与读、逐word一致和AF01A61B，false-ready为0；只有原生DDR为行为模型，81ms为仿真时间，不是实板测量。新物理封存后按已有授权串行SRAM；此时D8尚未部署，D7的实际歌曲可见不升级为模型／CNN／指导接受。Flash不写。
+
+
+### 2026-11-03：D8 已 SRAM 下载，独立读回身份，等待模型状态反馈
+
+[实板部署证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SRAM_20261103.json)：共享锁内重新枚举FT2CH／8321并复核所有封存门禁、位流、工具及回退hash。先op0读回D7 `D21103D7`，仅op2 SRAM编程D8（工具6.75秒），随后独立op0读回 `D21103D8`、op74状态00022230。D8 FS SHA256 `ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b`，输入未变；未逐bit SRAM读取，Flash未写。
+
+已请用户重新在Push选择实际travelers并反馈MODEL FAILED是否消失及CNN ANALYZING／GUIDE READY／SONG READY状态。该候选模型自动装载，无需串口；此时身份部署成功不代表物理模型CRC已通过，也不代替歌曲实际CNN／逐键推进／DAC／重选清理验收。M26原Flash回退保持。
