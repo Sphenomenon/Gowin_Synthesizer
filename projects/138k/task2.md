@@ -800,3 +800,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [部署证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D7_SRAM_20261103.json)：用户确认重接JTAG后，在共享锁下重新枚举FT2CH／8321，核实门禁／源码／位流／工具与M26回退hash，先独立读回掉电后M26 `D2110137`／状态00022020，再仅执行op2 SRAM下载D7。工具报告7.39秒，随后另行op0独立读回 `D21103D7`，op74状态00022230；未逐bit读取SRAM，Flash未写。实际下载位流SHA256 `6b3d68d0ebaa190dfdec300ad19cc36f3d72285bc6053e6d58b439c34cd99cb2`，输入保持封存不变。
 
 新版四根TF SPI已修正且模型自动装载，无需UART。已请用户确认真实TF中travelers的可见／可选及必要FS／CARD状态，尚未拿到本次Push反馈；物理model-ready／CRC、实际歌曲CNN／指导、正确按键推进、DAC有效和重选清旧状态仍未验收。身份下载与读回不冒充功能闭环。
+
+
+### 2026-11-03：D7 实板歌曲可见，但 MODEL FAILED；D8 修正 BIST 期间的请求丢失
+
+[源级与定向复现证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SOURCE_20261103.json)：用户确认歌曲列表恢复，进入后显示MODEL FAILED，不能算CNN闭环通过。定位CNN-DEMO独立memory owner：BIST未完成时屏蔽music／audio valid，却把空slot的ready回给上游，自动装载早发请求被当作接收但未入队。现在valid与ready使用同一真实client-ready条件，校准／BIST／故障未满足时都不接受；仅CNN-DEMO维护源码变化，M/W/BLE及冻结基线不改。
+
+新回归串起真实自动loader→请求CDC→command buffer→DDR16→真实slot／arbiter／BIST→返回CDC，仅原生DDR是行为模型。D7原文件负控确实丢138次写入（52101/52239），false-ready790次，最终CRC929A0F8F／F／stage3；修正后52239次原生写入与读回、逐word一致、CRC AF01A61B和BIST成功、false-ready为0。无模型预装或force-ready；来源边界17项、TF引脚4项保持通过。新候选f9eab12c021b9713相较D7实际编译输入仅memory owner这一份变化，模型／TF／CNN／指导字节保持；全量综合运行中，将以独立D21103D8做完整物理门禁与SRAM，不预报板端模型ready。

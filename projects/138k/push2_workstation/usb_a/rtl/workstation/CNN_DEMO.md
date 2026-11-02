@@ -96,6 +96,16 @@ remains unavailable. Audio scheduling continues independently. Song reselection
 clears analysis/guidance and retains the verified model. Configuration reload
 automatically reloads it. This uses no model Flash writes or Flash boot logic.
 
+The demo memory owner masks both request-valid and request-ready until DDR
+calibration and BIST complete successfully. Masking valid alone acknowledges
+requests into an empty slot that never receives them: the D7 negative regression
+loses 138 model writes and ends with CRC 929A0F8F. The integrated
+`sim/cnn_demo/run_boot_transport.py` runs the actual request/reply CDC FIFOs,
+DDR16 adapter, client slots, arbiter and BIST against behavioral native DDR.
+The corrected path writes and reads all 52239 words and obtains AF01A61B;
+the old D7 source remains an explicit negative control. This is transport
+simulation evidence, not physical model readiness or song acceptance.
+
 The demo preparation selects maintained `workstation_cnn_demo_model_loader.sv`
 through two hash/anchor-checked loader references in the locked timing85 PCM
 pipeline. It disables the historical UART loader and receiver in this compiler

@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "stage": "source_and_targeted_regression",
+  "user_observation": {
+    "candidate": "D21103D7",
+    "song_visible": true,
+    "selected_mode_text": "MODEL FAILED",
+    "model_ready": false,
+    "closed_loop_accepted": false
+  },
+  "root_cause": "CNN demo memory masked audio/music request-valid during BIST while exposing local slot-ready; upstream accepted requests were discarded.",
+  "fix": "Gate both audio_ready_o and music_ready_o with the same client_ready_o used by request-valid.",
+  "candidate_identity": "f9eab12c021b9713",
+  "candidate_path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12",
+  "only_changed_compiled_input": [
+    "rtl/memory/workstation_cnn_demo_memory.sv"
+  ],
+  "configuration": {
+    "song": "travelers.mp3",
+    "historical_song_label": "TRAVLER",
+    "format": "mp3",
+    "directory_extension": "MP3",
+    "sample_rate_hz": 48000,
+    "analysis_44100_resampler_retained": true,
+    "model_crc32": "AF01A61B",
+    "model_bytes": 104478,
+    "model_sha256": "18b55a4076c4670d228a205ee97f1f659ccffab4530b60bde45837597eab5fd6",
+    "model_load": "configuration_BSRAM_ROM_to_DDR_automatic",
+    "model_UART_required": false,
+    "model_ready": "status_E_after_DDR_readback_CRC",
+    "hdmi": false,
+    "ae350": false,
+    "visualization_fft": false,
+    "cnn_cqt": true,
+    "effects": false,
+    "bluetooth": false,
+    "recording": false
+  },
+  "source_sha256": {
+    "rtl/memory/workstation_cnn_demo_memory.sv": "5be3f2361161c25bffd9933ee443ddece8491741d909d7f8b8e369c1e047260f",
+    "sim/cnn_demo/tb_cnn_demo_boot_transport.sv": "3429a9c59834be5e9c490b4730ca4a4b3437383bcae62fe8e767e101af9144c6",
+    "sim/cnn_demo/run_boot_transport.py": "098a97452ce976a1be05dd12e6af3397ade49dccd0b50fff2fac150be8d28041"
+  },
+  "tests": {
+    "current_sources": 17,
+    "tf_pin_guards": 4,
+    "joined_boot": {
+      "scope": "real_BIST_CDC_DDR16_client_slots_arbiter_native_DDR_model",
+      "sources": {
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/workstation/workstation_cnn_demo_model_loader.sv": "af89f09515d1179b1586bee40289f8d97d4af8ed29e44cb4688ca7fbdd5b95e0",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/music/music_async_fifo.sv": "6d55458af075b01baebc22c81a856e98336a96ae82f061942a1511defc5a3ae6",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/music/basic_pitch_ddr_command_buffer.sv": "dc4507d6ac3f2bbe54b46ab334124ff26e67e525e5c8f63f7a2a9759263fbd99",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/music/basic_pitch_ddr16_port.sv": "6b0ce974e4081485f24a940e257e5a74daed3b1ce3e80f58b26f7304cae97785",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/memory/workstation_cnn_demo_memory.sv": "5be3f2361161c25bffd9933ee443ddece8491741d909d7f8b8e369c1e047260f",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/memory/workstation_ddr_bist.v": "d3737f42447cae6ddcf3c6939ffe9f937f4a2d72854fe3fbe549b3667031fb5c",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/timing/basic_pitch_ddr_client_queues.sv": "4a1c49cbea79514d68a1d0c567f0cd5dfd6b1bdfad1c9cf5df1e1a9c4443d2ab",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/candidate-v12/workstation/Prj1/rtl/timing/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+        "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/cnn_demo/tb_cnn_demo_boot_transport.sv": "3429a9c59834be5e9c490b4730ca4a4b3437383bcae62fe8e767e101af9144c6"
+      },
+      "negative_D7_sha256": "cbd37781c55456e233e7ecb2cf3042aa9cacf39ee440a31705c8efd627f5783f",
+      "model_preloaded": false,
+      "model_ready_forced": false,
+      "physical_DDR_tested": false,
+      "tests": {
+        "fixed": "PASS joined automatic boot: real BIST/CDC/DDR16/slots/arbiter, 52239 native writes and reads, AF01A61B, no false acceptance",
+        "D7_negative": "PASS D7 negative reproduced: status=f error=3 false_ready=        790 model_writes=      52101 CRC=929a0f8f"
+      }
+    },
+    "regression_path": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/boot-transport-v1",
+    "regression_sha256": "2373e8a090933266777a56ec590b24c41a262ed2bba036162cb22e3fcd8a027e",
+    "logs": {
+      "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/boot-transport-v1/D7_negative-0.log": "e392588d43cd978231e02ad5f1bfca7d6bc0ad7568af530768aa10ff5da228ad",
+      "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/boot-transport-v1/D7_negative-1.log": "affb33b708401f8150646cb36a117210c333249a567b73381e3768d8bb46739a",
+      "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/boot-transport-v1/fixed-0.log": "b891f6eb80782acbe877d4acce7b07ebcee2b68c6528c65511d4e71a50786ed3",
+      "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/regression/boot-transport-v1/fixed-1.log": "9b6c7e3f8e69f3abf3a6604e35772214a51bf8801b561d1df458d37584612f40"
+    }
+  },
+  "unchanged": {
+    "TF_pins": {
+      "sd_miso": {
+        "node": "U16.7",
+        "ball": "V15",
+        "inherited_ball": "AA15"
+      },
+      "sd_mosi": {
+        "node": "U16.3",
+        "ball": "Y16",
+        "inherited_ball": "W14"
+      },
+      "sd_sck": {
+        "node": "U16.5",
+        "ball": "W15",
+        "inherited_ball": "V15"
+      },
+      "sd_cs_n": {
+        "node": "U16.2",
+        "ball": "AB15",
+        "inherited_ball": "W15"
+      }
+    },
+    "model_crc32": "AF01A61B",
+    "historical_decoder_CNN_and_guide": true,
+    "M_W_BLE_inputs": true
+  },
+  "synthesis": "running",
+  "physical": "not_yet_run",
+  "hardware_tested": false,
+  "Flash_written": false,
+  "remaining": [
+    "full synthesis/P&R/resources/timing/PLL/CDC",
+    "SRAM independent identity and physical model ready",
+    "actual travelers CNN/guide/correct-key/audio/reselection"
+  ],
+  "rollback": "M26 Flash unchanged; D7 source and FS retained, hardware source acceptance still failed at model ready"
+}

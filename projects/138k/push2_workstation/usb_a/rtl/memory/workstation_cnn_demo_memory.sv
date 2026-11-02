@@ -31,6 +31,7 @@ module workstation_cnn_demo_memory #(parameter integer BIST_BURSTS=`PRJ1_DDR_BIS
     assign client_reset_no=memory_release[2];
     wire bist_valid,bist_write,bist_ready,bist_response,bist_done,bist_failed;
     wire response_fault;
+    wire audio_slot_ready,music_slot_ready;
     wire [28:0] bist_address;
     wire [255:0] bist_data;
     ddr3_bist #(.BURSTS(BIST_BURSTS)) u_bist(
@@ -40,6 +41,11 @@ module workstation_cnn_demo_memory #(parameter integer BIST_BURSTS=`PRJ1_DDR_BIS
         .rsp_data(response_data_o),.done(bist_done),.failed(bist_failed),
         .error_count(),.first_error_addr());
     assign client_ready_o=client_reset_no && bist_done && !bist_failed && !response_fault;
+    // Gate both halves of each handshake. An empty local slot may advertise
+    // ready during BIST, while its request_valid is masked below. Exposing
+    // that ready would acknowledge and discard automatic model writes.
+    assign audio_ready_o=client_ready_o && audio_slot_ready;
+    assign music_ready_o=client_ready_o && music_slot_ready;
     // Preserve the established native owner/tag protocol. Absent clients have
     // no requests or exposed interfaces; their idle slots are synthesis dead.
     basic_pitch_ddr_client_queues u_arbiter(
@@ -49,9 +55,9 @@ module workstation_cnn_demo_memory #(parameter integer BIST_BURSTS=`PRJ1_DDR_BIS
         .scan_valid(1'b0),.scan_address(29'd0),.scan_ready(),.scan_response(),
         .display_valid(1'b0),.display_address(29'd0),.display_ready(),.display_response(),
         .audio_valid(audio_valid_i && client_ready_o),.audio_write(audio_write_i),.audio_address(audio_address_i),.audio_data(audio_data_i),
-        .audio_ready(audio_ready_o),.audio_response(audio_response_o),
+        .audio_ready(audio_slot_ready),.audio_response(audio_response_o),
         .music_valid(music_valid_i && client_ready_o),.music_write(music_write_i),.music_address(music_address_i),
-        .music_data(music_data_i),.music_mask(music_mask_i),.music_ready(music_ready_o),.music_response(music_response_o),
+        .music_data(music_data_i),.music_mask(music_mask_i),.music_ready(music_slot_ready),.music_response(music_response_o),
         .delay_valid(1'b0),.delay_write(1'b0),
         .delay_address(29'd0),.delay_data(256'd0),
         .delay_ready(),.delay_response(),
