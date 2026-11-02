@@ -315,6 +315,12 @@ def audit(output):
     output = Path(output).resolve()
     manifest = output / 'integration_inputs.json'
     metadata = json.loads(manifest.read_text())
+    # Paired roles use their own immutable closure/feature policy. They must
+    # never fall through to the historical A26 complete-workstation identities.
+    from tools.workstation_task3_paired_audit import PROFILES as PAIRED_PROFILES
+    if metadata.get('workstation_profile', {}).get('name') in PAIRED_PROFILES:
+        from tools.workstation_task3_paired_audit import audit as audit_paired
+        return audit_paired(ROOT, output, metadata)
     # DEMO profiles have explicit retained/retired owners and native runtime
     # clocks. Never interpret them as a legacy A26 complete-workstation image.
     from tools.workstation_demo_audit import PROFILES as DEMO_PROFILES
@@ -663,7 +669,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output', type=Path)
     args = parser.parse_args()
-    print(json.dumps(audit(args.output), ensure_ascii=False, indent=2))
+    result = audit(args.output)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    # New paired audits retain all independent failures in one report while
+    # keeping a failing process status. Historical auditor behavior is unchanged.
+    if result.get('validation_stage') == 'task3_paired_synthesis_only' and not result['synthesis_audit_passed']:
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':

@@ -50,6 +50,9 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     input wire seal_hold_i, seal_request_i,
     output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
     output wire [3:0] seal_failure_code_o,
+`ifdef WORKSTATION_TASK3_W_PAIRED
+    output wire record_object_idle_o,record_source_needed_o,
+`endif
     output wire [7:0] seal_record_state_o,
     output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o,
     // clk / clk_i raw storage only; object/task/CRC/wire ownership stays here.
@@ -221,6 +224,16 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [31:0] data_crc_fact,data_reason_fact,data_first_ms,data_terminal_ms,data_block_crc,data_command_ms;
     wire [4:0] data_engine_flags;wire data_block_crc_valid,data_read_accepted;
     wire data_source_good,data_mutation_hold;
+`ifdef WORKSTATION_TASK3_W_PAIRED
+    // Actual unique physical engine state, never a seal snapshot/raw-store guess.
+    assign record_object_idle_o=record_state==0 && data_engine_idle && !data_mutation_hold;
+    wire paired_record_engine_start;
+    workstation_task3_record_source_gate paired_record_source(
+        .clk_i(clk),.reset_ni(resetn),.command_start_i(data_engine_start),.command_opcode_i(data_engine_opcode),
+        .object_idle_i(record_state==0 && !data_mutation_hold),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
+        .engine_done_i(engine_done),.record_state_i(record_state),.engine_start_o(paired_record_engine_start),
+        .source_needed_o(record_source_needed_o),.timed_out_o());
+`endif
     assign recording_done=cpu_completion_valid;
     assign recording_result=cpu_completion_status;
     assign recording_byte=cpu_data_byte;
@@ -313,7 +326,11 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .raw_sample_word_i(raw_sample_word_i),
         .pcm_valid_i(pcm_valid_i),.pcm_pair_i(pcm_pair_i),.source_ready_i(source_ready_i),.source_fault_i(source_fault_i),
         .transfer_subscribed(transfer_subscribed),.boot_id(boot_id),.att_value_limit(att_value_limit),.elapsed_ms(elapsed_ms),
+`ifdef WORKSTATION_TASK3_W_PAIRED
+        .command_start(paired_record_engine_start),.command_flags_i(data_engine_flags),
+`else
         .command_start(data_engine_start),.command_flags_i(data_engine_flags),
+`endif
         .command_object_id_i(data_engine_object),.command_transfer_id_i(data_engine_transfer),
         .idle_o(data_engine_idle),.command_result_o(data_engine_result),
         .object_crc_o(data_crc_fact),.stop_reason_o(data_reason_fact),

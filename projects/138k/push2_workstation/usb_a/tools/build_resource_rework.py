@@ -12,9 +12,59 @@ import xml.etree.ElementTree as ET
 from workstation_baselines import load_baseline
 ROOT=Path(__file__).resolve().parents[1]
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
-def prepare(timing_fixes=False,output_directory=None):
+NATIVE_CNN_INPUTS={
+    'rtl/music/basic_pitch_workstation_link.sv':'4e4cf079b3e0cf6fde20fbe5e92661ae671116536ecea8765a34b62b91af9227',
+    'rtl/music/workstation_cnn_task_service.sv':'f9fd9b1a07bb500dbd45ed49bfca588d28ed8324c89f37ebed3e6e7e328492fa',
+}
+
+def select_native_cnn_parameters(stage):
+    """Paired-only adaptation of exact maintained inputs, before diagnostic CDC.
+
+    The task owner still passes its parameters to the link and the link still
+    passes them to the pipeline. Do not replace either interface with literals.
+    The W stream explicitly selects the same geometry on its own instance.
+    """
+    stage=Path(stage)
+    actual={name:sha(stage/name) for name in NATIVE_CNN_INPUTS}
+    if actual!=NATIVE_CNN_INPUTS:
+        raise ValueError('native CNN parameter input identity drift: '+repr(actual))
+    link=stage/'rtl/music/basic_pitch_workstation_link.sv'
+    text=link.read_text()
+    edits=(
+        ('    parameter integer WIN_LEN=43844,FRAME_LIMIT=172,OCTAVE_LIMIT=9,',
+         '    parameter integer WIN_LEN=44100,FRAME_LIMIT=8,OCTAVE_LIMIT=9,'),
+        ('    parameter integer CQT_HOP_NUMERATOR=256,CQT_HOP_DENOMINATOR=1,',
+         '    parameter integer CQT_HOP_NUMERATOR=22050,CQT_HOP_DENOMINATOR=4,'),
+        ('    parameter integer FEATURE_TILE_COLS=0,\n    parameter bit COARSE_GUIDANCE=1\'b0,',
+         '    parameter integer FEATURE_TILE_COLS=16,\n    parameter bit COARSE_GUIDANCE=1\'b1,'))
+    for before,after in edits:
+        if text.count(before)!=1:raise ValueError('native CNN declaration anchor drift')
+        text=text.replace(before,after,1)
+    task=(stage/'rtl/music/workstation_cnn_task_service.sv').read_text()
+    geometry=('WIN_LEN','FRAME_LIMIT','OCTAVE_LIMIT','CQT_HOP_NUMERATOR',
+              'CQT_HOP_DENOMINATOR','FEATURE_TILE_COLS','COARSE_GUIDANCE')
+    for key in geometry:
+        if text.count('.'+key+'('+key+')')!=1:
+            raise ValueError('native CNN pipeline parameter binding drift: '+key)
+        if task.count('.'+key+'(CNN_'+key+')')!=1:
+            raise ValueError('native CNN task parameter binding drift: '+key)
+    evidence=dict(policy='paired_native_cnn_4hz_parameter_defaults_v1',
+        input_sha256=actual,
+        parameter_selected_link_sha256=hashlib.sha256(text.encode()).hexdigest(),
+        declaration_edits=[dict(parent=before,selected=after) for before,after in edits],
+        parameter_chain=list(geometry),
+        configuration=dict(WIN_LEN=44100,FRAME_LIMIT=8,OCTAVE_LIMIT=9,
+            CQT_HOP_NUMERATOR=22050,CQT_HOP_DENOMINATOR=4,FEATURE_TILE_COLS=16,
+            COARSE_GUIDANCE=True),
+        task_owner_defaults_unchanged=True,pipeline_parameter_interfaces_preserved=True,
+        accepted_input_changed=False,hardware_accepted=False)
+    return text,evidence
+
+def prepare(timing_fixes=False,output_directory=None,native_cnn_parameters=False):
     if output_directory is not None and not timing_fixes:
         raise ValueError('explicit output requires the native resource-timing prepare policy')
+    if native_cnn_parameters and not timing_fixes:
+        raise ValueError('native CNN parameters require the explicit paired resource-timing prepare policy')
     if timing_fixes:
         # A new timing candidate branches from the immutable, fully routed
         # 234-block source. Do not weaken the accepted builder's input guard.
@@ -52,12 +102,26 @@ def prepare(timing_fixes=False,output_directory=None):
     for src,dst in overlays.items():
         (stage/dst).parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/src,stage/dst)
     link=stage/'rtl/music/basic_pitch_workstation_link.sv'
-    s=link.read_text();old='.WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),'
-    if s.count(old)!=1:raise ValueError('analysis configuration anchor drift')
+    native_evidence=None
+    known_native_inputs=all((stage/name).is_file() and sha(stage/name)==expected
+        for name,expected in NATIVE_CNN_INPUTS.items())
+    if native_cnn_parameters or known_native_inputs:
+        s,native_evidence=select_native_cnn_parameters(stage)
+        native_evidence['selection_origin']=('explicit_paired_native_parameters' if native_cnn_parameters
+            else 'exact_maintained_native_parameter_inputs')
+    else:
+        s=link.read_text();old='.WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9),'
+        if re.search(r'\bparameter\s+integer\s+WIN_LEN\s*=',s):
+            raise ValueError('native CNN parameter input identity drift')
+        if s.count(old)!=1:raise ValueError('analysis configuration anchor drift')
+        s=s.replace(old,'.WIN_LEN(44100),.FRAME_LIMIT(8),.OCTAVE_LIMIT(9),\n'
+            '        .CQT_HOP_NUMERATOR(22050),.CQT_HOP_DENOMINATOR(4),\n'
+            '        .FEATURE_TILE_COLS(16),.COARSE_GUIDANCE(1\'b1),')
     from workstation_cnn_cdc import transform as synchronize_diagnostics
-    link.write_text(synchronize_diagnostics(s.replace(old,'.WIN_LEN(44100),.FRAME_LIMIT(8),.OCTAVE_LIMIT(9),\n'
-        '        .CQT_HOP_NUMERATOR(22050),.CQT_HOP_DENOMINATOR(4),\n'
-        '        .FEATURE_TILE_COLS(16),.COARSE_GUIDANCE(1\'b1),')))
+    link.write_text(synchronize_diagnostics(s))
+    if native_evidence is not None:
+        native_evidence['selected_sha256']={name:sha(stage/name) for name in NATIVE_CNN_INPUTS}
+        native_evidence['diagnostic_CDC_retained']=True
     timing_evidence={}
     if timing_fixes:
         from workstation_resource_timing import apply
@@ -85,12 +149,18 @@ def prepare(timing_fixes=False,output_directory=None):
         usb_cpu_ram_kib=64,hardware_tested=False,timing_fixes=timing_fixes,timing_structure=timing_evidence)
     meta['accepted_music_sha256']=meta['music_sha256']
     meta['music_sha256']={name:sha(stage/name) for name in overlays.values() if name.startswith('rtl/music/')}
+    if native_evidence is not None:
+        meta['native_cnn_parameter_selection']=native_evidence
     prepared_audit=output/'cnn_source_audit.json'
     shutil.copy2(prepared_audit,output/'prepared_cnn_source_audit.json')
     prepared_audit.write_text(json.dumps(dict(policy='explicit_live_candidate',
         ancestry='prepared_cnn_source_audit.json',sources=meta['music_sha256'],
         transforms=['8 frames per 2 seconds; 16 frequency columns per tile',
                     'retain seven diagnostic DDR level receivers']),indent=2)+'\n')
+    if native_evidence is not None:
+        audit=json.loads(prepared_audit.read_text())
+        audit['native_cnn_parameter_selection']=native_evidence
+        prepared_audit.write_text(json.dumps(audit,indent=2)+'\n')
     meta['cnn_source_audit_sha256']=sha(prepared_audit)
     (output/'resource_rework_overlays.json').write_text(json.dumps({src:dict(destination=dst,sha256=sha(stage/dst)) for src,dst in overlays.items()},indent=2)+'\n')
     return output,stage,meta
@@ -182,11 +252,26 @@ def main():
     (output/'workstation_inputs.json').write_text(json.dumps(inputs,indent=2)+'\n')
     # Validate the actual source consumed by tools, independently of metadata.
     link_text=(stage/'rtl/music/basic_pitch_workstation_link.sv').read_text()
-    tokens=['.WIN_LEN(44100),.FRAME_LIMIT(8),.OCTAVE_LIMIT(9),',
-            '.CQT_HOP_NUMERATOR(22050),.CQT_HOP_DENOMINATOR(4),',
-            ".FEATURE_TILE_COLS(16),.COARSE_GUIDANCE(1'b1),",'u_trace_cdc']
-    missing=[x for x in tokens if x not in link_text]
-    if missing:raise ValueError('actual candidate configuration drift: '+repr(missing))
+    native_selection=meta.get('native_cnn_parameter_selection')
+    if native_selection is not None:
+        from workstation_cnn_cdc import transform as synchronize_diagnostics
+        native_link,expected_selection=select_native_cnn_parameters(ROOT)
+        expected_selected=dict(NATIVE_CNN_INPUTS)
+        expected_selected['rtl/music/basic_pitch_workstation_link.sv']=hashlib.sha256(
+            synchronize_diagnostics(native_link).encode()).hexdigest()
+        if (native_selection.get('input_sha256')!=NATIVE_CNN_INPUTS or
+                native_selection.get('parameter_selected_link_sha256')!=expected_selection['parameter_selected_link_sha256'] or
+                native_selection.get('selected_sha256')!=expected_selected or
+                native_selection.get('selection_origin')not in
+                    ('explicit_paired_native_parameters','exact_maintained_native_parameter_inputs') or
+                {name:sha(stage/name)for name in NATIVE_CNN_INPUTS}!=expected_selected):
+            raise ValueError('actual native candidate configuration drift')
+    else:
+        tokens=['.WIN_LEN(44100),.FRAME_LIMIT(8),.OCTAVE_LIMIT(9),',
+                '.CQT_HOP_NUMERATOR(22050),.CQT_HOP_DENOMINATOR(4),',
+                ".FEATURE_TILE_COLS(16),.COARSE_GUIDANCE(1'b1),",'u_trace_cdc']
+        missing=[x for x in tokens if x not in link_text]
+        if missing:raise ValueError('actual candidate configuration drift: '+repr(missing))
     print(output,flush=True)
     if args.flow=='prepare':return
     with (output/('resource_'+args.flow+'.log')).open('w') as log:

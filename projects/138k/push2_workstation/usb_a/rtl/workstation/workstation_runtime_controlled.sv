@@ -13,6 +13,7 @@ module workstation_runtime_controlled #(
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
     parameter bit ENABLE_MEDIA_POLICY=0,
     parameter bit ENABLE_AE350_PCM=0,
+    parameter bit REMOTE_PCM_COMMAND_ENABLE=0,
     parameter bit SEPARATE_COMMON_RESET=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
@@ -52,6 +53,15 @@ module workstation_runtime_controlled #(
     output wire [31:0] pcm_prdata_o,
     input wire hci_session_ready_i,
     input wire [31:0] hci_controller_epoch_i,hci_transport_generation_i,
+    // Optional compute-domain command aperture into the SAME real PCM1 owner.
+    // An unselected local APB page fails explicitly; no second audio backend.
+    input wire remote_pcm_owner_ready_i,remote_pcm_command_valid_i,remote_pcm_command_write_i,
+    input wire [11:0] remote_pcm_command_address_i,
+    input wire [31:0] remote_pcm_command_data_i,
+    input wire [3:0] remote_pcm_command_strobes_i,
+    output wire remote_pcm_command_ready_o,remote_pcm_response_error_o,
+    output wire [31:0] remote_pcm_response_data_o,
+    output wire remote_pcm_owner_idle_o,
     // Atomic compute-domain TF packet. tf_busy also includes file-side work.
     input wire tf_active_i,tf_busy_i,tf_valid_i,tf_error_i,
     input wire signed [15:0] tf_left_i,tf_right_i,
@@ -178,7 +188,21 @@ module workstation_runtime_controlled #(
     wire [11:0] pcm_command_address;
     wire [31:0] pcm_command_data,pcm_response_data;
     wire [3:0] pcm_command_strobes;
-    generate if(ENABLE_AE350_PCM)begin: pcm_apb
+    generate if(ENABLE_AE350_PCM && REMOTE_PCM_COMMAND_ENABLE)begin: remote_pcm
+        assign pcm_pready_o=1;assign pcm_pslverr_o=1;assign pcm_prdata_o=0;
+        assign pcm_owner_reset=reset_compute_n && remote_pcm_owner_ready_i;
+        assign pcm_command_valid=remote_pcm_command_valid_i && remote_pcm_owner_ready_i;
+        assign pcm_command_write=remote_pcm_command_write_i;
+        assign pcm_command_address=remote_pcm_command_address_i;
+        assign pcm_command_data=remote_pcm_command_data_i;
+        assign pcm_command_strobes=remote_pcm_command_strobes_i;
+        // A revoked owner still completes its held mailbox with an error.
+        assign remote_pcm_command_ready_o=!remote_pcm_owner_ready_i || pcm_command_ready;
+        assign remote_pcm_response_error_o=!remote_pcm_owner_ready_i || pcm_response_error;
+        assign remote_pcm_response_data_o=remote_pcm_owner_ready_i?pcm_response_data:32'hffffffff;
+    end else if(ENABLE_AE350_PCM)begin: pcm_apb
+        assign remote_pcm_command_ready_o=1;assign remote_pcm_response_error_o=1;
+        assign remote_pcm_response_data_o=32'hffffffff;
         gw138k_apb_cdc commands(
             .reset_n(common_reset_n && preset_n),.pclk,.audio_clk(compute_clk_i),
             .psel(pcm_psel_i),.penable,.pwrite,.paddr,.pwdata,.pstrb,
@@ -187,6 +211,8 @@ module workstation_runtime_controlled #(
             .command_write(pcm_command_write),.command_address(pcm_command_address),.command_data(pcm_command_data),
             .command_strobes(pcm_command_strobes),.response_data(pcm_response_data),.response_error(pcm_response_error));
     end else begin: no_pcm_apb
+        assign remote_pcm_command_ready_o=1;assign remote_pcm_response_error_o=1;
+        assign remote_pcm_response_data_o=32'hffffffff;
         assign pcm_pready_o=1;assign pcm_pslverr_o=1;assign pcm_prdata_o=0;
         assign pcm_owner_reset=1;assign pcm_command_valid=0;assign pcm_command_write=0;
         assign pcm_command_address=0;assign pcm_command_data=0;assign pcm_command_strobes=0;
@@ -338,6 +364,7 @@ module workstation_runtime_controlled #(
         .pcm_cpu_ready_i(pcm_owner_reset),.pcm_command_valid_i(pcm_command_valid),.pcm_command_write_i(pcm_command_write),
         .pcm_command_address_i(pcm_command_address),.pcm_command_data_i(pcm_command_data),.pcm_command_strobes_i(pcm_command_strobes),
         .pcm_command_ready_o(pcm_command_ready_local),.pcm_response_error_o(pcm_response_error),.pcm_response_data_o(pcm_response_data),
+        .pcm_owner_idle_o(remote_pcm_owner_idle_o),
         .hci_session_ready_i,.hci_controller_epoch_i,.hci_transport_generation_i,.pcm_tf_busy_i(tf_active_i || tf_busy_i),.held_notes_o,.panic_epoch_o(panic_epoch),.panic_muted_o(),
         .active_mask_o,.scope_status_o,.tf_scope_control_o,.applied_events_o,.control_options_o,
         .active_voice_count_o(voices),.mode_o(mode),.master_volume_o,.pitch_q20_o(pitch),

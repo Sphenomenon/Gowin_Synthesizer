@@ -238,15 +238,15 @@ def raw_metadata(root):
     return dict(recording_metadata(root),policy='task3_w_single_C_BLE_raw_ddr_60s_v1',
         full_HCI_Classic_GATT=True,second_business_object=False,source_is_W_local_DAC=False)
 
-def build_firmware(root,evidence,prefix=None):
+def build_firmware(root,evidence,prefix=None,paired_source=False):
     """Delegate to the separately reviewed media ELF builder, never old UI roots."""
     from tools.workstation_task3_w_media_firmware import build,audit
     root,evidence=Path(root),Path(evidence)
-    linked=build(evidence,prefix,root)
+    linked=build(evidence,prefix,root,paired_source=paired_source)
     graph=audit(evidence,root)
     if not linked['passed'] or not graph['passed']:raise ValueError('actual media firmware rejected')
     record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,
-        runtime_policy=FIRMWARE_POLICY,worker_media=True,worker_demo=True,headless_worker=False,
+        runtime_policy=linked['policy'],worker_media=True,worker_demo=True,headless_worker=False,
         runtime_owner=True,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
         binary_sha256=sha(evidence/'firmware.bin'),call_chain_stack=graph['stack'],
         reviewed_JALR_sites=graph['reviewed_JALR_sites'],tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
@@ -265,7 +265,7 @@ def verify_firmware(root,evidence,record):
     graph=audit(evidence,root);linked=json.loads((evidence/'verification.json').read_text())
     for key,value in linked.items():
         if record.get(key)!=value:raise ValueError('W-media delegated firmware field drift: '+key)
-    if not record.get('worker_media') or record.get('runtime_policy')!=FIRMWARE_POLICY or not record.get('recording_api_enabled') or not record.get('business_owner_enabled') or record.get('headless_worker'):
+    if not record.get('worker_media') or record.get('runtime_policy')!=linked['policy'] or not record.get('recording_api_enabled') or not record.get('business_owner_enabled') or record.get('headless_worker'):
         raise ValueError('W-media actual runtime role drift')
     if (record['delegated_media_verification_sha256']!=sha(evidence/'verification.json') or
         record['delegated_callgraph_sha256']!=sha(evidence/'media_callgraph_verification.json') or

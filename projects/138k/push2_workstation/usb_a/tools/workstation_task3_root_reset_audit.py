@@ -18,6 +18,8 @@ ROOT_SOURCE = 'src/platform/reset_release.v'
 TOP_SOURCE = 'rtl/workstation/gw138k_push_workstation_top.v'
 ROOT_SOURCE_SHA256 = 'b5d153b9b0660e3ea9db722d41662a4a7f6f151bc40275b81bfedb15c4e9eac1'
 PROVIDER_SHA256 = '1a857e684cde13a83e598cf5d183858ba57e224d46048623974fa6b3716be071'
+PAIRED_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired.sv'
+PAIRED_PROVIDER_SHA256 = 'e5e2764eafdcc59fc9904eae93f4f457cb2bd59595336ac88e878d0bb1e65169'
 
 
 def require(condition, message):
@@ -34,11 +36,23 @@ def source_binding(stage):
     project = stage / 'Prj1.gprj'
     selected = [row.get('path') for row in ET.parse(project).find('FileList')
                 if row.get('enable') == '1']
-    require(selected.count(PROVIDER) == 1 and selected.count(ROOT_SOURCE) == 1,
+    provider, provider_sha = PROVIDER, PROVIDER_SHA256
+    if PAIRED_PROVIDER in selected:
+        from tools.workstation_profile import PROFILE_REGISTRY
+        providers = {row['provider'] for row in PROFILE_REGISTRY.values()}
+        require([path for path in selected if path in providers] == [PAIRED_PROVIDER],
+                'paired root requires unique explicit M provider')
+        from tools.workstation_task3_tf_storage_selection import unwrap_paired_top
+        parent, role = unwrap_paired_top(stage, (stage / TOP_SOURCE).read_text())
+        from tools.workstation_task3_m_paired_profile import PARENT_TOP_SHA256, digest
+        require(role == 'M' and digest(parent) == PARENT_TOP_SHA256,
+                'paired root exact common/role source inverse changed')
+        provider, provider_sha = PAIRED_PROVIDER, PAIRED_PROVIDER_SHA256
+    require(selected.count(provider) == 1 and selected.count(ROOT_SOURCE) == 1,
             'exact DIRECT provider/root source not uniquely selected')
     require(sha(stage / ROOT_SOURCE) == ROOT_SOURCE_SHA256,
             'reviewed reset_release source/HOLD_CYCLES changed')
-    require(sha(stage / PROVIDER) == PROVIDER_SHA256,
+    require(sha(stage / provider) == provider_sha,
             'reviewed DIRECT provider bytes changed')
     selected_top, direct = selected_direct_top(stage, (stage / TOP_SOURCE).read_text())
     require(direct, 'DIRECT profile not selected')
@@ -56,9 +70,9 @@ def source_binding(stage):
             'root instance/clock/default HOLD/ext binding changed')
     require(compact.count('wireruntime_common_reset_n=reset_n;') == 1,
             'DIRECT common reset is not the real root output')
-    files = (project, stage / PROVIDER, stage / ROOT_SOURCE, stage / TOP_SOURCE)
+    files = (project, stage / provider, stage / ROOT_SOURCE, stage / TOP_SOURCE)
     return dict(source_sha256={str(path.relative_to(stage)): sha(path) for path in files},
-                selected_provider=PROVIDER, default_hold_cycles=1024,
+                selected_provider=provider, default_hold_cycles=1024,
                 custom_external_reset_constant=1,
                 selected_top_root_binding_verified=True)
 

@@ -8,7 +8,7 @@
 - 参考目录：`dual-138k-workstation/Gowin_Synthesizer`。其task2、M24正在推进的候选和未提交的W流式Pitch工作继续由原分支维护；本轮不切分支、不搬走脏文件、不改其构建目录。原task3是被忽略的本地文件，已只读备份；本分支将修订稿纳入版本管理。
 - 单板主目录仍为`/Users/sphenicidition/Documents/Gowin_Synthesizer`，起点`ba2ba027`；其未提交录音工作保持原地。最终CPU/BLE录音整合不能复制回已退出的第二套后端。
 - task2当前M演示和W蓝牙流式D模式继续推进。task3不要求先完成task2全部功能，也不把task2的W临时USB/DAC输出当作最终接线。
-- 用户确认：两块目标板默认尚未接电脑；当前连接的138K供另一个分支使用，本轮不操作。LCD排线为反序线，TF在M，蓝牙模块可以接任一板。必要SRAM验证已授权，但仅在目标板到位且身份、电气、候选门禁确认后执行；Flash须另行授权。
+- 用户确认：两块目标板默认尚未接电脑；当前连接的138K供另一个分支使用，本轮不操作。LCD排线外观为反序线；用户于2026-11-02进一步确认两板同号网络一一对应（M_n→W_n，例如40→40），不按n→41−n推导。TF在M，蓝牙模块可以接任一板。必要SRAM验证已授权，但仅在目标板到位且身份、电气、候选门禁确认后执行；Flash须另行授权。
 
 工程遵循[架构](../../docs/architecture/README.md)、[整机接口](../../整机接口规划.md)、[原生组合](push2_workstation/usb_a/rtl/workstation/README.md)及[冻结输入](push2_workstation/usb_a/baselines/README.md)。accepted full83、timing85、resource-timing与DEMO保持各自来源；不改冻结基线、供应商字节或历史报告。
 
@@ -60,7 +60,7 @@ M相对LOCAL确实减少20个SDPB、19个MULT27X36，混响运算与历史存储
 
 ## 5. LCD、电气与通信预算
 
-[FPC4依据](../../example/LCD_RGB/docs/接线核对.md)及`example/LCD_RGB/constraints/lcd.cst`提供单板映射：1/2为+5V，颜色高位多处硬接地；可编程颜色16根、现有显示控制5根，约束为LVCMOS33。反序排线的接触面方向不能证明座间编号映射。**若实测为n→41−n，同型座的+5V会落到对端40/39，且部分信号落地；不能直接用现有LCD位流互连。** 当前禁用LCD配置仍把21根线驱动低，必须在新角色约束中明确输入/输出/高阻与供电隔离。
+[FPC4依据](../../example/LCD_RGB/docs/接线核对.md)及`example/LCD_RGB/constraints/lcd.cst`提供单板映射：1/2为+5V，颜色高位多处硬接地；可编程颜色16根、现有显示控制5根，约束为LVCMOS33。用户现已明确确认板间为**同号网络n→n**，例如M40→W40；反序排线外观不再作为倒序映射依据。按此编制互补收发方向，不把两端原LCD输出同时驱动同一线。此确认没有自动验证VCCIO、两板+5V供电关系、空闲电平/上下拉、时钟或链路性能。 旧禁用LCD配置仍把21根线驱动低；新paired角色已改成25个inout和互补所有权，复位默认高阻，供电隔离仍需实物核对。
 
 先断电核对两端pin1、地、电源隔离、线序、实际VCCIO、驱动方向和时钟；随后以保守源同步/异步实现逐级测速。逐方向测有效载荷、双向并发、RTT的min/p50/p95/p99/max、最大服务间隔、水位、CRC、拥塞/溢出、停钟、独立重启和重连。**5MB/s/方向只是待验证目标，不是已测吞吐。** 未完成此项前不冻结生产位宽/时钟/跨板PCM往返延迟。
 
@@ -147,7 +147,23 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 
 现有build.py新增显式框架prepare入口；快照`task3-framework-logical-v1-841ec6407a831645`锁定78文件/54编译输入。独立prepare/verify、22项拒绝负控及暂存后三入口全依赖lint通过；实际展开确认唯一TF/CQT/六层CNN/Viterbi和明确4Hz/BSRAM参数。相关有界/生命周期小验证通过，范围见报告，不代表完整实卡到Push或真实并发验收。
 
-这些是可展开的双板逻辑组合；没有新位流、物理资源/STA或实板延迟。当前共时钟边界不当作跨板CDC；LCD保持未验证，目标板默认未连接，另一分支使用的板卡不操作。下一步按此框架选入新paired profile，补齐真实DDR owner5/6/8、HCI单对象、M最终owner/显示及物理链路装配，再集中进行整机验证；原候选和task2继续原分支回退。框架来源快照进入现有build.py，旧锁不刷新。
+上述初版仅为可展开的双板逻辑组合，不继承物理资源/STA或实板延迟。其后同对板级接入见8.1；原逻辑快照保留。目标板默认未连接，另一分支使用的板卡不操作；原候选和task2继续原分支回退，旧锁不刷新。
+
+### 8.1 同对板级组合已接入，物理验收仍待完成
+
+新增独立 `custom138k-workstation-task3-{m,w}-paired-v1`，复用现有custom-board入口；分工、引脚、冷启动及失败契约见[配对组合说明](push2_workstation/usb_a/rtl/workstation/WORKSTATION_TASK3_PAIRED.md)，两板身份、资源、审计失败和原始回执哈希见[阶段总报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_FRAMEWORK_20261102.json)。维护顶层字节保持，严格可逆stage适配选择实际M/W组件；旧16份配置锁不刷新。
+
+M保留真实32声部普通/矢量、最终PCM1/统一时钟、HDMI与DAC调度。TF卡在M，唯一真实SD/FAT/WAV游标在直读播放与有界分析间互斥；CNN、模型、CQT、Viterbi与长录音存储实际位于W。W的HCI/Classic/SBC/GATT通过有界PCM1/clock代理请求M；M最终完成帧返回W唯一CPU/BLE录音对象。真实REC_START已补自动供流请求、M授权/ACK、终态cancel；四层HCI编译作用域已经实际预处理核对，不以端点单测代替板级选入。
+
+同号LCD采用双向4bit req/ack，本地时钟运行，不把LCD线当FPGA时钟。新增F808页要求CPU写实际非零boot/peer/session与递增generation；probe、预算、business分别启用，默认全关。M演奏PANIC与F808 PANIC在已授权LCD上提供至少50,000个50MHz周期紧急电平，撤销probe后仍保持；未启用probe时演奏PANIC不驱动LCD。保持电平不是已测对端接收。独立CPU复位、断链、预算撤销和重连禁止旧任务复活；自动冷启动nonce分发仍未完成。
+
+离线证据：LCD transport两配置34/42项、四态引脚1,667项；F808配置151/170项；真实APB CDC+公共板级LCD链590/819项；真实M/W业务端点89项（真实单录音引擎捕获/封存4帧）；TF默认真实播放/取消、分析9项/5场景和录音请求17项通过。W新paired固件构建及167个JALR审计通过；原media ELF/BIN/boot与同工具旧版本逐字节一致。范围及失败尝试保留在阶段报告，不当作实卡、无线或实板验收。
+
+v4同对候选已clean prepare并完成实际Gowin整板综合：M `...471dc1f03e7f86d7`、W `...dbd0aa27d30ff935`；M综合BSRAM等效220，W308，均非物理布线计数。真实W CNN、唯一录音引擎/raw存储、两侧端点和32声部M保留；严格审计已实际运行并返回失败：M/W的新LCD/headless组合尚未被旧clock checker完整识别，另有空SDC选择器、M root连接断言及W held/boundary缺口；不代表CDC/PLL/STA通过。远程混响尚未选入这对整板，M仍保留本地效果；先前20SDPB/19MULT子系统减量不能转记成本对整板收益。
+
+最终来源补齐默认资源入口对维护版原生CNN参数的严格选择；三条不依赖私有历史目录的重建路径共23项全部通过。随后v5重新clean prepare并独立verify：M `...6a9647ac5ddae37c`（927锁文件/283编译输入），W `...4d1d6ac48886aaee`（1,023/196）。与实际综合的v4比较，M全部689个stage文件相同；W680个stage文件中仅未被综合调用的Python构建依赖改变，全部硬件输入与综合Tcl相同。v5没有重新运行综合，不转移v4未通过的验收结论。
+
+当前固定52B帧逐样本传输，每条48k分析或录音流要2,496,000B/s；两者同向合计4,992,000B/s，另加维护/结果/控制。手机仍按PCM1 APB请求/响应往返，不能按192,000B/s净PCM冒充线速需求。本版用于接通框架，未经实测不得启用实时PCM生产配置；下一轮按实测预算实现块传输/上下文压缩和有界专用媒体流。离线分析可背压，基础采样不得等待。目标板尚未连接，无新位流/实测LCD吞吐/控制到声音延迟，也未操作另一分支板卡。
 
 ## 9. 阶段、提交与证据
 
@@ -158,11 +174,11 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-01 分支/原文/分工/预算 | 已完成，见[来源/硬件边界核对](push2_workstation/usb_a/reports/DUAL138K_TASK3_PLAN_20261101.json)；硬件吞吐均待测。原始规划备份在`~/.cache/gw138k-task3-20261101/task3-original-ignored.md` |
 | T3-02a 第一计算迁移源码 | 已完成[源码/仿真证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SOURCE_20261101.json)：M真实链退出本地混响的显式分支，W真实混响/历史RAM；端点15,076帧、18故障场景，整链37,312帧、全部效果顺序/mask/双率及3次有尾音普通屏障通过，整链最大538计算时钟。默认19项、来源17项、候选清单11项通过；生产DEMO宏关闭且原层次不变 |
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
-| T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
+| T3-03 LCD可用线与实测 | 用户确认同号网络n→n；按此实施互补收发/默认高阻。待目标板电气/供电/方向/时钟核对；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 新DIRECT候选…68efbb0415ea234e，CRC1/cache1/r3、269输入prepare/独立verify/实际综合通过，32声部及普通矢量保留；综合BSRAM216。FAST12双率11,000+97帧无欠载，CRC/FAT来源和失效负控通过；完整TF CDC仍拒绝，综合时钟估算未达标。音频CRC原子发布、任意碎片/真实卡/remount、完整P&R及实体延迟待验 |
-| T3-05 W CNN/分析/长录音 | 显式W媒体角色…01a09c94f065b7ba实际综合BSRAM228，CNN/raw/HCI保留；DDR配置4Hz/96,000帧真实任务和取消后重跑75检查通过，仿真单次约7.379秒；另选signal＋CQT本地…5ca0cbd4d7fcfae1（308BSRAM）继续框架，等价两任务75检查/约3.225秒，signal-only第二任务未完成。CPU/BLE同一60秒对象及下载组件通过，APB112/161检查保留。整曲/质量、长对象重连、44.1k、真实并发和完整CDC/P&R未验；软件tap默认关、LCD固定down |
+| T3-05 W CNN/分析/长录音 | 显式W媒体角色…01a09c94f065b7ba实际综合BSRAM228，CNN/raw/HCI保留；DDR配置4Hz/96,000帧真实任务和取消后重跑75检查通过，仿真单次约7.379秒；另选signal＋CQT本地…5ca0cbd4d7fcfae1（308BSRAM）继续框架，等价两任务75检查/约3.225秒，signal-only第二任务未完成。CPU/BLE同一60秒对象及下载组件通过，APB112/161检查保留。整曲/质量、长对象重连、44.1k、真实并发和完整CDC/P&R未验；旧候选软件tap默认关、LCD固定down；新paired实际接入见8.1 |
 | T3-06a 完整逻辑框架 | 真实TF/CNN流、原子谱面、手机PCM1/clock代理、M最终tap→W原对象入口、有界队列已装配；默认旧行为及旧锁保留。见框架报告；不继承旧候选物理/功能验收 |
-| T3-06b 同对板级集成 | 按框架选择新paired profile并接真实DDR owner5/6/8、HCI对象、M最终owner及LCD；再检验真实手机D→M DAC、全曲/Push、长录音/下载/重连/取消/PANIC及并发资源/时序/吞吐/延迟 |
+| T3-06b 同对板级集成 | 新paired profiles已实际接入真实M/W owner、HCI单对象、LCD/F808与控制门控，clean prepare及整板综合完成；严格离线审计和物理门禁仍有失败/未验项。手机D→M DAC、全曲/Push、长录音/下载及实测并发/时序/吞吐/延迟仍待验，见8.1 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 
 禁止用全量资源重写、放宽时钟/false path、删特性或报告字段代替门禁。子系统收益必须再经整机同条件P&R确认。新扩展配置进入现有`build.py`/显式profile；本轮子系统综合工具只用于分工验证，整机集成后收敛或退役，不成为新编号生产构建器。

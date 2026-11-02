@@ -46,6 +46,7 @@ module workstation_runtime_audio #(
     input wire [31:0] pcm_command_data_i,
     input wire [3:0] pcm_command_strobes_i,
     output wire pcm_command_ready_o,pcm_response_error_o,
+    output wire pcm_owner_idle_o,
     output wire [31:0] pcm_response_data_o,
     input wire hci_session_ready_i,
     input wire [31:0] hci_controller_epoch_i,hci_transport_generation_i,
@@ -276,10 +277,11 @@ module workstation_runtime_audio #(
             .switch_busy_i(switch_inhibit_compute[1]),.sample_take_i(render_request && service_ready),
             .legacy_left_i(pcm_left_i),.legacy_right_i(pcm_right_i),.pcm_left_o(input_left),.pcm_right_o(input_right),
             .history_clear_o(pcm_history_request),.history_ready_i(pcm_history_ready && !config_valid),.history_done_i(pcm_history_done),
-            .serial_hold_o(pcm_serial_hold),.cancel_epoch_o(pcm_cancel_epoch),.selected_o(),.failed_o(),.hard_fault_o(pcm_hard_fault));
+            .serial_hold_o(pcm_serial_hold),.cancel_epoch_o(pcm_cancel_epoch),.selected_o(),.failed_o(),.hard_fault_o(pcm_hard_fault),.idle_o(pcm_owner_idle_o));
     end else begin: no_cpu_pcm
         assign input_left=pcm_left_i;assign input_right=pcm_right_i;
         assign pcm_command_ready_o=1'b1;assign pcm_response_data_o=0;assign pcm_response_error_o=1'b1;
+        assign pcm_owner_idle_o=1'b1;
         assign pcm_history_request=1'b0;assign pcm_serial_hold=1'b0;assign pcm_cancel_epoch=0;assign pcm_hard_fault=1'b0;
     end endgenerate
     // The monotonic startup grant crosses as data. Only the common

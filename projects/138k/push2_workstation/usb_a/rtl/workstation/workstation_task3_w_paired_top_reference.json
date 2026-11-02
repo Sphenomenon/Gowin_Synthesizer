@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "policy": "task3_w_paired_exact_top_composition_v1",
+  "parent_sha256": "4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f",
+  "selected_sha256": "af4f2402f9aa4869f3c11c9a613ac14d0c7202b849080d8ffcce2e9c8806304c",
+  "edits": [
+    {
+      "parent": ".ENABLE_AE350_PCM(AE350_PCM_ENABLED)",
+      "selected": ".ENABLE_AE350_PCM(0)"
+    },
+    {
+      "parent": "        .rst_ni(runtime_reset_n),.common_reset_ni(button1_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),",
+      "selected": "        .rst_ni(runtime_reset_n),.common_reset_ni(reset_n),.clk_50m_i(clk_50m),.compute_clk_i(audio_clk),.memory_clk_i(memory_clk),"
+    },
+    {
+      "parent": "        .pcm_psel_i(pcm_select),.pcm_pready_o(pcm_bus_ready),.pcm_pslverr_o(pcm_bus_error),.pcm_prdata_o(pcm_bus_data),",
+      "selected": "        .pcm_psel_i(1'b0),.pcm_pready_o(),.pcm_pslverr_o(),.pcm_prdata_o(),"
+    },
+    {
+      "parent": ".output_mute_i(!output_safe_compute[2])",
+      "selected": ".output_mute_i(1'b1)"
+    },
+    {
+      "parent": "    workstation_audio_clock_service #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1)) u_clock_service(\n        .clk_i(clk_50m),.reset_ni(clock_command_reset_n),\n        .command_valid_i(clock_command_valid),.command_write_i(clock_command_write),\n        .command_address_i(clock_command_address),.command_data_i(clock_command_data),\n        .command_strobes_i(clock_command_strobes),.command_ready_o(clock_command_ready),\n        .response_data_o(clock_response_data),.response_error_o(clock_response_error),\n        .switch_permit_i(memory_guard_ready),.core_request_ready_i(rate_request_ready),\n        .core_busy_i(rate_busy),.core_fault_i(rate_fault),.core_dsp_fault_i(rate_dsp_fault || memory_guard_fault),\n        .core_accepted_i(rate_accepted),.core_applied_i(rate_applied),.core_rejected_i(rate_rejected),\n        .core_policy_rejected_i(rate_policy_rejected),.core_failed_i(rate_failed),\n        .core_reject_code_i(rate_reject_code),.core_fault_code_i(rate_fault_code),\n        .core_active_44k1_i(rate44),.core_active_valid_i(rate_valid),.core_stream_epoch_i(rate_epoch),\n        .core_source_qualified_i(rate_qualified),.request_o(rate_request),.request_44k1_o(rate_target44),\n        .recover_o(rate_recover),.media_stop_request_o(clock_media_request),\n        .media_stop_hold_o(clock_media_hold),.media_stop_ready_i(clock_media_ready),\n        .media_stop_done_i(clock_media_done),.media_stop_failed_i(clock_media_failed),\n        .media_stop_failure_code_i(clock_media_failure));\n",
+      "selected": "    // W physical clock is not the phone playback authority. Original F803\n    // command CDC remains; the paired endpoint completes it from M responses.\n    assign rate_request=1'b0,rate_target44=1'b0,rate_recover=1'b0;\n    assign clock_media_request=1'b0,clock_media_hold=1'b0;\n"
+    },
+    {
+      "parent": "`include \"rtl/workstation/workstation_task3_media_board.svh\"",
+      "selected": "`include \"rtl/workstation/workstation_task3_w_paired_board.svh\""
+    },
+    {
+      "parent": "        .initialized_o(),.connected_o(),.subscribed_o(),.failed_o(),.status_o(ble_status)\n",
+      "selected": "        .initialized_o(),.connected_o(),.subscribed_o(),.failed_o(),.status_o(ble_status)\n        ,.record_object_idle_o(task3_record_object_idle),.record_source_needed_o(task3_record_source_needed)\n"
+    }
+  ],
+  "scope": "W paired business binding only; physical transport/top ports are separately adapted",
+  "exit_plan": "Replace these reviewed source adaptations with explicit native role parameters once paired board hardware/feature gates close; retain old profiles and immutable rollback."
+}

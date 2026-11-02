@@ -38,6 +38,9 @@ module workstation_hci_native_core #(
     input wire seal_hold_i, seal_request_i,
     output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
     output wire [3:0] seal_failure_code_o,
+`ifdef WORKSTATION_TASK3_W_PAIRED
+    output wire record_object_idle_o,record_source_needed_o,
+`endif
     output wire [7:0] seal_record_state_o,
     output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o,
     // clk / clk_i raw storage only; object/task/CRC/wire ownership stays here.
@@ -216,6 +219,9 @@ module workstation_hci_native_core #(
         .clk(clk),.resetn(sub_resetn),.enable(enable && initialized && outputs_active),
         .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
         .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
+`ifdef WORKSTATION_TASK3_W_PAIRED
+        .record_object_idle_o(record_object_idle_o),.record_source_needed_o(record_source_needed_o),
+`endif
         .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),
         .seal_recording_id_o(seal_recording_id_o),.seal_frames_o(seal_frames_o),.seal_crc_o(seal_crc_o),
         .raw_start_valid_o(raw_start_valid_o),
@@ -259,6 +265,9 @@ module workstation_hci_native_core #(
     );
 `else
     // Only F8050 + 0x200 HCI commands exist. Retired business pages fail.
+`ifdef WORKSTATION_TASK3_W_PAIRED
+    assign record_object_idle_o=1'b0,record_source_needed_o=1'b0;
+`endif
     assign business_app_ready=1'b1,business_app_error=1'b1,business_app_data=32'd0;
     assign connected=0,subscribed=0,handle=0,notification_count=0,acl_rx_count=0;
     assign att_request_count=0,completed_packets=0,app_errors=0,app_elapsed=0,app_state=0;

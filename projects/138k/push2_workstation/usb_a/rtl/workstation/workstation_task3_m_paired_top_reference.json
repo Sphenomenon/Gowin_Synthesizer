@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "policy": "task3_m_paired_exact_top_composition_v1",
+  "parent_sha256": "4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f",
+  "selected_sha256": "ce6459cbab667af9510d43b964d0fcd2f2d182b88b33b65a283ba50c7bd36824",
+  "edits": [
+    {
+      "parent": "    localparam bit RECOGNITION_ENABLED=1'b0;",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n    localparam bit RECOGNITION_ENABLED=1'b1;\n`else\n    localparam bit RECOGNITION_ENABLED=1'b0;\n`endif"
+    },
+    {
+      "parent": "    // CPU reset clears command bookkeeping. The independently latched backend\n",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n`include \"rtl/workstation/workstation_task3_m_paired_board.svh\"\n`endif\n    // CPU reset clears command bookkeeping. The independently latched backend\n"
+    },
+    {
+      "parent": "        .command_valid_i(clock_command_valid),.command_write_i(clock_command_write),\n        .command_address_i(clock_command_address),.command_data_i(clock_command_data),\n        .command_strobes_i(clock_command_strobes),.command_ready_o(clock_command_ready),\n        .response_data_o(clock_response_data),.response_error_o(clock_response_error),",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n        .command_valid_i(task3_m_clock_valid),.command_write_i(task3_m_clock_write),\n        .command_address_i(task3_m_clock_address),.command_data_i(task3_m_clock_data),\n        .command_strobes_i(task3_m_clock_strobes),.command_ready_o(task3_m_clock_ready),\n        .response_data_o(task3_m_clock_response),.response_error_o(task3_m_clock_error),\n`else\n        .command_valid_i(clock_command_valid),.command_write_i(clock_command_write),\n        .command_address_i(clock_command_address),.command_data_i(clock_command_data),\n        .command_strobes_i(clock_command_strobes),.command_ready_o(clock_command_ready),\n        .response_data_o(clock_response_data),.response_error_o(clock_response_error),\n`endif"
+    },
+    {
+      "parent": "    assign music_score_ready=1'b1;\n    assign score_usb_valid=1'b0;\n    assign score_usb_note=7'd0;",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n    music_async_fifo #(.WIDTH(7),.ADDRESS_BITS(2)) u_task3_m_score_push_cdc(\n        .write_clk_i(clk_50m),.write_rst_ni(runtime_common_reset_n),\n        .write_valid_i(music_score_valid && score_accept),.write_ready_o(music_score_ready),.write_data_i(music_score_note),\n        .read_clk_i(usb_clk),.read_rst_ni(usb_reset_n),.read_valid_o(score_usb_valid),.read_ready_i(score_usb_ready),.read_data_o(score_usb_note));\n    assign task3_m_score_ready=music_score_ready && score_accept;\n`else\n    assign music_score_ready=1'b1;\n    assign score_usb_valid=1'b0;\n    assign score_usb_note=7'd0;\n`endif"
+    },
+    {
+      "parent": "    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)",
+      "selected": "    workstation_runtime_controlled #(.RESERVE_ZERO_EPOCH(1),.ENABLE_MEDIA_POLICY(1),.ENABLE_AE350_PCM(AE350_PCM_ENABLED),.SEPARATE_COMMON_RESET(1)\n`ifdef WORKSTATION_TASK3_M_PAIRED\n        ,.REMOTE_PCM_COMMAND_ENABLE(1)\n`endif"
+    },
+    {
+      "parent": "        .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n        .pc_uart_rx_i(pc_uart_rx_i),\n`else\n        .pc_uart_rx_i((!RECOGNITION_ENABLED || music_model_status==4'd14 || tf_mode_50) ? pc_uart_rx_i : 1'b1),\n`endif"
+    },
+    {
+      "parent": "        .hci_session_ready_i(hci_pcm_session_ready),.hci_controller_epoch_i(hci_pcm_controller_epoch),\n        .hci_transport_generation_i(hci_pcm_transport_generation),",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n        .hci_session_ready_i(task3_m_hci_ready),.hci_controller_epoch_i(task3_m_hci_epoch),.hci_transport_generation_i(task3_m_hci_generation),\n        .remote_pcm_owner_ready_i(task3_m_pcm_reset && task3_m_owner_live_sync[2]),\n        .remote_pcm_command_valid_i(task3_m_pcm_valid),.remote_pcm_command_write_i(task3_m_pcm_write),\n        .remote_pcm_command_address_i(task3_m_pcm_address),.remote_pcm_command_data_i(task3_m_pcm_data),.remote_pcm_command_strobes_i(task3_m_pcm_strobes),\n        .remote_pcm_command_ready_o(task3_m_pcm_ready),.remote_pcm_response_data_o(task3_m_pcm_response),.remote_pcm_response_error_o(task3_m_pcm_error),\n        .remote_pcm_owner_idle_o(task3_m_pcm_idle_compute),\n`else\n        .hci_session_ready_i(hci_pcm_session_ready),.hci_controller_epoch_i(hci_pcm_controller_epoch),\n        .hci_transport_generation_i(hci_pcm_transport_generation),\n`endif"
+    },
+    {
+      "parent": "        .held_notes_o(),.control_state_o(),.control_pitch_o(),.control_options_o(),.applied_events_o(),.pc_health_o(),",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n        .held_notes_o(),.control_state_o(),.control_pitch_o(task3_m_control_pitch),.control_options_o(),.applied_events_o(),.pc_health_o(),\n`else\n        .held_notes_o(),.control_state_o(),.control_pitch_o(),.control_options_o(),.applied_events_o(),.pc_health_o(),\n`endif"
+    },
+    {
+      "parent": "    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1),\n        .VERIFY_DATA_CRC(1),.FAT_SECTOR_CACHE(1)) u_tf_audio(",
+      "selected": "    workstation_tf_direct_runtime_service #(.SEPARATE_COMMON_RESET(1),\n`ifdef WORKSTATION_TASK3_M_PAIRED\n        .REMOTE_ANALYSIS_ENABLE(1),\n`endif\n        .VERIFY_DATA_CRC(1),.FAT_SECTOR_CACHE(1)) u_tf_audio("
+    },
+    {
+      "parent": "        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending));\n    // No selected TF file intermediate or request generator remains on owner4.",
+      "selected": "        .stop_failure_code_o(tf_stop_failure),.stop_pending_o(tf_stop_pending)\n`ifdef WORKSTATION_TASK3_M_PAIRED\n        ,.analysis_request_i(music_analysis_enable && !tf_mode_50),.analysis_cancel_i(task3_m_analysis_failed),\n        .analysis_start_ready_i(task3_m_analysis_ready),.analysis_start_valid_o(task3_m_analysis_start),.analysis_session_o(),\n        .analysis_pcm_valid_o(task3_m_analysis_pcm_valid),.analysis_pcm_last_o(task3_m_analysis_pcm_last),\n        .analysis_pcm_ready_i(task3_m_analysis_pcm_ready),.analysis_pcm_o(task3_m_analysis_pcm),.analysis_cancel_o(task3_m_analysis_cancel)\n`endif\n        );\n    // No selected TF file intermediate or request generator remains on owner4."
+    },
+    {
+      "parent": "    assign music_model_status=4'd0;",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n    assign music_model_status=task3_m_model_status;\n`else\n    assign music_model_status=4'd0;\n`endif"
+    },
+    {
+      "parent": "    assign music_score_valid=1'b0;\n    assign music_score_note=7'd0;\n    assign music_analysis_done=1'b0;",
+      "selected": "`ifdef WORKSTATION_TASK3_M_PAIRED\n    assign music_score_valid=task3_m_score_valid;\n    assign music_score_note=task3_m_score_note;\n    assign music_analysis_done=task3_m_analysis_done;\n`else\n    assign music_score_valid=1'b0;\n    assign music_score_note=7'd0;\n    assign music_analysis_done=1'b0;\n`endif"
+    }
+  ],
+  "stage_only": true,
+  "maintained_top_modified": false,
+  "exit_plan": "Integrate paired board composition into versioned shared top only after physical gates; retire this exact reversible stage adapter then.",
+  "physical_transport_verified": false
+}

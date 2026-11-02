@@ -128,6 +128,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
     media_worker=runtime and specification(profile['name']).get('worker_media',False)
     tf_direct=runtime and specification(profile['name']).get('tf_direct_enabled',False)
+    paired_role=specification(profile['name']).get('paired_role') if runtime else None
+    paired_worker=paired_role=='W'
+    if paired_role is not None:
+        from tools import workstation_task3_paired_board as paired_board
+        paired_helper=paired_board.role_helper(paired_role)
     if tf_direct:
         from tools.workstation_task3_tf_direct import SOURCES as DIRECT_SOURCES, RETIRED_SOURCES, UNSELECTED_WORKER_SOURCES, DEPENDENCIES as DIRECT_DEPENDENCIES, POLICY as DIRECT_POLICY
         from tools.workstation_task3_tf_storage_selection import configuration_selection
@@ -167,11 +172,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         _,cpu_sources,cpu_dependencies=cpu_selection(hci_selected,audio_only=audio_only)
         native_sources += cpu_sources
         profile_dependencies += cpu_dependencies
-    if classic_selected:
+    if classic_selected or paired_role=='M':
         from tools.workstation_ae350_pcm import SOURCES as PCM_SOURCES,DEPENDENCIES as PCM_DEPENDENCIES
-        from tools.workstation_classic_runtime import DEPENDENCIES as CLASSIC_DEPENDENCIES
         native_sources += PCM_SOURCES
-        profile_dependencies += (*PCM_DEPENDENCIES,*CLASSIC_DEPENDENCIES)
+        profile_dependencies += PCM_DEPENDENCIES
+    if classic_selected:
+        from tools.workstation_classic_runtime import DEPENDENCIES as CLASSIC_DEPENDENCIES
+        profile_dependencies += CLASSIC_DEPENDENCIES
         if ae350_memory['boot_rom_bytes']==98304:
             from tools.workstation_classic_runtime import ROM96_DEPENDENCIES
             profile_dependencies += ROM96_DEPENDENCIES
@@ -192,11 +199,18 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_sources=tuple(x for x in native_sources if not retired_source(x))+AUDIO_SOURCES
         profile_dependencies+=AUDIO_DEPENDENCIES
     if media_worker:
-        from tools.workstation_task3_w_media_profile import SOURCES as MEDIA_SOURCES,DEPENDENCIES as MEDIA_DEPENDENCIES,retired_source
+        if paired_worker:
+            MEDIA_SOURCES,MEDIA_DEPENDENCIES,retired_source=paired_helper.SOURCES,paired_helper.DEPENDENCIES,paired_helper.retired_source
+        else:
+            from tools.workstation_task3_w_media_profile import SOURCES as MEDIA_SOURCES,DEPENDENCIES as MEDIA_DEPENDENCIES,retired_source
         # The explicit resource parent already compiles current music owners.
         native_sources=tuple(dict.fromkeys((*[s for s in native_sources if not retired_source(s)],
             *[s for s in MEDIA_SOURCES if not s.startswith('rtl/music/')])) )
         profile_dependencies+=MEDIA_DEPENDENCIES
+    if paired_role is not None:
+        role_sources=tuple(p for p in paired_helper.SOURCES if not p.startswith('rtl/music/')) if paired_role=='M' else ()
+        native_sources=tuple(dict.fromkeys((*native_sources,*role_sources,*paired_board.SOURCES)))
+        profile_dependencies+=(*paired_helper.DEPENDENCIES,*paired_board.DEPENDENCIES)
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -220,11 +234,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     builder = importlib.import_module('build_resource_rework')
     if builder.ROOT.resolve() != root:
         raise ValueError('resource builder root does not match explicit custom-board root')
-    parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation')
+    parent_output, stage, parent_metadata = builder.prepare(timing_fixes=True, output_directory=output / 'workstation',**({'native_cnn_parameters':True} if paired_role is not None else {}))
     if workstation_profile is not None:
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
-            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only,media_worker=media_worker, **ae350_memory)
+            business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker, **ae350_memory)
     native_timing = adapt_timing(stage)
     demo_fifo_reset = None
     if demo_role is not None:
@@ -333,8 +347,15 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         audio_source_selection=select_sources(stage,files)
     media_source_selection=None
     if media_worker:
-        from tools.workstation_task3_w_media_profile import select_sources as select_media_sources
+        if paired_worker:select_media_sources=paired_helper.select_sources
+        else:
+            from tools.workstation_task3_w_media_profile import select_sources as select_media_sources
         media_source_selection=select_media_sources(stage,files)
+    task3_paired_selection=None
+    if paired_role is not None:
+        top_path=stage / paired_board.TOP
+        top_path.write_text(paired_helper.apply_top(root,top_path.read_text()))
+        task3_paired_selection=paired_board.prepare_top(root,stage,paired_role)
     shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
     shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
     shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
@@ -387,7 +408,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         combined_cst=audio_cst(combined_cst)
     media_constraints=None
     if media_worker:
-        from tools.workstation_task3_w_media_profile import constraints as media_sdc
+        if paired_worker:media_sdc=paired_helper.constraints
+        else:
+            from tools.workstation_task3_w_media_profile import constraints as media_sdc
         from tools.workstation_worker_audio_only import cst as headless_cst
         selected_sdc,media_constraints=media_sdc(selected_sdc)
         combined_cst=headless_cst(combined_cst)
@@ -396,15 +419,19 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_task3_tf_direct import adapt_constraints as direct_constraints
         selected_sdc,task3_tf_direct_cdc=direct_constraints(root,selected_sdc,
             revision=profile['configuration']['tf_sdc_revision'])
+    task3_paired_sdc=task3_paired_cst=None
+    if paired_role is not None:
+        selected_sdc,task3_paired_sdc=paired_board.adapt_constraints(root,selected_sdc)
+        combined_cst,task3_paired_cst=paired_board.adapt_cst(root,combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
-    from tools.workstation_ae350_rtc import prepared as prepare_ae350_rtc
-    ae350_rtc = prepare_ae350_rtc(root, stage)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
+    from tools.workstation_ae350_rtc import prepared as prepare_ae350_rtc
+    ae350_rtc = prepare_ae350_rtc(root, stage)
     (stage / 'scripts/custom_board_synthesis.tcl').write_text(
         'set root [file normalize [file join [file dirname [info script]] ..]]\n'
         'cd $root\nopen_project Prj1.gprj\n'
@@ -463,7 +490,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         if media_worker:
-            from tools.workstation_task3_w_media_profile import recording_metadata as media_recording_metadata
+            if paired_worker:media_recording_metadata=paired_helper.recording_metadata
+            else:
+                from tools.workstation_task3_w_media_profile import recording_metadata as media_recording_metadata
             metadata['recording']=dict(media_recording_metadata(root),address_map=recording_address_map)
         else:metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)
     if ble_raw_selected:
@@ -471,7 +500,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if business_selected:
             from tools.workstation_cpu_business import metadata as ble_recording_metadata
         if media_worker:
-            from tools.workstation_task3_w_media_profile import raw_metadata
+            if paired_worker:raw_metadata=paired_helper.raw_metadata
+            else:
+                from tools.workstation_task3_w_media_profile import raw_metadata
             metadata['ble_recording_storage']=dict(raw_metadata(root),adaptation=ble_raw_adaptation)
         else:metadata['ble_recording_storage']=dict(ble_recording_metadata(),adaptation=ble_raw_adaptation)
     if audio_only:
@@ -479,7 +510,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['worker_audio_only']=dict(policy=AUDIO_POLICY,sources=audio_source_selection,
             constraints=audio_constraints,hci=ble_raw_adaptation,recording_enabled=False,display_enabled=False)
     if media_worker:
-        metadata['worker_media']=dict(policy='task3_w_media_headless_board_v1',sources=media_source_selection,
+        metadata['worker_media']=dict(policy=paired_helper.POLICY if paired_worker else 'task3_w_media_headless_board_v1',sources=media_source_selection,
             constraints=media_constraints,LCD_link_ready=False,software_tap_default_open=False,
             physical_M_tap_connected=False,full_HCI_Classic_GATT=True)
         metadata['scan_window']=dict(policy='disabled_worker_media_v1',enabled=False)
@@ -505,7 +536,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                             provider_selection='included_with_runtime_macro')
     if media_worker:
         metadata['scan_window']=dict(policy='disabled_worker_media_v1',enabled=False)
-        metadata['bluetooth']['capture_source']='software_M_final_tap_aperture; physical_LCD_down; never_W_local_DAC'
+        metadata['bluetooth']['capture_source']=('typed_M_final_tap_over_budget_gated_LCD; never_W_local_DAC' if paired_worker else 'software_M_final_tap_aperture; physical_LCD_down; never_W_local_DAC')
     if audio_only:
         metadata['scan_window']=dict(policy='disabled_worker_audio_only_v1',enabled=False)
         metadata['bluetooth']['capture_source']='absent_audio_only_no_recording'
@@ -530,6 +561,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['audio_pin_behavior']='ak4493s_i2s32_dual_rate_output_paced_final_pcm'
         metadata['audio_clock_policy']='qualified_12m288_or_16m9344_native_DCS'
         metadata['volume_application']=('once_in_runtime_final_pcm_before_I2S' if audio_only else 'once_in_runtime_final_pcm_before_I2S_display_and_BLE')
+    if paired_role is not None:
+        metadata['task3_paired']=task3_paired_selection
+        metadata['task3_paired_sdc']=task3_paired_sdc
+        metadata['task3_paired_cst']=task3_paired_cst
+        metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR
+        metadata['remaining_gaps']+=['LCD cable power/VCCIO/continuity and physical CDC review',
+            'measured LCD throughput/RTT/jitter/congestion before business grant',
+            'cold-start nonce/session provisioning and complete paired hardware acceptance']
     (parent_output / 'build_metadata.json').write_text(json.dumps(dict(
         candidate=metadata['identity'],source_policy=metadata['source_policy'],
         validation_stage='integration_prepare_only',place_route_allowed=False,deployment_allowed=False,
@@ -546,7 +585,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['task3_tf_direct_storage'] = prepared_selection(root,stage,profile['configuration'])
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
-            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker)
+            metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker)
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
     return output, metadata

@@ -123,10 +123,24 @@ def _preprocess(stage,tool,hdl):
     if result.returncode:
         raise ValueError('Classic runtime actual include/macro closure failed: '+result.stderr.decode())
     return argv,result.stdout,result.stderr.decode()
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False):
+def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_worker=False,media_worker=False):
+    """An opt-in role, never inferred from old W media/demo selection."""
+    from tools import workstation_task3_w_paired_profile as paired
+    if (not media_worker or headless_worker or physical_rom_bytes!=131072 or
+        selected_provider not in (None,paired.PROVIDER)):
+        raise ValueError('paired W requires its explicit full media/ROM128 provider')
+    return paired
+
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
-    if selected_provider is not None:
+    if paired_worker:
+        helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
+            headless_worker=headless_worker,media_worker=media_worker)
+        if selected_provider!=helper.PROVIDER:raise ValueError('paired W actual provider omitted')
+        helper.cnn_memory_provider(selected_provider)
+        provider,policy=selected_provider,helper.FIRMWARE_POLICY
+    elif selected_provider is not None:
         from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
             cnn_memory_provider(selected_provider)
@@ -151,26 +165,40 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
         enabled_hdl_sha256={p:sha(stage/p)for p in hdl},enabled_hdl_count=len(hdl),
         tool_sha256={str(tool):sha(tool)},cdc={k:v for k,v in cdc_bundle().items()if k!='sdc'},
         GeneralBonding_enabled=False,hardware_accepted=False,physical_CDC_accepted=False)
+    if paired_worker:record['worker_paired']=True
     if media_worker:
-        from tools.workstation_task3_w_media_profile import selected_source_evidence
+        if paired_worker:selected_source_evidence=helper.selected_source_evidence
+        else:from tools.workstation_task3_w_media_profile import selected_source_evidence
         record['worker_media_source']=selected_source_evidence(stage,payload.decode())
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker)
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker,paired_worker=paired_worker)
     return record
-def verify_cdc_selection(text,record,*,worker_demo=False):
+def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False):
     """Check the exact final scoped lines for the explicitly selected role."""
     cdc=cdc_bundle()
     selected=cdc['sdc']
     if worker_demo:
         from tools.workstation_demo_policy import adapt_constraints
         selected,_=adapt_constraints(selected,'W')
+    if paired_worker:
+        if not worker_demo:raise ValueError('paired W CDC requires explicit worker role')
+        from tools.workstation_task3_paired_board import restore_constraints
+        from tools.workstation_task3_w_paired_profile import scoped_constraints
+        text=restore_constraints(Path(__file__).resolve().parents[1],text)
+        selected,_=scoped_constraints(selected)
     if record!={k:v for k,v in cdc.items()if k!='sdc'}or any(
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
-    if selected_provider is not None:
+    if paired_worker:
+        helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
+            headless_worker=headless_worker,media_worker=media_worker)
+        if selected_provider!=helper.PROVIDER:raise ValueError('paired W actual provider omitted')
+        helper.cnn_memory_provider(selected_provider)
+        provider,policy=selected_provider,helper.FIRMWARE_POLICY
+    elif selected_provider is not None:
         from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
             cnn_memory_provider(selected_provider)
@@ -184,6 +212,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
             policy=WORKER_AUDIO_POLICY if headless_worker else WORKER_POLICY
     if headless_worker and selected_provider is None:raise ValueError('audio-only worker requires explicit W provider')
     if record.get('headless_worker',False)!=headless_worker or record.get('worker_media',False)!=media_worker:raise ValueError('headless runtime role selection drift')
+    if record.get('worker_paired',False)!=paired_worker:raise ValueError('paired runtime role selection drift')
     from tools.workstation_ae350_pcm import source_bundle,SOURCES
     if record.get('policy')!=policy or record.get('pcm')!=dict(source_bundle(root),profile_selected=True)or record.get('provider')!=provider:
         raise ValueError('Classic runtime joint source selection changed')
@@ -202,7 +231,8 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         raise ValueError('Classic runtime actual macro closure cannot be reproduced')
     text=target.read_text()
     if media_worker:
-        from tools.workstation_task3_w_media_profile import selected_source_evidence
+        if paired_worker:selected_source_evidence=helper.selected_source_evidence
+        else:from tools.workstation_task3_w_media_profile import selected_source_evidence
         if record.get('worker_media_source')!=selected_source_evidence(stage,text):
             raise ValueError('W-media actual source/entry proof drift')
     for anchor in ['localparam AE350_PCM_ENABLED=1;','gw138k_boot_memory #(.ROM_BYTES('+str(physical_rom_bytes)+'))',
@@ -211,11 +241,20 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
     verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
-        worker_demo=media_worker or selected_provider=='rtl/workstation/workstation_profile_w_demo.sv')
+        worker_demo=media_worker or selected_provider=='rtl/workstation/workstation_profile_w_demo.sv',paired_worker=paired_worker)
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record
-def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False,media_worker=False):
+def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=False,headless_worker=False,media_worker=False,paired_worker=False):
+    if paired_worker:
+        helper=_paired_media_helper(physical_rom_bytes,headless_worker=headless_worker,media_worker=media_worker)
+        if not worker_demo:raise ValueError('paired W firmware requires explicit worker role')
+        record=helper.build_firmware(root,evidence,prefix)
+        if record.get('runtime_policy')!=helper.FIRMWARE_POLICY:raise ValueError('paired W actual firmware policy drift')
+        record['worker_paired']=True
+        (Path(evidence)/'build_metadata.json').write_text(json.dumps(record,indent=2)+'\n')
+        verify_build(root,evidence,record,physical_rom_bytes,paired_worker=True)
+        return record
     if media_worker:
         if physical_rom_bytes!=131072 or not worker_demo or headless_worker:raise ValueError('W-media ROM/runtime role drift')
         from tools.workstation_task3_w_media_profile import build_firmware
@@ -254,10 +293,20 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=Fals
     (evidence/'build_metadata.json').write_text(json.dumps(record,indent=2)+'\n')
     verify_build(root,evidence,record,physical_rom_bytes)
     return record
-def verify_build(root,evidence,record,physical_rom_bytes=131072):
+def verify_build(root,evidence,record,physical_rom_bytes=131072,*,paired_worker=None):
+    if paired_worker is None:paired_worker=record.get('worker_paired',False)
+    if record.get('worker_paired',False)!=paired_worker:raise ValueError('paired W firmware selection drift')
+    if paired_worker:
+        helper=_paired_media_helper(physical_rom_bytes,headless_worker=record.get('headless_worker',False),
+            media_worker=record.get('worker_media',False))
+        if (not record.get('worker_demo') or record.get('runtime_policy')!=helper.FIRMWARE_POLICY or
+            record.get('source_text_overlay')is not True):
+            raise ValueError('paired W actual source adaptation/role omitted')
+        return helper.verify_firmware(root,evidence,record)
     if record.get('worker_media',False):
         if physical_rom_bytes!=131072:raise ValueError('W-media physical ROM drift')
-        from tools.workstation_task3_w_media_profile import verify_firmware
+        from tools.workstation_task3_w_media_profile import verify_firmware,FIRMWARE_POLICY
+        if record.get('runtime_policy')!=FIRMWARE_POLICY:raise ValueError('W-media actual firmware policy drift')
         return verify_firmware(root,evidence,record)
     root,evidence=Path(root),Path(evidence)
     policy,_=composition(physical_rom_bytes)

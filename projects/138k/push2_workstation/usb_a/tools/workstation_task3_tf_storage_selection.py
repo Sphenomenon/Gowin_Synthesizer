@@ -24,8 +24,34 @@ def digest(raw):
 def require(ok,message):
     if not ok:raise ValueError('DIRECT TF storage selection: '+message)
 
+def unwrap_paired_top(root,text):
+    """Unwrap only an explicitly selected, fully identity-checked pair role.
+
+    Existing callers have the stage directory, including its exact references
+    and GPRJ. No historical source or private maintenance checkout is read.
+    """
+    common='`include "rtl/workstation/workstation_task3_paired_link_board.svh"'
+    markers=('`include "rtl/workstation/workstation_task3_m_paired_board.svh"',
+             '`include "rtl/workstation/workstation_task3_w_paired_board.svh"')
+    if common not in text and not any(marker in text for marker in markers):
+        return text,None
+    from tools.workstation_profile import PROFILE_REGISTRY
+    project=Path(root)/'Prj1.gprj'
+    require(project.is_file(),'paired inverse requires actual compilation manifest')
+    selected=[r.get('path') for r in ET.parse(project).find('FileList') if r.get('enable')=='1']
+    pairs=[s for s in PROFILE_REGISTRY.values() if s.get('paired_board',False) and s['provider'] in selected]
+    require(len(pairs)==1,'paired inverse requires unique registered role provider')
+    pair=pairs[0]
+    require(all(s['provider'] not in selected or s['provider']==pair['provider']
+                for s in PROFILE_REGISTRY.values()),'paired inverse mixed profile providers')
+    from tools.workstation_task3_paired_board import inverse_top as inverse_common,role_helper
+    role=pair['paired_role']
+    if common in text:text=inverse_common(root,text,role)
+    return role_helper(role).inverse_top(root,text),role
+
 def inverse_top(root,text):
     """Restore exact a070 input before the separate unchanged W inverse."""
+    text,_=unwrap_paired_top(root,text)
     if MARKER not in text and '.FAT_SECTOR_CACHE(1)) u_tf_audio' not in text:
         return text
     raw=(Path(root)/REFERENCE).read_bytes()
@@ -59,7 +85,7 @@ def configuration_selection(configuration):
             'explicit DIRECT CRC1/cache1/r3 configuration required')
     return dict(policy=POLICY,VERIFY_DATA_CRC=1,FAT_SECTOR_CACHE=1,sdc_revision=3)
 
-def prepared_selection(root,stage,configuration):
+def prepared_selection(root,stage,configuration,*,captured_source_sha256=None):
     """Check the actual selected inputs, independently of inverse validators."""
     root,stage=Path(root),Path(stage)
     selection=configuration_selection(configuration)
@@ -75,14 +101,27 @@ def prepared_selection(root,stage,configuration):
     require(all(selected.count(p)==1 for p in SOURCES),'complete DIRECT compilation inputs required')
     require(not set(selected).intersection(UNSELECTED_WORKER_SOURCES),'M cannot compile W CNN tasks')
     raw_top=(stage/TOP).read_text()
-    require(digest(raw_top)==SELECTED_SHA256 and (root/TOP).read_text()==raw_top,
+    maintained_top,paired_role=unwrap_paired_top(stage,raw_top)
+    require(paired_role in (None,'M'),'DIRECT selected a non-M paired role')
+    require(digest(maintained_top)==SELECTED_SHA256,
             'actual native top must be the new maintained input')
+    if captured_source_sha256 is None:
+        require((root/TOP).read_text()==maintained_top,
+                'actual native top must be the new maintained input')
+    else:
+        # Immutable paired synthesis review has no second maintained checkout.
+        # Its caller first verifies the mutually bound full candidate manifests.
+        require(root.resolve()==stage.resolve() and paired_role=='M' and
+                captured_source_sha256.get(TOP)==digest(maintained_top),
+                'captured paired parent must match exact maintained identity')
     inverse_top(stage,raw_top)
     # This check deliberately reads the actual native branch, not its inverse.
     parameters=re.findall(r'workstation_tf_direct_runtime_service\s*#\((.*?)\)\s*u_tf_audio\s*\(',raw_top,re.S)
     require(len(parameters)==1,'native TF owner instance must be unique')
-    require(re.findall(r'\.(\w+)\s*\(\s*([^()]+)\s*\)',parameters[0])==[
-        ('SEPARATE_COMMON_RESET','1'),('VERIFY_DATA_CRC','1'),('FAT_SECTOR_CACHE','1')],
+    expected_parameters=[('SEPARATE_COMMON_RESET','1')]
+    if paired_role=='M':expected_parameters.append(('REMOTE_ANALYSIS_ENABLE','1'))
+    expected_parameters.extend([('VERIFY_DATA_CRC','1'),('FAT_SECTOR_CACHE','1')])
+    require(re.findall(r'\.(\w+)\s*\(\s*([^()]+)\s*\)',parameters[0])==expected_parameters,
         'actual native instance must select explicit CRC1/cache1')
     provider_text=(stage/provider).read_text().splitlines()
     require(provider_text.count('`define WORKSTATION_TF_DIRECT_NATIVE')==1 and
@@ -91,10 +130,16 @@ def prepared_selection(root,stage,configuration):
     from tools.workstation_tf_fat_cache_provenance import validate_adaptation
     chain,_=validate_adaptation(stage)
     source_sha256={p:digest((stage/p).read_bytes()) for p in SOURCES}
-    require(all((root/p).read_bytes()==(stage/p).read_bytes() for p in SOURCES),
-            'staged DIRECT sources differ from maintained bytes')
+    if captured_source_sha256 is None:
+        require(all((root/p).read_bytes()==(stage/p).read_bytes() for p in SOURCES),
+                'staged DIRECT sources differ from maintained bytes')
+    else:
+        require(all(captured_source_sha256.get(p)==value for p,value in source_sha256.items()) and
+                captured_source_sha256.get(provider)==digest((stage/provider).read_bytes()),
+                'staged DIRECT sources differ from captured maintained bytes')
     return dict(selection,provider=provider,provider_sha256=digest((stage/provider).read_bytes()),
         native_top_sha256=digest(raw_top),source_sha256=source_sha256,
+        **({'paired_role':paired_role,'maintained_parent_top_sha256':digest(maintained_top)}if paired_role is not None else{}),
         reference_sha256=REFERENCE_SHA256,source_chain=chain,
         product_uses_native_source=True,reconstruction_used_only_for_verification=True,
         compiler_preprocessing_verified=False,synthesis_verified=False,physical_cdc_verified=False,

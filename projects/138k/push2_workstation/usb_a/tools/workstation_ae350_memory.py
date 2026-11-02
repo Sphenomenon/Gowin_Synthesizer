@@ -31,7 +31,23 @@ def selection(configuration):
         configuration.get('ae350_firmware_policy')=='task3_w_headless_media_single_recording_60s_v1' and
         configuration.get('display_policy')=='disabled_worker_media_v1' and
         configuration.get('recording_owner_policy')=='single_C_BLE_ddr_60s_v1')
-    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not (runtime or worker or audio_worker or media_worker):
+    paired_policy='task3_w_paired_media_single_recording_60s_v1'
+    paired_configuration=dict(ae350_memory_profile=LOCAL_PROFILE,ae350_boot_rom_bytes=131072,
+        ae350_firmware_policy=paired_policy,hci_transport_policy='native_shared_hci_owner_v1',
+        ae350_pcm_policy='task3_W_HCI_decode_M_PCM1_v1',demo_role='W',
+        display_policy='disabled_worker_media_v1',recording_owner_policy='single_C_BLE_ddr_60s_v1',
+        recording_policy='task3_w_paired_single_C_BLE_recording_60s_v1',
+        ble_recording_storage_policy='task3_w_paired_single_C_BLE_raw_ddr_60s_v1',
+        business_owner_policy='ae350_single_C_BLE_recording_owner_v1',
+        recognition_policy='task3_w_paired_native_CNN_stream_v1',
+        interboard_transport_policy='task3_lcd_reqack_crc_session_budget_gated_v1',
+        paired_config_policy='task3_f808_nonzero_nonce_v1')
+    paired_media_worker=(all(configuration.get(key)==value for key,value in paired_configuration.items())
+        and configuration.get('interboard_business_default_enabled')is False
+        and configuration.get('interboard_physical_acceptance_required')is True)
+    if configuration.get('ae350_firmware_policy')==paired_policy and not paired_media_worker:
+        raise ValueError('unsupported paired W AE350 memory/storage composition')
+    if (memory, capacity) not in ((DEFAULT_PROFILE, 16384), (LOCAL_PROFILE, 65536)) and not (runtime or worker or audio_worker or media_worker or paired_media_worker):
         raise ValueError('unsupported workstation AE350 memory/storage composition')
     return dict(memory_profile=memory, boot_rom_bytes=capacity)
 

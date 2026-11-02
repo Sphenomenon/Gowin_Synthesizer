@@ -26,6 +26,7 @@ from tools.workstation_recording_capacity_provenance import original_identity
 from tools.workstation_task3_w_media import firmware_capacity_flag,recording_geometry
 
 POLICY='task3_w_headless_media_single_recording_60s_v1'
+PAIRED_POLICY='task3_w_paired_media_single_recording_60s_v1'
 REVIEW='tools/workstation_task3_w_media_firmware_review.json'
 SOURCES=('start.S','worker_media_main.c','ui_runtime.c','audio_clock_service.c',
          'recording_service.c','business_mailbox.c','ble_business_owner.c',
@@ -78,8 +79,17 @@ def audit(output,root=ROOT):
     out,root=Path(output),Path(root)
     reviewed,lineage=verify_sources(root)
     d=json.loads((out/'verification.json').read_text())
-    if d.get('policy')!=POLICY or d.get('source_text_overlay')is not False or d.get('link_returncode')!=0:
+    paired_source=d.get('policy')==PAIRED_POLICY
+    if d.get('policy')not in (POLICY,PAIRED_POLICY) or d.get('source_text_overlay')is not paired_source or d.get('link_returncode')!=0:
         raise ValueError('new actual media ELF required')
+    if paired_source:
+        from tools import workstation_task3_w_paired_firmware as paired
+        paired.verify(root,out,d.get('paired_record_source_adaptation'))
+    elif d.get('paired_record_source_adaptation')is not None:raise ValueError('unexpected paired REC_START adaptation')
+    for name in (*SOURCES,*HEADERS):
+        if paired_source and 'firmware/ae350/'+name==paired.SOURCE:continue
+        if sha(out/name)!=sha(root/('firmware/ae350/'+name)):
+            raise ValueError('W-media actual compiled source drift: '+name)
     wanted=[*SOURCES,*('adapted/decoder/srce/'+p.name for p in sorted((out/'adapted/decoder/srce').glob('*.c')))]
     if d['compiled_sources']!=wanted:raise ValueError('W-media compiled-source inventory drift')
     for cmd in d['commands']:
@@ -142,18 +152,19 @@ def audit(output,root=ROOT):
         try:call_chain_report(out,frames,dis,capacity,reviewed_indirect_calls=mutated,input_sha256=inputs)
         except ValueError as error:negative.append(dict(name=name,rejected=True,error=str(error)))
         else:raise ValueError('W-media callback negative control survived: '+name)
-    result=dict(schema=1,passed=True,policy=POLICY,stack=stack,capacity=d['capacity'],
+    result=dict(schema=1,passed=True,policy=d['policy'],stack=stack,capacity=d['capacity'],
         source_review_sha256=sha(root/REVIEW),capacity_lineage=lineage,
         actual_callback_tables=tables,actual_machine_sites=all_sites,reviewed_JALR_sites=len(sites),
         negative_controls=negative,ELF_sha256=sha(out/'firmware.elf'),boot_sha256=sha(out/'boot.mem'),
         recording_capacity_frames=2880000,graph_ui_compiled=False,single_C_BLE_recording_owner=True,
-        R00_backend_selected=False,source_text_overlay=False,per_TU_capacity_define_verified=True,
+        R00_backend_selected=False,source_text_overlay=paired_source,per_TU_capacity_define_verified=True,
         native_candidate_selected=False,CPU_cycles_measured=False,hardware_watermark=False,
         radio_audio_acceptance=False,hardware_operated=False)
+    if paired_source:result['paired_record_source_adaptation']=d['paired_record_source_adaptation']
     (out/'media_callgraph_verification.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
-def build(output,prefix=None,root=ROOT):
+def build(output,prefix=None,root=ROOT,paired_source=False):
     out,root=Path(output).resolve(),Path(root)
     review,lineage=verify_sources(root)
     out.mkdir(parents=True,exist_ok=False)
@@ -165,6 +176,11 @@ def build(output,prefix=None,root=ROOT):
     inputs={}
     for name in (*SOURCES,*HEADERS):
         rel='firmware/ae350/'+name;shutil.copyfile(root/rel,out/name);inputs[rel]=sha(root/rel)
+    paired_adaptation=None
+    if paired_source:
+        from tools import workstation_task3_w_paired_firmware as paired
+        paired_adaptation=paired.apply(root,out)
+        inputs[paired.TOOL]=sha(root/paired.TOOL)
     tools=('tools/workstation_task3_w_media_firmware.py',REVIEW,'tools/workstation_recording_capacity_provenance.py',
            'firmware/ae350/ble_business_owner.capacity_lineage.json','tools/ae350_local_memory.py',
            'tools/ae350_rom_split.py','tools/ae350_rom_split_audit.py','tools/prepare_ae350_sbc.py',
@@ -186,11 +202,13 @@ def build(output,prefix=None,root=ROOT):
         return p
     compiled=[*SOURCES,*('adapted/decoder/srce/'+p.name for p in sorted((out/'adapted/decoder/srce').glob('*.c')))]
     objects=[]
-    record=dict(schema=1,policy=POLICY,passed=False,input_sha256=inputs,capacity_lineage=lineage,
-        source_text_overlay=False,compiled_sources=compiled,commands=commands,no_GC=True,no_LTO=True,
+    record=dict(schema=1,policy=PAIRED_POLICY if paired_source else POLICY,passed=False,input_sha256=inputs,capacity_lineage=lineage,
+        source_text_overlay=paired_source,
+        compiled_sources=compiled,commands=commands,no_GC=True,no_LTO=True,
         headless_media=True,recording_capacity_frames=2880000,native_candidate_selected=False,hardware_operated=False,
         recording_geometry=recording_geometry(root),
         tool_sha256={tool:sha(prefix+'-'+tool) for tool in ('gcc','objcopy','size','nm','objdump')})
+    if paired_source:record['paired_record_source_adaptation']=paired_adaptation
     try:
         for name in compiled:
             target=out/(Path(name).stem+'.o')

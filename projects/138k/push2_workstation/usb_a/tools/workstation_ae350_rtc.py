@@ -88,7 +88,16 @@ def prepared(root, stage):
     stage = Path(stage)
     require((stage / SOURCE).read_bytes() == (Path(root) / SOURCE).read_bytes(),
             'prepared RTC source differs from maintained source')
-    require((stage / SHARED_TOP).read_bytes() == (Path(root) / SHARED_TOP).read_bytes(),
+    prepared_top=(stage / SHARED_TOP).read_text()
+    if '`include "rtl/workstation/workstation_task3_paired_link_board.svh"' in prepared_top:
+        from tools.workstation_task3_tf_storage_selection import unwrap_paired_top
+        prepared_top,role=unwrap_paired_top(stage,prepared_top)
+        require(role in ('M','W'),'paired RTC role missing')
+    maintained_top=(Path(root) / SHARED_TOP).read_text()
+    if '`include "rtl/workstation/workstation_task3_paired_link_board.svh"' in maintained_top:
+        from tools.workstation_task3_tf_storage_selection import unwrap_paired_top
+        maintained_top,_=unwrap_paired_top(root,maintained_top)
+    require(prepared_top == maintained_top,
             'prepared RTC composition differs from maintained source')
     validate_constraints((stage / 'constraints/custom_138k.sdc').read_text())
     return result

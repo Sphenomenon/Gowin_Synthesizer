@@ -62,6 +62,8 @@ TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
 TASK3_W_MEDIA_NAME='custom138k-workstation-task3-w-media-v1'
 TASK3_W_SIGNAL_NAME='custom138k-workstation-task3-w-media-signal-bsram-v1'
 TASK3_W_CQT_NAME='custom138k-workstation-task3-w-media-cqt-bsram-v1'
+TASK3_M_PAIRED_NAME='custom138k-workstation-task3-m-paired-v1'
+TASK3_W_PAIRED_NAME='custom138k-workstation-task3-w-paired-v1'
 PROFILE_REGISTRY = {
     TASK3_W_MEDIA_NAME:dict(config='boards/custom_138k/workstation_profile_task3_w_media_v1.json',revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
@@ -193,6 +195,36 @@ for _name,_config,_provider,_policy,_identity in (
         configuration=dict(_parent['configuration'],cnn_memory_policy=_policy),
         integration_identity=_identity)
 
+# Explicit new pair policies keep every independent M/W lock and provider.
+_paired_configuration=dict(
+    interboard_transport_policy='task3_lcd_reqack_crc_session_budget_gated_v1',
+    paired_config_policy='task3_f808_nonzero_nonce_v1',
+    interboard_business_default_enabled=False,
+    interboard_physical_acceptance_required=True)
+_parent=PROFILE_REGISTRY[TASK3_M_DIRECT_NAME]
+PROFILE_REGISTRY[TASK3_M_PAIRED_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_paired_v1.json',
+    provider='rtl/workstation/workstation_profile_task3_m_paired.sv',
+    configuration=dict(_parent['configuration'],**_paired_configuration,
+        recognition_policy='task3_m_remote_CNN_follow_v1',
+        ae350_pcm_policy='task3_m_remote_commands_existing_PCM1_v1',
+        bluetooth_policy='task3_W_HCI_decode_M_PCM1_v1',
+        recording_policy='task3_M_final_physical_tap_to_W_single_object_v1'),
+    paired_board=True,paired_role='M',paired_worker=False,
+    integration_identity='custom138k-native-task3-m-paired-revision1')
+_parent=PROFILE_REGISTRY[TASK3_W_CQT_NAME]
+PROFILE_REGISTRY[TASK3_W_PAIRED_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_w_paired_v1.json',
+    provider='rtl/workstation/workstation_profile_task3_w_paired.sv',
+    configuration=dict(_parent['configuration'],**_paired_configuration,
+        ae350_firmware_policy='task3_w_paired_media_single_recording_60s_v1',
+        recognition_policy='task3_w_paired_native_CNN_stream_v1',
+        recording_policy='task3_w_paired_single_C_BLE_recording_60s_v1',
+        ble_recording_storage_policy='task3_w_paired_single_C_BLE_raw_ddr_60s_v1',
+        ae350_pcm_policy='task3_W_HCI_decode_M_PCM1_v1'),
+    paired_board=True,paired_role='W',paired_worker=True,
+    integration_identity='custom138k-native-task3-w-paired-revision1')
+
 
 def specification(name):
     if name not in PROFILE_REGISTRY:
@@ -217,8 +249,9 @@ def prepared_specification(prepared):
                 recording_owner_policy='single_ble_ddr_object_v1', usb_adapter_policy='worker_25k_v1'))
     legacy = dict(spec['configuration'])
     legacy.pop('usb_fifo_reset_policy', None)
+    accepted_configurations=(spec['configuration'],)if spec.get('paired_board',False)else(spec['configuration'],legacy)
     if (prepared.get('revision') != spec['revision'] or prepared.get('profile_source') != spec['config'] or
-            prepared.get('configuration') not in (spec['configuration'], legacy)):
+            prepared.get('configuration') not in accepted_configurations):
         raise ValueError('prepared workstation revision/configuration identity changed')
     return spec
 
@@ -238,6 +271,20 @@ def recognition_metadata(profile):
     if spec.get('tf_menu_enabled', False):
         metadata.update(tf_menu_enabled=True, recognition_menu_available=False,
                         tf_song_menu_available=True)
+    if spec.get('paired_role')=='M':
+        metadata.update(policy='task3_m_remote_CNN_follow_v1',
+            local_CNN_enabled=False,remote_analysis_enabled=True,
+            local_score_cue_preserved=False,local_score_service_enabled=False,
+            cnn_score_follow_enabled=True,recognition_menu_available=True,
+            Push_guidance_transport_connected=True,
+            final_score_requires_actual_file_terminal=True,
+            physical_LCD_hardware_verified=False)
+    elif spec.get('paired_role')=='W':
+        metadata.update(policy='task3_w_paired_native_CNN_stream_v1',
+            local_score_cue_preserved=False,local_score_service_enabled=False,
+            task_results_available_through='paired_ordered_result_lane',
+            Push_guidance_transport_connected=True,
+            physical_LCD_hardware_verified=False)
     return metadata
 
 
@@ -296,7 +343,7 @@ def load(root, name, *, allow_high_speed=True, hdmi_mode='1080p60'):
 
 
 def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False,
-                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False,headless_worker=False,media_worker=False):
+                  memory_profile='pl16k_8k', boot_rom_bytes=16384, business_owner=False,classic_runtime=False,worker_demo=False,headless_worker=False,media_worker=False,paired_worker=False):
     """Install maintained AE350 ROM only for the explicitly selected profile."""
     from tools.stage_ae350_firmware import stage_ae350_firmware
     root, output, stage = map(lambda path: Path(path).resolve(), (root, output, stage))
@@ -313,7 +360,7 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
         if not media_worker and (not recording_api and not headless_worker) or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072) or (headless_worker and (recording_api or not worker_demo)):
             raise ValueError('Classic runtime requires explicit local64/ROM96-or-ROM128/business composition')
         from tools.workstation_classic_runtime import build as build_runtime
-        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo,headless_worker=headless_worker,media_worker=media_worker);policy=build['runtime_policy']
+        build=build_runtime(root,evidence,riscv_prefix,physical_rom_bytes=boot_rom_bytes,worker_demo=worker_demo,headless_worker=headless_worker,media_worker=media_worker,**({'paired_worker':True}if paired_worker else{}));policy=build['runtime_policy']
     else:
         build = stage_ae350_firmware(root, evidence, riscv_prefix, recording_api=recording_api,
             memory_profile=memory_profile, boot_rom_bytes=boot_rom_bytes, business_owner=business_owner)
@@ -355,7 +402,8 @@ def _ae350_evidence(root, output, metadata, profile):
         raise ValueError('workstation profile AE350 recording API selection changed')
     if classic_runtime:
         from tools.workstation_classic_runtime import verify_build
-        verify_build(root,evidence,build,physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'])
+        verify_build(root,evidence,build,physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],
+            **({'paired_worker':True}if specification(profile['name']).get('paired_worker',False)else{}))
     elif business_owner:
         proof='tools/ae350_ble_business_indirect_review.json'
         if (build.get('indirect_call_review',{}).get('source')!=proof or
@@ -411,6 +459,15 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    paired_role=spec.get('paired_role')
+    if paired_role is not None:
+        from tools.workstation_task3_paired_board import verify_selection as verify_pair,restore_constraints as restore_pair_constraints
+        verify_pair(root,stage,metadata.get('task3_paired',{}),paired_role)
+        from tools.workstation_task3_paired_board import verify_constraints as verify_pair_constraints
+        verify_pair_constraints(root,stage,metadata)
+        installed_sdc=restore_pair_constraints(root,installed_sdc)
+    elif 'task3_paired' in metadata:
+        raise ValueError('unselected profile cannot claim paired board wiring')
     if spec.get('tf_direct_enabled', False):
         from tools.workstation_task3_tf_direct import restore_constraints
         from tools.workstation_task3_tf_storage_selection import prepared_selection
@@ -423,7 +480,10 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('unselected profile cannot claim direct TF constraints')
     media_worker=spec.get('worker_media',False)
     if media_worker:
-        from tools.workstation_task3_w_media_profile import restore_constraints
+        if paired_role=='W':
+            from tools.workstation_task3_w_paired_profile import restore_constraints
+        else:
+            from tools.workstation_task3_w_media_profile import restore_constraints
         installed_sdc=restore_constraints(installed_sdc,metadata['worker_media']['constraints'])
     audio_only=spec.get('worker_audio_only',False)
     if audio_only:
@@ -452,7 +512,11 @@ def _artifact(root, output, metadata, profile):
         panel = local_panel_bundle(False)
         if metadata.get('local_panel') != panel:
             raise ValueError('workstation profile local panel retirement changed')
-        if metadata.get('lcd_behavior') != panel['output_behavior']:
+        if paired_role is not None:
+            from tools.workstation_task3_paired_board import LCD_BEHAVIOR
+            expected_lcd_behavior=LCD_BEHAVIOR
+        else:expected_lcd_behavior=panel['output_behavior']
+        if metadata.get('lcd_behavior') != expected_lcd_behavior:
             raise ValueError('workstation profile retired LCD output behavior changed')
         if (any('u_lcd' in line or 'lcd_pixel31m5' in line for line in staged_sdc) or
                 'rtl/display_data/workstation_lcd.sv' in metadata['enabled_inputs'] or
@@ -524,7 +588,10 @@ def _artifact(root, output, metadata, profile):
         if business_selected:
             from tools.workstation_cpu_business import metadata as ble_recording_metadata,verify_prepared as verify_ble_raw
         if media_worker:
-            from tools.workstation_task3_w_media_profile import raw_metadata
+            if paired_role=='W':
+                from tools.workstation_task3_w_paired_profile import raw_metadata
+            else:
+                from tools.workstation_task3_w_media_profile import raw_metadata
             ble_recording_metadata=lambda:raw_metadata(root)
         selected = dict(metadata.get('ble_recording_storage', {}))
         ble_raw_adaptation = selected.pop('adaptation', None)
@@ -543,7 +610,10 @@ def _artifact(root, output, metadata, profile):
         from tools.workstation_recording_policy import metadata as recording_metadata, verify_address_map, MAP_SOURCE, MAP_DESTINATION
         selected=dict(metadata.get('recording',{}));address_map=selected.pop('address_map',None)
         if media_worker:
-            from tools.workstation_task3_w_media_profile import recording_metadata as media_recording_metadata
+            if paired_role=='W':
+                from tools.workstation_task3_w_paired_profile import recording_metadata as media_recording_metadata
+            else:
+                from tools.workstation_task3_w_media_profile import recording_metadata as media_recording_metadata
             expected_recording=media_recording_metadata(root)
         else:expected_recording=recording_metadata(ble_raw_ddr=ble_raw_selected)
         if selected!=expected_recording:raise ValueError('recording source/capacity selection changed')
@@ -571,6 +641,14 @@ def _artifact(root, output, metadata, profile):
             staged_hash=ble_raw_adaptation['copied'][target]['sha256']
         elif ble_raw_selected and target == 'rtl/bluetooth/workstation_bluetooth.sv':
             staged_hash = ble_raw_adaptation['output_sha256']['workstation_bluetooth.sv']
+        if paired_role is not None and target=='rtl/workstation/gw138k_push_workstation_top.v':
+            from tools.workstation_task3_paired_board import inverse_top as inverse_common,role_helper,digest as pair_digest
+            actual_top=(stage/target).read_text()
+            parent_top=role_helper(paired_role).inverse_top(root,inverse_common(root,actual_top,paired_role))
+            if (pair_digest(parent_top)!=metadata['copied_sources_sha256'][source] or
+                    parent_top!=(root/source).read_text()):
+                raise ValueError('paired top exact inverse differs from maintained source')
+            staged_hash=metadata['task3_paired']['selected_top_sha256']
         if (metadata['copied_sources_sha256'][source] != profile['source_sha256'][prefix + source] or
                 sha(checked_path(stage, target)) != staged_hash):
             raise ValueError('workstation profile copied source drift: ' + source)
@@ -641,9 +719,13 @@ def _artifact(root, output, metadata, profile):
     ae350 = _ae350_evidence(root, output, metadata, profile)
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
-        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker)
+        verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker,
+            **({'paired_worker':True}if spec.get('paired_worker',False)else{}))
         if media_worker:
-            from tools.workstation_task3_w_media_profile import cnn_memory_configuration
+            if paired_role=='W':
+                from tools.workstation_task3_w_paired_profile import cnn_memory_configuration
+            else:
+                from tools.workstation_task3_w_media_profile import cnn_memory_configuration
             memory=dict(metadata['classic_runtime']['worker_media_source']['selected_CNN_memory'])
             if memory!=cnn_memory_configuration(profile['configuration']):
                 raise ValueError('W CNN actual native memory selection does not match profile configuration')
@@ -691,6 +773,7 @@ def _artifact(root, output, metadata, profile):
                 **({'classic_runtime':metadata['classic_runtime']}if spec.get('classic_runtime_enabled',False)else{}),
                 scan_window=metadata['scan_window'],
                 runtime_audio=metadata.get('runtime_audio'), recognition=metadata['recognition'],
+                **({'task3_paired':metadata['task3_paired']}if paired_role is not None else{}),
                 ae350_core_clock_placement=ae350_clock_placement, ae350_rtc=ae350_rtc,
                 **({'recording':metadata['recording']} if spec.get('recording_enabled',False) else {}),
                 **({'ble_recording_storage':metadata['ble_recording_storage']} if ble_raw_selected else {}),

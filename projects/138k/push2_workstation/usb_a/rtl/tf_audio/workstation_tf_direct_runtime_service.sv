@@ -8,7 +8,8 @@ module workstation_tf_direct_runtime_service #(
     parameter integer TOKEN_WAIT_CLOCKS=8320000,WATCHDOG_CLOCKS=250000000,
     parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072,
     parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,
-    parameter bit SEPARATE_COMMON_RESET=0
+    parameter bit SEPARATE_COMMON_RESET=0,
+    parameter bit REMOTE_ANALYSIS_ENABLE=0
 )(
     input wire rst_ni,common_reset_ni,clk_50m_i,compute_clk_i,
     input wire mode_i,run_i,restart_i,cancel_i,transport_error_i,
@@ -32,6 +33,15 @@ module workstation_tf_direct_runtime_service #(
     output wire [31:0] tf_generation_o,tf_session_o,expected_generation_o,
     input wire tf_ready_i,
     output wire media_quiescent_o,
+    // Optional dedicated offline analysis pass through THIS file owner.
+    // Defaults retain the existing playback/physical-EOS contract.
+    input wire analysis_request_i,analysis_cancel_i,analysis_start_ready_i,
+    output wire analysis_start_valid_o,
+    output wire [31:0] analysis_session_o,
+    output wire analysis_pcm_valid_o,analysis_pcm_last_o,
+    input wire analysis_pcm_ready_i,
+    output wire [31:0] analysis_pcm_o,
+    output wire analysis_cancel_o,
     // The unique runtime router/serializer/observation path supplies these.
     input wire physical_eos_i,physical_quiescent_i,physical_failed_i,physical_abort_i,
     input wire stop_request_i,
@@ -60,9 +70,10 @@ module workstation_tf_direct_runtime_service #(
         end
     wire source_n=source_release[2],compute_n=compute_release[2];
     reg [2:0] state;
-    reg restart_q,cancel_q,mode_q,stop_q,transport_q;
+    reg restart_q,cancel_q,mode_q,stop_q,transport_q,analysis_q,analysis_cancel_q;
     reg [3:0] track_q,pending_track;
     reg pending_start,pending_rate,session_rate,session_applied,native_quiet;
+    reg pending_analysis,session_analysis;
     reg failed,eof_seen;
     reg [3:0] failure;
     reg [31:0] session,pending_epoch,session_epoch,quiet_wait;
@@ -76,11 +87,15 @@ module workstation_tf_direct_runtime_service #(
     wire signed [15:0] native_left,native_right;
     wire bridge_ready,source_quiet,generation_pending,bridge_quiet,expected_valid;
     wire [31:0] source_generation;
-    wire bad_context=!runtime_valid_i || runtime_fault_i || runtime_busy_i;
+    wire analysis_live=REMOTE_ANALYSIS_ENABLE && session_analysis;
+    wire bad_context=!analysis_live && (!runtime_valid_i || runtime_fault_i || runtime_busy_i);
     wire resume_event=restart_i && !restart_q;
-    wire cancel_event=(cancel_i && !cancel_q) || (mode_q && !mode_i);
+    wire cancel_event=(cancel_i && !cancel_q) || (mode_q && !mode_i && !analysis_live) ||
+        (analysis_live && analysis_cancel_i && !analysis_cancel_q);
     wire stop_event=stop_request_i && !stop_q && !stop_pending_o;
-    wire new_command=mode_i && (resume_event || track_index_i!=track_q) && !cancel_event && !stop_event && !stop_pending_o;
+    wire analysis_event=REMOTE_ANALYSIS_ENABLE && analysis_request_i && !analysis_q;
+    wire new_command=((mode_i && (resume_event || track_index_i!=track_q)) || analysis_event) &&
+        !cancel_event && !stop_event && !stop_pending_o;
     wire live=state==PREFILL || state==PLAY || state==ENDED;
 
     // Reliable event receipt: immutable session/kind bundle until source ACK.
@@ -136,9 +151,10 @@ module workstation_tf_direct_runtime_service #(
             else if(session_applied && native_ingress_error)failure_now=INGRESS;
             else if(transport_error_i)failure_now=TRANSPORT;
             else if(bad_context)failure_now=CONTEXT;
-            else if(session_applied && (runtime_epoch_i!=session_epoch || runtime_44k1_i!=session_rate))failure_now=EPOCH;
-            else if(physical_failure_event)failure_now=PHYSICAL;
+            else if(session_applied && !analysis_live && (runtime_epoch_i!=session_epoch || runtime_44k1_i!=session_rate))failure_now=EPOCH;
+            else if(!analysis_live && physical_failure_event)failure_now=PHYSICAL;
             else if(session_applied && native_empty)failure_now=EMPTY;
+            else if(analysis_live && state==LAUNCH && quiet_wait==QUIET_TIMEOUT_CYCLES-1)failure_now=QUIET_TIMEOUT;
         end
     end
     wire new_failure=failure_now!=0 && !failed;
@@ -149,18 +165,25 @@ module workstation_tf_direct_runtime_service #(
     always @(posedge clk_50m_i or negedge common_n)
         if(!common_n)source_quiesce_level<=1'b1;
         else source_quiesce_level<=!source_n || source_quiesce;
-    wire native_request=state==LAUNCH && !bad_context && !cancel_event && !stop_event;
+    wire native_request=state==LAUNCH && !bad_context && !cancel_event && !stop_event &&
+        (!pending_analysis || analysis_start_ready_i);
+    assign analysis_start_valid_o=REMOTE_ANALYSIS_ENABLE && native_request && native_ready && pending_analysis;
+    assign analysis_session_o=session;
+    assign analysis_pcm_valid_o=analysis_live && native_valid && !source_quiesce && !invalidate;
+    assign analysis_pcm_last_o=native_last;
+    assign analysis_pcm_o={native_right,native_left};
+    assign analysis_cancel_o=analysis_live && invalidate;
     workstation_tf_direct_native_v1 #(.SPI_CLK_DIV(SPI_CLK_DIV),.SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),
         .TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),.WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),
         .VERIFY_DATA_CRC(VERIFY_DATA_CRC),.FAT_SECTOR_CACHE(FAT_SECTOR_CACHE),
         .BYTE_DEPTH(BYTE_DEPTH),.PCM_DEPTH(PCM_DEPTH),.PREFILL_FRAMES(PREFILL_FRAMES)) native(
         .clk_i(clk_50m_i),.rst_ni(source_n),.spi_ssn_o(sd_cs_no),.spi_sck_o(sd_sck_o),.spi_mosi_o(sd_mosi_o),.spi_miso_i(sd_miso_i),
         .request_valid_i(native_request),.request_ready_o(native_ready),.track_index_i(pending_track),.generation_i(session),
-        .expected_rate_i(pending_rate ? 20'd44100:20'd48000),.stop_i(native_stop),.pause_i(!run_i),
+        .expected_rate_i(pending_rate ? 20'd44100:20'd48000),.stop_i(native_stop),.pause_i(!analysis_live && !run_i),
         // Physical deadlines belong to the unique actual downstream router.
         .sample_request_i(1'b0),.request_applied_o(native_applied),.request_pending_o(native_pending),
         .stop_completed_o(native_stop_done),.stop_failed_o(native_stop_failed),
-        .pcm_valid_o(native_valid),.pcm_ready_i(bridge_ready && !source_quiesce),
+        .pcm_valid_o(native_valid),.pcm_ready_i((analysis_live?analysis_pcm_ready_i:bridge_ready) && !source_quiesce),
         .pcm_left_o(native_left),.pcm_right_o(native_right),.pcm_last_o(native_last),
         .generation_o(native_session),.session_rate_o(native_rate),.active_o(native_active),.prefill_ready_o(native_prefill),.empty_o(native_empty),
         .ingress_failed_o(native_ingress_error),.ingress_failure_code_o(native_ingress_code),
@@ -170,7 +193,7 @@ module workstation_tf_direct_runtime_service #(
     workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(
         .rst_ni(common_n),.source_clk_i(clk_50m_i),.compute_clk_i,
         .invalidate_i(invalidate),.source_quiesce_i(source_quiesce_level),
-        .source_valid_i(native_valid && !source_quiesce),.source_error_i(1'b0),.source_last_i(native_last),
+        .source_valid_i(native_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(native_last),
         .source_session_generation_i(native_session),.source_sample_rate_i(native_rate),
         .source_left_i(native_left),.source_right_i(native_right),.source_ready_o(bridge_ready),
         .source_generation_o(source_generation),.source_generation_pending_o(generation_pending),.source_quiescent_o(source_quiet),
@@ -179,7 +202,8 @@ module workstation_tf_direct_runtime_service #(
         .expected_generation_o(expected_generation_o),.expected_generation_valid_o(expected_valid),.media_quiescent_o(bridge_quiet));
     // Immutable status mailbox. Gray generation separately revokes admission
     // even if this source clock stops before its inactive status can arrive.
-    wire [STATUS_WIDTH-1:0] desired_status={source_generation,session,mode_i && live,run_i,state!=IDLE,failed};
+    wire [STATUS_WIDTH-1:0] desired_status={source_generation,session,mode_i && live && !analysis_live,run_i,
+        state!=IDLE && !analysis_live,failed && !analysis_live};
     reg status_request,status_ack,status_capture;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] status_request_sync,status_ack_sync;
     always @(posedge clk_50m_i or negedge common_n)
@@ -214,18 +238,27 @@ module workstation_tf_direct_runtime_service #(
     assign media_quiescent_50_o=state==IDLE && source_quiet && physical_quiet_sync[1] && !control_pending;
     always @(posedge clk_50m_i or negedge source_n)
         if(!source_n)begin
-            state<=IDLE;restart_q<=0;cancel_q<=0;mode_q<=0;stop_q<=0;transport_q<=0;track_q<=0;
+            state<=IDLE;restart_q<=0;cancel_q<=0;mode_q<=0;stop_q<=0;transport_q<=0;track_q<=0;analysis_q<=0;analysis_cancel_q<=0;
             pending_track<=0;pending_start<=0;pending_rate<=0;pending_epoch<=0;
             session<=0;session_rate<=0;session_epoch<=0;session_applied<=0;native_quiet<=0;
+            pending_analysis<=0;session_analysis<=0;
             failed<=0;failure<=0;eof_seen<=0;quiet_wait<=0;
             stop_pending_o<=0;stop_done_o<=0;stop_failed_o<=0;stop_failure_code_o<=0;
         end else begin
             restart_q<=restart_i;cancel_q<=cancel_i;mode_q<=mode_i;stop_q<=stop_request_i;
+            analysis_q<=REMOTE_ANALYSIS_ENABLE && analysis_request_i;
+            analysis_cancel_q<=REMOTE_ANALYSIS_ENABLE && analysis_cancel_i;
             transport_q<=transport_error_i;track_q<=track_index_i;
             stop_done_o<=0;stop_failed_o<=0;
             if(native_applied)begin session_applied<=1;session_rate<=pending_rate;session_epoch<=pending_epoch;end
-            if(physical_end_event && live)begin eof_seen<=1;state<=ENDED;end
+            if(physical_end_event && live && !analysis_live)begin eof_seen<=1;state<=ENDED;end
+            if(analysis_live && state==PLAY && native_valid && analysis_pcm_ready_i && native_last && !source_quiesce)begin
+                // File EOF releases the shared native reader. Recognition
+                // may continue on W without retaining M's media-stop grant.
+                eof_seen<=1;state<=DRAIN;quiet_wait<=0;native_quiet<=0;pending_start<=0;
+            end
             if(state==LAUNCH && native_request && native_ready)begin state<=PREFILL;session_applied<=0;end
+            if(analysis_live && state==LAUNCH && quiet_wait<QUIET_TIMEOUT_CYCLES)quiet_wait<=quiet_wait+1'b1;
             if(state==PREFILL && native_active)state<=PLAY;
             if(state==DRAIN)begin
                 if(native_stop_done)native_quiet<=1;
@@ -239,7 +272,7 @@ module workstation_tf_direct_runtime_service #(
                             physical_quiet_sync[1] && !control_pending)begin
                     quiet_wait<=0;
                     if(stop_pending_o)begin stop_pending_o<=0;stop_done_o<=1;end
-                    if(pending_start && mode_i && !bad_context)begin state<=LAUNCH;pending_start<=0;end
+                    if(pending_start && (mode_i || pending_analysis) && !bad_context)begin state<=LAUNCH;pending_start<=0;end
                     else begin state<=IDLE;pending_start<=0;end
                 end else if(quiet_wait==QUIET_TIMEOUT_CYCLES-1)begin
                     failed<=1;failure<=QUIET_TIMEOUT;pending_start<=0;
@@ -252,7 +285,8 @@ module workstation_tf_direct_runtime_service #(
                 session_applied<=0;
                 if(new_command)begin
                     session<=session+1'b1;pending_track<=track_index_i;
-                    pending_rate<=runtime_44k1_i;pending_epoch<=runtime_epoch_i;pending_start<=1;
+                    pending_analysis<=analysis_event;session_analysis<=analysis_event;
+                    pending_rate<=analysis_event?1'b0:runtime_44k1_i;pending_epoch<=runtime_epoch_i;pending_start<=1;
                     failed<=0;failure<=0;eof_seen<=0;
                 end else pending_start<=0;
                 if(new_failure)begin failed<=1;failure<=failure_now;pending_start<=0;end

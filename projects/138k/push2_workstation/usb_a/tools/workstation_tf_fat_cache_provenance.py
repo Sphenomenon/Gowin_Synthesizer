@@ -36,9 +36,13 @@ def restore_crc_basis(root):
     cache=m['new_cache']
     require(cache['path']=='rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.sv' and
             digest((root/cache['path']).read_bytes())==cache['sha256'],'cache source identity changed')
-    restored={};rows=[]
+    restored={};rows=[];analysis_extension=None
     for row in m['adaptations']:
         actual=(root/row['path']).read_bytes()
+        if (row['path']=='rtl/tf_audio/workstation_tf_direct_runtime_service.sv' and
+                b'parameter bit REMOTE_ANALYSIS_ENABLE=0' in actual):
+            from tools.workstation_task3_tf_analysis_provenance import restore as restore_analysis
+            actual,analysis_extension=restore_analysis(root,actual)
         require(digest(actual)==row['adapted_sha256'],'adapted source changed: '+row['path'])
         text=actual.decode()
         for e in reversed(row['edits']):
@@ -54,6 +58,7 @@ def restore_crc_basis(root):
         rows.append(dict(path=row['path'],basis_sha256=digest(prior),adapted_sha256=digest(actual),
                          exact_forward_reverse=True))
     return dict(policy=POLICY,manifest_sha256=MANIFEST_SHA256,source_chain=rows,cache=cache,
+                **({'explicit_remote_analysis_extension':analysis_extension}if analysis_extension is not None else{}),
                 prior_CRC_manifest_bytes_unchanged=True,default_cache_enabled=False,
                 enabled_cache_requires_CRC=True,reconstruction_used_only_for_verification=True,
                 hardware_tested=False),restored

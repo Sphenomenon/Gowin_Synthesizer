@@ -47,6 +47,9 @@ module bt_gatt #(
     input wire seal_hold_i, seal_request_i,
     output wire seal_ready_o, seal_pending_o, seal_done_o, seal_failed_o,
     output wire [3:0] seal_failure_code_o,
+`ifdef WORKSTATION_TASK3_W_PAIRED
+    output wire record_object_idle_o,record_source_needed_o,
+`endif
     output wire [7:0] seal_record_state_o,
     output wire [31:0] seal_recording_id_o, seal_frames_o, seal_crc_o,
     // clk / clk_i raw storage only; object/task/CRC/wire ownership stays here.
@@ -253,6 +256,9 @@ module bt_gatt #(
         .clk(clk),.resetn(resetn),.enable(enable && connected),
         .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
         .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
+`ifdef WORKSTATION_TASK3_W_PAIRED
+        .record_object_idle_o(record_object_idle_o),.record_source_needed_o(record_source_needed_o),
+`endif
         .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),
         .seal_recording_id_o(seal_recording_id_o),.seal_frames_o(seal_frames_o),.seal_crc_o(seal_crc_o),
         .raw_start_valid_o(raw_start_valid_o),

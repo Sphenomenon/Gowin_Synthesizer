@@ -28,7 +28,7 @@ module workstation_ae350_pcm_owner #(
     input wire history_ready_i,history_done_i,
     output wire serial_hold_o,
     output reg [21:0] cancel_epoch_o,
-    output wire selected_o,failed_o,hard_fault_o
+    output wire selected_o,failed_o,hard_fault_o,idle_o
 );
     localparam [31:0] ONE=32'd16777216;
     localparam [3:0] H_IDLE=0,H_REQUEST=1,H_WAIT=2,H_SAMPLE=3,H_FAULT=4;
@@ -186,6 +186,7 @@ module workstation_ae350_pcm_owner #(
     assign selected_o=selected;
     assign failed_o=failed;
     assign hard_fault_o=history_state==H_FAULT;
+    assign idle_o=reset_ni && !armed && !selected && history_state==H_IDLE && queued==0;
     assign serial_hold_o=hold_serial;
     assign history_clear_o=history_state==H_REQUEST;
     assign command_ready_o=reset_ni && cpu_ready_i;

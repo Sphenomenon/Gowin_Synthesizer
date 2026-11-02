@@ -34,6 +34,8 @@ UNSELECTED_WORKER_SOURCES = ('rtl/music/workstation_cnn_ddr_broker.sv',
                              'rtl/music/workstation_cnn_task_service.sv')
 DEPENDENCIES = (TOOL, LEGACY,
     'tools/workstation_task3_tf_storage_selection.py',
+    'tools/workstation_task3_tf_analysis_provenance.py',
+    'rtl/tf_audio/workstation_tf_remote_analysis_v1.adaptation.json',
     'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
     'tools/workstation_tf_sd_crc16_provenance.py',
     'tools/workstation_tf_fat_cache_provenance.py',
