@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-02T19:26:52.657861+00:00",
+  "candidate_identity": "f9eab12c021b9713",
+  "user_code": "D21103D8",
+  "bitstream_sha256": "ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b",
+  "deployment_report": "/Users/sphenicidition/.codex/worktrees/dual-138k-workstation/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SRAM_RESTORE_20261103.json",
+  "deployment_report_sha256": "57c93bd79d186943aa2d4dbfcb20197a9bbf289460309518dd06d63ddd68cb83",
+  "evidence_kind": "direct_user_feedback_after_D8_SRAM_restore",
+  "user_quote": "\u73b0\u5728travler\u76f4\u63a5\u653e\u97f3\u4e50\u4e86",
+  "actual_input": {
+    "reported_TF_file": "travelers.mp3",
+    "display_spelling_reported": "travler",
+    "file_sha256": null,
+    "sample_rate": null
+  },
+  "user_reported_music_playback": true,
+  "instrumented_DAC_capture": false,
+  "model_ready_physical_verified": false,
+  "model_failure_disappearance_confirmed": null,
+  "real_CNN_result_accepted": false,
+  "single_note_guidance_accepted": false,
+  "correct_key_advancement_accepted": false,
+  "reselection_cleanup_accepted": false,
+  "whole_loop_accepted": false,
+  "Flash_written": false,
+  "pending": "Asked user for exact current Push status text and whether a single guide pad is lit; keep current playback state.",
+  "scope": "User reports actual song playback; this confirms observable playback progress only and does not prove model CRC, CNN inference or guide progression."
+}

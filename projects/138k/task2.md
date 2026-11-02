@@ -828,3 +828,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [Restore evidence](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SRAM_RESTORE_20261103.json): under the shared JTAG lock, rescanned FT2CH/channel 0/location 8321 and verified the sealed inputs, gates, bitstream, programmer and rollback hashes. Independent precheck found M26 `D2110137` / status 00022020. Operations were exclusively op0 -> op2 -> op0 -> op74; the same D8 SRAM image was programmed (tool: 7.2 seconds), followed by separate identity readback `D21103D8` / status 00022230. FS SHA256 remains `ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b`. No bitwise SRAM readback and no Flash write; original M26 fallback and the first D8 deployment evidence are preserved.
 
 Rechecked the actual control source: Play (CC85) enters song mode, Left/Right (CC44/45) browse, and the physical Select button (CC48) confirms or returns. Model E loads automatically from configuration ROM to DDR and requires full CRC verification; no USB UART is needed. User was reminded to keep power on. D8 physical model-ready, actual travelers inference/guide advancement, DAC audio, and reselection cleanup remain unaccepted; identity readback alone is not functional acceptance.
+
+
+### 2026-11-03: D8 user reports actual travelers music playback
+
+[User feedback evidence](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_PLAYBACK_FEEDBACK_20261103.json): after the D8 SRAM restore and selection instructions, the user reports that travler now plays music directly. Record this as user-observed song playback, with no instrumented DAC capture and no TF file hash/sample-rate measurement. This does not yet establish the CNN model CRC, an inferred score, single-note guidance, correct-key progression or reselection cleanup.
+
+Inspected the actual compiled playback/TF/Push owners: raw TF mode and recognition mode are separate, and audible playback alone cannot identify which is active. Asked for the current status text below the song name and any single lit guide pad, while preserving the current state. No RTL or bitstream change, no further JTAG operation, and no Flash write.
