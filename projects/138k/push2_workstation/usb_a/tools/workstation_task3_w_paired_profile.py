@@ -13,6 +13,7 @@ from tools import workstation_task3_w_media_profile as media
 POLICY = 'task3_w_paired_exact_top_composition_v1'
 NAME = 'custom138k-workstation-task3-w-paired-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired.sv'
+PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'
 REFERENCE = 'rtl/workstation/workstation_task3_w_paired_top_reference.json'
 BOARD = 'rtl/workstation/workstation_task3_w_paired_board.svh'
 HCI_PROVIDER = 'rtl/workstation/workstation_task3_w_paired_hci.sv'
@@ -29,6 +30,7 @@ SOURCES = tuple(s for s in media.SOURCES if s not in (
     'rtl/workstation/workstation_task3_w_bus_endpoint.sv',
     'rtl/workstation/workstation_task3_phone_command_proxy.sv',
     'rtl/workstation/workstation_task3_phone_command_mux.sv',
+    'rtl/workstation/workstation_task3_phone_window_tx.sv',
     'rtl/workstation/workstation_task3_record_source_gate.sv',
     HCI_PROVIDER,
     'rtl/music/workstation_task3_cnn_stream_w.sv')
@@ -240,14 +242,17 @@ def restore_constraints(selected, evidence):
 
 
 def cnn_memory_provider(provider=PROVIDER):
-    if provider != PROVIDER:
+    if provider not in (PROVIDER, PHONE_PROVIDER):
         raise ValueError('unregistered W paired CNN provider')
     return dict(policy='task3_w_signal_cqt_bsram_v1', USE_DDR_SIGNAL=0,
                 USE_DDR_CQT_COEFF=0, USE_DDR_FRONT_COEFF=1, USE_ALL_DDR=0, provider=provider)
 
 
 def cnn_memory_configuration(configuration):
-    selected = cnn_memory_provider()
+    phone_policy = configuration.get('phone_window_policy')
+    if phone_policy not in (None, 'posted_window5_single_inflight_applied_barrier_v1'):
+        raise ValueError('W paired phone-window configuration drift')
+    selected = cnn_memory_provider(PHONE_PROVIDER if phone_policy else PROVIDER)
     if configuration.get('cnn_memory_policy', selected['policy']) != selected['policy']:
         raise ValueError('W paired CNN memory configuration drift')
     return selected
@@ -303,7 +308,7 @@ def selected_source_evidence(stage, text):
     enabled = [row.get('path') for row in ET.parse(stage / 'Prj1.gprj').find('FileList')
                if row.get('enable') == '1']
     providers = [path for path in enabled if path.startswith('rtl/workstation/workstation_profile_')]
-    if providers != [PROVIDER]:
+    if providers not in ([PROVIDER], [PHONE_PROVIDER]):
         raise ValueError('W paired actual provider must be unique')
     def module(name):
         rows = re.findall(r'\bmodule\s+' + re.escape(name) + r'\b.*?\bendmodule\b', text, re.S)
@@ -320,7 +325,9 @@ def selected_source_evidence(stage, text):
                    '.clk_i(clk_50m),.reset_ni(reset_n),.link_ready_i(task3_pair_link_ready)',
                    'task3_pair_config_select?task3_pair_config_data:'):
         once(top, anchor)
-    once(top, "workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1)) u_task3_bus_endpoint(")
+    selected_phone=providers == [PHONE_PROVIDER]
+    once(top, "localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b" + ('1' if selected_phone else '0') + ";")
+    once(top, "workstation_task3_w_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)) u_task3_bus_endpoint(")
     once(top, "workstation_task3_w_paired #(.CNN_USE_DDR_SIGNAL(1'b0),.CNN_USE_DDR_CQT_COEFF(1'b0)) u_task3_media(")
     for anchor in ('gw138k_apb_cdc u_task3_pcm_control(', '.psel(pcm_select)',
                    '.command_valid_i({clock_command_valid,task3_pcm_valid})',
@@ -385,7 +392,7 @@ def selected_source_evidence(stage, text):
         single_memory_fabric=True, single_raw_store=True, single_C_BLE_recording_object=True,
         full_HCI_Classic_GATT=True, remote_PCM1_and_M_clock=True,
         actual_record_object_idle=True, software_injection_enabled=False,
-        selected_CNN_memory=cnn_memory_provider(), native_CNN_memory_parameters=True,
+        selected_CNN_memory=cnn_memory_provider(providers[0]), native_CNN_memory_parameters=True,
         selected_CNN_configuration=dict(**expected, COARSE_GUIDANCE=True),
         selected_CNN_configuration_origin='explicit paired native 4Hz defaults and W stream instance parameters',
         selected_CNN_parameter_chain=['W stream explicit geometry', 'task owner parameter forwarding',

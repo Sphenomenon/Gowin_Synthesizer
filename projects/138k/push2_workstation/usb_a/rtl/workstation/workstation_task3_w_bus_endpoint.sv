@@ -4,6 +4,7 @@
 // incoming file/recording/phone credit is connected to a physical sample tick.
 module workstation_task3_w_bus_endpoint #(
     parameter bit BLOCK_PCM=1'b0,
+    parameter bit PHONE_WINDOW_BLOCK=1'b0,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -66,12 +67,15 @@ module workstation_task3_w_bus_endpoint #(
     wire analysis_frame=analysis_packet && rx_payload_i[201:200]==1 && rx_payload_i[199:192]==0;
     wire analysis_seal=analysis_packet && rx_payload_i[201:200]==2 && rx_payload_i[199:192]==0;
     wire analysis_cancel=rx_channel_i==`TASK3_PAIR_CH_ANALYSIS_CANCEL && rx_length_i==`TASK3_PAIR_CANCEL_BYTES && rx_payload_i[255:128]==0;
+    localparam [31:0] MEDIA_VERSION=PHONE_WINDOW_BLOCK ? `TASK3_PAIR_PHONE_WINDOW_VERSION:`TASK3_PAIR_MEDIA_VERSION;
+    localparam [31:0] MEDIA_FEATURES=PHONE_WINDOW_BLOCK ? `TASK3_PAIR_PHONE_WINDOW_FEATURES:`TASK3_PAIR_MEDIA_FEATURES;
+    initial if(PHONE_WINDOW_BLOCK && !BLOCK_PCM)$fatal(1,"phone blocks require negotiated block media");
     reg media_cap_ready,media_cap_fault,media_cap_pending;
     reg [31:0] media_cap_age,media_cap_send_age;
     wire media_current=!BLOCK_PCM || (media_cap_ready && !media_cap_fault);
     wire media_cap_packet=BLOCK_PCM && rx_channel_i==`TASK3_PAIR_CH_MEDIA_CAPS && rx_length_i==`TASK3_PAIR_MEDIA_CAPS_BYTES && rx_payload_i[255:224]==0;
     wire media_cap_matches=rx_payload_i[223:96]=={peer_boot_i,local_boot_i,session_i,generation_i} &&
-        rx_payload_i[95:0]=={`TASK3_PAIR_MEDIA_MAGIC,`TASK3_PAIR_MEDIA_VERSION,`TASK3_PAIR_MEDIA_FEATURES};
+        rx_payload_i[95:0]=={`TASK3_PAIR_MEDIA_MAGIC,MEDIA_VERSION,MEDIA_FEATURES};
     wire a_block_packet=BLOCK_PCM && rx_channel_i==`TASK3_PAIR_CH_ANALYSIS_BLOCK;
     wire r_block_packet=BLOCK_PCM && rx_channel_i==`TASK3_PAIR_CH_RECORD_BLOCK;
     reg a_desc_pending,a_seal_pending,a_cancel_pending,a_active,a_protocol_fault,a_wire_sealed;
@@ -166,6 +170,15 @@ module workstation_task3_w_bus_endpoint #(
         .valid_o(mux_valid),.target_o(mux_target),.write_o(mux_write),.address_o(mux_address),.data_o(mux_data),.strobes_o(mux_strobes),
         .ready_i(mux_ready),.response_error_i(mux_error),.response_data_i(mux_response));
     wire phone_arm_ready,phone_arm_tx,phone_cancel_tx,phone_request,phone_request_ready;
+    wire phone_proxy_armed,phone_proxy_fault,phone_window_fault,phone_window_valid,phone_window_ready;
+    wire [255:0] phone_window_payload;
+    wire [5:0] phone_window_length;
+    wire proxy_command_valid,proxy_command_target,proxy_command_write,proxy_command_ready,proxy_response_error;
+    wire [11:0] proxy_command_address;
+    wire [31:0] proxy_command_data,proxy_response_data;
+    wire [3:0] proxy_command_strobes;
+    wire phone_media_live=!PHONE_WINDOW_BLOCK || media_current;
+    assign phone_fault_o=phone_proxy_fault || phone_window_fault;
     wire status_sent_current,phone_arm_tx_ready,phone_cancel_tx_ready;
     wire [31:0] phone_boot,phone_session,phone_generation,phone_sequence,phone_data;
     wire phone_target,phone_write,phone_response_ready;
@@ -175,10 +188,31 @@ module workstation_task3_w_bus_endpoint #(
     wire phone_ack_matches=rx_payload_i[160:65]=={phone_boot,phone_session,phone_generation};
     wire phone_arm_ack=phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_ARM && rx_payload_i[64:2]==0;
     wire phone_response=phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_DATA;
-    wire phone_arm_attempt=live && hci_classic_ready_i && phone_owner_ready_i && status_sent_current &&
+    wire phone_window_ack=PHONE_WINDOW_BLOCK && phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_WINDOW_ACK;
+    generate if(PHONE_WINDOW_BLOCK)begin:g_phone_window
+        workstation_task3_phone_window_tx window_tx(
+            .clk_i(clk_i),.reset_ni(reset_ni),.session_live_i(live && hci_classic_ready_i && phone_owner_ready_i && media_current),
+            .armed_i(phone_proxy_armed && !phone_proxy_fault),.token_i(generation_i),
+            .local_valid_i(mux_valid),.local_target_i(mux_target),.local_write_i(mux_write),.local_address_i(mux_address),
+            .local_data_i(mux_data),.local_strobes_i(mux_strobes),.local_ready_o(mux_ready),
+            .local_response_data_o(mux_response),.local_response_error_o(mux_error),
+            .proxy_valid_o(proxy_command_valid),.proxy_target_o(proxy_command_target),.proxy_write_o(proxy_command_write),
+            .proxy_address_o(proxy_command_address),.proxy_data_o(proxy_command_data),.proxy_strobes_o(proxy_command_strobes),
+            .proxy_ready_i(proxy_command_ready),.proxy_response_data_i(proxy_response_data),.proxy_response_error_i(proxy_response_error),
+            .block_valid_o(phone_window_valid),.block_ready_i(phone_window_ready),.block_payload_o(phone_window_payload),.block_length_o(phone_window_length),
+            .ack_valid_i(rx_valid_i && rx_ready_o && phone_window_ack && phone_ack_matches),
+            .ack_first_sequence_i(rx_payload_i[64:33]),.ack_next_sequence_i(rx_payload_i[31:0]),.ack_error_i(rx_payload_i[32]),
+            .busy_o(),.fault_o(phone_window_fault));
+    end else begin:g_legacy_phone_window
+        assign proxy_command_valid=mux_valid,proxy_command_target=mux_target,proxy_command_write=mux_write;
+        assign proxy_command_address=mux_address,proxy_command_data=mux_data,proxy_command_strobes=mux_strobes;
+        assign mux_ready=proxy_command_ready,mux_response=proxy_response_data,mux_error=proxy_response_error;
+        assign phone_window_fault=0,phone_window_valid=0,phone_window_payload=0,phone_window_length=0;
+    end endgenerate
+    wire phone_arm_attempt=live && phone_media_live && hci_classic_ready_i && phone_owner_ready_i && status_sent_current &&
         phone_arm_ready && attempted_common!=common;
     workstation_task3_phone_command_proxy phone_proxy(
-        .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && hci_classic_ready_i && phone_owner_ready_i),.panic_i(panic_i),
+        .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && hci_classic_ready_i && phone_owner_ready_i && phone_media_live && !phone_window_fault),.panic_i(panic_i),
         .arm_valid_i(phone_arm_attempt),.arm_ready_o(phone_arm_ready),.arm_boot_i(peer_boot_i),.arm_session_i(session_i),.arm_generation_i(generation_i),
         .arm_accepted_o(),.arm_rejected_o(),.arm_tx_valid_o(phone_arm_tx),.arm_tx_ready_i(phone_arm_tx_ready),
         .arm_result_accepted_i(rx_valid_i && rx_ready_o && phone_arm_ack && phone_ack_matches && rx_payload_i[1]),
@@ -186,15 +220,15 @@ module workstation_task3_w_bus_endpoint #(
         .boot_o(phone_boot),.session_o(phone_session),.generation_o(phone_generation),
         .cancel_tx_valid_o(phone_cancel_tx),.cancel_tx_ready_i(phone_cancel_tx_ready),
         .cancel_valid_i(1'b0),.cancel_session_i(32'd0),.cancel_generation_i(32'd0),
-        .cpu_command_valid_i(mux_valid),.cpu_command_target_i(mux_target),.cpu_command_write_i(mux_write),
-        .cpu_command_address_i(mux_address),.cpu_command_data_i(mux_data),.cpu_command_strobes_i(mux_strobes),
-        .cpu_command_ready_o(mux_ready),.cpu_response_data_o(mux_response),.cpu_response_error_o(mux_error),
+        .cpu_command_valid_i(proxy_command_valid),.cpu_command_target_i(proxy_command_target),.cpu_command_write_i(proxy_command_write),
+        .cpu_command_address_i(proxy_command_address),.cpu_command_data_i(proxy_command_data),.cpu_command_strobes_i(proxy_command_strobes),
+        .cpu_command_ready_o(proxy_command_ready),.cpu_response_data_o(proxy_response_data),.cpu_response_error_o(proxy_response_error),
         .request_valid_o(phone_request),.request_ready_i(phone_request_ready),.request_sequence_o(phone_sequence),
         .request_target_o(phone_target),.request_write_o(phone_write),.request_address_o(phone_address),.request_data_o(phone_data),.request_strobes_o(phone_strobes),
         .response_valid_i(rx_valid_i && phone_response && phone_ack_matches),.response_ready_o(phone_response_ready),
         .response_boot_i(rx_payload_i[160:129]),.response_session_i(rx_payload_i[128:97]),.response_generation_i(rx_payload_i[96:65]),
         .response_sequence_i(rx_payload_i[64:33]),.response_error_i(rx_payload_i[32]),.response_data_i(rx_payload_i[31:0]),
-        .armed_o(),.fault_o(phone_fault_o),.failure_code_o(),.completed_commands_o());
+        .armed_o(phone_proxy_armed),.fault_o(phone_proxy_fault),.failure_code_o(),.completed_commands_o());
     always @*begin
         rx_ready_o=reset_ni;
         if(live)begin
@@ -228,26 +262,28 @@ module workstation_task3_w_bus_endpoint #(
     assign phone_arm_tx_ready=normal_slot && phone_arm_tx;
     reg [1:0] normal_turn;
     reg choose_phone,choose_credit,choose_result;
+    wire phone_flow_pending=phone_request || phone_window_valid;
     wire credit_pending=(a_credit_valid && !a_wire_sealed) || r_credit_valid;
     wire result_pending=cnn_terminal_valid_i || cnn_score_valid_i || status_pending;
     always_comb begin
         choose_phone=0;choose_credit=0;choose_result=0;
         if(!BLOCK_PCM)begin choose_phone=phone_request;choose_result=!phone_request;end
         else case(normal_turn)
-            0:if(phone_request)choose_phone=1;else if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;
-            1:if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;else if(phone_request)choose_phone=1;
-            default:if(result_pending)choose_result=1;else if(phone_request)choose_phone=1;else if(credit_pending)choose_credit=1;
+            0:if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;
+            1:if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;
+            default:if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;
         endcase
     end
     wire fair_slot=normal_slot && !phone_arm_tx;
     assign phone_request_ready=fair_slot && choose_phone && phone_request;
+    assign phone_window_ready=fair_slot && choose_phone && !phone_request && phone_window_valid;
     wire credit_slot=fair_slot && choose_credit;
     assign a_credit_ready=BLOCK_PCM && credit_slot && a_credit_valid && !a_wire_sealed && (!r_credit_valid || !prefer_record_credit);
     assign r_credit_ready=BLOCK_PCM && credit_slot && r_credit_valid && (!a_credit_valid || a_wire_sealed || prefer_record_credit);
     assign cnn_terminal_ready_o=fair_slot && choose_result;
     assign cnn_score_ready_o=cnn_terminal_ready_o && !cnn_terminal_valid_i;
     wire take_status=cnn_score_ready_o && !cnn_score_valid_i && status_pending;
-    wire known_shape=analysis_desc || (!BLOCK_PCM && analysis_frame) || analysis_seal || analysis_cancel || record_arm || (!BLOCK_PCM && record_frame) || record_cancel || phone_arm_ack || phone_response || a_block_packet || r_block_packet || media_cap_packet;
+    wire known_shape=analysis_desc || (!BLOCK_PCM && analysis_frame) || analysis_seal || analysis_cancel || record_arm || (!BLOCK_PCM && record_frame) || record_cancel || phone_arm_ack || phone_response || phone_window_ack || a_block_packet || r_block_packet || media_cap_packet;
     wire stale=(record_packet && (!record_matches || (record_frame || record_cancel) && record_wire_common!=record_active_common)) ||
         (phone_ack_packet && !phone_ack_matches) || (media_cap_packet && !media_cap_matches);
     always @(posedge clk_i or negedge reset_ni)begin
@@ -279,7 +315,7 @@ module workstation_task3_w_bus_endpoint #(
                     else begin media_cap_ready<=0;media_cap_fault<=1;end
                 end
                 if(cap_take)media_cap_pending<=0;
-                if(phone_request && phone_request_ready)normal_turn<=1;
+                if((phone_request && phone_request_ready) || (phone_window_valid && phone_window_ready))normal_turn<=1;
                 else if(a_credit_ready || r_credit_ready)normal_turn<=2;
                 else if((cnn_terminal_valid_i && cnn_terminal_ready_o) || (cnn_score_valid_i && cnn_score_ready_o) || take_status)normal_turn<=0;
                 if(a_credit_ready)prefer_record_credit<=1;
@@ -365,7 +401,7 @@ module workstation_task3_w_bus_endpoint #(
                     tx_payload_o[179:0]<={`TASK3_PAIR_KIND_CANCEL,phone_boot,phone_session,phone_generation,82'd0};
                 end else if(cap_take)begin
                     tx_valid_o<=1;tx_channel_o<=`TASK3_PAIR_CH_MEDIA_CAPS;tx_length_o<=`TASK3_PAIR_MEDIA_CAPS_BYTES;
-                    tx_payload_o[223:0]<={local_boot_i,peer_boot_i,session_i,generation_i,`TASK3_PAIR_MEDIA_MAGIC,`TASK3_PAIR_MEDIA_VERSION,`TASK3_PAIR_MEDIA_FEATURES};
+                    tx_payload_o[223:0]<={local_boot_i,peer_boot_i,session_i,generation_i,`TASK3_PAIR_MEDIA_MAGIC,MEDIA_VERSION,MEDIA_FEATURES};
                 end else if(a_fault_take || r_fault_take)begin
                     tx_valid_o<=1;tx_channel_o<=`TASK3_PAIR_CH_MEDIA_FAULT;tx_length_o<=`TASK3_PAIR_MEDIA_FAULT_BYTES;
                     tx_payload_o[36:0]<=a_fault_take?{a_fault_reason,1'b0,a_fault_token}:{r_fault_reason,1'b1,r_fault_token};
@@ -381,6 +417,8 @@ module workstation_task3_w_bus_endpoint #(
                 end else if(phone_request && phone_request_ready)begin
                     tx_valid_o<=1;tx_channel_o<=`TASK3_PAIR_CH_PHONE;tx_length_o<=`TASK3_PAIR_PHONE_BYTES;
                     tx_payload_o[179:0]<={`TASK3_PAIR_KIND_DATA,phone_boot,phone_session,phone_generation,phone_sequence,phone_target,phone_write,phone_address,phone_data,phone_strobes};
+                end else if(phone_window_valid && phone_window_ready)begin
+                    tx_valid_o<=1;tx_channel_o<=`TASK3_PAIR_CH_PHONE_WINDOW;tx_length_o<=phone_window_length;tx_payload_o<=phone_window_payload;
                 end else if(a_credit_ready || r_credit_ready)begin
                     tx_valid_o<=1;tx_channel_o<=`TASK3_PAIR_CH_BLOCK_CREDIT;tx_length_o<=`TASK3_PAIR_CREDIT_BYTES;
                     tx_payload_o[64:0]<=a_credit_ready?{1'b0,a_credit_limit,a_credit_token}:{1'b1,r_credit_limit,r_credit_token};

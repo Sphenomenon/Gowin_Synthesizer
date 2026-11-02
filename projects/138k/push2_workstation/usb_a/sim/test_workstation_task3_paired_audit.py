@@ -2,12 +2,16 @@
 """Reject live retired endpoints and unresolved multi-layer paired bindings."""
 from pathlib import Path
 from types import SimpleNamespace
+import json
 import sys
+import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.workstation_task3_paired_audit import audit_constraint_inventory, TOP
+from tools.workstation_task3_paired_audit import (audit_constraint_inventory,
+    audit_paired_ports, PROFILES, TOP)
 from tools import workstation_task3_paired_board as common
 from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
 
@@ -74,6 +78,97 @@ class PairedConstraintInventory(unittest.TestCase):
             'every_retired_selector_absent'])
         with self.assertRaisesRegex(ValueError, 'remains live'):
             audit_constraint_inventory('', evidence, fixture('middle/live_0_s0'))
+
+
+class PairedSelectedProvider(unittest.TestCase):
+    """Exercise the public port audit with real GPRJ XML and preprocessing."""
+
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.stage = Path(self.temporary.name)
+        pinplan = json.loads((ROOT / common.PINPLAN).read_text())
+        lcd = {row['port']: row['fpga_ball'] for row in pinplan['pins']
+               if row['kind'] == 'programmable'}
+        expected = {port: [ball] for port, ball in lcd.items()
+                    if not port.startswith('lcd_ctp_')}
+        expected['clk_12m288'] = ['K18']
+        self.plan = dict(ports={port: dict(balls=balls) for port, balls in expected.items()})
+        self.write(common.PINPLAN, json.dumps(pinplan))
+        self.write('probes/audio_clock_i2s/probe.json', json.dumps(dict(pins=dict(
+            clk_16m9344='J19', clk_12m288='K18'))))
+        extra = {port: [ball] for port, ball in lcd.items() if port.startswith('lcd_ctp_')}
+        extra['clk_16m9344'] = ['J19']
+        for filename, locations in (('custom_138k.locations.cst', expected),
+                                    ('custom_138k.cst', dict(expected, **extra))):
+            self.write('constraints/' + filename, ''.join(
+                f'IO_LOC "{port}" {",".join(balls)};\n'
+                for port, balls in locations.items()))
+        self.header = f'''module {TOP} #(parameter UNUSED = 0) (
+    input wire clk_12m288, input wire clk_16m9344,
+    inout wire [4:0] lcd_r, inout wire [5:0] lcd_g, inout wire [4:0] lcd_b,
+    inout wire lcd_pclk, inout wire lcd_hsync, inout wire lcd_vsync,
+    inout wire lcd_de, inout wire lcd_bl,
+    inout wire lcd_ctp_rst, inout wire lcd_ctp_sda,
+    inout wire lcd_ctp_scl, inout wire lcd_ctp_int,
+    output wire tmds_clk_n, output wire [2:0] tmds_data_n,
+    output wire ddr_ck_n, inout wire [3:0] ddr_dqs_n
+); endmodule
+'''
+
+    def write(self, relative, value):
+        path = self.stage / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(value)
+
+    def manifest(self, *entries):
+        root = ET.Element('Project')
+        files = ET.SubElement(root, 'FileList')
+        for provider, enabled in entries:
+            ET.SubElement(files, 'File', path=provider, enable=str(enabled))
+        ET.ElementTree(root).write(self.stage / 'Prj1.gprj')
+
+    def test_every_registered_profile_selects_its_actual_enabled_provider(self):
+        # In particular, old paired and CPU48 candidates must not follow the
+        # first same-role registry entry when a new phone policy is registered.
+        providers = {row[2] for row in PROFILES.values()}
+        for name, (role, _, selected) in PROFILES.items():
+            with self.subTest(profile=name):
+                for provider in providers:
+                    self.write(provider, self.header if provider == selected
+                               else '`error disabled_provider_must_not_be_preprocessed\n')
+                self.manifest(*[(provider, int(provider == selected))
+                                for provider in sorted(providers)])
+                result = audit_paired_ports(self.stage, self.plan, role)
+                self.assertEqual(result['compilation_provider'], selected)
+                self.assertEqual(result['paired_LCD_inout_ports'], 25)
+                self.assertFalse(result['hardware_electrical_acceptance'])
+
+    def test_missing_enabled_provider_is_rejected(self):
+        selected = PROFILES['custom138k-workstation-task3-m-paired-v1'][2]
+        self.manifest((selected, 0), ('rtl/unrelated.sv', 1))
+        with self.assertRaisesRegex(ValueError, 'provider missing or mixed'):
+            audit_paired_ports(self.stage, self.plan, 'M')
+
+    def test_multiple_or_duplicate_enabled_providers_are_rejected(self):
+        old = PROFILES['custom138k-workstation-task3-m-paired-v1'][2]
+        phone = PROFILES['custom138k-workstation-task3-m-paired-phone-blocks-v1'][2]
+        worker = PROFILES['custom138k-workstation-task3-w-paired-v1'][2]
+        for entries in (((old, 1), (phone, 1)), ((old, 1), (worker, 1)),
+                        ((old, 1), (old, 1))):
+            with self.subTest(entries=entries):
+                self.manifest(*entries)
+                with self.assertRaisesRegex(ValueError, 'provider missing or mixed'):
+                    audit_paired_ports(self.stage, self.plan, 'M')
+
+    def test_wrong_role_or_unpaired_registered_provider_is_rejected(self):
+        from tools.workstation_profile import PROFILE_REGISTRY
+        for provider in (PROFILES['custom138k-workstation-task3-w-paired-v1'][2],
+                         PROFILE_REGISTRY['custom138k-workstation-task3-m-direct-tf-v1']['provider']):
+            with self.subTest(provider=provider):
+                self.manifest((provider, 1))
+                with self.assertRaisesRegex(ValueError, 'does not match role M'):
+                    audit_paired_ports(self.stage, self.plan, 'M')
 
 
 if __name__ == '__main__':

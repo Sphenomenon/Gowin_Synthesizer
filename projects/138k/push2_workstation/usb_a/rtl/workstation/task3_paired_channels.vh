@@ -17,6 +17,16 @@
 `define TASK3_PAIR_CH_BLOCK_CREDIT 4'd12
 `define TASK3_PAIR_CH_MEDIA_CAPS 4'd13
 `define TASK3_PAIR_CH_MEDIA_FAULT 4'd14
+`define TASK3_PAIR_CH_PHONE_WINDOW 4'd15
+// Explicit phone-window v2 capability, never inferred from legacy block6.
+`define TASK3_PAIR_PHONE_WINDOW_VERSION 32'd2
+`define TASK3_PAIR_PHONE_WINDOW_FEATURES 32'h80080601
+`define TASK3_PAIR_KIND_WINDOW_ACK 2'd3
+// ch15 low96={base_address32,first_word_sequence32,context_token32},
+// followed by 1..5 stereo32 words; len12+4*n; unused high bytes zero.
+// ch7 kind3 body65={first_word_sequence32,error1,next_word_sequence32}.
+// ACK proves real M PCM1 completion. W posted APB writes prove bounded admission;
+// every non-window command is an applied-watermark barrier. No BLE wire change.
 // Block-v1 is explicitly negotiated; legacy typed DATA is then forbidden.
 // ch10/11 low {PCM[n-1]..PCM[0],first_index32,context_token32}; n=1..6,
 // length=8+4*n, unused bytes zero. Full identity remains in descriptor/ARM.

@@ -155,15 +155,21 @@ def complete_closure(n, g, sources):
     """Inventory all endpoints; opaque CPU and RAM ports remain visible."""
     todo, seen, ends, primitives, comb, exports = [n.pin(p, 'Q') for p in sources], set(), {}, {}, set(), {}
     if not hasattr(g, '_recording_top_outputs'):
-        g._recording_top_outputs = {n.canonical('', b): name for name, direction in n.directions[TOP].items()
-            if direction in ('output', 'inout') for b in g.binding_bits('', name)}
+        outputs = defaultdict(set)
+        for name, direction in n.directions[TOP].items():
+            if direction in ('output', 'inout'):
+                for bit in g.binding_bits('', name):
+                    # Keep the public bit label even when buffers canonicalize
+                    # several output ports/bits to the same internal net.
+                    outputs[n.canonical('', bit)].add(bit)
+        g._recording_top_outputs = {net: tuple(sorted(bits)) for net, bits in outputs.items()}
     while todo:
         net = todo.pop()
         if net in seen:
             continue
         seen.add(net)
         if net in g._recording_top_outputs:
-            exports[g._recording_top_outputs[net]] = net
+            exports.update((bit, net) for bit in g._recording_top_outputs[net])
         for p, pin, role in g.fan[net]:
             if role == 'ff':
                 ends[p + '/' + pin] = n.pin(p, 'CLK')

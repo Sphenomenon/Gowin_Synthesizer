@@ -1,0 +1,617 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "branch": "codex/dual-138k-task3",
+  "source_base": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+  "scope": "Explicit bounded phone PCM1 posted window transport; actual paired endpoints/CDC/owner validation and whole-board synthesis; no physical acceptance",
+  "related_PR_integration": "DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+  "design": {
+    "M": "32 ordinary/vector voices, local parameters/ADSR/pitch/mix/DSP, TF on actual M wiring, final sample schedule and HDMI/DAC; remote writes only via original PCM1 owner",
+    "W": "Actual CNN/CQT/Viterbi, Classic HCI/SBC, bounded phone transport, sole C/BLE raw DDR recording object; no direct access to M TF/USB/DDR/HDMI/DAC",
+    "policy": "PHONE_WINDOW_BLOCK defaults off. New explicit paired phone profiles select block PCM and capability version2/features0x80080601; legacy/new mixing cannot arm",
+    "buffers": "W: one building plus one in-flight block, each at most five stereo32 words. M: one applied block. Bounded fail-closed waits; no audio sample backpressure",
+    "barriers": "Posted local ACK means bounded queue admission; actual M completion ACK is an applied RAM watermark; all other original PCM1/clock commands wait for it. Original owner still checks key/bitmap/slot/COMMIT/SELECT",
+    "failure": "Disconnect, wrong context, PANIC, overlap, overflow/malformed data and finite timeout revoke phone branch and stale history; local sample schedule independent",
+    "contract": "rtl/workstation/TASK3_PHONE_WINDOW_CONTRACT.md"
+  },
+  "boards": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-paired-phone-blocks-v1-a8c56437ef9af94e",
+      "configuration_sha256": "3ec242e16ce1022d80b523fda861c8bb41ddab773eb9684a93340b147315ccc7",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "task3_m_remote_CNN_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "task3_m_native_direct_tf_v1",
+        "tf_storage_policy": "direct_sd_crc16_validated_fat_cache_v1",
+        "tf_sdc_revision": 3,
+        "bluetooth_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "recording_policy": "task3_M_final_physical_tap_to_W_single_object_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_applied_barrier_v2",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "ae350_pcm_policy": "task3_m_remote_commands_existing_PCM1_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1"
+      },
+      "locked_sources": 967,
+      "source_snapshot_files": 1025,
+      "staged_inputs": 705,
+      "enabled_inputs": 286,
+      "integration": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-phone-blocks-prepare-v5/integration_inputs.json",
+        "sha256": "c52aada11a92e27330dfec14d57874dcb2920d978f629a19d58bb94074cf9f9b"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-phone-blocks-prepare-v5/workstation_profile.json",
+        "sha256": "ec03b4bbe7291d18f28333a047d037d18688c9cf95a5bb4bf02b2a914a36139f"
+      },
+      "actual_synthesis_run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_synthesis_run.json",
+        "sha256": "792606a421bf82e68720e11f1149bc516c40a14114b752ce6a772edd7dc47b4a"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_v2_v5_synthesis_reuse.json",
+        "sha256": "a01a55cd877538fa1c22d3e02d6e0754e95c3069ed5e3be302b92358b7a3fb48"
+      },
+      "synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_synthesis_audit_v5.json",
+        "sha256": "1229224d8678a2b16ba6d1f671e5cab21ddf04de4851b20ae742e9583ba9997d"
+      },
+      "audit_process": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_audit_run_v5.json",
+        "sha256": "fe8d20950244901bc2b7c8dcda81a18760b5fb5fa250f8d84877c2ee6cf900f7"
+      },
+      "resources": {
+        "Register": 56599,
+        "Lut": 68233,
+        "Alu": 27700,
+        "Bsram": 209,
+        "Ssram": 766,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "resource_count_kind": "synthesis equivalents, not routed physical primitives",
+      "phone_window_mapping": {
+        "u_task3_m_endpoint/g_phone_window.window_rx": {
+          "Register": 344,
+          "Lut": 489,
+          "Alu": 263,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        }
+      },
+      "gates_passed": 17,
+      "gates_total": 19,
+      "failed_gates": {
+        "M_paired_release_CDC": {
+          "passed": false,
+          "error": "M paired release audit: paired final release complete consumer inventory changed: cpu-source"
+        },
+        "native_held_handshakes": {
+          "passed": false,
+          "error": "task3 peripheral release audit: payload FF CE differs from its local request/acknowledge commit CE"
+        }
+      },
+      "synthesis_clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 42.644,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "usb2_ulpi_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 72.886,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "clk_12m288",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 275.331,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "clk_16m9344",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 275.331,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_managed/runtime/clocks/dac_mclk_d",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 136.705,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 59.634,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 65.742,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1338.315,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 267.023,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1455.604,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 201.532,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+          "required_mhz": 148.5,
+          "synthesis_estimated_mhz": 196.155,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "firmware": {
+        "ram_bytes": 49152,
+        "firmware_bytes": 21380,
+        "static_ram_end": 27228,
+        "stack_margin_bytes": 21924,
+        "rom_sha256": "718752a5c9e7aac767402c7e2a8fb3b6c0ba90a1239f443991237684b3db63b2"
+      },
+      "ae350_installed_rom": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/m-phone-blocks-prepare-v5/workstation/Prj1/firmware/boot.mem",
+        "sha256": "9114a7d51b6511ed4bd778401796b590fd746103753669414302abd2e9e6d0e0",
+        "parent_baseline_sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9",
+        "project_relative_path": "firmware/boot.mem"
+      },
+      "validation_stage": "prepared_verified; actual v2 whole-board synthesis explicitly reused after hardware-input equality for v5 audit-only changes",
+      "bitstream": null,
+      "usercode": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "routed_CDC": null,
+      "PLL_physical_acceptance": null,
+      "control_to_sound_latency": null,
+      "hardware_tested": false,
+      "deployment_allowed": false,
+      "phone_window_mapping_receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_window_mapped.json",
+        "sha256": "8173151c92df628e08f1da2ce0b1931824830eadb306e4bb70706d9daba8ca0f"
+      }
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-paired-phone-blocks-v1-86b7bda71d161a30",
+      "configuration_sha256": "63ea03a9f3e9d89765b9a129784d2efff7e53057c351d2d8af9664ea87b3631b",
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_media_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 131072,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "worker_25k_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_applied_barrier_v2",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1"
+      },
+      "locked_sources": 1061,
+      "source_snapshot_files": 1095,
+      "staged_inputs": 690,
+      "enabled_inputs": 199,
+      "integration": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-phone-blocks-prepare-v5/integration_inputs.json",
+        "sha256": "c721c584d26efc6753817dd6ee5c7b494e94423ce50f91d41a7f7a24f71c2024"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-phone-blocks-prepare-v5/workstation_profile.json",
+        "sha256": "756c329ada6a8e1d6e1425e110744147cbef1c0c96fa1659d1e607c6106332a4"
+      },
+      "actual_synthesis_run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_synthesis_run.json",
+        "sha256": "7b74b4d9c8b1e96a0f831a53fcaee03add0d006694cc3fc67e6978beefb27e68"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_v2_v5_synthesis_reuse.json",
+        "sha256": "dcfca426f79f992ec3f9cdca7ffb4b4aefd375c858bfb048d5f58fe391d24410"
+      },
+      "synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_synthesis_audit_v5.json",
+        "sha256": "a4bf323dbb42beed8db88cfcad275d36b56739a95abb476a27420d3932574705"
+      },
+      "audit_process": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_audit_run_v5.json",
+        "sha256": "aa4191806bf9a55d2dc7b1ac4089a6844270ea63b08b8c4357f8236feeb53c53"
+      },
+      "resources": {
+        "Register": 48475,
+        "Lut": 61605,
+        "Alu": 16077,
+        "Bsram": 308,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "resource_count_kind": "synthesis equivalents, not routed physical primitives",
+      "phone_window_mapping": {
+        "u_task3_bus_endpoint/g_phone_window.window_tx": {
+          "Register": 696,
+          "Lut": 736,
+          "Alu": 170,
+          "Bsram": 0,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        }
+      },
+      "gates_passed": 16,
+      "gates_total": 17,
+      "failed_gates": {
+        "native_held_handshakes": {
+          "passed": false,
+          "error": "paired W CDC audit: W shared PLL/control release complete inventory changed"
+        }
+      },
+      "synthesis_clock_estimates": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 43.888,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "usb2_ulpi_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 68.437,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "clk_12m288",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 77.754,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "clk_16m9344",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 77.754,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_managed/runtime/clocks/dac_mclk_d",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 77.754,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 76.8,
+          "synthesis_estimated_mhz": 65.193,
+          "estimate_meets_requirement": false
+        },
+        {
+          "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 48.0,
+          "synthesis_estimated_mhz": 69.498,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+          "required_mhz": 400.0,
+          "synthesis_estimated_mhz": 1338.315,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+          "required_mhz": 50.0,
+          "synthesis_estimated_mhz": 280.426,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 1455.604,
+          "estimate_meets_requirement": true
+        },
+        {
+          "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+          "required_mhz": 100.0,
+          "synthesis_estimated_mhz": 201.532,
+          "estimate_meets_requirement": true
+        }
+      ],
+      "firmware": {
+        "firmware_bytes": 19400,
+        "static_ram_end": 25204,
+        "stack_margin_bytes": 40332,
+        "rom_sha256": "95812eb843b3cfa78de56c3a8b649d2ee3803b7786e0bdef9706c447edad98db"
+      },
+      "ae350_installed_rom": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-phone-blocks-prepare-v5/workstation/Prj1/firmware/boot.mem",
+        "sha256": "d5082e31e1845268b80a7362c0dfb81f0e9dbd5e569fa782782929f44f27a719",
+        "parent_baseline_sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9",
+        "project_relative_path": "firmware/boot.mem"
+      },
+      "validation_stage": "prepared_verified; actual v2 whole-board synthesis explicitly reused after hardware-input equality for v5 audit-only changes",
+      "bitstream": null,
+      "usercode": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "routed_CDC": null,
+      "PLL_physical_acceptance": null,
+      "control_to_sound_latency": null,
+      "hardware_tested": false,
+      "deployment_allowed": false,
+      "phone_window_mapping_receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_window_mapped.json",
+        "sha256": "8bc46ce844ade36fca7d2d5d4323d545ba20b9f55fbb0ae3737a3a7ce34d5860"
+      }
+    }
+  },
+  "source_checkpoint_notes": [
+    "M inherits the reviewed explicit CPU48 source policy; the old 19 locks and candidates remain immutable.",
+    "W uses a new current source checkpoint, including reviewed PR default CPU RAM generate, DDR BIST/loaders and USB status changes as well as phone RTL; it is not described as phone-only versus frozen W v8.",
+    "The final v5 candidates are newly prepared/verified. Actual synthesis belongs to v2. Every hardware input, enabled manifest, Tcl, constraints and ROM matches exactly; only named uncompiled audit tools changed. No second independent synthesis is claimed."
+  ],
+  "verification": {
+    "final_prepare_verify": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/final_prepare_verify_v5.json",
+      "sha256": "43e6ce71cd5856d07ac6c3f61d7519ff3111273944f88934148d593c9905277c"
+    },
+    "final_root_and_role_negative_controls": {
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/m-phone-provider-propagation-v1/verification.json",
+        "sha256": "d0de51c74009b6a087061379464578a1fd27f11179881abe04d1bf40f55f330e"
+      },
+      "tests": 5,
+      "negative_controls": 85
+    },
+    "legacy_DIRECT_root_and_official_primitives": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-root-reset-review-v1/direct-regression.json",
+      "sha256": "093dbabda35f1367ce8ef5ef60539cbba801fe080dc3a3b27e4aeed33ec71b5c"
+    },
+    "post_provider_sources": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/post_provider_sources.json",
+      "sha256": "d2eb56777ec3729c44652626c712a295292ad9ec04401700c03861f2abb4d52e"
+    },
+    "window_contract": {
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/window-contract-v1/verification.json",
+        "sha256": "d8b8b054a76f85c0aee7dc6b04230841c499f35e0bcce81ec6412a791adbf787"
+      },
+      "checks": 363,
+      "model_owner_words": 19,
+      "blocks": 13,
+      "proxy_commands": 8,
+      "negative_cases": 19,
+      "mutants_rejected": 4
+    },
+    "overlap_lock": {
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/overlap-v1/verification.json",
+        "sha256": "60f511c9d8855e44aae9b5472cbd6f1967b8b7be6e2b99dfebbe57aa13cdefa3"
+      },
+      "checks": 75,
+      "cases": 6,
+      "mutants_rejected": 2
+    },
+    "actual_endpoints_CDC_owner": {
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-real-owner-v7/verification.json",
+        "sha256": "bab4101ef08a92c06381942427f684bd2cffce6a2774c6db659fdd18aa04de56"
+      },
+      "checks": 603,
+      "applied_words": 512,
+      "blocks": 104,
+      "exact_nonzero_stereo_samples": 160,
+      "mixed_policy_rejection_checks": 1,
+      "scope": "actual M/W endpoints, policy-hash-bound actual prepared held APB CDC and original PCM1 owner; no LCD PHY/DSP/DAC/firmware/RF"
+    },
+    "integration_lint": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-root-lint-v1/verification.json",
+      "sha256": "da3190e91e0595ca7a73d57875cb88e9da7bef08b80a7763ce75841a0aa9c30b"
+    },
+    "legacy_block_endpoints": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/legacy-pcm-blocks-v2/verification.json",
+      "sha256": "335265639253eb34eb98868fe4c57ed15ce20900906dcd0ab4b7e731cd98f858"
+    },
+    "legacy_bus_endpoints": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/legacy-paired-bus-v2/verification.json",
+      "sha256": "a1f54f0ab81690c1fbd7013d16cbe9fe5922e157f57b3be11e5ff0f78e50b0b4"
+    },
+    "source_regressions_before_final_auditor_fixes": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/final-source-regressions-v1/verification.json",
+      "sha256": "4d2c635a6192daa4ecc600010a2f9de1c741caf33a4c644985c867f74c437760"
+    },
+    "final_regressions": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/final-source-regressions-v2/verification.json",
+      "sha256": "6383019b1dcc511e5898b906feacf2e3aebebd19f8372922f482f3c37d83bf19"
+    },
+    "paired_preservation_review": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-blocks-prepare-review-v1/verification.json",
+      "sha256": "0169a34fac3310b54bf15931817f9c0674b32a66e20197a136f177ca170f1215"
+    },
+    "W_ROM_diagnosis": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/w-rom-generate-diagnosis-v1/verification.json",
+      "sha256": "cd3683635b5fa9a74dbaf1c7046be80205bf9080dfa7ad3d1d4dd1312f16e3c0"
+    },
+    "output_inventory_fix": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/pr-integration-release-review-v1/output_inventory_fix_validation.json",
+      "sha256": "f0fdaaf3638a20e368d8a57632f81ab82fad8be460c3bff02b759c15f45b250d"
+    },
+    "held_CE_semantic_diagnosis": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/m-phone-provider-propagation-v1/payload_ce_diagnosis.json",
+      "sha256": "3c8c4dba7e78fdb95899b675751c4b97eaf5a5b85f22258249969bfece4705d9"
+    }
+  },
+  "audit_fixes": [
+    "Port audit selects the unique actual enabled GPRJ provider; rejects missing, mixed, duplicate, wrong-role or unpaired providers. All five old/new paired profile choices have real XML/preprocessing regression.",
+    "New providers bind exact provider/include bytes, exact paired common/role inverse and the real root source. Actual 35 state-bit reset-inclusive BDD proofs remain required; no copied consumer seal is refreshed.",
+    "The 64KiB ROM gate now accepts exactly the complete old or g_ram64 32-SDPB inventory. It checks structural mapping and all 16384 initialized words, rejecting corruptions; CPU48 remains separate.",
+    "Complete-closure top outputs now retain every public vector bit and aliases. Old M CPU48 LCD output inventory corrected from two bus labels to seven bits; old consumer hashes still fail and have not been refreshed.",
+    "M phone provider classification propagates to paired release, held, peripheral and receipt proofs only after the original exact root validation. M now reaches actual historical cpu-source complete-consumer rejection; W remains excluded. No seal or consumer check changes."
+  ],
+  "communication": {
+    "physical_link": "LCD same network number M.n -> W.n; roles complementary and default high impedance; electrical/voltage/direction/clock acceptance pending",
+    "TF": "physically on M",
+    "bluetooth": "preferred HCI/SBC on W; no physical radio throughput/latency acceptance",
+    "frame_bytes": 52,
+    "phone_full_five_word_payload_Bps_per_direction": 499200,
+    "phone_original_128_frame_slots_Bps_per_direction": 507000,
+    "phone_original_slots_packets_per_second_per_direction": 9750,
+    "analysis_plus_record_block6_M_to_W_Bps": 832000,
+    "combined_M_to_W_Bps": 1339000,
+    "combined_M_to_W_packets_per_second": 25750,
+    "excluded": [
+      "credit/control/status/maintenance",
+      "all other PCM1/clock RPCs",
+      "real firmware polling and APB wait",
+      "LCD serialization/ACK/CDC worst-case delay"
+    ],
+    "realistic_three_flow_model_passed": false,
+    "physical_throughput": null,
+    "physical_RTT": null,
+    "jitter": null,
+    "sustained_phone_capability": false,
+    "measured_total_delay_capability": false
+  },
+  "preservation": {
+    "old_profile_locks_preserved": 19,
+    "receipt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/old_locks_before.json",
+      "sha256": "82ded1ab7f1e0e1d0782e5d4e1020c0ee29f0737b2955862215d44f75d33cd49"
+    },
+    "old_profiles_and_task2_candidates_preserved": true,
+    "single_board_and_other_worktrees_not_modified": true,
+    "legacy_defaults_preserved": true,
+    "old_release_seals_not_refreshed": true,
+    "clocks_and_false_paths_not_relaxed": true,
+    "second_recording_backend_not_restored": true
+  },
+  "failures_and_limits": {
+    "intermediate_synthesis_audit_v2": {
+      "M": {
+        "passed": 12,
+        "total": 19
+      },
+      "W": {
+        "passed": 10,
+        "total": 17
+      }
+    },
+    "historical_consumer_closure": "M cpu-source and W shared PLL/control complete-consumer inventories remain rejected. M held proof additionally rejects direct CE net equality: actual mapping folds source request commit into D with CE=VCC, while payload CE is conditional. Independent reset-inclusive BDD proves the local request XOR payload_CE transition for performance and CPU sources, each over 19 inputs; the full handshake/consumer audit remains rejected. Full DIRECT TF source CDC is incomplete; root/ROM or local transition proofs do not imply complete source or physical CDC.",
+    "timing": "50MHz and 76.8MHz synthesis estimates remain below targets; no P&R/STA/physical resource result.",
+    "tests": "Initial integration bench v1-v5 failures retained. Final v7 covers bounded writes and short exact output only; not real firmware continuous refill, HCI/SBC, D effects, radio or DAC acceptance.",
+    "hardware": "Target boards assumed disconnected; the connected 138K belongs to another branch. No discovery/JTAG/UART/device action, SRAM or Flash write occurred.",
+    "intermediate_audit_v4": {
+      "M": {
+        "receipt": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/M_synthesis_audit_v4.json",
+          "sha256": "8079c76e15ab7bac1be12253b6855bd8af35d1d16c3875b8c9747d9f1362fe73"
+        },
+        "failed_gates": {
+          "M_paired_release_CDC": {
+            "passed": false,
+            "error": "M paired release audit: verified explicit paired M root required"
+          },
+          "native_held_handshakes": {
+            "passed": false,
+            "error": "task3 native held audit: local release early-stage extra consumer/bypass"
+          }
+        }
+      },
+      "W": {
+        "receipt": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/phone-window-stage/W_synthesis_audit_v4.json",
+          "sha256": "08432c1077ee291c62f04c31b49ae14b3c3256905f5290470b33dfae0735afc9"
+        },
+        "failed_gates": {
+          "native_held_handshakes": {
+            "passed": false,
+            "error": "paired W CDC audit: W shared PLL/control release complete inventory changed"
+          }
+        }
+      }
+    },
+    "root_test_fixture_correction": "The first wrong-role fixture lacked opposite-board exact provider/reference inputs and was rejected for missing bytes. Final test uses explicitly provided opposite-stage inputs, reaches the paired inverse role proof, and includes 85 actual destructive controls. Intermediate v3/v4 candidates remain frozen; final v5 is distinct."
+  },
+  "next_steps": [
+    "Promote the exact mapped request-D/conditional-payload-CE transition proof into the held audit with destructive controls, then complete fresh semantic consumer inventories and full DIRECT TF source CDC without reusing old seals.",
+    "Run realistic three-flow LCD model using actual phone firmware polling/barriers and independent TF analysis/recording queues; verify congestion/cancellation and worst-case deadlines.",
+    "Use real critical-path/physical resource evidence to decide further heavy effects/FFT/display compute partition; keep 32 voices and existing ordinary/vector capabilities.",
+    "When target boards are identified and connected, check electrical link, measure throughput/RTT/jitter and necessary SRAM identity/readback; test TF/CNN/Push/recording/download/phone D and physical DAC/control-to-sound latency. Flash needs separate authorization."
+  ],
+  "rollback": {
+    "branch_parent": "f96df276",
+    "M_CPU48": "custom138k-workstation-task3-m-paired-cpu48-v1-4fbaadf81abc4c5f",
+    "W_frozen_v8": "custom138k-workstation-task3-w-paired-v1-4412228db9c7893d",
+    "phone_policy_default": false,
+    "original_candidates_untouched": true,
+    "hardware_not_changed": true
+  }
+}

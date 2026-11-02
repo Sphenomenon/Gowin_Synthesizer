@@ -10,7 +10,7 @@ import json
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER,
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER, M_PHONE_PROVIDER,
     validate_root_publisher)
 
 POLICY = 'task3-direct-peripheral-real-release-v1'
@@ -159,7 +159,7 @@ def audit_peripheral_releases(n, *, root):
             'verified task3 real-root startup proof required')
     root_register = root.get('root_register')
     validate_root_publisher(n, g, root)
-    paired = root['selected_provider'] == PAIRED_PROVIDER
+    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER)
     audio_publisher = g.register('u_audio_clock', 'audio_reset_pipe', 3)
     audio_reset = n.pin(audio_publisher, 'Q')
     require(audio_reset == n.canonical('', 'audio_reset_n') and

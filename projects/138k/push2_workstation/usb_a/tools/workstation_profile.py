@@ -237,6 +237,22 @@ PROFILE_REGISTRY[TASK3_M_CPU48_NAME]=dict(_parent,
     integration_identity='custom138k-native-task3-m-paired-cpu48-revision1')
 
 
+# Phone-window posting is a separate paired policy and wire capability.
+TASK3_M_PHONE_BLOCKS_NAME='custom138k-workstation-task3-m-paired-phone-blocks-v1'
+TASK3_W_PHONE_BLOCKS_NAME='custom138k-workstation-task3-w-paired-phone-blocks-v1'
+for _name,_parent_name,_role in (
+    (TASK3_M_PHONE_BLOCKS_NAME,TASK3_M_CPU48_NAME,'m'),
+    (TASK3_W_PHONE_BLOCKS_NAME,TASK3_W_PAIRED_NAME,'w')):
+    _parent=PROFILE_REGISTRY[_parent_name]
+    PROFILE_REGISTRY[_name]=dict(_parent,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_phone_blocks_v1.json',
+        provider='rtl/workstation/workstation_profile_task3_'+_role+'_paired_phone_blocks.sv',
+        configuration=dict(_parent['configuration'],
+            interboard_media_policy='task3_pcm_block6_credit8_phone_window5_applied_barrier_v2',
+            phone_window_policy='posted_window5_single_inflight_applied_barrier_v1'),
+        integration_identity='custom138k-native-task3-'+_role+'-paired-phone-blocks-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

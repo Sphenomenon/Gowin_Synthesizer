@@ -286,22 +286,73 @@ def check_ports(stage, plan):
 
 
 def check_rom(stage, netlist_text, expected_sha256):
+    """Prove all mapped words for either explicit 64 KiB CPU RAM hierarchy.
+
+    The RAM48 source added a named generate around the unchanged default RAM.
+    Accept only the complete legacy inventory or the complete g_ram64 inventory;
+    a substring/defparam match must not certify a mixed or uninstantiated RAM.
+    """
     modules = re.findall(r'^module\s+workstation_usb2_cpu_bus\s*\((.*?)^endmodule\b', netlist_text, re.M | re.S)
     if len(modules) != 1:
         raise ValueError('native CPU bus module missing or duplicated')
+    from tools.workstation_synthesis_netlist import SynthesisNetlist
+    native = SynthesisNetlist('module workstation_usb2_cpu_bus (' + modules[0] + '\nendmodule\n',
+                              'workstation_usb2_cpu_bus')
+    memories = {name: cell for name, cell in native.cells.items() if cell['kind'] == 'SDPB'}
+    inventories = {
+        prefix: {f'{prefix}memory_{byte}_{prefix}memory_{byte}_0_{bit}_s'
+                 for byte in range(4) for bit in range(8)}
+        for prefix in ('', 'g_ram64.')
+    }
+    selected = [prefix for prefix, names in inventories.items() if set(memories) == names]
+    if len(selected) != 1:
+        raise ValueError('native CPU bit-plane inventory changed')
+    prefix = selected[0]
     planes = []
+    write_enables = []
     for byte_lane in range(4):
+        byte_enables = set()
         for bit_lane in range(8):
-            instance = f'memory_{byte_lane}_memory_{byte_lane}_0_{bit_lane}_s'
+            instance = f'{prefix}memory_{byte_lane}_{prefix}memory_{byte_lane}_0_{bit_lane}_s'
+            cell = memories[instance]
+            parameters, ports = cell['parameters'], cell['ports']
             for port in (0, 1):
-                if modules[0].count(f'defparam {instance}.BIT_WIDTH_{port}=1;') != 1:
+                if parameters.get(f'BIT_WIDTH_{port}') != '1':
                     raise ValueError('native CPU bit-plane mapping changed')
-            chunks = re.findall(r'defparam ' + instance + r"\.INIT_RAM_([0-9A-Fa-f]{2})=256'h([0-9A-Fa-f]+);", modules[0])
-            if (len({index for index, _ in chunks}) != len(chunks) or
-                    any(int(index, 16) >= 64 or len(value) > 64 for index, value in chunks)):
-                raise ValueError('native CPU ROM initialization chunks changed')
+            expected_ports = dict(CLKA='usb_clk', CLKB='usb_clk',
+                ADA='data_address[15:2]', ADB='memory_address[13:0]',
+                CEB='VCC', OCE='GND', RESET='GND',
+                BLKSELA='{GND,GND,GND}', BLKSELB='{GND,GND,GND}',
+                DI='{' + ','.join(['GND']*31 + [f'data_write_data[{8*byte_lane+bit_lane}]']) + '}')
+            if any(re.sub(r'\s+', '', ports.get(key, '')) != value
+                   for key, value in expected_ports.items()):
+                raise ValueError('native CPU RAM clock/address/data connections changed')
+            output = re.sub(r'\s+', '', ports.get('DO', ''))
+            read_name = r'\\g_ram64\.read_q' if prefix else r'memory_read_q'
+            if not re.fullmatch(r'\{DO(?:_\d+)?\[31:1\],' + read_name +
+                                r'(?:_0)?\[' + str(8*byte_lane+bit_lane) + r'\]\}', output):
+                raise ValueError('native CPU RAM output bit location changed')
+            byte_enables.add(ports.get('CEA', ''))
+            if (parameters.get('READ_MODE') != "1'b0" or parameters.get('RESET_MODE') != '"SYNC"' or
+                    any(parameters.get(f'BLK_SEL_{port}') != "3'b000" for port in (0, 1))):
+                raise ValueError('native CPU RAM read/block mode changed')
+            chunks = []
+            for label, value in parameters.items():
+                if label.startswith('INIT_RAM_'):
+                    index = re.fullmatch(r'INIT_RAM_([0-9A-Fa-f]{2})', label)
+                    literal = re.fullmatch(r"256'h([0-9A-Fa-f]{1,64})", value)
+                    if not index or not literal or int(index[1], 16) >= 64:
+                        raise ValueError('native CPU ROM initialization chunks changed')
+                    chunks.append((index[1], literal[1]))
+            if len({int(index, 16) for index, _ in chunks}) != len(chunks):
+                raise ValueError('native CPU ROM initialization chunks duplicated')
             value = sum(int(value, 16) << (int(index, 16) * 256) for index, value in chunks)
             planes.append(value.to_bytes(2048, 'little'))
+        if len(byte_enables) != 1 or byte_enables.intersection({'', 'VCC', 'GND'}):
+            raise ValueError('native CPU byte write-enable grouping changed')
+        write_enables.extend(byte_enables)
+    if len(set(write_enables)) != 4:
+        raise ValueError('native CPU byte write-enable groups aliased')
     rom = stage / 'usb2_cpu.hex'
     words = [int(word, 16) for word in rom.read_text().splitlines()]
     if len(words) != 16384 or sha(rom) != expected_sha256:

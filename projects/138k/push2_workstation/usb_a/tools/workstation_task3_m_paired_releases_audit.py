@@ -10,7 +10,7 @@ import fnmatch
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    PAIRED_PROVIDER, validate_root_publisher)
+    PAIRED_PROVIDER, M_PHONE_PROVIDER, validate_root_publisher)
 from tools.workstation_task3_peripheral_releases_audit import (
     closure_identity, zero_async_ff, PAIRED_CPU_SOURCE_CLOSURE,
     PAIRED_CPU_DESTINATION_CLOSURE)
@@ -40,7 +40,7 @@ def require(ok, message):
 
 
 def audit_paired_release_sdc(n, sdc, *, root):
-    require(root.get('selected_provider') == PAIRED_PROVIDER and
+    require(root.get('selected_provider') in (PAIRED_PROVIDER, M_PHONE_PROVIDER) and
             root.get('all_state_assignments_proven') is True and
             root.get('actual_state_bits') == 35, 'verified explicit paired M root required')
     g = Graph(n)
@@ -115,7 +115,7 @@ def audit_paired_release_sdc(n, sdc, *, root):
             deferred_business_primitive_pins=len(final['primitive_endpoints']),
             deferred_business_top_outputs=len(final['top_output_endpoints']),
             downstream_business_function_proven=False))
-    return dict(policy=POLICY, selected_provider=PAIRED_PROVIDER,
+    return dict(policy=POLICY, selected_provider=root['selected_provider'],
         actual_root_register=root['root_register'], root_q=root_q,
         actual_release_chains=rows, distinct_release_FFs=12,
         exact_installed_release_CLEAR_pins=12,

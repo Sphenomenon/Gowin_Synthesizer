@@ -9,7 +9,7 @@ import re
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER,
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER, M_PHONE_PROVIDER,
     validate_root_publisher)
 
 POLICY = 'task3-direct-receipt-local-mailbox-v1'
@@ -340,7 +340,7 @@ def audit_direct_receipt(n, *, root):
     source_ce = n.pin(request, 'CE')
     require(all(n.pin(p, 'CE') == source_ce for p in payload),
             'source payload and request do not commit on the same CE')
-    paired = root['selected_provider'] == PAIRED_PROVIDER
+    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER)
     paired_lifecycle = None
     if paired:
         paired_lifecycle = _paired_source_lifecycle(n, g, root, ff=ff, next_proof=next_proof,

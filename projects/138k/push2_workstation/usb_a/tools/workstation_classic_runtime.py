@@ -127,7 +127,7 @@ def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_wo
     """An opt-in role, never inferred from old W media/demo selection."""
     from tools import workstation_task3_w_paired_profile as paired
     if (not media_worker or headless_worker or physical_rom_bytes!=131072 or
-        selected_provider not in (None,paired.PROVIDER)):
+        selected_provider not in (None,paired.PROVIDER,paired.PHONE_PROVIDER)):
         raise ValueError('paired W requires its explicit full media/ROM128 provider')
     return paired
 
@@ -137,7 +137,7 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
             headless_worker=headless_worker,media_worker=media_worker)
-        if selected_provider!=helper.PROVIDER:raise ValueError('paired W actual provider omitted')
+        if selected_provider not in (helper.PROVIDER,helper.PHONE_PROVIDER):raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
         provider,policy=selected_provider,helper.FIRMWARE_POLICY
     elif selected_provider is not None:
@@ -195,7 +195,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
             headless_worker=headless_worker,media_worker=media_worker)
-        if selected_provider!=helper.PROVIDER:raise ValueError('paired W actual provider omitted')
+        if selected_provider not in (helper.PROVIDER,helper.PHONE_PROVIDER):raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
         provider,policy=selected_provider,helper.FIRMWARE_POLICY
     elif selected_provider is not None:

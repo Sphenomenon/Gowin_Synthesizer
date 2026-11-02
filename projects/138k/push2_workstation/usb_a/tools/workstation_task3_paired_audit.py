@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-phone-blocks-v1': ('M', 'custom138k-native-task3-m-paired-phone-blocks-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired_phone_blocks.sv'),
+    'custom138k-workstation-task3-w-paired-phone-blocks-v1': ('W', 'custom138k-native-task3-w-paired-phone-blocks-revision1',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'),
     'custom138k-workstation-task3-m-paired-cpu48-v1': ('M', 'custom138k-native-task3-m-paired-cpu48-revision1',
         'rtl/workstation/workstation_profile_task3_m_paired.sv'),
     'custom138k-workstation-task3-m-paired-v1': ('M', 'custom138k-native-task3-m-paired-revision1',
@@ -228,8 +232,18 @@ def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
 def audit_paired_ports(stage, plan, role):
     """Extend the exact old location authority by the four reserved CTP pads."""
     from tools import workstation_task3_paired_board as common
+    from tools.workstation_profile import PROFILE_REGISTRY
     stage = Path(stage)
-    provider = PROFILES[next(name for name, row in PROFILES.items() if row[0] == role)][2]
+    require(role in ('M', 'W'), 'unknown paired port role')
+    files = ET.parse(stage / 'Prj1.gprj').find('FileList')
+    require(files is not None, 'paired GPRJ file list missing')
+    registered = {row['provider'] for row in PROFILE_REGISTRY.values()}
+    selected = [row.get('path') for row in files
+                if row.get('enable') == '1' and row.get('path') in registered]
+    require(len(selected) == 1, 'paired GPRJ provider missing or mixed')
+    provider = selected[0]
+    require(provider in {row[2] for row in PROFILES.values() if row[0] == role},
+            'paired GPRJ provider does not match role ' + role)
     result = subprocess.run(['iverilog', '-g2012', '-DSYNTHESIS', '-E', '-I', str(stage),
         '-o', '-', provider], cwd=stage, capture_output=True, text=True, timeout=30)
     require(result.returncode == 0, 'paired selected provider preprocessing failed: ' + result.stderr)

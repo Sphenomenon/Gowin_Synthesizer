@@ -16,12 +16,29 @@ POLICY = 'task3-direct-real-root-startup-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'
 ROOT_SOURCE = 'src/platform/reset_release.v'
 TOP_SOURCE = 'rtl/workstation/gw138k_push_workstation_top.v'
+UNPROFILED_PROVIDER = 'rtl/workstation/workstation_custom_138k_top.sv'
 ROOT_SOURCE_SHA256 = 'b5d153b9b0660e3ea9db722d41662a4a7f6f151bc40275b81bfedb15c4e9eac1'
 PROVIDER_SHA256 = '1a857e684cde13a83e598cf5d183858ba57e224d46048623974fa6b3716be071'
 PAIRED_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired.sv'
 PAIRED_PROVIDER_SHA256 = 'e5e2764eafdcc59fc9904eae93f4f457cb2bd59595336ac88e878d0bb1e65169'
 W_PAIRED_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired.sv'
 W_PAIRED_PROVIDER_SHA256 = 'a13cd5e6285e7d288a7e1eafe2179831dd339be7f8f8d98b243559124d322dac'
+M_PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_phone_blocks.sv'
+M_PHONE_PROVIDER_SHA256 = '799306fde1aa3e0e8fa026e6b23a194e445578208bb0c91bab4d5327255e3f05'
+W_PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'
+W_PHONE_PROVIDER_SHA256 = '9fe33e9ca0551b714882c5fee4018a791945cc80bfc131d8a16fd630111a3503'
+# These aliases were resolved from the actual started FF in each reviewed VG.
+# A new provider cannot infer its role or root alias from a convenient net name.
+PROVIDER_POLICIES = {
+    PROVIDER: (PROVIDER_SHA256, None, 'reset_n', {}),
+    PAIRED_PROVIDER: (PAIRED_PROVIDER_SHA256, 'M', 'terminal_ready', {}),
+    W_PAIRED_PROVIDER: (W_PAIRED_PROVIDER_SHA256, 'W', 'reset_n', {}),
+    M_PHONE_PROVIDER: (M_PHONE_PROVIDER_SHA256, 'M', 'terminal_ready', {}),
+    # This wrapper actually includes the old W provider; checking only the
+    # wrapper bytes would leave its consumed role/macro selection unbound.
+    W_PHONE_PROVIDER: (W_PHONE_PROVIDER_SHA256, 'W', 'reset_n',
+                       {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256}),
+}
 
 
 def require(condition, message):
@@ -38,31 +55,34 @@ def source_binding(stage):
     project = stage / 'Prj1.gprj'
     selected = [row.get('path') for row in ET.parse(project).find('FileList')
                 if row.get('enable') == '1']
-    provider, provider_sha = PROVIDER, PROVIDER_SHA256
-    paired = set(selected).intersection((PAIRED_PROVIDER, W_PAIRED_PROVIDER))
-    worker = W_PAIRED_PROVIDER in paired
-    if paired:
-        from tools.workstation_profile import PROFILE_REGISTRY
-        providers = {row['provider'] for row in PROFILE_REGISTRY.values()}
-        selected_pair = W_PAIRED_PROVIDER if worker else PAIRED_PROVIDER
-        require([path for path in selected if path in providers] == [selected_pair],
-                'paired root requires unique explicit role provider')
+    providers = [path for path in selected
+                 if path and (path.startswith('rtl/workstation/workstation_profile_')
+                              or path == UNPROFILED_PROVIDER)]
+    require(len(providers) == 1 and providers[0] in PROVIDER_POLICIES,
+            'root requires one uniquely selected reviewed provider')
+    provider = providers[0]
+    provider_sha, expected_role, _, includes = PROVIDER_POLICIES[provider]
+    worker = expected_role == 'W'
+    require(selected.count(ROOT_SOURCE) == 1,
+            'exact root source not uniquely selected')
+    # All reviewed providers include this composition transitively. Compiling
+    # it again as a standalone unit would bypass that macro/provider scope.
+    require(TOP_SOURCE not in selected,
+            'included root composition also selected as a standalone unit')
+    require((stage / ROOT_SOURCE).is_file() and sha(stage / ROOT_SOURCE) == ROOT_SOURCE_SHA256,
+            'reviewed reset_release source/HOLD_CYCLES changed')
+    for relative, expected in {provider: provider_sha, **includes}.items():
+        require((stage / relative).is_file() and sha(stage / relative) == expected,
+                'reviewed root provider/include bytes changed: ' + relative)
+    if expected_role is not None:
         from tools.workstation_task3_tf_storage_selection import unwrap_paired_top
         parent, role = unwrap_paired_top(stage, (stage / TOP_SOURCE).read_text())
         if worker:
             from tools.workstation_task3_w_paired_profile import PARENT_TOP_SHA256, digest
         else:
             from tools.workstation_task3_m_paired_profile import PARENT_TOP_SHA256, digest
-        require(role == ('W' if worker else 'M') and digest(parent) == PARENT_TOP_SHA256,
+        require(role == expected_role and digest(parent) == PARENT_TOP_SHA256,
                 'paired root exact common/role source inverse changed')
-        provider, provider_sha = ((W_PAIRED_PROVIDER, W_PAIRED_PROVIDER_SHA256) if worker else
-                                  (PAIRED_PROVIDER, PAIRED_PROVIDER_SHA256))
-    require(selected.count(provider) == 1 and selected.count(ROOT_SOURCE) == 1,
-            'exact DIRECT provider/root source not uniquely selected')
-    require(sha(stage / ROOT_SOURCE) == ROOT_SOURCE_SHA256,
-            'reviewed reset_release source/HOLD_CYCLES changed')
-    require(sha(stage / provider) == provider_sha,
-            'reviewed DIRECT provider bytes changed')
     raw_top = (stage / TOP_SOURCE).read_text()
     if worker:
         # The exact paired role inverse above binds every source edit. Unlike
@@ -92,7 +112,8 @@ def source_binding(stage):
     if not worker:
         require(compact.count('wireruntime_common_reset_n=reset_n;') == 1,
                 'DIRECT common reset is not the real root output')
-    files = (project, stage / provider, stage / ROOT_SOURCE, stage / TOP_SOURCE)
+    files = (project, stage / provider, stage / ROOT_SOURCE, stage / TOP_SOURCE,
+             *(stage / relative for relative in includes))
     return dict(source_sha256={str(path.relative_to(stage)): sha(path) for path in files},
                 selected_provider=provider, default_hold_cycles=1024,
                 custom_external_reset_constant=1,
@@ -107,10 +128,17 @@ def validate_root_publisher(n, g, root):
     Select that one reviewed spelling only for the exact paired provider;
     never accept an arbitrary named reset or an equivalent-looking cone.
     """
-    paired = root.get('selected_provider') == PAIRED_PROVIDER
-    require(root.get('selected_provider') in (PROVIDER, PAIRED_PROVIDER, W_PAIRED_PROVIDER),
+    provider = root.get('selected_provider')
+    require(provider in PROVIDER_POLICIES,
             'root publisher provider is not reviewed')
-    alias = 'terminal_ready' if paired else 'reset_n'
+    provider_sha, _, alias, includes = PROVIDER_POLICIES[provider]
+    source_identity = root.get('source_sha256', {})
+    require(isinstance(source_identity, dict) and
+            set(source_identity) == {'Prj1.gprj', TOP_SOURCE, ROOT_SOURCE, provider, *includes} and
+            all(source_identity.get(path) == expected
+            for path, expected in {ROOT_SOURCE: ROOT_SOURCE_SHA256,
+                                   provider: provider_sha, **includes}.items()),
+            'root publisher reviewed provider/source identity changed')
     started = g.register('u_reset', 'started')
     q = n.pin(started, 'Q')
     require(root.get('root_register') == started and root.get('root_q') == q and
@@ -180,8 +208,8 @@ def audit_root_startup(n, *, stage):
                 'root state FF port inventory changed: ' + path)
     root_q = n.pin(started, 'Q')
     binding = dict(source, root_register=started, root_q=root_q,
-                   mapped_common_root_name=('terminal_ready' if source['selected_provider'] == PAIRED_PROVIDER
-                                            else 'reset_n'), common_root_output_polarity=1)
+                   mapped_common_root_name=PROVIDER_POLICIES[source['selected_provider']][2],
+                   common_root_output_polarity=1)
     validate_root_publisher(n, g, binding)
     named = [*(n.pin(path, 'Q') for path in count),
              *(n.pin(path, 'Q') for path in sync), root_q]

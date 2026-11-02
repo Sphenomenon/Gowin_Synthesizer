@@ -11,7 +11,8 @@ REFERENCE_SHA256='e1af8daa488fbb704a7fd3fdc04b4b0fae89bdbcbe531643d3f2f97cbcd5e4
 SOURCES=('rtl/workstation/workstation_task3_m_bus_endpoint.sv',
  'rtl/music/workstation_task3_tf_analysis_source.sv','rtl/music/workstation_task3_score_commit_m.sv',
  'rtl/workstation/workstation_task3_final_tap_export.sv','rtl/workstation/workstation_task3_phone_command_ingress.sv',
- 'rtl/workstation/workstation_task3_phone_command_mux.sv')
+ 'rtl/workstation/workstation_task3_phone_command_mux.sv',
+ 'rtl/workstation/workstation_task3_phone_window_rx.sv')
 MAINTAINED_UPDATES=('rtl/workstation/workstation_runtime_controlled.sv',
  'rtl/workstation/workstation_runtime_audio.sv','rtl/audio/workstation_ae350_pcm_owner.sv',
  'rtl/tf_audio/workstation_tf_direct_runtime_service.sv')

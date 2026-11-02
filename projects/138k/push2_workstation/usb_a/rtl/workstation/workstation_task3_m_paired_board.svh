@@ -83,7 +83,12 @@
     always @(posedge clk_50m or negedge runtime_common_reset_n)
         if(!runtime_common_reset_n)task3_m_previous_drop<=0;else task3_m_previous_drop<=task3_m_frame_drops;
     wire task3_m_record_fault,task3_m_record_armed;
-    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1)) u_task3_m_endpoint(
+`ifdef WORKSTATION_TASK3_PHONE_WINDOW_BLOCK
+    localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b1;
+`else
+    localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b0;
+`endif
+    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK)) u_task3_m_endpoint(
         .clk_i(clk_50m),.reset_ni(runtime_common_reset_n),.link_ready_i(task3_pair_link_ready),
         .panic_i(task3_pair_panic || task3_m_panic),.local_boot_i(task3_pair_local_boot),.peer_boot_i(task3_pair_peer_boot),
         .session_i(task3_pair_session),.generation_i(task3_pair_generation),
