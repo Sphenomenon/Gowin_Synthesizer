@@ -52,7 +52,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
         if(!recovery) { downloadJob?.cancelAndJoin();downloadJob=null }
         closeSession()
         lastAddress=address;lastDemo=demo
-        _state.update{it.copy(ready=false,busy=true,connection="连接并发现服务…",demo=demo,name=if(demo)"模拟工作站"else scanner.devices.value.firstOrNull{it.address==address}?.name ?: "GOWIN · $address",error=null,capability=null,parameters=emptyMap(),snapshot=Snapshot(),updatedAt=0,record=null)}
+        _state.update{it.copy(ready=false,busy=true,connection="正在连接…",demo=demo,name=if(demo)"138K 工作站"else scanner.devices.value.firstOrNull{it.address==address}?.name ?: "GOWIN · $address",error=null,capability=null,parameters=emptyMap(),snapshot=Snapshot(),updatedAt=0,record=null)}
         var connectionProgress: Job? = null
         try {
             val t=if(demo) demoPeripheral ?: DemoTransport(scope).also{demoPeripheral=it} else AndroidBleTransport(appContext)
@@ -60,7 +60,7 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             connectionProgress=scope.launch { t.connectionProgress.filterNotNull().collect { progress -> _state.update{it.copy(connection=progress)} } }
             val cap=t.establish(address) {
                 session?.close()
-                _state.update{it.copy(connection="订阅通知与协议握手…")}
+                _state.update{it.copy(connection="正在接入工作站…")}
                 ProtocolSession(t,scope).also{session=it}.handshake()
             }
             val s=checkNotNull(session)
@@ -78,15 +78,15 @@ class Workstation(context: Context,private val scope: CoroutineScope) {
             _state.update{it.copy(parameters=params)}
             if(cap.has(2)) subscribe(200)
             _state.update{it.copy(ready=true,connection=when {
-                _state.value.builtInAudioTest->"已连接 · 内置音频录音测试"
-                cap.protocolTestOnly->"已连接 · 最小协议测试"
+                _state.value.builtInAudioTest->"已连接"
+                cap.protocolTestOnly->"已连接"
                 cap.has(0)||cap.has(1)->"已连接 · 可控制"
                 cap.has(3)||cap.has(4)||cap.has(5)->"已连接 · 录音服务"
-                else->"已连接 · 业务服务"
+                else->"已连接"
             })}
             watcher=scope.launch {
                 t.connected.filter{!it}.first()
-                _state.update{it.copy(ready=false,connection=if(cap.protocolTestOnly)"连接已断开，可重新扫描连接"else"连接已断开，设备录音默认继续")}
+                _state.update{it.copy(ready=false,connection=if(cap.protocolTestOnly)"连接已断开，可重新扫描连接"else"连接已断开，可重新连接")}
             }
             poll=scope.launch {
                 while(isActive) {

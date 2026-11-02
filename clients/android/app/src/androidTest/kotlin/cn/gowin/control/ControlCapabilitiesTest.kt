@@ -40,8 +40,8 @@ class ControlCapabilitiesTest {
         var openedMusic = false
         render(WorkstationState(ready = true, name = "GW138K-W", capability = Capability(1uL, 0x68, 256, 1),
             snapshot = Snapshot(valid = 4, recordState = 4))) { openedMusic = true }
-        compose.onNodeWithText("设备业务").assertIsDisplayed()
-        compose.onNodeWithText("参数请在工作站或25K面板上调整。").assertIsDisplayed()
+        compose.onNodeWithText("工作站").assertIsDisplayed()
+        compose.onNodeWithText("使用工作站或 25K 面板调节声音。").assertIsDisplayed()
         compose.onNodeWithText("设备录音：已开放").assertIsDisplayed()
         compose.onNodeWithText("录音下载：已开放").assertIsDisplayed()
         compose.onNodeWithText("合成模式").assertDoesNotExist()
@@ -59,15 +59,15 @@ class ControlCapabilitiesTest {
 
     @Test fun existing25kBuiltInAudioBranchIsPreserved() {
         render(WorkstationState(ready = true, name = "GW25K-PROTO", capability = Capability(1uL, 0x68, 256, 1)))
-        compose.onNodeWithText("25K 内置音频测试").assertIsDisplayed()
-        compose.onNodeWithText("发送 GET_STATUS").assertIsDisplayed()
-        compose.onNodeWithText("设备业务").assertDoesNotExist()
+        compose.onNodeWithText("25K 设备").assertIsDisplayed()
+        compose.onNodeWithText("刷新状态").assertIsDisplayed()
+        compose.onNodeWithText("工作站").assertDoesNotExist()
     }
 
     @Test fun existingProtocolOnlyBranchIsPreserved() {
         render(WorkstationState(ready = true, name = "GW25K-PROTO", capability = Capability(1uL, 0, 0, 1, 0)))
-        compose.onNodeWithText("25K 最小协议联调").assertIsDisplayed()
-        compose.onNodeWithText("发送 GET_STATUS").assertIsDisplayed()
-        compose.onNodeWithText("设备业务").assertDoesNotExist()
+        compose.onNodeWithText("25K 设备").assertIsDisplayed()
+        compose.onNodeWithText("刷新状态").assertIsDisplayed()
+        compose.onNodeWithText("工作站").assertDoesNotExist()
     }
 }

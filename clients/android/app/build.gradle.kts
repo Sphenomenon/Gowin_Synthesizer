@@ -5,10 +5,12 @@ android {
     buildToolsVersion = "35.0.0"
     defaultConfig {
         applicationId = "cn.gowin.control"
+        // Optional side-by-side install when the original device signing key is unavailable.
+        if (providers.gradleProperty("presentationInstall").orNull == "true") applicationIdSuffix = ".presentation"
         minSdk = 26
         targetSdk = 35
-        versionCode = 19
-        versionName = "0.3.4-recording-duration"
+        versionCode = 20
+        versionName = "0.3.5-presentation"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true }

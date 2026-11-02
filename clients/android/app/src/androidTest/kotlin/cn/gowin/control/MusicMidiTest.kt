@@ -57,7 +57,7 @@ class MusicMidiTest {
             playback.play()
         }
         compose.waitUntil(5_000) { playback.state.value.playing && playback.state.value.routeConfirmed }
-        compose.onNodeWithText("已确认实际路由与选择一致").assertIsDisplayed()
+        compose.onNodeWithText("实际输出：手机扬声器").performScrollTo().assertIsDisplayed()
         compose.runOnIdle { playback.seek(4000) }
         compose.waitUntil(5_000) { playback.state.value.positionMs >= 4000 }
         compose.runOnIdle { playback.pause() }
@@ -89,7 +89,7 @@ class MusicMidiTest {
         compose.waitUntil { 48 in midi.state.value.heldNotes }
         key.performTouchInput { cancel() }
         compose.waitUntil { midi.state.value.heldNotes.isEmpty() && link.sent.size == 36 }
-        compose.onNodeWithText("PANIC · 全通道停音").performScrollTo().performClick()
+        compose.onNodeWithText("全部停音").performScrollTo().performClick()
         compose.waitUntil { link.sent.size == 68 }
         Assert.assertEquals(0x90, link.sent[32][2].toInt() and 255)
         Assert.assertEquals(0x80, link.sent[33][2].toInt() and 255)

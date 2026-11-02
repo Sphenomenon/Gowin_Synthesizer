@@ -714,6 +714,10 @@ FS SHA256 `c5136b47854046b634fe5c8ef3fefb581be1d36f6a20fba9ccc4ff8af8de6d92`，�
 
 C1首次PLL子门错误已独立定位为macOS未自动找到官方gw5a模型；显式GOWIN_SIMLIB后在新workspace复跑原完整门通过，6 PLL／7负控／held门均通过，708项独立依赖与输出hash复核，原失败日志和已提交报告历史不改。C1完整STA仍1567 setup／−1.209ns，仍拒绝部署、未烧录。此补充不产生新位流，不写Flash；当前SRAM仍B6。
 
+### 2026-11-02：Android 演示页面与实际计时《小星星》录音
+
+按用户临时优先级，本轮仅完成 App：蓝牙／MIDI／录音页面去除开发者说明与冗长免责声明，原本地入口显示为“扫描并接入 138K”；真实 BLE 扫描保留。点击录音后按实际时间增长，停止或录满才封存《小星星》短旋律，再经原协议下载与 WAV 保存后试听，内部保留来源元数据。[阶段报告](../../clients/android/reports/PRESENTATION_20261102.md)记录 v20／0.3.5-presentation 身份、源码 hash、APK、日志与边界；[Push 演奏顺序](../../clients/android/docs/TWINKLE_PUSH.md)已核对冻结 M26 实际映射。114 单测中112通过／2既有无线跳过，9项模拟器完整界面回归通过，lint零错误／警告。vivo实机独立包安装成功，原v18与数据保留；6.037秒录音WAV、前11个完整音符与本应用MediaPlayer实际启动／结束已核对。此为本地演示验收，不转授为138K无线或DDR录音完成；本轮未操作板卡、EDA、SRAM或Flash，M/W及其他未提交工作保留。
+
 ### 2026-11-02: Independent CNN-DEMO historical trace and custom carrier
 
 [Trace and targeted evidence](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_TRACE_20261102.json): source 8bc80e9 and the full83 user acceptance record were verified. TRAVLER, WAV 48 kHz, model E / CRC32 AF01A61B remain the target; historical static_timing_closed=false is preserved. The local and remote acceptance tag is absent; the recorded acceptance JSON and complete source commit remain available. The custom carrier Netlist_my_138k_2026-10-21.tel and amplifier/Bluetooth netlists were recovered from the local locked archive and hash checked. No official-carrier bitstream is used. Current source boundary 17 tests, Push guidance/lights 2 tests, TF DMA, and candidate full83 Viterbi 172 frames x 89 states / 28 notes passed; the old map negative control failed as expected. The new explicit build.py --cnn-demo is undergoing actual compilation, retaining historical CQT/CNN BSRAM caches and original score/Push rules plus native USB and FPC audio. Model startup still requires manual BPN1 UART loading into DDR and CRC readback status E. New synthesis/P&R/PLL/STA/CDC and real Push/TF/CNN/DAC acceptance remain pending. No board action or Flash write was performed. Existing dirty M/W/BLE work and frozen candidates remain protected.

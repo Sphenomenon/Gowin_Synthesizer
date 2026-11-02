@@ -1,6 +1,6 @@
 # GOWIN Control Android
 
-当前本分支候选为 **0.3.4-recording-duration / versionCode19**，精确复用提交 `f1839911` 的生命周期修复，并在录音槽和本地作品中显示毫秒时长，避免短录音被显示为 `00:00`。该身份与已安装版本分开记录；构建、验证及部署状态见[短录音显示报告](reports/RECORDING_DURATION_20261102.md)。此前双138K演示版本的复核保留在[原交付记录](docs/DELIVERY_CHECK_20261102.md)。
+当前演示候选为 **0.3.5-presentation / versionCode20**：简化蓝牙与录音页面，原本地工作站入口显示为“扫描并接入 138K”，录音按实际经过时间封存《小星星》短旋律，再经原协议下载与 WAV 保存后试听。底层仍保留本地来源元数据，真实 BLE／A2DP 路径独立保留；此呈现调整不构成实板无线验收。构建、安装及验证见[本轮记录](reports/PRESENTATION_20261102.md)。此前毫秒时长与生命周期修改继续保留，见[短录音显示报告](reports/RECORDING_DURATION_20261102.md)及[原交付记录](docs/DELIVERY_CHECK_20261102.md)。
 
 已实装的生命周期版本为 **0.3.3-ble-lifecycle / versionCode18**，以0.3.1-demo-d3为基础，保留音乐／MIDI及工作站业务功能，包含单次、有证据的旧绑定恢复、独立MIDI前台连接服务，以及跨页面区分MIDI／工作站的连接状态。切页／后台只停音，不主动断开MIDI；只修改App，不要求FPGA综合或烧录。来源和边界见[连接恢复说明](docs/BLE_RECOVERY_20261102.md)，其手机安装、用户切换反馈、验证范围与剩余验收见[生命周期报告](reports/BLE_LIFECYCLE_20261102.md)。
 
@@ -28,13 +28,15 @@ APK与签名密钥按仓库规则不进入Git；`artifacts/`链接指本机归�
 ./gradlew :core:protocol:test :core:ble:testDebugUnitTest :core:data:testDebugUnitTest :app:assembleDebug :app:lintDebug
 ```
 
+若设备现装版本使用不同签名，可在同一构建命令加 `-PpresentationInstall=true` 生成独立包 `cn.gowin.control.presentation`；保留默认包名和手机原有 App／数据。此选项只改变安装包身份，源码和业务链路相同。
+
 `local.properties` 中设置本机 `sdk.dir`（Android Studio 通常自动生成）。首次需要联网下载固定版本依赖。Wrapper 为 Gradle 8.10.2，发行包 SHA256 已锁定。APK 输出为 `app/build/outputs/apk/debug/app-debug.apk`。调试 APK 用于联调，发布签名不进入源码。
 
 ## 使用
 
-1. 安装并打开 App，选择“体验模拟设备”，无需蓝牙权限即可查看控制、录音、作品页面。模拟录音上限 10 秒，生成左 440 Hz、右 660 Hz 的测试音频；结果标记为模拟文件。
+1. 安装并打开 App，选择“扫描并接入 138K”进入本地演示工作站；真实扫描仍通过“选择蓝牙设备”进入。演示录音上限 10 秒，点击开始后按单调时钟计时，停止或录满才封存对应时长的《小星星》片段，开始前没有可下载录音。界面使用正常操作文案，来源由内部 `demo`／`source` 元数据保留。
 2. 录音页开始录音，停止或等待容量满，点击“下载 / 继续”；完整 CRC 通过后生成 WAV，再到作品页试听、重命名、导出、分享或删除。
-3. 真实设备在“连接设备”中扫描业务服务并连接。授予附近设备权限；Android 8–11 还需满足系统 BLE 扫描的位置权限/位置服务要求。长连接使用可暂停/断开的前台通知。
+3. 真实设备在“选择蓝牙设备”中扫描业务服务并连接。授予附近设备权限；Android 8–11 还需满足系统 BLE 扫描的位置权限/位置服务要求。长连接使用可暂停/断开的前台通知。
 4. 下载可以暂停或断线恢复。连接设备重启、录音清除或身份改变后，旧临时文件不能拼接到新录音。App 进程结束后，重新连接原对象并点击“下载 / 继续”可从可靠检查点恢复。
 
 真实连接使用业务服务 `9b6d0000-4c2a-4f87-9a31-138000000001`。25K 本例已提供命令与内置音频录音子集；旧 FFF0/FFF1 BTST 底层固件不提供业务服务。

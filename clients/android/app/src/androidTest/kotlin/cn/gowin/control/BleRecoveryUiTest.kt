@@ -89,7 +89,7 @@ class BleRecoveryUiTest {
         compose.waitUntil { midi.state.value.ready }
         compose.runOnIdle { assertEquals(32, link.sent) }
         compose.onNodeWithContentDescription("MIDI音符48").assertIsEnabled()
-        compose.onNodeWithText("打开系统蓝牙设置 · 处理旧配对").assertExists()
+        compose.onNodeWithText("系统蓝牙设置").assertExists()
     }
 
     @Test fun leavingAndReturningToPanelKeepsConnectionAndClearsHeldNotes() {

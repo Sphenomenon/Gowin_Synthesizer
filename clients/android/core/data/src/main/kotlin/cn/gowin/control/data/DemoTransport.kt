@@ -5,10 +5,12 @@ import cn.gowin.control.protocol.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.UUID
-import kotlin.math.*
 
 /** A protocol peripheral, not a UI stub: all commands pass through byte framing and CRC. */
-class DemoTransport(private val scope: CoroutineScope) : BleTransport {
+class DemoTransport(
+    private val scope: CoroutineScope,
+    private val nowMs: () -> Long = { System.nanoTime() / 1_000_000 }
+) : BleTransport {
     private val _notifications=MutableSharedFlow<Notification>(extraBufferCapacity=256)
     override val notifications=_notifications.asSharedFlow()
     private val _connected=MutableStateFlow(false)
@@ -41,7 +43,7 @@ class DemoTransport(private val scope: CoroutineScope) : BleTransport {
             while(isActive) {
                 delay(statusPeriod)
                 updateRecording()
-                snapshot=snapshot.copy(id=(snapshot.id+1) and 0xffffffffL,time=(System.nanoTime()/1_000_000) and 0xffffffffL,
+                snapshot=snapshot.copy(id=(snapshot.id+1) and 0xffffffffL,time=nowMs() and 0xffffffffL,
                     recordState=record.state,recordId=record.id,frames=record.frames,capacity=record.capacity,
                     voices=if(record.state==2) 3 else 0,leftPeak=if(record.state==2) 28000 else 0,rightPeak=if(record.state==2) 23000 else 0)
                 if(nonce!=0uL) emit(GattIds.status,Message(Op.STATUS_EVENT,0,0,nonce,snapshot.encode()))
@@ -54,7 +56,7 @@ class DemoTransport(private val scope: CoroutineScope) : BleTransport {
     }
     override suspend fun subscribe(uuid: UUID) {}
     override suspend fun write(value: ByteArray) {
-        val raw=incoming.accept(value,System.nanoTime()/1_000_000) ?: return
+        val raw=incoming.accept(value,nowMs()) ?: return
         val request=Message.decode(raw)
         val cached=replies[request.requestId]
         if(cached!=null) {
@@ -120,7 +122,7 @@ class DemoTransport(private val scope: CoroutineScope) : BleTransport {
                 r.zero(2);val max=r.u32();if(max>480000)throw DeviceError(0x81)
                 maxFrames=if(max==0L)480000 else max
                 record=record.copy(id=nextRecord++,state=2,frames=0,bytes=0,crc=0,flags=0,reason=0)
-                started=System.nanoTime()/1_000_000;pcm=byteArrayOf();val id=task(m);record=record.copy(operation=id);status=1
+                started=nowMs();pcm=byteArrayOf();val id=task(m);record=record.copy(operation=id);status=1
                 Writer().u32(id).u32(record.id).build()
             }
             Op.STOP -> {
@@ -173,18 +175,13 @@ class DemoTransport(private val scope: CoroutineScope) : BleTransport {
     private fun transferIdentity(r: Reader) { if(r.u32()!=transfer||transfer==0L)throw DeviceError(0x8d) }
     private fun updateRecording() {
         if(record.state==2) {
-            val frames=((System.nanoTime()/1_000_000-started)*48).coerceAtMost(maxFrames)
+            val frames=((nowMs()-started)*48).coerceIn(0,maxFrames)
             record=record.copy(frames=frames,bytes=frames*4)
             if(frames>=maxFrames)finishRecording(2)
         }
     }
     private fun finishRecording(reason: Int) {
-        pcm=ByteArray(record.frames.toInt()*4)
-        for(i in 0 until record.frames.toInt()) {
-            val left=(sin(i*2*PI*440/48000)*12000).toInt()
-            val right=(sin(i*2*PI*660/48000)*10000).toInt()
-            pcm[i*4]=left.toByte();pcm[i*4+1]=(left shr 8).toByte();pcm[i*4+2]=right.toByte();pcm[i*4+3]=(right shr 8).toByte()
-        }
+        pcm=DemoMelody.pcm(record.frames)
         record=record.copy(state=4,flags=2,crc=crc32(pcm),reason=reason)
     }
     private suspend fun emitBlock(id: Long,b: PcmBlock) {

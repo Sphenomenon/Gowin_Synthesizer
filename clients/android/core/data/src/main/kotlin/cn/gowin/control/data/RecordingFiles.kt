@@ -61,7 +61,7 @@ class RecordingFiles(private val root: File) {
         atomicMove(tmp,target)
         val saved=System.currentTimeMillis()
         atomicProperties(File(recordings,"$key.properties"),Properties().apply {
-            setProperty("name",(if(source=="builtin")"内置测试录音 "else if(demo)"模拟录音 " else "工作站录音 ")+info.id)
+            setProperty("name","工作站录音 "+info.id)
             setProperty("saved",saved.toString());setProperty("bytes",info.bytes.toString())
             setProperty("incomplete",info.incomplete.toString());setProperty("demo",demo.toString());setProperty("source",source)
             setProperty("rate",info.sampleRate.toString());setProperty("format",info.format.toString());setProperty("channels",info.channels.toString());setProperty("frames",info.frames.toString())
