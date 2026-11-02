@@ -46,6 +46,8 @@ struct a138_classic_runtime {
     int16_t pcm[A138_SBC_MAX_PCM_SAMPLES];
     uint32_t passes,rx_packets,rx_dropped,pcm_blocks,rx_wait_started,pcm_started;
     uint32_t observed_generation,observed_stream;
+    uint32_t acl_header;
+    uint16_t acl_diagnostic;
     uint8_t enabled,started,fault,fence_sent,accepted_notified,done_notified;
     uint8_t rx_waiting,pcm_pending,media_bound,session_only;
 };
@@ -60,6 +62,15 @@ void a138_classic_runtime_init_session(struct a138_classic_runtime *,struct a138
  * one SBC frame decode per pass. Tick is always before service observations.
  * Each downstream callback and bus access must itself be bounded. */
 void a138_classic_runtime_step(struct a138_classic_runtime *);
+/* Existing W diagnostic registers only. Header is the actual four HCI ACL
+ * bytes in little-endian order, or CPU1 before the first ACL. Before any ACL,
+ * an actual security close instead exposes its sticky D4/FC close_context.
+ * Status is
+ * [3:0] Classic result, [4] started, [5] active, [6] secure, [7] exact security
+ * epoch/generation, [15:8] received packet count modulo256. BUSY retries do
+ * not increment the count. Reading this snapshot has no transport effects. */
+void a138_classic_runtime_diagnostic(const struct a138_classic_runtime *,uint32_t *,uint16_t *);
 void a138_classic_runtime_firmware_init(void);
 void a138_classic_runtime_firmware_pump(void);
+void a138_classic_runtime_firmware_diagnostic(uint32_t *,uint16_t *);
 #endif

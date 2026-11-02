@@ -126,7 +126,7 @@ class ActualNativeFixture(unittest.TestCase):
     def reject(self, name, path, part, key, value, message):
         with self.change(path, part, key, value):
             with self.assertRaisesRegex(ValueError, message) as error:
-                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+                audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         self.mutations.append(dict(case=name, rejected=True, error=str(error.exception)))
 
 class ActualNativeProtocol(ActualNativeFixture):
@@ -136,7 +136,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.skipTest('explicit W-audio retires display/RAM and display-loss monitor; actual absence verified')
 
     def test_actual_mailboxes_exact_payload_and_no_false_acceptance(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         if self.profile == 'w-demo-audio':
             self.assertEqual(result['mailbox_count'], 2)
             self.assertEqual({row['scope'] for row in result['mailboxes']},
@@ -148,6 +148,8 @@ class ActualNativeProtocol(ActualNativeFixture):
         display = next(x for x in result['mailboxes'] if x['scope'] == 'u_managed/display')
         self.assertEqual(display['registered_ram_bits'], 98)
         expected_display = (75 if self.profile == 'w-demo-d' else 132) if result.get('hmi_inventory_reviewed') else (41 if self.profile == 'w-demo-d' else 73)
+        if os.environ.get('GW138K_CONNECTED_XY') == '1' and self.profile == 'm-demo-core':
+            expected_display += 10  # exact existing connected-XY PANIC payload inventory
         self.assertEqual(display['held_ff_bits'], expected_display)
         self.assertFalse(result['physical_cdc_accepted'])
         pins = {p + '/' + port for p, c in self.n.cells.items()
@@ -171,7 +173,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.n.scopes[path] = self.n.scopes[source]
             try:
                 with self.assertRaisesRegex(ValueError, 'headless profile retained display/video') as error:
-                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+                    audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
                 self.mutations.append(dict(case='headless cell returned ' + scope, rejected=True, error=str(error.exception)))
             finally:
                 del self.n.cells[path]
@@ -185,7 +187,7 @@ class ActualNativeProtocol(ActualNativeFixture):
                 del self.n.frames[scope]
             from tools.workstation_worker_audio_only import constraints
             sdc, unused = constraints(protocol_constraints())
-            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+            result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
             for command in ('set_false_path', 'set_max_delay 2.000'):
                 changed = sdc + command + ' -to [get_pins {' + path + '/D}]\n'
                 with self.assertRaisesRegex(ValueError, 'retired display timing selector') as error:
@@ -196,10 +198,11 @@ class ActualNativeProtocol(ActualNativeFixture):
     def test_m22_new_hmi_mailbox_negative_controls(self):
         if self.profile != 'm-demo-core' or 'u_video/u_applied_parameters_cdc' not in self.n.frames:
             self.skipTest('M22 actual new HMI mailbox only')
-        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping,connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+        result=audit_native_protocol(self.n,profile=self.profile,mapping=self.mapping,connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         display=next(x for x in result['mailboxes'] if x['scope']=='u_managed/display')
         hmi=next(x for x in result['mailboxes'] if x['scope']=='u_video/u_applied_parameters_cdc')
-        self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['payload_bits']),(132,98,230))
+        expected=(142,98,240) if os.environ.get('GW138K_CONNECTED_XY') == '1' else (132,98,230)
+        self.assertEqual((display['held_ff_bits'],display['registered_ram_bits'],display['payload_bits']),expected)
         self.assertEqual((hmi['held_ff_bits'],hmi['registered_ram_bits'],hmi['payload_bits']),(60,0,60))
         g=Graph(self.n);scope='u_video/u_applied_parameters_cdc'
         held=g.register(scope,'held_data',3);destination=g.register(scope,'destination_data',3)
@@ -218,7 +221,7 @@ class ActualNativeProtocol(ActualNativeFixture):
             self.reject(name,path,'ports',pin,value,'.')
 
     def test_installed_sdc_keeps_later_stages_and_exact_local_bounds(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         sdc = protocol_constraints()
         headless = self.profile == 'w-demo-audio'
         if headless:
@@ -598,7 +601,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
                     self.bind(target, self.reg('u_tf_audio/frames', 'quiesce_sync_0')), 'first-stage has another consumer')
 
     def test_sdc_protects_payload_setup_and_all_later_stages(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         timing = result['timing_boundaries']
         sdc = protocol_constraints()
         headless = self.profile == 'w-demo-audio'
@@ -625,7 +628,7 @@ class ActualTimingBoundaries(ActualNativeFixture):
 
 class ActualDemoHeldHandshakes(ActualNativeFixture):
     def audited(self):
-        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1')
+        result = audit_native_protocol(self.n, profile=self.profile, mapping=self.mapping, connected_xy=os.environ.get('GW138K_CONNECTED_XY') == '1', stereo_xy=os.environ.get('GW138K_STEREO_XY') == '1', profile_revision=4 if os.environ.get('GW138K_STEREO_XY') == '1' else None, xy_axes_policy='ordinary_mid_side_vector_direct_v1' if os.environ.get('GW138K_STEREO_XY') == '1' else None)
         result['demo_held_handshakes'] = audit_demo_held_boundaries(self.n, result)
         return result
 
@@ -707,17 +710,22 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
             DEMO_TIMING_TOOL, select_demo_timing, audit_demo_held_handshakes)
         path = Path(os.environ['GW138K_NATIVE_PROTOCOL_VG'])
         physical = next((p for p in path.parents if (p/'physical_inputs.json').is_file()),None)
-        if physical is None:
-            self.skipTest('actual physical parent identity required for entry source slice')
-        source = Path(json.loads((physical/'physical_inputs.json').read_text())['parent_candidate'])/'workstation/Prj1'
+        candidate = (Path(json.loads((physical/'physical_inputs.json').read_text())['parent_candidate'])
+                     if physical else next((p for p in path.parents if (p/'integration_inputs.json').is_file()),None))
+        if candidate is None:
+            self.skipTest('actual sealed candidate required for entry source slice')
+        source = candidate/'workstation/Prj1'
         role = 'W' if self.profile in ('w-demo-d', 'w-demo-audio') else 'M'
         with tempfile.TemporaryDirectory(prefix='selected-demo-held-entry-') as directory:
-            stage = Path(directory)
+            fixture = Path(directory)/'candidate'
+            stage = fixture/'workstation/Prj1'
             for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',
                              'rtl/workstation/workstation_runtime_controlled.sv',
                              'rtl/workstation/workstation_profile_' + ('m' if role == 'M' else 'w') + '_demo.sv'):
                 target = stage/relative;target.parent.mkdir(parents=True,exist_ok=True)
                 target.write_bytes(((ROOT if relative == DEMO_TIMING_TOOL else source)/relative).read_bytes())
+            if os.environ.get('GW138K_STEREO_XY') == '1':
+                (fixture/'workstation_profile.json').write_bytes((candidate/'workstation_profile.json').read_bytes())
             baseline = protocol_constraints()
             if self.profile == 'w-demo-audio':
                 from tools.workstation_worker_audio_only import constraints
@@ -740,6 +748,75 @@ class ActualDemoHeldHandshakes(ActualNativeFixture):
                 gate()
             self.mutations.extend((dict(case='selected entry missing SDC line',rejected=True),
                                    dict(case='selected entry actual PC source reset binding',rejected=True)))
+
+
+class ActualStereoXYPolicy(ActualNativeFixture):
+    @classmethod
+    def setUpClass(cls):
+        if os.environ.get('GW138K_STEREO_XY') != '1':
+            raise unittest.SkipTest('explicit stereo candidate required for qualification controls')
+        super().setUpClass()
+
+    def test_stereo_inventory_requires_explicit_role_revision_and_axes_policy(self):
+        selected = dict(profile=self.profile, mapping=self.mapping, connected_xy=True,
+                        stereo_xy=True, profile_revision=4,
+                        xy_axes_policy='ordinary_mid_side_vector_direct_v1')
+        for label, change in (
+                ('stereo W role', dict(profile='w-demo-audio')),
+                ('stereo legacy M base', dict(profile='m-demo-base')),
+                ('stereo revision3', dict(profile_revision=3)),
+                ('stereo unspecified revision', dict(profile_revision=None)),
+                ('stereo unspecified axes', dict(xy_axes_policy=None)),
+                ('stereo wrong axes', dict(xy_axes_policy='direct_xy')),
+                ('stereo without connected trace', dict(connected_xy=False)),
+                ('new inventory without stereo selection', dict(stereo_xy=False))):
+            with self.subTest(case=label), self.assertRaises(ValueError) as error:
+                audit_native_protocol(self.n, **dict(selected, **change))
+            self.mutations.append(dict(case=label, rejected=True, error=str(error.exception)))
+
+    def test_actual_entry_rejects_missing_or_disagreeing_stereo_qualification(self):
+        from tools.workstation_performance_reset import DEMO_TIMING_TOOL, audit_demo_held_handshakes
+        path = Path(os.environ['GW138K_NATIVE_PROTOCOL_VG'])
+        candidate = next((p for p in path.parents if (p/'integration_inputs.json').is_file()),None)
+        if candidate is None:
+            self.skipTest('sealed source candidate required for provider qualification')
+        source = candidate/'workstation/Prj1'
+        metadata = json.loads((candidate/'integration_inputs.json').read_text())
+        profile = json.loads((candidate/'workstation_profile.json').read_text())
+        sdc = (source/'constraints/custom_138k.sdc').read_text()
+        with tempfile.TemporaryDirectory(prefix='stereo-entry-qualification-') as directory:
+            fixture = Path(directory)/'candidate'
+            stage = fixture/'workstation/Prj1'
+            for relative in (DEMO_TIMING_TOOL,'rtl/workstation/gw138k_push_workstation_top.v',
+                             'rtl/workstation/workstation_runtime_controlled.sv',
+                             'rtl/workstation/workstation_profile_m_demo.sv'):
+                target = stage/relative;target.parent.mkdir(parents=True,exist_ok=True)
+                target.write_bytes((source/relative).read_bytes())
+            artifact = fixture/'workstation_profile.json'
+            provider = stage/'rtl/workstation/workstation_profile_m_demo.sv'
+            original = provider.read_text()
+            self.assertEqual(original.splitlines().count('`define WORKSTATION_XY_STEREO'),1)
+            def gate():
+                return audit_demo_held_handshakes(stage,sdc,'M',metadata['demo_runtime_timing'],
+                    self.n,mapping=self.mapping,netlist_text=path.read_text())
+            def reject(label, message):
+                with self.assertRaisesRegex(ValueError,message) as error:
+                    gate()
+                self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
+            reject('stereo provider missing artifact','profile artifact missing')
+            artifact.write_text(json.dumps(profile))
+            provider.write_text(original.replace('`define WORKSTATION_XY_STEREO','// stereo marker removed'))
+            reject('stereo policy without provider marker','profile/provider disagreement')
+            provider.write_text(original)
+            changed=json.loads(json.dumps(profile));changed['configuration'].pop('xy_axes_policy')
+            artifact.write_text(json.dumps(changed))
+            reject('stereo provider without axes policy','profile/provider disagreement')
+            changed=json.loads(json.dumps(profile));changed['revision']=3
+            artifact.write_text(json.dumps(changed))
+            reject('stereo provider revision3','revision4 axes policy')
+            changed=json.loads(json.dumps(profile));changed['configuration']['demo_role']='W'
+            artifact.write_text(json.dumps(changed))
+            reject('stereo artifact wrong role','sealed M role')
 
 if __name__ == '__main__':
     unittest.main()

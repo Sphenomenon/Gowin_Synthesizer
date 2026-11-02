@@ -59,7 +59,7 @@ def audit_headless_display_absence(n):
                 display_mailbox_absent=True, display_health_absent=True, video_hierarchy_absent=True)
 
 
-def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False):
+def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False, stereo_xy=False, profile_revision=None, xy_axes_policy=None):
     require(profile in PROFILES, 'unknown role/profile')
     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')
     g = Graph(n)
@@ -75,6 +75,10 @@ def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False
     require(not hmi or profile == 'm-demo-core', 'new W HMI inventory not yet reviewed')
     hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()
     require(not connected_xy or profile == 'm-demo-core', 'connected XY requires explicit M core')
+    require(not stereo_xy or (profile == 'm-demo-core' and connected_xy and profile_revision == 4 and
+            xy_axes_policy == 'ordinary_mid_side_vector_direct_v1'),
+            'stereo XY requires explicit M core revision4 axes policy')
+    observation_extra = (203, 204) if stereo_xy else (203,)
     # PANIC is read at the 50MHz completed-frame receipt, then uses the
     # existing trust bit/drop counter. No observation-mailbox bits are added.
     panic_bits = tuple(range(54, 64)) if connected_xy else ()
@@ -88,7 +92,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False
     if not headless:
         specifications += (
             ('u_managed/display', display_bits, (*range(ordinary), *display_extra), 'compute', 'control'),
-            ('u_video/u_runtime_display/observation', (*old_display_bits, 203), len(old_display_bits) + 1,
+            ('u_video/u_runtime_display/observation', (*old_display_bits, *observation_extra), len(old_display_bits) + len(observation_extra),
              'control', 'memory'),
         )
     if hmi:

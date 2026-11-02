@@ -332,6 +332,78 @@ static void reset_session(void){
     CHECK(sec.session_only&&!sec.store.load&&!sec.store.replace_atomic&&!sec.store.delete_atomic);
 }
 static void erased_key(void){for(unsigned i=0;i<16;i++)CHECK(sec.bond.key[i]==0);}
+static void early_io_features(void){
+    uint8_t basic[13]={11,11,0,0x23,0},host[15]={0x23,13,0,0x23,0,1,1,1};
+    basic[11]=8;basic[12]=128;
+    pump();command(0x041b,1,0,0);CHECK(event(basic,13)==A138_SECURITY_OK);
+    pump();pump();command(0x041c,1,0,0);CHECK(event(host,15)==A138_SECURITY_OK);pump();
+}
+static void test_io_before_key_request(void){
+    for(unsigned mode=0;mode<3;++mode){
+        uint8_t io[3]={1,0,3},numeric[4]={1,0,0,0},key[17],auth[5]={6,3,0,0x23,0};
+        reset_session();startup();connect();
+        peer_event(0x31,0,0);CHECK(sec.io_pending&&!sec.key_loaded&&!sec.closing&&sec.peer_auth_started);
+        uint32_t deadline=sec.io_started_ms;advance(20);peer_event(0x31,0,0);
+        CHECK(sec.io_pending&&sec.io_started_ms==deadline&&!sec.count&&!sec.closing);
+        peer_event(0x32,io,3);early_io_features();CHECK(sec.count==1&&!sec.io_pending);
+        unsigned count=sec.count;peer_event(0x31,0,0);CHECK(sec.count==count&&!sec.closing);
+        command(0x042b,0,peer,6);CHECK(sec.io_replied);
+        peer_event(0x31,0,0);CHECK(!sec.count&&!sec.closing); /* Already replied is idempotent too. */
+        if(mode==1){peer_event(0x17,0,0);command(0x040c,0,peer,6);CHECK(sec.key_loaded);}
+        peer_event(0x33,numeric,4);command(0x042c,0,peer,6);
+        /* A real success event may precede KeyNotify. It grants no audio;
+         * P_AUTH still waits for the actual accepted type4 key below. */
+        CHECK(event(auth,5)==A138_SECURITY_OK&&sec.auth_done&&!sec.secure&&!classic.security_ready);
+        pump();pump();CHECK(!sec.count&&!sec.encrypt_sent&&!sec.new_key&&!sec.secure&&!classic.security_ready);
+        memset(key,0xa6,16);key[16]=(uint8_t)(mode==2?5:4);peer_event(0x18,key,17);
+        if(mode==2){
+            CHECK(sec.closing&&!sec.secure&&!classic.security_ready&&!sec.new_key);
+            CHECK((sec.close_context&UINT32_C(0xfc0000ff))==UINT32_C(0xd4000018));
+            uint32_t first=sec.close_context;io[0]=5;peer_event(0x32,io,3);CHECK(sec.close_context==first);
+            continue;
+        }
+        CHECK(sec.new_key&&!sec.secure&&!classic.security_ready&&!sec.auth_sent);
+        pump();pump();encrypt_and_size(16);pump();
+        CHECK(sec.secure&&classic.security_ready&&sec.auth_done&&sec.encrypted&&sec.key_size==16);
+        CHECK(!loads&&!replaces&&!deletes&&!sec.close_context);erased_key();
+    }
+#ifndef A138_SINGLE_BLE_RECORDING
+    /* A durable owner must actually query its backend even when peer SSP
+     * starts with IO; request order does not manufacture a missing-key fact. */
+    reset(0);startup();connect();peer_event(0x31,0,0);early_io_features();
+    CHECK(sec.io_pending&&!sec.key_loaded&&!sec.count&&!loads&&!sec.closing);
+    peer_event(0x31,0,0);CHECK(sec.io_pending&&!sec.count&&!sec.closing);
+    peer_event(0x17,0,0);command(0x040c,0,peer,6);CHECK(loads==1&&sec.key_loaded);
+    pump();command(0x042b,0,peer,6);CHECK(sec.io_replied&&!sec.io_pending&&!sec.secure);
+#endif
+}
+static void test_session_phone_ssp(void){
+    /* Xiaomi Civi 5 Pro HCI capture, 2026-11-02: DisplayYesNo, no OOB,
+     * DedicatedBonding+MITM (01 00 03), after our NoIO/NoBonding reply.
+     * Also cover the other valid MITM requests with the same Just Works
+     * association; none may open AVDTP before authentication+encryption. */
+    for(unsigned auth=1;auth<=5;auth+=2){
+        uint8_t io[3]={1,0,(uint8_t)auth},numeric[4]={1,0,0,0},key[17];
+        reset_session();startup();connect();remote_features();
+        peer_event(0x17,0,0);command(0x040c,0,peer,6);
+        peer_event(0x31,0,0);command(0x042b,0,peer,6);
+        peer_event(0x32,io,3);CHECK(!sec.closing&&sec.remote_io_seen&&!sec.secure&&!classic.security_ready);
+        peer_event(0x33,numeric,4);command(0x042c,0,peer,6);
+        memset(key,0xa6,16);key[16]=4;peer_event(0x18,key,17);
+        CHECK(!sec.secure&&!classic.security_ready&&!loads&&!replaces&&!deletes);
+        authenticated();CHECK(!sec.secure&&!classic.security_ready);
+        encrypt_and_size(16);pump();CHECK(sec.secure&&classic.security_ready);
+        erased_key();CHECK(connect_psm(25)==0);disconnect();
+    }
+    /* Reserved peer fields remain invalid for session-only audio too. */
+    for(unsigned field=0;field<3;++field){
+        uint8_t io[3]={1,0,3};io[field]=(uint8_t)(field==0?5:field==1?4:6);
+        reset_session();startup();connect();remote_features();
+        peer_event(0x17,0,0);command(0x040c,0,peer,6);
+        peer_event(0x31,0,0);command(0x042b,0,peer,6);peer_event(0x32,io,3);
+        CHECK(sec.closing&&!sec.secure&&!classic.security_ready);
+    }
+}
 static void test_session_only(void){
     reset_session();startup();connect();remote_features();pair_key();
     CHECK(!loads&&!replaces&&!deletes&&!sec.secure&&!classic.security_ready);
@@ -365,5 +437,7 @@ int main(void){
     test_peer_initiated_security_interleave();test_valid_envelope_fuzz();
 #endif
     test_session_only();
+    test_io_before_key_request();
+    test_session_phone_ssp();
     printf("classic security source-stage: %u checks passed\n",checks);return 0;
 }

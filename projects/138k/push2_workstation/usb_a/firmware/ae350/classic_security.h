@@ -64,6 +64,11 @@ struct a138_security {
     uint8_t secure,closing,disconnect_queued,delete_pending,forget_pending,forget_peer[6];
     uint32_t forget_revision;
     uint8_t close_reason,close_cause,failure,session_only;
+    /* First close only, retained until init. D4/FC marker; bits25:18 cause,
+     * bits17:12 host/basic/remoteIO/ioReplied/ioPending/keyLoaded,
+     * bits11:8 phase, bits7:0 triggering HCI event (F0 tick/F1 pump/F2 ACL/F3 forget). */
+    uint32_t close_context;
+    uint8_t context_event;
     uint32_t stale_events,negative_replies;
 };
 

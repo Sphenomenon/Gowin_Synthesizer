@@ -162,6 +162,40 @@ static void inject_frame(const uint8_t *data,unsigned bytes) {
     c->frame_count=1;c->frame[0]=(struct a138_classic_frame){.link_epoch=9,.stream_epoch=c->stream_epoch,.format=c->format,.bytes=(uint16_t)bytes};
     memcpy(c->frame[0].data,data,bytes);
 }
+static void test_acl_diagnostic(void) {
+    uint32_t header;uint16_t status;
+    uint8_t info[14]={0x23,0,10,0,6,0,1,0,10,2,2,0,2,0};
+    reset(0,0);a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(header==UINT32_C(0x43505531)&&status==0);
+    r.security.close_context=UINT32_C(0xd463c418);
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(header==UINT32_C(0xd463c418)&&status==0);
+    rx(2,9,0,info,sizeof info);
+    for(unsigned i=0;m.present&&i<10u;i++)step();
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(!m.present&&r.rx_dropped==1&&header==UINT32_C(0x000a0023));
+    CHECK(status==(256u|A138_CLASSIC_INACTIVE));
+
+    reset(1,0);startup();
+    CHECK(a138_classic_begin(&r.classic,9,9,0x23,276)==A138_CLASSIC_OK);
+    r.security.active=1;r.security.generation=9;r.security.handle=0x23;
+    rx(2,9,0,info,sizeof info); /* Invalid controller PB0 is observed, not accepted. */
+    for(unsigned i=0;m.present&&i<10u;i++)step();
+    a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(!m.present&&!r.fault&&r.classic.malformed==1&&!r.classic.tx_bytes);
+    CHECK(header==UINT32_C(0x000a0023)&&status==(256u|0xb0u|A138_CLASSIC_MALFORMED));
+
+    info[1]=0x20;rx(2,9,0,info,sizeof info);
+    r.classic.rx_complete=1;
+    for(unsigned i=0;!r.rx_waiting&&i<10u;i++)step();
+    CHECK(m.present&&r.rx_waiting&&!r.fault);
+    step();a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(header==UINT32_C(0x000a2023)&&status==(512u|0xb0u|A138_CLASSIC_BUSY));
+    r.classic.rx_complete=0;
+    step();a138_classic_runtime_diagnostic(&r,&header,&status);
+    CHECK(!m.present&&!r.fault&&!r.rx_waiting&&status==(512u|0xb0u|A138_CLASSIC_OK));
+    CHECK(r.classic.tx_bytes&&r.transport.tx_phase); /* Valid InfoRequest still produces a response. */
+}
 static void test_actual_decoder_and_media(const uint8_t *data,unsigned bytes,FILE *pcm) {
     reset(1,1);startup();inject_frame(data,bytes);step();CHECK(r.pcm_pending&&r.decoded.valid&&r.classic.ready&&submits==0);
     unsigned samples=r.decoded.scalar_samples;step();CHECK(!r.pcm_pending&&r.pcm_blocks==1&&submits==1&&!r.fault);
@@ -179,7 +213,7 @@ int main(int argc,char **argv) {
     unsigned mode=(frame[1]>>2)&3u,sub=frame[1]&1u?8u:4u,blocks=4u+4u*((frame[1]>>4)&3u);
     unsigned bits=blocks*frame[2]*(mode<2u?(mode?2u:1u):1u)+(mode==3u?sub:0u);
     bytes=4u+sub*(mode?2u:1u)/2u+(bits+7u)/8u;
-    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();test_session_startup();
+    test_missing_backend_and_identity();test_startup_and_ordering();test_transport_private_copy_and_faults();test_session_startup();test_acl_diagnostic();
     FILE *pcm=fopen(argv[2],"wb");CHECK(pcm);test_actual_decoder_and_media(frame,bytes,pcm);CHECK(fclose(pcm)==0);
     printf("classic runtime: %u checks passed; native RTL, durable store, phone and physical media absent\n",checks);return 0;
 }

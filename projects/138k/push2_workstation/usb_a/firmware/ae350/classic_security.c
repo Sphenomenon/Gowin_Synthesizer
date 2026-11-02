@@ -35,6 +35,11 @@ static enum a138_security_result fence(struct a138_security *s,uint8_t why) {
 static void close_link(struct a138_security *s,uint8_t why) {
     if(!s->active)return;
     revoke(s);if(!s->closing){
+        if(!s->close_context)s->close_context=UINT32_C(0xd4000000)|((uint32_t)why<<18)|
+            (s->remote_host?UINT32_C(1)<<17:0u)|(s->remote_basic?UINT32_C(1)<<16:0u)|
+            (s->remote_io_seen?UINT32_C(1)<<15:0u)|(s->io_replied?UINT32_C(1)<<14:0u)|
+            (s->io_pending?UINT32_C(1)<<13:0u)|(s->key_loaded?UINT32_C(1)<<12:0u)|
+            ((uint32_t)s->phase<<8)|s->context_event;
         s->closing=1;s->close_cause=why;s->close_reason=why==0x13u?0x13u:0x05u;s->store_started_ms=s->clock_ms;
     }
 }
@@ -90,6 +95,7 @@ enum a138_security_result a138_security_start_session(struct a138_security *s,ui
 }
 enum a138_security_result a138_security_tick(struct a138_security *s,uint32_t e,uint32_t now) {
     enum a138_security_result r=identity(s,e);if(r!=A138_SECURITY_OK)return r;
+    s->context_event=0xf0;
     if(s->clock_valid&&(uint32_t)(now-s->clock_ms)>=0x80000000u)return fence(s,F_CLOCK);
     s->clock_ms=now;s->clock_valid=1;
     if(s->count&&(uint32_t)(now-s->queue[s->head].started_ms)>=A138_SECURITY_COMMAND_MS)return fence(s,F_TIMEOUT);
@@ -112,6 +118,7 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
 #endif
     if(!s||!s->started)return A138_SECURITY_ARGUMENT;
     if(s->fenced)return A138_SECURITY_FENCED;
+    s->context_event=0xf1;
     if(!s->clock_valid)return A138_SECURITY_BUSY;
     retire(s);
 #ifndef A138_SINGLE_BLE_RECORDING
@@ -152,7 +159,7 @@ enum a138_security_result a138_security_pump(struct a138_security *s) {
         return A138_SECURITY_OK;
     }
     if(s->count)return A138_SECURITY_OK;
-    if(s->io_pending&&s->remote_basic&&s->remote_host){
+    if(s->io_pending&&s->remote_basic&&s->remote_host&&(s->session_only||s->key_loaded)){
         memcpy(p,s->peer,6);p[6]=3;p[7]=0;p[8]=s->session_only?0:4;s->io_pending=0;
         enqueue(s,C_IO,0x042b,p,9);return s->fenced?A138_SECURITY_FENCED:A138_SECURITY_OK;
     }
@@ -267,6 +274,7 @@ enum a138_security_result a138_security_response(struct a138_security *s,uint32_
     if(r!=A138_SECURITY_OK)return r;
     if(owner!=2u)return A138_SECURITY_STALE;
     if(!p||n<2u||n!=(uint16_t)(p[1]+2u))return fence(s,F_PROTOCOL);
+    s->context_event=p[0];
     if(!s->count)return fence(s,F_PROTOCOL);
     c=&s->queue[s->head];
     if(!c->accepted||c->response_done)return fence(s,F_PROTOCOL);
@@ -327,6 +335,7 @@ enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e
     if(r!=A138_SECURITY_OK)return r;
     if(!p||n<2u||n!=(uint16_t)(p[1]+2u))return fence(s,F_PROTOCOL);
     code=p[0];
+    s->context_event=code;
     if(code==0x10u||code==0x1au)return fence(s,F_PROTOCOL);
     if(code==4u){ /* Actual Connection Request, never invent accept on discovery. */
         if(n!=12u||!good_peer(p+2))return fence(s,F_PROTOCOL);
@@ -410,12 +419,29 @@ enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e
             return fence(s,F_POLICY);
 #endif
         }else if(code==0x31u){
-            if((s->phase!=P_BASIC&&s->phase!=P_HOST&&s->phase!=P_AUTH)||s->closing||!s->key_loaded||s->io_pending){
+            unsigned queued=0;
+            for(unsigned j=0;j<s->count;++j)
+                if(s->queue[(s->head+j)%A138_SECURITY_QUEUE].kind==C_IO)queued=1;
+            if((s->phase!=P_BASIC&&s->phase!=P_HOST&&s->phase!=P_AUTH)||s->closing){
                 memcpy(b,peer,6);b[6]=0x18;enqueue(s,C_IO_NEG,0x0434,b,7);close_link(s,0x18);
-            }else if(!s->remote_basic||!s->remote_host){s->io_pending=1;s->io_started_ms=s->clock_ms;}
-            else{memcpy(b,peer,6);b[6]=3;b[7]=0;b[8]=s->session_only?0:4;enqueue(s,C_IO,0x042b,b,9);}
+            }else{
+                /* Incoming SSP can ask for IO before any host key lookup.
+                 * Session-only has no reusable key; durable policy still waits
+                 * for its actual backend lookup. A repeat preserves the first
+                 * deadline and never queues a second IO reply. */
+                s->peer_auth_started=1;
+                if(s->io_pending||s->io_replied||queued)return A138_SECURITY_OK;
+                if(!s->remote_basic||!s->remote_host||(!s->session_only&&!s->key_loaded)){
+                    s->io_pending=1;s->io_started_ms=s->clock_ms;
+                }else{memcpy(b,peer,6);b[6]=3;b[7]=0;b[8]=s->session_only?0:4;enqueue(s,C_IO,0x042b,b,9);}
+            }
         }else if(code==0x32u){
-            if(p[8]>4u||p[9]>3u||p[10]>5u||(p[10]&1u)){close_link(s,0x18);return A138_SECURITY_OK;}
+            /* A phone can request MITM even when our NoInputNoOutput reply
+             * selects Just Works. Session-only audio accepts that request,
+             * but still requires the unauthenticated SSP key, successful
+             * authentication, encryption and negotiated key size below.
+             * Keep the durable-bond policy's stricter rejection unchanged. */
+            if(p[8]>4u||p[9]>3u||p[10]>5u||(!s->session_only&&(p[10]&1u))){close_link(s,0x18);return A138_SECURITY_OK;}
             s->remote_io_seen=1;s->remote_auth=p[10];
         }else if(code==0x33u){
             uint32_t numeric=(uint32_t)le(p+8)|((uint32_t)le(p+10)<<16);
@@ -423,7 +449,7 @@ enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e
                 enqueue(s,C_CONFIRM,0x042c,peer,6); /* JustWorks, no numeric comparison claimed. */
             else{address_reply(s,C_CONFIRM_NEG,0x042d,peer);close_link(s,0x18);}
         }else if(code==0x18u){
-            if((s->phase!=P_HOST&&s->phase!=P_AUTH)||s->closing||!s->key_loaded||!s->io_replied||
+            if((s->phase!=P_HOST&&s->phase!=P_AUTH)||s->closing||(!s->session_only&&!s->key_loaded)||!s->io_replied||
                !s->remote_io_seen||p[24]!=4u||(s->bond.revision&&s->bond.type==5u)){
                 close_link(s,0x05);return A138_SECURITY_OK;}
             if(s->new_key){if(s->bond.type!=p[24]||memcmp(s->bond.key,p+8,16)!=0)close_link(s,0x05);return A138_SECURITY_OK;}
@@ -451,7 +477,8 @@ enum a138_security_result a138_security_event(struct a138_security *s,uint32_t e
         if(n!=5u)return fence(s,F_PROTOCOL);
         if(le(p+3)!=s->handle)return stale(s);
         if((s->phase!=P_BASIC&&s->phase!=P_HOST&&s->phase!=P_AUTH)||s->auth_done||
-           (!s->auth_sent&&!(s->peer_auth_started&&s->key_response_sent)))return stale(s);
+           (!s->auth_sent&&!(s->peer_auth_started&&(s->key_response_sent||
+             (s->session_only&&s->io_replied&&s->remote_io_seen)))))return stale(s);
         if(p[2]){
             if(s->key_used&&(p[2]==5u||p[2]==6u)){s->delete_pending=1;s->store_started_ms=s->clock_ms;}
             close_link(s,p[2]);
@@ -474,6 +501,7 @@ enum a138_classic_result a138_security_classic_acl(struct a138_security *s,uint3
         const uint8_t *acl,uint16_t n) {
     enum a138_classic_result r;
     if(!s||!s->started)return A138_CLASSIC_ARGUMENT;
+    s->context_event=0xf2;
     if(!s->active||e!=s->epoch||g!=s->generation)return A138_CLASSIC_STALE;
     if(s->fenced||s->closing)return A138_CLASSIC_FENCED;
     r=a138_classic_acl(s->classic,g,g,acl,n);
@@ -482,6 +510,7 @@ enum a138_classic_result a138_security_classic_acl(struct a138_security *s,uint3
 }
 enum a138_security_result a138_security_forget(struct a138_security *s,uint32_t e,const uint8_t peer[6]) {
     enum a138_security_result r=identity(s,e);if(r!=A138_SECURITY_OK)return r;
+    s->context_event=0xf3;
     if(!peer||!good_peer(peer))return A138_SECURITY_ARGUMENT;
     if(s->session_only){
         if(s->active&&same(peer,s->peer))close_link(s,0x13);

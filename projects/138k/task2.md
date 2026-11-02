@@ -640,3 +640,12 @@ M26-1新普通立体声XY的[完整新综合与严格网表检查](push2_worksta
 
 
 [W26 SRAM deployment for user hardware acceptance](push2_workstation/usb_a/reports/DUAL138K_W26_SRAM_20261102.json) completed under the latest explicit user request. Frozen candidate 0a6b1eb610b17895 / D2110143 uses FS SHA256 4b76a2c5b991cbd268b2e72f2cc9f8538e7ad8ea23fbac677b82372e30b755af / CheckSum3575. All 19 programming inputs and physical evidence files remained unchanged. Before programming: M26 D2110137 / 00022020. SRAM Program (op2) exited 0; independent op0 then read D2110143 / 00022230, and op74 confirmed the same status. All 20 independent review checks passed. W26 is now left in SRAM for real phone streaming D, 25K combined press/release and disconnect cleanup, and continuous DAC acceptance; HDMI, recording and downloads remain absent. Identity readback does not establish those functions or bitwise SRAM verification. No Flash write was performed; the previously programmed original M26 configuration Flash remains, so a power cycle or explicit Flash reload returns to M26. No fresh Flash-byte readback or physical power cycle was performed. M26-1 source, other uncommitted work and the primary checkout remain protected; sequential testing on one board is not two-board concurrent acceptance.
+
+
+### 2026-11-02：接续其他会话 W B5 与独立 BLE 录音分线
+
+用户最新授权两线并行、JTAG串行及通过门禁后的SRAM复测，本轮不写Flash。真实vivo Y77/Android12已ADB授权，现装0.3.3-ble-lifecycle/code18，不再仅有模拟器。W音频线继续显式无HDMI／录音下载配置；独立BLE候选复用A25D/C1协议、真实最终PCM与16384帧短录音RAM，必须新身份及全量实现后验证连接／状态／非静音录音／完整CRC下载。A25D ROM数据、C1历史全零PCM均不作为真实乐音验收；25K转发仍由用户自行修改。
+
+已只读参考“执行最新 task.md 任务”的codex/w26-phone-audio工作树，精确迁入SSP请求策略／事件顺序修复及已有ACL诊断，不合并其M/显示差异。当前分支重新通过来源17项、security原生及sanitizer各17904检查、W session各3284检查及32变异；runtime 11个SBC用例原生及sanitizer各3759检查、15+9变异均通过。独立的既有M stereo审计维护13项／资格负控通过，未重新实现M位流。
+
+[W B5来源、物理门禁与SRAM证据](push2_workstation/usb_a/reports/DUAL138K_W_PHONE_B5_REUSE_20261102.json)：复用c83a2639会话已完成全量综合／P&R的候选dc79a470bb3e8135，物理D21102B5，FS SHA256 dfbcd2d458d47345d8853e2a4a9983db2158bd372589beaa238fcd28417c5a19。14域setup/hold端点均零，最差setup/hold/recovery/removal +.013/+.092/+2.376/+.281ns，PLL及四项实际routed CDC通过。功能LUT30655／FF27030／BSRAM218／DSP59，GAO另占BSRAM9；这不是本工作树新跑第二次P&R。重新逐hash验证封存输入及门禁后，已从D21102B4串行SRAM下载并独立读回D21102B5／00022230；当前板上身份以此替代前条W26记录。手机配对／A2DP及D／25K／连续DAC尚未验收，BLE录音线尚未上板。Flash未写，主目录与其他工作树保持。

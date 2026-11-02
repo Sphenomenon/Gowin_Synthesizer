@@ -33,6 +33,8 @@ MUTANTS=(
  ('avdtp-gate-removed','classic','if(!s->security_ready){result=3;s->security_violation=1;}','if(0){result=3;s->security_violation=1;}'),
  ('session-io-bonds','security','b[8]=s->session_only?0:4;','b[8]=4;'),
  ('session-deferred-io-bonds','security','p[8]=s->session_only?0:4;','p[8]=4;'),
+ ('session-peer-mitm-rejected','security','(!s->session_only&&(p[10]&1u))','(p[10]&1u)'),
+ ('durable-peer-mitm-allowed','security','(!s->session_only&&(p[10]&1u))','0'),
  ('session-key-retained','security','wipe(s->bond.key,sizeof s->bond.key);s->new_key=0;','s->new_key=0;'),
  ('session-observer-key-retained','security','if(s->session_only)wipe(s->bond.key,sizeof s->bond.key);','if(0)wipe(s->bond.key,sizeof s->bond.key);'),
 )

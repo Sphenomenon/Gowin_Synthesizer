@@ -1,0 +1,149 @@
+{
+  "schema": "dual138k-w-phone-b5-reuse-stage-v1",
+  "date": "2026-11-02",
+  "source_branch": "codex/w26-phone-audio",
+  "source_commit": "c83a26396841307591f15e455128caf37bd06337",
+  "source_changes": [
+    "daf5e09980f142a8df2d2d2cc83ddca8c6aaced9",
+    "81279d218e645f22f644968b459793b5531c7a7c",
+    "6f0dcfd827da8a6d513b5070d480910082f6c9d3"
+  ],
+  "maintained_source_sha256": {
+    "firmware/ae350/classic_runtime.c": "3138d07f99391b447947ad71939bfdcb57fdca0488a5755b7d85754181a1f6e6",
+    "firmware/ae350/classic_runtime.h": "ce40a359e3d5397d65723120cdc849179a41a6fecd10f48a8d4816fc77b69936",
+    "firmware/ae350/classic_security.c": "1a1521539e19cf953cb07214e24deef73fa1173b396d6a958c6c82f0bee1b268",
+    "firmware/ae350/classic_security.h": "7530ceafce140e2b271ca7061fa5e33d9eea5a06e514d6a2cf29c8e6c861b141",
+    "firmware/ae350/worker_audio_main.c": "2488ceffc420f709a2406b692ba1c448dcbd0fd1466e80c2bd563a3c6d68abee",
+    "sim/ae350_runtime_fixture.c": "b735c59d1a0f66a7c29bab5b12a303444d13f96cbc85509dac58c6d06081af17",
+    "sim/ae350_security_fixture.c": "ba4bad3869eaec47321d234afdb584e3cdecc8d563f61295c1c4ec5369a25b7b",
+    "sim/run_ae350_security.py": "e59adf5e2eaac3650661cb1958e66465e5485df2d7143109c636c3bb7af7aa15"
+  },
+  "source_test": {
+    "current_workstation": {
+      "passed": 17
+    },
+    "security": {
+      "native_checks": 17904,
+      "sanitized_checks": 17904,
+      "worker_session_checks": 3284,
+      "mutation_cases": 32,
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-b5-port-security-v1/verification.json",
+      "sha256": "45f74270bb3fb554cdb10bb424fe7a575b96e44bbfdf027355bff1d418c9adc2"
+    },
+    "runtime": {
+      "SBC_cases": 11,
+      "native_and_sanitized_checks_per_case": 3759,
+      "runtime_mutations": 15,
+      "pcm_mutations": 9,
+      "verification": "/Users/sphenicidition/.cache/gw138k-dual-20261031/w-phone-b5-port-runtime-v1/verification.json",
+      "sha256": "73e8564c65c4bebea23ecb710bdf7fc8f86b138337a1ffd169d40aa951439873"
+    }
+  },
+  "separate_audit_maintenance": {
+    "source_and_qualification_tests_passed": 13,
+    "evidence": "/Users/sphenicidition/.cache/gw138k-dual-20261031/maintained-stereo-audit-review-v1/run.json",
+    "sha256": "108470d0e996fc576393416445337deb4fe3194e2e9a41bfc268ada4debdc9b4",
+    "scope": "Previously uncommitted M stereo qualification maintenance; no M RTL or new M physical run."
+  },
+  "reused_physical_candidate": {
+    "identity": "custom138k-native-physical-D21102B5",
+    "candidate": "custom138k-workstation-w-demo-v1-dc79a470bb3e8135",
+    "scope": "Reuse the other conversation completed full synthesis/P&R; no claim of a second fresh P&R from this checkout. Exact imported firmware bytes checked. Frozen inputs unchanged.",
+    "global_worst_ns": {
+      "setup": 0.013,
+      "hold": 0.092,
+      "recovery": 2.376,
+      "removal": 0.281
+    },
+    "resources": {
+      "Logic": {
+        "used": 43324,
+        "capacity": 138240
+      },
+      "Register": {
+        "used": 27030,
+        "capacity": 139095
+      },
+      "CLS": {
+        "used": 32319,
+        "capacity": 69120
+      },
+      "BSRAM": {
+        "used": 218,
+        "capacity": 340
+      },
+      "DSP": {
+        "used": 59,
+        "capacity": 298
+      },
+      "LUT": 30655,
+      "ALU": 11607,
+      "ROM16": 0,
+      "SSRAM": 177
+    },
+    "GAO_resources": {
+      "Logic": 562,
+      "Register": 872,
+      "BSRAM": 9,
+      "LUT": 549,
+      "ALU": 13,
+      "ROM16": 0,
+      "SSRAM": 0
+    },
+    "STA_PLL_routed_CDC_passed": true,
+    "evidence_sha256": {
+      "phone-io-order-timing.json": "d037551701ed34fa0fc3b9de97d7e74cb5dc0f89487b20d9b6ae688ae246038e",
+      "phone-io-order-pll.json": "021afe044e6eb2f956143db78127bb85167f99361915dda67dcf110411405656",
+      "phone-io-order-routed-cdc.json": "649259100e3d09f8fadc80e3468f735254467b13aa8ad99797ec2ac84b4adb14"
+    },
+    "physical_input_manifest_sha256": "476e2b4db8c0b995a9c45a0978154aca26634e57978c66f1f99ee95a8b548abe"
+  },
+  "SRAM_deployment": {
+    "identity": "D21102B5",
+    "bitstream_sha256": "dfbcd2d458d47345d8853e2a4a9983db2158bd372589beaa238fcd28417c5a19",
+    "operation": "SRAM",
+    "independent_readback": true,
+    "user_code": "D21102B5",
+    "status": "00022230",
+    "flash_written": false,
+    "phone_audio_accepted": false,
+    "commands": {
+      "before": {
+        "exit_code": 0,
+        "log_sha256": "e0d3d501a5f864975ed3014cf501272469b1e62bf9e013f9996b5cc0c32cb6d4"
+      },
+      "program": {
+        "exit_code": 0,
+        "log_sha256": "05358f3b86b1cf6b73a24354427824c0c8ed257f3b4bc5ba0adc06163bee409a"
+      },
+      "readback": {
+        "exit_code": 0,
+        "log_sha256": "fc33a3ba751079eb6a45d8e54b0255e327b875b0671c79fe61cbc977546346ac"
+      },
+      "status": {
+        "exit_code": 0,
+        "log_sha256": "3bd2c54606afbb65ef8b683d94eaa36f7302d739fc72337a8b72cdca63353421"
+      }
+    },
+    "gate_sha256": {
+      "phone-io-order-timing.json": "d037551701ed34fa0fc3b9de97d7e74cb5dc0f89487b20d9b6ae688ae246038e",
+      "phone-io-order-routed-cdc.json": "649259100e3d09f8fadc80e3468f735254467b13aa8ad99797ec2ac84b4adb14",
+      "phone-io-order-pll.json": "021afe044e6eb2f956143db78127bb85167f99361915dda67dcf110411405656"
+    }
+  },
+  "phone": {
+    "model": "vivo Y77",
+    "android": 12,
+    "installed_app": "0.3.3-ble-lifecycle / code18",
+    "audio_accepted": false,
+    "BLE_recording_accepted": false
+  },
+  "limits": [
+    "The current W candidate has no business GATT, recording, display or download backend.",
+    "Pairing and identity readback do not establish A2DP, D processing or DAC acceptance.",
+    "BLE real PCM recording is a separate explicit candidate; C1 historical all-zero PCM is not reused as audio proof.",
+    "JTAG is root-serialized. No Flash write in this stage.",
+    "Original M26 configuration Flash is preserved; no fresh Flash-byte comparison was performed."
+  ],
+  "release_ready": false
+}

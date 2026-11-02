@@ -14,7 +14,11 @@ void services_main(void) {
     a138_classic_runtime_firmware_init();
     diagnostic[1]=UINT32_C(0x41554457); /* AUDW: pump entered, not radio acceptance. */
     for(;;) {
+        uint32_t acl_header;
+        uint16_t acl_status;
         a138_classic_runtime_firmware_pump();
-        diagnostic[2]=++heartbeat;
+        a138_classic_runtime_firmware_diagnostic(&acl_header,&acl_status);
+        diagnostic[0]=acl_header;
+        diagnostic[2]=(++heartbeat<<16)|acl_status;
     }
 }

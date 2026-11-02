@@ -29,6 +29,7 @@ void a138_classic_runtime_init(struct a138_classic_runtime *r,struct a138_hci_bu
         const struct a138_bond_store *store,const struct a138_runtime_media *media) {
     if(!r)return;
     memset(r,0,sizeof *r);a138_hci_init(&r->transport,bus);
+    r->acl_header=UINT32_C(0x43505531);
     a138_security_init(&r->security);a138_classic_init(&r->classic);a138_sbc_init(&r->decoder);
     if(store&&store->load&&store->replace_atomic&&store->delete_atomic) {
         r->store=*store;r->enabled=1;
@@ -69,6 +70,17 @@ static void rx_dispatch(struct a138_classic_runtime *r) {
     struct a138_hci_transport *t=&r->transport;
     const struct a138_hci_rx *p=a138_hci_rx_peek(t);
     if(!p)return;
+    if(p->type==A138_HCI_ACL) {
+        if(!r->rx_waiting) {
+            r->acl_header=(uint32_t)p->data[0]|(uint32_t)p->data[1]<<8|
+                (uint32_t)p->data[2]<<16|(uint32_t)p->data[3]<<24;
+            r->acl_diagnostic=(uint16_t)((r->acl_diagnostic+256u)&0xff00u);
+        }
+        r->acl_diagnostic=(uint16_t)((r->acl_diagnostic&0xff00u)|
+            (r->started?16u:0u)|(r->security.active?32u:0u)|(r->security.secure?64u:0u)|
+            (p->epoch==r->security.epoch&&p->generation==r->security.generation?128u:0u)|
+            (!r->started?A138_CLASSIC_INACTIVE:p->retired?A138_CLASSIC_STALE:A138_CLASSIC_EMPTY));
+    }
     if(!r->started) {
         /* No durable backend means no scan/auth/security grants. Unexpected
          * copies can be discarded without changing hardware receive credits. */
@@ -90,6 +102,7 @@ static void rx_dispatch(struct a138_classic_runtime *r) {
     }else {
         enum a138_classic_result status=a138_security_classic_acl(&r->security,p->epoch,
             p->generation,p->data,p->bytes);
+        r->acl_diagnostic=(uint16_t)((r->acl_diagnostic&0xfff0u)|(uint16_t)status);
         if(status==A138_CLASSIC_BUSY) {
             if(!r->rx_waiting){r->rx_wait_started=t->now_ms;r->rx_waiting=1;}
             else if((uint32_t)(t->now_ms-r->rx_wait_started)>=RX_WAIT_MS)
@@ -193,6 +206,11 @@ static void runtime_pass(struct a138_classic_runtime *r,uint8_t allow_decode) {
     }
 }
 void a138_classic_runtime_step(struct a138_classic_runtime *r) {runtime_pass(r,1);}
+void a138_classic_runtime_diagnostic(const struct a138_classic_runtime *r,uint32_t *header,uint16_t *status) {
+    if(header)*header=r?(r->acl_header==UINT32_C(0x43505531)&&r->security.close_context?
+        r->security.close_context:r->acl_header):UINT32_C(0x43505531);
+    if(status)*status=r?r->acl_diagnostic:0;
+}
 /* Actual firmware root. W-DEMO explicitly uses NoBonding/session-only SSP;
  * other profiles retain the disabled durable-backend gate. Neither policy
  * fabricates physical audio, clock-recovery or presentation-delay facts. */
@@ -234,4 +252,7 @@ void a138_classic_runtime_firmware_pump(void) {
 #ifndef A138_WORKER_AUDIO_ONLY
     a138_ble_business_firmware_pump();
 #endif
+}
+void a138_classic_runtime_firmware_diagnostic(uint32_t *header,uint16_t *status) {
+    a138_classic_runtime_diagnostic(&firmware_runtime,header,status);
 }
