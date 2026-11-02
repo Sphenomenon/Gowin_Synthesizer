@@ -2,7 +2,8 @@
 
 Trace from functional CLEAR pins before selecting any release register.  The
 performance chain was merged into TF control; the CPU source chain was merged
-into APB.  This is a reset proof, not a payload/handshake or physical CDC proof.
+into APB. Reset and local source-commit proofs do not establish ingress
+acceptance, the complete handshake or physical CDC correctness.
 """
 import hashlib
 import json
@@ -52,6 +53,66 @@ def zero_async_ff(n, path, *, clock, clear):
     require(n.pin(path, 'CLEAR') == clear, 'functional/common CLEAR changed: ' + path)
     return dict(register=path, primitive=cell['kind'], effective_init=0,
                 **{pin.lower(): n.pin(path, pin) for pin in ('Q', 'D', 'CLK', 'CE', 'CLEAR')})
+
+
+def audit_source_payload_commit(n, *, scope, clear):
+    """Prove one reviewed held-bus capture and request toggle share an edge.
+
+    Synthesis may move a request FF's CE into its D cone. Compare its effective
+    next-Q, including asynchronous clear precedence, rather than requiring CE
+    pin identity. This local transition proof does not prove ingress policy,
+    the complete handshake, held flight time or physical CDC correctness.
+    """
+    owners = {
+        'u_runtime/u_performance_cdc': (PERFORMANCE_BITS, 'audio_clk'),
+        'u_runtime/u_cpu_cdc': (tuple(range(224)), 'ram_clk'),
+    }
+    require(scope in owners, 'unreviewed source payload owner: ' + scope)
+    bits, clock = owners[scope]
+    g = Graph(n)
+    held = [g.register(scope, 'held_data', bit) for bit in bits]
+    require({p for p in g.regs if p.startswith(scope + '/held_data_')} == set(held),
+            'source held payload bit inventory changed: ' + scope)
+    request = g.register(scope, 'request_toggle')
+    for path in (*held, request):
+        zero_async_ff(n, path, clock=clock, clear=clear)
+    payload_ce = n.pin(held[0], 'CE')
+    require(all(n.pin(path, 'CE') == payload_ce for path in held),
+            'source held payload bits have differing commit CE: ' + scope)
+    require(payload_ce not in g.high | g.low,
+            'source held payload commit CE is constant: ' + scope)
+    captured = [g.register(scope, 'destination_data', bit) for bit in bits]
+    require(all(n.pin(dst, 'D') == n.pin(src, 'Q')
+                for src, dst in zip(held, captured)),
+            'source held payload corresponding capture D changed: ' + scope)
+    closure = complete_closure(n, g, held)
+    require(closure['ff_endpoints'] == {p + '/D': n.pin(p, 'CLK') for p in captured}
+            and not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
+            'source held payload extra/bypassed consumer: ' + scope)
+    q = n.pin(request, 'Q')
+    pins = {pin: n.pin(request, pin) for pin in ('CLEAR', 'CE', 'D')}
+    leaves = sorted({q}.union(*(g.support(net) for net in (*pins.values(), payload_ce))))
+    require(all(len(g.drivers[leaf]) == 1 and g.drivers[leaf][0][0] in g.regs
+                and g.drivers[leaf][0][1] == 'Q' for leaf in leaves),
+            'source commit proof leaf is not a unique real register Q: ' + scope)
+    bd = BooleanDiagram(leaves)
+    commit = bd.net(g, payload_ce)
+    require(commit not in (0, 1), 'source held payload commit CE is Boolean constant: ' + scope)
+    actual = bd.choose(bd.net(g, pins['CLEAR']), 0,
+        bd.choose(bd.net(g, pins['CE']), bd.net(g, pins['D']), bd.inputs[q]))
+    expected = bd.choose(bd.net(g, pins['CLEAR']), 0,
+                         bd.different(bd.inputs[q], commit))
+    require(actual == expected, 'source request/payload reset-inclusive next-Q changed: ' + scope)
+    return dict(scope=scope, clock=clock, functional_clear=clear,
+        held_registers=held, retained_payload_bits=list(bits), request_register=request,
+        request_q=q, request_ce=pins['CE'], request_d=pins['D'], payload_commit_ce=payload_ce,
+        raw_request_payload_ce_equal=pins['CE'] == payload_ce,
+        all_payload_bits_share_commit_ce=True, source_payload_consumer_closure=closure,
+        named_register_q_inputs=leaves, boolean_assignments=1 << len(leaves),
+        bdd_nodes=len(bd.nodes), reset_before_enable=True,
+        reset_inclusive_next_q_contract='CLEAR ? 0 : (request_Q XOR payload_CE)',
+        reset_inclusive_next_q_exact=True, ingress_acceptance_logic_proven=False,
+        complete_handshake_proven=False, physical_cdc_accepted=False)
 
 
 def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
@@ -211,20 +272,21 @@ def audit_peripheral_releases(n, *, root):
                 require(path + '/CLEAR' in release['consumer_closures'][2]['ff_endpoints'],
                         'owned FF absent from actual final-release closure: ' + path)
                 functional_rows.append(row)
-        # Preserve the exact held payload destination wiring.  Ingress content
-        # and source acceptance CE are observed below, not proved by this audit.
+        # Preserve the exact held payload destination wiring. The local source
+        # commit proof below does not prove ingress content or acceptance policy.
         for source, capture in zip(held, destination):
             require(n.pin(capture, 'D') == n.pin(source, 'Q'),
                     'destination payload is no longer actual corresponding held Q: ' + capture)
-        source_ce, destination_ce = (n.pin(paths[-1], 'CE') for paths in (source_control, destination_control))
-        require(all(n.pin(path, 'CE') == source_ce for path in held) and
-                all(n.pin(path, 'CE') == destination_ce for path in destination),
-                'payload FF CE differs from its local request/acknowledge commit CE')
+        source_commit = audit_source_payload_commit(n, scope=scope, clear=local[0]['functional_clear'])
+        destination_ce = n.pin(destination_control[-1], 'CE')
+        require(all(n.pin(path, 'CE') == destination_ce for path in destination),
+                'destination payload FF CE differs from its local acknowledge commit CE')
         scopes.append(dict(id=name, scope=scope, retained_payload_bits=list(bits),
             functional_register_count=len(functional_rows), functional_registers=functional_rows,
             all_owned_reset_pins_in_final_release_closure=True,
             corresponding_held_to_destination_D_verified=True,
             payload_commit_CE_consistency_verified=True,
+            source_payload_commit=source_commit,
             ingress_data_and_acceptance_logic_proven=False, complete_handshake_proven=False))
     require(len({p for row in chains for p in row['registers']}) == 12,
             'distinct actual peripheral release inventory changed')
