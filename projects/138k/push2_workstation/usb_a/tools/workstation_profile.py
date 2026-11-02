@@ -465,7 +465,7 @@ def _artifact(root, output, metadata, profile):
         verify_pair(root,stage,metadata.get('task3_paired',{}),paired_role)
         from tools.workstation_task3_paired_board import verify_constraints as verify_pair_constraints
         verify_pair_constraints(root,stage,metadata)
-        installed_sdc=restore_pair_constraints(root,installed_sdc)
+        installed_sdc=restore_pair_constraints(root,installed_sdc,metadata.get('task3_paired_sdc',{}))
     elif 'task3_paired' in metadata:
         raise ValueError('unselected profile cannot claim paired board wiring')
     if spec.get('tf_direct_enabled', False):

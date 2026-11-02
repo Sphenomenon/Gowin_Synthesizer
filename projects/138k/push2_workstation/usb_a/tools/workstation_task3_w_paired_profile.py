@@ -36,12 +36,22 @@ DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
     'tools/workstation_task3_w_paired_profile.py', PROVIDER, REFERENCE, BOARD,
     'tools/workstation_task3_w_paired_firmware.py',
     'tools/build_resource_rework.py',
+    'tools/workstation_task3_w_paired_cdc_audit.py',
     'tools/workstation_task3_paired_board.py',
     'rtl/workstation/workstation_task3_paired_link_board.svh',
     'rtl/workstation/task3_paired_channels.vh',
     'rtl/workstation/WORKSTATION_TASK3_W_PAIRED_CONTRACT.md')))
 RETIRED_SELECTORS = ('u_clock_service/', 'u_managed/runtime/cpu_pcm.',
-                     'u_task3_media_apb/')
+    'u_task3_media_apb/',
+    'u_managed/media_stop/request_toggle_s', 'u_managed/media_stop/hold_50_s',
+    'u_managed/runtime/serializer/current_sequence_',
+    'u_managed/runtime/clocks/transaction/pending_44k1_s',
+    'u_managed/runtime/clocks/transaction/pending_epoch_',
+    'u_managed/runtime/serial_rate_s',
+    *(f'u_managed/runtime/serial_epoch_{bit}_s' for bit in range(1, 32)))
+PAIRED_PIN_REBIND = tuple((scope + '/RESET', scope + '/CLEAR') for scope in (
+    'u_managed/startup_compute_0_s*', 'u_managed/runtime/startup_compute_0_s*',
+    'u_managed/runtime/startup_memory_0_s*', 'u_managed/runtime/startup_serial_0_s*'))
 
 
 def digest(value):
@@ -162,6 +172,11 @@ def _paired_constraints(text):
                 selected = old.replace('u_task3_media/cnn_task/',
                                        'u_task3_media/cnn_stream/task_service/')
                 selected = selected.replace('u_managed/pcm_apb.commands/', 'u_task3_pcm_control/')
+                selected = selected.replace('u_task3_media/cnn_stream/task_service/cnn/model_memory_meta',
+                                            'u_task3_media/cnn_stream/task_service/backend_meta')
+                for before, after in PAIRED_PIN_REBIND:
+                    if selected == before:
+                        selected = after
                 if selected.startswith(RETIRED_SELECTORS):
                     removed.append(old)
                 else:

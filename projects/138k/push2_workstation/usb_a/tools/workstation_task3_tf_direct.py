@@ -97,6 +97,49 @@ def root_constraint_mappings():
     return tuple(rows)
 
 
+def paired_release_constraint_mappings():
+    """Four separately proved M paired synthesis aliases; DIRECT r3 is unchanged.
+
+    Apply only in the paired stage adapter, after DIRECT r3 reconstruction.
+    All selected pins remain release-shift FF CLEARs, never functional state.
+    """
+    return (
+        ('u_managed/control_cdc/p_release*/CLEAR',
+         'u_task3_pair_link/config_cdc/p_release_*_s*/CLEAR'),
+        ('u_runtime/u_cpu_cdc/destination_release*/CLEAR',
+         'u_task3_pair_link/config_cdc/a_release_*_s*/CLEAR'),
+        ('u_managed/runtime/g_direct_tf.transport_health_mailbox/source_release_*_s*/CLEAR',
+         'u_task3_m_final_tap/source_release_*_s*/CLEAR'),
+        ('u_managed/midi_bytes/destination_release_*_s*/CLEAR',
+         'u_task3_m_pcm_commands/a_release_*_s*/CLEAR'),
+    )
+
+
+def adapt_paired_release_constraints(sdc):
+    selected = sdc
+    for before, after in paired_release_constraint_mappings():
+        if selected.count(before) != 1 or after in selected:
+            raise ValueError('M paired release constraint exact anchor drift: ' + before)
+        selected = selected.replace(before, after, 1)
+    return selected, dict(policy='task3_m_paired_real_release_aliases_v1',
+        input_sha256=digest(sdc), output_sha256=digest(selected),
+        mappings=[dict(before=a, after=b) for a, b in paired_release_constraint_mappings()],
+        actual_alias_and_consumer_proof_required=True, added_exceptions=0,
+        physical_recovery_removal_verified=False)
+
+
+def restore_paired_release_constraints(sdc, evidence):
+    restored = sdc
+    for before, after in reversed(paired_release_constraint_mappings()):
+        if restored.count(after) != 1 or before in restored:
+            raise ValueError('M paired release constraint inverse anchor drift: ' + after)
+        restored = restored.replace(after, before, 1)
+    selected, expected = adapt_paired_release_constraints(restored)
+    if selected != sdc or evidence != expected:
+        raise ValueError('M paired release constraint reconstruction evidence drift')
+    return restored
+
+
 def root_display_retired_constraints():
     # The real-root candidate retains an actual held FF for every display bit;
     # observation RAM no longer directly drives these destination D pins.

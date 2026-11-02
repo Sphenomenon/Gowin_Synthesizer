@@ -10,7 +10,7 @@ import hashlib
 import xml.etree.ElementTree as ET
 
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
-from tools.workstation_task3_root_reset_audit import POLICY as ROOT_POLICY
+from tools.workstation_task3_root_reset_audit import POLICY as ROOT_POLICY, validate_root_publisher
 
 POLICY='task3-direct-tf-tail-serial-retirement-v1'
 SCOPE='u_managed/runtime/g_direct_tf.tail'
@@ -32,8 +32,7 @@ def audit_tf_tail_retirement(n, *, root, stage):
     g=Graph(n)
     root_register=g.register('u_reset','started')
     rq=n.pin(root_register,'Q')
-    require(root.get('root_register')==root_register and root.get('root_q')==rq and
-            n.canonical('','reset_n')==rq,'root proof is not bound to actual root publisher')
+    validate_root_publisher(n, g, root)
     selected=[row.get('path') for row in ET.parse(Path(stage)/'Prj1.gprj').find('FileList')
               if row.get('enable')=='1']
     require(selected.count(SOURCE)==1,'reviewed serial-retirement source is not uniquely selected')

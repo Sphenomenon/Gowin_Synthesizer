@@ -9,7 +9,7 @@ import re
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256)
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, validate_root_publisher)
 
 POLICY = 'task3-direct-tf-real-startup-release-v1'
 SCOPE = 'u_tf_audio'
@@ -28,9 +28,7 @@ def audit_tf_startup_releases(n, *, root):
             'verified task3 real-root startup proof required')
     root_register = g.register('u_reset', 'started')
     root_q = n.pin(root_register, 'Q')
-    require(root.get('root_register') == root_register and root.get('root_q') == root_q
-            and n.canonical('', 'reset_n') == root_q,
-            'root proof is not bound to actual common reset publisher')
+    validate_root_publisher(n, g, root)
     require(n.frames.get(SCOPE, {}).get('kind') == 'workstation_tf_direct_runtime_service',
             'actual TF owner is not DIRECT runtime service')
     guard_register = g.register('u_runtime_memory_guard', 'started_o')

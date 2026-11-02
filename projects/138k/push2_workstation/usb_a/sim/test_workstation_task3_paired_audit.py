@@ -8,6 +8,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_task3_paired_audit import audit_constraint_inventory, TOP
+from tools import workstation_task3_paired_board as common
+from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
 
 
 def changed(old, new):
@@ -30,6 +32,21 @@ def metadata(*changes, delegated=()):
 
 
 class PairedConstraintInventory(unittest.TestCase):
+    def test_m_release_inverse_requires_exact_evidence(self):
+        original = '\n'.join('set_false_path -to [get_pins {' + old + '}]'
+                             for old, new in paired_release_constraint_mappings()) + '\n'
+        selected, receipt = common.adapt_constraints(ROOT, original, 'M')
+        self.assertEqual(common.restore_constraints(ROOT, selected, receipt), original)
+        self.assertEqual(selected.count('set_false_path'), original.count('set_false_path'))
+        with self.assertRaisesRegex(ValueError, 'requires sealed evidence'):
+            common.restore_constraints(ROOT, selected)
+        modified = dict(receipt, M_release_rebinding=dict(receipt['M_release_rebinding'], input_sha256='0' * 64))
+        with self.assertRaisesRegex(ValueError, 'evidence drift'):
+            common.restore_constraints(ROOT, selected, modified)
+        for role in (None, 'W'):
+            legacy, receipt = common.adapt_constraints(ROOT, original, role)
+            self.assertEqual(common.restore_constraints(ROOT, legacy, receipt), original)
+
     def test_retired_live_endpoint_cannot_be_hidden(self):
         with self.assertRaisesRegex(ValueError, 'source is still live'):
             audit_constraint_inventory('', metadata(changed('owner/live*/D', None)),

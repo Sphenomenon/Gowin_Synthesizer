@@ -20,7 +20,10 @@ SOURCES=('rtl/workstation/workstation_task3_paired_link.sv',
 DEPENDENCIES=('tools/workstation_task3_paired_board.py',BOARD,PINPLAN,CST,
  'rtl/workstation/TASK3_LCD_TRANSPORT.md','rtl/workstation/WORKSTATION_TASK3_PAIRED.md','rtl/services/TASK3_PAIR_CONFIG_CONTRACT.md',
  'boards/custom_138k/ae350.cst','boards/custom_138k/clocks.json',
- 'boards/custom_138k/usb2_cdc.json','boards/custom_138k/input_cdc.json')
+ 'boards/custom_138k/usb2_cdc.json','boards/custom_138k/input_cdc.json',
+ 'tools/workstation_task3_lcd_cdc_audit.py',
+ 'tools/workstation_task3_paired_clock_audit.py',
+ 'tools/workstation_task3_m_paired_releases_audit.py')
 # New synchronizers must receive a routed CDC/endpoint review before a physical
 # candidate can be accepted. This marker adds no false path or relaxed budget.
 SDC='\n# TASK3 paired LCD/F808 CDC physical endpoint review REQUIRED; no blanket exception.\n'
@@ -106,14 +109,30 @@ def verify_selection(root,stage,metadata,role):
   if (Path(stage)/path).read_bytes()!=(Path(root)/path).read_bytes():raise ValueError('paired common staged source drift: '+path)
  return expected
 
-def adapt_constraints(root,sdc):
+def adapt_constraints(root,sdc,role=None):
  if SDC.strip() in sdc:raise ValueError('paired SDC already selected')
- return sdc+SDC,dict(policy=POLICY,parent_sha256=digest(sdc),selected_sha256=digest(sdc+SDC),
+ parent=sdc;release=None
+ if role not in (None,'M','W'):raise ValueError('paired SDC role invalid')
+ if role=='M':
+  from tools.workstation_task3_tf_direct import adapt_paired_release_constraints
+  sdc,release=adapt_paired_release_constraints(sdc)
+ evidence=dict(policy=POLICY,parent_sha256=digest(parent),selected_sha256=digest(sdc+SDC),
   physical_cdc_verified=False,added_exceptions=0)
+ if release is not None:evidence['M_release_rebinding']=release
+ return sdc+SDC,evidence
 
-def restore_constraints(root,sdc):
+def restore_constraints(root,sdc,evidence=None):
  if sdc.count(SDC)!=1 or not sdc.endswith(SDC):raise ValueError('paired SDC marker drift')
- return sdc[:-len(SDC)]
+ restored=sdc[:-len(SDC)]
+ release=(evidence or {}).get('M_release_rebinding')
+ if release is not None:
+  from tools.workstation_task3_tf_direct import restore_paired_release_constraints
+  restored=restore_paired_release_constraints(restored,release)
+ else:
+  from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
+  if all(after in restored for before,after in paired_release_constraint_mappings()):
+   raise ValueError('paired M release reconstruction requires sealed evidence')
+ return restored
 
 def adapt_cst(root,cst):
  fragment=(Path(root)/CST).read_text()
@@ -152,7 +171,10 @@ def verify_constraints(root,stage,metadata):
  ports=[p for p,b in assignments];balls=[b for p,b in assignments]
  if len(ports)!=len(set(ports)) or len(balls)!=len(set(balls)):raise ValueError('paired CST duplicate port/ball')
  selected_sdc=(Path(stage)/'constraints/custom_138k.sdc').read_text()
- original_sdc=restore_constraints(root,selected_sdc)
- rebuilt_sdc,sdc_evidence=adapt_constraints(root,original_sdc)
+ selected_evidence=metadata.get('task3_paired_sdc',{})
+ original_sdc=restore_constraints(root,selected_sdc,selected_evidence)
+ role='M' if 'M_release_rebinding' in selected_evidence else None
+ if role is not None and metadata.get('task3_paired',{}).get('role')!=role:raise ValueError('paired release role mismatch')
+ rebuilt_sdc,sdc_evidence=adapt_constraints(root,original_sdc,role)
  if rebuilt_sdc!=selected_sdc or sdc_evidence!=metadata.get('task3_paired_sdc'):raise ValueError('paired SDC evidence drift')
  return dict(cst=evidence,sdc=sdc_evidence)

@@ -4,10 +4,14 @@ Trace from functional CLEAR pins before selecting any release register.  The
 performance chain was merged into TF control; the CPU source chain was merged
 into APB.  This is a reset proof, not a payload/handshake or physical CDC proof.
 """
+import hashlib
+import json
+
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256)
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER,
+    validate_root_publisher)
 
 POLICY = 'task3-direct-peripheral-real-release-v1'
 PERFORMANCE_BITS = (*range(48), *range(56, 67), *range(96, 416), 446)
@@ -15,6 +19,21 @@ SOURCE_CONTROL = ('ack_meta', 'ack_sync', 'request_toggle')
 DESTINATION_CONTROL = ('req_meta', 'req_sync', 'req_settled', 'acknowledge_toggle')
 CPU_BLACKBOX = 'u_cpu/u_RiscV_AE350_SOC'
 CPU_DEFERRED = {CPU_BLACKBOX + '/' + pin for pin in ('n8275_3', 'n8280_3')}
+# Separate paired policy: exact complete v4 endpoint inventories, not a
+# broader wildcard or a waiver based on endpoint count. The source chain is
+# shared with the F808 APB adapter. Its clk50 final Q also resets/gates the
+# new paired endpoints; those business D/CE/RAM/output cones are inventoried,
+# not presented as a proof of their downstream business function.
+PAIRED_CPU_SOURCE_CLOSURE = 'a4847d89534677bb0aab55b1bd2ee7cf0ef49b06a8b78f90b2f460d6ff6756d1'
+PAIRED_CPU_DESTINATION_CLOSURE = 'cbe5c18b92d425f53154665980cd894e3d58f10fb7a2b9ec220a606cb60b66c3'
+PAIRED_CPU_DEFERRED = {CPU_BLACKBOX + '/' + pin for pin in ('n9887_3', 'n9895_3')}
+
+
+def closure_identity(closure):
+    inventory = {key: dict(sorted(closure[key].items())) for key in
+                 ('ff_endpoints', 'primitive_endpoints', 'top_output_endpoints')}
+    return hashlib.sha256(json.dumps(inventory, sort_keys=True,
+                                    separators=(',', ':')).encode()).hexdigest()
 
 
 def require(condition, message):
@@ -37,7 +56,8 @@ def zero_async_ff(n, path, *, clock, clear):
 
 def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                   root_q, other_reset, opaque_cpu_reset=False,
-                  shared_cpu_source=False, expected_final_count):
+                  shared_cpu_source=False, expected_final_count,
+                  paired_final_closure=None):
     """Follow actual CLEAR -> INV -> Q2 -> D2/Q1 -> D1/Q0 -> one."""
     clear = n.pin(functional, 'CLEAR')
     drivers = g.drivers[clear]
@@ -88,20 +108,34 @@ def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                 not c['primitive_endpoints'] and not c['top_output_endpoints'],
                 'early release stage has an extra/bypassed consumer: ' + registers[bit])
     final = closures[2]
-    require(len(final['ff_endpoints']) == expected_final_count and
-            all(endpoint.endswith('/CLEAR') and domain == clock
-                for endpoint, domain in final['ff_endpoints'].items()) and
-            not final['top_output_endpoints'],
-            'final release FF consumer/clock/pin inventory changed: ' + registers[2])
-    allowed_opaque = CPU_DEFERRED if shared_cpu_source else set()
-    require(set(final['primitive_endpoints']) == allowed_opaque and
-            all(row['kind'] == 'RiscV_AE350_SOC' and not row['clock_pins']
-                for row in final['primitive_endpoints'].values()),
-            'unreviewed opaque release consumer')
+    if paired_final_closure is not None:
+        require(paired_final_closure in (PAIRED_CPU_SOURCE_CLOSURE, PAIRED_CPU_DESTINATION_CLOSURE) and
+                closure_identity(final) == paired_final_closure and
+                len(final['ff_endpoints']) == expected_final_count,
+                'paired final release complete endpoint inventory changed: ' + registers[2])
+        if shared_cpu_source:
+            require(set(final['primitive_endpoints']) == PAIRED_CPU_DEFERRED and
+                    all(row['kind'] == 'RiscV_AE350_SOC' and not row['clock_pins']
+                        for row in final['primitive_endpoints'].values()),
+                    'paired opaque AE350 reset alias changed')
+    else:
+        require(len(final['ff_endpoints']) == expected_final_count and
+                all(endpoint.endswith('/CLEAR') and domain == clock
+                    for endpoint, domain in final['ff_endpoints'].items()) and
+                not final['top_output_endpoints'],
+                'final release FF consumer/clock/pin inventory changed: ' + registers[2])
+        allowed_opaque = CPU_DEFERRED if shared_cpu_source else set()
+        require(set(final['primitive_endpoints']) == allowed_opaque and
+                all(row['kind'] == 'RiscV_AE350_SOC' and not row['clock_pins']
+                    for row in final['primitive_endpoints'].values()),
+                'unreviewed opaque release consumer')
     # Shared-owner FF endpoints still require actual asynchronous zero-clear
     # semantics. Opaque APB outputs are kept as explicit unresolved boundaries.
-    for endpoint in final['ff_endpoints']:
-        zero_async_ff(n, endpoint.rsplit('/', 1)[0], clock=clock, clear=clear)
+    for endpoint, domain in final['ff_endpoints'].items():
+        if endpoint.endswith('/CLEAR'):
+            require(domain == clock, 'local async release reaches a different reset clock')
+            zero_async_ff(n, endpoint.rsplit('/', 1)[0], clock=clock, clear=clear)
+    deferred = [p for p in final['ff_endpoints'] if not p.endswith('/CLEAR')]
     return dict(registers=registers, clock=clock, functional_clear=clear,
                 functional_clear_inverter=inverter, final_q=final_q,
                 common_clear=common, common_reset_sources=[root_q, other_reset],
@@ -109,7 +143,11 @@ def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                 chain_next_q=rows, all_32_reset_and_state_assignments_proven=True,
                 first_two_stages_have_only_next_D_consumer=True,
                 consumer_closures=closures, release_edges_after_both_resets_high=3,
-                deferred_opaque_endpoints=sorted(allowed_opaque),
+                complete_consumer_inventory_sha256=closure_identity(final),
+                deferred_opaque_endpoints=sorted(final['primitive_endpoints']),
+                deferred_business_ff_pin_count=len(deferred),
+                deferred_business_top_output_count=len(final['top_output_endpoints']),
+                downstream_business_reset_function_proven=not (deferred or final['top_output_endpoints']),
                 physical_recovery_removal_verified=False)
 
 
@@ -120,10 +158,8 @@ def audit_peripheral_releases(n, *, root):
             root.get('source_sha256', {}).get(ROOT_SOURCE) == ROOT_SOURCE_SHA256,
             'verified task3 real-root startup proof required')
     root_register = root.get('root_register')
-    require(root_register in g.regs and root_register == g.register('u_reset', 'started') and
-            g.drivers[root.get('root_q')] == [(root_register, 'Q')] and
-            root['root_q'] == n.pin(root_register, 'Q') == n.canonical('', 'reset_n'),
-            'provided root proof does not refer to actual common reset publisher')
+    validate_root_publisher(n, g, root)
+    paired = root['selected_provider'] == PAIRED_PROVIDER
     audio_publisher = g.register('u_audio_clock', 'audio_reset_pipe', 3)
     audio_reset = n.pin(audio_publisher, 'Q')
     require(audio_reset == n.canonical('', 'audio_reset_n') and
@@ -138,11 +174,13 @@ def audit_peripheral_releases(n, *, root):
     chains, scopes = [], []
     configs = (
         ('performance', PERFORMANCE_BITS, 'audio_clk', audio_reset,
-         'u_tf_control_cdc', 'source_release', 'u_tf_control_cdc', 410, 413),
+         'u_tf_control_cdc', 'source_release', 'u_tf_control_cdc', 'destination_release', 410, 413),
         ('cpu', tuple(range(224)), 'ram_clk', cpu_reset,
-         'u_managed/control_cdc', 'p_release', 'u_runtime/u_cpu_cdc', 315, 228),
+         'u_task3_pair_link/config_cdc' if paired else 'u_managed/control_cdc', 'p_release',
+         'u_task3_pair_link/config_cdc' if paired else 'u_runtime/u_cpu_cdc',
+         'a_release' if paired else 'destination_release', 403 if paired else 315, 5638 if paired else 228),
     )
-    for name, bits, source_clock, other_reset, source_alias, source_stem, destination_alias, scount, dcount in configs:
+    for name, bits, source_clock, other_reset, source_alias, source_stem, destination_alias, destination_stem, scount, dcount in configs:
         scope = 'u_runtime/u_' + name + '_cdc'
         held = [g.register(scope, 'held_data', bit) for bit in bits]
         destination = [g.register(scope, 'destination_data', bit) for bit in bits]
@@ -152,11 +190,13 @@ def audit_peripheral_releases(n, *, root):
         local = []
         for role, functional, alias, stem, clock, count, opaque in (
             ('source', held[0], source_alias, source_stem, source_clock, scount, name == 'cpu'),
-            ('destination', destination[0], destination_alias, 'destination_release', 'clk_50m', dcount, False),
+            ('destination', destination[0], destination_alias, destination_stem, 'clk_50m', dcount, False),
         ):
             row = trace_release(n, g, functional, alias_scope=alias, alias_stem=stem,
                 clock=clock, root_q=root['root_q'], other_reset=other_reset,
-                opaque_cpu_reset=name == 'cpu', shared_cpu_source=opaque, expected_final_count=count)
+                opaque_cpu_reset=name == 'cpu', shared_cpu_source=opaque, expected_final_count=count,
+                paired_final_closure=((PAIRED_CPU_SOURCE_CLOSURE if role == 'source' else
+                    PAIRED_CPU_DESTINATION_CLOSURE) if paired and name == 'cpu' else None))
             row.update(id=name + '-' + role, functional_scope=scope, role=role)
             chains.append(row)
             local.append(row)

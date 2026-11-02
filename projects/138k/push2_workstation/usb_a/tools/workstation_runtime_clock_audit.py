@@ -91,7 +91,7 @@ def prepared_local_panel_enabled(stage):
     return panel_enabled
 
 
-def audit_runtime_clocks(root, stage, netlist_text):
+def audit_runtime_clocks(root, stage, netlist_text, *, paired_role=None):
     """Check static clock declarations/connectivity, leaving physical gates false.
 
     The selected base-clock declaration prefix includes the conservative RTC bound.
@@ -100,11 +100,16 @@ def audit_runtime_clocks(root, stage, netlist_text):
     """
     root, stage = Path(root), Path(stage)
     local_panel_enabled = prepared_local_panel_enabled(stage)
+    paired_selection = None
+    if paired_role is not None:
+        from tools.workstation_task3_paired_clock_audit import paired_clock_selection
+        paired_selection = paired_clock_selection(stage, paired_role)
     profile_path = stage.parents[1] / 'workstation_profile.json'
     if profile_path.is_file():
         from tools.workstation_profile import prepared_specification
         selected_spec = prepared_specification(json.loads(profile_path.read_text()))
-        hdmi_enabled = not selected_spec.get('worker_audio_only', False)
+        hdmi_enabled = (paired_selection['hdmi_enabled'] if paired_selection is not None else
+                        not selected_spec.get('worker_audio_only', False))
         task3_direct = selected_spec.get('tf_direct_enabled', False)
     else:
         hdmi_enabled = True
@@ -119,9 +124,13 @@ def audit_runtime_clocks(root, stage, netlist_text):
     require(all(extra_lines.count(line) == 1 for line in MODE_EXCLUSIONS),
             'selected-mode exclusion declarations changed')
     base = audit_clocks(root, stage, netlist_text, extra_sdc=extra, local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled)
-    from tools.workstation_board_peripherals import audit_local_panel
-    panel = audit_local_panel(netlist_text, local_panel_enabled=local_panel_enabled)
     n = SynthesisNetlist(netlist_text, TOP)
+    if paired_selection is not None:
+        from tools.workstation_task3_paired_clock_audit import audit_paired_lcd_clock_boundary
+        panel = audit_paired_lcd_clock_boundary(stage, n, paired_role, base)
+    else:
+        from tools.workstation_board_peripherals import audit_local_panel
+        panel = audit_local_panel(netlist_text, local_panel_enabled=local_panel_enabled)
     require(all(n.directions[TOP].get(port) == 'input' for port in
                 ('clk_50m', 'usb2_ulpi_clk', 'clk_12m288', 'clk_16m9344')),
             'primary clock top input inventory changed')
@@ -153,6 +162,12 @@ def audit_runtime_clocks(root, stage, netlist_text):
         q_drivers[n.pin(p, 'Q')].append(p)
     select_drivers = []
     for bit, net in enumerate(select_bits[:2]):
+        if paired_role == 'W' and bit == 1:
+            require(net in zero_nets and not any(re.fullmatch(
+                r'u_managed/runtime/clocks/transaction/clock_select_o_1_s\d+', p) for p in registers),
+                'paired W must not retain a local 44.1kHz clock-selection authority')
+            select_drivers.append(dict(bit=bit, constant=0, policy='paired_W_remote_M_clock_authority'))
+            continue
         drivers = q_drivers[net]
         require(len(drivers) == 1, 'DCS select bit is not a direct unique register Q')
         p = drivers[0]
@@ -165,7 +180,13 @@ def audit_runtime_clocks(root, stage, netlist_text):
     require(serializer_registers and all(n.pin(p, 'CLK') == selected for p in serializer_registers),
             'serializer consumer clock differs from selected MCLK')
     monitor_groups = {}
-    direct_n = direct_root = None
+    direct_n = direct_root = paired_worker_n = paired_worker_root = None
+    if paired_role == 'W':
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        from tools.workstation_task3_paired_clock_audit import audit_paired_worker_monitor_release
+        paired_worker_n = protocol_netlist(netlist_text, mapping='synthesis')
+        from tools.workstation_task3_root_reset_audit import audit_root_startup
+        paired_worker_root = audit_root_startup(paired_worker_n, stage=stage)
     if task3_direct:
         from tools.workstation_native_protocol_audit import protocol_netlist
         from tools.workstation_task3_root_reset_audit import audit_root_startup
@@ -201,6 +222,9 @@ def audit_runtime_clocks(root, stage, netlist_text):
             if task3_direct:
                 direct_release = audit_clock_monitor_release(direct_n, stage=stage,
                     name=name, source_clock=source, root=direct_root)
+            elif paired_role == 'W':
+                worker_release = audit_paired_worker_monitor_release(paired_worker_n, stage=stage,
+                    name=name, source_clock=source, root=paired_worker_root)
             else:
                 require(registers[p]['kind'] in ('DFFCE', 'DFFRE') and
                         n.pin(p, 'CE') in one_nets and n.pin(p, 'D') == n.pin(pre[2], 'Q') and
@@ -213,6 +237,8 @@ def audit_runtime_clocks(root, stage, netlist_text):
                 pre_registers=[pre[i] for i in range(3)], no_clock_exception_added=True)
             if task3_direct:
                 release_evidence['actual_direct_startup_qualified_next_q'] = direct_release
+            elif paired_role == 'W':
+                release_evidence['actual_paired_worker_startup_qualified_next_q'] = worker_release
         require(source_regs and control_regs and
                 all(n.pin(p, 'CLK') == source for p in source_regs if p not in negative_release) and
                 all(n.pin(p, 'CLK') == 'clk_50m' for p in control_regs),
@@ -237,6 +263,15 @@ def audit_runtime_clocks(root, stage, netlist_text):
                     drivers[0]) is not None and n.pin(drivers[0], 'CLK') == selected,
                     'I2S output is not a direct selected-clock serializer register: ' + port)
             outputs[port] = dict(buffer=p, input_net=net, register=drivers[0], clock=selected)
+            if paired_role == 'W' and port == 'hp_din':
+                # The preserved serializer can retain PCM state even when its
+                # input owner is permanently muted. Do not replace actual
+                # selected-clock topology with an optimizer-dependent GND
+                # expectation, or claim a physical zero-output invariant.
+                outputs[port].update(policy='paired_W_local_DAC_is_not_final_audio_path',
+                    permanent_mute_source_binding_verified=True,
+                    mute_source_binding="u_managed.output_mute_i=1'b1",
+                    serial_zero_invariant_verified=False)
     return dict(schema=1, scope='static_source_netlist_clock_and_DCS_topology',
         base_clock_audit=base,
         local_panel_enabled=local_panel_enabled, hdmi_enabled=hdmi_enabled, local_panel=panel, visible_clock_primitives=primitives,

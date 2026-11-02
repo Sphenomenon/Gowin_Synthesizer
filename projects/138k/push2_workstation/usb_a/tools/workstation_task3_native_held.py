@@ -12,7 +12,8 @@ import re
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256)
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256,
+    PAIRED_PROVIDER, validate_root_publisher)
 
 PROFILE = 'm-task3-direct'
 POLICY = 'task3-direct-real-root-held-v1'
@@ -38,7 +39,7 @@ def inverse(g, clear, release_q, label):
                         cuts=(release_q,))
 
 
-def release_from_clear(n, g, clear, root_q, domain):
+def release_from_clear(n, g, clear, root_q, domain, *, paired=False):
     support = g.support(clear)
     require(len(support) == 1, 'owner CLEAR is not one registered release')
     last_q = next(iter(support))
@@ -69,7 +70,8 @@ def release_from_clear(n, g, clear, root_q, domain):
     early_closures = []
     merged_clk50 = rows == ['u_usb_pll/u_pll_init/enable_r_0_s0',
                            'u_usb_pll/u_pll_init/enable_r_1_s0',
-                           'u_managed/midi_bytes/source_release_2_s0'] and domain == 'clk_50m'
+                           ('u_task3_m_pcm_commands/p_release_2_s0' if paired else
+                            'u_managed/midi_bytes/source_release_2_s0')] and domain == 'clk_50m'
     for bit in (0, 1):
         closure = complete_closure(n, g, [rows[bit]])
         expected = {rows[bit+1] + '/D': domain}
@@ -124,8 +126,8 @@ def audit_direct_held_boundaries(n, result, *, root):
     g = Graph(n)
     root_reg = g.register('u_reset', 'started')
     root_q = n.pin(root_reg, 'Q')
-    require(root.get('root_register') == root_reg and root.get('root_q') == root_q,
-            'root proof does not identify actual started register')
+    validate_root_publisher(n, g, root)
+    paired = root['selected_provider'] == PAIRED_PROVIDER
     scope = 'u_managed/pc_bytes'
     pc = next(row for row in result['mailboxes'] if row['scope'] == scope)
     held, captured = (g.group(scope, stem, 8) for stem in ('held_data', 'destination_data'))
@@ -148,7 +150,7 @@ def audit_direct_held_boundaries(n, result, *, root):
         clears = {n.pin(p, 'CLEAR') for p in owners}
         require(len(clears) == 1, 'PC shared local reset changed')
         clear = next(iter(clears))
-        release = release_from_clear(n, g, clear, root_q, domain)
+        release = release_from_clear(n, g, clear, root_q, domain, paired=paired)
         pc_releases[side] = dict(release, owners=owners, reset_asserted_value=0)
     source_q = pc_releases['source']['final_q']
     dest_q = pc_releases['destination']['final_q']
@@ -186,7 +188,8 @@ def audit_direct_held_boundaries(n, result, *, root):
             ('destination', 'a_release', 'audio_clk',
              ('acknowledge_toggle', 'req_meta', 'req_sync', 'req_settled', 'request_decoded'),
              (('request_local', 49), ('response_held', 33)))):
-        releases = g.group(apb, stem, 3)
+        release_scope = 'u_task3_pair_link/config_cdc' if paired and side == 'source' else apb
+        releases = g.group(release_scope, stem, 3)
         owners = [g.register(apb, name) for name in names]
         owners += [p for name, width in groups for p in g.group(apb, name, width)]
         for p in releases + owners:

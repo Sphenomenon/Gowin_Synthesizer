@@ -172,3 +172,64 @@ download. Owner6 remains connected but W heavy effect execution is not claimed.
 Bluetooth/LCD audio suitability remains a measurement decision. Business link
 budget defaults closed. Existing W demo/media/task2 candidates remain rollback
 sources, and the connected board assigned to another branch was untouched.
+
+## Paired W retained CDC and SDC iteration
+
+The subsequent actual v4 synthesis exposed old DEMO assumptions in the public
+audit: paired W is headless, its display mailbox is absent, and PC/health
+mailboxes use the real startup root rather than the old constant-reset policy.
+`workstation_task3_w_paired_cdc_audit.py` now selects only that explicit W
+composition. The shared DEMO boundary, native-protocol and performance-reset
+auditors remain byte-for-byte unchanged.
+
+Actual synthesis proves the retained PC 8-bit and health 32-bit held payloads,
+the three-stage request capture and two-stage return ACK, no overwrite while
+awaiting ACK, exact payload mapping and complete first-stage/payload fanout.
+The 35-bit startup proof is reused with the exact W source/provider selection.
+PC/health releases fill on three receiving edges; APB's real source release
+is merged into `u_task3_pair_link/config_cdc/p_release`, with the original
+root-and-CPU assertion preserved. The shared PLL/control second release has
+14,361 FF, 245 primitive and three output endpoints; its complete closure is
+hash-locked, and it has no early PC/health functional consumer. This narrow
+proof does not certify reset semantics for those other clients.
+
+The paired-only SDC adaptation additionally retires absent media-stop source
+registers, serializer sequence, local rate and unused epoch state. Both retained
+media-stop first D inputs are physically constant zero. Four actual startup
+register groups use `DFFCE/CLEAR`, so their old `/RESET` selectors are rebound
+to those exact live `/CLEAR` pins. CNN's old `model_memory_meta` is physically
+merged into `task_service/backend_meta`; its complete first-Q closure contains
+only the live `cnn/model_memory_ready/D`, with the same reset and 50 MHz clock.
+No clock or delay budget changes. Old W/DEMO profiles do not opt into this
+adapter, and the original v4 installed SDC is left intact.
+
+`w-paired-cdc-retirement-v1/verification.json` records six actual-netlist test
+groups and 31 rejected destructive mutations, with original candidate hashes
+unchanged. The separate `proposed_W.sdc` fixture passes all visible selectors,
+retired/rebound endpoint resolution and 28 exact retained mailbox/APB/heartbeat
+constraints. Payload setup remains 13.020/20.000 ns, second stages 2.000 ns;
+later-stage false paths, whole-clock cuts and weaker overriding bounds fail.
+The fixture SHA-256 is
+`1af567d969001840675e1d076d6f8817ce40428d7d6af8dc9f54c726065d26ce`.
+These are synthesis/graph checks over frozen v4 plus a separately prepared SDC
+fixture. A new locked candidate and its synthesis/public audit remain required;
+routed CDC, STA, physical timing, metastability MTBF, measured latency and all
+hardware acceptance are pending. No board operation occurred.
+
+## Actual v6 synthesis and public audit
+
+The new W candidate is
+`custom138k-workstation-task3-w-paired-v1-3d33fb0c0c41caec`.
+Fresh synthesis completed with 46,554 registers, 59,478 LUTs and 308 synthesis
+BSRAM equivalents. All 196 enabled nonconstraint inputs remain byte-identical
+to frozen v4; the only changed enabled input is the reviewed SDC. The actual
+v6 public synthesis-structure audit passes 17/17 gates, including the retained
+W CDC boundaries and exact constraint retirement/rebinding. This supersedes
+the projected-fixture check only for that synthesis-structure scope.
+
+The 50 MHz and 76.8 MHz synthesis estimates are 48.889 and 72.616 MHz, both
+below requirement. Whole-source CDC, routed PLL/STA/resources, electrical
+acceptance and hardware/deployment remain false; bitstream and physical
+latencies remain null. The paired report records source identities, hashes,
+negative controls and the still-failing M full TF CDC gate:
+[v6 combined audit evidence](../push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_AUDIT_ALIGNMENT_20261102.json).

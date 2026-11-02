@@ -12,7 +12,7 @@ import re
 
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
-from tools.workstation_task3_root_reset_audit import POLICY as ROOT_POLICY
+from tools.workstation_task3_root_reset_audit import POLICY as ROOT_POLICY, validate_root_publisher
 
 POLICY = 'task3-direct-tf-tail-local-cdc-v1'
 SCOPE = 'u_managed/runtime/g_direct_tf.tail'
@@ -30,8 +30,7 @@ def audit_tf_tail_cdc(n, *, root, stage):
     require(root.get('policy') == ROOT_POLICY and root.get('all_state_assignments_proven') is True,
             'actual root startup proof required')
     rq = root['root_q']
-    require(n.pin(root['root_register'], 'Q') == rq and n.canonical('', 'reset_n') == rq,
-            'root proof not bound to actual common assertion')
+    validate_root_publisher(n, g, root)
     require(n.frames.get(s, {}).get('kind') == 'workstation_tf_physical_tail_v1',
             'actual physical tail hierarchy missing')
     source_hash=hashlib.sha256((Path(stage)/SOURCE).read_bytes()).hexdigest()

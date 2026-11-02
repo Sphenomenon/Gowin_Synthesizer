@@ -9,7 +9,8 @@ import re
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256)
+    POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER,
+    validate_root_publisher)
 
 POLICY = 'task3-direct-receipt-local-mailbox-v1'
 SCOPE = 'u_tf_audio'
@@ -21,6 +22,181 @@ def require(condition, message):
         raise ValueError('task3 receipt audit: ' + message)
 
 
+def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
+                             payload, request, ack_sync, source_ce):
+    """Exact paired source/abort/session proof; no event or payload data cuts.
+
+    Four arithmetic summaries are admitted only after their entire actual NE
+    chains match every reviewed registered operand pair. The remaining inputs
+    are explicitly inventoried audio-clock FF Qs. Fault producers, blocked's
+    state machine and physical-tail event meanings remain external owners;
+    abort_queued and all receipt queue/session state are proved here.
+    """
+    s, r = SCOPE, 'u_managed/runtime'
+    ws = r + '/service/workstation'
+    fx, ds = ws + '/runtime_effects.effects', ws + '/runtime_effects.effects/delay_stage'
+    reg = lambda scope, stem, bit=None: g.register(scope, stem, bit)
+    q = lambda p: n.pin(p, 'Q')
+    rq = lambda scope, stem, bit=None: q(reg(scope, stem, bit))
+    operands = {
+        'generation': {frozenset((rq(s, 'compute_status', 36+i),
+                                 rq(s+'/frames', 'expected_generation_o', i))) for i in range(32)},
+        'panic': {frozenset((rq(ws, 'panic_epoch_o', i),
+                            rq(r, 'g_direct_tf.panic_q', i))) for i in range(10)},
+        'cancel': {frozenset((rq(r+'/cpu_pcm.owner', 'cancel_epoch_o', i),
+                             rq(r, 'g_direct_tf.cancel_q', i))) for i in range(22)},
+        'epoch': {frozenset((rq(r, 'compute_epoch', i),
+                            rq(r, 'g_direct_tf.epoch_q', i))) for i in range(32)},
+    }
+    carries = g.carry_frontier(source_ce)
+    require(len(carries) == 4, 'paired receipt must have exactly four abort/status NE chains')
+    comparisons, comparison_rows = {}, []
+    for carry in sorted(carries):
+        actual = g.inequality_chain(carry)
+        labels = [label for label, pairs in operands.items() if pairs == actual]
+        require(len(labels) == 1 and labels[0] not in comparisons,
+                'paired abort/status NE operand identity/bit inventory changed')
+        label = labels[0]
+        comparisons[label] = carry
+        comparison_rows.append(dict(id=label, actual_output=carry,
+            operand_pairs=sorted(sorted(pair) for pair in actual), width=len(actual),
+            exact_NE_chain_all_bits_verified=True, summary_is_unverified_cut=False))
+    require(set(comparisons) == set(operands), 'paired receipt comparison inventory incomplete')
+    state = dict(root=root['root_register'], compute=reg(s, 'compute_release', 2),
+        aq=reg(s, 'abort_queued'), eq=reg(s, 'eos_queued'),
+        eos=reg(TAIL, 'physical_eos_o'), req=request, ack=ack_sync[1],
+        active=reg(s, 'compute_status', 3), expected=reg(s+'/frames', 'expected_generation_valid_o'),
+        blocked=reg(r, 'g_direct_tf.blocked'), rate=reg(r, 'compute_rate'),
+        oldrate=reg(r, 'g_direct_tf.rate_q'), context=reg(r, 'compute_context_valid'),
+        integration=reg(r, 'integration_fault'), tail=reg(TAIL, 'failed_o'),
+        oldtail=reg(r, 'g_direct_tf.tail_failed_q'), configfault=reg(ws, 'runtime_configuration.failed'),
+        dmafault=reg(fx, 'dma_fault_sync'), effectfault=reg(fx, 'transaction_fault'),
+        overflow=reg(ds, 'overflow_sticky'), peerfault=reg(ds, 'peer_fault'),
+        delayfault=reg(ds, 'transaction_fault'), underflow=reg(ds, 'underflow_sticky'))
+    state.update({'history'+str(i): reg(r+'/cpu_pcm.owner', 'history_state', i) for i in range(3)})
+    leaves = [q(p) for p in state.values()] + list(comparisons.values())
+    require(len(leaves) == len(set(leaves)), 'paired receipt state/comparison aliases changed')
+    # All remaining Boolean inputs must be these real registered publishers;
+    # in particular abort_queued is not an unconstrained event-condition cut.
+    require(g.support(source_ce, cuts=carries) == set(leaves) - {root['root_q']},
+            'paired source acceptance has an unreviewed state or arithmetic input')
+    external = []
+    for label, p in state.items():
+        if label == 'root':
+            continue
+        cell = n.cells[p]
+        require(cell['kind'] == 'DFFCE' and n.pin(p, 'CLK') == 'audio_clk' and
+                cell['parameters'].get('INIT', "1'b0") == "1'b0",
+                'paired receipt input is not reviewed audio-clock zero-INIT FF: ' + p)
+        external.append(dict(id=label, register=p, q=q(p), clear=n.pin(p, 'CLEAR'),
+                             clock='audio_clk', effective_init=0))
+    v = lambda b: {name: b.inputs[q(p)] for name, p in state.items()}
+
+    def either(b, values):
+        result = 0
+        for value in values:
+            result = b.either(result, value)
+        return result
+
+    def raw_abort(b):
+        x = v(b)
+        cmp = {name: b.inputs[net] for name, net in comparisons.items()}
+        # Maintained PCM owner H_FAULT=4; the mapped state retains three bits.
+        hard_fault = b.all([x['history2'], b.invert(x['history1']), b.invert(x['history0'])])
+        compute_fault = either(b, [hard_fault, *[x[name] for name in (
+            'integration', 'configfault', 'dmafault', 'effectfault',
+            'overflow', 'peerfault', 'delayfault', 'underflow')]])
+        changed = either(b, [cmp['panic'], cmp['cancel'], cmp['epoch'],
+            b.different(x['rate'], x['oldrate']), compute_fault, b.invert(x['context'])])
+        active = b.all([x['compute'], x['expected'], b.invert(cmp['generation']), x['active']])
+        local_abort = b.all([active, b.invert(x['blocked']), changed])
+        failed_edge = b.both(x['tail'], b.invert(x['oldtail']))
+        return b.either(local_abort, failed_edge)
+
+    def free_release(b):
+        x = v(b)
+        return b.both(x['compute'], b.invert(b.different(x['req'], x['ack'])))
+
+    def accepted(b):
+        x = v(b)
+        return b.both(free_release(b), either(b, [x['aq'], raw_abort(b), x['eq'], x['eos']]))
+
+    def queue_capture(b):
+        x = v(b)
+        return b.either(raw_abort(b), b.both(x['eos'], b.invert(x['aq'])))
+
+    bd = BooleanDiagram(leaves)
+    require(bd.net(g, source_ce) == accepted(bd),
+            'paired source CE differs from released/free and real abort-or-EOS event')
+    queue = [state['aq'], state['eq'], *g.group(s, 'queued_receipt_session', 32)]
+    require({p for p in g.regs if re.fullmatch(re.escape(s) +
+            r'/(?:abort_queued|eos_queued|queued_receipt_session_\d+)_s\d+', p)} == set(queue),
+            'paired abort/EOS/session queue exact register inventory changed')
+    queue_rows = [ff(p, 'audio_clk') for p in queue]
+    queue_start = len(proofs)
+    next_proof(state['aq'], leaves,
+        lambda b: b.all([v(b)['root'], b.invert(free_release(b)), b.either(v(b)['aq'], raw_abort(b))]),
+        'root & !released_free & (abort_queued | real_abort); accepted abort clears queue')
+    next_proof(state['eq'], leaves,
+        lambda b: b.all([v(b)['root'], b.invert(free_release(b)), b.invert(raw_abort(b)),
+            b.either(v(b)['eq'], b.both(v(b)['eos'], b.invert(v(b)['aq'])))]),
+        'root & !released_free & !real_abort & (eos_queued | (physicalEOS & !abort_queued))')
+    for bit, p in enumerate(queue[2:]):
+        current = rq(s, 'compute_status', bit+4)
+        next_proof(p, [*leaves, current],
+            lambda b, p=p, current=current: b.both(v(b)['root'], b.choose(
+                queue_capture(b), b.inputs[current], b.inputs[q(p)])),
+            'root & choose(real_abort | (physicalEOS & !abort_queued), current session bit, queued session bit)')
+    queue_proofs = proofs[queue_start:]
+    del proofs[queue_start:]
+    # These real one-cycle snapshots give the NE deltas and failed rising edge
+    # their declared meaning. Their input owners' business state is separate.
+    snapshots = [(reg(r, 'g_direct_tf.'+old, i), reg(owner, new, i))
+        for old, owner, new, width in (
+            ('panic_q', ws, 'panic_epoch_o', 10),
+            ('cancel_q', r+'/cpu_pcm.owner', 'cancel_epoch_o', 22),
+            ('epoch_q', r, 'compute_epoch', 32)) for i in range(width)]
+    snapshots.extend(((state['oldrate'], state['rate']), (state['oldtail'], state['tail'])))
+    snapshot_rows = [ff(p, 'audio_clk') for p, upstream in snapshots]
+    snapshot_start = len(proofs)
+    for p, upstream in snapshots:
+        require(n.pin(p, 'CE') in g.high and n.pin(p, 'D') == q(upstream),
+                'paired abort history snapshot input/enable changed: ' + p)
+        next_proof(p, [root['root_q'], q(upstream)],
+            lambda b, upstream=upstream: b.both(b.inputs[root['root_q']], b.inputs[q(upstream)]),
+            'root & exact current-state publisher Q; one-cycle abort history')
+    snapshot_proofs = proofs[snapshot_start:]
+    del proofs[snapshot_start:]
+    next_proof(request, leaves,
+        lambda b: b.both(v(b)['root'], b.different(v(b)['req'], accepted(b))),
+        'root & (request XOR accepted paired abort/EOS event)')
+    for bit, p in enumerate(payload):
+        current = rq(s, 'compute_status', bit+2) if bit >= 2 else None
+        queued = q(queue[bit]) if bit >= 2 else None
+
+        def expected(b, p=p, bit=bit, current=current, queued=queued):
+            x = v(b)
+            abort = b.either(x['aq'], raw_abort(b))
+            data = (abort if bit == 1 else b.invert(abort) if bit == 0 else
+                    b.choose(queue_capture(b), b.inputs[current], b.inputs[queued]))
+            return b.both(x['root'], b.choose(accepted(b), data, b.inputs[q(p)]))
+
+        next_proof(p, [*leaves, *([current, queued] if bit >= 2 else [])], expected,
+            'root & choose(accepted, abort-priority kind/exact current-or-queued session, held Q)',
+            source_data_semantics_proven=True, source_data_is_arbitrary_cut=False)
+    require(len(queue_proofs) == 34 and len(snapshot_proofs) == 66,
+            'paired abort/session/history next-Q proof incomplete')
+    return dict(policy='task3_m_paired_receipt_source_abort_lifecycle_v1',
+        exact_inequality_comparisons=comparison_rows, registered_state_inputs=external,
+        arbitrary_abort_or_data_cuts=[], source_acceptance_real_cone_proven=True,
+        abort_priority_over_EOS_proven=True, busy_preserves_queued_abort_proven=True,
+        abort_and_EOS_queue_registers=queue_rows, queue_next_q=queue_proofs,
+        history_snapshot_registers=snapshot_rows, history_snapshot_next_q=snapshot_proofs,
+        supplementary_next_q_register_count=100,
+        fault_producer_and_blocked_state_machine_semantics_proven=False,
+        physical_tail_event_semantics_proven=False, full_tf_cdc_proven=False)
+
+
 def audit_direct_receipt(n, *, root):
     g = Graph(n)
     require(root.get('policy') == ROOT_POLICY and root.get('all_state_assignments_proven') is True
@@ -29,9 +205,7 @@ def audit_direct_receipt(n, *, root):
             'verified task3 real-root startup proof required')
     root_register = g.register('u_reset', 'started')
     root_q = n.pin(root_register, 'Q')
-    require(root.get('root_register') == root_register and root.get('root_q') == root_q
-            and n.canonical('', 'reset_n') == root_q,
-            'root proof not bound to actual common assertion')
+    validate_root_publisher(n, g, root)
     require(n.frames.get(SCOPE, {}).get('kind') == 'workstation_tf_direct_runtime_service',
             'actual TF owner is not DIRECT runtime service')
     # Reject old broad-fanout receipt implementations before inspecting their
@@ -166,37 +340,45 @@ def audit_direct_receipt(n, *, root):
     source_ce = n.pin(request, 'CE')
     require(all(n.pin(p, 'CE') == source_ce for p in payload),
             'source payload and request do not commit on the same CE')
-    source_leaves = [root_q, q(compute_release), rq, a1, condition_cut, q(queued_eos), q(physical_eos)]
-    require(len(source_leaves) == len(set(source_leaves)), 'source acceptance state/event cuts alias')
+    paired = root['selected_provider'] == PAIRED_PROVIDER
+    paired_lifecycle = None
+    if paired:
+        paired_lifecycle = _paired_source_lifecycle(n, g, root, ff=ff, next_proof=next_proof,
+            proofs=proofs, payload=payload, request=request, ack_sync=ack_sync, source_ce=source_ce)
+    else:
+        source_leaves = [root_q, q(compute_release), rq, a1, condition_cut, q(queued_eos), q(physical_eos)]
+        require(len(source_leaves) == len(set(source_leaves)), 'source acceptance state/event cuts alias')
 
-    def accepted(b):
-        event_present = b.either(b.invert(b.inputs[condition_cut]),
-                                b.either(b.inputs[q(queued_eos)], b.inputs[q(physical_eos)]))
-        free = b.invert(b.different(b.inputs[rq], b.inputs[a1]))
-        return b.all([b.inputs[q(compute_release)], free, event_present])
+        def accepted(b):
+            event_present = b.either(b.invert(b.inputs[condition_cut]),
+                                    b.either(b.inputs[q(queued_eos)], b.inputs[q(physical_eos)]))
+            free = b.invert(b.different(b.inputs[rq], b.inputs[a1]))
+            return b.all([b.inputs[q(compute_release)], free, event_present])
 
-    bd = BooleanDiagram(source_leaves)
-    require(bd.net(g, source_ce) == accepted(bd),
-            'source CE is not compute_release && free && (!payload0.D || queuedEOS || physicalEOS)')
-    next_proof(request, source_leaves,
-        lambda b: b.both(b.inputs[root_q], b.different(b.inputs[rq], accepted(b))),
-        'root & (request XOR accepted); busy forbids source commit')
-    for bit, path in enumerate(payload):
-        data = n.pin(path, 'D')
-        data_leaves = [] if data in g.high | g.low else [data]
-        next_proof(path, [*source_leaves, *data_leaves],
-            lambda b, path=path, data=data: b.both(b.inputs[root_q],
-                b.choose(accepted(b), b.net(g, data), b.inputs[q(path)])),
-            'root & choose(accepted, actual D cut, held Q)',
-            actual_source_data_cut=data, source_data_semantics_proven=False)
+        bd = BooleanDiagram(source_leaves)
+        require(bd.net(g, source_ce) == accepted(bd),
+                'source CE is not compute_release && free && (!payload0.D || queuedEOS || physicalEOS)')
+        next_proof(request, source_leaves,
+            lambda b: b.both(b.inputs[root_q], b.different(b.inputs[rq], accepted(b))),
+            'root & (request XOR accepted); busy forbids source commit')
+        for bit, path in enumerate(payload):
+            data = n.pin(path, 'D')
+            data_leaves = [] if data in g.high | g.low else [data]
+            next_proof(path, [*source_leaves, *data_leaves],
+                lambda b, path=path, data=data: b.both(b.inputs[root_q],
+                    b.choose(accepted(b), b.net(g, data), b.inputs[q(path)])),
+                'root & choose(accepted, actual D cut, held Q)',
+                actual_source_data_cut=data, source_data_semantics_proven=False)
     require(len(proofs) == 76, 'receipt reset-inclusive proof inventory incomplete')
     return dict(policy=POLICY, root_register=root_register, root_q=root_q, common_clear=common,
         register_count=76, registers=ff_rows, source_pins=[p + '/Q' for p in payload],
         capture_pins=[p + '/D' for p in local], chains=chains,
         capture_state=capture + '/D', dispatch_state=dispatch + '/D', seen_state=seen + '/D',
         payload_complete_closure=payload_closure, source_ce=source_ce, local_capture_ce=local_ce,
-        source_acceptance_condition_cut=condition_cut, source_event_condition_semantics_proven=False,
-        source_data_semantics_proven=False, external_registered_boundaries=boundaries,
+        source_acceptance_condition_cut=None if paired else condition_cut,
+        source_event_condition_semantics_proven=paired,
+        source_data_semantics_proven=paired, paired_source_abort_lifecycle=paired_lifecycle,
+        external_registered_boundaries=boundaries,
         physical_eos_publisher=physical_eos, physical_event_semantics_proven=False,
         merged_ack_register=seen, next_q=proofs, all_reset_inclusive_next_q_proven=True,
         busy_prevents_source_overwrite=True, source_commit_and_toggle_same_CE=True,

@@ -42,6 +42,11 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_peripheral_releases_audit.py',
     'tools/workstation_task3_tf_startup_audit.py', 'tools/workstation_task3_receipt_audit.py',
     'tools/workstation_task3_tf_sdc_audit.py', 'tools/workstation_task3_clock_release_audit.py',
+    'tools/workstation_task3_lcd_cdc_audit.py',
+    'tools/workstation_task3_paired_clock_audit.py',
+    'tools/workstation_task3_m_paired_releases_audit.py',
+    'tools/workstation_task3_w_paired_cdc_audit.py',
+    'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_runtime_profile.py',
 )
 
 
@@ -111,7 +116,7 @@ def verify_prepared(output, metadata):
     restored = common.role_helper(role).inverse_top(stage, role_top)
     require(common.digest(restored) == common.role_helper(role).PARENT_TOP_SHA256,
             'common then role exact top inverse changed')
-    sdc = common.restore_constraints(stage, (stage / 'constraints/custom_138k.sdc').read_text())
+    sdc = common.restore_constraints(stage, (stage / 'constraints/custom_138k.sdc').read_text(), metadata.get('task3_paired_sdc', {}))
     if role == 'M':
         from tools.workstation_task3_tf_direct import restore_constraints
         from tools.workstation_task3_tf_storage_selection import prepared_selection
@@ -298,6 +303,10 @@ def audit_constraint_inventory(sdc, metadata, netlist):
                              if member in change['removed_selectors'])
             rules.extend((row['query'], row['original'], row['selected'])
                          for row in change.get('rebound_selectors', []))
+    release_rebinding = metadata.get('task3_paired_sdc', {}).get('M_release_rebinding')
+    if release_rebinding is not None:
+        require(metadata.get('task3_paired', {}).get('role') == 'M', 'release rebinding requires explicit M')
+        rules.extend(('get_pins', row['before'], row['after']) for row in release_rebinding['mappings'])
     def matches(kind, member):
         pattern = re.compile(fnmatch.translate(member))
         return sorted(p for p in universes[kind] if p == member or pattern.fullmatch(p))
@@ -377,7 +386,7 @@ def audit(root, output, metadata):
     gate('port_coverage', lambda: audit_paired_ports(stage, plan, role))
     gate('AE350_clock_placement', lambda: verify_clock(stage, stage, metadata.get('ae350_core_clock_placement')))
     gate('AE350_RTC', lambda: verify_rtc(stage, stage, metadata.get('ae350_rtc')))
-    clocks = gate('runtime_clock_PLL_structure', lambda: audit_runtime_clocks(stage, stage, vg_text))
+    clocks = gate('runtime_clock_PLL_structure', lambda: audit_runtime_clocks(stage, stage, vg_text, paired_role=role))
     if clocks is not None:
         base_clocks = clocks['base_clock_audit']
         gate('USB2_CDC', lambda: audit_usb2_cdc(stage, vg_text, base_clocks))
@@ -396,13 +405,29 @@ def audit(root, output, metadata):
     gate('USB_FIFO_write_reset', lambda: dict(prepared=verify_fifo(stage, metadata['demo_usb_fifo_write_reset']),
                                              synthesis=audit_fifo(PcmNetlist(vg_text, TOP))))
     gate('USB_bridge_resets', lambda: audit_bridge_resets(vg_text, TOP))
+    from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
+    from tools.workstation_native_protocol_audit import protocol_netlist
+    gate('LCD_pad_synchronizer_structure', lambda: audit_lcd_input_chains(
+        protocol_netlist(vg_text, mapping='synthesis'), stage=stage, role=role))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     gate('visible_SDC_members', lambda: audit_sdc_selectors(sdc, netlist))
     gate('constraint_retirement_and_rebinding', lambda: audit_constraint_inventory(sdc, metadata, netlist))
+    if role == 'M':
+        from tools.workstation_task3_root_reset_audit import audit_root_startup
+        from tools.workstation_task3_m_paired_releases_audit import audit_paired_release_sdc
+        def paired_releases():
+            n = protocol_netlist(vg_text, mapping='synthesis')
+            root_reset = audit_root_startup(n, stage=stage)
+            return dict(actual_root_startup=root_reset,
+                actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
+        gate('M_paired_release_CDC', paired_releases)
     from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
     from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
     def boundary():
         n = boundary_netlist(vg_text, mapping='synthesis')
+        if role == 'W':
+            from tools.workstation_task3_w_paired_cdc_audit import audit_boundary as audit_worker_boundary
+            return audit_worker_boundary(n, sdc, mapping='synthesis')
         evidence = audit_boundary(n, mapping='synthesis', expected_role=role)
         evidence['installed_sdc'] = validate_boundary(sdc, n, evidence)
         return evidence
@@ -410,11 +435,16 @@ def audit(root, output, metadata):
     from tools.workstation_performance_reset import audit_demo_held_handshakes
     from tools.workstation_native_protocol_audit import protocol_netlist
     from tools.workstation_task3_paired_board import restore_constraints as restore_common_sdc
-    held_sdc = restore_common_sdc(stage, sdc)
-    gate('native_held_handshakes', lambda: audit_demo_held_handshakes(stage, held_sdc, role,
-        metadata['demo_runtime_timing'], protocol_netlist(vg_text, mapping='synthesis'),
-        mapping='synthesis', netlist_text=vg_text,
-        task3_direct_constraints=metadata['task3_tf_direct_cdc'] if role == 'M' else None))
+    held_sdc = restore_common_sdc(stage, sdc, metadata.get('task3_paired_sdc', {}))
+    if role == 'W':
+        from tools.workstation_task3_w_paired_cdc_audit import audit_held as audit_worker_held
+        gate('native_held_handshakes', lambda: audit_worker_held(stage, held_sdc, metadata,
+            protocol_netlist(vg_text, mapping='synthesis'), mapping='synthesis'))
+    else:
+        gate('native_held_handshakes', lambda: audit_demo_held_handshakes(stage, held_sdc, role,
+            metadata['demo_runtime_timing'], protocol_netlist(vg_text, mapping='synthesis'),
+            mapping='synthesis', netlist_text=vg_text,
+            task3_direct_constraints=metadata['task3_tf_direct_cdc']))
     gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
     require(verify_prepared(output, metadata)[1] == profile, 'prepared closure drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)}, 'synthesis outputs drifted')
