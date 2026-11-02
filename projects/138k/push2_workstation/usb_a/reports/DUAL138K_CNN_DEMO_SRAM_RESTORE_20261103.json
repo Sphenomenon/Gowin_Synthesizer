@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "started_utc": "2026-11-02T16:48:43.464848+00:00",
+  "candidate_identity": "ad205f0df5065543",
+  "user_code": "D21102D4",
+  "bitstream": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/impl/pnr/custom_138k_integration.fs",
+  "bitstream_sha256": "48f097c7584595a6f17244e151d73d9aaf05c0d452698bf893e01c60fcb2120c",
+  "physical_report_sha256": "a459086e8e77ae7495b3e43275566f36783138a7d4afa55270fcd55eca6afd1e",
+  "gate_sha256": "ba946d3b4a29a556f49baa99faaf0ed70de7526609156c6d121e84e1f4fb2a12",
+  "runner_sha256": "6c3e4e409a4deba6c389bb106ab4ea7c577f5cfa83d7f62725f2d68223d66cdb",
+  "programmer_sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+  "operations": [
+    {
+      "label": "sram-precheck",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.4632886671461165,
+      "log_sha256": "70aa0321d9bf1712d438f87ab689c8ceeee8d4146d40eb5e2ca7aa3a3218b16e"
+    },
+    {
+      "label": "sram-program",
+      "operation_index": 2,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "2",
+        "--fsFile",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21102D4/impl/pnr/custom_138k_integration.fs"
+      ],
+      "exit_code": 0,
+      "seconds": 7.266727500129491,
+      "log_sha256": "1608451519744479970da9f9924831157ae72aec990c97b459d83b889ac7304e"
+    },
+    {
+      "label": "sram-readback",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.883415250107646,
+      "log_sha256": "8296a9adbc80fe5ab1ceb4ff2bf344b725c55ca1560011e20ff1dcfccd6dd6ee"
+    },
+    {
+      "label": "sram-status",
+      "operation_index": 74,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "74"
+      ],
+      "exit_code": 0,
+      "seconds": 0.38414025004021823,
+      "log_sha256": "4bc1d73a3b8df6ee9d9d0f68b6c846d645f94bf32c958040eb450991b6048405"
+    }
+  ],
+  "SRAM_write_invoked": true,
+  "SRAM_deployed": true,
+  "Flash_written": false,
+  "bitwise_SRAM_readback": false,
+  "hardware_functional_acceptance": false,
+  "rollback": {
+    "user_code": "D2110137",
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "sha256": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75",
+    "Flash_not_modified": true
+  },
+  "before_user_code": "D2110137",
+  "sram-precheck_status": "00022020",
+  "sram-program_status": "00022230",
+  "independent_after_user_code": "D21102D4",
+  "sram-readback_status": "00022230",
+  "sram-status_status": "00022230",
+  "independent_identity_readback": true,
+  "inputs_unchanged": true,
+  "finished_utc": "2026-11-02T16:48:52.778976+00:00",
+  "model_loaded": false,
+  "real_TF_inference_verified": false,
+  "DAC_accepted": false,
+  "reason": "user reported power cycle; SRAM lost, M26 Flash boot independently observed",
+  "cable": {
+    "name": "Gowin USB Cable(FT2CH)/0/8321",
+    "index": 1,
+    "location": "8321"
+  },
+  "passive_UART": {
+    "port": "/dev/cu.usbserial-21101",
+    "baud": 115200,
+    "bytes": 0,
+    "transmitted_bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "records": []
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/precheck.json": "29eaab951132d2a379b94af7c8eee7a995575d6d7a1608de665e6ca528b3b276",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/passive-UART.bin": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/sram-status.log": "4bc1d73a3b8df6ee9d9d0f68b6c846d645f94bf32c958040eb450991b6048405",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/result.json": "ae14a5dc6393d98de96514348e42a81fc8ed503ef340cf67b4e69593f8787f64",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/runner.log": "6d04e257ba91b7e04554dd5197310a1606eb8f75e7308977d9a71890d8cc6a02",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/sram-program.log": "1608451519744479970da9f9924831157ae72aec990c97b459d83b889ac7304e",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/precheck.log": "fed419224dc8fdba1644c8dffa37594dc0b4d4a2f1a40a919a5314eaee1f09c5",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/sram-readback.log": "8296a9adbc80fe5ab1ceb4ff2bf344b725c55ca1560011e20ff1dcfccd6dd6ee",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/sram-precheck.log": "70aa0321d9bf1712d438f87ab689c8ceeee8d4146d40eb5e2ca7aa3a3218b16e",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/cable-scan.log": "21b14f9a7d5deb1a98de7f854e76295f4eed1ac250d1ec4cc3a4feb176acc344",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D4-20261103-powercycle-v2/passive-UART.json": "173b9d8832fe269ea750618f7fb29309a2d9344849f87cb2614ab7a1a8d70200"
+  },
+  "remaining": "D4 requires manual model upload; superseding automatic embedded-model candidate being built, no functional acceptance"
+}
