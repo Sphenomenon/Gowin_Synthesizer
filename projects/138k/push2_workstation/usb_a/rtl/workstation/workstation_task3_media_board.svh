@@ -154,7 +154,20 @@
         .queued_frames_o(task3_tap_queued),
         .accepted_frames_o(task3_tap_accepted),
         .delivered_frames_o(task3_tap_delivered));
-    workstation_task3_w_media u_task3_media(
+    // Explicit W providers choose storage placement; ordinary W remains DDR.
+`ifdef WORKSTATION_TASK3_CNN_SIGNAL_BSRAM
+    localparam TASK3_CNN_USE_DDR_SIGNAL=1'b0;
+`else
+    localparam TASK3_CNN_USE_DDR_SIGNAL=1'b1;
+`endif
+`ifdef WORKSTATION_TASK3_CNN_CQT_BSRAM
+    localparam TASK3_CNN_USE_DDR_CQT_COEFF=1'b0;
+`else
+    localparam TASK3_CNN_USE_DDR_CQT_COEFF=1'b1;
+`endif
+    workstation_task3_w_media #(
+        .CNN_USE_DDR_SIGNAL(TASK3_CNN_USE_DDR_SIGNAL),
+        .CNN_USE_DDR_CQT_COEFF(TASK3_CNN_USE_DDR_CQT_COEFF)) u_task3_media(
         .clk_i(clk_50m),
         .reset_ni(reset_n),
         .memory_clk_i(memory_clk),

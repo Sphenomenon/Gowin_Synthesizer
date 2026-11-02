@@ -12,13 +12,20 @@ POLICY='task3_w_media_headless_board_v1'
 FIRMWARE_POLICY='task3_w_headless_media_single_recording_60s_v1'
 NAME='custom138k-workstation-task3-w-media-v1'
 PROVIDER='rtl/workstation/workstation_profile_task3_w_media.sv'
+CNN_MEMORY_PROVIDERS={
+ PROVIDER:dict(policy='task3_w_ddr_cnn_memory_v1',USE_DDR_SIGNAL=1,USE_DDR_CQT_COEFF=1),
+ 'rtl/workstation/workstation_profile_task3_w_media_signal_bsram.sv':
+     dict(policy='task3_w_signal_bsram_v1',USE_DDR_SIGNAL=0,USE_DDR_CQT_COEFF=1),
+ 'rtl/workstation/workstation_profile_task3_w_media_cqt_bsram.sv':
+     dict(policy='task3_w_signal_cqt_bsram_v1',USE_DDR_SIGNAL=0,USE_DDR_CQT_COEFF=0),
+}
 REFERENCE='rtl/workstation/workstation_task3_w_media_top_reference.json'
 BOARD='rtl/workstation/workstation_task3_media_board.svh'
 APB='rtl/services/workstation_task3_media_apb_service.sv'
 CONTROLLED='rtl/workstation/workstation_worker_runtime_controlled.sv'
 PRIMITIVES='rtl/workstation/workstation_worker_audio_primitives.sv'
 SOURCES=(*MEDIA_SOURCES,APB,CONTROLLED)
-DEPENDENCIES=('tools/workstation_task3_w_media_profile.py',REFERENCE,BOARD,PRIMITIVES,'rtl/ddr_address_map.vh',
+DEPENDENCIES=('tools/workstation_task3_w_media_profile.py',PROVIDER,REFERENCE,BOARD,PRIMITIVES,'rtl/ddr_address_map.vh',
  'tools/workstation_task3_w_media.py','tools/workstation_task3_w_media_firmware.py',
  'tools/workstation_task3_w_media_firmware_review.json',
  'rtl/workstation/workstation_runtime_controlled.sv','rtl/audio/workstation_observation_consumers.sv',
@@ -56,6 +63,61 @@ QUERY=re.compile(r'\[(get_regs|get_pins|get_ports|get_clocks) \{([^{}]+)\}\]')
 
 def digest(s):return hashlib.sha256(s.encode()if isinstance(s,str)else s).hexdigest()
 def sha(p):return digest(Path(p).read_bytes())
+
+def cnn_memory_provider(provider):
+    if provider not in CNN_MEMORY_PROVIDERS:raise ValueError('unregistered W CNN memory provider')
+    return dict(CNN_MEMORY_PROVIDERS[provider],USE_DDR_FRONT_COEFF=1,USE_ALL_DDR=0,provider=provider)
+
+def cnn_memory_configuration(configuration):
+    policy=configuration.get('cnn_memory_policy','task3_w_ddr_cnn_memory_v1')
+    matches=[cnn_memory_provider(p) for p,row in CNN_MEMORY_PROVIDERS.items() if row['policy']==policy]
+    if len(matches)!=1:raise ValueError('unregistered W CNN memory configuration')
+    return matches[0]
+
+def selected_cnn_memory(stage,text):
+    """Prove the actual provider/localparams/native parameter chain, not flags alone."""
+    from xml.etree import ElementTree as ET
+    stage=Path(stage)
+    enabled=[r.get('path') for r in ET.parse(stage/'Prj1.gprj').find('FileList') if r.get('enable')=='1']
+    providers=[p for p in enabled if p in CNN_MEMORY_PROVIDERS]
+    if len(providers)!=1:raise ValueError('W CNN memory provider must be unique')
+    selected=cnn_memory_provider(providers[0])
+    def module(name):
+        rows=re.findall(r'\bmodule\s+'+name+r'\b.*?\bendmodule\b',text,re.S)
+        if len(rows)!=1:raise ValueError('W CNN memory module must be unique: '+name)
+        return ''.join(rows[0].split())
+    def once(body,anchor):
+        if body.count(''.join(anchor.split()))!=1:raise ValueError('W CNN native memory chain drift: '+anchor)
+    link=module('basic_pitch_workstation_link')
+    task=module('workstation_cnn_task_service')
+    media=module('workstation_task3_w_media')
+    top=module('workstation_custom_138k_top')
+    parameterized='parameterbitUSE_DDR_SIGNAL=' in link
+    if parameterized:
+        for body,prefix in ((link,''),(task,'CNN_'),(media,'CNN_')):
+            for key in ('USE_DDR_SIGNAL','USE_DDR_CQT_COEFF'):
+                once(body,'parameter bit '+prefix+key+"=1'b1")
+        for key in ('USE_DDR_SIGNAL','USE_DDR_CQT_COEFF'):
+            once(link,'.'+key+'('+key+')')
+            once(task,'.'+key+'(CNN_'+key+')')
+            once(media,'.CNN_'+key+'(CNN_'+key+')')
+            once(top,'.CNN_'+key+'(TASK3_CNN_'+key+')')
+            once(top,'localparam TASK3_CNN_'+key+"=1'b"+str(selected[key])+';')
+        once(top,'workstation_task3_w_media #(')
+    else:
+        # An immutable pre-parameter W candidate remains independently inspectable.
+        # This does not substitute old bytes into a new build or relax its locks.
+        if selected['provider']!=PROVIDER:raise ValueError('local CNN provider requires native parameters')
+        for key in ('USE_DDR_SIGNAL','USE_DDR_CQT_COEFF'):
+            once(link,'.'+key+"(1'b1)")
+        once(top,'workstation_task3_w_media u_task3_media(')
+    for key in ('USE_DDR_FRONT_COEFF','USE_EXTERNAL_STATE','USE_EXTERNAL_PLANE',
+                'USE_EXTERNAL_WEIGHTS','USE_EXTERNAL_FEATURES'):
+        once(link,'.'+key+"(1'b1)")
+    once(link,".USE_ALL_DDR(1'b0)")
+    selected['native_parameters']=parameterized
+    return selected
+
 def inverse_top(root,text):
     """Full identity plus unique anchors, reverse and forward round trip."""
     if 'WORKSTATION_TASK3_W_MEDIA' not in text:return text
@@ -223,7 +285,6 @@ def selected_source_evidence(stage,text):
     top=module('workstation_custom_138k_top');media=module('workstation_task3_w_media')
     for anchor in ['workstation_task3_media_apb_service u_task3_media_service(',
                    'workstation_task3_record_ingress u_task3_record_ingress(',
-                   'workstation_task3_w_media u_task3_media(',
                    '.cnn_start_valid_i(task3_start_valid)',
                    '.cnn_start_task_id_i(task3_task_id)',
                    '.cnn_start_generation_i(task3_generation)',
@@ -257,11 +318,15 @@ def selected_source_evidence(stage,text):
         if len(re.findall(r'\.'+key+r'\('+str(value)+r'\)',link))!=1:
             raise ValueError('W-media selected existing CNN resource configuration drift: '+key)
     if link.count('.COARSE_GUIDANCE(1\'b1)')!=1:raise ValueError('W-media selected coarse guidance drift')
+    memory=selected_cnn_memory(stage,text)
+    native_memory_parameters=memory.pop('native_parameters')
     return dict(policy=POLICY,normalized_preprocessed_text_sha256=digest(text.replace('\r\n','\n').replace('\r','\n')),
         task_entry='F807 APB descriptors and PCM actually connected',
         LCD_ready=False,software_tap_closed_on_reset=True,W_local_DAC_is_recording_source=False,
         single_raw_store=True,single_C_BLE_recording_object=True,full_HCI_Classic_GATT=True,
         selected_CNN_configuration=dict(**expected,COARSE_GUIDANCE=True),
+        selected_CNN_memory=memory,
+        native_CNN_memory_parameters=native_memory_parameters,
         selected_CNN_configuration_origin='existing explicit resource-parent 4Hz guidance candidate',
         native_default_43844_172_inference_evidence_transferred=False,
         physical_CDC_accepted=False,hardware_accepted=False)

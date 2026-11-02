@@ -1,6 +1,7 @@
 # Task3 W CNN task component
 
-This component is not selected by an M or W production profile. It owns a
+The explicit task3 W media candidate profiles select this component; accepted
+single-board and task2 W21 profiles retain their own source policies. It owns a
 bounded offline analysis clip and the maintained real Basic Pitch pipeline;
 it does not supply the basic performance sample clock or access M's TF card.
 LCD framing, electrical validation and transport capability negotiation are
@@ -43,6 +44,16 @@ padding behind that could start another zero window. Genuine queued PCM
 and resampler history still cross ordinary window restarts. This parameter
 defaults to 0 in the existing link/pipeline, preserving their old behavior.
 Task success waits for the actual final-window and Viterbi score completion.
+
+`CNN_USE_DDR_SIGNAL` and `CNN_USE_DDR_CQT_COEFF` default to 1 and propagate
+through the maintained link to its existing pipeline storage branches. The
+explicit signal-BSRAM profile selects 0/1; the CQT-BSRAM profile selects 0/0.
+Front coefficients remain in DDR, `USE_ALL_DDR` remains 0, and state, plane,
+weights and features remain external. These controls change memory placement;
+they do not select a different model, arithmetic, inference graph or clock.
+Each local configuration needs independent equivalence, resource and timing
+evidence. The unchanged default does not refresh old source locks; use the
+original source commit and immutable candidate to reproduce an older profile.
 
 `workstation_cnn_ddr_broker` serializes staging and the real CNN DDR16 port
 onto native owner5 of `workstation_media_memory`. It holds the selected
@@ -100,12 +111,21 @@ this interface.
 
 ## Evidence boundary
 
-The runner boots the complete unchanged 52,239-word model via actual
-read-only SPI, validates payload and DDR readback CRC `AF01A61B`, and uses
+The task runners boot the complete unchanged 52,239-word model via actual
+read-only SPI, validate payload and DDR readback CRC `AF01A61B`, and use
 the actual CQT/CNN/Viterbi with behavioral native DDR and real media queues.
-Only a checked simulation copy changes window/frame dimensions to
-2048/2. Production dimensions remain 43844/172. This is a lifecycle and
-memory integration probe, not musical accuracy, whole-song completion,
-selected W profile, physical BSRAM/resource/timing, actual LCD throughput,
-board latency, SRAM deployment or Flash acceptance. No model/vendor or
-frozen baseline bytes are edited.
+The historical lifecycle probe uses a checked simulation copy with dimensions
+2048/2. The selected W runner instead consumes immutable prepared RTL without
+an overlay: WIN44100, FRAMES8, nine octaves, hop22050/4, tile16 and coarse
+guidance. The native link's unselected dimension defaults remain43844/172.
+The [selected-W report](../../reports/DUAL138K_TASK3_W_SELECTED_CNN_20261102.json)
+records the complete 96,000-frame task, real six-layer results and cancellation
+replay. Its 4Hz feature cadence does not imply real-time inference throughput.
+Local-memory configurations require their own cross-configuration results;
+the historical DDR result cannot validate them.
+
+These are lifecycle and memory integration checks. Musical accuracy,
+whole-song completion, physical timing, actual LCD throughput, board latency,
+SRAM deployment and Flash acceptance remain separate. The current W firmware
+has a diagnostic task entry, with no automatic TF/LCD producer; LCD-ready is
+fixed down. No model/vendor or frozen baseline bytes are edited.

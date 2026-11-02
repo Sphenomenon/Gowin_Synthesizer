@@ -5,7 +5,9 @@ module tb_workstation_cnn_task #(
     parameter integer MAX_CYCLES=120000000,
     parameter integer IO_TIMEOUT_CYCLES=4096,
     parameter [31:0] TASK_TIMEOUT_CYCLES=32'd400000000,
-    parameter bit REQUIRE_SELECTED_W=0
+    parameter bit REQUIRE_SELECTED_W=0,
+    parameter bit CNN_USE_DDR_SIGNAL=1,
+    parameter bit CNN_USE_DDR_CQT_COEFF=1
 );
     localparam integer MODEL_BYTES=104510;
     reg clk=0,mclk=0,reset_n=0,memory_reset_n=0,calibrated=0;
@@ -39,7 +41,11 @@ module tb_workstation_cnn_task #(
     reg allow_native=1,allow_response=1,corrupt_stage=0,inject_unowned_return=0,expect_fatal=0;
     reg delay_valid=0,recording_valid=0;
     wire delay_ready,recording_ready;
-    workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES),.TASK_TIMEOUT_CYCLES(TASK_TIMEOUT_CYCLES)) dut(
+    workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES),.TASK_TIMEOUT_CYCLES(TASK_TIMEOUT_CYCLES)
+`ifdef TB_CONFIGURABLE_CNN_STORAGE
+        ,.CNN_USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.CNN_USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF)
+`endif
+    ) dut(
         .clk_i(clk),.reset_ni(reset_n),.memory_clk_i(mclk),.memory_reset_ni(media_reset),
         .backend_ready_i(media_ready),.transport_fault_i(media_fault),
         .start_valid_i(start),.start_ready_o(start_ready),.start_task_id_i(start_id),.start_generation_i(start_generation),
@@ -110,6 +116,7 @@ module tb_workstation_cnn_task #(
     reg pending_read=0,pending_stage=0;
     integer native_cycle=0,pending_index=0,read_timer=0,reads=0,writes=0;
     integer owner5_commits=0,delay_commits=0,recording_commits=0,stage_writes=0,stage_reads=0;
+    integer owner5_reads=0,owner5_writes=0;
     integer index,lane;
     assign app_ready=reset_n && memory_reset_n && calibrated && allow_native && !pending_read && !app_response && native_cycle%11!=0;
     assign app_write_ready=allow_native && native_cycle%13>=3;
@@ -126,7 +133,11 @@ module tb_workstation_cnn_task #(
                 if(!app_ready || (app_wren && !app_write_ready))$fatal(1,"native joint acceptance violated");
                 index=gmap({1'b0,app_address[28:18]})*524288+{app_address[17:3],4'b0000};
                 if(gmap({1'b0,app_address[28:18]})<0)$fatal(1,"invalid actual native address %h",app_address);
-                if(native_accept[5])owner5_commits<=owner5_commits+1;
+                if(native_accept[5])begin
+                    owner5_commits<=owner5_commits+1;
+                    if(app_wren)owner5_writes<=owner5_writes+1;
+                    else owner5_reads<=owner5_reads+1;
+                end
                 if(native_accept[6])delay_commits<=delay_commits+1;
                 if(native_accept[8])recording_commits<=recording_commits+1;
                 if(app_wren)begin
@@ -165,6 +176,9 @@ module tb_workstation_cnn_task #(
     integer clocks=0,checks=0,notes=0,layer_writes[0:5],analysis_count=0;
     integer reference_writes[0:5],reference_notes=0;
     integer launch_clock=0,first_score_clock=0;
+    integer cnn_reads=0,cnn_writes=0;
+    integer launch_cnn_reads=0,launch_cnn_writes=0,launch_owner_reads=0,launch_owner_writes=0;
+    integer launch_stage_reads=0,launch_stage_writes=0;
     reg [191:0] reference_hashes;
     reg [6:0] observed_notes[0:511],reference_sequence[0:511];
     reg capture_layers=0;
@@ -173,6 +187,10 @@ module tb_workstation_cnn_task #(
     endtask
     always @(posedge clk)if(reset_n)begin
         clocks<=clocks+1;
+        if(dut.cnn.bp_mem_req && dut.cnn.bp_mem_ready)begin
+            if(dut.cnn.bp_mem_write)cnn_writes<=cnn_writes+1;
+            else cnn_reads<=cnn_reads+1;
+        end
         if(!expect_fatal && (fatal || media_fault))$fatal(1,"unexpected actual transport/restart fault task=%0d state=%0d model=%0d broker=%b broker_state=%0d broker_timer=%0d media=%b restart=%b restart_code=%0d stage=%b allow_response=%b pending=%b",id,dut.state,model_status,dut.broker_fault,dut.broker.state,dut.broker.timer,media_fault,dut.restart_fault,dut.restart_failure,dut.stage_inflight,allow_response,pending_read);
         if(clocks%10000000==0)begin
             $display("PROGRESS clocks=%0d task=%0d state=%0d cnn=%0d replayed=%0d reads=%0d writes=%0d front_started=%b full=%b drained=%b score=%b notes=%0d",clocks,id,dut.state,dut.cnn.u_basic_pitch.state,replayed,reads,writes,dut.cnn.u_basic_pitch.front_window_started,dut.cnn.u_basic_pitch.front_win_full,dut.cnn.u_basic_pitch.front_drained,score_valid,notes);$fflush();
@@ -182,7 +200,9 @@ module tb_workstation_cnn_task #(
         if(score_valid && score_ready)begin
             if(notes==0)first_score_clock=clocks;
             check(id==5 || id==7,"score belongs to current successful task");
-            check(score_index==32'(notes),"score sequence ordinal is exact");observed_notes[notes]=score_note;notes=notes+1;
+            check(score_index==32'(notes),"score sequence ordinal is exact");
+            $display("SCORE task=%0d index=%0d note=%0d",id,score_index,score_note);
+            observed_notes[notes]=score_note;notes=notes+1;
         end
         if(capture_layers)begin
             if(dut.cnn.u_basic_pitch.contour_act_valid)layer_writes[0]=layer_writes[0]+1;
@@ -193,6 +213,7 @@ module tb_workstation_cnn_task #(
             if(dut.cnn.u_basic_pitch.onset_out_act_valid)layer_writes[5]=layer_writes[5]+1;
             if(dut.cnn_analysis_done)begin
                 $display("TASK_METRICS task=%0d clip_frames=%0d launch_clock=%0d first_score_clock=%0d complete_clock=%0d task_cycles=%0d hashes=%h writes0=%0d writes1=%0d writes2=%0d writes3=%0d writes4=%0d writes5=%0d notes=%0d",id,CLIP_FRAMES,launch_clock,first_score_clock,clocks,clocks-launch_clock,dut.cnn.layer_hashes,layer_writes[0],layer_writes[1],layer_writes[2],layer_writes[3],layer_writes[4],layer_writes[5],notes);$fflush();
+                $display("TASK_TRAFFIC task=%0d cnn_ddr16_reads=%0d cnn_ddr16_writes=%0d owner5_native_reads=%0d owner5_native_writes=%0d staging_native_reads=%0d staging_native_writes=%0d",id,cnn_reads-launch_cnn_reads,cnn_writes-launch_cnn_writes,owner5_reads-launch_owner_reads,owner5_writes-launch_owner_writes,stage_reads-launch_stage_reads,stage_writes-launch_stage_writes);$fflush();
                 analysis_count=analysis_count+1;
                 if(id==5)begin
                     reference_hashes=dut.cnn.layer_hashes;reference_notes=notes;
@@ -212,6 +233,9 @@ module tb_workstation_cnn_task #(
         begin wait(start_ready);@(negedge clk);start_id=32'(task_number);start_generation=32'(task_number);start_frames=32'(frames);start_crc=crc_value;start=1;
             @(negedge clk);check(start_accepted,"valid bounded descriptor accepted");start=0;
             wait(frame_ready);launch_clock=clocks;first_score_clock=0;notes=0;for(integer k=0;k<6;k=k+1)layer_writes[k]=0;
+            launch_cnn_reads=cnn_reads;launch_cnn_writes=cnn_writes;
+            launch_owner_reads=owner5_reads;launch_owner_writes=owner5_writes;
+            launch_stage_reads=stage_reads;launch_stage_writes=stage_writes;
         end
     endtask
     task automatic feed(input integer task_number,input integer frames);
@@ -240,6 +264,12 @@ module tb_workstation_cnn_task #(
                   "actual selected W4Hz dimensions, tile and guidance are elaborated");
             check(CLIP_FRAMES==96000 && IO_TIMEOUT_CYCLES==50000000 && TASK_TIMEOUT_CYCLES==32'd3600000000,
                   "selected W task budgets and maximum clip capacity are unchanged");
+            check(dut.cnn.u_basic_pitch.USE_DDR_SIGNAL==CNN_USE_DDR_SIGNAL &&
+                  dut.cnn.u_basic_pitch.USE_DDR_CQT_COEFF==CNN_USE_DDR_CQT_COEFF &&
+                  dut.cnn.u_basic_pitch.USE_DDR_FRONT_COEFF==1 && dut.cnn.u_basic_pitch.USE_ALL_DDR==0 &&
+                  dut.cnn.u_basic_pitch.USE_EXTERNAL_STATE && dut.cnn.u_basic_pitch.USE_EXTERNAL_PLANE &&
+                  dut.cnn.u_basic_pitch.USE_EXTERNAL_WEIGHTS && dut.cnn.u_basic_pitch.USE_EXTERNAL_FEATURES,
+                  "actual storage selection retains front coefficients and external graph stores");
         end
         if(!$value$plusargs("IMAGE=%s",image_path))$fatal(1,"full real IMAGE required");
         $readmemh(image_path,image);

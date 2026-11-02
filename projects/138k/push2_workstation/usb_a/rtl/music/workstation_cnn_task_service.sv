@@ -5,6 +5,8 @@
 // audio source: transport credits must never propagate into M's sample clock.
 module workstation_cnn_task_service #(
     parameter integer CAPACITY_FRAMES=`PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES,
+    parameter bit CNN_USE_DDR_SIGNAL=1'b1,
+    parameter bit CNN_USE_DDR_CQT_COEFF=1'b1,
     parameter integer IO_TIMEOUT_CYCLES=50000000,
     parameter [31:0] TASK_TIMEOUT_CYCLES=32'd3600000000
 ) (
@@ -139,6 +141,7 @@ module workstation_cnn_task_service #(
         .data_o(memory_data_o),.mask_o(memory_mask_o),.slot_ready_i(memory_slot_ready_i),
         .native_accept_i(memory_native_accept_i),.response_i(memory_response_i),.idle_o(),.fault_o(broker_fault));
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1),.DRAIN_RESTART_ENABLE(1),.BOUNDED_EOF_PADDING(1),
+        .USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF),
         .RESTART_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES)) cnn(
         .clk_50m(clk_i),.reset_n(reset_ni),.memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),
         .memory_calibrated(backend_ready_i),.model_serial(model_serial_i),.flash_miso(flash_miso_i),

@@ -6,6 +6,8 @@
 // No LCD pins, M peripherals, second recorder or graphics are inferred here.
 module workstation_task3_w_media #(
     parameter integer BIST_BURSTS=`PRJ1_DDR_BIST_BEATS,
+    parameter bit CNN_USE_DDR_SIGNAL=1'b1,
+    parameter bit CNN_USE_DDR_CQT_COEFF=1'b1,
     parameter integer CNN_IO_TIMEOUT_CYCLES=50000000,
     parameter [31:0] CNN_TASK_TIMEOUT_CYCLES=32'd3600000000,
     parameter integer RAW_COMMAND_TIMEOUT_CYCLES=10000,
@@ -147,6 +149,7 @@ module workstation_task3_w_media #(
         .read_response_i(recording_response),.read_data_i(response_data_o),.transport_fault_i(transport_fault_o),
         .native_protocol_fault_o(raw_native_protocol_fault_o));
     workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(CNN_IO_TIMEOUT_CYCLES),
+        .CNN_USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.CNN_USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF),
         .TASK_TIMEOUT_CYCLES(CNN_TASK_TIMEOUT_CYCLES)) cnn_task(
         .clk_i(clk_i),.reset_ni(service_reset_n),.memory_clk_i(memory_clk_i),.memory_reset_ni(client_reset_no),
         .backend_ready_i(client_ready_o),.transport_fault_i(transport_fault_o),

@@ -104,7 +104,7 @@ TF复用维护的[native直读](push2_workstation/usb_a/rtl/tf_audio/WORKSTATION
 
 CNN首工作流为M选TF→明确分析PCM任务→W CQT/真实模型/CNN/Viterbi→完整谱面返回→M Push指导。先允许离线分析完再练习；不能称零延迟扒谱。模型权重/CRC、CQT、输入率/window/hop、量化、Viterbi和音符映射单独锁定；历史[full83验收](push2_workstation/usb_a/reports/CNN_83_ACCEPTANCE_20261006.json)不能转授新W。缺模型/loader/实现据实列缺口；允许W用部分BSRAM缓存加速，须测真实资源、推理最坏时间和录音/蓝牙共存。播放扇出不把两个ready相与：分析不足就降实际cadence或失败，不拖停播放。
 
-本轮已核对维护的`rtl/music/weights/cnn_ddr_blob.mem`：52,239个16-bit word、104,478B，文本SHA256为`b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf`，与accepted full83锁定模型逐字节相同；按little-endian word还原的CRC32为`AF01A61B`。真实模型存在；下述W候选已选择真实计算/存储接口并完成当前4Hz维度的2秒任务验证，整曲、其他维度、BSRAM加速配置和实板质量仍待验。原模型和Flash内容不修改。
+本轮已核对维护的`rtl/music/weights/cnn_ddr_blob.mem`：52,239个16-bit word、104,478B，文本SHA256为`b5a98b6458e71cf150da37665305a6f895ba002e9e66b2a5bac9cbc12c6d96bf`，与accepted full83锁定模型逐字节相同；按little-endian word还原的CRC32为`AF01A61B`。真实模型存在；下述W候选已选择真实计算/存储接口并完成当前4Hz维度的2秒任务验证；BSRAM加速另以显式候选验证，整曲、其他维度和实板质量仍待验。原模型和Flash内容不修改。
 
 W真实识别所需的任务取消边界已在维护`basic_pitch_workstation_link.sv`内显式可选实现（`DRAIN_RESTART_ENABLE=1`）；实际FIFO/DDR读返回与写接受排空后才重启推理，超时/内存复位/校准丢失隔离。真实模型、小窗口/2帧回归覆盖7种生命周期场景，取消后六层hash/写数/score与全新默认实例相同，跳过排空的负控失败，见[CNN任务证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_CNN_RESTART_20261101.json)。默认保持旧行为；W21未因此接回CNN，完整W装配/loader/质量与实板仍待验。
 
@@ -128,6 +128,10 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 
 [W选中配置的真实推理](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_SELECTED_CNN_20261102.json)直接使用不可变W v13的全部相关源码与完整SPI模型，不缩小维度或覆盖RTL。96,000帧/2秒任务及取消后重跑完成74项检查，六层写数分别为16,896/2,112/22,528/704/22,528/704，六层hash及完整4音符结果一致。单次任务约368,947,028个50MHz时钟（仿真7.379秒）；4Hz是特征cadence，不能据此称实时推理吞吐。输入为确定性LFSR，只证明计算/存储/生命周期，不证明识别质量；owner6/8仍为竞争探针，尚未运行真实Delay和长录音并发。
 
+[W CNN BSRAM分担实验](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_BSRAM_20261102.json)新增两份独立配置，均保持WIN44100/FRAMES8、9 octave、hop22050/4、tile16、真实模型及原算术/时钟。默认仍走DDR；仅显式新W配置把signal或signal＋CQT系数放入W本地BSRAM，front系数和state/plane/weights/features仍在DDR。两候选各991项来源锁、649项暂存、188项编译输入，独立prepare/verify、实际预处理参数链和整机综合已通过；旧14份配置锁保持原字节，回退按原提交及不可变候选，不在当前共享源码上刷新旧锁。
+
+实际综合为：signal-only `…8eead7dd2f05abcb` 使用276/340 BSRAM，signal＋coeff `…5ca0cbd4d7fcfae1` 使用308/340；旧W为228。新增信号RAM实占48 SDPB、两CQT ROM再占32 pROM，不能沿用44/18块的几何估算。两新配置50MHz综合估算均52.907MHz，音频仍63.698MHz/目标76.8MHz；无布线或物理时序通过。小型CQT三模式4完整窗口的全部幅值/抽取/写入序列一致，2项数据破坏负控被拒绝；signal＋coeff已完成两次96,000帧跨配置任务和取消后重跑，75项检查通过；六层hash/写数、完整音符序列与DDR基线一致。单次仿真任务从7.379秒降至3.225秒，accepted DDR16读取减少74.86%、写入减少56.08%，代价为BSRAM228→308。选择该不可变候选继续离线完整框架搭建，保留DDR回退；3.225秒处理2秒内容仍不属于实时推理，且输入未按真实48k节拍送入。signal-only首任务完整且结果一致，第二任务日志在330M时钟截断、进程丢失原因未知，无最终回执，不记为完整通过。官方整机审计入口对这两W身份拒绝`native board preparation policy changed`，完整W门禁接入及CDC/PLL/STA仍待完成。
+
 [W实际网表CDC预审](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CDC_PREFLIGHT_20261102.json)发现CNN ready、APB reset合并后失效的选择器，以及两个暂存FIFO Gray最高位合并为binary后漏覆盖。已留精确修正建议与5项拒绝检查，尚未选择新W约束；完整共享reset、继承端点、PLL和布线时序未闭合。保留旧候选，不以平均吞吐或局部CDC替代LCD实测。
 
 ## 8. 阶段、提交与证据
@@ -141,7 +145,7 @@ D保留真实手机A2DP/SBC连续流及按下启效、松开结束；BitCrush/Dr
 | T3-02b 同条件资源差值 | 已完成[真实综合/清单/网表证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)：M退出20SDPB/19MULT27X36，W实际承担；来源`06c55d8a`。候选工具12项来源/篡改测试通过，首轮不支持的工具宏选项失败保留，改为校验provider后新目录完整通过。仅子系统综合，整机profile传播、LCD/CDC和完整P&R另验，不把仿真538时钟当物理控制延迟 |
 | T3-03 LCD可用线与实测 | 待目标板：反序线逐脚/电气/方向/时钟；双向有效吞吐/最坏RTT/拥塞/重连；先据此决定实时往返效果与其他PCM通路 |
 | T3-04 M本地基础/TF前端 | 新DIRECT候选…68efbb0415ea234e，CRC1/cache1/r3、269输入prepare/独立verify/实际综合通过，32声部及普通矢量保留；综合BSRAM216。FAST12双率11,000+97帧无欠载，CRC/FAT来源和失效负控通过；完整TF CDC仍拒绝，综合时钟估算未达标。音频CRC原子发布、任意碎片/真实卡/remount、完整P&R及实体延迟待验 |
-| T3-05 W CNN/分析/长录音 | 显式W媒体角色…01a09c94f065b7ba实际综合BSRAM228，CNN/raw/HCI保留；当前4Hz/96,000帧真实任务和取消后重跑74检查通过，仿真单次约7.379秒。CPU/BLE同一60秒对象及下载组件通过，APB112/161检查保留。整曲/质量、长对象重连、44.1k、真实并发和完整CDC/P&R未验；软件tap默认关、LCD固定down |
+| T3-05 W CNN/分析/长录音 | 显式W媒体角色…01a09c94f065b7ba实际综合BSRAM228，CNN/raw/HCI保留；DDR配置4Hz/96,000帧真实任务和取消后重跑75检查通过，仿真单次约7.379秒；另选signal＋CQT本地…5ca0cbd4d7fcfae1（308BSRAM）继续框架，等价两任务75检查/约3.225秒，signal-only第二任务未完成。CPU/BLE同一60秒对象及下载组件通过，APB112/161检查保留。整曲/质量、长对象重连、44.1k、真实并发和完整CDC/P&R未验；软件tap默认关、LCD固定down |
 | T3-06 同对候选集成 | TF→W CNN→Push、真实手机D→M DAC、CPU/BLE同一长录音、下载/重连/取消/PANIC；分别测两板并发资源/时序/吞吐/延迟 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 

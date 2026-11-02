@@ -60,6 +60,8 @@ W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
 TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
 TASK3_W_MEDIA_NAME='custom138k-workstation-task3-w-media-v1'
+TASK3_W_SIGNAL_NAME='custom138k-workstation-task3-w-media-signal-bsram-v1'
+TASK3_W_CQT_NAME='custom138k-workstation-task3-w-media-cqt-bsram-v1'
 PROFILE_REGISTRY = {
     TASK3_W_MEDIA_NAME:dict(config='boards/custom_138k/workstation_profile_task3_w_media_v1.json',revision=1,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
@@ -178,6 +180,18 @@ PROFILE_REGISTRY = {
         provider=NO_CNN_PROVIDER, recognition_enabled=False,
         integration_identity='custom138k-native-dual-rate-no-cnn-revision1'),
 }
+
+for _name,_config,_provider,_policy,_identity in (
+    (TASK3_W_SIGNAL_NAME,'boards/custom_138k/workstation_profile_task3_w_media_signal_bsram_v1.json',
+     'rtl/workstation/workstation_profile_task3_w_media_signal_bsram.sv',
+     'task3_w_signal_bsram_v1','custom138k-native-task3-w-media-signal-bsram-revision1'),
+    (TASK3_W_CQT_NAME,'boards/custom_138k/workstation_profile_task3_w_media_cqt_bsram_v1.json',
+     'rtl/workstation/workstation_profile_task3_w_media_cqt_bsram.sv',
+     'task3_w_signal_cqt_bsram_v1','custom138k-native-task3-w-media-cqt-bsram-revision1')):
+    _parent=PROFILE_REGISTRY[TASK3_W_MEDIA_NAME]
+    PROFILE_REGISTRY[_name]=dict(_parent,config=_config,provider=_provider,
+        configuration=dict(_parent['configuration'],cnn_memory_policy=_policy),
+        integration_identity=_identity)
 
 
 def specification(name):
@@ -628,6 +642,11 @@ def _artifact(root, output, metadata, profile):
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
         verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker)
+        if media_worker:
+            from tools.workstation_task3_w_media_profile import cnn_memory_configuration
+            memory=dict(metadata['classic_runtime']['worker_media_source']['selected_CNN_memory'])
+            if memory!=cnn_memory_configuration(profile['configuration']):
+                raise ValueError('W CNN actual native memory selection does not match profile configuration')
     elif 'classic_runtime'in metadata:
         raise ValueError('unselected profile cannot claim Classic runtime composition')
     bluetooth = metadata['bluetooth']

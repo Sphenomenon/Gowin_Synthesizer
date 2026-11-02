@@ -127,11 +127,12 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
-        from tools.workstation_task3_w_media_profile import PROVIDER as MEDIA_PROVIDER,FIRMWARE_POLICY
+        from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
-            if selected_provider!=MEDIA_PROVIDER or headless_worker or physical_rom_bytes!=131072:
+            cnn_memory_provider(selected_provider)
+            if headless_worker or physical_rom_bytes!=131072:
                 raise ValueError('explicit full W-media provider/configuration required')
-            provider,policy=MEDIA_PROVIDER,FIRMWARE_POLICY
+            provider,policy=selected_provider,FIRMWARE_POLICY
         else:
             if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
                 raise ValueError("unreviewed Classic demo compilation provider")
@@ -170,11 +171,12 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if selected_provider is not None:
-        from tools.workstation_task3_w_media_profile import PROVIDER as MEDIA_PROVIDER,FIRMWARE_POLICY
+        from tools.workstation_task3_w_media_profile import cnn_memory_provider,FIRMWARE_POLICY
         if media_worker:
-            if selected_provider!=MEDIA_PROVIDER or headless_worker or physical_rom_bytes!=131072:
+            cnn_memory_provider(selected_provider)
+            if headless_worker or physical_rom_bytes!=131072:
                 raise ValueError('explicit full W-media provider/configuration required')
-            provider,policy=MEDIA_PROVIDER,FIRMWARE_POLICY
+            provider,policy=selected_provider,FIRMWARE_POLICY
         else:
             if selected_provider != "rtl/workstation/workstation_profile_w_demo.sv":
                 raise ValueError("unreviewed Classic demo compilation provider")
@@ -209,7 +211,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
     verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
-        worker_demo=selected_provider in ('rtl/workstation/workstation_profile_w_demo.sv','rtl/workstation/workstation_profile_task3_w_media.sv'))
+        worker_demo=media_worker or selected_provider=='rtl/workstation/workstation_profile_w_demo.sv')
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record

@@ -5,6 +5,9 @@
 // stalled by model upload or analysis.
 module basic_pitch_workstation_link #(
     parameter bit USE_FLASH_WEIGHTS = 1'b0,
+    // Placement only: the default preserves the existing DDR arithmetic path.
+    parameter bit USE_DDR_SIGNAL = 1'b1,
+    parameter bit USE_DDR_CQT_COEFF = 1'b1,
     // Opt in only for a task owner which waits for restart_done_o. The
     // default retains the accepted single-board restart contract.
     parameter bit DRAIN_RESTART_ENABLE = 1'b0,
@@ -85,8 +88,8 @@ module basic_pitch_workstation_link #(
         .USE_EXTERNAL_STATE(1'b1),.USE_EXTERNAL_PLANE(1'b1),
         .USE_EXTERNAL_WEIGHTS(1'b1),.USE_FLASH_WEIGHTS(USE_FLASH_WEIGHTS),.USE_EXTERNAL_FEATURES(1'b1),
         .BOUNDED_EOF_PADDING(BOUNDED_EOF_PADDING),
-        .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(1'b1),
-        .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(1'b1)
+        .USE_ALL_DDR(1'b0),.USE_DDR_SIGNAL(USE_DDR_SIGNAL),
+        .USE_DDR_FRONT_COEFF(1'b1),.USE_DDR_CQT_COEFF(USE_DDR_CQT_COEFF)
     ) u_basic_pitch (
         .clk_i(clk_50m),.rst_ni(reset_n),.analysis_restart_i(pipeline_restart),
         .model_serial_i(model_serial),.model_boot_ready_i(model_memory_ready),
