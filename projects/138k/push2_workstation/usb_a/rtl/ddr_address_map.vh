@@ -172,4 +172,11 @@
 `define PRJ1_DDR_TASK3_W_CNN_PCM_APP_LAST       29'h0c45_76ff
 `define PRJ1_DDR_TASK3_W_CNN_PCM_LAST_BEAT      29'h0c45_76f8
 
+// Alternative short-store implementation uses the existing exclusive BLE raw
+// suballocation. It cannot coexist with that raw backend; never use Basic
+// Pitch history at 0x30100000 for PCM. Native addresses count 32-bit words.
+`define PRJ1_DDR_BLE_PCM_BYTE_BASE `PRJ1_DDR_RECORDING_BLE_BYTE_BASE
+`define PRJ1_DDR_BLE_PCM_BYTE_LAST `PRJ1_DDR_RECORDING_BLE_BYTE_LAST
+`define PRJ1_DDR_BLE_PCM_APP_BASE  `PRJ1_DDR_RECORDING_BLE_APP_BASE
+
 `endif

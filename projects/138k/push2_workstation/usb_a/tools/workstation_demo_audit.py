@@ -204,7 +204,7 @@ def hierarchy_counts(root):
     return totals, rows
 
 
-def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, tf_direct_enabled=False):
+def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=False, tf_direct_enabled=False, usb_cpu_ram_bytes=65536):
     selected_m = {k: p for k, p in M_FEATURES.items() if tf_enabled or k not in ('tf', 'tf_decoder')}
     if tf_direct_enabled:
         require(role == 'M' and tf_enabled, 'direct TF requires retained M playback')
@@ -222,7 +222,15 @@ def audit_features(role, rows, netlist, *, tf_enabled=True, worker_audio_only=Fa
                         audio_memory_queues='u_audio_memory/u_arbiter')
     require(not any(p not in rows for p in features.values()),
             'retained features missing: ' + ', '.join(k for k, p in features.items() if p not in rows))
-    require(rows['u_native_usb/host']['Bsram'] >= 38 and
+    require(type(usb_cpu_ram_bytes) is int and usb_cpu_ram_bytes in (49152,65536),
+            'unregistered USB CPU RAM capacity')
+    # An explicit RAM48 profile replaces exactly eight CPU RAM SDPB lanes.
+    # Packet/register/event storage remains required, and the paired caller
+    # separately proves all24 RAM primitive widths and every initialized word.
+    if usb_cpu_ram_bytes==49152:
+        require(rows.get('u_native_usb/host/bus',{}).get('Bsram')==24,
+                'explicit RAM48 must retain all24 CPU RAM blocks')
+    require(rows['u_native_usb/host']['Bsram'] >= (30 if usb_cpu_ram_bytes==49152 else 38) and
             rows['u_native_usb/input_owner']['Bsram'] >= 1, 'USB CPU ROM/event storage swept')
     for name, minimum in (('delay', 8), ('chorus', 4), ('reverb', 20), ('hdmi_live_analysis', 32),
                           ('hdmi_waveform', 1), ('hdmi_xy_alignment', 1), ('hdmi_spectrum', 30)):

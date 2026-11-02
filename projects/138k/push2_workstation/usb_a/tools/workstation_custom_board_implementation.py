@@ -82,6 +82,104 @@ def checked_copy(source, destination, expected):
         raise ValueError('physical input changed during copy: ' + str(source))
 
 
+def reference_constraints(payload, netlist_text, excluded_ports=()):
+    """Bind an explicit historical CST to this netlist, without PCB acceptance."""
+    native = SynthesisNetlist(netlist_text, TOP)
+    ports = set()
+    for port in native.directions[TOP]:
+        limits = native.ranges[TOP].get(port)
+        ports.update([f'{port}[{i}]' for i in range(min(limits), max(limits)+1)] if limits else [port])
+    if set(excluded_ports) & ports:
+        raise ValueError('cannot exclude a port present in the current netlist')
+    lines, omitted, instances = [], [], {}
+    for line in payload.decode('utf-8').splitlines():
+        match = re.match(r'(IO_LOC|IO_PORT|INS_LOC|CLOCK_LOC)\s+"([^"]+)"', line)
+        if match:
+            kind, name = match.groups()
+            if kind.startswith('IO_') and name in excluded_ports:
+                omitted.append(line)
+                continue
+            if kind.startswith('IO_') and name not in ports:
+                raise ValueError('historical CST has an unreviewed absent port: ' + name)
+            if kind == 'INS_LOC':
+                if name in native.cells:
+                    instances[name] = 'resolved_in_synthesis_netlist'
+                elif name.startswith('u_memory/u_ddr3/gw3_top/u_ddr_phy_top/'):
+                    instances[name] = 'encrypted_DDR_target_require_routed_resolution'
+                else:
+                    raise ValueError('historical CST has an absent instance: ' + name)
+            if kind == 'CLOCK_LOC' and not any(
+                    cell['kind'] in ('IBUF', 'BUFG') and cell['ports'].get('O') == name
+                    for cell in native.modules[TOP].values()):
+                raise ValueError('historical CST has an absent top-level global clock net: ' + name)
+        lines.append(line)
+    result = ('\n'.join(lines)+'\n').encode('utf-8')
+    locations = parse_locations(result.decode('utf-8'))
+    implicit = {}
+    for port, balls in locations.items():
+        if len(balls) == 2:
+            negative = (port.replace('tmds_data_p', 'tmds_data_n').replace('tmds_clk_p', 'tmds_clk_n')
+                        if port.startswith('tmds_') else port.replace('ddr_dqs', 'ddr_dqs_n').replace('ddr_ck', 'ddr_ck_n'))
+            if negative == port or negative not in ports:
+                raise ValueError('unresolved differential complement: ' + port)
+            implicit[negative] = balls[1]
+    if set(locations) | set(implicit) != ports:
+        raise ValueError('historical CST does not cover every current top-level port bit')
+    balls = [ball for values in locations.values() for ball in values]
+    if len(set(balls)) != len(balls):
+        raise ValueError('historical CST assigns a package ball more than once')
+    return result, dict(port_bits=len(ports), explicit_locations=locations,
+                        differential_complements=implicit, omitted=omitted, instance_locations=instances)
+
+
+def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
+                      place_option=2, route_option=0):
+    """Offline experiment using a hash-pinned reference; never board validation."""
+    source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
+    script = implementation_script(user_code, place_option, route_option)
+    if output.exists() or source in output.parents:
+        raise ValueError('physical output must be new and outside its parent candidate')
+    if not re.fullmatch('[0-9a-f]{64}', reference_sha256) or sha(reference_cst) != reference_sha256:
+        raise ValueError('historical physical constraint identity changed')
+    audit = audit_synthesis(source)
+    metadata = json.loads((source / 'integration_inputs.json').read_text())
+    if metadata['top_module'] != TOP:
+        raise ValueError('native top identity changed')
+    stage = source / 'workstation/Prj1'
+    vg = stage / f'impl/gwsynthesis/{BASE}.vg'
+    cst, binding = reference_constraints(reference_cst.read_bytes(), vg.read_text(), excluded_ports)
+    inputs = {
+        BASE+'.vg': (vg, audit['netlist_sha256']),
+        'reference.cst': (reference_cst, reference_sha256),
+        'physical.sdc': (stage / 'constraints/custom_138k.sdc',
+                         metadata['staged_input_sha256']['constraints/custom_138k.sdc']),
+        'parent_integration_inputs.json': (source / 'integration_inputs.json', audit['integration_inputs_sha256']),
+    }
+    output.mkdir(parents=True)
+    for name, (path, expected) in inputs.items():
+        checked_copy(path, output/name, expected)
+    (output/'physical.cst').write_bytes(cst)
+    (output/'run.tcl').write_text(script)
+    (output/'parent_synthesis_audit.json').write_text(json.dumps(audit, indent=2)+'\n')
+    result = dict(schema=1, identity='custom138k-resource-physical-'+user_code.upper(),
+        prepared_at=datetime.now().astimezone().isoformat(),
+        validation_stage='offline_physical_experiment_prepared',
+        source_policy='audited_native_netlist_with_hash_pinned_historical_CST_and_unchanged_SDC',
+        parent_candidate=str(source), parent_identity=audit['identity'],
+        preparer_sha256=sha(__file__), user_code='0x'+user_code.upper(), top_module=TOP, device=DEVICE,
+        constraint_reference=dict(path=str(reference_cst), sha256=reference_sha256, binding=binding),
+        electrical_status='historical_reference_only_no_current_PCB_netlist_check',
+        board_netlists_checked=False, board_programming_authorized=False,
+        clocks_or_exceptions_relaxed=False, features_removed=False,
+        place_option=place_option, route_option=route_option, replicate_resources=False,
+        input_sha256={p.name: sha(p) for p in output.iterdir() if p.is_file()},
+        timing_closed=False, physical_gates_passed=False, hardware_tested=False,
+        deployment_allowed=False, release_ready=False, bitstream_sha256=None,
+        sram_programmed=False, flash_programmed=False, remaining_gaps=metadata['remaining_gaps'])
+    (output/'physical_inputs.json').write_text(json.dumps(result, indent=2)+'\n')
+    return result
+
+
 def ulpi_bypass_constraints(payload, plan):
     if plan.get('ulpi_bypass') != {'U4': 'not_fitted_short', 'U5': 'not_fitted_short'}:
         raise ValueError('ULPI IO standard requires the reviewed complete bypass declaration')
@@ -587,8 +685,28 @@ def main():
                           help='Place only the fixed 128 FFs in the two observed reference source banks')
     parser.add_argument('--expected-parent-evidence-sha256',
                         help='Required explicit identity when deriving the DDR capture-region experiment')
+    parser.add_argument('--reference-cst', type=Path, help='Explicit offline historical pin/floorplan reference')
+    parser.add_argument('--reference-sha256')
+    parser.add_argument('--exclude-reference-port', action='append', default=[])
+    parser.add_argument('--place-option', type=int, choices=range(5), default=2)
+    parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
     args = parser.parse_args()
-    if args.ddr_capture_region_parent_evidence:
+    reference_options = bool(args.reference_sha256 or args.exclude_reference_port or
+                             args.place_option != 2 or args.route_option != 0)
+    derivation_options = bool(args.ddr_capture_region_parent_evidence or args.ddr_dqs_hold_regions or
+        args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions or
+        args.ddr_launch_capture_far_regions or args.reference_monitor_source_regions or
+        args.expected_parent_evidence_sha256)
+    if args.reference_cst:
+        if args.ulpi_bypass_lvcmos33 or derivation_options or not args.reference_sha256:
+            parser.error('reference mode requires its hash and cannot mix board/derivation adaptations')
+        result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
+                                   args.reference_sha256, args.exclude_reference_port,
+                                   args.place_option, args.route_option)
+    elif reference_options:
+        parser.error('reference constraint options require --reference-cst')
+    elif args.ddr_capture_region_parent_evidence:
+
         if args.ulpi_bypass_lvcmos33:
             parser.error('the derived parent already fixes ULPI; a second adaptation is not allowed')
         result = derive_ddr_capture_region(args.source, args.output, args.user_code,

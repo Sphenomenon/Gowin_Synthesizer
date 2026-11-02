@@ -14,14 +14,20 @@ from tools.workstation_usb2_soc import SOC_SOURCE_PATHS
 from tools.workstation_custom_clocks import clock_bundle, shared_cdc_bundle
 from tools.workstation_custom_usb2_cdc import cdc_bundle
 from tools.workstation_custom_input_cdc import input_cdc_bundle
-from tools.workstation_bluetooth import prepare as prepare_bluetooth, SDC as BLUETOOTH_SDC
+from tools.workstation_bluetooth import prepare as prepare_bluetooth, stage_business, SDC as BLUETOOTH_SDC
 from tools.workstation_board_peripherals import prepare as prepare_peripherals, reviewed_profile, LCD_SDC, local_panel_bundle
 from tools.workstation_custom_timing import apply as adapt_timing, constraints as timing_constraints
 from tools.workstation_custom_flash import prepare as prepare_model_flash, SDC as MODEL_FLASH_SDC
 from tools.workstation_video_mode import apply as apply_video_mode, PROFILES_720
+from tools.workstation_ble_storage_cdc import constraints as storage_constraints
 
 
 IDENTITY = 'custom138k-native-integration-20261027-a26'
+NATIVE_OVERLAYS = {
+    'src/memory/ddr_address_map.vh': 'rtl/ddr_address_map.vh',
+    'rtl/audio/scope_vec/scope_control_player.sv': 'rtl/audio/scope_vec/scope_control_player.sv',
+    'rtl/music/music_async_fifo.sv': 'rtl/music/music_async_fifo.sv',
+}
 FPC_AUDIO_CST = 'boards/custom_138k/audio.cst'
 DISPLAY_CST = 'boards/custom_138k/display.cst'
 DDR_CST = 'boards/custom_138k/ddr.cst'
@@ -90,7 +96,7 @@ def source_snapshot(root, extra_inputs=()):
 
 
 def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed=True, hdmi_mode='1080p60',
-            *, workstation_profile=None):
+            *, workstation_profile=None, logic_only=False):
     root, output = Path(root).resolve(), Path(output).resolve()
     if output.exists():
         raise FileExistsError('custom-board output already exists: ' + str(output))
@@ -99,6 +105,19 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile = load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
     else:
         profile = None
+    if logic_only and profile is not None:
+        raise ValueError('logic-only is limited to the unprofiled native resource experiment')
+    resource_optimization = profile is not None and profile['configuration'].get('native_resource_optimization', False)
+    if type(resource_optimization) is not bool:
+        raise ValueError('native resource optimization selection must be boolean')
+    if resource_optimization:
+        raise ValueError('full native resource optimization requires an independently integrated backend')
+    ram_bytes = 65536 if profile is None else profile['configuration'].get('usb2_cpu_ram_bytes', 65536)
+    if type(ram_bytes) is not int or ram_bytes not in (49152, 65536):
+        raise ValueError('USB CPU RAM profile capacity must be 48 or 64 KiB')
+    if resource_optimization:
+        from tools.workstation_static_checks import validate_cues
+        validate_cues(root / 'rtl/audio/scope_vec/data/scene_controls.mem', 69)
     runtime = profile is not None and profile['configuration'].get('audio_policy') == 'native_dual_rate_runtime_v1'
     local_panel_enabled = True
     if runtime:
@@ -229,7 +248,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             from tools.workstation_classic_runtime import firmware_inputs
             extra_inputs += firmware_inputs(root,headless_worker=audio_only)
     snapshot = source_snapshot(root, extra_inputs)
-    pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
+    if logic_only:
+        output.mkdir(parents=True)
+        pinout_output = None
+        pinout = dict(device='GW5AST-LV138PG484AC2/I1', electrical_check=dict(status='not_checked'))
+    else:
+        pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
     builder = importlib.import_module('build_resource_rework')
     if builder.ROOT.resolve() != root:
@@ -239,7 +263,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_profile import prepare_ae350
         ae350_firmware = prepare_ae350(root, output, stage, riscv_prefix, recording_api=recording_selected,
             business_owner=business_selected,classic_runtime=classic_selected,worker_demo=demo_role=='W',headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker, **ae350_memory)
-    native_timing = adapt_timing(stage)
+    native_timing = adapt_timing(stage, resource_optimized=resource_optimization)
     demo_fifo_reset = None
     if demo_role is not None:
         from tools.workstation_usb_fifo_reset import prepare as prepare_fifo_reset
@@ -309,20 +333,36 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board copied source identity changed: ' + relative)
         if relative in native_sources:
             ElementTree.SubElement(files, 'File', path=target, type='file.verilog', enable='1')
+    from tools.stage_usb_firmware import select_usb2_cpu_ram
+    usb2_cpu_ram_selection = select_usb2_cpu_ram(root, stage, ram_bytes)
     recording_address_map=None
     if recording_selected:
         from tools.workstation_recording_policy import install_address_map
         recording_address_map=install_address_map(root,stage)
+    overlays = {}
+    if resource_optimization:
+        for destination, source in NATIVE_OVERLAYS.items():
+            before = sha(stage / destination)
+            shutil.copyfile(root / source, stage / destination)
+            overlays[destination] = dict(source=source, before=before, after=sha(stage / destination))
     support = {}
     for relative in LOCKED_INPUT_SOURCES:
+        if relative in replaced_inputs:
+            continue
         if sum(entry.get('path') == relative and entry.get('enable') == '1' for entry in files) != 1:
             raise ValueError('native-board shared support selection drift: ' + relative)
         support[relative] = sha(stage / relative)
     firmware = stage_usb2_cpu_firmware(root, stage / 'native_usb_firmware', root / 'firmware.c', riscv_prefix,
-                                       workstation=True, allow_high_speed=allow_high_speed,worker_demo=demo_role=='W')
+                                       workstation=True, allow_high_speed=allow_high_speed,worker_demo=demo_role=='W', ram_bytes=ram_bytes)
     shutil.copyfile(stage / 'native_usb_firmware/usb2_cpu.hex', stage / 'usb2_cpu.hex')
-    bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout,
-                                  relative_rom_paths=runtime)
+    if ram_bytes == 49152:
+        for bank in range(3):
+            shutil.copyfile(stage / f'native_usb_firmware/usb2_cpu_bank{bank}.hex', stage / f'usb2_cpu_bank{bank}.hex')
+    if logic_only:
+        bluetooth = stage_business(root, stage, resource_optimized=resource_optimization)
+    else:
+        bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout,
+            relative_rom_paths=runtime)
     if runtime:
         bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
     ble_raw_adaptation=None
@@ -333,10 +373,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
         ble_raw_adaptation=prepare_ble_raw(root,stage,enabled=True)
-    peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
-    if not local_panel_enabled:
-        peripherals['local_panel_enabled'] = False
-    model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
+    if logic_only:
+        peripherals = reviewed_profile(root)
+        model_flash = dict(read_only=True, use_flash_weights=True, board_pads_checked=False)
+    else:
+        peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
+        if not local_panel_enabled:
+            peripherals['local_panel_enabled'] = False
+        model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
     audio_source_selection=None
     if audio_only:
         from tools.workstation_worker_audio_only import select_sources,retired_source
@@ -356,15 +400,17 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         top_path=stage / paired_board.TOP
         top_path.write_text(paired_helper.apply_top(root,top_path.read_text()))
         task3_paired_selection=paired_board.prepare_top(root,stage,paired_role)
-    shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
-    shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
-    shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
-    shutil.copyfile(root / DISPLAY_CST, stage / 'constraints/custom_138k.display.cst')
-    shutil.copyfile(root / DDR_CST, stage / 'constraints/custom_138k.ddr.cst')
-    # Gowin selects a single active CST when opening a project. Keep the
-    # reviewed components as evidence, but select only their complete union.
-    combined_cst = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
-                           for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
+    combined_cst = ''
+    if not logic_only:
+        shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
+        shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
+        shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
+        shutil.copyfile(root / DISPLAY_CST, stage / 'constraints/custom_138k.display.cst')
+        shutil.copyfile(root / DDR_CST, stage / 'constraints/custom_138k.ddr.cst')
+        # Gowin selects a single active CST when opening a project. Keep the
+        # reviewed components as evidence, but select only their complete union.
+        combined_cst = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
+                               for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
     shared_crossings = shared_cdc_bundle(stage)
     runtime_constraints = None
     if runtime:
@@ -375,6 +421,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True, recording_authority=ble_raw_selected) + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    if resource_optimization:
+        selected_sdc += storage_constraints()
     if classic_selected:
         from tools.workstation_classic_runtime import cdc_bundle as classic_cdc_bundle
         selected_sdc += classic_cdc_bundle()['sdc']
@@ -424,10 +472,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc,task3_paired_sdc=paired_board.adapt_constraints(root,selected_sdc,paired_role)
         combined_cst,task3_paired_cst=paired_board.adapt_cst(root,combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
-    combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
-    (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
+    ae350_clock_placement = None
+    if not logic_only:
+        combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
+    if not logic_only:
+        (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
+        ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
-    ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
     from tools.workstation_ae350_rtc import prepared as prepare_ae350_rtc
@@ -447,14 +498,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     for relative, record in replacements.items():
         if sha(stage / relative) != record['sha256']:
             raise ValueError('native-board excluded historical input changed: ' + relative)
-    staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
+    staged = {source.relative_to(stage).as_posix(): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
     metadata = dict(schema=1, identity=(specification(profile['name'])['integration_identity'] if runtime else
                     PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY),
                     hdmi=video_mode,
                     native_timing_adaptations=native_timing,
                     model_flash=model_flash,
-                    top_module='workstation_custom_138k_top', source_policy='explicit_native_board_on_resource_timing',
+                    top_module='workstation_custom_138k_top', source_policy='native_logic_only_on_resource_timing' if logic_only else 'explicit_native_board_on_resource_timing',
                     validation_stage='integration_prepare_only', device=pinout['device'],
                     firmware=firmware, high_speed_allowed=bool(allow_high_speed),
                     bluetooth=bluetooth, peripherals=peripherals,
@@ -464,7 +515,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     unchanged_parent_inputs=checked_parent_inputs,
                     replaced_compilation_inputs=replacements, shared_resource_support_sha256=support,
                     parent_prepare_metadata_sha256=sha(output / 'parent_prepare_metadata.json'),
-                    pinout_sha256=sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
+                    pinout_sha256=None if logic_only else sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
                     staged_input_sha256=staged, native_usb=True, legacy_usb_host_elaborated=False,
                     tmds_polarity_inverted=[True, True, True, True], cec_behavior='released_high_impedance',
                     audio_pin_behavior='ak4493_i2s32_48k_mclk256fs_final_master_volume',
@@ -487,6 +538,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     remaining_gaps=['USB3300/TXS electrical compatibility', 'physical FPC DAC/audio acceptance',
                                     'physical BLE pairing/recording/download acceptance', 'complete IO/CDC/timing/PLL/P&R gates',
                                     'real external peripheral and hardware acceptance'])
+    if usb2_cpu_ram_selection is not None:
+        metadata['usb2_cpu_ram_selection'] = usb2_cpu_ram_selection
+    if resource_optimization:
+        metadata.update(board_netlists_checked=not logic_only, native_source_overlays=overlays,
+                        electrical_status=pinout['electrical_check']['status'])
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         if media_worker:

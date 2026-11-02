@@ -28,7 +28,7 @@ def verify_usb2_cpu_vendor(root):
 
 
 def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstation=False, allow_high_speed=True,
-                           worker_demo=False):
+                           worker_demo=False, ram_bytes=65536):
     root, output, entry = map(Path, (root, output, entry))
     if not workstation and not allow_high_speed:
         raise ValueError('full-speed-only policy requires workstation firmware')
@@ -53,7 +53,16 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstati
     compiler_version = subprocess.run([prefix + '-gcc', '--version'], text=True, capture_output=True,
                                       check=True).stdout.splitlines()[0]
     output.mkdir(parents=True, exist_ok=False)
-    shutil.copyfile(linker, output / 'baremetal.ld')
+    if ram_bytes not in (49152, 65536):
+        raise ValueError('USB CPU RAM must be 48 or 64 KiB')
+    if ram_bytes == 49152:
+        # Only the explicit 48 KiB candidate adapts generated startup/linker inputs.
+        startup = once(sources[0].read_text(), '.equ    STACK_TOP, 0x10000', '.equ    STACK_TOP, 0xc000')
+        (output / 'start.S').write_text(startup)
+        script = once(linker.read_text(), 'LENGTH = 0x10000', 'LENGTH = 0xc000')
+        (output / 'baremetal.ld').write_text(script)
+    else:
+        shutil.copyfile(linker, output / 'baremetal.ld')
     common = ['-march=rv32i', '-mabi=ilp32', '-mno-relax', '-msmall-data-limit=0']
     with (output / 'build.log').open('w') as log:
         objects = []
@@ -69,7 +78,7 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstati
             warning_flags = ['-Wall'] if vendor in source.parents else ['-Wall', '-Wextra', '-Werror']
             subprocess.run([prefix + '-gcc', *common, '-std=c11', '-O2' if workstation else '-Os', '-ffreestanding',
                             '-ffunction-sections', '-fdata-sections', *warning_flags,
-                            *profile_flags, '-I', str(root / 'drivers/usb2'), '-c', str(source.resolve()), '-o', target],
+                            *profile_flags, '-I', str(root / 'drivers/usb2'), '-c', str((output / 'start.S' if index == 0 and ram_bytes == 49152 else source).resolve()), '-o', target],
                            cwd=output, stdout=log, stderr=subprocess.STDOUT, check=True)
         subprocess.run([prefix + '-gcc', *common, '-nostdlib', '-Wl,-e,_start,--gc-sections,--build-id=none,-T,baremetal.ld',
                         *objects, '-lgcc', '-o', 'firmware.elf'], cwd=output,
@@ -81,23 +90,32 @@ def stage_usb2_cpu_firmware(root, output, entry, riscv_prefix=None, *, workstati
     used = static_memory_bytes(size.stdout)
     end = static_memory_end(symbols.stdout)
     binary = (output / 'firmware.bin').read_bytes()
-    if not binary or max(len(binary), used, end) >= 60000:
-        raise ValueError('USB2 CPU firmware must leave stack space in 64 KiB RAM')
+    limit = ram_bytes-8192 if ram_bytes == 49152 else 60000
+    if not binary or max(len(binary), used, end) >= limit:
+        raise ValueError('USB2 CPU firmware exceeds its static memory/stack budget')
     for relative, expected in identities.items():
         if sha(root / relative) != expected:
             raise ValueError('USB2 CPU firmware input changed during compilation: ' + relative)
-    padded = binary.ljust(65536, b'\0')
+    padded = binary.ljust(ram_bytes, b'\0')
     rom = output / 'usb2_cpu.hex'
     rom.write_text(''.join(f'{int.from_bytes(padded[index:index+4], "little"):08x}\n'
                            for index in range(0, len(padded), 4)))
-    return dict(isa='rv32i', abi='ilp32', compiler_prefix=prefix, compiler_version=compiler_version,
+    if ram_bytes==49152:
+        rows=rom.read_text().splitlines(keepends=True)
+        for bank in range(3):
+            (output / f'usb2_cpu_bank{bank}.hex').write_text(''.join(rows[bank*4096:(bank+1)*4096]))
+    metadata = dict(isa='rv32i', abi='ilp32', compiler_prefix=prefix, compiler_version=compiler_version,
                 firmware_profile='workstation' if workstation else 'probe',
                 high_speed_allowed=bool(allow_high_speed),
                 worker_demo=bool(worker_demo),
                 entry=str(entry.relative_to(root)), input_sha256=identities,
-                firmware_bytes=len(binary), static_ram_bytes=used, static_ram_end=end, stack_margin_bytes=65536-end,
+                firmware_bytes=len(binary), static_ram_bytes=used, static_ram_end=end, stack_margin_bytes=ram_bytes-end,
                 elf_sha256=sha(output / 'firmware.elf'), binary_sha256=sha(output / 'firmware.bin'), rom_sha256=sha(rom),
                 vendor_manifest_sha256=USB2_VENDOR_MANIFEST_SHA256, hardware_tested=False)
+    if ram_bytes == 49152:
+        metadata.update(ram_bytes=ram_bytes, generated_startup_sha256=sha(output / 'start.S'),
+                        generated_linker_sha256=sha(output / 'baremetal.ld'))
+    return metadata
 
 
 def sha(path):
@@ -110,6 +128,83 @@ def once(text, old, new):
     return text.replace(old, new)
 
 
+USB2_CPU_RAM_POLICY = 'usb2_cpu_banked48_checked_default_v1'
+USB2_CPU_RAM_SOURCE = 'rtl/usb2/workstation_usb2_cpu_bus.sv'
+USB2_CPU_RAM_ANCHOR = 'parameter integer RAM_BYTES = 65536,'
+
+
+def select_usb2_cpu_ram(root, stage, ram_bytes):
+    """Narrow capacity overlay until the native host owner wires the parameter.
+
+    The source is versioned and hash-bound by the explicit profile. Only the
+    default parameter changes; existing 64 KiB builds retain exact source bytes.
+    """
+    if type(ram_bytes) is not int or ram_bytes not in (49152, 65536):
+        raise ValueError('USB CPU RAM capacity must be 48 or 64 KiB')
+    if ram_bytes == 65536:
+        return None
+    source, target = Path(root) / USB2_CPU_RAM_SOURCE, Path(stage) / USB2_CPU_RAM_SOURCE
+    if source.read_bytes() != target.read_bytes():
+        raise ValueError('USB CPU RAM overlay requires unchanged maintained input')
+    before = sha(source)
+    transformed = once(source.read_text(), USB2_CPU_RAM_ANCHOR,
+                       'parameter integer RAM_BYTES = 49152,')
+    target.write_text(transformed)
+    return dict(policy=USB2_CPU_RAM_POLICY, source=USB2_CPU_RAM_SOURCE,
+                ram_bytes=ram_bytes, before=before, after=sha(target))
+
+
+def verify_usb2_cpu_ram_selection(root, stage, configuration, evidence, *, captured_source_sha256=None, firmware=None):
+    ram_bytes = configuration.get('usb2_cpu_ram_bytes', 65536)
+    if type(ram_bytes) is not int or ram_bytes not in (49152, 65536):
+        raise ValueError('USB CPU RAM profile capacity must be 48 or 64 KiB')
+    if firmware is not None and firmware.get('ram_bytes', 65536) != ram_bytes:
+        raise ValueError('USB CPU RAM and firmware capacity mismatch')
+    if ram_bytes == 65536:
+        if evidence is not None:
+            raise ValueError('unselected USB CPU RAM overlay')
+        return None
+    target = Path(stage) / USB2_CPU_RAM_SOURCE
+    transformed = target.read_text()
+    restored = once(transformed, 'parameter integer RAM_BYTES = 49152,', USB2_CPU_RAM_ANCHOR)
+    before = hashlib.sha256(restored.encode()).hexdigest()
+    expected_source = (captured_source_sha256 or {}).get(USB2_CPU_RAM_SOURCE)
+    if expected_source is None:
+        expected_source = sha(Path(root) / USB2_CPU_RAM_SOURCE)
+    expected = dict(policy=USB2_CPU_RAM_POLICY, source=USB2_CPU_RAM_SOURCE,
+                    ram_bytes=ram_bytes, before=before, after=sha(target))
+    if expected_source != before or evidence != expected:
+        raise ValueError('USB CPU RAM overlay input identity or exact inverse changed')
+    if firmware is None or firmware.get('ram_bytes') != ram_bytes:
+        raise ValueError('USB CPU RAM requires matching 48 KiB firmware evidence')
+    stage = Path(stage)
+    generated = stage / 'native_usb_firmware'
+    binary = (generated / 'firmware.bin').read_bytes()
+    end = firmware.get('static_ram_end', -1)
+    used = firmware.get('static_ram_bytes', -1)
+    if (firmware.get('firmware_bytes') != len(binary) or not binary or
+            not isinstance(end, int) or not isinstance(used, int) or min(end, used) < 0 or
+            max(len(binary), used, end) >= ram_bytes - 8192 or
+            firmware.get('stack_margin_bytes') != ram_bytes - end or
+            sha(generated / 'firmware.bin') != firmware.get('binary_sha256')):
+        raise ValueError('USB CPU 48 KiB firmware/static/stack budget mismatch')
+    padded = binary.ljust(ram_bytes, b'\0')
+    rows = [f'{int.from_bytes(padded[i:i+4], "little"):08x}\n' for i in range(0, ram_bytes, 4)]
+    expected_rom = ''.join(rows)
+    for path in (stage / 'usb2_cpu.hex', generated / 'usb2_cpu.hex'):
+        if path.read_text() != expected_rom or sha(path) != firmware.get('rom_sha256'):
+            raise ValueError('USB CPU 48 KiB firmware ROM identity/capacity mismatch')
+    for bank in range(3):
+        expected_bank = ''.join(rows[bank*4096:(bank+1)*4096])
+        for path in (stage / f'usb2_cpu_bank{bank}.hex', generated / f'usb2_cpu_bank{bank}.hex'):
+            if path.read_text() != expected_bank:
+                raise ValueError('USB CPU 48 KiB bank ROM differs from firmware')
+    for name, key in (('start.S', 'generated_startup_sha256'), ('baremetal.ld', 'generated_linker_sha256')):
+        if sha(generated / name) != firmware.get(key):
+            raise ValueError('USB CPU 48 KiB generated startup/linker identity mismatch')
+    return expected
+
+
 def compiler_prefix(value=None):
     """Resolve a GNU bare-metal RISC-V toolchain, preserving the Linux default."""
     explicit = value or os.environ.get('GW138K_RISCV_PREFIX')
@@ -118,7 +213,7 @@ def compiler_prefix(value=None):
         'riscv64-unknown-elf', 'riscv32-unknown-elf', 'riscv-none-elf', 'riscv64-elf',
     ]
     for candidate in candidates:
-        if candidate and all(shutil.which(candidate + '-' + tool) for tool in ('gcc', 'objcopy', 'size', 'nm')):
+        if candidate and all(shutil.which(candidate + '-' + tool + ('.exe' if os.name == 'nt' else '')) for tool in ('gcc', 'objcopy', 'size', 'nm')):
             return candidate
     raise FileNotFoundError(
         'RISC-V bare-metal gcc/objcopy/size/nm are required; pass --riscv-prefix '

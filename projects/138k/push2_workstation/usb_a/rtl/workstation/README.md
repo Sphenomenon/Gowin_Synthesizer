@@ -101,6 +101,12 @@ PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。�
 
 ## 显式新板装配
 
+PR #2 的资源实验及物理结果保存在 `../../reports/RESOURCE_OPTIMIZATION_20261102.md` 与 `TIMING_OPTIMIZATION_20261102.md`，对应队友分支的输入与身份，不代表当前默认或 task3 已选入全部优化。短录音 DDR 适配和公平仲裁组件暂不选入双板；当前唯一录音对象继续归 W 的 CPU/BLE owner，`PRJ1_DDR_BLE_PCM_*` 仅别名到已保留的 BLE raw 区，不得占用 Basic Pitch 历史区。完整资源开关在独立整合前明确拒绝。
+
+`custom138k-workstation-task3-m-paired-cpu48-v1` 单独选择 PR #2 的三个 16 KiB USB CPU RAM bank。准备阶段校验维护源码身份与唯一参数锚点，记录容量改写前后哈希；固件同步选择 48 KiB linker、栈顶、12,288 字 ROM 和三份 bank ROM。验证器检查容量、完整 ROM、各 bank、静态栈余量及精确源码逆变换，综合后逐字核对实际 24 个 SDPB 的初始化。该窄参数适配的退出条件是原生 Host owner 显式传递容量参数；此前不得推广到缺少配置的旧 profile。BIST、模型回读、cue 校验、普通/矢量声部与 W 唯一录音路径保持各自策略。资源和时序收益须按同工具同输入对照，不能从名义少 16 KiB 直接推断物理结果。
+
+`build.py --prepare-custom-board --logic-only` 仅支持无显式 profile 的逻辑实验，不选择 CST、不检查引脚或电气；严格审计可保留未支持/未完成门禁。它不能替代双板完整 prepare 或 PCB 网表，不能用于 P&R 和部署。
+
 原生工程只启用一个 `constraints/custom_138k.cst`，由位置、音频、蓝牙、HDMI 和原生外设五份可审查约束合并；Gowin 打开工程时会在多份 CST 中选择一份，不能依赖多文件同时生效。`display.cst` 保留参考核心板的 LVCMOS33D 差分标准，与同 Bank 的 3.3 V HPD／CEC 一致。`peripherals.json` 锁定远端已核对的音频排线、振荡器和 LCD 依据，来源漂移必须失败，不修改独立 pinout-only 配置的历史接线假设。
 
 `build.py --prepare-custom-board` 是独立的新板源码组合入口，仅准备工程并允许离线综合，不改变 accepted、timing85 或原 resource-timing 配置。它从锁定的资源时序父配置重建依赖，逐项禁用旧 USB FS CPU／Host、旧装配顶层、旧 DVI 输出 provider 和旧板约束，改选原生 USB2 输入及新板位置规划。禁用的历史文件保留原字节，替换关系与完整编译闭包写入 `integration_inputs.json`。

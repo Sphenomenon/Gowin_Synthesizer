@@ -3,6 +3,7 @@
 from pathlib import Path
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -324,6 +325,9 @@ endmodule
                 with patch.object(integration, 'validate_d5', return_value=reference):
                     output, manifest = integration.prepare(ROOT, base / 'candidate', base / 'netlists',
                                                            'C11028EF', base / 'reference')
+                    status_output, status_manifest = integration.prepare(
+                        ROOT, base / 'with-status', base / 'netlists', 'C1110201',
+                        base / 'reference', usb_status=True)
             self.assertEqual(manifest['top_module'], integration.TOP)
             self.assertTrue(manifest['hdmi_implementation_byte_identical'])
             self.assertEqual(len(manifest['identical_duplicate_sources_omitted']), 3)
@@ -340,6 +344,43 @@ endmodule
             self.assertIn('get_regs {u_hdmi/u_display/', constraints)
             self.assertIn('get_regs {u_usb/u_native_usb/', constraints)
             self.assertIn('u_usb/u_native_usb/host/usb/bridge/', constraints)
+            self.assertFalse(status_manifest['hdmi_implementation_byte_identical'])
+            self.assertTrue(status_manifest['usb_status_panel'])
+            for name in reference['enabled_inputs']:
+                self.assertEqual(sha(status_output / 'hdmi' / name), sha(base / 'reference' / name))
+            self.assertIn('status/hdmi_display.v', status_manifest['enabled_inputs'])
+            self.assertNotIn('hdmi/src/video/hdmi_display.v', status_manifest['enabled_inputs'])
+            self.assertIn('status/workstation_usb2_hotplug_top.sv', status_manifest['enabled_inputs'])
+            self.assertNotIn('usb/rtl/workstation/workstation_usb2_hotplug_top.sv', status_manifest['enabled_inputs'])
+            self.assertNotIn('`define WORKSTATION_USB_STATUS_SOURCE\n',
+                (output / 'usb/rtl/workstation/workstation_usb2_hotplug_top.sv').read_text())
+            self.assertIn('`define WORKSTATION_USB_STATUS_SOURCE\n',
+                (status_output / 'status/workstation_usb2_hotplug_top.sv').read_text())
+            original_renderer=(status_output / 'hdmi/src/video/feedback_renderer.v').read_text()
+            adapted_renderer=(status_output / 'status/feedback_renderer.v').read_text()
+            self.assertEqual(sorted(original_renderer.splitlines()),sorted(adapted_renderer.splitlines()))
+            self.assertIn('u_usb_status/u_status_cdc', (status_output / 'integration.sdc').read_text())
+            self.assertIn('u_usb_status/status_release_q_0_s*/Q', (status_output / 'integration.sdc').read_text())
+            self.assertIn('u_usb_status/status_release_q_2_s*/D', (status_output / 'integration.sdc').read_text())
+            self.assertEqual(integration.constraints(status_output, True),
+                ((status_output / 'integration.cst').read_text(), (status_output / 'integration.sdc').read_text()))
+            self.assertIn('`define HDMI_USB_STATUS', (status_output / 'hdmi_isolation_config.vh').read_text())
+            for name, expected in status_manifest['input_sha256'].items():
+                self.assertEqual(sha(status_output / name), expected, name)
+            if shutil.which('iverilog'):
+                # Elaborate selected first-party wiring; encrypted vendor/IP
+                # implementations are black boxes for this open-source tool.
+                result = subprocess.run(['iverilog', '-g2012', '-i', '-s', integration.TOP,
+                    '-I', str(status_output), '-o', str(status_output / 'elaboration'),
+                    *(str(status_output / name) for name in status_manifest['enabled_inputs']
+                      if '/vendor/' not in name)],
+                    cwd=status_output, capture_output=True, text=True, timeout=60)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            # Drift at a wiring anchor must fail instead of silently dropping the panel.
+            path = status_output / 'hdmi/src/video/hdmi_display.v'
+            path.write_text(path.read_text().replace('    ddr_frame_writer u_writer (', '    ddr_frame_writer renamed ('))
+            with self.assertRaises(ValueError):
+                integration.status_panel_sources(ROOT, status_output, manifest['enabled_inputs'])
 
 
 if __name__ == '__main__':

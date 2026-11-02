@@ -122,13 +122,15 @@ def phy_probe_bindings(netlist, profile):
 def audit(output):
     output = Path(output).resolve()
     manifest = json.loads((output / 'inputs.json').read_text())
-    if manifest.get('source_policy') != 'byte_identical_accepted_D5_display_plus_native_USB2_hotplug':
+    policy = ('checked_D5_with_native_USB_status_panel' if manifest.get('usb_status_panel') else
+              'byte_identical_accepted_D5_display_plus_native_USB2_hotplug')
+    if manifest.get('source_policy') != policy:
         raise ValueError('not an explicit D5/USB2 integration')
     for name, expected in manifest['input_sha256'].items():
         path = output / name
         if not path.resolve().is_relative_to(output) or sha(path) != expected:
             raise ValueError('integration input changed: ' + name)
-    if integration.constraints(output) != ((output / 'integration.cst').read_text(),
+    if integration.constraints(output, manifest.get('usb_status_panel', False)) != ((output / 'integration.cst').read_text(),
                                            (output / 'integration.sdc').read_text()):
         raise ValueError('integration constraints differ from the checked composition')
     if integration.gao_configuration(manifest['user_code'][2:], manifest.get('observer_profile', 'owner'),

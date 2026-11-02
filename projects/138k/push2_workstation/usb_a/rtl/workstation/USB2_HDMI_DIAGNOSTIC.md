@@ -1,6 +1,6 @@
 # D5 HDMI＋USB2 热插拔诊断与电脑监视器
 
-这个小配置将已验证的 `C11028D5` HDMI 显示与原生 USB2 热插拔诊断并列组合，用来快速检查同一个 USB-A 口上交替插入的 25K／Push。顶层 `workstation_usb2_hdmi_top.sv` 只负责接口组合；不修改 D5 显示实现，不接入声音合成或各种演奏业务。HDMI 仍显示 D5 原来的确定性动态测试界面，USB 检测结果显示在电脑监视器中。
+这个小配置将已验证的 `C11028D5` HDMI 显示与原生 USB2 热插拔诊断并列组合，用来快速检查同一个 USB-A 口上交替插入的 25K／Push。顶层 `workstation_usb2_hdmi_top.sv` 只负责接口组合，不接入声音合成或各种演奏业务。默认 HDMI 保留 D5 确定性动态测试界面，USB 检测结果显示在电脑监视器中；显式增加 `--usb2-hdmi-status` 时，在右下方加入实时 USB 信息与声部占用栏，产生新的显示输入身份。
 
 它复用已有 `build.py --prepare-usb2-soc --usb2-component workstation-hotplug` 入口，通过显式的 `--usb2-hdmi-baseline` 选项启用；不替换已有完整工作站或独立 HDMI 配置。单独的 USB 诊断仍见 [USB2_HOTPLUG_DIAGNOSTIC.md](USB2_HOTPLUG_DIAGNOSTIC.md)。
 
@@ -28,6 +28,16 @@ PYTHONPATH="$FPGA" python3 -m tools.workstation_usb2_hdmi_audit "$OUT"
 ```
 
 `build_result.json` 是工具执行与输出证据；`integration_audit.json` 分别记录结构检查及实际时序结果。审计退出成功表示结构检查通过，不能代替读取 `timing_closed` 和详细负路径。2026-10-28 的组合候选与实际耗时见 [C11028E4 报告](../../reports/USB2_HDMI_DIAGNOSTIC_20261028.md)。
+
+## HDMI 右侧 USB 与声部信息
+
+在上述 prepare 命令中增加 `--usb2-hdmi-status`。USB 状态读取原输入 owner 的 MMIO 0x00 同源投影与既有链路快照，区分断开、枚举中、已连接、错误和状态过期；识别 `PUSH 2`、`25K KEYBOARD`、`USB MIDI`，连接后显示实际 HS／FS。断开、错误或过期时清除设备名称。该名称是已支持的设备分类，不读取任意 USB 产品字符串。
+
+同一区域显示 `VOICES  nn / 32` 与 512 像素进度条，每声部对应 16 像素，满载转为黄色。数量取渲染快照 `shared_render_meta[159:128]` 的活动声部掩码，按置位数计算，和现有画面的声部状态同源；不是 Note On 计数或 held 键数。**本组合诊断没有 DSP，该掩码来自 D5 的确定性演示输入；因此这里的声部条是显示验证，不是实际发声音源的整机验收。** 后续整机接入须继续使用实际输出快照，不能改用 USB 事件数冒充声部占用。
+
+实现位于 `rtl/display_data/workstation_usb_status_panel.sv`：USB 状态整体经 mailbox 跨到 DDR UI 时钟域，源停止更新100,000,000个UI时钟后标记过期；每帧开始固定 USB 状态与声部数量，帧中变化延至下一帧。另在CPU域监测上游ULPI mailbox的新快照，48,000,000个CPU时钟没有更新就置链路错误，避免CPU继续运行时不断发布旧链路状态。源复位通过UI域本地同步释放链限定freshness状态。信息栏只修饰原有 renderer 的双像素流，再由原 writer 写入既有 DDR 背缓冲，沿用原帧发布和 HDMI 扫描；无新 DDR 区域、客户端或音频背压。
+
+prepare 首先完整验证 D5，再把三份仅接线的适配源写到新候选的 `status/`，原 `hdmi/`、`usb/` 子清单与内容保留。第三份只为内部USB子模块启用状态输出，独立hotplug顶层保留原引脚集合。另有第四份 `feedback_renderer.v` 适配，仅将四行wire声明移到使用点前，以兼容Icarus 13的严格声明顺序；全部表达式逐行保留，不改绘制算法。根清单记录适配前后哈希、适配类型、实际编译列表及 `hdmi_implementation_byte_identical=false`。接线与声明顺序适配使用唯一锚点且漂移即失败；退出条件是将锁定 D5 显示边界迁为版本化原生装配，绘制与状态行为不进入文本生成器。新增约束覆盖mailbox与本地复位释放链，不放宽既有时序／CDC／PLL与资源门禁；新增端点的实际网表和物理审计仍待完成。原PR变更验证见 [2026-11-02 记录](../../reports/HDMI_USB_VOICES_20261102.md)，合入后的修复须使用新来源身份。
 
 定位 PHY 未就绪时，在准备命令中增加 `--usb2-observer-profile phy`。这个独立 v2 布局保留 v1 owner 探针，并追加原有 ULPI 心跳、50 MHz 参考域时钟监控、Host 使能／复位、初始化／端口状态、快照请求／确认及原始 ULPI 电平。没有改动 USB 业务 RTL；这些跨域调试读数不是新增运行时 CDC 接口。解码器对整个窗口计数心跳沿和快照确认翻转；没有观察到快照更新时显示“状态快照未更新”，不再把全零快照直接称作 PHY 正在初始化。旧 E4 v1 布局仍可读。
 

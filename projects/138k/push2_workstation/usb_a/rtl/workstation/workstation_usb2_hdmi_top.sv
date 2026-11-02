@@ -1,3 +1,4 @@
+`include "hdmi_isolation_config.vh"
 module workstation_usb2_hdmi_top (
     input wire clk_50m, pc_uart_rx_i,
     output wire debug_uart_tx,
@@ -16,12 +17,20 @@ module workstation_usb2_hdmi_top (
     inout wire [31:0] ddr_dq,
     inout wire [3:0] ddr_dqs, ddr_dqs_n
 );
+    wire status_clk,status_reset_n;
+    wire [7:0] usb_status;
     workstation_usb2_hotplug_top u_usb (
         .clk_50m(clk_50m), .pc_uart_rx_i(pc_uart_rx_i), .debug_uart_tx(debug_uart_tx),
         .usb2_ulpi_clk(usb2_ulpi_clk), .usb2_ulpi_dir(usb2_ulpi_dir), .usb2_ulpi_nxt(usb2_ulpi_nxt),
         .usb2_ulpi_data(usb2_ulpi_data), .usb2_ulpi_stp(usb2_ulpi_stp)
+`ifdef HDMI_USB_STATUS
+        ,.status_clk_o(status_clk),.status_reset_n_o(status_reset_n),.display_status_o(usb_status)
+`endif
     );
     workstation_hdmi_probe_top u_hdmi (
+`ifdef HDMI_USB_STATUS
+        .usb_status_clk(status_clk),.usb_status_reset_n(status_reset_n),.usb_status(usb_status),
+`endif
         .clk_50m(clk_50m), .hdmi_hpd(hdmi_hpd), .hdmi_cec(hdmi_cec),
         .tmds_clk_p(tmds_clk_p), .tmds_clk_n(tmds_clk_n),
         .tmds_data_p(tmds_data_p), .tmds_data_n(tmds_data_n),

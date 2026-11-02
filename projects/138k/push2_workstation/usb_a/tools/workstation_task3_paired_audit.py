@@ -18,6 +18,8 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-cpu48-v1': ('M', 'custom138k-native-task3-m-paired-cpu48-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired.sv'),
     'custom138k-workstation-task3-m-paired-v1': ('M', 'custom138k-native-task3-m-paired-revision1',
         'rtl/workstation/workstation_profile_task3_m_paired.sv'),
     'custom138k-workstation-task3-w-paired-v1': ('W', 'custom138k-native-task3-w-paired-revision1',
@@ -25,6 +27,7 @@ PROFILES = {
 }
 AUDIT_SOURCES = (
     'tools/workstation_task3_paired_audit.py', 'tools/workstation_custom_board_audit.py',
+    'tools/workstation_usb_cpu_rom.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_demo_audit.py', 'tools/workstation_profile.py',
     'tools/workstation_task3_paired_board.py', 'tools/workstation_task3_m_paired_profile.py',
     'tools/workstation_task3_w_paired_profile.py', 'tools/workstation_task3_w_media_profile.py',
@@ -169,7 +172,7 @@ def verify_prepared(output, metadata):
     return role, profile, stage, constraints
 
 
-def audit_paired_features(role, rows, netlist):
+def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
     pair = {
         'bounded_lcd_link': 'u_task3_pair_link',
         'lcd_transport': 'u_task3_pair_link/transport',
@@ -179,7 +182,8 @@ def audit_paired_features(role, rows, netlist):
         'paired_endpoint': 'u_task3_m_endpoint' if role == 'M' else 'u_task3_bus_endpoint',
     }
     if role == 'M':
-        retained = audit_features('M', rows, netlist, tf_enabled=True, tf_direct_enabled=True)
+        retained = audit_features('M', rows, netlist, tf_enabled=True, tf_direct_enabled=True,
+                                  usb_cpu_ram_bytes=usb_cpu_ram_bytes)
     else:
         retained = dict(retained={}, retired_prefixes=[])
         pair.update(usb_host='u_native_usb/host', usb_cpu='u_native_usb/host/cpu',
@@ -365,7 +369,8 @@ def audit(root, output, metadata):
             return None
         gates[name] = dict(passed=True, evidence=evidence)
         return evidence
-    gate('feature_structure', lambda: audit_paired_features(role, rows, netlist))
+    gate('feature_structure', lambda: audit_paired_features(role, rows, netlist,
+        usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536)))
     if role == 'M':
         gate('M_32_voice_storage', lambda: audit_m_voice_storage(netlist))
     from tools.workstation_custom_board_audit import check_ports, check_rom, audit_native_feedback
@@ -445,7 +450,11 @@ def audit(root, output, metadata):
             metadata['demo_runtime_timing'], protocol_netlist(vg_text, mapping='synthesis'),
             mapping='synthesis', netlist_text=vg_text,
             task3_direct_constraints=metadata['task3_tf_direct_cdc']))
-    gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
+    if profile['configuration'].get('usb2_cpu_ram_bytes',65536)==49152:
+        from tools.workstation_usb_cpu_rom import check_banked_rom
+        gate('USB_ROM',lambda:check_banked_rom(stage,netlist,metadata['firmware']))
+    else:
+        gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
     require(verify_prepared(output, metadata)[1] == profile, 'prepared closure drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)}, 'synthesis outputs drifted')
     require(seals == {name: sha(root / name) for name in AUDIT_SOURCES}, 'auditor implementation drifted')

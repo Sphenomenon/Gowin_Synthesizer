@@ -1,0 +1,535 @@
+{
+  "port_bits": 142,
+  "explicit_locations": {
+    "debug_uart_tx": [
+      "U15"
+    ],
+    "clk_50m": [
+      "V22"
+    ],
+    "ddr_bank[2]": [
+      "M6"
+    ],
+    "ddr_bank[1]": [
+      "P2"
+    ],
+    "ddr_bank[0]": [
+      "P5"
+    ],
+    "ddr_addr[14]": [
+      "D1"
+    ],
+    "ddr_addr[13]": [
+      "K1"
+    ],
+    "ddr_addr[12]": [
+      "K4"
+    ],
+    "ddr_addr[11]": [
+      "H3"
+    ],
+    "ddr_addr[10]": [
+      "L1"
+    ],
+    "ddr_addr[9]": [
+      "H5"
+    ],
+    "ddr_addr[8]": [
+      "J5"
+    ],
+    "ddr_addr[7]": [
+      "J1"
+    ],
+    "ddr_addr[6]": [
+      "G3"
+    ],
+    "ddr_addr[5]": [
+      "H2"
+    ],
+    "ddr_addr[4]": [
+      "J2"
+    ],
+    "ddr_addr[3]": [
+      "J4"
+    ],
+    "ddr_addr[2]": [
+      "G2"
+    ],
+    "ddr_addr[1]": [
+      "K2"
+    ],
+    "ddr_addr[0]": [
+      "M1"
+    ],
+    "ddr_odt": [
+      "M2"
+    ],
+    "ddr_cke": [
+      "K6"
+    ],
+    "ddr_we": [
+      "M5"
+    ],
+    "ddr_cas": [
+      "L4"
+    ],
+    "ddr_ras": [
+      "L5"
+    ],
+    "ddr_cs": [
+      "P4"
+    ],
+    "ddr_reset_n": [
+      "L6"
+    ],
+    "ddr_ck": [
+      "L3",
+      "K3"
+    ],
+    "ddr_dm[3]": [
+      "W1"
+    ],
+    "ddr_dm[2]": [
+      "T6"
+    ],
+    "ddr_dm[1]": [
+      "V7"
+    ],
+    "ddr_dm[0]": [
+      "AA4"
+    ],
+    "ddr_dq[31]": [
+      "Y2"
+    ],
+    "ddr_dq[30]": [
+      "U1"
+    ],
+    "ddr_dq[29]": [
+      "V2"
+    ],
+    "ddr_dq[28]": [
+      "U2"
+    ],
+    "ddr_dq[27]": [
+      "U3"
+    ],
+    "ddr_dq[26]": [
+      "T1"
+    ],
+    "ddr_dq[25]": [
+      "Y1"
+    ],
+    "ddr_dq[24]": [
+      "W2"
+    ],
+    "ddr_dq[23]": [
+      "T5"
+    ],
+    "ddr_dq[22]": [
+      "V5"
+    ],
+    "ddr_dq[21]": [
+      "T4"
+    ],
+    "ddr_dq[20]": [
+      "Y6"
+    ],
+    "ddr_dq[19]": [
+      "R4"
+    ],
+    "ddr_dq[18]": [
+      "U6"
+    ],
+    "ddr_dq[17]": [
+      "R6"
+    ],
+    "ddr_dq[16]": [
+      "U5"
+    ],
+    "ddr_dq[15]": [
+      "Y9"
+    ],
+    "ddr_dq[14]": [
+      "AB6"
+    ],
+    "ddr_dq[13]": [
+      "W9"
+    ],
+    "ddr_dq[12]": [
+      "AB8"
+    ],
+    "ddr_dq[11]": [
+      "Y7"
+    ],
+    "ddr_dq[10]": [
+      "AB7"
+    ],
+    "ddr_dq[9]": [
+      "Y8"
+    ],
+    "ddr_dq[8]": [
+      "AA8"
+    ],
+    "ddr_dq[7]": [
+      "AB1"
+    ],
+    "ddr_dq[6]": [
+      "AB5"
+    ],
+    "ddr_dq[5]": [
+      "AB2"
+    ],
+    "ddr_dq[4]": [
+      "AA1"
+    ],
+    "ddr_dq[3]": [
+      "V4"
+    ],
+    "ddr_dq[2]": [
+      "AA5"
+    ],
+    "ddr_dq[1]": [
+      "AB3"
+    ],
+    "ddr_dq[0]": [
+      "Y4"
+    ],
+    "ddr_dqs[3]": [
+      "R3",
+      "R2"
+    ],
+    "ddr_dqs[2]": [
+      "W6",
+      "W5"
+    ],
+    "ddr_dqs[1]": [
+      "V9",
+      "V8"
+    ],
+    "ddr_dqs[0]": [
+      "Y3",
+      "AA3"
+    ],
+    "pc_uart_rx_i": [
+      "V14"
+    ],
+    "hp_bck": [
+      "A13"
+    ],
+    "hp_ws": [
+      "B15"
+    ],
+    "hp_din": [
+      "A14"
+    ],
+    "dac_mclk": [
+      "B13"
+    ],
+    "dac_pdn_n": [
+      "C13"
+    ],
+    "dac_sslow": [
+      "B16"
+    ],
+    "dac_smute": [
+      "A15"
+    ],
+    "dac_sd": [
+      "A16"
+    ],
+    "dac_slow": [
+      "D17"
+    ],
+    "amp_fpga_det": [
+      "C17"
+    ],
+    "usb2_ulpi_data[0]": [
+      "A21"
+    ],
+    "usb2_ulpi_data[1]": [
+      "B21"
+    ],
+    "usb2_ulpi_data[2]": [
+      "A20"
+    ],
+    "usb2_ulpi_data[3]": [
+      "B20"
+    ],
+    "usb2_ulpi_data[4]": [
+      "A19"
+    ],
+    "usb2_ulpi_data[5]": [
+      "A18"
+    ],
+    "usb2_ulpi_data[6]": [
+      "B18"
+    ],
+    "usb2_ulpi_data[7]": [
+      "B17"
+    ],
+    "usb2_ulpi_clk": [
+      "C18"
+    ],
+    "usb2_ulpi_dir": [
+      "F16"
+    ],
+    "usb2_ulpi_nxt": [
+      "D16"
+    ],
+    "usb2_ulpi_stp": [
+      "E17"
+    ],
+    "sd_miso": [
+      "AA15"
+    ],
+    "sd_mosi": [
+      "W14"
+    ],
+    "sd_sck": [
+      "V15"
+    ],
+    "sd_cs_n": [
+      "W15"
+    ],
+    "tmds_data_p[0]": [
+      "J14",
+      "H14"
+    ],
+    "tmds_data_p[1]": [
+      "J15",
+      "H15"
+    ],
+    "tmds_data_p[2]": [
+      "K17",
+      "J17"
+    ],
+    "tmds_clk_p": [
+      "G15",
+      "G16"
+    ],
+    "hdmi_hpd": [
+      "K13"
+    ],
+    "hdmi_cec": [
+      "K14"
+    ],
+    "ble_uart_tx_o": [
+      "T14"
+    ],
+    "ble_uart_rx_i": [
+      "W12"
+    ],
+    "ble_bt_dis_n": [
+      "AA9"
+    ],
+    "ble_wl_dis_n": [
+      "AA13"
+    ],
+    "clk_12m288": [
+      "K18"
+    ],
+    "lcd_r[0]": [
+      "N22"
+    ],
+    "lcd_r[1]": [
+      "M22"
+    ],
+    "lcd_r[2]": [
+      "M21"
+    ],
+    "lcd_r[3]": [
+      "L21"
+    ],
+    "lcd_r[4]": [
+      "L19"
+    ],
+    "lcd_g[0]": [
+      "L20"
+    ],
+    "lcd_g[1]": [
+      "K21"
+    ],
+    "lcd_g[2]": [
+      "K22"
+    ],
+    "lcd_g[3]": [
+      "J22"
+    ],
+    "lcd_g[4]": [
+      "H22"
+    ],
+    "lcd_g[5]": [
+      "J20"
+    ],
+    "lcd_b[0]": [
+      "J21"
+    ],
+    "lcd_b[1]": [
+      "G17"
+    ],
+    "lcd_b[2]": [
+      "G18"
+    ],
+    "lcd_b[3]": [
+      "G21"
+    ],
+    "lcd_b[4]": [
+      "G22"
+    ],
+    "lcd_pclk": [
+      "F18"
+    ],
+    "lcd_hsync": [
+      "E18"
+    ],
+    "lcd_vsync": [
+      "C22"
+    ],
+    "lcd_de": [
+      "B22"
+    ],
+    "lcd_bl": [
+      "F21"
+    ],
+    "flash_clk": [
+      "L12"
+    ],
+    "flash_cs_n": [
+      "T19"
+    ],
+    "flash_mosi": [
+      "P22"
+    ],
+    "flash_miso": [
+      "R22"
+    ],
+    "flash_wp_n": [
+      "P21"
+    ],
+    "flash_hold_n": [
+      "R21"
+    ]
+  },
+  "differential_complements": {
+    "ddr_ck_n": "K3",
+    "ddr_dqs_n[3]": "R2",
+    "ddr_dqs_n[2]": "W5",
+    "ddr_dqs_n[1]": "V8",
+    "ddr_dqs_n[0]": "AA3",
+    "tmds_data_n[0]": "H14",
+    "tmds_data_n[1]": "H15",
+    "tmds_data_n[2]": "J17",
+    "tmds_clk_n": "G16"
+  },
+  "omitted": [
+    "IO_LOC \"clk_16m9344\" J19;",
+    "IO_PORT \"clk_16m9344\" IO_TYPE=LVCMOS33 PULL_MODE=NONE;"
+  ],
+  "instance_locations": {
+    "u_memory/u_pll/u_pll_0/PLL_inst": "resolved_in_synthesis_netlist",
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_dll": "encrypted_DDR_target_require_routed_resolution",
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv": "encrypted_DDR_target_require_routed_resolution",
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0": "encrypted_DDR_target_require_routed_resolution",
+    "u_usb_pll/PLL_inst": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_0_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_1_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_2_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_3_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_4_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_5_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_6_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_7_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_8_s0": "resolved_in_synthesis_netlist",
+    "u_usb_pll/pll_control_9_s0": "resolved_in_synthesis_netlist",
+    "u_cpu_pll/PLL_inst": "resolved_in_synthesis_netlist",
+    "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0": "encrypted_DDR_target_require_routed_resolution"
+  },
+  "source_reference": {
+    "commit": "73c99cfd31c570582cafc12aa4566a7ba6a6cf9f",
+    "path": "projects/138k/push2_workstation/usb_a/reports/workstation_task_20261030/F6_netlist/physical.cst",
+    "sha256": "9604f198c36ea89da98154958c95aa59f188e06b84161de9386a276f80c7b639",
+    "omitted": [
+      {
+        "line": "IO_LOC \"clk_16m9344\" J19;",
+        "reason": "F6-only input absent from a27 top"
+      },
+      {
+        "line": "IO_PORT \"clk_16m9344\" IO_TYPE=LVCMOS33 PULL_MODE=NONE;",
+        "reason": "F6-only input absent from a27 top"
+      }
+    ],
+    "instance_checks": [
+      {
+        "line": "INS_LOC \"u_memory/u_pll/u_pll_0/PLL_inst\" PLL_L[0];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/u_dll\" DDRDLLM_BL;",
+        "verification": "encrypted DDR target; require implementation resolution"
+      },
+      {
+        "line": "INS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv\" LEFTSIDE[4];",
+        "verification": "encrypted DDR target; require implementation resolution"
+      },
+      {
+        "line": "INS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0\" R[104:108]C[170:178];",
+        "verification": "encrypted DDR target; require implementation resolution"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/PLL_inst\" PLL_B[3];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_0_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_1_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_2_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_3_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_4_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_5_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_6_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_7_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_8_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_usb_pll/pll_control_9_s0\" R[2:12]C[112:128];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_cpu_pll/PLL_inst\" PLL_R[0];",
+        "verification": "present in a27 synthesis netlist"
+      },
+      {
+        "line": "INS_LOC \"u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0\" R[40:50]C[70:90];",
+        "verification": "encrypted DDR target; require implementation resolution"
+      }
+    ],
+    "port_bits": 142,
+    "historical_pinout_identical": true,
+    "historical_pinout_sha256": "35b2cc2be1bbb10bd912c96f23d398674deda79a86cbb51704bbb06991c98718"
+  }
+}

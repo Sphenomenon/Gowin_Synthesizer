@@ -39,9 +39,13 @@ def unwrap_paired_top(root,text):
     project=Path(root)/'Prj1.gprj'
     require(project.is_file(),'paired inverse requires actual compilation manifest')
     selected=[r.get('path') for r in ET.parse(project).find('FileList') if r.get('enable')=='1']
-    pairs=[s for s in PROFILE_REGISTRY.values() if s.get('paired_board',False) and s['provider'] in selected]
+    # Multiple capacity configurations may reuse one exact role provider; the
+    # compiled provider/role must still be unique, irrespective of config name.
+    pairs={(s['paired_role'],s['provider']) for s in PROFILE_REGISTRY.values()
+           if s.get('paired_board',False) and s['provider'] in selected}
     require(len(pairs)==1,'paired inverse requires unique registered role provider')
-    pair=pairs[0]
+    selected_role,selected_provider=next(iter(pairs))
+    pair=dict(paired_role=selected_role,provider=selected_provider)
     require(all(s['provider'] not in selected or s['provider']==pair['provider']
                 for s in PROFILE_REGISTRY.values()),'paired inverse mixed profile providers')
     from tools.workstation_task3_paired_board import inverse_top as inverse_common,role_helper

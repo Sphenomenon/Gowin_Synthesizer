@@ -13,11 +13,13 @@ from tools import workstation_hdmi_isolation as hdmi
 from tools import workstation_usb2_hotplug as usb
 from tools.stage_usb_firmware import sha
 from tools.workstation_pinout import parse_locations
+from tools.workstation_resource_timing import once
 
 
 TOP = 'workstation_usb2_hdmi_top'
 BASE = 'usb2_hdmi'
 WRAPPER = 'rtl/workstation/workstation_usb2_hdmi_top.sv'
+STATUS_PANEL = 'rtl/display_data/workstation_usb_status_panel.sv'
 D5_MANIFEST = '4e7cd38aecdc6de4f1dc3c50bf2b5737c76010bc76bc1a8c9f251dfeb2de2df8'
 D5_BITSTREAM = '82a2f3aa1cc6a6b4660cc94bb837a56234397f8c6e859e8d06e30962e5c2e8aa'
 SCHEMA = 'usb2-hdmi-hotplug-cpu-observer-v1'
@@ -162,7 +164,7 @@ def source_composition(output, display, native):
     return [*selected, WRAPPER], omitted
 
 
-def constraints(output):
+def constraints(output, usb_status=False):
     display = (output / 'hdmi/display.cst').read_text()
     display = display.replace('"u_display/', '"u_hdmi/u_display/')
     native = (output / 'usb/usb2_hotplug.cst').read_text()
@@ -187,7 +189,15 @@ def constraints(output):
             sdc.append(line)
     sdc += [f'report_timing -{kind} -max_paths 2000 -max_common_paths 1'
             for kind in ('setup', 'hold', 'recovery', 'removal')]
-    return cst, '\n'.join(sdc) + '\n'
+    text = '\n'.join(sdc) + '\n'
+    if usb_status:
+        prefix = 'u_hdmi/u_display/u_video/u_usb_status'
+        text += usb.mailbox_constraints(prefix + '/u_status_cdc')
+        text += f'set_false_path -to [get_pins {{{prefix}/status_release_q_*_s*/CLEAR}}]\n'
+        for stage in range(2):
+            text += (f'set_max_delay -from [get_pins {{{prefix}/status_release_q_{stage}_s*/Q}}] '
+                     f'-to [get_pins {{{prefix}/status_release_q_{stage + 1}_s*/D}}] 2.000\n')
+    return cst, text
 
 
 def observer_trigger_signal(profile, trigger):
@@ -212,8 +222,76 @@ def gao_configuration(user_code, observer_profile='owner', observer_trigger='res
     return ElementTree.tostring(document, encoding='unicode') + '\n'
 
 
+def status_panel_sources(root, output, sources):
+    """Checked wiring and declaration-order adapters; retain the rollback children.
+
+    Exit when the D5 locked display boundary is replaced by a versioned native
+    composition. All drawing, frame freezing and CDC live in STATUS_PANEL.
+    """
+    ports = ('    input wire usb_status_clk, usb_status_reset_n,\n'
+             '    input wire [7:0] usb_status,\n')
+    connect = ('        .usb_status_clk(usb_status_clk),.usb_status_reset_n(usb_status_reset_n),\n'
+               '        .usb_status(usb_status),\n')
+    evidence = {}
+    for original in ('hdmi/src/video/hdmi_display.v',
+                     'hdmi/rtl/display_data/workstation_hdmi_isolation.sv',
+                     'usb/rtl/workstation/workstation_usb2_hotplug_top.sv',
+                     'hdmi/src/video/feedback_renderer.v'):
+        text = (output / original).read_text()
+        if original.endswith('feedback_renderer.v'):
+            # Icarus 13 rejects these forward references under default_nettype
+            # none. Reorder only the checked wire declarations in this new
+            # candidate; expressions and the locked rollback child stay exact.
+            declarations = (
+                "    wire [10:0] next_x=advance ? (issue_x==WIDTH-2 ? 11'd0 : issue_x+11'd2) : issue_x;\n"
+                "    wire [10:0] spectrum_offset=next_x-11'd64;\n"
+                "    wire [8:0] spectrum_column=next_x>=64 && next_x<1088 ? spectrum_offset[9:1] : 9'd0;\n"
+                "    wire [10:0] image_x=issue_x-11'd1248, image_y=issue_y-11'd224;\n")
+            text = once(text, declarations, '')
+            text = once(text, '    wire [8:0] read_column=',
+                        declarations + '    wire [8:0] read_column=')
+        elif original.endswith('workstation_usb2_hotplug_top.sv'):
+            # Select the versioned read-only ports only while this module is
+            # an internal child. The standalone top must retain its pin set.
+            text = once(text, 'module workstation_usb2_hotplug_top #(\n',
+                        '`define WORKSTATION_USB_STATUS_SOURCE\n'
+                        'module workstation_usb2_hotplug_top #(\n')
+            text += '\n`undef WORKSTATION_USB_STATUS_SOURCE\n'
+        elif original.endswith('hdmi_display.v'):
+            text = once(text, '    input wire clk_50m, reset_n,', ports + '    input wire clk_50m, reset_n,')
+            text = once(text, '    ddr_frame_writer u_writer (',
+                        '    wire [63:0] status_pixel_data;\n'
+                        '    workstation_usb_status_panel u_usb_status (\n'
+                        '        .source_clk(usb_status_clk),.source_reset_n(usb_status_reset_n),\n'
+                        '        .source_status(usb_status),.clk(memory_clk),.reset_n(ui_rst_n),\n'
+                        '        .frame_start(renderer_start),.pixel_valid(pixel_valid),.pixel_ready(pixel_ready),\n'
+                        '        .active_voices(shared_render_meta[159:128]),\n'
+                        '        .pixel_data(pixel_data),.decorated_data(status_pixel_data)\n'
+                        '    );\n    ddr_frame_writer u_writer (')
+            text = once(text, '.pixel_data(pixel_data),.display_meta(display_meta),.req_valid(write_req)',
+                        '.pixel_data(status_pixel_data),.display_meta(display_meta),.req_valid(write_req)')
+        else:
+            text = once(text, 'module workstation_hdmi_isolation (\n',
+                        'module workstation_hdmi_isolation (\n' + ports)
+            text = once(text, '    hdmi_display u_video (\n', '    hdmi_display u_video (\n' + connect)
+            text = once(text, ') (\n    input wire clk_50m,', ') (\n' + ports + '    input wire clk_50m,')
+            text = once(text, '    workstation_hdmi_isolation u_display (\n',
+                        '    workstation_hdmi_isolation u_display (\n' + connect)
+        adapted = 'status/' + Path(original).name
+        path = output / adapted
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        sources = [adapted if name == original else name for name in sources]
+        evidence[adapted] = dict(original=original, before=sha(output / original), after=sha(path),
+                                adaptation=('declaration_order_only' if original.endswith('feedback_renderer.v')
+                                            else 'wiring_only'))
+    (output / STATUS_PANEL).parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(root / STATUS_PANEL, output / STATUS_PANEL)
+    return [*sources, STATUS_PANEL], evidence
+
+
 def prepare(root, output, netlist_directory, user_code, baseline, riscv_prefix=None, allow_high_speed=True,
-            observer_profile='owner', observer_trigger='reset'):
+            observer_profile='owner', observer_trigger='reset', usb_status=False):
     root, output = Path(root).resolve(), Path(output).resolve()
     layout = observer_layout(observer_profile)
     trigger_signal = observer_trigger_signal(observer_profile, observer_trigger)
@@ -224,7 +302,7 @@ def prepare(root, output, netlist_directory, user_code, baseline, riscv_prefix=N
         raise FileExistsError('USB2/HDMI output already exists: ' + str(output))
     user_code = user_code.upper()
     inputs = {name: sha(root / name) for name in
-              (WRAPPER, 'tools/workstation_usb2_hdmi.py', 'build.py')}
+              (WRAPPER, STATUS_PANEL, 'tools/workstation_usb2_hdmi.py', 'build.py')}
     _, display = hdmi.prepare(root, netlist_directory, output / 'hdmi', user_code)
     for name in (*accepted['enabled_inputs'], 'display.cst', 'display.sdc'):
         if name not in display['input_sha256'] or sha(output / 'hdmi' / name) != accepted['input_sha256'][name]:
@@ -236,12 +314,18 @@ def prepare(root, output, netlist_directory, user_code, baseline, riscv_prefix=N
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(root / WRAPPER, destination)
     sources, omitted = source_composition(output, display, native)
+    status_adaptations = {}
+    if usb_status:
+        sources, status_adaptations = status_panel_sources(root, output, sources)
     shutil.copyfile(output / 'usb/usb2_cpu.hex', output / 'usb2_cpu.hex')
     shutil.copyfile(output / 'hdmi/hdmi_isolation_config.vh', output / 'hdmi_isolation_config.vh')
+    if usb_status:
+        with (output / 'hdmi_isolation_config.vh').open('a') as config:
+            config.write('`define HDMI_USB_STATUS\n')
     address_map = output / 'src/memory/ddr_address_map.vh'
     address_map.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(output / 'hdmi/src/memory/ddr_address_map.vh', address_map)
-    cst, sdc = constraints(output)
+    cst, sdc = constraints(output, usb_status)
     (output / 'integration.cst').write_text(cst)
     (output / 'integration.sdc').write_text(sdc)
     (output / 'integration.gao').write_text(gao_configuration(user_code, observer_profile, observer_trigger))
@@ -264,9 +348,11 @@ def prepare(root, output, netlist_directory, user_code, baseline, riscv_prefix=N
         if sha(root / name) != expected:
             raise ValueError('integration source changed during preparation: ' + name)
     manifest = dict(schema=1, identity='custom138k-usb2-hdmi-' + user_code, user_code='0x' + user_code,
-                    top_module=TOP, source_policy='byte_identical_accepted_D5_display_plus_native_USB2_hotplug',
+                    top_module=TOP, source_policy=('checked_D5_with_native_USB_status_panel' if usb_status else
+                                                   'byte_identical_accepted_D5_display_plus_native_USB2_hotplug'),
                     hdmi_baseline_manifest_sha256=D5_MANIFEST, rollback_bitstream_sha256=D5_BITSTREAM,
-                    hdmi_implementation_byte_identical=True, source_snapshot_sha256=inputs,
+                    hdmi_implementation_byte_identical=not usb_status, source_snapshot_sha256=inputs,
+                    usb_status_panel=bool(usb_status), usb_status_wiring_adaptations=status_adaptations,
                     child_manifests_sha256={name: sha(output / name) for name in
                                             ('hdmi/inputs.json', 'usb/hotplug_inputs.json')},
                     enabled_inputs=sources, source_paths=sources, identical_duplicate_sources_omitted=omitted,

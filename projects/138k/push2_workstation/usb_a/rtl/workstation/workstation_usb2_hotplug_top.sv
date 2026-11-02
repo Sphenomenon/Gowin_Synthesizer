@@ -6,6 +6,11 @@ module workstation_usb2_hotplug_top #(
     input wire usb2_ulpi_clk, usb2_ulpi_dir, usb2_ulpi_nxt,
     inout wire [7:0] usb2_ulpi_data,
     output wire usb2_ulpi_stp
+`ifdef WORKSTATION_USB_STATUS_SOURCE
+    ,
+    output wire status_clk_o, status_reset_n_o,
+    output wire [7:0] display_status_o
+`endif
 );
     wire reset_n, usb_clk, usb_locked, audio_clk, audio_reset_n, audio_locked;
     reset_release u_reset (.clk(clk_50m), .ext_reset_n(1'b1), .reset_n(reset_n));
@@ -29,7 +34,20 @@ module workstation_usb2_hotplug_top #(
     wire audio_valid, audio_lifecycle, audio_cancel;
     wire [17:0] audio_event;
     wire [223:0] telemetry;
+    wire [2:0] device_state;
     wire [3:0] cpu_fault;
+    wire [36:0] link_snapshot;
+    wire link_snapshot_valid;
+`ifdef WORKSTATION_USB_STATUS_SOURCE
+    assign status_clk_o=usb_clk;
+    assign status_reset_n_o=usb_reset_n;
+    // CPU-domain owner state plus the existing coherent ULPI snapshot.
+    workstation_usb_status_projection u_display_status (
+        .clk(usb_clk),.reset_n(usb_reset_n),.cpu_fault(|cpu_fault),
+        .device_state(device_state),.link_status(link_snapshot[4:0]),
+        .link_valid(link_snapshot_valid),.display_status(display_status_o)
+    );
+`endif
     wire [31:0] cpu_fault_address, canceled_requests, sof_count;
     wire transaction_reset_n, phy_ready, failed, high_speed;
     (* syn_keep = 1 *) wire traffic_enable;
@@ -63,7 +81,7 @@ module workstation_usb2_hotplug_top #(
         .telemetry_o(telemetry), .canceled_requests_o(canceled_requests), .cpu_fault_o(cpu_fault),
         .cpu_fault_address_o(cpu_fault_address), .transaction_reset_n_o(transaction_reset_n),
         .phy_ready_o(phy_ready), .failed_o(failed), .high_speed_o(high_speed),
-        .traffic_enable_o(traffic_enable), .sof_count_o(sof_count)
+        .traffic_enable_o(traffic_enable), .sof_count_o(sof_count), .device_state_o(device_state)
     );
     wire [113:0] event_snapshot;
     gw138k_stream_cdc #(.WIDTH(114)) u_diagnostic_snapshot (
@@ -71,7 +89,6 @@ module workstation_usb2_hotplug_top #(
         .source_valid(1'b1), .source_data({event_count_q, lifecycle_count_q, cancel_count_q, last_event_q}),
         .destination_valid(), .destination_data(event_snapshot), .drop_count()
     );
-    wire [36:0] link_snapshot;
     (* async_reg = "true", syn_preserve = 1 *) reg [1:0] link_release_q;
     always @(posedge usb2_ulpi_clk or negedge usb_reset_n)
         if (!usb_reset_n) link_release_q <= 0;
@@ -90,7 +107,7 @@ module workstation_usb2_hotplug_top #(
         .reset_n(usb_reset_n), .source_clk(usb2_ulpi_clk), .destination_clk(usb_clk),
         .source_valid(1'b1),
         .source_data({sof_count, link_level_sync_q}),
-        .destination_valid(), .destination_data(link_snapshot), .drop_count()
+        .destination_valid(link_snapshot_valid), .destination_data(link_snapshot), .drop_count()
     );
     (* async_reg = "true", syn_preserve = 1 *) reg [1:0] audio_lock_sync_q;
     (* async_reg = "true", syn_preserve = 1 *) reg [1:0] usb_lock_sync_q;
@@ -109,4 +126,29 @@ module workstation_usb2_hotplug_top #(
         .report_i({SIGNATURE, flags, link_snapshot[36:5], telemetry, event_snapshot[113:18],
                    14'd0, event_snapshot[17:0], cpu_fault_address, canceled_requests})
     );
+endmodule
+
+// CPU-domain read-only projection. The display mailbox has its own freshness
+// check, but its running CPU source cannot establish that ULPI is still alive.
+// Expire the upstream mailbox before publishing another healthy link status.
+module workstation_usb_status_projection #(
+    parameter integer STALE_CYCLES=48000000
+) (
+    input wire clk, reset_n, cpu_fault,
+    input wire [2:0] device_state,
+    input wire [4:0] link_status,
+    input wire link_valid,
+    output wire [7:0] display_status
+);
+    localparam integer AGE_WIDTH=STALE_CYCLES<2 ? 1 : $clog2(STALE_CYCLES);
+    reg [AGE_WIDTH-1:0] age;
+    reg link_fresh;
+    always @(posedge clk or negedge reset_n) begin
+        if(!reset_n) begin age<=0;link_fresh<=0;end
+        else if(link_valid) begin age<=0;link_fresh<=1;end
+        else if(age<STALE_CYCLES-1) age<=age+1'b1;
+        else link_fresh<=0;
+    end
+    assign display_status={cpu_fault,(!link_fresh || link_status[1]),
+                           link_status[3],link_status[4],link_status[2],device_state};
 endmodule

@@ -227,6 +227,16 @@ PROFILE_REGISTRY[TASK3_W_PAIRED_NAME]=dict(_parent,
     integration_identity='custom138k-native-task3-w-paired-revision1')
 
 
+# PR #2 CPU capacity optimization is opt-in and independently sealed. The W
+# v8 candidate and every prior M/worker profile retain their original inputs.
+TASK3_M_CPU48_NAME='custom138k-workstation-task3-m-paired-cpu48-v1'
+_parent=PROFILE_REGISTRY[TASK3_M_PAIRED_NAME]
+PROFILE_REGISTRY[TASK3_M_CPU48_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_paired_cpu48_v1.json',
+    configuration=dict(_parent['configuration'],usb2_cpu_ram_bytes=49152),
+    integration_identity='custom138k-native-task3-m-paired-cpu48-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -631,6 +641,9 @@ def _artifact(root, output, metadata, profile):
         bind(record['destination'], prefix + source)
     for source, record in parent['composition']['sources'].items():
         bind(record['destination'], prefix + source)
+    from tools.stage_usb_firmware import verify_usb2_cpu_ram_selection
+    verify_usb2_cpu_ram_selection(root,stage,profile['configuration'],
+                                  metadata.get('usb2_cpu_ram_selection'),firmware=metadata['firmware'])
     copies = metadata['copied_source_destinations']
     if set(copies) != set(metadata['copied_sources_sha256']) or len(set(copies.values())) != len(copies):
         raise ValueError('workstation profile copied source ownership changed')
@@ -638,6 +651,8 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target=='rtl/usb2/workstation_usb2_cpu_bus.sv' and metadata.get('usb2_cpu_ram_selection'):
+            staged_hash=metadata['usb2_cpu_ram_selection']['after']
         if business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv':
             staged_hash=ble_raw_adaptation['copied'][target]['sha256']
         elif ble_raw_selected and target == 'rtl/bluetooth/workstation_bluetooth.sv':

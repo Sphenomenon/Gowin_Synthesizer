@@ -52,6 +52,23 @@ def prepare(root, directory, stage, pinout_output, plan, *, relative_rom_paths=F
     plan['constraints_sha256'] = workstation_pinout.digest(constraints.encode())
     (pinout_output / 'pinout.json').write_text(json.dumps(plan, ensure_ascii=False, indent=2)+'\n')
     (pinout_output / 'custom_138k.locations.cst').write_text(constraints)
+    result = stage_business(root, stage, relative_rom_paths=relative_rom_paths)
+    result['mapping'] = mapping
+    return result
+
+
+def stage_business(root, stage, *, relative_rom_paths=False, resource_optimized=False):
+    """Stage the existing business source policy without replacing its recorder.
+
+    The teammate short-store backend is not the task3 single CPU/BLE object.
+    Keep this selection explicit until its address, drain, reset and object
+    integration have separate evidence; default staging remains byte-identical.
+    """
+    if resource_optimized:
+        raise ValueError('short BLE DDR store is not integrated with the single recording owner')
+    repository = root.parents[3]
+    protocol = repository / 'projects/25k/example/RTL8723DS_PROTOCOL'
+    vendor = repository / 'example/RTL8723DS/vendor/rtl8723ds_ble'
     sources = [protocol / name for name in (
         'prepare_adapted.py', 'adaptations/bt_hci_init.v', 'adaptations/bt_verilog_core.v',
         'adaptations/bt_gatt.v', 'adaptations/bt_h5_transport.v', 'adaptations/bt_uart_fast.v',
@@ -59,7 +76,7 @@ def prepare(root, directory, stage, pinout_output, plan, *, relative_rom_paths=F
         )]
     sources += [vendor / name for name in ('MANIFEST.json', 'rtl8723ds_patch.mem',
                                            'rtl/bt_uart.v', 'rtl/reset_release_sync.v')]
-    identities = {str(source.relative_to(repository)):sha(source) for source in sources}
+    identities = {source.relative_to(repository).as_posix():sha(source) for source in sources}
     manifest = json.loads((vendor / 'MANIFEST.json').read_text())['files']
     business_manifest = json.loads((protocol / 'vendor/rtl8723ds_ble/MANIFEST.json').read_text())['files']
     if manifest != business_manifest:
@@ -90,7 +107,7 @@ def prepare(root, directory, stage, pinout_output, plan, *, relative_rom_paths=F
     for relative, expected in identities.items():
         if sha(repository / relative) != expected:
             raise ValueError('BLE source changed during preparation: ' + relative)
-    return dict(source_snapshot_sha256=identities, mapping=mapping, capacity_frames=16384,
+    return dict(source_snapshot_sha256=identities, capacity_frames=16384,
                 rom_path_policy='stage_relative' if relative_rom_paths else 'absolute_original_candidate',
                 generated_input_provenance=generated_inputs,
                 transport_source='example/RTL8723DS/vendor/rtl8723ds_ble',
