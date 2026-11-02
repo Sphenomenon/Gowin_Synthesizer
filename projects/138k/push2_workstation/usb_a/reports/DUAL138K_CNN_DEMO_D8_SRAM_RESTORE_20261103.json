@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "started_utc": "2026-11-02T19:16:59.527269+00:00",
+  "candidate_identity": "f9eab12c021b9713",
+  "user_code": "D21103D8",
+  "bitstream": "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21103D8/impl/pnr/custom_138k_integration.fs",
+  "bitstream_sha256": "ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b",
+  "physical_report_sha256": "3ed6bd515e7626e68f1aa009b66aa13d348554114277201f4029ffa8b0632f26",
+  "gate_sha256": "57bd5544ae7d9a48fc5da81446fbb07ec656f146c6fff7024da436bade7f593b",
+  "runner_sha256": "215b599452e2784c1645f5f12fd0a423660f69d77abd68d25085428ac1a24028",
+  "programmer_sha256": "5b37f2b6189f6c3ff092f9c2d2da2790a10b53a6cce2e02d4cf02bcd699258a6",
+  "operations": [
+    {
+      "label": "sram-precheck",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.41774491700000005,
+      "log_sha256": "70aa0321d9bf1712d438f87ab689c8ceeee8d4146d40eb5e2ca7aa3a3218b16e"
+    },
+    {
+      "label": "sram-program",
+      "operation_index": 2,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "2",
+        "--fsFile",
+        "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/physical-D21103D8/impl/pnr/custom_138k_integration.fs"
+      ],
+      "exit_code": 0,
+      "seconds": 7.573913417,
+      "log_sha256": "4f18d0c024386f2f849503324e3c769f80725067cbf219a36e9fa7bb35abb23f"
+    },
+    {
+      "label": "sram-readback",
+      "operation_index": 0,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "0"
+      ],
+      "exit_code": 0,
+      "seconds": 0.9139410419999994,
+      "log_sha256": "783ad1abd2b65b52e4adf24f7770e8c48f67b86bab8d09928cd0d11f81540856"
+    },
+    {
+      "label": "sram-status",
+      "operation_index": 74,
+      "argv": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/Programmer/bin/programmer_cli",
+        "--device",
+        "GW5AST-138C",
+        "--cable-index",
+        "1",
+        "--location",
+        "8321",
+        "--operation_index",
+        "74"
+      ],
+      "exit_code": 0,
+      "seconds": 0.419612665999999,
+      "log_sha256": "4bc1d73a3b8df6ee9d9d0f68b6c846d645f94bf32c958040eb450991b6048405"
+    }
+  ],
+  "SRAM_write_invoked": true,
+  "SRAM_deployed": true,
+  "Flash_written": false,
+  "bitwise_SRAM_readback": false,
+  "hardware_functional_acceptance": false,
+  "rollback": {
+    "user_code": "D2110137",
+    "path": "/Users/sphenicidition/.cache/gw138k-dual-20261031/m-demo-base-v26-physical-D2110137/impl/pnr/custom_138k_integration.fs",
+    "sha256": "97ee9868446e8be70d6579e6b475f7126422af6dda5c540bb711762436419f75",
+    "Flash_not_modified": true
+  },
+  "before_user_code": "D2110137",
+  "sram-precheck_status": "00022020",
+  "sram-program_status": "00022230",
+  "independent_after_user_code": "D21103D8",
+  "sram-readback_status": "00022230",
+  "sram-status_status": "00022230",
+  "independent_identity_readback": true,
+  "inputs_unchanged": true,
+  "finished_utc": "2026-11-02T19:17:09.768765+00:00",
+  "model_loaded": null,
+  "model_load": "automatic_configuration_ROM_to_DDR_CRC",
+  "model_UART_required": false,
+  "model_ready_physical_verified": false,
+  "real_TF_inference_verified": false,
+  "DAC_accepted": false,
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/deployment-cable-scan.log": "21b14f9a7d5deb1a98de7f854e76295f4eed1ac250d1ec4cc3a4feb176acc344",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/result.json": "6dde8ee41108d798bbaf846105a2b6e7ef5e789df872b3fd7d3f0af79973d4b7",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/sram-precheck.log": "70aa0321d9bf1712d438f87ab689c8ceeee8d4146d40eb5e2ca7aa3a3218b16e",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/sram-program.log": "4f18d0c024386f2f849503324e3c769f80725067cbf219a36e9fa7bb35abb23f",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/sram-readback.log": "783ad1abd2b65b52e4adf24f7770e8c48f67b86bab8d09928cd0d11f81540856",
+    "/Users/sphenicidition/.cache/gw138k-cnn-demo-20261102/hardware-D8-restore-20261103-v2/sram-status.log": "4bc1d73a3b8df6ee9d9d0f68b6c846d645f94bf32c958040eb450991b6048405"
+  },
+  "event": "User requested SRAM reprogram; independent precheck found original M26 image before restoring the same sealed D8 candidate.",
+  "configuration": "CNN-DEMO MP3, custom-carrier TF pins, automatic model E ROM-to-DDR with CRC AF01A61B, BIST-gated request handshake",
+  "previous_deployment_report": "DUAL138K_CNN_DEMO_D8_SRAM_20261103.json",
+  "remaining_acceptance": [
+    "Physical automatic model readiness and CRC",
+    "Actual TF travelers.mp3 CNN/Viterbi result",
+    "Original single-note guide and correct-key progression",
+    "Physical DAC audio",
+    "Old result and guide cleanup on reselection"
+  ],
+  "user_controls": {
+    "enter_song_mode": "Play CC85",
+    "previous_song": "Left CC44",
+    "next_song": "Right CC45",
+    "confirm_or_return": "Select CC48"
+  }
+}

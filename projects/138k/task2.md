@@ -821,3 +821,10 @@ JTAG枚举出的E1串口115200、DTR／RTS关闭，只读4秒得到0字节；它
 [实板部署证据](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SRAM_20261103.json)：共享锁内重新枚举FT2CH／8321并复核所有封存门禁、位流、工具及回退hash。先op0读回D7 `D21103D7`，仅op2 SRAM编程D8（工具6.75秒），随后独立op0读回 `D21103D8`、op74状态00022230。D8 FS SHA256 `ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b`，输入未变；未逐bit SRAM读取，Flash未写。
 
 已请用户重新在Push选择实际travelers并反馈MODEL FAILED是否消失及CNN ANALYZING／GUIDE READY／SONG READY状态。该候选模型自动装载，无需串口；此时身份部署成功不代表物理模型CRC已通过，也不代替歌曲实际CNN／逐键推进／DAC／重选清理验收。M26原Flash回退保持。
+
+
+### 2026-11-03: D8 SRAM restored again at the user's request
+
+[Restore evidence](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_SRAM_RESTORE_20261103.json): under the shared JTAG lock, rescanned FT2CH/channel 0/location 8321 and verified the sealed inputs, gates, bitstream, programmer and rollback hashes. Independent precheck found M26 `D2110137` / status 00022020. Operations were exclusively op0 -> op2 -> op0 -> op74; the same D8 SRAM image was programmed (tool: 7.2 seconds), followed by separate identity readback `D21103D8` / status 00022230. FS SHA256 remains `ddd65278a1133a4284e28b85f7dc55f1086e8b481501d8e264f826f7ada22e5b`. No bitwise SRAM readback and no Flash write; original M26 fallback and the first D8 deployment evidence are preserved.
+
+Rechecked the actual control source: Play (CC85) enters song mode, Left/Right (CC44/45) browse, and the physical Select button (CC48) confirms or returns. Model E loads automatically from configuration ROM to DDR and requires full CRC verification; no USB UART is needed. User was reminded to keep power on. D8 physical model-ready, actual travelers inference/guide advancement, DAC audio, and reselection cleanup remain unaccepted; identity readback alone is not functional acceptance.
