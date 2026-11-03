@@ -940,7 +940,7 @@
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_dispatch_provenance.py": "91581ceedfed16b94098c90b6809f4c7cf1d42cd6172e471ff4a0deeb09918d5",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_hci_epoch.py": "8c6bb94ebf95eb5dde45e915cbacc5e12c658f915c4c5b02e98fe9d0ce0a79ea",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_local_panel.py": "9e2f604ba986c5f0a872fb66489c49898ec77eabb7cc6bb2a9d5eb0cdf9acdbe",
-    "projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py": "ab122d8f40aef86ee1dbc2e4de37ae89db984aff76a75296d14d26ff8d4863e9",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_native_protocol.py": "263c1b258599c4d016f6ddd43027554e688caa25e8cee53bde012ec94574a068",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_no_local_panel_precision.py": "be694ac24dcc8d64bb622a953eecc6cdf3f6b802436ef714a1f3c26de5f129e7",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_no_local_panel_profile.py": "94347850be9a0240f25972f2239b946681a3d39ce12bd1ff26b731a1f4c123de",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_performance_reset.py": "c6abf88e11e38b74347cf36bdcbf280757b2fb63c4dd1de3013a0e5faa51d5bb",

@@ -813,7 +813,7 @@ class ActualStereoXYPolicy(ActualNativeFixture):
             reject('stereo provider without axes policy','profile/provider disagreement')
             changed=json.loads(json.dumps(profile));changed['revision']=3
             artifact.write_text(json.dumps(changed))
-            reject('stereo provider revision3','revision4 axes policy')
+            reject('stereo provider revision3','explicit stereo profile requires sealed M role')
             changed=json.loads(json.dumps(profile));changed['configuration']['demo_role']='W'
             artifact.write_text(json.dumps(changed))
             reject('stereo artifact wrong role','sealed M role')
