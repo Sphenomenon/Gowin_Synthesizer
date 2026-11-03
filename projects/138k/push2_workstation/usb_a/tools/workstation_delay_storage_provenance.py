@@ -383,9 +383,18 @@ def source_bundle(root):
     root = Path(root)
     source, provenance, adaptation = ((root / p).read_bytes() for p in (SOURCE, PROVENANCE, ADAPTATION))
     prepared, evidence = verify(source, provenance, STORAGE_POLICY, adaptation)
-    if sha((root / FIFO).read_bytes()) != FIFO_SHA256:
-        raise ValueError('Delay FIFO source bytes changed')
+    fifo = (root / FIFO).read_bytes()
+    pr2_adaptations = {}
+    if sha(fifo) != FIFO_SHA256:
+        from tools.workstation_pr2_storage_reference import restore_parent
+        fifo, pr2_adaptations[FIFO] = restore_parent(fifo, FIFO)
+        if sha(fifo) != FIFO_SHA256:
+            raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()
+    from tools.workstation_pr2_storage_reference import RECORDS, restore_parent as restore_pr2
+    if sha(reference) == RECORDS[REFERENCE]['current_sha256']:
+        reference, pr2_adaptations[REFERENCE] = restore_pr2(reference, REFERENCE)
+    current_reference = (root / REFERENCE).read_bytes()
     reference_adaptation = None
     if sha(reference) != REFERENCE_SHA256:
         from tools.workstation_top_session_reference import restore_parent
@@ -421,9 +430,12 @@ def source_bundle(root):
         demo_d_controls={path: {key: value for key, value in item.items() if key!='edits'}
                          for path,item in D_CONTROL_ADAPTATIONS.items()},
         original_locked_prepared_slice_verified=True,
-        storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(reference),
+        storage_policy_reference=REFERENCE, storage_policy_reference_sha256=sha(current_reference),
         original_prepared_source=PREPARED_SOURCE, original_prepared_identity=info['prepared_source_identity'],
         accepted_baseline_storage_selection_inherited=False)
     if reference_adaptation is not None:
         evidence['storage_policy_reference_adaptation'] = reference_adaptation
+    if pr2_adaptations:
+        evidence['pr2_storage_reference_adaptations'] = pr2_adaptations
+        evidence['FIFO_sha256'] = sha((root / FIFO).read_bytes())
     return evidence

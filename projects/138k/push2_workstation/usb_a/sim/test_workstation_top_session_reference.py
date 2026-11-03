@@ -16,7 +16,8 @@ from tools import workstation_runtime_profile as runtime
 
 class SessionTopReference(unittest.TestCase):
     def setUp(self):
-        self.source = (ROOT / adapter.SOURCE).read_bytes()
+        from tools.workstation_pr2_storage_reference import restore_parent
+        self.source, _ = restore_parent((ROOT / adapter.SOURCE).read_bytes(), adapter.SOURCE)
         self.parent, self.evidence = adapter.restore_parent(self.source)
 
     def test_exact_committed_parent_and_both_directions(self):
@@ -70,7 +71,11 @@ class SessionTopReference(unittest.TestCase):
         for relative in paths:
             path = root / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(reference if relative == storage.REFERENCE else (ROOT / relative).read_bytes())
+            payload = reference if relative == storage.REFERENCE else (ROOT / relative).read_bytes()
+            if relative == storage.FIFO:
+                from tools.workstation_pr2_storage_reference import restore_parent
+                payload, _ = restore_parent(payload, relative)
+            path.write_bytes(payload)
         return root
 
     def test_legacy_complete_bundle_and_manifests_remain_unchanged(self):

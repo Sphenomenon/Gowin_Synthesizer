@@ -1,0 +1,50 @@
+"""Merged storage lineage must reject drift and retain the original delay chain."""
+from pathlib import Path
+import hashlib
+import sys
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools import workstation_pr2_storage_reference as adapter
+from tools import workstation_delay_storage_provenance as storage
+
+
+class MergedStorageReference(unittest.TestCase):
+    def test_complete_delay_chain_without_rewriting_sources(self):
+        paths = (*adapter.RECORDS, storage.PROVENANCE, storage.ADAPTATION)
+        before = {p: (ROOT / p).read_bytes() for p in paths}
+        evidence = storage.source_bundle(ROOT)
+        self.assertEqual(set(evidence['pr2_storage_reference_adaptations']), set(adapter.RECORDS))
+        self.assertTrue(evidence['original_locked_prepared_slice_verified'])
+        self.assertFalse(evidence['accepted_baseline_storage_selection_inherited'])
+        self.assertEqual(before, {p: (ROOT / p).read_bytes() for p in paths})
+        fifo, _ = adapter.restore_parent(before[storage.FIFO], storage.FIFO)
+        self.assertEqual(hashlib.sha256(fifo).hexdigest(), storage.FIFO_SHA256)
+        self.assertIn(b'parameter bit SMALL_DISTRIBUTED=0', before[storage.FIFO])
+
+    def test_unrelated_edit_and_changed_default_are_rejected(self):
+        for relative in adapter.RECORDS:
+            source = (ROOT / relative).read_bytes()
+            variants = [source + b'\n']
+            if relative == storage.FIFO:
+                variants.append(source.replace(b'SMALL_DISTRIBUTED=0', b'SMALL_DISTRIBUTED=1'))
+            for mutant in variants:
+                with self.subTest(relative=relative), self.assertRaisesRegex(ValueError, 'source identity'):
+                    adapter.restore_parent(mutant, relative)
+
+    def test_rebased_hash_cannot_hide_wrong_inverse(self):
+        for relative, record in adapter.RECORDS.items():
+            changed = dict(record)
+            edits = list(record['edits'])
+            before, after = edits[0]
+            edits[0] = (before + '// unrelated change\n', after)
+            changed['edits'] = tuple(edits)
+            with patch.dict(adapter.RECORDS, {relative: changed}):
+                with self.subTest(relative=relative), self.assertRaisesRegex(ValueError, 'parent identity'):
+                    adapter.restore_parent((ROOT / relative).read_bytes(), relative)
+
+
+if __name__ == '__main__':
+    unittest.main()
