@@ -42,7 +42,8 @@ module workstation_usb2_input #(
     output wire [3:0] cpu_fault_o,
     output wire [31:0] cpu_fault_address_o,
     output wire transaction_reset_n_o, phy_ready_o, failed_o, high_speed_o, traffic_enable_o,
-    output wire [31:0] sof_count_o
+    output wire [31:0] sof_count_o,
+    output wire [2:0] device_state_o
 );
     (* async_reg = "true", syn_preserve=1 *) reg [1:0] cpu_release_q, session_release_q, feedback_release_q;
     wire cpu_reset_n = cpu_release_q[1];
@@ -118,7 +119,8 @@ module workstation_usb2_input #(
         .rate_control_ready_i(rate_control_ready_i),.rate_toggle_o(rate_toggle_o),.rate_rejected_o(rate_rejected_o),
         .address(owner_address), .wdata(owner_write_data), .ready(owner_ready), .rdata(owner_read_data),
         .audio_valid(audio_valid_o), .audio_ready(audio_ready_i), .audio_event(audio_event_o),
-        .audio_lifecycle(audio_lifecycle_o), .audio_cancel(audio_cancel_o), .telemetry(telemetry_o)
+        .audio_lifecycle(audio_lifecycle_o), .audio_cancel(audio_cancel_o), .telemetry(telemetry_o),
+        .device_state_o(device_state_o)
     );
 endmodule
 

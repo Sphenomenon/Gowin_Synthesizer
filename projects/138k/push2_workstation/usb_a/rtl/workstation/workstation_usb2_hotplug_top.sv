@@ -5,7 +5,9 @@ module workstation_usb2_hotplug_top #(
     output wire debug_uart_tx,
     input wire usb2_ulpi_clk, usb2_ulpi_dir, usb2_ulpi_nxt,
     inout wire [7:0] usb2_ulpi_data,
-    output wire usb2_ulpi_stp
+    output wire usb2_ulpi_stp,
+    output wire status_clk_o, status_reset_n_o,
+    output wire [7:0] display_status_o
 );
     wire reset_n, usb_clk, usb_locked, audio_clk, audio_reset_n, audio_locked;
     reset_release u_reset (.clk(clk_50m), .ext_reset_n(1'b1), .reset_n(reset_n));
@@ -29,6 +31,11 @@ module workstation_usb2_hotplug_top #(
     wire audio_valid, audio_lifecycle, audio_cancel;
     wire [17:0] audio_event;
     wire [223:0] telemetry;
+    wire [2:0] device_state;
+    assign status_clk_o=usb_clk;
+    assign status_reset_n_o=usb_reset_n;
+    // CPU-domain owner state plus the existing coherent ULPI snapshot.
+    assign display_status_o={|cpu_fault,link_snapshot[1],link_snapshot[3],link_snapshot[4],link_snapshot[2],device_state};
     wire [3:0] cpu_fault;
     wire [31:0] cpu_fault_address, canceled_requests, sof_count;
     wire transaction_reset_n, phy_ready, failed, high_speed;
@@ -63,7 +70,7 @@ module workstation_usb2_hotplug_top #(
         .telemetry_o(telemetry), .canceled_requests_o(canceled_requests), .cpu_fault_o(cpu_fault),
         .cpu_fault_address_o(cpu_fault_address), .transaction_reset_n_o(transaction_reset_n),
         .phy_ready_o(phy_ready), .failed_o(failed), .high_speed_o(high_speed),
-        .traffic_enable_o(traffic_enable), .sof_count_o(sof_count)
+        .traffic_enable_o(traffic_enable), .sof_count_o(sof_count), .device_state_o(device_state)
     );
     wire [113:0] event_snapshot;
     gw138k_stream_cdc #(.WIDTH(114)) u_diagnostic_snapshot (
