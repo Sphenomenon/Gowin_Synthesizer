@@ -438,6 +438,9 @@ def sha(source):
 
 def restore_parent(relative, source):
     relative = str(relative)
+    from tools.workstation_pr2_storage_reference import RECORDS, restore_parent as restore_merged
+    if relative in RECORDS and sha(source) == RECORDS[relative]['current_sha256']:
+        source, _ = restore_merged(source, relative)
     if relative not in HUNKS or sha(source) != CURRENT_SHA256[relative]:
         raise ValueError('Streaming Pitch integration source identity changed: ' + relative)
     current = source.decode()

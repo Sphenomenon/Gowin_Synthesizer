@@ -39,9 +39,14 @@ def main():
         positives.append('exact current/parent roundtrip: '+name)
         reject('unrelated byte: '+name, lambda n=name, s=source: lineage.normalize_source(n, s+b' '))
         reject('changed parent: '+name, lambda n=name, p=parent: lineage.normalize_source(n, p+b' '))
+        # Apply the Pitch inverse mutations to its exact reviewed stage. The
+        # later default-off CNN branch has separate whole-source drift tests.
+        from tools.workstation_pr2_storage_reference import RECORDS, restore_parent as restore_merged
+        anchor_source = restore_merged(source, name)[0] if name in RECORDS else source
         for i, (before, after) in enumerate(lineage.HUNKS[name]):
+            assert anchor_source.count(after.encode()) == 1
             reject('partial inverse '+str(i)+': '+name,
-                lambda n=name, s=source, b=before, a=after: lineage.normalize_source(n, s.replace(a.encode(), b.encode())))
+                lambda n=name, s=anchor_source, b=before, a=after: lineage.normalize_source(n, s.replace(a.encode(), b.encode())))
     event = 'rtl/audio/gw138k_event_workstation.sv'
     assert dispatch.normalize_source(event, sources[event]) == dispatch.normalize_source(event, parents[event])
     positives.append('event reverses Pitch then the exact original dispatch ancestry')

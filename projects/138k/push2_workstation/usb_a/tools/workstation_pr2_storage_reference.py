@@ -1,9 +1,10 @@
-"""Prove merged storage-reference ancestry without rewriting RTL or frozen evidence.
+"""Prove merged runtime source ancestry without rewriting RTL or frozen evidence.
 
 The optional SMALL_DISTRIBUTED branch defaults off. The top changes select
 DDR storage/resource defaults only outside native runtime; M/W keep their
 existing policy. Exact inverse/forward checks retain the old delay lineage.
-The top inverse also includes pre-merge CNN-DEMO conditional branches.
+The top, event and parameter inverses include pre-merge CNN-DEMO branches.
+These inverse strings are proof data only and are never compiled or staged as RTL.
 Retire this bridge when delay provenance no longer depends on the whole top.
 """
 import hashlib
@@ -483,7 +484,233 @@ RECORDS = {'rtl/music/music_async_fifo.sv': {'parent_sha256': 'e5a190502bec8bb40
                                                               '.POR_RSTN(cpu_reset_n),.HW_RSTN(cpu_reset_n));\n'
                                                               '`endif\n'
                                                               'endmodule\n')),
-                                                   'parent_commit': 'bfac338acbb078d64ee23f5702115cdcb29be261'}}
+                                                   'parent_commit': 'bfac338acbb078d64ee23f5702115cdcb29be261'},
+ 'rtl/audio/gw138k_event_workstation.sv': {'parent_commit': 'dac3b082^',
+                                           'parent_sha256': 'c94ef35bdd97e69bf0aabcd3dc0b773949771c42e2ab30178d94b592e3529747',
+                                           'current_sha256': '8878d6ca86f06d3caaf181425a940ed763d26c42dfa30b8538acf86f214e9fa7',
+                                           'edits': (('    parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,\n'
+                                                      '    parameter bit SYNTH_ENGINES_ENABLE=1,\n'
+                                                      '    parameter bit D_ONLY_ENABLE=0,\n'
+                                                      '    parameter bit TF_CONTROL_ENABLE=1,\n',
+                                                      '    parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,\n'
+                                                      '    parameter bit SYNTH_ENGINES_ENABLE=1,\n'
+                                                      '    parameter bit CNN_DEMO_MINIMAL=0,\n'
+                                                      '    parameter bit D_ONLY_ENABLE=0,\n'
+                                                      '    parameter bit TF_CONTROL_ENABLE=1,\n'),
+                                                     ('  wire cue_start=event_valid && event_ready && '
+                                                      'kind==2 && a==96 && b==127 && !tf_scope_control_o[12] '
+                                                      '&& (scope_enable || legacy_active_mask==0);\n'
+                                                      '  wire cue_stop=usb_lifecycle || (event_valid && '
+                                                      'event_ready && kind==2 && ((a==96 && b==0) || a==120 '
+                                                      '|| a==123));\n'
+                                                      '  generate if(SYNTH_ENGINES_ENABLE)begin: '
+                                                      'instrument_cue\n'
+                                                      '  scope_control_player cue_player(\n'
+                                                      '      '
+                                                      '.clk_i,.rst_ni,.sample_ce_i(core_ce),.start_i(cue_start),.stop_i(cue_stop),\n',
+                                                      '  wire cue_start=event_valid && event_ready && '
+                                                      'kind==2 && a==96 && b==127 && !tf_scope_control_o[12] '
+                                                      '&& (scope_enable || legacy_active_mask==0);\n'
+                                                      '  wire cue_stop=usb_lifecycle || (event_valid && '
+                                                      'event_ready && kind==2 && ((a==96 && b==0) || a==120 '
+                                                      '|| a==123));\n'
+                                                      '  generate if(SYNTH_ENGINES_ENABLE && '
+                                                      '!CNN_DEMO_MINIMAL)begin: instrument_cue\n'
+                                                      '  scope_control_player cue_player(\n'
+                                                      '      '
+                                                      '.clk_i,.rst_ni,.sample_ce_i(core_ce),.start_i(cue_start),.stop_i(cue_stop),\n'),
+                                                     ('  );\n'
+                                                      '  wire [6:0] d_crush,d_drive,d_delay_send;\n'
+                                                      '  workstation_parameters '
+                                                      '#(.D_ONLY_ENABLE(D_ONLY_ENABLE),.TF_CONTROL_ENABLE(TF_CONTROL_ENABLE)) '
+                                                      'parameters (\n'
+                                                      '      .clk_i(clk_i),\n'
+                                                      '      .rst_ni(rst_ni),\n',
+                                                      '  );\n'
+                                                      '  wire [6:0] d_crush,d_drive,d_delay_send;\n'
+                                                      '  workstation_parameters '
+                                                      '#(.D_ONLY_ENABLE(D_ONLY_ENABLE),.TF_CONTROL_ENABLE(TF_CONTROL_ENABLE),\n'
+                                                      '      .CNN_DEMO_MINIMAL(CNN_DEMO_MINIMAL)) parameters '
+                                                      '(\n'
+                                                      '      .clk_i(clk_i),\n'
+                                                      '      .rst_ni(rst_ni),\n'),
+                                                     ('    assign load_busy=0;assign mix_busy=0;assign '
+                                                      'issued=0;assign pitch_q20_o=D_ONLY_ENABLE ? '
+                                                      "target_ratio : 22'd1048576;\n"
+                                                      '    assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? '
+                                                      "2'd3 : 2'd2;\n"
+                                                      '  end else if(RUNTIME_RATE_ENABLE) begin: '
+                                                      'runtime_engines\n'
+                                                      '    workstation_runtime_render_engines '
+                                                      '#(.RUNTIME_RATE_ENABLE(1)) engines(\n',
+                                                      '    assign load_busy=0;assign mix_busy=0;assign '
+                                                      'issued=0;assign pitch_q20_o=D_ONLY_ENABLE ? '
+                                                      "target_ratio : 22'd1048576;\n"
+                                                      '    assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? '
+                                                      "2'd3 : 2'd2;\n"
+                                                      '  end else if(CNN_DEMO_MINIMAL) begin: '
+                                                      'cnn_demo_instrument\n'
+                                                      '    // Fixed historical basic instrument; no vector, '
+                                                      'cue or rate switching.\n'
+                                                      "    assign pitch_q20_o=22'd1048576;\n"
+                                                      '    assign '
+                                                      "runtime_quiescent=1'b0,runtime_rate_ready=1'b0,engine_rate=1'b0;\n"
+                                                      '    assign '
+                                                      'core_event_slot_ready=core_event_ready,core_expression_slot_ready=core_expression_ready;\n'
+                                                      '    assign '
+                                                      "vec_event_ready=1'b1,vec_ready=1'b1,vec_busy=1'b0;\n"
+                                                      '    assign '
+                                                      'vec_valid=synth_valid_o,vec_left=0,vec_right=0,vec_active=0,vec_count=0;\n'
+                                                      '    assign '
+                                                      'vec_rejected=0,vec_config_error=0,vec_frequency_error=0,vec_clip=0;\n'
+                                                      '    // Mode application still drains the original '
+                                                      'session initialization.\n'
+                                                      "    assign mode_ready=1'b1,mode_o=2'd2;\n"
+                                                      '    reg pending;\n'
+                                                      '    reg pending_on;\n'
+                                                      '    reg [6:0] '
+                                                      'pending_note,pending_off,pending_velocity;\n'
+                                                      '    wire engine_ready,engine_sample_ready;\n'
+                                                      '    assign core_event_ready=!pending;\n'
+                                                      '    assign core_sample_ready=engine_sample_ready && '
+                                                      '!pending;\n'
+                                                      "    assign core_expression_ready=1'b1;\n"
+                                                      '    always_ff @(posedge clk_i or negedge rst_ni)\n'
+                                                      '      if(!rst_ni)begin '
+                                                      'pending<=0;pending_on<=0;pending_note<=0;pending_off<=0;pending_velocity<=0;end\n'
+                                                      '      else if(panic_accept)pending<=0;\n'
+                                                      '      else if(core_event_valid && '
+                                                      'core_event_ready)begin\n'
+                                                      '        '
+                                                      'pending<=1;pending_on<=core_note_on;pending_note<=a;\n'
+                                                      '        '
+                                                      'pending_off<=core_note;pending_velocity<=core_velocity;\n'
+                                                      '      end else if(pending && '
+                                                      'engine_ready)pending<=0;\n'
+                                                      '    workstation_runtime_oscillator_engine '
+                                                      '#(.EXPRESSION_ENABLE(0),.SAMPLE_RATE_HZ(48000),\n'
+                                                      '        .SEPARATE_OFF_NOTE(1),.PIPELINED_ENVELOPE(1)) '
+                                                      'engine(\n'
+                                                      '        '
+                                                      ".clk_i,.rst_ni,.mode_set_valid_i(1'b0),.mode_set_ready_o(),\n"
+                                                      '        '
+                                                      ".mode_i(2'd2),.current_mode_o(),.panic_i(panic_accept),\n"
+                                                      '        '
+                                                      '.event_valid_i(pending),.event_ready_o(engine_ready),\n'
+                                                      '        '
+                                                      '.event_slot_ready_o(),.expression_slot_ready_o(),\n'
+                                                      '        '
+                                                      ".event_note_on_i(pending_on),.event_profile_i(3'd0),\n"
+                                                      '        '
+                                                      '.event_midi_note_i(pending_note),.event_off_note_i(pending_off),.event_velocity_i(pending_velocity),\n'
+                                                      '        '
+                                                      ".expression_valid_i(1'b0),.expression_ready_o(),\n"
+                                                      '        '
+                                                      ".expression_note_i(7'd0),.expression_value_i(7'd0),\n"
+                                                      '        '
+                                                      ".pitch_ratio_q20_i(22'd1048576),.sample_ce_i(core_ce),\n"
+                                                      '        '
+                                                      '.sample_ready_o(engine_sample_ready),.sample_valid_o(synth_valid_o),.sample_o(synth_o),\n'
+                                                      '        '
+                                                      '.allocated_mask_o(allocated),.active_mask_o(legacy_active_mask),.active_voice_count_o(legacy_active_count),\n'
+                                                      '        '
+                                                      '.load_busy_o(load_busy),.mix_busy_o(mix_busy),.issued_slot_count_o(issued),\n'
+                                                      '        '
+                                                      ".rate_commit_i(1'b0),.rate_44100_i(1'b0),.rate_ready_o(),.applied_rate_44100_o(),.quiescent_o());\n"
+                                                      '  end else if(RUNTIME_RATE_ENABLE) begin: '
+                                                      'runtime_engines\n'
+                                                      '    workstation_runtime_render_engines '
+                                                      '#(.RUNTIME_RATE_ENABLE(1)) engines(\n'),
+                                                     ('    end\n'
+                                                      '  end\n'
+                                                      '  generate if(RUNTIME_EFFECTS_ENABLE) begin: '
+                                                      'runtime_effects\n'
+                                                      '    workstation_runtime_stereo_effects '
+                                                      '#(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.RELEASE_TAILS_ENABLE(!D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) '
+                                                      'effects(\n'
+                                                      '      '
+                                                      ".clk_i,.rst_ni,.clear_i(engine_clear),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),\n",
+                                                      '    end\n'
+                                                      '  end\n'
+                                                      '  generate if(CNN_DEMO_MINIMAL)begin: '
+                                                      'cnn_demo_dry_audio\n'
+                                                      '    // Preserve the joined render handshake and '
+                                                      'expression gain; effects and\n'
+                                                      '    // their DDR/CDC are absent in this explicit '
+                                                      'candidate.\n'
+                                                      '    wire signed [48:0] scaled=$signed(panic_muted ? '
+                                                      "32'sd0 : "
+                                                      "held_synth)*$signed({1'b0,expression_gain});\n"
+                                                      '    reg signed [31:0] dry_sample;\n'
+                                                      '    always_ff @(posedge clk_i or negedge rst_ni)\n'
+                                                      '      if(!rst_ni)begin '
+                                                      'sample_valid_o<=0;dry_sample<=0;end\n'
+                                                      '      else begin\n'
+                                                      '        sample_valid_o<=effects_valid && '
+                                                      '!panic_accept;\n'
+                                                      '        if(effects_valid)dry_sample<=scaled[46:15];\n'
+                                                      '      end\n'
+                                                      '    assign '
+                                                      'effect_left=dry_sample,effect_right=dry_sample;\n'
+                                                      '    assign '
+                                                      "fx_ready=1'b1,fx_sample_slot_ready=1'b1,fx_clip=1'b0;\n"
+                                                      '    assign '
+                                                      'fx_config_ready=0,fx_config_applied=0,fx_history_ready=0,fx_history_done=0;\n'
+                                                      '    assign '
+                                                      'fx_quiet=1,fx_fault=0,fx_rate=0,delay_heartbeat_o=0;\n'
+                                                      '    assign '
+                                                      'delay_dwr_valid_o=0,delay_dwr_data_o=0,delay_drd_ready_o=0;\n'
+                                                      '  end else if(RUNTIME_EFFECTS_ENABLE) begin: '
+                                                      'runtime_effects\n'
+                                                      '    workstation_runtime_stereo_effects '
+                                                      '#(.VECTOR_ENABLE(SYNTH_ENGINES_ENABLE),.D_DELAY_SEND_ENABLE(D_ONLY_ENABLE),.RELEASE_TAILS_ENABLE(!D_ONLY_ENABLE),.DELAY_BITS(DELAY_BITS),.ECHO_SAMPLES(ECHO_SAMPLES)) '
+                                                      'effects(\n'
+                                                      '      '
+                                                      ".clk_i,.rst_ni,.clear_i(engine_clear),.valid_i(effects_valid),.synth_i(panic_muted?32'sd0:held_synth),\n"))},
+ 'rtl/control/workstation_parameters.sv': {'parent_commit': 'dac3b082^',
+                                           'parent_sha256': '2dcba388e52d78adbc6817ba011a1b24a4b86c56048acaa8e4bdecf9236d2069',
+                                           'current_sha256': '645227bc12731115194a879f2ed3d35ac7bd03e5bb4b0069267e8cb245c28c35',
+                                           'edits': (('module workstation_parameters #(\n'
+                                                      '    parameter bit D_ONLY_ENABLE=0,\n'
+                                                      '    parameter bit TF_CONTROL_ENABLE=1\n'
+                                                      ') (\n'
+                                                      '    input wire clk_i, rst_ni, commit_i, lifecycle_i, '
+                                                      'mode_applied_i,\n',
+                                                      'module workstation_parameters #(\n'
+                                                      '    parameter bit D_ONLY_ENABLE=0,\n'
+                                                      '    parameter bit TF_CONTROL_ENABLE=1,\n'
+                                                      '    parameter bit CNN_DEMO_MINIMAL=0\n'
+                                                      ') (\n'
+                                                      '    input wire clk_i, rst_ni, commit_i, lifecycle_i, '
+                                                      'mode_applied_i,\n'),
+                                                     ('            endcase\n        end\n    end\n\n',
+                                                      '            endcase\n'
+                                                      '        end\n'
+                                                      '        // The filming profile has one basic '
+                                                      'instrument and a dry output. Keep\n'
+                                                      '        // unsupported controls out of this sole '
+                                                      'committed parameter state.\n'
+                                                      '        if (CNN_DEMO_MINIMAL && commit_i) begin\n'
+                                                      '            if (kind_i == 3 || kind_i == 4) '
+                                                      'rejected_o = 1;\n'
+                                                      '            if (kind_i == 2 && (address_i == 1 || '
+                                                      'address_i == 5 ||\n'
+                                                      '                (address_i >= 80 && address_i <= '
+                                                      '103))) rejected_o = 1;\n'
+                                                      '        end\n'
+                                                      '    end\n'
+                                                      '\n'),
+                                                     ('            end\n'
+                                                      '            if (rejected_o) scope_error_o <= 1;\n'
+                                                      '            if (commit_i) begin\n'
+                                                      '                case (kind_i)\n'
+                                                      '                    2: case (address_i)\n',
+                                                      '            end\n'
+                                                      '            if (rejected_o) scope_error_o <= 1;\n'
+                                                      '            if (commit_i && !(CNN_DEMO_MINIMAL && '
+                                                      'rejected_o)) begin\n'
+                                                      '                case (kind_i)\n'
+                                                      '                    2: case (address_i)\n'))}}
 
 
 def restore_parent(source, relative):

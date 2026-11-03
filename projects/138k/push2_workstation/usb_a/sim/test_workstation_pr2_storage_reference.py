@@ -16,13 +16,21 @@ class MergedStorageReference(unittest.TestCase):
         paths = (*adapter.RECORDS, storage.PROVENANCE, storage.ADAPTATION)
         before = {p: (ROOT / p).read_bytes() for p in paths}
         evidence = storage.source_bundle(ROOT)
-        self.assertEqual(set(evidence['pr2_storage_reference_adaptations']), set(adapter.RECORDS))
+        self.assertEqual(set(evidence['pr2_storage_reference_adaptations']), {storage.FIFO, storage.REFERENCE})
         self.assertTrue(evidence['original_locked_prepared_slice_verified'])
         self.assertFalse(evidence['accepted_baseline_storage_selection_inherited'])
         self.assertEqual(before, {p: (ROOT / p).read_bytes() for p in paths})
         fifo, _ = adapter.restore_parent(before[storage.FIFO], storage.FIFO)
         self.assertEqual(hashlib.sha256(fifo).hexdigest(), storage.FIFO_SHA256)
         self.assertIn(b'parameter bit SMALL_DISTRIBUTED=0', before[storage.FIFO])
+
+    def test_cnn_branches_restore_the_existing_stream_pitch_chain(self):
+        from tools import workstation_stream_pitch_provenance as pitch
+        self.assertEqual(pitch.source_bundle(ROOT)['stage'], 'stream_pitch')
+        for relative in ('rtl/audio/gw138k_event_workstation.sv', 'rtl/control/workstation_parameters.sv'):
+            source = (ROOT / relative).read_bytes()
+            parent, _ = adapter.restore_parent(source, relative)
+            self.assertEqual(pitch.normalize_source(relative, source), pitch.normalize_source(relative, parent))
 
     def test_unrelated_edit_and_changed_default_are_rejected(self):
         for relative in adapter.RECORDS:
