@@ -835,3 +835,8 @@ Rechecked the actual control source: Play (CC85) enters song mode, Left/Right (C
 [User feedback evidence](push2_workstation/usb_a/reports/DUAL138K_CNN_DEMO_D8_PLAYBACK_FEEDBACK_20261103.json): after the D8 SRAM restore and selection instructions, the user reports that travler now plays music directly. Record this as user-observed song playback, with no instrumented DAC capture and no TF file hash/sample-rate measurement. This does not yet establish the CNN model CRC, an inferred score, single-note guidance, correct-key progression or reselection cleanup.
 
 Inspected the actual compiled playback/TF/Push owners: raw TF mode and recognition mode are separate, and audible playback alone cannot identify which is active. Asked for the current status text below the song name and any single lit guide pad, while preserving the current state. No RTL or bitstream change, no further JTAG operation, and no Flash write.
+
+
+### 2026-11-04：M26 RC1 按用户明确时序例外固化 Flash
+
+[部署记录](push2_workstation/usb_a/reports/M26_RC1_FLASH_20261104.md)：远端 Release m26-no-cnn-20261104-rc1／05f4c46c 的原 FS b71523cc…ef1877ea，候选 D21104A2；用户明确接受 setup−0.657ns及混响路径违例后授权固化，原不可部署／时序未闭合标记保留。JTAG核实138K及Flash0B4018，op54写入校验与独立op66均成功，地址0至工具报告0x0506A00；清SRAM并从Flash重载后，独立op0／74确认D21104A2／00022020。首次重载后1秒读取尚未配置完成的拒绝日志保留，无再次Flash写入。未作物理断电或声画功能验收。原M26 D2110137回退位流与51项未提交文件hash保持；原工作树因3项重叠未快进pull，最新Release及部署报告在干净隔离工作树处理，不覆盖单板／BLE／CNN／M/W未提交工作。
