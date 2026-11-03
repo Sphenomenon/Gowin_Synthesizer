@@ -21,6 +21,20 @@ from tools.workstation_baselines import load_baseline
 
 
 class WorkstationUsbStatus(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('iverilog'),'requires Icarus Verilog')
+    def test_elastic_panel_frame_writer_drain(self):
+        baseline=load_baseline(ROOT,'resource_rework_route0')
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory);font=output/'video_font_5x7.v'
+            font.write_bytes(baseline.read_bytes('src/video/video_font_5x7.v'))
+            subprocess.run(['iverilog','-g2012','-s','tb_usb_status_pipeline','-o',str(output/'sim'),
+                str(ROOT/'sim/display/tb_usb_status_panel.sv'),
+                *(str(ROOT/p) for p in status.SOURCES),
+                str(ROOT/'rtl/control/workstation_stream_cdc.sv'),str(font)],check=True)
+            result=subprocess.run(['vvp',str(output/'sim')],cwd=output,capture_output=True,text=True,timeout=120)
+            self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+            self.assertIn('PASS pipelined USB status',result.stdout)
+
     @unittest.skipUnless(os.environ.get('GW138K_USB_STATUS_NETLIST'),'requires actual M5 mapped netlist')
     def test_actual_status_mailbox_chains_and_bypass_rejection(self):
         from tools.workstation_native_protocol_audit import protocol_netlist
@@ -74,6 +88,11 @@ class WorkstationUsbStatus(unittest.TestCase):
                     n.cells[c]['ports']['D']=n.cells[a]['ports']['Q']
                     with self.assertRaisesRegex(ValueError,'bypass'):verify_chain()
                 finally:n.cells[c]['ports']['D']=saved
+        scope='u_video/u_usb_status_panel'
+        first,second=(g.register(scope,'source_reset_sync_'+str(i)) for i in range(2))
+        self.assertEqual(n.pin(second,'D'),n.pin(first,'Q'))
+        self.assertEqual(n.pin(first,'CLK'),n.pin(second,'CLK'))
+        self.assertEqual(set(g.closure([first])['endpoints']),{second+'/D'})
 
     @unittest.skipUnless(shutil.which('iverilog'),'requires Icarus Verilog')
     def test_native_observer_to_panel_full_frame(self):
@@ -125,6 +144,9 @@ class WorkstationUsbStatus(unittest.TestCase):
                       (stage/'rtl/workstation/workstation_hdmi_display.sv').read_text())
         self.assertIn('.device_state_o(usb_display_device)',
                       (stage/'rtl/workstation/gw138k_push_workstation_top.v').read_text())
+        hdmi=(stage/'rtl/workstation/workstation_hdmi_display.sv').read_text()
+        self.assertIn('#(.PIPELINED(1)) u_usb_status_panel',hdmi)
+        self.assertIn('.renderer_done(writer_renderer_done)',hdmi)
         selected=(stage/'constraints/custom_138k.sdc').read_text()
         self.assertIn(status.constraints(),selected)
         self.assertFalse(artifact['hardware_tested'])

@@ -154,10 +154,13 @@ module hdmi_display #(
     wire [63:0] pixel_data;
 `ifdef WORKSTATION_USB_STATUS_PANEL
     wire [63:0] writer_pixel_data;
-    workstation_usb_status_panel u_usb_status_panel(
+    wire writer_pixel_valid,writer_pixel_ready,writer_renderer_done;
+    workstation_usb_status_panel #(.PIPELINED(1)) u_usb_status_panel(
         .source_clk(usb_status_clk),.source_reset_n(usb_status_reset_n),.source_status(usb_status),
         .clk(memory_clk),.reset_n(ui_rst_n),.frame_start(renderer_start),
-        .pixel_valid(pixel_valid),.pixel_ready(pixel_ready),
+        .pixel_valid(pixel_valid),.pixel_ready(writer_pixel_ready),
+        .input_ready(pixel_ready),.output_valid(writer_pixel_valid),
+        .renderer_done(renderer_done),.output_done(writer_renderer_done),
         .active_voices(shared_render_meta[159:128]),
         .pixel_data(pixel_data),.decorated_data(writer_pixel_data));
 `endif
@@ -276,10 +279,11 @@ module hdmi_display #(
 `else
         .front_bank(analysis_bank),.frame_swap(analysis_commit),.renderer_ready(renderer_ready && shared_initialized && !write_req),
 `endif
-        .renderer_done(renderer_done),.renderer_start(renderer_start),.pixel_valid(pixel_valid),
 `ifdef WORKSTATION_USB_STATUS_PANEL
-        .pixel_ready(pixel_ready),.pixel_data(writer_pixel_data),.display_meta(display_meta),.req_valid(write_req),
+        .renderer_done(writer_renderer_done),.renderer_start(renderer_start),.pixel_valid(writer_pixel_valid),
+        .pixel_ready(writer_pixel_ready),.pixel_data(writer_pixel_data),.display_meta(display_meta),.req_valid(write_req),
 `else
+        .renderer_done(renderer_done),.renderer_start(renderer_start),.pixel_valid(pixel_valid),
         .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.req_valid(write_req),
 `endif
         .req_ready(write_ready),.req_addr(write_addr),.req_wdata(write_data),

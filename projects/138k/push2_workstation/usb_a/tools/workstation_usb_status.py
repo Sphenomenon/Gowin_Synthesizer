@@ -1,7 +1,7 @@
 """Explicit M HDMI status composition and bounded observation CDC contracts."""
 import hashlib
 
-POLICY='usb_owner_link_and_render_voice_snapshot_v1'
+POLICY='usb_owner_link_and_render_voice_pipelined_v2'
 SOURCES=('rtl/usb2/workstation_usb2_display_status.sv',
          'rtl/display_data/workstation_usb_status_panel.sv')
 OLD_RELEASE_BLOCK=(
@@ -31,6 +31,10 @@ def constraints():
               f'set_false_path -to [get_pins {{{path}/ulpi_release*/CLEAR}}]']
     lines.append(f'set_max_delay 2.000 -from [get_pins {{{path}/ulpi_release_0_s*/Q}}] '
                  f'-to [get_pins {{{path}/ulpi_release_1_s*/D}}]')
+    path='u_video/u_usb_status_panel'
+    lines += [f'set_false_path -to [get_pins {{{path}/source_reset_sync_0_s*/D}}]',
+              f'set_max_delay 2.000 -from [get_pins {{{path}/source_reset_sync_0_s*/Q}}] '
+              f'-to [get_pins {{{path}/source_reset_sync_1_s*/D}}]']
     return '\n'.join(lines)+'\n'
 
 
@@ -40,6 +44,8 @@ def evidence():
         status_source_clock='usb_48m',destination_clock='ddr_ui100',
         voice_source='shared_render_meta[159:128]',voice_semantics='current_render_cache_active_mask_popcount',
         freeze='renderer_start',pixel_path='renderer_to_existing_DDR_frame_writer',
+        pixel_pipeline_stages=4,pixel_pipeline='elastic_ordered_drain_before_writer_done',
+        status_reset='locally_sampled_CPU_reset_level',
         audio_backpressure=False,new_DDR_allocation=False,
         sdc_sha256=hashlib.sha256(constraints().encode()).hexdigest(),
         physical_cdc_verified=False,hardware_tested=False)

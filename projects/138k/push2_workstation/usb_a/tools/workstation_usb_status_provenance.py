@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 MANIFEST = 'rtl/workstation/workstation_usb_status_integration.json'
-MANIFEST_SHA256 = '5191c5dc915ac594dcaa1c239928aab5b7fea84a2c3acf0058ebf1eaaa1c0657'
+MANIFEST_SHA256 = '9ecc7ebc5cc5be33ba8c362790c06ce62cb7000bd675ff5eb1c88ef0ae0f75cc'
 
 
 def restore_parent(source, relative):

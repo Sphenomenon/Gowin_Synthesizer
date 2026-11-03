@@ -2,7 +2,8 @@
 // Read-only decoration of the renderer stream before its existing DDR writer.
 // No ready generation, DDR allocation, audio dependency or scanout overlay.
 module workstation_usb_status_panel #(
-    parameter integer STALE_CYCLES=100000000
+    parameter integer STALE_CYCLES=100000000,
+    parameter integer PIPELINED=0
 ) (
     input wire source_clk, source_reset_n,
     // {CPU fault, link failed, traffic enabled, transaction ready, HS,
@@ -11,7 +12,10 @@ module workstation_usb_status_panel #(
     input wire clk, reset_n, frame_start, pixel_valid, pixel_ready,
     input wire [31:0] active_voices,
     input wire [63:0] pixel_data,
-    output wire [63:0] decorated_data
+    output wire [63:0] decorated_data,
+    output wire input_ready,output_valid,
+    input wire renderer_done,
+    output wire output_done
 );
     wire snapshot_valid;
     wire [7:0] snapshot;
@@ -34,11 +38,18 @@ module workstation_usb_status_panel #(
                 voice_count=voice_count+{5'd0,mask[bit_index]};
         end
     endfunction
-    wire status_reset_n=source_reset_n && reset_n;
+    // The production pipeline samples CPU reset as a level in the local
+    // memory clock. Never release local age/fresh FFs from the USB clock.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] source_reset_sync;
+    always @(posedge clk or negedge reset_n)
+        if(!reset_n)source_reset_sync<=0;
+        else source_reset_sync<={source_reset_sync[0],source_reset_n};
+    wire status_reset_n=PIPELINED ? reset_n : source_reset_n && reset_n;
     always @(posedge clk or negedge status_reset_n) begin
         if(!status_reset_n) begin age<=0;fresh<=0;end
         else begin
-            if(snapshot_valid) begin age<=0;fresh<=1;end
+            if(PIPELINED && !source_reset_sync[1])begin age<=0;fresh<=0;end
+            else if(snapshot_valid) begin age<=0;fresh<=1;end
             else if(age<STALE_CYCLES-1) age<=age+1'b1;
             else fresh<=0;
         end
@@ -47,9 +58,9 @@ module workstation_usb_status_panel #(
         if(!reset_n) begin frame_status<=0;frame_fresh<=0;frame_voices<=0;x<=0;y<=0;end
         else begin
             if(frame_start) begin
-                frame_status<=snapshot;frame_fresh<=fresh;x<=0;y<=0;
+                frame_status<=snapshot;frame_fresh<=fresh && (!PIPELINED || source_reset_sync[1]);x<=0;y<=0;
                 frame_voices<=voice_count(active_voices);
-            end else if(pixel_valid && pixel_ready) begin
+            end else if(pixel_valid && input_ready) begin
                 if(x==1918) begin x<=0;y<=y+1'b1;end
                 else x<=x+11'd2;
             end
@@ -110,6 +121,89 @@ module workstation_usb_status_panel #(
     wire [23:0] rgb=text_hit ? (y>=888 && y<902 ? accent : 24'he2e8f0) :
                      progress ? (filled ? voice_color : 24'h334155) :
                          border ? 24'h334155 : 24'h101b2b;
-    assign decorated_data=panel ? {8'd0,rgb,8'd0,rgb} : pixel_data;
+    generate if(!PIPELINED)begin:g_legacy
+        assign input_ready=pixel_ready;
+        assign output_valid=pixel_valid;
+        assign output_done=renderer_done;
+        assign decorated_data=panel ? {8'd0,rgb,8'd0,rgb} : pixel_data;
+    end else begin:g_pipeline
+        // Four elastic stages split row decode, character selection, glyph
+        // lookup and glyph-bit selection. Every field stalls with its pixel.
+        reg [3:0] valid;
+        wire [3:0] ready;
+        assign ready[3]=!valid[3] || pixel_ready;
+        assign ready[2]=!valid[2] || ready[3];
+        assign ready[1]=!valid[1] || ready[2];
+        assign ready[0]=!valid[0] || ready[1];
+        assign input_ready=ready[0] && !frame_start;
+        assign output_valid=valid[3];
+        reg [255:0] line0;
+        reg [4:0] index0;
+        reg [7:0] character1;
+        reg [2:0] column0,column1,column2,row0,row1,row2;
+        reg [34:0] glyph2;
+        wire [34:0] glyph1;
+        reg [63:0] data0,data1,data2,data3;
+        reg [7:0] flags0,flags1,flags2,flags3;
+        reg ink3,done_pending,done_pulse;
+        wire [7:0] flags={panel,x>=1248 && x<1760 && text_row,
+            y>=888 && y<902,progress,filled,border,connected,frame_voices==32};
+        video_font_5x7 pipeline_font(.character(character1),.column(3'd0),
+            .row(3'd0),.ink(),.glyph(glyph1));
+        reg [4:0] glyph_row;
+        always @*begin
+            case(row2)
+                0:glyph_row=glyph2[34:30];1:glyph_row=glyph2[29:25];
+                2:glyph_row=glyph2[24:20];3:glyph_row=glyph2[19:15];
+                4:glyph_row=glyph2[14:10];5:glyph_row=glyph2[9:5];
+                6:glyph_row=glyph2[4:0];default:glyph_row=0;
+            endcase
+        end
+        always @(posedge clk or negedge reset_n)begin
+            if(!reset_n)begin valid<=0;done_pending<=0;done_pulse<=0;end
+            else if(frame_start)begin valid<=0;done_pending<=0;done_pulse<=0;end
+            else begin
+                done_pulse<=done_pending && !(|valid);
+                if(renderer_done)done_pending<=1;
+                else if(done_pending && !(|valid))done_pending<=0;
+                if(ready[0])begin
+                    valid[0]<=pixel_valid;
+                    if(pixel_valid)begin
+                        line0<=text_line;index0<=character_index;
+                        column0<=local_x[3:1];row0<=font_y[3:1];
+                        data0<=pixel_data;flags0<=flags;
+                    end
+                end
+                if(ready[1])begin
+                    valid[1]<=valid[0];
+                    if(valid[0])begin
+                        character1<=line0[255-index0*8-:8];
+                        column1<=column0;row1<=row0;data1<=data0;flags1<=flags0;
+                    end
+                end
+                if(ready[2])begin
+                    valid[2]<=valid[1];
+                    if(valid[1])begin
+                        glyph2<=glyph1;column2<=column1;row2<=row1;
+                        data2<=data1;flags2<=flags1;
+                    end
+                end
+                if(ready[3])begin
+                    valid[3]<=valid[2];
+                    if(valid[2])begin
+                        ink3<=column2<5 && row2<7 && glyph_row[4-column2];
+                        data3<=data2;flags3<=flags2;
+                    end
+                end
+            end
+        end
+        assign output_done=done_pulse;
+        wire [23:0] pipe_accent=flags3[1] ? 24'h4ade80 : 24'hfbbf24;
+        wire [23:0] pipe_voice=flags3[0] ? 24'hfbbf24 : 24'h38bdf8;
+        wire [23:0] pipe_rgb=(flags3[6] && ink3) ? (flags3[5] ? pipe_accent : 24'he2e8f0) :
+            flags3[4] ? (flags3[3] ? pipe_voice : 24'h334155) :
+            flags3[2] ? 24'h334155 : 24'h101b2b;
+        assign decorated_data=flags3[7] ? {8'd0,pipe_rgb,8'd0,pipe_rgb} : data3;
+    end endgenerate
 endmodule
 `default_nettype wire

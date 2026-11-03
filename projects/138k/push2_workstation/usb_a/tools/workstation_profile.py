@@ -68,7 +68,7 @@ PROFILE_REGISTRY = {
             push_rate_control_policy='push_session_committed_toggle_generation_v1',
             xy_trace_policy='connected_xy_two_snapshot_history_v1',
             xy_axes_policy='ordinary_mid_side_vector_direct_v1',
-            usb_status_panel_policy='usb_owner_link_and_render_voice_snapshot_v1'),
+            usb_status_panel_policy='usb_owner_link_and_render_voice_pipelined_v2'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
         push_rate_control=True,xy_trace=True,xy_stereo=True,usb_status_panel=True,

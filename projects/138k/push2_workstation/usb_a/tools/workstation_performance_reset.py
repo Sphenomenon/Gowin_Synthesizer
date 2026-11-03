@@ -238,7 +238,7 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
     if sealed_profile.get('profile') == 'custom138k-workstation-m-demo-v1' and sealed_profile.get('revision') == 5:
         require('`define WORKSTATION_USB_STATUS_PANEL' in provider.read_text().splitlines() and
                 sealed_profile.get('configuration', {}).get('usb_status_panel_policy') ==
-                    'usb_owner_link_and_render_voice_snapshot_v1',
+                    'usb_owner_link_and_render_voice_pipelined_v2',
                 'M revision5 requires explicit USB status composition')
     result = audit_native_protocol(n, profile=profile, mapping=mapping, connected_xy=connected_xy,
         stereo_xy=stereo_xy, profile_revision=sealed_profile.get('revision'), xy_axes_policy=axes_policy,

@@ -103,3 +103,86 @@ module tb_usb_status_panel;
     end
     initial begin #30000000;$fatal(1,"timeout");end
 endmodule
+
+// Compare every accepted pixel against the legacy combinational decoration.
+// Independent input bubbles/output stalls exercise all elastic-stage edges.
+module tb_usb_status_pipeline;
+    reg clk=0,source_clk=0,ulpi_clk=0;
+    always #5 clk=~clk;
+    always #7 source_clk=~source_clk;
+    always #9 ulpi_clk=~ulpi_clk;
+    reg reset_n=0,source_reset_n=0,frame_start=0;
+    reg pixel_valid=0,pixel_ready=0,renderer_done=0;
+    reg [63:0] pixel_data=0;
+    wire input_ready,output_valid,output_done;
+    wire [63:0] result,reference;
+    wire [7:0] source_status;
+    workstation_usb2_display_status #(.STALE_CYCLES(200)) observer(
+        .cpu_clk(source_clk),.ulpi_clk(ulpi_clk),.reset_n(source_reset_n),
+        .device_state(3'b111),.cpu_fault(4'd0),.failed(1'b0),
+        .traffic_enable(1'b1),.transaction_ready(1'b1),.high_speed(1'b0),
+        .status(source_status));
+    workstation_usb_status_panel #(.STALE_CYCLES(200),.PIPELINED(1)) dut(
+        .source_clk(source_clk),.source_reset_n(source_reset_n),.source_status(source_status),
+        .clk(clk),.reset_n(reset_n),.frame_start(frame_start),
+        .pixel_valid(pixel_valid),.pixel_ready(pixel_ready),.active_voices(32'haaaa5555),
+        .pixel_data(pixel_data),.decorated_data(result),.input_ready(input_ready),
+        .output_valid(output_valid),.renderer_done(renderer_done),.output_done(output_done));
+    workstation_usb_status_panel #(.STALE_CYCLES(200)) model(
+        .source_clk(source_clk),.source_reset_n(source_reset_n),.source_status(source_status),
+        .clk(clk),.reset_n(reset_n),.frame_start(frame_start),
+        .pixel_valid(pixel_valid),.pixel_ready(input_ready),.active_voices(32'haaaa5555),
+        .pixel_data(pixel_data),.decorated_data(reference));
+    localparam integer PAIRS=1920*1080/2;
+    integer sent=0,received=0,queued=0,write_index=0,read_index=0;
+    integer cycle=0,stalls=0;
+    reg [63:0] expected[0:15];
+    reg stalled=0;
+    reg [63:0] held;
+    reg [31:0] random_state=32'h1234abcd;
+    reg running=0,done_sent=0;
+    always @(posedge clk)if(reset_n && running && !frame_start)begin
+        if(stalled && (!output_valid || result!==held))$fatal(1,"output changed during stall");
+        stalled=output_valid && !pixel_ready;held=result;
+        if(stalled)stalls=stalls+1;
+        if(output_valid && pixel_ready)begin
+            if(queued==0 || result!==expected[read_index])
+                $fatal(1,"pipeline ordering/pixel mismatch at pair %0d",received);
+            read_index=(read_index+1)%16;queued=queued-1;received=received+1;
+        end
+        if(pixel_valid && input_ready)begin
+            expected[write_index]=reference;write_index=(write_index+1)%16;
+            queued=queued+1;sent=sent+1;
+            if(queued>4)$fatal(1,"pipeline exceeded four accepted pixels");
+        end
+        if(output_done)begin
+            if(sent!=PAIRS || received!=PAIRS || queued!=0 || stalls<100)
+                $fatal(1,"frame committed before final output handshake");
+            // Reset flush cannot leak an old valid or completion pulse.
+            running=0;reset_n=0;
+        end
+    end
+    always @(negedge clk)if(running)begin
+        random_state={random_state[30:0],random_state[31]^random_state[21]^random_state[1]^random_state[0]};
+        cycle=cycle+1;
+        pixel_ready=random_state[2] || random_state[8];
+        renderer_done=0;
+        if(sent==PAIRS)begin
+            pixel_valid=0;
+            if(!done_sent)begin renderer_done=1;done_sent=1;end
+        end else if(!pixel_valid || input_ready)begin
+            pixel_valid=random_state[0] || random_state[5];
+            pixel_data=64'h0012345600654321 ^ sent;
+        end
+    end
+    initial begin
+        repeat(3)@(negedge clk);reset_n=1;source_reset_n=1;
+        repeat(200)@(negedge clk);frame_start=1;
+        @(negedge clk);frame_start=0;running=1;
+        wait(!reset_n);repeat(3)@(negedge clk);
+        if(output_valid || output_done)$fatal(1,"reset did not flush output");
+        $display("PASS pipelined USB status: %0d ordered pairs, %0d stalls, writer done after drain",received,stalls);
+        $finish;
+    end
+    initial begin #100000000;$fatal(1,"pipeline timeout");end
+endmodule
