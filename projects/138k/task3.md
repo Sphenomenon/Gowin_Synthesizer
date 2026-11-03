@@ -357,6 +357,16 @@ M／W各3项实际映射回归通过，分别拒绝42／48个破坏场景；9项
 
 本轮未更新历史消费者hash来放行，也未修改来源锁、RTL、固件或旧候选。后续逐项解释和验证新增释放消费者，再处理完整TF CDC与物理实现；综合时钟估算仍保留8.8的未达标结果。生产CAP3与LCD probe／budget／business继续关闭；实体LCD预算、持续手机三流期限、D按下／松开到M DAC、TF／CNN／Push及同一录音对象下载并发仍待验证。SRAM／Flash均未写入。
 
+### 8.11 M原PC释放链与两板最终消费者定位（2026-11-03）
+
+本轮完成M原PC／control APB的局部释放证明，见[实际连接、负控和剩余失败](push2_workstation/usb_a/reports/DUAL138K_TASK3_BATCH_PC_RELEASE_20261103.json)。phone observer改为lease reset后，其释放寄存器不再与原root-only PC链合并；M的50MHz末级实际保留为`final_tap/destination_release_2`，音频域三段链保留为`panic_epoch/source_release`。前两级仍是原PLL enable链，完整消费者分别2／43个；仅替换下一段D名称后，新旧清单逐项相同，没有新增业务早级旁路。原stream／APB源码及`control_cdc`实例逐字未变。
+
+审计只对已核验root与batch边界的新M provider选择这个确切名称；旧配置沿用原路径。4项实际新旧网表回归／33个负控通过，覆盖错误INIT／时钟／复位、早级旁路、缺失既有消费者、错误名称和缺失batch证明，并冻结旧消费者常量。旧根复位5项／85个负控和来源17项通过。M整板重审仍18／20：局部PC／APB证明通过后，两处完整门禁都在F808／config_cdc的CPU source最终消费者清单拒绝，未刷新hash或授予完整TF CDC验收。MIDI原root链与phone observer的lease链已不同，后续也须核对实际SDC语义。
+
+W本轮只读核对了三份真实VG：历史shared control seal精确对应v6的14,361个FF端点，phone-blocks v5已变为14,481，batch v3为14,488；primitive／top端点三者相同。后两份原始FF引脚差为删113／增120，去除Gowin实例后缀仅作诊断后为24／31，涉及39个50MHz逻辑寄存器，包含CPU mailbox、同一录音对象CRC／状态、HCI启动／序号及raw store计数。原owner源码8份逐字相同，但这不证明映射后next-Q等价；W旧seal继续拒绝，未重跑或提升其前轮17／18审计。后续按真实owner逐项证明复位和有效next-Q，不能把D／CE重映射或名称归一当作通过；DFFPE省略INIT时须按官方默认1处理。
+
+本轮没有修改RTL、固件、来源锁、约束或两份v3候选；M／W综合等效BSRAM仍209／308，物理资源、布线时序、LCD实际预算、位流／UserCode和实体延迟仍未验或未生成。生产CAP3与LCD业务能力继续关闭；未操作任何板卡，SRAM／Flash均未写入。
+
 ## 9. 阶段、提交与证据
 
 每阶段完成针对性验证后commit、push并回写本节。输出固定目录、配置和来源；两板分别列源提交/输入hash、固件/模型、UserCode、位流SHA、物理资源、setup/hold/recovery/removal、PLL/CDC、LCD及控制到声音延迟、功能范围与回退。没有位流时明确`bitstream=null`，不复用已接受身份。
@@ -379,6 +389,7 @@ M／W各3项实际映射回归通过，分别拒绝42／48个破坏场景；9项
 | T3-06h 原子快照／批量控制 | 默认关闭的新RTL／C与真实LCD模型完成；200ms四组注入各75块、无欠载，生产CAP3仍关闭，取消后原owner归零；旧模式负例保留。新profile／真实ELF／整板资源时序和实板未验，见8.7 |
 | T3-06i batch生产来源配置 | 新显式M／W配置、真实W ELF、两板clean prepare与整板综合完成，等效BSRAM209／308；严格12／19、11／17，新的root生产注册及下游完整门禁未闭合。旧配置与回退保留，持续能力与实体链路仍关闭，见8.8 |
 | T3-06j batch映射审计 | 局部M／W各3项、42／48破坏控制与注册9项／52拒绝场景通过；同一v3严格M18／20、W17／18，释放消费者／provider及完整物理门禁仍拒绝。进度8.9、完成范围与失败见8.10 |
+| T3-06k 原PC释放／最终消费者 | M新旧局部4项／33负控通过，早级2／43完整消费者保持；整板18／20在CPU最终清单拒绝。W三VG诊断定位39个需逐项证明的逻辑寄存器，旧seal未改，见8.11 |
 | T3-07 硬件收敛 | 目标板到位并确认身份后必要SRAM验证；完整32声部/向量/效果/HDMI/TF/识别/录音证据和回退；Flash另授权 |
 
 禁止用全量资源重写、放宽时钟/false path、删特性或报告字段代替门禁。子系统收益必须再经整机同条件P&R确认。新扩展配置进入现有`build.py`/显式profile；本轮子系统综合工具只用于分工验证，整机集成后收敛或退役，不成为新编号生产构建器。

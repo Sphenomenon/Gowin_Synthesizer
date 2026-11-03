@@ -10,7 +10,7 @@ import fnmatch
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
-    PAIRED_PROVIDER, M_PHONE_PROVIDER, validate_root_publisher)
+    PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER, validate_root_publisher)
 from tools.workstation_task3_peripheral_releases_audit import (
     closure_identity, zero_async_ff, PAIRED_CPU_SOURCE_CLOSURE,
     PAIRED_CPU_DESTINATION_CLOSURE)
@@ -40,9 +40,13 @@ def require(ok, message):
 
 
 def audit_paired_release_sdc(n, sdc, *, root):
-    require(root.get('selected_provider') in (PAIRED_PROVIDER, M_PHONE_PROVIDER) and
+    require(root.get('selected_provider') in (PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER) and
             root.get('all_state_assignments_proven') is True and
             root.get('actual_state_bits') == 35, 'verified explicit paired M root required')
+    if root['selected_provider'] == M_PHONE_BATCH_PROVIDER:
+        require(root.get('batch_mapped_structure', {}).get('mapped_structure_verified') is True and
+                root['batch_mapped_structure'].get('policy') == 'task3_m_batch_mapped_command_snapshot_v1',
+                'verified actual M batch mapped boundary required')
     g = Graph(n)
     root_q = validate_root_publisher(n, g, root)
     pins = {p + '/' + pin for p, cell in n.cells.items() for pin in cell['ports']}

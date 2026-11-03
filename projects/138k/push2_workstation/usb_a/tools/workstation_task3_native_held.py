@@ -13,7 +13,7 @@ from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_task3_root_reset_audit import (
     POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256,
-    PAIRED_PROVIDER, M_PHONE_PROVIDER, validate_root_publisher)
+    PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER, validate_root_publisher)
 
 PROFILE = 'm-task3-direct'
 POLICY = 'task3-direct-real-root-held-v1'
@@ -39,7 +39,8 @@ def inverse(g, clear, release_q, label):
                         cuts=(release_q,))
 
 
-def release_from_clear(n, g, clear, root_q, domain, *, paired=False):
+def release_from_clear(n, g, clear, root_q, domain, *, paired=False, batch=False):
+    require(not batch or paired, 'batch release mapping requires explicit paired role')
     support = g.support(clear)
     require(len(support) == 1, 'owner CLEAR is not one registered release')
     last_q = next(iter(support))
@@ -68,10 +69,12 @@ def release_from_clear(n, g, clear, root_q, domain, *, paired=False):
             'local release assertion differs between stages')
     assertion = inverse(g, n.pin(rows[0], 'CLEAR'), root_q, 'local release common root assertion')
     early_closures = []
+    final_control = ('u_task3_m_final_tap/destination_release_2_s0' if batch else
+                     'u_task3_m_pcm_commands/p_release_2_s0' if paired else
+                     'u_managed/midi_bytes/source_release_2_s0')
     merged_clk50 = rows == ['u_usb_pll/u_pll_init/enable_r_0_s0',
                            'u_usb_pll/u_pll_init/enable_r_1_s0',
-                           ('u_task3_m_pcm_commands/p_release_2_s0' if paired else
-                            'u_managed/midi_bytes/source_release_2_s0')] and domain == 'clk_50m'
+                           final_control] and domain == 'clk_50m'
     for bit in (0, 1):
         closure = complete_closure(n, g, [rows[bit]])
         expected = {rows[bit+1] + '/D': domain}
@@ -98,7 +101,8 @@ def release_from_clear(n, g, clear, root_q, domain, *, paired=False):
     return dict(stages=rows, final_q=last_q, common_assertion=assertion,
                 domain=domain, release_edges=3, merged_register_aliases_resolved=True,
                 exact_early_consumer_closures=early_closures,
-                reviewed_pll_initializer_and_tf_first_edge_merge=merged_clk50)
+                reviewed_pll_initializer_and_tf_first_edge_merge=merged_clk50,
+                batch_observer_release_separation=batch)
 
 
 def next_q(n, g, p, bd):
@@ -127,7 +131,12 @@ def audit_direct_held_boundaries(n, result, *, root):
     root_reg = g.register('u_reset', 'started')
     root_q = n.pin(root_reg, 'Q')
     validate_root_publisher(n, g, root)
-    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER)
+    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER)
+    batch = root['selected_provider'] == M_PHONE_BATCH_PROVIDER
+    if batch:
+        require(root.get('batch_mapped_structure', {}).get('mapped_structure_verified') is True and
+                root['batch_mapped_structure'].get('policy') == 'task3_m_batch_mapped_command_snapshot_v1',
+                'verified actual M batch mapped boundary required')
     scope = 'u_managed/pc_bytes'
     pc = next(row for row in result['mailboxes'] if row['scope'] == scope)
     held, captured = (g.group(scope, stem, 8) for stem in ('held_data', 'destination_data'))
@@ -150,7 +159,7 @@ def audit_direct_held_boundaries(n, result, *, root):
         clears = {n.pin(p, 'CLEAR') for p in owners}
         require(len(clears) == 1, 'PC shared local reset changed')
         clear = next(iter(clears))
-        release = release_from_clear(n, g, clear, root_q, domain, paired=paired)
+        release = release_from_clear(n, g, clear, root_q, domain, paired=paired, batch=batch)
         pc_releases[side] = dict(release, owners=owners, reset_asserted_value=0)
     source_q = pc_releases['source']['final_q']
     dest_q = pc_releases['destination']['final_q']
