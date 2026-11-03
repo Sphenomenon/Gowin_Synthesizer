@@ -11,6 +11,11 @@ TRANSACTIONS = dict(
     ulpi=('request_sync_q', 'result_toggle_q', 'result_mailbox_q', 'descriptor_ulpi_q',
           'state_q', 'upload_index_q', 'receive_count_q', 'elapsed_q', 'recovery_q'))
 
+# M5 may share the identical first two release FFs with this observation
+# mailbox. Accept only these reviewed aliases and the same structural proof.
+STATUS_RELEASE_SCOPE = 'u_usb_display_status/link_cdc'
+STATUS_RELEASE_PREFIX = dict(cpu='destination_release', ulpi='source_release')
+
 
 def audit_bridge_resets(netlist_text, top='workstation_usb2_host_mmio'):
     netlist = SynthesisNetlist(netlist_text, top)
@@ -27,7 +32,7 @@ def audit_bridge_resets(netlist_text, top='workstation_usb2_host_mmio'):
              for label in netlist.modules['workstation_usb2_cpu_bridge']}
     drivers = {}
     for instance_path, cell in netlist.cells.items():
-        if instance_path.rpartition('/')[0] not in ancestors:
+        if instance_path.rpartition('/')[0] not in ancestors | {STATUS_RELEASE_SCOPE}:
             continue
         kind, ports = cell['kind'], cell['ports']
         output = ('Q' if kind.startswith('DFF') else 'F' if re.fullmatch(r'LUT[1-6]', kind)
@@ -70,8 +75,8 @@ def audit_bridge_resets(netlist_text, top='workstation_usb2_host_mmio'):
             raise ValueError('USB2 bridge release stage is not unconditionally clocked: ' + instance_path)
         return {port: netlist.pin(instance_path, port) for port in cell['ports']}
 
-    def chain(scope, domain, purpose):
-        prefix = domain + '_' + purpose + '_q'
+    def chain(scope, domain, purpose, prefix=None):
+        prefix = prefix or domain + '_' + purpose + '_q'
         stages = []
         for index in range(2):
             matches = [scope + '/' + label for label in netlist.modules[netlist.frames[scope]['kind']]
@@ -109,6 +114,17 @@ def audit_bridge_resets(netlist_text, top='workstation_usb2_host_mmio'):
                 continue
             if inverse == [1, 0]:
                 candidates.append(candidate)
+        if STATUS_RELEASE_SCOPE in netlist.frames:
+            candidate = chain(STATUS_RELEASE_SCOPE, domain, 'release', STATUS_RELEASE_PREFIX[domain])
+            if candidate['clock'] == chains[domain]['session']['clock']:
+                try:
+                    inverse = [value(netlist.pin(targets[0], 'CLEAR'), candidate['ready'], source_value)
+                               for source_value in (0, 1)]
+                except ValueError:
+                    inverse = None
+                if inverse == [1, 0]:
+                    candidate['mapped_alias'] = STATUS_RELEASE_PREFIX[domain]
+                    candidates.append(candidate)
         if len(candidates) != 1:
             raise ValueError('USB2 bridge global local-release chain not resolved: ' + domain)
         chains[domain]['release'] = candidates[0]

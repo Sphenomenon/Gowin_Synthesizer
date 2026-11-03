@@ -655,6 +655,18 @@ module gw138k_push_workstation_top #(
 `ifdef WORKSTATION_CUSTOM_138K
     wire [7:0] native_usb_data;
     wire native_usb_oe;
+`ifdef WORKSTATION_USB_STATUS_PANEL
+    wire [2:0] usb_display_device;
+    wire [3:0] usb_display_cpu_fault;
+    wire usb_display_failed,usb_display_traffic,usb_display_ready,usb_display_high_speed;
+    wire [7:0] usb_display_status;
+    workstation_usb2_display_status u_usb_display_status(
+        .cpu_clk(usb_clk),.ulpi_clk(usb2_ulpi_clk),.reset_n(usb_reset_n),
+        .device_state(usb_display_device),.cpu_fault(usb_display_cpu_fault),
+        .failed(usb_display_failed),.traffic_enable(usb_display_traffic),
+        .transaction_ready(usb_display_ready),.high_speed(usb_display_high_speed),
+        .status(usb_display_status));
+`endif
     assign usb2_ulpi_data=native_usb_oe ? native_usb_data : 8'bz;
     workstation_usb2_input #(.FEEDBACK_AUDIO_DOMAIN(1)
 `ifdef WORKSTATION_CNN_DEMO
@@ -696,8 +708,15 @@ module gw138k_push_workstation_top #(
         .track_launch_o(push_track_launch),.track_index_o(push_track_index),
         .audio_valid_o(all_usb_valid),.audio_ready_i(all_usb_ready),.audio_event_o(all_usb_event),
         .audio_lifecycle_o(usb_lifecycle),.audio_cancel_o(usb_cancel),.telemetry_o(usb_words),
+`ifdef WORKSTATION_USB_STATUS_PANEL
+        .canceled_requests_o(),.cpu_fault_o(usb_display_cpu_fault),.cpu_fault_address_o(),
+        .transaction_reset_n_o(usb_display_ready),.phy_ready_o(),.failed_o(usb_display_failed),
+        .high_speed_o(usb_display_high_speed),.traffic_enable_o(usb_display_traffic),.sof_count_o(),
+        .device_state_o(usb_display_device)
+`else
         .canceled_requests_o(),.cpu_fault_o(),.cpu_fault_address_o(),.transaction_reset_n_o(),
         .phy_ready_o(),.failed_o(),.high_speed_o(),.traffic_enable_o(),.sof_count_o()
+`endif
     );
 `else
     push2_usb_a_control u_push(.clk(usb_clk),.reset_n(usb_reset_n),.audio_clk(audio_clk),.audio_reset_n(audio_reset_n),
@@ -1313,6 +1332,9 @@ module gw138k_push_workstation_top #(
     assign tmds_clk_p=0,tmds_clk_n=0,tmds_data_p=0,tmds_data_n=0;
 `else
     hdmi_display u_video (
+`ifdef WORKSTATION_USB_STATUS_PANEL
+        .usb_status_clk(usb_clk),.usb_status_reset_n(usb_reset_n),.usb_status(usb_display_status),
+`endif
 `ifdef WORKSTATION_PUSH_RATE_CONTROL
         // Independent of PCM observations: a stopped/muted audio stream must
         // not freeze switching/fault feedback. Bit0 is the committed rate.

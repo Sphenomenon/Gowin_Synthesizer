@@ -450,6 +450,15 @@ def audit_resets(text, clocks, *, feedback_source_clock='clk_50m', top='workstat
     def register(stem):
         matches = [name for name, cell in netlist.cells.items()
                    if cell['kind'].startswith('DFF') and re.fullmatch(re.escape(stem) + r'_s\d+', name)]
+        if not matches and stem in (HOST + '/bridge/ulpi_release_q_0', HOST + '/bridge/ulpi_release_q_1'):
+            # Gowin can share these identical release FFs with M5's read-only
+            # status mailbox. All clock/reset/CE/start/fanout checks below
+            # still apply to the actual mapped registers.
+            alias = 'u_usb_display_status/link_cdc/source_release_' + stem[-1]
+            matches = [name for name, cell in netlist.cells.items()
+                       if cell['kind'].startswith('DFF') and re.fullmatch(re.escape(alias) + r'_s\d+', name)]
+            if len(matches) == 1:
+                evidence.setdefault('mapping_aliases', {})[stem] = matches[0]
         if len(matches) != 1:
             raise ValueError('native USB synchronizer inventory changed: ' + stem)
         return matches[0]

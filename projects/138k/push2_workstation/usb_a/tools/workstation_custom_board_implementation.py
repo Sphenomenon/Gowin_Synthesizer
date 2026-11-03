@@ -133,10 +133,10 @@ def reference_constraints(payload, netlist_text, excluded_ports=()):
 
 
 def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
-                      place_option=2, route_option=0):
+                      place_option=2, route_option=0, replicate_resources=False):
     """Offline experiment using a hash-pinned reference; never board validation."""
     source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
-    script = implementation_script(user_code, place_option, route_option)
+    script = implementation_script(user_code, place_option, route_option, replicate_resources)
     if output.exists() or source in output.parents:
         raise ValueError('physical output must be new and outside its parent candidate')
     if not re.fullmatch('[0-9a-f]{64}', reference_sha256) or sha(reference_cst) != reference_sha256:
@@ -171,7 +171,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         electrical_status='historical_reference_only_no_current_PCB_netlist_check',
         board_netlists_checked=False, board_programming_authorized=False,
         clocks_or_exceptions_relaxed=False, features_removed=False,
-        place_option=place_option, route_option=route_option, replicate_resources=False,
+        place_option=place_option, route_option=route_option, replicate_resources=replicate_resources,
         input_sha256={p.name: sha(p) for p in output.iterdir() if p.is_file()},
         timing_closed=False, physical_gates_passed=False, hardware_tested=False,
         deployment_allowed=False, release_ready=False, bitstream_sha256=None,
@@ -690,13 +690,18 @@ def main():
     parser.add_argument('--exclude-reference-port', action='append', default=[])
     parser.add_argument('--place-option', type=int, choices=range(5), default=2)
     parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
+    parser.add_argument('--replicate-resources', action='store_true',
+                        help='Allow P&R high-fanout resource replication in an explicit reference-CST experiment')
     args = parser.parse_args()
+    if args.replicate_resources and not args.reference_cst:
+        parser.error('--replicate-resources requires --reference-cst')
     if args.reference_cst:
         if (args.ulpi_bypass_lvcmos33 or args.ddr_capture_region_parent_evidence or
                 not args.reference_sha256):
             parser.error('reference mode requires its hash and cannot mix physical derivations')
         result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
-            args.reference_sha256, args.exclude_reference_port, args.place_option, args.route_option)
+            args.reference_sha256, args.exclude_reference_port, args.place_option, args.route_option,
+            args.replicate_resources)
     elif args.ddr_capture_region_parent_evidence:
         if args.ulpi_bypass_lvcmos33:
             parser.error('the derived parent already fixes ULPI; a second adaptation is not allowed')

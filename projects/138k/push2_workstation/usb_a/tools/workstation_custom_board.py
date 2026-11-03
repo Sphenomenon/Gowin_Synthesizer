@@ -144,6 +144,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     audio_only=runtime and specification(profile['name']).get('worker_audio_only',False)
     stream_pitch=runtime and specification(profile['name']).get('worker_stream_pitch',False)
     registered_epoch=runtime and specification(profile['name']).get('hci_registered_controller_epoch',False)
+    usb_status_selected=runtime and specification(profile['name']).get('usb_status_panel',False)
+    if usb_status_selected:
+        from tools.workstation_usb_status import SOURCES as USB_STATUS_SOURCES
+        native_sources += USB_STATUS_SOURCES
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -398,6 +402,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         from tools.workstation_push_rate_control import constraints as push_rate_sdc, evidence as push_rate_evidence
         selected_sdc += push_rate_sdc()
         push_rate_control = push_rate_evidence()
+    if usb_status_selected:
+        from tools.workstation_usb_status import install as install_usb_status
+        selected_sdc,usb_status_details=install_usb_status(selected_sdc)
     if demo_role is not None:
         from tools.workstation_demo_policy import adapt_constraints as demo_adapt_constraints
         selected_sdc, demo_constraints = demo_adapt_constraints(selected_sdc, demo_role,
@@ -481,6 +488,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                     'real external peripheral and hardware acceptance'])
     if push_rate_control is not None:
         metadata['push_rate_control']=push_rate_control
+    if usb_status_selected:
+        metadata['usb_status_panel']=usb_status_details
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)

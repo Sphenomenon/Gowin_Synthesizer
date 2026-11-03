@@ -714,6 +714,9 @@ RECORDS = {'rtl/music/music_async_fifo.sv': {'parent_sha256': 'e5a190502bec8bb40
 
 
 def restore_parent(source, relative):
+    actual_source = source
+    from tools.workstation_usb_status_provenance import restore_parent as restore_status
+    source, status_bridge = restore_status(source, relative)
     record = RECORDS[relative]
     digest = lambda payload: hashlib.sha256(payload).hexdigest()
     if digest(source) != record['current_sha256']:
@@ -732,7 +735,10 @@ def restore_parent(source, relative):
         current = current.replace(before, after)
     if current.encode('utf-8') != source:
         raise ValueError('PR2 storage reference round trip changed: ' + relative)
-    return parent, dict(source=relative, parent_commit=record['parent_commit'],
-        current_source_sha256=digest(source), restored_parent_sha256=digest(parent),
+    evidence = dict(source=relative, parent_commit=record['parent_commit'],
+        current_source_sha256=digest(actual_source), restored_parent_sha256=digest(parent),
         exact_inverse_edits=len(record['edits']), exact_round_trip_verified=True,
         input_source_rewritten=False, default_runtime_storage_policy_changed=False)
+    if status_bridge is not None:
+        evidence['usb_status_composition'] = status_bridge
+    return parent, evidence

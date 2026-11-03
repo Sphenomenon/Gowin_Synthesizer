@@ -5,10 +5,22 @@ module tb_usb_status_panel;
     always #5 clk=~clk;
     reg source_reset_n=0,reset_n=0,frame_start=0,pixel_valid=0,pixel_ready=0;
     reg [7:0] source_status=0;
+`ifdef WORKSTATION_NATIVE_USB_STATUS
+    reg ulpi_clk=0;
+    always #9 ulpi_clk=~ulpi_clk;
+    wire [7:0] observed_status;
+    workstation_usb2_display_status #(.STALE_CYCLES(200)) actual_status(
+        .cpu_clk(source_clk),.ulpi_clk(ulpi_clk),.reset_n(source_reset_n),
+        .device_state(source_status[2:0]),.cpu_fault({3'b0,source_status[7]}),
+        .failed(source_status[6]),.traffic_enable(source_status[5]),
+        .transaction_ready(source_status[4]),.high_speed(source_status[3]),.status(observed_status));
+`else
+    wire [7:0] observed_status=source_status;
+`endif
     reg [31:0] active_voices=0;
     wire [63:0] decorated;
     workstation_usb_status_panel #(.STALE_CYCLES(200)) dut(
-        .source_clk(source_clk),.source_reset_n(source_reset_n),.source_status(source_status),
+        .source_clk(source_clk),.source_reset_n(source_reset_n),.source_status(observed_status),
         .clk(clk),.reset_n(reset_n),.frame_start(frame_start),.pixel_valid(pixel_valid),
         .pixel_ready(pixel_ready),.active_voices(active_voices),
         .pixel_data(64'h0012345600654321),.decorated_data(decorated));

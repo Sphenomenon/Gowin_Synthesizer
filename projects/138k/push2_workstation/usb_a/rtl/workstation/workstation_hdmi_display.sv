@@ -11,6 +11,10 @@ module hdmi_display #(
 `endif
 ) (
     input wire clk_50m, reset_n,
+`ifdef WORKSTATION_USB_STATUS_PANEL
+    input wire usb_status_clk,usb_status_reset_n,
+    input wire [7:0] usb_status,
+`endif
 `ifdef WORKSTATION_PUSH_RATE_CONTROL
     input wire [3:0] audio_clock_status_i,
 `endif
@@ -148,6 +152,15 @@ module hdmi_display #(
     wire display_enabled=bist_done && !bist_failed && !fetch_fault && !arbiter_fault;
     wire renderer_ready,renderer_busy,renderer_done,renderer_start,pixel_valid,pixel_ready;
     wire [63:0] pixel_data;
+`ifdef WORKSTATION_USB_STATUS_PANEL
+    wire [63:0] writer_pixel_data;
+    workstation_usb_status_panel u_usb_status_panel(
+        .source_clk(usb_status_clk),.source_reset_n(usb_status_reset_n),.source_status(usb_status),
+        .clk(memory_clk),.reset_n(ui_rst_n),.frame_start(renderer_start),
+        .pixel_valid(pixel_valid),.pixel_ready(pixel_ready),
+        .active_voices(shared_render_meta[159:128]),
+        .pixel_data(pixel_data),.decorated_data(writer_pixel_data));
+`endif
     wire [255:0] display_meta,shared_export_meta;
     wire [31:0] underruns,rendered_frames;
     wire shared_start,shared_write_done,shared_busy,shared_initialized,shared_read_enable;
@@ -264,7 +277,11 @@ module hdmi_display #(
         .front_bank(analysis_bank),.frame_swap(analysis_commit),.renderer_ready(renderer_ready && shared_initialized && !write_req),
 `endif
         .renderer_done(renderer_done),.renderer_start(renderer_start),.pixel_valid(pixel_valid),
+`ifdef WORKSTATION_USB_STATUS_PANEL
+        .pixel_ready(pixel_ready),.pixel_data(writer_pixel_data),.display_meta(display_meta),.req_valid(write_req),
+`else
         .pixel_ready(pixel_ready),.pixel_data(pixel_data),.display_meta(display_meta),.req_valid(write_req),
+`endif
         .req_ready(write_ready),.req_addr(write_addr),.req_wdata(write_data),
         .frame_pending(frame_pending),.rendered_frames(rendered_frames)
     );

@@ -69,6 +69,9 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'tools/workstation_usb_status.py',
+    'tools/workstation_usb_status_provenance.py',
+    'rtl/workstation/workstation_usb_status_integration.json',
     'rtl/ddr_address_map.vh',
     'tools/workstation_recording_policy.py',
     'rtl/workstation/RUNTIME_DISPLAY.md',

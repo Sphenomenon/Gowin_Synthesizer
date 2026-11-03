@@ -59,7 +59,7 @@ M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 BLE_DEMO_NAME='custom138k-workstation-ble-demo-v1'
 PROFILE_REGISTRY = {
-    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=4,
+    M_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_m_demo_v1.json', revision=5,
         configuration=dict(RUNTIME_CONFIGURATION, recognition_policy='disabled_cnn_and_follow_v1',
             local_panel_policy='disabled_local_lcd_touch_v1',demo_role='M',
             usb_fifo_reset_policy=DEMO_USB_FIFO_RESET_POLICY,
@@ -67,10 +67,12 @@ PROFILE_REGISTRY = {
             bluetooth_policy='retired_for_independent_m_demo_v1',recording_policy='disabled_m_demo_v1',
             push_rate_control_policy='push_session_committed_toggle_generation_v1',
             xy_trace_policy='connected_xy_two_snapshot_history_v1',
-            xy_axes_policy='ordinary_mid_side_vector_direct_v1'),
+            xy_axes_policy='ordinary_mid_side_vector_direct_v1',
+            usb_status_panel_policy='usb_owner_link_and_render_voice_snapshot_v1'),
         provider='rtl/workstation/workstation_profile_m_demo.sv',recognition_enabled=False,
         local_panel_enabled=False,demo_role='M',
-        push_rate_control=True,xy_trace=True,xy_stereo=True,integration_identity='custom138k-native-m-demo-session-rate-stereo-xy-revision4'),
+        push_rate_control=True,xy_trace=True,xy_stereo=True,usb_status_panel=True,
+        integration_identity='custom138k-native-m-demo-session-rate-stereo-xy-usb-status-revision5'),
     W_DEMO_NAME:dict(config='boards/custom_138k/workstation_profile_w_demo_v1.json',revision=5,
         configuration=dict(CPU_BUSINESS_CONFIGURATION,hci_transport_policy='native_shared_hci_owner_v1',
             ae350_firmware_policy='ae350_worker_audio_only_classic_runtime_v1',ae350_boot_rom_bytes=131072,
@@ -156,8 +158,9 @@ PROFILE_REGISTRY[BLE_DEMO_NAME] = dict(PROFILE_REGISTRY[M_DEMO_NAME],
         bluetooth_policy='independent_ble_business_final_pcm_v1',
         recording_policy='ble_short_pcm_ram_only_v1'),
     provider='rtl/workstation/workstation_profile_ble_demo.sv',
-    retain_bluetooth=True,
+    retain_bluetooth=True,usb_status_panel=False,
     integration_identity='custom138k-native-ble-business-final-pcm-revision1')
+PROFILE_REGISTRY[BLE_DEMO_NAME]['configuration'].pop('usb_status_panel_policy')
 
 
 def specification(name):
@@ -169,6 +172,11 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') in (1,2,3,4):
+        configuration=dict(spec['configuration'])
+        configuration.pop('usb_status_panel_policy')
+        spec=dict(spec,revision=4,usb_status_panel=False,configuration=configuration,
+            integration_identity='custom138k-native-m-demo-session-rate-stereo-xy-revision4')
     if prepared.get('profile') == M_DEMO_NAME and prepared.get('revision') in (1, 2, 3):
         configuration = dict(spec['configuration'])
         configuration.pop('xy_axes_policy')
@@ -427,6 +435,12 @@ def _artifact(root, output, metadata, profile):
         original_sdc = installed_sdc
     if spec.get('push_rate_control',False):
         from tools.workstation_push_rate_control import constraints as push_constraints
+        if spec.get('usb_status_panel',False):
+            from tools.workstation_usb_status import verify as verify_status, SOURCES
+            original_sdc=verify_status(original_sdc,metadata.get('usb_status_panel'))
+            if (any(source not in metadata['enabled_inputs'] for source in SOURCES) or
+                    '`define WORKSTATION_USB_STATUS_PANEL' not in (stage/spec['provider']).read_text()):
+                raise ValueError('M USB status compiled source/provider missing')
         selected_push_sdc=push_constraints()
         if not original_sdc.endswith(selected_push_sdc) or original_sdc.count(selected_push_sdc)!=1:
             raise ValueError('Push Session constraint installation order changed')

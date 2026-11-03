@@ -1,9 +1,14 @@
 """Historical physical references must bind the exact current signal inventory."""
 from pathlib import Path
+import json
+import subprocess
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools import workstation_custom_board_implementation as physical
 from tools.workstation_custom_board_implementation import reference_constraints, implementation_script
 from tools.workstation_resource_physical import CHECKERS, adapt, sha, fifo_head_domains, primitive_inventory
 
@@ -17,6 +22,44 @@ CST = b'IO_LOC "clk_50m" V22;\nIO_LOC "ddr_ck" L3,K3;\n'
 
 
 class ReferencePhysical(unittest.TestCase):
+    def test_replication_is_explicit_and_bound_to_unchanged_inputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root/'source'
+            stage = source/'workstation/Prj1'
+            vg = stage/f'impl/gwsynthesis/{physical.BASE}.vg'
+            vg.parent.mkdir(parents=True)
+            vg.write_text(NETLIST)
+            sdc = stage/'constraints/custom_138k.sdc'
+            sdc.parent.mkdir()
+            sdc.write_bytes(b'create_clock -name clk_50m -period 20 [get_ports clk_50m]\n')
+            metadata = source/'integration_inputs.json'
+            metadata.write_text(json.dumps(dict(top_module=physical.TOP,
+                staged_input_sha256={'constraints/custom_138k.sdc':sha(sdc)},remaining_gaps=['hardware'])))
+            reference = root/'reference.cst'
+            reference.write_bytes(CST)
+            audit = dict(identity='audited-parent',netlist_sha256=sha(vg),integration_inputs_sha256=sha(metadata))
+            with patch.object(physical,'audit_synthesis',return_value=audit):
+                for replication in (False,True):
+                    output = root/str(replication)
+                    result = physical.prepare_reference(source,output,'D21104B5',reference,sha(reference),
+                        place_option=2,route_option=1,replicate_resources=replication)
+                    self.assertIs(result['replicate_resources'],replication)
+                    self.assertIn(f'set_option -replicate_resources {int(replication)}\n',(output/'run.tcl').read_text())
+                    self.assertEqual((output/'physical.cst').read_bytes(),CST)
+                    self.assertEqual(sha(output/'physical.sdc'),sha(sdc))
+                    self.assertEqual(sha(output/(physical.BASE+'.vg')),sha(vg))
+                    self.assertFalse(result['deployment_allowed'])
+                    for name,expected in result['input_sha256'].items():
+                        self.assertEqual(sha(output/name),expected)
+
+    def test_replication_cannot_be_silently_ignored_by_other_modes(self):
+        result = subprocess.run([sys.executable,'-m','tools.workstation_custom_board_implementation',
+            '--source','missing','--output','missing','--user-code','D21104B5','--replicate-resources'],
+            cwd=Path(physical.__file__).resolve().parents[1],text=True,capture_output=True)
+        self.assertEqual(result.returncode,2)
+        self.assertIn('--replicate-resources requires --reference-cst',result.stderr)
+
     def test_inline_ram_does_not_hide_following_routed_primitives(self):
         class Design:
             cells = {'before': ('DFFR', {})}

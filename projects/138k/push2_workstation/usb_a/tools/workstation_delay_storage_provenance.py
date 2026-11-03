@@ -391,6 +391,8 @@ def source_bundle(root):
         if sha(fifo) != FIFO_SHA256:
             raise ValueError('Delay FIFO source bytes changed')
     reference = (root / REFERENCE).read_bytes()
+    from tools.workstation_usb_status_provenance import restore_parent as restore_status
+    reference, status_bridge = restore_status(reference, REFERENCE)
     from tools.workstation_pr2_storage_reference import RECORDS, restore_parent as restore_pr2
     if sha(reference) == RECORDS[REFERENCE]['current_sha256']:
         reference, pr2_adaptations[REFERENCE] = restore_pr2(reference, REFERENCE)
@@ -435,6 +437,8 @@ def source_bundle(root):
         accepted_baseline_storage_selection_inherited=False)
     if reference_adaptation is not None:
         evidence['storage_policy_reference_adaptation'] = reference_adaptation
+    if status_bridge is not None:
+        evidence['usb_status_composition'] = status_bridge
     if pr2_adaptations:
         evidence['pr2_storage_reference_adaptations'] = pr2_adaptations
         evidence['FIFO_sha256'] = sha((root / FIFO).read_bytes())

@@ -1,0 +1,409 @@
+{
+  "schema": 1,
+  "scope": "Routed timing closure and selected structural/PLL gates for the pre-panel M revision4 candidate only",
+  "candidate_identity": "custom138k-workstation-m-demo-v1-8f17dee67bb94a49",
+  "profile_revision": 4,
+  "configuration": {
+    "hdmi_mode": "1080p60",
+    "high_speed_allowed": true,
+    "tf_audio_kind": "wav",
+    "implemented_sample_rates_hz": [
+      48000,
+      44100
+    ],
+    "ae350_firmware_policy": "maintained_ae350_v1",
+    "scan_window_policy": "native_admission_v1",
+    "audio_policy": "native_dual_rate_runtime_v1",
+    "reserve_zero_epoch": true,
+    "display_metadata_minor": 1,
+    "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+    "recognition_policy": "disabled_cnn_and_follow_v1",
+    "local_panel_policy": "disabled_local_lcd_touch_v1",
+    "demo_role": "M",
+    "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+    "tf_policy": "disabled_first_m_core_demo_v1",
+    "bluetooth_policy": "retired_for_independent_m_demo_v1",
+    "recording_policy": "disabled_m_demo_v1",
+    "push_rate_control_policy": "push_session_committed_toggle_generation_v1",
+    "xy_trace_policy": "connected_xy_two_snapshot_history_v1",
+    "xy_axes_policy": "ordinary_mid_side_vector_direct_v1"
+  },
+  "user_code": "D21104B4",
+  "routed_timing_closed": true,
+  "global_worst_ns": {
+    "setup": 0.002,
+    "hold": 0.003,
+    "recovery": 2.192,
+    "removal": 0.25
+  },
+  "timing": {
+    "timing_closed": true,
+    "problems": [],
+    "frequencies": {
+      "clk_50m": {
+        "required_mhz": 50.0,
+        "actual_mhz": 64.285
+      },
+      "ulpi_60m": {
+        "required_mhz": 60.0,
+        "actual_mhz": 95.587
+      },
+      "dac_ref12m288": {
+        "required_mhz": 12.288,
+        "actual_mhz": 128.801
+      },
+      "dac_ref16m9344": {
+        "required_mhz": 16.934,
+        "actual_mhz": 140.282
+      },
+      "audio_76m8": {
+        "required_mhz": 76.8,
+        "actual_mhz": 76.813
+      },
+      "usb_48m": {
+        "required_mhz": 48.0,
+        "actual_mhz": 57.931
+      },
+      "ddr_mem400": {
+        "required_mhz": 400.0,
+        "actual_mhz": 2598.774
+      },
+      "ddr_ui100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 100.19
+      },
+      "video_pixel148": {
+        "required_mhz": 148.5,
+        "actual_mhz": 171.21
+      },
+      "cpu_ram50": {
+        "required_mhz": 50.0,
+        "actual_mhz": 98.764
+      },
+      "cpu_core100": {
+        "required_mhz": 100.0,
+        "actual_mhz": 1530.455
+      },
+      "selected48": {
+        "required_mhz": 12.288,
+        "actual_mhz": 144.187
+      },
+      "selected44": {
+        "required_mhz": 16.934,
+        "actual_mhz": 144.187
+      }
+    },
+    "global_worst_ns": {
+      "setup": 0.002,
+      "hold": 0.003,
+      "recovery": 2.192,
+      "removal": 0.25
+    },
+    "pulse_width_worst_ns": 0.76,
+    "pulse_width_violations": [],
+    "checks": {
+      "clk_50m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ulpi_60m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref12m288": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "dac_ref16m9344": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "audio_76m8": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "usb_48m": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_mem400": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "ddr_ui100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_ref49": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_serial742": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "video_pixel148": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_ram50": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_core100": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "cpu_rtc_bound": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected48": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      },
+      "selected44": {
+        "setup": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        },
+        "hold": {
+          "tns_ns": 0.0,
+          "endpoints": 0
+        }
+      }
+    },
+    "global_reports": {
+      "setup": true,
+      "hold": true,
+      "recovery": true,
+      "removal": true
+    },
+    "reset_reports": {
+      "recovery": true,
+      "removal": true
+    },
+    "negative_paths": [],
+    "report_sha256": "d34afdb314dafd21d2f7aab171fc5da1c705ac9ecf1c4ef3d0e408f89af30c99",
+    "hardware_tested": false
+  },
+  "bitstream_sha256": "e8266501012a695b572a8890b4463ee53850d496eee008fd05648f9934ad0080",
+  "implementation_options": {
+    "place_option": 2,
+    "route_option": 1,
+    "replicate_resources": false
+  },
+  "native_gate": {
+    "passed": true,
+    "tests_run": 62,
+    "skips": [
+      {
+        "test": "test_tf_ack_must_wait_for_payload_capture (timing_routed_native.ActualControlBoundaries.test_tf_ack_must_wait_for_payload_capture)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_capture_needs_registered_settling (timing_routed_native.ActualControlBoundaries.test_tf_capture_needs_registered_settling)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_compare_must_cover_same_desired_bits (timing_routed_native.ActualControlBoundaries.test_tf_compare_must_cover_same_desired_bits)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_payload_bit_swap_rejected (timing_routed_native.ActualControlBoundaries.test_tf_payload_bit_swap_rejected)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_request_meta_extra_consumer_rejected (timing_routed_native.ActualControlBoundaries.test_tf_request_meta_extra_consumer_rejected)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_request_must_toggle_on_capture (timing_routed_native.ActualControlBoundaries.test_tf_request_must_toggle_on_capture)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_request_second_cannot_bypass_first (timing_routed_native.ActualControlBoundaries.test_tf_request_second_cannot_bypass_first)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_tf_source_busy_gate_rejected (timing_routed_native.ActualControlBoundaries.test_tf_source_busy_gate_rejected)",
+        "reason": "W explicitly retires the TF owner"
+      },
+      {
+        "test": "test_headless_display_cannot_return_in_cells_hierarchy_or_sdc (timing_routed_native.ActualNativeProtocol.test_headless_display_cannot_return_in_cells_hierarchy_or_sdc)",
+        "reason": "explicit W-audio retirement only"
+      },
+      {
+        "test": "test_m22_new_hmi_mailbox_negative_controls (timing_routed_native.ActualNativeProtocol.test_m22_new_hmi_mailbox_negative_controls)",
+        "reason": "M22 actual new HMI mailbox only"
+      },
+      {
+        "test": "test_actual_entry_rejects_missing_or_disagreeing_stereo_qualification (timing_routed_native.ActualStereoXYPolicy.test_actual_entry_rejects_missing_or_disagreeing_stereo_qualification)",
+        "reason": "sealed source candidate required for provider qualification"
+      },
+      {
+        "test": "test_apb_ce_toggle_cannot_bypass_payload_capture (timing_routed_native.ActualTimingBoundaries.test_apb_ce_toggle_cannot_bypass_payload_capture)",
+        "reason": "reviewed CE-factored request mapping not present"
+      },
+      {
+        "test": "test_apb_ce_toggle_feedback_must_invert_its_own_q (timing_routed_native.ActualTimingBoundaries.test_apb_ce_toggle_feedback_must_invert_its_own_q)",
+        "reason": "reviewed CE-factored request mapping not present"
+      },
+      {
+        "test": "test_apb_routed_inverse_lut_truth_table_is_exact (timing_routed_native.ActualTimingBoundaries.test_apb_routed_inverse_lut_truth_table_is_exact)",
+        "reason": "reviewed routed LUT1 inverse mapping not present"
+      },
+      {
+        "test": "test_tf_quiesce_cannot_bypass_registered_source (timing_routed_native.ActualTimingBoundaries.test_tf_quiesce_cannot_bypass_registered_source)",
+        "reason": "W retires TF"
+      },
+      {
+        "test": "test_tf_quiesce_first_stage_cannot_reach_functional_state (timing_routed_native.ActualTimingBoundaries.test_tf_quiesce_first_stage_cannot_reach_functional_state)",
+        "reason": "W retires TF"
+      }
+    ]
+  },
+  "boundary_gate": {
+    "passed": true,
+    "tests_run": 7,
+    "skips": []
+  },
+  "pll_gate": {
+    "passed": true,
+    "scope": "Maintained native PLL/startup and selected DEMO held-mailbox subgates; not full STA/CDC/electrical or board acceptance",
+    "source_proofs_reexecuted": true
+  },
+  "new_usb_panel_included": false,
+  "clocks_or_exceptions_relaxed": false,
+  "ddr_minimum_delay_ns": 3.5,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "full_physical_acceptance": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "source_and_output_sha256": {
+    "custom_138k_integration.vg": "1e0189442fcaee6d11b2b5063cea5659af9a8a2ef036943261b73eead202a935",
+    "impl/pnr/custom_138k_integration.fs": "e8266501012a695b572a8890b4463ee53850d496eee008fd05648f9934ad0080",
+    "impl/pnr/custom_138k_integration.pin.html": "1864eab8e6fac0fb2dce14f8f71fba53aa1e852241416cb21e469312e1dade7f",
+    "impl/pnr/custom_138k_integration.power.html": "56e2045d80e0a980e432b3e92e749a09b963f69c64035340d2b65a2f6ab622ea",
+    "impl/pnr/custom_138k_integration.rpt.html": "d48ed8c6e6ba4e0736447c225ad2848352a41e81ad7740237551e20966200c57",
+    "impl/pnr/custom_138k_integration.rpt.txt": "30a756e0cb5cb55932f8303c6d5370c16fc87c4221e27947b28aca071979f017",
+    "impl/pnr/custom_138k_integration.sdf": "6cc3be8dcfe93b5973c4841de4131ef597658bf5978381c652ad06c3e36f35ae",
+    "impl/pnr/custom_138k_integration.tr": "aa84e3ef18c9a267271a8ead8086067efef9f175464ba0485a027fd806774465",
+    "impl/pnr/custom_138k_integration.tr.html": "5db0aa9a5903cd2fdc5bc64fa3ee1d280c87671acd14ec1545a200804d807341",
+    "impl/pnr/custom_138k_integration.vo": "ce405e57dcd7f94d15f2f4e178cd26dd085211f795be3c54e363983668ae332c",
+    "impl/pnr/custom_138k_integration_tr_cata.html": "251590b03ee156c1971807b63472bc374d66d572a0cc64e377ac84ff3954292c",
+    "impl/pnr/custom_138k_integration_tr_content.html": "d34afdb314dafd21d2f7aab171fc5da1c705ac9ecf1c4ef3d0e408f89af30c99",
+    "parent_integration_inputs.json": "37bc642cc20e7b6ddc948973100d5f4d492cd21d2749a83294e094f280db427a",
+    "parent_synthesis_audit.json": "35bf8e15d83b1dff4782448638196920be89ae769fe9e922973c96dddb286b77",
+    "physical.cst": "342c7f247bf778ade9072f05d34404c8c98e8c4f79de8cf0e851d81a4cede4f0",
+    "physical.sdc": "e6dfc0170d082e7341cf675ec0141740011be0e3701c5f0c20c86e06c7dd3784",
+    "physical_inputs.json": "1691f3f43136aaf0e83ab3f15d9a9837a8305e9aee2323f77f6bd334b12d6ce9",
+    "pnr_console.log": "c0aa4e4ca4edce6f7f669031dbb11b15e7abb023d783d7cf7c5646a8be4077ef",
+    "pnr_run.json": "7813918921ee58777a29912c59b5bfc2a5cb6b837475f3fbf3e6ba188d91ebaa",
+    "reference.cst": "342c7f247bf778ade9072f05d34404c8c98e8c4f79de8cf0e851d81a4cede4f0",
+    "run.tcl": "03bad82a16aabe72f44bed0853bdfd3f71b4f9630e0c5fd6f1c6addc96115595"
+  },
+  "evidence_sha256": {
+    "m26_physical_T4_measurement.json": "c9906f2767fd950d048de99243b5f7f3ed80e58deddd6429692c7ea52d95dfdd",
+    "m26_physical_T4_native_summary.json": "5ec5f2282ee4d5e9883498015951f78ada711726a0c575f264716033c38a37d1",
+    "m26_physical_T4_native_mutants.json": "320d3913b5071f5e0f4b400aca4021eaa78d838ce0553cb65bade943631760e8",
+    "m26_physical_T4_boundary_summary.json": "3058358fa1a322723355a7b9222f09b917427507700013f1d9c36905707d54da",
+    "m26_physical_T4_boundary_mutants.json": "8a2105ac61f4e8496eea2a6a0718bee849eb19bf0565377f5e1d56693d47733e",
+    "pll_T4_audit.json": "d90081a39c3bae369715fb26ab15780785ced5d0129c9a2414abceb796fe0262",
+    "m26_physical_T4_pll_view_provenance.json": "b2756ced4543e0ef15a2441494ee89f60f783e469204bd2f0c934f193eca5055",
+    "M26_TIMING_20261104_control_region_recipe.json": "de5367791bfda7bf0f1732d88ce42bc5cf3d4f14b425816847e42c30e392784d"
+  },
+  "rollback": "Original rc1 remains unchanged. This is a separate D21104B4 implementation experiment, never programmed to a board. New panel inputs must receive new physical evidence."
+}

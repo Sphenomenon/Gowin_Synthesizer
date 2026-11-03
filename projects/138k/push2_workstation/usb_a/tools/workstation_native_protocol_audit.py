@@ -76,10 +76,13 @@ def audit_native_protocol(n, *, profile, mapping='synthesis', connected_xy=False
     hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()
     require(not connected_xy or profile == 'm-demo-core', 'connected XY requires explicit M core')
     stereo_qualified = ((profile_revision == 4 and profile_identity in (None, 'custom138k-workstation-m-demo-v1')) or
+                        (profile_revision == 5 and profile_identity == 'custom138k-workstation-m-demo-v1' and
+                         any(p.startswith('u_usb_display_status/') for p in n.cells) and
+                         any(p.startswith('u_video/u_usb_status_panel/') for p in n.cells)) or
                         (profile_revision == 1 and profile_identity == 'custom138k-workstation-ble-demo-v1'))
     require(not stereo_xy or (profile == 'm-demo-core' and connected_xy and stereo_qualified and
             xy_axes_policy == 'ordinary_mid_side_vector_direct_v1'),
-            'stereo XY requires explicit M core revision4 or BLE revision1 axes policy')
+            'stereo XY requires explicit M core revision4/5 or BLE revision1 axes policy')
     observation_extra = (203, 204) if stereo_xy else (203,)
     # PANIC is read at the 50MHz completed-frame receipt, then uses the
     # existing trust bit/drop counter. No observation-mailbox bits are added.

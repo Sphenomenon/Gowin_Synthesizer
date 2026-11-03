@@ -231,12 +231,18 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
     require(not stereo_xy or (role == 'M' and
             (sealed_profile.get('profile'), sealed_profile.get('revision')) in (
                 ('custom138k-workstation-m-demo-v1', 4),
+                ('custom138k-workstation-m-demo-v1', 5),
                 ('custom138k-workstation-ble-demo-v1', 1)) and
             sealed_profile.get('configuration', {}).get('demo_role') == 'M'),
             'explicit stereo profile requires sealed M role')
+    if sealed_profile.get('profile') == 'custom138k-workstation-m-demo-v1' and sealed_profile.get('revision') == 5:
+        require('`define WORKSTATION_USB_STATUS_PANEL' in provider.read_text().splitlines() and
+                sealed_profile.get('configuration', {}).get('usb_status_panel_policy') ==
+                    'usb_owner_link_and_render_voice_snapshot_v1',
+                'M revision5 requires explicit USB status composition')
     result = audit_native_protocol(n, profile=profile, mapping=mapping, connected_xy=connected_xy,
         stereo_xy=stereo_xy, profile_revision=sealed_profile.get('revision'), xy_axes_policy=axes_policy,
-        **(dict(profile_identity=sealed_profile['profile']) if ble_demo else {}))
+        **(dict(profile_identity=sealed_profile['profile']) if stereo_xy else {}))
     result['stereo_axes_inventory_reviewed'] = stereo_xy
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
