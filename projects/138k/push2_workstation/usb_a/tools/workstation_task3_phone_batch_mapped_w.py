@@ -152,10 +152,24 @@ def audit(n, *, stage):
     clear = n.pin(regs['state'][0], 'CLEAR')
     checked = inventory | {p for p in g.regs if n.scopes[p] == W}
     preset = {regs['allow_context'][0], *(g.register(B,'intent_rate',bit) for bit in (7,8,9,12))}
+    def check_ff(p, kind, pin):
+        cell = n.cells[p]
+        expected_init = "1'b1" if kind == 'DFFPE' else "1'b0"
+        require(cell['kind'] == kind and
+                set(cell['ports']) == {'Q','D','CLK','CE',pin} and
+                set(cell['parameters']) <= {'INIT'} and
+                cell['parameters'].get('INIT', "1'b0") == expected_init,
+                'actual register primitive/INIT/port inventory changed: ' + p)
+        require(n.pin(p,'Q') not in g.high | g.low and
+                g.drivers[n.pin(p,'Q')] == [(p,'Q')],
+                'actual register Q constant or ambiguous: ' + p)
+        require(n.pin(p,'CLK') == n.canonical('','clk_50m') and
+                n.pin(p,pin) == clear, 'actual executor/window clock/reset changed: ' + p)
     for p in checked:
         kind, pin = ('DFFPE','PRESET') if p in preset else ('DFFCE','CLEAR')
-        require(n.cells[p]['kind'] == kind and n.pin(p, 'CLK') == n.canonical('', 'clk_50m') and
-                n.pin(p, pin) == clear, 'actual executor/window clock/reset changed: ' + p)
+        check_ff(p,kind,pin)
+    require(len({n.pin(p,'Q') for p in checked}) == len(checked),
+            'actual batch/window state Qs aliased')
     proofs = [g.equivalent('common asynchronous clear is inverse of positive root',
                            [clear, root_q], lambda v: v[0] == 1-v[1], cuts={root_q})]
     q = lambda stem, bit=0: n.pin(regs[stem][bit], 'Q')
@@ -268,8 +282,8 @@ def audit(n, *, stage):
         cuts={old_flight,timer,flush,gate}))
     tx = g.group(E,'tx_payload_o',256)
     for bit,p in enumerate(tx):
-        require(n.cells[p]['kind']=='DFFCE' and n.pin(p,'CLK')==n.canonical('','clk_50m') and
-                n.pin(p,'CLEAR')==clear and n.pin(p,'Q')==n.canonical('',f'task3_pair_tx_payload[{bit}]'),
+        check_ff(p,'DFFCE','CLEAR')
+        require(n.pin(p,'Q')==n.canonical('',f'task3_pair_tx_payload[{bit}]'),
                 'actual transport payload register binding changed: ' + p)
     sources = {n.pin(p,'Q') for p in payload}
     transport = [_local_transport_influence(n,g,tx[bit],sources) for bit in range(238)]
@@ -277,6 +291,7 @@ def audit(n, *, stage):
             'request payload bit transport permutation')
     return dict(policy=POLICY, **source, actual_executor=B, actual_window=W,
         actual_batch_state_bits=len(inventory), checked_clock_reset_registers=len(checked),
+        checked_transport_registers=len(tx), register_init_and_port_inventory_verified=True,
         root_q=root_q, root_startup_proven_here=False,
         request_payload_bits=238, request_conditional_bdd_checks=bdd_checks+1,
         declared_request_bus_width=256, high_padding_zero_proven=False,

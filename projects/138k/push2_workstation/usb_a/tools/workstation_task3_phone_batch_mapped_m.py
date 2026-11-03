@@ -351,9 +351,13 @@ def audit(n, *, stage):
             n.pin(acknowledge, 'D') == q(req_sync[2]) and
             n.pin(acknowledge, 'CE') == common(response, 'CE'),
             'mailbox request/acknowledge toggle update changed')
-    proofs.append(prove(g, 'request toggle changes exactly with held command acceptance',
+    # The actual held-word CE is also the mapped toggle XOR input. Treat that
+    # exact shared net as arbitrary: the local identity holds for either CE
+    # value and does not require expanding upstream command arbitration.
+    proofs.append(g.equivalent('request toggle changes exactly with held command acceptance',
                         [n.pin(request_toggle, 'D'), q(request_toggle), common(held, 'CE')],
-                        lambda b, v: v[0] == b.different(v[1], v[2])))
+                        lambda v: v[0] == (v[1] ^ v[2]),
+                        cuts={q(request_toggle), common(held, 'CE')}))
     proofs.append(prove(g, 'APB response capture waits for matching acknowledge',
                         [common(returned, 'CE'), q(mailbox_state[0]), q(mailbox_state[1]),
                          q(ack_sync[2]), q(g.register(MAILBOX, 'request_toggle'))],
