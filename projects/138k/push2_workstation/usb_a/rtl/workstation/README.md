@@ -101,6 +101,12 @@ PNR/all 必须显式给新的 `--user-code`，不再默认套用历史编号。�
 
 ## 显式新板装配
 
+原生资源候选将 BLE 的 16,384 帧 PCM 存储放在 DDR 的 `PRJ1_DDR_BLE_PCM_*` 分区，容量仍约 0.341 秒，不代表长录音已经集成。`../bluetooth/workstation_ble_pcm_store.sv` 拥有采集命令 FIFO、下载预取和 8 KiB 缓存；`../memory/workstation_ddr_pair.sv` 在既有 music DDR owner 后公平合并 CNN 与 BLE，请求背压期间固定选择，读响应返回前保持归属。采样不等待 DDR，采集队列满会使录音失败；取消下载先排空在途预取，不能把旧缓存作为下一请求结果。
+
+此配置显式选择 48 KiB USB CPU RAM（三个 16 KiB bank）、单条 BLE 重放缓存且无过期计时、逐字节 GATT 回复槽复制、启动 BIST 旁路和模型 DDR 回读 CRC 旁路。模型输入 CRC、UART 恢复、DDR 校准、协议会话及最近请求冲突检查保留。静态 cue ROM 的合法性检查移到 prepare；只用于故障非零判断的 PC CDC 丢失计数改为 sticky。独立组件的默认校验和容量保持原配置，accepted/full85 的选择策略不变。
+
+缺少 PCB 原始接线网表时，可明确选择 `build.py --prepare-custom-board --logic-only --custom-board-output <新目录>` 准备全部原生逻辑并本地综合。它不选择 CST，不检查板级引脚或电气，`integration_inputs.json` 明确记录此范围；综合后的 `.vg` 不能替代 PCB 网表。源码覆盖逐项记录覆盖前后哈希；`tools.workstation_custom_board_audit` 对该候选核对输入闭包、功能层次、CPU RAM 全部初始化字、存储结构和适用的时钟／CDC／复位门禁。物理 BSRAM、路由后时序与实物行为需要后续独立验证。
+
 原生工程只启用一个 `constraints/custom_138k.cst`，由位置、音频、蓝牙、HDMI 和原生外设五份可审查约束合并；Gowin 打开工程时会在多份 CST 中选择一份，不能依赖多文件同时生效。`display.cst` 保留参考核心板的 LVCMOS33D 差分标准，与同 Bank 的 3.3 V HPD／CEC 一致。`peripherals.json` 锁定远端已核对的音频排线、振荡器和 LCD 依据，来源漂移必须失败，不修改独立 pinout-only 配置的历史接线假设。
 
 `build.py --prepare-custom-board` 是独立的新板源码组合入口，仅准备工程并允许离线综合，不改变 accepted、timing85 或原 resource-timing 配置。它从锁定的资源时序父配置重建依赖，逐项禁用旧 USB FS CPU／Host、旧装配顶层、旧 DVI 输出 provider 和旧板约束，改选原生 USB2 输入及新板位置规划。禁用的历史文件保留原字节，替换关系与完整编译闭包写入 `integration_inputs.json`。

@@ -164,7 +164,7 @@ class Bluetooth(unittest.TestCase):
             reference_frames=reference_frames+1;
         end
     end
-    workstation_bluetooth #(.CLK_HZ(CLK_HZ),.CAPACITY_FRAMES(64),.DISABLE_MS(1),.STARTUP_MS(2)) dut (
+    workstation_bluetooth #(.CLK_HZ(CLK_HZ),.CAPACITY_FRAMES(64),.STORAGE_DDR(0),.DISABLE_MS(1),.STARTUP_MS(2)) dut (
         .clk_i(clk),.rst_ni(resetn && enable),.module_uart_tx_i(uart_rx),
         .pcm_valid_i(pcm_valid),.pcm_pair_i(pcm_pair),.pcm_sequence_i(pcm_sequence),.source_allowed_i(1'b1),
         .module_uart_rx_o(uart_tx),.module_bt_dis_no(bt_enable),.module_wl_dis_no(),.outputs_active_o(outputs_active),

@@ -61,9 +61,7 @@ module panel_display_endpoint #(
     reg [4:0] header_index;
     reg [9:0] payload_index;
     reg [7:0] pixel_low;
-    reg [15:0] staging_pixels [0:247];
-    reg [15:0] tile_pixels [0:255];
-    reg [15:0] copy_data;
+    (* syn_ramstyle="block_ram" *) reg [15:0] pixel_memory [0:511];
     reg [7:0] copy_index;
     reg [8:0] copy_pixels;
     reg tile_busy,tile_started;
@@ -123,8 +121,15 @@ module panel_display_endpoint #(
         end
     endfunction
 
-    // Dedicated synchronous read port. Contents stay fixed while tile_busy.
-    always @(posedge clk) tile_read_data <= tile_pixels[tile_read_addr];
+    wire staging_write=!reset && !link_reset && state==PAYLOAD && accepting && payload_index>=16 && payload_index[0];
+    wire committed_write=!reset && !link_reset && state==COPY_WRITE;
+    wire [7:0] staging_address=payload_index[8:1]-8'd8;
+    wire [8:0] pixel_write_address=committed_write ? {1'b1,copy_index} : {1'b0,staging_address};
+    always @(posedge clk)begin
+        tile_read_data<=pixel_memory[state==COPY_READ ? {1'b0,copy_index} : {1'b1,tile_read_addr}];
+        if(committed_write || staging_write)
+            pixel_memory[pixel_write_address]<=committed_write ? tile_read_data : {rx_data,pixel_low};
+    end
 
     always @* begin
         case(tx_index)
@@ -212,7 +217,7 @@ module panel_display_endpoint #(
     always @(posedge clk) begin
         if(reset) begin
             state<=SEEK_P;header<=0;metadata<=0;header_index<=0;payload_index<=0;
-            pixel_low<=0;copy_data<=0;copy_index<=0;copy_pixels<=0;
+            pixel_low<=0;copy_index<=0;copy_pixels<=0;
             remote_enable<=0;manual_settings<=0;redraw_required<=1;protocol_errors<=0;
             tile_valid<=0;tile_x<=0;tile_y<=0;tile_width<=0;tile_height<=0;
             tile_busy<=0;tile_started<=0;session_valid<=0;session<=0;
@@ -276,7 +281,6 @@ module panel_display_endpoint #(
                     request_crc<=crc_byte(request_crc,rx_data);
                     if(payload_index<16) metadata[payload_index*8+:8]<=rx_data;
                     else if(!payload_index[0]) pixel_low<=rx_data;
-                    else staging_pixels[(payload_index-16)>>1]<={rx_data,pixel_low};
                     if(payload_index+1'b1==request_length) state<=VALIDATE;
                     else payload_index<=payload_index+1'b1;
                 end
@@ -342,9 +346,8 @@ module panel_display_endpoint #(
                         default:reject(8);
                     endcase
                 end
-                COPY_READ:begin copy_data<=staging_pixels[copy_index];state<=COPY_WRITE;end
+                COPY_READ:state<=COPY_WRITE;
                 COPY_WRITE:begin
-                    tile_pixels[copy_index]<=copy_data;
                     if(copy_index+1'b1==copy_pixels) begin
                         if(manual_settings||!session_valid||session_expired||(settings_toggle&&remote_enable)) begin
                             tile_valid<=0;tile_busy<=0;start_reply(8'ha0,1,current_page,current_frame,1);

@@ -6,7 +6,8 @@
 module basic_pitch_uart_model_loader #(
     parameter integer WORDS = 52239,
     parameter integer CLK_HZ = 50_000_000,
-    parameter integer BAUD = 115200
+    parameter integer BAUD = 115200,
+    parameter bit VERIFY_DDR = 1'b1
 ) (
     input  logic        clk_i,
     input  logic        rst_ni,
@@ -56,8 +57,8 @@ module basic_pitch_uart_model_loader #(
     assign done_o = state == DONE;
     assign status_o = state;
     assign debug_expected_crc_o = expected_crc;
-    assign debug_actual_crc_o = state==VERIFY_CHECK || state==DONE ||
-                                (state==ERROR && debug_error_stage_o==2'd3) ?
+    assign debug_actual_crc_o = VERIFY_DDR && (state==VERIFY_CHECK || state==DONE ||
+                                (state==ERROR && debug_error_stage_o==2'd3)) ?
                                 ~verify_crc : ~rx_crc;
     assign mem_req_o = state == WRITE || state == VERIFY_REQ;
     assign mem_write_o = state == WRITE;
@@ -105,7 +106,7 @@ module basic_pitch_uart_model_loader #(
                 CHECK: if ((~rx_crc) == expected_crc) begin
                     word_index <= 0;
                     verify_crc <= 32'hffff_ffff;
-                    state <= VERIFY_REQ;
+                    state <= VERIFY_DDR ? VERIFY_REQ : DONE;
                 end else begin state <= ERROR;debug_error_stage_o<=2'd2;end
                 VERIFY_REQ: if (mem_ready_i) state <= VERIFY_WAIT;
                 VERIFY_WAIT: if (mem_rsp_valid_i) begin

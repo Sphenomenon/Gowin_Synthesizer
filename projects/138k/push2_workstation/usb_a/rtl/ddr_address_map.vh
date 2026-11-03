@@ -142,4 +142,10 @@
 `define PRJ1_DDR_RECORDING_BLE_APP_BASE  29'h0c14_4000
 `define PRJ1_DDR_RECORDING_BLE_APP_LAST  29'h0c14_7fff
 
+// Legacy native BLE store, distinct from CNN history and owner8 recordings.
+// The first-party raw-store profiles retain their existing BLE allocation.
+`define PRJ1_DDR_BLE_PCM_BYTE_BASE      32'h3052_0000
+`define PRJ1_DDR_BLE_PCM_BYTE_LAST      32'h3052_ffff
+`define PRJ1_DDR_BLE_PCM_APP_BASE       29'h0c14_8000
+
 `endif

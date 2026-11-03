@@ -1,0 +1,3 @@
+`ifndef MIDI_PLUCK_PROFILE_VH
+`define MIDI_PLUCK_PROFILE_VH
+`endif

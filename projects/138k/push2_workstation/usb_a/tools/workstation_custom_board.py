@@ -14,14 +14,20 @@ from tools.workstation_usb2_soc import SOC_SOURCE_PATHS
 from tools.workstation_custom_clocks import clock_bundle, shared_cdc_bundle
 from tools.workstation_custom_usb2_cdc import cdc_bundle
 from tools.workstation_custom_input_cdc import input_cdc_bundle
-from tools.workstation_bluetooth import prepare as prepare_bluetooth, SDC as BLUETOOTH_SDC
+from tools.workstation_bluetooth import prepare as prepare_bluetooth, stage_business, SDC as BLUETOOTH_SDC
 from tools.workstation_board_peripherals import prepare as prepare_peripherals, reviewed_profile, LCD_SDC, local_panel_bundle
 from tools.workstation_custom_timing import apply as adapt_timing, constraints as timing_constraints
 from tools.workstation_custom_flash import prepare as prepare_model_flash, SDC as MODEL_FLASH_SDC
 from tools.workstation_video_mode import apply as apply_video_mode, PROFILES_720
+from tools.workstation_ble_storage_cdc import constraints as storage_constraints
 
 
-IDENTITY = 'custom138k-native-integration-20261027-a26'
+IDENTITY = 'custom138k-native-integration-20261103-pr2-merge'
+NATIVE_OVERLAYS = {
+    'src/memory/ddr_address_map.vh': 'rtl/ddr_address_map.vh',
+    'rtl/audio/scope_vec/scope_control_player.sv': 'rtl/audio/scope_vec/scope_control_player.sv',
+    'rtl/music/music_async_fifo.sv': 'rtl/music/music_async_fifo.sv',
+}
 FPC_AUDIO_CST = 'boards/custom_138k/audio.cst'
 DISPLAY_CST = 'boards/custom_138k/display.cst'
 DDR_CST = 'boards/custom_138k/ddr.cst'
@@ -44,6 +50,10 @@ NATIVE_SOURCES = (*SOC_SOURCE_PATHS, *NATIVE_INPUT_SOURCES,
                   'rtl/bluetooth/workstation_bluetooth.sv',
                   'rtl/bluetooth/gw138k_ble_status_uart.v',
                   'rtl/memory/workstation_ddr_bist.v',
+                  'rtl/memory/workstation_ddr_pair.sv',
+                  'rtl/ddr_address_map_guard.v',
+                  'rtl/control/workstation_stream_cdc.sv',
+                  'rtl/bluetooth/workstation_ble_pcm_store.sv',
                   'rtl/display_data/workstation_custom_dvi.sv')
 # Only the explicit workstation profile migrates this composition boundary.
 # The included implementation and provenance remain in the staged closure;
@@ -53,6 +63,8 @@ PROFILE_SOURCES = ('rtl/workstation/workstation_profile_hdmi.sv',
 PROFILE_DEPENDENCIES = ('rtl/workstation/workstation_hdmi_display.sv',
                         'rtl/workstation/workstation_hdmi_display.provenance.json')
 REPLACED_INPUTS = {
+    'src/memory/ddr_address_map_guard.v': 'rtl/ddr_address_map_guard.v',
+    'src/migration/gw138k_stream_cdc.sv': 'rtl/control/workstation_stream_cdc.sv',
     'src/memory/ddr3_bist.v': 'rtl/memory/workstation_ddr_bist.v',
     'src/usb_a/VexRiscv.v': 'vendor/usb_host_fs_8fc3/src/VexRiscv.v',
     'src/usb_a/simpleuart.v': 'vendor/usb_host_fs_8fc3/src/simpleuart.v',
@@ -90,10 +102,14 @@ def source_snapshot(root, extra_inputs=()):
 
 
 def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed=True, hdmi_mode='1080p60',
-            *, workstation_profile=None):
+            *, workstation_profile=None, logic_only=False):
     root, output = Path(root).resolve(), Path(output).resolve()
     if output.exists():
         raise FileExistsError('custom-board output already exists: ' + str(output))
+    if logic_only and workstation_profile is not None:
+        raise ValueError('logic-only preparation cannot select a board/runtime profile')
+    from tools.workstation_static_checks import validate_cues
+    validate_cues(root / 'rtl/audio/scope_vec/data/scene_controls.mem', 69)
     if workstation_profile is not None:
         from tools.workstation_profile import load as load_profile
         profile = load_profile(root, workstation_profile, allow_high_speed=allow_high_speed, hdmi_mode=hdmi_mode)
@@ -205,7 +221,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             from tools.workstation_classic_runtime import firmware_inputs
             extra_inputs += firmware_inputs(root,headless_worker=audio_only)
     snapshot = source_snapshot(root, extra_inputs)
-    pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
+    if logic_only:
+        output.mkdir(parents=True)
+        pinout_output = None
+        pinout = dict(device='GW5AST-LV138PG484AC2/I1', electrical_check=dict(status='not_checked'))
+    else:
+        pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
     sys.path.insert(0, str(root / 'tools'))
     builder = importlib.import_module('build_resource_rework')
     if builder.ROOT.resolve() != root:
@@ -278,20 +299,34 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('native-board copied source identity changed: ' + relative)
         if relative in native_sources:
             ElementTree.SubElement(files, 'File', path=target, type='file.verilog', enable='1')
+    overlays = {}
+    for destination, source in NATIVE_OVERLAYS.items():
+        # The runtime profile has its own exact owner and map installation.
+        if runtime:
+            continue
+        before = sha(stage / destination)
+        shutil.copyfile(root / source, stage / destination)
+        overlays[destination] = dict(source=source, before=before, after=sha(stage / destination))
     recording_address_map=None
     if recording_selected:
         from tools.workstation_recording_policy import install_address_map
         recording_address_map=install_address_map(root,stage)
     support = {}
     for relative in LOCKED_INPUT_SOURCES:
+        if relative in REPLACED_INPUTS:
+            continue
         if sum(entry.get('path') == relative and entry.get('enable') == '1' for entry in files) != 1:
             raise ValueError('native-board shared support selection drift: ' + relative)
         support[relative] = sha(stage / relative)
     firmware = stage_usb2_cpu_firmware(root, stage / 'native_usb_firmware', root / 'firmware.c', riscv_prefix,
-                                       workstation=True, allow_high_speed=allow_high_speed,worker_demo=demo_role=='W')
+                                       workstation=True, allow_high_speed=allow_high_speed,worker_demo=demo_role=='W',
+                                       ram_bytes=65536 if runtime else 49152)
     shutil.copyfile(stage / 'native_usb_firmware/usb2_cpu.hex', stage / 'usb2_cpu.hex')
-    bluetooth = prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout,
-                                  relative_rom_paths=runtime)
+    if not runtime:
+        for bank in range(3):
+            shutil.copyfile(stage / f'native_usb_firmware/usb2_cpu_bank{bank}.hex', stage / f'usb2_cpu_bank{bank}.hex')
+    bluetooth = (stage_business(root, stage) if logic_only else
+        prepare_bluetooth(root, netlist_directory, stage, pinout_output, pinout, relative_rom_paths=runtime))
     if runtime:
         bluetooth['capture_source'] = 'runtime_physical_frame_observation_48k_only'
     ble_raw_adaptation=None
@@ -302,10 +337,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     elif ble_raw_selected:
         from tools.workstation_bluetooth_ddr import prepare as prepare_ble_raw
         ble_raw_adaptation=prepare_ble_raw(root,stage,enabled=True)
-    peripherals = prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled)
+    peripherals = (reviewed_profile(root) if logic_only else
+        prepare_peripherals(root, pinout_output, pinout, stage, local_panel_enabled=local_panel_enabled))
     if not local_panel_enabled:
         peripherals['local_panel_enabled'] = False
-    model_flash = prepare_model_flash(root, pinout_output, pinout, stage)
+    model_flash = (dict(read_only=True,use_flash_weights=True,board_pads_checked=False) if logic_only else
+        prepare_model_flash(root, pinout_output, pinout, stage))
     audio_source_selection=None
     if audio_only:
         from tools.workstation_worker_audio_only import select_sources,retired_source
@@ -314,15 +351,17 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         ElementTree.SubElement(files, 'File', path=relative, type='file.verilog', enable='1')
     if audio_only:
         audio_source_selection=select_sources(stage,files)
-    shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
-    shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
-    shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
-    shutil.copyfile(root / DISPLAY_CST, stage / 'constraints/custom_138k.display.cst')
-    shutil.copyfile(root / DDR_CST, stage / 'constraints/custom_138k.ddr.cst')
-    # Gowin selects a single active CST when opening a project. Keep the
-    # reviewed components as evidence, but select only their complete union.
-    combined_cst = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
-                           for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
+    combined_cst = ''
+    if not logic_only:
+        shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
+        shutil.copyfile(root / FPC_AUDIO_CST, stage / 'constraints/custom_138k.audio.cst')
+        shutil.copyfile(root / 'boards/custom_138k/bluetooth.cst', stage / 'constraints/custom_138k.bluetooth.cst')
+        shutil.copyfile(root / DISPLAY_CST, stage / 'constraints/custom_138k.display.cst')
+        shutil.copyfile(root / DDR_CST, stage / 'constraints/custom_138k.ddr.cst')
+        # Gowin selects a single active CST when opening a project. Keep the
+        # reviewed components as evidence, but select only their complete union.
+        combined_cst = ''.join((stage / ('constraints/custom_138k.' + part + '.cst')).read_text() + '\n'
+                               for part in ('locations', 'audio', 'bluetooth', 'display', 'peripherals', 'model_flash', 'ddr'))
     shared_crossings = shared_cdc_bundle(stage)
     runtime_constraints = None
     if runtime:
@@ -332,7 +371,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         combined_cst += runtime_constraints['extra_cst']
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True, recording_authority=ble_raw_selected) + MODEL_FLASH_SDC
     else:
-        selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+        selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC + storage_constraints()
     if classic_selected:
         from tools.workstation_classic_runtime import cdc_bundle as classic_cdc_bundle
         selected_sdc += classic_cdc_bundle(registered_controller_epoch=registered_epoch)['sdc']
@@ -370,12 +409,16 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             retire_synth_midi=specification(profile['name']).get('worker_synth_midi_retired',False))
         combined_cst=audio_cst(combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
-    combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
+    if logic_only:
+        ae350_clock_placement = None
+    else:
+        combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
     (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
     from tools.workstation_ae350_rtc import prepared as prepare_ae350_rtc
     ae350_rtc = prepare_ae350_rtc(root, stage)
-    ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
+    if not logic_only:
+        ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
     (stage / 'scripts/custom_board_synthesis.tcl').write_text(
@@ -393,14 +436,17 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     for relative, record in replacements.items():
         if sha(stage / relative) != record['sha256']:
             raise ValueError('native-board excluded historical input changed: ' + relative)
-    staged = {str(source.relative_to(stage)): sha(source) for source in stage.rglob('*')
+    staged = {source.relative_to(stage).as_posix(): sha(source) for source in stage.rglob('*')
               if source.is_file() and 'impl' not in source.relative_to(stage).parts}
     metadata = dict(schema=1, identity=(specification(profile['name'])['integration_identity'] if runtime else
                     PROFILES_720[hdmi_mode]['identity'] if hdmi_mode in PROFILES_720 else IDENTITY),
                     hdmi=video_mode,
                     native_timing_adaptations=native_timing,
                     model_flash=model_flash,
-                    top_module='workstation_custom_138k_top', source_policy='explicit_native_board_on_resource_timing',
+                    top_module='workstation_custom_138k_top', source_policy='native_logic_only_on_resource_timing' if logic_only else 'explicit_native_board_on_resource_timing',
+                    board_netlists_checked=not logic_only,
+                    native_source_overlays=overlays,
+                    electrical_status=pinout['electrical_check']['status'],
                     validation_stage='integration_prepare_only', device=pinout['device'],
                     firmware=firmware, high_speed_allowed=bool(allow_high_speed),
                     bluetooth=bluetooth, peripherals=peripherals,
@@ -410,7 +456,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     unchanged_parent_inputs=checked_parent_inputs,
                     replaced_compilation_inputs=replacements, shared_resource_support_sha256=support,
                     parent_prepare_metadata_sha256=sha(output / 'parent_prepare_metadata.json'),
-                    pinout_sha256=sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
+                    pinout_sha256=None if logic_only else sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
                     staged_input_sha256=staged, native_usb=True, legacy_usb_host_elaborated=False,
                     tmds_polarity_inverted=[True, True, True, True], cec_behavior='released_high_impedance',
                     audio_pin_behavior='ak4493_i2s32_48k_mclk256fs_final_master_volume',

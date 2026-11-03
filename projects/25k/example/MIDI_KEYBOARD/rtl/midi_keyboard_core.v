@@ -184,6 +184,8 @@ module midi_keyboard_core #(
         (ignored_key_events != 0), (active_notes != 0),
         ble_queue_full, usb_queue_full, ble_online, usb_online};
     screen_control_endpoint control_endpoint (
+        .pluck_diagnostics(512'd0),
+        .pluck_diagnostics_valid(1'b1),
         .touch_diagnostics(800'd0),
         .clk(clk), .reset(reset || control_reset),
         .rx_valid(control_rx_valid), .rx_ready(control_rx_ready), .rx_data(control_rx_data),

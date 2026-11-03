@@ -4,13 +4,21 @@ module ble_recording #(
     parameter CLK_HZ=50000000,
     parameter AUDIO_FILE="audio/test_tone.mem",
     parameter CAPACITY_FRAMES=48000,
-    parameter EXTERNAL_PCM=0,
+    parameter EXTERNAL_PCM=0, parameter STORAGE_DDR=0,
     parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter integer SEAL_TIMEOUT_CYCLES=64
 )(
     input wire clk, resetn, enable, connected, transfer_subscribed,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
+    output wire pcm_store_write_o,
+    output wire [13:0] pcm_store_write_frame_o, pcm_store_read_frame_o,
+    output wire [31:0] pcm_store_write_data_o,
+    output wire pcm_store_fetch_o,
+    output wire [31:0] pcm_store_fetch_byte_o,
+    output wire [12:0] pcm_store_fetch_bytes_o,
+    input wire [31:0] pcm_store_read_data_i,
+    input wire pcm_store_fetched_i, pcm_store_ready_i, pcm_store_fault_i,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire [31:0] elapsed_ms,
@@ -47,7 +55,7 @@ module ble_recording #(
 );
     localparam [31:0] CAPACITY=CAPACITY_FRAMES;
     localparam C_IDLE=0,C_OPERATION=1,C_BLOCK_PREP=2,C_BLOCK_CRC=3,
-        C_DATA_PREP=4,C_DATA_BUILD=5,C_DATA_CRC=6,C_CODEC_START=7,C_CODEC_WAIT=8;
+        C_DATA_PREP=4,C_DATA_BUILD=5,C_DATA_CRC=6,C_CODEC_START=7,C_CODEC_WAIT=8,C_FETCH=9;
     reg [3:0] state;
     reg [383:0] result_payload;
     assign command_data=result_payload>>(8*command_addr);
@@ -106,20 +114,36 @@ module ble_recording #(
     wire [31:0] codec_absolute=data_offset+{19'd0,codec_sample_addr};
     wire [31:0] sample_address=codec_active ? codec_absolute>>2 :(state==C_DATA_PREP || state==C_DATA_BUILD) ? data_absolute>>2 :
         (state==C_BLOCK_PREP || state==C_BLOCK_CRC) ? (data_offset+index)>>2 : recorded_frames;
-    reg [31:0] rom_word;
-    generate if(EXTERNAL_PCM) begin: live_capture
+    wire [31:0] rom_word;
+    wire capture_write=resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
+        capture_state==0 && !stop_pending && (record_state==1 || record_state==2 || record_state==3);
+    assign pcm_store_write_o=STORAGE_DDR && resetn && enable && source_ready_i && pcm_valid_i &&
+        capture_state==0 && !stop_pending && (record_state==1 || record_state==2 || record_state==3);
+    assign pcm_store_write_frame_o=recorded_frames[13:0];
+    assign pcm_store_write_data_o=pcm_pair_i;
+    assign pcm_store_read_frame_o=sample_address[13:0];
+    assign pcm_store_fetch_o=STORAGE_DDR && state==C_FETCH;
+    assign pcm_store_fetch_byte_o=data_offset;
+    assign pcm_store_fetch_bytes_o=data_length;
+    generate if(EXTERNAL_PCM && STORAGE_DDR) begin: ddr_capture
+        assign rom_word=pcm_store_read_data_i;
+    end else begin: internal_storage
+    reg [31:0] internal_word;
+    assign rom_word=internal_word;
+    if(EXTERNAL_PCM) begin: live_capture
         localparam ADDRESS_BITS=$clog2(CAPACITY_FRAMES);
         (* ram_style="block" *) reg [31:0] pcm_memory[0:CAPACITY_FRAMES-1];
         wire capture_write=resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
             capture_state==0 && !stop_pending && !external_capture_hold && recording_active;
         always @(posedge clk) begin
             if(capture_write) pcm_memory[recorded_frames[ADDRESS_BITS-1:0]]<=pcm_pair_i;
-            rom_word<=pcm_memory[sample_address[ADDRESS_BITS-1:0]];
+            internal_word<=pcm_memory[sample_address[ADDRESS_BITS-1:0]];
         end
     end else begin: builtin_capture
         (* ram_style="block" *) reg [31:0] pcm_rom[0:1023];
         initial $readmemh(AUDIO_FILE,pcm_rom);
-        always @(posedge clk) rom_word<=pcm_rom[sample_address[9:0]];
+        always @(posedge clk) internal_word<=pcm_rom[sample_address[9:0]];
+    end
     end endgenerate
     ble_rice_encoder encoder(.clk(clk),.resetn(resetn),.enable(enable && connected && codec_active),
         .start(state==C_CODEC_START),.allow_second(data_second),.pcm_length(data_length),.sample_addr(codec_sample_addr),
@@ -417,7 +441,7 @@ module ble_recording #(
                             else if(command_replay) begin
                                 data_request<=request_id;data_nonce<=nonce;data_transfer<=payload[31:0];
                                 data_recording<=replay_recording_id;data_offset<=read_offset;data_length<=read_length;data_lossless<=read_lossless;data_second<=read_second;data_codec<=0;
-                                crc_work<=32'hffffffff;index<=0;state<=C_BLOCK_PREP;data_replay<=1;
+                                crc_work<=32'hffffffff;index<=0;state<=STORAGE_DDR ? C_FETCH : C_BLOCK_PREP;data_replay<=1;
                             end else if(!transfer_open || payload[31:0]!=transfer_id) reject(8'h8d);
                             else if(transfer_valid || (!read_combined && block_pending)) reject(8'h82);
                             else if(read_combined && (!block_pending ||
@@ -428,7 +452,7 @@ module ble_recording #(
                             else begin
                                 data_request<=request_id;data_nonce<=nonce;data_transfer<=transfer_id;
                                 data_recording<=recording_id;data_offset<=read_offset;data_length<=read_length;data_lossless<=read_lossless;data_second<=read_second;data_codec<=0;
-                                crc_work<=32'hffffffff;index<=0;state<=C_BLOCK_PREP;data_replay<=0;
+                                crc_work<=32'hffffffff;index<=0;state<=STORAGE_DDR ? C_FETCH : C_BLOCK_PREP;data_replay<=0;
                                 transfer_time<=elapsed_ms;
                                 if(read_combined) begin
                                     confirmed_offset<=read_offset;block_pending<=0;
@@ -468,6 +492,10 @@ module ble_recording #(
                             task_failed[queried_task] ? 8'd3 : task_finished[queried_task] ? 8'd2 : 8'd1,task_opcode[queried_task],task_request[queried_task],task_id[queried_task]};
                         success(20);
                     end
+                end
+                C_FETCH: begin
+                    if(!pcm_store_ready_i || pcm_store_fault_i) reject(8'h83);
+                    else if(pcm_store_fetched_i) state<=C_BLOCK_PREP;
                 end
                 C_BLOCK_PREP: state<=C_BLOCK_CRC;
                 C_BLOCK_CRC: begin

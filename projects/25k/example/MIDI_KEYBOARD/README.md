@@ -1,14 +1,24 @@
 # GW25K 16键 MIDI 键盘
 
+按附件分别构建两份完整固件：`build.sh --input-panel touch`（默认）和`build.sh --input-panel pluck`（兼容`--pluck`）。两版共用本工程，均保留USB双速、BLE、LCD、PL、编码器及灯光，只移除不使用的附件前端；不复制工程，不再要求单个位流自动切换附件。换附件需使用匹配固件，构建身份、验证与部署边界见[双配置报告](reports/INPUT_PROFILES_20261101.md)。此前单个位流合并超资源的记录保留在[合并实验报告](reports/PLUCK_INTEGRATION_20261101.md)。
+
+手机BLE-MIDI接收现在除更新灯光外，也单向转发到USB／138K，保留原通道、音高、力度与控制消息；USB主机的引导灯光反馈不反向转发，避免回环。两附件配置均包含此功能，背压、断连清音与新候选验证见[BLE转发报告](reports/BLE_USB_FORWARDING_20261101.md)。
+
+转发版触摸`C125C202`、弹拨`C125D202`已通过综合、P&R及严格时序门禁；145项离线回归、138K原生HS／FS输入仿真通过。未上板、未下载SRAM或写Flash；弹拨版物理BSRAM已用满56/56，后续扩展需重新核算。
+
+上一轮完整触摸候选`C125C201`与完整弹拨候选`C125D201`均已通过综合、P&R及原时序门禁，相同输入143项离线回归通过，但尚不含上述手机转发。它们均未上板、未下载SRAM或写Flash，不能继承历史候选的实体验收；新候选不能复用这两个身份。
+
+弹拨 ADC 配置与电脑 MIDI/原始数据 GUI 见 [PLUCK_INTERFACE.md](docs/PLUCK_INTERFACE.md)。弹拨完整版在ADC online后自动开启指定五路50%PWM，25kHz双串行采样、2ms窗口Vpp、无遮挡参考与下降迟滞检测，无需GUI租约。`--pluck-probe`仅为弹拨＋USB诊断，不含完整键盘外围，发射器默认关闭。历史`C125B101`已有授权SRAM下载、校验、独立回读及关闭状态USB/GUI检查，随后用户反馈识别满意；不将该反馈继承给新完整版。原始证据见[PWM报告](reports/PLUCK_PWM_20261101.md)，旧证据见[噪声校准报告](reports/PLUCK_NOISE_20261101.md)和[10月31日报告](reports/PLUCK_BRINGUP_20261031.md)。本轮未操作板卡或写Flash。
+
 USB2 可选独立 JTAG 观察配置见 [USB2_DEBUG.md](docs/USB2_DEBUG.md)：保留完整键盘功能，用于检查 PHY 初始化、枚举地址及真实 MIDI 受理计数；默认构建不启用。
 
 138K USB1 全速主机连接本板 USB2 的双速回退、复位尾段修正及验证边界见 [USB2_FS_FALLBACK.md](docs/USB2_FS_FALLBACK.md)；不切换本板 USB1，也不改变 MIDI/PL 线规。
 
-本工程将触摸键盘、一个触摸条、两个编码器、灯光和横屏界面接入同一套 MIDI 应用：USB2 / USB3300 提供 USB-MIDI 1.0 与独立屏幕控制接口，RTL8723DS 提供标准 BLE MIDI 服务。两路可同时发送，接收主机音符用于灯光反馈。旧 USB、BLE、编码器和屏幕例程保持独立，派生文件在本目录维护。
+本工程将所选附件（触摸键盘／触摸条，或五路弹拨）、两个编码器、灯光和横屏界面接入同一套 MIDI 应用：USB2 / USB3300 提供 USB-MIDI 1.0 与独立屏幕控制接口，RTL8723DS 提供标准 BLE MIDI 服务。USB与BLE两路可同时发送，接收主机音符用于灯光反馈。旧 USB、BLE、编码器和屏幕例程保持独立，派生文件在本目录维护。
 
 2026-10-17用户已补全键序：A–P依次对应QT2160原始0基位`5 3 1 7 13 11 9 15 4 2 0 6 12 10 8 14`。GPIO与原理图一致，当前源码在顶层将原始快照经`midi_key_layout`统一重排，再交给MIDI、显示、WS2812和主机按键反馈。WS链序保持`ABCDHGFEIJKLPONM`；PCA9685仍指示滑条位置，屏幕保持反向横屏、滑条在右侧。见 [键序核对](docs/KEY_ORDER_AUDIT.md)。
 
-针对实板过于灵敏的反馈，当前源码分别设置按键NTHR=12、NDIL=7、BL=4，以及滑条NTHR=12、NDIL=3、BL=8；两颗均写入并读回LP=1、BREP=1。按键以新按差值≥12、保持差值≥10形成迟滞；滑条加入3 counts死区及大跳变连续读样确认。这些是分别可调的编译期参数，USB协议不提供运行时灵敏度设置，详见 [触摸驱动](docs/TOUCH_DRIVER.md)。完整键序、迟滞与滑条滤波此前已经回归、构建并烧入基线版本；实际误触率与快速滑动响应仍需在板上观察。
+当前源码设置按键NTHR=12、NDIL=1、BL=4，以及滑条NTHR=12、NDIL=3、BL=8；两颗均写入并读回LP=1、BREP=1。2026-11-02为降低触摸到灯亮的延迟，按键NDIL由7降至芯片允许的最小值1，即从连续8次采集确认降为2次；前后状态复核、新按差值≥12与保持差值≥10的迟滞保留。滑条仍使用3 counts死区及大跳变连续读样确认。这些是分别可调的编译期参数，USB协议不提供运行时灵敏度设置，详见 [触摸驱动](docs/TOUCH_DRIVER.md)。历史基线的构建和烧录记录不覆盖本次调参；新版实际延迟与误触率待实板验证，未下载SRAM或写Flash。
 
 导入的历史固件、回归、时序和实板记录见 [BUILD_VALIDATION.md](docs/BUILD_VALIDATION.md) 与 [FLASH_PROGRAMMING.md](docs/FLASH_PROGRAMMING.md)。Android系统配对及BLE MIDI应用连接已在`0x00005A52`确认；该历史版本新增外部输入画面与E1长按设置；当前默认138K面板路径不分配长按，按 [PL local-v1接口](docs/PANEL_DISPLAY_PROTOCOL.md) 接收RGB565像素。
 

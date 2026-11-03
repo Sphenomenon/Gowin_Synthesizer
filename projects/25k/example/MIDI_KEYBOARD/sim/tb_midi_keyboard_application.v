@@ -25,7 +25,7 @@ module tb_midi_keyboard_application;
     wire [15:0] active_keys,lamp_keys,theme_rgb565,clear_rgb565;
     wire panic_busy,screen_update;
     wire [31:0] status_flags,emitted_events;
-    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2),.HOST_PANEL_CONTROLS(0)) dut(.*);
+    midi_keyboard_application #(.CLK_HZ(4000),.FIFO_DEPTH(2),.HOST_PANEL_CONTROLS(0)) dut(.pluck_diagnostics(512'd0),.pluck_noise_diagnostics(512'd0),.pluck_diagnostics_valid(1'b1),.input_config_write(),.input_config_opcode(),.input_config_value(),.*);
     reg [23:0] usb_messages[0:4095],ble_messages[0:4095];
     reg [1:0] usb_lengths[0:4095],ble_lengths[0:4095];
     reg [12:0] ble_timestamps[0:4095];
@@ -44,8 +44,8 @@ module tb_midi_keyboard_application;
             a=message[19:16];b=message[14:8];
             case(message[23:20])
                 9:begin
-                    if(voices[which][a][b])$fatal(1,"Duplicate external Note On link%0d channel%0d note%0d",which,a,b);
-                    voices[which][a][b]=1;
+                    if(message[6:0]!=0 && voices[which][a][b])$fatal(1,"Duplicate external Note On link%0d channel%0d note%0d",which,a,b);
+                    voices[which][a][b]=message[6:0]!=0;
                 end
                 8:voices[which][a][b]=0;
                 11:if(b==120||b==123)for(b=0;b<128;b=b+1)voices[which][a][b]=0;
@@ -202,7 +202,7 @@ module tb_midi_keyboard_application;
         if(midi_channel!==4||transpose!==-12)$fatal(1,"Rejected control changed MIDI settings");
         control_request(8'h10,2,0,0,2);control_request(8'h11,0,0,0,0);drain();
         // Both real decoder RX slots become valid together. Neither event may
-        // be lost, and inbound MIDI must update lights without being echoed.
+        // be lost; phone MIDI reaches USB, USB feedback stays local.
         usb_mark=usb_count;ble_mark=ble_count;
         fork host_usb(24'h923064);host_ble(24'h923164);join
         expect_lamps(16'h0003);
@@ -216,7 +216,8 @@ module tb_midi_keyboard_application;
         expect_lamps(3);host_usb(24'hb27b00);expect_lamps(2);
         host_ble(24'hb27800);expect_lamps(0);
         host_usb(24'h933064);host_ble(24'h921064);expect_lamps(0);
-        if(usb_count!=usb_mark||ble_count!=ble_mark)$fatal(1,"Host lamp feedback was echoed into MIDI outputs");
+        host_ble(24'h821000);expect_lamps(0);
+        if(usb_count!=usb_mark+8||ble_count!=ble_mark)$fatal(1,"Expected only phone BLE MIDI forwarded to USB");
         // Link loss clears only that link's lamp ownership.
         fork host_usb(24'h923064);host_ble(24'h923164);join
         expect_lamps(3);usb_online=0;expect_lamps(2);
@@ -254,7 +255,7 @@ module tb_midi_keyboard_application;
         @(negedge clk);control_rx_valid=0;control_reset=1;ticks(2);control_reset=0;ticks(2);
         if(!control_rx_ready||screen_page!==0||midi_channel!==2||transpose!==0)$fatal(1,"Control session reset was not isolated from performance");
         control_request(8'h20,1,0,0,1);
-        $display("PASS application: actual USB/BLE packets for 16 keys, host control CRC/settings, held mapping, RX lamp arbitration and per-link ownership, no echo, MIDI backpressure/control independence, disconnect cleanup and current-note replay");
+        $display("PASS application: actual USB/BLE packets for 16 keys, host control CRC/settings, held mapping, independent RX lamps, phone BLE to USB without echo, MIDI backpressure/control independence, disconnect cleanup and current-note replay");
         $finish;
     end
     initial begin #1_000_000;$fatal(1,"Application timeout usb=%0d ble=%0d lamps=%h active=%h flags=%h",usb_count,ble_count,lamp_keys,active_keys,status_flags);end

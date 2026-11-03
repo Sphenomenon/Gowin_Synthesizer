@@ -66,18 +66,21 @@ module midi_ble_gatt #(
     reg [31:0] adv_timer;
     reg completion_nonzero,completion_match;
     reg [7:0] completion_handle_low,completion_count_low;
-    integer i,used,start_handle,end_handle,attribute_type,response_base;
+    integer i;
+    reg [4:0] used;
+    reg [15:0] start_handle,end_handle,attribute_type;
+    reg [5:0] response_base;
     reg uuid_matches;
     assign tx_payload_data=tx_payload_addr<36 ? active_tx[tx_payload_addr] : 0;
     assign value_tx_ready=enable && connected && subscribed && !failed &&
         !security_pairing && !security_failed &&
         !tx_value_pending && value_tx_length>=3 && value_tx_length<=5;
     function [15:0] word_at;
-        input integer address;
+        input [4:0] address;
         begin word_at={packet[address+1],packet[address]}; end
     endfunction
     function [15:0] attribute_uuid;
-        input integer handle;
+        input [15:0] handle;
         begin case(handle)
             1,4,5:attribute_uuid=16'h2800;
             2,6:attribute_uuid=16'h2803;
@@ -95,17 +98,17 @@ module midi_ble_gatt #(
         endcase end
     endfunction
     task response_word;
-        input integer at; input [15:0] data;
+        input [4:0] at; input [15:0] data;
         begin response[response_base+at]=data[7:0];
             response[response_base+at+1]=data[15:8]; end
     endtask
     task response_uuid;
-        input integer at; input [127:0] uuid;
+        input [4:0] at; input [127:0] uuid;
         integer n;
         begin for(n=0;n<16;n=n+1) response[response_base+at+n]=uuid[n*8+:8]; end
     endtask
     task response_begin;
-        input [15:0] cid; input integer length;
+        input [15:0] cid; input [4:0] length;
         begin
             response_word(0,{4'b0000,connection_handle});
             response_word(2,length+4);response_word(4,length);response_word(6,cid);
@@ -120,7 +123,7 @@ module midi_ble_gatt #(
             response[response_base+12]=code;end
     endtask
     task read_attribute;
-        input integer handle;
+        input [15:0] handle;
         begin
             response[response_base+8]=8'h0b;
             case(handle)

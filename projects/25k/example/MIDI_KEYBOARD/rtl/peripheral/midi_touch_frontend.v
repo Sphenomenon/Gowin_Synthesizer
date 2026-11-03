@@ -12,7 +12,8 @@ module midi_touch_frontend #(
     parameter integer BUS_FREE_CYCLES = CLK_HZ / 10_000,
     parameter integer TIMEOUT_CYCLES = CLK_HZ / 50,
     parameter integer KEY_NEGATIVE_THRESHOLD = 12,
-    parameter integer KEY_DETECT_INTEGRATOR = 7,
+    // QT2160 NDIL minimum is 1 (two acquisitions); retain per-snapshot filtering.
+    parameter integer KEY_DETECT_INTEGRATOR = 1,
     parameter integer KEY_BURST_LENGTH = 4,
     parameter integer SLIDER_NEGATIVE_THRESHOLD = 12,
     parameter integer SLIDER_DETECT_INTEGRATOR = 3,
@@ -103,7 +104,7 @@ module midi_qt2160_client #(
     parameter integer TIMEOUT_CYCLES = CLK_HZ / 50,
     parameter integer NEGATIVE_THRESHOLD = 12,
     parameter integer BURST_LENGTH = 4,
-    parameter integer DETECT_INTEGRATOR = 7
+    parameter integer DETECT_INTEGRATOR = 1
 ) (
     input wire clk, input wire reset, input wire change_n,
     input wire scl_in, input wire sda_in, output wire scl_low, output wire sda_low,
@@ -113,19 +114,33 @@ module midi_qt2160_client #(
     output reg [7:0] general_status = 0, output reg overrun_seen = 0,
     output reg [7:0] sample_count = 0,
     output reg [511:0] diagnostic_levels = 0,
-    output reg [31:0] diagnostic_status = 0, diagnostic_detect = 0, frame_count = 0
+    output reg [31:0] diagnostic_status = 0,
+    output reg [31:0] diagnostic_detect = 0,
+    output reg [31:0] frame_count = 0
 );
     localparam [3:0] STARTUP=0, IDENTIFY=1, CONFIGURE=2, CAL_WAIT=3,
         STATUS_BEFORE=4, SIGNAL_A=5, SIGNAL_B=6, REFERENCE_A=7,
-        REFERENCE_B=8, STATUS_AFTER=9, IDLE=10, RETRY=11, RESET_BASELINE=12;
+        REFERENCE_B=8, STATUS_AFTER=9, IDLE=10, RETRY=11, RESET_BASELINE=12, FILTER_KEYS=13;
     localparam integer POLL_LIMIT = POLL_CYCLES > MIN_SCAN_CYCLES ? POLL_CYCLES : MIN_SCAN_CYCLES;
-    localparam integer RELEASE_LEVEL = NEGATIVE_THRESHOLD > 2 ? NEGATIVE_THRESHOLD - 2 : 1;
     localparam [127:0] SLIDER_CONFIG = 128'h00000000000001010101010101010028;
     localparam [127:0] SLIDER_BURST = {64'b0, {8{BURST_LENGTH[7:0]}}};
     localparam [127:0] SLIDER_THRESHOLD = {64'b0, {8{NEGATIVE_THRESHOLD[7:0]}}};
     reg [3:0] state = STARTUP, config_index = 0;
     reg waiting = 0;
-    reg [31:0] wait_count = 0, poll_count = 0;
+    function integer counter_width;
+        input integer maximum;
+        integer remaining;
+        begin
+            remaining=maximum;counter_width=0;
+            while(remaining>0)begin counter_width=counter_width+1;remaining=remaining>>1;end
+            if(counter_width<1)counter_width=1;
+        end
+    endfunction
+    localparam integer WAIT_LIMIT = STARTUP_CYCLES > CALIBRATION_CYCLES ?
+        (STARTUP_CYCLES > POLL_CYCLES ? STARTUP_CYCLES : POLL_CYCLES) :
+        (CALIBRATION_CYCLES > POLL_CYCLES ? CALIBRATION_CYCLES : POLL_CYCLES);
+    reg [counter_width(WAIT_LIMIT)-1:0] wait_count = 0;
+    reg [counter_width(POLL_LIMIT)-1:0] poll_count = 0;
     reg [15:0] keys_before = 0;
     reg [255:0] signals = 0, references = 0;
     reg request = 0, read_request = 0;
@@ -136,7 +151,10 @@ module midi_qt2160_client #(
     wire [127:0] read_data;
     wire [7:0] bus_error;
     wire [2:0] ack_mask;
-    reg [15:0] filtered_keys;
+    reg [15:0] filtered_keys=0,keys_after=0;
+    reg [3:0] filter_index=0;
+    wire filtered_key;
+    wire [15:0] completed_keys={filtered_key,filtered_keys[14:0]};
     integer k;
     wire mismatch = IS_SLIDER ?
         ((config_index == 5 && read_data[15:0] != 16'h0101) ||
@@ -150,17 +168,9 @@ module midi_qt2160_client #(
          (config_index == 9 && read_data != 0) ||
          (config_index == 10 && read_data != {16{NEGATIVE_THRESHOLD[7:0]}}) ||
          (config_index == 11 && read_data != {16{BURST_LENGTH[7:0]}}));
-    always @* begin
-        filtered_keys = 0;
-        for (k = 0; k < 16; k = k + 1)
-            if (keys_before[k] && read_data[k+8] &&
-                references[k*16 +: 16] >= signals[k*16 +: 16] &&
-                // A new press must cross NTHR; only an already held key
-                // benefits from the chip's NTHR-2 release hysteresis.
-                ({1'b0,references[k*16 +: 16]} - {1'b0,signals[k*16 +: 16]}) >=
-                    (keys[k] ? RELEASE_LEVEL : NEGATIVE_THRESHOLD))
-                filtered_keys[k] = 1'b1;
-    end
+    midi_touch_key_filter #(.NEGATIVE_THRESHOLD(NEGATIVE_THRESHOLD),.CHANNELS(1)) key_filter(
+        .before_keys(keys_before[filter_index]),.after_keys(keys_after[filter_index]),.previous_keys(keys[filter_index]),
+        .signals(signals[filter_index*16+:16]),.references(references[filter_index*16+:16]),.filtered_keys(filtered_key));
     midi_i2c_register_master #(.DEVICE_ADDRESS(7'h0d), .HALF_CYCLES(HALF_CYCLES),
         .BUS_FREE_CYCLES(BUS_FREE_CYCLES), .TIMEOUT_CYCLES(TIMEOUT_CYCLES)) bus (
         .clk(clk), .reset(reset), .scl_in(scl_in), .sda_in(sda_in), .request(request),
@@ -175,6 +185,7 @@ module midi_qt2160_client #(
             keys <= 0; position <= 0; touched <= 0; update <= 0; ready <= 0; error_code <= 0;
             general_status <= 0; overrun_seen <= 0; sample_count <= 0;
             diagnostic_levels <= 0; diagnostic_status <= 0; diagnostic_detect <= 0; frame_count <= 0;
+            filtered_keys <= 0; keys_after <= 0; filter_index <= 0;
         end else begin
             request <= 0; update <= 0;
             if (poll_count < POLL_LIMIT) poll_count <= poll_count + 1;
@@ -284,16 +295,22 @@ module midi_qt2160_client #(
                             REFERENCE_A: begin references[127:0] <= read_data; state <= REFERENCE_B; end
                             REFERENCE_B: begin references[255:128] <= read_data; state <= STATUS_AFTER; end
                             default: begin
-                                keys <= filtered_keys; ready <= 1; update <= 1; error_code <= 0;
-                                sample_count <= sample_count + 1'b1; state <= IDLE;
-                                diagnostic_status <= {read_data[7:0],sample_count+8'd1,filtered_keys};
-                                diagnostic_detect <= {read_data[23:8],keys_before};
-                                for(k=0;k<16;k=k+1)
-                                    diagnostic_levels[k*32+:32] <= {references[k*16+:16],signals[k*16+:16]};
-                                frame_count <= frame_count + 1'b1;
+                                keys_after <= read_data[23:8];filter_index <= 0;filtered_keys <= 0;state <= FILTER_KEYS;
                             end
                         endcase
                     end
+                end
+                FILTER_KEYS: begin
+                    filtered_keys[filter_index] <= filtered_key;
+                    if(filter_index==15)begin
+                        keys <= completed_keys;ready <= 1;update <= 1;error_code <= 0;
+                        sample_count <= sample_count+1'b1;state <= IDLE;
+                        diagnostic_status <= {general_status,sample_count+8'd1,completed_keys};
+                        diagnostic_detect <= {keys_after,keys_before};
+                        for(k=0;k<16;k=k+1)
+                            diagnostic_levels[k*32+:32] <= {references[k*16+:16],signals[k*16+:16]};
+                        frame_count <= frame_count+1'b1;
+                    end else filter_index <= filter_index+1'b1;
                 end
                 // QT2160 section 5.5: polling faster than one matrix scan
                 // provides no new information and can slow acquisition.

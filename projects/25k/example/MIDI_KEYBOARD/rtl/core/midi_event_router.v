@@ -13,7 +13,8 @@
 // This block does not generate MIDI panic. After a disconnect, the host must
 // first issue panic/all-notes-off and/or re-press keys to restore note state.
 module midi_event_router #(
-    parameter integer FIFO_DEPTH = 16
+    parameter integer FIFO_DEPTH = 16,
+    parameter integer PANEL_EVENTS = 0
 ) (
     input wire clk,
     input wire reset,
@@ -50,7 +51,7 @@ module midi_event_router #(
     assign usb_valid = usb_online && usb_queue_valid;
     assign ble_valid = ble_online && ble_queue_valid;
 
-    midi_event_fifo #(.DEPTH(FIFO_DEPTH)) usb_queue (
+    midi_event_fifo #(.DEPTH(FIFO_DEPTH),.PANEL_EVENTS(PANEL_EVENTS)) usb_queue (
         .clk(clk), .reset(reset), .clear(!usb_online),
         .in_valid(accept_event && usb_target), .in_ready(usb_enqueue_ready),
         .in_message(in_message), .in_length(in_length), .in_timestamp(in_timestamp),
@@ -58,7 +59,7 @@ module midi_event_router #(
         .out_message(usb_message), .out_length(usb_length), .out_timestamp(usb_timestamp),
         .full(usb_full)
     );
-    midi_event_fifo #(.DEPTH(FIFO_DEPTH)) ble_queue (
+    midi_event_fifo #(.DEPTH(FIFO_DEPTH),.PANEL_EVENTS(PANEL_EVENTS)) ble_queue (
         .clk(clk), .reset(reset), .clear(!ble_online),
         .in_valid(accept_event && ble_target), .in_ready(ble_enqueue_ready),
         .in_message(in_message), .in_length(in_length), .in_timestamp(in_timestamp),

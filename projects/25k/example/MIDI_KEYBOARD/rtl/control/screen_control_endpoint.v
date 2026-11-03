@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 // Transport-neutral byte endpoint for the USB vendor bulk control interface.
 // A transfer is accepted only when valid && ready. All ports use clk.
-module screen_control_endpoint (
+module screen_control_endpoint #(parameter integer PLUCK_ENABLED=0,parameter integer PLUCK_EMITTER_CONTROL=0,
+                                 parameter integer PLUCK_VPP_CONTROL=0,parameter integer PLUCK_NOISE_DIAGNOSTICS=0)(
     input  wire              clk,
     input  wire              reset,
     input  wire              rx_valid,
@@ -12,6 +13,9 @@ module screen_control_endpoint (
     output wire [7:0]        tx_data,
     input  wire [31:0]       status_flags,
     input  wire [799:0]      touch_diagnostics,
+    input  wire [511:0]      pluck_diagnostics,
+    input  wire [511:0]      pluck_noise_diagnostics,
+    input  wire              pluck_diagnostics_valid,
     output reg  [3:0]        midi_channel,
     output reg signed [7:0]  transpose,
     output reg  [3:0]        screen_page,
@@ -34,12 +38,35 @@ module screen_control_endpoint (
     reg [127:0] response;
     reg [15:0] request_crc;
     reg [15:0] response_crc;
+    (* syn_ramstyle="block_ram" *) reg [31:0] diagnostic_memory [0:31];
+    reg [31:0] diagnostic_word;
+    reg [3:0] capture_index;
+    reg pluck_snapshot_valid;
+    reg pluck_noise_snapshot_valid;
 
     wire [7:0] opcode = request[31:24];
     wire [31:0] arg0 = request[79:48];
     wire [31:0] arg1 = request[111:80];
     reg [31:0] response_status;
     reg [31:0] response_result;
+    wire pluck_capture = PLUCK_ENABLED && !reset && state == CHECK &&
+                        response_status == 0 && opcode == 8'h03 && arg0 == 0 &&
+                        pluck_diagnostics_valid;
+    wire noise_capture = PLUCK_ENABLED && PLUCK_NOISE_DIAGNOSTICS && !reset && state == CHECK &&
+                         response_status == 0 && opcode == 8'h06 && arg0 == 0 && pluck_diagnostics_valid;
+    wire awaiting_capture = response_status == 0 && arg0 == 0 && PLUCK_ENABLED &&
+                            (opcode == 8'h03 || (opcode == 8'h06 && PLUCK_NOISE_DIAGNOSTICS));
+    wire capture_done = pluck_diagnostics_valid && capture_index == 15;
+    wire [31:0] capture_word = opcode == 8'h06 ? pluck_noise_diagnostics[capture_index*32+:32] :
+                                                               pluck_diagnostics[capture_index*32+:32];
+
+    always @(posedge clk) begin
+        diagnostic_word <= diagnostic_memory[{opcode == 8'h06, arg0[3:0]}];
+        if (pluck_capture || noise_capture)
+            diagnostic_memory[{opcode == 8'h06, capture_index}] <= capture_word;
+        if (reset || state != CHECK || !awaiting_capture || !pluck_diagnostics_valid) capture_index <= 0;
+        else capture_index <= capture_index + 1'b1;
+    end
 
     function [15:0] crc16_byte;
         input [15:0] previous;
@@ -74,6 +101,28 @@ module screen_control_endpoint (
                     if (arg0 > 24 || arg1 != 0) response_status = 32'd2;
                     else response_result = touch_diagnostics[arg0[4:0]*32+:32];
                 end
+                8'h03: begin
+                    if (!PLUCK_ENABLED) response_status = 32'd1;
+                    else if (arg0 > 15 || arg1 != 0) response_status = 32'd2;
+                    else if (arg0 == 0) response_result = pluck_diagnostics[31:0];
+                    else if (pluck_snapshot_valid) response_result = diagnostic_word;
+                end
+                8'h04: begin
+                    if (!PLUCK_ENABLED || !PLUCK_EMITTER_CONTROL) response_status = 32'd1;
+                    else if (arg0 > 1 || arg1 != 0) response_status = 32'd2;
+                    else response_result = arg0;
+                end
+                8'h05: begin
+                    if (!PLUCK_ENABLED || !PLUCK_VPP_CONTROL) response_status = 32'd1;
+                    else if (arg0[15:0] <= arg0[31:16] || arg1 != 0) response_status = 32'd2;
+                    else response_result = arg0;
+                end
+                8'h06: begin
+                    if (!PLUCK_ENABLED || !PLUCK_NOISE_DIAGNOSTICS) response_status = 32'd1;
+                    else if (arg0 > 15 || arg1 != 0) response_status = 32'd2;
+                    else if (arg0 == 0) response_result = pluck_noise_diagnostics[31:0];
+                    else if (pluck_noise_snapshot_valid) response_result = diagnostic_word;
+                end
                 8'h10, 8'h20: begin
                     if (arg0 > 32'd15 || arg1 != 0) response_status = 32'd2;
                     else response_result = arg0;
@@ -106,6 +155,8 @@ module screen_control_endpoint (
             response <= 128'd0;
             request_crc <= 16'hffff;
             response_crc <= 16'hffff;
+            pluck_snapshot_valid <= 0;
+            pluck_noise_snapshot_valid <= 0;
             midi_channel <= 4'd0;
             transpose <= 8'sd0;
             screen_page <= 4'd0;
@@ -144,7 +195,7 @@ module screen_control_endpoint (
                         state <= CHECK;
                     else rx_index <= rx_index + 1'b1;
                 end
-                CHECK: begin
+                CHECK: if (!awaiting_capture || capture_done) begin
                     // Little-endian byte storage; compute the outgoing CRC a
                     // byte per clock to keep the FPGA combinational path short.
                     response <= {16'h0000, response_result, response_status,
@@ -157,7 +208,9 @@ module screen_control_endpoint (
                         if (protocol_errors != 16'hffff)
                             protocol_errors <= protocol_errors + 1'b1;
                     end else begin
-                        if (opcode != 8'h01 && opcode != 8'h02) begin
+                        if (opcode == 8'h03 && arg0 == 0) pluck_snapshot_valid <= 1;
+                        if (opcode == 8'h06 && arg0 == 0) pluck_noise_snapshot_valid <= 1;
+                        if (opcode != 8'h01 && opcode != 8'h02 && opcode != 8'h03 && opcode != 8'h06) begin
                             config_write <= 1'b1;
                             config_opcode <= opcode;
                             config_value <= arg0;

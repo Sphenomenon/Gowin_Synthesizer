@@ -148,7 +148,19 @@ def byte_increment(text):
     for bit in range(7, 32):
         replacement += f'            add_byte_count[{bit}] = value[{bit}] ^ (carries[6] && (&value[{bit-1}:6]));\n'
     replacement += '        end\n    endfunction'
-    return once(text, original, replacement)
+    text = once(text, original, replacement)
+    # The ring advances by the same 32-byte DDR beat. Reuse the bounded
+    # increment network rather than synthesizing another long carry chain.
+    start = text.index('    function [31:0] advance_ring;')
+    end = text.index('    endfunction', start) + len('    endfunction')
+    original_ring = text[start:end]
+    if len(re.findall(r"offset\s*\+\s*32'd32", original_ring)) != 4:
+        raise ValueError('native ring increment anchor drifted')
+    ring = once(original_ring, '        input [31:0] offset;\n        begin',
+                '        input [31:0] offset;\n        reg [31:0] next_offset;\n        begin\n'
+                "            next_offset = add_byte_count(offset, 6'd32);")
+    ring = re.sub(r"offset\s*\+\s*32'd32", 'next_offset', ring)
+    return once(text, original_ring, ring)
 
 
 def voice_controls(text):
@@ -229,7 +241,85 @@ def telemetry_usb_reset(text):
 ''')
 
 
-TRANSFORMS = dict(zip(INPUTS, (audio_pll, sine_address, byte_increment, voice_controls, telemetry_usb_reset)))
+def envelope_arithmetic(text):
+    """Bound carry depth in the shared ADSR lane without adding a cycle.
+
+    This checked overlay is limited to the frozen engine until that engine is
+    migrated to native source. Keep its 25-bit attack overflow and unsigned
+    decay/release comparisons, including inputs outside normal ADSR ranges.
+    """
+    helper = '''  function automatic [24:0] envelope_add24;
+    input [23:0] a, b;
+    input carry_in;
+    reg [6:0] part0, part1, part2, part3;
+    reg [3:0] propagate, generate_carry;
+    reg [4:0] carry;
+    begin
+      part0 = {1'b0,a[5:0]} + {1'b0,b[5:0]};
+      part1 = {1'b0,a[11:6]} + {1'b0,b[11:6]};
+      part2 = {1'b0,a[17:12]} + {1'b0,b[17:12]};
+      part3 = {1'b0,a[23:18]} + {1'b0,b[23:18]};
+      propagate = {&(a[23:18]^b[23:18]), &(a[17:12]^b[17:12]),
+                   &(a[11:6]^b[11:6]), &(a[5:0]^b[5:0])};
+      generate_carry = {part3[6],part2[6],part1[6],part0[6]};
+      carry[0] = carry_in;
+      carry[1] = generate_carry[0] | (propagate[0] & carry_in);
+      carry[2] = generate_carry[1] | (propagate[1] & generate_carry[0]) |
+                 ((&propagate[1:0]) & carry_in);
+      carry[3] = generate_carry[2] | (propagate[2] & generate_carry[1]) |
+                 ((&propagate[2:1]) & generate_carry[0]) | ((&propagate[2:0]) & carry_in);
+      carry[4] = generate_carry[3] | (propagate[3] & generate_carry[2]) |
+                 ((&propagate[3:2]) & generate_carry[1]) |
+                 ((&propagate[3:1]) & generate_carry[0]) | ((&propagate[3:0]) & carry_in);
+      envelope_add24[5:0] = part0[5:0] + carry[0];
+      envelope_add24[11:6] = part1[5:0] + carry[1];
+      envelope_add24[17:12] = part2[5:0] + carry[2];
+      envelope_add24[23:18] = part3[5:0] + carry[3];
+      envelope_add24[24] = carry[4];
+    end
+  endfunction
+  function automatic envelope_le24;
+    input [23:0] a, b;
+    begin
+      envelope_le24 = (a[23:18] < b[23:18]) |
+          ((a[23:18] == b[23:18]) & (a[17:12] < b[17:12])) |
+          ((a[23:12] == b[23:12]) & (a[11:6] < b[11:6])) |
+          ((a[23:6] == b[23:6]) & (a[5:0] <= b[5:0]));
+    end
+  endfunction
+  wire [23:0] envelope_above_sustain =
+      envelope_add24(envelope_update_level_q24, ~envelope_update_sustain_q24, 1'b1);
+'''
+    text = once(text, '  assign envelope_update_attack_sum =\n'
+                "      {1'b0, envelope_update_level_q24} +\n"
+                "      {1'b0, envelope_update_attack_q24};",
+                helper + '  assign envelope_update_attack_sum =\n'
+                "      envelope_add24(envelope_update_level_q24, envelope_update_attack_q24, 1'b0);")
+    substitutions = [
+        ("envelope_update_attack_sum >= {1'b0, MAXIMUM_LEVEL_Q24}",
+         '(envelope_update_attack_sum[24] || (&envelope_update_attack_sum[23:6]))'),
+        ('envelope_update_level_q24 <= envelope_update_sustain_q24',
+         'envelope_le24(envelope_update_level_q24, envelope_update_sustain_q24)'),
+        ('envelope_update_level_q24 - envelope_update_sustain_q24 <=\n'
+         '                envelope_update_decay_q24',
+         'envelope_le24(envelope_above_sustain, envelope_update_decay_q24)'),
+        ('envelope_update_level_q24 -\n              envelope_update_decay_q24',
+         "envelope_add24(envelope_update_level_q24, ~envelope_update_decay_q24, 1'b1)"),
+        ('envelope_update_level_q24 <= envelope_update_release_q24',
+         'envelope_le24(envelope_update_level_q24, envelope_update_release_q24)'),
+        ('envelope_update_level_q24 -\n              envelope_update_release_q24',
+         "envelope_add24(envelope_update_level_q24, ~envelope_update_release_q24, 1'b1)"),
+    ]
+    for original, replacement in substitutions:
+        text = once(text, original, replacement)
+    return text
+
+
+def oscillator_timing(text):
+    return envelope_arithmetic(voice_controls(text))
+
+
+TRANSFORMS = dict(zip(INPUTS, (audio_pll, sine_address, byte_increment, oscillator_timing, telemetry_usb_reset)))
 
 
 def apply(stage):
