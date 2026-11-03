@@ -1124,7 +1124,7 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_composition.py": "8306eddc2d249c4288684b5b23ff929b57a9d57426bed0a3f8c85f84a821514c",
     "projects/138k/push2_workstation/usb_a/tools/workstation_cpu_business.py": "88930c90ef0635ff01f809668cb9c4561c1ef52dd8badf12b219dae64920de54",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py": "10f4f54fb10142938c33cfed4b57d8fde2e527510919086ffdceba68ce03d5af",
-    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "63b0f20368db2d7db03c754090efb01371d521867e74a25cb5cbe04f0290edaa",
+    "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_audit.py": "119876cb4150801237cd7bc9e95c6924a345d8dfa7276c56831d8f3b42dc1643",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board_implementation.py": "c391cf0683f5e11db29f11e6252d1d4a1cb092f3c624efe622d20497a862b4c3",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_clocks.py": "2dda3707c0ffcc6444d702d3710f306413bd9ad8e16fd76f61663ababd185098",
     "projects/138k/push2_workstation/usb_a/tools/workstation_custom_flash.py": "30cc354d1ccd89d43b936e08eb2dea00bfd888708b5728ee8ab0a5e2628545a4",
@@ -1238,7 +1238,8 @@
     "projects/138k/push2_workstation/usb_a/tools/workstation_static_checks.py": "8a4d5ebb327483bb14e9484b5d1d93b51b4bf153e16730fd9ad96936219b3006",
     "projects/138k/push2_workstation/usb_a/sim/test_workstation_pr2_storage_reference.py": "30747a63cd058fd309477a723e1a35c65ad66b77a24501be601944a9b32c02d5",
     "projects/138k/push2_workstation/usb_a/tools/workstation_pr2_storage_reference.py": "518d227875df1168a86084bb143fcc46bd3e21414ec49f87b5aca6208ffd8fc6",
-    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_address_map.py": "2f4b7d53f289c729e203a2d0727ed471cfcb82501c9538878fcd1fd12169b9e0"
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_runtime_address_map.py": "2f4b7d53f289c729e203a2d0727ed471cfcb82501c9538878fcd1fd12169b9e0",
+    "projects/138k/push2_workstation/usb_a/sim/test_workstation_usb_rom_audit.py": "ede3e36017eb8e9bc180ee7ad04a982fe6b74cafe16f17d079b9cf1bf56014d9"
   },
   "revision": 4
 }

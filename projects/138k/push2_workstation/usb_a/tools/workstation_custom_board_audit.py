@@ -289,19 +289,30 @@ def check_rom(stage, netlist_text, expected_sha256):
     modules = re.findall(r'^module\s+workstation_usb2_cpu_bus\s*\((.*?)^endmodule\b', netlist_text, re.M | re.S)
     if len(modules) != 1:
         raise ValueError('native CPU bus module missing or duplicated')
+    bus = SynthesisNetlist('module workstation_usb2_cpu_bus (' + modules[0] + 'endmodule\n',
+                           'workstation_usb2_cpu_bus')
+    legacy = [f'memory_{byte}_memory_{byte}_0_{bit}_s' for byte in range(4) for bit in range(8)]
+    generated = [f'g_ram64.memory_{byte}_g_ram64.memory_{byte}_0_{bit}_s'
+                 for byte in range(4) for bit in range(8)]
+    memory = {name: cell for name, cell in bus.cells.items() if cell['kind'] == 'SDPB'}
+    mappings = [names for names in (legacy, generated) if set(names) == set(memory)]
+    if len(mappings) != 1:
+        raise ValueError('native CPU bit-plane mapping changed')
     planes = []
-    for byte_lane in range(4):
-        for bit_lane in range(8):
-            instance = f'memory_{byte_lane}_memory_{byte_lane}_0_{bit_lane}_s'
-            for port in (0, 1):
-                if modules[0].count(f'defparam {instance}.BIT_WIDTH_{port}=1;') != 1:
-                    raise ValueError('native CPU bit-plane mapping changed')
-            chunks = re.findall(r'defparam ' + instance + r"\.INIT_RAM_([0-9A-Fa-f]{2})=256'h([0-9A-Fa-f]+);", modules[0])
-            if (len({index for index, _ in chunks}) != len(chunks) or
-                    any(int(index, 16) >= 64 or len(value) > 64 for index, value in chunks)):
+    for instance in mappings[0]:
+        parameters = memory[instance]['parameters']
+        if any(parameters.get(f'BIT_WIDTH_{port}') != '1' for port in (0, 1)):
+            raise ValueError('native CPU bit-plane mapping changed')
+        chunks = []
+        for key, value in parameters.items():
+            if not key.startswith('INIT_RAM_'):
+                continue
+            match = re.fullmatch(r"256'h([0-9A-Fa-f]{1,64})", value)
+            if not re.fullmatch(r'INIT_RAM_[0-3][0-9A-Fa-f]', key) or not match:
                 raise ValueError('native CPU ROM initialization chunks changed')
-            value = sum(int(value, 16) << (int(index, 16) * 256) for index, value in chunks)
-            planes.append(value.to_bytes(2048, 'little'))
+            chunks.append((int(key[-2:], 16), int(match[1], 16)))
+        value = sum(value << (index * 256) for index, value in chunks)
+        planes.append(value.to_bytes(2048, 'little'))
     rom = stage / 'usb2_cpu.hex'
     words = [int(word, 16) for word in rom.read_text().splitlines()]
     if len(words) != 16384 or sha(rom) != expected_sha256:
