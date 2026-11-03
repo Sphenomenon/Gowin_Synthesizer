@@ -545,6 +545,10 @@ def _artifact(root, output, metadata, profile):
         bind(MAP_DESTINATION,prefix+MAP_SOURCE)
     elif 'recording' in metadata:
         raise ValueError('unselected profile cannot claim recording owner8')
+    if not spec.get('recording_enabled', False):
+        from tools.workstation_recording_policy import verify_address_map, MAP_SOURCE, MAP_DESTINATION
+        verify_address_map(root, stage, metadata.get('native_address_map'))
+        bind(MAP_DESTINATION, prefix + MAP_SOURCE)
     for source, expected in profile['source_sha256'].items():
         relative = source[len(prefix):] if source.startswith(prefix) else None
         if (relative in metadata['source_snapshot_sha256'] and

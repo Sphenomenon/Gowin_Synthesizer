@@ -69,6 +69,8 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'rtl/ddr_address_map.vh',
+    'tools/workstation_recording_policy.py',
     'rtl/workstation/RUNTIME_DISPLAY.md',
     'rtl/display_data/feedback_dashboard.provenance.json',
     'rtl/display_data/assets/contest_brand_layout.svh',

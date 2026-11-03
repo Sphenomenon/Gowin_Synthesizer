@@ -308,7 +308,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         shutil.copyfile(root / source, stage / destination)
         overlays[destination] = dict(source=source, before=before, after=sha(stage / destination))
     recording_address_map=None
-    if recording_selected:
+    if runtime or recording_selected:
         from tools.workstation_recording_policy import install_address_map
         recording_address_map=install_address_map(root,stage)
     support = {}
@@ -484,6 +484,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if recording_selected:
         from tools.workstation_recording_policy import metadata as recording_metadata
         metadata['recording']=dict(recording_metadata(ble_raw_ddr=ble_raw_selected),address_map=recording_address_map)
+    elif runtime:
+        # Allocation declarations are shared even when all recording clients
+        # are retired. This does not select or elaborate a recording backend.
+        metadata['native_address_map'] = recording_address_map
     if ble_raw_selected:
         from tools.workstation_ble_recording_policy import metadata as ble_recording_metadata
         if business_selected:
