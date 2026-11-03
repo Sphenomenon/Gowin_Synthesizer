@@ -50,6 +50,8 @@ AUDIT_SOURCES = (
     'tools/workstation_worker_audio_only.py', 'tools/workstation_task3_tf_direct.py',
     'tools/workstation_task3_tf_storage_selection.py',
     'tools/workstation_task3_root_reset_audit.py', 'tools/workstation_task3_native_held.py',
+    'tools/workstation_task3_phone_batch_mapped_m.py',
+    'tools/workstation_task3_phone_batch_mapped_w.py',
     'tools/workstation_task3_peripheral_releases_audit.py',
     'tools/workstation_task3_tf_startup_audit.py', 'tools/workstation_task3_receipt_audit.py',
     'tools/workstation_task3_tf_sdc_audit.py', 'tools/workstation_task3_clock_release_audit.py',
@@ -453,6 +455,16 @@ def audit(root, output, metadata):
     gate('USB_bridge_resets', lambda: audit_bridge_resets(vg_text, TOP))
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
+    if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-phone-batch-v1',
+            'custom138k-workstation-task3-w-paired-phone-batch-v1'):
+        from tools.workstation_task3_root_reset_audit import audit_selected_batch_structure
+        def batch_structure():
+            proof = audit_selected_batch_structure(
+                protocol_netlist(vg_text, mapping='synthesis'), stage=stage)
+            require(proof is not None, 'batch profile did not select a mapped batch proof')
+            return proof
+        gate('phone_batch_mapped_structure', batch_structure)
     gate('LCD_pad_synchronizer_structure', lambda: audit_lcd_input_chains(
         protocol_netlist(vg_text, mapping='synthesis'), stage=stage, role=role))
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()

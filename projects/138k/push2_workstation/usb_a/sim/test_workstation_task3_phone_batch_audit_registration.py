@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Register exact batch sources without inheriting an unproved mapped root.
+"""Bind exact batch sources and boundaries to their actual mapped roots.
 
 Optional explicit old stages/VGs verify preservation of the existing real root
-proof. Temporary new-provider fixtures test source binding and rejection only;
-they are not new production candidates or new synthesis evidence.
+proof. Explicit new outputs prove their own mapped roots and batch boundaries.
+Temporary fixtures test rejection only; they are never production candidates.
 """
 from pathlib import Path
 import copy
@@ -25,6 +25,7 @@ from tools import workstation_task3_paired_audit as paired
 from tools import workstation_task3_tf_direct as direct
 from tools import workstation_task3_tf_storage_selection as storage
 from tools.workstation_native_protocol_audit import protocol_netlist
+from tools.workstation_runtime_pcm_cdc import Graph
 
 
 def sha(path):
@@ -45,12 +46,15 @@ class BatchAuditRegistration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.evidence = dict(source_bindings={}, rejections=[], old_actual_roots={},
-                            pending_batch_aliases=[], batch_prepared={}, direct_batch_selection=None,
+                            reviewed_batch_aliases=[], batch_actual_roots={},
+                            batch_prepared={}, direct_batch_selection=None,
                             old_prepared_profiles_preserved=[], mutation_fixtures_are_candidates=False)
         cls.parents, cls.batch_outputs = {}, {}
         cls.before = {str(path): sha(path) for path in (
             Path(__file__), ROOT / 'tools/workstation_task3_root_reset_audit.py',
             ROOT / 'tools/workstation_task3_paired_audit.py',
+            ROOT / 'tools/workstation_task3_phone_batch_mapped_m.py',
+            ROOT / 'tools/workstation_task3_phone_batch_mapped_w.py',
             ROOT / 'tools/workstation_task3_tf_direct.py',
             ROOT / 'tools/workstation_task3_tf_storage_selection.py')}
         for role in NEW:
@@ -66,6 +70,8 @@ class BatchAuditRegistration(unittest.TestCase):
                 for relative in ('Prj1.gprj', roots.TOP_SOURCE, NEW[role][2],
                                  *roots.PROVIDER_POLICIES[NEW[role][2]][3]):
                     cls.before[str(stage / relative)] = sha(stage / relative)
+                vg = stage / 'impl/gwsynthesis/custom_138k_integration.vg'
+                cls.before[str(vg)] = sha(vg)
             selected = os.environ.get('GW138K_TASK3_BATCH_AUDIT_' + role + '_STAGE')
             if selected:
                 stage = Path(selected).resolve()
@@ -83,10 +89,14 @@ class BatchAuditRegistration(unittest.TestCase):
         if target:
             unchanged = cls.before == {path: sha(path) for path in cls.before}
             complete = (cls.test_result.wasSuccessful() and unchanged and
-                len(cls.evidence['source_bindings']) == 2 and len(cls.evidence['old_actual_roots']) == 2)
+                len(cls.evidence['source_bindings']) == 2 and
+                len(cls.evidence['old_actual_roots']) == 2 and
+                len(cls.evidence['batch_actual_roots']) == 2)
             Path(target).write_text(json.dumps(dict(cls.evidence, passed=complete,
                 input_sha256=cls.before, inputs_unchanged=unchanged,
-                new_batch_synthesis_verified=False, new_batch_root_alias_verified=False,
+                new_batch_synthesis_verified=False,
+                existing_batch_mapped_root_verified=len(cls.evidence['batch_actual_roots'])==2,
+                new_batch_root_alias_verified=len(cls.evidence['batch_actual_roots'])==2,
                 both_batch_prepared_profiles_verified=len(cls.evidence['batch_prepared'])==2,
                 routed_timing_verified=False, hardware_tested=False), indent=2) + '\n')
 
@@ -119,7 +129,7 @@ class BatchAuditRegistration(unittest.TestCase):
             self.assertEqual(spec['configuration']['phone_batch_policy'], 'full_key_atomic_owner_snapshot_command_v1')
             self.assertEqual(spec['configuration']['interboard_media_policy'], 'task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3')
 
-    def test_02_exact_transitive_provider_hashes_and_pending_aliases(self):
+    def test_02_exact_transitive_provider_hashes_and_reviewed_aliases(self):
         for role, (_, _, provider) in NEW.items():
             provider_hash, registered_role, alias, includes = roots.PROVIDER_POLICIES[provider]
             self.assertEqual(registered_role, role)
@@ -128,15 +138,9 @@ class BatchAuditRegistration(unittest.TestCase):
                              if role == 'M' else {roots.W_PAIRED_PROVIDER, roots.W_MEDIA_PROVIDER})
             for relative, expected in includes.items():
                 self.assertEqual(sha(ROOT / relative), expected)
-            # No new mapped alias is copied from an older candidate. Even a
-            # forged familiar name cannot pass before reviewing a new real VG.
-            self.assertIsNone(alias)
-            for forged in ('reset_n', 'terminal_ready', 'u_reset/started'):
-                with self.assertRaisesRegex(ValueError, 'requires actual synthesis review'):
-                    roots.validate_root_publisher(None, None,
-                        dict(selected_provider=provider, mapped_common_root_name=forged))
-            self.evidence['pending_batch_aliases'].append(dict(role=role, provider=provider,
-                mapped_alias=None, new_synthesis_required=True))
+            self.assertEqual(alias, 'terminal_ready' if role == 'M' else 'reset_n')
+            self.evidence['reviewed_batch_aliases'].append(dict(role=role, provider=provider,
+                mapped_alias=alias, alias_alone_authorizes_batch=False))
 
     def fixture(self, role, destination):
         if role not in self.parents:
@@ -193,12 +197,8 @@ class BatchAuditRegistration(unittest.TestCase):
                     tree.write(project)
                     self.reject_source(stage, role + ' ' + label)
                     project.write_bytes(original)
-                # A real old VG does not turn the new wrapper into a reviewed
-                # batch implementation: the new alias remains unregistered.
-                netlist = protocol_netlist(self.parents[role]['vg'].read_text(), mapping='synthesis')
-                with self.assertRaisesRegex(ValueError, 'requires actual synthesis review'):
-                    roots.audit_root_startup(netlist, stage=stage)
-                self.evidence['rejections'].append(dict(case=role + ' old VG cannot authorize new alias', rejected=True))
+                # This fixture checks source registration only. The actual
+                # new stage/old VG cross-check below exercises mapped guards.
 
     def test_04_old_real_root_proof_remains_strict(self):
         for role in NEW:
@@ -206,7 +206,11 @@ class BatchAuditRegistration(unittest.TestCase):
                 self.skipTest('explicit M/W old stage and VG inputs required; no cache fallback')
             row = self.parents[role]
             netlist = protocol_netlist(row['vg'].read_text(), mapping='synthesis')
-            proof = roots.audit_root_startup(netlist, stage=row['stage'])
+            with patch('tools.workstation_task3_phone_batch_mapped_m.audit',
+                       side_effect=AssertionError('old M invoked new mapped guard')), \
+                 patch('tools.workstation_task3_phone_batch_mapped_w.audit',
+                       side_effect=AssertionError('old W invoked new mapped guard')):
+                proof = roots.audit_root_startup(netlist, stage=row['stage'])
             self.assertEqual(proof['actual_state_bits'], 35)
             self.assertEqual(proof['state_assignment_count'], 1 << 35)
             self.assertTrue(proof['all_state_assignments_proven'])
@@ -329,6 +333,62 @@ class BatchAuditRegistration(unittest.TestCase):
                 actual_role, profile, _, _ = paired.verify_prepared(output, metadata)
             self.assertEqual(actual_role, role)
             self.evidence['old_prepared_profiles_preserved'].append(profile['profile'])
+
+    def test_08_actual_batch_root_and_destructive_controls(self):
+        if len(self.batch_outputs) != 2:
+            self.skipTest('explicit new M/W outputs required; no cache fallback')
+        for role, output in self.batch_outputs.items():
+            stage = output / 'workstation/Prj1'
+            vg = stage / 'impl/gwsynthesis/custom_138k_integration.vg'
+            n = protocol_netlist(vg.read_text(), mapping='synthesis')
+            proof = roots.audit_root_startup(n, stage=stage)
+            self.assertEqual(proof['selected_provider'], NEW[role][2])
+            self.assertEqual(proof['actual_state_bits'], 35)
+            self.assertEqual(proof['state_assignment_count'], 1 << 35)
+            self.assertTrue(proof['all_state_assignments_proven'])
+            self.assertEqual(proof['first_root_rise_clock_edge_from_zero_init'], 1026)
+            self.assertIn('batch_mapped_structure', proof)
+            self.assertFalse(proof['routed_timing_verified'])
+            self.assertFalse(proof['hardware_tested'])
+            self.evidence['batch_actual_roots'][role] = proof
+            g = Graph(n)
+            for key, value in (('mapped_common_root_name', 'unreviewed_root'),
+                               ('common_root_output_polarity', 0), ('root_q', "1'b1")):
+                forged = dict(proof, **{key: value})
+                with self.assertRaises(ValueError):
+                    roots.validate_root_publisher(n, g, forged)
+                self.evidence['rejections'].append(dict(case=role+' forged '+key, rejected=True))
+            started = g.register('u_reset', 'started')
+            count = g.group('u_reset', 'startup_count', 32)
+            sync = g.group('u_reset', 'sync_ff', 2)
+            reset_pin = 'CLEAR' if n.cells[started]['kind'] == 'DFFCE' else 'RESET'
+            for label, path, section, key, value in (
+                    ('root INIT', started, 'parameters', 'INIT', "1'b1"),
+                    ('root reset removed', started, 'ports', reset_pin, "1'b0"),
+                    ('sync1 bypass', sync[1], 'ports', 'D', "1'b1"),
+                    ('counter LSB stuck', count[0], 'ports', 'D', "1'b0")):
+                original = copy.deepcopy(n.cells[path])
+                try:
+                    n.cells[path][section][key] = value
+                    with self.assertRaises(ValueError):
+                        roots.audit_root_startup(n, stage=stage)
+                    self.evidence['rejections'].append(dict(case=role+' '+label, rejected=True))
+                finally:
+                    n.cells[path] = original
+
+    def test_09_old_VG_cannot_borrow_actual_batch_stage(self):
+        if len(self.parents) != 2 or len(self.batch_outputs) != 2:
+            self.skipTest('explicit old VGs and new M/W outputs required; no cache fallback')
+        for role, row in self.parents.items():
+            stage = self.batch_outputs[role] / 'workstation/Prj1'
+            # This is the actual untouched new source closure, not a fixture
+            # adapted from the old build. Only the supplied VG is wrong.
+            n = protocol_netlist(row['vg'].read_text(), mapping='synthesis')
+            with self.assertRaises(ValueError) as error:
+                roots.audit_root_startup(n, stage=stage)
+            self.evidence['rejections'].append(dict(
+                case=role+' old VG with actual batch stage', rejected=True,
+                error=str(error.exception), actual_batch_inputs_unchanged=True))
 
 
 if __name__ == '__main__':

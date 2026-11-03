@@ -1,0 +1,46 @@
+{
+  "schema": "dual138k-task3-batch-mapped-progress-v1",
+  "date": "2026-11-03",
+  "source_parent_commit": "18a44509401d53bb20efbd8730e7b2a2712df8fe",
+  "stage": "work_in_progress_checkpoint_requested_before_continuing_validation",
+  "scope": "audit-only; same immutable v3 M/W candidates from 18a44509; no new RTL/firmware/synthesis/bitstream",
+  "auditor_sha256": {
+    "tools/workstation_task3_root_reset_audit.py": "cfcd9629bec3b065300c4ff723262766a3aa0eb64f1f1bc7de0825835c122315",
+    "tools/workstation_task3_paired_audit.py": "b1eea1ec4d2aba6700c3ed86865fffe9bd761c1046ad43b9f367313284b62934",
+    "tools/workstation_task3_phone_batch_mapped_m.py": "f76372008d781d12544b0ffe86b673c95343dcddd40d60db6646bd9cf57187ab",
+    "tools/workstation_task3_phone_batch_mapped_w.py": "75d147a307cfd476cf0c94a195a0b19fe7726681abcbb0b2065ceed75948c194"
+  },
+  "completed_checks": {
+    "current_workstation_sources": {
+      "passed": 17,
+      "total": 17
+    },
+    "stage_USB_firmware": {
+      "passed": 7,
+      "total": 7
+    },
+    "old_actual_phone_roots": {
+      "passed": 5,
+      "total": 5,
+      "negative_controls": 85,
+      "historical_consumer_seals_still_reject": true
+    },
+    "python_compile": true,
+    "git_diff_check": true
+  },
+  "pending_checks": [
+    "new batch mapped destructive controls and registration regression",
+    "W register INIT and port inventory review",
+    "full strict synthesis re-audit; preserve historical consumer and TF failures"
+  ],
+  "observed_open_failure": "M request-toggle local proof expands more than the BooleanDiagram 120-input limit; positive integration currently rejects. Keep fail-closed behavior; no acceptance granted.",
+  "source_locks_changed": false,
+  "prepared_candidates_changed": false,
+  "whole_board_offline_accepted": false,
+  "physical_CDC_accepted": false,
+  "routed_timing_verified": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_programmed": false,
+  "bitstream": null
+}

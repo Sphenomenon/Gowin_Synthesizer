@@ -48,13 +48,13 @@ PROVIDER_POLICIES = {
     # wrapper bytes would leave its consumed role/macro selection unbound.
     W_PHONE_PROVIDER: (W_PHONE_PROVIDER_SHA256, 'W', 'reset_n',
                        {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256}),
-    # Source registration only. No batch VG has established its mapped root
-    # alias yet; None deliberately prevents a successful root startup proof.
-    # Include all transitive composition providers until the covered top/HDL.
-    M_PHONE_BATCH_PROVIDER: (M_PHONE_BATCH_PROVIDER_SHA256, 'M', None,
+    # Actual batch VGs established these aliases. Root auditing additionally
+    # checks the selected role's mapped batch boundary before using them;
+    # relabeling an older VG with these exact source wrappers must still fail.
+    M_PHONE_BATCH_PROVIDER: (M_PHONE_BATCH_PROVIDER_SHA256, 'M', 'terminal_ready',
         {M_PHONE_PROVIDER: M_PHONE_PROVIDER_SHA256,
          RUNTIME_PROVIDER: RUNTIME_PROVIDER_SHA256, HDMI_PROVIDER: HDMI_PROVIDER_SHA256}),
-    W_PHONE_BATCH_PROVIDER: (W_PHONE_BATCH_PROVIDER_SHA256, 'W', None,
+    W_PHONE_BATCH_PROVIDER: (W_PHONE_BATCH_PROVIDER_SHA256, 'W', 'reset_n',
         {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256, W_MEDIA_PROVIDER: W_MEDIA_PROVIDER_SHA256}),
 }
 
@@ -206,8 +206,22 @@ class RootDiagram(BooleanDiagram):
         return super().net(graph, net, memo, active)
 
 
+def audit_selected_batch_structure(n, *, stage, source=None):
+    """Dispatch only exact batch providers; old root policies stay unchanged."""
+    source = source_binding(stage) if source is None else source
+    provider = source['selected_provider']
+    if provider == M_PHONE_BATCH_PROVIDER:
+        from tools.workstation_task3_phone_batch_mapped_m import audit
+    elif provider == W_PHONE_BATCH_PROVIDER:
+        from tools.workstation_task3_phone_batch_mapped_w import audit
+    else:
+        return None
+    return audit(n, stage=stage)
+
+
 def audit_root_startup(n, *, stage):
     source = source_binding(stage)
+    batch = audit_selected_batch_structure(n, stage=stage, source=source)
     require(n.frames.get('', {}).get('kind') == 'workstation_custom_138k_top', 'wrong actual top')
     g = Graph(n)
     started = g.register('u_reset', 'started')
@@ -230,6 +244,8 @@ def audit_root_startup(n, *, stage):
     binding = dict(source, root_register=started, root_q=root_q,
                    mapped_common_root_name=PROVIDER_POLICIES[source['selected_provider']][2],
                    common_root_output_polarity=1)
+    if batch is not None:
+        binding['batch_mapped_structure'] = batch
     validate_root_publisher(n, g, binding)
     named = [*(n.pin(path, 'Q') for path in count),
              *(n.pin(path, 'Q') for path in sync), root_q]
