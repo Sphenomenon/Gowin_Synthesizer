@@ -113,6 +113,27 @@ def require(condition, message):
         raise ValueError('runtime CDC audit: ' + message)
 
 
+def custom_board_header(text):
+    """Stop at the custom-board outer else, allowing nested parameter guards."""
+    marker = 'module workstation_custom_138k_top'
+    require(text.count(marker) == 1, 'staged custom-board header missing/duplicate')
+    lines = text[text.index(marker):].splitlines(keepends=True)
+    depth, selected = 0, []
+    for line in lines:
+        directive = re.match(r'\s*`(ifdef|ifndef|endif|else|elsif)\b', line)
+        if directive:
+            kind = directive[1]
+            if kind in ('else', 'elsif') and depth == 0:
+                return ''.join(selected)
+            if kind in ('ifdef', 'ifndef'):
+                depth += 1
+            elif kind == 'endif':
+                depth -= 1
+                require(depth >= 0, 'staged custom-board header nesting changed')
+        selected.append(line)
+    raise ValueError('runtime CDC audit: staged custom-board outer else missing')
+
+
 def prepared_ble_reset_policy(stage):
     """Select only the explicit common-reset wiring in a sealed staged top."""
     relative = 'rtl/workstation/gw138k_push_workstation_top.v'
@@ -124,7 +145,7 @@ def prepared_ble_reset_policy(stage):
     if not selected or selected == ['0']:
         return dict(mode='legacy-shared-release', raw_common_reset=False)
     require(selected == ['1'], 'staged common-reset selection is not explicit')
-    custom = text.split('`else', 1)[0]
+    custom = custom_board_header(text)
     require('module workstation_custom_138k_top' in custom and
             len(re.findall(r"\bwire\s+button1_n\s*=\s*1'b1\s*;", custom)) == 1 and
             len(re.findall(r'\.common_reset_ni\s*\(\s*button1_n\s*\)', ports)) == 1 and

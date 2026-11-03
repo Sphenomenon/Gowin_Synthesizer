@@ -32,6 +32,18 @@ class MergedStorageReference(unittest.TestCase):
             parent, _ = adapter.restore_parent(source, relative)
             self.assertEqual(pitch.normalize_source(relative, source), pitch.normalize_source(relative, parent))
 
+    def test_custom_header_does_not_stop_at_nested_parameter_else(self):
+        from tools.workstation_runtime_cdc import custom_board_header
+        source = (ROOT / storage.REFERENCE).read_text()
+        selected = custom_board_header(source)
+        self.assertIn("wire button1_n=1'b1;", selected)
+        self.assertNotIn('module gw138k_push_workstation_top', selected)
+        # A declaration in the alternate board branch cannot satisfy the gate.
+        moved = source.replace("    wire button1_n=1'b1;\n", '')
+        moved = moved.replace('module gw138k_push_workstation_top',
+                              "wire button1_n=1'b1;\nmodule gw138k_push_workstation_top")
+        self.assertNotIn("wire button1_n=1'b1;", custom_board_header(moved))
+
     def test_unrelated_edit_and_changed_default_are_rejected(self):
         for relative in adapter.RECORDS:
             source = (ROOT / relative).read_bytes()

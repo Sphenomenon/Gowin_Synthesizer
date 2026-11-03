@@ -116,7 +116,8 @@ def prepared_reset_policy(stage):
     if not selected or selected == ['0']:
         return dict(mode='legacy-global')
     require(selected == ['1'], 'staged common-reset selection is not explicit')
-    custom = text.split('`else', 1)[0]
+    from tools.workstation_runtime_cdc import custom_board_header
+    custom = custom_board_header(text)
     require('module workstation_custom_138k_top' in custom and
             len(re.findall(r"\bwire\s+button1_n\s*=\s*1'b1\s*;", custom)) == 1 and
             re.search(r'\.common_reset_ni\s*\(\s*button1_n\s*\)', ports) is not None and
