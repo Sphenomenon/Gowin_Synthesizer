@@ -23,7 +23,6 @@ def run(output,protocol_result=None):
     output.mkdir(parents=True,exist_ok=False)
     (output/'pinout').mkdir()
     maintained=[ROOT/'rtl/bluetooth/workstation_bluetooth.sv',ROOT/'tools/workstation_bluetooth.py',
-        ROOT/'rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md',
         ROOT/'tools/workstation_pinout.py',ROOT/'sim/test_workstation_pinout.py',
         ROOT/'boards/custom_138k/bluetooth.json',ROOT/'boards/custom_138k/pinout.json',
         PROTOCOL/'tests/tb_protocol_recording.sv',Path(__file__).resolve(),

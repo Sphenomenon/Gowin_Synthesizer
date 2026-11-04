@@ -31,7 +31,7 @@ def main():
         'rtl/music/music_async_fifo.sv')]
     sources += [selected_source(project), project / 'src/migration/gw138k_stream_cdc.sv']
     sources += [Path(__file__).with_name('tb_workstation_display_observation_health.sv')]
-    inputs = sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'rtl/audio/DISPLAY_OBSERVATION_HEALTH.md',
+    inputs = sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_runtime_counter.py',
                        project.parents[1] / 'workstation_profile.json', project.parents[1] / 'integration_inputs.json']
     initial_hashes = {str(path): digest(path) for path in inputs}
     result = dict(schema=1, passed=False, hardware_tested=False, profile_changed=False, bitstream_identity=None,

@@ -43,8 +43,7 @@ def main():
     unique_sources(sources)
     fixtures+=ble_inputs
     extra=[Path(__file__).resolve(),Path(__file__).with_name('runtime_media_integration_sources.py'),
-           Path(__file__).with_name('runtime_media_ble_integration_sources.py'),
-           ROOT/'rtl/services/MEDIA_STOP_POLICY.md']
+           Path(__file__).with_name('runtime_media_ble_integration_sources.py')]
     def input_key(path):
         for prefix,base in (('fixture/',output),('prepared/',project),('repository/',ROOT.parents[3])):
             if path.is_relative_to(base):return prefix+str(path.relative_to(base))

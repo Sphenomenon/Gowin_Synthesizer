@@ -6,8 +6,6 @@ SOURCES = (
     'rtl/memory/workstation_recording_ddr_authority.sv',
 )
 DEPENDENCIES = (
-    'rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md',
-    'rtl/memory/RECORDING_DDR_AUTHORITY_CONTRACT.md',
     'tools/workstation_bluetooth_ddr.py',
     'tools/workstation_ble_recording_policy.py',
 )

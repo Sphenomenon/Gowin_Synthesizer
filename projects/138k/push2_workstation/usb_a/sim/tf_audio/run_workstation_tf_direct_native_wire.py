@@ -80,7 +80,7 @@ def no_DDR_closure(binary):
 
 def main():
  ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--case',action='append');ap.add_argument('--no-negatives',action='store_true');args=ap.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
- inputs=[*SOURCES,TB,CARD,Path(__file__).resolve(),SIM/'run_workstation_tf_direct_ingress.py',RTL/'workstation_tf_direct_ingress.provenance.json',RTL/'storage/workstation_tf_file_reader.provenance.json',RTL/'storage/WORKSTATION_TF_FILE_READER_CONTRACT.md',RTL/'WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md',RTL/'WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md']
+ inputs=[*SOURCES,TB,CARD,Path(__file__).resolve(),SIM/'run_workstation_tf_direct_ingress.py',RTL/'workstation_tf_direct_ingress.provenance.json',RTL/'storage/workstation_tf_file_reader.provenance.json']
  hashes={str(p):sha(p) for p in inputs};result=dict(schema=1,passed=False,input_sha256=hashes,cases={},negative_controls={},real_SPI_FAT_WAV_PCM=True,public_ports_only=True,profile_selected=False,whole_workstation_owner4_trace_verified=False,physical_EOF_success_verified=False,implementation_tools_invoked=False,hardware_operated=False,deployment_allowed=False)
  def execute(case,source=None,negative=None):
   name,fs,partition,rate,mode,count=case;folder=out/name;manifest=disk(folder,fs,partition,rate,count,97,mode)

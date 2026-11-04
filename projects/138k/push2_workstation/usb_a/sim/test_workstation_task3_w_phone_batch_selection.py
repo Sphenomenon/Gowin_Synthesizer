@@ -35,8 +35,7 @@ class WPhoneBatchSelection(unittest.TestCase):
             ROOT / 'rtl/workstation/workstation_task3_w_bus_endpoint.sv',
             ROOT / 'rtl/workstation/workstation_task3_phone_window_tx.sv',
             ROOT / 'rtl/workstation/workstation_task3_phone_batch_w.sv',
-            ROOT / 'rtl/workstation/task3_paired_channels.vh',
-            ROOT / 'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md']
+            ROOT / 'rtl/workstation/task3_paired_channels.vh']
         cls.evidence['input_sha256'] = {str(path): sha(path) for path in cls.tracked}
 
     def setUp(self):

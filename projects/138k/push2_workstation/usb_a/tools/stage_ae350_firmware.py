@@ -129,7 +129,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
             raise FileNotFoundError('missing maintained AE350 firmware input: ' + name)
     provenance = json.loads((source_dir / 'provenance.json').read_text())
     baseline = load_baseline(root, 'resource_rework_route0')
-    if provenance.get('schema') != 1 or provenance.get('imported_from') != baseline.evidence():
+    if provenance.get('schema') != 1 or provenance.get('imported_from') != baseline.import_evidence():
         raise ValueError('AE350 import provenance does not match the locked baseline')
     if set(provenance.get('files', {})) != set((*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')):
         raise ValueError('AE350 imported source inventory drift')

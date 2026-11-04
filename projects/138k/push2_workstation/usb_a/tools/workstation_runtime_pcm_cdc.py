@@ -29,8 +29,7 @@ CONSTRAINT_REVISIONS = ('paired-nextq-v2', 'legacy-v1')
 R = 'u_managed/runtime'
 B, Z, T = R + '/bridge', R + '/serializer', R + '/clocks/transaction'
 AUDIT_SOURCES = (*CLOCK_SOURCES, 'tools/workstation_custom_usb2_cdc.py',
-                 'tools/workstation_runtime_pcm_cdc.py', 'sim/test_workstation_runtime_pcm_cdc.py',
-                 'tools/WORKSTATION_RUNTIME_PCM_CDC.md')
+                 'tools/workstation_runtime_pcm_cdc.py', 'sim/test_workstation_runtime_pcm_cdc.py')
 # (scope, stem, bit indexes or None for scalar, pin). Each bit is selected
 # explicitly; suffix wildcards may match only its one actual synthesis FF.
 def ref(scope, stem, width=None, port='D', start=0):

@@ -15,7 +15,6 @@ COPIES={
 SOURCES=(DIRECTORY+'/workstation_ble_record_data_engine.sv',
     DIRECTORY+'/workstation_ble_record_data_service.sv','rtl/services/workstation_business_mailbox.sv')
 DEPENDENCIES=(*COPIES.values(),DIRECTORY+'/provenance.json',
-    DIRECTORY+'/CONTRACT.md','rtl/services/BUSINESS_MAILBOX_CONTRACT.md',
     'rtl/workstation/workstation_profile_r00_no_local_panel.sv','tools/workstation_cpu_business.py',
     'tools/ae350_ble_business_indirect_review.json')
 HCI_POLICY='native_shared_hci_owner_v1'

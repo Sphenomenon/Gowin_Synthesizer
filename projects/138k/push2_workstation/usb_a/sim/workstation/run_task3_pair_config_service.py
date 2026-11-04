@@ -15,7 +15,7 @@ def run(output):
     root = Path(__file__).resolve().parents[2]
     sources = [root / 'rtl/services/workstation_task3_pair_config_service.sv',
                root / 'sim/workstation/tb_task3_pair_config_service.sv']
-    tracked = sources + [root / 'rtl/services/TASK3_PAIR_CONFIG_CONTRACT.md', Path(__file__).resolve()]
+    tracked = sources + [ Path(__file__).resolve()]
     before = {str(p): sha(p) for p in tracked}
     output.mkdir(parents=True, exist_ok=False)
     report = dict(schema=1, passed=False, source_sha256=before, commands=[],

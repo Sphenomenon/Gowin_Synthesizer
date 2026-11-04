@@ -1,0 +1,14 @@
+USB board adapter attribution
+
+Files under vendor/ come from the local USB3300_HS reference. vendor/UPSTREAM.json
+records original paths and SHA256. SIE TX/RX and CRC16 sources are Copyright
+2014-2019 Ultra-Embedded.com, LGPL-2.1-or-later; complete notices remain in each
+file and vendor/LICENSE-LGPL-2.1. The ULPI wrapper is GPL-2.0-or-later; its original
+notice and vendor/LICENSE-GPL-2.0 are retained. Preserve corresponding source
+and license obligations when distributing derived work.
+
+Local changes prefix SIE module names and add token CRC5 verification.
+midi_usb_hs_phy.v derives from the local CDC PHY negotiation controller.
+midi_usb2_boot.v derives from the project USB3300 recovery/initialization block
+with a module-name prefix. The application/control/transaction layer is
+first-party code.

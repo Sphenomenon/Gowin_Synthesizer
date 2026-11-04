@@ -21,8 +21,7 @@ def main():
     output.mkdir(parents=True,exist_ok=False)
     rtl=ROOT/'rtl/services/workstation_media_preparation.sv'
     tb=Path(__file__).with_name('tb_workstation_media_preparation.sv')
-    inputs={str(p):sha(p) for p in (rtl,tb,Path(__file__).resolve(),
-        ROOT/'rtl/services/MEDIA_PREPARATION_CONTRACT.md')}
+    inputs={str(p):sha(p) for p in (rtl,tb,Path(__file__).resolve())}
     result=dict(schema=1,passed=False,input_sha256=inputs,
         identity='native-media-preparation-v1-'+hashlib.sha256(json.dumps(inputs,sort_keys=True).encode()).hexdigest()[:16],
         scope='50MHz result correlation and held lifecycle; backend request/completion fixtures',

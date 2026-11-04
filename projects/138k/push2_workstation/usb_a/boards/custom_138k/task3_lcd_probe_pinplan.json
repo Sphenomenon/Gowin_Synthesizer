@@ -5,8 +5,6 @@
   "mapping": "M.FPC4.n -> W.FPC4.n; user-confirmed network mapping; no n->41-n transform",
   "default": "all programmable pads high impedance",
   "source_basis": {
-    "Hardware/\u539f\u7406\u56fe\u89e3\u6790.md": "d9b91fb355bff7e5d7eac04d82a0ec788461162a3a5e32a69541ca4f4e956b20",
-    "example/LCD_RGB/docs/\u63a5\u7ebf\u6838\u5bf9.md": "cc5dcc7f6e27d3ec32f234025fad80df55d13f6ee3f47175be9aed1676418c9f",
     "example/LCD_RGB/constraints/lcd.cst": "3503323ae5c6f21ec3b39bf1ca7b0ccd122d8d2ce75aeb85f7b66def4e242c6a"
   },
   "schematic_reference": "Hardware/SCH_MY_138K_1_2026-10-23.pdf as cited and transcribed by the reviewed source documents; raw PDF is not present in this worktree",
@@ -374,5 +372,9 @@
     }
   ],
   "hardware_operated": false,
-  "bitstream": null
+  "bitstream": null,
+  "archived_document_basis": {
+    "Hardware/\u539f\u7406\u56fe\u89e3\u6790.md": "d9b91fb355bff7e5d7eac04d82a0ec788461162a3a5e32a69541ca4f4e956b20",
+    "example/LCD_RGB/docs/\u63a5\u7ebf\u6838\u5bf9.md": "cc5dcc7f6e27d3ec32f234025fad80df55d13f6ee3f47175be9aed1676418c9f"
+  }
 }

@@ -97,7 +97,6 @@ AUDIT_SOURCES = (
     "sim/test_workstation_runtime_shared_cdc.py",
     "sim/test_workstation_runtime_r00_shared_cdc.py",
     "sim/test_workstation_no_local_panel_precision.py",
-    "tools/WORKSTATION_RUNTIME_SHARED_CDC.md",
     "tools/workstation_usb2_owner_reset.py",
     "tools/workstation_ble_ddr_cdc_scope.py",
     "sim/test_workstation_usb2_owner_reset.py",

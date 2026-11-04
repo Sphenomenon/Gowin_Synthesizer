@@ -36,7 +36,7 @@ def main():
     sources += [project / name for name in ('src/migration/gw138k_stream_cdc.sv',
         'src/usb_host/gw138k_usb_event_fifo.v', 'src/push2/push2_midi_rx.sv', 'src/video/video_font_5x7.v')]
     sources += [bench]
-    inputs = sources + [top, wrapper, old_runner, old_bench, contract, frozen, Path(__file__).resolve(),
+    inputs = sources + [top, wrapper, old_runner, old_bench,  frozen, Path(__file__).resolve(),
         project.parents[1] / 'workstation_profile.json', project.parents[1] / 'integration_inputs.json']
     hashes = {str(path): digest(path) for path in inputs}
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()

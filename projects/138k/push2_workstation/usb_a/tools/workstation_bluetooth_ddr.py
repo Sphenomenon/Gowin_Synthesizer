@@ -354,7 +354,7 @@ def verify_prepared(root,stage,evidence):
         if evidence.get(key)!=expected:raise ValueError('BLE raw DDR preparation evidence drift: '+key)
     for path,sha in UPSTREAM_SHA256.items():
         if digest((root.parents[3]/path).read_bytes())!=sha:raise ValueError('BLE raw DDR upstream source drift: '+path)
-    for path,sha in ((RAW_STORE_PATH,RAW_STORE_SHA256),(RAW_CONTRACT_PATH,RAW_CONTRACT_SHA256)):
+    for path,sha in ((RAW_STORE_PATH,RAW_STORE_SHA256),(RAW_CONTRACT_SHA256)):
         if digest((root/path).read_bytes())!=sha:raise ValueError('BLE raw DDR store/contract drift: '+path)
     for name,path in STAGED_PATHS.items():
         if digest((stage/path).read_bytes())!=OUTPUT_SHA256[name]:raise ValueError('BLE raw DDR output drift: '+path)

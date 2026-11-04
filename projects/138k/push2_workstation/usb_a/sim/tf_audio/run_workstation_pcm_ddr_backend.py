@@ -13,7 +13,6 @@ REPOSITORY=ROOT.parents[3]
 PREFIX='projects/138k/push2_workstation/usb_a/'
 REFERENCE='728eac7a9888ef617dec0c05a57a8ea24f3ec521'
 BACKEND='rtl/audio/workstation_pcm_ddr_backend.sv'
-CONTRACT='rtl/audio/PCM_DDR_BACKEND_CONTRACT.md'
 MAP='rtl/ddr_address_map.vh'
 FIXTURE='sim/tf_audio/workstation_pcm_ddr_backend_tb.sv'
 DEPENDENCIES=(
@@ -43,8 +42,7 @@ def number(value):
 
 def run(output):
     output.mkdir(parents=True,exist_ok=False)
-    names=[BACKEND,CONTRACT,MAP,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT)),*DEPENDENCIES,*NATIVE,
-        'rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md']
+    names=[BACKEND,MAP,FIXTURE,str(Path(__file__).resolve().relative_to(ROOT)),*DEPENDENCIES,*NATIVE]
     hashes={name:sha((ROOT/name).read_bytes()) for name in names}
     protected={}
     for name in DEPENDENCIES:

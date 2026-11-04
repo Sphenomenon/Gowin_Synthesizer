@@ -24,8 +24,8 @@ MAINTAINED_UPDATES=('rtl/workstation/workstation_runtime_controlled.sv',
 DEPENDENCIES=('tools/workstation_task3_m_paired_profile.py',PROVIDER,REFERENCE,BOARD,
  'rtl/workstation/task3_paired_channels.vh','rtl/workstation/workstation_runtime_controlled.sv',
  'rtl/workstation/workstation_runtime_audio.sv','rtl/audio/workstation_ae350_pcm_owner.sv',
- 'rtl/tf_audio/workstation_tf_direct_runtime_service.sv','rtl/workstation/WORKSTATION_TASK3_M_PAIRED_CONTRACT.md',
- BATCH_PROVIDER,PHONE_WINDOW_PROVIDER,'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md')
+ 'rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
+ BATCH_PROVIDER,PHONE_WINDOW_PROVIDER)
 def digest(s):return hashlib.sha256(s.encode() if isinstance(s,str) else s).hexdigest()
 def reference(root):
  payload=(Path(root)/REFERENCE).read_bytes()
@@ -67,8 +67,7 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
            'rtl/workstation/workstation_runtime_audio.sv',
            'rtl/audio/workstation_ae350_pcm_owner.sv',
            'rtl/workstation/workstation_task3_m_bus_endpoint.sv',
-           'rtl/workstation/workstation_task3_phone_batch_m.sv',
-           'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md')
+           'rtl/workstation/workstation_task3_phone_batch_m.sv')
     hashes={}
     for relative in files:
         source=(root/relative).read_bytes();selected=(stage/relative).read_bytes()

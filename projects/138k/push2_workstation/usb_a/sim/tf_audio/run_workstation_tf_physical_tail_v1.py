@@ -10,7 +10,7 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);a=ap.parse_args()
     out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
-    inputs=[RTL,TB,CONTRACT,Path(__file__).resolve()];hashes={str(p):sha(p) for p in inputs}
+    inputs=[RTL,TB,Path(__file__).resolve()];hashes={str(p):sha(p) for p in inputs}
     result=dict(schema=1,passed=False,input_sha256=hashes,public_endpoint_only=True,real_native_chain=False,physical_CDC_verified=False,hardware_operated=False,cases={})
     original=RTL.read_text()
     mutants={

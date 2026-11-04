@@ -28,9 +28,7 @@ SOURCES=(*MEDIA_SOURCES,APB,CONTROLLED)
 DEPENDENCIES=('tools/workstation_task3_w_media_profile.py',PROVIDER,REFERENCE,BOARD,PRIMITIVES,'rtl/ddr_address_map.vh',
  'tools/workstation_task3_w_media.py','tools/workstation_task3_w_media_firmware.py',
  'tools/workstation_task3_w_media_firmware_review.json',
- 'rtl/workstation/workstation_runtime_controlled.sv','rtl/audio/workstation_observation_consumers.sv',
- 'rtl/workstation/WORKSTATION_TASK3_W_MEDIA_CONTRACT.md',
- 'rtl/workstation/WORKSTATION_TASK3_W_MEDIA_BOARD_CONTRACT.md')
+ 'rtl/workstation/workstation_runtime_controlled.sv','rtl/audio/workstation_observation_consumers.sv')
 TOP='rtl/workstation/gw138k_push_workstation_top.v'
 PARENT_TOP_SHA256='2bd14a9c81c28817dc0fd2bf39a87d208f0344f7f1c8f06571953bc2550f3cd0'
 REFERENCE_SHA256='ca2dc65f6e958f0730642a980fd591612bde3edbdbad45f0d8dc0d3b63bcfa1a'

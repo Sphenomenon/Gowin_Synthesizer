@@ -39,8 +39,7 @@ def main():
     support=verified_project(ROOT,project)
     sources=build_sources(ROOT,project)+[Path(__file__).with_name('tb_workstation_media_runtime_integration.sv')]
     fixtures=prepare_fixtures(ROOT,project,output)
-    extra=[Path(__file__).resolve(),Path(__file__).with_name('runtime_media_integration_sources.py'),
-           ROOT/'rtl/services/MEDIA_STOP_POLICY.md']
+    extra=[Path(__file__).resolve(),Path(__file__).with_name('runtime_media_integration_sources.py')]
     paths={input_key(ROOT,project,output,path):path for path in sources+fixtures+extra}
     hashes={key:sha(path) for key,path in paths.items()}
     identity=hashlib.sha256(json.dumps(hashes,sort_keys=True).encode()).hexdigest()

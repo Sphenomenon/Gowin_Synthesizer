@@ -45,7 +45,7 @@ def main():
     reference_inputs = [project / name for name in PINNED_REFERENCE]
     profile_path = project.parents[1] / 'workstation_profile.json'
     inputs = list(dict.fromkeys(analysis_sources + fixtures + [legacy_tb,
-        Path(__file__).resolve(), ROOT / 'DISPLAY_DATA_LAYOUT_V1.md',
+        Path(__file__).resolve(),
         ROOT / 'rtl/display_data/DISPLAY_METADATA_CONTEXT.md', profile_path,
         project.parents[1] / 'integration_inputs.json'] + reference_inputs))
     hashes = {str(path): digest(path) for path in inputs}

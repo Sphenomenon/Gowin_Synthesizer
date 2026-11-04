@@ -70,7 +70,7 @@ def main():
         (owner8_sources + [ROOT / name for name in hdmi_provenance.OWNER8_SOURCES] +
          [adaptation_path, project / 'Prj1.gprj', project / hdmi_provenance.SOURCE] if args.hdmi_adaptation else []) +
         [prepared_counter, ROOT / 'tools/workstation_runtime_counter.py', ROOT / 'tools/workstation_hdmi_provenance.py', native_hdmi, provenance_path,
-        ROOT / 'rtl/workstation/RUNTIME_DISPLAY.md', a07_path, Path(__file__).resolve(),
+         a07_path, Path(__file__).resolve(),
         project / 'src/memory/ddr_address_map.vh', profile_path, project.parents[1] / 'integration_inputs.json']))
     hashes = {str(path): digest(path) for path in inputs}
     source_identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()

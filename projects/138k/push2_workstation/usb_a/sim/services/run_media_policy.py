@@ -42,7 +42,7 @@ def main():
     score_tb=Path(__file__).with_name('tb_workstation_media_policy_score.sv')
     paths=sources+tables+[score_tb,Path(__file__).resolve(),ROOT/'tools/workstation_baselines.py',
         ROOT/'tools/workstation_resource_timing.py',ROOT/'rtl/services/workstation_controlled_services.provenance.json',
-        ROOT/'rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md',ROOT/'rtl/services/MEDIA_STOP_POLICY.md',baseline.manifest]
+        baseline.manifest]
     def input_key(path):
         if path.is_relative_to(output):return 'reconstructed/'+str(path.relative_to(output))
         return str(path.relative_to(ROOT))

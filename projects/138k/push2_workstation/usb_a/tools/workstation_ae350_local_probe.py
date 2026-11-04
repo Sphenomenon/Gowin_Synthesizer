@@ -35,10 +35,10 @@ CPU_PLL_CONSTRAINT=f'INS_LOC "{CPU_PLL_INSTANCE}" {CPU_PLL_SITE};'
 RTC_CLOCK_PIN='u_rtc/rtc_tick_s1/Q'
 RTC_CLOCK_SDC=('create_generated_clock -name cpu_rtc_bound -source [get_ports {clk_50m}] '
                '-divide_by 1524 [get_pins {'+RTC_CLOCK_PIN+'}]')
-BSRAM_METADATA=('rtl/probe/AE350_BSRAM_SNAPSHOT_CONTRACT.md',
+BSRAM_METADATA=(
     'tools/workstation_ae350_snapshot_ram_audit.py','tools/workstation_synthesis_netlist.py',
     'tools/decode_ae350_banked_gao.py','tools/decode_ae350_local_probe.py')
-CACHE_METADATA=('firmware/ae350/probes/CACHE_PMA_PROBE.md',
+CACHE_METADATA=(
     'tools/workstation_ae350_cache_probe.py','tools/decode_ae350_cache_probe.py')
 
 def native_sources(gao_mode,program='local-memory'):
@@ -76,7 +76,7 @@ def gao_record(gao_mode):
     return result
 
 def metadata_sources(gao_mode,program='local-memory'):
-    return BSRAM_METADATA+(('rtl/probe/AE350_BSRAM8_GAO_CONTRACT.md','tools/decode_ae350_bsram8_gao.py') if gao_mode=='bsram8' else ())+ (CACHE_METADATA if program=='cache-pma-v1' else ())
+    return BSRAM_METADATA+(('tools/decode_ae350_bsram8_gao.py',) if gao_mode=='bsram8' else ())+ (CACHE_METADATA if program=='cache-pma-v1' else ())
 
 def audit_gao_synthesis(netlist_text,gao_mode='full64',program='local-memory'):
     """Require every declared GAO bit to survive as a 50MHz register.

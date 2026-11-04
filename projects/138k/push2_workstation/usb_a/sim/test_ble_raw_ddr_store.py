@@ -33,7 +33,7 @@ def replace_once(source, anchor, replacement):
 
 def verify(output):
     output.mkdir(parents=True, exist_ok=False)
-    inputs = (*SOURCES, FIXTURE, CONTRACT, str(Path(__file__).resolve().relative_to(ROOT)))
+    inputs = (*SOURCES, FIXTURE,  str(Path(__file__).resolve().relative_to(ROOT)))
     hashes = {name: sha((ROOT / name).read_bytes()) for name in inputs}
     identity = sha(json.dumps(hashes, sort_keys=True).encode())
     result = dict(schema=1, passed=False, source_set_sha256=identity, source_sha256=hashes,

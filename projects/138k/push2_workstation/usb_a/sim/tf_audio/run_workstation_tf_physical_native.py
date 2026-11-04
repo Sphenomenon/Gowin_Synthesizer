@@ -32,7 +32,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--case',action='append');args=ap.parse_args()
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     helpers=[Path(__file__).resolve(),SIM/'run_workstation_tf_direct_native_wire.py',SIM/'run_workstation_tf_direct_ingress.py']
-    contracts=[RTL/'tf_audio'/name for name in ('WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md','WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md','WORKSTATION_TF_FRAME_BRIDGE_V2_CONTRACT.md','WORKSTATION_TF_PHYSICAL_TAIL_V1_CONTRACT.md','workstation_tf_frame_bridge_v2.provenance.json','provenance/workstation_tf_frame_bridge_v2.patch')]
+    contracts=[RTL/'tf_audio'/name for name in ('WORKSTATION_TF_FRAME_BRIDGE_V2_CONTRACT.md','workstation_tf_frame_bridge_v2.provenance.json','provenance/workstation_tf_frame_bridge_v2.patch')]
     inputs=[*SOURCES,TB,CARD,*helpers,*contracts];hashes={str(p):sha(p) for p in inputs}
     result=dict(schema=1,passed=False,input_sha256=hashes,cases={},real_SPI_FAT_WAV_PCM_I2S=True,source_autonomous_sample_tick=False,actual_serializer_requests=True,profile_selected=False,whole_workstation_owner4_trace_verified=False,physical_CDC_verified=False,hardware_operated=False,deployment_allowed=False)
     def execute(case):

@@ -16,7 +16,7 @@ from tools.stage_ae350_firmware import INPUTS, IMPORTED_SOURCES, stage_ae350_fir
 
 OWNED = (
     'firmware/ae350/audio_clock_service.c', 'firmware/ae350/audio_clock_service.h',
-    'firmware/ae350/README.md', 'tools/stage_ae350_firmware.py',
+     'tools/stage_ae350_firmware.py',
     'tools/stage_usb_firmware.py', 'tools/workstation_baselines.py',
     'sim/test_stage_ae350_firmware.py', 'sim/ae350_clock_service_host.c',
     'sim/run_ae350_clock_service_api.py',

@@ -103,6 +103,21 @@ class BaselineSources(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cannot exclude a production baseline input'):
             load_baseline(self.root, 'test')
 
+    def test_retired_document_outside_docs_does_not_supply_production_input(self):
+        write_baseline(self.root, 'retired', self.files,
+                       excluded={'rtl/audio/README.md': 'historical notes'})
+        baseline = load_baseline(self.root, 'retired')
+        self.assertEqual(set(baseline.inputs), set(self.files))
+        baseline.materialize(self.root / 'retired-output')
+        self.assertFalse((self.root / 'retired-output/rtl/audio/README.md').exists())
+
+    def test_document_extension_cannot_hide_a_project_input(self):
+        write_baseline(self.root, 'referenced_doc',
+                       {'Prj1.gprj': '<Project><File path="src/core.md"/></Project>'},
+                       excluded={'src/core.md': 'module core; endmodule'})
+        with self.assertRaisesRegex(ValueError, 'project files missing from locked baseline'):
+            load_baseline(self.root, 'referenced_doc')
+
     def test_gprj_reference_must_be_in_source_closure(self):
         write_baseline(self.root, 'incomplete',
                        {'Prj1.gprj': '<Project><File path="src/missing.sv"/></Project>'})
@@ -204,8 +219,8 @@ class BaselineSources(unittest.TestCase):
 
 class ProductionBaselines(unittest.TestCase):
     def test_all_registered_sources_and_project_references_are_bound(self):
-        for name, source_files in (('accepted_full83', 414), ('timing85', 417),
-                                   ('resource_rework_route0', 437)):
+        for name, source_files in (('accepted_full83', 411), ('timing85', 414),
+                                   ('resource_rework_route0', 434)):
             with self.subTest(name=name):
                 baseline = load_baseline(ROOT, name)
                 self.assertEqual(len(baseline.inputs), source_files)
@@ -213,6 +228,21 @@ class ProductionBaselines(unittest.TestCase):
                 self.assertNotIn('firmware/boot.elf', baseline.inputs)
                 self.assertNotIn('firmware/boot.bin', baseline.inputs)
                 self.assertFalse(any(path.startswith('docs/') for path in baseline.inputs))
+
+
+    def test_retirement_preserves_original_production_hashes(self):
+        for name in ('accepted_full83', 'timing85', 'resource_rework_route0'):
+            with self.subTest(name=name):
+                original = json.loads((ROOT / 'baselines' / (name + '.json')).read_text())
+                baseline = load_baseline(ROOT, name)
+                removed = set(original['files']) - baseline.inputs.keys()
+                self.assertTrue(removed)
+                self.assertTrue(all(Path(path).suffix in ('.md', '.log') for path in removed))
+                self.assertEqual(baseline.inputs, {
+                    path: entry['sha256'] for path, entry in original['files'].items()
+                    if path not in removed})
+                self.assertEqual(baseline.descriptor['origin'], original['origin'])
+                self.assertEqual(baseline.descriptor['metadata'], original['metadata'])
 
 
 @unittest.skipUnless(os.environ.get('GW138K_VERIFY_CLEAN_PREPARE') == '1',

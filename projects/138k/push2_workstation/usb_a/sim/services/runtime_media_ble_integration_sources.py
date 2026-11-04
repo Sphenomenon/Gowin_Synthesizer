@@ -25,8 +25,7 @@ def prepare_bluetooth(root,output):
     maintained += [root/name for name in (
         'rtl/bluetooth/workstation_bluetooth.sv','tools/workstation_bluetooth.py',
         'tools/workstation_pinout.py','tools/stage_usb_firmware.py','sim/test_workstation_pinout.py',
-        'boards/custom_138k/bluetooth.json','boards/custom_138k/pinout.json',
-        'rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md')]
+        'boards/custom_138k/bluetooth.json','boards/custom_138k/pinout.json')]
     fixtures=[prepared,output/'native_bluetooth/patch_path.vh',output/'native_bluetooth/rtl8723ds_patch.mem',
               *sorted(pinout.iterdir())]
     return staged,maintained+fixtures,metadata

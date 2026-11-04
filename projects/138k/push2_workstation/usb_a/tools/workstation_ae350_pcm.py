@@ -8,7 +8,7 @@ import hashlib,json
 POLICY='ae350_decoded_pcm_source_v1'
 MACRO='WORKSTATION_AE350_PCM'
 SOURCES=('rtl/audio/workstation_ae350_pcm_owner.sv','rtl/audio/workstation_ae350_pcm_session.sv')
-DEPENDENCIES=('rtl/audio/AE350_PCM_INGRESS_CONTRACT.md','tools/workstation_ae350_pcm.py')
+DEPENDENCIES=('tools/workstation_ae350_pcm.py',)
 COMPOSITION=('rtl/workstation/gw138k_push_workstation_top.v',
     'rtl/workstation/workstation_runtime_controlled.sv','rtl/workstation/workstation_runtime_audio.sv',
     'rtl/audio/workstation_i2s_serializer.sv')

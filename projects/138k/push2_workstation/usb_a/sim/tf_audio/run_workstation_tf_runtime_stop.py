@@ -17,8 +17,7 @@ def run(output):
     clear=json.loads((output/'clear/verification.json').read_text())
     nominal=clear['nominal'];fixture=output/'clear/nominal'
     tb=Path(__file__).with_name('tb_workstation_tf_runtime_stop.sv')
-    inputs={**clear['input_sha256'],str(tb):digest(tb),str(Path(__file__).resolve()):digest(Path(__file__).resolve()),
-        str(ROOT/'rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md'):digest(ROOT/'rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md')}
+    inputs={**clear['input_sha256'],str(tb):digest(tb),str(Path(__file__).resolve()):digest(Path(__file__).resolve())}
     identity=hashlib.sha256(json.dumps(inputs,sort_keys=True).encode()).hexdigest()
     result=dict(schema=2,passed=False,identity='native-tf-runtime-stop-v2-'+identity[:16],source_set_sha256=identity,
         input_sha256=inputs,clear_regression=clear,hardware_tested=False,profile_changed=False,

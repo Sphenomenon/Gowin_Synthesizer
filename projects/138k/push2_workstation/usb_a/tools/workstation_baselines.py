@@ -73,7 +73,7 @@ def source_bytes(repository, entry, name):
 
 
 def exclusion_reason(name):
-    if name.startswith('docs/'):
+    if name.startswith('docs/') or PurePosixPath(name).suffix.lower() in ('.md', '.log'):
         return 'historical_documentation_or_capture'
     if name in ('firmware/boot.elf', 'firmware/boot.bin'):
         return 'firmware_build_intermediate'
@@ -117,6 +117,31 @@ class Baseline:
             if missing:
                 raise ValueError('project files missing from locked baseline: ' + repr(missing))
         return len(references)
+
+    def import_evidence(self):
+        """Preserve import identity across a checked documentation-only retirement."""
+        parent = self.descriptor.get('documentation_parent')
+        if parent is None:
+            return self.evidence()
+        manifest = repository_file(self.repository, parent['manifest'])
+        original = json.loads(read_locked(manifest, parent['manifest_sha256'],
+                                          'baseline documentation parent'))
+        removed = original['files'].keys() - self.descriptor['files'].keys()
+        expected_files = {name: entry for name, entry in original['files'].items()
+                          if name not in removed}
+        expected_excluded = dict(original['excluded'], **{
+            name: 'historical_documentation_or_capture' for name in removed})
+        if (not removed or original.get('schema_version') != 1 or
+                original['name'] != self.descriptor['name'] or
+                original['origin'] != self.descriptor['origin'] or
+                original['metadata'] != self.descriptor['metadata'] or
+                any(PurePosixPath(name).suffix.lower() not in ('.md', '.log') for name in removed) or
+                self.descriptor['files'] != expected_files or
+                self.descriptor['excluded'] != expected_excluded):
+            raise ValueError('baseline documentation retirement changed production inputs')
+        return dict(name=original['name'], manifest=parent['manifest'],
+                    manifest_sha256=parent['manifest_sha256'], origin=original['origin'],
+                    source_files=len(original['files']), excluded_files=len(original['excluded']))
 
     def materialize(self, destination):
         destination = Path(destination)
@@ -178,6 +203,7 @@ def load_baseline(root, name):
         if relative_name(target) != PurePosixPath(target).name:
             raise ValueError('baseline metadata must have a plain filename: ' + target)
     baseline = Baseline(repository, manifest, lock['sha256'], descriptor)
+    baseline.import_evidence()
     baseline.verify()
     return baseline
 

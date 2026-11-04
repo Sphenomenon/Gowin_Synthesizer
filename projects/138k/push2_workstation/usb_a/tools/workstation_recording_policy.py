@@ -20,9 +20,6 @@ SOURCES=(
 DEPENDENCIES=(
     'rtl/workstation/workstation_profile_no_cnn_runtime.sv',
     'rtl/ddr_address_map.vh',
-    'rtl/services/RECORDING_DDR_SERVICE_CONTRACT.md',
-    'rtl/audio/PCM_DDR_BACKEND_CONTRACT.md',
-    'rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md',
 )
 MAP_SOURCE='rtl/ddr_address_map.vh'
 MAP_DESTINATION='src/memory/ddr_address_map.vh'

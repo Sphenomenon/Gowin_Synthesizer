@@ -22,11 +22,10 @@ def run(output):
     tb_pins = root / 'sim/workstation/tb_task3_lcd_pins.sv'
     plan_path = root / 'boards/custom_138k/task3_lcd_probe_pinplan.json'
     cst = root / 'boards/custom_138k/task3_lcd_probe.cst'
-    contract = root / 'rtl/workstation/TASK3_LCD_TRANSPORT.md'
     plan = json.loads(plan_path.read_text())
     basis = [repository / name for name in plan['source_basis']]
     tracked = [phy, transport, pins, tb_transport, tb_pins, plan_path, cst,
-               contract, Path(__file__).resolve(), *basis]
+               Path(__file__).resolve(), *basis]
     before = {str(p): sha(p) for p in tracked}
     output.mkdir(parents=True, exist_ok=False)
     report = dict(schema=1, passed=False, source_sha256=before,

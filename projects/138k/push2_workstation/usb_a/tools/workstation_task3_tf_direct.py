@@ -41,8 +41,6 @@ DEPENDENCIES = (TOOL, LEGACY,
     'tools/workstation_tf_fat_cache_provenance.py',
     'rtl/tf_audio/storage/workstation_tf_sd_crc16_v1.adaptation.json',
     'rtl/tf_audio/storage/workstation_tf_fat_sector_cache_v1.adaptation.json',
-    'rtl/tf_audio/storage/WORKSTATION_TF_SD_CRC16_V1_CONTRACT.md',
-    'rtl/tf_audio/storage/WORKSTATION_TF_FAT_SECTOR_CACHE_V1_CONTRACT.md',
     'rtl/tf_audio/storage/workstation_tf_sd_sector_reader.provenance.json',
     'rtl/tf_audio/storage/workstation_tf_file_reader.provenance.json',
     'rtl/tf_audio/storage/tang_mp3/vendor/tf_sd_spi_sector_reader.v',
@@ -61,10 +59,7 @@ DEPENDENCIES = (TOOL, LEGACY,
     'tools/workstation_task3_w_media_profile.py',
     'rtl/workstation/workstation_task3_w_media_top_reference.json',
     *tuple('rtl/tf_audio/' + name for name in (
-    'WORKSTATION_TF_DIRECT_NATIVE_V1_CONTRACT.md',
-    'WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md',
-    'WORKSTATION_TF_FRAME_BRIDGE_V2_CONTRACT.md',
-    'WORKSTATION_TF_PHYSICAL_TAIL_V1_CONTRACT.md')))
+    'WORKSTATION_TF_FRAME_BRIDGE_V2_CONTRACT.md',)))
 
 
 def root_constraint_mappings():

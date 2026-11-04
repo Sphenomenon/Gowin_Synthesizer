@@ -2,16 +2,16 @@
   "schema_version": 1,
   "baselines": {
     "accepted_full83": {
-      "manifest": "accepted_full83.json",
-      "sha256": "9bc6482b5885b9bc635d5089589e62aad6adf182a1822e2945a54be024c12717"
+      "manifest": "accepted_full83_source_only.json",
+      "sha256": "a6ac6d104b1b2bbb70bcc0db1b88cd1b73d8eb981e8d1e65d4e80d8dcf39e1e3"
     },
     "timing85": {
-      "manifest": "timing85.json",
-      "sha256": "1a12086acbfa39909570e21c704007adfccac5a6a2fbe0b8b552969c97116029"
+      "manifest": "timing85_source_only.json",
+      "sha256": "bf384bf8d36a1bbf36eac7d668c0ec38fe8f35b98fb1426d5d4810abb67fbe54"
     },
     "resource_rework_route0": {
-      "manifest": "resource_rework_route0.json",
-      "sha256": "f5d7758d098b0a1c130988d687dd8b8e1bbe6581d685279dedde65f5bb8f8948"
+      "manifest": "resource_rework_route0_source_only.json",
+      "sha256": "a2a856aa4c5af8f831ebb115877ddd3aff3e5bacbdf73e5692c8a0d506cfdc4a"
     }
   }
 }

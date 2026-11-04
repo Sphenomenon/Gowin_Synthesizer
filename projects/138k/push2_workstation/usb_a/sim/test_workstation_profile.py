@@ -75,7 +75,6 @@ class ProfileSources(unittest.TestCase):
         for dependency in ('tools/workstation_runtime_cdc.py',
                            'tools/workstation_runtime_clock_audit.py',
                            'tools/workstation_runtime_pcm_cdc.py',
-                           'tools/WORKSTATION_RUNTIME_PCM_CDC.md',
                            'sim/test_workstation_runtime_pcm_cdc.py'):
             self.assertIn('projects/138k/push2_workstation/usb_a/' + dependency,
                           selected['source_sha256'])

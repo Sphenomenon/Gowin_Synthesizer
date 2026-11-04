@@ -19,7 +19,6 @@ SOURCES = (
     MODULE,
 )
 INPUTS = (*SOURCES, TB, 'rtl/ddr_address_map.vh',
-          'rtl/memory/WORKSTATION_MEDIA_MEMORY_CONTRACT.md',
           'sim/memory/run_workstation_media_memory.py')
 
 

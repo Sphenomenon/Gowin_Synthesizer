@@ -68,7 +68,6 @@ def main():
         pending = list(SOURCES)+[BOARD, policy.BATCH_PROVIDER, policy.PROVIDER,
             policy.PHONE_WINDOW_PROVIDER, policy.REFERENCE,
             'tools/workstation_task3_m_paired_profile.py',
-            'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md',
             str(Path(__file__).resolve().relative_to(ROOT))]
         # Snapshot literal include closure only, not a copy of the full project.
         # The selected top is the exact frozen prepared paired composition.

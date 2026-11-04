@@ -1,0 +1,12 @@
+Third-party attribution
+
+WangXuan95/FPGA-SDcard-Reader-SPI, commit 75ef453 (2023-09-14).
+https://github.com/WangXuan95/FPGA-SDcard-Reader-SPI
+License: GPL-3.0. See GPL-3.0.txt. The third_party_* files retain SPDX headers.
+Local adaptations widen FAT32 start-cluster capture to 32 bits and add file_size_o.
+
+kami4ka/tang_mp3_player, commit 7b0c43c (2026-08-06).
+https://github.com/kami4ka/tang_mp3_player
+License: GPL-3.0. See tang_mp3/LICENSE. Adapted files are under tang_mp3/;
+SPI module names use the tf_ prefix. Project adapters and WAV chunk parsing
+are separate first-party files.

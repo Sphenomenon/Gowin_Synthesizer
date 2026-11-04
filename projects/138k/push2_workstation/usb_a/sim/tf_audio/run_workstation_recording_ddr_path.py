@@ -18,7 +18,6 @@ QUEUES='rtl/memory/workstation_recording_ddr_client_queues.sv'
 BRIDGE='rtl/memory/workstation_recording_ddr_native_bridge.sv'
 FIXTURE='sim/tf_audio/workstation_recording_ddr_path_tb.sv'
 FAULT_FIXTURE='sim/tf_audio/workstation_recording_ddr_fault_tb.sv'
-CONTRACT='rtl/memory/RECORDING_DDR_NATIVE_CONTRACT.md'
 
 def sha(data):return hashlib.sha256(data).hexdigest()
 
@@ -28,7 +27,7 @@ def once(text,anchor,replacement):
 
 def run(output):
     output.mkdir(parents=True,exist_ok=False)
-    names=[*LEGACY,CORE,QUEUES,BRIDGE,FIXTURE,FAULT_FIXTURE,CONTRACT,str(Path(__file__).resolve().relative_to(ROOT))]
+    names=[*LEGACY,CORE,QUEUES,BRIDGE,FIXTURE,FAULT_FIXTURE,str(Path(__file__).resolve().relative_to(ROOT))]
     hashes={name:sha((ROOT/name).read_bytes()) for name in names}
     for name in LEGACY:
         original=subprocess.check_output(['git','show',REFERENCE+':'+PREFIX+name],cwd=REPOSITORY)

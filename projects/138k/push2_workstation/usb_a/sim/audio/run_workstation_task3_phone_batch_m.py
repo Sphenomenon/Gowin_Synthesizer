@@ -44,7 +44,6 @@ def main():
         bench = 'sim/audio/tb_workstation_task3_phone_batch_m.sv'
         executor = 'rtl/workstation/workstation_task3_phone_batch_m.sv'
         tracked = [OWNER, bench, executor, policy_relative,
-                   'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md',
                    str(Path(__file__).resolve().relative_to(root))]
         inputs = {rel: sha(root/rel) for rel in tracked}
         snapshot = output/'inputs'

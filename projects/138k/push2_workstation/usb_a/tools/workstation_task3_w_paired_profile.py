@@ -47,8 +47,7 @@ DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
     'tools/workstation_task3_paired_board.py',
     'rtl/workstation/workstation_task3_paired_link_board.svh',
     'rtl/workstation/task3_paired_channels.vh',
-    'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md',
-    'rtl/workstation/WORKSTATION_TASK3_W_PAIRED_CONTRACT.md')))
+    )))
 # Only the explicitly selected new batch ELF consumes this separate review.
 BATCH_DEPENDENCIES = ('tools/workstation_task3_w_phone_batch_firmware_review.json',)
 RETIRED_SELECTORS = ('u_clock_service/', 'u_managed/runtime/cpu_pcm.',

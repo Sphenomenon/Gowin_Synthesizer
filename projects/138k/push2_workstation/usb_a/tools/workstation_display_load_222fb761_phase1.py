@@ -515,8 +515,7 @@ def run_audit(root,stage,evidence,*,scope=LEGACY_SCOPE):
         (Graph,OwnerResetNetlist,verify_synthesis_identity,audit_runtime_clocks,metadata,verify_address_map,
          validate_ble_ddr_profile))}
     helper_paths.update(root/p for p in CLOCK_SOURCES)
-    helper_paths.update((ROOT/'sim/test_workstation_recording_phase1_cdc.py',
-                         ROOT/'tools/WORKSTATION_RECORDING_PHASE1_CDC.md'))
+    helper_paths.update((ROOT/'sim/test_workstation_recording_phase1_cdc.py'))
     if scope in BLE_DDR_SCOPES:
         helper_paths.add(ROOT/'sim/test_workstation_ble_ddr_cdc_scope.py')
     if scope == BLE_DDR_PREFIX_SCOPE:

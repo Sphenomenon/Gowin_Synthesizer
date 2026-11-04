@@ -32,7 +32,6 @@ CHORUS_SOURCE_SHA256 = {
     'rtl/audio/workstation_runtime_chorus_effect.sv': 'f0d9200a165d40f0b44fc69c3aaae3a8a75ed14420dd91d11ff49136f22e0176',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json': '41babc5ece0ec3ca5cae68e2f7d5c5069e93d1acb63224771d7483c138f32b48',
     'rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json': '0f2811bdfa33f04111cc036cace4b986eecf25306cdb13fd297b56d0bcfbadf4',
-    'rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md': '538a8b16bbeaa9df60d1096cc226b4bc1fe7225b2a601cada8ae0e5349fa60cb',
     'tools/workstation_chorus_provenance.py': 'd70d41c8a56130b149a5c364f27869dc0202e233cf90a95dc2d4dc4d3823180e',
 }
 SOURCE_SHA256 = dict(BUSINESS_SOURCE_SHA256, **{COUNTER_SOURCE: COUNTER_SHA256, TF_SOURCE: TF_SHA256},

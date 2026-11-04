@@ -19,8 +19,7 @@ def run(output):
     output.mkdir(parents=True, exist_ok=False)
     builder = ROOT / 'sim/audio/run_task3_phone_firmware_workload.py'
     smoke = ROOT / 'sim/fixtures/task3_phone_firmware_paired_smoke.c'
-    inputs = {str(p): sha(p) for p in (builder, smoke, Path(__file__).resolve(),
-              ROOT / 'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md')}
+    inputs = {str(p): sha(p) for p in (builder, smoke, Path(__file__).resolve())}
     report = dict(schema='task3-paired-phone-real-firmware-v1', passed=False,
                   inputs=inputs, commands=[], hardware_tested=False,
                   native_RTL_verified=False, CPU_cycles_measured=False,

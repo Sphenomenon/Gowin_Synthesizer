@@ -231,7 +231,7 @@ def main():
     assert not (args.gowin and args.gowin_original), 'Choose fresh or existing isolated synthesis'
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    paths = [OWNER, SERVICE, TB, Path(__file__).resolve(), ROOT / 'rtl/services/MEDIA_STOP_POLICY.md',
+    paths = [OWNER, SERVICE, TB, Path(__file__).resolve(),
              ROOT / 'tools/workstation_synthesis_netlist.py']
     if args.gowin or args.gowin_original:
         paths.append(PRIMITIVES)

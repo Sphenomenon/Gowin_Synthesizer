@@ -35,10 +35,9 @@ def main():
     parser=ROOT/'rtl/tf_audio/storage/workstation_tf_wav_chunk_parser_v1.sv';decoder=parser.with_name('workstation_tf_wav_pcm_decoder_v1.sv')
     tb=Path(__file__).with_name('tb_workstation_tf_direct_ingress.sv');provenance=ROOT/'rtl/tf_audio/workstation_tf_direct_ingress.provenance.json'
     old=[parser.with_name(x) for x in ('tf_wav_chunk_parser.v','tf_wav_pcm_decoder.v','tf_audio_decoder_ip.v')]
-    contract=ROOT/'rtl/tf_audio/WORKSTATION_TF_DIRECT_INGRESS_V1_CONTRACT.md'
     legacy_tbs=[tb.with_name(x+'.sv') for x in ('tb_tf_wav_chunk_parser','tb_tf_wav_pcm_decoder','tb_tf_wav_formats')]
     manifest=json.loads(provenance.read_text());patches=[ROOT/d['review_diff'] for d in manifest['derivations']]
-    inputs=[owner,parser,decoder,tb,provenance,contract,Path(__file__).resolve(),*old,*legacy_tbs,*patches]
+    inputs=[owner,parser,decoder,tb,provenance,Path(__file__).resolve(),*old,*legacy_tbs,*patches]
     before={str(p):sha(p) for p in inputs};result=dict(schema=1,passed=False,input_sha256=before,independent_python_PCM_oracle=True,
         real_maintained_WAV_kernel=True,selected_profile=False,implementation_tools_invoked=False,hardware_operated=False,release_ready=False,deployment_allowed=False,cases=[],negative_controls=[])
     vectors=[]

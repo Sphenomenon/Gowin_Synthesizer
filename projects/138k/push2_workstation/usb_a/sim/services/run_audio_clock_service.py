@@ -43,7 +43,7 @@ def run(output, prepared_project=None, epoch_policy='legacy'):
     runtime_profile_selected=any(path.endswith('/'+native_path) for path in profile['source_sha256'])
     inputs = sources + [Path(__file__).resolve(), ROOT / 'tools/workstation_resource_timing.py',
                        ROOT / 'tools/workstation_baselines.py', ROOT / 'tools/workstation_composition.py',
-                       ROOT / 'rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md', profile_path, baseline.manifest]
+                        profile_path, baseline.manifest]
     paths = {('prepared/gw138k_apb_cdc.sv' if path == apb else str(path.relative_to(ROOT))): path for path in inputs}
     hashes = {key: digest(path) for key, path in paths.items()}
     identity = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
