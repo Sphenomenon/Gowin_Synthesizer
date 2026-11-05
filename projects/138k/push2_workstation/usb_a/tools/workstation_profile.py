@@ -454,6 +454,21 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision13')
 
 
+# The clock-local CNN readiness stages merge under backend_meta/backend_sync.
+# Only this new revision binds the existing2ns constraint to the actual final.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v14'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v14'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v13']
+    _configuration=dict(_parent['configuration'])
+    if _role=='w':
+        from tools.workstation_task3_cnn_ready_sdc import POLICY as _ready_sdc_policy
+        _configuration['cnn_ready_sdc_policy']=_ready_sdc_policy
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=14,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v14.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision14')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -703,6 +718,9 @@ def _artifact(root, output, metadata, profile):
         wanted_midi=profile['configuration'].get('midi_release_policy')
         if (actual_midi or {}).get('policy')!=wanted_midi:
             raise ValueError('paired profile MIDI release policy does not match selected constraints')
+        actual_ready=metadata.get('task3_paired_sdc',{}).get('W_CNN_ready_rebinding')
+        if (actual_ready or {}).get('policy')!=profile['configuration'].get('cnn_ready_sdc_policy'):
+            raise ValueError('paired profile CNN readiness policy does not match selected constraints')
         installed_sdc=restore_pair_constraints(root,installed_sdc,metadata.get('task3_paired_sdc',{}))
     elif 'task3_paired' in metadata:
         raise ValueError('unselected profile cannot claim paired board wiring')
@@ -973,6 +991,7 @@ def _artifact(root, output, metadata, profile):
     if spec.get('classic_runtime_enabled',False):
         from tools.workstation_classic_runtime import verify_selection
         verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker,
+            paired_sdc_evidence=metadata.get('task3_paired_sdc'),
             **({'paired_worker':True}if spec.get('paired_worker',False)else{}),
             **({'phone_batch':True}if spec.get('phone_batch',False)else{}))
         if media_worker:

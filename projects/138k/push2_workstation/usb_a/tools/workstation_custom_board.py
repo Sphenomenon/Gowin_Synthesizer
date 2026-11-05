@@ -483,7 +483,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     task3_paired_sdc=task3_paired_cst=None
     if paired_role is not None:
         selected_sdc,task3_paired_sdc=paired_board.adapt_constraints(root,selected_sdc,paired_role,
-            midi_release_policy=profile['configuration'].get('midi_release_policy'))
+            midi_release_policy=profile['configuration'].get('midi_release_policy'),
+            cnn_ready_policy=profile['configuration'].get('cnn_ready_sdc_policy'))
         combined_cst,task3_paired_cst=paired_board.adapt_cst(root,combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     ae350_clock_placement = None
@@ -660,6 +661,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
             metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker,
+                paired_sdc_evidence=task3_paired_sdc,
                 **({'phone_batch':True}if phone_batch_worker else{}))
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')

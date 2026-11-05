@@ -132,7 +132,7 @@ def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_wo
         raise ValueError('paired W requires its explicit full media/ROM128 provider')
     return paired
 
-def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False):
+def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False,paired_sdc_evidence=None):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if phone_batch and not paired_worker:raise ValueError('phone-batch requires explicit paired W runtime')
@@ -174,9 +174,9 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
         if paired_worker:selected_source_evidence=helper.selected_source_evidence
         else:from tools.workstation_task3_w_media_profile import selected_source_evidence
         record['worker_media_source']=selected_source_evidence(stage,payload.decode())
-    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker,paired_worker=paired_worker,phone_batch=phone_batch)
+    verify_selection(root,stage,output,record,physical_rom_bytes,selected_provider=selected_provider,headless_worker=headless_worker,media_worker=media_worker,paired_worker=paired_worker,phone_batch=phone_batch,paired_sdc_evidence=paired_sdc_evidence)
     return record
-def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False):
+def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False,paired_sdc_evidence=None):
     """Check the exact final scoped lines for the explicitly selected role."""
     cdc=cdc_bundle()
     selected=cdc['sdc']
@@ -187,13 +187,13 @@ def verify_cdc_selection(text,record,*,worker_demo=False,paired_worker=False):
         if not worker_demo:raise ValueError('paired W CDC requires explicit worker role')
         from tools.workstation_task3_paired_board import restore_constraints
         from tools.workstation_task3_w_paired_profile import scoped_constraints
-        text=restore_constraints(Path(__file__).resolve().parents[1],text)
+        text=restore_constraints(Path(__file__).resolve().parents[1],text,paired_sdc_evidence)
         selected,_=scoped_constraints(selected)
     if record!={k:v for k,v in cdc.items()if k!='sdc'}or any(
             text.splitlines().count(line)!=1 for line in selected.splitlines()):
         raise ValueError('Classic runtime scoped CDC input changed')
 
-def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False):
+def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,selected_provider=None,headless_worker=False,media_worker=False,paired_worker=False,phone_batch=False,paired_sdc_evidence=None):
     root,stage,output=map(Path,(root,stage,output))
     policy,provider=composition(physical_rom_bytes)
     if phone_batch and not paired_worker:raise ValueError('phone-batch requires explicit paired W runtime')
@@ -248,7 +248,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
         '.hci_controller_epoch_i(hci_pcm_controller_epoch)', '.hci_transport_generation_i(hci_pcm_transport_generation)']:
         if text.count(anchor)!=1:raise ValueError('Classic runtime actual macro/ABI branch missing: '+anchor)
     verify_cdc_selection((stage/'constraints/custom_138k.sdc').read_text(),record['cdc'],
-        worker_demo=media_worker or selected_provider=='rtl/workstation/workstation_profile_w_demo.sv',paired_worker=paired_worker)
+        worker_demo=media_worker or selected_provider=='rtl/workstation/workstation_profile_w_demo.sv',paired_worker=paired_worker,paired_sdc_evidence=paired_sdc_evidence)
     if any(record[k]for k in ['GeneralBonding_enabled','hardware_accepted','physical_CDC_accepted']):
         raise ValueError('Classic runtime acceptance fabricated')
     return record

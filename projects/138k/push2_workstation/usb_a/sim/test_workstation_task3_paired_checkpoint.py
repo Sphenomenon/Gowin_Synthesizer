@@ -42,6 +42,9 @@ class CurrentSources(unittest.TestCase):
                 if role=='W' and name.endswith('-v12'):
                     from tools.workstation_task3_cnn_reset import POLICY
                     expected['cnn_reset_policy']=POLICY
+                if role=='W' and name.endswith('-v14'):
+                    from tools.workstation_task3_cnn_ready_sdc import POLICY
+                    expected['cnn_ready_sdc_policy']=POLICY
                 self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])

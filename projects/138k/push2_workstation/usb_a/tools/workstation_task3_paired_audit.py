@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v14': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision14',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v14': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision14',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v13': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision13',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v13': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision13',
@@ -92,6 +96,7 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_cnn_ready_sdc.py',
     'tools/workstation_task3_cnn_reset.py',
     'tools/workstation_task3_w_fault_cdc.py',
     'tools/workstation_task3_paired_audit.py', 'tools/workstation_custom_board_audit.py',
@@ -457,6 +462,14 @@ def audit_constraint_inventory(sdc, metadata, netlist):
     if release_rebinding is not None:
         require(metadata.get('task3_paired', {}).get('role') == 'M', 'release rebinding requires explicit M')
         rules.extend(('get_pins', row['before'], row['after']) for row in release_rebinding['mappings'])
+    ready_rebinding = metadata.get('task3_paired_sdc', {}).get('W_CNN_ready_rebinding')
+    if ready_rebinding is not None:
+        from tools.workstation_task3_cnn_ready_sdc import POLICY,BEFORE,AFTER,STALE,FINAL
+        require(metadata.get('task3_paired',{}).get('role')=='W' and
+                ready_rebinding.get('policy')==POLICY and
+                ready_rebinding.get('before')==BEFORE and ready_rebinding.get('after')==AFTER,
+                'readiness rebinding requires explicit W policy')
+        rules.append(('get_regs',STALE,FINAL))
     def matches(kind, member):
         pattern = re.compile(fnmatch.translate(member))
         return sorted(p for p in universes[kind] if p == member or pattern.fullmatch(p))
@@ -606,6 +619,10 @@ def audit(root, output, metadata):
     sdc = (stage / 'constraints/custom_138k.sdc').read_text()
     gate('visible_SDC_members', lambda: audit_sdc_selectors(sdc, netlist))
     gate('constraint_retirement_and_rebinding', lambda: audit_constraint_inventory(sdc, metadata, netlist))
+    if role=='W' and profile['configuration'].get('cnn_ready_sdc_policy') is not None:
+        from tools.workstation_task3_cnn_ready_sdc import audit as audit_ready_sdc
+        gate('W_CNN_ready_SDC',lambda: audit_ready_sdc(
+            protocol_netlist(vg_text,mapping='synthesis'),sdc,stage=stage))
     if role == 'M':
         from tools.workstation_task3_root_reset_audit import audit_root_startup
         from tools.workstation_task3_m_paired_releases_audit import audit_paired_release_sdc

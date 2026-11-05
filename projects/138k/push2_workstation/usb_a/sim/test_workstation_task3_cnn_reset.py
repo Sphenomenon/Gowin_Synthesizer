@@ -37,6 +37,10 @@ class CnnResetSources(unittest.TestCase):
                 with self.assertRaises(ValueError):reset.inverse(reset.LINK,changed)
             for name in reset.PARENTS:
                 path=stage/name;original=path.read_text()
+                path.unlink()
+                with self.subTest(missing=name),self.assertRaisesRegex(ValueError,'source missing'):
+                    reset.source_evidence(stage)
+                path.write_text(original)
                 with self.subTest(path=name),self.assertRaises(ValueError):
                     reset.inverse(name,original+'\n// unreviewed drift\n')
                 if name in NATIVE_CNN_INPUTS:

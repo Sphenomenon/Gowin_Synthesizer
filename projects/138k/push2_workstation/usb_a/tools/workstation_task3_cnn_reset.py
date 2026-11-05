@@ -99,6 +99,7 @@ def inverse(path,text):
 def source_evidence(stage):
     stage=Path(stage);rows=[]
     for path in PARENTS:
+        if not (stage/path).is_file():raise ValueError('CNN reset source missing: '+path)
         payload=(stage/path).read_text();inverse(path,payload)
         rows.append(dict(path=path,selected_sha256=hashlib.sha256(payload.encode()).hexdigest(),
                          parent_sha256=PARENTS[path],exact_inverse_verified=True))
