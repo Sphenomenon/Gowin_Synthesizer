@@ -1,0 +1,400 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "5c54d01f573185d27c7798ace9221f9780c2e8ea",
+  "stage": "latest_candidate_priority_and_communication_review",
+  "new_RTL_or_firmware_changes": false,
+  "new_build_or_deployment": false,
+  "source_only_document": "projects/138k/task3.md",
+  "source_document_is_build_input": false,
+  "goal_complete": false,
+  "remote": {
+    "fetch_succeeded": true,
+    "branch_equal_before_document_edit": true,
+    "head": "5c54d01f573185d27c7798ace9221f9780c2e8ea"
+  },
+  "requirement_source": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/docs/requests/全国大学生嵌入式芯片与系统设计竞赛'2026FPGA赛道选题指南-高云半导体.pdf",
+    "sha256": "09415c6e2b4922d564317dcd7c28720ce1e1363e6ddbe17d4c5eb9710cc0165d",
+    "physical_pages": [
+      15,
+      16
+    ],
+    "printed_pages": [
+      13,
+      14
+    ],
+    "basic_latency_ms": 10,
+    "extended_latency_ms": 5,
+    "basic_voices_min": 4,
+    "project_preserves_voices": 32,
+    "PCM_media_cannot_substitute_for_basic_HDL_synthesis": true
+  },
+  "boards": {
+    "M": {
+      "output": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4",
+      "candidate_identity": "custom138k-workstation-task3-m-paired-sync-storage-v1-7d8ebf5cda5109d6",
+      "profile": "custom138k-workstation-task3-m-paired-sync-storage-v1",
+      "configuration_sha256": "15a219660504db79ed0594f2d91f0ec5e8d3bcb8fc90d1b52bc8c36ec104a069",
+      "input_sha256": "7d8ebf5cda5109d68c1ec7268d4e9b3b122749752893b68eaa4386ec7b8e3609",
+      "source_policy": "explicit_native_board_on_resource_timing",
+      "enabled_inputs": 287,
+      "immutable_prepared_closure_verified": true,
+      "manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4/workstation_profile.json",
+        "sha256": "e58d97e4a06bea199e2d1bd652f4557e925bdc53504e4ce64e982f539c68da23"
+      },
+      "bitstream_sha256": null,
+      "UserCode": null,
+      "target_JTAG_serial": null,
+      "target_UART": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "measured_control_to_sound_ms": null,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_programmed": false,
+      "current_source_profile_verified": true,
+      "new_synthesis_passed": false,
+      "new_VG": null,
+      "actual_synthesis_resources": null,
+      "failed_synthesis_invocation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4/synthesis-invocation.json",
+        "sha256": "959b7552da4aedd8a521d8d73ecf97b8763d6e276d1978072d69ca9760bc9940"
+      }
+    },
+    "M_reference": {
+      "output": "/Users/sphenicidition/.cache/gw138k-task3-20261103/m-phone-batch-prepare-v3",
+      "candidate_identity": "custom138k-workstation-task3-m-paired-phone-batch-v1-3bb41077d21baadc",
+      "profile": "custom138k-workstation-task3-m-paired-phone-batch-v1",
+      "configuration_sha256": "4818e7bbf0e511e1b92ddea2fbdeccc55ea3c22766ebd58e3c15c0dd36b458ac",
+      "input_sha256": "3bb41077d21baadca8ca14594417ec5c97e951a9ab31ff260a56a1bb329c7d78",
+      "source_policy": "explicit_native_board_on_resource_timing",
+      "enabled_inputs": 287,
+      "immutable_prepared_closure_verified": true,
+      "manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/m-phone-batch-prepare-v3/workstation_profile.json",
+        "sha256": "7bfc4f10dd3be4e8b49488d9d784a769b3af8ffc1965141e570b4bbe581eb7ed"
+      },
+      "bitstream_sha256": null,
+      "UserCode": null,
+      "target_JTAG_serial": null,
+      "target_UART": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "measured_control_to_sound_ms": null,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_programmed": false,
+      "actual_synthesis_resources": {
+        "Register": 58377,
+        "Lut": 70377,
+        "Alu": 28228,
+        "Bsram": 209,
+        "Ssram": 766,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "resource_evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/m-phone-batch-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+        "sha256": "491c1c22e7513256cee962b09ffd8aad709cd16f2df6ca543791ef835e7222e1"
+      },
+      "VG": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/m-phone-batch-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "4dceb255e0f83aae726dc58af41b1877edf50c982bdc9ac57167833df2ea2863"
+      }
+    },
+    "W": {
+      "output": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+      "candidate_identity": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+      "profile": "custom138k-workstation-task3-w-paired-phone-batch-v1",
+      "configuration_sha256": "c2f919997690990ce2caf3aede6ec8e2016901d6e8cf433b7a7015b1071e6fef",
+      "input_sha256": "cda40ccde09fd1ee5d1f8d432ff6299cadcf1af054938b9f0c6908e3faa8f78c",
+      "source_policy": "explicit_native_board_on_resource_timing",
+      "enabled_inputs": 200,
+      "immutable_prepared_closure_verified": true,
+      "manifest": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/workstation_profile.json",
+        "sha256": "15a5c8cb71eb34c9014090d3b8a4e2d54665c7d9db2a08b984e260200d4db4bc"
+      },
+      "bitstream_sha256": null,
+      "UserCode": null,
+      "target_JTAG_serial": null,
+      "target_UART": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "measured_control_to_sound_ms": null,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_programmed": false,
+      "actual_synthesis_resources": {
+        "Register": 49463,
+        "Lut": 65009,
+        "Alu": 16351,
+        "Bsram": 308,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "resource_evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+        "sha256": "62fd8cef534749dd7dd294a6c0e09d32e6aec575c6229568703fec48e6b555e4"
+      },
+      "VG": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "8e9702ac47c91d4c022c8eade8aff2c7531f69ccc41381fd9fa3fe7d5f29df52"
+      },
+      "recording": {
+        "runtime_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "firmware_metadata": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/ae350_firmware/build_metadata.json",
+          "sha256": "7ae8989e1135503263f993415d32cdc89a299f260a22dd5525455816c230e115"
+        },
+        "capacity_frames": 2880000,
+        "capacity_bytes": 11520000,
+        "sample_rate_hz": 48000,
+        "format": 1,
+        "byte_base": 811597824,
+        "byte_last": 823117823,
+        "native_word_base": 202899456,
+        "native_word_last": 205779455,
+        "last_native_BL8": 205779448,
+        "pool_padding_bytes": 14336,
+        "capacity_seconds": 60.0,
+        "actual_60s_record_download_hardware_accepted": false,
+        "recording_44100_supported": false,
+        "sole_CPU_BLE_object": true
+      }
+    }
+  },
+  "resource_metric": "Actual Gowin synthesis XML counters, recursively inclusive; Register/Lut/Alu kept separate. Bsram is synthesis-equivalent, Ssram is RAM16; neither is post-route physical utilization.",
+  "priority_review": [
+    {
+      "priority": "P1",
+      "item": "M placement/routing and broad combinational paths",
+      "finding": "Latest sync-storage candidate has no new VG or routed result. User-reported two latest M placement timeouts are not yet bound to identified logs in this review.",
+      "existing_implemented_action": "Explicit M sync score/tap full-capacity prefetch and12-bit local score counters; no clocks, false paths or audio features relaxed.",
+      "next_gate": "Actual BSRAM/RAM16 mapping, complete new mapped CDC/consumer proof, bounded P&R and routed critical paths.",
+      "blocker": "Gowin license hostid mismatch; feth94 absent; sudo -n requires password. Existing launch script requires user administrator confirmation."
+    },
+    {
+      "priority": "P2",
+      "item": "TF/board-link cache",
+      "user_reported": {
+        "logic_units": 8558,
+        "RAM16": 494,
+        "scope_unbound": true
+      },
+      "actual_reference_owners": {
+        "u_tf_audio": {
+          "Register": 3092,
+          "Lut": 4833,
+          "Alu": 2107,
+          "Bsram": 13,
+          "Ssram": 42,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "u_tf_audio/native/ingress": {
+          "Register": 628,
+          "Lut": 1111,
+          "Alu": 421,
+          "Bsram": 11,
+          "Ssram": 0,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "u_task3_m_endpoint/collector_m": {
+          "Register": 359,
+          "Lut": 935,
+          "Alu": 509,
+          "Bsram": 0,
+          "Ssram": 256,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        },
+        "u_task3_m_endpoint/recording": {
+          "Register": 222,
+          "Lut": 671,
+          "Alu": 158,
+          "Bsram": 0,
+          "Ssram": 256,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        }
+      },
+      "finding": "Selected actual direct-TF ingress already uses synchronous BSRAM/prefetch. M score and final-tap buffers each used256RAM16 in the mapped reference; new synchronous selection awaits actual mapping.",
+      "next_gate": "Validate new candidate before changing unrelated retired TF client."
+    },
+    {
+      "priority": "P2",
+      "item": "25K display drawing",
+      "user_reported": {
+        "logic_units": 4011,
+        "scope_unbound": true
+      },
+      "actual_reference_owner": {
+        "path": "u_native_usb/input_owner/pixels",
+        "module": "push2_surface_pixels",
+        "resources": {
+          "Register": 330,
+          "Lut": 2052,
+          "Alu": 171,
+          "Bsram": 0,
+          "Ssram": 48,
+          "MULTALU27X18": 0,
+          "MULT12X12": 2,
+          "MULT27X36": 0
+        }
+      },
+      "finding": "Maintained Push renderer is compiled on M in current reference. Listed25K count is not interchangeable with these typed XML counts.",
+      "next_gate": "Optimize only if actual fresh critical-path/resource evidence selects this owner; preserve display capture/metadata snapshot and byte rendering."
+    },
+    {
+      "priority": "P2",
+      "item": "BLE business owner",
+      "user_reported": {
+        "logic_units": 6191,
+        "scope_unbound": true
+      },
+      "actual_reference_owner": {
+        "path": "u_bluetooth/u_core/owner",
+        "module": "workstation_hci_native_transport",
+        "resources": {
+          "Register": 2154,
+          "Lut": 4079,
+          "Alu": 2166,
+          "Bsram": 6,
+          "Ssram": 163,
+          "MULTALU27X18": 0,
+          "MULT12X12": 0,
+          "MULT27X36": 0
+        }
+      },
+      "finding": "This owner is native HCI transport, not ble_protocol_command task lookup. Maintained business metadata already has synchronous prefetch.",
+      "next_gate": "Resolve actual request/response owner and critical path before any time-sharing rewrite; retain sole CPU/BLE recording backend."
+    },
+    {
+      "priority": "P2",
+      "item": "long recording and44.1k",
+      "finding": "Actual W firmware selects2,880,000frames/11,520,000bytes/48k/format1/60s.0.341s describes the old16384-frame backend.",
+      "next_gate": "Actual60s capture/seal/download/reconnect concurrent with phone;44.1k requires separate format/rate/lifecycle/audio/protocol validation."
+    }
+  ],
+  "communication": {
+    "physical_measurements_exist": false,
+    "pinplan": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/task3_lcd_probe_pinplan.json",
+      "sha256": "6c8a3f87de233a614879cb70537bdc629a6e463c2bb98c5a97d2da4d927232f9"
+    },
+    "user_confirmed_mapping": "M.FPC4.n -> W.FPC4.n; no41-n transform",
+    "framing": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+      "sha256": "97685fa334124c41974309e926d63c5c4426d61f0393f0cfdc26e818e2ccaae8"
+    },
+    "typed_channels": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/task3_paired_channels.vh",
+      "sha256": "aa1ec82c2a4a368fabce7e3c75ecbe166433d773ba2793c036946b35e390b73d"
+    },
+    "fixed_wire_frame_bytes": 52,
+    "payload_max_bytes": 32,
+    "clock": "Independent local50MHz,4-bit bundled-data four-phase req/ack; no LCD clock input",
+    "budget_policy": "Arithmetic lower bounds; separate direction budgets. Not electrical throughput or permission to enable PCM.",
+    "budget": {
+      "48000": {
+        "net_stereo16_Bps": 192000,
+        "block6_packets_per_second": 8000.0,
+        "block6_wire_Bps_per_stream": 416000.0,
+        "ideal_full_phone_window5_wire_Bps_each_direction": 499200.0,
+        "phone_128_frames_26_windows_wire_Bps_each_direction": 507000.0,
+        "phone_plus_minimum_two_control_wire_Bps_each_direction": 546000.0,
+        "three_stream_minimum_M_to_W_wire_Bps": 1378000.0,
+        "three_stream_minimum_W_to_M_wire_Bps": 546000.0,
+        "tap_capacity_ms": 5.333333333333333,
+        "block_rx_capacity_max_ms": 1.0,
+        "format_support": "current recognition/recording admission supports48k"
+      },
+      "44100": {
+        "net_stereo16_Bps": 176400,
+        "block6_packets_per_second": 7350.0,
+        "block6_wire_Bps_per_stream": 382200.0,
+        "ideal_full_phone_window5_wire_Bps_each_direction": 458640.0,
+        "phone_128_frames_26_windows_wire_Bps_each_direction": 465806.25,
+        "phone_plus_minimum_two_control_wire_Bps_each_direction": 501637.5,
+        "three_stream_minimum_M_to_W_wire_Bps": 1266037.5,
+        "three_stream_minimum_W_to_M_wire_Bps": 501637.5,
+        "tap_capacity_ms": 5.804988662131519,
+        "block_rx_capacity_max_ms": 1.0884353741496597,
+        "format_support": "arithmetic only; current recognition/recording rejects44.1k"
+      }
+    },
+    "exclusions": [
+      "additional idle/status/history polling",
+      "source selection/cancel/key initialization",
+      "analysis/record credits",
+      "health/status/probes/maintenance",
+      "electrical encoding/service gaps"
+    ],
+    "credit_traffic": "8-block RX; publication after at least4 consumed blocks. Under regular full-block traffic without coalescing: each48k stream requires2000 credit packets/s=104000B/s on reverse direction, plus initial/terminal state. This is a scenario, not a universal minimum.",
+    "physical_budget_authorized": false,
+    "business_enabled_by_this_review": false,
+    "CAP3_production_enabled": false,
+    "previous_model_evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/phone-batch-lcd-final-v5/verification.json",
+      "sha256": "60cb35e756c1c13bf616c201b08c7dfa762275e4ae2a057319f77750ecd8e66f"
+    },
+    "previous_model_scope": "Actual finite firmware/MMIO and real LCD/PCM1 RTL under ideal wires with injected CAP3 only; no physical timing, RF/HCI/SBC execution, DDR capture or DSP/DAC acceptance.",
+    "prior_model_cases": [
+      {
+        "name": "injected_three_streams_W10",
+        "model_elapsed_ps": 201433100000,
+        "M_packets": 5879,
+        "W_packets": 3484,
+        "accepted_blocks": 75,
+        "batch_requests": 662,
+        "batch_replies": 662,
+        "window_packets_accepted_by_transport": 1950,
+        "max_commit_interval_ps": 3582680000
+      },
+      {
+        "name": "injected_three_streams_W11",
+        "model_elapsed_ps": 201312040417,
+        "M_packets": 5652,
+        "W_packets": 3255,
+        "accepted_blocks": 75,
+        "batch_requests": 438,
+        "batch_replies": 438,
+        "window_packets_accepted_by_transport": 1950,
+        "max_commit_interval_ps": 3665200000
+      }
+    ],
+    "remote_heavy_effect": "Real reverb subsystem exists and maps separately; no complete paired-board selection or wire channel admitted. Old subsystem savings do not apply to full M."
+  },
+  "validation": {
+    "immutable_M_Mreference_W_closures_verified": true,
+    "current_M_source_profile_verified": true,
+    "budget_recomputed_against_previous_report": true,
+    "document_relative_links_checked": true,
+    "new_synthesis_passed": false,
+    "physical_PNR_completed": false,
+    "complete_CDC_accepted": false,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_programmed": false,
+    "document_link_count": 12,
+    "evidence_hashes_checked": 14
+  },
+  "rollback": {
+    "previous_M": "custom138k-workstation-task3-m-paired-phone-batch-tf-v1-c29be00bc7003fd4",
+    "W": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+    "historical_source_locks_modified": false,
+    "task2_or_single_board_worktrees_touched": false
+  }
+}
