@@ -18,6 +18,8 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-sync-storage-v1': ('M', 'custom138k-native-task3-m-paired-sync-storage-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-m-paired-phone-batch-tf-v1': ('M', 'custom138k-native-task3-m-paired-phone-batch-tf-revision1',
         'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-phone-batch-reset-v1': ('M', 'custom138k-native-task3-m-paired-phone-batch-reset-revision1',
@@ -418,6 +420,20 @@ def audit_constraint_inventory(sdc, metadata, netlist):
         timing_budgets_or_clocks_relaxed=False, physical_CDC_accepted=False)
 
 
+def audit_m_sync_storage(rows):
+    """Require actual Gowin mapping, not just a block_ram source attribute."""
+    selected={}
+    for owner in ('collector_m','recording'):
+        path='u_task3_m_endpoint/'+owner
+        require(path in rows,'synchronous storage owner absent: '+path)
+        counts=rows[path]
+        require(counts['Bsram']>=1 and counts['Ssram']==0,
+                'synchronous storage not mapped to BSRAM without RAM16: '+path)
+        selected[path]=counts
+    return dict(hierarchy_counts=selected,units='Gowin synthesis BSRAM-equivalent and SSRAM',
+                physical_block_count_verified=False,physical_timing_verified=False)
+
+
 def audit(root, output, metadata):
     root, output = Path(root), Path(output)
     seals = {name: sha(root / name) for name in AUDIT_SOURCES}
@@ -445,6 +461,8 @@ def audit(root, output, metadata):
         usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536)))
     if role == 'M':
         gate('M_32_voice_storage', lambda: audit_m_voice_storage(netlist))
+        if profile['configuration'].get('m_endpoint_storage_policy')=='sync_score_and_final_tap_prefetch_v1':
+            gate('M_sync_storage_mapping',lambda: audit_m_sync_storage(rows))
     from tools.workstation_custom_board_audit import check_ports, check_rom, audit_native_feedback
     from tools.workstation_ae350_clock_placement import verify_prepared as verify_clock
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
@@ -485,6 +503,7 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-sync-storage-v1',
             'custom138k-workstation-task3-m-paired-phone-batch-tf-v1',
             'custom138k-workstation-task3-m-paired-phone-batch-reset-v1',
             'custom138k-workstation-task3-m-paired-phone-batch-v1',
@@ -510,7 +529,8 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-phone-batch-tf-v1',
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-sync-storage-v1',
+                                  'custom138k-workstation-task3-m-paired-phone-batch-tf-v1',
                                   'custom138k-workstation-task3-m-paired-phone-batch-v1',
                                   'custom138k-workstation-task3-m-paired-phone-batch-reset-v1'):
             # Independent of the older final-consumer seals: those may reject

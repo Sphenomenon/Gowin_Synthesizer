@@ -290,6 +290,15 @@ PROFILE_REGISTRY[TASK3_M_BATCH_TF_NAME]=dict(_parent,
     integration_identity='custom138k-native-task3-m-paired-phone-batch-tf-revision1')
 
 
+TASK3_M_SYNC_STORAGE_NAME='custom138k-workstation-task3-m-paired-sync-storage-v1'
+_parent=PROFILE_REGISTRY[TASK3_M_BATCH_TF_NAME]
+PROFILE_REGISTRY[TASK3_M_SYNC_STORAGE_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_paired_sync_storage_v1.json',
+    provider='rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv',
+    configuration=dict(_parent['configuration'],m_endpoint_storage_policy='sync_score_and_final_tap_prefetch_v1'),
+    integration_identity='custom138k-native-task3-m-paired-sync-storage-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

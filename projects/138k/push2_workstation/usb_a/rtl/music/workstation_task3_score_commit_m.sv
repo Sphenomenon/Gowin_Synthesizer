@@ -3,7 +3,8 @@
 // Notes from bounded clips accumulate in one bounded song image. Only the
 // actual file-final clip's successful terminal starts publication to Push.
 module workstation_task3_score_commit_m #(
-    parameter integer MAX_NOTES=2048
+    parameter integer MAX_NOTES=2048,
+    parameter bit SYNC_READ_STORAGE=1'b0
 )(
     input wire clk_i,reset_ni,link_ready_i,cancel_i,panic_i,
     input wire arm_valid_i,
@@ -23,13 +24,17 @@ module workstation_task3_score_commit_m #(
     output wire [6:0] push_score_note_o,
     output reg analysis_done_o,failed_o,
     output reg [3:0] failure_code_o,
-    output reg [31:0] note_count_o
+    output wire [31:0] note_count_o
 );
     localparam integer AW=$clog2(MAX_NOTES);
+    // The explicit memory candidate bounds local counters to the physical
+    // capacity. Protocol lengths and completion payloads remain 32 bits.
+    localparam integer CW=SYNC_READ_STORAGE ? AW+1:32;
     localparam [1:0] IDLE=0,COLLECT=1,PUBLISH=2,DONE=3;
     reg [1:0] state;
     reg [127:0] identity;
-    reg [31:0] clip_notes,cursor;
+    reg [CW-1:0] clip_notes,cursor,note_count;
+    assign note_count_o=32'(note_count);
     reg poisoned;
     (* ram_style="block",syn_ramstyle="block_ram" *) reg [6:0] notes[0:MAX_NOTES-1];
     assign arm_ready_o=reset_ni && link_ready_i && (state==IDLE || state==DONE);
@@ -38,47 +43,74 @@ module workstation_task3_score_commit_m #(
     assign score_ready_o=reset_ni;
     assign terminal_ready_o=reset_ni;
     wire score_match=score_valid_i && state==COLLECT && score_i[166:39]==identity;
-    wire score_good=score_match && score_i[38:7]==clip_notes && note_count_o<MAX_NOTES;
+    wire score_good=score_match && score_i[38:7]==32'(clip_notes) && note_count<MAX_NOTES;
+    wire [CW-1:0] clip_notes_after=clip_notes+CW'(score_good);
+    wire [CW-1:0] note_count_after=note_count+CW'(score_good);
     wire terminal_match=terminal_valid_i && state==COLLECT && terminal_i[163:36]==identity;
-    assign push_score_valid_o=reset_ni && link_ready_i && !cancel_i && !panic_i && state==PUBLISH && cursor<note_count_o;
-    assign push_score_note_o=notes[cursor[AW-1:0]];
+    wire note_ready;
+    wire publish=reset_ni && link_ready_i && !cancel_i && !panic_i && state==PUBLISH && cursor<note_count;
+    wire publish_fire=push_score_valid_o && push_score_ready_i;
+    wire store_write=reset_ni && link_ready_i && !cancel_i && !panic_i && score_good;
+    // Keep the memory ports reset-free. Only publication validity is reset;
+    // cancelled/failed notes remain unreachable until a new successful seal.
+    always @(posedge clk_i)
+        if(store_write)notes[note_count[AW-1:0]]<=score_i[6:0];
+    generate if(SYNC_READ_STORAGE)begin:g_sync_notes
+        reg [6:0] head;
+        reg head_valid;
+        wire [CW-1:0] next_cursor=cursor+CW'(publish_fire);
+        wire fetch=publish && (!head_valid || publish_fire) && next_cursor<note_count;
+        always @(posedge clk_i)
+            if(fetch)head<=notes[next_cursor[AW-1:0]];
+        always @(posedge clk_i or negedge reset_ni)
+            if(!reset_ni)head_valid<=0;
+            else if(!publish)head_valid<=0;
+            else if(fetch)head_valid<=1;
+            else if(publish_fire)head_valid<=0;
+        assign note_ready=head_valid;
+        assign push_score_note_o=head;
+    end else begin:g_async_notes
+        assign note_ready=1'b1;
+        assign push_score_note_o=notes[cursor[AW-1:0]];
+    end endgenerate
+    assign push_score_valid_o=publish && note_ready;
     initial if(MAX_NOTES<4 || (1<<AW)!=MAX_NOTES)$fatal(1,"invalid bounded score capacity");
     always @(posedge clk_i or negedge reset_ni)begin
         if(!reset_ni)begin
             state<=IDLE;identity<=0;clip_notes<=0;cursor<=0;poisoned<=0;
-            completion_valid_o<=0;completion_o<=0;analysis_done_o<=0;failed_o<=0;failure_code_o<=0;note_count_o<=0;
+            completion_valid_o<=0;completion_o<=0;analysis_done_o<=0;failed_o<=0;failure_code_o<=0;note_count<=0;
         end else begin
             completion_valid_o<=0;
             if(!link_ready_i || cancel_i || panic_i)begin
-                state<=IDLE;clip_notes<=0;cursor<=0;poisoned<=0;note_count_o<=0;analysis_done_o<=0;
+                state<=IDLE;clip_notes<=0;cursor<=0;poisoned<=0;note_count<=0;analysis_done_o<=0;
                 if(state!=IDLE)begin failed_o<=1;failure_code_o<=1;end
             end else begin
                 if(arm_valid_i && arm_ready_o)begin
                     identity<=arm_identity_i;clip_notes<=0;poisoned<=0;cursor<=0;state<=COLLECT;analysis_done_o<=0;
-                    if(!arm_append_i)begin note_count_o<=0;failed_o<=0;failure_code_o<=0;end
+                    if(!arm_append_i)begin note_count<=0;failed_o<=0;failure_code_o<=0;end
                 end
                 if(score_match)begin
                     if(!score_good)begin poisoned<=1;failed_o<=1;failure_code_o<=2;end
-                    else begin notes[note_count_o[AW-1:0]]<=score_i[6:0];note_count_o<=note_count_o+1'b1;clip_notes<=clip_notes+1'b1;end
+                    else begin note_count<=note_count+1'b1;clip_notes<=clip_notes+1'b1;end
                 end
                 if(terminal_match)begin
                     completion_valid_o<=1;
                     if(terminal_i[3:0]!=0 || poisoned || (score_match && !score_good) ||
-                        terminal_i[35:4]!=(clip_notes+32'(score_good)))begin
-                        completion_o<={identity,clip_notes,4'd14};state<=IDLE;note_count_o<=0;
+                        terminal_i[35:4]!=32'(clip_notes_after))begin
+                        completion_o<={identity,32'(clip_notes),4'd14};state<=IDLE;note_count<=0;
                         failed_o<=1;failure_code_o<=3;analysis_done_o<=0;
                     end else begin
                         completion_o<=terminal_i;
                         if(chunk_file_last_i)begin
                             cursor<=0;
-                            if(note_count_o+32'(score_good)==0)begin state<=DONE;analysis_done_o<=1;end
+                            if(note_count_after==0)begin state<=DONE;analysis_done_o<=1;end
                             else state<=PUBLISH;
                         end else state<=IDLE;
                     end
                 end
                 if(push_score_valid_o && push_score_ready_i)begin
                     cursor<=cursor+1'b1;
-                    if(cursor+1'b1==note_count_o)begin state<=DONE;analysis_done_o<=1;end
+                    if(cursor+1'b1==note_count)begin state<=DONE;analysis_done_o<=1;end
                 end
             end
         end

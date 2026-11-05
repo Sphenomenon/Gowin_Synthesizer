@@ -128,7 +128,16 @@ def prepared_selection(root,stage,configuration,*,captured_source_sha256=None):
     require(re.findall(r'\.(\w+)\s*\(\s*([^()]+)\s*\)',parameters[0])==expected_parameters,
         'actual native instance must select explicit CRC1/cache1')
     provider_text=(stage/provider).read_text().splitlines()
-    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv':
+    from tools.workstation_task3_m_paired_profile import SYNC_PROVIDER
+    sync_provider=provider==SYNC_PROVIDER
+    if sync_provider:
+        expected='''`define WORKSTATION_TASK3_M_SYNC_STORAGE
+`include "rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv"
+`undef WORKSTATION_TASK3_M_SYNC_STORAGE'''
+        clean=lambda s: ''.join(re.sub(r'//[^\n]*|/\*.*?\*/','',s,flags=re.S).split())
+        require(clean((stage/provider).read_text())==clean(expected),
+                'synchronous storage wrapper scope drift')
+    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv' or sync_provider:
         # Only this registered wrapper delegates DIRECT macros to the exact
         # phone-window leaf. Bind its whole transitive provider closure first;
         # other providers keep the original direct-byte selection check.

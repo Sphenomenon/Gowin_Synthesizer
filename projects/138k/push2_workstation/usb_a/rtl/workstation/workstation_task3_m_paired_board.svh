@@ -118,3 +118,6 @@
         .phone_command_data_o(task3_m_phone_data),.phone_command_strobes_o(task3_m_phone_strobes),.phone_response_data_i(task3_m_phone_response),.phone_response_error_i(task3_m_phone_error),
         .hci_ready_o(task3_m_hci_ready),.hci_epoch_o(task3_m_hci_epoch),.hci_generation_o(task3_m_hci_generation),.model_status_o(task3_m_model_status),
         .malformed_packets_o(),.stale_packets_o());
+`ifdef WORKSTATION_TASK3_M_SYNC_STORAGE
+    defparam u_task3_m_endpoint.SYNC_READ_STORAGE=1'b1;
+`endif

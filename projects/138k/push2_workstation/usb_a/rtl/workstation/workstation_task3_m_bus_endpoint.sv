@@ -8,6 +8,7 @@ module workstation_task3_m_bus_endpoint #(
     parameter bit BLOCK_PCM=1'b0,
     parameter bit PHONE_WINDOW_BLOCK=1'b0,
     parameter bit PHONE_BATCH=1'b0,
+    parameter bit SYNC_READ_STORAGE=1'b0,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -78,7 +79,7 @@ module workstation_task3_m_bus_endpoint #(
     wire result_packet=rx_channel_i==`TASK3_PAIR_CH_RESULT && rx_length_i==`TASK3_PAIR_RESULT_BYTES && rx_payload_i[255:168]==0 &&
         (!rx_payload_i[167] || rx_payload_i[166:164]==0);
     wire score_ready,terminal_ready;
-    workstation_task3_score_commit_m collector_m(
+    workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) collector_m(
         .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && !new_identity),.cancel_i(analysis_cancel_i || source_failed),.panic_i(panic_i),
         .arm_valid_i(arm_valid),.arm_ready_o(arm_ready),.arm_identity_i(arm_identity),.arm_append_i(arm_append),.chunk_file_last_i(file_last),
         .score_valid_i(live && rx_valid_i && result_packet && !rx_payload_i[167]),.score_ready_o(score_ready),.score_i(rx_payload_i[166:0]),
@@ -110,7 +111,7 @@ module workstation_task3_m_bus_endpoint #(
     wire [31:0] record_tx_epoch,record_tx_sequence,record_tx_pcm;
     wire record_tx_rate,record_tx_error,record_local_fault;
     assign record_fault_o=record_local_fault || (BLOCK_PCM && media_cap_fault);
-    workstation_task3_final_tap_export recording(
+    workstation_task3_final_tap_export #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) recording(
         .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && !new_identity),.panic_i(panic_i),
         .arm_valid_i(record_arm_fire),.arm_ready_o(record_arm_ready),
         .arm_boot_i(local_boot_i),.arm_session_i(session_i),.arm_generation_i(next_record_generation),

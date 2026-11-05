@@ -174,7 +174,19 @@ def selected_direct_top(stage, text):
         if direct_enabled:raise ValueError('direct TF top branch missing')
         return text, False
     source=(stage/provider).read_text().splitlines() if direct_enabled else []
-    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv':
+    from tools.workstation_task3_m_paired_profile import SYNC_PROVIDER
+    sync_provider=provider==SYNC_PROVIDER
+    if sync_provider:
+        # Source-only wrapper recognition does not assign a mapped reset alias.
+        # The new VG must separately pass the strict root/consumer audits.
+        wrapper=(stage/provider).read_text()
+        expected='''`define WORKSTATION_TASK3_M_SYNC_STORAGE
+`include "rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv"
+`undef WORKSTATION_TASK3_M_SYNC_STORAGE'''
+        clean=lambda s: ''.join(re.sub(r'//[^\n]*|/\*.*?\*/','',s,flags=re.S).split())
+        if clean(wrapper)!=clean(expected):
+            raise ValueError('direct TF synchronous storage wrapper scope drift')
+    if provider=='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv' or sync_provider:
         # This one reviewed wrapper delegates DIRECT macros to its immutable
         # window provider. Bind every transitive provider before selecting the
         # leaf; old providers retain their original direct-byte checks below.

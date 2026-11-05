@@ -4,7 +4,8 @@
 // pulse-only and has no ready output: transport congestion fails the recording
 // branch and never changes the physical audio schedule.
 module workstation_task3_final_tap_export #(
-    parameter integer FIFO_ADDRESS_BITS=8
+    parameter integer FIFO_ADDRESS_BITS=8,
+    parameter bit SYNC_READ_STORAGE=1'b0
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
     input wire arm_valid_i,
@@ -33,7 +34,7 @@ module workstation_task3_final_tap_export #(
     localparam integer DEPTH=1<<FIFO_ADDRESS_BITS;
     // 1 overflow, 2 epoch/sequence/format/sample error, 3 link loss,
     // 5 PANIC, 6 matching cancellation. Format1 is stereo16/48k only.
-    (* ram_style="block" *) reg [97:0] frames[0:DEPTH-1];
+    (* ram_style="block",syn_ramstyle="block_ram" *) reg [97:0] frames[0:DEPTH-1];
     reg [FIFO_ADDRESS_BITS-1:0] wr,rd;
     reg [FIFO_ADDRESS_BITS:0] count;
     reg [31:0] retired_generation,expected_sequence;
@@ -47,14 +48,45 @@ module workstation_task3_final_tap_export #(
     assign arm_ready_o=reset_ni && link_ready_i && !panic_i && !armed_o &&
         !arm_pending && !cancel_pending && retired_generation!=32'hffffffff;
     assign arm_tx_valid_o=usable && arm_pending && !arm_sent;
-    assign frame_tx_valid_o=usable && !arm_pending && count!=0;
-    assign {frame_tx_44k1_o,frame_tx_error_o,frame_tx_epoch_o,frame_tx_sequence_o,frame_tx_pcm_o}=frames[rd];
+    wire head_valid;
+    wire [97:0] head;
+    wire [97:0] incoming={frame_44k1_i,frame_error_i,frame_epoch_i,frame_sequence_i,frame_pcm_i};
+    assign frame_tx_valid_o=usable && !arm_pending && count!=0 && head_valid;
+    assign {frame_tx_44k1_o,frame_tx_error_o,frame_tx_epoch_o,frame_tx_sequence_o,frame_tx_pcm_o}=head;
     // A cancel remains visible after link loss. The hub may retain it locally
     // or retire it on a new physical boot; it must never replay queued PCM.
     assign cancel_tx_valid_o=reset_ni && cancel_pending;
     assign queued_frames_o=count;
     wire push=usable && frame_valid_i;
     wire pop=frame_tx_valid_o && frame_tx_ready_i;
+    // A pulse-only source never waits on the read port or remote transport.
+    // Data ports have no reset; occupancy and validity revoke stale contents.
+    always @(posedge clk_i)
+        if(push)frames[wr]<=incoming;
+    generate if(SYNC_READ_STORAGE)begin:g_sync_frames
+        reg [97:0] ram_head,bypass_head;
+        reg valid,bypass;
+        wire [FIFO_ADDRESS_BITS-1:0] next_rd=rd+FIFO_ADDRESS_BITS'(pop);
+        wire fetch=usable && ((!valid && count!=0) || (pop && count>1));
+        // Write forwarding handles empty and last-pop/new-push collisions;
+        // RAM read-during-write behavior is never used as a data authority.
+        wire forward=push && (count==0 || (pop && count==1));
+        always @(posedge clk_i)begin
+            if(fetch)ram_head<=frames[next_rd];
+            if(forward)bypass_head<=incoming;
+        end
+        always @(posedge clk_i or negedge reset_ni)
+            if(!reset_ni)begin valid<=0;bypass<=0;end
+            else if(!usable)begin valid<=0;bypass<=0;end
+            else if(forward)begin valid<=1;bypass<=1;end
+            else if(fetch)begin valid<=1;bypass<=0;end
+            else if(pop)valid<=0;
+        assign head_valid=valid;
+        assign head=bypass ? bypass_head:ram_head;
+    end else begin:g_async_frames
+        assign head_valid=1'b1;
+        assign head=frames[rd];
+    end endgenerate
     initial if(FIFO_ADDRESS_BITS<2 || FIFO_ADDRESS_BITS>8)
         $fatal(1,"invalid final tap queue geometry");
     always @(posedge clk_i or negedge reset_ni)begin
@@ -86,7 +118,6 @@ module workstation_task3_final_tap_export #(
                     if(arm_tx_valid_o && arm_tx_ready_i)arm_sent<=1;
                     if(arm_pending && arm_sent && arm_result_accepted_i)arm_pending<=0;
                     if(push)begin
-                        frames[wr]<={frame_44k1_i,frame_error_i,frame_epoch_i,frame_sequence_i,frame_pcm_i};
                         wr<=wr+1'b1;expected_sequence<=expected_sequence+1'b1;
                         captured_frames_o<=captured_frames_o+1'b1;
                     end

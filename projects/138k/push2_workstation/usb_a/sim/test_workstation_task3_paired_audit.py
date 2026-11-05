@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_task3_paired_audit import (audit_constraint_inventory,
-    audit_paired_ports, verify_m_batch_source_receipt, PROFILES, TOP)
+    audit_paired_ports, audit_m_sync_storage, verify_m_batch_source_receipt, PROFILES, TOP)
 from tools import workstation_task3_paired_board as common
 from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
 
@@ -37,6 +37,17 @@ def metadata(*changes, delegated=()):
 
 
 class PairedConstraintInventory(unittest.TestCase):
+    def test_sync_storage_cannot_accept_ram16_or_missing_owner(self):
+        rows={'u_task3_m_endpoint/'+p:dict(Bsram=1,Ssram=0) for p in ('collector_m','recording')}
+        self.assertFalse(audit_m_sync_storage(rows)['physical_block_count_verified'])
+        for owner in tuple(rows):
+            for counts in (None,dict(Bsram=0,Ssram=0),dict(Bsram=1,Ssram=256)):
+                mutated=dict(rows)
+                if counts is None:del mutated[owner]
+                else:mutated[owner]=counts
+                with self.subTest(owner=owner,counts=counts),self.assertRaises(ValueError):
+                    audit_m_sync_storage(mutated)
+
     def test_source_only_and_exact_historical_receipts(self):
         expected = dict(source_sha256={'owner.sv': 'a'*64}, proof='exact')
         verify_m_batch_source_receipt(ROOT, expected, expected)
