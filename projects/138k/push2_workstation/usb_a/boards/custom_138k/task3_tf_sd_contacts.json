@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "scope": "Explicit task3 M TF contact policy; source-only adaptation of independently reviewed CNN-DEMO contacts. Historical pinout and all other profiles remain separately selected.",
+  "carrier_filename": "Netlist_my_138k_2026-10-21.tel",
+  "carrier_sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+  "symbol_evidence": {
+    "source": "ProPrj_138K（这个有效）_2026-10-16.epro2.zip/138K（这个有效）.epru",
+    "sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
+    "symbol": "XDFP-0090-012.1",
+    "component": "U16",
+    "pin_names": {
+      "1": "DAT2",
+      "2": "CD/DAT3",
+      "3": "CMD",
+      "4": "VDD",
+      "5": "CLX",
+      "6": "VSS",
+      "7": "DAT0",
+      "8": "DAT1",
+      "9": "CS",
+      "10": "EH"
+    },
+    "interpretation": "SPI uses DAT0=MISO, CMD=MOSI, CLK=SCK and CD/DAT3=CS_n; shell pins 9/10 are grounded in the carrier netlist"
+  },
+  "ports": {
+    "sd_miso": {
+      "node": "U16.7",
+      "ball": "V15",
+      "inherited_ball": "AA15"
+    },
+    "sd_mosi": {
+      "node": "U16.3",
+      "ball": "Y16",
+      "inherited_ball": "W14"
+    },
+    "sd_sck": {
+      "node": "U16.5",
+      "ball": "W15",
+      "inherited_ball": "V15"
+    },
+    "sd_cs_n": {
+      "node": "U16.2",
+      "ball": "AB15",
+      "inherited_ball": "W15"
+    }
+  },
+  "unused_data_nodes": [
+    "U16.1",
+    "U16.8"
+  ],
+  "hardware_verified": false,
+  "policy": "task3_m_actual_sd_contacts_v1",
+  "upstream": {
+    "commit": "efaf4c7e0f7ca5879443fbb23bf0dcf84d809583",
+    "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/cnn_demo_tf_spi.json",
+    "descriptor_sha256": "89e18c20b7dcfd175a5e69617b4899a4e7c347dd8ec02efa8a69beff88133afa",
+    "acceptance_inherited": false
+  }
+}

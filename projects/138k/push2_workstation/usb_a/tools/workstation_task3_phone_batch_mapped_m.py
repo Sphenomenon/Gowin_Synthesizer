@@ -52,6 +52,7 @@ def source_evidence(stage):
     artifact = stage.parent.parent / 'workstation_profile.json'
     profile = json.loads(artifact.read_text())
     require(profile.get('profile') in (PROFILE,
+            'custom138k-workstation-task3-m-paired-phone-batch-tf-v1',
             'custom138k-workstation-task3-m-paired-phone-batch-reset-v1'),
             'exact M batch profile artifact required')
     selected = selected_batch_source_evidence(

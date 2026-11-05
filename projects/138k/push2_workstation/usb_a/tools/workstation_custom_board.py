@@ -233,6 +233,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile_dependencies+=(*paired_helper.DEPENDENCIES,*paired_board.DEPENDENCIES)
         if phone_batch_worker:
             profile_dependencies+=paired_helper.BATCH_DEPENDENCIES
+    tf_contact_policy = None if profile is None else profile['configuration'].get('tf_contact_policy')
+    if tf_contact_policy is not None:
+        if paired_role != 'M' or not tf_direct:
+            raise ValueError('actual SD contacts require explicit paired M direct TF')
+        from tools.workstation_task3_tf_contacts import POLICY as TF_CONTACT_POLICY, DEPENDENCIES as TF_CONTACT_INPUTS
+        if tf_contact_policy != TF_CONTACT_POLICY:
+            raise ValueError('unknown task3 TF contact policy')
+        profile_dependencies += TF_CONTACT_INPUTS
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
@@ -256,7 +264,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         pinout_output = None
         pinout = dict(device='GW5AST-LV138PG484AC2/I1', electrical_check=dict(status='not_checked'))
     else:
-        pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout')
+        pinout_output, pinout = prepare_pinout(root, netlist_directory, output / 'pinout',
+            **({'tf_contact_policy': tf_contact_policy} if tf_contact_policy is not None else {}))
     sys.path.insert(0, str(root / 'tools'))
     builder = importlib.import_module('build_resource_rework')
     if builder.ROOT.resolve() != root:

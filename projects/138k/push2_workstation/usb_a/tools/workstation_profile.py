@@ -282,6 +282,14 @@ PROFILE_REGISTRY[TASK3_M_BATCH_RESET_NAME]=dict(_parent,
     integration_identity='custom138k-native-task3-m-paired-phone-batch-reset-revision1')
 
 
+TASK3_M_BATCH_TF_NAME='custom138k-workstation-task3-m-paired-phone-batch-tf-v1'
+_parent=PROFILE_REGISTRY[TASK3_M_BATCH_RESET_NAME]
+PROFILE_REGISTRY[TASK3_M_BATCH_TF_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_paired_phone_batch_tf_v1.json',
+    configuration=dict(_parent['configuration'], tf_contact_policy='task3_m_actual_sd_contacts_v1'),
+    integration_identity='custom138k-native-task3-m-paired-phone-batch-tf-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -491,6 +499,9 @@ def _artifact(root, output, metadata, profile):
     repository = root.parents[3]
     spec = specification(profile['name'])
     stage = output / 'workstation/Prj1'
+    from tools.workstation_task3_tf_contacts import verify_plan as verify_tf_contacts
+    verify_tf_contacts(root, json.loads((output / 'pinout/pinout.json').read_text()),
+                      profile['configuration'].get('tf_contact_policy'))
     if spec.get('demo_role') is not None:
         from tools.workstation_usb_fifo_reset import verify_demo_selection
         verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),

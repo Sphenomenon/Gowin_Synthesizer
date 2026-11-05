@@ -1,0 +1,333 @@
+{
+  "schema": "dual138k-task3-actual-TF-contacts-source-stage-v1",
+  "date": "2026-11-05",
+  "source_parent_commit": "2fe1a486b6b7cb5f95c5c74d0ad604f6071e84e5",
+  "validation_stage": "explicit corrected TF-contact profile, fresh preparation and source/constraint verification only; fresh synthesis blocked by host license",
+  "parent_stage": {
+    "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_MIDI_ROOT_RELEASE_20261105.json",
+    "sha256": "3fc8c087a4fea917d31895915b36eaa02eea2a8a62dbb84efa26c3ec46b1fa2d"
+  },
+  "upstream_source": {
+    "commit": "efaf4c7e0f7ca5879443fbb23bf0dcf84d809583",
+    "path": "projects/138k/push2_workstation/usb_a/boards/custom_138k/cnn_demo_tf_spi.json",
+    "descriptor_sha256": "89e18c20b7dcfd175a5e69617b4899a4e7c347dd8ec02efa8a69beff88133afa",
+    "acceptance_inherited": false
+  },
+  "changes": [
+    "Existing build.py --prepare-custom-board entry point selects a separate paired M profile with both the MIDI root correction and actual SD contacts.",
+    "Locked carrier netlist and the attributed schematic symbol define MISO U16.7/V15, MOSI U16.3/Y16, SCK U16.5/W15 and CS_n U16.2/AB15.",
+    "Old false unused reservations U16.2/U16.3 are replaced only in the selected plan by the actual unused DAT2/DAT1 contacts U16.1/U16.8. Original pinout.json stays unchanged.",
+    "Source policy, tool, inherited pinout and correction descriptor are copied into the selected immutable closure and independently verified.",
+    "All enabled RTL, firmware and timing constraints remain byte-identical to the MIDI-reset candidate. Only four TF location lines in each generated CST differ."
+  ],
+  "boards": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-paired-phone-batch-tf-v1-c29be00bc7003fd4",
+      "configuration_sha256": "3c9799d9e8b0bac6bbf84f9492fe6e63e79e305da83e014e675b5ea4a3982fda",
+      "source_snapshot_identity": "4b385593f1f741b2e38585d0333ae9ec66e1a1d2f9eb7d1e933c983f2137d695",
+      "prepared_output": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "task3_m_remote_CNN_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "task3_m_native_direct_tf_v1",
+        "tf_storage_policy": "direct_sd_crc16_validated_fat_cache_v1",
+        "tf_sdc_revision": 3,
+        "bluetooth_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "recording_policy": "task3_M_final_physical_tap_to_W_single_object_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "ae350_pcm_policy": "task3_m_remote_commands_existing_PCM1_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "midi_release_policy": "task3_m_batch_midi_actual_root_release_sdc_v1",
+        "tf_contact_policy": "task3_m_actual_sd_contacts_v1"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/workstation_profile.json",
+        "sha256": "97035dc7b4c6e118ee5387e24a5bc1d68ea385a331021232b560d44f6322844e"
+      },
+      "integration_inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/integration_inputs.json",
+        "sha256": "b97d9f47f41f75efffd209d904a8355f57c915a352d966b29960766ea5626762"
+      },
+      "contact_selection": {
+        "policy": "task3_m_actual_sd_contacts_v1",
+        "descriptor": "boards/custom_138k/task3_tf_sd_contacts.json",
+        "descriptor_sha256": "8930929ee8dee086bc4b17606abe0fb15251a42a1c9d4d638205b5fed3a69bad",
+        "tool": "tools/workstation_task3_tf_contacts.py",
+        "tool_sha256": "1a3b4475a8e5de0c18964f8f503590e3aa43051126434f86684a2a33d07d38fd",
+        "parent_pinout_identity": "custom_138k_usb2_20261022_pinout_v2",
+        "carrier_sha256": "deff91f6c48be8d66241e32107b88f7eea47ad2bf6c5b607b139c4b85c33a121",
+        "contacts": {
+          "sd_miso": {
+            "node": "U16.7",
+            "ball": "V15",
+            "inherited_node": "U16.1",
+            "inherited_ball": "AA15",
+            "direction": "input"
+          },
+          "sd_mosi": {
+            "node": "U16.3",
+            "ball": "Y16",
+            "inherited_node": "U16.8",
+            "inherited_ball": "W14",
+            "direction": "output"
+          },
+          "sd_sck": {
+            "node": "U16.5",
+            "ball": "W15",
+            "inherited_node": "U16.7",
+            "inherited_ball": "V15",
+            "direction": "output"
+          },
+          "sd_cs_n": {
+            "node": "U16.2",
+            "ball": "AB15",
+            "inherited_node": "U16.5",
+            "inherited_ball": "W15",
+            "direction": "output"
+          }
+        },
+        "carrier_supply_network": "+3V3",
+        "carrier_ground_nodes": [
+          "U16.6",
+          "U16.9",
+          "U16.10"
+        ],
+        "selected_unused_data_nodes": [
+          "U16.1",
+          "U16.8"
+        ],
+        "schematic_symbol_evidence": {
+          "source": "ProPrj_138K（这个有效）_2026-10-16.epro2.zip/138K（这个有效）.epru",
+          "sha256": "c714cacea6ca2b6dc400c8e22a851f9e0b644303968b76dde492c7f4b043e19b",
+          "symbol": "XDFP-0090-012.1",
+          "component": "U16",
+          "pin_names": {
+            "1": "DAT2",
+            "2": "CD/DAT3",
+            "3": "CMD",
+            "4": "VDD",
+            "5": "CLX",
+            "6": "VSS",
+            "7": "DAT0",
+            "8": "DAT1",
+            "9": "CS",
+            "10": "EH"
+          },
+          "interpretation": "SPI uses DAT0=MISO, CMD=MOSI, CLK=SCK and CD/DAT3=CS_n; shell pins 9/10 are grounded in the carrier netlist"
+        },
+        "actual_board_measured": false,
+        "bank_VCCIO_measured": false,
+        "TF_clock_or_timing_budget_changed": false,
+        "hardware_verified": false
+      },
+      "pinout": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/pinout/pinout.json",
+        "sha256": "ac42136b78da5b42f85349f9a35652af3ed8528547e40c0f46ce50ece558e262"
+      },
+      "enabled_compiler_input_differences": {
+        "constraints/custom_138k.cst": {
+          "before_sha256": "b8071ad1c125e74a44f58973134504ceb834f42ac3c15ba760f34708d68fdc4c",
+          "after_sha256": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124"
+        }
+      },
+      "all_CST_differences": {
+        "constraints/custom_138k.cst": {
+          "before_sha256": "b8071ad1c125e74a44f58973134504ceb834f42ac3c15ba760f34708d68fdc4c",
+          "after_sha256": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124"
+        },
+        "constraints/custom_138k.locations.cst": {
+          "before_sha256": "c2fff9310a197946b746d5664dcf44cf8d24a89d5ad460bb68d99d76e554235e",
+          "after_sha256": "6ec47851620d18a89c22efb0a1e797dda3b15e995d8b3200ac0357a2b57ed5dc"
+        }
+      },
+      "USB_firmware": {
+        "elf_sha256": "e8364124f66956d60ee56cafc0d10255322b1fc3f513247693c9ca799e64148b",
+        "binary_sha256": "fef2397a2a0daa19762ffdc7b3e524bf5d9a6586125fd0699db5382d2b618c02",
+        "rom_sha256": "718752a5c9e7aac767402c7e2a8fb3b6c0ba90a1239f443991237684b3db63b2"
+      },
+      "AE350_firmware": {
+        "audio_clock_service.c": "0c13026ff71df0beb8aeb929c0e49a7551c107930e14dfa26314411b70644829",
+        "audio_clock_service.h": "0ac43161ae18b7a375096f6e9d5adb5128c23afbbe90c95db5bfa66da9a8e551",
+        "audio_clock_service.o": "89e90bbaef73ce4ae6211f2eb45dd60a9774c9c692608de025ca8e72b743ffd6",
+        "audio_clock_service.su": "86aaa24e326a4a4d77082f4e646ba7262d0c0c9ec89aac844e829c16e6e8d7ad",
+        "audio_services.h": "d84a0450f5aab3a24bc323e86401566da87e3a46cc681860d2f0b902c1ff74ff",
+        "boot.ld": "16b6db0eda538f9d2aae4f9eb05b4ad4bc2cd80c177c3d39e9ae03a2183edc1c",
+        "boot.mem": "9114a7d51b6511ed4bd778401796b590fd746103753669414302abd2e9e6d0e0",
+        "build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_metadata.json": "0aef5e70a3198cc1b69be4a2b75ed38ee20929e223318bbe2b5971fdc3f1bb2b",
+        "firmware.bin": "a179dd5d831b1f8d36f0c690403962270233146a07bf966872765033c8fb677d",
+        "firmware.elf": "d6b0b26bdf0aed8987e71893d2ebdd588810b3b2f900198d6f03baf2b5360cc5",
+        "firmware.map": "015a9f6fd1287ce16cfc6b97783c20c18daa1c78f516d0b178a83ac8909da657",
+        "firmware.nm": "665699e25344a989961b42d79720399692bfea79815b720ab5f6f5c485ec3c0c",
+        "firmware.size": "df1bacec7075ca19f905e34d058c7c3ae473e3f6b6b19942e666598578342c22",
+        "firmware_checks.h": "ff4ec89a99bbd3b67f7f477f450866efb35a64ed0986215bb61b81226f866c55",
+        "provenance.json": "62761bad296e90f02f5e466ef9e18ea8d79e3df56347e390ebe46631335edb69",
+        "reference_boot.mem": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9",
+        "start.S": "2de8303a122f6d448c70f2f8398a616d9396e7c4dee61ba2587a069bf0b217f9",
+        "start.o": "71e961d263dbc8529f67d7887624eeaf11817c4e64678d7752c4d8eec7c277eb",
+        "ui_main.c": "9283f9af5b0222ce5c3485a74fa4cb76ef7a5748468d874622394b1d4905084c",
+        "ui_main.o": "4049757cc9acb9d69bb4bc83335bb69677875d9091336c902f8b1f07fe27a7ab",
+        "ui_main.su": "28d8f00b04d5c88fb89dc9502ac7234a10bece9ca8d9f5b75c60854547ac6904",
+        "ui_model.h": "c8984df950ec06ccd349ca5783f473a102f6c19e6cc7eb9d16c4372527afb450",
+        "ui_render.c": "7a4dab40db09be456d6be7ab198ef57b38f03e68b2cf736328a60f641c753007",
+        "ui_render.h": "72dcc31cf9457ad9d6a7e2f250e9715bf6b0168fdd7830d9f0b9547cbc38ae67",
+        "ui_render.o": "5b82c2ebc6b0de29c2bf2e177ca247cc008e85a6ea61b8350bf8d5a2a2f99f49",
+        "ui_render.su": "316379feb8c950f730871806add44f98a4758453d0a4359fac984c1bcd813969",
+        "ui_runtime.c": "eccdd362e3c2319379acdd2a5e8d7baf78cc4108e8d916ae0c4950e36e7f46f5",
+        "ui_runtime.o": "f7125d922fb02d31021885c62381d6bea602ab098c44296f87d116ecf59b22fc",
+        "ui_runtime.su": "59719f3c7c860acadfddc87415a8be6bc44a22ee5ca83f6ddd2e64a8e39647b5"
+      },
+      "synthesis_resources": null,
+      "physical_resources": null,
+      "routed_STA": null,
+      "control_to_sound_latency_ms": null,
+      "UserCode": null,
+      "bitstream": null
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+      "prepared_output": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+      "configuration_sha256": "c2f919997690990ce2caf3aede6ec8e2016901d6e8cf433b7a7015b1071e6fef",
+      "source_snapshot_identity": "2ad8aa5c2514be204fef03885665d9c9210ef3fa6b45b146ec5a0978e81a2306",
+      "implementation_changed": false,
+      "historical_synthesis_equivalent_BSRAM": 308,
+      "physical_resources": null,
+      "routed_STA": null,
+      "UserCode": null,
+      "bitstream": null,
+      "strict_audit": {
+        "passed": 17,
+        "total": 18,
+        "failures": {
+          "native_held_handshakes": {
+            "passed": false,
+            "error": "paired W CDC audit: W shared PLL/control release complete inventory changed"
+          }
+        },
+        "evidence": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-batch-strict-audit-v1.json",
+          "sha256": "25fbf5f253ad7ffa804ff1582bb80084691d681d5168d971678f8dc07c5c8397"
+        }
+      }
+    }
+  },
+  "validation": {
+    "actual_carrier_contact_regression": {
+      "passed": 4,
+      "negative_controls": 24,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/tf-contacts-verification-v5.json",
+        "sha256": "bd5309206ce562830d794f1b342abae95af2d4aa9b04f28a7b64b1193db3eb6e"
+      }
+    },
+    "inherited_pinout_regression": {
+      "passed": 32,
+      "failed": 0
+    },
+    "current_workstation_sources": {
+      "passed": 17,
+      "failed": 0
+    },
+    "paired_audit_regression": {
+      "passed": 10,
+      "failed": 0
+    },
+    "new_profile_independent_verification": true,
+    "new_immutable_prepare_audit": true,
+    "installed_source_proof": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/installed-TF-source-proof.json",
+      "sha256": "8592875e7fc1601a7f3082a88fa6f2045263ab741584368e6fd7f309a3ae422c"
+    },
+    "enabled_compiler_input_count": 287,
+    "all_enabled_RTL_and_firmware_byte_identical": true,
+    "all_timing_constraints_byte_identical": true,
+    "complete_combined_CST_ball_collisions": 0,
+    "old_M_W_and_MIDI_candidates_immutable_prepare_audit": "all verified without changing original artifacts",
+    "native_board_regression": {
+      "passed": false,
+      "tests": 9,
+      "failures": 1,
+      "errors": 5,
+      "causes": [
+        "Default riscv64-elf compiler fails firmware compilation; explicit xPack prefix succeeds in actual new preparation.",
+        "Default gw_sh/simulation library discovery is unavailable; explicit absolute Gowin executable separately reports hostid mismatch.",
+        "Legacy top token digest differs from frozen expected value; owning top is byte-identical to committed HEAD and was not edited in this stage."
+      ],
+      "frozen_token_seal_changed": false,
+      "owning_top_sha256": "4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f"
+    },
+    "fresh_synthesis": {
+      "passed": false,
+      "exit_code": 1,
+      "error": "License verification failed  License hostid not match.",
+      "invocation": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/synthesis-invocation.json",
+        "sha256": "a5e62335d9016e22ef79e671f51b6322124e3a55c10343fbb1822a0d4a83a206"
+      },
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v4/synthesis.log",
+        "sha256": "fb137eec4af31e48fee7091078dc616756c70f58bc5acbd18ab25cddd111e612"
+      }
+    }
+  },
+  "preserved": {
+    "task2_and_single_board_candidates": true,
+    "frozen_baselines": true,
+    "historical_source_locks": true,
+    "historical_CDC_consumer_seals": true,
+    "original_pinout_sha256": "e03020d6dd67081577b79e4224ff4fdbb569acd26206f4d738bbb2119a35ba75",
+    "M_32_voice_normal_vector_RTL": true,
+    "TF_reader_clock_and_protocol": true,
+    "M_parameter_and_output_authority": true,
+    "W_actual_migrated_compute_and_single_recording_object": true,
+    "LCD_business_and_budget_default_disabled": true
+  },
+  "rollback": {
+    "previous_M_candidate": "custom138k-workstation-task3-m-paired-phone-batch-reset-v1-bb7a78c22632a427",
+    "previous_M_output": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-reset-prepare-v6",
+    "existing_W_output": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+    "TF_hardware_acceptance_inherited": false,
+    "previous_candidates_remain_inspectable": true
+  },
+  "retained_failed_or_superseded_experiments": {
+    "negative_fixture_failure": "/Users/sphenicidition/.cache/gw138k-task3-20261105/tf-contacts-verification-v1.json",
+    "prepare_v1": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v1",
+    "prepare_v2": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v2",
+    "prepare_v3": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-phone-batch-tf-prepare-v3",
+    "overwritten": false
+  },
+  "remaining": [
+    "Restore licensed Gowin tool execution and synthesize this exact final profile; old mapped/physical evidence is not transferred.",
+    "Close M CPU final consumers, W shared PLL/control release consumers and complete TF/held CDC.",
+    "Fresh physical resources, P&R, PLL, STA and CDC for the final selected M/W identities.",
+    "Correct target boards only: measure TF bank VCCIO/contacts and actual read/playback; LCD throughput, RTT and congestion; control-to-sound latency; actual CNN/Push, sustained phone D mode and one nonzero CPU/BLE recording/download object."
+  ],
+  "fresh_synthesis": false,
+  "timing_closed": false,
+  "physical_CDC_accepted": false,
+  "hardware_tested": false,
+  "sram_deployed": false,
+  "flash_deployed": false,
+  "deployment_allowed": false
+}

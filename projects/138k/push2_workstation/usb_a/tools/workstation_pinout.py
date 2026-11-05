@@ -297,11 +297,15 @@ def render_constraints(plan):
     return '\n'.join(lines) + '\n'
 
 
-def prepare(root, input_directory, output=None):
+def prepare(root, input_directory, output=None, *, tf_contact_policy=None):
     root = Path(root).resolve()
     profile_path = root / PROFILE_PATH
     profile = json.loads(profile_path.read_bytes())
     netlists, sources = load_sources(profile, input_directory)
+    tf_contacts = None
+    if tf_contact_policy is not None:
+        from tools.workstation_task3_tf_contacts import select_profile
+        profile, tf_contacts = select_profile(root, profile, netlists, tf_contact_policy)
     baseline = load_baseline(root, profile['core_baseline'])
     core_payload = baseline.read_bytes('constraints/tang_mega_138k.cst')
     plan = resolve(profile, netlists, core_payload.decode('utf-8-sig'))
@@ -310,11 +314,16 @@ def prepare(root, input_directory, output=None):
         raise ValueError('generated constraints do not match resolved locations')
     plan['source_baseline'] = baseline.evidence()
     plan['source_inputs'] = sources
+    if tf_contacts is not None:
+        plan['tf_contact_selection'] = tf_contacts
     plan['core_constraints_sha256'] = digest(core_payload)
     plan['recipe_inputs'] = {PROFILE_PATH.as_posix(): digest(profile_path.read_bytes()),
                              'tools/workstation_pinout.py': digest(Path(__file__).read_bytes()),
                              'tools/workstation_baselines.py': digest(Path(__file__).with_name('workstation_baselines.py').read_bytes()),
                              'build.py': digest((root / 'build.py').read_bytes())}
+    if tf_contacts is not None:
+        from tools.workstation_task3_tf_contacts import DEPENDENCIES
+        plan['recipe_inputs'].update({path: digest((root / path).read_bytes()) for path in DEPENDENCIES})
     plan['constraints_sha256'] = digest(constraints.encode('utf-8'))
     output = Path(output).resolve() if output is not None else root / 'results' / datetime.now().strftime('custom_138k_pinout_%Y%m%d_%H%M%S_%f')
     if output.is_relative_to(Path(input_directory).resolve()):
