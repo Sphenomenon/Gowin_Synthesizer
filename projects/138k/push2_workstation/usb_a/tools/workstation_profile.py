@@ -378,6 +378,22 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision7')
 
 
+# W v2 physically expands to 344 BSRAMs, above the device's 340-block limit.
+# Reuse the reviewed PR #2 RAM48 selection for its USB CPU, with matching
+# startup/linker/ROM and stack-budget verification. M's runtime stays at v7;
+# both new source checkpoints preserve the previous descriptors and candidates.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v8'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v8'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v7']
+    _configuration=dict(_parent['configuration'])
+    if _role=='w':
+        _configuration['usb2_cpu_ram_bytes']=49152
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=8,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v8.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision8')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

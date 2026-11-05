@@ -62,13 +62,18 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，最新来源检查点为两板 v7；M v7 已完成实际综合，W v7 仅准备和验证。W v7 与 W v6 的运行配置及 200 项编译输入逐字节一致，最新实际综合仍绑定 W v2。历史 v3–v6、task2 和单板回退均保留。
+截至 2026-11-06，最新来源检查点为两板 v8。W v8 显式复用 PR #2 的 USB CPU48，已完成实际综合；M v8 仅准备和验证，其运行配置及 287 项编译输入与 M v7 逐字节一致，不继承新的综合或物理验收。历史 v1–v7、task2 和单板回退均保留。
 
 | 板 | 选定来源与身份 | 验证边界 |
 | --- | --- | --- |
+| M v8 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v8-ae70593a23c867b3`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v8.json) | 945 项来源锁、287 项编译输入。运行配置和编译输入等于 v7；本阶段未重新综合，实际综合仍参考 M v7，物理比较仍以 M v5 为基线。 |
+| W v8 CPU48 实验 | `custom138k-workstation-task3-w-paired-checkpoint-v8-47db282fd95aafe1`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v8.json) | 993 项来源锁、200 项编译输入；仅 USB CPU RAM 模块改变。综合：49,465 Register、64,950 LUT、16,355 ALU、300 BSRAM 等效、779 RAM16。审计 16/17，完整共享 PLL/控制 release consumer 门禁仍拒绝。物理容量与布线另验。 |
 | M v7 综合实验 | `custom138k-workstation-task3-m-paired-checkpoint-v7-9023663c453c3399`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v7.json) | 945 项来源锁、287 项编译输入。综合：58,417 Register、68,770 LUT、28,056 ALU、212 BSRAM 等效、254 RAM16。审计 20/22；32 声部、普通/矢量结构、score/tap BSRAM、CPU48 ROM、PLL/USB/MIDI 局部检查通过；两个完整 CPU consumer 门禁仍拒绝。 |
-| W v2 实际参考 | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 综合：49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16。完整审查 11/18；优化后的 live/batch 映射仍待证明。保留 60 秒单对象，真实录音/下载未验收。 |
-| W v7 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v7-6ac9f7e40060f3cc`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v7.json) | 993 项来源锁、200 项编译输入，准备和校验通过；运行配置等于 v6。本阶段未综合，不继承 W v2 的实际映射或物理验收。 |
+| W v2 历史参考 | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 综合：49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16；历史完整审查 11/18。本次真实物理展开需要 344/340 BSRAM，布局前因 PA2017 被拒绝；该参考不能作为可部署回退。 |
+
+[W CPU48 来源与综合证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CPU48_SYNTHESIS_20261106.json)记录了 W v2 的真实 344/340 BSRAM 超限，以及据此选入 W 的 PR #2 分银行方案。W v8 相对 v2 减少 8 个 BSRAM 等效，增加 964 LUT、7 Register、8 ALU；保留真实 CNN/CQT/Viterbi、HCI/SBC 和 60 秒唯一录音对象。USB 固件仍为 19,400 字节，静态末端 25,204 字节，48 KB 配置栈余量 23,948 字节；实际网表逐字验证全部 12,288 个 ROM 字、24 个银行块。功能审计显式区分 48/64 KB，保留默认 64 KB 的原资源下限，RAM48 必须恰有 24 个银行块及输入 FIFO，不能用容量选项掩盖功能删除。
+
+本阶段 40 项准备、来源及审计回归通过，无跳过；选入的 RAM48 模块另通过 31 项 CPU 总线行为检查。W v8 的 50 MHz、76.8 MHz 域综合估算分别为 48.732、75.574 MHz，仍未达到要求。P2R0 物理诊断已越过原 BSRAM 超限点并进入布局，完整资源、布线和 STA 结果尚待记录；综合等效数不能替代物理块数。
 
 M v7 通过显式 `m_identity_compare_policy` 选择 16 组、每组 8 位的完整身份比较。它保留全部 128 位、同拍撤销语义及原有直接比较默认值，不增加寄存器或等待拍；精确反向重建检查保证端点其余字节等于封存的 M v5。完整 M 网表中的该比较从 128 级串行 ALU 缩为最长 8 级 ALU、10 级组合逻辑。两份实际整机 VG 均完成所有 `2^256` 个独立 FF-Q 输入赋值的函数证明，各自 128 个漏位故障均被拒绝。这只证明该组合函数，级数不代表纳秒或整机关键路径。
 
@@ -84,13 +89,13 @@ M v7 的 [P2R0 物理诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_ID
 
 M v5 的同约束 P2R0 诊断以 `D21106E1` 请求值运行，699.30 秒后自然失败，剩余 362 条未布通网络；失败物理报告为 Logic 99,067、Register 58,417、CLS 61,314/69,120（89%）、BSRAM 253/340，PRIMARY 与 LW 均为 8/8。M v3 同选项为 1,168 条，另一次算法 1 在 900 秒上限终止。失败 VO、局部链缩短或更少未布通网络均不构成完整 STA、位流或部署许可。历史 [release/physical](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_RELEASE_AND_PHYSICAL_20261105.json)与 [route comparison](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_ROUTE_COMPARISON_20261105.json)保留。两板均无本阶段板上身份、实测声音延迟或硬件通过结论。
 
-远程成果已由 `f96df276` 审查后采用：PR #2 的 CPU48 分银行 RAM 用于 M，当前 v7 实际网表逐字验证 24 个块、12,288 个 ROM 字，集成对比为 32→24 块；PR #3 的独立 USB/HDMI 诊断、复位和状态新鲜度修复也已保留。ADSR/TF ring 仍是实验，退出的重复录音后端未选入。2026-11-06 fetch 后 task3 无新增远程提交；取舍见 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
+远程成果已由 `f96df276` 审查后采用：PR #2 的 CPU48 分银行 RAM 已用于 M，本阶段进一步选入 W；两份实际网表均逐字验证 24 个块、12,288 个 ROM 字，原集成对比为 32→24 块。PR #3 的独立 USB/HDMI 诊断、复位和状态新鲜度修复也已保留。ADSR/TF ring 仍是实验，退出的重复录音后端未选入。2026-11-06 GitHub 只读 ref 核对 task3 仍为 `eb9f3866`；本次 git fetch 超时已保留记录，未将其报告为成功 pull。取舍见 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
 
 后续按以下顺序推进：
 
 1. 以 M v5 为物理对比基线，结合 M v7 的失败结果检查拥塞、时钟/复位扇出和剩余组合路径。身份比较已在实际整机网表中缩短，但整机综合估算未改善；继续定位真实限制，保留异步复位与生命周期，完整布通后核对 setup/hold/recovery/removal，不放宽时钟或 false path。
 2. 关闭 M 两个完整 CPU release/consumer 边界与完整 TF CDC；对 W 优化后的 live/batch 关系建立实际网表证明。局部命令、MIDI 或根状态证明不能替代这些门禁；不得刷新历史清单来冒充通过。
-3. 结合真实资源与 LCD 余量逐项选择重型效果、FFT/显示分析及扩展合成迁移。已移至 W 的识别、手机解码与唯一录音/下载对象继续保留。旧 TF 客户端、25K 绘制、BLE owner 的资源数字须先对应实际编译路径，不做全量重写。
+3. 先完成 W CPU48 的真实物理容量与布线核查，再结合 LCD 余量选择重型效果、FFT/显示分析及扩展合成迁移。W 实际网表已含 32 个 BSRAM 等效的效果链，其中混响占 20 个；优先审查将其复用为受 M 参数控制的有界计算分支，不能直接假定还能叠加一套混响或 FFT。该复用尚未选入整机。已移至 W 的识别、手机解码与唯一录音/下载对象继续保留；旧 TF 客户端、25K 绘制、BLE owner 的数字仍须对应实际编译路径。
 4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 有效吞吐、往返延迟、拥塞，再验收 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果与 60 秒录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 及真实来源格式绑定；当前成对配置只接纳 48 kHz 录音。
 
 必要 SRAM 验证沿用本任务授权，须先识别正确目标；Flash 仍需单独授权。每阶段完成相关验证后 commit、push 并更新证据。

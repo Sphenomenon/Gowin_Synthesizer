@@ -12,7 +12,8 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_task3_paired_audit import (audit_constraint_inventory,
-    audit_paired_ports, audit_m_sync_storage, verify_m_batch_source_receipt, PROFILES, TOP)
+    audit_paired_ports, audit_m_sync_storage, audit_worker_usb_storage,
+    verify_m_batch_source_receipt, PROFILES, TOP)
 from tools import workstation_task3_paired_board as common
 from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
 
@@ -37,6 +38,21 @@ def metadata(*changes, delegated=()):
 
 
 class PairedConstraintInventory(unittest.TestCase):
+    def test_worker_usb_capacity_cannot_hide_swept_banks_or_input_fifo(self):
+        host='u_native_usb/host';bus=host+'/bus';source='u_native_usb/input_owner'
+        rows={host:dict(Bsram=30),bus:dict(Bsram=24),source:dict(Bsram=1)}
+        self.assertFalse(audit_worker_usb_storage(rows,49152)['physical_block_count_verified'])
+        for owner,count in ((host,29),(bus,23),(bus,32),(source,0)):
+            with self.subTest(owner=owner,count=count),self.assertRaises(ValueError):
+                audit_worker_usb_storage(dict(rows,**{owner:dict(Bsram=count)}),49152)
+        with self.assertRaises(ValueError):
+            audit_worker_usb_storage({k:v for k,v in rows.items() if k!=bus},49152)
+        for capacity in (True,32768,65536):
+            with self.subTest(capacity=capacity),self.assertRaises(ValueError):
+                audit_worker_usb_storage(rows,capacity)
+        rows[host]=dict(Bsram=38);rows[bus]=dict(Bsram=32)
+        self.assertEqual(audit_worker_usb_storage(rows,65536)['required_host_bsram_equivalent'],38)
+
     def test_sync_storage_cannot_accept_ram16_or_missing_owner(self):
         rows={'u_task3_m_endpoint/'+p:dict(Bsram=1,Ssram=0) for p in ('collector_m','recording')}
         self.assertFalse(audit_m_sync_storage(rows)['physical_block_count_verified'])

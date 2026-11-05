@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v8': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision8',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v8': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision8',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v7': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision7',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v7': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision7',
@@ -265,6 +269,24 @@ def verify_prepared(output, metadata):
     return role, profile, stage, constraints
 
 
+def audit_worker_usb_storage(rows, usb_cpu_ram_bytes):
+    require(type(usb_cpu_ram_bytes) is int and usb_cpu_ram_bytes in (49152,65536),
+            'W USB CPU capacity must be explicitly 48 or 64 KiB')
+    required_host_blocks=38
+    if usb_cpu_ram_bytes==49152:
+        # The selected three-bank RAM removes exactly eight USB RAM blocks.
+        # Keep the default64 floor and require the actual RAM48 bank inventory;
+        # changing capacity cannot excuse a swept CPU RAM or input FIFO.
+        required_host_blocks=30
+        require(rows.get('u_native_usb/host/bus',{}).get('Bsram')==24,
+                'W USB RAM48 must map to exactly 24 bank blocks')
+    require(rows['u_native_usb/host']['Bsram']>=required_host_blocks and
+            rows['u_native_usb/input_owner']['Bsram']>=1, 'W USB storage swept')
+    return dict(ram_bytes=usb_cpu_ram_bytes,required_host_bsram_equivalent=required_host_blocks,
+                host=rows['u_native_usb/host'],input_owner=rows['u_native_usb/input_owner'],
+                physical_block_count_verified=False)
+
+
 def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
     pair = {
         'bounded_lcd_link': 'u_task3_pair_link',
@@ -308,8 +330,7 @@ def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
                           'workstation_runtime_oscillator_engine', 'workstation_runtime_scope_vec', 'dvi_tx'):
             require(forbidden not in kinds, 'W duplicate/local retired kind remains: ' + forbidden)
         retained['retired_prefixes'] = retired
-        require(rows['u_native_usb/host']['Bsram'] >= 38 and
-                rows['u_native_usb/input_owner']['Bsram'] >= 1, 'W USB storage swept')
+        retained['USB_storage']=audit_worker_usb_storage(rows,usb_cpu_ram_bytes)
     require(all(path in rows for path in pair.values()),
             'paired functionality swept: ' + ', '.join(k for k, p in pair.items() if p not in rows))
     retained['retained'].update({key: dict(instance=path, **rows[path]) for key, path in pair.items()})
