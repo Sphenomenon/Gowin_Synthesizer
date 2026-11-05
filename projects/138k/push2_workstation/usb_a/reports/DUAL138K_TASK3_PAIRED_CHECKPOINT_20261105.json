@@ -1,0 +1,625 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "created_utc": "2026-11-05T13:00:43.839445+00:00",
+  "stage": "paired_current_source_prepare_checkpoint",
+  "problem": "The previous W descriptor strictly rejects 16 drifted source locks after maintained M storage and shared preparation/audit changes. Preserve both historical descriptors and immutable candidates, then explicitly prepare both current roles together.",
+  "source": {
+    "branch": "codex/dual-138k-task3",
+    "parent_commit": "9bde11f030dda587af094f7b8186e3fff45ee12f",
+    "sha256": {
+      "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v1.json": "1d4ac57232d80a0f77b309cac371cc8a572df72ded6b5367561ff296044ce833",
+      "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v1.json": "3ac677608af8e589e1e01e856fc38fd51bbf6bda530d40d81f669f80836e4584",
+      "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_paired_checkpoint.py": "f8097a83e3c8edf70f65ea84141da8c9e897fda3b3501eaa30d763f95ca3301e",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py": "d363641194cb54875869971d22a67365cd8a4aed94da90f4ab6f653dc88de4d1",
+      "projects/138k/push2_workstation/usb_a/tools/workstation_task3_paired_audit.py": "9f8e91c4273c84ca8dd6fb06efee1554cce73b3f00810c6d22dcac0ab3d834b8"
+    }
+  },
+  "changes": {
+    "new_explicit_profiles": true,
+    "new_builder": false,
+    "new_runtime_wrapper": false,
+    "production_RTL_modified_in_this_stage": false,
+    "firmware_modified_in_this_stage": false,
+    "runtime_parameters_changed": false,
+    "wire_protocol_changed": false,
+    "reason_for_W_score_delta": "W stages the shared M-side score module; current bytes match the maintained synchronous-storage implementation. No new W mapped conclusion is borrowed from its parent."
+  },
+  "before": {
+    "before_profiles": {
+      "M": {
+        "profile": "custom138k-workstation-task3-m-paired-sync-storage-v1",
+        "configuration_path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_sync_storage_v1.json",
+        "configuration_sha256": "15a219660504db79ed0594f2d91f0ec5e8d3bcb8fc90d1b52bc8c36ec104a069",
+        "drift": []
+      },
+      "W": {
+        "profile": "custom138k-workstation-task3-w-paired-phone-batch-v1",
+        "configuration_path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_phone_batch_v1.json",
+        "configuration_sha256": "ac38016e78b18e52d24cf09890b19cd9872403fe635e55beb48142bbfce37718",
+        "drift": [
+          {
+            "path": "projects/138k/push2_workstation/usb_a/rtl/music/workstation_task3_score_commit_m.sv",
+            "expected_sha256": "e52594ed17fe58a3696aa04ffa3ce7204ee79b65a6b3b45c155d9425afa76c8a",
+            "actual_sha256": "9bded8544f5e5eef7d7c6427967f99e60ec1a32826bedc510c926dfa97bbbe4c"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_m_bus_endpoint.sv",
+            "expected_sha256": "827ae79416262a64c7fc6d41cdc336e75f4567d431d7b3c7e20c9ffa701e8e70",
+            "actual_sha256": "c42aa3b0158457e50dba9d2ae4eb21af09d4ab0b30aea235272424940181a779"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_paired_audit.py",
+            "expected_sha256": "08c2401aa9cab04740279855d6d0d3a7cddd85d43e9d561a5765fa664edfb688",
+            "actual_sha256": "c9fdc4682839b28b52bb4daf2798cfbaf395470077d9da59b6c1a2e4a08bad48"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_phone_batch_audit_registration.py",
+            "expected_sha256": "aa0ebbb3c68796373cb8a83df1da6752718946f1d3fd28ac63c375715d998aff",
+            "actual_sha256": "daf4fbcbd4215030e43e44f9260a97f13d74d842b2d75b08eb5e610b317aec28"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_custom_board.py",
+            "expected_sha256": "f119ea6991d331159b14decc6e576b1582a150df75b67bf592348b83d43282b9",
+            "actual_sha256": "645279fe90af4fd090866b4881fef5d0b9570df6682d5e8bac726ee754a6daf6"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_pinout.py",
+            "expected_sha256": "6616dc97ff8f8abb970a7b7da97d1d6ed35db2ed57020aa89d5aa3784751583d",
+            "actual_sha256": "eb5d59910eb4e5229174ca53bd8c70c4e482cc064cee68e53e27084a1db858e4"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+            "expected_sha256": "158c0ba46f186242a68ac6e76155246ef660f8ed8e451abd699250da333c08cd",
+            "actual_sha256": "acd2e753917bd09579d8c623ae5b8a07d2aa98249b70603ed0353e420906ae62"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_m_paired_profile.py",
+            "expected_sha256": "a556cfc853451f498de21e244b597a40d9877458dd720de428b9963c56bf0de1",
+            "actual_sha256": "76d6108d107c9b6c6cfb303d6da188464d337916d1f995016aa51159c50b2cf3"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_m_paired_releases_audit.py",
+            "expected_sha256": "c8f4de0abb74cebe8c9aa7c539774e7c16d8563e91402e70ee526a983e7e002e",
+            "actual_sha256": "f6659bd1a52f9a9dc5eae0ff873d2fd27f7d531bc1579fe83938b6f65756a171"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_native_held.py",
+            "expected_sha256": "b172bd563a93aff76bcc583742b6dc9728e8f94d1c4736c1de59cdf558c2df75",
+            "actual_sha256": "8854e1d1d74cf6285de67dfb65c14d16e5ab5a9c54c99d81b7790376b25bd1bf"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_paired_audit.py",
+            "expected_sha256": "fc2b914ee239446cd5017fa48685a71265d37f4aa1e3278dc3632236c1c52ad3",
+            "actual_sha256": "b946cca4a2a87db020ef69f20746b2f6ee7f2084fc9f6acc60cd4a79c7685984"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_paired_board.py",
+            "expected_sha256": "5cf34cbc65bde9528595785ab50cdfc4d34a7cc82bda85cc60fcf6aa0345178c",
+            "actual_sha256": "869ca1aad446d0ab939fbe519940ef203a1a0958afc70c210651882fc2a1d3e4"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_peripheral_releases_audit.py",
+            "expected_sha256": "c019ff9b0407a6f0a8bbc9048330ed189d94e6756b6b0ece6a75ad395bcd5fc1",
+            "actual_sha256": "ab2801a110c03c2c264fff54b9a7b5a33039793ba914566407c35f746e61d1bd"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_root_reset_audit.py",
+            "expected_sha256": "81668d0979fc09b7f36f11fa4b18e933d5aa8e7b2e8acac1e22ecca383d0a0de",
+            "actual_sha256": "cfcd9629bec3b065300c4ff723262766a3aa0eb64f1f1bc7de0825835c122315"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_direct.py",
+            "expected_sha256": "6b8098cc7ffb093482015b18fe7249a5d60c1089305abe38523d4fa747407842",
+            "actual_sha256": "85826c062ff160516988dfd798d88f456e1cd258f0b110d52fe53b7beccac5f3"
+          },
+          {
+            "path": "projects/138k/push2_workstation/usb_a/tools/workstation_task3_tf_storage_selection.py",
+            "expected_sha256": "0b3a6a96cbc1088fab76d3d0288220783c6ecd14f62e16a0eef9d074309a1f30",
+            "actual_sha256": "207db13904d3094e11f36e3a619bb6facdf15535cf92a906cebe806279159640"
+          }
+        ]
+      }
+    },
+    "new_profile_names": []
+  },
+  "candidates": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-paired-checkpoint-v1",
+      "identity": "custom138k-workstation-task3-m-paired-checkpoint-v1-b892d338bda29aa6",
+      "candidate_input_sha256": "b892d338bda29aa67cac5a6de4f4c8278c8969f83c9e903b7bebe9fa98463c6a",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v1.json",
+        "sha256": "1d4ac57232d80a0f77b309cac371cc8a572df72ded6b5367561ff296044ce833"
+      },
+      "source_lock_count": 939,
+      "prepared_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+      "enabled_input_count": 287,
+      "manifests": {
+        "integration_inputs.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/integration_inputs.json",
+          "sha256": "23e178d53edb717fbd05829eee1cccced18040bff69d576a7f4a9a73eb10da13"
+        },
+        "workstation_profile.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/workstation_profile.json",
+          "sha256": "4e5984868683b239e0b6a67b4d4bf8e66d8f10da912b75a6f02baa4d777064e5"
+        }
+      },
+      "parent": {
+        "identity": "custom138k-workstation-task3-m-paired-sync-storage-v1-7d8ebf5cda5109d6",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4",
+        "descriptor": {
+          "configuration": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_sync_storage_v1.json",
+          "configuration_sha256": "15a219660504db79ed0594f2d91f0ec5e8d3bcb8fc90d1b52bc8c36ec104a069",
+          "profile": "custom138k-workstation-task3-m-paired-sync-storage-v1",
+          "historical_descriptor_modified": false
+        },
+        "manifests": {
+          "integration_inputs.json": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4/integration_inputs.json",
+            "sha256": "0883562ef8cd7c90949a119affdb3789133b086c565163d3bc174324b5fddc97"
+          },
+          "workstation_profile.json": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4/workstation_profile.json",
+            "sha256": "e58d97e4a06bea199e2d1bd652f4557e925bdc53504e4ce64e982f539c68da23"
+          }
+        }
+      },
+      "runtime_configuration_unchanged": true,
+      "provider_unchanged": true,
+      "enabled_inputs_unchanged": true,
+      "changed_enabled_inputs": [],
+      "changed_staged_inputs": [],
+      "firmware": {
+        "ROM": {
+          "path": "firmware/boot.mem",
+          "sha256": "9114a7d51b6511ed4bd778401796b590fd746103753669414302abd2e9e6d0e0",
+          "parent_baseline_sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
+        },
+        "ROM_bytes_unchanged": true,
+        "compiled_source_and_header_hashes_unchanged": true,
+        "all_build_input_hashes_unchanged": true,
+        "build_input_delta": []
+      },
+      "constraints_and_LCD_pins_unchanged": true,
+      "evidence": {
+        "stage": "integration_prepare_only",
+        "source_verified": true,
+        "synthesis_passed": false,
+        "full_CDC_accepted": false,
+        "routed_timing_verified": false,
+        "physical_resource_usage": null,
+        "timing": null,
+        "bitstream_sha256": null,
+        "UserCode": null,
+        "control_to_sound_latency_ms": null,
+        "LCD_throughput_Bps": null,
+        "LCD_RTT_us": null,
+        "target_JTAG_ID": null,
+        "target_serial_ID": null,
+        "hardware_tested": false,
+        "sram_programmed": false,
+        "flash_programmed": false,
+        "deployment_allowed": false
+      }
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-paired-checkpoint-v1",
+      "identity": "custom138k-workstation-task3-w-paired-checkpoint-v1-a4d7149f35281b4c",
+      "candidate_input_sha256": "a4d7149f35281b4c0db4d65154c876e0af1ba169984ac6356148d4c5113f04a6",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v1.json",
+        "sha256": "3ac677608af8e589e1e01e856fc38fd51bbf6bda530d40d81f669f80836e4584"
+      },
+      "source_lock_count": 987,
+      "prepared_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3",
+      "enabled_input_count": 200,
+      "manifests": {
+        "integration_inputs.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3/integration_inputs.json",
+          "sha256": "f2af90f7650adf38e9a9c47eb5e242647962ebf8c57b61166b38eff658387748"
+        },
+        "workstation_profile.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3/workstation_profile.json",
+          "sha256": "fded9bf8cea8f1ec5d7270f9fc816e7969f78b347c2fcffc6602d1ef77ed7335"
+        }
+      },
+      "parent": {
+        "identity": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+        "descriptor": {
+          "configuration": "projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_phone_batch_v1.json",
+          "configuration_sha256": "ac38016e78b18e52d24cf09890b19cd9872403fe635e55beb48142bbfce37718",
+          "profile": "custom138k-workstation-task3-w-paired-phone-batch-v1",
+          "historical_descriptor_modified": false
+        },
+        "manifests": {
+          "integration_inputs.json": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/integration_inputs.json",
+            "sha256": "75dd5323b340958a1257786cdc4fa89586f54e34651d7ebe57d14e088ccdcbfd"
+          },
+          "workstation_profile.json": {
+            "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/workstation_profile.json",
+            "sha256": "15a5c8cb71eb34c9014090d3b8a4e2d54665c7d9db2a08b984e260200d4db4bc"
+          }
+        }
+      },
+      "runtime_configuration_unchanged": true,
+      "provider_unchanged": true,
+      "enabled_inputs_unchanged": true,
+      "changed_enabled_inputs": [
+        "rtl/music/workstation_task3_score_commit_m.sv"
+      ],
+      "changed_staged_inputs": [
+        {
+          "path": "boards/custom_138k/task3_lcd_probe_pinplan.json",
+          "old": "99862a9cf97390c89ff7129a13c7353fb44dc03ca74c3c3dc460ee0b2d7eba85",
+          "new": "6c8a3f87de233a614879cb70537bdc629a6e463c2bb98c5a97d2da4d927232f9"
+        },
+        {
+          "path": "rtl/audio/AE350_PCM_INGRESS_CONTRACT.md",
+          "old": "69a25ac81399b8d418639ec3ba59f3fcd393403b4cb4df522475037977e0c787",
+          "new": null
+        },
+        {
+          "path": "rtl/audio/WORKSTATION_RUNTIME_CHORUS_DELAY.md",
+          "old": "538a8b16bbeaa9df60d1096cc226b4bc1fe7225b2a601cada8ae0e5349fa60cb",
+          "new": null
+        },
+        {
+          "path": "rtl/audio/WORKSTATION_RUNTIME_DELAY_STORAGE.md",
+          "old": "4c3cb11700a0eade0e6efc8b9811088623cb6631146093e15259f055a88b3329",
+          "new": null
+        },
+        {
+          "path": "rtl/audio/scope_vec/README.md",
+          "old": "c66182e32c4850b43e1efa19040f232ffad3a93eead2b9fa7f28581a2539f39b",
+          "new": null
+        },
+        {
+          "path": "rtl/audio/scope_vec/VERIFICATION.md",
+          "old": "3df08c2fe15d351e3009916d71e444b71e2ce91b63d270e47594a7d72415738d",
+          "new": null
+        },
+        {
+          "path": "rtl/bluetooth/WORKSTATION_BLE_SEAL_CONTRACT.md",
+          "old": "466cb4adce85ffc7cd0702f0ae623e3a1193804372af4ae9f9427ed0c3993ff7",
+          "new": null
+        },
+        {
+          "path": "rtl/bluetooth/cpu_owner/CONTRACT.md",
+          "old": "e624f3ff5f5b06ef6c20ed4644882c443144bfe5b8ac3308153041192c91a5df",
+          "new": null
+        },
+        {
+          "path": "rtl/memory/RECORDING_DDR_AUTHORITY_CONTRACT.md",
+          "old": "422ea024fe3790c74b0d6404d224527e73c04756e298eab251bccec9d34f52ec",
+          "new": null
+        },
+        {
+          "path": "rtl/memory/RUNTIME_MEMORY_GUARD_CONTRACT.md",
+          "old": "4edc8afa7874a5f2be68e2d7ac2be70fb3d54cedeb7fbef9005733cab99ed98e",
+          "new": null
+        },
+        {
+          "path": "rtl/memory/WORKSTATION_BLE_RAW_DDR_STORE.md",
+          "old": "86dd2b30edf3772dd637d2766d1b89120c1c4ef2216aa87c744ee76414519763",
+          "new": null
+        },
+        {
+          "path": "rtl/migration/WORKSTATION_RUNTIME_COUNTER_CDC.md",
+          "old": "8ef93aadec43262e6c98f380255677600221233b003e2b6322b9a0dd74964b13",
+          "new": null
+        },
+        {
+          "path": "rtl/music/BASIC_PITCH_TASK_RESTART_CONTRACT.md",
+          "old": "7b0cd0c10354b04e46cfb644bbf0ce081b1bcab71e36e1cfbecc5d3fc2532d6a",
+          "new": null
+        },
+        {
+          "path": "rtl/music/TASK3_TF_CNN_STREAM_CONTRACT.md",
+          "old": "ae47c94a772aed163f514cbedfb67e850d0b27e369aee63970c690a987469058",
+          "new": null
+        },
+        {
+          "path": "rtl/music/WORKSTATION_CNN_TASK_SERVICE_CONTRACT.md",
+          "old": "a8d3e8600b8fc1fd284581a4541ec4bff40a1e016732bc10ba02a959436aba78",
+          "new": null
+        },
+        {
+          "path": "rtl/music/workstation_task3_score_commit_m.sv",
+          "old": "e52594ed17fe58a3696aa04ffa3ce7204ee79b65a6b3b45c155d9425afa76c8a",
+          "new": "9bded8544f5e5eef7d7c6427967f99e60ec1a32826bedc510c926dfa97bbbe4c"
+        },
+        {
+          "path": "rtl/services/AUDIO_CLOCK_SERVICE_CONTRACT.md",
+          "old": "c5675a2e5140ad48e98991076183bb06b47eb2e10ce29aafd52303a2fa586a18",
+          "new": null
+        },
+        {
+          "path": "rtl/services/BUSINESS_MAILBOX_CONTRACT.md",
+          "old": "2226a017ec5b6f0e2a7e9b25c66d764341f172331d57570b1f6609ed610bdd6d",
+          "new": null
+        },
+        {
+          "path": "rtl/services/MEDIA_PREPARATION_CONTRACT.md",
+          "old": "576c844e09f64b9b5ce1de46255a1159f9786084196040aa7a35334a80869cec",
+          "new": null
+        },
+        {
+          "path": "rtl/services/MEDIA_STOP_POLICY.md",
+          "old": "6bb99231256b6a5f3f54d74c328b59af26207b44ed236765f8e3a71b0b1d79b5",
+          "new": null
+        },
+        {
+          "path": "rtl/services/TASK3_PAIR_CONFIG_CONTRACT.md",
+          "old": "100f4900b1e31ccefdf730d6ffe4244fbd6e94fcdbf53fcb1086a5d5aee627b0",
+          "new": null
+        },
+        {
+          "path": "rtl/tf_audio/WORKSTATION_TF_FRAME_BRIDGE_CONTRACT.md",
+          "old": "d3ec4bec86903ee54dd5cb2fcb6a6a01537e4321d62fc6bc189166e1bf4d23ad",
+          "new": null
+        },
+        {
+          "path": "rtl/tf_audio/WORKSTATION_TF_RUNTIME_SERVICE_CONTRACT.md",
+          "old": "4999673727b4ebafced6b7eb72ccdff162cbb1410bda425884abb26743f2e733",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/RUNTIME_DISPLAY.md",
+          "old": "e3d86499d6812f27ffb021d5b66bbe162fa3d34d36e1751c2f33285e54846ad2",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/TASK3_LCD_TRANSPORT.md",
+          "old": "59dc461a61004552747f6e44736d1462c109b2063cc860dcedef010f47a39009",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/TASK3_PCM_BLOCK_CONTRACT.md",
+          "old": "524282ff66f641375b7158a0c794a8620a53ff0d689aa3a2230654557b888d83",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md",
+          "old": "605f3dc41c3fcbd7c1c8bf313a88433e4fa45d45a406f04a9ad6e73d724bae38",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/TASK3_PHONE_WINDOW_CONTRACT.md",
+          "old": "3ab1e0cffcdc743a3627c66c8af4fcdf7527d8aa837465d46405be6673738d4b",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/WORKSTATION_TASK3_PAIRED.md",
+          "old": "69aae8faa0bee37ee45192a456c2f5b58866fe61823725aa047aaf6deda2f0bb",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/WORKSTATION_TASK3_W_MEDIA_BOARD_CONTRACT.md",
+          "old": "1b71fc772f598627439be6f5225f75a8eec0e03bda149d0873bb959b8aa24271",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/WORKSTATION_TASK3_W_MEDIA_CONTRACT.md",
+          "old": "5be37e03df2ea16412297d7059ab2a0ee8f7d94741eb3a0b77b39d1c91a99107",
+          "new": null
+        },
+        {
+          "path": "rtl/workstation/WORKSTATION_TASK3_W_PAIRED_CONTRACT.md",
+          "old": "a4b1a70ffb8ab0c148fe1c665e8fca52aa9146a50c082695ced8a511112bbd71",
+          "new": null
+        },
+        {
+          "path": "src/storage/THIRD_PARTY.md",
+          "old": "42b88d32140dd4fb04155794489ef221ad573e1f38237b8618f168b38f6bef24",
+          "new": null
+        },
+        {
+          "path": "tools/workstation_ae350_pcm.py",
+          "old": "c8385b3411e43399af8faed2f1c24a3f198bd5f34ca488f4bcd7a0dad25fa590",
+          "new": "09f7b0c50a2ab98f6b358778680a4165bb9093a67ad8b0aa67090297cb09983d"
+        },
+        {
+          "path": "tools/workstation_ble_recording_policy.py",
+          "old": "fa0a867cdf2006a2d510124c11ece16d4d39f39e91cc768b741711b567b275cf",
+          "new": "d8851ddf7ad48ea21ee7aaf62b0033247cc93c115bd364c2a80315650b5b71b6"
+        },
+        {
+          "path": "tools/workstation_bluetooth_ddr.py",
+          "old": "92abe7d72a0683e58e5f20c02391133c4a312c3eddab85e3425101b844f2ed9d",
+          "new": "8dfea4b90704ca65bfb5119b991bf2cee7bf04fd07ad77548ceb0edeac7f098e"
+        },
+        {
+          "path": "tools/workstation_cpu_business.py",
+          "old": "9b8a84f0d1fb2f23d8f442e91474f9f50c720c5078cb81b785b871e6e28a1c5d",
+          "new": "1a81bc7eca037fbc3d3204cfcb3bcaa90ebb56b56356495c5c3233b370884c0a"
+        },
+        {
+          "path": "tools/workstation_task3_m_midi_release_sdc.py",
+          "old": null,
+          "new": "6881d2baa31b198b315e1ed8a98ea74028314739b0e6cd1e59058b81f2c81081"
+        },
+        {
+          "path": "tools/workstation_task3_m_paired_releases_audit.py",
+          "old": "c8f4de0abb74cebe8c9aa7c539774e7c16d8563e91402e70ee526a983e7e002e",
+          "new": "f6659bd1a52f9a9dc5eae0ff873d2fd27f7d531bc1579fe83938b6f65756a171"
+        },
+        {
+          "path": "tools/workstation_task3_paired_board.py",
+          "old": "00ab3bc963b9b3715177b0c417680c1cd1617949a491f58d8aa75559758d9a6a",
+          "new": "869ca1aad446d0ab939fbe519940ef203a1a0958afc70c210651882fc2a1d3e4"
+        },
+        {
+          "path": "tools/workstation_task3_tf_storage_selection.py",
+          "old": "0b3a6a96cbc1088fab76d3d0288220783c6ecd14f62e16a0eef9d074309a1f30",
+          "new": "207db13904d3094e11f36e3a619bb6facdf15535cf92a906cebe806279159640"
+        },
+        {
+          "path": "tools/workstation_task3_w_media_profile.py",
+          "old": "fc31ae370636eab0244effdf1012d777d9f32863171906e0278f7ac6c546553f",
+          "new": "903196db7e20b011ef1adaa898dd09725fce39f2347c83509c0fbcc991852b5d"
+        },
+        {
+          "path": "tools/workstation_task3_w_paired_profile.py",
+          "old": "81edf6ee5352b09c55e663146ed1c8ebf5e645f852aca32933424d799a45cea8",
+          "new": "d1f97d9324ac08afd66ae00cfb89a1956ed487912f8904e4c9882fe6cbe219cb"
+        }
+      ],
+      "firmware": {
+        "ROM": {
+          "path": "firmware/boot.mem",
+          "sha256": "ef3d51ed567b47ee67e37326d6afa48ec6301187d9946460af417f21393c6aa4",
+          "parent_baseline_sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
+        },
+        "ROM_bytes_unchanged": true,
+        "compiled_source_and_header_hashes_unchanged": true,
+        "all_build_input_hashes_unchanged": false,
+        "build_input_delta": [
+          {
+            "path": "firmware/ae350/third_party/sbc_oi/README.md",
+            "old": "944e3b7fd5e30c403014020a43eaae37df41899e5f336f369bc2f7bf772ccf94",
+            "new": null
+          }
+        ]
+      },
+      "constraints_and_LCD_pins_unchanged": true,
+      "evidence": {
+        "stage": "integration_prepare_only",
+        "source_verified": true,
+        "synthesis_passed": false,
+        "full_CDC_accepted": false,
+        "routed_timing_verified": false,
+        "physical_resource_usage": null,
+        "timing": null,
+        "bitstream_sha256": null,
+        "UserCode": null,
+        "control_to_sound_latency_ms": null,
+        "LCD_throughput_Bps": null,
+        "LCD_RTT_us": null,
+        "target_JTAG_ID": null,
+        "target_serial_ID": null,
+        "hardware_tested": false,
+        "sram_programmed": false,
+        "flash_programmed": false,
+        "deployment_allowed": false
+      }
+    }
+  },
+  "pair_consistency": {
+    "common_source_snapshot_inputs": 1024,
+    "all_common_hashes_equal": true,
+    "comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/final-staged-delta.json",
+      "sha256": "4f06aae3fd4909b43c09b28d56866bdc094b58c243f7e9193bf3366775d158ce"
+    },
+    "wire_protocol": "v3",
+    "business_default_enabled": false,
+    "physical_acceptance_required": true,
+    "M_score_capacity_notes": 2048,
+    "M_final_tap_capacity_frames": 256,
+    "M_independent_synth_voices": 32,
+    "ordinary_and_vector_preserved": true,
+    "W_single_object_recording_capacity_seconds": 60,
+    "recording_rate_hz": 48000,
+    "recording_44100_enabled": false
+  },
+  "validation": {
+    "tests_passed": 32,
+    "failures": 0,
+    "skipped": 0,
+    "metadata_tampering_negatives_rejected": 8,
+    "tests": [
+      {
+        "command": "GW138K_TASK3_CHECKPOINT_M=/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2 GW138K_TASK3_CHECKPOINT_W=/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3 GW138K_TASK3_CHECKPOINT_PARENT_M=/Users/sphenicidition/.cache/gw138k-task3-20261105/m-sync-storage-prepare-v4 GW138K_TASK3_CHECKPOINT_PARENT_W=/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3 python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_paired_checkpoint.py",
+        "tests": 4,
+        "failures": 0,
+        "skipped": 0,
+        "capture": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/checkpoint-tests-final.json",
+          "sha256": "61d3207188e5687f2bbaab30ab4b754e878271467d691179783dcc4173f1e4eb"
+        },
+        "output": "...\n----------------------------------------------------------------------\nRan 4 tests in 2.536s\n\nOK\n"
+      },
+      {
+        "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_paired_audit.py",
+        "tests": 11,
+        "failures": 0,
+        "skipped": 0,
+        "capture": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/paired-audit-tests.json",
+          "sha256": "1dc8793466c6fac08a4b6f2cd985abeea08085c33460435c519458dce5f276ee"
+        },
+        "output": "...........\n----------------------------------------------------------------------\nRan 11 tests in 0.107s\n\nOK\n"
+      },
+      {
+        "command": "python3 projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+        "tests": 17,
+        "failures": 0,
+        "skipped": 0,
+        "capture": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/current-source-tests.json",
+          "sha256": "9e52b9bc28bed74e2347d4637f4f57431a162c38d8184fdd4a1ab869ef20e34b"
+        },
+        "output": ".................\n----------------------------------------------------------------------\nRan 17 tests in 0.067s\n\nOK\n"
+      }
+    ],
+    "both_current_profiles_verified": true,
+    "both_frozen_parents_verified": true,
+    "frozen_parent_manifests_unchanged_by_tests": true,
+    "all_current_staged_bytes_rehashed": true
+  },
+  "prepare_commands": {
+    "M": "python3 projects/138k/push2_workstation/usb_a/build.py --prepare-custom-board --workstation-profile custom138k-workstation-task3-m-paired-checkpoint-v1 --netlist-dir /Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists --riscv-prefix /Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf --custom-board-output /Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+    "W": "python3 projects/138k/push2_workstation/usb_a/build.py --prepare-custom-board --workstation-profile custom138k-workstation-task3-w-paired-checkpoint-v1 --netlist-dir /Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists --riscv-prefix /Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf --custom-board-output /Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3"
+  },
+  "prepare_logs": {
+    "m-prepare-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/m-prepare-v2.log",
+      "sha256": "fd70db71cd6b3d5c75b46afe0a93439b1b3e4b02b0bb588df4dcc0e24c3c294a"
+    },
+    "w-prepare-v3.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/w-prepare-v3.log",
+      "sha256": "621057c45b639675489f05c8fb29814155e0662703d04a2f610c73613baab44c"
+    }
+  },
+  "intermediate_failures": [
+    {
+      "stage": "W prepare v1",
+      "reason": "Strict source binder rejected missing current audit dependencies. Added explicit descriptor dependencies before preparing a new candidate.",
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/w-prepare.log",
+        "sha256": "d0bda9c73887345012b34de5ba3ac9951054714b00ca89fe6d650551bab4e64f"
+      }
+    },
+    {
+      "stage": "checkpoint regression first attempt",
+      "reason": "Two errors: missing W audit dependency in M and an M snapshot prepared before the final W descriptor. No frozen/cache candidate was patched. Both descriptors were finalized and fresh M v2/W v3 were prepared.",
+      "capture": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/paired-checkpoint-review-v1/checkpoint-tests-first-attempt.json",
+        "sha256": "fbd50fe083d2ad2243465351564b3c35e57cf8123cf9f516ec808e3c9c2120e3"
+      }
+    },
+    {
+      "stage": "report generation first attempt",
+      "reason": "Assertion that the entire W firmware input dictionary was unchanged failed because the noncompiled sbc_oi README left the build provenance set. All compiled source/header inputs and ROM bytes match; the exact README deletion is recorded above. No candidate or production source was changed to bypass the assertion."
+    }
+  ],
+  "remaining_gates": [
+    "Restore existing Gowin hostid/license runtime; do not rerun the known failing invocation until the environment changes.",
+    "Synthesize these M and W identities, verify actual synchronous memory mapping and real resources.",
+    "Rebuild complete mapped CDC inventories and run bounded P&R with setup/hold/recovery/removal evidence.",
+    "Bind the correct M/W targets, verify LCD electrical contacts and measure directional throughput, RTT, jitter and congestion before enabling business.",
+    "Validate standalone M synthesis/DAC latency, TF-to-W CNN/Push, phone D press/release, single-object 60-second recording/download and concurrent operation.",
+    "Implement explicit format authorization, compatible ARM negotiation, actual sample-rate and object metadata binding before enabling 44.1 kHz recording."
+  ],
+  "rollback": {
+    "historical_descriptors_unchanged": true,
+    "frozen_parent_candidates_preserved": true,
+    "task2_and_single_board_worktrees_untouched": true,
+    "no_board_operation": true,
+    "flash_authorized": false
+  },
+  "scope": "Source and prepared-byte verification only. No fresh mapped netlist, physical resource count, routed timing, full CDC acceptance, bitstream, measured latency, SRAM or hardware acceptance is claimed."
+}
