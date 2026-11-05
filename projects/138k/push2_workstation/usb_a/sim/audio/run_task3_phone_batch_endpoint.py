@@ -12,7 +12,9 @@ import subprocess
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    output = parser.parse_args().output.resolve()
+    parser.add_argument('--phone-identity-group-bits',type=int,choices=(96,8),default=96)
+    args=parser.parse_args()
+    output = args.output.resolve()
     root = Path(__file__).resolve().parents[2]
     sources = ['rtl/workstation/' + name + '.sv' for name in (
         'workstation_task3_m_bus_endpoint', 'workstation_task3_phone_batch_m', 'workstation_task3_phone_window_rx',
@@ -28,6 +30,7 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     snapshot = output / 'inputs'
     report = dict(schema=1, passed=False, error=None, inputs_sha256=before, invocations=[], mutants=[],
+                  phone_identity_group_bits=args.phone_identity_group_bits,
                   scope='actual M v3 endpoint/batch/window with deterministic wrong-ID owner; lease/overlap/fault only',
                   first_lease_fixture_cut='only ARM-ACK pending held zero to isolate the one-cycle executor qualification',
                   hardware_tested=False, actual_APB_CDC_or_PCM_owner=False, physical_LCD_or_latency=False)
@@ -49,8 +52,9 @@ def main():
             return result
 
         top = 'tb_task3_phone_batch_endpoint'
+        parameter=['-P'+top+'.PHONE_IDENTITY_COMPARE_GROUP_BITS='+str(args.phone_identity_group_bits)]
         binary = output / 'overlap.vvp'
-        invoke('compile', ['iverilog', '-g2012', '-I.', '-s', top, '-o', str(binary), bench, *sources])
+        invoke('compile', ['iverilog', '-g2012', '-I.', '-s', top, *parameter, '-o', str(binary), bench, *sources])
         result = invoke('run', ['vvp', str(binary)])
         match = re.search(r'PASS phone batch endpoint checks=(\d+) cases=(\d+) batch_errors=(\d+) applied=(\d+) samples=(\d+)', result.stdout)
         if not match:
@@ -86,7 +90,7 @@ def main():
             mutated = snapshot / (name + '.sv')
             mutated.write_text(changed)
             mutant = output / (name + '.vvp')
-            invoke(name + '_compile', ['iverilog', '-g2012', '-I.', '-s', top, '-o', str(mutant), bench,
+            invoke(name + '_compile', ['iverilog', '-g2012', '-I.', '-s', top, *parameter, '-o', str(mutant), bench,
                                      *[str(mutated) if p == endpoint else p for p in sources]])
             result = invoke(name + '_run', ['vvp', str(mutant)], required=False)
             rejected = result.returncode != 0 and 'PASS phone batch endpoint' not in result.stdout

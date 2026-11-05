@@ -121,4 +121,5 @@
 `ifdef WORKSTATION_TASK3_M_SYNC_STORAGE
     defparam u_task3_m_endpoint.SYNC_READ_STORAGE=1'b1;
     defparam u_task3_m_endpoint.IDENTITY_COMPARE_GROUP_BITS=8;
+    defparam u_task3_m_endpoint.PHONE_IDENTITY_COMPARE_GROUP_BITS=8;
 `endif

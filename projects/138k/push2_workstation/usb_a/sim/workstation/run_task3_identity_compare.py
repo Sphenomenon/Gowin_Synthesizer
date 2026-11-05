@@ -5,6 +5,7 @@ import argparse,copy,hashlib,json,os,re,subprocess,sys,time,xml.etree.ElementTre
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from tools.workstation_task3_identity_compare import ENDPOINT,comparator_block,restore_endpoint
+from tools.workstation_task3_phone_identity_compare import BEGIN as PHONE_BEGIN,restore_endpoint as restore_phone
 from tools.workstation_synthesis_netlist import SynthesisNetlist
 from tools.workstation_runtime_pcm_cdc import Graph
 from tools.workstation_task3_phone_batch_mapped_m import MappedDiagram
@@ -56,8 +57,10 @@ def prove(vg):
 
 def run(args):
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
-    source=(ROOT/ENDPOINT).read_text();restore_endpoint(source);block=comparator_block(source)
-    inputs={str(p):sha(p) for p in (ROOT/ENDPOINT,Path(__file__),ROOT/'tools/workstation_task3_identity_compare.py',ROOT/'tools/workstation_task3_phone_batch_mapped_m.py',ROOT/'tools/workstation_runtime_pcm_cdc.py')}
+    source=(ROOT/ENDPOINT).read_text()
+    restore_endpoint(restore_phone(source) if PHONE_BEGIN in source else source)
+    block=comparator_block(source)
+    inputs={str(p):sha(p) for p in (ROOT/ENDPOINT,Path(__file__),ROOT/'tools/workstation_task3_identity_compare.py',ROOT/'tools/workstation_task3_phone_identity_compare.py',ROOT/'tools/workstation_task3_phone_batch_mapped_m.py',ROOT/'tools/workstation_runtime_pcm_cdc.py')}
     result=dict(schema=1,passed=False,input_sha256=inputs,cases=[],hardware_tested=False,timing_closed=False)
     env=os.environ.copy();env.update(DYLD_LIBRARY_PATH=str(args.gowin_lib),DYLD_FRAMEWORK_PATH=str(args.gowin_lib))
     try:

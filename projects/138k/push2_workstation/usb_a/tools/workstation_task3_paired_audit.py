@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v15': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision15',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v15': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision15',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v14': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision14',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v14': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision14',
@@ -96,6 +100,7 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_phone_identity_compare.py',
     'tools/workstation_task3_cnn_ready_sdc.py',
     'tools/workstation_task3_cnn_reset.py',
     'tools/workstation_task3_w_fault_cdc.py',
@@ -588,6 +593,8 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-checkpoint-v15',
+            'custom138k-workstation-task3-w-paired-checkpoint-v15',
             'custom138k-workstation-task3-m-paired-checkpoint-v7',
             'custom138k-workstation-task3-w-paired-checkpoint-v7',
             'custom138k-workstation-task3-m-paired-checkpoint-v6',
@@ -632,7 +639,8 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v7',
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v15',
+                                  'custom138k-workstation-task3-m-paired-checkpoint-v7',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v6',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v5',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v4',

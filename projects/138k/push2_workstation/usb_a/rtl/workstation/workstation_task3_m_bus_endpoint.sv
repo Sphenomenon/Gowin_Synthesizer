@@ -10,6 +10,7 @@ module workstation_task3_m_bus_endpoint #(
     parameter bit PHONE_BATCH=1'b0,
     parameter bit SYNC_READ_STORAGE=1'b0,
     parameter integer IDENTITY_COMPARE_GROUP_BITS=128,
+    parameter integer PHONE_IDENTITY_COMPARE_GROUP_BITS=96,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -149,7 +150,20 @@ module workstation_task3_m_bus_endpoint #(
         .failure_code_o(),.queued_frames_o(),.captured_frames_o(),.exported_frames_o());
     wire phone_packet=rx_channel_i==`TASK3_PAIR_CH_PHONE && rx_length_i==`TASK3_PAIR_PHONE_BYTES && rx_payload_i[255:180]==0;
     // Proxy deliberately addresses the M boot, not a radio-local boot.
-    wire phone_matches=rx_payload_i[177:82]==common;
+    // TASK3 phone identity comparison begin.
+    (* syn_keep=1 *) wire phone_matches;
+    generate if(PHONE_IDENTITY_COMPARE_GROUP_BITS==96)begin:g_phone_identity_direct
+        assign phone_matches=rx_payload_i[177:82]==common;
+    end else begin:g_phone_identity_grouped
+        (* syn_keep=1 *) wire [11:0] byte_equal;
+        for(genvar byte_group=0;byte_group<12;byte_group=byte_group+1)begin:g_byte
+            assign byte_equal[byte_group]=rx_payload_i[82+byte_group*8+:8]==common[byte_group*8+:8];
+        end
+        assign phone_matches=&byte_equal;
+    end endgenerate
+    initial if(PHONE_IDENTITY_COMPARE_GROUP_BITS!=96 && PHONE_IDENTITY_COMPARE_GROUP_BITS!=8)
+        $fatal(1,"phone identity comparison requires the reviewed96-bit direct or8-bit grouped policy");
+    // TASK3 phone identity comparison end.
     wire phone_arm=phone_packet && rx_payload_i[179:178]==`TASK3_PAIR_KIND_ARM && rx_payload_i[81:0]==0;
     wire phone_request=phone_packet && rx_payload_i[179:178]==`TASK3_PAIR_KIND_DATA;
     wire phone_cancel=phone_packet && rx_payload_i[179:178]==`TASK3_PAIR_KIND_CANCEL && rx_payload_i[81:0]==0;

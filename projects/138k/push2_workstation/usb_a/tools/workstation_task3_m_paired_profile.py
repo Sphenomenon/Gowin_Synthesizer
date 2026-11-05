@@ -26,6 +26,7 @@ MAINTAINED_UPDATES=('rtl/workstation/workstation_runtime_controlled.sv',
  'rtl/tf_audio/workstation_tf_direct_runtime_service.sv')
 DEPENDENCIES=('tools/workstation_task3_m_paired_profile.py',PROVIDER,REFERENCE,BOARD,
  'tools/workstation_task3_identity_compare.py',
+ 'tools/workstation_task3_phone_identity_compare.py',
  'rtl/workstation/task3_paired_channels.vh','rtl/workstation/workstation_runtime_controlled.sv',
  'rtl/workstation/workstation_runtime_audio.sv','rtl/audio/workstation_ae350_pcm_owner.sv',
  'rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
@@ -127,6 +128,8 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     top=matches[0]
     from tools.workstation_task3_identity_compare import selection as identity_selection
     identity=identity_selection(stage,configuration,top,sync_selected=selected_sync)
+    from tools.workstation_task3_phone_identity_compare import selection as phone_identity_selection
+    phone_identity=phone_identity_selection(stage,configuration,top,sync_selected=selected_sync)
     storage_binding="defparam u_task3_m_endpoint.SYNC_READ_STORAGE=1'b1;"
     if selected_sync:
         exact(top,storage_binding,'synchronous endpoint storage binding')
@@ -188,4 +191,6 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
                 independent_audio_schedule_unchanged=True)
         if identity is not None:
             result['local_storage']['identity_comparison']=identity
+        if phone_identity is not None:
+            result['local_storage']['phone_identity_comparison']=phone_identity
     return result

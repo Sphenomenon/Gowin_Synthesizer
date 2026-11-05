@@ -3,7 +3,9 @@
 // Actual v3 M endpoint and batch executor; deterministic owner replies intentionally
 // reject the ID probe. The first case cuts only ARM-ACK pending to isolate the
 // one-cycle batch lease qualification from the independent ARM reply barrier.
-module tb_task3_phone_batch_endpoint;
+module tb_task3_phone_batch_endpoint #(
+    parameter integer PHONE_IDENTITY_COMPARE_GROUP_BITS=96
+);
     reg clk=0,reset_n=0,link=0,panic=0;
     always #10 clk=~clk;
     reg rx_valid=0;
@@ -25,7 +27,8 @@ module tb_task3_phone_batch_endpoint;
     integer total_applied=0,total_response=0;
     reg command_seen=0,previous_valid=0;
     reg [49:0] previous_command;
-    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1),.PHONE_WINDOW_BLOCK(1),.PHONE_BATCH(1)) m(
+    workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1),.PHONE_WINDOW_BLOCK(1),.PHONE_BATCH(1),
+        .PHONE_IDENTITY_COMPARE_GROUP_BITS(PHONE_IDENTITY_COMPARE_GROUP_BITS)) m(
         .clk_i(clk),.reset_ni(reset_n),.link_ready_i(link),.panic_i(panic),
         .local_boot_i(32'd11),.peer_boot_i(32'd22),.session_i(32'd33),.generation_i(32'd1),
         .rx_valid_i(rx_valid),.rx_ready_o(rx_ready),.rx_channel_i(rx_channel),.rx_payload_i(rx_payload),.rx_length_i(rx_length),

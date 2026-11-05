@@ -46,7 +46,11 @@ def selection(stage,configuration,selected_top,*,sync_selected):
     require(sync_selected and configuration.get('m_score_terminal_policy')==
             'task3_m_one_slot_terminal_validation_v1','grouping requires explicit sync/terminal policy')
     require(selected_top.count(BINDING)==1,'group8 actual endpoint binding changed')
-    stage=Path(stage);text=(stage/ENDPOINT).read_text();restore_endpoint(text)
+    stage=Path(stage);text=(stage/ENDPOINT).read_text()
+    if configuration.get('m_phone_identity_compare_policy') is not None:
+        from tools.workstation_task3_phone_identity_compare import restore_endpoint as restore_phone
+        text=restore_phone(text)
+    restore_endpoint(text)
     return dict(policy=policy,compared_identity_bits=128,group_bits=8,groups=16,
         extra_cycles=0,new_state_bits=0,same_cycle_revocation=True,
         endpoint_source_sha256=sha(stage/ENDPOINT),board_source_sha256=sha(stage/BOARD),
