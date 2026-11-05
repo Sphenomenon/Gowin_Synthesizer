@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v9': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision9',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v9': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision9',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v8': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision8',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v8': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision8',

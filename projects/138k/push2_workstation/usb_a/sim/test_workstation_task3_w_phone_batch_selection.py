@@ -162,7 +162,9 @@ class WPhoneBatchSelection(unittest.TestCase):
                 self.assertEqual(proof['actual_phone_provider']['phone_batch'], batch)
                 self.assertEqual(proof['selected_CNN_memory'], paired.cnn_memory_provider(provider))
                 negatives = paired.source_negative_controls(stage, text)
-                self.assertEqual(len(negatives), 17 if batch else 8)
+                self.assertEqual(len(negatives), 19 if batch else 10)
+                self.assertEqual(proof['record_fault_control_boundary']['control_sync_stages'],2)
+                self.assertFalse(proof['record_fault_control_boundary']['direct_memory_fault_to_record_ingress'])
                 self.evidence['negative_controls'].extend(dict(provider=provider, **row) for row in negatives)
                 self.evidence['configurations'].append(dict(provider=provider, phone_window=window,
                     phone_batch=batch, actual_preprocessed_sha256=hashlib.sha256(text.encode()).hexdigest(),

@@ -394,6 +394,18 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision8')
 
 
+# Repair the W memory-to-control fault boundary without changing the immutable
+# v8 build or its failed STA evidence. M runtime and the paired wire format stay
+# unchanged; the W board include now uses the existing two-flop readiness fence.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v9'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v9'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v8'],
+        revision=9,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v9.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision9')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

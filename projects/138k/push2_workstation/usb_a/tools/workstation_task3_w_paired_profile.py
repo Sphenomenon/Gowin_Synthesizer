@@ -365,6 +365,24 @@ def selected_source_evidence(stage, text):
         if body.count(''.join(anchor.split())) != 1:
             raise ValueError('W paired actual binding drift: ' + anchor)
     top, native = module('workstation_custom_138k_top'), module('workstation_task3_w_paired')
+    # Keep old sealed stages readable without certifying their direct DDR
+    # fault bypass. New board bytes must bind the synchronized local fence.
+    fault_boundary = {}
+    if media.sha(stage / BOARD) != '0a58c9de4c8c47ce541918ad0b2b385b61accb7993d54b32eaee2b9a8d264d82':
+        once(top, '.record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault)')
+        once(top, '.control_ready_o(recording_channel_ready50)')
+        once(native, 'else ready_control<={ready_control[0],client_ready_o};')
+        once(native, 'assign control_ready_o=ready_control[1];')
+        once(module('workstation_media_memory'),
+             'assign client_ready_o=client_reset_no && bist_done && !bist_failed && !transport_fault_o;')
+        arbiter = module('workstation_recording_ddr_arbiter_pipeline')
+        once(arbiter, 'assign transport_fault_o=response_fault || response_fault_now;')
+        once(arbiter, 'if(response_fault_now)response_fault<=1;')
+        fault_boundary['record_fault_control_boundary'] = dict(
+            policy='native_immediate_quarantine_control_ready_sync2_v1',
+            control_sync_stages=2, direct_memory_fault_to_record_ingress=False,
+            native_fault_sticky_until_reset=True, source_binding_verified=True,
+            mapped_CDC_verified=False, routed_timing_verified=False)
     once(top, "workstation_task3_paired_link #(.ROLE_M(1'b0),.EXPERIMENT_ENABLE(1'b1),.ALLOW_BUSINESS(1'b1)) u_task3_pair_link(")
     for anchor in ('.link_ready_o(task3_pair_link_ready)',
                    '.tx_valid_i(task3_pair_tx_valid)', '.rx_valid_o(task3_pair_rx_valid)',
@@ -467,7 +485,7 @@ def selected_source_evidence(stage, text):
                                       'link parameter forwarding', 'actual CNN pipeline'],
         native_default_43844_172_inference_evidence_transferred=False,
         W_local_DAC_is_recording_source=False,
-        physical_CDC_accepted=False, hardware_accepted=False)
+        physical_CDC_accepted=False, hardware_accepted=False, **fault_boundary)
 
 
 def source_negative_controls(stage, text):
@@ -481,6 +499,14 @@ def source_negative_controls(stage, text):
         ('drop-CNN-task-parameter', '.WIN_LEN(CNN_WIN_LEN)', '.WIN_LEN(43844)'),
         ('drop-CNN-pipeline-parameter', '.WIN_LEN(WIN_LEN)', '.WIN_LEN(43844)'),
         ('missing-native-store', ') raw_store(', ') removed_store(')]
+    if media.sha(Path(stage) / BOARD) != '0a58c9de4c8c47ce541918ad0b2b385b61accb7993d54b32eaee2b9a8d264d82':
+        controls += [
+            ('direct-DDR-fault-bypass',
+             '.record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault)',
+             '.record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault || task3_memory_transport_fault)'),
+            ('single-stage-readiness', 'assign control_ready_o=ready_control[1];',
+             'assign control_ready_o=ready_control[0];'),
+        ]
     if verify_batch_provider(stage, cnn_provider_from_stage(stage))['phone_batch']:
         controls += [
             ('batch-board-disabled', "localparam bit TASK3_PHONE_BATCH=1'b1;", "localparam bit TASK3_PHONE_BATCH=1'b0;"),

@@ -55,7 +55,10 @@
         .backend_ready_i(recording_channel_ready50),.model_status_i(task3_actual_model_status),
         .record_object_idle_i(task3_record_object_idle && raw_start_ready && !raw_fault),
         .record_source_needed_i(task3_record_source_needed),
-        .record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault || task3_memory_transport_fault),
+        // Native DDR dispatch fences immediately in its own domain. Its sticky
+        // fault withdraws client readiness through ready_control's two flops;
+        // do not bypass them with the memory-domain combinational fault cone.
+        .record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault),
         .record_pcm_valid_o(task3_record_pcm_valid),.record_source_allowed_o(task3_record_source_allowed),
         .record_pcm_o(task3_record_pcm),.record_sequence_o(task3_record_sequence),.record_fault_o(),.record_failure_o(),
         .hci_classic_ready_i(hci_pcm_session_ready),.phone_owner_ready_i(task3_pcm_reset_n && clock_command_reset_n),
