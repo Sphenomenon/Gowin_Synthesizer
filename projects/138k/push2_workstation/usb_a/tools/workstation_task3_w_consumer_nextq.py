@@ -177,6 +177,13 @@ class Circuit:
                 require(truth is not None and int(truth[1]) == 1 << width and
                         int(truth[2], 16) < 1 << (1 << width), 'invalid LUT truth: ' + p)
                 value = self.e.lut([pin('I'+str(i)) for i in range(width)], int(truth[2], 16))
+            elif kind in ('MUX2_LUT5', 'MUX2_LUT6', 'MUX2_LUT7', 'MUX2_LUT8'):
+                require(port == 'O' and not cell['parameters'] and
+                        set(cell['ports']) == {'O', 'I0', 'I1', 'S0'},
+                        'MUX port/parameter inventory: ' + p)
+                # GW5A wrappers instantiate the vendor MUX2/mux2 UDP.
+                # This diagnostic evaluates its two-valued truth table only.
+                value = self.e.choose(pin('S0'), pin('I1'), pin('I0'))
             elif kind == 'ALU':
                 mode = cell['parameters'].get('ALU_MODE')
                 require(mode in ('0','1','3','4','5') and port in ('SUM','COUT'),
@@ -220,7 +227,51 @@ class ConsumerDiagram(BooleanDiagram):
         self.inputs = {net:self.node(i,0,1) for i,net in enumerate(inputs)}
 
 
-def compare(old, new, name):
+def sat_compare(e, a, b, *, timeout_ms=10000, evidence_dir=None, label='miter'):
+    """Exact Boolean miter over unconstrained named leaves; opt-in diagnostic.
+
+    No correlations between distinct named leaves or composite cuts are
+    asserted. A result other than unsat never establishes equivalence.
+    The expression/input bounds remain the same as the BDD diagnostic.
+    """
+    import z3
+    require(1 <= timeout_ms <= 10000, 'SAT timeout outside diagnostic bound')
+    closure = e.closure(a) | e.closure(b)
+    leaves = sorted(node for node in closure if e.nodes[node][0] == 'state')
+    require(len(leaves) <= 2048, 'SAT named-state input bound')
+    values = {0:z3.BoolVal(False), 1:z3.BoolVal(True)}
+    # Node IDs are topological: every expression is interned after its children.
+    for node in sorted(closure - {0,1}):
+        kind, *args = e.nodes[node]
+        if kind == 'state':
+            values[node] = z3.Bool(args[0])
+        else:
+            require(kind == 'choose', 'unreviewed SAT expression')
+            values[node] = z3.If(*(values[child] for child in args))
+    solver = z3.Solver()
+    solver.set(timeout=timeout_ms)
+    solver.add(z3.Xor(values[a],values[b]))
+    smt2 = '(set-option :timeout '+str(timeout_ms)+')\n'+solver.to_smt2()
+    artifact = None
+    if evidence_dir is not None:
+        artifact = Path(evidence_dir)/('miter-'+hashlib.sha256(label.encode()).hexdigest()[:16]+'.smt2')
+        require(not artifact.exists(), 'SAT miter evidence exists')
+        artifact.write_text(smt2)
+    result = solver.check()
+    detail = dict(proof_engine='Z3_Boolean_miter', solver_version=z3.get_version_string(),
+                  solver_timeout_ms=timeout_ms, solver_result=str(result),
+                  solver_reason_unknown=solver.reason_unknown() if result == z3.unknown else None,
+                  named_state_inputs=len(leaves), expression_nodes=len(closure),
+                  smt2_sha256=hashlib.sha256(smt2.encode()).hexdigest(),
+                  smt2_path=str(artifact) if artifact else None)
+    if artifact:
+        artifact.with_suffix('.result.json').write_text(json.dumps(detail,indent=2)+'\n')
+    require(result == z3.unsat,
+            'SAT miter ' + str(result) + (': '+solver.reason_unknown() if result == z3.unknown else ''))
+    return detail
+
+
+def compare(old, new, name, *, sat_fallback=False, evidence_dir=None):
     require(name in old.state and name in new.state, 'missing corresponding named state: ' + name)
     a, ai, ac = old.next_q(old.state[name])
     b, bi, bc = new.next_q(new.state[name])
@@ -254,22 +305,37 @@ def compare(old, new, name):
                 memo[node] = bd.choose(*(value(c) for c in e.nodes[node][1:]))
             return memo[node]
         return value(a) == value(b), bd
-    equal, bd = attempt(cuts)
-    if not equal:
-        # Independent composite cuts may lose relationships with their own
-        # descendants. Fall back to exact named state leaves, never assume a
-        # relation between composite cuts to manufacture equivalence.
-        cuts = {node for node in e.closure(a) | e.closure(b) if e.nodes[node][0] == 'state'}
+    try:
         equal, bd = attempt(cuts)
-    require(equal, 'conditional reset-inclusive next-Q not established: ' + name)
+        if not equal:
+            # Independent composite cuts may lose relationships with their own
+            # descendants. Fall back to exact named state leaves, never assume a
+            # relation between composite cuts to manufacture equivalence.
+            cuts = {node for node in e.closure(a) | e.closure(b) if e.nodes[node][0] == 'state'}
+            equal, bd = attempt(cuts)
+        require(equal, 'conditional reset-inclusive next-Q not established: ' + name)
+        proof = dict(proof_engine='BDD', independent_expression_cuts=len(cuts),
+                     bdd_nodes=len(bd.nodes))
+    except ValueError as error:
+        # Only BDD node exhaustion admits the optional solver. Missing state,
+        # unsupported primitives, input limits and counterexamples still reject.
+        if not sat_fallback or str(error) != 'runtime PCM CDC audit: next-Q BDD exceeds reviewed node bound':
+            raise
+        proof = sat_compare(e,a,b,evidence_dir=evidence_dir,label=name)
+        proof['BDD_node_bound_exhausted'] = True
     return dict(register=name, old_cell=old.state[name], new_cell=new.state[name],
                 INIT=ai, clock=ac, conditional_next_Q_equal=True,
-                independent_expression_cuts=len(cuts), bdd_nodes=len(bd.nodes),
+                **proof,
                 named_leaf_correspondence_is_assumption=True,
                 asynchronous_event_equivalence_proven=False)
 
 
-def run(old_output, new_output, output):
+def run(old_output, new_output, output, *, sat_fallback=False):
+    if sat_fallback:
+        try:
+            import z3
+        except ImportError as error:
+            raise ValueError('W consumer next-Q: --sat-fallback requires Z3 in the selected Python interpreter') from error
     output = Path(output).resolve()
     require(not output.exists(), 'evidence directory exists')
     repository = Path(__file__).resolve().parents[5]
@@ -307,6 +373,7 @@ def run(old_output, new_output, output):
         production_auditor_modified=False, whole_source_CDC_accepted=False,
         physical_CDC_accepted=False, routed_timing_verified=False, hardware_tested=False,
         full_state_relation_inductively_proven=False, deployment_allowed=False,
+        SAT_fallback_explicitly_enabled=sat_fallback,
         scope='Conditional one-step equality under named state correspondence, not source semantics, initialization/reachability induction, asynchronous reset-event equivalence, or full CDC admission.')
     report['candidate_identities'] = {label:row['candidate_identity'] for label,row in sources.items()}
     report['immutable_prepared_closures_verified'] = True
@@ -325,7 +392,8 @@ def run(old_output, new_output, output):
             for path in paths:
                 before[str(path)] = sha(path)
             report['owner_source_sha256'][relative] = sha(paths[0])
-            report['proved'].append(compare(old,new,name))
+            report['proved'].append(compare(old,new,name,sat_fallback=sat_fallback,
+                                           evidence_dir=output if sat_fallback else None))
         except ValueError as error:
             report['pending'].append(dict(register=name,reason=str(error)))
     require(before == {p:sha(p) for p in before}, 'immutable input drift during comparison')
@@ -342,7 +410,9 @@ if __name__ == '__main__':
     parser.add_argument('--old',type=Path,required=True)
     parser.add_argument('--new',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--sat-fallback',action='store_true',
+                        help='Explicitly permit a 10-second Z3 Boolean miter after BDD node exhaustion')
     args = parser.parse_args()
-    result = run(args.old,args.new,args.output)
+    result = run(args.old,args.new,args.output,sat_fallback=args.sat_fallback)
     print(json.dumps({key:result[key] for key in
         ('diagnostic_completed','changed_register_count','conditional_equal_count','pending_count')},indent=2))

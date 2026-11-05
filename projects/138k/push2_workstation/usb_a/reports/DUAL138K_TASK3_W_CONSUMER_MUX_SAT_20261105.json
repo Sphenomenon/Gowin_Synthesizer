@@ -1,0 +1,512 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "fa291328b8ef222d086fe3106574e50c4da6717d",
+  "stage": "isolated_W_consumer_MUX_and_opt_in_SAT_diagnosis",
+  "goal_complete": false,
+  "production_RTL_or_firmware_modified": false,
+  "selected_profiles_modified": false,
+  "new_build_or_deployment": false,
+  "previous_stage": "DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json",
+  "candidates": {
+    "old": "custom138k-workstation-task3-w-paired-phone-blocks-v1-86b7bda71d161a30",
+    "new": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee"
+  },
+  "diagnostic": {
+    "scope": "Conditional one-step equality under named state correspondence, not source semantics, initialization/reachability induction, asynchronous reset-event equivalence, or full CDC admission.",
+    "changed_register_count": 39,
+    "conditional_equal_count": 23,
+    "BDD_equal_count": 12,
+    "SAT_equal_count": 11,
+    "pending_count": 16,
+    "named_state_correspondence_is_assumption": true,
+    "full_state_relation_inductively_proven": false,
+    "asynchronous_event_equivalence_proven": false,
+    "MUX_model": {
+      "types": [
+        "MUX2_LUT5",
+        "MUX2_LUT6",
+        "MUX2_LUT7",
+        "MUX2_LUT8"
+      ],
+      "semantics": "Two-valued vendor MUX2/mux2 UDP: S0 ? I1 : I0",
+      "required_ports": [
+        "O",
+        "I0",
+        "I1",
+        "S0"
+      ],
+      "parameters_allowed": [],
+      "no_ordinary_MUX_or_other_primitive_implicitly_admitted": true
+    },
+    "SAT_fallback": {
+      "explicit_flag": "--sat-fallback",
+      "default_enabled": false,
+      "requires_Z3_in_selected_Python": true,
+      "trigger": "Only reviewed BDD 200000-node exhaustion",
+      "timeout_ms": 10000,
+      "solver_version": "5.1.0",
+      "miter": "Xor(old reset-inclusive next-Q, new reset-inclusive next-Q)",
+      "constraints": "Every distinct named state leaf is independent. Matching old/new named leaves represent the explicit conditional state correspondence; no reachability or composite-cut correlations are asserted.",
+      "accepted_result": "unsat only",
+      "sat_or_unknown_is_not_equivalence": true,
+      "expression_bound": 300000,
+      "named_state_input_bound": 2048,
+      "shared_production_BDD_limits_unchanged": true,
+      "miter_artifacts_saved": 11
+    },
+    "new_conditional_proofs": [
+      {
+        "register": "u_bluetooth/u_core/application/command_endpoint/recording/object_crc_9",
+        "old_cell": "u_bluetooth/u_core/application/command_endpoint/recording/object_crc_9_s3",
+        "new_cell": "u_bluetooth/u_core/application/command_endpoint/recording/object_crc_9_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 142,
+        "expression_nodes": 819,
+        "smt2_sha256": "3b8d2874d2d0c87714dee1ece41d8a8cec69e86f70a0fce1d4d593cf4892ead4",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-9faa4d96b3385548.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/conf_req_pending",
+        "old_cell": "u_bluetooth/u_core/transport/conf_req_pending_s1",
+        "new_cell": "u_bluetooth/u_core/transport/conf_req_pending_s6",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 143,
+        "expression_nodes": 651,
+        "smt2_sha256": "cacd36f39d20b3eed7649dba80d865383e5eb1a421b645f543c9ac7c7ff43638",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-8a84f046da4f6ce0.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_16",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_16_s3",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_16_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 740,
+        "smt2_sha256": "d82b9fe1d1c6b32c1f0fc152bf55a3d4995ff92477c5568092c38767d40c18f1",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-eaf390c147daa718.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_19",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_19_s3",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_19_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 740,
+        "smt2_sha256": "13422b53cb0fa1cce1af20d69e5c0e7b15ee65af7813bc3bbfb1c8da63bb40e7",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-3bab85566a33af22.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_24",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_24_s3",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_24_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 744,
+        "smt2_sha256": "8b1324a46351c937afe5fa47b8d028343bfe0ce4226376b7dbdc49768254954d",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-e956401900ee2151.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_27",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_27_s1",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_27_s3",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 743,
+        "smt2_sha256": "1d30b50945e8c57f0629977c8e694c53e1d39ac999cf9caaa23dc86ce524d109",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-913890f7e91e1434.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_29",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_29_s1",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_29_s3",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 743,
+        "smt2_sha256": "7c3423c626568c6a8884a56b16f193b7987b50a5fe035e0e96919b91cb08eb86",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-1079cc767835fad4.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/link_timer_3",
+        "old_cell": "u_bluetooth/u_core/transport/link_timer_3_s3",
+        "new_cell": "u_bluetooth/u_core/transport/link_timer_3_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 166,
+        "expression_nodes": 741,
+        "smt2_sha256": "925555d37a7f66edafc4d7f96f10a1948c7201186ac3843ccd1b9f6b67012876",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-01c77506f03d53f3.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/rx_seq_2",
+        "old_cell": "u_bluetooth/u_core/transport/rx_seq_2_s1",
+        "new_cell": "u_bluetooth/u_core/transport/rx_seq_2_s4",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 172,
+        "expression_nodes": 772,
+        "smt2_sha256": "aa7b4be09ed22c88d3c9224c28071abac374d010a78da8bf706c36df6c7a4138",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-45364e282cf57b0f.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/synced",
+        "old_cell": "u_bluetooth/u_core/transport/synced_s1",
+        "new_cell": "u_bluetooth/u_core/transport/synced_s5",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 167,
+        "expression_nodes": 754,
+        "smt2_sha256": "04d27ef5f5d75715af2d24aae29d372ce3a1f14902c90783d3a61d3af130109e",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-e9158ab7d3aa14e5.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/tx_seq_0",
+        "old_cell": "u_bluetooth/u_core/transport/tx_seq_0_s3",
+        "new_cell": "u_bluetooth/u_core/transport/tx_seq_0_s1",
+        "INIT": "1'b0",
+        "clock": "clk_50m",
+        "conditional_next_Q_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.1.0",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 167,
+        "expression_nodes": 740,
+        "smt2_sha256": "041f77eacfb466ff57ca9078db52d660e580249475c949e94e225dd4057724e2",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/miter-eef399b253557b66.smt2",
+        "BDD_node_bound_exhausted": true,
+        "named_leaf_correspondence_is_assumption": true,
+        "asynchronous_event_equivalence_proven": false
+      }
+    ],
+    "pending_counts": {
+      "opaque_DDR_output": 9,
+      "ambiguous_named_state": 6,
+      "missing_named_state": 1
+    },
+    "pending_registers": [
+      {
+        "register": "u_bluetooth/u_core/application/command_endpoint/fragment_error_2",
+        "reason": "W consumer next-Q: missing corresponding named state: u_bluetooth/u_core/application/command_endpoint/fragment_error_2"
+      },
+      {
+        "register": "u_bluetooth/u_core/application/command_endpoint/recording/record_state_1",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_bluetooth/u_core/application/command_endpoint/recording/stop_pending",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_bluetooth/u_core/application/command_endpoint/recording/stop_reason_1",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_bluetooth/u_core/owner/bootstrap/elapsed_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_bluetooth/u_core/owner/flow/last_generation_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_bluetooth/u_core/owner/host_rx/last_lease_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_bluetooth/u_core/owner/host_rx/tokens[0]_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_bluetooth/u_core/owner/host_rx/tokens[3]_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_bluetooth/u_core/transport/retry_count_0",
+        "reason": "W consumer next-Q: ambiguous named state leaf: u_bluetooth/u_core/owner/host_rx/generations_ER_CL_s8"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_10",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_12",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_19",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_20",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_6",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      },
+      {
+        "register": "u_task3_media/raw_store/accepted_frames_o_9",
+        "reason": "W consumer next-Q: unknown/ambiguous driver: controller_rvalid"
+      }
+    ],
+    "frontier_findings": {
+      "controller_rvalid": "Driven by u_memory/u_ddr3/gw3_top, kind ~GW_DDR3_PHY_MC.DDR3_Memory_Interface_Top. The encrypted definition is absent from the parsed VG; this is an opaque model frontier, not proof of an electrically undriven net.",
+      "generations_ER_CL": "Both old and new contain separate _s0/_s8 DFFRE cells with distinct Q nets and CE generations_ER_CL_20 / generations_ER_CL_22. Same stripped name is insufficient to identify or merge these state bits.",
+      "opaque_outputs_assumed_corresponding": false,
+      "duplicate_states_merged": false
+    }
+  },
+  "validation": {
+    "tests": 15,
+    "failures": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "installed_GW5A_ALU_truth_rows": 80,
+    "installed_GW5A_MUX_truth_rows": 32,
+    "MUX_unknown_port_missing_select_or_parameter_shapes_rejected": 12,
+    "actual_BDD_mutations_rejected": 6,
+    "actual_SAT_D_and_CE_mutations_rejected": 2,
+    "missing_correspondence_rejected": true,
+    "opaque_and_duplicate_frontiers_preserved": true,
+    "SAT_unknown_injection_rejected": true,
+    "default_BDD_node_bound_exhaustion_still_rejected": true,
+    "asynchronous_limit_demonstration": {
+      "register": "u_bluetooth/u_core/transport/link_timer_16",
+      "mutation": "Only mapped asynchronous CLEAR pin replaced by constant zero in memory; original VG unchanged.",
+      "result": "Reset-inclusive next-active-clock-edge functions remain equal because the synchronous cone already contains reset behavior.",
+      "asynchronous_reset_equivalence_proven": false,
+      "whole_CDC_accepted": false,
+      "implication": "A one-step miter must never be promoted to asynchronous event, initialization/reachability, complete state-relation or whole-CDC acceptance."
+    },
+    "standalone_solver_replayed_miters": 11,
+    "standalone_solver_all_unsat": true,
+    "actual_inputs_unchanged": true,
+    "immutable_prepared_closures_verified": true,
+    "production_auditor_modified": false,
+    "historical_seals_modified": false,
+    "complete_CDC_accepted": false,
+    "routed_timing_verified": false,
+    "physical_resources_verified": false,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_programmed": false,
+    "bitstream_sha256": null,
+    "UserCode": null,
+    "deployment_allowed": false
+  },
+  "evidence": {
+    "final_diagnostic": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/verification.json",
+      "sha256": "5c7d083e37ff955ac393344a9c860eccc9b838ce8cd7e6e8ade69414244d68e4"
+    },
+    "final_test_checks": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-mux-sat-tests-v10.json",
+      "sha256": "a25532e1f45519a0b2719467777dd63e1bc0db99964351fa4a25985a709d5cd4"
+    },
+    "final_test_process_result": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/tests-process-result-v10.json",
+      "sha256": "9bc23198dfbf766cae29b3ac61cec4dcb0a60b0346becff56cd5175a09382790"
+    },
+    "standalone_replay": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v10/standalone-replay.json",
+      "sha256": "681f9efc83e91192185c069dc4c885a81f405cc7e78995a1715765be33719485"
+    },
+    "frontier_inspection": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-frontier-inspection-v1/verification.json",
+      "sha256": "08e07f0c46c8d5736a3233206a538776982690a824c6c03eda748c54af628761"
+    },
+    "diagnostic_source": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_task3_w_consumer_nextq.py",
+      "sha256": "58f1192a8dafd404e1ac059792fb512736860ee6b8aaa970e48c186f62564e33"
+    },
+    "regression_source": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_w_consumer_nextq.py",
+      "sha256": "0b07d796de47f5a6e9dc3f0a8c060684d9a78b772318fafdfe031aa27459c066"
+    },
+    "vendor_primitives": {
+      "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+      "sha256": "2ec53fec48601d2d491299bc3a28b4b199d3a79708f1dd38f72555a5c688ebd5"
+    },
+    "solver_binary": {
+      "path": "/Users/sphenicidition/miniforge3/bin/z3",
+      "sha256": "164c85de5f5dcb7d57cbab64b1a11580a982c1658384120b2b65358f41847418"
+    }
+  },
+  "intermediate_attempts": [
+    {
+      "attempt": "MUX-only v6",
+      "outcome": "10 tests passed after the additional ambiguous-state regression; count remains 12/39. Nine unsupported-MUX frontiers advance to opaque controller_rvalid.",
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-mux-v6/verification.json",
+        "sha256": "1aae14a6a9f706e9627f31496cd10d58e559fa561d38a028640c25df52bd1318"
+      }
+    },
+    {
+      "attempt": "SAT v7 under system Python 3.9",
+      "outcome": "Failed on missing z3; no completed verification report. Added upfront interpreter dependency check and used the explicit installed interpreter.",
+      "retained_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v7"
+    },
+    {
+      "attempt": "SAT v8",
+      "outcome": "23/39 conditional equal; 11 standalone miter replays unsat. Superseded by source-bound final v10.",
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-sat-v8/verification.json",
+        "sha256": "37223603c9675e198403c437016e15936b5f944969ff2a469041594d3e1b6ca9"
+      }
+    },
+    {
+      "attempt": "regression v9",
+      "outcome": "14 tests, 1 failure: test incorrectly expected removing redundant asynchronous CLEAR to alter next-edge function. D and CE mutants rejected. Retained failure; added an explicit next-edge-vs-asynchronous limitation regression in v10.",
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-consumer-nextq-mux-sat-tests-v9.json",
+        "sha256": "f1980595d3a83a0ae9b8e8a0b67217a4305dd2f52b11b3a4a9f2e1c70a828d16"
+      }
+    }
+  ],
+  "reproducibility": {
+    "Python_interpreter": "/Users/sphenicidition/miniforge3/bin/python3",
+    "working_directory": "projects/138k/push2_workstation/usb_a",
+    "command": [
+      "/Users/sphenicidition/miniforge3/bin/python3",
+      "-m",
+      "tools.workstation_task3_w_consumer_nextq",
+      "--old",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-phone-blocks-prepare-v5",
+      "--new",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+      "--output",
+      "<new absent cache directory outside repository and candidates>",
+      "--sat-fallback"
+    ],
+    "test_environment": {
+      "GW138K_TASK3_W_NEXTQ_OLD": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-phone-blocks-prepare-v5",
+      "GW138K_TASK3_W_NEXTQ_NEW": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+      "GW138K_TASK3_W_NEXTQ_PRIMITIVES": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/simlib/gw5a/prim_sim.v",
+      "GW138K_TASK3_W_NEXTQ_SAT": "1",
+      "GW138K_TASK3_W_NEXTQ_TEST_EVIDENCE": "<new external JSON path>"
+    },
+    "test_command": [
+      "/Users/sphenicidition/miniforge3/bin/python3",
+      "projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_w_consumer_nextq.py"
+    ],
+    "miter_replay": [
+      "/Users/sphenicidition/miniforge3/bin/z3",
+      "-smt2",
+      "<saved miter path>"
+    ]
+  },
+  "next_gates": [
+    "Resolve 16 pending state/IP frontiers with explicit checked models and correspondence, without equating distinct states or opaque outputs merely by net name.",
+    "Prove initialization/state-relation induction and asynchronous event behavior before proposing any production consumer-seal replacement. Production CDC remains failed.",
+    "M sync-storage candidate remains blocked on existing Gowin hostid runtime; feth94 was absent in this live read-only check. No new M synthesis, mapped resource delta or P&R is claimed.",
+    "Latest two M layout timeouts remain unbound to inspectable candidate logs. Do not infer their identity from another worktree or old task2 evidence.",
+    "Correct target boards, LCD throughput/RTT/jitter/congestion and actual audio/TF/CNN/phone/recording acceptance remain separate; CAP3 stays disabled."
+  ],
+  "rollback": {
+    "W_unchanged": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+    "M_unchanged": "custom138k-workstation-task3-m-paired-sync-storage-v1-7d8ebf5cda5109d6",
+    "historical_locks_modified": false,
+    "frozen_candidates_modified": false,
+    "task2_or_single_board_worktrees_touched": false
+  }
+}
