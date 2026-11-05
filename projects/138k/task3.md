@@ -62,18 +62,22 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-05，M 同步存储改动保持 2048 音符、256 帧、32 声部和普通/矢量能力；同步读、held 预取及写转发的定向回归通过。本阶段完成可选双采样率录音后端，并建立同一份维护源码下的成对 v2 检查点。v2 继续选用 48 kHz 跨板录音和 v3 LCD 协议；后端的 44.1 kHz 选项尚未接入成对配置。旧配置与冻结候选保留，资源收益仍须新 Gowin 网表实际映射后统计。
+截至 2026-11-05，成对 v2 检查点已完成新的 Gowin 综合；M 同步存储实际映射通过，保持 2048 音符、256 帧、32 声部和普通/矢量结构。同步读、held 预取及写转发的定向行为回归另有独立证据。v2 继续选用 48 kHz 跨板录音和 v3 LCD 协议；可选双采样率后端的 44.1 kHz 尚未接入成对配置。旧配置与冻结候选保留，完整 CDC、路由时序及硬件验收仍待完成。
 
 | 板 | 选定来源与身份 | 验证边界 |
 | --- | --- | --- |
-| M | `custom138k-workstation-task3-m-paired-checkpoint-v2-1bc270034f55f1be`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v2.json) | 完整 prepare/来源复核通过。直接编译输入、启动 ROM、SDC/CST 与冻结 v1 相同，增加独立来源记录；等待恢复 hostid 环境后综合。无新 VG、完整路由、位流及板上验收。 |
-| W | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 完整 prepare/来源复核、实际 RISC-V ELF 调用图和栈检查通过，保留 60 秒单对象。新录音组件和 ROM 已绑定；固件 ILM 占 50,160 字节，保守栈为 896 字节。SDC/CST 未变，该身份尚无新综合网表及物理验收。 |
+| M | `custom138k-workstation-task3-m-paired-checkpoint-v2-1bc270034f55f1be`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v2.json) | 新综合完成；58,384 Register、69,206 LUT、28,074 ALU、212 BSRAM 等效、254 RAM16。32 声部、普通/矢量结构、同步存储及 CPU48 ROM 检查通过；完整审查 13/22 通过，新 wrapper 的根复位来源策略尚未纳入审查。无完整路由、位流及板上验收。 |
+| W | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 新综合完成；49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16。完整审查 11/18 通过，局部证明硬编码的历史自动网名在新 VG 中已不存在，Boolean driver 查找拒绝；尚不能据此判断电路错误。保留 60 秒单对象；既有 ELF 检查的 ILM 为 50,160 字节、保守栈 896 字节。无物理验收。 |
 
-两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。209/308 等历史 BSRAM 数是旧 M/W 综合等效统计，不能冒充最新 M 或路由后物理用量。
+两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。上述资源是本次 XML 综合统计，不能当作布局后的物理用量。M 的 50 MHz 综合估算仅 41.597 MHz，76.8 MHz 音频时钟估算 58.651 MHz；W 对应为 48.618/72.254 MHz，均未达到要求。综合估算不能代替 routed STA，也没有据此降低时钟。
+
+本次 [成对综合及存储映射证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_SYNTHESIS_20261105.json)记录两板 VG/XML/log 身份、全部失败门禁及回退。封存的 685/665 个输入在综合前后均未变化；工具新增的 `Prj1.gprj.user` 使通用 prepare 清单检查拒绝，原始失败保留，明确允许该工具输出的生产 paired 校验通过。静态网表检查还定位到一个带 10,138 个已知复位负载的网络，以及经过 score 身份比较和计数逻辑的长组合链；这是后续布局/STA 排查入口，不是实际延迟结论。
+
+远程 PR 成果已由 `f96df276` 集成并保留在当前分支：PR #2 的 CPU48 分银行 RAM 与固件/映射 ROM 证明已选入 M；PR #3 的 USB/HDMI 诊断及复位、状态修复已引入。ADSR/TF ring 仍是待物理验证的实验，退出的重复录音后端未选入。此次 fetch 后本分支与 origin 一致；具体取舍见 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
 
 两板 v2 来源锁、完整准备结果及两个冻结 v1 父候选的回退核对通过；42 项定向测试通过，包含 8 项成对元数据和 11 项实际 ELF 记录的篡改拒绝。共享源码快照的 1028 个输入 hash 一致，v3 线协议及业务默认关闭策略保留。最新身份、完整准备差异与复现命令见 [双采样率后端及 v2 检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORD_FORMATS_20261105.json)。此前的 [v1 成对来源检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_CHECKPOINT_20261105.json)及其父候选保留。
 
-M 检查点另通过 [通用存储推断预检](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_STORAGE_INFERENCE_20261105.json)：Yosys 在原准备输入中保留 2048×7 位 score 和 256×98 位 tap，两者均形成无复位的同步读端口；score 本地计数为 12 位，公开计数仍为 32 位。同一源码的两个异步模式负控均不满足同步读判据。此检查尚未映射厂商原语，不能据此确认实际 BSRAM/RAM16 收益或 Gowin 综合、CDC、时序通过；原有生命周期和读写冲突行为回归仍为独立证据。
+M 本次 Gowin 网表中，score 为 1 个 SDPB、tap 为 2 个 SDPB，两者均无 RAM16。相对此前冻结的 phone-batch 网表，各移除 256 个 RAM16；整体 RAM16 从 766 降到 254，LUT 从 70,377 降到 69,206，BSRAM 等效从 209 增到 212。该比较不是单变量的物理 A/B，不能证明时序改善。此前的 [通用存储推断预检](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_STORAGE_INFERENCE_20261105.json)另验证原准备输入的 2048×7 位 score 和 256×98 位 tap 同步读端口、12 位本地计数及两个异步模式负控；生命周期和读写冲突回归仍为独立证据。
 
 冻结 W phone-batch 参考候选的独立网表诊断已检查 39 个 consumer 差异：23 个在明确的同名状态对应前提下，复位在内的下一拍函数相等（12 个 BDD、11 个限时 Z3 布尔 miter）；16 个仍待证明。15 项定向测试通过，包含 Gowin ALU 的 80 组及四种 MUX 的 32 组厂商真值核对、实际网表的 8 项突变拒绝，以及 11 份 miter 的独立进程重放。最新范围及复现见 [W MUX/SAT 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_MUX_SAT_20261105.json)，此前的 [12 项诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json)保留。该网表不作为新检查点的映射或 CDC 通过证据。
 
@@ -87,7 +91,7 @@ W 的[共享存储录音回归](push2_workstation/usb_a/reports/DUAL138K_TASK3_W
 
 接下来按以下顺序推进：
 
-1. 恢复本机已有 Gowin 许可证运行环境，优先综合当前 M 检查点，再综合 W；确认 M score/tap 实际推断为 BSRAM 且不含原 RAM16，保留完整资源与时序检查。随后审查各自新映射的 reset、held、TF 和全部 CDC consumer，不能继承旧候选证明。
+1. 本机许可证环境已恢复，两板新综合及 M score/tap 的实际 BSRAM 映射已完成。接下来为 M 同步存储 wrapper 核对准确的 include 来源和真实根复位映射，为 W 的 batch-active 关系建立真实映射证明，替代已失效的历史自动网名查找；再审查新映射的 reset、held、TF 和全部 CDC consumer。保持失败门禁，不能继承旧候选证明。
 2. 对该身份做有界 P&R，记录布局阶段、超时日志、扇出及 routed setup/hold/recovery/removal。以真实关键路径选择分拍或迁移，不降低时钟或放宽 false path。用户提到的两次最新 M 超时尚未在本地报告中绑定到可核验日志，继续保留未完成状态。
 3. 根据新资源决定下一个迁移。优先验证现有存储改动；旧 TF 客户端、25K 绘制和 BLE owner 的数字需先对应实际 compiled owner，避免重复优化已退出路径。混响、FFT/显示分析及扩展合成按链路余量逐项选择，不做全量重写。
 4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 实测预算，再做 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果及 60 秒录音/下载并发验收。44.1 kHz 后端格式授权与对象描述符已完成离线验证，仍需补齐兼容的跨板 ARM、M 真实输出/tap 格式与 W ingress 的采样率绑定，再单独验证协议与音频。当前成对配置继续拒绝 44.1 kHz 录音。
