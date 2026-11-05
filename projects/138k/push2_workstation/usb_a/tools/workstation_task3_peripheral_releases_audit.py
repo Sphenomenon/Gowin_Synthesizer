@@ -12,7 +12,7 @@ from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_root_reset_audit import (
     POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256, PAIRED_PROVIDER, M_PHONE_PROVIDER,
-    M_PHONE_BATCH_PROVIDER,
+    M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER,
     validate_root_publisher)
 
 POLICY = 'task3-direct-peripheral-real-release-v1'
@@ -221,8 +221,9 @@ def audit_peripheral_releases(n, *, root):
             'verified task3 real-root startup proof required')
     root_register = root.get('root_register')
     validate_root_publisher(n, g, root)
-    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER)
-    if root['selected_provider'] == M_PHONE_BATCH_PROVIDER:
+    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER,
+                                          M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER)
+    if root['selected_provider'] in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER):
         require(root.get('batch_mapped_structure', {}).get('mapped_structure_verified') is True and
                 root['batch_mapped_structure'].get('policy') == 'task3_m_batch_mapped_command_snapshot_v1',
                 'verified actual M batch mapped boundary required')

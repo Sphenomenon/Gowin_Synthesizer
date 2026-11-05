@@ -13,7 +13,8 @@ from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_task3_root_reset_audit import (
     POLICY as ROOT_POLICY, ROOT_SOURCE, ROOT_SOURCE_SHA256,
-    PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER, validate_root_publisher)
+    PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER,
+    validate_root_publisher)
 
 PROFILE = 'm-task3-direct'
 POLICY = 'task3-direct-real-root-held-v1'
@@ -131,8 +132,9 @@ def audit_direct_held_boundaries(n, result, *, root):
     root_reg = g.register('u_reset', 'started')
     root_q = n.pin(root_reg, 'Q')
     validate_root_publisher(n, g, root)
-    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER, M_PHONE_BATCH_PROVIDER)
-    batch = root['selected_provider'] == M_PHONE_BATCH_PROVIDER
+    paired = root['selected_provider'] in (PAIRED_PROVIDER, M_PHONE_PROVIDER,
+                                          M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER)
+    batch = root['selected_provider'] in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER)
     if batch:
         require(root.get('batch_mapped_structure', {}).get('mapped_structure_verified') is True and
                 root['batch_mapped_structure'].get('policy') == 'task3_m_batch_mapped_command_snapshot_v1',

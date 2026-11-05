@@ -46,6 +46,7 @@ SYNC_PROFILES = (
     'custom138k-workstation-task3-m-paired-checkpoint-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v2',
     'custom138k-workstation-task3-m-paired-checkpoint-v3',
+    'custom138k-workstation-task3-m-paired-checkpoint-v4',
 )
 
 

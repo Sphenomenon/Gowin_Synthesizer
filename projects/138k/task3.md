@@ -62,15 +62,22 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-05，M v3 检查点已完成新的 Gowin 综合及实际映射证明，完整审计为 19/22；W v3 已完成准备，最新实际综合参考仍是 W v2。M 保持 2048 音符、256 帧、32 声部和普通/矢量结构，同步存储映射通过。v3 的运行配置与 v2 相同，继续选用 48 kHz 跨板录音和 v3 LCD 协议；可选双采样率后端的 44.1 kHz 尚未接入成对配置。旧配置与冻结候选保留，完整 CDC、路由时序及硬件验收仍待完成。
+截至 2026-11-05，最新来源检查点为两板 v4，均已准备但未另跑综合；实际综合参考为 M v3、W v2。M v3 经当前外部审计为 20/22，并完成一次失败的物理诊断。M 保持 2048 音符、256 帧、32 声部和普通/矢量结构，同步存储映射通过。v4 保留 v3 的运行配置、48 kHz 跨板录音和 v3 LCD 协议；可选双采样率后端的 44.1 kHz 尚未接入成对配置。旧配置与冻结候选保留，完整 CDC、路由时序及硬件验收仍待完成。
 
 | 板 | 选定来源与身份 | 验证边界 |
 | --- | --- | --- |
-| M v3 | `custom138k-workstation-task3-m-paired-checkpoint-v3-110816887ce99741`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v3.json) | 新综合完成；58,384 Register、69,206 LUT、28,074 ALU、212 BSRAM 等效、254 RAM16。32 声部、普通/矢量结构、同步存储、时钟/PLL、USB CDC、batch 映射及 CPU48 ROM 检查通过。完整审查 19/22；两个 release 审计仍拒绝新 provider，held 审计拒绝 early-stage 额外 consumer。无完整路由、位流及板上验收。 |
+| M v3 实际参考 | `custom138k-workstation-task3-m-paired-checkpoint-v3-110816887ce99741`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v3.json) | 已综合；58,384 Register、69,206 LUT、28,074 ALU、212 BSRAM 等效、254 RAM16。当前外部审计 20/22：原有功能结构、时钟/PLL、USB CDC、batch 映射、CPU48 ROM 及 MIDI release 通过；两个完整 CPU consumer 门禁仍拒绝。物理诊断布局完成，布线失败；无完整 STA、位流及板上验收。 |
 | W v2 参考 | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 已综合；49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16。完整审查 11/18 通过，局部证明硬编码的历史自动网名在新 VG 中已不存在，Boolean driver 查找拒绝；尚不能据此判断电路错误。保留 60 秒单对象；既有 ELF 检查的 ILM 为 50,160 字节、保守栈 896 字节。无物理验收。 |
-| W v3 | `custom138k-workstation-task3-w-paired-checkpoint-v3-add6f5c40cb99472`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v3.json) | 准备及来源校验通过；665 个封存输入与 W v2 逐字节相同，未另跑综合，未将 v2 资源和审计改记为 v3 结果。 |
+| M v4 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v4-d5a33514ee4deb61`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v4.json) | 准备及来源校验通过，运行配置和编译文件列表与 M v3 一致；四个封存审计脚本更新，未另跑综合。M v3 的审计和物理结果不改记为 v4 结果。 |
+| W v4 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v4-752f0d5f38ed41e2`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v4.json) | 准备及来源校验通过，运行配置和编译文件列表与 W v3 一致；两个共享审计脚本更新，未另跑综合。最新 W 实际资源仍绑定 v2。 |
 
-两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。上述资源是本次 XML 综合统计，不能当作布局后的物理用量。M 的 50 MHz 综合估算仅 41.597 MHz，76.8 MHz 音频时钟估算 58.651 MHz；W 对应为 48.618/72.254 MHz，均未达到要求。综合估算不能代替 routed STA，也没有据此降低时钟。
+两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。表内资源是各自 XML 综合统计，失败物理报告的用量另列于下文。M 的 50 MHz 综合估算仅 41.597 MHz，76.8 MHz 音频时钟估算 58.651 MHz；W 对应为 48.618/72.254 MHz，均未达到要求。综合估算不能代替 routed STA，也没有据此降低时钟。
+
+最新 [M release 与物理诊断证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_RELEASE_AND_PHYSICAL_20261105.json)记录了来源分类修复、MIDI 原始根复位及 528 个最终复位 consumer、PC/APB 局部握手证明。73 项测试通过，97 项故障/来源篡改被拒绝；历史完整 consumer 清单未刷新。M CPU source 的 403 个 FF、两个不透明 IP 终点与旧 batch 清单相同，但不能据此放行其业务行为；destination 清单仍有较大差异。两个完整 consumer 门禁与全部 TF CDC 继续保留。
+
+M v3 原 SDC 在 Gowin 物理阶段出现 17 个 TA2003 对象绑定错误，尚未进入布局。现有物理准备工具新增显式 `--task3-pin-collections` 选项，枚举 15 个实际标量 Q，并为两处 RAM16SDP4 向量端口使用集合查询；逻辑终点集合及其余 SDC 字节保持一致，时钟、预算和例外范围不变。维护入口准备的 E3 与实际 E2 探针的 VG/CST/SDC 逐字节一致；临时探针脚本只作历史证据，不作为后续唯一构建入口。向量时序弧与完整 FIFO 证明仍未通过。
+
+E2 物理诊断以 900 秒为上限，约 653 秒后自然失败，非超时：布局完成，布线报 1,168 条未布通网络。失败报告用量为 Logic 99,577/138,240、Register 58,384、CLS 61,370/69,120（89%）、BSRAM 253/340；PRIMARY 与 LW 均为 8/8。该物理映射统计与综合的 212 BSRAM 等效不同，不能视作布通或时序通过。生成的 VO 属于失败实现，未生成完整 STA 或位流；请求的 UserCode 为 `D21105E2`，不是板上身份。
 
 本阶段 [M 同步 wrapper 与根复位映射证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_SYNC_ROOT_PROOF_20261105.json)绑定新 M v3 VG、完整审计及两板 v3 来源。精确 include 链和真实根 Q 通过验证，35 个根状态位的下一拍方程对全部 `2^35` 个状态赋值成立；请求翻转按真实 D/CE、异步 CLEAR 与 held-word CE 验证有效下一拍行为，未要求综合器沿用旧映射。三份实际 M 网表合计 15 项测试、231 项故障/来源篡改拒绝，加上 32 项来源及 paired 回归，共 47 项测试通过。旧 provider 仍用原证明，完整 executor、APB、consumer 和物理 CDC 未据此放行。
 
@@ -94,8 +101,8 @@ W 的[共享存储录音回归](push2_workstation/usb_a/reports/DUAL138K_TASK3_W
 
 接下来按以下顺序推进：
 
-1. 本机许可证环境已恢复，M v3 根复位和 batch 映射证明、实际综合及 score/tap 的 BSRAM 映射已完成。接下来补齐两个 release 审计对同步 wrapper 的精确来源接纳，继续核查 held 的额外 consumer；W 需对优化后分散的 live/batch-active 关系建立分层映射证明，不能只替换历史自动网名。随后审查 reset、held、TF 和全部 CDC consumer。保持失败门禁，不能继承旧候选证明。
-2. 对该身份做有界 P&R，记录布局阶段、超时日志、扇出及 routed setup/hold/recovery/removal。以真实关键路径选择分拍或迁移，不降低时钟或放宽 false path。用户提到的两次最新 M 超时尚未在本地报告中绑定到可核验日志，继续保留未完成状态。
+1. M 同步 wrapper 的来源分类、MIDI release、PC/APB 局部证明已完成；接下来证明两个完整 CPU release/consumer 边界及完整 TF CDC。W 需对优化后分散的 live/batch-active 关系建立分层映射证明，不能只替换历史自动网名。保持失败门禁，不能继承旧候选证明。
+2. P1 已绑定 M v3 的真实失败实现：SDC 对象表达问题已修复，布线仍有 1,168 条未布通网络。先在相同 VG/CST/SDC 上限时比较另一布线算法，结合 CLS、时钟/复位资源和高扇出网络定位拥塞，再选局部分拍或迁移；完整布通后核对 setup/hold/recovery/removal，不降低时钟或放宽 false path。此前用户提到的两次 M 超时仍未绑定本地可核验日志，与本次自然失败分开保留。
 3. 根据新资源决定下一个迁移。优先验证现有存储改动；旧 TF 客户端、25K 绘制和 BLE owner 的数字需先对应实际 compiled owner，避免重复优化已退出路径。混响、FFT/显示分析及扩展合成按链路余量逐项选择，不做全量重写。
 4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 实测预算，再做 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果及 60 秒录音/下载并发验收。44.1 kHz 后端格式授权与对象描述符已完成离线验证，仍需补齐兼容的跨板 ARM、M 真实输出/tap 格式与 W ingress 的采样率绑定，再单独验证协议与音频。当前成对配置继续拒绝 44.1 kHz 录音。
 

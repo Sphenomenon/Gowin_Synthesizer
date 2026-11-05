@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v4': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision4',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v4': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision4',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v3': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision3',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v3': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision3',
@@ -515,6 +519,8 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-checkpoint-v4',
+            'custom138k-workstation-task3-w-paired-checkpoint-v4',
             'custom138k-workstation-task3-m-paired-checkpoint-v3',
             'custom138k-workstation-task3-w-paired-checkpoint-v3',
             'custom138k-workstation-task3-m-paired-checkpoint-v2',
@@ -547,7 +553,8 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v3',
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v4',
+                                  'custom138k-workstation-task3-m-paired-checkpoint-v3',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v2',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v1',
                                   'custom138k-workstation-task3-m-paired-sync-storage-v1',

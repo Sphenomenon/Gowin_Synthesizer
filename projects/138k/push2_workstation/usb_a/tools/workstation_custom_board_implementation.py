@@ -7,6 +7,7 @@ program hardware. Physical and deployment results require separate evidence.
 from pathlib import Path
 from datetime import datetime
 import argparse
+import fnmatch
 import json
 import re
 import shutil
@@ -132,8 +133,80 @@ def reference_constraints(payload, netlist_text, excluded_ports=()):
                         differential_complements=implicit, omitted=omitted, instance_locations=instances)
 
 
+def task3_pin_collections(payload, netlist_text):
+    """Express the same DIRECT r3 pin sets in Gowin's physical selector syntax.
+
+    Gowin rejects the numeric character class accepted by our lexical audit,
+    and requires a collection for RAM16SDP4 vector ports. Materialize only the
+    exact fifteen reviewed scalar producers and two RAM vector queries. Every
+    native endpoint set and all non-query bytes must remain unchanged. This
+    does not prove routed vector arcs, the FIFO contract, or physical CDC.
+    """
+    from tools.workstation_task3_tf_direct import new_constraints
+    text = payload.decode('utf-8')
+    query = re.compile(r'\[get_pins\s+\{([^{}]+)\}\]')
+    reviewed = {selector for match in query.finditer(new_constraints(revision=3))
+                for selector in match[1].split() if '[0-9]' in selector}
+    if len(reviewed) != 15:
+        raise ValueError('reviewed DIRECT r3 scalar selector inventory changed')
+    n = SynthesisNetlist(netlist_text, TOP)
+    pins = {path + '/' + pin for path, cell in n.cells.items() for pin in cell['ports']}
+    ram = 'u_tf_audio/frames/frames_0/g_small_head.memory_g_small_head.memory_0_*_s'
+    vectors = {ram + '/DO', ram + '/RAD'}
+    selected, changes = [], []
+
+    def convert(match):
+        result, changed = [], False
+        for selector in match[1].split():
+            after = [selector]
+            if selector in reviewed or selector in vectors:
+                endpoints = sorted(pin for pin in pins if fnmatch.fnmatchcase(pin, selector))
+                if not endpoints or selector in selected:
+                    raise ValueError('missing/duplicated physical pin selector: ' + selector)
+                if selector in reviewed:
+                    if any(not pin.endswith('/Q') or
+                           n.cells[pin.rsplit('/', 1)[0]]['kind'] not in
+                           ('DFFCE', 'DFFRE', 'DFFPE') for pin in endpoints):
+                        raise ValueError('scalar selector no longer names reviewed FF Qs')
+                    after = endpoints
+                    kind = 'explicit_scalar_FF_Q'
+                else:
+                    if any(n.cells[pin.rsplit('/', 1)[0]]['kind'] != 'RAM16SDP4' or
+                           set(n.cells[pin.rsplit('/', 1)[0]]['ports']) !=
+                           {'DO', 'CLK', 'WRE', 'WAD', 'DI', 'RAD'} for pin in endpoints):
+                        raise ValueError('vector collection requires exact RAM16SDP4 ports')
+                    after = [selector + '*']
+                    kind = 'RAM16SDP4_vector_collection'
+                actual = {pin for replacement in after for pin in pins
+                          if fnmatch.fnmatchcase(pin, replacement)}
+                if actual != set(endpoints):
+                    raise ValueError('physical selector changes native endpoint set')
+                selected.append(selector)
+                changes.append(dict(before=selector, after=after, kind=kind,
+                                    native_endpoints=endpoints,
+                                    **(dict(vector_width=4) if selector in vectors else {})))
+                changed = True
+            elif '[0-9]' in selector:
+                raise ValueError('unreviewed numeric character class in physical SDC')
+            result.extend(after)
+        return '[get_pins {' + ' '.join(result) + '}]' if changed else match[0]
+
+    adapted = query.sub(convert, text)
+    if set(selected) != reviewed | vectors or len(selected) != 17:
+        raise ValueError('incomplete DIRECT r3 physical selector inventory')
+    if query.sub('PIN_QUERY', adapted) != query.sub('PIN_QUERY', text):
+        raise ValueError('physical pin adaptation changed a clock/budget/exception command')
+    result = adapted.encode('utf-8')
+    return result, dict(policy='task3_direct_r3_Gowin_pin_collections_v1',
+        input_sha256=digest(payload), output_sha256=digest(result), changes=changes,
+        logical_native_endpoint_sets_unchanged=True, non_query_bytes_unchanged=True,
+        clocks_or_budgets_or_exception_scope_relaxed=False,
+        routed_vector_arcs_verified=False, whole_CDC_accepted=False,
+        physical_timing_verified=False, hardware_tested=False, deployment_allowed=False)
+
+
 def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
-                      place_option=2, route_option=0):
+                      place_option=2, route_option=0, task3_pins=False):
     """Offline experiment using a hash-pinned reference; never board validation."""
     source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
     script = implementation_script(user_code, place_option, route_option)
@@ -155,16 +228,26 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
                          metadata['staged_input_sha256']['constraints/custom_138k.sdc']),
         'parent_integration_inputs.json': (source / 'integration_inputs.json', audit['integration_inputs_sha256']),
     }
+    pin_adaptation = None
+    physical_sdc = None
+    if task3_pins:
+        if audit.get('paired_role') != 'M' or audit.get('validation_stage') != 'task3_paired_synthesis_only':
+            raise ValueError('task3 physical pin collections require an explicit paired M audit')
+        physical_sdc, pin_adaptation = task3_pin_collections(
+            inputs['physical.sdc'][0].read_bytes(), vg.read_text())
     output.mkdir(parents=True)
     for name, (path, expected) in inputs.items():
         checked_copy(path, output/name, expected)
     (output/'physical.cst').write_bytes(cst)
+    if physical_sdc is not None:
+        (output/'physical.sdc').write_bytes(physical_sdc)
     (output/'run.tcl').write_text(script)
     (output/'parent_synthesis_audit.json').write_text(json.dumps(audit, indent=2)+'\n')
     result = dict(schema=1, identity='custom138k-resource-physical-'+user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_experiment_prepared',
-        source_policy='audited_native_netlist_with_hash_pinned_historical_CST_and_unchanged_SDC',
+        source_policy=('audited_native_netlist_with_hash_pinned_CST_and_exact_task3_pin_collections'
+                       if task3_pins else 'audited_native_netlist_with_hash_pinned_historical_CST_and_unchanged_SDC'),
         parent_candidate=str(source), parent_identity=audit['identity'],
         preparer_sha256=sha(__file__), user_code='0x'+user_code.upper(), top_module=TOP, device=DEVICE,
         constraint_reference=dict(path=str(reference_cst), sha256=reference_sha256, binding=binding),
@@ -172,6 +255,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         board_netlists_checked=False, board_programming_authorized=False,
         clocks_or_exceptions_relaxed=False, features_removed=False,
         place_option=place_option, route_option=route_option, replicate_resources=False,
+        task3_pin_adaptation=pin_adaptation,
         input_sha256={p.name: sha(p) for p in output.iterdir() if p.is_file()},
         timing_closed=False, physical_gates_passed=False, hardware_tested=False,
         deployment_allowed=False, release_ready=False, bitstream_sha256=None,
@@ -687,11 +771,13 @@ def main():
                         help='Required explicit identity when deriving the DDR capture-region experiment')
     parser.add_argument('--reference-cst', type=Path, help='Explicit offline historical pin/floorplan reference')
     parser.add_argument('--reference-sha256')
+    parser.add_argument('--task3-pin-collections', action='store_true',
+                        help='Express the same reviewed paired M DIRECT r3 pin sets for Gowin P&R')
     parser.add_argument('--exclude-reference-port', action='append', default=[])
     parser.add_argument('--place-option', type=int, choices=range(5), default=2)
     parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
     args = parser.parse_args()
-    reference_options = bool(args.reference_sha256 or args.exclude_reference_port or
+    reference_options = bool(args.reference_sha256 or args.exclude_reference_port or args.task3_pin_collections or
                              args.place_option != 2 or args.route_option != 0)
     derivation_options = bool(args.ddr_capture_region_parent_evidence or args.ddr_dqs_hold_regions or
         args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions or
@@ -702,7 +788,7 @@ def main():
             parser.error('reference mode requires its hash and cannot mix board/derivation adaptations')
         result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
                                    args.reference_sha256, args.exclude_reference_port,
-                                   args.place_option, args.route_option)
+                                   args.place_option, args.route_option, args.task3_pin_collections)
     elif reference_options:
         parser.error('reference constraint options require --reference-cst')
     elif args.ddr_capture_region_parent_evidence:

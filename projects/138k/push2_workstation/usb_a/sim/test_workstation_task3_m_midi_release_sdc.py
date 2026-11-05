@@ -48,6 +48,8 @@ class ActualMidiRelease(unittest.TestCase):
         cls.inputs = {str(p): sha(p) for p in (
             vg, sdc, stage/'Prj1.gprj', Path(__file__),
             ROOT/'tools/workstation_task3_m_midi_release_sdc.py',
+            ROOT/'tools/workstation_task3_native_held.py',
+            ROOT/'tools/workstation_task3_root_reset_audit.py',
             ROOT/'tools/workstation_task3_paired_board.py',
             ROOT/'tools/workstation_task3_paired_audit.py')}
         cls.evidence = dict(actual_stage=str(stage), rejections=[], installed_corrected=cls.installed_corrected)
@@ -150,6 +152,15 @@ class ActualMidiRelease(unittest.TestCase):
         for bad in ({}, dict(mapped_structure_verified=True, policy='unreviewed')):
             self.rejected('missing or wrong batch proof', lambda bad=bad: audit_midi_release_sdc(
                 n, self.projected, root=dict(self.root, batch_mapped_structure=bad)))
+        for label, patch in (
+            ('unknown provider', dict(selected_provider='unreviewed')),
+            ('opposite role', dict(selected_provider='rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv')),
+            ('wrong root alias', dict(mapped_common_root_name='reset_n')),
+            ('inverted root', dict(common_root_output_polarity=0)),
+            ('forged source binding', dict(source_sha256={})),
+        ):
+            self.rejected(label, lambda patch=patch: audit_midi_release_sdc(
+                n, self.projected, root=dict(self.root, **patch)))
 
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@ from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_task3_native_held import release_from_clear
 from tools.workstation_task3_peripheral_releases_audit import zero_async_ff
 from tools.workstation_task3_root_reset_audit import (
-    M_PHONE_BATCH_PROVIDER, POLICY as ROOT_POLICY, validate_root_publisher)
+    M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER, POLICY as ROOT_POLICY, validate_root_publisher)
 
 POLICY = 'task3_m_batch_midi_actual_root_release_sdc_v1'
 FUNCTIONAL_SCOPE = 'u_managed/midi_bytes'
@@ -114,7 +114,7 @@ def _final_reset_consumers(n, g, last, clear):
 
 def audit_midi_release_sdc(n, sdc, *, root):
     require(root.get('policy') == ROOT_POLICY and
-            root.get('selected_provider') == M_PHONE_BATCH_PROVIDER and
+            root.get('selected_provider') in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER) and
             root.get('all_state_assignments_proven') is True and
             root.get('actual_state_bits') == 35,
             'verified actual batch M root required')

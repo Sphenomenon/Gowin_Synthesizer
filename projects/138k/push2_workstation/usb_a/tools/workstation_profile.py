@@ -328,6 +328,16 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v3.json',
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision3')
 
+# Keep the source checkpoint reproducible after release-auditor and physical
+# pin-collection fixes. Runtime inputs/configuration still follow frozen v3.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v4'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v4'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v3'],
+        revision=4,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v4.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision4')
+
 
 def specification(name):
     if name not in PROFILE_REGISTRY:
