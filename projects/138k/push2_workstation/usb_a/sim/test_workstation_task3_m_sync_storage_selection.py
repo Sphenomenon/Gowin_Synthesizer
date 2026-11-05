@@ -34,7 +34,7 @@ class Selection(unittest.TestCase):
         self.assertEqual(actual['local_storage']['tap_capacity_frames'],256)
         self.assertEqual(actual['local_storage']['score_capacity_notes'],2048)
         self.assertFalse(actual['local_storage']['physical_BSRAM_mapping_verified'])
-        old=copy.deepcopy(self.config);old.pop('m_endpoint_storage_policy')
+        old=copy.deepcopy(self.config);old.pop('m_endpoint_storage_policy');old.pop('m_score_terminal_policy',None)
         default=m.selected_batch_source_evidence(self.stage,self.stage,old,m.BATCH_PROVIDER)
         self.assertNotIn('local_storage',default)
 
@@ -44,6 +44,22 @@ class Selection(unittest.TestCase):
             config=dict(self.config,m_endpoint_storage_policy=value)
             with self.subTest(provider=provider,value=value),self.assertRaises(ValueError):
                 m.selected_batch_source_evidence(self.stage,self.stage,config,provider)
+
+    def test_terminal_policy_and_binding_rejected(self):
+        if self.config.get('m_score_terminal_policy')!=m.TERMINAL_POLICY:
+            return
+        for value in (None,'unreviewed'):
+            with self.subTest(value=value),self.assertRaises(ValueError):
+                m.selected_batch_source_evidence(self.stage,self.stage,
+                    dict(self.config,m_score_terminal_policy=value),m.SYNC_PROVIDER)
+        path=self.fixture/'rtl/workstation/workstation_task3_m_bus_endpoint.sv'
+        original=path.read_text();anchor='.PIPELINED_TERMINAL(SYNC_READ_STORAGE)'
+        self.assertEqual(original.count(anchor),1)
+        path.write_text(original.replace(anchor,'.PIPELINED_TERMINAL(0)'))
+        try:
+            with self.assertRaises(ValueError):
+                m.selected_batch_source_evidence(self.fixture,self.fixture,self.config,m.SYNC_PROVIDER)
+        finally:path.write_text(original)
 
     def test_wrapper_scope_rejected(self):
         path=self.fixture/m.SYNC_PROVIDER;original=path.read_text()
@@ -62,8 +78,8 @@ class Selection(unittest.TestCase):
             ('rtl/workstation/workstation_task3_m_bus_endpoint.sv',
              "parameter bit SYNC_READ_STORAGE=1'b0","parameter bit SYNC_READ_STORAGE=1'b1"),
             ('rtl/workstation/workstation_task3_m_bus_endpoint.sv',
-             'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE))',
-             'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(0))'),
+             'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)',
+             'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(0)'),
             ('rtl/workstation/workstation_task3_m_bus_endpoint.sv',
              'workstation_task3_final_tap_export #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE))',
              'workstation_task3_final_tap_export #(.SYNC_READ_STORAGE(0))')]

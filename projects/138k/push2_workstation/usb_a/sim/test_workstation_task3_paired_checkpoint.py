@@ -30,7 +30,11 @@ class CurrentSources(unittest.TestCase):
                 parent = json.loads(parent_path.read_text())
                 self.assertEqual(sha(parent_path),reference['configuration_sha256'])
                 self.assertEqual(parent['name'],reference['profile'])
-                self.assertEqual(selected['configuration'],parent['configuration'])
+                expected=deepcopy(parent['configuration'])
+                if role=='M' and name.endswith('-v5'):
+                    from tools.workstation_task3_m_paired_profile import TERMINAL_POLICY
+                    expected['m_score_terminal_policy']=TERMINAL_POLICY
+                self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])
                 self.assertEqual(profiles.specification(name)['provider'],
@@ -95,6 +99,9 @@ class PreparedPair(unittest.TestCase):
                     self.assertEqual(storage['score_capacity_notes'],2048)
                     self.assertEqual(storage['tap_capacity_frames'],256)
                     self.assertFalse(storage['physical_BSRAM_mapping_verified'])
+                    if 'm_score_terminal_policy' in config:
+                        self.assertEqual(storage['terminal_commit']['queue_slots'],1)
+                        self.assertEqual(storage['terminal_commit']['extra_validation_cycles'],1)
                 else:
                     self.assertTrue(metadata['classic_runtime']['phone_batch'])
                     self.assertTrue(metadata['classic_runtime']['worker_media'])

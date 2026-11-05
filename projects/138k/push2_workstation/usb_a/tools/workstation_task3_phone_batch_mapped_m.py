@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, COMB, Graph
 from tools.workstation_task3_m_paired_profile import (
-    BATCH_PROVIDER, SYNC_PROVIDER, SYNC_POLICY, selected_batch_source_evidence,
+    BATCH_PROVIDER, SYNC_PROVIDER, SYNC_POLICY, TERMINAL_POLICY, selected_batch_source_evidence,
 )
 
 POLICY = 'task3_m_batch_mapped_command_snapshot_v1'
@@ -41,12 +41,22 @@ SYNC_SOURCE_SHA256 = dict(SOURCE_SHA256, **{
     'rtl/music/workstation_task3_score_commit_m.sv': '9bded8544f5e5eef7d7c6427967f99e60ec1a32826bedc510c926dfa97bbbe4c',
     'rtl/workstation/workstation_task3_final_tap_export.sv': 'd7856615e4cfa2446f1a11e28c3348359ca76215bfd9c5e9d1b405f70eb8950c',
 })
+# The v5 endpoint changes only the collector parameter binding. Keep the old
+# source policies immutable; the batch/owner next-Q proof below still runs on
+# every actual new VG, independently of the collector behavior regression.
+TERMINAL_PROFILE='custom138k-workstation-task3-m-paired-checkpoint-v5'
+TERMINAL_PROFILES=(TERMINAL_PROFILE,'custom138k-workstation-task3-m-paired-checkpoint-v6')
+TERMINAL_SOURCE_SHA256=dict(SYNC_SOURCE_SHA256,**{
+    'rtl/workstation/workstation_task3_m_bus_endpoint.sv': '5d625039d428ab18d554a70ae9ef9ee9b241eba8421fdd301013baf8ad769908',
+    'rtl/music/workstation_task3_score_commit_m.sv': '4486d85295c4da778e1631d39cbf6eccdac416e511eb45899a7fa1f21a1d2722',
+})
 SYNC_PROFILES = (
     'custom138k-workstation-task3-m-paired-sync-storage-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v2',
     'custom138k-workstation-task3-m-paired-checkpoint-v3',
     'custom138k-workstation-task3-m-paired-checkpoint-v4',
+    *TERMINAL_PROFILES,
 )
 
 
@@ -74,7 +84,12 @@ def source_evidence(stage):
     require(profile.get('profile') in names, 'exact M batch profile artifact required')
     require((profile['configuration'].get('m_endpoint_storage_policy') == SYNC_POLICY)
             is (provider == SYNC_PROVIDER), 'M mapped storage policy/provider mismatch')
-    sources = SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256
+    terminal_profile=profile.get('profile') in TERMINAL_PROFILES
+    terminal_policy=profile['configuration'].get('m_score_terminal_policy')
+    require(terminal_policy==(TERMINAL_POLICY if terminal_profile else None),
+            'M mapped terminal policy/profile mismatch')
+    sources = (TERMINAL_SOURCE_SHA256 if terminal_profile else
+               SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256)
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], provider)
     require(selected is not None, 'snapshot parameter selection absent')

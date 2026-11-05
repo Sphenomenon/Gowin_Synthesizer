@@ -9,6 +9,7 @@ BOARD='rtl/workstation/workstation_task3_m_paired_board.svh'
 BATCH_PROVIDER='rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'
 SYNC_PROVIDER='rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'
 SYNC_POLICY='sync_score_and_final_tap_prefetch_v1'
+TERMINAL_POLICY='task3_m_one_slot_terminal_validation_v1'
 PHONE_WINDOW_PROVIDER='rtl/workstation/workstation_profile_task3_m_paired_phone_blocks.sv'
 BATCH_MEDIA_POLICY='task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3'
 BATCH_POLICY='full_key_atomic_owner_snapshot_command_v1'
@@ -60,9 +61,12 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     media=configuration.get('interboard_media_policy')
     batch=configuration.get('phone_batch_policy')
     sync=configuration.get('m_endpoint_storage_policy')
+    terminal=configuration.get('m_score_terminal_policy')
     selected_sync=provider==SYNC_PROVIDER
     if (sync==SYNC_POLICY)!=selected_sync or sync not in (None,SYNC_POLICY):
         raise ValueError('M synchronous storage requires its explicit provider and policy')
+    if terminal not in (None,TERMINAL_POLICY) or terminal is not None and not selected_sync:
+        raise ValueError('M terminal pipeline requires its explicit synchronous policy')
     requested=provider in (BATCH_PROVIDER,SYNC_PROVIDER) or media==BATCH_MEDIA_POLICY or batch is not None
     if not requested:return None
     if provider not in (BATCH_PROVIDER,SYNC_PROVIDER) or media!=BATCH_MEDIA_POLICY or batch!=BATCH_POLICY:
@@ -125,7 +129,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
         exact(top,storage_binding,'synchronous endpoint storage binding')
         endpoint=(stage/'rtl/workstation/workstation_task3_m_bus_endpoint.sv').read_text()
         exact(endpoint,"parameter bit SYNC_READ_STORAGE=1'b0",'storage default off')
-        exact(endpoint,'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) collector_m(','score storage binding')
+        score_binding=('workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) collector_m('
+            if terminal is None else 'workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE),.PIPELINED_TERMINAL(SYNC_READ_STORAGE)) collector_m(')
+        exact(endpoint,score_binding,'score storage/terminal binding')
         exact(endpoint,'workstation_task3_final_tap_export #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) recording(','tap storage binding')
     elif compact(storage_binding) in compact(top):
         raise ValueError('unselected M synchronous storage binding')
@@ -172,4 +178,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
             tap_capacity_frames=256,synchronous_read=True,held_prefetch=True,
             tap_write_forwarding=True,score_initial_read_cycles=1,
             continuous_read_frames_per_cycle=1,physical_BSRAM_mapping_verified=False)
+        if terminal is not None:
+            result['local_storage']['terminal_commit']=dict(policy=TERMINAL_POLICY,
+                queue_slots=1,extra_validation_cycles=1,shared_result_backpressure_cycles=1,
+                pending_payload_reset_free=True,revoked_by=['reset','cancel','PANIC','link_loss'],
+                independent_audio_schedule_unchanged=True)
     return result

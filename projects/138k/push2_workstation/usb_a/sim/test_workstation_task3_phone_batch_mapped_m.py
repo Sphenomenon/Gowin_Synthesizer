@@ -162,7 +162,8 @@ class ActualMappedM(unittest.TestCase):
         self.assertEqual(root['actual_state_bits'],35)
         self.assertEqual(root['state_assignment_count'],1<<35)
         self.assertEqual(root['root_q'],n.pin(g.register('u_reset','started'),'Q'))
-        self.assertEqual(root['mapped_common_root_name'],'terminal_ready')
+        terminal=bool(root.get('root_mapping_variant'))
+        self.assertEqual(root['mapped_common_root_name'],'reset_n' if terminal else 'terminal_ready')
         self.assertTrue(root['batch_mapped_structure']['mapped_structure_verified'])
         self.evidence['root']=root
         started=g.register('u_reset','started')
@@ -188,12 +189,21 @@ class ActualMappedM(unittest.TestCase):
         for label,patch in [
             ('unknown root provider',dict(selected_provider='unreviewed')),
             ('opposite-role root',dict(selected_provider='rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv')),
-            ('wrong root alias',dict(mapped_common_root_name='reset_n')),
+            ('wrong root alias',dict(mapped_common_root_name='terminal_ready' if terminal else 'reset_n')),
             ('inverted root',dict(common_root_output_polarity=0)),
             ('forged root sources',dict(source_sha256={})),
         ]:
             self.rejected(label,lambda patch=patch:
                 validate_root_publisher(n,Graph(n),dict(root,**patch)))
+        if terminal:
+            for label,patch in [
+                ('unreviewed root mapping',dict(root_mapping_variant='unreviewed')),
+                ('terminal root borrows old profile',dict(root_profile='custom138k-workstation-task3-m-paired-checkpoint-v3')),
+                ('terminal root borrows other role',dict(root_profile='custom138k-workstation-task3-w-paired-checkpoint-v5')),
+                ('terminal root loses mapping policy',dict(root_mapping_variant=None)),
+            ]:
+                self.rejected(label,lambda patch=patch:
+                    validate_root_publisher(n,Graph(n),dict(root,**patch)))
 
     def test_05_storage_policy_cannot_borrow_a_provider(self):
         with tempfile.TemporaryDirectory(prefix='task3-M-mapped-policy-fixture-') as temp:
@@ -206,6 +216,8 @@ class ActualMappedM(unittest.TestCase):
                 ('unreviewed profile',lambda p:p.update(profile='unreviewed')),
                 ('mismatched storage policy',lambda p:p['configuration'].update(m_endpoint_storage_policy=
                     None if p['configuration'].get('m_endpoint_storage_policy') else mapped.SYNC_POLICY)),
+                ('mismatched terminal policy',lambda p:p['configuration'].update(m_score_terminal_policy=
+                    None if p['configuration'].get('m_score_terminal_policy') else mapped.TERMINAL_POLICY)),
             ]:
                 profile=json.loads(original);change(profile)
                 artifact.write_text(json.dumps(profile))

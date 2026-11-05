@@ -79,7 +79,8 @@ module workstation_task3_m_bus_endpoint #(
     wire result_packet=rx_channel_i==`TASK3_PAIR_CH_RESULT && rx_length_i==`TASK3_PAIR_RESULT_BYTES && rx_payload_i[255:168]==0 &&
         (!rx_payload_i[167] || rx_payload_i[166:164]==0);
     wire score_ready,terminal_ready;
-    workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE)) collector_m(
+    workstation_task3_score_commit_m #(.SYNC_READ_STORAGE(SYNC_READ_STORAGE),
+        .PIPELINED_TERMINAL(SYNC_READ_STORAGE)) collector_m(
         .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && !new_identity),.cancel_i(analysis_cancel_i || source_failed),.panic_i(panic_i),
         .arm_valid_i(arm_valid),.arm_ready_o(arm_ready),.arm_identity_i(arm_identity),.arm_append_i(arm_append),.chunk_file_last_i(file_last),
         .score_valid_i(live && rx_valid_i && result_packet && !rx_payload_i[167]),.score_ready_o(score_ready),.score_i(rx_payload_i[166:0]),

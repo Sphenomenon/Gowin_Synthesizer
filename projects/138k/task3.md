@@ -62,52 +62,36 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-05，最新来源检查点为两板 v4，均已准备但未另跑综合；实际综合参考为 M v3、W v2。M v3 经当前外部审计为 20/22，并完成一次自然失败及一次超时的布线诊断。M 保持 2048 音符、256 帧、32 声部和普通/矢量结构，同步存储映射通过。v4 保留 v3 的运行配置、48 kHz 跨板录音和 v3 LCD 协议；可选双采样率后端的 44.1 kHz 尚未接入成对配置。旧配置与冻结候选保留，完整 CDC、路由时序及硬件验收仍待完成。
+截至 2026-11-06，最新来源检查点为两板 v6；实际综合参考为 M v5、W v2。M v5 已将识别结果终态校验分为两拍，实际整机综合相对 M v3 减少 473 LUT、20 ALU，增加 33 个寄存器，BSRAM/RAM16 数量不变。两板 v6 仅封存后续审计修正，与各自 v5 的编译输入、配置、约束和固件二进制逐字节相同，均未另跑综合。
 
 | 板 | 选定来源与身份 | 验证边界 |
 | --- | --- | --- |
-| M v3 实际参考 | `custom138k-workstation-task3-m-paired-checkpoint-v3-110816887ce99741`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v3.json) | 已综合；58,384 Register、69,206 LUT、28,074 ALU、212 BSRAM 等效、254 RAM16。当前外部审计 20/22：原有功能结构、时钟/PLL、USB CDC、batch 映射、CPU48 ROM 及 MIDI release 通过；两个完整 CPU consumer 门禁仍拒绝。物理诊断布局完成，布线失败；无完整 STA、位流及板上验收。 |
-| W v2 参考 | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 已综合；49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16。完整审查 11/18 通过，局部证明硬编码的历史自动网名在新 VG 中已不存在，Boolean driver 查找拒绝；尚不能据此判断电路错误。保留 60 秒单对象；既有 ELF 检查的 ILM 为 50,160 字节、保守栈 896 字节。无物理验收。 |
-| M v4 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v4-d5a33514ee4deb61`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v4.json) | 准备及来源校验通过，运行配置和编译文件列表与 M v3 一致；四个封存审计脚本更新，未另跑综合。M v3 的审计和物理结果不改记为 v4 结果。 |
-| W v4 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v4-752f0d5f38ed41e2`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v4.json) | 准备及来源校验通过，运行配置和编译文件列表与 W v3 一致；两个共享审计脚本更新，未另跑综合。最新 W 实际资源仍绑定 v2。 |
+| M v5 实际参考 | `custom138k-workstation-task3-m-paired-checkpoint-v5-509346bb5c4bff42`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v5.json) | 综合完成：58,417 Register、68,733 LUT、28,054 ALU、212 BSRAM 等效、254 RAM16。外部审计 20/22；32 声部、普通/矢量结构、score/tap BSRAM、CPU48 ROM、PLL/USB/MIDI 局部检查通过；两个完整 CPU consumer 门禁仍拒绝。物理诊断结果另列。 |
+| W v2 实际参考 | `custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json) | 已综合：49,458 Register、63,986 LUT、16,347 ALU、308 BSRAM 等效、779 RAM16。完整审查 11/18，优化后的 live/batch 映射仍待证明；不能只替换自动网名。保留 60 秒单对象，真实录音/下载未验收。 |
+| M v6 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v6-c9e610228d97154d`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v6.json) | 943 项来源锁、287 项编译输入，准备和校验通过；运行配置等于 v5。新增精确终态流水线复位来源审计，不继承 v5 综合或物理验收。 |
+| W v6 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v6-b802f5e84c9fc673`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v6.json) | 991 项来源锁、200 项编译输入，准备和校验通过；运行配置等于 v5。最新实际资源仍绑定 W v2。 |
 
-两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。表内资源是各自 XML 综合统计，失败物理报告的用量另列于下文。M 的 50 MHz 综合估算仅 41.597 MHz，76.8 MHz 音频时钟估算 58.651 MHz；W 对应为 48.618/72.254 MHz，均未达到要求。综合估算不能代替 routed STA，也没有据此降低时钟。
+表内资源来自各自 XML 综合统计，物理 BSRAM 分配另记。M v5 的 50 MHz 与 76.8 MHz 域综合估算为 41.463/58.620 MHz，M v3 为 41.597/58.651 MHz；整体估算仍未达标。W v2 对应为 48.618/72.254 MHz。局部流水线的改善尚未成为整机时序改善，综合估算也不代替 routed STA。
 
-最新 [M release 与物理诊断证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_RELEASE_AND_PHYSICAL_20261105.json)记录了来源分类修复、MIDI 原始根复位及 528 个最终复位 consumer、PC/APB 局部握手证明。73 项测试通过，97 项故障/来源篡改被拒绝；历史完整 consumer 清单未刷新。M CPU source 的 403 个 FF、两个不透明 IP 终点与旧 batch 清单相同，但不能据此放行其业务行为；destination 清单仍有较大差异。两个完整 consumer 门禁与全部 TF CDC 继续保留。
+最新 [M 终态流水线与完整验证证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TERMINAL_PIPELINE_20261106.json)记录源码、两板配置、VG/XML/log 哈希及回退。collector 仅增加一个有界终态槽，收下最后音符与终态后，下一拍核验已提交的计数；暂停结果入口一拍，reset、cancel、PANIC 或断链立即撤销有效性。容量仍为 2048 音符，跨板身份和 32 位协议计数保留；复用稳定任务身份，避免再复制 128 位。M 的基础采样、权威参数、HDMI/DAC、W 计算和唯一录音对象均未改动。
 
-M v3 原 SDC 在 Gowin 物理阶段出现 17 个 TA2003 对象绑定错误，尚未进入布局。现有物理准备工具新增显式 `--task3-pin-collections` 选项，枚举 15 个实际标量 Q，并为两处 RAM16SDP4 向量端口使用集合查询；逻辑终点集合及其余 SDC 字节保持一致，时钟、预算和例外范围不变。维护入口准备的 E3 与实际 E2 探针的 VG/CST/SDC 逐字节一致；临时探针脚本只作历史证据，不作为后续唯一构建入口。向量时序弧与完整 FIFO 证明仍未通过。
+独立 Gowin 探针在同一 100 MHz 约束下，collector 的参考/直接/流水线综合估算分别为 75.216/74.616/109.349 MHz，LUT 为 368/367/200，寄存器为 314/314/361，均保留一个真实 SDPB。这是子系统结果。四种 RTL 模式和真实同步映射均完成 9,502 拍检查，覆盖满曲、追加、同拍最后音符/终态、128 位陈旧身份、计数高位、撤销和上游载荷变化；五个语义故障均被拒绝。真实 TF 分析源与 collector 的离线组合也通过，使用确定性 PCM/W 响应，尚非真实卡、CNN 或 LCD 验收。
 
-E2 物理诊断以 900 秒为上限，约 653 秒后自然失败，非超时：布局完成，布线报 1,168 条未布通网络。失败报告用量为 Logic 99,577/138,240、Register 58,384、CLS 61,370/69,120（89%）、BSRAM 253/340；PRIMARY 与 LW 均为 8/8。该物理映射统计与综合的 212 BSRAM 等效不同，不能视作布通或时序通过。生成的 VO 属于失败实现，未生成完整 STA 或位流；请求的 UserCode 为 `D21105E2`，不是板上身份。
+M v5 的 `terminal_ready` 已含 pending 条件，综合根复位改名为 `reset_n`。审计仅在新配置及两份 RTL 精确哈希匹配时接纳它，并验证其为真实 `u_reset.started/Q` 的唯一正向输出、35 个状态位的全部 `2^35` 个下一拍状态赋值。原始失败审计 14/22 及修正后的 20/22 均保留。37 项来源/配置回归与 16 项新旧 M 网表测试通过，220 项篡改被拒绝；两个完整 CPU consumer 门禁和完整 TF CDC 未据此放行。
 
-后续 [同输入布线算法对比](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_ROUTE_COMPARISON_20261105.json)由维护入口准备独立 E4，VG/CST/SDC 与 E2 逐字节一致，仅改变请求 UserCode 和 `route_option=1`，布局选项仍为 2。E4 完成布局、进入布线，900 秒后按预设上限终止，进程码为 -15；末条进度为 Routing Phase 0 完成，没有完整路由报告、未布通网络总数或位流。不能把 E2 的 1,168 条网络数或物理资源当作 E4 结果。同一 M v3 网表的只读复核仍发现 `n6538_6` 连接 10,138 个已知复位引脚，最长等权组合链为 149 级，终点为曲谱 collector 的 `analysis_done_o/D`；宏、缓冲及未解析驱动会终止该结构遍历，级数不是纳秒或实际关键路径。本轮未更改运行源码，两板 v4 来源及全部回退保留。
+M v5 已按维护入口以 `D21106E1`、布局 2/布线 0 完成离线诊断：699.30 秒后自然失败，剩余 362 条未布通网络。物理 CST/SDC 与 M v3 同选项参考逐字节一致；旧结果为 1,168 条，此次减少 806 条，但仍不能称布通或时序改善。失败报告资源为 Logic 99,067/138,240、Register 58,417、CLS 61,314/69,120（89%）、BSRAM 253/340，PRIMARY 与 LW 均为 8/8。VO 属于失败实现，无完整 STA 或位流；UserCode 仅为请求值，未操作板卡。
 
-本阶段 [M 同步 wrapper 与根复位映射证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_SYNC_ROOT_PROOF_20261105.json)绑定新 M v3 VG、完整审计及两板 v3 来源。精确 include 链和真实根 Q 通过验证，35 个根状态位的下一拍方程对全部 `2^35` 个状态赋值成立；请求翻转按真实 D/CE、异步 CLEAR 与 held-word CE 验证有效下一拍行为，未要求综合器沿用旧映射。三份实际 M 网表合计 15 项测试、231 项故障/来源篡改拒绝，加上 32 项来源及 paired 回归，共 47 项测试通过。旧 provider 仍用原证明，完整 executor、APB、consumer 和物理 CDC 未据此放行。
+物理回退参考仍为 M v3 `custom138k-workstation-task3-m-paired-checkpoint-v3-110816887ce99741`：算法 0 自然失败，1,168 条未布通网络；同输入算法 1 在 900 秒上限终止。其来源、约束对象修复、失败物理资源及高扇出诊断保存在 [release/physical](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_RELEASE_AND_PHYSICAL_20261105.json)与 [route comparison](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_ROUTE_COMPARISON_20261105.json)。v3/v4/v5 描述符与封存输入均保留，task2、单板分支和原候选未被替换。两板均无本阶段板上身份、实测声音延迟或硬件通过结论。
 
-此前的 [v2 成对综合及存储映射证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_SYNTHESIS_20261105.json)保留两板 VG/XML/log 身份、全部失败门禁及回退。工具新增的 `Prj1.gprj.user` 曾使通用 prepare 清单检查拒绝，原始失败保留；本次 M v3 在综合前做通用校验，综合后由生产 paired 校验核对全部封存输入，仅允许该工具输出。静态网表诊断中的 10,138 负载复位网络及 score 身份比较/计数长组合链仍是后续布局/STA 排查入口，不是实际延迟结论。
+远程成果已由 `f96df276` 审查后采用：PR #2 的 CPU48 分银行 RAM 用于 M，当前 v5 实际网表逐字验证 24 个块、12,288 个 ROM 字，集成对比为 32→24 块；PR #3 的独立 USB/HDMI 诊断、复位和状态新鲜度修复也已保留。ADSR/TF ring 仍是实验，退出的重复录音后端未选入。2026-11-06 fetch 后 task3 无新增远程提交；取舍见 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
 
-远程 PR 成果已由 `f96df276` 审查后按 task3 分工选入：PR #2 的 CPU48 分银行 RAM 与固件/映射 ROM 证明已用于 M，当前 M v3 的实际网表通过 24 个块、12,288 个 ROM 字的逐字校验；此前集成对比从 32 块减为 24 块。PR #3 保留为独立 USB/HDMI 诊断入口，并修复复位与上游状态新鲜度；未把诊断的演示声部计数当作整机真实 DSP 声部数。ADSR/TF ring 仍是待物理验证的实验，退出的重复录音后端未选入。本次 fetch 后未发现远程 task3 新提交；具体取舍见 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
+后续按以下顺序推进：
 
-两板 v2 来源锁、完整准备结果及两个冻结 v1 父候选的回退核对通过；42 项定向测试通过，包含 8 项成对元数据和 11 项实际 ELF 记录的篡改拒绝。共享源码快照的 1028 个输入 hash 一致，v3 线协议及业务默认关闭策略保留。最新身份、完整准备差异与复现命令见 [双采样率后端及 v2 检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORD_FORMATS_20261105.json)。此前的 [v1 成对来源检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_CHECKPOINT_20261105.json)及其父候选保留。
+1. 根据 M v5 实际布局/布线结果检查拥塞、时钟/复位扇出和组合路径。部分标量图仍见 `n6538_6` 的 10,137 个复位负载，最长等权链为 147 级、终点为 collector 的 `g_sync_notes.head_valid_s1/D`；宏和缓冲会终止遍历，级数不代表纳秒或物理关键路径。同一部分图的路径追溯从 `configured_identity[0]` 经端点 `new_identity` 的 128 级比较 ALU、Push ready 进入预取；优先评估保持完整身份语义的组合比较重组。继续局部优化，保留异步复位与生命周期，完整布通后核对 setup/hold/recovery/removal，不放宽时钟或 false path。
+2. 关闭 M 两个完整 CPU release/consumer 边界与完整 TF CDC；对 W 优化后的 live/batch 关系建立实际网表证明。局部命令、MIDI 或根状态证明不能替代这些门禁；不得刷新历史清单来冒充通过。
+3. 结合真实资源与 LCD 余量逐项选择重型效果、FFT/显示分析及扩展合成迁移。已移至 W 的识别、手机解码与唯一录音/下载对象继续保留。旧 TF 客户端、25K 绘制、BLE owner 的资源数字须先对应实际编译路径，不做全量重写。
+4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 有效吞吐、往返延迟、拥塞，再验收 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果与 60 秒录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 及真实来源格式绑定；当前成对配置只接纳 48 kHz 录音。
 
-M 本次 Gowin 网表中，score 为 1 个 SDPB、tap 为 2 个 SDPB，两者均无 RAM16。相对此前冻结的 phone-batch 网表，各移除 256 个 RAM16；整体 RAM16 从 766 降到 254，LUT 从 70,377 降到 69,206，BSRAM 等效从 209 增到 212。该比较不是单变量的物理 A/B，不能证明时序改善。此前的 [通用存储推断预检](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_STORAGE_INFERENCE_20261105.json)另验证原准备输入的 2048×7 位 score 和 256×98 位 tap 同步读端口、12 位本地计数及两个异步模式负控；生命周期和读写冲突回归仍为独立证据。
+必要 SRAM 验证沿用本任务授权，须先识别正确目标；Flash 仍需单独授权。每阶段完成相关验证后 commit、push 并更新证据。
 
-冻结 W phone-batch 参考候选的独立网表诊断已检查 39 个 consumer 差异：23 个在明确的同名状态对应前提下，复位在内的下一拍函数相等（12 个 BDD、11 个限时 Z3 布尔 miter）；16 个仍待证明。15 项定向测试通过，包含 Gowin ALU 的 80 组及四种 MUX 的 32 组厂商真值核对、实际网表的 8 项突变拒绝，以及 11 份 miter 的独立进程重放。最新范围及复现见 [W MUX/SAT 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_MUX_SAT_20261105.json)，此前的 [12 项诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json)保留。该网表不作为新检查点的映射或 CDC 通过证据。
-
-剩余项为 9 个加密 DDR IP 输出边界、6 个有歧义的同名状态及 1 个缺失状态对应，均未按同名信号直接放行。真实负控还表明：删除某计时器的异步 CLEAR 后，下一拍函数仍可相等；单步诊断因此不能代替异步事件或完整 CDC 证明。完整状态关系、生产门禁、物理时序及硬件验收仍未通过，历史锁和冻结候选均未改变。
-
-W 的[共享存储录音回归](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_SHARED_RECORDING_20261105.json)绑定此前冻结候选的组件字节：生产队列/仲裁器在模拟分析及 delay 流量竞争下完成 288 万帧录制和全部 11.52 MB 下载，CRC 为 `3ddb23ec`；下载断连后旧 ACK 被拒绝，新租约从 73,008 字节恢复同一对象。采样源独立计数，注入第 17,000 帧丢失后，对象 CRC 校验拒绝该结果。此为加速 PCM、行为 DDR 控制器及模拟竞争流量的离线验证，尚不证明新 v2 的全容量并发、实际 CNN/手机并发、硬件 60 秒录音或物理时限。
-
-本阶段的双采样率后端沿用 Android 已有 `REC_FORMATS 0x43 v1`，由同一 C owner 与 DDR 录音引擎处理。开启选项时使用独立物理 ABI，错配在对象分配前被拒绝；44.1 kHz START 必须先获本次 HELLO 授权，再与真实源格式核对。50 MHz 独立采样源在 10 ms 仿真中产生 441 帧，完成 1,764 字节录制、断线续传和 CRC `bc3b03dc` 校验；CPU 与 BLE 交叉操作同一对象。录制中切换采样率使录音失败，保留原对象的 44.1 kHz 描述符，源 PCM 继续运行。282 项行为检查、4 项故障突变和两个方向的 ABI 错配检查通过；同一当前源码的默认 48 kHz 路径通过 1,765 项行为检查、15 项突变拒绝，136 条消息与原参考逐字节一致。该回归使用宿主编译 C、真实解析/APB/CRC/存储 RTL 和行为 DDR 控制器，未执行完整 AE350、LCD、手机或 DAC。
-
-另保留一个通用旧路径失败：`test_stage_ae350_firmware.py` 的 10 项中有 1 项失败，R00 16 KiB ROM 超出 760 字节。精确父版本对照同样溢出，相关目标文件逐字节相同；本阶段未扩大该 ROM、删除功能或跳过测试。此项与已通过的 v2 成对准备及 W 128 KiB ROM 检查分开记录。
-
-接下来按以下顺序推进：
-
-1. M 同步 wrapper 的来源分类、MIDI release、PC/APB 局部证明已完成；接下来证明两个完整 CPU release/consumer 边界及完整 TF CDC。W 需对优化后分散的 live/batch-active 关系建立分层映射证明，不能只替换历史自动网名。保持失败门禁，不能继承旧候选证明。
-2. P1 已绑定 M v3 的真实失败实现：SDC 对象表达问题已修复，算法 0 报 1,168 条未布通网络，同输入算法 1 在 900 秒上限终止。接下来优先检查曲谱 collector 的 128 位身份比较及终态计数链，选择局部分拍实验，并结合 CLS、时钟/复位资源和高扇出分布核查拥塞；保留异步复位、取消/PANIC 和队列边界。完整布通后核对 setup/hold/recovery/removal，不降低时钟或放宽 false path。此前用户提到的两次 M 超时仍未绑定本地可核验日志，与本次 E2 自然失败、E4 超时分开保留。
-3. 根据新资源决定下一个迁移。优先验证现有存储改动；旧 TF 客户端、25K 绘制和 BLE owner 的数字需先对应实际 compiled owner，避免重复优化已退出路径。混响、FFT/显示分析及扩展合成按链路余量逐项选择，不做全量重写。
-4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 实测预算，再做 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果及 60 秒录音/下载并发验收。44.1 kHz 后端格式授权与对象描述符已完成离线验证，仍需补齐兼容的跨板 ARM、M 真实输出/tap 格式与 W ingress 的采样率绑定，再单独验证协议与音频。当前成对配置继续拒绝 44.1 kHz 录音。
-
-每阶段提交并 push 源码、配置和结构化证据，保留失败项与回退入口。必要 SRAM 验证沿用本任务授权，但必须先核对正确目标；Flash 仍需单独授权。
-
-当前资源、优先级和预算复核见 [priority review](push2_workstation/usb_a/reports/DUAL138K_TASK3_PRIORITY_REVIEW_20261105.json)。对应实现证据见 [M 同步存储](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_SYNC_STORAGE_20261105.json)、[paired profiles](push2_workstation/usb_a/reports/DUAL138K_TASK3_PHONE_BATCH_PROFILES_20261103.json)、[phone batch 负载](push2_workstation/usb_a/reports/DUAL138K_TASK3_PHONE_BATCH_20261103.json)、[混响子系统](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)和 [PR 审查与选用](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。
+历史来源及资源基线见 [priority review](push2_workstation/usb_a/reports/DUAL138K_TASK3_PRIORITY_REVIEW_20261105.json)、[M 同步存储](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_SYNC_STORAGE_20261105.json)、[paired synthesis](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_SYNTHESIS_20261105.json)、[录音格式](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORD_FORMATS_20261105.json)、[W consumer 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_MUX_SAT_20261105.json)和 [混响子系统](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)。

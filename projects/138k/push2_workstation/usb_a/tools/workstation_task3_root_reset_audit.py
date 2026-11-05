@@ -6,6 +6,7 @@ from the runtime reset-release and held-boundary proofs owned by the caller.
 """
 from pathlib import Path
 import hashlib
+import json
 import re
 import xml.etree.ElementTree as ET
 
@@ -31,6 +32,19 @@ M_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_pho
 M_PHONE_BATCH_PROVIDER_SHA256 = 'a8b49bc23afa8eb0ee1424ec08ae88201143d7455d46c59043ddd6bc296fa56d'
 M_SYNC_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'
 M_SYNC_PROVIDER_SHA256 = 'aaab25be165322ba25c1c08f22cefcad061c7ab0ba71bee704cf79deddafcc85'
+# The one-slot terminal no longer exposes reset directly as terminal_ready.
+# Actual v5 synthesis preserves reset_n as the positive started/Q alias.
+# This admission is separate from the historical sync-provider mapping.
+TERMINAL_ROOT_VARIANT = 'task3-m-terminal-pipeline-root-v1'
+TERMINAL_ROOT_PROFILES = (
+    'custom138k-workstation-task3-m-paired-checkpoint-v5',
+    'custom138k-workstation-task3-m-paired-checkpoint-v6',
+)
+TERMINAL_ROOT_POLICY = 'task3_m_one_slot_terminal_validation_v1'
+TERMINAL_ROOT_SOURCES = {
+    'rtl/workstation/workstation_task3_m_bus_endpoint.sv': '5d625039d428ab18d554a70ae9ef9ee9b241eba8421fdd301013baf8ad769908',
+    'rtl/music/workstation_task3_score_commit_m.sv': '4486d85295c4da778e1631d39cbf6eccdac416e511eb45899a7fa1f21a1d2722',
+}
 W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
@@ -89,6 +103,25 @@ def source_binding(stage):
             'root requires one uniquely selected reviewed provider')
     provider = providers[0]
     provider_sha, expected_role, _, includes = PROVIDER_POLICIES[provider]
+    includes = dict(includes)
+    mapping = {}
+    if provider == M_SYNC_PROVIDER:
+        artifact = json.loads((stage.parent.parent / 'workstation_profile.json').read_text())
+        terminal_profile = artifact.get('profile') in TERMINAL_ROOT_PROFILES
+        configuration = artifact.get('configuration', {})
+        require(configuration.get('m_score_terminal_policy') ==
+                (TERMINAL_ROOT_POLICY if terminal_profile else None),
+                'terminal root profile/policy mismatch')
+        if terminal_profile:
+            require(configuration.get('demo_role') == 'M' and
+                    configuration.get('m_endpoint_storage_policy') == 'sync_score_and_final_tap_prefetch_v1',
+                    'terminal root role/storage policy mismatch')
+            for relative in TERMINAL_ROOT_SOURCES:
+                require(selected.count(relative) == 1,
+                        'terminal root source not uniquely selected: ' + relative)
+            includes.update(TERMINAL_ROOT_SOURCES)
+            mapping = dict(root_mapping_variant=TERMINAL_ROOT_VARIANT,
+                           root_profile=artifact['profile'])
     worker = expected_role == 'W'
     require(selected.count(ROOT_SOURCE) == 1,
             'exact root source not uniquely selected')
@@ -144,21 +177,35 @@ def source_binding(stage):
     return dict(source_sha256={str(path.relative_to(stage)): sha(path) for path in files},
                 selected_provider=provider, default_hold_cycles=1024,
                 custom_external_reset_constant=1,
-                selected_top_root_binding_verified=True)
+                selected_top_root_binding_verified=True, **mapping)
+
+
+def publisher_policy(root):
+    """Select one source-bound reviewed alias; never search for a matching net."""
+    provider = root.get('selected_provider')
+    require(provider in PROVIDER_POLICIES, 'root publisher provider is not reviewed')
+    provider_sha, _, alias, includes = PROVIDER_POLICIES[provider]
+    includes = dict(includes)
+    variant = root.get('root_mapping_variant')
+    if variant is not None:
+        require(variant == TERMINAL_ROOT_VARIANT and provider == M_SYNC_PROVIDER and
+                root.get('root_profile') in TERMINAL_ROOT_PROFILES,
+                'unreviewed terminal root mapping/profile')
+        alias = 'reset_n'
+        includes.update(TERMINAL_ROOT_SOURCES)
+    else:
+        require('root_profile' not in root, 'root profile without mapping policy')
+    return provider_sha, alias, includes
 
 
 def validate_root_publisher(n, g, root):
     """Bind the reviewed source policy to the actual positive root FF output.
 
-    The paired top adds terminal_ready consumers, so Gowin chooses that name
-    for the same reset_release.started Q and removes the reset_n wire alias.
-    Select that one reviewed spelling only for the exact paired provider;
-    never accept an arbitrary named reset or an equivalent-looking cone.
+    Historical paired mappings use terminal_ready; the source-bound terminal
+    pipeline uses reset_n. Both must be the unique, positive actual started Q.
     """
     provider = root.get('selected_provider')
-    require(provider in PROVIDER_POLICIES,
-            'root publisher provider is not reviewed')
-    provider_sha, _, alias, includes = PROVIDER_POLICIES[provider]
+    provider_sha, alias, includes = publisher_policy(root)
     require(isinstance(alias, str) and bool(alias),
             'mapped root alias requires actual synthesis review: ' + provider)
     source_identity = root.get('source_sha256', {})
@@ -251,7 +298,7 @@ def audit_root_startup(n, *, stage):
                 'root state FF port inventory changed: ' + path)
     root_q = n.pin(started, 'Q')
     binding = dict(source, root_register=started, root_q=root_q,
-                   mapped_common_root_name=PROVIDER_POLICIES[source['selected_provider']][2],
+                   mapped_common_root_name=publisher_policy(source)[1],
                    common_root_output_polarity=1)
     if batch is not None:
         binding['batch_mapped_structure'] = batch

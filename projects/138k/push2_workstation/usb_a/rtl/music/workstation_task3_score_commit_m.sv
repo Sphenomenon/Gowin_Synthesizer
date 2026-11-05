@@ -4,7 +4,8 @@
 // actual file-final clip's successful terminal starts publication to Push.
 module workstation_task3_score_commit_m #(
     parameter integer MAX_NOTES=2048,
-    parameter bit SYNC_READ_STORAGE=1'b0
+    parameter bit SYNC_READ_STORAGE=1'b0,
+    parameter bit PIPELINED_TERMINAL=1'b0
 )(
     input wire clk_i,reset_ni,link_ready_i,cancel_i,panic_i,
     input wire arm_valid_i,
@@ -40,13 +41,56 @@ module workstation_task3_score_commit_m #(
     assign arm_ready_o=reset_ni && link_ready_i && (state==IDLE || state==DONE);
     // Stale identities are consumed and discarded, never allowed to fill a
     // transport queue indefinitely after local cancel or a session restart.
-    assign score_ready_o=reset_ni;
-    assign terminal_ready_o=reset_ni;
-    wire score_match=score_valid_i && state==COLLECT && score_i[166:39]==identity;
+    wire seal_pending;
+    assign score_ready_o=reset_ni && !seal_pending;
+    assign terminal_ready_o=reset_ni && !seal_pending;
+    wire score_match=score_valid_i && score_ready_o && state==COLLECT && score_i[166:39]==identity;
     wire score_good=score_match && score_i[38:7]==32'(clip_notes) && note_count<MAX_NOTES;
     wire [CW-1:0] clip_notes_after=clip_notes+CW'(score_good);
     wire [CW-1:0] note_count_after=note_count+CW'(score_good);
-    wire terminal_match=terminal_valid_i && state==COLLECT && terminal_i[163:36]==identity;
+    wire terminal_match=terminal_valid_i && terminal_ready_o && state==COLLECT && terminal_i[163:36]==identity;
+    wire seal_apply,seal_bad,seal_file_last,seal_empty;
+    wire [163:0] seal_completion,seal_failure;
+    generate if(PIPELINED_TERMINAL)begin:g_terminal_pipeline
+        reg pending;
+        reg [31:0] held_count;
+        reg [CW-1:0] prior_clip_notes;
+        reg held_bad,held_file_last;
+        // The slot owns only a background result. Accept the final note and
+        // terminal together, then compare with the committed count next cycle.
+        // Payload is reset-free; validity is fenced asynchronously and on every
+        // cancellation, PANIC or link loss. No old result may survive rearm.
+        always @(posedge clk_i)
+            if(terminal_match && link_ready_i && !cancel_i && !panic_i)begin
+                held_count<=terminal_i[35:4];
+                prior_clip_notes<=clip_notes;
+                held_bad<=terminal_i[3:0]!=0 || poisoned || (score_match && !score_good);
+                held_file_last<=chunk_file_last_i;
+            end
+        always @(posedge clk_i or negedge reset_ni)
+            if(!reset_ni)pending<=0;
+            else if(!link_ready_i || cancel_i || panic_i)pending<=0;
+            else pending<=terminal_match;
+        assign seal_pending=pending;
+        assign seal_apply=pending;
+        assign seal_bad=held_bad || held_count!=32'(clip_notes);
+        assign seal_file_last=held_file_last;
+        assign seal_empty=note_count==0;
+        // Identity cannot change in COLLECT while this slot blocks ingress.
+        // Successful status is zero; failures use the prior-count descriptor.
+        // Avoid a second resettable or reset-free 128-bit identity copy.
+        assign seal_completion={identity,held_count,4'd0};
+        assign seal_failure={identity,32'(prior_clip_notes),4'd14};
+    end else begin:g_terminal_direct
+        assign seal_pending=1'b0;
+        assign seal_apply=terminal_match;
+        assign seal_bad=terminal_i[3:0]!=0 || poisoned || (score_match && !score_good) ||
+                        terminal_i[35:4]!=32'(clip_notes_after);
+        assign seal_file_last=chunk_file_last_i;
+        assign seal_empty=note_count_after==0;
+        assign seal_completion=terminal_i;
+        assign seal_failure={identity,32'(clip_notes),4'd14};
+    end endgenerate
     wire note_ready;
     wire publish=reset_ni && link_ready_i && !cancel_i && !panic_i && state==PUBLISH && cursor<note_count;
     wire publish_fire=push_score_valid_o && push_score_ready_i;
@@ -93,17 +137,16 @@ module workstation_task3_score_commit_m #(
                     if(!score_good)begin poisoned<=1;failed_o<=1;failure_code_o<=2;end
                     else begin note_count<=note_count+1'b1;clip_notes<=clip_notes+1'b1;end
                 end
-                if(terminal_match)begin
+                if(seal_apply)begin
                     completion_valid_o<=1;
-                    if(terminal_i[3:0]!=0 || poisoned || (score_match && !score_good) ||
-                        terminal_i[35:4]!=32'(clip_notes_after))begin
-                        completion_o<={identity,32'(clip_notes),4'd14};state<=IDLE;note_count<=0;
+                    if(seal_bad)begin
+                        completion_o<=seal_failure;state<=IDLE;note_count<=0;
                         failed_o<=1;failure_code_o<=3;analysis_done_o<=0;
                     end else begin
-                        completion_o<=terminal_i;
-                        if(chunk_file_last_i)begin
+                        completion_o<=seal_completion;
+                        if(seal_file_last)begin
                             cursor<=0;
-                            if(note_count_after==0)begin state<=DONE;analysis_done_o<=1;end
+                            if(seal_empty)begin state<=DONE;analysis_done_o<=1;end
                             else state<=PUBLISH;
                         end else state<=IDLE;
                     end

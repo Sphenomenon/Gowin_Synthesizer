@@ -155,7 +155,8 @@ class ActualMidiRelease(unittest.TestCase):
         for label, patch in (
             ('unknown provider', dict(selected_provider='unreviewed')),
             ('opposite role', dict(selected_provider='rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv')),
-            ('wrong root alias', dict(mapped_common_root_name='reset_n')),
+            ('wrong root alias', dict(mapped_common_root_name=
+                'terminal_ready' if self.root['mapped_common_root_name']=='reset_n' else 'reset_n')),
             ('inverted root', dict(common_root_output_polarity=0)),
             ('forged source binding', dict(source_sha256={})),
         ):

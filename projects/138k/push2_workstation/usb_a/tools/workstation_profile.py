@@ -339,6 +339,31 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision4')
 
 
+# Explicit runtime change: one pending score terminal separates its identity
+# check from count validation. W wire/recording/runtime configuration is stable.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v5'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v5'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v4']
+    _configuration=dict(_parent['configuration'])
+    if _role=='m':
+        from tools.workstation_task3_m_paired_profile import TERMINAL_POLICY
+        _configuration['m_score_terminal_policy']=TERMINAL_POLICY
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=5,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v5.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision5')
+
+# Source-only audit checkpoint. Runtime bytes and configuration stay at v5;
+# its already synthesized candidate and original source descriptor stay sealed.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v6'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v6'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v5'],
+        revision=6,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v6.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision6')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
