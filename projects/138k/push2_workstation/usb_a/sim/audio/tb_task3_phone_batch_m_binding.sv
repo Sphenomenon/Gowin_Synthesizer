@@ -122,6 +122,11 @@ module tb_task3_phone_batch_m_binding;
         fixture_address=12'h000;fixture_write=0;fixture_valid=1;
         begin integer age;age=0;#1;while(!task3_m_phone_ready)begin clocks(1);age++;if(age>100)$fatal(1,"stale completion timeout");end end
         fixture_valid=0;fixture_live=0;#1;
+`ifdef WORKSTATION_TASK3_PHONE_SOURCE_REGISTER
+        check(u_task3_m_pcm_commands.reset_n===1'b1,"source register holds until PCLK");
+        @(posedge clk_50m);#1;
+        check(task3_m_phone_live_source===1'b0,"lease revoked at first source edge");
+`endif
         check(u_task3_m_pcm_commands.reset_n===!TASK3_PHONE_BATCH,"lease-loss observer reset");
         clocks(15);
         check(u_managed.runtime.cpu_pcm.owner.reset_ni===1'b1,"lease loss keeps owner root reset released");
@@ -142,6 +147,28 @@ module tb_task3_phone_batch_m_binding;
         stage_key(10);transfer(1,12'h040,1,0,value);
         check(u_managed.runtime.cpu_pcm.owner.last_stream==10,"fresh stream after reconnect");
         check(u_managed.runtime.cpu_pcm.owner.command_id==2,"stale completion never replays command");
+`ifdef WORKSTATION_TASK3_PHONE_SOURCE_REGISTER
+        // Minimum one-source-edge revocation, at four offsets relative to the
+        // independently running compute clock. Reset must last a complete
+        // source period even when the raw lease returns at the next negedge.
+        for(integer phase=0;phase<4;phase=phase+1)begin
+            @(negedge clk_50m);#(1+phase*2);fixture_live=0;#1;
+            check(task3_m_phone_live_source===1'b1,"no asynchronous source-register change");
+            @(posedge clk_50m);#1;
+            check(!task3_m_phone_live_source && !u_task3_m_pcm_commands.reset_n,"bounded observer cancellation");
+            check(!task3_m_pcm_bus_ready,"no old completion during cancellation");
+            @(negedge clk_50m);fixture_live=1;
+            @(posedge clk_50m);#1;
+            check(task3_m_phone_live_source && !task3_m_pcm_bus_ready,"reconnect requires local mailbox release");
+            clocks(15);
+            check(u_managed.runtime.cpu_pcm.owner.reset_ni,"minimum pulse keeps real owner reset released");
+            check(u_managed.runtime.cpu_pcm.owner.last_stream==10 &&
+                  u_managed.runtime.cpu_pcm.owner.command_id==2,"minimum pulse preserves retired identity without replay");
+        end
+        // Root assertion remains asynchronous and clears both new/old stages.
+        #1;runtime_common_reset_n=0;#1;
+        check(!task3_m_phone_live_source && task3_m_owner_live_sync==0,"root reset clears all lease stages");
+`endif
         $display("PASS phone batch M binding batch=%0d checks=%0d",TASK3_PHONE_BATCH,checks);$finish;
     end
     initial begin #100000;$fatal(1,"binding watchdog");end

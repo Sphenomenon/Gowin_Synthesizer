@@ -47,6 +47,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project', type=Path, required=True, help='explicit prepared paired M Prj1')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--source-register', action='store_true', help='also exercise explicit new source-clock composition')
     args = parser.parse_args()
     project, output = args.project.resolve(), args.output.resolve()
     if output.is_relative_to(ROOT.parents[3]) or output.is_relative_to(project):
@@ -115,9 +116,10 @@ def main():
         report['Icarus_adaptation']=dict(source=CONTROLLED, before_sha256=hashlib.sha256(original).hexdigest(),
             after_sha256=sha(stage/CONTROLLED), only_same_scope_declaration_reorder=True)
 
-        def exercise(label, batch, expected_pass):
+        def exercise(label, batch, expected_pass, source_registered=False):
             binary=output/(label+'.vvp')
             argv=['iverilog','-i','-g2012','-I.','-DWORKSTATION_TASK3_PHONE_WINDOW_BLOCK']
+            if source_registered:argv.append('-DWORKSTATION_TASK3_PHONE_SOURCE_REGISTER')
             if batch:argv.append('-DWORKSTATION_TASK3_PHONE_BATCH')
             result=invoke(label+'_compile', argv+['-s','tb_task3_phone_batch_m_binding','-o',str(binary),*SOURCES,*prepared])
             if result.returncode:raise ValueError('binding compilation failed: '+label)
@@ -179,6 +181,23 @@ def main():
             has_snapshot="defparamu_managed.PCM_SNAPSHOT_ENABLE=1'b1;" in ''.join(result.stdout.split())
             if has_snapshot!=batch:raise ValueError('default-off snapshot selection failed: '+label)
             report['default_off'].append(dict(provider=provider,batch_selected=batch,macro_leak=False))
+        if args.source_register:
+            from tools import workstation_task3_m_phone_lease_source as lease
+            path=stage/BOARD;parent=path.read_text();selected=lease.apply(parent)
+            path.write_text(selected)
+            (stage/CONTROLLED).write_text(adapted)
+            checks['registered_source_batch']=exercise('registered_source_batch',True,True,True)
+            for name,old,new in [
+                ('source_never_revokes','task3_m_phone_live_source<=task3_m_phone_live;','task3_m_phone_live_source<=1\'b1;'),
+                ('observer_bypasses_source','(!TASK3_PHONE_BATCH || task3_m_phone_live_source)','(!TASK3_PHONE_BATCH || task3_m_phone_live)'),
+                ('source_wrong_clock','always @(posedge clk_50m or negedge runtime_common_reset_n)\n        if(!runtime_common_reset_n)task3_m_phone_live_source',
+                 'always @(posedge audio_clk or negedge runtime_common_reset_n)\n        if(!runtime_common_reset_n)task3_m_phone_live_source')]:
+                if selected.count(old)!=1:raise ValueError('registered mutant anchor drift: '+name)
+                path.write_text(selected.replace(old,new,1))
+                exercise(name,True,False,True)
+                report['mutations'].append(dict(name=name,rejected=True))
+            path.write_text(parent)
+            (stage/CONTROLLED).write_bytes(original)
         report['checks']=checks
         report['source_unchanged']=all(sha(Path(v['source']))==v['sha256'] for v in tracked.values())
         report['passed']=report['source_unchanged'] and checks['new_batch']>=40 and checks['legacy_window']>=30

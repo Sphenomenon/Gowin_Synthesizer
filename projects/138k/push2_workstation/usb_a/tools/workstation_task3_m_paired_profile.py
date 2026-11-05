@@ -64,6 +64,8 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     batch=configuration.get('phone_batch_policy')
     sync=configuration.get('m_endpoint_storage_policy')
     terminal=configuration.get('m_score_terminal_policy')
+    from tools import workstation_task3_m_phone_lease_source as lease_source
+    registered_lease=lease_source.configured(configuration)
     selected_sync=provider==SYNC_PROVIDER
     if (sync==SYNC_POLICY)!=selected_sync or sync not in (None,SYNC_POLICY):
         raise ValueError('M synchronous storage requires its explicit provider and policy')
@@ -86,7 +88,12 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     hashes={}
     for relative in files:
         source=(root/relative).read_bytes();selected=(stage/relative).read_bytes()
-        if source!=selected:raise ValueError('M phone batch maintained input differs: '+relative)
+        compared=selected
+        if relative==BOARD and registered_lease:
+            compared=lease_source.restore(selected.decode()).encode()
+            if digest(source)!=lease_source.PARENT_SHA256:
+                source=lease_source.restore(source.decode()).encode()
+        if source!=compared:raise ValueError('M phone batch maintained input differs: '+relative)
         hashes[relative]=digest(selected)
     def compact(text):return ''.join(re.sub(r'//[^\n]*|/\*.*?\*/','',text,flags=re.S).split())
     def exact(text,anchor,label):
@@ -126,6 +133,7 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     matches=re.findall(r'\bmodule\s+workstation_custom_138k_top\b.*?\bendmodule\b',prepared.stdout,re.S)
     if len(matches)!=1:raise ValueError('M phone batch actual top must be unique')
     top=matches[0]
+    lease=lease_source.selection(stage,configuration,top)
     from tools.workstation_task3_identity_compare import selection as identity_selection
     identity=identity_selection(stage,configuration,top,sync_selected=selected_sync)
     from tools.workstation_task3_phone_identity_compare import selection as phone_identity_selection
@@ -146,7 +154,7 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
         ("localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b1;",'selected window policy'),
         ("defparam u_managed.PCM_SNAPSHOT_ENABLE=1'b1;",'exact forward snapshot binding'),
         ("workstation_task3_m_bus_endpoint #(.BLOCK_PCM(1'b1),.PHONE_WINDOW_BLOCK(TASK3_PHONE_WINDOW_BLOCK),.PHONE_BATCH(TASK3_PHONE_BATCH)) u_task3_m_endpoint(",'actual endpoint binding'),
-        ('gw138k_apb_cdc u_task3_m_pcm_commands(\n.reset_n(runtime_common_reset_n && (!TASK3_PHONE_BATCH || task3_m_phone_live)),','observer-only lease reset'),
+        ('gw138k_apb_cdc u_task3_m_pcm_commands(\n.reset_n(runtime_common_reset_n && (!TASK3_PHONE_BATCH || '+('task3_m_phone_live_source' if registered_lease else 'task3_m_phone_live')+')),','observer-only lease reset'),
         ('.remote_pcm_owner_ready_i(task3_m_pcm_reset && task3_m_owner_live_sync[2]),','owner observer readiness'),
         ('.REMOTE_PCM_COMMAND_ENABLE(1)','same real remote owner')]:
         exact(top,anchor,label)
@@ -179,6 +187,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
         observer_APB_reset='runtime_common_reset_n && (!TASK3_PHONE_BATCH || task3_m_phone_live)',
         actual_endpoint_PHONE_BATCH=True,atomic_owner_snapshot=True,default_enabled=False,
         physical_CDC_accepted=False,routed_timing_verified=False,hardware_accepted=False)
+    if lease is not None:
+        result['lease_source']=lease
+        result['observer_APB_reset']='runtime_common_reset_n && (!TASK3_PHONE_BATCH || task3_m_phone_live_source)'
     if selected_sync:
         result['local_storage']=dict(policy=SYNC_POLICY,score_capacity_notes=2048,
             tap_capacity_frames=256,synchronous_read=True,held_prefetch=True,

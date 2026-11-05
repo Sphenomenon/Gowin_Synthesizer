@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, Graph
 from tools.workstation_task3_tf_direct import selected_direct_top
+from tools import workstation_task3_m_phone_lease_source as lease_source
 
 POLICY = 'task3-direct-real-root-startup-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'
@@ -63,6 +64,7 @@ PHONE_GROUPED_ROOT_SOURCES=dict(GROUPED_ROOT_SOURCES,**{
     'rtl/workstation/workstation_task3_m_bus_endpoint.sv': 'cd60fb213960963cfd15343660796006ae5f70782ddc681e2f3cc30a4f2ab77d',
     'rtl/workstation/workstation_task3_m_paired_board.svh': '541d91d67db0944c0ac4ad0979d4e1845cc297dbcbc88a2a2868b525346c4c0a',
 })
+LEASE_SOURCE_ROOT_SOURCES=dict(PHONE_GROUPED_ROOT_SOURCES,**{lease_source.BOARD:lease_source.SELECTED_SHA256})
 W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
@@ -125,10 +127,12 @@ def source_binding(stage):
     mapping = {}
     if provider == M_SYNC_PROVIDER:
         artifact = json.loads((stage.parent.parent / 'workstation_profile.json').read_text())
-        phone_grouped_profile=artifact.get('profile') in PHONE_GROUPED_ROOT_PROFILES
+        lease_profile=artifact.get('profile')==lease_source.PROFILE
+        phone_grouped_profile=artifact.get('profile') in PHONE_GROUPED_ROOT_PROFILES or lease_profile
         grouped_profile=artifact.get('profile')==GROUPED_ROOT_PROFILE or phone_grouped_profile
         terminal_profile = artifact.get('profile') in TERMINAL_ROOT_PROFILES or grouped_profile
         configuration = artifact.get('configuration', {})
+        require(lease_source.configured(configuration)==lease_profile,'source-clock lease profile/policy mismatch')
         from tools.workstation_task3_identity_compare import POLICY as IDENTITY_POLICY
         require(configuration.get('m_identity_compare_policy')==
                 (IDENTITY_POLICY if grouped_profile else None),'identity root profile/policy mismatch')
@@ -143,7 +147,7 @@ def source_binding(stage):
             require(configuration.get('demo_role') == 'M' and
                     configuration.get('m_endpoint_storage_policy') == 'sync_score_and_final_tap_prefetch_v1',
                     'terminal root role/storage policy mismatch')
-            reviewed=(PHONE_GROUPED_ROOT_SOURCES if phone_grouped_profile else
+            reviewed=(LEASE_SOURCE_ROOT_SOURCES if lease_profile else PHONE_GROUPED_ROOT_SOURCES if phone_grouped_profile else
                       GROUPED_ROOT_SOURCES if grouped_profile else TERMINAL_ROOT_SOURCES)
             for relative in reviewed:
                 require(relative.endswith('.svh') or selected.count(relative) == 1,
@@ -151,8 +155,9 @@ def source_binding(stage):
             includes.update(reviewed)
             if phone_grouped_profile:
                 phone_identity.restore_endpoint((stage/phone_identity.ENDPOINT).read_text())
-                phone_identity.restore_board((stage/phone_identity.BOARD).read_text())
-            mapping = dict(root_mapping_variant=PHONE_GROUPED_ROOT_VARIANT if phone_grouped_profile else
+                board=(stage/phone_identity.BOARD).read_text()
+                phone_identity.restore_board(lease_source.restore(board) if lease_profile else board)
+            mapping = dict(root_mapping_variant=lease_source.ROOT_VARIANT if lease_profile else PHONE_GROUPED_ROOT_VARIANT if phone_grouped_profile else
                            GROUPED_ROOT_VARIANT if grouped_profile else TERMINAL_ROOT_VARIANT,
                            root_profile=artifact['profile'])
     worker = expected_role == 'W'
@@ -223,13 +228,15 @@ def publisher_policy(root):
     if variant is not None:
         grouped=variant==GROUPED_ROOT_VARIANT
         phone_grouped=variant==PHONE_GROUPED_ROOT_VARIANT
+        registered=variant==lease_source.ROOT_VARIANT
         require(provider == M_SYNC_PROVIDER and
-                ((phone_grouped and root.get('root_profile') in PHONE_GROUPED_ROOT_PROFILES) or
+                ((registered and root.get('root_profile')==lease_source.PROFILE) or
+                 (phone_grouped and root.get('root_profile') in PHONE_GROUPED_ROOT_PROFILES) or
                  (grouped and root.get('root_profile')==GROUPED_ROOT_PROFILE) or
                  (variant==TERMINAL_ROOT_VARIANT and root.get('root_profile') in TERMINAL_ROOT_PROFILES)),
                 'unreviewed terminal root mapping/profile')
         alias = 'reset_n'
-        includes.update(PHONE_GROUPED_ROOT_SOURCES if phone_grouped else
+        includes.update(LEASE_SOURCE_ROOT_SOURCES if registered else PHONE_GROUPED_ROOT_SOURCES if phone_grouped else
                         GROUPED_ROOT_SOURCES if grouped else TERMINAL_ROOT_SOURCES)
     else:
         require('root_profile' not in root, 'root profile without mapping policy')

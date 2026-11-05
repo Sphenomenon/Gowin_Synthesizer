@@ -56,6 +56,10 @@ def selection(stage,configuration,selected_top,*,sync_selected):
     require(selected_top.count(BINDING.strip())==1,'actual phone group8 endpoint binding changed')
     stage=Path(stage)
     endpoint=(stage/ENDPOINT).read_text();board=(stage/BOARD).read_text()
+    if configuration.get('m_phone_lease_source_policy') is not None:
+        from tools.workstation_task3_m_phone_lease_source import configured,restore
+        require(configured(configuration),'unselected source-clock lease')
+        board=restore(board)
     restore_endpoint(endpoint);restore_board(board)
     return dict(policy=policy,compared_identity_bits=96,group_bits=8,groups=12,
         extra_cycles=0,new_state_bits=0,same_cycle_revocation=True,

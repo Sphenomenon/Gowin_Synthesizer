@@ -153,6 +153,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if paired_role is not None:
         from tools import workstation_task3_paired_board as paired_board
         paired_helper=paired_board.role_helper(paired_role)
+    lease_source_policy = None if profile is None else profile['configuration'].get('m_phone_lease_source_policy')
+    if lease_source_policy is not None:
+        from tools import workstation_task3_m_phone_lease_source as lease_source
+        if paired_role != 'M' or not lease_source.configured(profile['configuration']):
+            raise ValueError('phone lease source register requires paired M')
+        profile_dependencies += (lease_source.TOOL,)
     if tf_direct:
         from tools.workstation_task3_tf_direct import SOURCES as DIRECT_SOURCES, RETIRED_SOURCES, UNSELECTED_WORKER_SOURCES, DEPENDENCIES as DIRECT_DEPENDENCIES, POLICY as DIRECT_POLICY
         from tools.workstation_task3_tf_storage_selection import configuration_selection
@@ -413,6 +419,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         top_path=stage / paired_board.TOP
         top_path.write_text(paired_helper.apply_top(root,top_path.read_text()))
         task3_paired_selection=paired_board.prepare_top(root,stage,paired_role)
+        if lease_source_policy is not None:
+            lease_source.prepare(stage,profile['configuration'])
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')

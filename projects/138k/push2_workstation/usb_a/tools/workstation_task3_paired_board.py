@@ -19,6 +19,7 @@ SOURCES=('rtl/workstation/workstation_task3_paired_link.sv',
  'rtl/workstation/workstation_task3_lcd_transport.sv','rtl/services/workstation_task3_pair_config_service.sv',
  'rtl/workstation/workstation_task3_pcm_block_tx.sv','rtl/workstation/workstation_task3_pcm_block_rx.sv')
 DEPENDENCIES=('tools/workstation_task3_paired_board.py',BOARD,PINPLAN,CST,
+ 'tools/workstation_task3_m_phone_lease_source.py',
  'boards/custom_138k/ae350.cst','boards/custom_138k/clocks.json',
  'boards/custom_138k/usb2_cdc.json','boards/custom_138k/input_cdc.json',
  'tools/workstation_task3_lcd_cdc_audit.py',

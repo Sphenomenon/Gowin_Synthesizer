@@ -11,6 +11,7 @@ import re
 import xml.etree.ElementTree as ET
 
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, COMB, Graph
+from tools import workstation_task3_m_phone_lease_source as lease_source
 from tools.workstation_task3_m_paired_profile import (
     BATCH_PROVIDER, SYNC_PROVIDER, SYNC_POLICY, TERMINAL_POLICY, selected_batch_source_evidence,
 )
@@ -63,7 +64,9 @@ PHONE_GROUPED_SOURCE_SHA256=dict(GROUPED_SOURCE_SHA256,**{
     'rtl/workstation/workstation_task3_m_bus_endpoint.sv': 'cd60fb213960963cfd15343660796006ae5f70782ddc681e2f3cc30a4f2ab77d',
     'rtl/workstation/workstation_task3_m_paired_board.svh': '541d91d67db0944c0ac4ad0979d4e1845cc297dbcbc88a2a2868b525346c4c0a',
 })
+LEASE_SOURCE_SHA256=dict(PHONE_GROUPED_SOURCE_SHA256,**{lease_source.BOARD:lease_source.SELECTED_SHA256})
 SYNC_PROFILES = (
+    lease_source.PROFILE,
     'custom138k-workstation-task3-m-paired-sync-storage-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v2',
@@ -99,7 +102,8 @@ def source_evidence(stage):
     require(profile.get('profile') in names, 'exact M batch profile artifact required')
     require((profile['configuration'].get('m_endpoint_storage_policy') == SYNC_POLICY)
             is (provider == SYNC_PROVIDER), 'M mapped storage policy/provider mismatch')
-    phone_grouped_profile=profile.get('profile') in PHONE_GROUPED_PROFILES
+    registered_lease=profile.get('profile')==lease_source.PROFILE
+    phone_grouped_profile=profile.get('profile') in PHONE_GROUPED_PROFILES or registered_lease
     grouped_profile=profile.get('profile')==GROUPED_PROFILE or phone_grouped_profile
     terminal_profile=profile.get('profile') in TERMINAL_PROFILES or grouped_profile
     terminal_policy=profile['configuration'].get('m_score_terminal_policy')
@@ -112,7 +116,7 @@ def source_evidence(stage):
     require(profile['configuration'].get('m_phone_identity_compare_policy')==
             (PHONE_IDENTITY_POLICY if phone_grouped_profile else None),
             'M mapped phone identity policy/profile mismatch')
-    sources = (PHONE_GROUPED_SOURCE_SHA256 if phone_grouped_profile else
+    sources = (LEASE_SOURCE_SHA256 if registered_lease else PHONE_GROUPED_SOURCE_SHA256 if phone_grouped_profile else
                GROUPED_SOURCE_SHA256 if grouped_profile else TERMINAL_SOURCE_SHA256 if terminal_profile else
                SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256)
     selected = selected_batch_source_evidence(
@@ -308,6 +312,13 @@ def audit(n, *, stage):
     proofs.append(prove(g, 'M batch/lease reset is actual root only', [batch_reset, root],
                         lambda b, v: v[0] == b.invert(v[1])))
     live = n.canonical('', 'task3_m_phone_live')
+    registered_lease=source['root_source'].get('root_profile')==lease_source.PROFILE
+    if registered_lease:
+        source_ff=group('', 'task3_m_phone_live_source')
+        ff(source_ff,'clk_50m',batch_reset)
+        require(n.pin(source_ff[0],'D')==live and n.pin(source_ff[0],'CE') in g.high,
+                'source lease D/CE changed')
+        live=q(source_ff[0])
     live_sync = group('', 'task3_m_owner_live_sync', 3)
     ff(live_sync, 'audio_clk', batch_reset)
     for bit, path in enumerate(live_sync):
@@ -316,7 +327,22 @@ def audit(n, *, stage):
 
     releases = {stem: group(MAILBOX, stem, 3) for stem in ('p_release', 'a_release')}
     mailbox_clear = n.pin(releases['p_release'][0], 'CLEAR')
-    proofs.append(prove_observer_assertion(g, mailbox_clear, root, live))
+    if registered_lease:
+        proofs.append(prove(g,'mailbox assertion = !(actual root AND source lease Q)',
+                            [mailbox_clear,root,live],
+                            lambda b,v:v[0]==b.invert(b.both(v[1],v[2]))))
+        from tools.workstation_recording_phase1_cdc import complete_closure
+        closure=complete_closure(n,g,source_ff)
+        wanted={live_sync[0]+'/D':'audio_clk'}
+        wanted.update({p+'/CLEAR':('clk_50m' if stem=='p_release' else 'audio_clk')
+                       for stem,paths in releases.items() for p in paths})
+        require(closure['ff_endpoints']==wanted and not closure['primitive_endpoints'] and
+                not closure['top_output_endpoints'],'source lease complete consumer inventory changed')
+        proofs.append(dict(contract='source lease complete fanout is first audio D and six observer CLEARs',
+                           source_register=source_ff[0],source_Q=live,exact=True,
+                           ff_endpoints=wanted,primitive_endpoints=0,top_output_endpoints=0))
+    else:
+        proofs.append(prove_observer_assertion(g, mailbox_clear, root, live))
     for stem, paths in releases.items():
         ff(paths, 'clk_50m' if stem == 'p_release' else 'audio_clk', mailbox_clear)
         for bit, path in enumerate(paths):

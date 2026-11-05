@@ -494,6 +494,20 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision16')
 
 
+# Source-clock phone lease observer; historical v16 composition stays sealed.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v17'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v17'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v16']
+    _configuration=dict(_parent['configuration'])
+    if _role=='m':
+        from tools.workstation_task3_m_phone_lease_source import KEY as _lease_key,POLICY as _lease_policy
+        _configuration[_lease_key]=_lease_policy
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=17,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v17.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision17')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -945,6 +959,13 @@ def _artifact(root, output, metadata, profile):
                     parent_top!=(root/source).read_text()):
                 raise ValueError('paired top exact inverse differs from maintained source')
             staged_hash=metadata['task3_paired']['selected_top_sha256']
+        if paired_role=='M' and target=='rtl/workstation/workstation_task3_m_paired_board.svh' and profile['configuration'].get('m_phone_lease_source_policy') is not None:
+            from tools.workstation_task3_m_phone_lease_source import configured,restore,digest
+            if (not configured(profile['configuration']) or
+                    restore((stage/target).read_text())!=(root/source).read_text() or
+                    digest((root/source).read_text())!=metadata['copied_sources_sha256'][source]):
+                raise ValueError('phone lease board exact inverse differs from maintained source')
+            staged_hash=sha(stage/target)
         if (metadata['copied_sources_sha256'][source] != profile['source_sha256'][prefix + source] or
                 sha(checked_path(stage, target)) != staged_hash):
             raise ValueError('workstation profile copied source drift: ' + source)
