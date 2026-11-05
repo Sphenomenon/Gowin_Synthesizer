@@ -318,6 +318,16 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v2.json',
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision2')
 
+# Audit-only source changes get new checkpoints as well: retain the sealed v2
+# descriptors and hardware inputs rather than refreshing historical locks.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v3'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v3'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v2'],
+        revision=3,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v3.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision3')
+
 
 def specification(name):
     if name not in PROFILE_REGISTRY:

@@ -15,6 +15,7 @@ sys.path.insert(0,str(ROOT))
 from tools import workstation_task3_phone_batch_mapped_m as mapped
 from tools.workstation_native_protocol_audit import protocol_netlist
 from tools.workstation_runtime_pcm_cdc import Graph
+from tools.workstation_task3_root_reset_audit import audit_root_startup, validate_root_publisher
 
 
 def sha(path):
@@ -31,11 +32,14 @@ class ActualMappedM(unittest.TestCase):
         cls.vg=cls.stage/'impl/gwsynthesis/custom_138k_integration.vg'
         cls.n=protocol_netlist(cls.vg.read_text(),mapping='synthesis')
         source=mapped.source_evidence(cls.stage)
+        cls.reviewed_sources=source['reviewed_source_sha256']
+        cls.root_sources=source['root_source']['source_sha256']
         cls.before={str(p):sha(p) for p in (cls.vg,Path(__file__),
             ROOT/'tools/workstation_task3_phone_batch_mapped_m.py',
+            ROOT/'tools/workstation_task3_root_reset_audit.py',
             cls.stage.parent.parent/'workstation_profile.json',
             *(cls.stage/p for p in source['root_source']['source_sha256']),
-            *(cls.stage/p for p in mapped.SOURCE_SHA256))}
+            *(cls.stage/p for p in cls.reviewed_sources))}
         cls.evidence=dict(positive=None,rejections=[],inputs_mutated=False,
             complete_APB_protocol_verified=False,whole_executor_state_machine_verified=False,
             physical_CDC_accepted=False,routed_timing_verified=False,hardware_tested=False)
@@ -112,6 +116,7 @@ class ActualMappedM(unittest.TestCase):
             ('returned response disconnected',returned,'ports','D',"1'b0"),
             ('response capture enable',response,'ports','CE',"1'b0"),
             ('request toggle no command',toggle,'ports','D',n.pin(toggle,'Q')),
+            ('request toggle disabled',toggle,'ports','CE',"1'b0"),
             ('request toggle INIT',toggle,'parameters','INIT',"1'b1"),
             ('request synchronizer bypass',sync,'ports','D',"1'b0"),
             ('live chain clock',live,'ports','CLK',"1'b0"),
@@ -141,7 +146,7 @@ class ActualMappedM(unittest.TestCase):
             shutil.copytree(self.stage,stage,ignore=shutil.ignore_patterns('impl'))
             shutil.copyfile(self.stage.parent.parent/'workstation_profile.json',output/'workstation_profile.json')
             mapped.source_evidence(stage)
-            for relative in mapped.SOURCE_SHA256:
+            for relative in set(self.reviewed_sources) | (set(self.root_sources)-{'Prj1.gprj'}):
                 p=stage/relative
                 original=p.read_bytes()
                 for missing in (False,True):
@@ -150,6 +155,61 @@ class ActualMappedM(unittest.TestCase):
                     self.rejected(('missing ' if missing else 'changed ')+relative,
                         lambda:mapped.source_evidence(stage))
                     p.write_bytes(original)
+
+    def test_04_actual_root_state_and_publisher(self):
+        n,g=self.n,Graph(self.n)
+        root=audit_root_startup(n,stage=self.stage)
+        self.assertEqual(root['actual_state_bits'],35)
+        self.assertEqual(root['state_assignment_count'],1<<35)
+        self.assertEqual(root['root_q'],n.pin(g.register('u_reset','started'),'Q'))
+        self.assertEqual(root['mapped_common_root_name'],'terminal_ready')
+        self.assertTrue(root['batch_mapped_structure']['mapped_structure_verified'])
+        self.evidence['root']=root
+        started=g.register('u_reset','started')
+        sync=g.group('u_reset','sync_ff',2)
+        count=g.group('u_reset','startup_count',32)
+        for label,p,section,key,value in [
+            ('root INIT',started,'parameters','INIT',"1'b1"),
+            ('root Q disconnected',started,'ports','Q','audit_disconnected_root'),
+            ('root clock',started,'ports','CLK',"1'b0"),
+            ('root disabled',started,'ports','CE',"1'b0"),
+            ('root reset removed',started,'ports','RESET',"1'b0"),
+            ('root sync bypass',sync[1],'ports','D',"1'b1"),
+            ('root counter INIT',count[31],'parameters','INIT',"1'b1"),
+            ('root counter D',count[0],'ports','D',"1'b0"),
+            ('root counter CE',count[31],'ports','CE',"1'b0"),
+            ('root counter reset',count[23],'ports','RESET',"1'b0"),
+        ]:
+            original=copy.deepcopy(n.cells[p])
+            try:
+                n.cells[p][section][key]=value
+                self.rejected(label,lambda:audit_root_startup(n,stage=self.stage))
+            finally:n.cells[p]=original
+        for label,patch in [
+            ('unknown root provider',dict(selected_provider='unreviewed')),
+            ('opposite-role root',dict(selected_provider='rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv')),
+            ('wrong root alias',dict(mapped_common_root_name='reset_n')),
+            ('inverted root',dict(common_root_output_polarity=0)),
+            ('forged root sources',dict(source_sha256={})),
+        ]:
+            self.rejected(label,lambda patch=patch:
+                validate_root_publisher(n,Graph(n),dict(root,**patch)))
+
+    def test_05_storage_policy_cannot_borrow_a_provider(self):
+        with tempfile.TemporaryDirectory(prefix='task3-M-mapped-policy-fixture-') as temp:
+            output=Path(temp)/'fixture';stage=output/'workstation/Prj1'
+            shutil.copytree(self.stage,stage,ignore=shutil.ignore_patterns('impl'))
+            artifact=output/'workstation_profile.json'
+            original=(self.stage.parent.parent/'workstation_profile.json').read_text()
+            for label,change in [
+                ('wrong-role profile',lambda p:p.update(profile='custom138k-workstation-task3-w-paired-checkpoint-v2')),
+                ('unreviewed profile',lambda p:p.update(profile='unreviewed')),
+                ('mismatched storage policy',lambda p:p['configuration'].update(m_endpoint_storage_policy=
+                    None if p['configuration'].get('m_endpoint_storage_policy') else mapped.SYNC_POLICY)),
+            ]:
+                profile=json.loads(original);change(profile)
+                artifact.write_text(json.dumps(profile))
+                self.rejected(label,lambda:mapped.source_evidence(stage))
 
 
 if __name__=='__main__':

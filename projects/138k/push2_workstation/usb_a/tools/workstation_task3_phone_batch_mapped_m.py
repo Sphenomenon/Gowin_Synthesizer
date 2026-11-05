@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 
 from tools.workstation_runtime_pcm_cdc import BooleanDiagram, COMB, Graph
 from tools.workstation_task3_m_paired_profile import (
-    BATCH_PROVIDER, selected_batch_source_evidence,
+    BATCH_PROVIDER, SYNC_PROVIDER, SYNC_POLICY, selected_batch_source_evidence,
 )
 
 POLICY = 'task3_m_batch_mapped_command_snapshot_v1'
@@ -32,6 +32,21 @@ SOURCE_SHA256 = {
     'rtl/audio/workstation_ae350_pcm_owner.sv': '7d095570cb94978760b3038b0e31d48a7d070053533d591dc294d36a0b7b319a',
     'src/migration/gw138k_apb_cdc.sv': '99eddbe61b57756f50e97cf108099cdfaf7324b55178808ab4d403bebf9818b7',
 }
+# This is a separate exact source policy. The older batch inputs above remain
+# accepted only under their original providers/profiles and are not re-sealed.
+SYNC_SOURCE_SHA256 = dict(SOURCE_SHA256, **{
+    SYNC_PROVIDER: 'aaab25be165322ba25c1c08f22cefcad061c7ab0ba71bee704cf79deddafcc85',
+    'rtl/workstation/workstation_task3_m_bus_endpoint.sv': 'c42aa3b0158457e50dba9d2ae4eb21af09d4ab0b30aea235272424940181a779',
+    'rtl/workstation/workstation_task3_m_paired_board.svh': '3fbed8e7323bed00c36a98e9e71439546dbbb92686fe68ac94683883072c2e33',
+    'rtl/music/workstation_task3_score_commit_m.sv': '9bded8544f5e5eef7d7c6427967f99e60ec1a32826bedc510c926dfa97bbbe4c',
+    'rtl/workstation/workstation_task3_final_tap_export.sv': 'd7856615e4cfa2446f1a11e28c3348359ca76215bfd9c5e9d1b405f70eb8950c',
+})
+SYNC_PROFILES = (
+    'custom138k-workstation-task3-m-paired-sync-storage-v1',
+    'custom138k-workstation-task3-m-paired-checkpoint-v1',
+    'custom138k-workstation-task3-m-paired-checkpoint-v2',
+    'custom138k-workstation-task3-m-paired-checkpoint-v3',
+)
 
 
 def require(condition, message):
@@ -48,24 +63,28 @@ def source_evidence(stage):
     from tools.workstation_task3_root_reset_audit import source_binding
     stage = Path(stage)
     binding = source_binding(stage)
-    require(binding['selected_provider'] == BATCH_PROVIDER, 'exact M batch provider required')
+    provider = binding['selected_provider']
+    require(provider in (BATCH_PROVIDER, SYNC_PROVIDER), 'exact M batch provider required')
     artifact = stage.parent.parent / 'workstation_profile.json'
     profile = json.loads(artifact.read_text())
-    require(profile.get('profile') in (PROFILE,
+    names = SYNC_PROFILES if provider == SYNC_PROVIDER else (PROFILE,
             'custom138k-workstation-task3-m-paired-phone-batch-tf-v1',
-            'custom138k-workstation-task3-m-paired-phone-batch-reset-v1'),
-            'exact M batch profile artifact required')
+            'custom138k-workstation-task3-m-paired-phone-batch-reset-v1')
+    require(profile.get('profile') in names, 'exact M batch profile artifact required')
+    require((profile['configuration'].get('m_endpoint_storage_policy') == SYNC_POLICY)
+            is (provider == SYNC_PROVIDER), 'M mapped storage policy/provider mismatch')
+    sources = SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256
     selected = selected_batch_source_evidence(
-        stage, stage, profile['configuration'], BATCH_PROVIDER)
+        stage, stage, profile['configuration'], provider)
     require(selected is not None, 'snapshot parameter selection absent')
     enabled = [row.get('path') for row in ET.parse(stage / 'Prj1.gprj').find('FileList')
                if row.get('enable') == '1']
-    for relative, expected in SOURCE_SHA256.items():
+    for relative, expected in sources.items():
         require(sha(stage / relative) == expected, 'reviewed source identity changed: ' + relative)
         if not relative.endswith('.svh'):
             require(enabled.count(relative) == 1, 'reviewed source not uniquely selected: ' + relative)
     return dict(root_source=binding, snapshot_selection=selected,
-                reviewed_source_sha256=SOURCE_SHA256.copy(),
+                reviewed_source_sha256=sources.copy(),
                 profile_artifact_sha256=sha(artifact),
                 full_candidate_manifest_validation=False)
 
@@ -350,17 +369,36 @@ def audit(n, *, stage):
     acknowledge = g.register(MAILBOX, 'acknowledge_toggle')
     ff([request_toggle, *mailbox_state], 'clk_50m', common(held, 'CLEAR'))
     ff([acknowledge, g.register(MAILBOX, 'request_decoded')], 'audio_clk', common(local, 'CLEAR'))
-    require(n.pin(request_toggle, 'CE') in g.high and
-            n.pin(acknowledge, 'D') == q(req_sync[2]) and
+    require(n.pin(acknowledge, 'D') == q(req_sync[2]) and
             n.pin(acknowledge, 'CE') == common(response, 'CE'),
             'mailbox request/acknowledge toggle update changed')
     # The actual held-word CE is also the mapped toggle XOR input. Treat that
     # exact shared net as arbitrary: the local identity holds for either CE
     # value and does not require expanding upstream command arbitration.
-    proofs.append(g.equivalent('request toggle changes exactly with held command acceptance',
-                        [n.pin(request_toggle, 'D'), q(request_toggle), common(held, 'CE')],
-                        lambda v: v[0] == (v[1] ^ v[2]),
-                        cuts={q(request_toggle), common(held, 'CE')}))
+    if source['root_source']['selected_provider'] == SYNC_PROVIDER:
+        # The fresh sync VG maps XOR feedback into D/CE. Check the effective
+        # next Q including asynchronous clear, with the real held-word CE as
+        # an arbitrary independent input; no upstream arbitration is assumed.
+        clear = n.pin(request_toggle, 'CLEAR')
+        acceptance = common(held, 'CE')
+        bd = MappedDiagram([q(request_toggle), acceptance, clear])
+        actual = bd.choose(bd.net(g, n.pin(request_toggle, 'CE')),
+                           bd.net(g, n.pin(request_toggle, 'D')), bd.inputs[q(request_toggle)])
+        actual = bd.choose(bd.inputs[clear], 0, actual)
+        expected = bd.choose(bd.inputs[clear], 0,
+                             bd.different(bd.inputs[q(request_toggle)], bd.inputs[acceptance]))
+        require(actual == expected, 'request toggle reset-inclusive next-Q changed')
+        proofs.append(dict(contract='request toggle changes exactly with held command acceptance',
+                           reset_inclusive_next_q_exact=True, independent_inputs=list(bd.inputs),
+                           all_input_assignments=8, bdd_nodes=len(bd.nodes),
+                           mapped_D=n.pin(request_toggle, 'D'), mapped_CE=n.pin(request_toggle, 'CE'),
+                           asynchronous_assertion_bound_by_exact_FF_and_clear=True))
+    else:
+        require(n.pin(request_toggle, 'CE') in g.high, 'mailbox request toggle enable changed')
+        proofs.append(g.equivalent('request toggle changes exactly with held command acceptance',
+                            [n.pin(request_toggle, 'D'), q(request_toggle), common(held, 'CE')],
+                            lambda v: v[0] == (v[1] ^ v[2]),
+                            cuts={q(request_toggle), common(held, 'CE')}))
     proofs.append(prove(g, 'APB response capture waits for matching acknowledge',
                         [common(returned, 'CE'), q(mailbox_state[0]), q(mailbox_state[1]),
                          q(ack_sync[2]), q(g.register(MAILBOX, 'request_toggle'))],

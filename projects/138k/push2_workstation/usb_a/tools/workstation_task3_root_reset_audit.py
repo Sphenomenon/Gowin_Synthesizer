@@ -29,6 +29,8 @@ W_PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blo
 W_PHONE_PROVIDER_SHA256 = '9fe33e9ca0551b714882c5fee4018a791945cc80bfc131d8a16fd630111a3503'
 M_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'
 M_PHONE_BATCH_PROVIDER_SHA256 = 'a8b49bc23afa8eb0ee1424ec08ae88201143d7455d46c59043ddd6bc296fa56d'
+M_SYNC_PROVIDER = 'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'
+M_SYNC_PROVIDER_SHA256 = 'aaab25be165322ba25c1c08f22cefcad061c7ab0ba71bee704cf79deddafcc85'
 W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
@@ -53,6 +55,13 @@ PROVIDER_POLICIES = {
     # relabeling an older VG with these exact source wrappers must still fail.
     M_PHONE_BATCH_PROVIDER: (M_PHONE_BATCH_PROVIDER_SHA256, 'M', 'terminal_ready',
         {M_PHONE_PROVIDER: M_PHONE_PROVIDER_SHA256,
+         RUNTIME_PROVIDER: RUNTIME_PROVIDER_SHA256, HDMI_PROVIDER: HDMI_PROVIDER_SHA256}),
+    # Fresh sync-storage VG 3379e610fc580383... resolves the same positive
+    # started Q. Bind the complete wrapper/include chain and invoke the mapped
+    # batch proof; a familiar root alias alone never admits a new provider.
+    M_SYNC_PROVIDER: (M_SYNC_PROVIDER_SHA256, 'M', 'terminal_ready',
+        {M_PHONE_BATCH_PROVIDER: M_PHONE_BATCH_PROVIDER_SHA256,
+         M_PHONE_PROVIDER: M_PHONE_PROVIDER_SHA256,
          RUNTIME_PROVIDER: RUNTIME_PROVIDER_SHA256, HDMI_PROVIDER: HDMI_PROVIDER_SHA256}),
     W_PHONE_BATCH_PROVIDER: (W_PHONE_BATCH_PROVIDER_SHA256, 'W', 'reset_n',
         {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256, W_MEDIA_PROVIDER: W_MEDIA_PROVIDER_SHA256}),
@@ -210,7 +219,7 @@ def audit_selected_batch_structure(n, *, stage, source=None):
     """Dispatch only exact batch providers; old root policies stay unchanged."""
     source = source_binding(stage) if source is None else source
     provider = source['selected_provider']
-    if provider == M_PHONE_BATCH_PROVIDER:
+    if provider in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER):
         from tools.workstation_task3_phone_batch_mapped_m import audit
     elif provider == W_PHONE_BATCH_PROVIDER:
         from tools.workstation_task3_phone_batch_mapped_w import audit
