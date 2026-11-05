@@ -34,6 +34,9 @@ class CurrentSources(unittest.TestCase):
                 if role=='M' and name.endswith('-v5'):
                     from tools.workstation_task3_m_paired_profile import TERMINAL_POLICY
                     expected['m_score_terminal_policy']=TERMINAL_POLICY
+                if role=='M' and name.endswith('-v7'):
+                    from tools.workstation_task3_identity_compare import POLICY
+                    expected['m_identity_compare_policy']=POLICY
                 self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])

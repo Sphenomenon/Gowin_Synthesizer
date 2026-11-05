@@ -9,6 +9,7 @@ module workstation_task3_m_bus_endpoint #(
     parameter bit PHONE_WINDOW_BLOCK=1'b0,
     parameter bit PHONE_BATCH=1'b0,
     parameter bit SYNC_READ_STORAGE=1'b0,
+    parameter integer IDENTITY_COMPARE_GROUP_BITS=128,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -41,7 +42,25 @@ module workstation_task3_m_bus_endpoint #(
     wire [95:0] common={local_boot_i,session_i,generation_i};
     reg [127:0] configured_identity;
     reg [31:0] next_job;
-    wire new_identity=configured_identity!={local_boot_i,peer_boot_i,session_i,generation_i};
+    // TASK3 identity comparison begin. Group only this combinational guard;
+    // keep every identity bit and same-cycle revocation, without new state.
+    wire new_identity;
+    wire [127:0] current_identity={local_boot_i,peer_boot_i,session_i,generation_i};
+    generate if(IDENTITY_COMPARE_GROUP_BITS==128)begin:g_identity_direct
+        assign new_identity=configured_identity!=current_identity;
+    end else begin:g_identity_grouped
+        localparam integer GROUPS=128/IDENTITY_COMPARE_GROUP_BITS;
+        (* syn_keep=1 *) wire [GROUPS-1:0] changed;
+        for(genvar bit_group=0;bit_group<GROUPS;bit_group=bit_group+1)begin:g_word
+            assign changed[bit_group]=
+                configured_identity[bit_group*IDENTITY_COMPARE_GROUP_BITS+:IDENTITY_COMPARE_GROUP_BITS]!=
+                current_identity[bit_group*IDENTITY_COMPARE_GROUP_BITS+:IDENTITY_COMPARE_GROUP_BITS];
+        end
+        assign new_identity=|changed;
+    end endgenerate
+    initial if(IDENTITY_COMPARE_GROUP_BITS!=128 && IDENTITY_COMPARE_GROUP_BITS!=8)
+        $fatal(1,"identity comparison requires the reviewed128-bit direct or8-bit grouped policy");
+    // TASK3 identity comparison end.
     // A FAT32 file contains at most 2^30 stereo16 frames, hence <65536
     // native 96000-frame clips. Reserve that entire interval for each job.
     wire job_space=next_job!=0 && next_job<=32'hfffe0000;

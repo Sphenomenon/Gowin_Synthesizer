@@ -218,6 +218,8 @@ class ActualMappedM(unittest.TestCase):
                     None if p['configuration'].get('m_endpoint_storage_policy') else mapped.SYNC_POLICY)),
                 ('mismatched terminal policy',lambda p:p['configuration'].update(m_score_terminal_policy=
                     None if p['configuration'].get('m_score_terminal_policy') else mapped.TERMINAL_POLICY)),
+                ('mismatched identity policy',lambda p:p['configuration'].update(m_identity_compare_policy=
+                    None if p['configuration'].get('m_identity_compare_policy') else 'unreviewed')),
             ]:
                 profile=json.loads(original);change(profile)
                 artifact.write_text(json.dumps(profile))

@@ -35,6 +35,7 @@ class Selection(unittest.TestCase):
         self.assertEqual(actual['local_storage']['score_capacity_notes'],2048)
         self.assertFalse(actual['local_storage']['physical_BSRAM_mapping_verified'])
         old=copy.deepcopy(self.config);old.pop('m_endpoint_storage_policy');old.pop('m_score_terminal_policy',None)
+        old.pop('m_identity_compare_policy',None)
         default=m.selected_batch_source_evidence(self.stage,self.stage,old,m.BATCH_PROVIDER)
         self.assertNotIn('local_storage',default)
 
@@ -71,6 +72,25 @@ class Selection(unittest.TestCase):
             with self.subTest(mutated=mutated),self.assertRaises(ValueError):
                 m.selected_batch_source_evidence(self.fixture,self.fixture,self.config,m.SYNC_PROVIDER)
         path.write_text(original)
+
+    def test_identity_policy_and_comparator_rejected(self):
+        if not self.config.get('m_identity_compare_policy'):return
+        for value in (None,'unreviewed'):
+            with self.assertRaises(ValueError):
+                m.selected_batch_source_evidence(self.stage,self.stage,
+                    dict(self.config,m_identity_compare_policy=value),m.SYNC_PROVIDER)
+        path=self.fixture/'rtl/workstation/workstation_task3_m_bus_endpoint.sv'
+        original=path.read_text()
+        for old,new in [('parameter integer IDENTITY_COMPARE_GROUP_BITS=128',
+                         'parameter integer IDENTITY_COMPARE_GROUP_BITS=8'),
+                        ('assign new_identity=|changed;',"assign new_identity=1'b0;"),
+                        ('(* syn_keep=1 *)','(* syn_keep=0 *)')]:
+            self.assertEqual(original.count(old),1)
+            path.write_text(original.replace(old,new))
+            try:
+                with self.assertRaises(ValueError):
+                    m.selected_batch_source_evidence(self.fixture,self.fixture,self.config,m.SYNC_PROVIDER)
+            finally:path.write_text(original)
 
     def test_binding_and_default_rejected(self):
         changes=[(m.BOARD,"defparam u_task3_m_endpoint.SYNC_READ_STORAGE=1'b1;",

@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v7': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision7',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v7': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision7',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v6': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision6',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v6': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision6',
@@ -65,6 +69,7 @@ PROFILES = {
 }
 AUDIT_SOURCES = (
     'tools/workstation_task3_paired_audit.py', 'tools/workstation_custom_board_audit.py',
+    'tools/workstation_task3_identity_compare.py',
     'tools/workstation_usb_cpu_rom.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_demo_audit.py', 'tools/workstation_profile.py',
     'tools/workstation_task3_paired_board.py', 'tools/workstation_task3_m_paired_profile.py',
@@ -527,6 +532,8 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-checkpoint-v7',
+            'custom138k-workstation-task3-w-paired-checkpoint-v7',
             'custom138k-workstation-task3-m-paired-checkpoint-v6',
             'custom138k-workstation-task3-w-paired-checkpoint-v6',
             'custom138k-workstation-task3-m-paired-checkpoint-v5',
@@ -565,7 +572,8 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v6',
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v7',
+                                  'custom138k-workstation-task3-m-paired-checkpoint-v6',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v5',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v4',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v3',
