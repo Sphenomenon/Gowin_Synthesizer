@@ -55,6 +55,14 @@ GROUPED_SOURCE_SHA256=dict(TERMINAL_SOURCE_SHA256,**{
     'rtl/workstation/workstation_task3_m_bus_endpoint.sv': '474b6d2288d968f791a2111e17e8cd4d88844f5f006789719f83e504c1b92acf',
     'rtl/workstation/workstation_task3_m_paired_board.svh': '8948765c295b5c26663f9e958b781678bb7930fecdc7d4d5611f2b99955e51ab',
 })
+PHONE_GROUPED_PROFILES=(
+    'custom138k-workstation-task3-m-paired-checkpoint-v15',
+    'custom138k-workstation-task3-m-paired-checkpoint-v16',
+)
+PHONE_GROUPED_SOURCE_SHA256=dict(GROUPED_SOURCE_SHA256,**{
+    'rtl/workstation/workstation_task3_m_bus_endpoint.sv': 'cd60fb213960963cfd15343660796006ae5f70782ddc681e2f3cc30a4f2ab77d',
+    'rtl/workstation/workstation_task3_m_paired_board.svh': '541d91d67db0944c0ac4ad0979d4e1845cc297dbcbc88a2a2868b525346c4c0a',
+})
 SYNC_PROFILES = (
     'custom138k-workstation-task3-m-paired-sync-storage-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v1',
@@ -63,6 +71,7 @@ SYNC_PROFILES = (
     'custom138k-workstation-task3-m-paired-checkpoint-v4',
     *TERMINAL_PROFILES,
     GROUPED_PROFILE,
+    *PHONE_GROUPED_PROFILES,
 )
 
 
@@ -90,7 +99,8 @@ def source_evidence(stage):
     require(profile.get('profile') in names, 'exact M batch profile artifact required')
     require((profile['configuration'].get('m_endpoint_storage_policy') == SYNC_POLICY)
             is (provider == SYNC_PROVIDER), 'M mapped storage policy/provider mismatch')
-    grouped_profile=profile.get('profile')==GROUPED_PROFILE
+    phone_grouped_profile=profile.get('profile') in PHONE_GROUPED_PROFILES
+    grouped_profile=profile.get('profile')==GROUPED_PROFILE or phone_grouped_profile
     terminal_profile=profile.get('profile') in TERMINAL_PROFILES or grouped_profile
     terminal_policy=profile['configuration'].get('m_score_terminal_policy')
     require(terminal_policy==(TERMINAL_POLICY if terminal_profile else None),
@@ -98,7 +108,12 @@ def source_evidence(stage):
     from tools.workstation_task3_identity_compare import POLICY as IDENTITY_POLICY
     require(profile['configuration'].get('m_identity_compare_policy')==
             (IDENTITY_POLICY if grouped_profile else None),'M mapped identity policy/profile mismatch')
-    sources = (GROUPED_SOURCE_SHA256 if grouped_profile else TERMINAL_SOURCE_SHA256 if terminal_profile else
+    from tools.workstation_task3_phone_identity_compare import POLICY as PHONE_IDENTITY_POLICY
+    require(profile['configuration'].get('m_phone_identity_compare_policy')==
+            (PHONE_IDENTITY_POLICY if phone_grouped_profile else None),
+            'M mapped phone identity policy/profile mismatch')
+    sources = (PHONE_GROUPED_SOURCE_SHA256 if phone_grouped_profile else
+               GROUPED_SOURCE_SHA256 if grouped_profile else TERMINAL_SOURCE_SHA256 if terminal_profile else
                SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256)
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], provider)

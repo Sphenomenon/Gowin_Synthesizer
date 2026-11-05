@@ -483,6 +483,17 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision15')
 
 
+# Source admission and actual mapped proof for the full96 phone comparator.
+# No compiler input or runtime policy changes; keep the v15 seals unchanged.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v16'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v16'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v15']
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=16,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v16.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision16')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

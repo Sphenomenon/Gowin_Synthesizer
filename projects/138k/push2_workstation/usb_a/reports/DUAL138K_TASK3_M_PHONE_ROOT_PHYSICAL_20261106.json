@@ -1,0 +1,766 @@
+{
+  "schema": 1,
+  "date": "2026-11-05T22:15:26.159035+00:00",
+  "branch": "codex/dual-138k-task3",
+  "source_base_commit": "8392b5db2cad9e21e293280b5a9a3dd57cae8712",
+  "scope": "Exact source admission for current M phone guard,unchanged real root/batch equations,and one same-constraint M physical comparison. No runtime/RTL/firmware/protocol/clock/SDC policy change or target-board operation.",
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "PR2": "CPU48 banked RAM retained on both boards,including verified ROM bytes and W physical336/340 benefit.",
+    "PR3": "Independent USB/HDMI diagnostic,reset release and freshness fixes retained.",
+    "unselected": [
+      "ADSR/TF ring experiment",
+      "retired duplicate recording backend"
+    ]
+  },
+  "boards": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v16-e95617f8e93d9071",
+      "candidate_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint16-prepare-v1",
+      "descriptor": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v16.json",
+        "sha256": "55a5ab9f7dd8c4771bbd8976ab3defde3a0849e9dcc6516164802e495d40806d"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint16-prepare-v1/workstation_profile.json",
+        "sha256": "dc6f52cb7e878910eb19de99768771a3aa18c673b48d7d042cf7588f4e700f7a"
+      },
+      "integration_inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint16-prepare-v1/integration_inputs.json",
+        "sha256": "b09693cd9453e7eeada044bb75f1efebeb693020c9c53a53772248123e99fdfc"
+      },
+      "source_locks": 961,
+      "enabled_inputs": 287,
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "task3_m_remote_CNN_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "task3_m_native_direct_tf_v1",
+        "tf_storage_policy": "direct_sd_crc16_validated_fat_cache_v1",
+        "tf_sdc_revision": 3,
+        "bluetooth_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "recording_policy": "task3_M_final_physical_tap_to_W_single_object_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "ae350_pcm_policy": "task3_m_remote_commands_existing_PCM1_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "midi_release_policy": "task3_m_batch_midi_actual_root_release_sdc_v1",
+        "tf_contact_policy": "task3_m_actual_sd_contacts_v1",
+        "m_endpoint_storage_policy": "sync_score_and_final_tap_prefetch_v1",
+        "m_score_terminal_policy": "task3_m_one_slot_terminal_validation_v1",
+        "m_identity_compare_policy": "task3_m_full128_identity_group8_v1",
+        "m_phone_identity_compare_policy": "task3_m_phone_full96_identity_group8_v1"
+      },
+      "compiler_closure": {
+        "old_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint15-prepare-v3",
+        "new_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint16-prepare-v1",
+        "old_identity": "custom138k-workstation-task3-m-paired-checkpoint-v15-1d782f7c4f78fb86",
+        "new_identity": "custom138k-workstation-task3-m-paired-checkpoint-v16-e95617f8e93d9071",
+        "runtime_configuration_identical": true,
+        "all_staged_bytes_identical": false,
+        "noncompiled_python_changes": {
+          "tools/workstation_task3_root_reset_audit.py": {
+            "previous": "66ffc6f6ac12f49331d3d96d6625f94acffd286a0fb8e867b2a7d6d1e5ec5ca3",
+            "current": "2dc3cea787fa1a04a3c9116cea1001ff05688ab0791176db951a52a7c1af6692"
+          }
+        },
+        "all_other_staged_bytes_identical": true,
+        "identical_staged_inputs": 687,
+        "staged_inputs": 688,
+        "enabled_inputs_identical": true,
+        "enabled_inputs": 287,
+        "compiler_entry_script_exact": true,
+        "noncompiled_python_not_in_project": true,
+        "old_manifest_sha256": "8f4a841b31d584f61faf921f003340db0ad518de31435a3bd3b4e2e09918fec4",
+        "new_manifest_sha256": "b09693cd9453e7eeada044bb75f1efebeb693020c9c53a53772248123e99fdfc"
+      },
+      "new_synthesis_run": false,
+      "new_physical_run": true,
+      "bitstream_sha256": null,
+      "actual_board_identity": null,
+      "actual_control_to_sound_latency_ms": null,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_programmed": false
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-paired-checkpoint-v16-78e43218cc73e29a",
+      "candidate_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint16-prepare-v1",
+      "descriptor": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v16.json",
+        "sha256": "790917df8bdfb15f2a91be89f958e323d570e331eb06a7bc5bb1b7e466cee56b"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint16-prepare-v1/workstation_profile.json",
+        "sha256": "34bb8844edc46aea22a579a31b9e6f8f6cfce83f6dc6caa967e3bb4f27c79a9f"
+      },
+      "integration_inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint16-prepare-v1/integration_inputs.json",
+        "sha256": "40694f9394640b9182084f1d94167af09b81ee9ddd29cf1f4b0a3626fdd44121"
+      },
+      "source_locks": 1009,
+      "enabled_inputs": 200,
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 131072,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "worker_25k_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "cnn_reset_policy": "task3_w_CNN_control_native_reset_release3_v1",
+        "cnn_ready_sdc_policy": "task3_w_CNN_ready_backend_sync_rebind_v1"
+      },
+      "compiler_closure": {
+        "old_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint15-prepare-v3",
+        "new_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint16-prepare-v1",
+        "old_identity": "custom138k-workstation-task3-w-paired-checkpoint-v15-7c23d96955b9a2ab",
+        "new_identity": "custom138k-workstation-task3-w-paired-checkpoint-v16-78e43218cc73e29a",
+        "runtime_configuration_identical": true,
+        "all_staged_bytes_identical": true,
+        "noncompiled_python_changes": {},
+        "all_other_staged_bytes_identical": true,
+        "identical_staged_inputs": 674,
+        "staged_inputs": 674,
+        "enabled_inputs_identical": true,
+        "enabled_inputs": 200,
+        "compiler_entry_script_exact": true,
+        "noncompiled_python_not_in_project": true,
+        "old_manifest_sha256": "aae32bc98a32a3bdcc3aad08f166e17c248148558ecef44a362f464965c6efc2",
+        "new_manifest_sha256": "40694f9394640b9182084f1d94167af09b81ee9ddd29cf1f4b0a3626fdd44121"
+      },
+      "new_synthesis_run": false,
+      "new_physical_run": false,
+      "bitstream_sha256": null,
+      "actual_board_identity": null,
+      "actual_control_to_sound_latency_ms": null,
+      "hardware_tested": false,
+      "sram_programmed": false,
+      "flash_programmed": false
+    }
+  },
+  "source_admission": {
+    "root_variant": "task3-m-phone-group8-identity-root-v1",
+    "exact_inverse_to_v7": true,
+    "historical_descriptors": 30,
+    "historical_descriptors_unchanged": true,
+    "descriptor_delta": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-descriptor-source-delta.json",
+      "sha256": "badbda8ead814d7b043510611d5f92a737573ca72903c4ffca26272ff6e13b2f"
+    },
+    "all35_root_state_next_q_proven": true,
+    "root_state_assignments": 34359738368,
+    "actual_root_alias": "reset_n",
+    "batch_mapped_proofs": 19,
+    "executor_snapshot_FFs": 640,
+    "owner_snapshot_FFs": 414,
+    "request_bits": 49,
+    "response_bits": 33,
+    "mapped_evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v15-mapped-initial.json",
+      "sha256": "4cf91345b73d25c04b999ba2c5ef3ffe30bf30e73ec52152a46afa5a66c96286"
+    },
+    "destructive_controls_rejected": 85,
+    "historical_v5_v7_root_and_batch_regression": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/historical-root-regression.json",
+      "sha256": "6d553d1e20fd23ecb4f671361f6fc867b44d5c6bba902ee4de5ee3adb45e5236"
+    },
+    "full_batch_executor_and_response_mux_proven": false
+  },
+  "synthesis": {
+    "reuse": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-synthesis-reuse.json",
+      "sha256": "c839c84014e49cd0b8f42b9f1af9779d5fbab8971f86e5255ccded343ab7e547"
+    },
+    "new_synthesis_run": false,
+    "netlist_sha256": "2b02ac1c0fad8d352a03153187d63e2a6a6cd3b54565eed00e6c3494f4c5be01",
+    "resources": {
+      "Register": 58417,
+      "Lut": 68786,
+      "Alu": 28044,
+      "Bsram": 212,
+      "Ssram": 254,
+      "MULTALU27X18": 33,
+      "MULT12X12": 3,
+      "MULT27X36": 43
+    },
+    "units": "Gowin synthesis BSRAM-equivalent and SSRAM; not physical block count.",
+    "synthesis_clock_estimates": [
+      {
+        "clock": "clk_50m",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 41.463,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "usb2_ulpi_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 81.208,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "clk_12m288",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 275.331,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "clk_16m9344",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 275.331,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_managed/runtime/clocks/dac_mclk_d",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 135.814,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 76.8,
+        "synthesis_estimated_mhz": 58.62,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 48.0,
+        "synthesis_estimated_mhz": 65.138,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+        "required_mhz": 400.0,
+        "synthesis_estimated_mhz": 1338.315,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 311.818,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 1455.604,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 201.532,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+        "required_mhz": 148.5,
+        "synthesis_estimated_mhz": 196.155,
+        "estimate_meets_requirement": true
+      }
+    ],
+    "audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/m-v16-synthesis-audit.json",
+      "sha256": "319ce7016d746a084ada647a508f2c1faa5105cc8b1b1f411e020af304139e00"
+    },
+    "passed_gates": 20,
+    "total_gates": 22,
+    "gates": {
+      "feature_structure": {
+        "passed": true,
+        "error": null
+      },
+      "M_32_voice_storage": {
+        "passed": true,
+        "error": null
+      },
+      "M_sync_storage_mapping": {
+        "passed": true,
+        "error": null
+      },
+      "port_coverage": {
+        "passed": true,
+        "error": null
+      },
+      "AE350_clock_placement": {
+        "passed": true,
+        "error": null
+      },
+      "AE350_RTC": {
+        "passed": true,
+        "error": null
+      },
+      "runtime_clock_PLL_structure": {
+        "passed": true,
+        "error": null
+      },
+      "USB2_CDC": {
+        "passed": true,
+        "error": null
+      },
+      "input_FIFO_CDC": {
+        "passed": true,
+        "error": null
+      },
+      "native_reset": {
+        "passed": true,
+        "error": null
+      },
+      "native_feedback": {
+        "passed": true,
+        "error": null
+      },
+      "USB_FIFO_write_reset": {
+        "passed": true,
+        "error": null
+      },
+      "USB_bridge_resets": {
+        "passed": true,
+        "error": null
+      },
+      "phone_batch_mapped_structure": {
+        "passed": true,
+        "error": null
+      },
+      "LCD_pad_synchronizer_structure": {
+        "passed": true,
+        "error": null
+      },
+      "visible_SDC_members": {
+        "passed": true,
+        "error": null
+      },
+      "constraint_retirement_and_rebinding": {
+        "passed": true,
+        "error": null
+      },
+      "M_paired_release_CDC": {
+        "passed": false,
+        "error": "M paired release audit: paired final release complete consumer inventory changed: cpu-source"
+      },
+      "M_MIDI_release_SDC_semantics": {
+        "passed": true,
+        "error": null
+      },
+      "native_boundary_CDC": {
+        "passed": true,
+        "error": null
+      },
+      "native_held_handshakes": {
+        "passed": false,
+        "error": "task3 peripheral release audit: paired final release complete endpoint inventory changed: u_task3_pair_link/config_cdc/p_release_2_s0"
+      },
+      "USB_ROM": {
+        "passed": true,
+        "error": null
+      }
+    },
+    "old_v15_original_audit_passed_gates": 13,
+    "old_v15_original_audit_preserved": true,
+    "change_is_source_admission_not_hardware_performance": true
+  },
+  "verification": {
+    "checks": [
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/current-sources.log",
+          "sha256": "2a8e68f03033877231cd51e38e19569915582d2b8f42f851cab1d103ca8a16cc"
+        },
+        "test_methods": 17,
+        "passed": true,
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/paired-audit-tests.log",
+          "sha256": "ae9a8bf67b650739c6d924cd6fa45cebbb9b9a4fe178995677f24eb1762e68f6"
+        },
+        "test_methods": 12,
+        "passed": true,
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-checkpoint-tests.log",
+          "sha256": "f22fbcf842370e22c8843f04fc94dc5bc9060c3346aaee75be25a4b5bec21d88"
+        },
+        "test_methods": 4,
+        "passed": true,
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v15-mapped-initial.log",
+          "sha256": "6e770894fa8045721abccdaf7d9e49914bc3f59dddfc9af1b915417aca774480"
+        },
+        "test_methods": 5,
+        "passed": true,
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/phone-root-source-tests.log",
+          "sha256": "dc2ee5c7643da6ea623a5fa7a049c661090db45cee90e41ba9797322ebde4605"
+        },
+        "test_methods": 4,
+        "passed": true,
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-phone-source-tests.log",
+          "sha256": "b84b807528dc1abfb42212c00d64456869e0e8b2afc6d9af7edf4e5c39a4cc61"
+        },
+        "test_methods": 4,
+        "passed": true,
+        "skipped": 0
+      }
+    ],
+    "total_method_executions": 46,
+    "all_passed": true,
+    "physical_or_hardware_acceptance": false
+  },
+  "physical": {
+    "identity": "custom138k-resource-physical-D21106EA",
+    "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1",
+    "status": "failed",
+    "invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-physical-run.json",
+      "sha256": "840fc22f7584cfa515b6fd30bf233fe109cae7365fa177581a788fefc6c6da13"
+    },
+    "receipt": {
+      "command": [
+        "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/run.tcl"
+      ],
+      "cwd": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1",
+      "input_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/custom_138k_integration.vg": "2b02ac1c0fad8d352a03153187d63e2a6a6cd3b54565eed00e6c3494f4c5be01",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/reference.cst": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/physical.cst": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/run.tcl": "d69a31d67fc5d11a11b561641d030555f9472e993ef73e618741ccdcbc970540",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/parent_synthesis_audit.json": "319ce7016d746a084ada647a508f2c1faa5105cc8b1b1f411e020af304139e00",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/physical.sdc": "145efe8fb3dce65f7742240aef3cb368b809a572a73920d9199b37f771b5b871",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/parent_integration_inputs.json": "b09693cd9453e7eeada044bb75f1efebeb693020c9c53a53772248123e99fdfc",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/physical_inputs.json": "553b64136913278d6f1ea7cb054aaf1d7eaab26b08e642ad76d10080f0aa2d83"
+      },
+      "board_accessed": false,
+      "timeout_seconds": 900,
+      "started_utc": "2026-11-05T22:03:20.970737+00:00",
+      "constraints_comparison": {
+        "physical.cst": {
+          "current": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124",
+          "reference": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124",
+          "byte_identical": true
+        },
+        "physical.sdc": {
+          "current": "145efe8fb3dce65f7742240aef3cb368b809a572a73920d9199b37f771b5b871",
+          "reference": "145efe8fb3dce65f7742240aef3cb368b809a572a73920d9199b37f771b5b871",
+          "byte_identical": true
+        }
+      },
+      "source_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint16-prepare-v1",
+      "UserCode_request": "D21106EA",
+      "UserCode_readback": null,
+      "script_sha256": "d69a31d67fc5d11a11b561641d030555f9472e993ef73e618741ccdcbc970540",
+      "tool_sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01",
+      "exit_code": 1,
+      "timed_out": false,
+      "duration_seconds": 600.4495609170117,
+      "finished_utc": "2026-11-05T22:13:21.430405+00:00",
+      "log_sha256": "45568549a6e30d6e58e89e4ec5f4638374f6e6c854fa6379434a3d8ac3d8e382",
+      "inputs_unchanged": true
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/v16-physical-run.log",
+      "sha256": "45568549a6e30d6e58e89e4ec5f4638374f6e6c854fa6379434a3d8ac3d8e382"
+    },
+    "input_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/physical_inputs.json",
+      "sha256": "553b64136913278d6f1ea7cb054aaf1d7eaab26b08e642ad76d10080f0aa2d83"
+    },
+    "resources": {
+      "Logic": {
+        "used": 99143,
+        "capacity": 138240,
+        "percent": 72
+      },
+      "Register": {
+        "used": 58417,
+        "capacity": 139095,
+        "percent": 42
+      },
+      "CLS": {
+        "used": 61358,
+        "capacity": 69120,
+        "percent": 89
+      },
+      "BSRAM": {
+        "used": 253,
+        "capacity": 340,
+        "percent": 75
+      },
+      "PRIMARY": {
+        "used": 8,
+        "capacity": 8,
+        "percent": 100
+      },
+      "LW": {
+        "used": 8,
+        "capacity": 8,
+        "percent": 100
+      }
+    },
+    "physical_BSRAM_not_synthesis_equivalent": true,
+    "unrouted_nets": 522,
+    "unrouted_delta_vs_v5": 160,
+    "unrouted_delta_vs_v7": -393,
+    "errors": [
+      "ERROR  (PR0004) : There are total 522 unrouted nets"
+    ],
+    "output_artifacts": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/impl/pnr/custom_138k_integration.vo",
+        "sha256": "97e923acfe81fdcba10c4c5434e1d5cfccd8ab46ee2314a5152410ec56811c94"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/impl/pnr/custom_138k_integration.rpt.html",
+        "sha256": "d8263c7c9de5c86abcf94ee81404b77182b0b2c65892bffb83a6eeb6657a3bc8"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/impl/pnr/custom_138k_integration.pin.html",
+        "sha256": "13d2136dda527d7e469ad0206b8c7878c36b17941a18f51f81ca6f1857263326"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v16-phone-root-p2r0-v1/impl/pnr/custom_138k_integration.rpt.txt",
+        "sha256": "8c64504f71fcdeb16c8b151fb0a03ae6c4e180b5dd167ce5a71b44fe670df973"
+      }
+    ],
+    "bitstreams": [],
+    "UserCode_request": "D21106EA",
+    "UserCode_board_readback": null,
+    "constraints_byte_identical_v7": true,
+    "complete_routed_STA_accepted": false,
+    "physical_failure_cause_proven": false,
+    "physical_CDC_accepted": false,
+    "hardware_tested": false,
+    "deployment_allowed": false
+  },
+  "physical_references": {
+    "M_v5": {
+      "report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TERMINAL_PIPELINE_20261106.json",
+        "sha256": "65609a6a8b1f6f8781df6588ace57102806d90b50ee15e60308fd97122c5371c"
+      },
+      "UserCode_request": "D21106E1",
+      "unrouted_nets": 362,
+      "seconds": 699.3,
+      "resources": {
+        "Logic": 99067,
+        "Register": 58417,
+        "CLS": 61314,
+        "BSRAM": 253
+      }
+    },
+    "M_v7": {
+      "report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_IDENTITY_PHYSICAL_20261106.json",
+        "sha256": "7441cd00c85eed805ad15b183c153596d02914799cde600ff4fb3dd108eabf2e"
+      },
+      "UserCode_request": "D21106E2",
+      "unrouted_nets": 915,
+      "seconds": 645.04,
+      "resources": {
+        "Logic": 99123,
+        "CLS": 61398,
+        "BSRAM": 253
+      }
+    },
+    "scope": "One observed P2R0 result per full VG; identical constraints do not make an unrouted count a routed timing or deployment acceptance metric."
+  },
+  "W_existing_physical": {
+    "report": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json",
+      "sha256": "6429aaedec3408ca16c9dcdce32ba5cd18fbe0cca1cdae14ca12ee83cbdffc66"
+    },
+    "source_checkpoint": "v14",
+    "UserCode_request": "D21106E9",
+    "physical_BSRAM": {
+      "used": 336,
+      "capacity": 340
+    },
+    "worst_setup_hold_recovery_removal_ns": [
+      -7.224,
+      -4.35,
+      -7.947,
+      -0.234
+    ],
+    "audit_gates": {
+      "passed": 11,
+      "total": 18
+    },
+    "bitstream_sha256": "058f909025b8f4db02243d835c3ac9c14e5b46487851970e6a8eed5be8576e60",
+    "result_not_relabelled_as_v16": true,
+    "new_W_synthesis_or_physical_run": false,
+    "hardware_tested": false
+  },
+  "CPU_consumer_diagnosis": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/m-v16-cpu-consumer-diagnosis.json",
+      "sha256": "830ae9e877f1809615f7f9bb551dc1a7843280f7d2611805451793bcbdf751b1"
+    },
+    "summary": {
+      "source": {
+        "actual_identity": "eb68cea6169af4fa1c04af01ddb8f67c0d15c045e72b8029be8859b5c41ea886",
+        "historical_expected_identity": "a4847d89534677bb0aab55b1bd2ee7cf0ef49b06a8b78f90b2f460d6ff6756d1",
+        "historical_gate_passed": false,
+        "counts": {
+          "ff_endpoints": 403,
+          "primitive_endpoints": 2,
+          "top_output_endpoints": 0
+        },
+        "FF_clock_counts": {
+          "ram_clk": 403
+        },
+        "FF_pin_counts": {
+          "CLEAR": 403
+        },
+        "difference_vs_v3": {
+          "ff_endpoints": {
+            "added": 0,
+            "removed": 0,
+            "changed": 0
+          },
+          "primitive_endpoints": {
+            "added": 0,
+            "removed": 0,
+            "changed": 0
+          },
+          "top_output_endpoints": {
+            "added": 0,
+            "removed": 0,
+            "changed": 0
+          }
+        }
+      },
+      "destination": {
+        "actual_identity": "49c3aec6f2988d95756b5f13815b791d3731f4c1b43641292aab6a1c941175ca",
+        "historical_expected_identity": "cbe5c18b92d425f53154665980cd894e3d58f10fb7a2b9ec220a606cb60b66c3",
+        "historical_gate_passed": false,
+        "counts": {
+          "ff_endpoints": 9508,
+          "primitive_endpoints": 22,
+          "top_output_endpoints": 7
+        },
+        "FF_clock_counts": {
+          "audio_clk": 4,
+          "clk_50m": 9504
+        },
+        "FF_pin_counts": {
+          "D": 2587,
+          "CE": 6600,
+          "CLEAR": 321
+        },
+        "difference_vs_v3": {
+          "ff_endpoints": {
+            "added": 41,
+            "removed": 135,
+            "changed": 0
+          },
+          "primitive_endpoints": {
+            "added": 0,
+            "removed": 0,
+            "changed": 0
+          },
+          "top_output_endpoints": {
+            "added": 0,
+            "removed": 0,
+            "changed": 0
+          }
+        }
+      }
+    },
+    "historical_constants_unchanged": true,
+    "whole_business_functions_proven": false,
+    "full_TF_CDC_accepted": false
+  },
+  "synthesis_path_diagnosis": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-phone-root-v1/m-v16-synthesis-path-diagnosis.json",
+    "sha256": "ef7702ebe43082dc841b9e20da5970349efbe93320905cbbef1ca37be039d718"
+  },
+  "rollback": {
+    "parent_checkpoint": "v15",
+    "M_source_and_v5_v7_physical_references_preserved": true,
+    "W_v14_physical_reference_preserved": true,
+    "task2_and_single_board_not_modified": true,
+    "historical_locks_not_refreshed": true
+  },
+  "timing_closed": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "remaining_gaps": [
+    "M routed timing including setup/hold/recovery/removal and clocks/PLL; full CPU consumer proof and TF CDC.",
+    "W actual full-key/batch semantic proof,USB FIFO/PLL/CDC,PR1014 and failed routed timing.",
+    "Correct target identities and LCD electrical/throughput/RTT/jitter/congestion measurements; business admission remains disabled.",
+    "Independent M32-voice normal/vector,DAC latency and2D performance acceptance.",
+    "Real TF menu/direct playback through W CNN/CQT/Viterbi and Push guidance; measured phone D press/release audio.",
+    "Single CPU/BLE60-second recording/download concurrency; paired44.1k acquisition/negotiation.",
+    "Measured-budget integration of W existing heavy effects and evaluation of FFT/display/extended synthesis migration."
+  ]
+}

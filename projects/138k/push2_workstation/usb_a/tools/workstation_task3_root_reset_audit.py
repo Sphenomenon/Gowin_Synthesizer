@@ -51,6 +51,18 @@ GROUPED_ROOT_SOURCES=dict(TERMINAL_ROOT_SOURCES,**{
     'rtl/workstation/workstation_task3_m_bus_endpoint.sv': '474b6d2288d968f791a2111e17e8cd4d88844f5f006789719f83e504c1b92acf',
     'rtl/workstation/workstation_task3_m_paired_board.svh': '8948765c295b5c26663f9e958b781678bb7930fecdc7d4d5611f2b99955e51ab',
 })
+# The full96 phone guard has an exact source inverse to the sealed v7
+# endpoint/board. Its source admission is separate; the actual root state and
+# batch/mailbox equations below still have to pass on the new mapped design.
+PHONE_GROUPED_ROOT_PROFILES=(
+    'custom138k-workstation-task3-m-paired-checkpoint-v15',
+    'custom138k-workstation-task3-m-paired-checkpoint-v16',
+)
+PHONE_GROUPED_ROOT_VARIANT='task3-m-phone-group8-identity-root-v1'
+PHONE_GROUPED_ROOT_SOURCES=dict(GROUPED_ROOT_SOURCES,**{
+    'rtl/workstation/workstation_task3_m_bus_endpoint.sv': 'cd60fb213960963cfd15343660796006ae5f70782ddc681e2f3cc30a4f2ab77d',
+    'rtl/workstation/workstation_task3_m_paired_board.svh': '541d91d67db0944c0ac4ad0979d4e1845cc297dbcbc88a2a2868b525346c4c0a',
+})
 W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
@@ -113,12 +125,17 @@ def source_binding(stage):
     mapping = {}
     if provider == M_SYNC_PROVIDER:
         artifact = json.loads((stage.parent.parent / 'workstation_profile.json').read_text())
-        grouped_profile=artifact.get('profile')==GROUPED_ROOT_PROFILE
+        phone_grouped_profile=artifact.get('profile') in PHONE_GROUPED_ROOT_PROFILES
+        grouped_profile=artifact.get('profile')==GROUPED_ROOT_PROFILE or phone_grouped_profile
         terminal_profile = artifact.get('profile') in TERMINAL_ROOT_PROFILES or grouped_profile
         configuration = artifact.get('configuration', {})
         from tools.workstation_task3_identity_compare import POLICY as IDENTITY_POLICY
         require(configuration.get('m_identity_compare_policy')==
                 (IDENTITY_POLICY if grouped_profile else None),'identity root profile/policy mismatch')
+        from tools import workstation_task3_phone_identity_compare as phone_identity
+        require(configuration.get('m_phone_identity_compare_policy')==
+                (phone_identity.POLICY if phone_grouped_profile else None),
+                'phone identity root profile/policy mismatch')
         require(configuration.get('m_score_terminal_policy') ==
                 (TERMINAL_ROOT_POLICY if terminal_profile else None),
                 'terminal root profile/policy mismatch')
@@ -126,12 +143,17 @@ def source_binding(stage):
             require(configuration.get('demo_role') == 'M' and
                     configuration.get('m_endpoint_storage_policy') == 'sync_score_and_final_tap_prefetch_v1',
                     'terminal root role/storage policy mismatch')
-            reviewed=GROUPED_ROOT_SOURCES if grouped_profile else TERMINAL_ROOT_SOURCES
+            reviewed=(PHONE_GROUPED_ROOT_SOURCES if phone_grouped_profile else
+                      GROUPED_ROOT_SOURCES if grouped_profile else TERMINAL_ROOT_SOURCES)
             for relative in reviewed:
                 require(relative.endswith('.svh') or selected.count(relative) == 1,
                         'terminal root source not uniquely selected: ' + relative)
             includes.update(reviewed)
-            mapping = dict(root_mapping_variant=GROUPED_ROOT_VARIANT if grouped_profile else TERMINAL_ROOT_VARIANT,
+            if phone_grouped_profile:
+                phone_identity.restore_endpoint((stage/phone_identity.ENDPOINT).read_text())
+                phone_identity.restore_board((stage/phone_identity.BOARD).read_text())
+            mapping = dict(root_mapping_variant=PHONE_GROUPED_ROOT_VARIANT if phone_grouped_profile else
+                           GROUPED_ROOT_VARIANT if grouped_profile else TERMINAL_ROOT_VARIANT,
                            root_profile=artifact['profile'])
     worker = expected_role == 'W'
     require(selected.count(ROOT_SOURCE) == 1,
@@ -200,12 +222,15 @@ def publisher_policy(root):
     variant = root.get('root_mapping_variant')
     if variant is not None:
         grouped=variant==GROUPED_ROOT_VARIANT
+        phone_grouped=variant==PHONE_GROUPED_ROOT_VARIANT
         require(provider == M_SYNC_PROVIDER and
-                ((grouped and root.get('root_profile')==GROUPED_ROOT_PROFILE) or
+                ((phone_grouped and root.get('root_profile') in PHONE_GROUPED_ROOT_PROFILES) or
+                 (grouped and root.get('root_profile')==GROUPED_ROOT_PROFILE) or
                  (variant==TERMINAL_ROOT_VARIANT and root.get('root_profile') in TERMINAL_ROOT_PROFILES)),
                 'unreviewed terminal root mapping/profile')
         alias = 'reset_n'
-        includes.update(GROUPED_ROOT_SOURCES if grouped else TERMINAL_ROOT_SOURCES)
+        includes.update(PHONE_GROUPED_ROOT_SOURCES if phone_grouped else
+                        GROUPED_ROOT_SOURCES if grouped else TERMINAL_ROOT_SOURCES)
     else:
         require('root_profile' not in root, 'root profile without mapping policy')
     return provider_sha, alias, includes
