@@ -71,6 +71,8 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 两板均无本阶段位流 SHA/UserCode、实测控制到声音延迟或硬件通过结论；目标 JTAG/串口身份待接入后绑定。209/308 等历史 BSRAM 数是旧 M/W 综合等效统计，不能冒充最新 M 或路由后物理用量。
 
+W 的独立网表诊断已检查 39 个 consumer 差异：12 个在明确的同名状态对应前提下，复位在内的下一拍函数相等；27 个仍待证明。7 项定向测试通过，包含 Gowin ALU 原语交叉核对和实际网表的 6 种突变拒绝。此结果未证明完整状态关系、异步复位事件或完整 CDC；生产门禁、历史锁及冻结候选均未改变。范围及复现入口见 [W consumer 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json)。
+
 接下来按以下顺序推进：
 
 1. 恢复本机已有 Gowin 许可证运行环境，综合冻结的 M 新候选；确认 score/tap 实际推断为 BSRAM 且不含原 RAM16，保留完整资源与时序检查。随后审查新映射的 reset、held、TF 和全部 CDC consumer，不能继承旧候选证明。
