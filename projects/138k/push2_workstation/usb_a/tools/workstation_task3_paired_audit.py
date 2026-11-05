@@ -18,6 +18,8 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-phone-batch-reset-v1': ('M', 'custom138k-native-task3-m-paired-phone-batch-reset-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-phone-batch-v1': ('M', 'custom138k-native-task3-m-paired-phone-batch-revision1',
         'rtl/workstation/workstation_profile_task3_m_paired_phone_batch.sv'),
     'custom138k-workstation-task3-w-paired-phone-batch-v1': ('W', 'custom138k-native-task3-w-paired-phone-batch-revision1',
@@ -58,6 +60,7 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_lcd_cdc_audit.py',
     'tools/workstation_task3_paired_clock_audit.py',
     'tools/workstation_task3_m_paired_releases_audit.py',
+    'tools/workstation_task3_m_midi_release_sdc.py',
     'tools/workstation_task3_w_paired_cdc_audit.py',
     'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_runtime_profile.py',
 )
@@ -66,6 +69,27 @@ AUDIT_SOURCES = (
 def require(ok, message):
     if not ok:
         raise ValueError('paired synthesis audit: ' + message)
+
+
+def verify_m_batch_source_receipt(stage, actual, expected):
+    """Read the pre-retirement receipt without making its document a new input.
+
+    The immutable stage closure is checked before this call. Only the exact
+    retired document is compatible; all executable source/proof fields remain
+    exact, and neither the candidate nor its original receipt is rewritten.
+    """
+    if actual == expected:
+        return
+    document = 'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md'
+    historical = '605f3dc41c3fcbd7c1c8bf313a88433e4fa45d45a406f04a9ad6e73d724bae38'
+    require(isinstance(actual, dict) and isinstance(actual.get('source_sha256'), dict),
+            'M phone batch source receipt missing')
+    sources = dict(actual['source_sha256'])
+    require(set(sources) == set(expected['source_sha256']) | {document} and
+            sources.pop(document) == historical and sha(checked(stage, document)) == historical,
+            'M phone batch historical document receipt changed')
+    require(dict(actual, source_sha256=sources) == expected,
+            'M phone batch prepared source evidence changed')
 
 
 def verify_prepared(output, metadata):
@@ -134,9 +158,8 @@ def verify_prepared(output, metadata):
         # root=stage keeps the immutable candidate independent of live sources.
         if role == 'M':
             from tools.workstation_task3_m_paired_profile import selected_batch_source_evidence
-            require(metadata.get('task3_phone_batch') == selected_batch_source_evidence(
-                stage, stage, profile['configuration'], provider),
-                'M phone batch prepared source evidence changed')
+            verify_m_batch_source_receipt(stage, metadata.get('task3_phone_batch'),
+                selected_batch_source_evidence(stage, stage, profile['configuration'], provider))
         else:
             from tools.workstation_task3_w_paired_profile import (
                 BATCH_PROVIDER, BATCH_FIRMWARE_POLICY, selected_source_evidence)
@@ -456,6 +479,7 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-phone-batch-reset-v1',
             'custom138k-workstation-task3-m-paired-phone-batch-v1',
             'custom138k-workstation-task3-w-paired-phone-batch-v1'):
         from tools.workstation_task3_root_reset_audit import audit_selected_batch_structure
@@ -479,6 +503,16 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-phone-batch-v1',
+                                  'custom138k-workstation-task3-m-paired-phone-batch-reset-v1'):
+            # Independent of the older final-consumer seals: those may reject
+            # first, but must not conceal a selector reaching the wrong reset.
+            from tools.workstation_task3_m_midi_release_sdc import audit_midi_release_sdc
+            def midi_release_sdc():
+                n = protocol_netlist(vg_text, mapping='synthesis')
+                root_reset = audit_root_startup(n, stage=stage)
+                return audit_midi_release_sdc(n, sdc, root=root_reset)
+            gate('M_MIDI_release_SDC_semantics', midi_release_sdc)
     from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
     from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
     def boundary():

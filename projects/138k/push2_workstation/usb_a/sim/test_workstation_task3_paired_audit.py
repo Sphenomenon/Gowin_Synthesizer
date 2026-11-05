@@ -6,12 +6,13 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.workstation_task3_paired_audit import (audit_constraint_inventory,
-    audit_paired_ports, PROFILES, TOP)
+    audit_paired_ports, verify_m_batch_source_receipt, PROFILES, TOP)
 from tools import workstation_task3_paired_board as common
 from tools.workstation_task3_tf_direct import paired_release_constraint_mappings
 
@@ -36,6 +37,28 @@ def metadata(*changes, delegated=()):
 
 
 class PairedConstraintInventory(unittest.TestCase):
+    def test_source_only_and_exact_historical_receipts(self):
+        expected = dict(source_sha256={'owner.sv': 'a'*64}, proof='exact')
+        verify_m_batch_source_receipt(ROOT, expected, expected)
+        document = 'rtl/workstation/TASK3_PHONE_BATCH_CONTRACT.md'
+        historical = '605f3dc41c3fcbd7c1c8bf313a88433e4fa45d45a406f04a9ad6e73d724bae38'
+        legacy = dict(expected, source_sha256=dict(expected['source_sha256'], **{document: historical}))
+        # This fixture exercises receipt structure. The actual frozen stage is
+        # independently checked by the read-only candidate audit.
+        module = 'tools.workstation_task3_paired_audit'
+        with patch(module+'.checked', return_value=ROOT/'retired_fixture'), patch(module+'.sha', return_value=historical):
+            verify_m_batch_source_receipt(ROOT, legacy, expected)
+            for changed in (dict(legacy, proof='changed'),
+                    dict(legacy, source_sha256=dict(legacy['source_sha256'], **{'owner.sv': 'b'*64})),
+                    dict(legacy, source_sha256=dict(legacy['source_sha256'], **{'extra.md': historical})),
+                    dict(legacy, source_sha256=dict(legacy['source_sha256'], **{document: '0'*64}))):
+                with self.assertRaises(ValueError):
+                    verify_m_batch_source_receipt(ROOT, changed, expected)
+        with patch(module+'.checked', return_value=ROOT/'retired_fixture'), patch(module+'.sha', return_value='0'*64), self.assertRaises(ValueError):
+            verify_m_batch_source_receipt(ROOT, legacy, expected)
+        with self.assertRaises(ValueError):
+            verify_m_batch_source_receipt(ROOT, None, expected)
+
     def test_m_release_inverse_requires_exact_evidence(self):
         original = '\n'.join('set_false_path -to [get_pins {' + old + '}]'
                              for old, new in paired_release_constraint_mappings()) + '\n'

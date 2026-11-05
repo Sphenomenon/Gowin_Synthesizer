@@ -273,6 +273,15 @@ for _name,_parent_name,_role in (
         integration_identity='custom138k-native-task3-'+_role+'-paired-phone-batch-revision1')
 
 
+TASK3_M_BATCH_RESET_NAME='custom138k-workstation-task3-m-paired-phone-batch-reset-v1'
+_parent=PROFILE_REGISTRY[TASK3_M_PHONE_BATCH_NAME]
+PROFILE_REGISTRY[TASK3_M_BATCH_RESET_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_paired_phone_batch_reset_v1.json',
+    configuration=dict(_parent['configuration'],
+        midi_release_policy='task3_m_batch_midi_actual_root_release_sdc_v1'),
+    integration_identity='custom138k-native-task3-m-paired-phone-batch-reset-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -515,6 +524,10 @@ def _artifact(root, output, metadata, profile):
         verify_pair(root,stage,metadata.get('task3_paired',{}),paired_role)
         from tools.workstation_task3_paired_board import verify_constraints as verify_pair_constraints
         verify_pair_constraints(root,stage,metadata)
+        actual_midi=metadata.get('task3_paired_sdc',{}).get('M_MIDI_root_release')
+        wanted_midi=profile['configuration'].get('midi_release_policy')
+        if (actual_midi or {}).get('policy')!=wanted_midi:
+            raise ValueError('paired profile MIDI release policy does not match selected constraints')
         installed_sdc=restore_pair_constraints(root,installed_sdc,metadata.get('task3_paired_sdc',{}))
     elif 'task3_paired' in metadata:
         raise ValueError('unselected profile cannot claim paired board wiring')

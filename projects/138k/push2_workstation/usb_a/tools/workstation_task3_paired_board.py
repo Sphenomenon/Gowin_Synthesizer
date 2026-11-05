@@ -23,6 +23,7 @@ DEPENDENCIES=('tools/workstation_task3_paired_board.py',BOARD,PINPLAN,CST,
  'boards/custom_138k/usb2_cdc.json','boards/custom_138k/input_cdc.json',
  'tools/workstation_task3_lcd_cdc_audit.py',
  'tools/workstation_task3_paired_clock_audit.py',
+ 'tools/workstation_task3_m_midi_release_sdc.py',
  'tools/workstation_task3_m_paired_releases_audit.py')
 # New synchronizers must receive a routed CDC/endpoint review before a physical
 # candidate can be accepted. This marker adds no false path or relaxed budget.
@@ -109,21 +110,33 @@ def verify_selection(root,stage,metadata,role):
   if (Path(stage)/path).read_bytes()!=(Path(root)/path).read_bytes():raise ValueError('paired common staged source drift: '+path)
  return expected
 
-def adapt_constraints(root,sdc,role=None):
+def adapt_constraints(root,sdc,role=None,*,midi_release_policy=None):
  if SDC.strip() in sdc:raise ValueError('paired SDC already selected')
- parent=sdc;release=None
+ parent=sdc;release=None;midi=None
  if role not in (None,'M','W'):raise ValueError('paired SDC role invalid')
  if role=='M':
   from tools.workstation_task3_tf_direct import adapt_paired_release_constraints
   sdc,release=adapt_paired_release_constraints(sdc)
+ if midi_release_policy is not None:
+  from tools.workstation_task3_m_midi_release_sdc import POLICY as MIDI_POLICY,project_midi_release_sdc
+  if role!='M' or midi_release_policy!=MIDI_POLICY:raise ValueError('paired MIDI release policy invalid')
+  sdc,midi=project_midi_release_sdc(sdc)
  evidence=dict(policy=POLICY,parent_sha256=digest(parent),selected_sha256=digest(sdc+SDC),
   physical_cdc_verified=False,added_exceptions=0)
  if release is not None:evidence['M_release_rebinding']=release
+ if midi is not None:evidence['M_MIDI_root_release']=midi
  return sdc+SDC,evidence
 
 def restore_constraints(root,sdc,evidence=None):
  if sdc.count(SDC)!=1 or not sdc.endswith(SDC):raise ValueError('paired SDC marker drift')
  restored=sdc[:-len(SDC)]
+ midi=(evidence or {}).get('M_MIDI_root_release')
+ if midi is not None:
+  from tools.workstation_task3_m_midi_release_sdc import restore_midi_release_sdc
+  restored=restore_midi_release_sdc(restored,midi)
+ else:
+  from tools.workstation_task3_m_midi_release_sdc import CORRECT_SELECTOR
+  if CORRECT_SELECTOR in restored:raise ValueError('corrected MIDI selector requires sealed evidence')
  release=(evidence or {}).get('M_release_rebinding')
  if release is not None:
   from tools.workstation_task3_tf_direct import restore_paired_release_constraints
@@ -175,6 +188,9 @@ def verify_constraints(root,stage,metadata):
  original_sdc=restore_constraints(root,selected_sdc,selected_evidence)
  role='M' if 'M_release_rebinding' in selected_evidence else None
  if role is not None and metadata.get('task3_paired',{}).get('role')!=role:raise ValueError('paired release role mismatch')
- rebuilt_sdc,sdc_evidence=adapt_constraints(root,original_sdc,role)
+ midi_policy=None
+ if 'M_MIDI_root_release' in selected_evidence:
+  from tools.workstation_task3_m_midi_release_sdc import POLICY as midi_policy
+ rebuilt_sdc,sdc_evidence=adapt_constraints(root,original_sdc,role,midi_release_policy=midi_policy)
  if rebuilt_sdc!=selected_sdc or sdc_evidence!=metadata.get('task3_paired_sdc'):raise ValueError('paired SDC evidence drift')
  return dict(cst=evidence,sdc=sdc_evidence)

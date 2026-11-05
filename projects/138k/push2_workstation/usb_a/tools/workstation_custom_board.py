@@ -473,7 +473,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             revision=profile['configuration']['tf_sdc_revision'])
     task3_paired_sdc=task3_paired_cst=None
     if paired_role is not None:
-        selected_sdc,task3_paired_sdc=paired_board.adapt_constraints(root,selected_sdc,paired_role)
+        selected_sdc,task3_paired_sdc=paired_board.adapt_constraints(root,selected_sdc,paired_role,
+            midi_release_policy=profile['configuration'].get('midi_release_policy'))
         combined_cst,task3_paired_cst=paired_board.adapt_cst(root,combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
     ae350_clock_placement = None

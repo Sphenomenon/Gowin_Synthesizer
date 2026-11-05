@@ -51,7 +51,9 @@ def source_evidence(stage):
     require(binding['selected_provider'] == BATCH_PROVIDER, 'exact M batch provider required')
     artifact = stage.parent.parent / 'workstation_profile.json'
     profile = json.loads(artifact.read_text())
-    require(profile.get('profile') == PROFILE, 'exact M batch profile artifact required')
+    require(profile.get('profile') in (PROFILE,
+            'custom138k-workstation-task3-m-paired-phone-batch-reset-v1'),
+            'exact M batch profile artifact required')
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], BATCH_PROVIDER)
     require(selected is not None, 'snapshot parameter selection absent')
