@@ -40,6 +40,7 @@ SOURCES = tuple(s for s in media.SOURCES if s not in (
     HCI_PROVIDER,
     'rtl/music/workstation_task3_cnn_stream_w.sv')
 DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
+    'tools/workstation_task3_w_fault_cdc.py',
     'tools/workstation_task3_w_paired_profile.py', PROVIDER, BATCH_PROVIDER, REFERENCE, BOARD,
     'tools/workstation_task3_w_paired_firmware.py',
     'tools/build_resource_rework.py',
@@ -368,6 +369,16 @@ def selected_source_evidence(stage, text):
     # Keep old sealed stages readable without certifying their direct DDR
     # fault bypass. New board bytes must bind the synchronized local fence.
     fault_boundary = {}
+    stream = module('workstation_task3_cnn_stream_w')
+    if media.sha(stage / 'rtl/music/workstation_task3_cnn_stream_w.sv') != 'ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0':
+        once(stream, 'else transport_fault_control<={transport_fault_control[0],transport_fault_i};')
+        once(stream, 'wire live=reset_ni && link_ready_i && !transport_fault_control[1] && !panic_i;')
+        once(stream, '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_i)')
+        fault_boundary['CNN_fault_control_boundary'] = dict(
+            policy='native_immediate_quarantine_CNN_control_fault_sync2_v1',
+            control_sync_stages=2, native_broker_fault_binding_preserved=True,
+            direct_memory_fault_to_CNN_control=False, source_binding_verified=True,
+            mapped_CDC_verified=False, routed_timing_verified=False)
     if media.sha(stage / BOARD) != '0a58c9de4c8c47ce541918ad0b2b385b61accb7993d54b32eaee2b9a8d264d82':
         once(top, '.record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault)')
         once(top, '.control_ready_o(recording_channel_ready50)')
@@ -506,6 +517,14 @@ def source_negative_controls(stage, text):
              '.record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault || task3_memory_transport_fault)'),
             ('single-stage-readiness', 'assign control_ready_o=ready_control[1];',
              'assign control_ready_o=ready_control[0];'),
+        ]
+    if media.sha(Path(stage) / 'rtl/music/workstation_task3_cnn_stream_w.sv') != 'ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0':
+        controls += [
+            ('direct-CNN-fault-bypass', '!transport_fault_control[1]', '!transport_fault_i'),
+            ('first-stage-CNN-fault-consumer', '!transport_fault_control[1]', '!transport_fault_control[0]'),
+            ('delayed-native-CNN-quarantine',
+             '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_i)',
+             '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_control[1])'),
         ]
     if verify_batch_provider(stage, cnn_provider_from_stage(stage))['phone_batch']:
         controls += [

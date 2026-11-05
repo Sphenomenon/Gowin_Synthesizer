@@ -33,6 +33,7 @@ class ActualMappedW(unittest.TestCase):
         cls.n = protocol_netlist(cls.vg.read_text(), mapping='synthesis')
         cls.before = {str(p):sha(p) for p in (cls.vg, Path(__file__),
             ROOT/'tools/workstation_task3_phone_batch_mapped_w.py',
+            ROOT/'tools/workstation_task3_w_fault_cdc.py',
             cls.stage/'Prj1.gprj', *(cls.stage/p for p in mapped.SOURCE_SHA256))}
         cls.evidence = dict(positive=None, rejections=[], inputs_mutated=False,
             complete_state_machine_proven=False, full_protocol_functionality_proven=False,
@@ -80,6 +81,8 @@ class ActualMappedW(unittest.TestCase):
         state = g.group(mapped.B,'state',3)
         preset = reg(mapped.B,'allow_context')
         window = reg(mapped.W,'held')
+        flight = reg(mapped.W,'flight',0)
+        flight_gate = g.drivers[n.pin(flight,'D')][0][0]
         token = g.group(mapped.B,'token',32)
         # Select actual mapped cells, never a source-level or invented seam.
         compare = g.drivers[n.canonical(mapped.B,'n44_3')][0][0]
@@ -95,6 +98,8 @@ class ActualMappedW(unittest.TestCase):
             ('preset root',preset,'ports','PRESET',"1'b0"),
             ('window clock',window,'ports','CLK',"1'b0"),
             ('window clear',window,'ports','CLEAR',"1'b0"),
+            ('window flight gate truth table',flight_gate,'parameters','INIT',"16'h0000"),
+            ('window flight next state',flight,'ports','D',"1'b0"),
             ('TX clock',tx[0],'ports','CLK',"1'b0"),
             ('TX clear',tx[0],'ports','CLEAR',"1'b0"),
             ('request alias',payload[0],'ports','Q',n.pin(payload[1],'Q')),
@@ -152,6 +157,32 @@ class ActualMappedW(unittest.TestCase):
                 project.write_bytes(ET.tostring(tree))
                 self.rejected(label,lambda:mapped.source_binding(stage))
                 project.write_bytes(original)
+
+    def test_04_fault_synchronizer_mutations(self):
+        proof = mapped.audit(self.n, stage=self.stage)['fault_control_boundaries']
+        if proof is None:
+            self.assertFalse(mapped.source_binding(self.stage)['fault_source_adaptations'])
+            return
+        self.assertFalse(proof['complete_CDC_accepted'])
+        chains = [proof['recording_ready']]
+        if proof['CNN_fault_control'] is not None:
+            chains.append(proof['CNN_fault_control'])
+        for chain in chains:
+            first, last = chain['first'], chain['last']
+            cases = [('first clock', first, 'CLK', "1'b0"),
+                     ('first enable', first, 'CE', "1'b0"),
+                     ('last clock', last, 'CLK', "1'b0"),
+                     ('last enable', last, 'CE', "1'b0"),
+                     ('last data', last, 'D', "1'b0"),
+                     ('last reset', last, 'CLEAR', "1'b0")]
+            for label, cell, pin, value in cases:
+                old = self.n.cells[cell]['ports'][pin]
+                try:
+                    self.n.cells[cell]['ports'][pin] = value
+                    self.rejected(chain['first'] + ' ' + label,
+                        lambda:mapped.audit(self.n, stage=self.stage))
+                finally:
+                    self.n.cells[cell]['ports'][pin] = old
 
 
 if __name__ == '__main__':

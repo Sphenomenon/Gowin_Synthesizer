@@ -112,8 +112,12 @@ module tb_task3_w_record_fault_cdc;
         @(negedge clk);#1;inject=1;#1;
         check(media_fault && !media_ready && !en,"native quarantine is immediate");
         check(control_ready && !control_fault,"DDR fault has no combinational control bypass");
+        check(dut.cnn_stream.live,"DDR fault has no combinational CNN control bypass");
         @(posedge clk);#1;check(control_ready,"first synchronizer sample cannot withdraw local readiness");
+        check(dut.cnn_stream.live,"first fault sample cannot cancel CNN control");
         @(posedge clk);#1;check(!control_ready && control_fault && !pcm_valid,"second sample fences control PCM");
+        check(!dut.cnn_stream.live && !dut.cnn_stream.desc_ready_o && !dut.cnn_stream.score_valid_o &&
+            !dut.cnn_stream.terminal_valid_o,"second fault sample fences CNN input/results");
         @(negedge clk);inject=0;allow_native=1;ticks(40);
         check(media_fault && raw_channel_fault && raw_fault,"one native pulse remains a failed object/channel");
         check(!armed && source_fault && source_failure==3,"ingress records transport failure and flushes");
@@ -124,6 +128,7 @@ module tb_task3_w_record_fault_cdc;
         reset_n=0;calibrated=0;ticks(5);reset_n=1;ticks(4);calibrated=1;
         wait(control_ready && raw_start_ready);ticks(40);
         check(!raw_fault && accepted==0 && committed==0 && native_record_writes==0,"backend reset discards old recording work");
+        check(dut.cnn_stream.live && dut.cnn_stream.state==0,"backend reset clears CNN fault without old descriptor replay");
         $display("PASS task3_W_record_fault_CDC checks=%0d control_ticks=%0d",checks,control_ticks);$finish;
     end
 endmodule

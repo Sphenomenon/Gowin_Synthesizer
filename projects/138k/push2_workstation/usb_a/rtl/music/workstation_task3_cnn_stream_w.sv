@@ -46,9 +46,16 @@ module workstation_task3_cnn_stream_w #(
     reg [199:0] descriptor;
     reg [31:0] service_generation;
     reg aborted;
+    // Native DDR quarantine is immediate in task_service.broker. Only its
+    // sticky fault crosses here: cancellation and result publication belong
+    // to clk_i and must not consume the native combinational fault cone.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] transport_fault_control;
+    always @(posedge clk_i or negedge reset_ni)
+        if(!reset_ni)transport_fault_control<=0;
+        else transport_fault_control<={transport_fault_control[0],transport_fault_i};
     wire [127:0] identity=descriptor[199:72];
     wire peer_matches=identity[127:96]==peer_boot_i && identity[95:64]==session_i;
-    wire live=reset_ni && link_ready_i && !transport_fault_i && !panic_i;
+    wire live=reset_ni && link_ready_i && !transport_fault_control[1] && !panic_i;
     wire desc_peer=desc_i[199:168]==peer_boot_i && desc_i[167:136]==session_i;
     wire desc_shape=desc_peer && desc_i[199:168]!=0 && desc_i[167:136]!=0 &&
         desc_i[135:104]!=0 && desc_i[103:72]!=0 && desc_i[71:40]!=0 && desc_i[71:40]<=96000 && desc_i[7:0]==1;

@@ -19,9 +19,12 @@ PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 E = 'u_task3_bus_endpoint'
 B = E + '/g_phone_batch.batch_w'
 W = E + '/g_phone_window.window_tx'
+BOARD = 'rtl/workstation/workstation_task3_w_paired_board.svh'
+CNN_STREAM = 'rtl/music/workstation_task3_cnn_stream_w.sv'
 # Exact consumed source identities, independently reviewed for this new path.
 # Existing providers/review files are neither replaced nor re-admitted here.
 SOURCE_SHA256 = {
+    CNN_STREAM: 'ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0',
     PROVIDER: '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4',
     'rtl/workstation/workstation_profile_task3_w_paired.sv': 'a13cd5e6285e7d288a7e1eafe2179831dd339be7f8f8d98b243559124d322dac',
     'rtl/workstation/workstation_profile_task3_w_media.sv': '2b18d6349c509ce8227e389618b96dffb58739b3efe9c2b04388a80f585e1920',
@@ -52,6 +55,38 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def fault_source_inverse(stage, path):
+    """Admit only the exact fault fixes; preserve the historical source seal."""
+    text = (stage / path).read_text()
+    if path == BOARD:
+        selected = '''        // Native DDR dispatch fences immediately in its own domain. Its sticky
+        // fault withdraws client readiness through ready_control's two flops;
+        // do not bypass them with the memory-domain combinational fault cone.
+        .record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault),'''
+        parent = '        .record_transport_fault_i(!recording_channel_ready50 || raw_channel_fault || task3_memory_transport_fault),'
+        require(text.count(selected) == 1, 'recording fault fix anchor changed')
+        inverse = text.replace(selected, parent, 1)
+    elif path == CNN_STREAM:
+        selected = '''    // Native DDR quarantine is immediate in task_service.broker. Only its
+    // sticky fault crosses here: cancellation and result publication belong
+    // to clk_i and must not consume the native combinational fault cone.
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] transport_fault_control;
+    always @(posedge clk_i or negedge reset_ni)
+        if(!reset_ni)transport_fault_control<=0;
+        else transport_fault_control<={transport_fault_control[0],transport_fault_i};
+'''
+        new = 'wire live=reset_ni && link_ready_i && !transport_fault_control[1] && !panic_i;'
+        old = 'wire live=reset_ni && link_ready_i && !transport_fault_i && !panic_i;'
+        require(text.count(selected) == text.count(new) == 1, 'CNN fault fix anchor changed')
+        inverse = text.replace(selected, '', 1).replace(new, old, 1)
+    else:
+        raise ValueError('unreviewed source adaptation: ' + path)
+    parent_sha = hashlib.sha256(inverse.encode()).hexdigest()
+    require(parent_sha == SOURCE_SHA256[path], 'bytes outside exact fault fix changed: ' + path)
+    return dict(path=path, selected_sha256=sha(stage/path), parent_sha256=parent_sha,
+                exact_inverse_verified=True, full_CDC_or_root_acceptance=False)
+
+
 def source_binding(stage):
     stage = Path(stage)
     project = stage / 'Prj1.gprj'
@@ -65,15 +100,19 @@ def source_binding(stage):
                 p.endswith(('gw138k_push_workstation_top.v', '.svh', '.vh'))]
     require(not any(p in selected for p in included if p != PROVIDER),
             'included composition also compiled as a standalone source')
+    adaptations = []
     for p in SOURCE_SHA256:
-        require((stage/p).is_file() and sha(stage/p) == SOURCE_SHA256[p],
-                'reviewed consumed source changed: ' + p)
+        require((stage/p).is_file(), 'reviewed consumed source missing: ' + p)
+        if sha(stage/p) != SOURCE_SHA256[p]:
+            require(p in (BOARD, CNN_STREAM), 'reviewed consumed source changed: ' + p)
+            adaptations.append(fault_source_inverse(stage, p))
     for p in ('rtl/workstation/workstation_task3_w_bus_endpoint.sv',
               'rtl/workstation/workstation_task3_phone_batch_w.sv',
-              'rtl/workstation/workstation_task3_phone_window_tx.sv'):
+              'rtl/workstation/workstation_task3_phone_window_tx.sv', CNN_STREAM):
         require(selected.count(p) == 1, 'required executor source not uniquely compiled: ' + p)
     return dict(selected_provider=PROVIDER,
-                source_sha256={**SOURCE_SHA256, 'Prj1.gprj': sha(project)})
+                source_sha256={**{p:sha(stage/p) for p in SOURCE_SHA256}, 'Prj1.gprj': sha(project)},
+                fault_source_adaptations=adaptations)
 
 
 def _local_transport_influence(n, g, register, sources, *, scope=E):
@@ -134,6 +173,12 @@ def _local_transport_influence(n, g, register, sources, *, scope=E):
 
 def audit(n, *, stage):
     source = source_binding(stage)
+    fault_proof = None
+    if source['fault_source_adaptations']:
+        from tools.workstation_task3_w_fault_cdc import audit as audit_fault
+        changed = {row['path'] for row in source['fault_source_adaptations']}
+        require(BOARD in changed, 'CNN fault fix requires the reviewed recording fault boundary')
+        fault_proof = audit_fault(n, cnn_control=CNN_STREAM in changed)
     require(n.frames.get('', {}).get('kind') == 'workstation_custom_138k_top', 'wrong mapped top')
     require([p for p, c in n.frames.items() if c['kind'] == 'workstation_task3_phone_batch_w'] == [B],
             'actual batch W executor missing/duplicate')
@@ -276,10 +321,26 @@ def audit(n, *, stage):
     gate = window('n890_24')
     old_flight = window('n5090_8')
     timer = n.canonical('', 'partial_timer_31_9')
-    proofs.append(g.equivalent('external flush gate drives actual window flight register',
-        [flight_d,old_flight,timer,flush,gate],
-        lambda v:v[0] == int(v[4] and (v[1] or (v[2] and v[3]))),
-        cuts={old_flight,timer,flush,gate}))
+    if g.drivers[old_flight]:
+        flight_mapping = 'separate_old_flight_gate'
+        proofs.append(g.equivalent('external flush gate drives actual window flight register',
+            [flight_d,old_flight,timer,flush,gate],
+            lambda v:v[0] == int(v[4] and (v[1] or (v[2] and v[3]))),
+            cuts={old_flight,timer,flush,gate}))
+    else:
+        # The exact fault fixes permit Gowin to absorb old_flight into the
+        # final LUT. Retain the real flight Q and inhibit net as independent
+        # inputs; prove the actual next-D function, never cut an absent net.
+        require(source['fault_source_adaptations'], 'unreviewed merged flight mapping')
+        inhibit = window('n5090_10')
+        flight_q = n.pin(g.register(W,'flight',0),'Q')
+        require(len(g.drivers[inhibit]) == 1 and len(g.drivers[gate]) == 1,
+                'merged flight actual gate missing/ambiguous')
+        flight_mapping = 'merged_old_flight_gate'
+        proofs.append(g.equivalent('merged external flush drives actual flight D',
+            [flight_d,flight_q,inhibit,timer,flush,gate],
+            lambda v:v[0] == int(v[5] and ((v[1] and not v[2]) or (v[3] and v[4]))),
+            cuts={inhibit,timer,flush,gate}))
     tx = g.group(E,'tx_payload_o',256)
     for bit,p in enumerate(tx):
         check_ff(p,'DFFCE','CLEAR')
@@ -289,7 +350,7 @@ def audit(n, *, stage):
     transport = [_local_transport_influence(n,g,tx[bit],sources) for bit in range(238)]
     require(all(row['source']==n.pin(payload[bit],'Q') for bit,row in enumerate(transport)),
             'request payload bit transport permutation')
-    return dict(policy=POLICY, **source, actual_executor=B, actual_window=W,
+    return dict(policy=POLICY, **source, fault_control_boundaries=fault_proof, actual_executor=B, actual_window=W,
         actual_batch_state_bits=len(inventory), checked_clock_reset_registers=len(checked),
         checked_transport_registers=len(tx), register_init_and_port_inventory_verified=True,
         root_q=root_q, root_startup_proven_here=False,
@@ -298,6 +359,7 @@ def audit(n, *, stage):
         key_stored_bits=128, generation_and_token_share_actual_input=True,
         key_comparison_bits=128, reply_tag_comparison_bits=64,
         local_equations=proofs, watermark_actual_state_influence=watermark_state,
+        window_flight_mapping=flight_mapping,
         reply_data_bit_equations=reply_proofs,
         transport_data_influence=transport,
         transport_check_scope='bit-specific local Boolean influence with independent non-data boundary cuts; arbitration not proven',

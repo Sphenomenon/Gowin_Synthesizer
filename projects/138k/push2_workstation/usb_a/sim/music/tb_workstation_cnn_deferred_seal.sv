@@ -39,11 +39,11 @@ module tb_workstation_cnn_deferred_seal;
         .start_valid_i(1'b0),.start_ready_o(old_ready),.frame_valid_i(1'b0),.ingress_fault_i(1'b0),.cancel_valid_i(1'b0),
         .seal_ready_o(old_seal_ready),.terminal_ready_i(1'b0),.score_ready_i(1'b1),.fatal_o(old_fatal),
         .model_serial_i(1'b1),.flash_miso_i(1'b1),.memory_slot_ready_i(1'b0),.memory_native_accept_i(1'b0),.memory_response_i(1'b0),.memory_read_data_i(256'd0));
-    reg race_desc=0,race_cancel=0;
+    reg race_desc=0,race_cancel=0,race_fault=0;
     wire race_ready;
     workstation_task3_cnn_stream_w race(
         .clk_i(clk),.reset_ni(rst),.memory_clk_i(mclk),.memory_reset_ni(rst),.backend_ready_i(rst),
-        .link_ready_i(1'b1),.transport_fault_i(1'b0),.panic_i(1'b0),.peer_boot_i(32'd1),.session_i(32'd2),
+        .link_ready_i(1'b1),.transport_fault_i(race_fault),.panic_i(1'b0),.peer_boot_i(32'd1),.session_i(32'd2),
         .desc_valid_i(race_desc),.desc_ready_o(race_ready),.desc_i({32'd1,32'd2,32'd3,32'd4,32'd16,32'd0,8'd1}),
         .frame_valid_i(1'b0),.frame_i(192'd0),.seal_valid_i(1'b0),.seal_i(192'd0),
         .cancel_valid_i(race_cancel),.cancel_i({32'd1,32'd2,32'd3,32'd4}),
@@ -130,7 +130,25 @@ module tb_workstation_cnn_deferred_seal;
             race.task_service.cnn.CQT_HOP_NUMERATOR==22050 && race.task_service.cnn.CQT_HOP_DENOMINATOR==4 &&
             race.task_service.cnn.FEATURE_TILE_COLS==16 && race.task_service.cnn.COARSE_GUIDANCE==1,
             "explicit native W4Hz parameter chain");
-        $display("PASS deferred_seal_storage_lifecycle checks=%0d scenarios=8 real_cnn=0",checks);$finish;
+        // Actual adapter/task/broker with the explicit CNN sink above. A
+        // native sticky fault must stop native dispatch immediately while
+        // the control domain observes only its final synchronized sample.
+        while(!race_ready)@(negedge clk);race_desc=1;@(negedge clk);race_desc=0;
+        wait(race.state==3 && race.task_service.state==2);
+        @(negedge clk);#1;race_fault=1;#1;
+        check(race.live && !race.task_service.broker.live,"native quarantine precedes synchronized control cancellation");
+        @(posedge clk);#1;check(race.live,"first fault sample has no control consumer");
+        @(posedge clk);#1;
+        check(!race.live && !race.desc_ready_o && !race.score_valid_o && !race.terminal_valid_o,
+            "second fault sample fences descriptor and result publication");
+        repeat(30)@(negedge clk);
+        check(race.fatal_o && race.state==0 && race.task_service.state==0,
+            "failed active task drains once without a published score or terminal");
+        race_fault=0;repeat(10)@(negedge clk);
+        check(!race_ready && !race.score_valid_o,"clearing raw input cannot resurrect a poisoned task service");
+        reset_all();repeat(10)@(negedge clk);
+        check(race_ready && race.state==0 && race.service_generation==0,"backend reset recovers without old work");
+        $display("PASS deferred_seal_storage_lifecycle checks=%0d scenarios=9 real_cnn=0",checks);$finish;
     end
     initial begin #30000000;$fatal(1,"test timeout");end
 endmodule

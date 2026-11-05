@@ -18,6 +18,14 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v11': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision11',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v11': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision11',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
+    'custom138k-workstation-task3-m-paired-checkpoint-v10': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision10',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v10': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision10',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v9': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision9',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v9': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision9',
@@ -76,6 +84,7 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_w_fault_cdc.py',
     'tools/workstation_task3_paired_audit.py', 'tools/workstation_custom_board_audit.py',
     'tools/workstation_task3_identity_compare.py',
     'tools/workstation_usb_cpu_rom.py', 'tools/stage_usb_firmware.py',
