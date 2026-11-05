@@ -41,6 +41,14 @@ module workstation_task3_cnn_stream_w #(
     output reg [31:0] rejected_descriptors_o,stale_transactions_o,
     output wire [31:0] accepted_frames_o,committed_frames_o,replayed_frames_o
 );
+    // The shared request asserts immediately; each clock releases only after
+    // three local edges. Never use native DDR release as control-domain CE.
+    wire reset_request_n=reset_ni && memory_reset_ni;
+    (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] control_release;
+    always @(posedge clk_i or negedge reset_request_n)
+        if(!reset_request_n)control_release<=0;
+        else control_release<={control_release[1:0],1'b1};
+    wire control_reset_n=control_release[2];
     localparam [2:0] IDLE=0,START=1,START_ACK=2,ACTIVE=3,REJECT=4;
     reg [2:0] state;
     reg [199:0] descriptor;
@@ -50,12 +58,12 @@ module workstation_task3_cnn_stream_w #(
     // sticky fault crosses here: cancellation and result publication belong
     // to clk_i and must not consume the native combinational fault cone.
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] transport_fault_control;
-    always @(posedge clk_i or negedge reset_ni)
-        if(!reset_ni)transport_fault_control<=0;
+    always @(posedge clk_i or negedge control_reset_n)
+        if(!control_reset_n)transport_fault_control<=0;
         else transport_fault_control<={transport_fault_control[0],transport_fault_i};
     wire [127:0] identity=descriptor[199:72];
     wire peer_matches=identity[127:96]==peer_boot_i && identity[95:64]==session_i;
-    wire live=reset_ni && link_ready_i && !transport_fault_control[1] && !panic_i;
+    wire live=control_reset_n && link_ready_i && !transport_fault_control[1] && !panic_i;
     wire desc_peer=desc_i[199:168]==peer_boot_i && desc_i[167:136]==session_i;
     wire desc_shape=desc_peer && desc_i[199:168]!=0 && desc_i[167:136]!=0 &&
         desc_i[135:104]!=0 && desc_i[103:72]!=0 && desc_i[71:40]!=0 && desc_i[71:40]<=96000 && desc_i[7:0]==1;
@@ -73,11 +81,11 @@ module workstation_task3_cnn_stream_w #(
     assign desc_ready_o=live && state==IDLE && service_generation!=32'hffffffff && !fatal_o;
     // Stale traffic is drained without entering the real task. Current-task
     // traffic retains ready/valid backpressure from native storage commitment.
-    assign frame_ready_o=reset_ni && (!frame_match || state==IDLE || state==REJECT || !live || aborted ||
+    assign frame_ready_o=control_reset_n && (!frame_match || state==IDLE || state==REJECT || !live || aborted ||
         (state==ACTIVE && service_frame_ready));
-    assign seal_ready_o=reset_ni && (!seal_match || state==IDLE || state==REJECT || !live || aborted ||
+    assign seal_ready_o=control_reset_n && (!seal_match || state==IDLE || state==REJECT || !live || aborted ||
         (state==ACTIVE && seal_eligible && service_seal_ready));
-    assign cancel_ready_o=reset_ni;
+    assign cancel_ready_o=control_reset_n;
     assign score_valid_o=live && peer_matches && state==ACTIVE && !aborted && service_score_valid;
     assign score_o={identity,service_score_index,service_score_note};
     assign terminal_valid_o=live && peer_matches && !aborted &&
@@ -85,13 +93,13 @@ module workstation_task3_cnn_stream_w #(
     assign terminal_o={identity,state==REJECT?32'd0:service_score_index,state==REJECT?4'd13:service_terminal_code};
     wire service_terminal_ready=state==ACTIVE && service_terminal_valid &&
         (aborted || !live || !peer_matches || terminal_ready_i);
-    workstation_cnn_task_service #(.CNN_USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),
+    workstation_cnn_task_service #(.DOMAIN_RESET_RELEASE(1'b1),.CNN_USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),
         .CNN_USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF),.DEFERRED_SEAL_ENABLE(1'b1),
         .CNN_WIN_LEN(44100),.CNN_FRAME_LIMIT(8),.CNN_OCTAVE_LIMIT(9),
         .CNN_CQT_HOP_NUMERATOR(22050),.CNN_CQT_HOP_DENOMINATOR(4),
         .CNN_FEATURE_TILE_COLS(16),.CNN_COARSE_GUIDANCE(1'b1),
         .IO_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES),.TASK_TIMEOUT_CYCLES(TASK_TIMEOUT_CYCLES)) task_service(
-        .clk_i(clk_i),.reset_ni(reset_ni),.memory_clk_i(memory_clk_i),.memory_reset_ni(memory_reset_ni),
+        .clk_i(clk_i),.reset_ni(control_reset_n),.memory_clk_i(memory_clk_i),.memory_reset_ni(memory_reset_ni),
         .backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_i),
         .start_valid_i(state==START && live && peer_matches && !cancel_match),.start_ready_o(start_ready),
         .start_task_id_i(identity[63:32]),.start_generation_i(service_generation),
@@ -116,8 +124,8 @@ module workstation_task3_cnn_stream_w #(
         .memory_address_o(memory_address_o),.memory_data_o(memory_data_o),.memory_mask_o(memory_mask_o),
         .memory_slot_ready_i(memory_slot_ready_i),.memory_native_accept_i(memory_native_accept_i),
         .memory_response_i(memory_response_i),.memory_read_data_i(memory_read_data_i));
-    always @(posedge clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin state<=IDLE;descriptor<=0;service_generation<=0;aborted<=0;rejected_descriptors_o<=0;stale_transactions_o<=0;end
+    always @(posedge clk_i or negedge control_reset_n)begin
+        if(!control_reset_n)begin state<=IDLE;descriptor<=0;service_generation<=0;aborted<=0;rejected_descriptors_o<=0;stale_transactions_o<=0;end
         else begin
             if((frame_valid_i && frame_ready_o && (!frame_match || state!=ACTIVE)) ||
                 (seal_valid_i && seal_ready_o && (!seal_match || state!=ACTIVE)))stale_transactions_o<=stale_transactions_o+1'b1;

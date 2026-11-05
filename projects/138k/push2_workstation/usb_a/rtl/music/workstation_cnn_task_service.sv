@@ -5,6 +5,7 @@
 // audio source: transport credits must never propagate into M's sample clock.
 module workstation_cnn_task_service #(
     parameter integer CAPACITY_FRAMES=`PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES,
+    parameter bit DOMAIN_RESET_RELEASE=1'b0,
     parameter bit CNN_USE_DDR_SIGNAL=1'b1,
     parameter bit CNN_USE_DDR_CQT_COEFF=1'b1,
     // Default keeps the frozen descriptor-CRC contract. Explicit logical TF
@@ -57,6 +58,26 @@ module workstation_cnn_task_service #(
     input wire memory_slot_ready_i,memory_native_accept_i,memory_response_i,
     input wire [255:0] memory_read_data_i
 );
+    // Opt-in W contract: common asynchronous assertion, independent local
+    // release. Default retains the frozen standalone task reset contract.
+    wire control_reset_n,native_reset_n,overflow_reset_n;
+    generate if(DOMAIN_RESET_RELEASE)begin:g_domain_reset
+        wire request_n=reset_ni && memory_reset_ni;
+        (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [2:0] control_release,native_release;
+        always @(posedge clk_i or negedge request_n)
+            if(!request_n)control_release<=0;
+            else control_release<={control_release[1:0],1'b1};
+        always @(posedge memory_clk_i or negedge request_n)
+            if(!request_n)native_release<=0;
+            else native_release<={native_release[1:0],1'b1};
+        assign control_reset_n=control_release[2];
+        assign native_reset_n=native_release[2];
+        assign overflow_reset_n=native_reset_n;
+    end else begin:g_legacy_reset
+        assign control_reset_n=reset_ni;
+        assign native_reset_n=reset_ni && memory_reset_ni;
+        assign overflow_reset_n=reset_ni;
+    end endgenerate
     localparam [3:0] IDLE=0,ARM=1,CAPTURE=2,WRITE_WAIT=3,VERIFY_REQ=4,VERIFY_WAIT=5,
         VERIFY_DATA=6,RUN_REQ=7,RUN_WAIT=8,RUN_DATA=9,ENDING=10,DRAIN=11,TERMINAL=12,SEAL_WAIT=13;
     // Terminal0 success,1 cancel,2 input identity/index/overflow,3 length,
@@ -79,7 +100,7 @@ module workstation_cnn_task_service #(
     wire [1:0] restart_failure;
     wire cancel_match=cancel_valid_i && cancel_task_id_i==task_id_o && cancel_generation_i==generation_o;
     wire active=state!=IDLE && state!=TERMINAL;
-    wire live=reset_ni && memory_reset_ni && backend_sync && !fatal_o;
+    wire live=control_reset_n && (DOMAIN_RESET_RELEASE || memory_reset_ni) && backend_sync && !fatal_o;
     wire running=state==RUN_REQ || state==RUN_WAIT || state==RUN_DATA || state==ENDING;
     assign start_ready_o=live && state==IDLE && model_status_o==4'd14 && restart_ready;
     assign frame_ready_o=live && state==CAPTURE && !cancel_match && !ingress_fault_i && !crc_busy &&
@@ -120,22 +141,22 @@ module workstation_cnn_task_service #(
     wire request_valid,request_ready;
     wire [317:0] request_data;
     music_async_fifo #(.WIDTH(318),.ADDRESS_BITS(2)) staging_requests(
-        .write_clk_i(clk_i),.write_rst_ni(reset_ni),.write_valid_i(command_valid),.write_ready_o(command_ready),
-        .write_data_i(command_data),.read_clk_i(memory_clk_i),.read_rst_ni(reset_ni && memory_reset_ni),
+        .write_clk_i(clk_i),.write_rst_ni(control_reset_n),.write_valid_i(command_valid),.write_ready_o(command_ready),
+        .write_data_i(command_data),.read_clk_i(memory_clk_i),.read_rst_ni(native_reset_n),
         .read_valid_o(request_valid),.read_ready_i(request_ready),.read_data_o(request_data));
     wire completion_valid,completion_ready,completion_source_ready;
     wire [256:0] completion_data;
     wire staging_native_ready,staging_response;
     wire completion_write=staging_native_ready && request_data[317];
     reg completion_overflow;
-    always @(posedge memory_clk_i or negedge reset_ni)
-        if(!reset_ni)completion_overflow<=0;
+    always @(posedge memory_clk_i or negedge overflow_reset_n)
+        if(!overflow_reset_n)completion_overflow<=0;
         else if((completion_write || staging_response) && !completion_source_ready)completion_overflow<=1;
     music_async_fifo #(.WIDTH(257),.ADDRESS_BITS(2)) staging_completions(
-        .write_clk_i(memory_clk_i),.write_rst_ni(reset_ni && memory_reset_ni),
+        .write_clk_i(memory_clk_i),.write_rst_ni(native_reset_n),
         .write_valid_i(completion_write || staging_response),.write_ready_o(completion_source_ready),
         .write_data_i({completion_write,memory_read_data_i}),
-        .read_clk_i(clk_i),.read_rst_ni(reset_ni),.read_valid_o(completion_valid),
+        .read_clk_i(clk_i),.read_rst_ni(control_reset_n),.read_valid_o(completion_valid),
         .read_ready_i(completion_ready),.read_data_o(completion_data));
     assign completion_ready=stage_inflight &&
         (state==WRITE_WAIT || state==VERIFY_WAIT || state==RUN_WAIT || state==DRAIN);
@@ -145,7 +166,7 @@ module workstation_cnn_task_service #(
     wire [255:0] cnn_ddr_data;
     wire [31:0] cnn_ddr_mask;
     workstation_cnn_ddr_broker #(.TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES)) broker(
-        .clk_i(memory_clk_i),.reset_ni(reset_ni && memory_reset_ni),.backend_ready_i(backend_ready_i),
+        .clk_i(memory_clk_i),.reset_ni(native_reset_n),.backend_ready_i(backend_ready_i),
         .transport_fault_i(transport_fault_i || completion_overflow),
         .cnn_valid_i(cnn_ddr_valid),.cnn_write_i(cnn_ddr_write),.cnn_address_i(cnn_ddr_address),
         .cnn_data_i(cnn_ddr_data),.cnn_mask_i(cnn_ddr_mask),.cnn_ready_o(cnn_ddr_ready),.cnn_response_o(cnn_ddr_response),
@@ -156,12 +177,14 @@ module workstation_cnn_task_service #(
         .data_o(memory_data_o),.mask_o(memory_mask_o),.slot_ready_i(memory_slot_ready_i),
         .native_accept_i(memory_native_accept_i),.response_i(memory_response_i),.idle_o(),.fault_o(broker_fault));
     basic_pitch_workstation_link #(.USE_FLASH_WEIGHTS(1),.DRAIN_RESTART_ENABLE(1),.BOUNDED_EOF_PADDING(1),
+        .NATIVE_LIFETIME_RESET(DOMAIN_RESET_RELEASE),
         .WIN_LEN(CNN_WIN_LEN),.FRAME_LIMIT(CNN_FRAME_LIMIT),.OCTAVE_LIMIT(CNN_OCTAVE_LIMIT),
         .CQT_HOP_NUMERATOR(CNN_CQT_HOP_NUMERATOR),.CQT_HOP_DENOMINATOR(CNN_CQT_HOP_DENOMINATOR),
         .FEATURE_TILE_COLS(CNN_FEATURE_TILE_COLS),.COARSE_GUIDANCE(CNN_COARSE_GUIDANCE),
         .USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF),
         .RESTART_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES)) cnn(
-        .clk_50m(clk_i),.reset_n(reset_ni),.memory_clk(memory_clk_i),.memory_reset_n(memory_reset_ni),
+        .clk_50m(clk_i),.reset_n(control_reset_n),.memory_clk(memory_clk_i),
+        .memory_reset_n(DOMAIN_RESET_RELEASE ? native_reset_n : memory_reset_ni),
         .memory_calibrated(backend_ready_i),.model_serial(model_serial_i),.flash_miso(flash_miso_i),
         .flash_cs_n(flash_cs_n_o),.flash_clk(flash_clk_o),.flash_mosi(flash_mosi_o),
         .analysis_enable(live && running && !cancel_match),.analysis_restart(cnn_restart),
@@ -182,8 +205,8 @@ module workstation_cnn_task_service #(
             if(!restart_pending)begin cnn_restart<=1;restart_pending<=1;end
         end
     endtask
-    always @(posedge clk_i or negedge reset_ni)begin
-        if(!reset_ni)begin
+    always @(posedge clk_i or negedge control_reset_n)begin
+        if(!control_reset_n)begin
             state<=IDLE;expected_frames<=0;expected_crc<=0;last_generation<=0;elapsed<=0;cursor<=0;
             pack<=0;read_beat<=0;pack_frames<=0;write_frames<=0;beat_frame<=0;crc<=32'hffffffff;crc_word<=0;
             crc_phase<=0;crc_busy<=0;stage_inflight<=0;restart_pending<=0;cnn_restart<=0;previous_result<=0;sealed<=0;
@@ -192,7 +215,7 @@ module workstation_cnn_task_service #(
             terminal_code_o<=0;seal_valid_o<=0;seal_crc_o<=0;accepted_frames_o<=0;committed_frames_o<=0;
             replayed_frames_o<=0;score_index_o<=0;fatal_o<=0;first_result_valid_o<=0;first_result_note_o<=0;first_result_frame_o<=0;
         end else begin
-            backend_meta<=backend_ready_i;backend_sync<=backend_meta;
+            backend_meta<=backend_ready_i && (!DOMAIN_RESET_RELEASE || native_reset_n);backend_sync<=backend_meta;
             broker_fault_meta<=broker_fault;broker_fault_sync<=broker_fault_meta;
             if(backend_sync)backend_seen<=1;
             start_accepted_o<=0;start_rejected_o<=0;seal_valid_o<=0;cnn_restart<=0;

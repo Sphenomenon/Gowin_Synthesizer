@@ -3,9 +3,11 @@
 // outside this focused test. Source binding is checked separately on the full
 // preprocessed board. No model boot, inference or physical CDC is claimed.
 module tb_task3_w_record_fault_cdc;
-    reg clk=0,mclk=0,reset_n=0,calibrated=0,allow_native=1,inject=0;
-    always #10 clk=~clk;
-    always #7 mclk=~mclk;
+    reg raw_clk=0,raw_mclk=0,control_run=1,native_run=1;
+    wire clk=raw_clk && control_run,mclk=raw_mclk && native_run;
+    reg reset_n=0,calibrated=0,allow_native=1,inject=0;
+    always #10 raw_clk=~raw_clk;
+    always #7 raw_mclk=~raw_mclk;
     wire media_ready,control_ready,media_fault,raw_channel_fault,raw_fault;
     wire raw_start_ready,raw_start_done,raw_capture_ready,raw_drained;
     reg raw_start=0,arm=0,frame_valid=0;
@@ -129,6 +131,25 @@ module tb_task3_w_record_fault_cdc;
         wait(control_ready && raw_start_ready);ticks(40);
         check(!raw_fault && accepted==0 && committed==0 && native_record_writes==0,"backend reset discards old recording work");
         check(dut.cnn_stream.live && dut.cnn_stream.state==0,"backend reset clears CNN fault without old descriptor replay");
+        @(negedge mclk);native_run=0;#1;calibrated=0;#1;
+        check(!dut.cnn_stream.control_reset_n && !dut.cnn_stream.task_service.native_reset_n && !en,
+            "backend loss asserts both CNN resets with native clock stopped");
+        calibrated=1;ticks(20);
+        check(!dut.cnn_stream.control_reset_n && !dut.cnn_stream.task_service.native_reset_n,
+            "stopped native clock cannot release CNN domains");
+        native_run=1;wait(control_ready && raw_start_ready);ticks(20);
+        check(dut.cnn_stream.control_reset_n && dut.cnn_stream.task_service.native_reset_n,
+            "CNN resets release after native clock returns");
+        @(negedge clk);control_run=0;#1;calibrated=0;#1;
+        check(!dut.cnn_stream.control_reset_n && !dut.cnn_stream.task_service.native_reset_n && !en,
+            "backend loss asserts both CNN resets with control clock stopped");
+        calibrated=1;repeat(30)@(negedge mclk);
+        check(!dut.cnn_stream.control_reset_n && !dut.cnn_stream.task_service.native_reset_n,
+            "native startup cannot bypass stopped CNN control release");
+        control_run=1;wait(control_ready && raw_start_ready);ticks(30);
+        check(dut.cnn_stream.state==0 && dut.cnn_stream.task_service.state==0 &&
+            dut.cnn_stream.task_service.control_reset_n && dut.cnn_stream.task_service.native_reset_n,
+            "both clocks recover without old CNN work");
         $display("PASS task3_W_record_fault_CDC checks=%0d control_ticks=%0d",checks,control_ticks);$finish;
     end
 endmodule

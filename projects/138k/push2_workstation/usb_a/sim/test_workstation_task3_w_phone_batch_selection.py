@@ -18,7 +18,10 @@ from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / 'tools'))
 from tools import workstation_task3_w_paired_profile as paired
+from build_resource_rework import select_native_cnn_parameters
+from workstation_cnn_cdc import transform as synchronize_diagnostics
 
 
 def sha(path):
@@ -32,6 +35,10 @@ class WPhoneBatchSelection(unittest.TestCase):
         cls.tracked = [Path(__file__), ROOT / 'tools/workstation_task3_w_paired_profile.py',
             ROOT / 'tools/workstation_task3_paired_board.py', ROOT / paired.BOARD,
             ROOT / paired.PROVIDER, ROOT / paired.PHONE_PROVIDER, ROOT / paired.BATCH_PROVIDER,
+            ROOT / 'rtl/music/workstation_task3_cnn_stream_w.sv',
+            ROOT / 'rtl/music/workstation_cnn_task_service.sv',
+            ROOT / 'rtl/music/basic_pitch_workstation_link.sv',
+            ROOT / 'tools/workstation_task3_cnn_reset.py',
             ROOT / 'rtl/workstation/workstation_task3_w_bus_endpoint.sv',
             ROOT / 'rtl/workstation/workstation_task3_phone_window_tx.sv',
             ROOT / 'rtl/workstation/workstation_task3_phone_batch_w.sv',
@@ -121,6 +128,8 @@ class WPhoneBatchSelection(unittest.TestCase):
         shutil.copytree(parent, stage, ignore=shutil.ignore_patterns('impl'))
         selected = (paired.PROVIDER, paired.PHONE_PROVIDER, paired.BATCH_PROVIDER, paired.BOARD,
             'rtl/music/workstation_task3_cnn_stream_w.sv',
+            'rtl/music/workstation_cnn_task_service.sv',
+            'rtl/music/basic_pitch_workstation_link.sv',
             'rtl/workstation/workstation_task3_w_bus_endpoint.sv',
             'rtl/workstation/workstation_task3_phone_batch_w.sv',
             'rtl/workstation/workstation_task3_phone_window_tx.sv',
@@ -129,6 +138,8 @@ class WPhoneBatchSelection(unittest.TestCase):
             target = stage / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / relative, target)
+        link, _ = select_native_cnn_parameters(stage)
+        (stage / 'rtl/music/basic_pitch_workstation_link.sv').write_text(synchronize_diagnostics(link))
         tree = ET.parse(stage / 'Prj1.gprj')
         rows = tree.find('FileList')
         providers = [row for row in rows if row.get('enable') == '1' and
@@ -163,17 +174,20 @@ class WPhoneBatchSelection(unittest.TestCase):
                 self.assertEqual(proof['actual_phone_provider']['phone_batch'], batch)
                 self.assertEqual(proof['selected_CNN_memory'], paired.cnn_memory_provider(provider))
                 negatives = paired.source_negative_controls(stage, text)
-                self.assertEqual(len(negatives), 22 if batch else 13)
+                self.assertEqual(len(negatives), 28 if batch else 19)
                 self.assertEqual(proof['record_fault_control_boundary']['control_sync_stages'],2)
                 self.assertFalse(proof['record_fault_control_boundary']['direct_memory_fault_to_record_ingress'])
                 self.assertEqual(proof['CNN_fault_control_boundary']['control_sync_stages'],2)
                 self.assertTrue(proof['CNN_fault_control_boundary']['native_broker_fault_binding_preserved'])
+                self.assertTrue(proof['CNN_domain_reset_boundary']['default_task_and_link_policies_preserved'])
                 self.evidence['negative_controls'].extend(dict(provider=provider, **row) for row in negatives)
                 self.evidence['configurations'].append(dict(provider=provider, phone_window=window,
                     phone_batch=batch, actual_preprocessed_sha256=hashlib.sha256(text.encode()).hexdigest(),
                     normalized_source_proof=proof, command=command,
                     fixture_current_sources_sha256={relative: sha(stage / relative) for relative in
                         (paired.BATCH_PROVIDER, paired.BOARD, 'rtl/music/workstation_task3_cnn_stream_w.sv',
+                         'rtl/music/workstation_cnn_task_service.sv',
+                         'rtl/music/basic_pitch_workstation_link.sv',
                          'rtl/workstation/workstation_task3_w_bus_endpoint.sv',
                          'rtl/workstation/workstation_task3_phone_batch_w.sv')}))
                 tree = ET.parse(stage / 'Prj1.gprj')

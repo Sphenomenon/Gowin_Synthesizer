@@ -27,7 +27,10 @@ def select_native_cnn_parameters(stage):
     stage=Path(stage)
     actual={name:sha(stage/name) for name in NATIVE_CNN_INPUTS}
     if actual!=NATIVE_CNN_INPUTS:
-        raise ValueError('native CNN parameter input identity drift: '+repr(actual))
+        from workstation_task3_cnn_reset import inverse
+        for name,expected in NATIVE_CNN_INPUTS.items():
+            if hashlib.sha256(inverse(name,(stage/name).read_text()).encode()).hexdigest()!=expected:
+                raise ValueError('native CNN parameter input identity drift: '+name)
     link=stage/'rtl/music/basic_pitch_workstation_link.sv'
     text=link.read_text()
     edits=(
@@ -50,6 +53,7 @@ def select_native_cnn_parameters(stage):
             raise ValueError('native CNN task parameter binding drift: '+key)
     evidence=dict(policy='paired_native_cnn_4hz_parameter_defaults_v1',
         input_sha256=actual,
+        reset_policy_exact_inverse_checked=actual!=NATIVE_CNN_INPUTS,
         parameter_selected_link_sha256=hashlib.sha256(text.encode()).hexdigest(),
         declaration_edits=[dict(parent=before,selected=after) for before,after in edits],
         parameter_chain=list(geometry),
@@ -105,6 +109,13 @@ def prepare(timing_fixes=False,output_directory=None,native_cnn_parameters=False
     native_evidence=None
     known_native_inputs=all((stage/name).is_file() and sha(stage/name)==expected
         for name,expected in NATIVE_CNN_INPUTS.items())
+    if not known_native_inputs:
+        from workstation_task3_cnn_reset import inverse
+        try:
+            known_native_inputs=all(hashlib.sha256(inverse(name,(stage/name).read_text()).encode()).hexdigest()==expected
+                for name,expected in NATIVE_CNN_INPUTS.items())
+        except ValueError:
+            known_native_inputs=False
     if native_cnn_parameters or known_native_inputs:
         s,native_evidence=select_native_cnn_parameters(stage)
         native_evidence['selection_origin']=('explicit_paired_native_parameters' if native_cnn_parameters
@@ -256,10 +267,13 @@ def main():
     if native_selection is not None:
         from workstation_cnn_cdc import transform as synchronize_diagnostics
         native_link,expected_selection=select_native_cnn_parameters(ROOT)
-        expected_selected=dict(NATIVE_CNN_INPUTS)
+        # Selection already verifies either immutable bytes or the exact
+        # reviewed reset inverse. Compare the stage to those admitted bytes.
+        expected_selected=dict(expected_selection['input_sha256'])
         expected_selected['rtl/music/basic_pitch_workstation_link.sv']=hashlib.sha256(
             synchronize_diagnostics(native_link).encode()).hexdigest()
-        if (native_selection.get('input_sha256')!=NATIVE_CNN_INPUTS or
+        if (native_selection.get('input_sha256')!=expected_selection['input_sha256'] or
+                native_selection.get('reset_policy_exact_inverse_checked')!=expected_selection['reset_policy_exact_inverse_checked'] or
                 native_selection.get('parameter_selected_link_sha256')!=expected_selection['parameter_selected_link_sha256'] or
                 native_selection.get('selected_sha256')!=expected_selected or
                 native_selection.get('selection_origin')not in

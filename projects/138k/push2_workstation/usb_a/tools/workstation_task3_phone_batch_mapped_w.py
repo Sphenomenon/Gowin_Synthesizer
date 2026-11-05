@@ -25,6 +25,8 @@ CNN_STREAM = 'rtl/music/workstation_task3_cnn_stream_w.sv'
 # Existing providers/review files are neither replaced nor re-admitted here.
 SOURCE_SHA256 = {
     CNN_STREAM: 'ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0',
+    'rtl/music/workstation_cnn_task_service.sv': 'f9fd9b1a07bb500dbd45ed49bfca588d28ed8324c89f37ebed3e6e7e328492fa',
+    'rtl/music/basic_pitch_workstation_link.sv': '56c78719204d93f18cad2e2906ec7c65c56806c251f6a3b24a2b79c6ad2fa7ca',
     PROVIDER: '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4',
     'rtl/workstation/workstation_profile_task3_w_paired.sv': 'a13cd5e6285e7d288a7e1eafe2179831dd339be7f8f8d98b243559124d322dac',
     'rtl/workstation/workstation_profile_task3_w_media.sv': '2b18d6349c509ce8227e389618b96dffb58739b3efe9c2b04388a80f585e1920',
@@ -58,6 +60,10 @@ def sha(path):
 def fault_source_inverse(stage, path):
     """Admit only the exact fault fixes; preserve the historical source seal."""
     text = (stage / path).read_text()
+    if path == CNN_STREAM and '.DOMAIN_RESET_RELEASE(1\'b1)' in text:
+        from tools.workstation_task3_cnn_reset import inverse, source_evidence
+        source_evidence(stage)
+        text = inverse(path,text)
     if path == BOARD:
         selected = '''        // Native DDR dispatch fences immediately in its own domain. Its sticky
         // fault withdraws client readiness through ready_control's two flops;
@@ -104,8 +110,13 @@ def source_binding(stage):
     for p in SOURCE_SHA256:
         require((stage/p).is_file(), 'reviewed consumed source missing: ' + p)
         if sha(stage/p) != SOURCE_SHA256[p]:
-            require(p in (BOARD, CNN_STREAM), 'reviewed consumed source changed: ' + p)
-            adaptations.append(fault_source_inverse(stage, p))
+            if p in ('rtl/music/workstation_cnn_task_service.sv','rtl/music/basic_pitch_workstation_link.sv'):
+                from tools.workstation_task3_cnn_reset import source_evidence
+                reset = source_evidence(stage)
+                adaptations.append(next(row for row in reset['sources'] if row['path']==p))
+            else:
+                require(p in (BOARD, CNN_STREAM), 'reviewed consumed source changed: ' + p)
+                adaptations.append(fault_source_inverse(stage, p))
     for p in ('rtl/workstation/workstation_task3_w_bus_endpoint.sv',
               'rtl/workstation/workstation_task3_phone_batch_w.sv',
               'rtl/workstation/workstation_task3_phone_window_tx.sv', CNN_STREAM):

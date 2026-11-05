@@ -34,15 +34,16 @@ module tb_workstation_cnn_deferred_seal;
     // Old callers omit all new seal inputs with the default parameter. They
     // must remain ready and may not enter a deferred-seal state by X leakage.
     wire old_ready,old_seal_ready,old_fatal;
+    reg legacy_memory_reset=1;
     workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(1000)) old_default(
-        .clk_i(clk),.reset_ni(rst),.memory_clk_i(mclk),.memory_reset_ni(rst),.backend_ready_i(rst),.transport_fault_i(1'b0),
+        .clk_i(clk),.reset_ni(rst),.memory_clk_i(mclk),.memory_reset_ni(legacy_memory_reset),.backend_ready_i(rst),.transport_fault_i(1'b0),
         .start_valid_i(1'b0),.start_ready_o(old_ready),.frame_valid_i(1'b0),.ingress_fault_i(1'b0),.cancel_valid_i(1'b0),
         .seal_ready_o(old_seal_ready),.terminal_ready_i(1'b0),.score_ready_i(1'b1),.fatal_o(old_fatal),
         .model_serial_i(1'b1),.flash_miso_i(1'b1),.memory_slot_ready_i(1'b0),.memory_native_accept_i(1'b0),.memory_response_i(1'b0),.memory_read_data_i(256'd0));
-    reg race_desc=0,race_cancel=0,race_fault=0;
+    reg race_desc=0,race_cancel=0,race_fault=0,race_memory_reset=1;
     wire race_ready;
     workstation_task3_cnn_stream_w race(
-        .clk_i(clk),.reset_ni(rst),.memory_clk_i(mclk),.memory_reset_ni(rst),.backend_ready_i(rst),
+        .clk_i(clk),.reset_ni(rst),.memory_clk_i(mclk),.memory_reset_ni(rst && race_memory_reset),.backend_ready_i(rst),
         .link_ready_i(1'b1),.transport_fault_i(race_fault),.panic_i(1'b0),.peer_boot_i(32'd1),.session_i(32'd2),
         .desc_valid_i(race_desc),.desc_ready_o(race_ready),.desc_i({32'd1,32'd2,32'd3,32'd4,32'd16,32'd0,8'd1}),
         .frame_valid_i(1'b0),.frame_i(192'd0),.seal_valid_i(1'b0),.seal_i(192'd0),
@@ -108,6 +109,12 @@ module tb_workstation_cnn_deferred_seal;
     endtask
     reg [31:0] crc_value;
     initial begin
+        for(integer combo=0;combo<4;combo=combo+1)begin
+            rst=combo[0];legacy_memory_reset=combo[1];#1;
+            check(old_default.control_reset_n==rst && old_default.native_reset_n==(rst && legacy_memory_reset) &&
+                old_default.cnn.memory_reset_n==legacy_memory_reset,"default task retains separate control/native reset inputs");
+        end
+        rst=0;legacy_memory_reset=1;
         reset_all();launch(32);feed(13,crc_value);
         repeat(50)@(negedge clk);check(rf==0 && dut.cnn.received==0,"no inference before partial seal");
         send_seal(13,crc_value);terminal(0);
@@ -148,7 +155,15 @@ module tb_workstation_cnn_deferred_seal;
         check(!race_ready && !race.score_valid_o,"clearing raw input cannot resurrect a poisoned task service");
         reset_all();repeat(10)@(negedge clk);
         check(race_ready && race.state==0 && race.service_generation==0,"backend reset recovers without old work");
-        $display("PASS deferred_seal_storage_lifecycle checks=%0d scenarios=9 real_cnn=0",checks);$finish;
+        while(!race_ready)@(negedge clk);race_desc=1;@(negedge clk);race_desc=0;
+        wait(race.state==3 && race.task_service.state==2);
+        @(negedge clk);#1;race_memory_reset=0;#1;
+        check(!race.live && !race.task_service.native_reset_n && !race.score_valid_o && !race.terminal_valid_o,
+            "active task memory reset asserts quarantine without another clock edge");
+        repeat(10)@(negedge clk);race_memory_reset=1;repeat(30)@(negedge clk);
+        check(race_ready && race.state==0 && race.task_service.state==0 && race.service_generation==0 &&
+            !race.score_valid_o && !race.terminal_valid_o,"coherent reset discards active task without stale publication");
+        $display("PASS deferred_seal_storage_lifecycle checks=%0d scenarios=11 real_cnn=0",checks);$finish;
     end
     initial begin #30000000;$fatal(1,"test timeout");end
 endmodule
@@ -157,7 +172,7 @@ endmodule
 module basic_pitch_workstation_link #(
     parameter bit USE_FLASH_WEIGHTS=0,USE_DDR_SIGNAL=1,USE_DDR_CQT_COEFF=1,DRAIN_RESTART_ENABLE=0,BOUNDED_EOF_PADDING=0,
     parameter integer WIN_LEN=43844,FRAME_LIMIT=172,OCTAVE_LIMIT=9,CQT_HOP_NUMERATOR=256,CQT_HOP_DENOMINATOR=1,FEATURE_TILE_COLS=0,
-    parameter bit COARSE_GUIDANCE=0,
+    parameter bit COARSE_GUIDANCE=0,NATIVE_LIFETIME_RESET=0,
     parameter integer RESTART_TIMEOUT_CYCLES=50000000
 )(
     input wire clk_50m,reset_n,memory_clk,memory_reset_n,memory_calibrated,model_serial,flash_miso,

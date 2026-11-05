@@ -15,6 +15,9 @@ module basic_pitch_workstation_link #(
     // Opt in only for a task owner which waits for restart_done_o. The
     // default retains the accepted single-board restart contract.
     parameter bit DRAIN_RESTART_ENABLE = 1'b0,
+    // W task owner supplies coherent resets already released in each domain.
+    // Default ledgers retain their lifetime across memory-only reset/loss.
+    parameter bit NATIVE_LIFETIME_RESET = 1'b0,
     parameter bit BOUNDED_EOF_PADDING = 1'b0,
     parameter integer RESTART_TIMEOUT_CYCLES = 50000000
 ) (
@@ -225,12 +228,13 @@ module basic_pitch_workstation_link #(
         assign restart_fault_o=fault;
         assign restart_failure_code_o=failure_code;
 
+        wire lifetime_reset_n=NATIVE_LIFETIME_RESET ? memory_reset_n : reset_n;
         // Register Gray from the very same single native-write acceptance.
         // It changes by at most one bit per memory clock, even while source
         // request admission is frozen for drain. Do not reset this counter
         // with memory_reset_n: lost transport state must fault, not look empty.
-        always @(posedge memory_clk or negedge reset_n) begin
-            if(!reset_n)begin
+        always @(posedge memory_clk or negedge lifetime_reset_n) begin
+            if(!lifetime_reset_n)begin
                 writes_committed<=0;writes_committed_gray<=0;
                 memory_was_ready<=0;memory_failed<=0;
             end else begin

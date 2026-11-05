@@ -62,22 +62,24 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，最新来源检查点为两板 v11。W v11 修复 native DDR 故障直接影响 CNN 控制取消和结果发布的组合旁路，已完成实际综合、布局布线和位流生成，整机时序仍失败。v10 仅保留为准备记录；v11 补齐 provider 回归夹具的 CNN 来源，运行输入与 v10 相同。历史检查点、task2 和单板回退均保留。
+截至 2026-11-06，最新来源检查点为两板 v13。W 的 CNN 复位改为共同异步置位、按各自时钟等待三拍释放；旧 v11 位流及 v12/v13 准备记录保留。v13 正式物理准备因一个失效 SDC 选择器被拒绝，另建 E8 诊断核对实际绑定；诊断不能替代正式生成器修订或整机验收。task2、单板和历史候选均保留。
 
-| 板 | 选定来源与身份 | 验证边界 |
+| 板与阶段 | 来源身份 | 实际证据 |
 | --- | --- | --- |
-| M v11 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v11-7bbb8bab1f893e3a`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v11.json) | 949 项来源锁、287 项编译输入。相对 v9 仅未实例化的 W CNN 模块定义改变；M 运行配置、固件和约束字节不变。没有新 M 综合或网表相同结论，实际综合仍参考 v7，物理比较仍以 v5 为基线。 |
-| W v11 CNN 故障边界实验 | `custom138k-workstation-task3-w-paired-checkpoint-v11-3cbc102ada8e7b2a`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v11.json) | 997 项来源锁、200 项编译输入；相对 v9 仅 CNN wrapper 的编译字节改变。综合：49,467 Register、64,941 LUT、16,355 ALU、300 BSRAM 等效、779 RAM16。完整审计 11/17；P2R0 已布通，真实 BSRAM 336/340，时序失败。 |
-| W v9 录音故障边界参考 | `custom138k-workstation-task3-w-paired-checkpoint-v9-24609e04f66eb61e`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_RECORD_FAULT_CDC_20261106.json) | DDR→BLE 录音组合旁路已移除；P2R0 已布通，BSRAM 336/340；最差 setup −7.826 ns，setup/hold 违规端点 10,578/172，仍不能部署。 |
-| W v8 CPU48 物理参考 | `custom138k-workstation-task3-w-paired-checkpoint-v8-47db282fd95aafe1`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CPU48_CAPACITY_20261106.json) | 采用 PR #2 后真实 BSRAM 由旧 W v2 的 344/340 降至 336/340；布局布线完成，但时序和完整门禁失败。仅余 4 块 BSRAM，综合等效数 300 不能替代物理数 336。 |
+| M v13 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v13-4dd0aba0be6244ff`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v13.json) | 953 项来源锁、287 项编译输入。相对 v11 仅 W CNN/link/task 的未实例化定义改变；M 无本阶段新综合或物理收益结论。实际综合仍参考 v7，物理对比仍用 v5。 |
+| W v13 CNN 复位实验 | `custom138k-workstation-task3-w-paired-checkpoint-v13-0753e88e22a7f3b1`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v13.json) | 1,001 项来源锁、200 项编译输入；综合 49,471 Register、63,891 LUT、16,345 ALU、300 BSRAM 等效、779 RAM16。相对 v11 为 +4 Register、−1,050 LUT、−10 ALU，BSRAM 等效和 RAM16 不变；完整审计 8/17。 |
+| W v13 E8 独立物理诊断 | `custom138k-resource-physical-D21106E8`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_DOMAIN_RESET_20261106.json) | 仅将原 2 ns 就绪链约束的失效末级名称重绑定到实存 `backend_sync`；不改变时钟、预算或例外范围。已布通，真实 BSRAM 336/340，时序仍失败；正式生成器尚未同步该变更。 |
+| W v11 故障边界回退 | `custom138k-workstation-task3-w-paired-checkpoint-v11-3cbc102ada8e7b2a`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_FAULT_CDC_20261106.json) | 两级故障同步与 native 立即隔离继续保留。旧 P2R0 已布通、BSRAM 336/340，但整机时序失败；不把旧位流或门禁结果归到新候选。 |
 
-v11 让 CNN wrapper 的 `live` 只消费两级 `transport_fault_control` 的末级；native broker 仍接收原始故障并立即隔离事务。两拍同步后取消并排空当前任务，禁止发布结果；清除故障输入不能复活旧任务，reset 恢复不得重放。既有录音 `ready_control` 边界继续保留，没有增加录音后端、队列或 BSRAM。两板运行配置、安装的 USB/AE350 ROM、LCD/BLE 协议及 CST/SDC 字节不变；约束来源元数据和固件路径相关记录不作逐字节相同声明。
+v13 的 wrapper 和 task control 各自等待三个控制时钟边沿，native 侧等待三个 DDR 时钟边沿。请求异步撤销时立即清空两域，暂停任一时钟均不能提前释放。只有该 W 策略把 native 排空账本接到 native 末级复位；默认 task 仍保留独立控制/存储复位输入，默认 link 的账本仍跨 memory-only reset 保持原有生命周期。native broker 故障隔离、两级控制故障同步、唯一录音对象和 M 基础采样调度继续保留。
 
-[W CNN 故障边界证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_FAULT_CDC_20261106.json)记录 36 项来源/配置/审计回归、48 项 provider 负向变异，均通过且无跳过；真实 media/arbiter/raw-store 的 16 项故障检查及真实 task/broker 配确定性 CNN sink 的 33 项、9 场景生命周期检查也通过。后者不证明模型加载、推理质量或完整 HCI 录音对象。实际网表中 128 个 DDR tag FF 到 CNN 核心的直接组合传播由 v9 的 83 个 FF 引脚、1 个不透明端点降为零；两个两级边界的 12 项故障变异被拒绝。该局部证明不覆盖全部 native status、payload、复位或 PLL。
+[本阶段报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_DOMAIN_RESET_20261106.json)记录 71 项来源/准备/固件回归和 66 项 provider 负向检查通过，无跳过；其中包含三条完整工作站的干净来源重建。真实 task/broker 配确定性 CNN sink 的 39 项、11 场景检查，以及真实 media/arbiter/raw-store 配 CNN 实例的 22 项检查通过，包括时钟暂停与校准丢失/恢复；它们不证明模型加载、推理质量或完整 HCI 录音。独立 16 KiB AE350 录音 API 回归仍因 ROM 超出 760 字节失败；当前选用的 128 KiB W 手机/录音固件准备通过，两板 USB 固件 ELF、binary、ROM 与 v11 相同。
 
-完整 batch 网表回归 4 项中有 2 项 error：旧生成网络名 `u_task3_bus_endpoint/n10383_32` 已不存在。完整审计保留 11/17，相关时钟、USB、reset、feedback 和 held 门禁仍被阻挡，没有对缺失网络做 cut 或刷新历史 consumer 清单来放行。v9 的只读映射回归通过也不转化为 v11 完整验收。
+实际网表中，DDR `memory_release` 到 CNN 范围的控制域 FF 引脚从 10,542 个降到 11 个，仅剩释放链异步清零和状态同步首级 D。到 CNN 核心的直接传播从 7,984 个 FF 引脚、264 个不透明原语端点降为零。三条三级释放链、33 个 native 账本 FF、就绪链和既有故障链的局部证明共拒绝 56 项破坏性变异；该局部证明不覆盖完整 CDC/PLL 或 payload hold。
 
-v11 P2R0 在同约束下 348.11 秒自然完成，输入哈希前后一致；真实资源为 Logic 86,426、Register 49,467、CLS 59,096/69,120、BSRAM 336/340，PRIMARY 与 LW 均为 8/8。最差 setup/hold/recovery/removal 分别为 −5.679/−4.319/−7.123/−0.276 ns；setup/hold 违规端点从 v9 的 10,578/172 变为 13,002/192。最差 setup 为 DDR memory release→CNN 前端 CE；50 MHz、76.8 MHz、DDR UI 100 MHz 域的 Fmax 分别为 42.769/67.660/74.713 MHz，均失败。局部 CDC 修复不等于整机达标，PR1014 的 `clk_50m_d` 普通布线警告仍存在。位流 SHA-256 为 `8f5f1b054e3482049d46211967659e6ccac1f8cfc0e744bfda4866f76c44a125`，UserCode **请求值** `D21106E6`；没有板上读回、SRAM 下载、Flash 写入或硬件功能验收。
+正式 E7 物理运行在 SDC 第 367 行被 `TA2003` 拒绝，尚未布局或生成位流：综合器保留 `backend_meta→backend_sync`，旧 `model_memory_ready*` 末级名称消失。完整 batch 网表回归 4 项中有 3 项 error：两项被完整四字身份比较的 Boolean 证明阻挡，一项是缺失关联来源文件时的异常类型；未裁掉生成网络、改写历史 consumer 清单或放宽门禁。完整审计还保留 USB FIFO Boolean 映射及失效 SDC 选择器等失败。
+
+E8 使用同一 v13 网表、相同 CST，仅重绑定该条既有 2 ns 约束；实际两级直连、相同复位、无门控 CE、CNN 就绪输入连接及 8 项破坏性检查均通过。它在 318.98 秒自然完成路由与位流生成，输入哈希前后一致。真实资源为 Logic 85,355、Register 49,471、CLS 58,819/69,120、BSRAM 336/340；最差 setup/hold/recovery/removal 分别为 -7.224/-4.350/-7.947/-0.234 ns，setup/hold 违规端点 3,608/75。最差 setup 比 v11 的 −5.679 ns 更差，当前最差路径是 native DDR 仲裁 tag→延迟效果控制；局部修复未证明整机时序改善。完整时序、CDC/PLL 仍未通过；PR1014 仍需处理。位流 SHA-256 为 `e1026e1ba7653d312ab112638651cc7a004a690399498ea8621896911f431d55`，UserCode **请求值** `D21106E8`；无板上读回、SRAM 下载、Flash 写入或硬件功能验收。
 
 [W CPU48 来源与综合证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CPU48_SYNTHESIS_20261106.json)保留 PR #2 的固件容量、栈预算、24 银行及全部 12,288 个 ROM 字证明；两板仍使用该优化，保留真实识别、HCI/SBC 和唯一 60 秒录音对象。v8/v9 的完整物理失败和位流身份保存在对应报告，不改写为新检查点的证据。
 
@@ -100,7 +102,7 @@ M v5 的同约束 P2R0 诊断以 `D21106E1` 请求值运行，699.30 秒后自�
 后续按以下顺序推进：
 
 1. 以 M v5 为物理对比基线，结合 M v7 的失败结果检查拥塞、时钟/复位扇出和剩余组合路径。身份比较已在实际整机网表中缩短，但整机综合估算未改善；继续定位真实限制，保留异步复位与生命周期，完整布通后核对 setup/hold/recovery/removal，不放宽时钟或 false path。
-2. 关闭 M 两个完整 CPU release/consumer 边界与完整 TF CDC；W 录音和 CNN 控制的局部 DDR tag 组合旁路已修复，完整 batch 证明仍被缺失生成网络名阻挡；继续核对实际关键路径、DDR/配置 payload hold、根 reset→audio recovery、memory release→CNN removal 和 PR1014。为新网表补齐完整 live/batch 功能证明，保留历史 consumer 清单与失败；局部命令、录音、MIDI 或根状态证明不能替代这些门禁，不放宽时钟或 false path。
+2. 关闭 M 两个完整 CPU release/consumer 边界与完整 TF CDC；W 录音/CNN 故障与 CNN 本域复位的局部旁路已修复；先把实测就绪末级的选择器重绑定移入正式生成器，补正向、旧选择器拒绝及精确逆变换回归，准备新身份。完整 batch 仍被四字身份比较证明和缺失来源异常类型阻挡；继续核对 DDR/配置 payload hold、剩余高扇出复位路径和 PR1014。为新网表补齐完整 live/batch 功能证明，保留历史 consumer 清单与失败；局部命令、录音、MIDI 或根状态证明不能替代这些门禁，不放宽时钟或 false path。
 3. W CPU48 已完成真实物理容量与布线核查，但时序和完整门禁仍失败。结合仅余 4 块 BSRAM 和 LCD 预算，选择重型效果、FFT/显示分析及扩展合成迁移。W 实际网表已含 32 个 BSRAM 等效的效果链，其中混响占 20 个；优先审查将其复用为受 M 参数控制的有界计算分支，不能直接假定还能叠加一套混响或 FFT。该复用尚未选入整机。已移至 W 的识别、手机解码与唯一录音/下载对象继续保留；旧 TF 客户端、25K 绘制、BLE owner 的数字仍须对应实际编译路径。
 4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 有效吞吐、往返延迟、拥塞，再验收 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果与 60 秒录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 及真实来源格式绑定；当前成对配置只接纳 48 kHz 录音。
 

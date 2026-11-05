@@ -39,6 +39,9 @@ class CurrentSources(unittest.TestCase):
                     expected['m_identity_compare_policy']=POLICY
                 if role=='W' and name.endswith('-v8'):
                     expected['usb2_cpu_ram_bytes']=49152
+                if role=='W' and name.endswith('-v12'):
+                    from tools.workstation_task3_cnn_reset import POLICY
+                    expected['cnn_reset_policy']=POLICY
                 self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])

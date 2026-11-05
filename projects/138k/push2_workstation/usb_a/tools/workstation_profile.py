@@ -429,6 +429,31 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision11')
 
 
+# W CNN reset assertion remains common; release now belongs to each clock.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v12'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v12'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v11']
+    _configuration=dict(_parent['configuration'])
+    if _role=='w':
+        from tools.workstation_task3_cnn_reset import POLICY as _cnn_reset_policy
+        _configuration['cnn_reset_policy']=_cnn_reset_policy
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=12,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v12.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision12')
+
+
+# Preserve v12 preparations. Its resource CLI verification still expected the
+# historical task bytes; v13 checks the admitted exact-reset-inverse bytes.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v13'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v13'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v12'],
+        revision=13,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v13.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision13')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))

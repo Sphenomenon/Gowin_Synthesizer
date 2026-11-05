@@ -370,9 +370,21 @@ def selected_source_evidence(stage, text):
     # fault bypass. New board bytes must bind the synchronized local fence.
     fault_boundary = {}
     stream = module('workstation_task3_cnn_stream_w')
+    reset_release_selected = '.DOMAIN_RESET_RELEASE(1\'b1)' in stream
+    if reset_release_selected:
+        from tools.workstation_task3_cnn_reset import source_evidence
+        fault_boundary['CNN_domain_reset_boundary'] = source_evidence(stage)
+        once(stream, 'wire reset_request_n=reset_ni && memory_reset_ni;')
+        once(stream, 'wire control_reset_n=control_release[2];')
+        once(stream, '.reset_ni(control_reset_n),.memory_clk_i(memory_clk_i),.memory_reset_ni(memory_reset_ni)')
+        task = module('workstation_cnn_task_service')
+        once(task, 'assign control_reset_n=control_release[2];')
+        once(task, 'assign native_reset_n=native_release[2];')
+        once(task, 'wire live=control_reset_n && (DOMAIN_RESET_RELEASE || memory_reset_ni) && backend_sync && !fatal_o;')
+        once(task, '.NATIVE_LIFETIME_RESET(DOMAIN_RESET_RELEASE)')
     if media.sha(stage / 'rtl/music/workstation_task3_cnn_stream_w.sv') != 'ba67f7d71b08d3ccf22a766b79bc1fa312d73c219758b45bac046d687eac94b0':
         once(stream, 'else transport_fault_control<={transport_fault_control[0],transport_fault_i};')
-        once(stream, 'wire live=reset_ni && link_ready_i && !transport_fault_control[1] && !panic_i;')
+        once(stream, 'wire live='+('control_reset_n' if reset_release_selected else 'reset_ni')+' && link_ready_i && !transport_fault_control[1] && !panic_i;')
         once(stream, '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_i)')
         fault_boundary['CNN_fault_control_boundary'] = dict(
             policy='native_immediate_quarantine_CNN_control_fault_sync2_v1',
@@ -525,6 +537,16 @@ def source_negative_controls(stage, text):
             ('delayed-native-CNN-quarantine',
              '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_i)',
              '.backend_ready_i(backend_ready_i),.transport_fault_i(transport_fault_control[1])'),
+        ]
+    if '.DOMAIN_RESET_RELEASE(1\'b1)' in text:
+        controls += [
+            ('CNN-domain-reset-disabled', ".DOMAIN_RESET_RELEASE(1'b1)", ".DOMAIN_RESET_RELEASE(1'b0)"),
+            ('CNN-first-control-release-consumer', 'wire control_reset_n=control_release[2];', 'wire control_reset_n=control_release[0];'),
+            ('CNN-first-native-release-consumer', 'assign native_reset_n=native_release[2];', 'assign native_reset_n=native_release[0];'),
+            ('CNN-raw-memory-reset-live', '(DOMAIN_RESET_RELEASE || memory_reset_ni)', 'memory_reset_ni'),
+            ('CNN-native-ledger-release-disabled', '.NATIVE_LIFETIME_RESET(DOMAIN_RESET_RELEASE)', ".NATIVE_LIFETIME_RESET(1'b0)"),
+            ('CNN-raw-wrapper-reset', '.reset_ni(control_reset_n),.memory_clk_i(memory_clk_i),.memory_reset_ni(memory_reset_ni)',
+             '.reset_ni(reset_ni),.memory_clk_i(memory_clk_i),.memory_reset_ni(memory_reset_ni)'),
         ]
     if verify_batch_provider(stage, cnn_provider_from_stage(stage))['phone_batch']:
         controls += [
