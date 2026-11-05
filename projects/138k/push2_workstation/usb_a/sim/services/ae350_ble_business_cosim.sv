@@ -26,7 +26,8 @@ module ae350_ble_business_cosim #(
  output wire [2:0] codec_phase,
  output wire [3:0] fetch_debug,
  output wire [31:0] object_id,frames,record_state,
- output wire [31:0] native_writes,max_native_address,native_committed
+ output wire [31:0] native_writes,max_native_address,native_committed,
+ output wire [31:0] competing_music_commands,competing_delay_commands
 );
 assign engine_phase=endpoint.recording.state;
 assign codec_phase=endpoint.recording.encoder.phase;
@@ -63,6 +64,26 @@ gw138k_apb_cdc bus_bridge(.reset_n(owner_resetn && resetn),.pclk(clk),.audio_clk
 reg [31:0] phase=0,ms_count=0,ms_divider=0;
 assign elapsed_ms_o=ms_count+test_time_bias;
 wire tick=FAST_CAPTURE ? phase[2:0]==7 : phase+32'd48000>=32'd50000000;
+wire test_pcm_valid;
+wire [31:0] test_pcm_pair;
+`ifdef TASK3_SHARED_RECORD_DDR
+// Advance the source independently of the recorder. A missed delivery must
+// change the sealed bytes/CRC instead of silently repeating its frame index.
+reg [31:0] source_sequence;
+always @(posedge clk)begin
+ if(!resetn || raw_start_done_i)source_sequence<=0;
+ else if(tick && pcm_run)source_sequence<=source_sequence+1'b1;
+end
+assign test_pcm_pair=32'h9e370b5a ^ (source_sequence*32'h0010203);
+`ifdef TASK3_SHARED_DROP_PCM
+assign test_pcm_valid=tick && pcm_run && source_sequence!=17000;
+`else
+assign test_pcm_valid=tick && pcm_run;
+`endif
+`else
+assign test_pcm_valid=tick && pcm_run;
+assign test_pcm_pair=FAST_CAPTURE ? 32'h9e370b5a ^ (frames*32'h0010203) : 32'h22221111;
+`endif
 always @(posedge clk)if(!resetn)begin phase<=0;ms_count<=0;ms_divider<=0;end
 else begin
  phase<=FAST_CAPTURE ? phase+1'b1 : tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
@@ -80,8 +101,8 @@ ble_protocol_command #(
  .business_command_data_i(command_data),.business_command_strobes_i(command_strobes),
  .business_command_ready_o(command_ready),.business_response_error_o(response_error),
  .business_response_data_o(bus_response_data),
- .pcm_valid_i(tick && pcm_run),.source_ready_i(1'b1),.source_fault_i(1'b0),
- .pcm_pair_i(FAST_CAPTURE ? 32'h9e370b5a ^ (frames*32'h0010203) : 32'h22221111),
+ .pcm_valid_i(test_pcm_valid),.source_ready_i(1'b1),.source_fault_i(1'b0),
+ .pcm_pair_i(test_pcm_pair),
  .boot_id(64'h1122334455667788),.att_value_limit(test_att_limit),.boot_valid(1'b1),
  .response_subscribed(1'b1),.control_open(1'b1),.recording_enable(1'b1),.transfer_subscribed(1'b1),
  .elapsed_ms(ms_count+test_time_bias),.fragment_write(fragment_write),.fragment_addr(fragment_addr),.fragment_data(fragment_data),
@@ -124,7 +145,13 @@ ble_protocol_command #(
 assign capture_phase=endpoint.recording.capture_state;
 assign object_id=endpoint.recording_id,frames=endpoint.recorded_frames,record_state={24'd0,endpoint.record_state};
 assign native_committed=raw_committed_frames_i;
+`ifdef TASK3_SHARED_RECORD_DDR
+ae350_ble_shared_ddr_fixture #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.BASE_APP(BASE_APP)) backing(
+        .music_commands_o(competing_music_commands),.delay_commands_o(competing_delay_commands),
+`else
+assign competing_music_commands=0,competing_delay_commands=0;
 ble_raw_ddr_fixture #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.BASE_APP(BASE_APP)) backing(
+`endif
         .native_writes_o(native_writes),.max_native_address_o(max_native_address),
         .clk(clk),.resetn(resetn),.native_pause(test_native_pause),        .raw_start_valid_o(raw_start_valid_o),
         .raw_start_ready_i(raw_start_ready_i),

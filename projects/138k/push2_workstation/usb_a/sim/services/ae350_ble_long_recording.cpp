@@ -31,13 +31,20 @@ int main(int argc,char **) {
     h.check(h.dut.frames==capacity && h.dut.native_committed==capacity,"full long object native committed prefix");
     h.check(h.dut.native_writes==capacity/8,"full object exact BL8 writes");
     h.check(h.dut.max_native_address==TASK3_RECORD_BASE+capacity-8,"last native beat excludes reservation padding");
+#ifdef A138_TASK3_SHARED_MEMORY_TEST
+    h.check(h.dut.competing_music_commands>capacity/8 && h.dut.competing_delay_commands>capacity/8,
+        "long capture shares actual queues/arbiter with sustained owner5/6 traffic");
+    const uint32_t music_before_download=h.dut.competing_music_commands;
+    const uint32_t delay_before_download=h.dut.competing_delay_commands;
+    bool resumed=false;
+#endif
     const auto pcm=expected_pcm(capacity);const uint32_t object_crc=crc(pcm);
     h.dut.enable=1;h.cycle(64);std::vector<uint8_t> p;put(p,1);h.command(1,p);h.cycle(4096);
     p.clear();put(p,0);auto info=h.command(0x22,p);
     h.check(info[1]==0 && word(info,24)==1 && info[28]==4 && word(info,32)==48000 &&
         word(info,36)==capacity && word(info,40)==capacity*4 && word(info,44)==capacity &&
         word(info,48)==object_crc,"BLE GET exposes same full CPU object/format/capacity/CRC");
-    p=h.object();put(p,0);auto opened=h.command(0x3d,p);const uint32_t transfer=word(opened,16);
+    p=h.object();put(p,0);auto opened=h.command(0x3d,p);uint32_t transfer=word(opened,16);
     h.check(opened[1]==0 && (word(opened,32)&65535)==8112,"long object uses unchanged bounded download window");
     uint32_t offset=0,blocks=0;std::vector<uint8_t> downloaded;downloaded.reserve(pcm.size());
     while(offset<pcm.size()) {
@@ -49,10 +56,37 @@ int main(int argc,char **) {
         h.check(actual.size()==length && std::equal(actual.begin(),actual.end(),pcm.begin()+offset),"every downloaded PCM byte is real DDR data");
         h.check(word(block,40)==crc(actual),"each long block real PCM CRC");
         downloaded.insert(downloaded.end(),actual.begin(),actual.end());offset+=length;blocks++;
+#ifdef A138_TASK3_SHARED_MEMORY_TEST
+        if(!resumed && offset>65536u) {
+            const uint32_t old_transfer=transfer;
+            // The received block is CRC-verified but its ACK is still pending.
+            // A new session must retire that lease, retain the sealed object,
+            // and accept an explicit offset only after metadata validation.
+            h.dut.enable=0;h.cycle(64);h.pump();h.dut.enable=1;h.cycle(64);
+            h.next_id=1;p.clear();put(p,1);h.command(1,p);h.cycle(4096);
+            for(unsigned k=0;k<8;k++)h.pump();
+            p.clear();put(p,0);auto retained=h.command(0x22,p);
+            h.check(retained[1]==0 && word(retained,24)==1 && retained[28]==4 && retained[29]==1 &&
+                word(retained,32)==48000 && word(retained,36)==capacity && word(retained,48)==object_crc &&
+                h.owner.object_counter==1,"reconnect preserves actual full immutable PCM object");
+            p.clear();put(p,old_transfer);put(p,offset);put(p,word(block,40));
+            h.check(h.command(0x32,p)[1]==0x8d,"old pending ACK cannot revive a disconnected download");
+            p=h.object();put(p,offset);opened=h.command(0x3d,p);transfer=word(opened,16);
+            h.check(opened[1]==0 && transfer==old_transfer+1 && word(opened,28)==offset,
+                "new C transfer resumes after verified bytes beyond the former short capacity");
+            resumed=true;
+            std::printf("RESUMED long object offset=%u old_transfer=%u new_transfer=%u\n",offset,old_transfer,transfer);
+            continue;
+        }
+#endif
         p.clear();put(p,transfer);put(p,offset);put(p,word(block,40));
         h.check(h.command(0x32,p)[1]==0,"long block ACK advances same C lease");
     }
     h.check(downloaded==pcm && crc(downloaded)==object_crc,"full 11520000-byte download/object CRC");
+#ifdef A138_TASK3_SHARED_MEMORY_TEST
+    h.check(resumed && h.dut.competing_music_commands>music_before_download &&
+        h.dut.competing_delay_commands>delay_before_download,"shared traffic continues during complete download/reconnect");
+#endif
     h.check(h.command(0x31,h.read_payload(transfer,offset,4))[1]==0x89,"object end cannot address allocation padding");
     p.clear();put(p,transfer);put(p,object_crc);h.check(h.command(0x33,p)[1]==0,"complete long object CLOSE");
     h.check(h.command(0x23,h.object())[1]==0 && h.dut.object_id==0,"BLE clears the CPU-created long object");
@@ -80,11 +114,12 @@ int main(int argc,char **) {
         receipt.crc==crc(short_pcm) && h.dut.native_writes==writes_before+2,"STOP exact partial object/CRC/native count");
     p.clear();put(p,0x55667788);put(p,0x11223344);put(p,2);put(p,0);
     opened=h.command(0x30,p);uint32_t short_transfer=word(opened,16);
-    h.check(opened[1]==0 && short_transfer==2,"BLE opens the actual replacement object2");
+    h.check(opened[1]==0 && short_transfer==transfer+1,"BLE opens the actual replacement object2");
     h.check(h.command(0x31,h.read_payload(short_transfer,0,52))[1]==0,"partial object BLE READ");
     auto block=h.transfer_block();
     h.check(std::vector<uint8_t>(block.begin()+44,block.end()-4)==short_pcm,"partial final BL8 excludes stale long-object tail");
     std::printf("PASS long single recording frames=%u bytes=%zu blocks=%u checks=%u crc=%08x last_native=%08x\n",
         capacity,downloaded.size(),blocks,h.checks,object_crc,TASK3_RECORD_BASE+capacity-8);
+    h.dut.final();
     return 0;
 }

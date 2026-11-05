@@ -73,6 +73,8 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 W 的独立网表诊断已检查 39 个 consumer 差异：12 个在明确的同名状态对应前提下，复位在内的下一拍函数相等；27 个仍待证明。7 项定向测试通过，包含 Gowin ALU 原语交叉核对和实际网表的 6 种突变拒绝。此结果未证明完整状态关系、异步复位事件或完整 CDC；生产门禁、历史锁及冻结候选均未改变。范围及复现入口见 [W consumer 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json)。
 
+W 的[共享存储录音回归](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_SHARED_RECORDING_20261105.json)已绑定当前候选的组件字节：生产队列/仲裁器在模拟分析及 delay 流量竞争下完成 288 万帧录制和全部 11.52 MB 下载，CRC 为 `3ddb23ec`；下载断连后旧 ACK 被拒绝，新租约从 73,008 字节恢复同一对象。采样源独立计数，注入第 17,000 帧丢失后，对象 CRC 校验拒绝该结果；默认路径的 136 条协议消息与原参考逐字节一致。此为加速 PCM、行为 DDR 控制器及模拟竞争流量的离线验证，尚不证明实际 CNN/手机并发、硬件 60 秒录音或物理时限；44.1 kHz 录音仍未启用。
+
 接下来按以下顺序推进：
 
 1. 恢复本机已有 Gowin 许可证运行环境，综合冻结的 M 新候选；确认 score/tap 实际推断为 BSRAM 且不含原 RAM16，保留完整资源与时序检查。随后审查新映射的 reset、held、TF 和全部 CDC consumer，不能继承旧候选证明。

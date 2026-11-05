@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "e6d8e704",
+  "stage": "W_long_recording_shared_fabric_and_reconnect_component_validation",
+  "goal_complete": false,
+  "implementation_change": "Opt-in simulation fixture connects the maintained single recording engine/store to production owner5/6/8 queues and registered arbiter; adds sustained synthetic music/delay load, independent native readiness stalls, delayed returns and reconnect during a pending download ACK. Shared-mode PCM uses an independent source counter; a deliberately missing source frame17000 must fail the complete-object CRC oracle.",
+  "production_RTL_modified": false,
+  "production_firmware_modified": false,
+  "selected_profiles_modified": false,
+  "new_candidate_created": false,
+  "candidate_component_binding": {
+    "candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+    "candidate_identity": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee",
+    "immutable_prepared_closure_verified": true,
+    "paired_RTL_sha256": {
+      "rtl/bluetooth/cpu_owner/ble_protocol_command.v": "79b99162d26e3abff2681b97c9bab7554e4a2d424df6ddbdc6859855c503d3bd",
+      "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv": "ea28fff83b5ab6f7175bf88cea97a1933ff8d87c06c1860bc44770fd3ac2a3b2",
+      "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv": "b53a89328c453f1b1dafcd4fbc296d6bdd50878eebd2177f74634ae8c4c429db",
+      "rtl/services/workstation_business_mailbox.sv": "61b3ad5f9976294fd28ad8506ecb254d7e69e4409dd8c780c0af94404623632a",
+      "rtl/memory/workstation_ble_raw_ddr_store.sv": "5d2b3512b543ef2935161d468f61962965a508ffa9a23fd71ab8d9117626d874",
+      "rtl/memory/workstation_recording_ddr_native_bridge.sv": "05fcd2ea0abe2daebdc0ab8216545b42fbd0f830f2cce30a09afb25ba3723205",
+      "rtl/memory/workstation_sdp.sv": "2e804a142f941b63a31d41b13f9238f540d1fc758c90f1098af020530d4d72ec",
+      "rtl/music/music_async_fifo.sv": "e5a190502bec8bb402ad3c44d45d9f61702ddbdbe144baeb67f4da416fe82792",
+      "rtl/memory/workstation_recording_ddr_client_queues.sv": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+      "rtl/music/basic_pitch_ddr_client_queues.sv": "b3530585a536417e5dbf046658c8a6db834ba18052c670ba3163bd7d25a00a7c",
+      "rtl/music/basic_pitch_ddr_arbiter_pipeline.sv": "7c390c18f9fa0477f4007c1f1f41bf9cee57e68730a1fc927e40a6f71eb0d69d",
+      "rtl/ddr_address_map.vh": "051c46466feb23a43003cf15c28340a1409974da1b6f4af2c5aa45ebdb030655"
+    },
+    "firmware_source_sha256": {
+      "firmware/ae350/business_mailbox.c": "49f14da2b57d6c826502b9d01ba26c5ff7c5089d6a2f14f4022b685d32054945",
+      "firmware/ae350/recording_service.c": "f948f9aba50bb039ef36bc610f3694c375a31cc2501df28bbbed20466d860f26",
+      "firmware/ae350/ble_business_owner.c": "e7d4b9dc032d2a4e494baf90364c13230f3550627d8658751c1ecd910ef15122",
+      "firmware/ae350/ble_business_owner.h": "1b2841938b24f06d6ea252ae1172c7611320438dfec089b36551fddaeb29659a",
+      "firmware/ae350/recording_service.h": "7200bc80652be8f0f95a8c1ece393bcab060af2adf6c0bc37d20b2d7a1c9f194",
+      "firmware/ae350/business_mailbox.h": "7e2c67d8392907d2fde90c8844816a417dc111653260510c997b037adc3a934b",
+      "firmware/ae350/audio_services.h": "d84a0450f5aab3a24bc323e86401566da87e3a46cc681860d2f0b902c1ff74ff"
+    },
+    "scope": "Same selected component bytes; host-compiled C owner and modeled controller. No complete W/AE350/HCI/CNN execution."
+  },
+  "unchanged_boards": {
+    "M": "custom138k-workstation-task3-m-paired-sync-storage-v1-7d8ebf5cda5109d6",
+    "W": "custom138k-workstation-task3-w-paired-phone-batch-v1-cda40ccde09fd1ee"
+  },
+  "recording": {
+    "format_id": 1,
+    "sample_rate_hz": 48000,
+    "capacity_frames": 2880000,
+    "capacity_bytes": 11520000,
+    "represented_capacity_seconds": 60,
+    "wall_clock_audio_test": false,
+    "admitted_and_committed_frames": 2880000,
+    "full_object_native_BL8_writes": 360000,
+    "total_native_writes_including_replacement_object": 360002,
+    "last_native_BL8": "0x0c43f1f8",
+    "native_word_base": "0xc180000",
+    "object_crc32": "3ddb23ec",
+    "downloaded_bytes": 11520000,
+    "download_blocks": 1421,
+    "bounded_window_bytes": 8112,
+    "full_download_byte_and_CRC_comparison": true,
+    "padding_access_rejected": true,
+    "replacement_object_frames": 13,
+    "partial_native_write_and_seal_wait_verified": true,
+    "CPU_and_BLE_use_same_object": true
+  },
+  "contention": {
+    "production_queues": "rtl/memory/workstation_recording_ddr_client_queues.sv",
+    "production_arbiter": "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv",
+    "TAG_BITS": 5,
+    "RECORDING_ENABLE": true,
+    "music_owner": 5,
+    "delay_owner": 6,
+    "recording_owner": 8,
+    "competing_loads_are_synthetic": true,
+    "actual_CNN_or_delay_DSP_executed": false,
+    "music_native_commands": 18973236,
+    "delay_native_commands": 18973235,
+    "memory_cycles": 158750523,
+    "model": "Readiness withheld independently every7/5 memory cycles. The read-delay counter loads2..5 clocks and publishes a registered return on expiration. Native pause during partial STOP. Each competing owner alternates writes/reads and checks actual response identity/data.",
+    "source_cadence": "One PCM frame per8 control clocks; real20ns/14ns simulation clock ratio. Not actual48k cadence, a latency budget or board DDR throughput.",
+    "source_backpressure": false,
+    "physical_service_time_bound_verified": false,
+    "source_sequence_independent_of_recorder": true
+  },
+  "reconnect": {
+    "pending_old_ACK": true,
+    "byte_offset": 73008,
+    "old_transfer": 1,
+    "new_transfer": 2,
+    "old_ACK_rejected": true,
+    "sealed_object_id_unchanged": true,
+    "object_format_capacity_rate_CRC_rechecked": true,
+    "explicit_resume": true,
+    "auto_replay": false,
+    "all_downloaded_bytes_match_original": true
+  },
+  "validation": {
+    "shared_run_checks": 38502,
+    "shared_run_exit": 0,
+    "compiled_input_hashes_verified": true,
+    "candidate_RTL_bindings": 13,
+    "candidate_firmware_bindings": 7,
+    "default_mode_checks": 1765,
+    "default_mode_groups": 13,
+    "reference_wire_messages": 136,
+    "reference_wire_equal": true,
+    "rejected_default_mutations": {
+      "allow_full_task_slot": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "succeed_before_first_frame": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "skip_object_identity": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "remove_uncertain_deadline": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "remove_uncertain_completion_deadline": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "retire_torn_observation": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "ignore_ack_crc": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "ignore_combined_crc": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "commit_combined_before_range": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "ignore_confirmed_offset": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "remove_transfer_timeout": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "replay_mutates_cursor": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "skip_replay_object_identity": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "ignore_extended_limit": {
+        "rejected": true,
+        "returncode": 1
+      },
+      "commit_unstarted_read": {
+        "rejected": true,
+        "returncode": 1
+      }
+    },
+    "capacity_mismatch_rejected": true,
+    "invalid_C_capacity_controls": 3,
+    "address_map_controls": [
+      "valid",
+      "overlap_original_recording",
+      "padding_exposed",
+      "wrong_native_word",
+      "wrong_last_BL8"
+    ],
+    "no_combinational_loop_warning": true,
+    "dropped_PCM_negative_control": {
+      "frame_sequence": 17000,
+      "rejected": true,
+      "reason": "Independent source sequence advances while one PCM-valid pulse is suppressed; sealed CRC disagrees with the complete source image."
+    },
+    "negative_control_is_test_oracle_not_runtime_fault_detector": true,
+    "current_input_hashes_rechecked": true
+  },
+  "evidence": {
+    "shared": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v3/verification.json",
+      "sha256": "48f3ce2166b67f46df3ab5d47778a349a3f6d04a644af2be1a141f882669bc1f"
+    },
+    "shared_stdout": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v3/long-run.log",
+      "sha256": "31b808b55b93bf793a1938c9f4bea52fa59ea5e2450acbc6b2d3cd9bf21d3192"
+    },
+    "default": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-shared-fixture-default-regression-v2/verification.json",
+      "sha256": "c02feb77f1e6f437feb1bb1360c3dac9c402052fc014e55d5e5d5867dc6eb48b"
+    },
+    "W_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/workstation_profile.json",
+      "sha256": "15a5c8cb71eb34c9014090d3b8a4e2d54665c7d9db2a08b984e260200d4db4bc"
+    },
+    "W_firmware_metadata": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3/ae350_firmware/build_metadata.json",
+      "sha256": "7ae8989e1135503263f993415d32cdc89a299f260a22dd5525455816c230e115"
+    },
+    "source_drop_stdout": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v3/drop-run.log",
+      "sha256": "b4d4bbbeaf292db2c624ce3c137eb14388e1804dca8590dfd63fcfeac5a746dd"
+    }
+  },
+  "failed_attempts": [
+    {
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v1",
+      "cause": "Collector required SHARED_DDR exit statistics; C++ did not call the Verilator final callback. Executable exited0 and printed the full CRC/download/reconnect PASS, but collection failed and no validation PASS was published.",
+      "correction": "Call dut.final() before successful exit; rerun with explicit immutable W component binding.",
+      "source_binding_for_failed_attempt_established": false,
+      "retained_stdout": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v1/long-run.log",
+        "sha256": "efef409ae9d81027c381cf441cfae37308d1dc88909f1bf78a4966952fbd7d03"
+      },
+      "retained_compile_log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v1/compile.log",
+        "sha256": "e6c4f5198387e12d135e40c158e692d9eb1f543727c968e81f58fd51c4da0792"
+      }
+    }
+  ],
+  "source_audit_44100": {
+    "implemented_in_this_change": false,
+    "Android_format2_negotiation_exists": true,
+    "Android_opcode": "0x43",
+    "current_M_tap_rejects_44k1": true,
+    "current_record_ARM_reserves_rate_bits_as_zero": true,
+    "current_W_ingress_requires_format1_and_rejects_44k1": true,
+    "current_object_reports_format1_and48000": true,
+    "required_next_scope": "Negotiate format2 in the current session, carry an explicit rate through both ARM/tap and W object descriptors, bind it to real samples, and retain it through seal/download/reconnect. Do not just permit frame44 or relabel48k bytes."
+  },
+  "limits": [
+    "Same compiled component bytes, not complete W top/AE350 instruction execution.",
+    "Synthetic memory requests, not real CNN inference, HCI/SBC, phone D DSP or simultaneous physical playback.",
+    "Behavioral controller and accelerated PCM; no physical DDR/CDC/PLL/STA, BIST, LCD/RF throughput or control-to-DAC latency acceptance.",
+    "44.1k recording remains unsupported; no format/capability enabled by this test.",
+    "M sync-storage synthesis still awaits the existing hostid license environment. No new mapping, routed timing, resource benefit or bitstream is claimed."
+  ],
+  "hardware": {
+    "M_resources": null,
+    "W_resources": null,
+    "routed_timing": null,
+    "control_to_sound_ms": null,
+    "bitstream_sha256": null,
+    "UserCode": null,
+    "target_JTAG_serial": null,
+    "target_UART": null,
+    "hardware_tested": false,
+    "SRAM_programmed": false,
+    "Flash_written": false,
+    "release_ready": false,
+    "deployment_allowed": false
+  },
+  "reproducibility": {
+    "shared": [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_long_recording.py",
+      "--shared-memory",
+      "--candidate",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261103/w-phone-batch-prepare-v3",
+      "--output",
+      "<new absent cache directory>"
+    ],
+    "default": [
+      "python3",
+      "projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py",
+      "--single-recording",
+      "--output",
+      "<new absent cache directory>"
+    ]
+  },
+  "rollback": {
+    "shared_fixture_default_enabled": false,
+    "production_inputs_unchanged": true,
+    "frozen_candidates_untouched": true,
+    "task2_and_single_board_worktrees_untouched": true
+  },
+  "superseded_positive_run": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v2/verification.json",
+      "sha256": "ac5a34eccd313af3ed5823f5bb3cc3632c58ce0b08c6fe70a5a32f6437c2c8c7"
+    },
+    "reason": "Passed the full test but shared PCM still used recorder.frames to produce its pattern. The final v3 source advances independently and adds a dropped-frame negative control; use v3 for final validation."
+  }
+}
