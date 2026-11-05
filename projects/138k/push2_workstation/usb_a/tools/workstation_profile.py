@@ -301,14 +301,22 @@ PROFILE_REGISTRY[TASK3_M_SYNC_STORAGE_NAME]=dict(_parent,
 
 # One current source checkpoint for both roles. Historical descriptors remain
 # immutable; a changed shared generator must not strand the opposite role.
-TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v1'
-TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v1'
 for _name,_parent_name,_role in (
-        (TASK3_M_CHECKPOINT_NAME,TASK3_M_SYNC_STORAGE_NAME,'m'),
-        (TASK3_W_CHECKPOINT_NAME,TASK3_W_PHONE_BATCH_NAME,'w')):
+        ('custom138k-workstation-task3-m-paired-checkpoint-v1',TASK3_M_SYNC_STORAGE_NAME,'m'),
+        ('custom138k-workstation-task3-w-paired-checkpoint-v1',TASK3_W_PHONE_BATCH_NAME,'w')):
     PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY[_parent_name],
         config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v1.json',
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision1')
+
+# Reviewed format backend is opt-in only. These checkpoints compile the current
+# bytes with the existing 48 kHz paired ARM; v1 prepared candidates stay sealed.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v2'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v2'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    PROFILE_REGISTRY[_name]=dict(PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v1'],
+        revision=2,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v2.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision2')
 
 
 def specification(name):

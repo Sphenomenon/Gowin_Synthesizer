@@ -3,7 +3,8 @@
 // One immutable descriptor. This transport never allocates business identities.
 // Observer loss fences future submissions; accepted physical work still drains.
 module workstation_ble_record_data_service #(
-    parameter integer CAPACITY_FRAMES=16384
+    parameter integer CAPACITY_FRAMES=16384,
+    parameter DUAL_RATE_RECORDING=0
 ) (
     input wire clk_i,rst_ni,owner_reset_ni,
     input wire command_valid_i,command_write_i,
@@ -14,6 +15,8 @@ module workstation_ble_record_data_service #(
     output reg response_error_o,
     output reg [31:0] response_data_o,
     input wire [7:0] record_state_i,
+    input wire [7:0] object_format_i,
+    input wire [31:0] object_rate_i,
     input wire [31:0] object_id_i,frames_i,committed_i,crc_i,stop_reason_i,first_frame_ms_i,terminal_ms_i,
     input wire source_good_i,mutation_hold_i,transfer_valid_i,
     input wire request_admitted_i,request_replay_i,
@@ -81,13 +84,13 @@ module workstation_ble_record_data_service #(
                 default:response_error_o=1;
             endcase
         end else case(command_address_i)
-            8'h00:response_data_o=32'h52434403;
+            8'h00:response_data_o=DUAL_RATE_RECORDING ? 32'h52434404:32'h52434403;
             8'h04:response_data_o=32'h00301002; // 48-byte result, 16-byte command, one descriptor.
             8'h0c:response_data_o={16'd0,subscribed_i,enabled_i,1'b0,transfer_valid_i,
                 mutation_hold_i,source_good_i,fenced,busy,record_state_i};
             8'h1c:response_data_o=object_id_i;
             8'h20:response_data_o=0; // BLE32 tag, distinct from R00's independent object64.
-            8'h24:response_data_o=32'd48000; // Existing BLE format 1 only.
+            8'h24:response_data_o=DUAL_RATE_RECORDING ? object_rate_i:32'd48000;
             8'h28:response_data_o=0;
             8'h2c:response_data_o=frames_i;
             8'h30:response_data_o=committed_i;
@@ -112,6 +115,9 @@ module workstation_ble_record_data_service #(
             8'hd8:response_data_o=request_session_i;
             8'hdc:response_data_o=request_boot_i[31:0];
             8'he0:response_data_o=request_boot_i[63:32];
+            // ABI v4 only. Do not let a dual-rate C owner bind a v3 store.
+            8'he4:begin response_data_o=32'd3;response_error_o=!DUAL_RATE_RECORDING;end
+            8'he8:begin response_data_o={24'd0,object_format_i};response_error_o=!DUAL_RATE_RECORDING;end
             // The MMIO ABI only selects aligned whole words. Keep the shared
             // address decode explicit instead of a wide variable bit slice.
             8'h90:response_data_o=result_payload[0+:32];

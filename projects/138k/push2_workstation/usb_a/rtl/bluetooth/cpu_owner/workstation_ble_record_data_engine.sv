@@ -9,11 +9,16 @@ module workstation_ble_record_data_engine #(
     parameter integer SEAL_TIMEOUT_CYCLES=64,
     parameter EXTERNAL_RAW_STORE=0,
     parameter ALLOW_LOCAL_RECORDING=0,
+    parameter DUAL_RATE_RECORDING=0,
     parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0
 )(
     input wire clk, resetn, enable, connected, transfer_subscribed,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
+    // Opt-in physical source fact, on clk. Never a requested clock setting.
+    input wire [7:0] source_format_i,
+    output reg [7:0] object_format_o,
+    output wire [31:0] object_rate_o,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire [31:0] elapsed_ms,
@@ -91,7 +96,12 @@ module workstation_ble_record_data_engine #(
     reg [31:0] limit_frames, object_crc, recording_crc;
     reg [15:0] stop_reason;
     reg [31:0] sample_phase;
-    wire sample_tick=sample_phase+32'd48000>=CLK_HZ;
+    assign object_rate_o=DUAL_RATE_RECORDING && object_format_o==2 ? 32'd44100:32'd48000;
+    wire sample_tick=sample_phase+object_rate_o>=CLK_HZ;
+    wire requested_format_valid=payload[31:0]==1 || (DUAL_RATE_RECORDING && payload[31:0]==2);
+    wire source_format_matches=!DUAL_RATE_RECORDING || source_format_i==object_format_o;
+    wire start_source_good=source_ready_i && !source_fault_i &&
+        (!DUAL_RATE_RECORDING || source_format_i==payload[7:0]);
     reg [2:0] capture_state;
     reg [31:0] capture_word;
     reg stop_pending;
@@ -111,7 +121,7 @@ module workstation_ble_record_data_engine #(
     wire command_link_ready=connected || local_record_command;
     wire seal_commit=EXTERNAL_SEAL_PROTOCOL && seal_pending_o &&
         recording_active && capture_state==0 && recording_id==seal_recording_id_o;
-    wire seal_source_lost=seal_requires_source && (!enable || (EXTERNAL_PCM && (!source_ready_i || source_fault_i)));
+    wire seal_source_lost=seal_requires_source && (!enable || (EXTERNAL_PCM && (!source_ready_i || source_fault_i || !source_format_matches)));
     wire seal_current_error=seal_source_lost || recording_id!=seal_recording_id_o || record_state==5;
     reg [31:0] data_request, data_transfer, data_recording, data_offset, data_crc;
     reg [63:0] data_nonce;
@@ -139,9 +149,9 @@ module workstation_ble_record_data_engine #(
     wire raw_cache_live=raw_cache_owned && raw_cache_valid_i && !raw_fault_i;
     assign raw_seal_admission=!raw_clear_sent && !raw_closing && state!=C_RAW_START && state!=C_RAW_CLEAR &&
         !raw_channel_fault_i && (recording_active || (record_state==0 ? raw_start_ready_i : raw_drained_i));
-    assign raw_start_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_START && command_link_ready && enable && !external_mutation_hold;
+    assign raw_start_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_START && command_link_ready && enable && !external_mutation_hold && start_source_good;
     assign raw_clear_valid_o=EXTERNAL_RAW_STORE && state==C_RAW_CLEAR && !raw_clear_sent;
-    assign raw_capture_valid_o=EXTERNAL_RAW_STORE && resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
+    assign raw_capture_valid_o=EXTERNAL_RAW_STORE && resetn && enable && source_ready_i && !source_fault_i && source_format_matches && pcm_valid_i &&
         capture_state==0 && !stop_pending && !external_capture_hold && recording_active;
     assign raw_capture_index_o=recorded_frames,raw_capture_pcm_o=pcm_pair_i;
     assign raw_close_valid_o=EXTERNAL_RAW_STORE && raw_closing && !raw_fault_i;
@@ -156,7 +166,8 @@ module workstation_ble_record_data_engine #(
         $fatal(1,"raw DDR requires external PCM, bounded capacity and explicit drain timeout");
     assign object_crc_o=object_crc,stop_reason_o={16'd0,stop_reason};
     assign block_crc_o=data_crc;
-    assign source_good_o=source_ready_i && !source_fault_i;
+    assign source_good_o=source_ready_i && !source_fault_i && (!DUAL_RATE_RECORDING ||
+        ((source_format_i==1 || source_format_i==2) && (!recording_active || source_format_matches)));
     assign mutation_hold_o=external_mutation_hold;
     reg [31:0] rom_word;
     generate if(EXTERNAL_RAW_STORE) begin: raw_storage
@@ -165,7 +176,7 @@ module workstation_ble_record_data_engine #(
     end else if(EXTERNAL_PCM) begin: live_capture
         localparam ADDRESS_BITS=$clog2(CAPACITY_FRAMES);
         (* ram_style="block" *) reg [31:0] pcm_memory[0:CAPACITY_FRAMES-1];
-        wire capture_write=resetn && enable && source_ready_i && !source_fault_i && pcm_valid_i &&
+        wire capture_write=resetn && enable && source_ready_i && !source_fault_i && source_format_matches && pcm_valid_i &&
             capture_state==0 && !stop_pending && !external_capture_hold && recording_active;
         always @(posedge clk) begin
             if(capture_write) pcm_memory[recorded_frames[ADDRESS_BITS-1:0]]<=pcm_pair_i;
@@ -322,6 +333,7 @@ module workstation_ble_record_data_engine #(
             state<=C_IDLE; result_payload<=0; command_status<=0; command_length<=0;
             raw_closing<=0;raw_cache_owned<=0;raw_clear_sent<=0;raw_wait<=0;
             record_state<=0; recording_id<=0; recorded_frames<=0;
+            object_format_o<=1;
             limit_frames<=0; object_crc<=0; recording_crc<=32'hffffffff;
             stop_reason<=0; sample_phase<=0; capture_state<=0; capture_word<=0; stop_pending<=0;
             transfer_compact<=0;transfer_bulk<=0;transfer_direct<=0;
@@ -330,8 +342,8 @@ module workstation_ble_record_data_engine #(
             data_recording<=0; data_nonce<=0; data_offset<=0; data_length<=0;data_wire_length<=0;data_lossless<=0;data_second<=0;data_codec<=0;
             data_crc<=0; crc_work<=0; index<=0;
         end else begin
-            if(sample_tick) sample_phase<=sample_phase+32'd48000-CLK_HZ;
-            else sample_phase<=sample_phase+32'd48000;
+            if(sample_tick) sample_phase<=sample_phase+object_rate_o-CLK_HZ;
+            else sample_phase<=sample_phase+object_rate_o;
             if(transfer_consume) transfer_valid<=0;
             if(command_start)begin block_crc_valid_o<=0;read_accepted_o<=0;end
             if(!command_link_ready || !enable) begin
@@ -350,7 +362,7 @@ module workstation_ble_record_data_engine #(
                             record_state<=4; object_crc<=~recording_crc;
                             stop_pending<=0;
                         end
-                    end else if(!external_capture_hold && (EXTERNAL_PCM ? pcm_valid_i && source_ready_i && !source_fault_i : sample_tick)) begin
+                    end else if(!external_capture_hold && (EXTERNAL_PCM ? pcm_valid_i && source_ready_i && !source_fault_i && source_format_matches : sample_tick)) begin
                         if(EXTERNAL_PCM) begin
                             if(!EXTERNAL_RAW_STORE || raw_capture_ready_i)begin capture_word<=pcm_pair_i;capture_state<=2;end
                         end
@@ -378,7 +390,7 @@ module workstation_ble_record_data_engine #(
                 end
             endcase
             if(recording_active && ((EXTERNAL_SEAL_PROTOCOL && !enable) || (EXTERNAL_PCM &&
-                (!source_ready_i || source_fault_i || (!external_capture_hold && pcm_valid_i && capture_state!=0))))) begin
+                (!source_ready_i || source_fault_i || !source_format_matches || (!external_capture_hold && pcm_valid_i && capture_state!=0))))) begin
                 record_state<=5;stop_reason<=!enable || !source_ready_i ? 6 : 3;capture_state<=0;
                 if(EXTERNAL_RAW_STORE)raw_closing<=1;
                 stop_pending<=0;
@@ -386,7 +398,7 @@ module workstation_ble_record_data_engine #(
             // Finish the accepted stereo word and all four CRC bytes first.
             // An unstarted zero-frame object keeps its ID and empty CRC, but
             // its START task fails because no first frame ever became real.
-            if(seal_commit && enable && !(EXTERNAL_PCM && (!source_ready_i || source_fault_i)) &&
+            if(seal_commit && enable && !(EXTERNAL_PCM && (!source_ready_i || source_fault_i || !source_format_matches)) &&
                (!EXTERNAL_RAW_STORE || !raw_closing))begin
                 object_crc<=~recording_crc;stop_reason<=1;
                 if(EXTERNAL_RAW_STORE)begin raw_closing<=1;record_state<=3;end
@@ -399,9 +411,9 @@ module workstation_ble_record_data_engine #(
                     case(opcode)
 
                         8'h20: begin
-                            if(payload_length!=8 || payload[31:0]!=1) reject(8'h81);
+                            if(payload_length!=8 || !requested_format_valid) reject(8'h81);
                             else if(external_mutation_hold) reject(8'h82);
-                            else if(EXTERNAL_PCM && (!source_ready_i || source_fault_i)) reject(8'h83);
+                            else if(EXTERNAL_PCM && !start_source_good) reject(8'h83);
                             else if(record_state!=0) reject(8'h83);
                             else if(payload[63:32]>CAPACITY_FRAMES) reject(8'h89);
                             else if(command_object_id_i==0) reject(8'h82);
@@ -411,6 +423,7 @@ module workstation_ble_record_data_engine #(
                                     else state<=C_RAW_START;
                                 end else begin
                                 recording_id<=command_object_id_i;
+                                object_format_o<=DUAL_RATE_RECORDING ? payload[7:0]:8'd1;
                                 recorded_frames<=0; recording_crc<=32'hffffffff; object_crc<=0;
                                 limit_frames<=payload[63:32]==0 ? CAPACITY_FRAMES : payload[63:32];
                                 record_state<=1; stop_reason<=0; stop_pending<=0; capture_state<=0;
@@ -441,6 +454,7 @@ module workstation_ble_record_data_engine #(
                                 end else begin
                                 result_payload<={352'd0,recording_id}; success(4);
                                 record_state<=0; recording_id<=0; recorded_frames<=0;
+                                object_format_o<=1;
                                 object_crc<=0; stop_reason<=0;
                                 end
                             end
@@ -467,8 +481,10 @@ module workstation_ble_record_data_engine #(
                 end
                 C_RAW_START: begin
                     if(external_mutation_hold || raw_fault_i)reject(8'h82);
+                    else if(!start_source_good)reject(8'h83);
                     else if(raw_start_valid_o && raw_start_ready_i)begin
                                 recording_id<=command_object_id_i;
+                                object_format_o<=DUAL_RATE_RECORDING ? payload[7:0]:8'd1;
                                 recorded_frames<=0; recording_crc<=32'hffffffff; object_crc<=0;
                                 limit_frames<=payload[63:32]==0 ? CAPACITY_FRAMES : payload[63:32];
                                 record_state<=1; stop_reason<=0; stop_pending<=0; capture_state<=0;
@@ -527,12 +543,13 @@ module workstation_ble_record_data_engine #(
                     if(state==C_RAW_CLEAR)begin
                                 result_payload<={352'd0,recording_id}; success(4);
                                 record_state<=0; recording_id<=0; recorded_frames<=0;
+                                object_format_o<=1;
                                 object_crc<=0; stop_reason<=0;
                     end
                 end
                 if(raw_closing && raw_drained_i)begin
                     raw_closing<=0;
-                    if(record_state!=5 && enable && source_ready_i && !source_fault_i && !raw_fault_i && !raw_expired &&
+                    if(record_state!=5 && enable && source_ready_i && !source_fault_i && source_format_matches && !raw_fault_i && !raw_expired &&
                        raw_accepted_frames_i==recorded_frames && raw_committed_frames_i==recorded_frames)begin
                         record_state<=4;
                         stop_pending<=0;

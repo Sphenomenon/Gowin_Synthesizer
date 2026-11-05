@@ -5,6 +5,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     parameter EXTERNAL_PCM=0, parameter CAPACITY_FRAMES=48000,
     parameter CACHE_METADATA_RAM_STYLE="block_ram", parameter EXTERNAL_SEAL_PROTOCOL=0,
     parameter EXTERNAL_RAW_STORE=0,
+    parameter DUAL_RATE_RECORDING=0,
     parameter SINGLE_BLE_RECORDING=0, parameter integer RAW_DRAIN_TIMEOUT_CYCLES=0) (
     input wire business_owner_reset_ni,business_command_valid_i,business_command_write_i,
     input wire [11:0] business_command_address_i,
@@ -15,6 +16,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     input wire clk, resetn, enable,
     input wire pcm_valid_i, source_ready_i, source_fault_i,
     input wire [31:0] pcm_pair_i,
+    input wire [7:0] source_format_i,
     input wire [63:0] boot_id,
     input wire [8:0] att_value_limit,
     input wire boot_valid, response_subscribed, control_open,
@@ -149,7 +151,7 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         end
     end endgenerate
     wire supported_business=header[0]==4 || (header[0]>=8'h20 && header[0]<=8'h23) ||
-        (header[0]>=8'h30 && header[0]<=8'h42 && header[0]!=8'h3a); 
+        (header[0]>=8'h30 && header[0]<=8'h43 && header[0]!=8'h3a);
     wire [15:0] fragment_token={frag[2],frag[1]};
     reg [7:0] current_reply_byte;
     assign busy=state!=IDLE;
@@ -224,6 +226,8 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
     wire [31:0] data_crc_fact,data_reason_fact,data_first_ms,data_terminal_ms,data_block_crc,data_command_ms;
     wire [4:0] data_engine_flags;wire data_block_crc_valid,data_read_accepted;
     wire data_source_good,data_mutation_hold;
+    wire [7:0] data_object_format;
+    wire [31:0] data_object_rate;
 `ifdef WORKSTATION_TASK3_W_PAIRED
     // Actual unique physical engine state, never a seal snapshot/raw-store guess.
     assign record_object_idle_o=record_state==0 && data_engine_idle && !data_mutation_hold;
@@ -267,13 +271,14 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .completion_read_address_i(cpu_read_address),.completion_data_valid_o(cpu_data_valid),
         .completion_data_o(cpu_data_byte));
     wire physical_recording_enable=recording_enable || SINGLE_BLE_RECORDING;
-    workstation_ble_record_data_service #(.CAPACITY_FRAMES(CAPACITY_FRAMES)) cpu_data(
+    workstation_ble_record_data_service #(.CAPACITY_FRAMES(CAPACITY_FRAMES),.DUAL_RATE_RECORDING(DUAL_RATE_RECORDING)) cpu_data(
         .clk_i(clk),.rst_ni(resetn),.owner_reset_ni(business_owner_reset_ni),
         .command_valid_i(business_command_valid_i && data_select),.command_write_i(business_command_write_i),
         .command_address_i(business_command_address_i[7:0]),.command_data_i(business_command_data_i),
         .command_strobes_i(business_command_strobes_i),.command_ready_o(data_ready),
         .response_error_o(data_error),.response_data_o(data_read),
         .record_state_i(record_state),.object_id_i(recording_id),.frames_i(recorded_frames),
+        .object_format_i(data_object_format),.object_rate_i(data_object_rate),
         .committed_i(raw_committed_frames_i),.crc_i(data_crc_fact),.stop_reason_i(data_reason_fact),
         .first_frame_ms_i(data_first_ms),.terminal_ms_i(data_terminal_ms),
         .source_good_i(data_source_good),.mutation_hold_i(data_mutation_hold),
@@ -290,8 +295,9 @@ module ble_protocol_command #(parameter CLK_HZ=50000000, parameter AUDIO_FILE="a
         .engine_done_i(engine_done),.engine_status_i(engine_status),
         .engine_length_i(engine_result_length),.engine_result_i(data_engine_result),
         .observer_fault_o(data_observer_fault));
-    workstation_ble_record_data_engine #(.ALLOW_LOCAL_RECORDING(SINGLE_BLE_RECORDING),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
+    workstation_ble_record_data_engine #(.DUAL_RATE_RECORDING(DUAL_RATE_RECORDING),.ALLOW_LOCAL_RECORDING(SINGLE_BLE_RECORDING),.EXTERNAL_SEAL_PROTOCOL(EXTERNAL_SEAL_PROTOCOL),.EXTERNAL_RAW_STORE(EXTERNAL_RAW_STORE),.RAW_DRAIN_TIMEOUT_CYCLES(RAW_DRAIN_TIMEOUT_CYCLES),.CLK_HZ(CLK_HZ),.AUDIO_FILE(AUDIO_FILE),.EXTERNAL_PCM(EXTERNAL_PCM),.CAPACITY_FRAMES(CAPACITY_FRAMES)) recording (
         .clk(clk),.resetn(resetn),.enable(physical_recording_enable),.connected(enable),
+        .source_format_i(source_format_i),.object_format_o(data_object_format),.object_rate_o(data_object_rate),
         .seal_hold_i(seal_hold_i),.seal_request_i(seal_request_i),
         .seal_ready_o(seal_ready_o),.seal_pending_o(seal_pending_o),.seal_done_o(seal_done_o),.seal_failed_o(seal_failed_o),
         .seal_failure_code_o(seal_failure_code_o),.seal_record_state_o(seal_record_state_o),

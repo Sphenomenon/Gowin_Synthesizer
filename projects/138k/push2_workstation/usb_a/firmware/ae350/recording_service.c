@@ -56,7 +56,11 @@ int a138_record_read_head(const a138_record_bus *b,a138_record_head *out) {
 int a138_record_data_probe(const a138_record_bus *b) {
     uint32_t id,caps;
     return valid(b) && b->read(b->context,0,&id) && b->read(b->context,4,&caps) &&
+#ifdef A138_BLE_RECORD_DUAL_RATE
+        id==UINT32_C(0x52434404) && caps==UINT32_C(0x00301002);
+#else
         id==UINT32_C(0x52434403) && caps==UINT32_C(0x00301002);
+#endif
 }
 int a138_record_data_poll(const a138_record_bus *b,a138_record_data_facts *out) {
     a138_record_data_facts f={0};uint32_t again,generation;
@@ -74,6 +78,11 @@ int a138_record_data_poll(const a138_record_bus *b,a138_record_data_facts *out) 
        !b->read(b->context,A138_DATA_APPLIED,&f.applied_seq) ||
        !b->read(b->context,A138_DATA_FIRST_MS,&f.first_ms) ||
        !b->read(b->context,A138_DATA_TERMINAL_MS,&f.terminal_ms) ||
+#ifdef A138_BLE_RECORD_DUAL_RATE
+       !b->read(b->context,A138_DATA_FORMATS,&f.formats_mask) ||
+       !b->read(b->context,A138_DATA_FORMAT,&f.format_id) ||
+       !b->read(b->context,A138_REC_RATE,&f.rate_hz) ||
+#endif
        !b->read(b->context,A138_DATA_OBJECT,&again) ||
        !b->read(b->context,A138_DATA_GENERATION,&generation))return A138_DATA_IO;
     if(again!=f.object_id || generation!=f.generation)return A138_DATA_NONE;

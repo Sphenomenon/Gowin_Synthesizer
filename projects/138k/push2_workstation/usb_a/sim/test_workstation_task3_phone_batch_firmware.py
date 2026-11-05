@@ -20,6 +20,7 @@ from tools import workstation_task3_w_media_profile as media
 from tools import workstation_task3_w_paired_profile as profile
 from tools import workstation_classic_runtime as runtime
 from tools import workstation_ae350_memory as memory
+from tools import workstation_recording_format_provenance as formats
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -39,7 +40,7 @@ class PhoneBatchFirmware(unittest.TestCase):
         reviewed=json.loads((ROOT/paired.BATCH_REVIEW).read_text())
         with tempfile.TemporaryDirectory(prefix='phone-batch-source-') as temp:
             root=Path(temp)
-            for rel in (*reviewed['input_sha256'],paired.BATCH_REVIEW,paired.PARENT_REVIEW):
+            for rel in (*reviewed['input_sha256'],paired.BATCH_REVIEW,paired.PARENT_REVIEW,formats.MANIFEST):
                 target=root/rel;target.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copyfile(ROOT/rel,target)
             expected=set(reviewed['input_sha256'])
@@ -108,6 +109,8 @@ class PhoneBatchFirmware(unittest.TestCase):
         self.assertEqual(nominal['policy'],paired.BATCH_POLICY)
         mutations=[
             ('missing-source',lambda d:d['input_sha256'].pop('firmware/ae350/pcm_media.c')),
+            ('parent-source-substituted-for-compiled-bytes',lambda d:d['input_sha256'].update({
+                'firmware/ae350/ble_business_owner.c':json.loads((ROOT/formats.MANIFEST).read_text())['files']['ble_business_owner.c']['parent_sha256']})),
             ('one-TU-missing-define',lambda d:d['commands'][0]['argv'].remove('-DA138_TASK3_PHONE_BATCH')),
             ('one-TU-conflicting-define',lambda d:d['commands'][0]['argv'].insert(1,'-DA138_TASK3_PHONE_BATCH=0')),
             ('missing-compile-command',lambda d:d['commands'].pop(0)),

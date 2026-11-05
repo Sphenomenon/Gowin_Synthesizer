@@ -101,6 +101,8 @@ DEPENDENCIES = (
     'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
     'rtl/workstation/workstation_task3_direct_reference.json',
     'tools/workstation_recording_capacity_provenance.py',
+    'tools/workstation_recording_format_provenance.py',
+    'firmware/ae350/recording_formats.lineage.json',
     'firmware/ae350/ble_business_owner.capacity_lineage.json',
     'rtl/audio/delay_ddr/workstation_runtime_delay_effect_ddr.provenance.json',
     'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.provenance.json',

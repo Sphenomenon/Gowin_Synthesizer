@@ -8,6 +8,7 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from tools.workstation_recording_capacity_provenance import original_identity,MANIFEST
+from tools.workstation_recording_format_provenance import original_identity as current_identity, parent_source
 
 
 class RecordingCapacityLineage(unittest.TestCase):
@@ -15,15 +16,16 @@ class RecordingCapacityLineage(unittest.TestCase):
         old=json.loads((ROOT/'firmware/ae350/provenance.json').read_text())
         for name in ('ble_business_owner.c','ble_business_owner.h'):
             payload=(ROOT/'firmware/ae350'/name).read_bytes()
-            parent,evidence=original_identity(ROOT,name,payload)
+            parent,evidence=current_identity(ROOT,name,payload)
             self.assertEqual(parent,old['first_party_files'][name]['sha256'])
             self.assertTrue(evidence['exact_inverse_round_trip_verified'])
-            with self.assertRaises(ValueError):original_identity(ROOT,name,payload+b'\n')
+            with self.assertRaises(ValueError):current_identity(ROOT,name,payload+b'\n')
 
     def test_original_bytes_remain_valid_but_manifest_tampering_fails(self):
         row=json.loads((ROOT/MANIFEST).read_text())
         for name in row['files']:
             payload=(ROOT/'firmware/ae350'/name).read_text()
+            payload=parent_source(ROOT,name,payload.encode())[0].decode()
             for edit in reversed(row['files'][name]['exact_changes']):
                 payload=payload.replace(edit['after'],edit['before'],1)
             parent,evidence=original_identity(ROOT,name,payload.encode())

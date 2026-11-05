@@ -1,6 +1,6 @@
 """One reviewed temporary source adaptation for the explicit paired W ELF.
 
-The original media C bytes/review remain unchanged. REC_START may request a
+The frozen media review remains unchanged. REC_START may request a
 source before it exists; the real paired RTL gate acquires it before the same
 physical engine checks source_ready. No source-good status is forged.
 Exit: replace this single guarded dispatch decision with a versioned native
@@ -10,6 +10,7 @@ from pathlib import Path
 import hashlib
 import json
 import re
+from tools.workstation_recording_format_provenance import parent_source
 
 POLICY = 'task3_w_paired_media_single_recording_60s_v1'
 BATCH_POLICY = 'task3_w_paired_phone_batch_single_recording_60s_v1'
@@ -81,6 +82,9 @@ def verify_phone_batch_sources(root, expected):
     guarded = {'classic_runtime.c': 1, 'pcm_media.c': 3, 'pcm_media.h': 2}
     for rel, wanted in reviewed['input_sha256'].items():
         payload = (root / rel).read_bytes()
+        # Compare the independently locked format parent for provenance only;
+        # the actual current C/header bytes are copied into the new ELF build.
+        payload, _ = parent_source(root, Path(rel).name, payload)
         if digest(payload) != wanted:
             raise ValueError('batch reviewed source drift: ' + rel)
         if Path(rel).name in guarded:
@@ -100,37 +104,41 @@ def digest(text):
     return hashlib.sha256(text.encode() if isinstance(text, str) else text).hexdigest()
 
 
-def adapt(text):
-    if digest(text) != PARENT_SHA256 or text.count(PARENT) != 1:
+def _selection(text, root):
+    parent, lineage = parent_source(root, Path(SOURCE).name, text.encode())
+    if digest(parent) != PARENT_SHA256 or text.count(PARENT) != 1:
         raise ValueError('paired REC_START original source identity/anchor drift')
     selected = text.replace(PARENT, SELECTED, 1)
-    if digest(selected) != SELECTED_SHA256 or selected.count(SELECTED) != 1:
+    if digest(parent.decode().replace(PARENT, SELECTED, 1)) != SELECTED_SHA256 or selected.count(SELECTED) != 1:
         raise ValueError('paired REC_START selected source identity/anchor drift')
     if selected.replace(SELECTED, PARENT, 1) != text:
         raise ValueError('paired REC_START exact inverse drift')
-    return selected
+    evidence = dict(policy=POLICY, source=SOURCE, parent_sha256=digest(text),
+                    selected_sha256=digest(selected), unique_anchor=True,
+                    exact_inverse=True, forged_source_good=False,
+                    physical_engine_source_check_retained=True,
+                    bounded_RTL_source_gate_required=True)
+    if lineage is not None:
+        evidence['recording_format_lineage'] = lineage
+    return selected, evidence
+
+
+def adapt(text, root=None):
+    return _selection(text, Path(root) if root is not None else Path(__file__).resolve().parents[1])[0]
 
 
 def apply(root, output):
     root, output = Path(root), Path(output)
     source = root / SOURCE
-    selected = adapt(source.read_text())
+    selected, evidence = _selection(source.read_text(), root)
     (output / Path(SOURCE).name).write_text(selected)
-    return dict(policy=POLICY, source=SOURCE, parent_sha256=PARENT_SHA256,
-                selected_sha256=SELECTED_SHA256, unique_anchor=True,
-                exact_inverse=True, forged_source_good=False,
-                physical_engine_source_check_retained=True,
-                bounded_RTL_source_gate_required=True)
+    return evidence
 
 
 def verify(root, output, evidence):
     root, output = Path(root), Path(output)
     selected = (output / Path(SOURCE).name).read_text()
-    expected = dict(policy=POLICY, source=SOURCE, parent_sha256=PARENT_SHA256,
-                    selected_sha256=SELECTED_SHA256, unique_anchor=True,
-                    exact_inverse=True, forged_source_good=False,
-                    physical_engine_source_check_retained=True,
-                    bounded_RTL_source_gate_required=True)
-    if evidence != expected or selected != adapt((root / SOURCE).read_text()):
+    expected_source, expected = _selection((root / SOURCE).read_text(), root)
+    if evidence != expected or selected != expected_source:
         raise ValueError('paired REC_START actual compiled-source adaptation drift')
     return expected

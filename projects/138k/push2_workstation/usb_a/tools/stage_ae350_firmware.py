@@ -139,7 +139,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     if set(provenance.get('first_party_files', {})) != set(maintained):
         raise ValueError('AE350 first-party source inventory drift')
     capacity_lineage={}
-    from tools.workstation_recording_capacity_provenance import original_identity
+    from tools.workstation_recording_format_provenance import original_identity
     for name in maintained:
         original_sha,adaptation=original_identity(root,name,(source_dir/name).read_bytes())
         if adaptation is not None:
@@ -235,7 +235,7 @@ def stage_ae350_firmware(root, output, riscv_prefix=None, *, reference_mem=None,
     result = dict(schema=1, firmware_profile='maintained_ae350_workstation', isa=isa, abi='ilp32',
                   compiler_prefix=prefix, compiler_version=versions['gcc'], tool_versions=versions,
                   source_provenance=provenance, input_sha256=identities, recording_api_enabled=recording_api,business_owner_enabled=business_owner,
-                  **({'first_party_capacity_lineage':capacity_lineage} if capacity_lineage else {}),
+                  **({'first_party_source_lineage':capacity_lineage} if capacity_lineage else {}),
                   changed_from_import=[name for name in (*IMPORTED_SOURCES, *IMPORTED_HEADERS, 'boot.ld')
                                        if sha(source_dir / name) != provenance['files'][name]['sha256']],
                   first_party_inputs={name: sha(source_dir / name)

@@ -1,0 +1,473 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "verified_at": "2026-11-05T21:43:35.675429+08:00",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "4cd69be80c0741524b9ba79156691b905d93080e",
+  "stage": "opt_in_single_recording_dual_rate_backend_and_paired_checkpoint_v2",
+  "goal_complete": false,
+  "remote": {
+    "fetch_completed": true,
+    "fast_forward_result": "Already up to date",
+    "head_before_this_phase": "4cd69be80c0741524b9ba79156691b905d93080e",
+    "transient_failures": [
+      "HTTP2 framing error",
+      "HTTPS connect timeout"
+    ],
+    "fallback": "Per-command HTTP1.1 fetch succeeded; repository/global Git configuration unchanged"
+  },
+  "implementation": {
+    "owner": "The same maintained C task/transfer owner and physical DDR recording engine; no parallel CPU/BLE backend",
+    "wire_contract": {
+      "path": "clients/android/core/protocol/src/main/kotlin/cn/gowin/control/protocol/RecordingFormats.kt",
+      "sha256": "de7116c21bc62f603b6f3c3067ab164e7e2549fe61c7578096de6b4189c3fe7d",
+      "opcode": "0x43 REC_FORMATS",
+      "version": 1,
+      "format1": "48000Hz stereoPCM16",
+      "format2": "44100Hz stereoPCM16",
+      "mask1_always_required": true,
+      "new_wire_protocol": false
+    },
+    "opt_in": {
+      "C": "A138_BLE_RECORD_DUAL_RATE",
+      "RTL": "DUAL_RATE_RECORDING=1",
+      "legacy_physical_ABI": "0x52434403",
+      "dual_physical_ABI": "0x52434404",
+      "ABI_mismatch_rejected": true
+    },
+    "lifecycle": [
+      "Format2 START requires a grant for the current HELLO session; malformed requests cannot grant.",
+      "The actual physical source format must match the requested format before object allocation and every captured frame.",
+      "Object format/rate latch on successful physical START and stay immutable through STOP, disconnect, download and failed capture; CLEAR restores empty format1.",
+      "Rate change terminates capture as FAILED without stopping source PCM; failed mixed-rate objects cannot download.",
+      "Local CPU requests serialize through the same owner as BLE. Actual first-frame/native-drain evidence still gates completion.",
+      "Old download ACKs cannot revive a retired lease. Resume uses a new transfer on the same sealed object."
+    ],
+    "DDR": {
+      "authority": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh",
+        "sha256": "051c46466feb23a43003cf15c28340a1409974da1b6f4af2c5aa45ebdb030655"
+      },
+      "allocation_changed": false,
+      "native_32bit_word_base": "0x0c180000",
+      "byte_base": "0x30600000",
+      "capacity_frames": 2880000,
+      "capacity_bytes": 11520000
+    },
+    "lineage": {
+      "manifest": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/recording_formats.lineage.json",
+        "sha256": "5d074a96c3f4d77a12a6e469a3389f9aea5f8c4d0f11a13ace306c2757d5da55"
+      },
+      "exact_inverse_roundtrip_for_provenance_only": true,
+      "current_sources_compiled": true,
+      "historical_firmware_capacity_and_phone_reviews_unchanged": true,
+      "exit": "Replace the single guarded paired REC_START overlay when native format-aware source acquisition is introduced; keep explicit source identities."
+    }
+  },
+  "backend_validation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-v1/verification.json",
+      "sha256": "053d4e4295f1fb95b99049ccc936391b0f08ef8c397e3a2660e487dfcadbb3a9"
+    },
+    "current_input_hashes_rechecked": 20,
+    "checks": 282,
+    "real_control_period_ns": 20,
+    "modeled_memory_period_ns": 14,
+    "format": 2,
+    "rate_hz": 44100,
+    "source_ticks_in_10ms": 441,
+    "captured_frames": 441,
+    "downloaded_bytes": 1764,
+    "resumed_offset_bytes": 1760,
+    "object_crc32": "bc3b03dc",
+    "negative_controls": {
+      "skip_format_grant": {
+        "rejected": true,
+        "modified_source_sha256": "4404fc485692e494a341d9906269f08a0e3d03fe944936043fbdb57879a7ad59"
+      },
+      "retain_grant_after_reconnect": {
+        "rejected": true,
+        "modified_source_sha256": "0b47a75bb58dc83a27fee4212b1adc26b0093980542cfdf9eefaf56b1216388c"
+      },
+      "relabel_object_as_48k": {
+        "rejected": true,
+        "modified_source_sha256": "950173fbd6dfbb332835c8305f7875ad452f47691eb14438314ad2bc32dcb283"
+      },
+      "ignore_actual_source_format": {
+        "rejected": true,
+        "modified_source_sha256": "b16ee7ec4ce029be5356729c97822aeaec8c446117dbbe81a42dc9c112751551"
+      }
+    },
+    "ABI_mismatches": {
+      "dual_C_v3_RTL": "rejected_before_object_allocation",
+      "v3_C_dual_RTL": "rejected_before_object_allocation"
+    },
+    "CPU_and_BLE_same_object": true,
+    "source_sequence_independent_of_recorder": true,
+    "actual_cadence_simulated": true,
+    "full_60_second_capture": false,
+    "competing_CNN_or_phone": false,
+    "behavioral_DDR_controller": true,
+    "scope": "Maintained host-compiled sole C owner and parser/APB/CRC/raw DDR RTL. No complete AE350 core, paired ARM, LCD, RF, DAC or hardware execution."
+  },
+  "legacy_validation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-default-business-v1/verification.json",
+      "sha256": "873556fd0c9cd3373a7113ee9c668744b6c45b83b985719c7fefdf6a5b396deb"
+    },
+    "current_input_hashes_rechecked": 21,
+    "behavioral_checks": 1765,
+    "compared_messages": 136,
+    "golden_wire_equal": true,
+    "negative_controls_rejected": 15,
+    "wire_bytes_normalized": false
+  },
+  "validation": {
+    "tests": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/verified-tests.json",
+      "sha256": "a1b5ec15a4eb04de8ff6ae59646f60bfae5d183aa3b6d2bc73b7732e7fd5b1d9"
+    },
+    "unit_tests_passed": 42,
+    "unit_failures": 0,
+    "ELF_receipt_mutations": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/ELF-negative-controls.json",
+      "sha256": "bf40a13e45648ba1b6590e6bb114dbc74c23f9ce588eb86b90dc3cdd63f3d8f1"
+    },
+    "ELF_receipt_mutations_rejected": 11,
+    "paired_metadata_mutations_rejected": 8,
+    "both_current_and_both_frozen_parent_closures_verified": true,
+    "models_reused_only_after_all_current_input_hashes_rechecked": true
+  },
+  "candidates": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-paired-checkpoint-v2",
+      "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v2-1bc270034f55f1be",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v2.json",
+        "sha256": "b4cc16fd39766226572b3de1ef3c5dbc1d05aaa7894e67a38bcbe87eada7f460"
+      },
+      "source_lock_count": 942,
+      "prepared_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1",
+      "prepared_manifests": {
+        "integration_inputs.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1/integration_inputs.json",
+          "sha256": "0c6dd9c89d152cefc6204ae8896feb00e4b8c6c6d443d8a03eb171675db2e476"
+        },
+        "workstation_profile.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1/workstation_profile.json",
+          "sha256": "832b81a08206fad095b995f8c4e452da85de9ee159ab62689c38d362df69cd6b"
+        }
+      },
+      "enabled_input_count": 287,
+      "parent": {
+        "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v1-b892d338bda29aa6",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+        "immutable_prepared_closure_verified": true
+      },
+      "runtime_configuration_unchanged": true,
+      "provider_unchanged": true,
+      "enabled_compilation_changes": [],
+      "firmware": {
+        "build_evidence": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1/ae350_firmware/build_metadata.json",
+          "sha256": "53ca277e83b562ef1cf8cf3b82c3fcadf7d619febf62d3c6a96215ee6fa1f2dc"
+        },
+        "ROM": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1/ae350_firmware/boot.mem",
+          "sha256": "9114a7d51b6511ed4bd778401796b590fd746103753669414302abd2e9e6d0e0"
+        },
+        "parent_ROM": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/ae350_firmware/boot.mem",
+          "sha256": "9114a7d51b6511ed4bd778401796b590fd746103753669414302abd2e9e6d0e0"
+        },
+        "ROM_unchanged": true,
+        "capacity": {
+          "rom_capacity_bytes": 16384,
+          "binary_bytes": 15472,
+          "static_ram_span_bytes": 60,
+          "stack_capacity_bytes": 7620
+        },
+        "parent_capacity": {
+          "rom_capacity_bytes": 16384,
+          "binary_bytes": 15472,
+          "static_ram_span_bytes": 60,
+          "stack_capacity_bytes": 7620
+        },
+        "dual_rate_C_macro_selected": false
+      },
+      "constraints_unchanged": true,
+      "evidence": {
+        "stage": "integration_prepare_only",
+        "source_verified": true,
+        "synthesis": false,
+        "full_CDC_accepted": false,
+        "physical_PNR_completed": false,
+        "physical_resources": null,
+        "setup_hold_recovery_removal": null,
+        "bitstream_sha256": null,
+        "UserCode": null,
+        "control_to_sound_latency_ms": null,
+        "LCD_throughput_Bps": null,
+        "LCD_RTT_us": null,
+        "JTAG_ID": null,
+        "serial_ID": null,
+        "hardware_tested": false,
+        "SRAM_programmed": false,
+        "Flash_programmed": false,
+        "deployment_allowed": false
+      },
+      "changed_staged_inputs": [
+        {
+          "path": "firmware/ae350/recording_formats.lineage.json",
+          "before_sha256": null,
+          "after_sha256": "5d074a96c3f4d77a12a6e469a3389f9aea5f8c4d0f11a13ace306c2757d5da55"
+        },
+        {
+          "path": "tools/workstation_recording_format_provenance.py",
+          "before_sha256": null,
+          "after_sha256": "0651307faab89768a588c98622f915374b45036d0ef775402dd962e7efa80278"
+        }
+      ],
+      "enabled_input_comparison_scope": "Only direct enabled project files. Text includes, boot ROM and provenance inputs are separately covered by changed_staged_inputs and the complete staged closure."
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-paired-checkpoint-v2",
+      "candidate_identity": "custom138k-workstation-task3-w-paired-checkpoint-v2-c93ee337298bcad6",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v2.json",
+        "sha256": "97de281ba6a0e78b931a484cc04c64d3ded64c959078855f0011ed47e01f3e39"
+      },
+      "source_lock_count": 990,
+      "prepared_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1",
+      "prepared_manifests": {
+        "integration_inputs.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1/integration_inputs.json",
+          "sha256": "953a95de3d1a72ae9e844aeb7483066a4356cca1e3f1dcb62334b72b1de81b79"
+        },
+        "workstation_profile.json": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1/workstation_profile.json",
+          "sha256": "71ef8a7a98ce75a928d083877574a0c3faa958661343a6109c92fd587f6f17d1"
+        }
+      },
+      "enabled_input_count": 200,
+      "parent": {
+        "candidate_identity": "custom138k-workstation-task3-w-paired-checkpoint-v1-a4d7149f35281b4c",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3",
+        "immutable_prepared_closure_verified": true
+      },
+      "runtime_configuration_unchanged": true,
+      "provider_unchanged": true,
+      "enabled_compilation_changes": [
+        {
+          "path": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv",
+          "before_sha256": "ea28fff83b5ab6f7175bf88cea97a1933ff8d87c06c1860bc44770fd3ac2a3b2",
+          "after_sha256": "a717d4228ef80c925b564dffcc1b49e0cc648eb70e6c5b54183546a42383aa1c"
+        },
+        {
+          "path": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv",
+          "before_sha256": "b53a89328c453f1b1dafcd4fbc296d6bdd50878eebd2177f74634ae8c4c429db",
+          "after_sha256": "613bc95b67e9042adaabef09c8dfb21b3c8d45adcd2b118672f73644b40f20f3"
+        }
+      ],
+      "firmware": {
+        "build_evidence": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1/ae350_firmware/verification.json",
+          "sha256": "b2d38b5739a92326214e3dbeef34c9b725385cdce4a8630d98f5cee477a06413"
+        },
+        "ROM": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1/ae350_firmware/boot.mem",
+          "sha256": "e37d75e22176844c7ddbb435d131b6773f99184c5da177562c0fb19ebd4fedde"
+        },
+        "parent_ROM": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3/ae350_firmware/boot.mem",
+          "sha256": "ef3d51ed567b47ee67e37326d6afa48ec6301187d9946460af417f21393c6aa4"
+        },
+        "ROM_unchanged": false,
+        "capacity": {
+          "rom_capacity_bytes": 131072,
+          "binary_bytes": 90416,
+          "ilm_runtime_bytes": 50160,
+          "static_ram_span_bytes": 7664,
+          "stack_capacity_bytes": 16384
+        },
+        "parent_capacity": {
+          "rom_capacity_bytes": 131072,
+          "binary_bytes": 90416,
+          "ilm_runtime_bytes": 49952,
+          "static_ram_span_bytes": 7664,
+          "stack_capacity_bytes": 16384
+        },
+        "dual_rate_C_macro_selected": false
+      },
+      "constraints_unchanged": true,
+      "evidence": {
+        "stage": "integration_prepare_only",
+        "source_verified": true,
+        "synthesis": false,
+        "full_CDC_accepted": false,
+        "physical_PNR_completed": false,
+        "physical_resources": null,
+        "setup_hold_recovery_removal": null,
+        "bitstream_sha256": null,
+        "UserCode": null,
+        "control_to_sound_latency_ms": null,
+        "LCD_throughput_Bps": null,
+        "LCD_RTT_us": null,
+        "JTAG_ID": null,
+        "serial_ID": null,
+        "hardware_tested": false,
+        "SRAM_programmed": false,
+        "Flash_programmed": false,
+        "deployment_allowed": false
+      },
+      "changed_staged_inputs": [
+        {
+          "path": "firmware/ae350/recording_formats.lineage.json",
+          "before_sha256": null,
+          "after_sha256": "5d074a96c3f4d77a12a6e469a3389f9aea5f8c4d0f11a13ace306c2757d5da55"
+        },
+        {
+          "path": "firmware/boot.mem",
+          "before_sha256": "ef3d51ed567b47ee67e37326d6afa48ec6301187d9946460af417f21393c6aa4",
+          "after_sha256": "e37d75e22176844c7ddbb435d131b6773f99184c5da177562c0fb19ebd4fedde"
+        },
+        {
+          "path": "native_bluetooth/ble_protocol_command.v",
+          "before_sha256": "79b99162d26e3abff2681b97c9bab7554e4a2d424df6ddbdc6859855c503d3bd",
+          "after_sha256": "ae8150f16b3119e1a7f9602c46924ce40dbf5807c5fde4897645465cc96f3d6b"
+        },
+        {
+          "path": "rtl/bluetooth/cpu_owner/ble_protocol_command.v",
+          "before_sha256": "79b99162d26e3abff2681b97c9bab7554e4a2d424df6ddbdc6859855c503d3bd",
+          "after_sha256": "ae8150f16b3119e1a7f9602c46924ce40dbf5807c5fde4897645465cc96f3d6b"
+        },
+        {
+          "path": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_engine.sv",
+          "before_sha256": "ea28fff83b5ab6f7175bf88cea97a1933ff8d87c06c1860bc44770fd3ac2a3b2",
+          "after_sha256": "a717d4228ef80c925b564dffcc1b49e0cc648eb70e6c5b54183546a42383aa1c"
+        },
+        {
+          "path": "rtl/bluetooth/cpu_owner/workstation_ble_record_data_service.sv",
+          "before_sha256": "b53a89328c453f1b1dafcd4fbc296d6bdd50878eebd2177f74634ae8c4c429db",
+          "after_sha256": "613bc95b67e9042adaabef09c8dfb21b3c8d45adcd2b118672f73644b40f20f3"
+        },
+        {
+          "path": "tools/workstation_recording_format_provenance.py",
+          "before_sha256": null,
+          "after_sha256": "0651307faab89768a588c98622f915374b45036d0ef775402dd962e7efa80278"
+        },
+        {
+          "path": "tools/workstation_task3_w_media_firmware.py",
+          "before_sha256": "badf4d7a6c38a877bd259b31dcc5f85e6006e71ee5a919f8034dbb3dede9c86d",
+          "after_sha256": "2394c63a84583757b72b293676df91be0023ede85f49cf2c98dcfff0ed9ce06b"
+        },
+        {
+          "path": "tools/workstation_task3_w_paired_firmware.py",
+          "before_sha256": "4cbdde5c177380845364630c2e73dc69a7059bcadc0efb312d95bfdcb9435d86",
+          "after_sha256": "d9528b09dcbb57a674c4f1e052624a57bb89836f160769eabc7517b9a4f99d62"
+        }
+      ],
+      "enabled_input_comparison_scope": "Only direct enabled project files. Text includes, boot ROM and provenance inputs are separately covered by changed_staged_inputs and the complete staged closure."
+    }
+  },
+  "pair_consistency": {
+    "common_snapshot_input_count": 1028,
+    "all_common_snapshot_hashes_equal": true,
+    "paired_wire_protocol": "v3",
+    "business_default_enabled": false,
+    "physical_acceptance_required": true,
+    "paired_recording_format": 1,
+    "paired_recording_rate_hz": 48000,
+    "dual_rate_physical_ABI_selected": false,
+    "cross_board_44100_enabled": false,
+    "recognition_rate_hz": 48000,
+    "M_score_capacity_notes": 2048,
+    "M_tap_capacity_frames": 256,
+    "M_voices": 32,
+    "ordinary_and_vector_retained": true,
+    "W_recording_capacity_frames": 2880000,
+    "capacity_seconds_at_selected_48k": 60
+  },
+  "known_failure": {
+    "test": "test_stage_ae350_firmware.py",
+    "tests_run": 10,
+    "tests_passed": 9,
+    "errors": 1,
+    "failed_case": "test_recording_api_requires_explicit_selection_and_is_in_real_riscv_rom",
+    "reason": "Unrelated legacy R00 pl16k recording-api ROM overflow by760bytes. Same overflow with exact parent recording sources; relevant object bytes identical. No expansion, linker relaxation, skip or feature removal.",
+    "first_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/test_stage_ae350_firmware.py.log",
+      "sha256": "d6527b1ba3dad35756a851fd6dba8308a4853cc54fcb616c0cfb6601531d2157"
+    },
+    "explicit_toolchain_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/test_stage_ae350_firmware.py.final.log",
+      "sha256": "9f1270e2a5cc218cd2b550db904614032d4c071fb1c3ee01f8305e862b29729d"
+    },
+    "reproduction": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/R00-firmware-first.log",
+      "sha256": "ccff78c788594debfad6a0a1394478ca76426da804c94994992163271c073671"
+    },
+    "parent_control": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/R00-parent-control/verification.json",
+      "sha256": "0d1126bcc553f111f992067a2beca3ed9be29cabb3aab3510b77b4b7f0dfe6de"
+    },
+    "unresolved": true
+  },
+  "physical_blocker": {
+    "environment": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/hostid-environment.json",
+      "sha256": "db1f5fec318015a5d56181a29727d0360fd56df71d48fc857ec28b8cdcfa1e26"
+    },
+    "existing_priority_report": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PRIORITY_REVIEW_20261105.json",
+      "sha256": "2c352e872f8488e04adfaf58629ad408608579cf61f1243025daa1b7ad6e1bf8"
+    },
+    "feth94_present": false,
+    "synthesis_not_retried_without_environment_change": true,
+    "no_new_mapped_resource_or_timing_claim": true,
+    "user_reported_M_timeouts_still_unbound_to_exact_logs": true
+  },
+  "remaining_gates": [
+    "P1 restore the existing licensed hostid runtime, synthesize current M first and verify real score/tap BSRAM and RAM16 mapping, then W.",
+    "Rebuild all mapped CDC inventories and run bounded physical P&R; inspect fanout and actual critical paths without reducing clocks or weakening exceptions.",
+    "Implement a compatible paired ARM format contract, actual M source/tap rate identity and W ingress checks before selecting the dual-rate backend in paired profiles. Existing analysis and paired recording admission remain48k.",
+    "Measure LCD electrical levels/directions, directional throughput, round-trip/jitter/congestion and Bluetooth before enabling audio business.",
+    "Validate M independent32-voice ordinary/vector synthesis, DAC and control-to-sound latency; TF/CNN/Push, phone D press/release and real60s shared-object recording/download concurrency.",
+    "Legacy R00 pl16k recording-api ROM overflow remains a separate unresolved build limitation."
+  ],
+  "rollback": {
+    "v1_M": {
+      "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v1-b892d338bda29aa6",
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+      "immutable_prepared_closure_verified": true
+    },
+    "v1_W": {
+      "candidate_identity": "custom138k-workstation-task3-w-paired-checkpoint-v1-a4d7149f35281b4c",
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3",
+      "immutable_prepared_closure_verified": true
+    },
+    "historical_descriptors_and_frozen_candidates_preserved": true,
+    "task2_and_single_board_worktrees_untouched": true,
+    "no_board_operation": true,
+    "Flash_authorized": false
+  },
+  "reproduce": {
+    "backend": "python3 projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_record_formats.py --output <new-empty-cache-directory>",
+    "default": "python3 projects/138k/push2_workstation/usb_a/sim/services/run_ae350_ble_business.py --single-recording --output <new-empty-cache-directory>",
+    "test_environment": {
+      "GW138K_RISCV_PREFIX": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+      "GW138K_TASK3_CHECKPOINT_M": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint2-prepare-v1",
+      "GW138K_TASK3_CHECKPOINT_W": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint2-prepare-v1",
+      "GW138K_TASK3_CHECKPOINT_PARENT_M": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+      "GW138K_TASK3_CHECKPOINT_PARENT_W": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-paired-checkpoint-prepare-v3",
+      "GW138K_TASK3_PHONE_BATCH_FIRMWARE_EVIDENCE": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-record-formats-firmware-v1",
+      "GW138K_TASK3_PHONE_BATCH_FIRMWARE_TEST_EVIDENCE": "/Users/sphenicidition/.cache/gw138k-task3-20261105/record-formats-review-v1/ELF-negative-controls.json"
+    },
+    "prepare": {
+      "M": "python3 projects/138k/push2_workstation/usb_a/build.py --prepare-custom-board --workstation-profile custom138k-workstation-task3-m-paired-checkpoint-v2 --netlist-dir /Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists --riscv-prefix /Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf --custom-board-output <new-empty-cache-directory>",
+      "W": "python3 projects/138k/push2_workstation/usb_a/build.py --prepare-custom-board --workstation-profile custom138k-workstation-task3-w-paired-checkpoint-v2 --netlist-dir /Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists --riscv-prefix /Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf --custom-board-output <new-empty-cache-directory>"
+    }
+  },
+  "scope": "Backend implementation, current compiled C/RTL model verification, actual default RISC-V firmware and complete M/W preparation only. No fresh synthesis/P&R, full CDC, physical resource, bitstream, latency, SRAM/Flash or target-board acceptance."
+}

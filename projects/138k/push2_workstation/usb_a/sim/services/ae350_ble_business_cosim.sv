@@ -2,9 +2,12 @@
 module ae350_ble_business_cosim #(
  parameter integer CAPACITY_FRAMES=16384,
  parameter bit FAST_CAPTURE=0,
+ parameter bit DUAL_RATE_RECORDING=0,
  parameter [28:0] BASE_APP=0
 )(
  input wire clk,resetn,owner_resetn,enable,pcm_run,test_native_pause,
+ input wire [7:0] test_source_format,
+ input wire test_source_ready,test_source_fault,
  input wire psel,penable,pwrite,input wire [11:0] paddr,
  input wire [31:0] pwdata,input wire [3:0] pstrb,
  output wire pready,pslverr,output wire [31:0] prdata,
@@ -27,7 +30,8 @@ module ae350_ble_business_cosim #(
  output wire [3:0] fetch_debug,
  output wire [31:0] object_id,frames,record_state,
  output wire [31:0] native_writes,max_native_address,native_committed,
- output wire [31:0] competing_music_commands,competing_delay_commands
+ output wire [31:0] competing_music_commands,competing_delay_commands,
+ output wire source_pcm_valid_o
 );
 assign engine_phase=endpoint.recording.state;
 assign codec_phase=endpoint.recording.encoder.phase;
@@ -63,9 +67,16 @@ gw138k_apb_cdc bus_bridge(.reset_n(owner_resetn && resetn),.pclk(clk),.audio_clk
  .response_data(bus_response_data),.response_error(response_error));
 reg [31:0] phase=0,ms_count=0,ms_divider=0;
 assign elapsed_ms_o=ms_count+test_time_bias;
-wire tick=FAST_CAPTURE ? phase[2:0]==7 : phase+32'd48000>=32'd50000000;
+wire [31:0] fixture_rate=DUAL_RATE_RECORDING && test_source_format==2 ? 32'd44100:32'd48000;
+wire tick=FAST_CAPTURE ? phase[2:0]==7 : phase+fixture_rate>=32'd50000000;
 wire test_pcm_valid;
+assign source_pcm_valid_o=test_pcm_valid;
 wire [31:0] test_pcm_pair;
+reg [31:0] rate_source_sequence;
+always @(posedge clk)begin
+ if(!resetn || raw_start_done_i)rate_source_sequence<=0;
+ else if(tick && pcm_run)rate_source_sequence<=rate_source_sequence+1'b1;
+end
 `ifdef TASK3_SHARED_RECORD_DDR
 // Advance the source independently of the recorder. A missed delivery must
 // change the sealed bytes/CRC instead of silently repeating its frame index.
@@ -82,16 +93,20 @@ assign test_pcm_valid=tick && pcm_run;
 `endif
 `else
 assign test_pcm_valid=tick && pcm_run;
-assign test_pcm_pair=FAST_CAPTURE ? 32'h9e370b5a ^ (frames*32'h0010203) : 32'h22221111;
+assign test_pcm_pair=DUAL_RATE_RECORDING ? 32'h9e370b5a ^ (rate_source_sequence*32'h0010203) :
+    FAST_CAPTURE ? 32'h9e370b5a ^ (frames*32'h0010203) : 32'h22221111;
 `endif
 always @(posedge clk)if(!resetn)begin phase<=0;ms_count<=0;ms_divider<=0;end
 else begin
- phase<=FAST_CAPTURE ? phase+1'b1 : tick ? phase+32'd48000-32'd50000000:phase+32'd48000;
+ phase<=FAST_CAPTURE ? phase+1'b1 : tick ? phase+fixture_rate-32'd50000000:phase+fixture_rate;
  if(ms_divider==49999)begin ms_divider<=0;ms_count<=ms_count+1'b1;end else ms_divider<=ms_divider+1'b1;
 end
 ble_protocol_command #(
 `ifdef WORKSTATION_SINGLE_BLE_RECORDING
  .SINGLE_BLE_RECORDING(1),
+`endif
+`ifdef TASK3_RECORD_FORMAT_TEST
+ .DUAL_RATE_RECORDING(DUAL_RATE_RECORDING),
 `endif
  .EXTERNAL_PCM(1),.CAPACITY_FRAMES(CAPACITY_FRAMES),.EXTERNAL_SEAL_PROTOCOL(1),
  .EXTERNAL_RAW_STORE(1),.RAW_DRAIN_TIMEOUT_CYCLES(5000000)) endpoint(
@@ -101,7 +116,11 @@ ble_protocol_command #(
  .business_command_data_i(command_data),.business_command_strobes_i(command_strobes),
  .business_command_ready_o(command_ready),.business_response_error_o(response_error),
  .business_response_data_o(bus_response_data),
- .pcm_valid_i(test_pcm_valid),.source_ready_i(1'b1),.source_fault_i(1'b0),
+ .pcm_valid_i(test_pcm_valid),.source_ready_i(DUAL_RATE_RECORDING ? test_source_ready:1'b1),
+ .source_fault_i(DUAL_RATE_RECORDING && test_source_fault),
+`ifdef TASK3_RECORD_FORMAT_TEST
+ .source_format_i(test_source_format),
+`endif
  .pcm_pair_i(test_pcm_pair),
  .boot_id(64'h1122334455667788),.att_value_limit(test_att_limit),.boot_valid(1'b1),
  .response_subscribed(1'b1),.control_open(1'b1),.recording_enable(1'b1),.transfer_subscribed(1'b1),

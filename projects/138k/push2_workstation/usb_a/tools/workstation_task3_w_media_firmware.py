@@ -22,7 +22,7 @@ from tools.stage_usb_firmware import compiler_prefix
 from tools.ae350_rom_split import split_memory_report
 from tools.ae350_local_memory import call_chain_report,direct_long_calls,symbol_values,ILM_BASE
 from tools.ae350_rom_split_audit import verify_tables
-from tools.workstation_recording_capacity_provenance import original_identity
+from tools.workstation_recording_format_provenance import original_identity, parent_source
 from tools.workstation_task3_w_media import firmware_capacity_flag,recording_geometry
 
 POLICY='task3_w_headless_media_single_recording_60s_v1'
@@ -71,7 +71,8 @@ def verify_sources(root,phone_batch=False):
         if review.get('policy')!=POLICY or set(review.get('input_sha256',{}))!=expected:
             raise ValueError('W-media source review policy/inventory drift')
         for rel,value in review['input_sha256'].items():
-            if sha(root/rel)!=value:raise ValueError('W-media reviewed source drift: '+rel)
+            parent,_=parent_source(root,Path(rel).name,(root/rel).read_bytes())
+            if hashlib.sha256(parent).hexdigest()!=value:raise ValueError('W-media reviewed source drift: '+rel)
     old=json.loads((root/'tools/ae350_worker_recording_indirect_review.json').read_text())
     lineage={}
     for rel,wanted in old['input_sha256'].items():
@@ -91,7 +92,8 @@ def verify_sources(root,phone_batch=False):
     legacy=json.loads((root/'tools/ae350_ble_business_indirect_review.json').read_text())
     for name in ('audio_clock_service.c','recording_service.c','business_mailbox.c'):
         rel='firmware/ae350/'+name
-        if sha(root/rel)!=legacy['input_sha256'][rel]:raise ValueError('inherited MMIO callbacks drift')
+        original,_=original_identity(root,name,(root/rel).read_bytes())
+        if original!=legacy['input_sha256'][rel]:raise ValueError('inherited MMIO callbacks drift')
     if phone_batch:lineage['phone_batch_disabled_parent']=batch_lineage
     return review,lineage
 
@@ -106,7 +108,10 @@ def audit(output,root=ROOT):
         d.get('source_text_overlay')is not paired_source or d.get('link_returncode')!=0):
         raise ValueError('new actual media ELF required')
     if phone_batch:
-        if any(d.get('input_sha256',{}).get(rel)!=value for rel,value in reviewed['input_sha256'].items()):
+        # verify_sources has checked the frozen review through exact lineage.
+        # The build receipt must bind the actual current bytes, including the
+        # opt-in format backend, rather than substituting those parent hashes.
+        if any(d.get('input_sha256',{}).get(rel)!=sha(root/rel) for rel in reviewed['input_sha256']):
             raise ValueError('phone-batch actual source inventory drift')
         if d.get('phone_batch_artifacts_sha256')!=batch_artifacts(out):
             raise ValueError('phone-batch actual ELF/compiler evidence drift')
@@ -237,6 +242,7 @@ def build(output,prefix=None,root=ROOT,paired_source=False,phone_batch=False):
         paired_adaptation=paired.apply(root,out)
         inputs[paired.TOOL]=sha(root/paired.TOOL)
     tools=('tools/workstation_task3_w_media_firmware.py',REVIEW,'tools/workstation_recording_capacity_provenance.py',
+           'tools/workstation_recording_format_provenance.py','firmware/ae350/recording_formats.lineage.json',
            'firmware/ae350/ble_business_owner.capacity_lineage.json','tools/ae350_local_memory.py',
            'tools/ae350_rom_split.py','tools/ae350_rom_split_audit.py','tools/prepare_ae350_sbc.py',
            'tools/ae350_ble_business_indirect_review.json','tools/ae350_worker_recording_indirect_review.json',

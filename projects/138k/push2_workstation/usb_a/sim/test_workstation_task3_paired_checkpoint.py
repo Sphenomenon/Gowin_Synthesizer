@@ -98,6 +98,14 @@ class PreparedPair(unittest.TestCase):
                 else:
                     self.assertTrue(metadata['classic_runtime']['phone_batch'])
                     self.assertTrue(metadata['classic_runtime']['worker_media'])
+                    firmware = json.loads((output/'ae350_firmware/verification.json').read_text())
+                    self.assertTrue(firmware['passed'])
+                    for command in firmware['commands']:
+                        if command['name'].startswith('compile-'):
+                            self.assertFalse(any(arg.startswith('-DA138_BLE_RECORD_DUAL_RATE')
+                                                 for arg in command['argv']))
+                    gatt = (output/'workstation/Prj1/rtl/bluetooth/cpu_owner/bt_gatt.v').read_text()
+                    self.assertNotIn('.DUAL_RATE_RECORDING',gatt)
 
     def test_metadata_tampering_cannot_borrow_another_role_or_old_identity(self):
         for role,output in self.outputs.items():

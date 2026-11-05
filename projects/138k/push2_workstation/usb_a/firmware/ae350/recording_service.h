@@ -56,9 +56,16 @@ enum { A138_DATA_STATUS=0x0c,A138_DATA_OBJECT=0x1c,A138_DATA_FRAMES=0x2c,
     A138_DATA_RESULT_CRC=0x88,A138_DATA_RESULT_MS=0x8c,A138_DATA_RESULT_PAYLOAD=0x90,A138_DATA_FIRST_MS=0xc0,A138_DATA_TERMINAL_MS=0xc4,
     A138_DATA_REPLAY_FLAGS=0xc8,A138_DATA_REPLAY_OBJECT=0xcc,A138_DATA_KEY_TICKET=0xd0,
     A138_DATA_KEY_OWNER=0xd4,A138_DATA_KEY_SESSION=0xd8,A138_DATA_KEY_BOOT_LOW=0xdc,A138_DATA_KEY_BOOT_HIGH=0xe0 };
+#ifdef A138_BLE_RECORD_DUAL_RATE
+/* Explicit physical ABI v4. These are immutable object facts, not requests. */
+enum {A138_DATA_FORMATS=0xe4,A138_DATA_FORMAT=0xe8};
+#endif
 typedef struct {
     uint32_t state,object_id,frames,committed,crc,reason,att_limit,command_ms,time_ms;
     uint32_t accepted_seq,applied_seq,generation,first_ms,terminal_ms;
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    uint32_t formats_mask,format_id,rate_hz;
+#endif
 } a138_record_data_facts;
 typedef struct {
     uint32_t sequence,object_id,transfer_id,request_id,opcode,length,flags;

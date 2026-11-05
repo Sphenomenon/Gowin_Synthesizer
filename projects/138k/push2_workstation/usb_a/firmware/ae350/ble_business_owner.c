@@ -79,6 +79,10 @@ static void get_object(a138_ble_business_owner *o) {
     o->completion_payload[13]=1;o->completion_payload[14]=2;
     o->completion_payload[15]=(uint8_t)(o->transfer.open*4u+(state==4)*2u+(state==5));
     put(o->completion_payload+16,48000);put(o->completion_payload+20,f->frames);
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    o->completion_payload[13]=(uint8_t)f->format_id;
+    put(o->completion_payload+16,f->rate_hz);
+#endif
     put(o->completion_payload+24,f->frames*4u);put(o->completion_payload+28,A138_BLE_RECORD_CAPACITY_FRAMES);
     put(o->completion_payload+32,state==4 ? f->crc:0);
     o->completion_payload[36]=(uint8_t)f->reason;o->completion_payload[37]=(uint8_t)(f->reason>>8);
@@ -108,6 +112,21 @@ static void dispatch(a138_ble_business_owner *o) {
     const uint8_t *p=o->request.payload;
     zero(o->completion_payload,64);o->pending_operation=0;o->pending_object=0;o->pending_transfer=0;
     o->active_read=0;o->active_replay=0;
+    if(op==0x43) {
+        /* Existing optional REC_FORMATS v1 wire contract (Android). */
+        if(len!=8 || word(p)!=1 || !(word(p+4)&1u) || (word(p+4)&~3u)) {reject(o,BAD_ARG);return;}
+        uint32_t mask=1;
+#ifdef A138_BLE_RECORD_DUAL_RATE
+        mask=word(p+4)&o->facts.formats_mask;
+        /* Grants accumulate within one HELLO session. Cached earlier replies
+         * cannot revoke or resurrect a grant after a later query/reconnect. */
+        o->format_grant_session=o->request.key.session;o->format_grant_mask|=mask;
+#endif
+        put(o->completion_payload,1);put(o->completion_payload+4,mask);
+        put(o->completion_payload+8,(uint32_t)o->context.boot_id);
+        put(o->completion_payload+12,(uint32_t)(o->context.boot_id>>32));
+        reply(o,0,16);return;
+    }
     if(op==4) {
         if(len!=4) {reject(o,BAD_ARG);return;}
         uint32_t id=word(p);a138_ble_task *t=&o->tasks[(id-1u)&7u];
@@ -123,7 +142,15 @@ static void dispatch(a138_ble_business_owner *o) {
         get_object(o);return;
     }
     if(op==0x20) {
-        if(len!=8 || word(p)!=1) {reject(o,BAD_ARG);return;}
+        uint32_t format=word(p);
+        int format_allowed=format==1;
+#ifdef A138_BLE_RECORD_DUAL_RATE
+        if(format==2 && o->format_grant_session==o->request.key.session && (o->format_grant_mask&2u))format_allowed=1;
+#ifdef A138_SINGLE_BLE_RECORDING
+        if(o->active_local && format==2)format_allowed=1;
+#endif
+#endif
+        if(len!=8 || !format_allowed) {reject(o,BAD_ARG);return;}
         if(o->facts.state&(1u<<11)) {reject(o,BUSY);return;}
         if(!(o->facts.state&(1u<<10)) || state!=0) {reject(o,BAD_STATE);return;}
         if(word(p+4)>A138_BLE_RECORD_CAPACITY_FRAMES) {reject(o,RANGE);return;}
@@ -236,7 +263,12 @@ void a138_ble_business_init(a138_ble_business_owner *o,a138_business_bus mailbox
     zero(o,sizeof *o);o->mailbox=mailbox;o->data=data;
 }
 #ifdef A138_SINGLE_BLE_RECORDING
+#ifdef A138_BLE_RECORD_DUAL_RATE
+int a138_ble_record_local_submit_format(a138_ble_business_owner *o,uint32_t opcode,uint32_t limit,uint32_t format) {
+    if(format!=1 && !(opcode==0x20 && format==2))return 0;
+#else
 int a138_ble_record_local_submit(a138_ble_business_owner *o,uint32_t opcode,uint32_t limit) {
+#endif
     if(!o || !o->bound || o->fault || o->phase!=IDLE || o->local_pending ||
        o->local_record.phase==A138_LOCAL_WAIT || o->local_record.token==UINT32_MAX ||
        (opcode!=0x20 && opcode!=0x21 && opcode!=0x23) ||
@@ -244,8 +276,16 @@ int a138_ble_record_local_submit(a138_ble_business_owner *o,uint32_t opcode,uint
     uint32_t token=o->local_record.token+1u;
     o->local_record=(a138_ble_local_record_result){.token=token,.opcode=opcode,
         .phase=A138_LOCAL_QUEUED,.status=1};
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    o->local_format=format;
+#endif
     o->local_limit=limit;o->local_pending=1;return 1;
 }
+#ifdef A138_BLE_RECORD_DUAL_RATE
+int a138_ble_record_local_submit(a138_ble_business_owner *o,uint32_t opcode,uint32_t limit) {
+    return a138_ble_record_local_submit_format(o,opcode,limit,1);
+}
+#endif
 int a138_ble_record_local_poll(const a138_ble_business_owner *o,a138_ble_local_record_result *out) {
     if(!o || !out || !o->local_record.token)return 0;
     *out=o->local_record;
@@ -275,6 +315,9 @@ static void local_record_dispatch(a138_ble_business_owner *o) {
     if(!o->request.nonce)o->request.nonce=1;
     if(r->opcode==0x20) {
         o->request.length=8;put(o->request.payload,1);put(o->request.payload+4,o->local_limit);
+#ifdef A138_BLE_RECORD_DUAL_RATE
+        put(o->request.payload,o->local_format);
+#endif
     } else {
         o->request.length=12;put(o->request.payload,(uint32_t)o->context.boot_id);
         put(o->request.payload+4,(uint32_t)(o->context.boot_id>>32));
@@ -293,6 +336,13 @@ void a138_ble_business_pump(a138_ble_business_owner *o) {
     if(fact_result==A138_DATA_NONE)return;
     if(fact_result!=A138_DATA_OK) {o->fault=A138_OWNER_FACT_IO;return;}
     if(o->facts.state&(1u<<9)) {o->fault=A138_OWNER_OBSERVER_LOST;return;}
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    if(o->facts.formats_mask!=3 || (o->facts.format_id!=1 && o->facts.format_id!=2) ||
+       o->facts.rate_hz!=(o->facts.format_id==2 ? 44100u:48000u)) {o->fault=A138_OWNER_FORMAT_MISMATCH;return;}
+    if(context.session!=o->format_grant_session) {
+        o->format_grant_session=context.session;o->format_grant_mask=0;
+    }
+#endif
     if(!o->bound) {
         if(!a138_record_data_probe(&o->data) || a138_business_probe(&o->mailbox)!=A138_BM_OK ||
            o->facts.object_id || o->facts.accepted_seq || o->facts.applied_seq) {o->fault=A138_OWNER_DIRTY_BOOT;return;}

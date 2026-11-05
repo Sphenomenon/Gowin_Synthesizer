@@ -18,7 +18,7 @@ enum {
     A138_OWNER_REQUEST_IO,A138_OWNER_CLAIM_IO,A138_OWNER_SUBMIT_UNOBSERVED,
     A138_OWNER_COMPLETE_UNOBSERVED,A138_OWNER_REQUEST_META_IO,
     A138_OWNER_REQUEST_META_UNOBSERVED,A138_OWNER_RESULT_IDENTITY,
-    A138_OWNER_CAPACITY_MISMATCH
+    A138_OWNER_CAPACITY_MISMATCH,A138_OWNER_FORMAT_MISMATCH
 };
 typedef struct {
     uint32_t id,request_id,recording_id,time_ms;
@@ -51,9 +51,15 @@ typedef struct {
     uint32_t phase,opened,bound,fault,completion_phase,completion_status,completion_length;
     uint8_t active_read,active_replay;
     uint8_t completion_payload[64];
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    uint32_t format_grant_session,format_grant_mask;
+#endif
 #ifdef A138_SINGLE_BLE_RECORDING
     a138_ble_local_record_result local_record;
     uint32_t local_limit;
+#ifdef A138_BLE_RECORD_DUAL_RATE
+    uint32_t local_format;
+#endif
     uint8_t local_pending,active_local;
 #endif
 #ifdef A138_BLE_BUSINESS_DIAGNOSTICS
@@ -78,6 +84,11 @@ void a138_ble_business_pump(a138_ble_business_owner *);
  * Local commands serialize with BLE primitives and share monotonic IDs. The
  * CPU observer-reset fence remains in force. No GATT connection is required. */
 int a138_ble_record_local_submit(a138_ble_business_owner *,uint32_t opcode,uint32_t limit);
+#ifdef A138_BLE_RECORD_DUAL_RATE
+/* Trusted local request; physical START still checks the actual source format.
+ * Existing submit always requests format1. This cannot change the audio clock. */
+int a138_ble_record_local_submit_format(a138_ble_business_owner *,uint32_t opcode,uint32_t limit,uint32_t format);
+#endif
 int a138_ble_record_local_poll(const a138_ble_business_owner *,a138_ble_local_record_result *);
 int a138_ble_record_firmware_submit(uint32_t opcode,uint32_t limit);
 int a138_ble_record_firmware_poll(a138_ble_local_record_result *);
