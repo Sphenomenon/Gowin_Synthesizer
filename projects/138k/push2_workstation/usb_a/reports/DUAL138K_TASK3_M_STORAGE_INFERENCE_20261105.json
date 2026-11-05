@@ -1,0 +1,290 @@
+{
+  "schema": 1,
+  "date": "2026-11-05",
+  "created_utc": "2026-11-05T13:07:29.505654+00:00",
+  "stage": "immutable_M_prepared_generic_memory_inference_precheck",
+  "source_parent_commit": "f84a2bcd96c26cf94323bbe2116b550404700021",
+  "source_script": {
+    "path": "projects/138k/push2_workstation/usb_a/sim/memory/run_task3_m_storage_inference.py",
+    "sha256": "05b6bf1b8649875b29a0203e0e05fb69d112d9a7e14f8df103f7cfc795799c07"
+  },
+  "purpose": "Check that full-capacity score and final-tap synchronous ports survive RTL elaboration and memory collection while the Gowin license runtime is unavailable. This optional isolated precheck does not replace the vendor synthesis or physical release gates.",
+  "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v1-b892d338bda29aa6",
+  "candidate_configuration_sha256": "1d4ac57232d80a0f77b309cac371cc8a572df72ded6b5367561ff296044ce833",
+  "command": "python3 projects/138k/push2_workstation/usb_a/sim/memory/run_task3_m_storage_inference.py --candidate /Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2 --output /Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1 --yosys /Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+  "dependencies": {
+    "scope": "isolated cache venv; no repository or system Python dependency changes",
+    "yowasp-yosys": "0.70.0.0.post1259",
+    "yowasp-runtime": "1.96",
+    "wasmtime": "47.0.1"
+  },
+  "verification_artifact": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/verification.json",
+    "sha256": "ea3ba64d286d0367f01da0f1b794935df9f895199009468074d6f808b4453dad"
+  },
+  "verification": {
+    "schema": 1,
+    "passed": true,
+    "candidate_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2",
+    "implementation": "generic_Yosys_memory_collect",
+    "source_script_sha256": "05b6bf1b8649875b29a0203e0e05fb69d112d9a7e14f8df103f7cfc795799c07",
+    "physical_BSRAM_mapping_verified": false,
+    "Gowin_synthesis_passed": false,
+    "routed_timing_verified": false,
+    "full_CDC_accepted": false,
+    "hardware_tested": false,
+    "bitstream_sha256": null,
+    "sram_programmed": false,
+    "flash_programmed": false,
+    "invocations": [
+      {
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+          "-V"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/version.log",
+        "log_sha256": "8512617f4662b2e8b0068cd38a3ddaf0cf3fcab142ea47de643efa52ef61b594"
+      },
+      {
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+          "-s",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync0.ys"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync0.log",
+        "log_sha256": "3eb16c3fac2c93232fe70951fb335b9668ede3545812c831830cc071b559d7e2"
+      },
+      {
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+          "-s",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync1.ys"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync1.log",
+        "log_sha256": "d86b119e324a640c0f9e7e60335010ed5ae1175ba452775f1a3e716b6863c6d4"
+      },
+      {
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+          "-s",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync0.ys"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync0.log",
+        "log_sha256": "23ed8614e1bb7e3d3a0a27e27a300693333c2aecfbf99e7b27667879c5d95ede"
+      },
+      {
+        "argv": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/yosys-precheck-env/bin/yowasp-yosys",
+          "-s",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync1.ys"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync1.log",
+        "log_sha256": "6536d139416951a458323842a86bea2ae72b993437b79aa745e27fcda74b7c7a"
+      }
+    ],
+    "cases": [
+      {
+        "case": "workstation_task3_score_commit_m-sync0",
+        "selected_synchronous_mode": false,
+        "asynchronous_negative_rejected": true,
+        "passed": true,
+        "observed": {
+          "memory": "notes",
+          "geometry_and_ports": {
+            "WIDTH": 7,
+            "SIZE": 2048,
+            "ABITS": 11,
+            "RD_PORTS": 1,
+            "WR_PORTS": 1,
+            "RD_CLK_ENABLE": 0,
+            "WR_CLK_ENABLE": 1,
+            "RD_CLK_POLARITY": 0,
+            "WR_CLK_POLARITY": 1,
+            "RD_TRANSPARENCY_MASK": 0,
+            "RD_COLLISION_X_MASK": 0
+          },
+          "read_reset_free": true,
+          "synchronous_read": false,
+          "local_counter_widths": {
+            "clip_notes": 32,
+            "cursor": 32,
+            "note_count": 32
+          }
+        },
+        "script": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync0.ys",
+        "script_sha256": "aec40798727cc566d2b60c7d789da32109a31d6bd36f10aaaf563cacbde928cf",
+        "generic_netlist": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync0.json",
+        "generic_netlist_sha256": "5cc8a80816e5fc976e53c276fbeaebdcdf304319b53d1afdeb6c8f837b024298"
+      },
+      {
+        "case": "workstation_task3_score_commit_m-sync1",
+        "selected_synchronous_mode": true,
+        "asynchronous_negative_rejected": false,
+        "passed": true,
+        "observed": {
+          "memory": "notes",
+          "geometry_and_ports": {
+            "WIDTH": 7,
+            "SIZE": 2048,
+            "ABITS": 11,
+            "RD_PORTS": 1,
+            "WR_PORTS": 1,
+            "RD_CLK_ENABLE": 1,
+            "WR_CLK_ENABLE": 1,
+            "RD_CLK_POLARITY": 1,
+            "WR_CLK_POLARITY": 1,
+            "RD_TRANSPARENCY_MASK": 0,
+            "RD_COLLISION_X_MASK": 1
+          },
+          "read_reset_free": true,
+          "synchronous_read": true,
+          "local_counter_widths": {
+            "clip_notes": 12,
+            "cursor": 12,
+            "note_count": 12
+          }
+        },
+        "script": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync1.ys",
+        "script_sha256": "2d6dc7839fda4922216e6f556b57ff085a44bc2abf0db840db086df2d4d726fa",
+        "generic_netlist": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_score_commit_m-sync1.json",
+        "generic_netlist_sha256": "66e9a90b8212bcfdde35357951c550ff8e7312b1a5c5a7d2d97cb8bddccbdff8"
+      },
+      {
+        "case": "workstation_task3_final_tap_export-sync0",
+        "selected_synchronous_mode": false,
+        "asynchronous_negative_rejected": true,
+        "passed": true,
+        "observed": {
+          "memory": "frames",
+          "geometry_and_ports": {
+            "WIDTH": 98,
+            "SIZE": 256,
+            "ABITS": 8,
+            "RD_PORTS": 1,
+            "WR_PORTS": 1,
+            "RD_CLK_ENABLE": 0,
+            "WR_CLK_ENABLE": 1,
+            "RD_CLK_POLARITY": 0,
+            "WR_CLK_POLARITY": 1,
+            "RD_TRANSPARENCY_MASK": 0,
+            "RD_COLLISION_X_MASK": 0
+          },
+          "read_reset_free": true,
+          "synchronous_read": false,
+          "local_counter_widths": {}
+        },
+        "script": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync0.ys",
+        "script_sha256": "2d193e6244b39513c095a79dc361c048eb7b64f785b8d69959a3b73e27e5b46a",
+        "generic_netlist": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync0.json",
+        "generic_netlist_sha256": "a4c3f12d19cb490d9bde985d53fd51a8ac97fe2a65b996dae1bea9f06ce7650c"
+      },
+      {
+        "case": "workstation_task3_final_tap_export-sync1",
+        "selected_synchronous_mode": true,
+        "asynchronous_negative_rejected": false,
+        "passed": true,
+        "observed": {
+          "memory": "frames",
+          "geometry_and_ports": {
+            "WIDTH": 98,
+            "SIZE": 256,
+            "ABITS": 8,
+            "RD_PORTS": 1,
+            "WR_PORTS": 1,
+            "RD_CLK_ENABLE": 1,
+            "WR_CLK_ENABLE": 1,
+            "RD_CLK_POLARITY": 1,
+            "WR_CLK_POLARITY": 1,
+            "RD_TRANSPARENCY_MASK": 0,
+            "RD_COLLISION_X_MASK": 0
+          },
+          "read_reset_free": true,
+          "synchronous_read": true,
+          "local_counter_widths": {}
+        },
+        "script": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync1.ys",
+        "script_sha256": "605dbcc857687cfb73fde1e8a8f61adfcc674739c2db070bd3382bbc07b8c39c",
+        "generic_netlist": "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-storage-inference-v1/workstation_task3_final_tap_export-sync1.json",
+        "generic_netlist_sha256": "e5b7551e20550760e0bfb87d83e0b987827771f3541956b3ea25204c9f3548c9"
+      }
+    ],
+    "candidate_identity": "custom138k-workstation-task3-m-paired-checkpoint-v1-b892d338bda29aa6",
+    "configuration_sha256": "1d4ac57232d80a0f77b309cac371cc8a572df72ded6b5367561ff296044ce833",
+    "candidate_manifests_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/integration_inputs.json": "23e178d53edb717fbd05829eee1cccced18040bff69d576a7f4a9a73eb10da13",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/workstation_profile.json": "4e5984868683b239e0b6a67b4d4bf8e66d8f10da912b75a6f02baa4d777064e5"
+    },
+    "source_and_prepared_identity_verified": true,
+    "tool_version": "Yosys 0.70 (git sha1 28ba3cb92, Release, Clang /workspace/YoWASP/yosys/wasi-sdk-33.0-x86_64-linux/share/cmake/../..//bin/clang++ 22.1.0)",
+    "prepared_source_sha256": {
+      "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/workstation/Prj1/rtl/music/workstation_task3_score_commit_m.sv": "9bded8544f5e5eef7d7c6427967f99e60ec1a32826bedc510c926dfa97bbbe4c",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261105/m-paired-checkpoint-prepare-v2/workstation/Prj1/rtl/workstation/workstation_task3_final_tap_export.sv": "d7856615e4cfa2446f1a11e28c3348359ca76215bfd9c5e9d1b405f70eb8950c"
+    },
+    "inputs_unchanged": true,
+    "synchronous_cases_passed": 2,
+    "asynchronous_negatives_rejected": 2,
+    "not_verified": [
+      "Vendor primitive inference and physical BSRAM/RAM16 counts",
+      "Gowin full-design synthesis, mapped CDC and routed timing",
+      "Behavioral lifecycle and read/write collision semantics",
+      "Target LCD throughput, audio latency and hardware acceptance"
+    ]
+  },
+  "findings": [
+    {
+      "module": "workstation_task3_score_commit_m",
+      "capacity": {
+        "notes": 2048,
+        "bits_per_note": 7
+      },
+      "synchronous_read_clock": "actual clk_i",
+      "write_clock": "actual clk_i",
+      "read_reset": false,
+      "local_counter_bits": {
+        "legacy": 32,
+        "selected": 12
+      },
+      "public_count_bits": 32
+    },
+    {
+      "module": "workstation_task3_final_tap_export",
+      "capacity": {
+        "frames": 256,
+        "bits_per_frame": 98
+      },
+      "synchronous_read_clock": "actual clk_i",
+      "write_clock": "actual clk_i",
+      "read_reset": false
+    }
+  ],
+  "negative_controls": "The same two prepared modules at SYNC_READ_STORAGE=0 retain asynchronous read ports and fail the synchronous-read predicate. Neither source is patched.",
+  "read_write_collision_scope": "Score memory collects an undefined same-address collision mask; the precheck makes no claim about port collision semantics. Existing successful lifecycle/collision behavior regressions remain separate evidence.",
+  "production_changes": {
+    "RTL": false,
+    "firmware": false,
+    "profiles": false,
+    "constraints": false,
+    "wire_protocol": false,
+    "candidate_manifests": false,
+    "business_admission": false
+  },
+  "remaining": {
+    "Gowin_synthesis_passed": false,
+    "actual_BSRAM_or_RAM16_delta": null,
+    "physical_resources": null,
+    "routed_timing": null,
+    "full_CDC_accepted": false,
+    "bitstream_sha256": null,
+    "UserCode": null,
+    "measured_latency_ms": null,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "next_gate": "Restore the existing Gowin hostid/license runtime, synthesize both paired checkpoints, verify actual memory mapping and full mapped CDC, then run bounded P&R and target hardware validation. No clock or false-path changes."
+}

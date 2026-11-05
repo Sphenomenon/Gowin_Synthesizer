@@ -73,6 +73,8 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 两板新来源锁、完整准备结果及两个冻结父候选的回退核对通过；32 项相关测试通过，包含 8 项元数据篡改拒绝。共享源码快照的 1024 个输入 hash 一致，v3 线协议及业务默认关闭策略保留。差异、失败尝试与复现命令见 [成对来源检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_CHECKPOINT_20261105.json)。
 
+M 检查点另通过 [通用存储推断预检](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_STORAGE_INFERENCE_20261105.json)：Yosys 在原准备输入中保留 2048×7 位 score 和 256×98 位 tap，两者均形成无复位的同步读端口；score 本地计数为 12 位，公开计数仍为 32 位。同一源码的两个异步模式负控均不满足同步读判据。此检查尚未映射厂商原语，不能据此确认实际 BSRAM/RAM16 收益或 Gowin 综合、CDC、时序通过；原有生命周期和读写冲突行为回归仍为独立证据。
+
 冻结 W phone-batch 参考候选的独立网表诊断已检查 39 个 consumer 差异：23 个在明确的同名状态对应前提下，复位在内的下一拍函数相等（12 个 BDD、11 个限时 Z3 布尔 miter）；16 个仍待证明。15 项定向测试通过，包含 Gowin ALU 的 80 组及四种 MUX 的 32 组厂商真值核对、实际网表的 8 项突变拒绝，以及 11 份 miter 的独立进程重放。最新范围及复现见 [W MUX/SAT 诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_MUX_SAT_20261105.json)，此前的 [12 项诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CONSUMER_NEXTQ_20261105.json)保留。该网表不作为新检查点的映射或 CDC 通过证据。
 
 剩余项为 9 个加密 DDR IP 输出边界、6 个有歧义的同名状态及 1 个缺失状态对应，均未按同名信号直接放行。真实负控还表明：删除某计时器的异步 CLEAR 后，下一拍函数仍可相等；单步诊断因此不能代替异步事件或完整 CDC 证明。完整状态关系、生产门禁、物理时序及硬件验收仍未通过，历史锁和冻结候选均未改变。
