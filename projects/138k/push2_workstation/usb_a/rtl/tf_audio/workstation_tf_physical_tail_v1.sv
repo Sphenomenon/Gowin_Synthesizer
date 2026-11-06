@@ -3,7 +3,9 @@
 // Reusable TF endpoint, not an audio top or another source selector. Compute
 // admission must wait for armed_o. Only actual TF fire binds an ordered LAST.
 // The serializer and observation queue remain owned by the unique audio path.
-module workstation_tf_physical_tail_v1 (
+module workstation_tf_physical_tail_v1 #(
+    parameter bit SEPARATE_DOMAIN_RESET=0
+) (
     input wire rst_ni,compute_clk_i,serial_clk_i,
     // Compute-domain lifecycle fence; one event per high edge. It invalidates
     // eligibility immediately but does not reset either mailbox endpoint.
@@ -34,8 +36,14 @@ module workstation_tf_physical_tail_v1 (
     output reg [3:0] failure_code_o,
     output reg [31:0] tail_epoch_o,tail_sequence_o,
     output reg [31:0] baseline_drops_o,tail_drops_o,
-    output wire mailbox_busy_o
+    output wire mailbox_busy_o,
+    // Opt-in coherent common lifetime, asynchronously asserted and released
+    // only by the corresponding local clock. Never use a session/clock-switch
+    // reset here: an outstanding held token must survive those operations.
+    input wire compute_reset_ni,serial_reset_ni
 );
+    wire compute_reset_n=SEPARATE_DOMAIN_RESET ? compute_reset_ni:rst_ni;
+    wire serial_reset_n=SEPARATE_DOMAIN_RESET ? serial_reset_ni:rst_ni;
     // kind/rate/transport/session/epoch/sequence/cancellation-Gray.
     localparam integer TOKEN_WIDTH=162,REPLY_WIDTH=229;
     localparam [1:0] OK=0,CANCELLED=1,BAD_CONTEXT=2;
@@ -54,9 +62,9 @@ module workstation_tf_physical_tail_v1 (
     reg [31:0] context_generation,context_session,context_epoch,context_fence,first_sequence;
     wire busy=request_toggle!=reply_sync[1];
     assign mailbox_busy_o=busy;
-    assign arm_ready_o=rst_ni && !fence_i && !busy && !arm_pending && !armed_o && !tail_pending_o && !tail_closed_o;
+    assign arm_ready_o=compute_reset_n && !fence_i && !busy && !arm_pending && !armed_o && !tail_pending_o && !tail_closed_o;
     assign tf_admit_o=armed_o && !tail_closed_o && !failed_o && !fence_i;
-    assign quiescent_o=rst_ni && !armed_o && !tail_pending_o && !arm_pending && !busy;
+    assign quiescent_o=compute_reset_n && !armed_o && !tail_pending_o && !arm_pending && !busy;
     wire arm_fire=arm_valid_i && arm_ready_o;
     wire [TOKEN_WIDTH-1:0] reply_token=held_reply[REPLY_WIDTH-1:67];
     wire [1:0] reply_status=held_reply[66:65];
@@ -85,8 +93,8 @@ module workstation_tf_physical_tail_v1 (
                     observation_drop_event_i)failure_now=OBSERVATION_ERROR;
         end
     end
-    always @(posedge compute_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge compute_clk_i or negedge compute_reset_n)begin
+        if(!compute_reset_n)begin
             fence_count<=0;fence_gray<=0;request_toggle<=0;reply_consumed<=0;reply_sync<=0;held_request<=0;
             armed_o<=0;arm_pending<=0;tail_pending_o<=0;tail_closed_o<=0;tail_sent<=0;tail_observed<=0;tail_receipted<=0;
             context_rate<=0;context_generation<=0;context_session<=0;context_epoch<=0;context_fence<=0;
@@ -161,8 +169,8 @@ module workstation_tf_physical_tail_v1 (
     task retire(input [1:0] status,input [31:0] baseline,prefix,input bit error);
         begin held_reply<={serial_token,status,baseline,prefix,error};reply_toggle<=serial_request_seen;serial_state<=IDLE;end
     endtask
-    always @(posedge serial_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge serial_clk_i or negedge serial_reset_n)begin
+        if(!serial_reset_n)begin
             request_sync<=0;fence_meta<=0;fence_sync<=0;serial_state<=IDLE;serial_token<=0;
             serial_request_seen<=0;serial_context_valid<=0;serial_frame_error<=0;
             serial_generation<=0;serial_session<=0;serial_epoch<=0;serial_fence<=0;serial_baseline<=0;serial_rate<=0;

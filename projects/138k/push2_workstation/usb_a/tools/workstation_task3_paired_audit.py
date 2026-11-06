@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-paired-checkpoint-v19': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision19',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-paired-checkpoint-v19': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision19',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v18': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision18',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v18': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision18',
@@ -112,6 +116,8 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_tf_tail_reset.py',
+    'rtl/tf_audio/workstation_tf_tail_local_reset_v1.adaptation.json',
     'tools/workstation_task3_m_phone_lease_source.py',
     'tools/workstation_task3_phone_identity_compare.py',
     'tools/workstation_task3_cnn_ready_sdc.py',
@@ -606,6 +612,8 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-m-paired-checkpoint-v19',
+            'custom138k-workstation-task3-w-paired-checkpoint-v19',
             'custom138k-workstation-task3-m-paired-checkpoint-v18',
             'custom138k-workstation-task3-w-paired-checkpoint-v18',
             'custom138k-workstation-task3-m-paired-checkpoint-v17',
@@ -650,6 +658,10 @@ def audit(root, output, metadata):
         gate('W_CNN_ready_SDC',lambda: audit_ready_sdc(
             protocol_netlist(vg_text,mapping='synthesis'),sdc,stage=stage))
     if role == 'M':
+        if profile['configuration'].get('tf_tail_reset_policy') is not None:
+            from tools.workstation_task3_tf_tail_reset import audit_mapped as audit_tail_reset
+            gate('M_TF_tail_local_reset',lambda: audit_tail_reset(
+                protocol_netlist(vg_text,mapping='synthesis'),stage=stage))
         from tools.workstation_task3_root_reset_audit import audit_root_startup
         from tools.workstation_task3_m_paired_releases_audit import audit_paired_release_sdc
         def paired_releases():
@@ -658,7 +670,8 @@ def audit(root, output, metadata):
             return dict(actual_root_startup=root_reset,
                 actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v18',
+        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v19',
+                                  'custom138k-workstation-task3-m-paired-checkpoint-v18',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v17',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v16',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v15',

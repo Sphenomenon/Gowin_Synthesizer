@@ -119,6 +119,13 @@ def source_evidence(stage):
     sources = (LEASE_SOURCE_SHA256 if registered_lease else PHONE_GROUPED_SOURCE_SHA256 if phone_grouped_profile else
                GROUPED_SOURCE_SHA256 if grouped_profile else TERMINAL_SOURCE_SHA256 if terminal_profile else
                SYNC_SOURCE_SHA256 if provider == SYNC_PROVIDER else SOURCE_SHA256)
+    from tools import workstation_task3_tf_tail_reset as tail_reset
+    local_tail=profile.get('profile')==tail_reset.PROFILE
+    require(tail_reset.configured(profile['configuration']) is local_tail,
+            'TF tail reset policy/profile mismatch')
+    if local_tail:
+        tail_reset.evidence(stage, profile['configuration'])
+        sources=dict(sources, **{tail_reset.RUNTIME:sha(stage/tail_reset.RUNTIME)})
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], provider)
     require(selected is not None, 'snapshot parameter selection absent')

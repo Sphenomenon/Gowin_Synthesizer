@@ -51,6 +51,9 @@ class CurrentSources(unittest.TestCase):
                 if role=='M' and name.endswith('-v17'):
                     from tools.workstation_task3_m_phone_lease_source import KEY,POLICY
                     expected[KEY]=POLICY
+                if role=='M' and name.endswith('-v19'):
+                    from tools.workstation_task3_tf_tail_reset import KEY,POLICY
+                    expected[KEY]=POLICY
                 self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])

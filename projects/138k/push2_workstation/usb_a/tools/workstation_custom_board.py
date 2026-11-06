@@ -168,6 +168,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('direct TF requires the explicit native M/no-CNN/menu composition')
         native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
         profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
+    from tools import workstation_task3_tf_tail_reset as tail_reset
+    tail_reset_selected = tail_reset.configured({} if profile is None else profile['configuration'])
+    if tail_reset_selected:
+        if paired_role != 'M' or not tf_direct:
+            raise ValueError('TF tail local reset requires paired DIRECT M')
+        profile_dependencies += (tail_reset.TOOL, tail_reset.MANIFEST)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -421,6 +427,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         task3_paired_selection=paired_board.prepare_top(root,stage,paired_role)
         if lease_source_policy is not None:
             lease_source.prepare(stage,profile['configuration'])
+    task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
@@ -642,6 +649,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['volume_application']=('once_in_runtime_final_pcm_before_I2S' if audio_only else 'once_in_runtime_final_pcm_before_I2S_display_and_BLE')
     if paired_role is not None:
         metadata['task3_paired']=task3_paired_selection
+        if task3_tail_reset is not None:
+            metadata['task3_tf_tail_reset'] = task3_tail_reset
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR

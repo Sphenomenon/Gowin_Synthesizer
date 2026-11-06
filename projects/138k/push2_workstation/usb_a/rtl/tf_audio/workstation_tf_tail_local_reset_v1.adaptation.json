@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "policy": "task3_m_TF_tail_existing_local_release_v1",
+  "inputs": {
+    "rtl/workstation/workstation_runtime_audio.sv": {
+      "parent_sha256": "3170078c72ac8b11d02f0366ee0ffde9b26269237e77430d5b68e9c44aa2bedb",
+      "native_sha256": "d6f89693d19fabcbbc68b3c84456006f1a03eed10ef67a3b70a15fa707c8f921",
+      "edits": [
+        {
+          "before": "    parameter bit TF_CONTROL_ENABLE=1,\n    parameter bit TF_DIRECT_ENABLE=0,\n    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,\n    parameter bit SEPARATE_COMMON_RESET=0,\n",
+          "after": "    parameter bit TF_CONTROL_ENABLE=1,\n    parameter bit TF_DIRECT_ENABLE=0,\n    parameter bit TF_TAIL_LOCAL_RESET_ENABLE=0,\n    parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,\n    parameter bit SEPARATE_COMMON_RESET=0,\n"
+        },
+        {
+          "before": "    assign smute_o=serializer_mute || dac_mute || dsp_fault_o;\n    generate if(TF_DIRECT_ENABLE)begin:g_direct_tf\n        reg [31:0] generation_q,epoch_q;\n        reg [9:0] panic_q;\n",
+          "after": "    assign smute_o=serializer_mute || dac_mute || dsp_fault_o;\n    generate if(TF_DIRECT_ENABLE)begin:g_direct_tf\n        // Reuse the existing coherent runtime lifetime. Local releases wait\n        // for their own clock; sample scheduling and per-session fences do\n        // not reset this two-clock mailbox.\n        wire tail_compute_reset_n=TF_TAIL_LOCAL_RESET_ENABLE ? compute_reset_n:common_reset_n;\n        reg [31:0] generation_q,epoch_q;\n        reg [9:0] panic_q;\n"
+        },
+        {
+          "before": "            router_unexpected!=router_unexpected_q || bridge_unexpected!=bridge_unexpected_q;\n        (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [1:0] serial_quiet_compute;\n        always @(posedge compute_clk_i or negedge common_reset_n)\n            if(!common_reset_n)begin\n                generation_q<=0;epoch_q<=0;panic_q<=0;cancel_q<=0;rate_q<=0;\n                blocked<=0;tail_failed_q<=0;drain_pending<=0;drain_epoch<=0;drain_sequence<=0;drain_rate<=0;serial_quiet_compute<=0;quiet_published<=0;\n",
+          "after": "            router_unexpected!=router_unexpected_q || bridge_unexpected!=bridge_unexpected_q;\n        (* ASYNC_REG=\"TRUE\",syn_preserve=1 *) reg [1:0] serial_quiet_compute;\n        always @(posedge compute_clk_i or negedge tail_compute_reset_n)\n            if(!tail_compute_reset_n)begin\n                generation_q<=0;epoch_q<=0;panic_q<=0;cancel_q<=0;rate_q<=0;\n                blocked<=0;tail_failed_q<=0;drain_pending<=0;drain_epoch<=0;drain_sequence<=0;drain_rate<=0;serial_quiet_compute<=0;quiet_published<=0;\n"
+        },
+        {
+          "before": "        assign tf_physical_abort_o=local_abort;\n        assign tf_physical_failed_o=failure_event;\n        workstation_tf_physical_tail_v1 tail(\n            .rst_ni(common_reset_n),.compute_clk_i,.serial_clk_i(selected_clock),.fence_i(fence),\n            .arm_valid_i(arm_valid),.arm_ready_o(),.arm_44k1_i(compute_rate),\n            .arm_generation_i(tf_generation_i),.arm_session_i(tf_session_i),.arm_epoch_i(compute_epoch),\n",
+          "after": "        assign tf_physical_abort_o=local_abort;\n        assign tf_physical_failed_o=failure_event;\n        workstation_tf_physical_tail_v1 #(.SEPARATE_DOMAIN_RESET(TF_TAIL_LOCAL_RESET_ENABLE)) tail(\n            .rst_ni(common_reset_n),.compute_clk_i,.serial_clk_i(selected_clock),.fence_i(fence),\n            .compute_reset_ni(compute_reset_n),.serial_reset_ni(serial_common_reset_n),\n            .arm_valid_i(arm_valid),.arm_ready_o(),.arm_44k1_i(compute_rate),\n            .arm_generation_i(tf_generation_i),.arm_session_i(tf_session_i),.arm_epoch_i(compute_epoch),\n"
+        }
+      ]
+    },
+    "rtl/tf_audio/workstation_tf_physical_tail_v1.sv": {
+      "parent_sha256": "6411af9cc250391eae6303c952c828376c34f63c5e4bef04a50ec6ca059d3eed",
+      "native_sha256": "b94729e839f9b1f9c2102f6a6c150c3393030a11a04e79f1a20ed08a9183e6ae",
+      "edits": [
+        {
+          "before": "// admission must wait for armed_o. Only actual TF fire binds an ordered LAST.\n// The serializer and observation queue remain owned by the unique audio path.\nmodule workstation_tf_physical_tail_v1 (\n    input wire rst_ni,compute_clk_i,serial_clk_i,\n    // Compute-domain lifecycle fence; one event per high edge. It invalidates\n",
+          "after": "// admission must wait for armed_o. Only actual TF fire binds an ordered LAST.\n// The serializer and observation queue remain owned by the unique audio path.\nmodule workstation_tf_physical_tail_v1 #(\n    parameter bit SEPARATE_DOMAIN_RESET=0\n) (\n    input wire rst_ni,compute_clk_i,serial_clk_i,\n    // Compute-domain lifecycle fence; one event per high edge. It invalidates\n"
+        },
+        {
+          "before": "    output reg [31:0] tail_epoch_o,tail_sequence_o,\n    output reg [31:0] baseline_drops_o,tail_drops_o,\n    output wire mailbox_busy_o\n);\n    // kind/rate/transport/session/epoch/sequence/cancellation-Gray.\n    localparam integer TOKEN_WIDTH=162,REPLY_WIDTH=229;\n",
+          "after": "    output reg [31:0] tail_epoch_o,tail_sequence_o,\n    output reg [31:0] baseline_drops_o,tail_drops_o,\n    output wire mailbox_busy_o,\n    // Opt-in coherent common lifetime, asynchronously asserted and released\n    // only by the corresponding local clock. Never use a session/clock-switch\n    // reset here: an outstanding held token must survive those operations.\n    input wire compute_reset_ni,serial_reset_ni\n);\n    wire compute_reset_n=SEPARATE_DOMAIN_RESET ? compute_reset_ni:rst_ni;\n    wire serial_reset_n=SEPARATE_DOMAIN_RESET ? serial_reset_ni:rst_ni;\n    // kind/rate/transport/session/epoch/sequence/cancellation-Gray.\n    localparam integer TOKEN_WIDTH=162,REPLY_WIDTH=229;\n"
+        },
+        {
+          "before": "    wire busy=request_toggle!=reply_sync[1];\n    assign mailbox_busy_o=busy;\n    assign arm_ready_o=rst_ni && !fence_i && !busy && !arm_pending && !armed_o && !tail_pending_o && !tail_closed_o;\n    assign tf_admit_o=armed_o && !tail_closed_o && !failed_o && !fence_i;\n    assign quiescent_o=rst_ni && !armed_o && !tail_pending_o && !arm_pending && !busy;\n    wire arm_fire=arm_valid_i && arm_ready_o;\n    wire [TOKEN_WIDTH-1:0] reply_token=held_reply[REPLY_WIDTH-1:67];\n",
+          "after": "    wire busy=request_toggle!=reply_sync[1];\n    assign mailbox_busy_o=busy;\n    assign arm_ready_o=compute_reset_n && !fence_i && !busy && !arm_pending && !armed_o && !tail_pending_o && !tail_closed_o;\n    assign tf_admit_o=armed_o && !tail_closed_o && !failed_o && !fence_i;\n    assign quiescent_o=compute_reset_n && !armed_o && !tail_pending_o && !arm_pending && !busy;\n    wire arm_fire=arm_valid_i && arm_ready_o;\n    wire [TOKEN_WIDTH-1:0] reply_token=held_reply[REPLY_WIDTH-1:67];\n"
+        },
+        {
+          "before": "        end\n    end\n    always @(posedge compute_clk_i or negedge rst_ni)begin\n        if(!rst_ni)begin\n            fence_count<=0;fence_gray<=0;request_toggle<=0;reply_consumed<=0;reply_sync<=0;held_request<=0;\n            armed_o<=0;arm_pending<=0;tail_pending_o<=0;tail_closed_o<=0;tail_sent<=0;tail_observed<=0;tail_receipted<=0;\n",
+          "after": "        end\n    end\n    always @(posedge compute_clk_i or negedge compute_reset_n)begin\n        if(!compute_reset_n)begin\n            fence_count<=0;fence_gray<=0;request_toggle<=0;reply_consumed<=0;reply_sync<=0;held_request<=0;\n            armed_o<=0;arm_pending<=0;tail_pending_o<=0;tail_closed_o<=0;tail_sent<=0;tail_observed<=0;tail_receipted<=0;\n"
+        },
+        {
+          "before": "        begin held_reply<={serial_token,status,baseline,prefix,error};reply_toggle<=serial_request_seen;serial_state<=IDLE;end\n    endtask\n    always @(posedge serial_clk_i or negedge rst_ni)begin\n        if(!rst_ni)begin\n            request_sync<=0;fence_meta<=0;fence_sync<=0;serial_state<=IDLE;serial_token<=0;\n            serial_request_seen<=0;serial_context_valid<=0;serial_frame_error<=0;\n",
+          "after": "        begin held_reply<={serial_token,status,baseline,prefix,error};reply_toggle<=serial_request_seen;serial_state<=IDLE;end\n    endtask\n    always @(posedge serial_clk_i or negedge serial_reset_n)begin\n        if(!serial_reset_n)begin\n            request_sync<=0;fence_meta<=0;fence_sync<=0;serial_state<=IDLE;serial_token<=0;\n            serial_request_seen<=0;serial_context_valid<=0;serial_frame_error<=0;\n"
+        }
+      ]
+    }
+  }
+}

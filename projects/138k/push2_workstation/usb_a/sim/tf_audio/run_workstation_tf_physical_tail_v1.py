@@ -8,7 +8,7 @@ TB=ROOT/'sim/tf_audio/tb_workstation_tf_physical_tail_v1.sv'
 CONTRACT=ROOT/'rtl/tf_audio/WORKSTATION_TF_PHYSICAL_TAIL_V1_CONTRACT.md'
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
-    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);a=ap.parse_args()
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--output',type=Path,required=True);ap.add_argument('--local-reset',action='store_true');a=ap.parse_args()
     out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
     inputs=[RTL,TB,Path(__file__).resolve()];hashes={str(p):sha(p) for p in inputs}
     result=dict(schema=1,passed=False,input_sha256=hashes,public_endpoint_only=True,real_native_chain=False,physical_CDC_verified=False,hardware_operated=False,cases={})
@@ -22,6 +22,9 @@ def main():
       'accept_saturated_ARM':("reply_baseline==32'hffffffff","1'b0"),
       'sample_prefix_before_physical_FIFO_edge':('else retire(OK,serial_baseline,observation_source_drops_i,serial_frame_error);','else retire(OK,serial_baseline,serial_baseline,serial_frame_error);'),
     }
+    if a.local_reset:
+        mutants['raw_compute_reset_bypass']=('wire compute_reset_n=SEPARATE_DOMAIN_RESET ? compute_reset_ni:rst_ni;', 'wire compute_reset_n=rst_ni;')
+        mutants['raw_serial_reset_bypass']=('wire serial_reset_n=SEPARATE_DOMAIN_RESET ? serial_reset_ni:rst_ni;', 'wire serial_reset_n=rst_ni;')
     try:
         for name in ['positive',*mutants]:
             folder=out/name;folder.mkdir();source=RTL
@@ -29,6 +32,7 @@ def main():
                 old,new=mutants[name];assert original.count(old)==1,(name,'anchor drift')
                 source=folder/'mutant.sv';source.write_text(original.replace(old,new,1))
             compile_cmd=['iverilog','-g2012','-s','tb_workstation_tf_physical_tail_v1','-o',str(folder/'sim.vvp'),str(source),str(TB)]
+            if a.local_reset:compile_cmd.insert(1,'-Ptb_workstation_tf_physical_tail_v1.LOCAL_RESET=1')
             p=subprocess.run(compile_cmd,capture_output=True,text=True,timeout=30);(folder/'compile.log').write_text(p.stdout+p.stderr)
             if p.returncode:raise ValueError(name+' must elaborate: '+p.stdout+p.stderr)
             p=subprocess.run(['vvp',str(folder/'sim.vvp')],capture_output=True,text=True,timeout=30);log=p.stdout+p.stderr;(folder/'run.log').write_text(log)

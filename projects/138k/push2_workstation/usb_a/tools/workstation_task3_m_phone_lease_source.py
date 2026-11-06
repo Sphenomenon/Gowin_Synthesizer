@@ -11,7 +11,8 @@ import hashlib
 POLICY = 'task3_m_phone_lease_source_register_v1'
 KEY = 'm_phone_lease_source_policy'
 PROFILE = 'custom138k-workstation-task3-m-paired-checkpoint-v17'
-PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v18')
+PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v18',
+            'custom138k-workstation-task3-m-paired-checkpoint-v19')
 ROOT_VARIANT = 'task3-m-source-clock-phone-lease-root-v1'
 BOARD = 'rtl/workstation/workstation_task3_m_paired_board.svh'
 TOOL = 'tools/workstation_task3_m_phone_lease_source.py'

@@ -518,6 +518,19 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision18')
 
 
+# Only M selects the existing local release chain for TF tail state.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v19'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v19'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v18']
+    _configuration=dict(_parent['configuration'])
+    if _role=='m':
+        _configuration['tf_tail_reset_policy']='task3_m_TF_tail_existing_local_release_v1'
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=19,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v19.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision19')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -955,6 +968,12 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target == 'rtl/workstation/workstation_runtime_audio.sv' and profile['configuration'].get('tf_tail_reset_policy') is not None:
+            from tools import workstation_task3_tf_tail_reset as tail_reset
+            if (tail_reset.evidence(stage, profile['configuration']) != metadata.get('task3_tf_tail_reset') or
+                    tail_reset.native(target, (stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('TF tail local reset parameter/source selection changed')
+            staged_hash = sha(stage/target)
         if target=='rtl/usb2/workstation_usb2_cpu_bus.sv' and metadata.get('usb2_cpu_ram_selection'):
             staged_hash=metadata['usb2_cpu_ram_selection']['after']
         if business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv':

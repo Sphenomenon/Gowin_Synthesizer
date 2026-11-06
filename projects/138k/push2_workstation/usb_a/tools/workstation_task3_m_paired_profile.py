@@ -65,7 +65,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     sync=configuration.get('m_endpoint_storage_policy')
     terminal=configuration.get('m_score_terminal_policy')
     from tools import workstation_task3_m_phone_lease_source as lease_source
+    from tools import workstation_task3_tf_tail_reset as tail_reset
     registered_lease=lease_source.configured(configuration)
+    local_tail=tail_reset.configured(configuration)
     selected_sync=provider==SYNC_PROVIDER
     if (sync==SYNC_POLICY)!=selected_sync or sync not in (None,SYNC_POLICY):
         raise ValueError('M synchronous storage requires its explicit provider and policy')
@@ -89,6 +91,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     for relative in files:
         source=(root/relative).read_bytes();selected=(stage/relative).read_bytes()
         compared=selected
+        if relative==tail_reset.RUNTIME and local_tail:
+            compared=tail_reset.native(relative,selected.decode()).encode()
+            source=tail_reset.native(relative,source.decode()).encode()
         if relative==BOARD and registered_lease:
             compared=lease_source.restore(selected.decode()).encode()
             if digest(source)!=lease_source.PARENT_SHA256:

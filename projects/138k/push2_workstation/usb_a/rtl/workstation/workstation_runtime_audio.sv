@@ -15,6 +15,7 @@ module workstation_runtime_audio #(
     parameter bit D_ONLY_ENABLE=0,
     parameter bit TF_CONTROL_ENABLE=1,
     parameter bit TF_DIRECT_ENABLE=0,
+    parameter bit TF_TAIL_LOCAL_RESET_ENABLE=0,
     parameter [31:0] INITIAL_STREAM_EPOCH=RESERVE_ZERO_EPOCH ? 32'd1 : 32'd0,
     parameter bit SEPARATE_COMMON_RESET=0,
     parameter bit PCM_SNAPSHOT_ENABLE=0
@@ -407,6 +408,10 @@ module workstation_runtime_audio #(
     assign pdn_no=serializer_pdn && !dsp_fault_o;
     assign smute_o=serializer_mute || dac_mute || dsp_fault_o;
     generate if(TF_DIRECT_ENABLE)begin:g_direct_tf
+        // Reuse the existing coherent runtime lifetime. Local releases wait
+        // for their own clock; sample scheduling and per-session fences do
+        // not reset this two-clock mailbox.
+        wire tail_compute_reset_n=TF_TAIL_LOCAL_RESET_ENABLE ? compute_reset_n:common_reset_n;
         reg [31:0] generation_q,epoch_q;
         reg [9:0] panic_q;
         reg [21:0] cancel_q;
@@ -434,8 +439,8 @@ module workstation_runtime_audio #(
         wire transport_fault=(transport_health_valid && transport_health!=transport_health_q) ||
             router_unexpected!=router_unexpected_q || bridge_unexpected!=bridge_unexpected_q;
         (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [1:0] serial_quiet_compute;
-        always @(posedge compute_clk_i or negedge common_reset_n)
-            if(!common_reset_n)begin
+        always @(posedge compute_clk_i or negedge tail_compute_reset_n)
+            if(!tail_compute_reset_n)begin
                 generation_q<=0;epoch_q<=0;panic_q<=0;cancel_q<=0;rate_q<=0;
                 blocked<=0;tail_failed_q<=0;drain_pending<=0;drain_epoch<=0;drain_sequence<=0;drain_rate<=0;serial_quiet_compute<=0;quiet_published<=0;
                 transport_health_q<=0;router_unexpected_q<=0;bridge_unexpected_q<=0;
@@ -462,8 +467,9 @@ module workstation_runtime_audio #(
         assign tf_physical_quiescent_o=quiet_published;
         assign tf_physical_abort_o=local_abort;
         assign tf_physical_failed_o=failure_event;
-        workstation_tf_physical_tail_v1 tail(
+        workstation_tf_physical_tail_v1 #(.SEPARATE_DOMAIN_RESET(TF_TAIL_LOCAL_RESET_ENABLE)) tail(
             .rst_ni(common_reset_n),.compute_clk_i,.serial_clk_i(selected_clock),.fence_i(fence),
+            .compute_reset_ni(compute_reset_n),.serial_reset_ni(serial_common_reset_n),
             .arm_valid_i(arm_valid),.arm_ready_o(),.arm_44k1_i(compute_rate),
             .arm_generation_i(tf_generation_i),.arm_session_i(tf_session_i),.arm_epoch_i(compute_epoch),
             .armed_o(tail_armed),.tail_pending_o(tail_pending),.tail_closed_o(tail_closed),.tf_admit_o(tail_admit),.quiescent_o(tail_quiet),
