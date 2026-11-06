@@ -24,6 +24,8 @@ WS = 'u_managed/runtime/service/workstation'
 EFFECTS = WS + '/runtime_effects.effects'
 ENGINES = WS + '/runtime_engines.engines'
 PROFILES = {
+    'custom138k-workstation-task3-m-independent-v1': ('M', 'custom138k-native-task3-m-independent-revision1',
+                                      'rtl/workstation/workstation_profile_m_demo.sv'),
     'custom138k-workstation-task3-m-direct-tf-v1': ('M', 'custom138k-native-task3-m-direct-tf-revision1',
                                       'rtl/workstation/workstation_profile_task3_m_direct_tf.sv'),
     'custom138k-workstation-m-demo-v1': ('M', 'custom138k-native-m-demo-base-revision1',
@@ -560,9 +562,25 @@ def audit_sdc_selectors(sdc, netlist):
                 routed_CDC_or_STA_accepted=False)
 
 
+def audit_usb_rom(stage, vg_text, netlist, firmware, configuration):
+    """Prove the selected capacity against actual mapped initialization words."""
+    capacity = configuration.get('usb2_cpu_ram_bytes', 65536)
+    require(type(capacity) is int and capacity in (49152, 65536),
+            'unregistered USB CPU RAM capacity')
+    # Historical RAM64 receipts predate the explicit capacity field. The word
+    # checker still proves their complete64KiB image; RAM48 must name48KiB.
+    require(firmware.get('ram_bytes', 65536) == capacity, 'USB firmware capacity mismatch')
+    if capacity == 49152:
+        from tools.workstation_usb_cpu_rom import check_banked_rom
+        return check_banked_rom(stage, netlist, firmware)
+    from tools.workstation_custom_board_audit import check_rom
+    return dict(words=check_rom(stage, vg_text, firmware['rom_sha256']), bytes=65536,
+                every_word_verified=True)
+
+
 def audit(root, output, metadata):
     # Import lazily so the unchanged native auditor can dispatch here.
-    from tools.workstation_custom_board_audit import (check_ports, check_rom, audit_native_feedback)
+    from tools.workstation_custom_board_audit import (check_ports, audit_native_feedback)
     from tools.workstation_runtime_clock_audit import audit_runtime_clocks
     from tools.workstation_custom_usb2_cdc import audit_usb2_cdc
     from tools.workstation_custom_input_cdc import audit_input_fifo
@@ -572,6 +590,8 @@ def audit(root, output, metadata):
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
     root, output = Path(root), Path(output)
     audit_source_names = AUDIT_SOURCES
+    if metadata.get('workstation_profile',{}).get('name') == 'custom138k-workstation-task3-m-independent-v1':
+        audit_source_names += ('tools/workstation_usb_cpu_rom.py',)
     if metadata.get('workstation_profile',{}).get('name')=='custom138k-workstation-task3-m-direct-tf-v1':
         audit_source_names+=('tools/workstation_task3_tf_direct.py',
             'boards/custom_138k/task3_tf_direct_legacy_cdc_v1.json',
@@ -615,7 +635,8 @@ def audit(root, output, metadata):
     totals, rows = hierarchy_counts(ET.parse(report).getroot())
     features = audit_features(role, rows, netlist,
         tf_enabled=profile['configuration'].get('tf_policy') != 'disabled_first_m_core_demo_v1',
-        worker_audio_only=worker_audio_only,tf_direct_enabled=tf_direct)
+        worker_audio_only=worker_audio_only,tf_direct_enabled=tf_direct,
+        usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536))
     voices = audit_m_voice_storage(netlist) if role == 'M' else None
     plan = json.loads((output / 'pinout/pinout.json').read_text())
     electrical = plan['electrical_check']
@@ -686,7 +707,7 @@ def audit(root, output, metadata):
     recording_diagnostics = (audit_w_recording_diagnostic_retirement(stage, netlist)
         if role == 'W' and not worker_audio_only and retirement['policy'] in (V3_POLICY, POLICY) else None)
     selectors = audit_sdc_selectors(sdc, netlist)
-    rom_words = check_rom(stage, vg_text, metadata['firmware']['rom_sha256'])
+    rom = audit_usb_rom(stage, vg_text, netlist, metadata['firmware'], profile['configuration'])
     # Rehash the frozen closure after all source/netlist checks.
     require(verify_prepared(output, metadata)[1] == profile, 'candidate drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)},
@@ -702,7 +723,8 @@ def audit(root, output, metadata):
         source_snapshot_entries=len(metadata['source_snapshot_sha256']), source_policy='immutable_prepared_closure',
         current_live_tree_reproducibility_rechecked=False,
         resources=totals, synthesis_bsram_equivalent=totals['Bsram'], bsram_capacity=CAPACITY,
-        features=features, m_voice_storage=voices, port_coverage=ports, verified_rom_words=rom_words,
+        features=features, m_voice_storage=voices, port_coverage=ports, verified_rom_words=rom['words'],
+        usb_cpu_rom_audit=rom,
         rom_sha256=metadata['firmware']['rom_sha256'], high_speed_allowed=metadata['high_speed_allowed'],
         explicit_clock_audit=clocks, ae350_core_clock_placement=clock_placement, ae350_rtc=rtc,
         usb2_bridge_cdc_audit=usb_cdc, input_fifo_cdc_audit=input_cdc,

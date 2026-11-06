@@ -56,6 +56,7 @@ CPU_BUSINESS_CONFIGURATION=dict(RUNTIME_CONFIGURATION,recognition_policy='disabl
 LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1'
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
+TASK3_M_INDEPENDENT_NAME='custom138k-workstation-task3-m-independent-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
 TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
@@ -182,6 +183,14 @@ PROFILE_REGISTRY = {
         provider=NO_CNN_PROVIDER, recognition_enabled=False,
         integration_identity='custom138k-native-dual-rate-no-cnn-revision1'),
 }
+
+# Refresh the source closure under a new identity; retain the original M-demo
+# descriptor and reuse its provider instead of creating another composition.
+_parent=PROFILE_REGISTRY[M_DEMO_NAME]
+PROFILE_REGISTRY[TASK3_M_INDEPENDENT_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_independent_v1.json',
+    configuration=dict(_parent['configuration'],usb2_cpu_ram_bytes=49152),
+    integration_identity='custom138k-native-task3-m-independent-revision1')
 
 for _name,_config,_provider,_policy,_identity in (
     (TASK3_W_SIGNAL_NAME,'boards/custom_138k/workstation_profile_task3_w_media_signal_bsram_v1.json',

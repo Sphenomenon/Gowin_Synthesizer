@@ -1,0 +1,302 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "scope": "Proposal A independent M source checkpoint, real component verification and one failed Gowin synthesis parse. No physical or board acceptance.",
+  "source_base_commit": "acef9d487136cfa653a4f86999f6f7b8bfc78ef8",
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "ancestor_verified": true,
+    "latest_fetch_succeeded": true,
+    "local_remote_counts": "0\t0",
+    "PR2": "Reviewed USB CPU48 banked RAM selected; full mapped word proof remains required for this new profile.",
+    "PR3": "Reviewed USB/HDMI diagnostic, destination reset and status freshness fixes retained. Not a full-workstation voice proof.",
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    }
+  },
+  "predeclared_proposal": {
+    "id": "A",
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json",
+      "sha256": "64db72465ef396b3b48ad813a4bda33062e1b13161cd95b78fe3db500b719019"
+    },
+    "expected_benefit": "Freeze independent local interaction/synthesis/DAC boundaries using the existing M provider. No advance numeric timing/resource improvement claim.",
+    "new_synthesis_used": 1,
+    "new_PnR_used": 0,
+    "max_synthesis": 1,
+    "max_PnR": 1,
+    "automatic_retry": false,
+    "disposition": "Stop EDA for proposal A this round after the failed parse. Fix exact diagnosed dependencies and verify offline only. No new netlist, resources or timing claimed. B/C budgets remain unused."
+  },
+  "M": {
+    "final_candidate_identity": "custom138k-workstation-task3-m-independent-v1-dca520d2406ed45f",
+    "configuration": {
+      "hdmi_mode": "1080p60",
+      "high_speed_allowed": true,
+      "tf_audio_kind": "wav",
+      "implemented_sample_rates_hz": [
+        48000,
+        44100
+      ],
+      "ae350_firmware_policy": "maintained_ae350_v1",
+      "scan_window_policy": "native_admission_v1",
+      "audio_policy": "native_dual_rate_runtime_v1",
+      "reserve_zero_epoch": true,
+      "display_metadata_minor": 1,
+      "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+      "recognition_policy": "disabled_cnn_and_follow_v1",
+      "local_panel_policy": "disabled_local_lcd_touch_v1",
+      "demo_role": "M",
+      "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+      "tf_policy": "disabled_first_m_core_demo_v1",
+      "bluetooth_policy": "retired_for_independent_m_demo_v1",
+      "recording_policy": "disabled_m_demo_v1",
+      "usb2_cpu_ram_bytes": 49152
+    },
+    "descriptor": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_independent_v1.json",
+      "sha256": "31d3b7b3bcdc24faae5ecec59ce57fc7c9faf152da969271bb07065c896fb7b4"
+    },
+    "artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v7/workstation_profile.json",
+      "sha256": "331a9d14ae827e94d29b69453baafe879feca5edb26cf39ddfcf9b7cc558ac45"
+    },
+    "integration_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v7/integration_inputs.json",
+      "sha256": "0bee4175734061cae75e6844f03a99c885af8bb6986f62e2883dfedc2f7fbb36"
+    },
+    "staged_files": 612,
+    "enabled_inputs": 267,
+    "source_lock_files": 840,
+    "ordinary_voices": 32,
+    "existing_vector_voices": 8,
+    "provider": "rtl/workstation/workstation_profile_m_demo.sv",
+    "provider_reused": true,
+    "tf_cnn_phone_recording": "Outside this independent checkpoint; paired candidate and task2 paths retained.",
+    "usb_firmware_bytes": 21380,
+    "usb_ram_bytes": 49152,
+    "usb_stack_margin_bytes": 21924,
+    "mapped_resources": null,
+    "physical_resources": null,
+    "timing_closed": false,
+    "control_to_sound_hardware_latency_ms": null,
+    "bitstream_identity": null
+  },
+  "W": {
+    "changed": false,
+    "new_synthesis": 0,
+    "new_PnR": 0,
+    "physical_reference_identity": "custom138k-resource-physical-D21106E9",
+    "physical_reference_BSRAM": 336,
+    "physical_reference_capacity": 340,
+    "reference_timing_closed": false,
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json",
+      "sha256": "6429aaedec3408ca16c9dcdce32ba5cd18fbe0cca1cdae14ca12ee83cbdffc66"
+    },
+    "limits": "Historicalv14 physical reference. Not a newv21 or current-source physical result."
+  },
+  "validation": {
+    "source_regression_test_methods": 45,
+    "source_regressions": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/source-regressions.json",
+      "sha256": "b7ec45bfda8d9d4a7b77a3855edd500622207f228714658b2660529b739c262e"
+    },
+    "runtime_audio": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/runtime-audio-v2/verification.json",
+      "sha256": "2a147bf8247028901e4127bab1c340a07ac14af09ba440bb23f401aa8e27fd7d"
+    },
+    "runtime_audio_metrics": {
+      "ordinary_voices": 32,
+      "vector_voices": 8,
+      "polyphony_checks": 12,
+      "checked": 22532,
+      "good": 22518,
+      "errors": 14,
+      "nonzero": 22361,
+      "first_slots": 15,
+      "config_acks": 16,
+      "applies": 14,
+      "faults": 5,
+      "mid_frame_switches": 10,
+      "max_render_clocks": 1204,
+      "max_slot_clocks": 1229,
+      "max_config_clocks": 454,
+      "writes": 5620,
+      "fences": 35,
+      "analysis_drops": 7515,
+      "record_drops": 13512,
+      "startup_frames": 3,
+      "epoch": 15,
+      "loader_overlap_slots": 6,
+      "pressure_events": 768,
+      "pressure_noteoffs": 26,
+      "wet48": 7,
+      "wet44": 7,
+      "fdn_seen": 3,
+      "boundary_cases": 12
+    },
+    "runtime_audio_limits": "Actual DSP/DMA/official DCS/final PCM/bit-level I2S component; shorter clock qualification/startup, ordered DDR model and general coherent TF fixture. Not independent M USB/CPU top or board simulation.",
+    "runtime_to_final_input_binding": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/component-final-binding.json",
+      "sha256": "2d5e2d618200526ed73e0f378ce60a263cdb7d85178acbb20dd36f6c3224de44"
+    },
+    "push_entries": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/push-entries/verification.json",
+      "sha256": "0920da08362bc2cedf2393465da305735fb41156a364219615f90cb6719b6282"
+    },
+    "tf_retirement": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/tf-retirement/verification.json",
+      "sha256": "755c857a73e6507537c0d3f21eb01acb13cc885f35601d41c90121a990e0bded"
+    },
+    "first_audio_run": {
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/runtime-audio/verification.json",
+        "sha256": "892d7a497c1024ae7f712c50f4a8094a8db71eee82519e2f4ee3ff822b9c9f4b"
+      },
+      "passed": false,
+      "reason": "Functional run completed; strict runner rejected16 newly missing interface pins. Fixed by explicit fixture wiring, without waiving warnings."
+    },
+    "include_repair": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/include-repair-verification.json",
+      "sha256": "9a374a1dc078c2d09b6cadcf975e437b4a5e1467862405286f4f2524c581b8cb"
+    }
+  },
+  "synthesis": {
+    "candidate_identity": "custom138k-workstation-task3-m-independent-v1-dc0bcfb288cb4512",
+    "receipt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/m-independent-synthesis-invocation.json",
+      "sha256": "00dca56b6c046a850f3b1eaf8d00ca4a159c17164e520d5ef7f382c144f2b531"
+    },
+    "exit_code": 1,
+    "duration_seconds": 2.2177397919876967,
+    "inputs_unchanged_after": true,
+    "errors": [
+      "ERROR (EX5985) : Cannot open include file 'rtl/ddr_address_map.vh'(\"/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v6/workstation/Prj1/rtl/music/workstation_cnn_task_service.sv\":2)",
+      "ERROR (EX3755) : Cannot open include file 'rtl/ddr_address_map.vh'(\"/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v6/workstation/Prj1/rtl/music/workstation_cnn_task_service.sv\":2)",
+      "ERROR (EX3842) : Use of undefined macro 'PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES'(\"/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v6/workstation/Prj1/rtl/music/workstation_cnn_task_service.sv\":7)",
+      "ERROR (EX3863) : Syntax error near ','(\"/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-prepare-v6/workstation/Prj1/rtl/music/workstation_cnn_task_service.sv\":7)"
+    ],
+    "diagnosis": "The resource-parent compilation parses the disabled CNN library, whose DDR authority include was absent when local recording was disabled. Added unchanged rtl/ddr_address_map.vh to common runtime dependencies. Finalv7 passes prepare and Icarus preprocessing only.",
+    "synthesis_complete": false,
+    "netlist_generated": false,
+    "resources_available": false,
+    "final_repaired_candidate_synthesized": false
+  },
+  "preparation_attempts": [
+    {
+      "attempt": 1,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare.log",
+        "sha256": "328bb41d49a644d2ad268f02a04d659f20180feed77467fa53b809552ed74e76"
+      },
+      "result": "failed",
+      "reason": "Default Homebrew RISC-V toolchain lacks string.h. Use the reference xPack15.2 prefix."
+    },
+    {
+      "attempt": 2,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v2.log",
+        "sha256": "da3c9d9cda06549ae623053627399445e8361ac3c0aebd9c0db43197ef050e11"
+      },
+      "result": "failed",
+      "reason": "Missing shared W-media top provenance reference in stage."
+    },
+    {
+      "attempt": 3,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v3.log",
+        "sha256": "681df87f2a8967f5a8ec1fc7eae2a61f45891a421a95d558aa54f9b48d7da497"
+      },
+      "result": "failed",
+      "reason": "Selected runtime dependencies missing from the new descriptor."
+    },
+    {
+      "attempt": 4,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v4.log",
+        "sha256": "92d9125852fba22cdccf30c596bc36f1e37b42e9521e5f6a4b9294635be6d1a8"
+      },
+      "result": "passed",
+      "reason": "Prepared; superseded before EDA by explicit fixture-port wiring."
+    },
+    {
+      "attempt": 5,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v5.log",
+        "sha256": "ff1555d66f0a279c4c5e64e2f60d46ebf93bbba04f4f6d9a4756dd58b80b64e1"
+      },
+      "result": "passed",
+      "reason": "Audio component reference; superseded by historical RAM64 auditor compatibility."
+    },
+    {
+      "attempt": 6,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v6.log",
+        "sha256": "86da73ac5c4631eeaa92aeb87d5832d202cfc789504b37ff60f7a0121bac529e"
+      },
+      "result": "passed",
+      "reason": "Only actual Gowin attempt; missing DDR map include."
+    },
+    {
+      "attempt": 7,
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/prepare-v7.log",
+        "sha256": "45e5df496d40e8137495c3c9e9f58a62327ca30754c0254444910fe800db8ee8"
+      },
+      "result": "passed",
+      "reason": "Final include-repaired prepare, not synthesized."
+    }
+  ],
+  "source_delta": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/descriptor-source-delta.json",
+    "sha256": "c33cb8bd5d4e23d61e80c0ba72cfcdc82c2aeb33902d88fdfe8e392a254da065"
+  },
+  "historical_descriptor_count": 68,
+  "historical_descriptors_unchanged": true,
+  "license_environment": {
+    "feth94_and_feth95_present": true,
+    "Gowin_entered_parser": true,
+    "license_error_seen": false
+  },
+  "remaining_gates": [
+    "Complete synthesis and actual32-voice/vector/ROM resource audit for a future authorized budget.",
+    "Full source/consumer/held CDC, PLL, physical resources and routed STA.",
+    "Correct target M control-to-DAC latency and audible polyphony.",
+    "Correct paired hardware pin/electrical/throughput/RTT/congestion and TF/CNN/Push, phone D and long-recording/download acceptance."
+  ],
+  "rollback": "Omit the explicit independent profile to return to retained pairedv21, original M-demo, task2 or single-board candidates. No historical descriptor, baseline, generated implementation or deployed board changed.",
+  "hardware_tested": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "release_ready": false,
+  "bitstream_sha256": null,
+  "source_receipts": {
+    "tools/workstation_profile.py": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+      "sha256": "ba751cdc3d0f4b16ad8cfb86f3428cca1faeabc569615b80c72b4f2b7c78a288"
+    },
+    "tools/workstation_demo_audit.py": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_demo_audit.py",
+      "sha256": "8e7d7fb9d56eeacb6473d6eda66b4a13d765ff3b015cbbe4365e0e354b01c92d"
+    },
+    "tools/workstation_runtime_profile.py": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_runtime_profile.py",
+      "sha256": "6984e2cfb0686810ea162f78a472d826abe8f519ad6bc823492975ea25c8e737"
+    },
+    "sim/test_workstation_task3_m_independent.py": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_task3_m_independent.py",
+      "sha256": "2f2dd0f0e8205d3e11fcdf51608ce6b48738ad4bce2ebfe0b9074e8f5091ffc2"
+    },
+    "sim/audio/tb_workstation_runtime_audio.sv": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/tb_workstation_runtime_audio.sv",
+      "sha256": "9550c51886c0cf327405a51ffa2e6e233fb4bdde27e90738dfac1088d0e9a0a9"
+    },
+    "rtl/ddr_address_map.vh": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/ddr_address_map.vh",
+      "sha256": "051c46466feb23a43003cf15c28340a1409974da1b6f4af2c5aa45ebdb030655"
+    }
+  }
+}

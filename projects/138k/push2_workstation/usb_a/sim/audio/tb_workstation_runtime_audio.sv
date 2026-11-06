@@ -52,7 +52,7 @@ module tb_workstation_runtime_audio #(
         .midi_byte_valid_i(1'b0),.pc_byte_valid_i(1'b0),.cpu_event_valid_i(event_valid),.midi_byte_i(8'd0),.pc_byte_i(8'd0),
         .pcm_cpu_ready_i(1'b1),.pcm_command_valid_i(1'b0),.pcm_command_write_i(1'b0),
         .pcm_command_address_i(12'd0),.pcm_command_data_i(32'd0),.pcm_command_strobes_i(4'd0),
-        .pcm_command_ready_o(),.pcm_response_error_o(),.pcm_response_data_o(),
+        .pcm_command_ready_o(),.pcm_response_error_o(),.pcm_response_data_o(),.pcm_owner_idle_o(),
         .hci_session_ready_i(1'b0),.hci_controller_epoch_i(32'd0),.hci_transport_generation_i(32'd0),.pcm_tf_busy_i(1'b0),
         .cpu_event_i(event_data),.cpu_event_ready_o(event_ready),.pcm_left_i(32'sd0),.pcm_right_i(32'sd0),.output_mute_i(1'b0),
         .held_notes_o(held),.panic_epoch_o(panic_epoch),.panic_muted_o(muted),.active_mask_o(active),.active_voice_count_o(voices),
@@ -62,7 +62,15 @@ module tb_workstation_runtime_audio #(
         .note_drop_o(note_drops),.clip_o(),.synth_gain_o(),.pcm_gain_o(),.route_o(),.profile_o(),.effect_mask_o(),
         .effect_order_o(),.effect_state_o(),.panel_event_valid_o(),.panel_command_o(),
         .tf_left_i(16'sd25000),.tf_right_i(-16'sd17000),.tf_sample_rate_i(tf_rate),.tf_generation_i(32'd1),
-        .expected_tf_generation_i(32'd1),.tf_ready_o(tf_ready),.ddr_req_o(ddr_req),.ddr_write_o(ddr_write),
+        .expected_tf_generation_i(32'd1),.tf_ready_o(tf_ready),
+        // This fixture uses the legacy coherent TF input, not the direct
+        // physical-tail branch. Keep its new inputs explicit and inactive.
+        .tf_last_i(1'b0),.tf_pause_i(1'b0),.tf_session_i(32'd1),
+        .tf_observation_valid_i(1'b0),.tf_observation_error_i(1'b0),.tf_observation_44k1_i(1'b0),
+        .tf_observation_gap_i(1'b0),.tf_observation_drop_i(1'b0),
+        .tf_observation_epoch_i(32'd0),.tf_observation_sequence_i(32'd0),.tf_observation_source_drops_i(32'd0),
+        .tf_physical_eos_o(),.tf_physical_quiescent_o(),.tf_physical_failed_o(),.tf_physical_abort_o(),
+        .ddr_req_o(ddr_req),.ddr_write_o(ddr_write),
         .ddr_address_o(ddr_address),.ddr_data_o(ddr_data),.ddr_mask_o(ddr_mask),.ddr_ready_i(ddr_ready),
         .ddr_response_i(ddr_response),.ddr_read_data_i(ddr_read_data),.mclk_o(mclk),.bck_o(bck),.lrck_o(lrck),.data_o(sd),
         .pdn_no(pdn_n),.smute_o(smute),.analysis_enable_i(1'b1),.analysis_ready_i(analysis_ready),
@@ -105,7 +113,7 @@ module tb_workstation_runtime_audio #(
     integer max_render_clocks=0,render_started=0,max_config_clocks=0,config_started=0,max_slot_clocks=0;
     integer expected_count=0,physical_position=0;
     integer mid_frame_switches=0;
-    integer loader_overlap_slots=0,pressure_events=0,pressure_noteoffs=0;
+    integer loader_overlap_slots=0,pressure_events=0,pressure_noteoffs=0,polyphony_checks=0;
     reg [2:0] wet48=0,wet44=0;
     reg [1:0] fdn_seen=0;
     reg old_frame_guard=0,old_frame_rate;
@@ -271,13 +279,24 @@ module tb_workstation_runtime_audio #(
                 // Deliberately start the real NoteOn loader just before the
                 // next physical request; the public event FIFO is unchanged.
                 wait(dut.serializer.playing && dut.serializer.bit_position==62);
+                before_nonzero=nonzero;
                 for(integer note=0;note<(source==3 ? 8:32);note=note+1)send(1,48+note,96);
                 frames(source==2 ? 9800:192);
+                if(voices!=(source==3 ? 8:32) || $countones(active)!=(source==3 ? 8:32) || nonzero<=before_nonzero)
+                    $fatal(1,"real polyphony/output mismatch source=%0d voices=%0d active=%h",source,voices,active);
+                polyphony_checks=polyphony_checks+1;
                 for(integer step=0;step<64;step=step+1)begin
                     send(2,7,80+step%40);send(2,11,96+step%32);send(3,step[0] ? 16:40,0);
                     pressure_events=pressure_events+3;
                 end
-                switch_rate(1);if(source==2)frames(9000);switch_rate(0);
+                switch_rate(1);if(source==2)frames(9000);
+                if(voices!=(source==3 ? 8:32) || $countones(active)!=(source==3 ? 8:32))
+                    $fatal(1,"44k1 lost real polyphony source=%0d voices=%0d",source,voices);
+                polyphony_checks=polyphony_checks+1;
+                switch_rate(0);
+                if(voices!=(source==3 ? 8:32) || $countones(active)!=(source==3 ? 8:32))
+                    $fatal(1,"48k lost real polyphony source=%0d voices=%0d",source,voices);
+                polyphony_checks=polyphony_checks+1;
                 for(integer note=0;note<(source==3 ? 2:8);note=note+1)begin
                     send(0,48+note,0);pressure_noteoffs=pressure_noteoffs+1;
                 end
@@ -354,6 +373,8 @@ module tb_workstation_runtime_audio #(
         if(!startup_only && (wet48!=7 || wet44!=7 || fdn_seen!=3 || loader_overlap_slots==0 || pressure_events!=768 || pressure_noteoffs!=26))
             $fatal(1,"wet/loader/event coverage wet48=%b wet44=%b fdn=%b loader=%0d",wet48,wet44,fdn_seen,loader_overlap_slots);
         if(!startup_only && physical_cancel_boundaries!=12)$fatal(1,"physical cancellation boundary coverage missing");
+        if(!startup_only && polyphony_checks!=12)$fatal(1,"real polyphony coverage missing");
+        $display("PASS polyphony: ordinary_voices=32 vector_voices=8 polyphony_checks=%0d",polyphony_checks);
         $display("PASS runtime_audio: checked=%0d good=%0d errors=%0d nonzero=%0d first_slots=%0d config_acks=%0d applies=%0d faults=%0d mid_frame_switches=%0d max_render_clocks=%0d max_slot_clocks=%0d max_config_clocks=%0d writes=%0d fences=%0d analysis_drops=%0d record_drops=%0d startup_frames=%0d epoch=%0d loader_overlap_slots=%0d pressure_events=%0d pressure_noteoffs=%0d wet48=%0d wet44=%0d fdn_seen=%0d",checked,good,error_frames,nonzero,first_slots,config_acks,applies,faults,mid_frame_switches,max_render_clocks,max_slot_clocks,max_config_clocks,writes,fences,analysis_drops,record_drops,STARTUP_FRAMES,epoch,loader_overlap_slots,pressure_events,pressure_noteoffs,wet48,wet44,fdn_seen);
         $display("PASS physical_cancel_delivery: boundary_cases=%0d",physical_cancel_boundaries);
         $finish;

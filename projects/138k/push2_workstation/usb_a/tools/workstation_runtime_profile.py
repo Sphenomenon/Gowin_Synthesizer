@@ -67,6 +67,9 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    # Resource-parent music libraries parse this authority even when the
+    # independent M provider disables their CNN elaboration.
+    'rtl/ddr_address_map.vh',
     'rtl/display_data/feedback_dashboard.provenance.json',
     'rtl/display_data/assets/contest_brand_layout.svh',
     'rtl/display_data/assets/contest_brand_logo_pairs.memh',
@@ -99,6 +102,10 @@ DEPENDENCIES = (
     'tools/workstation_delay_storage_provenance.py',
     'tools/workstation_task3_tf_storage_selection.py',
     'rtl/workstation/workstation_task3_tf_storage_top_reference.json',
+    # The shared native top contains the default-off W-media branch. Its exact
+    # inverse is also required by delay provenance for independent M profiles.
+    'tools/workstation_task3_w_media_profile.py',
+    'rtl/workstation/workstation_task3_w_media_top_reference.json',
     'rtl/workstation/workstation_task3_direct_reference.json',
     'tools/workstation_recording_capacity_provenance.py',
     'tools/workstation_recording_format_provenance.py',
