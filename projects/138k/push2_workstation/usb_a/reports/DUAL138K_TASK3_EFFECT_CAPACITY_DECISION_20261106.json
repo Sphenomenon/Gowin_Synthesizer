@@ -1,0 +1,785 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "recorded_utc": "2026-11-06T11:34:48.604211+00:00",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "ab25c53a66967c000de727724028369a830f0aad",
+  "source_stage_identity": "task3-effect-capacity-decision-v1-0c921f0ef3f88246",
+  "scope": "Bounded architecture decision from fresh unchanged-maintained transport/PHY finite throughput evidence and explicit simultaneous traffic budgets. No new packet format,production source selection,or EDA trial.",
+  "boards": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-independent-ddr-map-v1",
+      "candidate_identity": "custom138k-workstation-task3-m-independent-ddr-map-v1-8cf0f8e10a9efb34",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "disabled_first_m_core_demo_v1",
+        "bluetooth_policy": "retired_for_independent_m_demo_v1",
+        "recording_policy": "disabled_m_demo_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "ddr_map_alias_policy": "native_ddr_authority_equal_include_aliases_v1"
+      },
+      "source_report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_PHYSICAL_20261106.json",
+        "sha256": "8a95039864efadb2315185ff31617bdca4afe4be83ef81c9764467bd3c6898b8"
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "598300de7ae12e8c1382f8369471a6ee0e817a60598445d6607ea19ba940a0ed"
+      },
+      "new_stream_selected": false,
+      "hardware_tested": false,
+      "control_to_sound_latency_ms": null,
+      "physical_identity": "custom138k-native-physical-D21106F7",
+      "actual_physical_BSRAM": 238,
+      "physical_resources": {
+        "Logic": {
+          "used": 60564,
+          "capacity": 138240,
+          "percent": 44
+        },
+        "Register": {
+          "used": 43158,
+          "capacity": 139095,
+          "percent": 32
+        },
+        "--Logic Register as Latch": {
+          "used": 0,
+          "capacity": 138240,
+          "percent": 0
+        },
+        "--Logic Register as FF": {
+          "used": 43158,
+          "capacity": 138240,
+          "percent": 32
+        },
+        "--I/O Register as Latch": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "--I/O Register as FF": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "CLS": {
+          "used": 46641,
+          "capacity": 69120,
+          "percent": 68
+        },
+        "I/O Port": {
+          "used": 143,
+          "capacity": 297,
+          "percent": 49
+        },
+        "AE350_SOC": {
+          "used": 1,
+          "capacity": 1,
+          "percent": 100
+        },
+        "PRIMARY": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "LW": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "GCLK_PIN": {
+          "used": 15,
+          "capacity": 24,
+          "percent": 63
+        },
+        "CLKDIV": {
+          "used": 2,
+          "capacity": 24,
+          "percent": 9
+        },
+        "DCS": {
+          "used": 1,
+          "capacity": 20,
+          "percent": 5
+        },
+        "DDRDLL": {
+          "used": 1,
+          "capacity": 4,
+          "percent": 25
+        },
+        "DQS": {
+          "used": 4,
+          "capacity": 23,
+          "percent": 18
+        },
+        "PLL": {
+          "used": 6,
+          "capacity": 12,
+          "percent": 50
+        },
+        "BSRAM": {
+          "used": 238,
+          "capacity": 340,
+          "percent": 70
+        }
+      },
+      "timing": {
+        "setup": -0.548,
+        "hold": -3.535,
+        "recovery": 2.943,
+        "removal": 0.275
+      },
+      "audio_Fmax_MHz": 73.696,
+      "required_audio_MHz": 76.8,
+      "ordinary_voices": 32,
+      "existing_vector_voices": 8,
+      "new_lease_selected": false
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-paired-banked96-v1",
+      "candidate_identity": "custom138k-workstation-task3-w-paired-banked96-v1-c5aa7e9c87dd9908",
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 98304,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "task3_paired_W_USB_retired_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "cnn_reset_policy": "task3_w_CNN_control_native_reset_release3_v1",
+        "cnn_ready_sdc_policy": "task3_w_CNN_ready_backend_sync_rebind_v1",
+        "ae350_boot_storage_policy": "task3_W_three_bank32k_physical96_v1"
+      },
+      "source_report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json",
+        "sha256": "8beda2a1202f11c8e71c8253daf4ae64f45b316433f235345475fb3fea0b83a3"
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-banked96-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4"
+      },
+      "new_stream_selected": false,
+      "hardware_tested": false,
+      "control_to_sound_latency_ms": null,
+      "physical_identity": "custom138k-resource-physical-D21106F6",
+      "actual_physical_BSRAM": 287,
+      "physical_resources": {
+        "Logic": {
+          "used": 79560,
+          "capacity": 138240,
+          "percent": 58
+        },
+        "Register": {
+          "used": 46521,
+          "capacity": 139095,
+          "percent": 34
+        },
+        "--Logic Register as Latch": {
+          "used": 0,
+          "capacity": 138240,
+          "percent": 0
+        },
+        "--Logic Register as FF": {
+          "used": 46521,
+          "capacity": 138240,
+          "percent": 34
+        },
+        "--I/O Register as Latch": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "--I/O Register as FF": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "CLS": {
+          "used": 56239,
+          "capacity": 69120,
+          "percent": 82
+        },
+        "I/O Port": {
+          "used": 147,
+          "capacity": 297,
+          "percent": 50
+        },
+        "AE350_SOC": {
+          "used": 1,
+          "capacity": 1,
+          "percent": 100
+        },
+        "PRIMARY": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "LW": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "GCLK_PIN": {
+          "used": 17,
+          "capacity": 24,
+          "percent": 71
+        },
+        "CLKDIV": {
+          "used": 1,
+          "capacity": 24,
+          "percent": 5
+        },
+        "DCS": {
+          "used": 1,
+          "capacity": 20,
+          "percent": 5
+        },
+        "DDRDLL": {
+          "used": 1,
+          "capacity": 4,
+          "percent": 25
+        },
+        "DQS": {
+          "used": 4,
+          "capacity": 23,
+          "percent": 18
+        },
+        "PLL": {
+          "used": 4,
+          "capacity": 12,
+          "percent": 34
+        },
+        "BSRAM": {
+          "used": 287,
+          "capacity": 340,
+          "percent": 85
+        }
+      },
+      "timing_closed": false,
+      "consumer_failure": "Boolean driver absent/ambiguous: u_task3_bus_endpoint/n737_9",
+      "role": "actual CNN/CQT/Viterbi,HCI/SBC,sole CPU/BLE DDR recording object",
+      "new_lease_selected": false
+    }
+  },
+  "expected_benefit": {
+    "target": "Retained M reverb20 BSRAM-equivalent and19 MULT27X36",
+    "action": "Reuse W single engine only after full communication admission. Current decision declines integration,so no M resource reduction claimed.",
+    "actual_new_resource_delta": null,
+    "M_worst_setup_remains_glide": true
+  },
+  "actual_new_evidence": {
+    "capacity": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-effect-lcd-capacity-v1/verification.json",
+      "sha256": "fedb90709053661ced84fd1726f41b9a04bb2e0ace6f02b60d8f3fc7db4bd306"
+    },
+    "decision": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-effect-lcd-decision-v3/verification.json",
+      "sha256": "73a5dddca046ca62346542c8b3d13e4f83d2cbe64d4fb91f1113795f54caffee"
+    },
+    "source_and_raw_command_logs_verified": true,
+    "clock_backpressure_trials": 4,
+    "ordered_business_packets": 8192,
+    "budget_scenarios": 9,
+    "invalid_evidence_controls": [
+      {
+        "name": "failed_run",
+        "rejected": true,
+        "reason": "capacity run did not pass with unchanged sources"
+      },
+      {
+        "name": "changed_source",
+        "rejected": true,
+        "reason": "capacity source identity changed"
+      },
+      {
+        "name": "payload_as_packets",
+        "rejected": true,
+        "reason": "capacity units disagree"
+      },
+      {
+        "name": "wrong_direction",
+        "rejected": true,
+        "reason": "missing capacity direction"
+      },
+      {
+        "name": "changed_elapsed",
+        "rejected": true,
+        "reason": "capacity row disagrees with raw log"
+      }
+    ],
+    "source_bound_state_floor": {
+      "byte_period_floor_ns": 460,
+      "raw_byte_rate_upper_bound": 2173913.0434782607,
+      "all_streams_even_PCM_only_floor_exceeds_M_to_W_upper_bound": true
+    },
+    "not_verified": [
+      "Physical LCD electrical/clock/throughput/RTT/jitter/congestion",
+      "Media typed consumers and end-to-end application throughput;benchmark carries generic32-byte transport load",
+      "CPU/HCI/SBC/CNN/DDR concurrency",
+      "New CDC/PLL/P&R/STA or DAC latency"
+    ],
+    "raw_data_note": "No wire delays or metastability modeled. One-ready-cycle-in-seven is light consumer backpressure,not a sustained stall or worst-case congestion guarantee."
+  },
+  "communication": {
+    "derived_model_capacity": {
+      "M_to_W": [
+        {
+          "worker_clock_Hz": 50000000.0,
+          "receiver_ready": "continuous",
+          "packets_per_second": 34920.82946655057,
+          "business_wire_Bps": 1815883.1322606297,
+          "payload_Bps": 1117466.5429296182
+        },
+        {
+          "worker_clock_Hz": 50000000.0,
+          "receiver_ready": "one_cycle_in_seven",
+          "packets_per_second": 34920.71037864315,
+          "business_wire_Bps": 1815876.9396894437,
+          "payload_Bps": 1117462.7321165807
+        },
+        {
+          "worker_clock_Hz": 45454545.45454545,
+          "receiver_ready": "continuous",
+          "packets_per_second": 32250.22546812903,
+          "business_wire_Bps": 1677011.7243427096,
+          "payload_Bps": 1032007.2149801289
+        },
+        {
+          "worker_clock_Hz": 45454545.45454545,
+          "receiver_ready": "one_cycle_in_seven",
+          "packets_per_second": 32250.13608675589,
+          "business_wire_Bps": 1677007.0765113062,
+          "payload_Bps": 1032004.3547761885
+        }
+      ],
+      "W_to_M": [
+        {
+          "worker_clock_Hz": 50000000.0,
+          "receiver_ready": "continuous",
+          "packets_per_second": 34920.809221549,
+          "business_wire_Bps": 1815882.0795205482,
+          "payload_Bps": 1117465.895089568
+        },
+        {
+          "worker_clock_Hz": 50000000.0,
+          "receiver_ready": "one_cycle_in_seven",
+          "packets_per_second": 34920.71395126855,
+          "business_wire_Bps": 1815877.1254659647,
+          "payload_Bps": 1117462.8464405937
+        },
+        {
+          "worker_clock_Hz": 45454545.45454545,
+          "receiver_ready": "continuous",
+          "packets_per_second": 32933.06579505534,
+          "business_wire_Bps": 1712519.421342878,
+          "payload_Bps": 1053858.105441771
+        },
+        {
+          "worker_clock_Hz": 45454545.45454545,
+          "receiver_ready": "one_cycle_in_seven",
+          "packets_per_second": 32932.981061927836,
+          "business_wire_Bps": 1712515.0152202474,
+          "payload_Bps": 1053855.3939816908
+        }
+      ]
+    },
+    "scenarios": [
+      {
+        "name": "paired_minimum",
+        "stereo32_samples_per_packet": 0,
+        "packet_assumption": "no effects",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 1378000.0,
+            "with_block_credit_allowance_Bps": 1378000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 546000.0,
+            "with_block_credit_allowance_Bps": 754000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": true
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "effects_only",
+        "stereo32_samples_per_packet": 2,
+        "packet_assumption": "10-byte header/flags envelope;not an assigned wire format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 1248000.0,
+            "with_block_credit_allowance_Bps": 1248000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": true
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1248000.0,
+            "with_block_credit_allowance_Bps": 1248000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": true
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "effects_only",
+        "stereo32_samples_per_packet": 3,
+        "packet_assumption": "8-byte token/index PCM-only floor;per-sample flags omitted,not a valid format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 832000.0,
+            "with_block_credit_allowance_Bps": 832000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": true
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 832000.0,
+            "with_block_credit_allowance_Bps": 832000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": true
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_and_effects",
+        "stereo32_samples_per_packet": 2,
+        "packet_assumption": "10-byte header/flags envelope;not an assigned wire format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 1794000.0,
+            "with_block_credit_allowance_Bps": 1794000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1794000.0,
+            "with_block_credit_allowance_Bps": 1794000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_and_effects",
+        "stereo32_samples_per_packet": 3,
+        "packet_assumption": "8-byte token/index PCM-only floor;per-sample flags omitted,not a valid format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 1378000.0,
+            "with_block_credit_allowance_Bps": 1378000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1378000.0,
+            "with_block_credit_allowance_Bps": 1378000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": true,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_record_and_effects",
+        "stereo32_samples_per_packet": 2,
+        "packet_assumption": "10-byte header/flags envelope;not an assigned wire format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 2210000.0,
+            "with_block_credit_allowance_Bps": 2210000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": false,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1794000.0,
+            "with_block_credit_allowance_Bps": 1898000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": false,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_record_and_effects",
+        "stereo32_samples_per_packet": 3,
+        "packet_assumption": "8-byte token/index PCM-only floor;per-sample flags omitted,not a valid format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 1794000.0,
+            "with_block_credit_allowance_Bps": 1794000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1378000.0,
+            "with_block_credit_allowance_Bps": 1482000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_record_analysis_and_effects",
+        "stereo32_samples_per_packet": 2,
+        "packet_assumption": "10-byte header/flags envelope;not an assigned wire format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 2626000.0,
+            "with_block_credit_allowance_Bps": 2626000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": false,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1794000.0,
+            "with_block_credit_allowance_Bps": 2002000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": false,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      },
+      {
+        "name": "phone_record_analysis_and_effects",
+        "stereo32_samples_per_packet": 3,
+        "packet_assumption": "8-byte token/index PCM-only floor;per-sample flags omitted,not a valid format",
+        "directions": {
+          "M_to_W": {
+            "required_lower_bound_Bps": 2210000.0,
+            "with_block_credit_allowance_Bps": 2210000.0,
+            "nominal_model_Bps": 1815876.9396894437,
+            "all_tested_model_min_Bps": 1677007.0765113062,
+            "nominal_model_fits": false,
+            "all_tested_models_fit": false,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          },
+          "W_to_M": {
+            "required_lower_bound_Bps": 1378000.0,
+            "with_block_credit_allowance_Bps": 1586000.0,
+            "nominal_model_Bps": 1815877.1254659647,
+            "all_tested_model_min_Bps": 1712515.0152202474,
+            "nominal_model_fits": true,
+            "all_tested_models_fit": true,
+            "nominal_with_planning_headroom_fits": false,
+            "all_models_with_planning_headroom_fit": false
+          }
+        },
+        "required_streams_retained": true,
+        "new_effect_business_admitted": false
+      }
+    ],
+    "credit_policy": "Steady full-block allowance up to one credit frame per4 consumed blocks;delayed credits may coalesce. Distinct from the no-credit lower bound.",
+    "omitted_traffic": "Initial caps/ARM,initial credits,recognition results,status,additional polling,downloads,retries and congestion headroom.",
+    "strict_no_credit_floor_48k_Bps": {
+      "paired_current": {
+        "M_to_W": 1378000,
+        "W_to_M": 546000
+      },
+      "with_two_sample_flags_envelope": {
+        "M_to_W": 2626000,
+        "W_to_M": 1794000
+      },
+      "with_three_sample_PCM_only_floor": {
+        "M_to_W": 2210000,
+        "W_to_M": 1378000
+      }
+    },
+    "full_block_credit_allowance_W_to_M_Bps": 208000,
+    "full_flags_envelope_including_credit_allowance": {
+      "M_to_W": 2626000,
+      "W_to_M": 2002000
+    },
+    "planning_headroom_percent": 20,
+    "headroom_policy": "Offline planning assumption,not measured jitter allowance or production admission.",
+    "new_wire_format_selected": false,
+    "firmware_traffic_basis": "Maintained paired-v3 window5:26 packets per128-frame source block plus at least two snapshot/commit exchanges per block;record/analysis block6. Existing lower-bound assumptions retained from the previous budget report,not a fresh firmware throughput proof."
+  },
+  "decision": "Do not integrate optional remote reverb into unchanged paired-v3 transport. The full simultaneous workload exceeds even the favorable source-based upper bound. Retain local M effects and both fallbacks;never evict phone/recording or silently discard analysis to admit it.",
+  "integration_policy": {
+    "keep_M_local_effects": true,
+    "shared_engine_source_experiment_preserved": true,
+    "paired_v3_profiles_unchanged": true,
+    "phone_recording_analysis_unchanged": true,
+    "no_silent_stream_eviction": true,
+    "physical_admission_remains_closed": true,
+    "all_fallbacks_preserved": true
+  },
+  "validation": {
+    "existing_source_regressions": 17,
+    "demo_policy_regressions": 8,
+    "compile_and_run": "Actual unchanged existing run_task3_lcd_budget.py;four complete duplex cases passed.",
+    "budget_validator": "Reconciles source hashes,raw logs,packet/payload counts,elapsed units,directions and derived byte rates. All5 mutated evidence documents rejected."
+  },
+  "preservation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-effect-lcd-decision-v3/preservation.json",
+      "sha256": "600512de255a1b0626800dd1f93eff6716c2d3dba683dd1116208441a6da0754"
+    },
+    "historical_files_checked": 556,
+    "historical_descriptors_checked": 72,
+    "all_unchanged": true,
+    "previous_shared_lease_sources_verified": true,
+    "previous_shared_lease_report": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_SHARED_REVERB_LEASE_20261106.json",
+      "sha256": "cf8b21156be014c4d64ce666f36909b5b38b1077d3935c76c469c99eea442077"
+    }
+  },
+  "attempt_budget": {
+    "new_Gowin_synthesis_calls": 0,
+    "new_PnR_calls": 0,
+    "first_round_PnR_used": {
+      "A": 1,
+      "B": 1,
+      "C": 1
+    },
+    "additional_layout_route_trials": false
+  },
+  "remaining": [
+    "Resolve M actual glide setup and DDR initialization hold paths by source/design evidence;no repeated comparator/layout/route trials.",
+    "If continuing remote effects,first review a maintained-protocol change that materially reduces full simultaneous framing/ack cost,with bounded buffers and negotiated fallback. No extra channel or independent competing wire format.",
+    "Then integrate native single-engine ownership and M asynchronous scheduling in explicit new candidates,with fresh complete resource/CDC/PLL/timing gates when budget is available.",
+    "Correct-target electrical and measured concurrent link/audio/TF/CNN/Push/phone D/recording/download acceptance remains separate;connected unrelated board untouched."
+  ],
+  "timing_closed": false,
+  "whole_source_CDC_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "bitstream_for_new_source": null,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "rollback": {
+    "source_parent_commit": "ab25c53a66967c000de727724028369a830f0aad",
+    "production_profiles_unchanged": true,
+    "retained_M": "D21106F7",
+    "retained_W": "D21106F6",
+    "previous_W_fallback": "D21106F5"
+  }
+}
