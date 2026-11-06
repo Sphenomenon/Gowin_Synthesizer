@@ -25,7 +25,7 @@ def logic_driver(cells, parameters, output_net, kind, inputs, scope, init=None):
     return name
 
 
-def inspect_grant_reset_inputs(netlist, sdc, role):
+def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False):
     """Prove synchronous RESET inputs are first-stage CDC data, not OSER resets.
 
     DFFRE RESET is a clocked data input in the vendor model. Only the exact
@@ -43,13 +43,20 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
     from tools.workstation_synthesis_netlist import IDENTIFIER
     assert role in ('M', 'W'), 'grant RESET proof requires an explicit DEMO role'
     assert sdc is not None, 'grant RESET proof requires the installed SDC'
+    assert type(tf_disabled_m_core) is bool, 'TF-disabled M selection must be boolean'
+    assert not tf_disabled_m_core or role == 'M', 'TF-disabled M selection requires M role'
     n = protocol_netlist(netlist, mapping='routed')
     g = Graph(n)
+    if tf_disabled_m_core:
+        assert not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled M retains TF cells'
+        assert not any('u_tf_audio/' in body for body in
+                       re.findall(r'\[get_(?:pins|regs)\s+\{([^}]+)\}\]', sdc)), \
+            'TF-disabled M retains TF constraint queries'
     domains = {'audio_76m8': 'audio_clk', 'ddr_ui100': 'memory_clk',
                'selected48/selected44': 'dac_mclk_d', 'usb_48m': 'usb_clk'}
     destinations = {prefix: domain for prefix, source, domain in RUNTIME_GRANT_CHAINS}
     prefixes = [prefix for prefix in RUNTIME_GRANT_RESET_INPUTS
-                if role == 'M' or not prefix.startswith('u_tf_audio/')]
+                if role == 'M' and not tf_disabled_m_core or not prefix.startswith('u_tf_audio/')]
     result, protected = [], set()
     for prefix in prefixes:
         receivers = [[p for p in g.regs if re.fullmatch(re.escape(prefix) + f'_{bit}_s' + r'\d+', p)]
@@ -99,7 +106,7 @@ def inspect_grant_reset_inputs(netlist, sdc, role):
 
 
 def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native',
-                               startup_grant_role=None):
+                               startup_grant_role=None, tf_disabled_m_core=False):
     if not __debug__:
         return ["startup audit requires normal Python execution; -O disables validation assertions"], {}
     def unescape(value):
@@ -109,6 +116,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
         return [float(item) for item in re.findall(r"[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?", value)]
 
     try:
+        assert type(tf_disabled_m_core) is bool and (not tf_disabled_m_core or startup_grant_role == 'M'), \
+            'TF-disabled M startup selection requires explicit M role'
         scale = re.search(r"\(TIMESCALE\s+([\d.]+)\s*(ns|ps|us)\)", sdf)
         assert scale, "SDF timescale missing/unsupported"
         unit = float(scale[1]) * {"ns": 1, "ps": 0.001, "us": 1000}[scale[2]]
@@ -389,7 +398,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                                                           "budget_ns": 40.0, "paths": step_paths}})
         grant_inputs = []
         if startup_grant_role is not None:
-            grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role)
+            grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role,
+                                                     tf_disabled_m_core=tf_disabled_m_core)
             for row in grant_inputs:
                 first, second = row['first'], row['second']
                 setup_values = re.findall(r"\(SETUPHOLD \((?:pos|neg)edge D\) \(posedge CLK\) \(([^)]+)\)", sdf_cells[second])
@@ -446,7 +456,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                                          "differential_ports": list(expected_lanes[clock_serializer])},
                     "pixel_divider": divider_audit, "ddr_phy": ddr_distribution, 'resolved_logic': resolved_logic,
                     "sdc_reset_exception_coverage": reset_constraints,
-                    "synchronous_grant_reset_inputs": grant_inputs}
+                    "synchronous_grant_reset_inputs": grant_inputs,
+                    "tf_disabled_m_core_verified": tf_disabled_m_core}
     except (AssertionError, KeyError, ValueError) as error:
         return [f"stopped-clock reset VO/SDF audit failed: {error}"], {}
 

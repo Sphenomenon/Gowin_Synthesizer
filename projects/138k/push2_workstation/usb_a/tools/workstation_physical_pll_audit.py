@@ -415,8 +415,10 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 demo_held_handshakes = dict(gate_applied=False, scope='sealed legacy DEMO timing policy')
         except (ValueError, KeyError, OSError) as error:
             demo_held_errors.append(str(error))
+    tf_disabled_m_core = parent.get('workstation_profile', {}).get('name') == \
+        'custom138k-workstation-task3-m-independent-ddr-map-v1'
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
-                                                         startup_grant_role=demo_role)
+        startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core)
     video_errors, video = inspect_video_pll_init(sdf, vo, stage)
     shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled)
     core_clock, core_errors = {}, []
@@ -453,7 +455,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
             broken = vo[:match.start()] + changed + vo[match.end():]
             bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled) if kind == 'PLL' else
                            inspect_serializer_startup(sdf, broken, ddr, sdc, lane_layout='native',
-                                                      startup_grant_role=demo_role))
+                               startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core))
             if not bad or not any(reason in message for message in bad):
                 raise ValueError('Negative mutation did not fail its gate: ' + name + ' ' + str(bad))
             negatives[name + '/' + pin] = bad

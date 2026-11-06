@@ -77,6 +77,29 @@ class GrantResetTests(unittest.TestCase):
                                 row['first_stage_fanout_only_second_D'] for row in proof))
             if role == 'W': self.assertFalse(any(row['first'].startswith('u_tf_audio/') for row in proof))
 
+    def test_explicit_independent_m_requires_absent_tf_and_preserves_six_grants(self):
+        text, sdc, prefixes = self.fixture('W')
+        proof = inspect_grant_reset_inputs(text, sdc, 'M', tf_disabled_m_core=True)
+        self.assertEqual(len(proof), 6)
+        self.assertTrue(all(row['first_stage_fanout_only_second_D'] for row in proof))
+        with self.assertRaisesRegex(AssertionError, 'grant receiver inventory'):
+            inspect_grant_reset_inputs(text, sdc, 'M')
+        with self.assertRaisesRegex(AssertionError, 'requires M role'):
+            inspect_grant_reset_inputs(text, sdc, 'W', tf_disabled_m_core=True)
+        with self.assertRaisesRegex(AssertionError, 'must be boolean'):
+            inspect_grant_reset_inputs(text, sdc, 'M', tf_disabled_m_core=1)
+
+    def test_independent_m_rejects_retained_tf_and_stale_tf_queries(self):
+        full_text, full_sdc, _ = self.fixture('M')
+        text, sdc, _ = self.fixture('W')
+        with self.assertRaisesRegex(AssertionError, 'retains TF cells'):
+            inspect_grant_reset_inputs(full_text, sdc, 'M', tf_disabled_m_core=True)
+        with self.assertRaisesRegex(AssertionError, 'retains TF constraint queries'):
+            inspect_grant_reset_inputs(text, full_sdc, 'M', tf_disabled_m_core=True)
+        with self.assertRaisesRegex(AssertionError, 'later stage'):
+            inspect_grant_reset_inputs(text, sdc + '\nset_false_path -to [get_pins '
+                '{u_managed/startup_compute_1_s*/D}]', 'M', tf_disabled_m_core=True)
+
     def test_first_stage_cannot_feed_functional_logic(self):
         text, sdc, prefixes = self.fixture()
         text = text.replace('endmodule', 'LUT1 extra (.I0(q0),.F(escaped));\nendmodule')
