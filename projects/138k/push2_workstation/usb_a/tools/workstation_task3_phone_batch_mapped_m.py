@@ -66,7 +66,7 @@ PHONE_GROUPED_SOURCE_SHA256=dict(GROUPED_SOURCE_SHA256,**{
 })
 LEASE_SOURCE_SHA256=dict(PHONE_GROUPED_SOURCE_SHA256,**{lease_source.BOARD:lease_source.SELECTED_SHA256})
 SYNC_PROFILES = (
-    lease_source.PROFILE,
+    *lease_source.PROFILES,
     'custom138k-workstation-task3-m-paired-sync-storage-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v1',
     'custom138k-workstation-task3-m-paired-checkpoint-v2',
@@ -102,7 +102,7 @@ def source_evidence(stage):
     require(profile.get('profile') in names, 'exact M batch profile artifact required')
     require((profile['configuration'].get('m_endpoint_storage_policy') == SYNC_POLICY)
             is (provider == SYNC_PROVIDER), 'M mapped storage policy/provider mismatch')
-    registered_lease=profile.get('profile')==lease_source.PROFILE
+    registered_lease=profile.get('profile') in lease_source.PROFILES
     phone_grouped_profile=profile.get('profile') in PHONE_GROUPED_PROFILES or registered_lease
     grouped_profile=profile.get('profile')==GROUPED_PROFILE or phone_grouped_profile
     terminal_profile=profile.get('profile') in TERMINAL_PROFILES or grouped_profile
@@ -312,7 +312,7 @@ def audit(n, *, stage):
     proofs.append(prove(g, 'M batch/lease reset is actual root only', [batch_reset, root],
                         lambda b, v: v[0] == b.invert(v[1])))
     live = n.canonical('', 'task3_m_phone_live')
-    registered_lease=source['root_source'].get('root_profile')==lease_source.PROFILE
+    registered_lease=source['root_source'].get('root_profile') in lease_source.PROFILES
     if registered_lease:
         source_ff=group('', 'task3_m_phone_live_source')
         ff(source_ff,'clk_50m',batch_reset)

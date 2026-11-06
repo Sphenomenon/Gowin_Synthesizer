@@ -127,7 +127,7 @@ def source_binding(stage):
     mapping = {}
     if provider == M_SYNC_PROVIDER:
         artifact = json.loads((stage.parent.parent / 'workstation_profile.json').read_text())
-        lease_profile=artifact.get('profile')==lease_source.PROFILE
+        lease_profile=artifact.get('profile') in lease_source.PROFILES
         phone_grouped_profile=artifact.get('profile') in PHONE_GROUPED_ROOT_PROFILES or lease_profile
         grouped_profile=artifact.get('profile')==GROUPED_ROOT_PROFILE or phone_grouped_profile
         terminal_profile = artifact.get('profile') in TERMINAL_ROOT_PROFILES or grouped_profile
@@ -230,7 +230,7 @@ def publisher_policy(root):
         phone_grouped=variant==PHONE_GROUPED_ROOT_VARIANT
         registered=variant==lease_source.ROOT_VARIANT
         require(provider == M_SYNC_PROVIDER and
-                ((registered and root.get('root_profile')==lease_source.PROFILE) or
+                ((registered and root.get('root_profile') in lease_source.PROFILES) or
                  (phone_grouped and root.get('root_profile') in PHONE_GROUPED_ROOT_PROFILES) or
                  (grouped and root.get('root_profile')==GROUPED_ROOT_PROFILE) or
                  (variant==TERMINAL_ROOT_VARIANT and root.get('root_profile') in TERMINAL_ROOT_PROFILES)),

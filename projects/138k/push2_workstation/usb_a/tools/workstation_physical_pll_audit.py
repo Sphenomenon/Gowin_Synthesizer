@@ -105,18 +105,23 @@ def shared_clock_plls(sdf, netlist, routed_type, *, local_panel_enabled=True):
     return errors, evidence
 
 
-def demo_source_context(physical, inputs, snapshot):
-    """Recheck an explicit immutable DEMO closure, without rewriting its manifest.
+def role_source_context(physical, inputs, snapshot, *, paired=False):
+    """Recheck an explicit immutable role closure, without rewriting its manifest.
 
     These candidates use the custom-board preparer's hash-bound Gowin log,
     profile and synthesis audit rather than the runtime driver's process seal.
     Neither evidence format is represented as the other.
     """
-    from tools.workstation_demo_audit import verify_prepared, PROFILES
+    if paired:
+        from tools.workstation_task3_paired_audit import verify_prepared, PROFILES
+    else:
+        from tools.workstation_demo_audit import verify_prepared, PROFILES
+    label = 'paired' if paired else 'DEMO'
+    role_field = 'paired_role' if paired else 'demo_role'
     required = {'parent_workstation_profile.json', 'parent_integration_inputs.json',
                 'parent_synthesis_audit.json', 'custom_138k_integration.vg', 'physical.sdc'}
     if not required <= inputs.get('input_sha256', {}).keys():
-        raise ValueError('DEMO PLL source metadata is not sealed')
+        raise ValueError(label + ' PLL source metadata is not sealed')
     source = Path(inputs['parent_candidate']).resolve()
     parent_path = physical / 'parent_integration_inputs.json'
     profile_path = physical / 'parent_workstation_profile.json'
@@ -124,47 +129,60 @@ def demo_source_context(physical, inputs, snapshot):
     profile = json.loads(profile_path.read_text())
     audit = json.loads((physical / 'parent_synthesis_audit.json').read_text())
     selected = parent.get('workstation_profile', {})
-    if selected.get('name') not in PROFILES or inputs.get('demo_role') not in ('M', 'W'):
-        raise ValueError('DEMO PLL source requires an explicit registered role/profile')
+    if selected.get('name') not in PROFILES or inputs.get(role_field) not in ('M', 'W'):
+        raise ValueError(label + ' PLL source requires an explicit registered role/profile')
     for copied, original in ((parent_path, source / 'integration_inputs.json'),
                              (profile_path, source / 'workstation_profile.json')):
         if copied.read_bytes() != original.read_bytes():
-            raise ValueError('DEMO PLL copied metadata differs: ' + str(copied))
+            raise ValueError(label + ' PLL copied metadata differs: ' + str(copied))
         snapshot[original] = sha(original)
-    role, verified_profile, stage = verify_prepared(source, parent)
-    if (profile != verified_profile or role != inputs['demo_role'] or audit.get('demo_role') != role or
+    role, verified_profile, stage = verify_prepared(source, parent)[:3]
+    if paired:
+        selected_gates = ('feature_structure', 'port_coverage', 'visible_SDC_members',
+                          'constraint_retirement_and_rebinding')
+        source_gates_passed = all(audit.get('gates', {}).get(name, {}).get('passed') is True
+                                  for name in selected_gates)
+    else:
+        source_gates_passed = (audit.get('features', {}).get('role_retirement_verified') is True and
+            audit.get('visible_sdc_selector_audit', {}).get('all_visible_selector_members_resolved') is True and
+            audit.get('constraint_retirement_audit', {}).get('every_retired_selector_proven_absent') is True)
+    if (profile != verified_profile or role != inputs[role_field] or audit.get(role_field) != role or
             audit.get('candidate_identity') != profile['candidate_identity'] or
             inputs.get('parent_candidate_identity') != profile['candidate_identity'] or
             inputs.get('parent_identity') != audit.get('identity') or
             audit.get('identity') != parent.get('identity') or
-            audit.get('validation_stage') != 'demo_full_profile_synthesis_only' or
+            audit.get('validation_stage') != ('task3_paired_synthesis_only' if paired else 'demo_full_profile_synthesis_only') or
             audit.get('source_policy') != 'immutable_prepared_closure' or
             audit.get('audit_source_seal_before_and_after') is not True or
-            audit.get('features', {}).get('role_retirement_verified') is not True or
-            audit.get('visible_sdc_selector_audit', {}).get('all_visible_selector_members_resolved') is not True or
-            audit.get('constraint_retirement_audit', {}).get('every_retired_selector_proven_absent') is not True):
-        raise ValueError('DEMO PLL candidate/synthesis source linkage differs')
+            not source_gates_passed):
+        raise ValueError(label + ' PLL candidate/synthesis source linkage differs')
     outputs = {'integration_inputs_sha256': source / 'integration_inputs.json',
                'netlist_sha256': stage / 'impl/gwsynthesis/custom_138k_integration.vg',
                'synthesis_log_sha256': source / 'synthesis.log',
                'resource_report_sha256': stage / 'impl/gwsynthesis/custom_138k_integration_syn_rsc.xml'}
     for field, path in outputs.items():
         if audit.get(field) != sha(path):
-            raise ValueError('DEMO PLL synthesis evidence differs: ' + field)
+            raise ValueError(label + ' PLL synthesis evidence differs: ' + field)
         snapshot[path] = sha(path)
     log = outputs['synthesis_log_sha256'].read_text()
     if re.search(r'(?m)^ERROR\b', log) or log.count('GowinSynthesis finish') != 1:
-        raise ValueError('DEMO PLL Gowin emitted log is not a completed synthesis')
+        raise ValueError(label + ' PLL Gowin emitted log is not a completed synthesis')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),
                                      ('physical.sdc', stage / 'constraints/custom_138k.sdc')):
-        if (inputs['input_sha256'][physical_name] != sha(original) or
-                (physical / physical_name).read_bytes() != original.read_bytes()):
-            raise ValueError('DEMO PLL physical/synthesis input differs: ' + physical_name)
+        expected = original.read_bytes()
+        if paired and physical_name == 'physical.sdc' and inputs.get('task3_pin_adaptation') is not None:
+            from tools.workstation_custom_board_implementation import task3_pin_collections
+            expected, binding = task3_pin_collections(expected, outputs['netlist_sha256'].read_text())
+            if binding != inputs['task3_pin_adaptation']:
+                raise ValueError('paired PLL physical pin collection binding differs')
+        if (inputs['input_sha256'][physical_name] != hashlib.sha256(expected).hexdigest() or
+                (physical / physical_name).read_bytes() != expected):
+            raise ValueError(label + ' PLL physical/synthesis input differs: ' + physical_name)
     panel = parent.get('local_panel', {})
     if (panel.get('enabled') is not False or panel.get('sources') != [] or panel.get('sdc') != '' or
             panel.get('touch_input_selected') is not False or
             panel.get('output_behavior') != 'all_21_lcd_output_bits_static_low_backlight_off'):
-        raise ValueError('DEMO PLL explicit no-local-panel scope differs')
+        raise ValueError(label + ' PLL explicit no-local-panel scope differs')
     for relative, expected in profile['staged_input_sha256'].items():
         snapshot[stage / relative] = expected
     for relative, expected in (
@@ -175,13 +193,17 @@ def demo_source_context(physical, inputs, snapshot):
     firmware = parent['ae350_firmware']
     for relative, expected in firmware['artifacts_sha256'].items():
         snapshot[source / firmware['evidence_directory'] / relative] = expected
-    return stage, parent, False, dict(policy='sealed_immutable_demo_profile_source',
-        candidate_identity=profile['candidate_identity'], demo_role=role,
+    return stage, parent, False, dict(policy=('sealed_immutable_paired_profile_source' if paired else 'sealed_immutable_demo_profile_source'),
+        candidate_identity=profile['candidate_identity'], **{role_field: role},
         prepared_profile_sha256=sha(profile_path), vg_sha256=audit['netlist_sha256'],
         synthesis_evidence_scope='hash_bound_Gowin_emitted_log_not_driver_stdout',
         synthesis_log_sha256=audit['synthesis_log_sha256'],
         parent_synthesis_audit_sha256=sha(physical / 'parent_synthesis_audit.json'),
         local_panel_enabled=False, acceptance_inherited=False)
+
+
+def demo_source_context(physical, inputs, snapshot):
+    return role_source_context(physical, inputs, snapshot)
 
 
 def source_context(physical, inputs, snapshot):
@@ -194,7 +216,11 @@ def source_context(physical, inputs, snapshot):
     from workstation_profile import (R00_NO_LOCAL_PANEL_NAME, LOCAL_BOOT64_NAME,
                                      CPU_BUSINESS_NAME, specification, identity_digest)
     source = inputs.get('source', {})
+    if 'paired_role' in inputs and ('synthesis' in source or 'demo_role' in inputs):
+        raise ValueError('paired PLL competing physical source evidence')
     if 'synthesis' not in source:
+        if 'paired_role' in inputs:
+            return role_source_context(physical, inputs, snapshot, paired=True)
         if inputs.get('demo_role') in ('M', 'W') or 'parent_workstation_profile.json' in inputs.get('input_sha256', {}):
             return demo_source_context(physical, inputs, snapshot)
         parent_path = physical / 'parent_integration_inputs.json'
@@ -369,7 +395,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
     ddr_errors, ddr = check_build.inspect_ddr_audit()
     config_errors, config = check_build.inspect_ddr_configuration_audit()
     sdf, vo, sdc = (path.read_text() for path in (base.with_suffix('.sdf'), base.with_suffix('.vo'), physical / 'physical.sdc'))
-    demo_role = selection.get('demo_role')
+    demo_role = selection.get('demo_role') or selection.get('paired_role')
     demo_held_handshakes, demo_held_errors = {}, []
     if demo_role:
         from tools.workstation_performance_reset import (
@@ -455,7 +481,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
     evidence.update({str(path): sha(path) for path in outputs.glob('*.json')})
     verify_unchanged(snapshot)
     return dict(schema=1, recorded_at=datetime.now().astimezone().isoformat(), identity=inputs['identity'],
-                scope='Maintained native PLL/startup and selected DEMO held-mailbox subgates; not full STA/CDC/electrical or board acceptance',
+                scope='Maintained native PLL/startup and selected role held-mailbox subgates; not full STA/CDC/electrical or board acceptance',
                 pll_gate_passed=not errors, errors=errors, ddr_source=ddr, ddr_configuration=config,
                 serializer_startup=startup, video_pll=video, shared_clock_plls=shared,
                 ae350_dedicated_core_clock=core_clock, ae350_dedicated_core_clock_errors=core_errors,

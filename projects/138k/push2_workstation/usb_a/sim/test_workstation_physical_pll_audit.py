@@ -347,7 +347,7 @@ class DemoSpecificationTests(unittest.TestCase):
                         (physical / filename).write_text('{}')
                     inputs = dict(parent_candidate=str(source), demo_role=role,
                                   input_sha256={p.name: sha(p) for p in physical.iterdir()})
-                    with self.assertRaisesRegex(ValueError, 'role/configuration identity changed'):
+                    with self.assertRaisesRegex(ValueError, 'configuration identity changed'):
                         source_context(physical, inputs, {})
 
 

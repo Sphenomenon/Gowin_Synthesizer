@@ -62,23 +62,27 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，最新来源检查点为两板 v17。M 针对 v16 EB 暴露的 owner-live 跨域组合路径增加一个 50 MHz 源域寄存器；W 运行配置及全部编译输入保持 v16 的字节。两板仍实际分担识别、手机接收/解码及唯一录音对象，完整时序、CDC 和目标板验收尚未完成。
+截至 2026-11-06，最新来源检查点为两板 v18，封存 paired 物理准备与 PLL 审计的来源绑定。两板配置、RTL、固件及全部编译输入均与 v17 相同；M 保留 v17 的 50 MHz 手机租约源寄存级。两板继续实际分担识别、手机接收/解码及唯一录音对象，完整时序、CDC 和目标板验收尚未完成。
 
 | 板与阶段 | 来源身份 | 实际证据 |
 | --- | --- | --- |
-| M v17 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v17-239e04eb4b34c512`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v17.json) | 963 项来源锁、287 项编译输入。一次新综合用时 195.82 秒；58,418 Register、68,786 LUT、28,044 ALU、212 BSRAM 等效、254 RAM16。相对 v16 只增加 1 个寄存器；审计 20/22。 |
+| M v18 当前来源 | `custom138k-workstation-task3-m-paired-checkpoint-v18-67efc67aa1e0dd7c`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v18.json) | 964 项来源锁、287 项编译输入、689 项准备文件。逐字节核对后复用 v17 原始综合输出：58,418 Register、68,786 LUT、28,044 ALU、212 BSRAM 等效、254 RAM16；重新审计 20/22。无新综合、布局或位流。 |
 | M v17 EC 物理结果 | `custom138k-resource-physical-D21106EC`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_LEASE_SOURCE_20261106.json) | 同约束 P3R0，973.71 秒后完成布线及位流生成；Logic 99155、Register 58418、BSRAM 253/340、CLS 62407/69120。setup/hold/recovery/removal 为 -8.098/-3.612/-5.369/0.281 ns，未部署。 |
 | M v16 EB 回退参考 | `custom138k-resource-physical-D21106EB`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_P3_SOURCE_REVIEW_20261106.json) | 已布通，真实 BSRAM 253/340、CLS 62,474/69,120；setup/hold/recovery/removal 为 -12.625/-3.616/-15.581/-0.681 ns。保留原位流与失败结果。 |
-| W v17 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v17-4b1aa30b7f83e867`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v17.json) | 1011 项来源锁、200 项编译输入、675 项准备文件；相对 v16 仅审计 Python 文件变化。没有新 W 综合或物理运行。v14 综合为 49,471 Register、63,891 LUT、16,345 ALU、300 BSRAM 等效、779 RAM16。 |
-| W v14 E9 保留物理结果 | `custom138k-resource-physical-D21106E9`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json) | 已布通，真实 BSRAM 336/340、CLS 58,819/69,120；审计 11/18，setup/hold/recovery/removal 为 -7.224/-4.350/-7.947/-0.234 ns。结果不改名归到 v17。 |
+| W v18 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v18-14e31b8f3610fc8a`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v18.json) | 1012 项来源锁、200 项编译输入、675 项准备文件；相对 v17 仅非编译 Python 文件变化。没有新 W 综合或物理运行。v14 综合为 49,471 Register、63,891 LUT、16,345 ALU、300 BSRAM 等效、779 RAM16。 |
+| W v14 E9 保留物理结果 | `custom138k-resource-physical-D21106E9`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json) | 已布通，真实 BSRAM 336/340、CLS 58,819/69,120；审计 11/18，setup/hold/recovery/removal 为 -7.224/-4.350/-7.947/-0.234 ns。结果不改名归到 v18。 |
 
 v17 的显式来源策略可精确逆变换回完整 v16 board 字节，32 份历史检查点描述符未改。源域寄存级只延迟 observer 的撤销和跨域电平，正常 50 MHz 时最多增加 1 拍、20 ns；命令入口仍立即拒绝撤销会话，公共根复位仍异步断言。真实 PCM owner 的根复位、已用 stream 身份、capture ID 和 command ID 保留。20 ns 不代表停钟处理已验收，也不代表真实控制到声音延迟。
 
-[本轮验证](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_LEASE_SOURCE_20261106.json)执行 48 项测试方法，无跳过；原有根和 batch 网表回归拒绝 85 项故障，新路径拒绝 14 项故障。实际映射证明源寄存器位于 50 MHz 域，其完整最终消费者恰为音频同步器首级 D 和 observer 的六个 CLEAR，无额外 FF、存储原语或顶层输出。真实 APB/controlled/audio/owner 绑定覆盖旧 COMPLETE 清除、旧 stream 拒绝、重连、身份保持及四种相位的最短撤销脉冲；这些局部检查不替代完整协议和物理 CDC。
+[v17 验证](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_LEASE_SOURCE_20261106.json)执行 48 项测试方法，无跳过；原有根和 batch 网表回归拒绝 85 项故障，新路径拒绝 14 项故障。实际映射证明源寄存器位于 50 MHz 域，其完整最终消费者恰为音频同步器首级 D 和 observer 的六个 CLEAR，无额外 FF、存储原语或顶层输出。真实 APB/controlled/audio/owner 绑定覆盖旧 COMPLETE 清除、旧 stream 拒绝、重连、身份保持及四种相位的最短撤销脉冲；这些局部检查不替代完整协议和物理 CDC。
 
 新物理运行与 v16 EB 的 CST、SDC 逐字节相同，布局/布线均为 P3R0，没有放宽时钟或例外。位流、UserCode 请求值和原始报告的完整哈希见本轮证据；没有目标板读回。两个完整 CPU release/consumer 门禁仍失败，旧清单未刷新，完整 TF CDC 未放行。先前 403 个 CPU 源侧 FF 和外部 APB 方程的[补充核查](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_P3_SOURCE_REVIEW_20261106.json)仍是独立证据，不能替代目的侧、完整握手或正式接入。
 
-物理 PLL 门禁也未关闭：维护中的 reference prepare 尚无封存的 paired/no-panel 来源上下文，既有审计回落到 `legacy_default_LCD_required`。后续须修复正式准备路径的来源绑定，不能修改候选清单或删除 LCD PLL 检查来放行。高扇出复位、PR1014、同域 reply CE、PANIC/混响、滑音与事件队列路径仍需结合新路由继续诊断。
+[v18 验证](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_PHYSICAL_PROFILE_20261106.json)完成 100 项测试方法，无跳过；34 份历史检查点描述符未改。两条物理准备路径均封存实际 paired 配置、角色和候选身份，审计重新核对原始综合输出及精确的 SDC 引脚集合转换。独立 ED 准备目录复核的是 EC 的原始路由报告，VG/CST/SDC 均逐字节相同；本阶段未执行新的 EDA，也没有 ED 位流或 UserCode 读回。
+
+复核已正确选择六个 PLL，三组控制元组的最长传播分别为音频 6.280 ns、USB 5.621 ns、CPU 6.500 ns，均满足原 10 ns 预算；实际报告的三项故障注入均被拒绝。完整 PLL/startup 门禁仍失败：paired 的 `startup_compute` 实际为两级 DFFCE，通用 grant 检查仍要求首级 DFFRE；held-handshake 审计也尚未还原 paired 与物理引脚选择后的约束。两项均保留为失败，未删除检查或放宽预算。
+
+EC 当前最差 setup 为 50 MHz 的 `u_reset/started_s0/Q` 到音频域 TF tail 的 `context_fence/CE`，为 -8.098 ns。下一项运行逻辑修改优先处理尾帧状态和 payload 的域内复位释放，并验证取消、短复位、停钟和重启。高扇出复位、PR1014、同域 reply CE、PANIC/混响、滑音与事件队列路径继续保留核查。
 
 历史 M [终态流水线](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TERMINAL_PIPELINE_20261106.json)、[128 位身份比较](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_IDENTITY_GROUPING_20261106.json)、[96 位手机身份比较](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_PHONE_IDENTITY_20261106.json)和 [P2R0 失败比较](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_PHONE_ROOT_PHYSICAL_20261106.json)保留各自原始资源、来源、时序与失败结果。W 的独立 16 KiB 录音 API 溢出也保留为失败；选用的 128 KiB 手机/录音固件具有独立准备及 ELF 审计证据。
 
@@ -86,7 +90,7 @@ v17 的显式来源策略可精确逆变换回完整 v16 board 字节，32 份�
 
 后续按以下顺序推进：
 
-1. 以 M v17 EC 和 v16 EB 的同约束 P3R0 结果定位剩余瓶颈，保留 v5/v7/EA 的 P2R0 对照。源寄存级已切断宽身份组合逻辑直达音频首级与 observer CLEAR 的路径；继续检查其物理延迟、同域 reply CE、PANIC/混响、滑音、事件队列及高扇出复位，结合 CLS、拥塞与时钟分配选择下一项局部修改。不放宽时钟、时序预算或 false path。
+1. 以 M v17 EC 和 v16 EB 的同约束 P3R0 结果定位剩余瓶颈，保留 v5/v7/EA 的 P2R0 对照。源寄存级已切断宽身份组合逻辑直达音频首级与 observer CLEAR 的路径；优先修复公共启动复位进入 TF 尾帧音频状态的路径，再检查同域 reply CE、PANIC/混响、滑音、事件队列及高扇出复位。不放宽时钟、时序预算或 false path。
 2. 关闭 M 两个完整 CPU release/consumer 边界与完整 TF CDC；将已通过的 403 个源侧 FF 和外部 APB 方程核查接入新显式检查点前，继续证明目的侧和完整握手，不刷新旧哈希。W 录音/CNN 故障与 CNN 本域复位的局部旁路已修复；v14 的正式就绪 SDC 绑定已验证。完整 batch 仍被历史生成网名的四字身份比较证明阻挡；下一步按实际语义 consumer 证明完整身份、live 和请求/回复路径，核对 DDR/配置 payload hold、剩余高扇出复位、PR1014 及完整 PLL 门禁。局部命令、录音、MIDI 或根状态证明不能替代这些门禁。
 3. W CPU48 已完成真实物理容量与布线核查，但时序和完整门禁仍失败。结合仅余 4 块 BSRAM 和 LCD 预算，选择重型效果、FFT/显示分析及扩展合成迁移。W 实际网表已含 32 个 BSRAM 等效的效果链，其中混响占 20 个；优先审查将其复用为受 M 参数控制的有界计算分支，不能直接假定还能叠加一套混响或 FFT。该复用尚未选入整机。已移至 W 的识别、手机解码与唯一录音/下载对象继续保留；旧 TF 客户端、25K 绘制、BLE owner 的数字仍须对应实际编译路径。
 4. 正确目标板接入后，先核对两板身份、引脚/电平和 LCD 有效吞吐、往返延迟、拥塞，再验收 M 独立演奏/DAC 延迟、TF→W CNN→Push、手机 D 按放效果与 60 秒录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 及真实来源格式绑定；当前成对配置只接纳 48 kHz 录音。

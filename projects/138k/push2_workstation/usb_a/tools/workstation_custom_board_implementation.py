@@ -83,6 +83,28 @@ def checked_copy(source, destination, expected):
         raise ValueError('physical input changed during copy: ' + str(source))
 
 
+def paired_profile_input(source, metadata, audit):
+    """Seal the selected paired profile without inheriting its failed gates."""
+    if audit.get('paired_role') is None:
+        return {}
+    from tools.workstation_task3_paired_audit import PROFILES
+    selected = metadata.get('workstation_profile', {})
+    name = selected.get('name')
+    if (name not in PROFILES or PROFILES[name][0] != audit['paired_role'] or
+            audit.get('validation_stage') != 'task3_paired_synthesis_only' or
+            audit.get('source_policy') != 'immutable_prepared_closure' or
+            audit.get('audit_source_seal_before_and_after') is not True or
+            selected.get('artifact') != 'workstation_profile.json' or
+            selected.get('candidate_identity') != audit.get('candidate_identity') or
+            audit.get('identity') != metadata.get('identity')):
+        raise ValueError('paired physical parent profile/role linkage changed')
+    path = Path(source) / selected['artifact']
+    expected = selected.get('artifact_sha256')
+    if not isinstance(expected, str) or sha(path) != expected:
+        raise ValueError('paired physical profile artifact changed')
+    return {'parent_workstation_profile.json': (path, expected)}
+
+
 def reference_constraints(payload, netlist_text, excluded_ports=()):
     """Bind an explicit historical CST to this netlist, without PCB acceptance."""
     native = SynthesisNetlist(netlist_text, TOP)
@@ -228,6 +250,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
                          metadata['staged_input_sha256']['constraints/custom_138k.sdc']),
         'parent_integration_inputs.json': (source / 'integration_inputs.json', audit['integration_inputs_sha256']),
     }
+    inputs.update(paired_profile_input(source, metadata, audit))
     pin_adaptation = None
     physical_sdc = None
     if task3_pins:
@@ -249,6 +272,8 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         source_policy=('audited_native_netlist_with_hash_pinned_CST_and_exact_task3_pin_collections'
                        if task3_pins else 'audited_native_netlist_with_hash_pinned_historical_CST_and_unchanged_SDC'),
         parent_candidate=str(source), parent_identity=audit['identity'],
+        **(dict(paired_role=audit['paired_role'], parent_candidate_identity=audit['candidate_identity'])
+           if audit.get('paired_role') is not None else {}),
         preparer_sha256=sha(__file__), user_code='0x'+user_code.upper(), top_module=TOP, device=DEVICE,
         constraint_reference=dict(path=str(reference_cst), sha256=reference_sha256, binding=binding),
         electrical_status='historical_reference_only_no_current_PCB_netlist_check',
@@ -694,6 +719,7 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_b
             raise ValueError('DEMO physical parent candidate identity changed')
         inputs['parent_workstation_profile.json'] = (
             source / selected['artifact'], selected['artifact_sha256'])
+    inputs.update(paired_profile_input(source, metadata, audit))
     if ulpi_bypass_lvcmos33:
         pinout_identity = metadata.get('pinout_sha256')
         if not isinstance(pinout_identity, str) or not re.fullmatch(r'[0-9a-f]{64}', pinout_identity):
@@ -728,6 +754,8 @@ def prepare(source, output, user_code, acknowledge_electrical_risk=False, ulpi_b
         parent_candidate=str(source), parent_identity=audit['identity'],
         **({'parent_candidate_identity': audit['candidate_identity'], 'demo_role': audit['demo_role']}
            if audit.get('demo_role') in ('M', 'W') else {}),
+        **({'parent_candidate_identity': audit['candidate_identity'], 'paired_role': audit['paired_role']}
+           if audit.get('paired_role') is not None else {}),
         preparer_sha256=sha(Path(__file__)), user_code='0x' + user_code.upper(),
         top_module=TOP, device=DEVICE, electrical_blocked=audit['electrical_blocked'],
         electrical_risk_explicitly_acknowledged=True,
