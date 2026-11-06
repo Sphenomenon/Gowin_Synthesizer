@@ -1,0 +1,339 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "0feadebb0716db1ddf8cb27818477b0263089cf6",
+  "scope": "Close the bounded architecture review with a requirement-by-requirement decision. No fourth proposal,licensed EDA,production source/profile selection,or board operation. Final dual-board workstation acceptance remains incomplete.",
+  "bounded_architecture_review_complete": true,
+  "final_workstation_complete": false,
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "ancestor_verified": true,
+    "actually_selected": "PR2 CPU48 banked RAM/firmware/ROM proof;PR3 separate diagnostic and reviewed reset/freshness fixes. Duplicate recorder and unproved ADSR/TF-ring strategy remain unselected.",
+    "evidence": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    }
+  },
+  "requirements": [
+    {
+      "requirement": "Stop repetitive comparator/floorplan/route-option trials",
+      "result": "satisfied_for_bounded_review",
+      "evidence": [
+        "Three declared A/B/C proposals completed;zero new synthesis or P&R in this close-out."
+      ],
+      "remaining": "No automatic fourth EDA trial."
+    },
+    {
+      "requirement": "Audit W USB,boot storage and effects actual use",
+      "result": "satisfied_for_bounded_review",
+      "evidence": [
+        "B explicitly retires paired-W USB;physical BSRAM336->303.",
+        "C keeps exact90416-byte image,live cold code,run addresses,scratch/ILM/DLM/stack;three32KiB banks,physical303->287.",
+        "One real W reverb is shared through a bounded lease,real whole-chain maintenance and ordered DDR fence in source-only experiment."
+      ],
+      "remaining": "Complete W consumer/PLL proof and timing fail. Effects experiment has no production selection."
+    },
+    {
+      "requirement": "M independently verifies interaction/synthesis/output without degrading32/vector capabilities",
+      "result": "configuration_and_offline_component_evidence_available",
+      "evidence": [
+        "Explicit independent M retains USB interaction,ordinary32/vector8,pitch/ADSR/mix,complete local effects,HDMI and final I2S.",
+        "Existing22532 component checks include actual final PCM and bit-level I2S;maximum render1204/slot1229 clocks.",
+        "New actual-engine boundary run:38 frames,76 captures,36 full32/vector8 frames,37 sample-cadence checks;both naive register mutations rejected at both consumers."
+      ],
+      "remaining": "No integrated USB/CPU-to-physical DAC acceptance or control-to-sound measurement. F7 audio73.696<76.8MHz;setup/DDR hold fail. Separate paired TF/CNN/phone/record candidates remain."
+    },
+    {
+      "requirement": "W performs actual recognition,phone decode and sole recording object",
+      "result": "selected_sources_and_bounded_offline_evidence_available",
+      "evidence": [
+        "Selected paired-W profile retains real CQT/CNN/Viterbi and BPF1 modelAF01A61B,HCI/SBC/Classic and sole CPU/BLE DDR object.",
+        "TF is physically on M;analysis PCM crosses LCD. Phone W->M original PCM1->local DSP->I2S/DAC.",
+        "Selected recording48k stereo16,2880000-frame60s capacity;44.1k backend separately verified."
+      ],
+      "remaining": "Full target-model loading/whole-song quality,phone sustained RF/SBC/D behavior and real long recording/download concurrency unaccepted;paired ARM remains48k."
+    },
+    {
+      "requirement": "Each of at most three proposals has prior expected benefit and bounded trials",
+      "result": "satisfied_with_explicit_parse_retry_exceptions",
+      "evidence": [
+        "A independently fixes actual M composition without promising timing saving;B targets actual USB owner;C predicts16 physical ROM blocks.",
+        "A has3 synthesis invocations:2 dependency/parse failures repaired with explicit user exceptions,1 successful synthesis;one P2R0. B/C each one synthesis and one P2R0."
+      ],
+      "remaining": "All first-round P&R budgets spent;timing failures retained."
+    },
+    {
+      "requirement": "Resolve asynchronous effect scheduling and bandwidth before integration",
+      "result": "decision_complete_do_not_integrate_unchanged_transport",
+      "evidence": [
+        "M64-frame alignment,16-frame bounded queue,dry fallback;full192-bit context. W one actual shared reverb,4096-clock drain denial,512-clock restoration fault.",
+        "Actual unchanged transport/PHY generic-load benchmark:8192 duplex frames;W clock stress1.677/1.713MB/s of wire-frame bytes per direction.",
+        "Full48k concurrency with stereo32 effects needs at least2.626/1.794MB/s before credits;with planned credits reverse2.002MB/s. Even PCM-only floor2.210MB/s M->W exceeds source-derived2.174MB/s raw upper bound."
+      ],
+      "remaining": "Keep M local effects. Any future migration first needs maintained negotiated protocol/batching and a new complete concurrency budget;no new wire format selected or stream silently evicted."
+    },
+    {
+      "requirement": "Retain all CDC,timing,physical and hardware gates and fallbacks",
+      "result": "satisfied_as_visible_failed_or_unmeasured_gates",
+      "evidence": [
+        "M F7/W F6 bitstream hashes rechecked;F5 and prior paired/task2/single-board fallbacks retained.",
+        "M614 and W684 frozen file hashes and exact inventories rechecked;current-root source verification rejects5/7 later build/audit tool changes."
+      ],
+      "remaining": "No source-lock refresh;no claim that old candidates are a new current-root build. Target boards disconnected by default;unrelated computer-connected board untouched."
+    }
+  ],
+  "first_round_budget": {
+    "A": {
+      "synthesis_invocations": 3,
+      "dependency_parse_failures": 2,
+      "explicitly_authorized_parse_retries": 2,
+      "successful_synthesis": 1,
+      "PnR": 1
+    },
+    "B": {
+      "synthesis_invocations": 1,
+      "PnR": 1
+    },
+    "C": {
+      "synthesis_invocations": 1,
+      "PnR": 1
+    },
+    "new_synthesis_this_phase": 0,
+    "new_PnR_this_phase": 0,
+    "additional_trials_in_this_round": false
+  },
+  "candidate_revalidation": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/convergence-close-v1/candidate-revalidation.json",
+    "sha256": "be84d3119e21fc0891b1944eeff70b2893197cde0ba05fe03ab5b593a2407571"
+  },
+  "retained_physical": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-independent-ddr-map-v1",
+      "candidate_identity": "custom138k-workstation-task3-m-independent-ddr-map-v1-8cf0f8e10a9efb34",
+      "physical_identity": "custom138k-native-physical-D21106F7",
+      "BSRAM_used": 238,
+      "BSRAM_capacity": 340,
+      "Logic": 60564,
+      "Register": 43158,
+      "audio_required_mhz": 76.8,
+      "audio_actual_mhz": 73.696,
+      "worst_slack_ns": {
+        "setup": -0.548,
+        "hold": -3.535,
+        "recovery": 2.943,
+        "removal": 0.275
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "598300de7ae12e8c1382f8369471a6ee0e817a60598445d6607ea19ba940a0ed"
+      }
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-paired-banked96-v1",
+      "candidate_identity": "custom138k-workstation-task3-w-paired-banked96-v1-c5aa7e9c87dd9908",
+      "physical_identity": "custom138k-resource-physical-D21106F6",
+      "BSRAM_used": 287,
+      "BSRAM_capacity": 340,
+      "Logic": 79560,
+      "Register": 46521,
+      "worst_slack_ns": {
+        "setup": -2.542,
+        "hold": -4.334,
+        "recovery": -6.654,
+        "removal": -0.609
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-banked96-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4"
+      },
+      "fallback_physical_identity": "custom138k-resource-physical-D21106F5"
+    }
+  },
+  "pitch_path_diagnosis": {
+    "observed_source": "parameters/glide_step_o_6_s0/Q",
+    "observed_destination": "runtime_engines.engines/pitch/glide_ratio_2_s0/D",
+    "data_delay_ns": 13.506,
+    "slack_ns": -0.548,
+    "predeclared_diagnostic_benefit": "Determine whether a new register can preserve actual frame-edge consumer semantics before changing the real critical path. No physical improvement expected or claimed from this diagnostic.",
+    "reference_model": "Direct integer160/147 with accumulated remainder,independent continuous vibrato model,and actual ordinary/vector capture registers;registered parameter commits one or two clocks before CE.",
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/pitch-capture-boundary-v4/verification.json",
+      "sha256": "1a24f7a7e02083f89f87b732399ba6c87713e166a4623548fcd6ca9193d829dd"
+    },
+    "metrics": {
+      "frames": 38,
+      "captures": 76,
+      "full32_vector8": 36,
+      "cadence_checks": 37,
+      "commits": 38,
+      "switches": 3,
+      "panic_cases": 1,
+      "synth_outputs": 38,
+      "vector_outputs": 38,
+      "nonzero_synth": 37,
+      "nonzero_vector": 38,
+      "max_synth_clocks": 1061,
+      "max_vector_clocks": 284
+    },
+    "mutants": {
+      "input_register_mutant": {
+        "expected": 983057,
+        "oscillator": 917523,
+        "vector": 917523
+      },
+      "output_register_mutant": {
+        "expected": 917510,
+        "oscillator": 917504,
+        "vector": 917504
+      }
+    },
+    "decision": "Do not add a blind input/output pipeline. Future precomputation must be coordinated with the single authoritative parameter-application point and prove existing capture edges. No such implementation is selected.",
+    "limits": "Nominal76.8MHz cycle budgets only;test clock is normalized. No top-level USB,physical timing,DAC latency or all-timbre/audio-quality proof.",
+    "fixture_history": [
+      {
+        "folder": "pitch-capture-boundary-v1",
+        "result": "Width warnings in new model;rejected before simulation;fixed explicit bit slice without suppressing warnings."
+      },
+      {
+        "folder": "pitch-capture-boundary-v2",
+        "result": "Passed narrower directed test;strengthened to expose both consumers while32/vector8 remain active."
+      },
+      {
+        "folder": "pitch-capture-boundary-v3",
+        "result": "Passed;cadence diagnostic then found task helper restarted period after render. Fixed helper to preserve previous CE deadline and added37 actual inter-CE checks."
+      },
+      {
+        "folder": "pitch-capture-boundary-v4",
+        "result": "Final production and two compiled consumer-level negative controls passed."
+      }
+    ]
+  },
+  "validation": {
+    "regressions": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/convergence-close-v1/regressions.json",
+      "sha256": "ec385931a179822c4cc11ffb4670a09fbfdc06ea7656b6e44128a460db8fb1d4"
+    },
+    "current_source_tests": 17,
+    "demo_policy_tests": 8,
+    "pitch_model_tests": 1,
+    "pitch_model_samples": 95714,
+    "locked48_clocks": 16000,
+    "critical_prior_raw_receipts_hash_verified": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-v1/runtime-audio-v2/verification.json",
+        "sha256": "2a147bf8247028901e4127bab1c340a07ac14af09ba440bb23f401aa8e27fd7d"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261101/w-media-selected-4hz-task-v2/verification.json",
+        "sha256": "58656e68ff091b39cb14e53c70e4c217c4d84523baa60399de353a45bb0a3c13"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261105/w-long-shared-recording-v3/verification.json",
+        "sha256": "48f3ce2166b67f46df3ab5d47778a349a3f6d04a644af2be1a141f882669bc1f"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v10/verification.json",
+        "sha256": "eec7739be68edc4aeda5204c92ededd93758ac65f5b2ae0182542d0c7a8b4cd2"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "598300de7ae12e8c1382f8369471a6ee0e817a60598445d6607ea19ba940a0ed"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "edb72b630defca10617989991668914147964489b0c949a6e3b195e2141d9807"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-banked96-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/convergence-close-v1/test_current_workstation_sources.py.log",
+        "sha256": "68fd171e8236dab7442e5efa3b8df046a89b304a79fc5644983e7e49b35fb9c7"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/convergence-close-v1/test_workstation_demo_policy.py.log",
+        "sha256": "f8f7b0ac7f2b53ac4e96000f166430c488f2c37e059ad5502b09d60f29d363b8"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/convergence-close-v1/test_workstation_rate_pitch_expression.py.log",
+        "sha256": "dd4e0c49ea15e8b74f387d3efa77447b6caee3ebc84dc9181106397c669a06e4"
+      }
+    ],
+    "no_new_width_missing_pin_or_combinational_loop_warnings_in_capture_fixture": true
+  },
+  "evidence_reports": {
+    "DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json",
+      "sha256": "64db72465ef396b3b48ad813a4bda33062e1b13161cd95b78fe3db500b719019"
+    },
+    "DUAL138K_TASK3_PR_INTEGRATION_20261103.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    },
+    "DUAL138K_TASK3_M_INDEPENDENT_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_20261106.json",
+      "sha256": "c623640eb62bbc038e34d3a560004a3fa315166d363f556e5749b5802642cddb"
+    },
+    "DUAL138K_TASK3_M_DDR_ALIAS_REPAIR_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_DDR_ALIAS_REPAIR_20261106.json",
+      "sha256": "7112fd3f028937faa8e13b4c353e3974bc16b5bd475ccddba5344bf3994b8186"
+    },
+    "DUAL138K_TASK3_M_INDEPENDENT_PHYSICAL_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_PHYSICAL_20261106.json",
+      "sha256": "8a95039864efadb2315185ff31617bdca4afe4be83ef81c9764467bd3c6898b8"
+    },
+    "DUAL138K_TASK3_W_USB_RETIREMENT_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_USB_RETIREMENT_20261106.json",
+      "sha256": "44ab7b9315001f4bc1a2dcff891944639c1a9a2ee38cb4f5d28728093024a576"
+    },
+    "DUAL138K_TASK3_W_BANKED96_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json",
+      "sha256": "8beda2a1202f11c8e71c8253daf4ae64f45b316433f235345475fb3fea0b83a3"
+    },
+    "DUAL138K_TASK3_ASYNC_EFFECT_STREAM_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_ASYNC_EFFECT_STREAM_20261106.json",
+      "sha256": "eaf21ff80365641693a3fa1c0646ba9e0a6855eead5a9533823c330c2878117b"
+    },
+    "DUAL138K_TASK3_SHARED_REVERB_LEASE_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_SHARED_REVERB_LEASE_20261106.json",
+      "sha256": "cf8b21156be014c4d64ce666f36909b5b38b1077d3935c76c469c99eea442077"
+    },
+    "DUAL138K_TASK3_EFFECT_CAPACITY_DECISION_20261106.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_EFFECT_CAPACITY_DECISION_20261106.json",
+      "sha256": "7922db5453e434f685fbbc8adfda46cae256c29695fa4a50111177ecf046261d"
+    },
+    "DUAL138K_TASK3_W_SELECTED_CNN_20261102.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_SELECTED_CNN_20261102.json",
+      "sha256": "36d443f03546d704d711b419f152d1ba32cb81bc433530b646e91ee7fab4462b"
+    },
+    "DUAL138K_TASK3_W_SHARED_RECORDING_20261105.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_SHARED_RECORDING_20261105.json",
+      "sha256": "a5cb6c19e66aad9ac784a2d8caa7eb8c9aa15c018d4bd24311a7741728594962"
+    },
+    "DUAL138K_TASK3_RECORD_FORMATS_20261105.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORD_FORMATS_20261105.json",
+      "sha256": "505103dd21b5825642f6274c6a3f6046ec384a554b9d5309b10dec82d4926e55"
+    }
+  },
+  "remaining_work_in_order": [
+    "Source-only W generated-net/root/complete consumer proof at u_task3_bus_endpoint/n737_9;diagnose actual driver and fail-closed exact mapping,without bypassing gate or changing wire semantics.",
+    "M frame-edge-safe glide/parameter precompute design plus independent effects-gain/enable-fanout and HDMI glyph path proofs;dedicated vendor DDR initialization cross-clock hold diagnosis. No automatic new EDA in this bounded round.",
+    "Retain paired3 local effects;only reopen cross-board effects after a maintained negotiated transport improvement and source-bound full-concurrency budget.",
+    "Identify correct disconnected M/W targets,verify one-to-one LCD continuity/VCCIO/directions/clock and actual bidirectional throughput/RTT/jitter/congestion. Do not operate the other branch board.",
+    "After complete source/CDC/timing gates,perform correct-target authorized SRAM and readback,then actual two-dimension/ordinary32/vector8 DAC latency,TF/CNN/Push,phone D press/release and sole long-recording/download concurrency;Flash remains separately authorized."
+  ],
+  "rollback": "No production input changed. Retain M F7,paired-v21,task2/single-board and W F6/F5. New files are diagnostic-only;remove or revert this phase without changing candidates. Never deploy a retained failing bitstream as accepted firmware.",
+  "production_profile_changed": false,
+  "timing_closed": false,
+  "whole_source_CDC_accepted": false,
+  "physical_gates_passed": false,
+  "hardware_tested": false,
+  "physical_control_to_sound_latency_ms": null,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "release_ready": false
+}
