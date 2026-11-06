@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "scope": "Preserve the pre-architecture-review effects command reservation experiment; not selected or promoted.",
+  "identity": "custom138k-task3-m-effects-dispatch-experiment-1885c314a9a8ff81",
+  "parent_source_identity": "custom138k-workstation-task3-m-paired-checkpoint-v21-cac552dbb92de6d2",
+  "source_policy": "Immutable full M v21 inputs through read-only symlink view and absolute compiler paths; only exact reversible effects child-broadcast/barrier adaptation plus one first-party held-dispatch module. No F3 capture identity or physical constraint changes.",
+  "expected_benefit_before_validation": "Interrupt the known divider-valid -> configuration-acceptance -> reverb RAM CEA combinational cone with a held dispatch reservation; add at least one configuration cycle, preserve sample datapath.",
+  "source": {
+    "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-effects-dispatch-experiment-v1/full-M-preparation.json",
+    "sha256": "0ab74e51f8fca31413553b2801eda94a63abc0a15ae2ff1b792f21e88100c24d"
+  },
+  "validation": {
+    "unit_test_methods": 4,
+    "unit_test_skips": 0,
+    "full_effects": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-effects-dispatch-experiment-v1/full-effects-v1/verification.json",
+      "sha256": "00d0fd713c4619b8ee6f35ceb5213a14cbc6cfebb77187357633ca53473bee17"
+    },
+    "full_effects_tests": 10,
+    "skips": 0,
+    "checked_sample_frames": 105088,
+    "max_normal_latency_cycles": 105,
+    "PANIC_case": "Before child dispatch, change input rate after reservation and hold old DDR fence; reserved rate applies exactly once."
+  },
+  "synthesis": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-effects-dispatch-experiment-v1/full-M-synthesis-invocation.json",
+      "sha256": "63d87673ed5ea36de94e82c269a1128ee8a9e6a8dce69fc83e73c7dab9879387"
+    },
+    "exit_code": 0,
+    "duration_seconds": 228.8199672079936,
+    "all_inputs_unchanged": true,
+    "resource_comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-effects-dispatch-experiment-v1/synthesis-resource-comparison.json",
+      "sha256": "256e1eda4a2a4fd83f45da5f0e03424368922ff60f088e999ad4741c15cf4c73"
+    },
+    "resources": {
+      "Register": 58411,
+      "LUT": 69062,
+      "ALU": 28056,
+      "BSRAM_equivalent": 212,
+      "RAM16": 254,
+      "MULT27X36": 43
+    },
+    "delta_from_v21": {
+      "Register": 3,
+      "LUT": 392,
+      "ALU": -5,
+      "BSRAM_equivalent": 0,
+      "RAM16": 0,
+      "MULT27X36": 0
+    },
+    "unchanged_existing_instances": 155,
+    "note": "Global optimization changed attribution in other hierarchy instances too; no resource saving or effects-only mapped delta claimed."
+  },
+  "mapped_diagnostic": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-effects-dispatch-experiment-v1/mapped-cone-v1/verification.json",
+      "sha256": "a1ea745b0b29d054c4396bd1b98e80e26d885e2861b8e26099b8b97107f714d6"
+    },
+    "passed": false,
+    "scope": "Stopped while parsing old-reference escaped vector alias g_rate_pipeline.coefficient_valid[6]. Topology cut not proved; checker not validated.",
+    "checker": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/audio/inspect_effects_dispatch_mapped.py",
+      "sha256": "6c6e186e8b5b01be325e7483c8f0466430fcfbd58d23ac0fd329519fd847b521"
+    }
+  },
+  "disposition": "Preserve exact experiment and failed diagnostic. No P&R or more parser/micro-EDA work is scheduled automatically under the revised architecture goal.",
+  "rollback": "No maintained effects parent, production profile, frozen descriptor, baseline or standard M/W candidate changed. Omit these unselected experiment files to retire it.",
+  "production_profile_selected": false,
+  "new_PnR_run": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "deployment_allowed": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}

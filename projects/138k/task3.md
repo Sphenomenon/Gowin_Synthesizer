@@ -87,14 +87,30 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 识别完成信号已确认是保持状态，实际 USB meta→sync 两级存在；任务取消、重新 ARM、完成与曲谱数据的顺序仍需完整证明。真实 32 声部普通/矢量合成、TF→W CNN→Push、手机 D 按放效果及 60 秒录音/下载并发也仍需各自验收，不能由子系统离线通过替代。
 
-远程成果由 `f96df276` 审查后选择性合入，且仍为当前祖先：PR #2 的 CPU48 分 bank RAM 已用于 M/W，实际网表逐字验证 24 块、12288 个 ROM 字，原对照为 32→24 块；W 的物理 BSRAM 从 344 降至 336/340。PR #3 的独立 USB/HDMI 诊断、目标域复位与状态新鲜度修复也已保留。ADSR/TF ring 仍是实验，重复录音后端未选入，详见[PR 取舍](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。本轮实际 fetch 后本地与远程基点均为 `e093185a`，无待合入 PR；在线确认 PR #2/#3 已合入原 workstation 分支。F3 的完整 M 网表重建仍确认 CPU48 优化生效；W 沿用明确标识的 E9 物理证据，本轮没有新增 W 综合或物理运行。
+远程成果由 `f96df276` 审查后选择性合入，且仍为当前祖先：PR #2 的 CPU48 分 bank RAM 已用于 M/W，实际网表逐字验证 24 块、12288 个 ROM 字，原对照为 32→24 块；W 的物理 BSRAM 从 344 降至 336/340。PR #3 的独立 USB/HDMI 诊断、目标域复位与状态新鲜度修复也已保留，该诊断不作为完整工作站的真实声部证明。ADSR/TF ring 仍是实验，重复录音后端未选入，详见[PR 取舍](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。本次再次 fetch 后本地与远程基点均为 `f84fa3c7`，没有新增提交。F3 的完整 M 网表重建仍确认 CPU48 优化生效。
 
-后续按以下顺序推进：
+按最新 goal，先完成[有界架构审查](push2_workstation/usb_a/reports/DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json)，暂停重复比较器、局部布局及路由参数试跑。本阶段没有新综合或 P&R，也没有改变生产配置。W E9 继续保留原身份：v14 与 v21 配置相同，但一个编译文件的字节不同，差异位于 W 未启用的 TF direct 分支；不能称 E9 为 v21 的新物理结果。
 
-1. F3 局部比较证明通过但布线失败，先独立定位 PR0004，再进行有依据的布局/配置比较并取得完整 STA/SDF；不把 27 级拓扑或“0 unrouted”解释为整机改善。F2 证实局部输出线缩短但整机时序回退，仍需覆盖编码器输入、复位和串行器端点的像素专项 STA；F1 的 6 ns PLL RESET 预算和 F2 的 60 单元区域均不直接选入。继续处理 clk50 的 RX payload→TX payload，以及 audio 的 divider valid→配置接受→reverb RAM CE 路径（18 级逻辑，途中门扇出 514），保持采样与配置应用屏障。F2 的 PCM owner staged_physical→written 路径需与原对照分开评估。核查 HCI ready→PCM session release、识别完成→USB 首级及效果故障的运行语义，以及 PANIC/事件队列和复位扇出。保留 F3、F2、F1、F0、EF、EE、EC 对照，不放宽时钟或 false path。
-2. 关闭 M 的完整 CPU release/consumer、held-handshake、TF CDC 与 PLL/startup 门禁。将已有局部证明接入新检查点前，补全目的侧和完整握手；不刷新旧清单哈希来取得通过。W 完整 batch 的消费者、身份、live、请求/回复及 DDR/配置 payload hold 仍需独立证明。
-3. 结合 W 仅余 4 块物理 BSRAM、理想 LCD 回显超出现有单槽期限的结果及后续实测预算，继续评估重型效果、FFT/显示分析及扩展合成分担。M F0/W E9 的实际综合层级均已有使用 20 BSRAM 等效和 19 MULT27X36 的混响实例，优先复用 W 现有效果链；重新设计异步 wet/结果调度，不能假定还能叠加一套混响或 FFT。已有[混响子系统综合](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)尚未选入 paired 整机，其资源减少不能算整机收益。
-4. 正确目标板接入后，先核对身份、引脚/电平及 LCD 有效吞吐、往返延迟和拥塞，再验收 M 独立演奏/DAC 延迟、TF/CNN/Push、手机 D 按放效果与长录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 与真实来源格式绑定；当前 paired 配置只接纳 48 kHz 录音。
+| W 实际资源用途 | 核查与处置 |
+| --- | --- |
+| USB：2570 Register、4858 LUT、31 BSRAM 等效 | 事件只到 W 本地 `u_managed`，没有板间 USB 事件通道。手机 PCM/时钟 APB 已转发 M，USB CPU 与 AE350 解码 CPU 分离。优先在显式 paired-W 配置裁掉 USB；保留 W-demo/25K 回退。 |
+| 启动存储：64 pROM＋8 SDPB | 真实固件镜像 90416 B；其中 24880 B 为运行时仍执行的 ROM 代码。实际 32768 个初始化字已逐字核对，不能删除 ROM。可评估三 bank、96 KiB ROM，预计少 16 pROM；保留 scratch、ILM/DLM、地址和 16 KiB 栈。当前 linker/验证器只接纳 128 KiB，不能静默缩容。 |
+| 本地效果：4326 Register、4122 LUT、32 BSRAM 等效 | paired W 无本地手机 PCM，且输出强制静音；本地 USB 参数、效果、时钟/串行器和 delay DDR 客户端仍在。混响本身占 20 BSRAM 等效及 19 MULT27X36，优先复用。裁剪需一起处理私有参数、DDR 请求与 readiness，不能直接接常量掩盖依赖。 |
+| 识别、解码与录音 | 保留实际 CNN/CQT/Viterbi、HCI/SBC/Classic，以及来自 M 最终输出 tap 的唯一 C/BLE DDR 录音对象。 |
+
+上表是 E9 对应综合的包含式层级统计，父子项不能相加，也不能当成新配置的物理收益。首轮限定以下三个方案，每个最多一次综合、一次 P&R；先完成各自局部验证再消耗预算，结果未改善且无新诊断依据时停止。
+
+| 顺序与方案 | 验证前预期收益 | 成功条件 |
+| --- | --- | --- |
+| A：M 独立演奏配置 | 沿用现有 M-demo/provider 与构建入口，把独立交互→32 声部普通/矢量合成→DAC 的真实边界固定下来；不预称时序或资源改善。 | 保留两个交互维度、变调、ADSR、混音；验证真实源到串行器和所有声部；完整 CDC/PLL/时序通过后再测目标板控制到声音延迟。 |
+| B：paired W 裁掉未转发 USB | 参考子树最多释放 31 BSRAM 等效及 4858 LUT，实际整机收益须测；M 暂不因此减资源。为后续实际迁移留余量。 | HCI/手机代理、CNN、唯一录音对象与固件保持正确；网表不含 USB host/CPU/owner，物理 BSRAM 降低，门禁保留。 |
+| C：W 显式 96 KiB 分 bank ROM | 64→48 pROM 的目标；现镜像余量 7888 B。单改数组深度可能仍填充到原块数，不能算收益。 | ELF、启动及运行地址不变、镜像逐字一致；范围/别名与 AHB 时延检查、48 个实际 ROM 块及完整物理门禁通过。 |
+
+跨板混响暂不作为第四个 EDA 试跑。先定义有界异步 dry-send/wet-result 队列、完整身份/序号和期限、附加延迟及 dry/wet 对齐；丢链、松键、取消及 PANIC 丢弃旧 wet 结果并有界退回本地 dry。若沿用 stereo16 block6，额外发送/返回各至少 416000 B/s@48 kHz，信用/状态及手机、录音、分析并发另计；实测前业务仍关闭。
+
+[F4 route1](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_ROUTE1_20261106.json)已在 1800 秒监督期限被终止，没有完整资源、STA、SDF 或位流，不再自动重跑。此前[效果配置分拍实验](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_EFFECTS_DISPATCH_EXPERIMENT_20261106.json)保留未选入状态：4 项局部测试及 10 项真实效果/DDR 回归通过，完整 M 综合成功但 LUT +392；映射拓扑检查在旧参考的向量别名处失败，尚未证明切断关键路径，没有 P&R，不作为整机改善。
+
+完整 M CPU release/consumer、held-handshake、TF CDC、W batch 消费者及 DDR/配置 payload hold 门禁继续保留。正确目标板接入后，先核对身份、引脚/电平及 LCD 有效吞吐、往返延迟和拥塞，再验收独立演奏、TF/CNN/Push、手机 D 按放效果与长录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 与真实来源格式绑定。
 
 必要 SRAM 验证沿用本任务授权，须先识别正确目标；Flash 仍需单独授权。每阶段完成相关验证后 commit、push 并更新证据。
 

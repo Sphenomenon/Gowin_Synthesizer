@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "scope": "Bounded dual-board architecture review before new EDA; no runtime profile selection or new synthesis/P&R.",
+  "source_base_commit": "f84fa3c75abd74895d049fac3348cd8e3ef8511a",
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "ancestor_verified": true,
+    "fetch_remote": "refs/heads/codex/dual-138k-task3",
+    "local_remote_counts": [
+      0,
+      0
+    ],
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    },
+    "PR2": "CPU48 banked RAM/firmware/mapped-ROM proof selected in task3; W physical BSRAM344 to336.",
+    "PR3": "Separate USB/HDMI diagnostic and its reset/freshness fixes retained; not a full-workstation DSP voice proof.",
+    "unselected": [
+      "ADSR/TF-ring physical strategy",
+      "retired25K BLE recorder and duplicate recording backend",
+      "unrelated Android/25K branch changes"
+    ]
+  },
+  "current_sources": {
+    "custom138k-workstation-task3-w-paired-checkpoint-v21-d8fa5871d2958f19": {
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint21-prepare-v4/workstation_profile.json",
+        "sha256": "0f738ec6ef6569f2485120d637bb937f6d833f393c86c2fbd075b4dc7650cbc5"
+      },
+      "staged_files_verified": 675,
+      "enabled_compiler_inputs": 200
+    },
+    "custom138k-workstation-task3-m-paired-checkpoint-v21-cac552dbb92de6d2": {
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint21-prepare-v4/workstation_profile.json",
+        "sha256": "b1a48f3edcf6d4182ef1311f896975e732f04fa4bb2574a4482a202643d72744"
+      },
+      "staged_files_verified": 693,
+      "enabled_compiler_inputs": 287
+    }
+  },
+  "W_reference": {
+    "candidate_identity": "custom138k-workstation-task3-w-paired-checkpoint-v14-265bf8183560b737",
+    "actual_inventory": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/architecture-review-v1/w-resource-inventory-v2.json",
+      "sha256": "c5092f8f733bd5f07d0c22eceaccfa86891b2bed2b0cdd0e5d522b7d1a583bcb"
+    },
+    "physical_identity": "custom138k-resource-physical-D21106E9",
+    "physical_BSRAM_used": 336,
+    "physical_BSRAM_capacity": 340,
+    "reference_report": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json",
+      "sha256": "6429aaedec3408ca16c9dcdce32ba5cd18fbe0cca1cdae14ca12ee83cbdffc66"
+    },
+    "configuration_equals_current": true,
+    "compiler_inputs_byte_identical_to_v21": false,
+    "compiler_input_differences": [
+      {
+        "path": "rtl/workstation/workstation_runtime_audio.sv",
+        "reference_sha256": "3170078c72ac8b11d02f0366ee0ffde9b26269237e77430d5b68e9c44aa2bedb",
+        "current_sha256": "d6f89693d19fabcbbc68b3c84456006f1a03eed10ef67a3b70a15fa707c8f921"
+      }
+    ],
+    "difference_review": "The one source change adds default-off TF tail reset selection and changes the TF_DIRECT_ENABLE generate branch. W does not select TF_DIRECT_ENABLE. No fresh synthesis/equivalence or physical identity is claimed for v21."
+  },
+  "W_ownership_review": [
+    {
+      "owner": "USB",
+      "resources": {
+        "Register": 2570,
+        "Alu": 479,
+        "Lut": 4858,
+        "Bsram": 31
+      },
+      "actual_path": "W ULPI -> u_native_usb -> all_usb_event/lifecycle/cancel -> W u_managed. No USB event/lifecycle channel exists in the selected paired channel contract.",
+      "phone_dependency": "Phone PCM1 and clock APB end at the remote M proxy, not W local DSP. USB CPU is separate from the AE350 HCI/SBC/business firmware.",
+      "decision": "First W trim candidate: explicitly retire paired-W USB with safe pin/event/telemetry values and exact selector retirement. Preserve W-demo/25K local-phone fallback. Do not claim M relief until W capacity is used by an actual migration."
+    },
+    {
+      "owner": "AE350 boot storage",
+      "resources": {
+        "Register": 256,
+        "Alu": 40,
+        "Lut": 206,
+        "Bsram": 72
+      },
+      "primitive_inventory": {
+        "pROM_instances": 64,
+        "scratch_SDPB_instances": 8,
+        "words_compared": 32768,
+        "every_initialization_word_matches": true,
+        "scope": "Initialization and primitive packing only; no AHB/timing proof"
+      },
+      "firmware": {
+        "rom_bytes": 131072,
+        "binary_bytes": 90416,
+        "payload_bytes": 75648,
+        "hole_bytes": 14768,
+        "cold_executable_bytes": 24880,
+        "hot_ILM_bytes": 50160,
+        "DLM_static_bytes": 7664,
+        "stack_reserved_bytes": 16384,
+        "ROM96_headroom_bytes": 7888
+      },
+      "actual_path": "ROM reset/trap and boot copy; live classic_service/classic_security cold code at0x80010000. Hot decoder/runtime execute in hard ILM; globals/stack in hard DLM. Separate8KiB AHB scratch consumes8 SDPB and is retained.",
+      "decision": "Retain executable boot storage. Optional explicit three-bank96KiB experiment may remove16 pROM, with unchanged image/code addresses and new range/linker/source proof. Current split linker/verifier deliberately accepts128KiB only; no silent96KiB switch. A monolithic depth reduction alone may retain padded physical blocks."
+    },
+    {
+      "owner": "Local effects/runtime",
+      "resources": {
+        "Register": 8103,
+        "Alu": 3038,
+        "Lut": 8858,
+        "MULTALU27X18": 1,
+        "MULT27X36": 23,
+        "Bsram": 32,
+        "Ssram": 10
+      },
+      "effects": {
+        "Register": 4326,
+        "Alu": 2516,
+        "Lut": 4122,
+        "MULTALU27X18": 1,
+        "MULT27X36": 23,
+        "Bsram": 32
+      },
+      "reverb": {
+        "Register": 2879,
+        "Alu": 2069,
+        "Lut": 2135,
+        "MULT27X36": 19,
+        "Bsram": 20
+      },
+      "actual_path": "Paired top disables local AE350 PCM, forces output mute, disables instrument engines and TF; W USB still changes local parameters. The effects/clock/serializer and delay DDR client remain live. M final tap, not W DAC, feeds the sole recording object.",
+      "decision": "Do not add a second W reverb. Reuse the existing algorithm/history in an asynchronous worker after queue/identity/budget design. Retire or recompose private W parameter/serializer/delay owners together; deleting a module or tying readiness high is not sufficient."
+    },
+    {
+      "owner": "CNN/HCI/record",
+      "CNN_resources": {
+        "Register": 9700,
+        "Alu": 3501,
+        "Lut": 12459,
+        "MULTALU27X18": 19,
+        "MULT12X12": 36,
+        "MULT27X36": 19,
+        "Bsram": 102,
+        "Ssram": 312
+      },
+      "actual_path": "W CQT/CNN/Viterbi and model storage; AE350 HCI/SBC/Classic pump; M final tap -> W single C/BLE raw DDR object. CPU/BLE share the same object.",
+      "decision": "Retain as real W work; no duplicate backend or fake recognition result."
+    }
+  ],
+  "first_round": {
+    "max_proposals": 3,
+    "per_proposal_max_new_synthesis": 1,
+    "per_proposal_max_new_PnR": 1,
+    "new_synthesis_used": 0,
+    "new_PnR_used": 0,
+    "no_automatic_retries": true,
+    "proposals": [
+      {
+        "id": "A",
+        "priority": 1,
+        "name": "M independent32-voice interaction to DAC checkpoint",
+        "base": "Existing M-demo provider and existing build.py profile preparation; no new numbered builder. Current source selection needs a new explicit identity if inputs differ from the retained descriptor.",
+        "expected_benefit": "Remove cross-board service participation from the base-demonstration configuration and expose its actual USB/control/render/effects/output paths. Preserve32 voices and ordinary/vector synthesis. No numeric timing or resource saving is claimed in advance.",
+        "known_path": "Full paired M divider-valid -> configuration acceptance -> reverb RAM CEA remains a diagnosed18-level path; a smaller composition does not by itself fix it.",
+        "success": "Actual32 independent active voices, two dimensions, pitch/ADSR/mix, real source->serializer proof; complete source/CDC/PLL/resource gates and routed timing. Correct-target DAC and control-to-sound measurement remain hardware gates.",
+        "stop": "If full route is no better or fails, retain the result; no comparator/floorplan/route-option retry without new path evidence.",
+        "new_synthesis_used": 0,
+        "new_PnR_used": 0
+      },
+      {
+        "id": "B",
+        "priority": 2,
+        "name": "Paired W USB retirement",
+        "expected_benefit": {
+          "reference_owner_Register": 2570,
+          "reference_owner_LUT": 4858,
+          "reference_owner_ALU": 479,
+          "reference_owner_BSRAM_equivalent": 31,
+          "note": "Owner footprint is an upper estimate, not measured whole-device savings. M resources unchanged; potential W headroom supports later real migration."
+        },
+        "implementation_boundary": "Explicit paired-W composition only, preserving native HCI/AE350, CNN, raw DDR recording and phone remote proxy. Keep USB PLL if another retained consumer needs it.",
+        "success": "No USB host/CPU/input owner remains in mapped W; phone/CNN/record inputs and firmware unchanged; measured physical BSRAM decreases and complete gates retained.",
+        "stop": "If no physical saving, unchanged key timing and no new diagnostic basis, stop this direction.",
+        "new_synthesis_used": 0,
+        "new_PnR_used": 0
+      },
+      {
+        "id": "C",
+        "priority": 3,
+        "name": "W explicit banked96KiB boot ROM",
+        "expected_benefit": {
+          "reference_ROM_pROM": 64,
+          "target_ROM_pROM": 48,
+          "expected_reduction": 16,
+          "retained_scratch_SDPB": 8,
+          "binary_headroom_bytes": 7888,
+          "note": "Projection for three32KiB banks, not a measured result; monolithic shrink is not assumed to save blocks."
+        },
+        "implementation_boundary": "New explicit source policy and capacity/linker checks. Preserve reset/trap, ELF load and run addresses, all90,416 image bytes,64KiB ILM/DLM and16KiB stack; reject reads above0x80017fff without alias.",
+        "success": "All ELF/boot words reconstruct exactly, mapped ROM banks=48, AHB range/latency tests and startup failure cases pass; physical resource improvement and complete timing/CDC/PLL required.",
+        "stop": "If mapped/physical blocks do not decrease, image/stack budget fails or live cold execution worsens key timing, retain failure and stop.",
+        "new_synthesis_used": 0,
+        "new_PnR_used": 0
+      }
+    ]
+  },
+  "remote_reverb": {
+    "state": "Deferred until asynchronous contract and measured transport budget exist; not an additional first-round EDA proposal.",
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_LCD_REVERB_BUDGET_20261106.json",
+      "sha256": "bd6fc7dcf160586605440e503ecbfee25c495065adcece68b4f2993e781e68de"
+    },
+    "ideal_echo_us": [
+      57.96,
+      62.12
+    ],
+    "old_single_slot_us": 6.666666666666667,
+    "required_contract": [
+      "Dedicated bounded dry-send and wet-result queues; sample scheduler never waits for remote result.",
+      "Full boot/session/generation identity and sequence/deadline; reject stale, reordered and late wet data.",
+      "Declare wet latency and dry/wet alignment; finite worker service budget, priority and overflow counters.",
+      "Button release, PANIC/cancel/link loss flush wet state; immediate bounded local dry fallback, no automatic replay after reconnect.",
+      "Budget both extra stereo16 directions: minimum416000B/s per direction at48k with current block6 framing, before credits/status/other media; actual wet representation may cost more.",
+      "Measured sustained bidirectional payload, jitter/RTT/congestion and arbitration under concurrent phone/record/CNN; business remains closed."
+    ]
+  },
+  "preserved_experiments": {
+    "F4": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_ROUTE1_20261106.json",
+      "sha256": "2013a28247dce7c1b165593dd646adabe0cc701e3db69367a3c306cee0e1d7b7"
+    },
+    "effects_dispatch": "Pre-review unselected experiment is preserved separately. Full synthesis completed; mapped topology diagnostic failed; no P&R or promotion."
+  },
+  "source_review_receipts": {
+    "tools/workstation_profile.py": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_profile.py",
+      "sha256": "ac75d2d349ced0f1c9f6f37737a2c1fa729efe29fb8fed41718dadf57b81ee9e"
+    },
+    "rtl/workstation/workstation_task3_w_paired_board.svh": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_w_paired_board.svh",
+      "sha256": "32a8e819cc57b15d5b4a3836fb780ced819b76926d939c0a178378fe5cf82735"
+    },
+    "rtl/workstation/workstation_task3_w_paired_top_reference.json": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_w_paired_top_reference.json",
+      "sha256": "f268c0d8466513c5f59fe79dcda7580eb7cc37dd2031564c32250c66bc0f0e95"
+    },
+    "rtl/workstation/workstation_profile_task3_w_media.sv": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_profile_task3_w_media.sv",
+      "sha256": "2b18d6349c509ce8227e389618b96dffb58739b3efe9c2b04388a80f585e1920"
+    },
+    "rtl/workstation/task3_paired_channels.vh": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/task3_paired_channels.vh",
+      "sha256": "aa1ec82c2a4a368fabce7e3c75ecbe166433d773ba2793c036946b35e390b73d"
+    },
+    "rtl/workstation/gw138k_push_workstation_top.v": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/gw138k_push_workstation_top.v",
+      "sha256": "4b4a99f674a7033b032a3e82b98e553d7d7675689627ca4fb0cebf9746738d0f"
+    },
+    "firmware/ae350/worker_media_main.c": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/worker_media_main.c",
+      "sha256": "44b592beb72e178cea23c4b5b393509a9a0d72299d3f954ef5ede829bc91aeef"
+    },
+    "firmware/ae350/boot_ilm_dlm_rom128_split.ld": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/firmware/ae350/boot_ilm_dlm_rom128_split.ld",
+      "sha256": "687daf3ac43d6efd4c6cc21c477392baf4356a00b4cde872b44c6ad537c8b5b5"
+    }
+  },
+  "resource_scope": "Synthesis inclusive subtree totals, not additive; retained physical336/340 belongs to W E9, not a fresh v21 run.",
+  "license_prerequisite": "feth94/feth95 present after user command; no new licensed EDA invocation in this phase.",
+  "hardware_tested": false,
+  "timing_closed": false,
+  "physical_gates_passed": false,
+  "deployment_allowed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "production_profile_changed": false
+}
