@@ -1,0 +1,410 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "scope": "Explicitly authorized A parse-dependency retries. New M DDR alias profile synthesized; full held-handshake audit failed. No P&R or board operation.",
+  "source_base_commit": "b7464c77099bb8e7047c3f5eab984da681541068",
+  "authorization": {
+    "first_exception": "这种低级错误允许重复构建一次",
+    "second_exception": "这种低级问题也允许修复后重新构建",
+    "scope": "Repair include/parse integration errors and rebuild; no expanded speculative P&R or routing parameter trials",
+    "A_actual_synthesis_invocations": 3,
+    "A_parse_failures": 2,
+    "A_successful_synthesis": 1,
+    "A_PnR_invocations": 0,
+    "B_C_new_EDA_invocations": 0
+  },
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "ancestor_verified": true,
+    "PR2": "CPU48 banked USB RAM selected in M; all12288 mapped words/24 blocks checked in this candidate",
+    "PR3": "Reviewed USB/HDMI diagnostic/reset/freshness changes retained; diagnostic is not actual full-workstation voice proof",
+    "unselected": [
+      "duplicate recording backend",
+      "unproved ADSR/TF-ring physical experiment"
+    ],
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    }
+  },
+  "earlier_attempts": [
+    {
+      "attempt": 1,
+      "reference": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_20261106.json",
+        "sha256": "c623640eb62bbc038e34d3a560004a3fa315166d363f556e5749b5802642cddb"
+      },
+      "duration_seconds": 2.2177397919876967,
+      "result": "parse_failed_missing_rtl_ddr_map_include",
+      "unchanged": true
+    },
+    {
+      "attempt": 2,
+      "candidate_identity": "custom138k-workstation-task3-m-independent-v1-dca520d2406ed45f",
+      "duration_seconds": 1.2602773749968037,
+      "exit_code": 1,
+      "errors": [
+        "EX3842: undefined PRJ1_DDR_TASK3_W_CNN_PCM_CAPACITY_FRAMES",
+        "EX3863: syntax error near comma"
+      ],
+      "diagnosis": "Old src/memory DDR header defines the same include guard before the maintained rtl header. The original single-file preprocess did not cover this ordering.",
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-authorized-retry-v1/synthesis-invocation.json",
+        "sha256": "f36dce1213f809067e366b199b0f9a6138417067ef2555b380d97948c8cce687"
+      },
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-authorized-retry-v1/synthesis.log",
+        "sha256": "d981a3758b6c5d39718a0ab9a3a1bf766eadccb18c948f45e3a0f67dae443a30"
+      },
+      "include_order_reproduction": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-authorized-retry-v1/include-order-diagnosis.json",
+        "sha256": "cf28200cfa2a4e082f0d3c76ccb1e214c617d2a65ccbc880b6cedd9dfe834ad4"
+      }
+    }
+  ],
+  "repair": {
+    "policy": {
+      "policy": "native_ddr_authority_equal_include_aliases_v1",
+      "source": "rtl/ddr_address_map.vh",
+      "alias": "src/memory/ddr_address_map.vh",
+      "parent_sha256": "0ec949e54acecac04b71fceca2cf725d56d2691c850fbd83951fdc6441fc8ddb",
+      "selected_sha256": "051c46466feb23a43003cf15c28340a1409974da1b6f4af2c5aa45ebdb030655",
+      "preserved_parent_macros": 69,
+      "existing_allocations_preserved": true,
+      "equal_include_bytes": true
+    },
+    "implementation": "Versioned opt-in helper installs identical maintained authority bytes at both include aliases; original69 macro values preserved. Default profiles, original descriptors, baselines and vendor bytes unchanged.",
+    "helper": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_ddr_map_aliases.py",
+      "sha256": "8d7fbe94b8ba5c1ad5b3b25602ea9246f7656e872c9318b7ca87afac5dfa4a5f"
+    },
+    "historical_descriptors_unchanged": 71,
+    "source_seal": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/source-seal.json",
+      "sha256": "3a1e4e0976248e0f13466257ea06534fa4218e8570916ac01a944cc45998ff6d"
+    },
+    "source_root_reconstruction": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/source-root-reconstruction.json",
+      "sha256": "b4b4ace7e7753d99e202681d03b6c0647d008580e5c26e621d1ff80da7954b88"
+    },
+    "source_root_note": "Sparse root restores hash-locked first-party inputs and declared baseline sources. One historical compiled CRLF file is inversely decoded to its declared raw hash only in this root; original historical tree untouched. Two vendor manifests and unchanged vendor inputs explicitly locked. No missing or changed input fallback."
+  },
+  "M": {
+    "candidate_identity": "custom138k-workstation-task3-m-independent-ddr-map-v1-8cf0f8e10a9efb34",
+    "profile": "custom138k-workstation-task3-m-independent-ddr-map-v1",
+    "configuration": {
+      "hdmi_mode": "1080p60",
+      "high_speed_allowed": true,
+      "tf_audio_kind": "wav",
+      "implemented_sample_rates_hz": [
+        48000,
+        44100
+      ],
+      "ae350_firmware_policy": "maintained_ae350_v1",
+      "scan_window_policy": "native_admission_v1",
+      "audio_policy": "native_dual_rate_runtime_v1",
+      "reserve_zero_epoch": true,
+      "display_metadata_minor": 1,
+      "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+      "recognition_policy": "disabled_cnn_and_follow_v1",
+      "local_panel_policy": "disabled_local_lcd_touch_v1",
+      "demo_role": "M",
+      "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+      "tf_policy": "disabled_first_m_core_demo_v1",
+      "bluetooth_policy": "retired_for_independent_m_demo_v1",
+      "recording_policy": "disabled_m_demo_v1",
+      "usb2_cpu_ram_bytes": 49152,
+      "ddr_map_alias_policy": "native_ddr_authority_equal_include_aliases_v1"
+    },
+    "descriptor": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_independent_ddr_map_v1.json",
+      "sha256": "febc6ae9b76b2547770581e4d3d86c6e0d01a561a36f5732f1b833420609fbe6"
+    },
+    "profile_artifact": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-map-prepare-v3/workstation_profile.json",
+      "sha256": "57e00782fae6865f3335e973a67a90eb2812d2f06c60c3fa83cadeeea270d4cb"
+    },
+    "integration_inputs": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-map-prepare-v3/integration_inputs.json",
+      "sha256": "e44512e5a3b95a72ac266c54a9dbc4ed4280ba8e0cc3d800e1e1eca1fe487506"
+    },
+    "source_lock_count": 854,
+    "staged_input_count": 614,
+    "enabled_inputs": 267,
+    "enabled_HDL_inputs": 264,
+    "provider": "rtl/workstation/workstation_profile_m_demo.sv",
+    "ordinary32_storage": {
+      "voices": 32,
+      "groups": {
+        "sample_envelope_q18": {
+          "voices": 32,
+          "bits_per_voice": 18,
+          "registers": 576,
+          "register_inventory_sha256": "19b3e4e29a1001facaee3437381a680b475e6b166ed2488bdd9bf595c55b39e4"
+        },
+        "envelope_state": {
+          "voices": 32,
+          "bits_per_voice": 3,
+          "registers": 96,
+          "register_inventory_sha256": "24e520cccd012e9cdea1c55b7d68b07a671ab1e244b75ab22e2fa0c2a6f3c543"
+        },
+        "expression_gain_q8": {
+          "voices": 32,
+          "bits_per_voice": 8,
+          "registers": 256,
+          "register_inventory_sha256": "dd42a11e3bcdf867cfc4a698d165cd31117b4c40f4209d959669f0f4d050e5dd"
+        }
+      },
+      "synthesized_storage_verified": true,
+      "concurrent_voice_functionality_hardware_verified": false
+    },
+    "vector8": "Existing maintained8-voice source and prior A runtime component simulation retained; current vector hierarchy present. No new hardware voice acceptance.",
+    "checkpoint_scope": "Independent local interaction/synthesis/effects/HDMI/final I2S. TF/CNN/phone/recording remain in separate protected paired candidates.",
+    "synthesis_resources": {
+      "Register": 43158,
+      "Lut": 48137,
+      "Alu": 11422,
+      "Bsram": 198,
+      "Ssram": 99,
+      "MULTALU27X18": 33,
+      "MULT12X12": 2,
+      "MULT27X36": 41
+    },
+    "physical_resources": null,
+    "bitstream_identity": null,
+    "control_to_sound_hardware_latency_ms": null,
+    "timing_closed": false,
+    "hardware_tested": false,
+    "sram_programmed": false,
+    "flash_programmed": false
+  },
+  "W": {
+    "changed": false,
+    "candidate_identity": "custom138k-workstation-task3-w-paired-banked96-v1-c5aa7e9c87dd9908",
+    "physical_identity": "custom138k-resource-physical-D21106F6",
+    "physical_BSRAM": 287,
+    "reference": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json",
+      "sha256": "8beda2a1202f11c8e71c8253daf4ae64f45b316433f235345475fb3fea0b83a3"
+    },
+    "new_synthesis": 0,
+    "new_PnR": 0,
+    "limits": "Retains its original negative routed slacks, failed gates and bitstream identity; no new board result."
+  },
+  "validation": {
+    "regression_test_methods": 40,
+    "regression_receipt": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/regressions.json",
+      "sha256": "1b3adf9d491fc4305e2df96451dd7c6f8c0a0e6972c9c1e1d215727e0fe05008"
+    },
+    "full_order_preprocessing": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/all-enabled-preprocess.json",
+      "sha256": "7ea9016676da48c20ec21f3b03d0e4e1d17c22b1da172683ce4e596d37717f5e"
+    },
+    "preflight": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/preflight.json",
+      "sha256": "2cfa321faddf13726ce098533be725277dc1e5ec3925c71bed79a922bc69fa50"
+    },
+    "post_synthesis_profile_verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/post-synthesis-profile-verification.log",
+      "sha256": "2e6e167c9b743240a23ef1e3593e6a28473c0a554f7f1225ac1aff180e333a45"
+    },
+    "compiled_input_comparison": "All264 enabled HDL files, GPRJ/CST/SDC and all firmware ROMs identical to v7. Only HDL dependency change is src/memory/ddr_address_map.vh. Tools/manifest identity explicitly changed.",
+    "synthesis": {
+      "attempt": 3,
+      "exit_code": 0,
+      "duration_seconds": 130.21714058399084,
+      "inputs_unchanged_after": true,
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/synthesis-invocation.json",
+        "sha256": "ac12cbcd62251e763fd27e6671c6869ff77d4c90efde33538e6fc3e426c23e0b"
+      },
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/synthesis.log",
+        "sha256": "ad8ff30ca57cb1701fad5171465c30d7f98be5a7b2b7b931ac188e61d7fbc001"
+      },
+      "netlist": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-map-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "a9bbe4b4c519840d9db21de88ded005130c1be7cc81701ae57eb6b953ffd24db"
+      },
+      "resource_report": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-map-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+        "sha256": "c4e56dd00f9570e8fdd70e52bc0b141f0d95fc6cdb02756035ca3af156050d81"
+      },
+      "tool": {
+        "path": "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+        "sha256": "c7650c2d6840da20eb9a32a7a8b5ecc385c428d3ed74fef436150a85ca8bac01"
+      }
+    },
+    "full_standard_audit": {
+      "command": "python3 -m tools.workstation_custom_board_audit CANDIDATE",
+      "exit_code": 1,
+      "passed": false,
+      "error": "native protocol audit: register bit inventory changed: u_managed/display/held_data",
+      "stderr": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/synthesis-audit.stderr",
+        "sha256": "118707d3ba67132e0d9d43f442d701cf8718e38a4fa9372ce2bb3209c46be619"
+      }
+    },
+    "independent_mapped_checks": {
+      "passed": 17,
+      "total": 18,
+      "scope": "Component results after full standard audit aborted; not a replacement or full-audit pass",
+      "gates": {
+        "prepared_closure": {
+          "passed": true
+        },
+        "feature_structure": {
+          "passed": true
+        },
+        "USB48_every_word": {
+          "passed": true
+        },
+        "port_coverage": {
+          "passed": true
+        },
+        "AE350_clock_placement": {
+          "passed": true
+        },
+        "AE350_RTC": {
+          "passed": true
+        },
+        "runtime_clock_PLL_structure": {
+          "passed": true
+        },
+        "USB2_CDC": {
+          "passed": true
+        },
+        "input_FIFO_CDC": {
+          "passed": true
+        },
+        "native_reset": {
+          "passed": true
+        },
+        "native_feedback": {
+          "passed": true
+        },
+        "USB_FIFO_write_reset": {
+          "passed": true
+        },
+        "USB_bridge_resets": {
+          "passed": true
+        },
+        "constraint_retirement": {
+          "passed": true
+        },
+        "native_held_handshakes": {
+          "passed": false,
+          "error": "native protocol audit: register bit inventory changed: u_managed/display/held_data"
+        },
+        "demo_boundary_CDC": {
+          "passed": true
+        },
+        "performance_release": {
+          "passed": true
+        },
+        "ordinary32_storage": {
+          "passed": true
+        }
+      },
+      "receipt": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-ddr-alias-repair-v1/mapped-component-audit.json",
+        "sha256": "8157cf3b9dae804ca8215f3bd14eb781724337086443a573883c9e9b297206b1"
+      },
+      "USB48_ROM": {
+        "words": 12288,
+        "bytes": 49152,
+        "blocks": 24,
+        "every_word_verified": true
+      }
+    },
+    "synthesis_clock_estimates": [
+      {
+        "clock": "clk_50m",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 68.437,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "usb2_ulpi_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 99.95,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "clk_12m288",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 138.696,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "clk_16m9344",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 138.696,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_managed/runtime/clocks/dac_mclk_d",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 120.034,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_audio_clock/g_hardware.u_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 76.8,
+        "synthesis_estimated_mhz": 72.852,
+        "estimate_meets_requirement": false
+      },
+      {
+        "clock": "u_usb_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 48.0,
+        "synthesis_estimated_mhz": 73.774,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_pll/u_pll/PLL_inst/CLKOUT2.default_gen_clk",
+        "required_mhz": 400.0,
+        "synthesis_estimated_mhz": 1338.315,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT0.default_gen_clk",
+        "required_mhz": 50.0,
+        "synthesis_estimated_mhz": 311.818,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_cpu_pll/PLL_inst/CLKOUT1.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 1455.604,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/fclkdiv/CLKOUT.default_gen_clk",
+        "required_mhz": 100.0,
+        "synthesis_estimated_mhz": 201.532,
+        "estimate_meets_requirement": true
+      },
+      {
+        "clock": "u_video/u_clock/g_hardware.u_pll/u_pixel_div/CLKOUT.default_gen_clk",
+        "required_mhz": 148.5,
+        "synthesis_estimated_mhz": 212.902,
+        "estimate_meets_requirement": true
+      }
+    ],
+    "timing_limits": "Estimates are not routed STA; audio76.8MHz reports72.852MHz. Some SYN targets use default100MHz and do not supersede reviewed SDC. No physical result or relaxed clock.",
+    "hardware_acceptance": false
+  },
+  "remaining": [
+    "Close the exact display held-data register/alias/registered-RAM proof with negative controls; do not waive the existing failure",
+    "Only after complete gates, consider the still-unused A P&R trial; no speculative repeat layout/route trials",
+    "Continue bounded asynchronous reuse of W effects; B/C freed W capacity, but M heavy effects have not migrated",
+    "Identify target boards and measure LCD electrical/throughput/RTT/jitter/congestion before business admission",
+    "Measure independent real DAC/control-to-sound latency and paired TF/CNN/Push/phone-D/long-recording/download acceptance"
+  ],
+  "rollback": "All71 pre-existing descriptors and original A/B/C reports untouched. Retain original M-demo, task2/single-board and paired checkpoints, plus W F5/F6. Do not treat parse-failed v1 as a newly deployable candidate.",
+  "physical_gates_passed": false,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "board_accessed": false
+}

@@ -64,10 +64,11 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，两板 v21 保留为 paired 来源检查点；本轮另登记 M 独立演奏、W USB 退役和 W 显式 96 KiB 分 bank 配置；两个 W 方案各完成一次综合及一次 P2R0。另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。其中 W v21 的配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
+截至 2026-11-06，两板 v21 保留为 paired 来源检查点；本轮另登记 M 独立演奏、W USB 退役和 W 显式 96 KiB 分 bank 配置。M 经授权修复 DDR 头文件封装后完成综合，显示 held-data 清单仍挡住完整审计，未进入 P&R；两个 W 方案各完成一次综合及一次 P2R0。另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。其中 W v21 的配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
 
 | 板与阶段 | 来源身份 | 实际证据 |
 | --- | --- | --- |
+| M 独立演奏 A，DDR 解析修复 | `custom138k-workstation-task3-m-independent-ddr-map-v1-8cf0f8e10a9efb34`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_DDR_ALIAS_REPAIR_20261106.json) | 854 个来源锁、614 个冻结文件、267 个编译输入。130.22 秒完成综合：43158 Register、48137 LUT、11422 ALU、198 BSRAM 等效、99 RAM16。普通 32 声部存储、矢量子树及 CPU48 全部 ROM 字核对通过；完整审计在显示 held-data 清单处失败，独立分项 17/18，尚无 P&R、位流或目标板结果。 |
 | M v21 实验来源 | `custom138k-workstation-task3-m-paired-checkpoint-v21-cac552dbb92de6d2`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_paired_checkpoint_v21.json) | 979 项来源锁、287 项编译输入、693 项准备文件。完整 M 综合：58408 Register、68670 LUT、28061 ALU、212 BSRAM 等效、254 RAM16；审计 21/23。相对 v20 仅批处理器编译字节改变，LUT −132、ALU +29，寄存器和存储不变。 |
 | M v21 F0 物理比较 | `custom138k-resource-physical-D21106F0`；[本轮证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_COMPARISON_20261106.json) | 同约束 P3R0，816.13 秒完成布线与位流生成；Logic 99061、Register 58408、BSRAM 253/340、CLS 61686/69120。setup/hold/recovery/removal 为 -4.468/-3.665/-4.263/-0.141 ns；未通过完整物理门禁，未部署。 |
 | M v21 F1 物理预算实验 | `custom138k-resource-physical-D21106F1`；[PLL 路由实验与远程复核](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_PLL_RESET_EXPERIMENT_20261106.json) | 相同综合 VG、CST、P3R0；只追加更严格的 TMDS PLL RESET 6 ns 预算及像素专项报告。831.70 秒完成布线，资源及四项最差裕量与 F0 相同；PLL RESET 仍为 10.870 ns。该实验未改善时序，未选入生产配置。 |
@@ -100,7 +101,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 | 本地效果：4326 Register、4122 LUT、32 BSRAM 等效 | paired W 无本地手机 PCM，且输出强制静音；本地 USB 参数、效果、时钟/串行器和 delay DDR 客户端仍在。混响本身占 20 BSRAM 等效及 19 MULT27X36，优先复用。裁剪需一起处理私有参数、DDR 请求与 readiness，不能直接接常量掩盖依赖。 |
 | 识别、解码与录音 | 保留实际 CNN/CQT/Viterbi、HCI/SBC/Classic，以及来自 M 最终输出 tap 的唯一 C/BLE DDR 录音对象。 |
 
-上表是 E9 对应综合的包含式层级统计，父子项不能相加，也不能当成新配置的物理收益。首轮限定以下三个方案，每个最多一次综合、一次 P&R；先完成各自局部验证再消耗预算，结果未改善且无新诊断依据时停止。
+上表是 E9 对应综合的包含式层级统计，父子项不能相加，也不能当成新配置的物理收益。首轮限定以下三个方案，每个最多一次综合、一次 P&R；先完成各自局部验证再消耗预算，结果未改善且无新诊断依据时停止。用户另行允许修复输入封装、解析等低级错误后重建；这些调用单列记录，不扩展布局或路由参数试跑预算。
 
 | 顺序与方案 | 验证前预期收益 | 成功条件 |
 | --- | --- | --- |
@@ -112,7 +113,11 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 45 项来源／审计回归通过；实际音频子系统仿真检查 22532 帧，普通 32 声部和矢量 8 声部在 48/44.1 kHz 下共 12 次活跃数量检查、12 种物理串行取消边界通过。Push 入口与禁用 TF 边界回归通过。此证据使用真实 DSP、DDR 模型、DCS、最终 PCM 和 I2S，尚不等同于 USB/CPU 整板仿真或可闻复音及控制到声音延迟实测。
 
-用户完成许可证命令后 Gowin 已进入解析；A 的唯一一次综合在 2.22 秒后因冻结目录缺少 `rtl/ddr_address_map.vh` 失败，无网表、资源或时序结果。已补齐权威头文件依赖并通过重新 prepare、来源校验及 Icarus 预处理；修复后的最终候选未再综合。本轮 A 已用 **1/1 综合、0/1 P&R**，停止该方向的 EDA，不自动重跑；B 已用 **1/1 综合、1/1 P&R**，不追加参数试跑；C 已用 **1/1 综合、1/1 P&R**，首轮三个方案不再追加 EDA。完整 CDC、PLL、布线及硬件门禁均未放宽。
+用户完成许可证命令后 Gowin 已进入解析；A 首次调用在 2.22 秒后因冻结目录缺少 `rtl/ddr_address_map.vh` 失败。[经授权的解析修复](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_DDR_ALIAS_REPAIR_20261106.json)保留全部失败：补齐头文件后的第二次调用在 1.26 秒失败，原因是旧 `src/memory/ddr_address_map.vh` 先设置同名 include guard，屏蔽了当前 CNN 容量宏；单文件预处理未覆盖该顺序。新显式配置让两个 include 路径使用同一份维护权威映射，保留全部 69 个旧宏值。第三次调用 130.22 秒综合成功。A 实际为 **3 次综合调用（2 次解析失败、1 次成功）、0/1 P&R**；两次额外调用均有用户授权。B、C 各仍为 **1/1 综合、1/1 P&R**，未追加布局或路由参数试跑。
+
+新候选 `8cf0f8e10a9efb34` 的 40 项针对性回归通过，264 个 HDL 文件按实际完整顺序预处理无警告；相对原 A，全部已启用 HDL、固件、工程、CST/SDC 不变，仅旧 DDR include 别名改用维护权威字节。71 份历史描述符、原 A/B/C 报告与基线均未修改。来源在独立缓存根中按锁重建，包含将一份历史编译 CRLF 文件还原为其声明的原始字节，原历史目录不动；重建过程、缺失供应商清单的准备失败和最终哈希均在报告中。
+
+完整标准审计仍报 `u_managed/display/held_data` 寄存器清单变化，未放行；独立分项检查为 17/18，覆盖实际普通 32 声部存储、保留矢量子树、CPU48 的 24 块及全部 12288 字、时钟/PLL 拓扑与多项 CDC。矢量 8 声部的功能依据仍是维护源码和前述真实子系统仿真，不冒充新的目标板复音验收。综合资源为 43158 Register、48137 LUT、198 BSRAM 等效；这不是物理 BSRAM，也不能把独立配置未启用的扩展功能算成 paired M 的优化收益。音频 76.8 MHz 域的综合估计仅 72.852 MHz；尚无布线 STA、位流或控制到声音实测，因此未进入 P&R。完整 CDC、PLL、布线及硬件门禁继续保留。
 
 [方案 B 阶段证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_USB_RETIREMENT_20261106.json)：显式 `custom138k-workstation-task3-w-paired-no-usb-v1` 只替换 W 的 USB 输入实现，保持数据线高阻、无事件、无 ready；原生顶层、HCI/CNN/录音源码与 AE350 固件同 v21。最终候选有 1030 个来源锁、677 个冻结文件、200 个编译输入；69 份历史描述符保持原哈希。实际综合用初版 `ad50780b1d6923f2`，175.58 秒完成；最终版与其 198 个 HDL 输入、工程和综合选项逐项一致，仅补退役网表中已消失的 USB 遥测约束，明确复用原网表，不再综合。相对 W v14 综合参考，BSRAM 等效 300→269、LUT 63891→58584；该参考不是 v21 的物理结果。
 

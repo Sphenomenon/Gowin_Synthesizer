@@ -150,6 +150,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     paired_role=specification(profile['name']).get('paired_role') if runtime else None
     paired_worker=paired_role=='W'
     phone_batch_worker=paired_worker and specification(profile['name']).get('phone_batch',False)
+    ddr_aliases_selected=False
+    if profile is not None and profile['configuration'].get('ddr_map_alias_policy') is not None:
+        from tools import workstation_ddr_map_aliases as ddr_aliases
+        ddr_aliases_selected=ddr_aliases.configured(profile['configuration'])
+        if not runtime or demo_role != 'M' or recording_selected or paired_role is not None:
+            raise ValueError('DDR include alias repair requires explicit independent M')
+        profile_dependencies += ddr_aliases.DEPENDENCIES
     from tools import workstation_task3_w_usb_retirement as usb_retirement
     usb_retired=usb_retirement.configured({} if profile is None else profile['configuration'])
     if usb_retired:
@@ -386,6 +393,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if recording_selected:
         from tools.workstation_recording_policy import install_address_map
         recording_address_map=install_address_map(root,stage)
+    runtime_ddr_aliases=ddr_aliases.install(root,stage) if ddr_aliases_selected else None
     overlays = {}
     if resource_optimization:
         for destination, source in NATIVE_OVERLAYS.items():
@@ -601,6 +609,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                     'real external peripheral and hardware acceptance'])
     if usb2_cpu_ram_selection is not None:
         metadata['usb2_cpu_ram_selection'] = usb2_cpu_ram_selection
+    if runtime_ddr_aliases is not None:
+        metadata['runtime_ddr_aliases'] = runtime_ddr_aliases
     if usb_retired:
         metadata['task3_w_usb_retirement']=dict(selection=usb_retirement_selection,
             constraints=usb_retirement_constraints)

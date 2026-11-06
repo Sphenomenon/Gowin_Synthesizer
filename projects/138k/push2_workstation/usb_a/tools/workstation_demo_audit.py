@@ -24,6 +24,8 @@ WS = 'u_managed/runtime/service/workstation'
 EFFECTS = WS + '/runtime_effects.effects'
 ENGINES = WS + '/runtime_engines.engines'
 PROFILES = {
+    'custom138k-workstation-task3-m-independent-ddr-map-v1': ('M', 'custom138k-native-task3-m-independent-ddr-map-revision1',
+                                      'rtl/workstation/workstation_profile_m_demo.sv'),
     'custom138k-workstation-task3-m-independent-v1': ('M', 'custom138k-native-task3-m-independent-revision1',
                                       'rtl/workstation/workstation_profile_m_demo.sv'),
     'custom138k-workstation-task3-m-direct-tf-v1': ('M', 'custom138k-native-task3-m-direct-tf-revision1',
@@ -136,6 +138,12 @@ def verify_prepared(output, metadata):
     for relative, expected in inputs.items():
         require(re.fullmatch(r'[0-9a-f]{64}', expected) is not None and
                 sha(checked(stage, relative)) == expected, 'staged input changed: ' + relative)
+    if profile['configuration'].get('ddr_map_alias_policy') is not None:
+        from tools import workstation_ddr_map_aliases as ddr_aliases
+        require(ddr_aliases.configured(profile['configuration']), 'DDR include alias policy missing')
+        source = 'projects/138k/push2_workstation/usb_a/' + ddr_aliases.SOURCE
+        ddr_aliases.verify_staged(stage, metadata.get('runtime_ddr_aliases'),
+                                 authority_sha256=profile['source_sha256'][source])
     selected_inputs = [e.get('path') for e in ET.parse(stage / 'Prj1.gprj').find('FileList')
                        if e.get('enable') == '1']
     require(selected_inputs == metadata['enabled_inputs'] and
@@ -590,8 +598,12 @@ def audit(root, output, metadata):
     from tools.workstation_ae350_rtc import verify_prepared as verify_rtc
     root, output = Path(root), Path(output)
     audit_source_names = AUDIT_SOURCES
-    if metadata.get('workstation_profile',{}).get('name') == 'custom138k-workstation-task3-m-independent-v1':
+    if metadata.get('workstation_profile',{}).get('name') in (
+            'custom138k-workstation-task3-m-independent-v1',
+            'custom138k-workstation-task3-m-independent-ddr-map-v1'):
         audit_source_names += ('tools/workstation_usb_cpu_rom.py',)
+    if metadata.get('runtime_ddr_aliases') is not None:
+        audit_source_names += ('tools/workstation_ddr_map_aliases.py',)
     if metadata.get('workstation_profile',{}).get('name')=='custom138k-workstation-task3-m-direct-tf-v1':
         audit_source_names+=('tools/workstation_task3_tf_direct.py',
             'boards/custom_138k/task3_tf_direct_legacy_cdc_v1.json',

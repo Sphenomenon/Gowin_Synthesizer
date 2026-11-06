@@ -57,6 +57,7 @@ LOCAL_BOOT64_NAME = 'custom138k-workstation-r00-no-local-panel-ilm64k-boot64k-v1
 LOCAL_BOOT64_CONFIG = 'boards/custom_138k/workstation_profile_r00_no_local_panel_ilm64k_boot64k_v1.json'
 M_DEMO_NAME='custom138k-workstation-m-demo-v1'
 TASK3_M_INDEPENDENT_NAME='custom138k-workstation-task3-m-independent-v1'
+TASK3_M_INDEPENDENT_MAP_NAME='custom138k-workstation-task3-m-independent-ddr-map-v1'
 W_DEMO_NAME='custom138k-workstation-w-demo-v1'
 TASK3_M_TF_NAME='custom138k-workstation-task3-m-local-tf-v1'
 TASK3_M_DIRECT_NAME='custom138k-workstation-task3-m-direct-tf-v1'
@@ -191,6 +192,13 @@ PROFILE_REGISTRY[TASK3_M_INDEPENDENT_NAME]=dict(_parent,
     config='boards/custom_138k/workstation_profile_task3_m_independent_v1.json',
     configuration=dict(_parent['configuration'],usb2_cpu_ram_bytes=49152),
     integration_identity='custom138k-native-task3-m-independent-revision1')
+
+_parent=PROFILE_REGISTRY[TASK3_M_INDEPENDENT_NAME]
+PROFILE_REGISTRY[TASK3_M_INDEPENDENT_MAP_NAME]=dict(_parent,
+    config='boards/custom_138k/workstation_profile_task3_m_independent_ddr_map_v1.json',
+    configuration=dict(_parent['configuration'],
+        ddr_map_alias_policy='native_ddr_authority_equal_include_aliases_v1'),
+    integration_identity='custom138k-native-task3-m-independent-ddr-map-revision1')
 
 for _name,_config,_provider,_policy,_identity in (
     (TASK3_W_SIGNAL_NAME,'boards/custom_138k/workstation_profile_task3_w_media_signal_bsram_v1.json',
@@ -972,6 +980,14 @@ def _artifact(root, output, metadata, profile):
         bindings[destination] = source
 
     prefix = root.relative_to(repository).as_posix() + '/'
+    if profile['configuration'].get('ddr_map_alias_policy') is not None:
+        from tools import workstation_ddr_map_aliases as ddr_aliases
+        if not ddr_aliases.configured(profile['configuration']):
+            raise ValueError('DDR include alias policy missing')
+        ddr_aliases.verify(root, stage, metadata.get('runtime_ddr_aliases'))
+        bind(ddr_aliases.ALIAS, prefix + ddr_aliases.SOURCE)
+    elif metadata.get('runtime_ddr_aliases') is not None:
+        raise ValueError('unselected DDR include alias evidence')
     ble_raw_selected = spec.get('ble_recording_storage_enabled', False)
     business_selected=spec.get('business_owner_enabled',False)
     ble_raw_adaptation = None
