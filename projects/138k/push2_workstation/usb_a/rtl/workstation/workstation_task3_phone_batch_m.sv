@@ -3,7 +3,8 @@
 // every mutation is replayed through the original PCM1 command owner/CDC.
 // A reply describes one frozen owner capture, never a scan of live registers.
 module workstation_task3_phone_batch_m #(
-    parameter integer TIMEOUT_CYCLES=50000
+    parameter integer TIMEOUT_CYCLES=50000,
+    parameter integer CAPTURE_COMPARE_GROUP_BITS=32
 )(
     input wire clk_i,reset_ni,live_i,cancel_i,
     input wire [31:0] token_i,
@@ -66,6 +67,25 @@ module workstation_task3_phone_batch_m #(
     wire [31:0] packed_flags={snapshot[16][3],snapshot[8]==32'd44100,1'b1,1'b0,
         active_match,live_match,snapshot[12][3:0],snapshot[11][9:0],snapshot[10][3:0],snapshot[9][7:0]};
     wire snapshot_shape_good=snapshot[8]==32'd44100 || snapshot[8]==32'd48000;
+    // TASK3 capture ordering comparison begin.
+    // Preserve unsigned <=, including zero, equality and the original wrap
+    // rejection. Only the combinational implementation is selectable.
+    (* syn_keep=1 *) wire capture_not_newer;
+    generate if(CAPTURE_COMPARE_GROUP_BITS==32)begin:g_capture_direct
+        assign capture_not_newer=command_response_data_i<=last_capture_id;
+    end else begin:g_capture_grouped
+        (* syn_keep=1 *) wire [3:0] byte_less,byte_equal;
+        for(genvar capture_byte=0;capture_byte<4;capture_byte=capture_byte+1)begin:g_byte
+            assign byte_less[capture_byte]=command_response_data_i[capture_byte*8+:8]<last_capture_id[capture_byte*8+:8];
+            assign byte_equal[capture_byte]=command_response_data_i[capture_byte*8+:8]==last_capture_id[capture_byte*8+:8];
+        end
+        assign capture_not_newer=byte_less[3] || (byte_equal[3] &&
+            (byte_less[2] || (byte_equal[2] && (byte_less[1] ||
+            (byte_equal[1] && (byte_less[0] || byte_equal[0]))))));
+    end endgenerate
+    initial if(CAPTURE_COMPARE_GROUP_BITS!=32 && CAPTURE_COMPARE_GROUP_BITS!=8)
+        $fatal(1,"capture ordering requires the reviewed32-bit direct or8-bit grouped policy");
+    // TASK3 capture ordering comparison end.
     wire snapshot_fields_good=snapshot_shape_good && snapshot[9][31:8]==0 &&
         snapshot[10][31:4]==0 && snapshot[11]<=512 && snapshot[12][31:4]==0 &&
         snapshot[16]==probed_caps && snapshot[17]==capture_id && snapshot[18]==0 && snapshot[19]==0 &&
@@ -167,7 +187,7 @@ module workstation_task3_phone_batch_m #(
                             else operation<=CAPTURE;
                         CAPTURE:if(command_response_data_i!=32'h50434d53)fail(request_token,request_sequence);
                             else operation<=FIRST_CAPTURE_ID;
-                        FIRST_CAPTURE_ID:if(command_response_data_i==0 || command_response_data_i<=last_capture_id)
+                        FIRST_CAPTURE_ID:if(command_response_data_i==0 || capture_not_newer)
                                 fail(request_token,request_sequence);
                             else begin capture_id<=command_response_data_i;word_index<=0;operation<=SNAPSHOT_WORD;end
                         SNAPSHOT_WORD:begin

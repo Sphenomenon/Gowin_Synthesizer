@@ -180,6 +180,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if paired_role != 'M':
             raise ValueError('demand identity grouping requires paired M')
         profile_dependencies += (demand_identity.TOOL,)
+    from tools import workstation_task3_capture_compare as capture_compare
+    capture_compare_selected=capture_compare.configured({} if profile is None else profile['configuration'])
+    if capture_compare_selected:
+        if paired_role != 'M':
+            raise ValueError('capture ordering grouping requires paired M')
+        profile_dependencies += (capture_compare.TOOL,)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -436,6 +442,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
+    if capture_compare_selected:
+        capture_compare.select(stage,profile['configuration'])
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')

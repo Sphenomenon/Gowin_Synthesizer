@@ -127,13 +127,21 @@ def source_evidence(stage):
         tail_reset.evidence(stage, profile['configuration'])
         sources=dict(sources, **{tail_reset.RUNTIME:sha(stage/tail_reset.RUNTIME)})
     from tools import workstation_task3_demand_identity_compare as demand
-    demand_profile=profile.get('profile')==demand.PROFILE
+    demand_profile=profile.get('profile') in demand.PROFILES
     require(demand.configured(profile['configuration']) is demand_profile,'demand identity policy/profile mismatch')
     if demand_profile:
         demand.evidence(stage,profile['configuration'])
         require(demand.digest(demand.restore_endpoint((stage/demand.ENDPOINT).read_text()))==sources[demand.ENDPOINT],
                 'demand identity source inverse changed')
         sources=dict(sources,**{demand.ENDPOINT:sha(stage/demand.ENDPOINT)})
+    from tools import workstation_task3_capture_compare as capture
+    capture_profile=profile.get('profile')==capture.PROFILE
+    require(capture.configured(profile['configuration']) is capture_profile,'capture ordering policy/profile mismatch')
+    if capture_profile:
+        capture.evidence(stage,profile['configuration'])
+        require(capture.digest(capture.restore((stage/capture.SOURCE).read_text()))==sources[capture.SOURCE],
+                'capture ordering source inverse changed')
+        sources=dict(sources,**{capture.SOURCE:sha(stage/capture.SOURCE)})
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], provider)
     require(selected is not None, 'snapshot parameter selection absent')

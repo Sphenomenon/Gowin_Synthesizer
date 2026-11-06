@@ -9,6 +9,7 @@ import hashlib
 POLICY='task3_m_demand_full96_identity_group8_v1'
 KEY='m_demand_identity_compare_policy'
 PROFILE='custom138k-workstation-task3-m-paired-checkpoint-v20'
+PROFILES=(PROFILE,'custom138k-workstation-task3-m-paired-checkpoint-v21')
 ENDPOINT='rtl/workstation/workstation_task3_m_bus_endpoint.sv'
 TOOL='tools/workstation_task3_demand_identity_compare.py'
 PARENT_SHA256='cd60fb213960963cfd15343660796006ae5f70782ddc681e2f3cc30a4f2ab77d'

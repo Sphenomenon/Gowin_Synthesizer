@@ -545,6 +545,20 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision20')
 
 
+# Group the existing unsigned capture ordering; preserve state and failure policy.
+TASK3_M_CHECKPOINT_NAME='custom138k-workstation-task3-m-paired-checkpoint-v21'
+TASK3_W_CHECKPOINT_NAME='custom138k-workstation-task3-w-paired-checkpoint-v21'
+for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w')):
+    _parent=PROFILE_REGISTRY['custom138k-workstation-task3-'+_role+'-paired-checkpoint-v20']
+    _configuration=dict(_parent['configuration'])
+    if _role=='m':
+        from tools.workstation_task3_capture_compare import KEY as _capture_key,POLICY as _capture_policy
+        _configuration[_capture_key]=_capture_policy
+    PROFILE_REGISTRY[_name]=dict(_parent,revision=21,configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_'+_role+'_paired_checkpoint_v21.json',
+        integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision21')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -994,6 +1008,13 @@ def _artifact(root, output, metadata, profile):
             if (demand.evidence(stage,profile['configuration']) != expected or
                     demand.native((stage/target).read_text()) != (root/source).read_text()):
                 raise ValueError('demand identity parameter/source selection changed')
+            staged_hash=sha(stage/target)
+        if target == 'rtl/workstation/workstation_task3_phone_batch_m.sv' and profile['configuration'].get('m_capture_compare_policy') is not None:
+            from tools import workstation_task3_capture_compare as capture
+            expected=metadata.get('task3_phone_batch',{}).get('local_storage',{}).get('capture_comparison')
+            if (capture.evidence(stage,profile['configuration']) != expected or
+                    capture.native((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('capture ordering parameter/source selection changed')
             staged_hash=sha(stage/target)
         if target=='rtl/usb2/workstation_usb2_cpu_bus.sv' and metadata.get('usb2_cpu_ram_selection'):
             staged_hash=metadata['usb2_cpu_ram_selection']['after']

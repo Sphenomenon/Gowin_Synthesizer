@@ -11,7 +11,8 @@ import json
 POLICY = 'task3_m_TF_tail_existing_local_release_v1'
 KEY = 'tf_tail_reset_policy'
 PROFILE = 'custom138k-workstation-task3-m-paired-checkpoint-v19'
-PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v20')
+PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v20',
+            'custom138k-workstation-task3-m-paired-checkpoint-v21')
 RUNTIME = 'rtl/workstation/workstation_runtime_audio.sv'
 TAIL = 'rtl/tf_audio/workstation_tf_physical_tail_v1.sv'
 TOOL = 'tools/workstation_task3_tf_tail_reset.py'

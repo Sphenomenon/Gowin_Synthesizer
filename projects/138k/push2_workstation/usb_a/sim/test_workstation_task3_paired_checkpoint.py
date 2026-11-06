@@ -57,6 +57,9 @@ class CurrentSources(unittest.TestCase):
                 if role=='M' and name.endswith('-v20'):
                     from tools.workstation_task3_demand_identity_compare import KEY,POLICY
                     expected[KEY]=POLICY
+                if role=='M' and name.endswith('-v21'):
+                    from tools.workstation_task3_capture_compare import KEY,POLICY
+                    expected[KEY]=POLICY
                 self.assertEqual(selected['configuration'],expected)
                 self.assertFalse(selected['configuration']['interboard_business_default_enabled'])
                 self.assertTrue(selected['configuration']['interboard_physical_acceptance_required'])

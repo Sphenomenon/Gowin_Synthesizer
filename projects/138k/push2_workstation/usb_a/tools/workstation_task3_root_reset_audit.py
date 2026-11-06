@@ -133,7 +133,7 @@ def source_binding(stage):
         terminal_profile = artifact.get('profile') in TERMINAL_ROOT_PROFILES or grouped_profile
         configuration = artifact.get('configuration', {})
         from tools import workstation_task3_demand_identity_compare as demand
-        demand_profile=artifact.get('profile')==demand.PROFILE
+        demand_profile=artifact.get('profile') in demand.PROFILES
         require(demand.configured(configuration)==demand_profile,'demand identity root profile/policy mismatch')
         require(lease_source.configured(configuration)==lease_profile,'source-clock lease profile/policy mismatch')
         from tools.workstation_task3_identity_compare import POLICY as IDENTITY_POLICY
@@ -157,6 +157,14 @@ def source_binding(stage):
                 require(demand.digest(demand.restore_endpoint((stage/demand.ENDPOINT).read_text()))==reviewed[demand.ENDPOINT],
                         'demand identity source does not invert to the reviewed endpoint')
                 reviewed[demand.ENDPOINT]=sha(stage/demand.ENDPOINT)
+            from tools import workstation_task3_capture_compare as capture
+            capture_profile=artifact.get('profile')==capture.PROFILE
+            require(capture.configured(configuration)==capture_profile,'capture ordering root profile/policy mismatch')
+            if capture_profile:
+                capture.evidence(stage,configuration)
+                require(capture.digest(capture.restore((stage/capture.SOURCE).read_text()))==capture.PARENT_SHA256,
+                        'capture ordering source does not invert to the reviewed batch')
+                reviewed[capture.SOURCE]=sha(stage/capture.SOURCE)
             for relative in reviewed:
                 require(relative.endswith('.svh') or selected.count(relative) == 1,
                         'terminal root source not uniquely selected: ' + relative)
@@ -247,9 +255,13 @@ def publisher_policy(root):
         includes.update(LEASE_SOURCE_ROOT_SOURCES if registered else PHONE_GROUPED_ROOT_SOURCES if phone_grouped else
                         GROUPED_ROOT_SOURCES if grouped else TERMINAL_ROOT_SOURCES)
         from tools import workstation_task3_demand_identity_compare as demand
-        if root.get('root_profile')==demand.PROFILE:
+        if root.get('root_profile') in demand.PROFILES:
             require(registered,'demand root requires the reviewed source-clock lease policy')
             includes[demand.ENDPOINT]=demand.SELECTED_SHA256
+        from tools import workstation_task3_capture_compare as capture
+        if root.get('root_profile')==capture.PROFILE:
+            require(registered,'capture root requires the reviewed source-clock lease policy')
+            includes[capture.SOURCE]=capture.SELECTED_SHA256
     else:
         require('root_profile' not in root, 'root profile without mapping policy')
     return provider_sha, alias, includes
