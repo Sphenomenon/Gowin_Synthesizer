@@ -26,7 +26,7 @@ POLICY = 'native-demo-mailbox-structure-v3'
 RAM_SCOPE = 'u_managed/observation/frames/'
 RAM_STEM = 'g_small_head.memory_g_small_head.memory_0_'
 STREAM_SHA256 = '90cb55acd6f83965d74b843993bed625d121ae2eefafbd928eb6fececb6e5376'
-PROFILES = ('m-demo-base', 'm-demo-core', 'w-demo-d', 'm-task3-direct')
+PROFILES = ('m-demo-base', 'm-demo-core', 'w-demo-d', 'm-task3-direct', 'm-task3-independent')
 DELAY = 'u_managed/runtime/service/workstation/runtime_effects.effects/delay_stage'
 DMA = 'u_managed/runtime/delay_dma'
 APB = 'u_managed/control_cdc'
@@ -53,12 +53,13 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     g = Graph(n)
     domains = dict(control='clk_50m', compute='audio_clk', memory='memory_clk', selected='dac_mclk_d')
     ordinary = 41 if profile == 'w-demo-d' else 73
-    # Preserve the old inventories unless the separately named DIRECT owner
-    # is selected. Its applied-parameter mailbox uses the exact M25 reviewed
-    # 60-bit mapping; do not import unrelated W/headless policy changes.
+    # Keep historical inventories. Only the explicit DIRECT/independent M
+    # proofs include the reviewed 60-bit applied-parameter mailbox; the latter
+    # retains the 98 registered RAM outputs in its display payload.
     direct = profile == 'm-task3-direct'
-    hmi = direct and any(p.startswith('u_video/u_applied_parameters_cdc/') for p in n.cells)
-    require(not direct or hmi, 'DIRECT applied-parameter mailbox missing')
+    independent = profile == 'm-task3-independent'
+    hmi = (direct or independent) and any(p.startswith('u_video/u_applied_parameters_cdc/') for p in n.cells)
+    require(not (direct or independent) or hmi, 'selected applied-parameter mailbox missing')
     hmi_bits = (*range(3, 18), *range(32, 54), *range(67, 80), *range(88, 96), 104, 128) if hmi else ()
     display_extra = tuple(203 + bit for bit in hmi_bits if bit < 128)
     old_display_bits = (*range(ordinary), *range(105, 203))
@@ -66,7 +67,8 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
     specifications = (
         ('u_managed/pc_bytes', tuple(range(8)), 8, 'control', 'compute'),
         ('u_managed/health_snapshot', tuple(range(32, 64)), 32, 'selected', 'compute'),
-        ('u_managed/display', display_bits, display_bits if direct else tuple(range(ordinary)), 'compute', 'control'),
+        ('u_managed/display', display_bits,
+         display_bits if direct else (*range(ordinary), *display_extra), 'compute', 'control'),
         ('u_video/u_runtime_display/observation', (*old_display_bits, 203), len(old_display_bits) + 1,
          'control', 'memory'),
     )
@@ -748,6 +750,8 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     resolution, other exceptions and complete synthesis/input provenance.
     """
     direct = result['profile'] == 'm-task3-direct'
+    independent = result['profile'] == 'm-task3-independent'
+    hmi = direct or independent
     direct_scopes = ('u_managed/display/', 'u_video/u_applied_parameters_cdc/')
     mandatory = [line for line in protocol_constraints().splitlines()
                  if (not direct and RAM_SCOPE in line) or 'u_managed/display_observation_health/loss_meta_' in line
@@ -755,8 +759,8 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
                  or APB + '/response_held_' in line or DELAY + '/' in line or DMA + '/peer_' in line
                  or result['profile'] == 'm-demo-base' and
                     ('u_tf_audio/held_control_' in line or 'u_tf_audio/frames/quiesce_sync_' in line)
-                 or direct and RAM_SCOPE not in line and any(scope in line for scope in direct_scopes)]
-    require(len(mandatory) == (26 if direct else 20 if result['profile'] == 'm-demo-base' else 16) and
+                 or hmi and RAM_SCOPE not in line and any(scope in line for scope in direct_scopes)]
+    require(len(mandatory) == (26 if direct else 28 if independent else 20 if result['profile'] == 'm-demo-base' else 16) and
             all(sdc.splitlines().count(line) == 1 for line in mandatory),
             'local RAM/loss/TF/PC/heartbeat/APB constraints missing, duplicated or changed')
     display = next(row for row in result['mailboxes'] if row['scope'] == 'u_managed/display')
@@ -769,21 +773,33 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     captures = {p for p in all_pins if re.fullmatch(r'u_managed/display/destination_data_(\d+)_s\d+/D', p)
                 and 105 <= int(re.search(r'destination_data_(\d+)_', p)[1]) <= 202}
     direct_display_bounds, direct_hold, direct_bounded = [], set(), set()
-    if direct:
-        require(not ram_pins and display['held_ff_bits'] == display['payload_bits'] == 230,
-                'DIRECT display must use exact 230 held FFs')
+    if hmi:
+        require(display['payload_bits'] == 230 and
+                display['held_ff_bits'] == (230 if direct else 132) and
+                display['registered_ram_bits'] == (0 if direct else 98) and
+                bool(ram_pins) is independent,
+                'selected display FF/RAM inventory changed')
         retired = [line for line in protocol_constraints().splitlines() if RAM_SCOPE in line]
-        require(len(retired) == 2 and not any(line in sdc.splitlines() for line in retired),
-                'DIRECT retained obsolete RAM-output display constraints')
+        if direct:
+            require(len(retired) == 2 and not any(line in sdc.splitlines() for line in retired),
+                    'DIRECT retained obsolete RAM-output display constraints')
         full_pins = {p + '/' + port for p, cell in n.cells.items() for port in cell['ports']}
         for scope, width in zip(direct_scopes, (230, 60)):
             mailbox = next(row for row in result['mailboxes'] if row['scope'] == scope[:-1])
-            require(mailbox['held_ff_bits'] == mailbox['payload_bits'] == width and not mailbox['ram'],
-                    'DIRECT held FF bit inventory changed: ' + scope)
-            sources = list(mailbox['payload_sources'].values())
-            capture = [pin.rsplit('/', 1)[0].replace('/held_data_', '/destination_data_') + '/D'
-                       for pin in sources]
-            rows = [line for line in mandatory if scope in line]
+            mixed = independent and scope == 'u_managed/display/'
+            require(mailbox['payload_bits'] == width and
+                    mailbox['held_ff_bits'] == (132 if mixed else width) and
+                    mailbox['registered_ram_bits'] == (98 if mixed else 0),
+                    'selected held FF bit inventory changed: ' + scope)
+            sources = [pin for pin in mailbox['payload_sources'].values() if '/held_data_' in pin]
+            # Resolve mapped suffixes from the actual cells; the bit inventory
+            # itself remains exact, including the 98 RAM-driven capture bits.
+            capture_pattern = re.compile(re.escape(scope + 'destination_data_') + r'(\d+)_s\d+/D')
+            capture = [pin for pin in full_pins if pin.startswith(scope + 'destination_data_')
+                       and (match := capture_pattern.fullmatch(pin))
+                       and match[1] in mailbox['payload_sources']]
+            require(len(capture) == width, 'selected mailbox capture pin inventory changed: ' + scope)
+            rows = [line for line in mandatory if scope in line and RAM_SCOPE not in line]
             expected = [
                 ('set_max_delay 20.000 ', (sources, capture)),
                 ('set_false_path -hold ', (sources, capture)),
@@ -806,9 +822,11 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
             direct_hold.add(rows[1])
             direct_bounded.update(capture)
             direct_bounded.update(mailbox[key]['second'] for key in ('request', 'acknowledge'))
-        captures = set()
-    else:
-        queries = re.findall(r'\[get_pins \{([^}]+)\}\]', mandatory[0])
+        if direct:
+            captures = set()
+    if not direct:
+        ram_setup = next(line for line in mandatory if RAM_SCOPE in line and line.startswith('set_max_delay '))
+        queries = re.findall(r'\[get_pins \{([^}]+)\}\]', ram_setup)
         require(len(queries) == 2, 'registered RAM constraint query shape')
         require(matches(queries[0]) == ram_pins, 'registered RAM selector resolves outside exact reviewed cells')
         require(len(captures) == 98 and matches(queries[1]) == captures,
@@ -861,6 +879,9 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
     protected.update(apb['capture_pins'])
     protected.update(direct_bounded)
     allowed_hold = {apb_lines[1], *direct_hold}
+    if independent:
+        allowed_hold.update(line for line in mandatory if RAM_SCOPE in line and
+                            line.startswith('set_false_path -hold '))
     demo_resolved = []
     if demo_held_handshakes is not None:
         demo = result.get('demo_held_handshakes')
@@ -908,7 +929,8 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
         # payload/second-stage bounds while the mandatory line still exists.
         bounded_targets = set(demo['pc_capture_pins'] + demo['apb_request_capture_pins'] + apb['capture_pins']) | direct_bounded
         bounded_targets.update(row['second'] for row in demo['new_chains'])
-        finite_lines = set(selected + apb_lines + pc_ack_lines + direct_display_bounds)
+        finite_lines = set(selected + apb_lines + pc_ack_lines + direct_display_bounds +
+                           [line for line in mandatory if independent and RAM_SCOPE in line])
         for raw in sdc.splitlines():
             line = raw.strip()
             if not line.startswith('set_max_delay'):
@@ -937,7 +959,8 @@ def validate_native_protocol_sdc(sdc, n, result, *, demo_held_handshakes=None):
                 tf_control_payload_pins_verified=bool(controls['tf_control']), pc_health_levels_verified=2,
                 apb_response_payload_pins_verified=33, delay_heartbeat_crossings_verified=2,
                 demo_held_handshake_constraints=demo_resolved,
-                direct_display_hmi_ff_bounds_verified=bool(direct_display_bounds),
+                direct_display_hmi_ff_bounds_verified=direct and bool(direct_display_bounds),
+                independent_display_hmi_bounds_verified=independent and bool(direct_display_bounds),
                 tf_quiesce_first_stage_verified=bool(timing['tf_quiesce']),
                 global_clock_exception_audit_complete=False)
 

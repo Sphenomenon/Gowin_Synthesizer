@@ -694,7 +694,9 @@ def audit(root, output, metadata):
             timing_evidence, protocol_netlist(vg_text, mapping='synthesis')
             if timing_evidence.get('policy') in DEMO_HELD_TIMING_POLICIES else None,
             mapping='synthesis', netlist_text=vg_text,
-            task3_direct_constraints=metadata['task3_tf_direct_cdc'] if tf_direct else None)
+            task3_direct_constraints=metadata['task3_tf_direct_cdc'] if tf_direct else None,
+            **({'native_protocol_profile':'m-task3-independent'}
+               if profile['profile'] == 'custom138k-workstation-task3-m-independent-ddr-map-v1' else {}))
     if metadata.get('demo_boundary_cdc') is not None:
         from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
         from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary

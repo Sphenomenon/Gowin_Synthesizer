@@ -187,7 +187,7 @@ def verify_demo_timing(stage, sdc, role, evidence):
 
 
 def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlist_text=None,
-                               task3_direct_constraints=None):
+                               task3_direct_constraints=None, native_protocol_profile=None):
     """One selected gate shared by strict synthesis and actual routed entry."""
     # Preserve the old no-held-policy early return, including callers which
     # intentionally have no prepared top/source slice to inspect.
@@ -259,6 +259,10 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
         provider = Path(stage) / 'rtl/workstation/workstation_profile_m_demo.sv'
         if '`define WORKSTATION_DEMO_NO_TF' in provider.read_text().splitlines():
             profile = 'm-demo-core'
+    if native_protocol_profile is not None:
+        require(native_protocol_profile == 'm-task3-independent' and profile == 'm-demo-core',
+                'independent display proof requires explicit TF-disabled M')
+        profile = native_protocol_profile
     result = audit_native_protocol(n, profile=profile, mapping=mapping)
     result['demo_held_handshakes'] = audit_demo_held_boundaries(n, result)
     result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,

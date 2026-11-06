@@ -407,7 +407,10 @@ def audit(physical, self_test=False, workspace=None, output=None):
             # the v2 mailbox policy by re-running a maintained auditor.
             if evidence and evidence.get('policy') in DEMO_HELD_TIMING_POLICIES:
                 demo_held_handshakes = audit_demo_held_handshakes(stage, sdc, demo_role, evidence,
-                    protocol_netlist(vo, mapping='routed'), mapping='routed', netlist_text=vo)
+                    protocol_netlist(vo, mapping='routed'), mapping='routed', netlist_text=vo,
+                    **({'native_protocol_profile': 'm-task3-independent'}
+                       if parent.get('workstation_profile', {}).get('name') ==
+                       'custom138k-workstation-task3-m-independent-ddr-map-v1' else {}))
             else:
                 demo_held_handshakes = dict(gate_applied=False, scope='sealed legacy DEMO timing policy')
         except (ValueError, KeyError, OSError) as error:
