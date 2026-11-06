@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure an unselected M recording-demand identity comparator experiment.
 
-This runner extracts the exact maintained direct96 guard. The alternate
+This runner extracts the exact direct96 guard from an immutable M candidate. The alternate
 byte-group expression is an isolated experiment, not a production RTL input.
 Require full mapped equivalence, a new explicit source profile, complete M
 synthesis and same-constraint P&R before selecting it in the workstation.
@@ -26,7 +26,8 @@ parser.add_argument('--gowin',type=Path,default='/Applications/GowinIDE.app/Cont
 parser.add_argument('--gowin-lib',type=Path,default='/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/lib')
 args=parser.parse_args()
 out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
-endpoint=root/'rtl/workstation/workstation_task3_m_bus_endpoint.sv'
+candidate=args.candidate.resolve()
+endpoint=candidate/'workstation/Prj1/rtl/workstation/workstation_task3_m_bus_endpoint.sv'
 source=endpoint.read_text();anchor='    wire demand_matches=rx_payload_i[95:0]==common;\n'
 assert source.count(anchor)==1
 alternative='''    (* syn_keep=1 *) wire [11:0] demand_byte_equal;
@@ -38,7 +39,6 @@ alternative='''    (* syn_keep=1 *) wire [11:0] demand_byte_equal;
 # This experiment changes no production input. Preserve the complete expression
 # in the receipt; use the already reviewed 192-input Boolean proof unchanged.
 paths=[endpoint,Path(__file__),root/'sim/workstation/run_task3_phone_identity_compare.py',root/'tools/workstation_task3_phone_batch_mapped_m.py',root/'tools/workstation_runtime_pcm_cdc.py',root/'tools/workstation_native_protocol_audit.py',root/'tools/workstation_synthesis_netlist.py']
-candidate=args.candidate.resolve()
 paths.extend(candidate/p for p in ('workstation_profile.json','integration_inputs.json','workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg'))
 before={str(p):sha(p) for p in paths}
 result=dict(schema=1,started_utc=datetime.now(timezone.utc).isoformat(),passed=False,input_sha256=before,
@@ -94,7 +94,7 @@ run syn
  artifact=profiles.verify(root,candidate)
  assert artifact['configuration']['demo_role']=='M'
  assert artifact['configuration']['phone_batch_policy']=='full_key_atomic_owner_snapshot_command_v1'
- assert (candidate/'workstation/Prj1/rtl/workstation/workstation_task3_m_bus_endpoint.sv').read_bytes()==endpoint.read_bytes()
+ assert artifact['configuration'].get('m_demand_identity_compare_policy') is None
  vg=candidate/'workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg'
  n=protocol_netlist(vg.read_text(),mapping='synthesis');g=Graph(n);scope='u_task3_m_endpoint'
  left=[n.canonical(scope,'task3_pair_rx_payload['+str(i)+']') for i in range(96)];right=[]

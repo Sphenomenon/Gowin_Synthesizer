@@ -11,6 +11,7 @@ module workstation_task3_m_bus_endpoint #(
     parameter bit SYNC_READ_STORAGE=1'b0,
     parameter integer IDENTITY_COMPARE_GROUP_BITS=128,
     parameter integer PHONE_IDENTITY_COMPARE_GROUP_BITS=96,
+    parameter integer DEMAND_IDENTITY_COMPARE_GROUP_BITS=96,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -116,7 +117,21 @@ module workstation_task3_m_bus_endpoint #(
     reg record_demand_pending;
     reg [31:0] record_demand_age,next_record_generation;
     wire demand_packet=rx_channel_i==`TASK3_PAIR_CH_RECORD_DEMAND && rx_length_i==`TASK3_PAIR_RECORD_DEMAND_BYTES && rx_payload_i[255:98]==0;
-    wire demand_matches=rx_payload_i[95:0]==common;
+    // TASK3 demand identity comparison begin.
+    // Keep same-cycle ARM/CANCEL fencing and every boot/session/generation bit.
+    (* syn_keep=1 *) wire demand_matches;
+    generate if(DEMAND_IDENTITY_COMPARE_GROUP_BITS==96)begin:g_demand_identity_direct
+        assign demand_matches=rx_payload_i[95:0]==common;
+    end else begin:g_demand_identity_grouped
+        (* syn_keep=1 *) wire [11:0] demand_byte_equal;
+        for(genvar demand_byte=0;demand_byte<12;demand_byte=demand_byte+1)begin:g_demand_byte
+            assign demand_byte_equal[demand_byte]=rx_payload_i[demand_byte*8+:8]==common[demand_byte*8+:8];
+        end
+        assign demand_matches=&demand_byte_equal;
+    end endgenerate
+    initial if(DEMAND_IDENTITY_COMPARE_GROUP_BITS!=96 && DEMAND_IDENTITY_COMPARE_GROUP_BITS!=8)
+        $fatal(1,"demand identity comparison requires the reviewed96-bit direct or8-bit grouped policy");
+    // TASK3 demand identity comparison end.
     wire demand_start=demand_packet && rx_payload_i[97:96]==`TASK3_PAIR_KIND_ARM;
     wire demand_cancel=demand_packet && rx_payload_i[97:96]==`TASK3_PAIR_KIND_CANCEL;
     wire demand_cancel_fire=rx_valid_i && rx_ready_o && demand_cancel && demand_matches;

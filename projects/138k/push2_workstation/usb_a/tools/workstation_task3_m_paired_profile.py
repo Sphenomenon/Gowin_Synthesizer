@@ -27,6 +27,7 @@ MAINTAINED_UPDATES=('rtl/workstation/workstation_runtime_controlled.sv',
 DEPENDENCIES=('tools/workstation_task3_m_paired_profile.py',PROVIDER,REFERENCE,BOARD,
  'tools/workstation_task3_identity_compare.py',
  'tools/workstation_task3_phone_identity_compare.py',
+ 'tools/workstation_task3_demand_identity_compare.py',
  'rtl/workstation/task3_paired_channels.vh','rtl/workstation/workstation_runtime_controlled.sv',
  'rtl/workstation/workstation_runtime_audio.sv','rtl/audio/workstation_ae350_pcm_owner.sv',
  'rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
@@ -66,8 +67,10 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     terminal=configuration.get('m_score_terminal_policy')
     from tools import workstation_task3_m_phone_lease_source as lease_source
     from tools import workstation_task3_tf_tail_reset as tail_reset
+    from tools import workstation_task3_demand_identity_compare as demand_identity
     registered_lease=lease_source.configured(configuration)
     local_tail=tail_reset.configured(configuration)
+    grouped_demand=demand_identity.configured(configuration)
     selected_sync=provider==SYNC_PROVIDER
     if (sync==SYNC_POLICY)!=selected_sync or sync not in (None,SYNC_POLICY):
         raise ValueError('M synchronous storage requires its explicit provider and policy')
@@ -94,6 +97,9 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
         if relative==tail_reset.RUNTIME and local_tail:
             compared=tail_reset.native(relative,selected.decode()).encode()
             source=tail_reset.native(relative,source.decode()).encode()
+        if relative==demand_identity.ENDPOINT and grouped_demand:
+            compared=demand_identity.native(selected.decode()).encode()
+            source=demand_identity.native(source.decode()).encode()
         if relative==BOARD and registered_lease:
             compared=lease_source.restore(selected.decode()).encode()
             if digest(source)!=lease_source.PARENT_SHA256:
@@ -143,6 +149,7 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     identity=identity_selection(stage,configuration,top,sync_selected=selected_sync)
     from tools.workstation_task3_phone_identity_compare import selection as phone_identity_selection
     phone_identity=phone_identity_selection(stage,configuration,top,sync_selected=selected_sync)
+    demand=demand_identity.evidence(stage,configuration)
     storage_binding="defparam u_task3_m_endpoint.SYNC_READ_STORAGE=1'b1;"
     if selected_sync:
         exact(top,storage_binding,'synchronous endpoint storage binding')
@@ -209,4 +216,6 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
             result['local_storage']['identity_comparison']=identity
         if phone_identity is not None:
             result['local_storage']['phone_identity_comparison']=phone_identity
+        if demand is not None:
+            result['local_storage']['demand_identity_comparison']=demand
     return result

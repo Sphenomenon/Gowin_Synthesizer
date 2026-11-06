@@ -29,6 +29,9 @@ def comparator_block(text):
 
 
 def restore_endpoint(text):
+    from tools import workstation_task3_demand_identity_compare as demand
+    if demand.BEGIN in text or 'DEMAND_IDENTITY_COMPARE_GROUP_BITS' in text:
+        text=demand.restore_endpoint(text)
     block=comparator_block(text)
     require(digest(block)==COMPARATOR_SHA256,'reviewed complete96-bit comparator changed')
     require(text.count(PARAMETER)==1,'direct96 default changed')

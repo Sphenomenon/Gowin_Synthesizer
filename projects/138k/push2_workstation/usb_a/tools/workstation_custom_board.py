@@ -174,6 +174,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if paired_role != 'M' or not tf_direct:
             raise ValueError('TF tail local reset requires paired DIRECT M')
         profile_dependencies += (tail_reset.TOOL, tail_reset.MANIFEST)
+    from tools import workstation_task3_demand_identity_compare as demand_identity
+    demand_identity_selected=demand_identity.configured({} if profile is None else profile['configuration'])
+    if demand_identity_selected:
+        if paired_role != 'M':
+            raise ValueError('demand identity grouping requires paired M')
+        profile_dependencies += (demand_identity.TOOL,)
     if demo_role is not None:
         from tools.workstation_performance_reset import DEMO_TIMING_TOOL
         profile_dependencies += (DEMO_TIMING_TOOL, 'tools/workstation_demo_boundary_cdc.py')
@@ -428,6 +434,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if lease_source_policy is not None:
             lease_source.prepare(stage,profile['configuration'])
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
+    if demand_identity_selected:
+        demand_identity.select(stage,profile['configuration'])
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')

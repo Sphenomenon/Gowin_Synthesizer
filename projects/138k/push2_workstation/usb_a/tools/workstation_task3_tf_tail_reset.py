@@ -11,6 +11,7 @@ import json
 POLICY = 'task3_m_TF_tail_existing_local_release_v1'
 KEY = 'tf_tail_reset_policy'
 PROFILE = 'custom138k-workstation-task3-m-paired-checkpoint-v19'
+PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v20')
 RUNTIME = 'rtl/workstation/workstation_runtime_audio.sv'
 TAIL = 'rtl/tf_audio/workstation_tf_physical_tail_v1.sv'
 TOOL = 'tools/workstation_task3_tf_tail_reset.py'
@@ -115,7 +116,7 @@ def audit_mapped(n, *, stage):
     from tools.workstation_task3_root_reset_audit import audit_root_startup
     stage=Path(stage)
     profile=json.loads((stage.parents[1]/'workstation_profile.json').read_text())
-    require(profile.get('profile')==PROFILE, 'mapped reset requires explicit v19 M')
+    require(profile.get('profile') in PROFILES, 'mapped reset requires explicit reviewed M')
     source=evidence(stage,profile['configuration'])
     root=audit_root_startup(n,stage=stage)
     require(root.get('all_state_assignments_proven') is True, 'complete actual root proof required')
