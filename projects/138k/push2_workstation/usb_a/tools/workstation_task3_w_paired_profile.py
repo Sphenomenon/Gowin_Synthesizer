@@ -15,6 +15,7 @@ NAME = 'custom138k-workstation-task3-w-paired-v1'
 PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired.sv'
 PHONE_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_blocks.sv'
 BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
+from tools.workstation_task3_w_banked96 import PROVIDER as BANKED96_PROVIDER
 BATCH_MEDIA_POLICY = 'task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3'
 PHONE_BATCH_POLICY = 'full_key_atomic_owner_snapshot_command_v1'
 REFERENCE = 'rtl/workstation/workstation_task3_w_paired_top_reference.json'
@@ -250,7 +251,7 @@ def restore_constraints(selected, evidence):
 
 
 def cnn_memory_provider(provider=PROVIDER):
-    if provider not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER):
+    if provider not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER, BANKED96_PROVIDER):
         raise ValueError('unregistered W paired CNN provider')
     return dict(policy='task3_w_signal_cqt_bsram_v1', USE_DDR_SIGNAL=0,
                 USE_DDR_CQT_COEFF=0, USE_DDR_FRONT_COEFF=1, USE_ALL_DDR=0, provider=provider)
@@ -261,7 +262,9 @@ def cnn_memory_configuration(configuration):
     if phone_policy not in (None, 'posted_window5_single_inflight_applied_barrier_v1'):
         raise ValueError('W paired phone-window configuration drift')
     selected_batch = phone_batch_configuration(configuration)
-    selected = cnn_memory_provider(BATCH_PROVIDER if selected_batch else PHONE_PROVIDER if phone_policy else PROVIDER)
+    from tools.workstation_task3_w_banked96 import configured
+    banked96=configured(configuration)
+    selected = cnn_memory_provider(BANKED96_PROVIDER if banked96 else BATCH_PROVIDER if selected_batch else PHONE_PROVIDER if phone_policy else PROVIDER)
     if configuration.get('cnn_memory_policy', selected['policy']) != selected['policy']:
         raise ValueError('W paired CNN memory configuration drift')
     return selected
@@ -285,6 +288,17 @@ def phone_batch_configuration(configuration):
 
 def verify_batch_provider(stage, provider):
     """Bind the actual batch macro scope and included role to this one provider."""
+    if provider == BANKED96_PROVIDER:
+        stage = Path(stage)
+        expected = ['`define WORKSTATION_AE350_ROM96', '`include "' + BATCH_PROVIDER + '"',
+                    '`undef WORKSTATION_AE350_ROM96']
+        actual = [line.strip() for line in (stage/provider).read_text().splitlines()
+                  if line.strip() and not line.lstrip().startswith('//')]
+        if actual != expected:
+            raise ValueError('W paired banked96 macro scope drift')
+        parent = verify_batch_provider(stage, BATCH_PROVIDER)
+        return dict(parent, provider=provider, provider_sha256=media.sha(stage/provider),
+            batch_provider=parent, physical_rom_bytes=98304)
     if provider != BATCH_PROVIDER:
         if provider not in (PROVIDER, PHONE_PROVIDER):
             raise ValueError('unregistered W paired provider')
@@ -317,8 +331,8 @@ def raw_metadata(root):
         source_is_W_local_DAC=False)
 
 
-def build_firmware(root, evidence, prefix=None, phone_batch=False):
-    return media.build_firmware(root, evidence, prefix, paired_source=True, phone_batch=phone_batch)
+def build_firmware(root, evidence, prefix=None, phone_batch=False, physical_rom_bytes=131072):
+    return media.build_firmware(root, evidence, prefix, paired_source=True, phone_batch=phone_batch, physical_rom_bytes=physical_rom_bytes)
 
 
 verify_firmware = media.verify_firmware
@@ -354,7 +368,7 @@ def selected_source_evidence(stage, text):
     enabled = [row.get('path') for row in ET.parse(stage / 'Prj1.gprj').find('FileList')
                if row.get('enable') == '1']
     providers = [path for path in enabled if path.startswith('rtl/workstation/workstation_profile_')]
-    if providers not in ([PROVIDER], [PHONE_PROVIDER], [BATCH_PROVIDER]):
+    if providers not in ([PROVIDER], [PHONE_PROVIDER], [BATCH_PROVIDER], [BANKED96_PROVIDER]):
         raise ValueError('W paired actual provider must be unique')
     batch_provider = verify_batch_provider(stage, providers[0])
     def module(name):
@@ -412,8 +426,8 @@ def selected_source_evidence(stage, text):
                    '.clk_i(clk_50m),.reset_ni(reset_n),.link_ready_i(task3_pair_link_ready)',
                    'task3_pair_config_select?task3_pair_config_data:'):
         once(top, anchor)
-    selected_batch=providers == [BATCH_PROVIDER]
-    selected_phone=providers in ([PHONE_PROVIDER], [BATCH_PROVIDER])
+    selected_batch=providers in ([BATCH_PROVIDER], [BANKED96_PROVIDER])
+    selected_phone=providers in ([PHONE_PROVIDER], [BATCH_PROVIDER], [BANKED96_PROVIDER])
     once(top, "localparam bit TASK3_PHONE_WINDOW_BLOCK=1'b" + ('1' if selected_phone else '0') + ";")
     once(top, "localparam bit TASK3_PHONE_BATCH=1'b" + ('1' if selected_batch else '0') + ";")
     batch_parameter=',.PHONE_BATCH(TASK3_PHONE_BATCH)' if selected_batch else ''
@@ -583,6 +597,6 @@ def cnn_provider_from_stage(stage):
     from xml.etree import ElementTree as ET
     providers = [row.get('path') for row in ET.parse(Path(stage) / 'Prj1.gprj').find('FileList')
                  if row.get('enable') == '1' and row.get('path', '').startswith('rtl/workstation/workstation_profile_')]
-    if len(providers) != 1 or providers[0] not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER):
+    if len(providers) != 1 or providers[0] not in (PROVIDER, PHONE_PROVIDER, BATCH_PROVIDER, BANKED96_PROVIDER):
         raise ValueError('W paired actual provider must be unique')
     return providers[0]

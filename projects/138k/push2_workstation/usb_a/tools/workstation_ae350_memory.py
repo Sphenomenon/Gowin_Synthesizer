@@ -34,7 +34,9 @@ def selection(configuration):
     paired_policy='task3_w_paired_media_single_recording_60s_v1'
     batch_policy='task3_w_paired_phone_batch_single_recording_60s_v1'
     phone_batch=configuration.get('ae350_firmware_policy')==batch_policy
-    paired_configuration=dict(ae350_memory_profile=LOCAL_PROFILE,ae350_boot_rom_bytes=131072,
+    from tools.workstation_task3_w_banked96 import configured
+    banked96=configured(configuration)
+    paired_configuration=dict(ae350_memory_profile=LOCAL_PROFILE,ae350_boot_rom_bytes=98304 if banked96 else 131072,
         ae350_firmware_policy=batch_policy if phone_batch else paired_policy,hci_transport_policy='native_shared_hci_owner_v1',
         ae350_pcm_policy='task3_W_HCI_decode_M_PCM1_v1',demo_role='W',
         display_policy='disabled_worker_media_v1',recording_owner_policy='single_C_BLE_ddr_60s_v1',
@@ -74,8 +76,15 @@ def verify_prepared(stage, build, configuration, sha):
     entries = ElementTree.parse(stage / 'Prj1.gprj').find('FileList')
     enabled = [entry.get('path') for entry in entries if entry.get('enable') == '1']
     expanded = chosen['memory_profile'] == LOCAL_PROFILE
-    if enabled.count(SOURCE) != int(expanded) or enabled.count(PARENT) != int(not expanded):
+    from tools.workstation_task3_w_banked96 import configured,SOURCE as BANKED_SOURCE,verify_banks
+    banked96=configured(configuration)
+    source=BANKED_SOURCE if banked96 else SOURCE
+    if (enabled.count(source) != int(expanded) or enabled.count(PARENT) != int(not expanded) or
+            enabled.count(SOURCE if banked96 else BANKED_SOURCE)!=0):
         raise ValueError('AE350 physical ROM compilation owner changed')
+    if banked96:
+        if build.get('banked96_storage',{}).get('banks_sha256')!=verify_banks(stage/'firmware/boot.mem'):
+            raise ValueError('AE350 installed physical bank image drift')
     if expanded:
         storage={65536:'explicit_64k_pl_boot_rom',98304:'explicit_96k_pl_boot_rom_split',131072:'explicit_128k_pl_boot_rom_split'}[chosen['boot_rom_bytes']]
         if (build.get('cold_boot', {}).get('image_capacity_bytes') != chosen['boot_rom_bytes'] or
@@ -85,6 +94,6 @@ def verify_prepared(stage, build, configuration, sha):
         for relative, expected in PLATFORM.items():
             if sha(stage / relative) != expected:
                 raise ValueError('AE350 selected hard-IP platform drift: ' + relative)
-    return dict(**chosen, physical_rom_source=SOURCE if expanded else PARENT,
+    return dict(**chosen, physical_rom_source=source if expanded else PARENT,
                 cache_policy='disabled_fail_if_enabled' if expanded else 'historical_startup',
                 platform_sha256=PLATFORM if expanded else {}, hardware_verified=False)

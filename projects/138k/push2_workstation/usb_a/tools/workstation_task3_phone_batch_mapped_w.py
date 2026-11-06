@@ -101,10 +101,15 @@ def source_binding(stage):
     providers = [p for p in selected if p and
                  (p.startswith('rtl/workstation/workstation_profile_') or
                   p == 'rtl/workstation/workstation_custom_138k_top.sv')]
-    require(providers == [PROVIDER], 'exact new W provider not uniquely selected')
+    from tools.workstation_task3_w_banked96 import PROVIDER as BANKED96_PROVIDER
+    require(providers in ([PROVIDER],[BANKED96_PROVIDER]), 'exact new W provider not uniquely selected')
+    banked96=providers==[BANKED96_PROVIDER]
+    if banked96:
+        from tools.workstation_task3_w_paired_profile import verify_batch_provider
+        verify_batch_provider(stage,BANKED96_PROVIDER)
     included = [p for p in SOURCE_SHA256 if 'workstation_profile_' in p or
                 p.endswith(('gw138k_push_workstation_top.v', '.svh', '.vh'))]
-    require(not any(p in selected for p in included if p != PROVIDER),
+    require(not any(p in selected for p in included if p != providers[0]),
             'included composition also compiled as a standalone source')
     adaptations = []
     for p in SOURCE_SHA256:
@@ -121,8 +126,9 @@ def source_binding(stage):
               'rtl/workstation/workstation_task3_phone_batch_w.sv',
               'rtl/workstation/workstation_task3_phone_window_tx.sv', CNN_STREAM):
         require(selected.count(p) == 1, 'required executor source not uniquely compiled: ' + p)
-    return dict(selected_provider=PROVIDER,
-                source_sha256={**{p:sha(stage/p) for p in SOURCE_SHA256}, 'Prj1.gprj': sha(project)},
+    return dict(selected_provider=providers[0],
+                source_sha256={**{p:sha(stage/p) for p in SOURCE_SHA256},
+                    **({BANKED96_PROVIDER:sha(stage/BANKED96_PROVIDER)} if banked96 else {}), 'Prj1.gprj': sha(project)},
                 fault_source_adaptations=adaptations)
 
 

@@ -67,6 +67,8 @@ PHONE_GROUPED_ROOT_SOURCES=dict(GROUPED_ROOT_SOURCES,**{
 LEASE_SOURCE_ROOT_SOURCES=dict(PHONE_GROUPED_ROOT_SOURCES,**{lease_source.BOARD:lease_source.SELECTED_SHA256})
 W_PHONE_BATCH_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'
 W_PHONE_BATCH_PROVIDER_SHA256 = '74fa5e601734d495e73119fa98d22c4e3143ee34df9486f8426940e0a8212da4'
+W_BANKED96_PROVIDER = 'rtl/workstation/workstation_profile_task3_w_paired_banked96.sv'
+W_BANKED96_PROVIDER_SHA256 = '1fba7a44d51bac8b831644d9b04f23d0b688d7615a67bdc136d72bc3e37312f0'
 RUNTIME_PROVIDER = 'rtl/workstation/workstation_profile_runtime.sv'
 RUNTIME_PROVIDER_SHA256 = '31b1483485ccf454c1c8eeabe8c37198e0975da750a36f850fb91244927a0b3f'
 HDMI_PROVIDER = 'rtl/workstation/workstation_profile_hdmi.sv'
@@ -97,6 +99,9 @@ PROVIDER_POLICIES = {
         {M_PHONE_BATCH_PROVIDER: M_PHONE_BATCH_PROVIDER_SHA256,
          M_PHONE_PROVIDER: M_PHONE_PROVIDER_SHA256,
          RUNTIME_PROVIDER: RUNTIME_PROVIDER_SHA256, HDMI_PROVIDER: HDMI_PROVIDER_SHA256}),
+    W_BANKED96_PROVIDER: (W_BANKED96_PROVIDER_SHA256, 'W', 'reset_n',
+        {W_PHONE_BATCH_PROVIDER: W_PHONE_BATCH_PROVIDER_SHA256,
+         W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256, W_MEDIA_PROVIDER: W_MEDIA_PROVIDER_SHA256}),
     W_PHONE_BATCH_PROVIDER: (W_PHONE_BATCH_PROVIDER_SHA256, 'W', 'reset_n',
         {W_PAIRED_PROVIDER: W_PAIRED_PROVIDER_SHA256, W_MEDIA_PROVIDER: W_MEDIA_PROVIDER_SHA256}),
 }
@@ -337,7 +342,7 @@ def audit_selected_batch_structure(n, *, stage, source=None):
     provider = source['selected_provider']
     if provider in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER):
         from tools.workstation_task3_phone_batch_mapped_m import audit
-    elif provider == W_PHONE_BATCH_PROVIDER:
+    elif provider in (W_PHONE_BATCH_PROVIDER,W_BANKED96_PROVIDER):
         from tools.workstation_task3_phone_batch_mapped_w import audit
     else:
         return None

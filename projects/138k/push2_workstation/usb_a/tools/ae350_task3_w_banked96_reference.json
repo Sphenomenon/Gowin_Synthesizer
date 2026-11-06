@@ -1,0 +1,10 @@
+{
+  "policy": "paired_W_rom96_same_elf_bin_layout_reference_v1",
+  "link_layout_bytes": 131072,
+  "physical_rom_bytes": 98304,
+  "parent_candidate": "custom138k-workstation-task3-w-paired-no-usb-v1-366eee69d13d8733",
+  "elf_sha256": "81be8b1449d6eccd457cd98449d1716477ceb7fb47d28a2fc58ea9431bdd7837",
+  "binary_sha256": "529e08b0cdbd80ef255862d707c56f4c8acf7143612c2ffafa98267c3412d781",
+  "nm_sha256": "3e806712cc373b5d17c989ceb5bc8ff84de2af47635df43a7136881aa4ad5d62",
+  "layout128_rom_sha256": "e37d75e22176844c7ddbb435d131b6773f99184c5da177562c0fb19ebd4fedde"
+}

@@ -236,11 +236,11 @@ def raw_metadata(root):
     return dict(recording_metadata(root),policy='task3_w_single_C_BLE_raw_ddr_60s_v1',
         full_HCI_Classic_GATT=True,second_business_object=False,source_is_W_local_DAC=False)
 
-def build_firmware(root,evidence,prefix=None,paired_source=False,phone_batch=False):
+def build_firmware(root,evidence,prefix=None,paired_source=False,phone_batch=False,physical_rom_bytes=131072):
     """Delegate to the separately reviewed media ELF builder, never old UI roots."""
     from tools.workstation_task3_w_media_firmware import build,audit
     root,evidence=Path(root),Path(evidence)
-    linked=build(evidence,prefix,root,paired_source=paired_source,phone_batch=phone_batch)
+    linked=build(evidence,prefix,root,paired_source=paired_source,phone_batch=phone_batch,physical_rom_bytes=physical_rom_bytes)
     graph=audit(evidence,root)
     if not linked['passed'] or not graph['passed']:raise ValueError('actual media firmware rejected')
     record=dict(linked,memory_profile='ilm64k_dlm64k',recording_api_enabled=True,business_owner_enabled=True,
@@ -248,7 +248,7 @@ def build_firmware(root,evidence,prefix=None,paired_source=False,phone_batch=Fal
         runtime_owner=True,rom_sha256=sha(evidence/'boot.mem'),elf_sha256=sha(evidence/'firmware.elf'),
         binary_sha256=sha(evidence/'firmware.bin'),call_chain_stack=graph['stack'],
         reviewed_JALR_sites=graph['reviewed_JALR_sites'],tool_versions=dict(exact_executable_sha256=linked['tool_sha256']),
-        cold_boot=dict(image_capacity_bytes=131072,image_storage='explicit_128k_pl_boot_rom_split',
+        cold_boot=dict(image_capacity_bytes=physical_rom_bytes,image_storage='explicit_'+str(physical_rom_bytes//1024)+'k_pl_boot_rom_split',
             cache_policy='reject_enabled_i_or_d_cache_on_entry'),
         GeneralBonding_enabled=False,PCM_sustained_verified=False,measured_delay_valid=False,
         delegated_media_verification_sha256=sha(evidence/'verification.json'),

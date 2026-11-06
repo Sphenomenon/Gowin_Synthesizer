@@ -26,7 +26,7 @@ def decode_rom(path,physical_rom_bytes=131072):
     if len(words)!=physical_rom_bytes//4 or any(not re.fullmatch('[0-9a-fA-F]{8}',w)for w in words):
         raise ValueError('Classic runtime requires exact physical ROM'+str(physical_rom_bytes//1024)+' image')
     return b''.join(int(w,16).to_bytes(4,'little')for w in words)
-def physical96_report(root,evidence):
+def physical96_report(root,evidence,*,reference_path=ROM96_REFERENCE,reference_policy='rom96_same_elf_bin_layout_reference_v1',headless_worker=False):
     """Revalidate actual ELF and impose a stricter physical bound than its layout.
 
     The historical __boot_rom_bytes=128K linker symbol is an unchanged layout
@@ -42,7 +42,7 @@ def physical96_report(root,evidence):
     if symbols.get('__boot_rom_bytes')!=131072:
         raise ValueError('ROM96 unchanged linker layout envelope missing')
     layout=split_memory_report((evidence/'firmware.size').read_text(),
-        (evidence/'firmware.nm').read_text(),binary,evidence/'firmware.elf')
+        (evidence/'firmware.nm').read_text(),binary,evidence/'firmware.elf',headless_worker=headless_worker)
     if not base+65536==symbols['__rom_text_start']<symbols['__rom_text_end']<=limit or symbols['__image_end']!=base+len(binary):
         raise ValueError('ROM96 physical cold address boundary overflow')
     raw=(evidence/'firmware.elf').read_bytes();h=struct.unpack_from('<16sHHIIIIIHHHHHH',raw)
@@ -65,10 +65,10 @@ def physical96_report(root,evidence):
         if not valid:raise ValueError('ROM96 actual ELF runtime memory span invalid')
         segments.append(dict(run_address=vma,run_end=vma+memsize,load_address=lma,
             stored_end=lma+size,file_bytes=size,memory_bytes=memsize,owner=owner))
-    reference=json.loads((root/ROM96_REFERENCE).read_text())
+    reference=json.loads((root/reference_path).read_text())
     actual=dict(elf_sha256=sha(evidence/'firmware.elf'),binary_sha256=sha(evidence/'firmware.bin'),
         nm_sha256=sha(evidence/'firmware.nm'))
-    if reference.get('policy')!='rom96_same_elf_bin_layout_reference_v1'or reference.get('link_layout_bytes')!=131072 or reference.get('physical_rom_bytes')!=98304 or any(reference[k]!=v for k,v in actual.items()):
+    if reference.get('policy')!=reference_policy or reference.get('link_layout_bytes')!=131072 or reference.get('physical_rom_bytes')!=98304 or any(reference[k]!=v for k,v in actual.items()):
         raise ValueError('ROM96 ELF/BIN/code address reference identity changed')
     capacity=copy.deepcopy(layout)
     capacity.update(rom_capacity_bytes=98304,cold_code_unallocated_bytes=limit-symbols['__rom_text_end'])
@@ -76,7 +76,7 @@ def physical96_report(root,evidence):
         link_layout_limit_bytes=131072,legacy_layout_symbol=dict(name='__boot_rom_bytes',value=131072,
             meaning='unchanged link address envelope only; selected physical bound checked separately'),
         actual_ELF_load_and_runtime_spans=segments,layout_capacity=layout,
-        reference=ROM96_REFERENCE,reference_sha256=sha(root/ROM96_REFERENCE),**actual,
+        reference=reference_path,reference_sha256=sha(root/reference_path),**actual,
         all_original_ELF_BIN_and_code_addresses_identical=True,only_zero_ROM_padding_removed=True,
         nominal_removed_storage_bytes=32768,nominal_removed_512x32_storage_banks=16,
         actual_resource_savings_verified=False,constant_padding_may_be_pruned_by_synthesis=True)
@@ -126,8 +126,9 @@ def _preprocess(stage,tool,hdl):
 def _paired_media_helper(physical_rom_bytes,*,selected_provider=None,headless_worker=False,media_worker=False,phone_batch=False):
     """An opt-in role, never inferred from old W media/demo selection."""
     from tools import workstation_task3_w_paired_profile as paired
-    providers=(None,paired.BATCH_PROVIDER)if phone_batch else (None,paired.PROVIDER,paired.PHONE_PROVIDER)
-    if (not media_worker or headless_worker or physical_rom_bytes!=131072 or
+    providers=(None,paired.BANKED96_PROVIDER if physical_rom_bytes==98304 else paired.BATCH_PROVIDER)if phone_batch else (None,paired.PROVIDER,paired.PHONE_PROVIDER)
+    allowed_capacity=physical_rom_bytes==131072 or (physical_rom_bytes==98304 and phone_batch)
+    if (not media_worker or headless_worker or not allowed_capacity or
         selected_provider not in providers):
         raise ValueError('paired W requires its explicit full media/ROM128 provider')
     return paired
@@ -139,7 +140,7 @@ def prepare_selection(root,stage,output,physical_rom_bytes=131072,*,selected_pro
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
             headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
-        providers=(helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
+        providers=(helper.BANKED96_PROVIDER if physical_rom_bytes==98304 else helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
         if selected_provider not in providers:raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
         provider,policy=selected_provider,helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
@@ -200,7 +201,7 @@ def verify_selection(root,stage,output,record,physical_rom_bytes=131072,*,select
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,selected_provider=selected_provider,
             headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
-        providers=(helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
+        providers=(helper.BANKED96_PROVIDER if physical_rom_bytes==98304 else helper.BATCH_PROVIDER,)if phone_batch else (helper.PROVIDER,helper.PHONE_PROVIDER)
         if selected_provider not in providers:raise ValueError('paired W actual provider omitted')
         helper.cnn_memory_provider(selected_provider)
         provider,policy=selected_provider,helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
@@ -262,7 +263,7 @@ def build(root,evidence,prefix=None,physical_rom_bytes=131072,*,worker_demo=Fals
     if paired_worker:
         helper=_paired_media_helper(physical_rom_bytes,headless_worker=headless_worker,media_worker=media_worker,phone_batch=phone_batch)
         if not worker_demo:raise ValueError('paired W firmware requires explicit worker role')
-        record=helper.build_firmware(root,evidence,prefix,phone_batch=phone_batch)
+        record=helper.build_firmware(root,evidence,prefix,phone_batch=phone_batch,physical_rom_bytes=physical_rom_bytes)
         policy=helper.BATCH_FIRMWARE_POLICY if phone_batch else helper.FIRMWARE_POLICY
         if record.get('runtime_policy')!=policy:raise ValueError('paired W actual firmware policy drift')
         record['worker_paired']=True
@@ -319,6 +320,8 @@ def verify_build(root,evidence,record,physical_rom_bytes=131072,*,paired_worker=
         if (not record.get('worker_demo') or record.get('runtime_policy')!=policy or
             record.get('source_text_overlay')is not True):
             raise ValueError('paired W actual source adaptation/role omitted')
+        if record.get('capacity',{}).get('rom_capacity_bytes')!=physical_rom_bytes:
+            raise ValueError('paired W physical storage capacity drift')
         return helper.verify_firmware(root,evidence,record)
     if record.get('worker_media',False):
         if physical_rom_bytes!=131072:raise ValueError('W-media physical ROM drift')

@@ -120,6 +120,9 @@ def audit(output,root=ROOT):
         capacity=split_memory_report((out/'firmware.size').read_text(),
             (out/'firmware.nm').read_text(),(out/'firmware.bin').read_bytes(),
             out/'firmware.elf',headless_worker=True)
+        if 'banked96_storage' in d:
+            from tools.workstation_task3_w_banked96 import verify_storage
+            capacity=verify_storage(root,out,d)
         if capacity!=d.get('capacity'):
             raise ValueError('phone-batch actual ELF memory capacity drift')
     if paired_source:
@@ -223,9 +226,11 @@ def audit(output,root=ROOT):
     (out/'media_callgraph_verification.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
-def build(output,prefix=None,root=ROOT,paired_source=False,phone_batch=False):
+def build(output,prefix=None,root=ROOT,paired_source=False,phone_batch=False,physical_rom_bytes=131072):
     out,root=Path(output).resolve(),Path(root)
     if phone_batch and not paired_source:raise ValueError('phone-batch requires explicit paired W firmware')
+    if physical_rom_bytes not in (98304,131072) or (physical_rom_bytes==98304 and not (paired_source and phone_batch)):
+        raise ValueError('banked96 requires paired W batch firmware')
     review,lineage=verify_sources(root,phone_batch=phone_batch)
     out.mkdir(parents=True,exist_ok=False)
     prefix=compiler_prefix(prefix)
@@ -249,6 +254,9 @@ def build(output,prefix=None,root=ROOT,paired_source=False,phone_batch=False):
            'tools/workstation_task3_w_media.py','rtl/ddr_address_map.vh')
     for name in tools:inputs[name]=sha(root/name)
     if phone_batch:inputs[paired.BATCH_REVIEW]=sha(root/paired.BATCH_REVIEW)
+    if physical_rom_bytes==98304:
+        from tools.workstation_task3_w_banked96 import DEPENDENCIES
+        inputs.update({name:sha(root/name) for name in DEPENDENCIES})
     adaptation=prepare(root,out/'adapted')
     adapted_before=adapted_inputs(out)if phone_batch else None
     for p in(root/'firmware/ae350/third_party/sbc_oi').rglob('*'):
@@ -294,6 +302,9 @@ def build(output,prefix=None,root=ROOT,paired_source=False,phone_batch=False):
         record['capacity']=split_memory_report(size,syms,raw,out/'firmware.elf',headless_worker=True)
         padded=raw.ljust(131072,b'\0')
         (out/'boot.mem').write_text(''.join(f'{int.from_bytes(padded[i:i+4],"little"):08x}\n'for i in range(0,131072,4)))
+        if physical_rom_bytes==98304:
+            from tools.workstation_task3_w_banked96 import apply_storage
+            record['capacity'],record['banked96_storage']=apply_storage(root,out)
         run([prefix+'-nm','-S','--size-sort','firmware.elf'],'nm-size')
         run([prefix+'-nm','-u','firmware.elf'],'undefined')
         if any(sha(root/name)!=value for name,value in inputs.items()):raise ValueError('source changed during W-media build')

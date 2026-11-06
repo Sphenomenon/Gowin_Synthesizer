@@ -578,6 +578,16 @@ PROFILE_REGISTRY[TASK3_W_NO_USB_NAME]=dict(_parent,revision=1,
     integration_identity='custom138k-native-task3-w-paired-no-usb-revision1')
 
 
+# Bounded proposal C, derived from B; all historical descriptors stay frozen.
+TASK3_W_BANKED96_NAME='custom138k-workstation-task3-w-paired-banked96-v1'
+from tools.workstation_task3_w_banked96 import KEY as _boot_key,POLICY as _boot_policy,PROVIDER as _boot_provider
+_parent=PROFILE_REGISTRY[TASK3_W_NO_USB_NAME]
+PROFILE_REGISTRY[TASK3_W_BANKED96_NAME]=dict(_parent,revision=1,provider=_boot_provider,
+    config='boards/custom_138k/workstation_profile_task3_w_paired_banked96_v1.json',
+    configuration=dict(_parent['configuration'],ae350_boot_rom_bytes=98304,**{_boot_key:_boot_policy}),
+    integration_identity='custom138k-native-task3-w-paired-banked96-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -709,7 +719,7 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     if phone_batch and not (classic_runtime and paired_worker and media_worker):
         raise ValueError('phone batch firmware requires the explicit paired W media runtime')
     if classic_runtime:
-        if media_worker and (not recording_api or not business_owner or headless_worker or not worker_demo or memory_profile!='ilm64k_dlm64k' or boot_rom_bytes!=131072):
+        if media_worker and (not recording_api or not business_owner or headless_worker or not worker_demo or memory_profile!='ilm64k_dlm64k' or (boot_rom_bytes!=131072 and not (paired_worker and phone_batch and boot_rom_bytes==98304))):
             raise ValueError('W-media requires explicit full shared-HCI/single-recording/local64/ROM128')
         if not media_worker and (not recording_api and not headless_worker) or not business_owner or memory_profile!='ilm64k_dlm64k'or boot_rom_bytes not in (98304,131072) or (headless_worker and (recording_api or not worker_demo)):
             raise ValueError('Classic runtime requires explicit local64/ROM96-or-ROM128/business composition')
@@ -721,6 +731,10 @@ def prepare_ae350(root, output, stage, riscv_prefix=None, *, recording_api=False
     if sha(evidence / 'boot.mem') != build['rom_sha256']:
         raise ValueError('AE350 generated ROM changed before installation')
     shutil.copyfile(evidence / 'boot.mem', stage / rom_path)
+    if paired_worker and phone_batch and boot_rom_bytes==98304:
+        from tools.workstation_task3_w_banked96 import verify_banks
+        for name in verify_banks(evidence/'boot.mem'):
+            shutil.copyfile(evidence/name,stage/'firmware'/name)
     if sha(stage / rom_path) != build['rom_sha256']:
         raise ValueError('AE350 installed ROM identity differs from the build')
     return dict(policy=policy, project_rom_installed=True, evidence_directory=AE350_DIRECTORY,

@@ -64,7 +64,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，两板 v21 保留为 paired 来源检查点；本轮另登记 M 独立演奏与 W USB 退役配置，后者完成一次综合及一次 P2R0。另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。W 配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
+截至 2026-11-06，两板 v21 保留为 paired 来源检查点；本轮另登记 M 独立演奏、W USB 退役和 W 显式 96 KiB 分 bank 配置；两个 W 方案各完成一次综合及一次 P2R0。另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。其中 W v21 的配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
 
 | 板与阶段 | 来源身份 | 实际证据 |
 | --- | --- | --- |
@@ -77,6 +77,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 | W v21 保留 paired 来源 | `custom138k-workstation-task3-w-paired-checkpoint-v21-d8fa5871d2958f19`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v21.json) | 1027 项来源锁、200 项编译输入、675 项准备文件。配置及全部编译字节与 v20 相同；本阶段没有新 W 综合或物理运行。 |
 | W v14 E9 保留物理结果 | `custom138k-resource-physical-D21106E9`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json) | 真实 BSRAM 336/340、CLS 58819/69120；审计 11/18，setup/hold/recovery/removal 为 −7.224/−4.350/−7.947/−0.234 ns。结果保留原身份，未部署。 |
 | W USB 退役 F5 | 来源 `custom138k-workstation-task3-w-paired-no-usb-v1-366eee69d13d8733`；物理 `custom138k-resource-physical-D21106F5`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_USB_RETIREMENT_20261106.json) | 实际物理 BSRAM 303/340，比 E9 少 33 块；Logic 79556、CLS 56313/69120。317.30 秒完成布线和位流生成，setup/hold/recovery/removal 为 −2.520/−4.194/−7.381/−0.424 ns；审计 17/20，PR1014 仍在，未通过完整门禁，未部署。 |
+| W 分 bank ROM F6 | 来源 `custom138k-workstation-task3-w-paired-banked96-v1-c5aa7e9c87dd9908`；物理 `custom138k-resource-physical-D21106F6`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json) | 物理 BSRAM 287/340，比 F5 少 16 块、比 E9 少 49 块；48 pROM＋8 scratch SDPB 及全部 24576 个初始化字核对通过。403.42 秒完成 P2R0，setup/hold/recovery/removal 为 −2.542/−4.334/−6.654/−0.609 ns；审计 18/21，PR1014 仍在，未通过完整门禁，未部署。 |
 
 [v21 源码验证](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_COMPARISON_20261106.json)完成 61 项测试方法，无跳过。新批处理器与精确逆变换得到的完整 v20 参考，在真实异步 APB/PCM owner 测试中逐周期比较 18135 个周期、全部 11 个公开输出；955 项 owner 检查通过，取消、断链、超时及回复背压期间音频采样继续推进。维护 RTL 默认仍用直接无符号比较，只有显式 M v21 选入分组；局部比较与完整消费者/CDC 验证分别记录。
 
@@ -90,12 +91,12 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 远程成果由 `f96df276` 审查后选择性合入，且仍为当前祖先：PR #2 的 CPU48 分 bank RAM 已用于 M/W，实际网表逐字验证 24 块、12288 个 ROM 字，原对照为 32→24 块；W 的物理 BSRAM 从 344 降至 336/340。PR #3 的独立 USB/HDMI 诊断、目标域复位与状态新鲜度修复也已保留，该诊断不作为完整工作站的真实声部证明。ADSR/TF ring 仍是实验，重复录音后端未选入，详见[PR 取舍](push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json)。架构审查时再次 fetch，本地与远程当时均为 `f84fa3c7`，没有新增提交。F3 的完整 M 网表重建仍确认 CPU48 优化生效。
 
-按最新 goal，先完成[有界架构审查](push2_workstation/usb_a/reports/DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json)，暂停重复比较器、局部布局及路由参数试跑。本阶段没有新综合或 P&R，也没有改变生产配置。W E9 继续保留原身份：v14 与 v21 配置相同，但一个编译文件的字节不同，差异位于 W 未启用的 TF direct 分支；不能称 E9 为 v21 的新物理结果。
+按最新 goal，先完成[有界架构审查](push2_workstation/usb_a/reports/DUAL138K_TASK3_ARCHITECTURE_REVIEW_20261106.json)，暂停重复比较器、局部布局及路由参数试跑。架构审查阶段没有新综合或 P&R；后续 A/B/C 实验另行记录。W E9 继续保留原身份：v14 与 v21 配置相同，但一个编译文件的字节不同，差异位于 W 未启用的 TF direct 分支；不能称 E9 为 v21 的新物理结果。
 
 | W 实际资源用途 | 核查与处置 |
 | --- | --- |
 | USB：2570 Register、4858 LUT、31 BSRAM 等效 | 事件只到 W 本地 `u_managed`，没有板间 USB 事件通道。手机 PCM/时钟 APB 已转发 M，USB CPU 与 AE350 解码 CPU 分离。优先在显式 paired-W 配置裁掉 USB；保留 W-demo/25K 回退。 |
-| 启动存储：64 pROM＋8 SDPB | 真实固件镜像 90416 B；其中 24880 B 为运行时仍执行的 ROM 代码。实际 32768 个初始化字已逐字核对，不能删除 ROM。可评估三 bank、96 KiB ROM，预计少 16 pROM；保留 scratch、ILM/DLM、地址和 16 KiB 栈。当前 linker/验证器只接纳 128 KiB，不能静默缩容。 |
+| 启动存储：64 pROM＋8 SDPB | 真实固件镜像 90416 B；其中 24880 B 为运行时仍执行的 ROM 代码。实际 32768 个初始化字已逐字核对，不能删除 ROM。可评估三 bank、96 KiB ROM，预计少 16 pROM；保留 scratch、ILM/DLM、地址和 16 KiB 栈。原配置的 linker/验证器只接纳 128 KiB；方案 C 使用独立物理容量校验，保留原 linker 地址。 |
 | 本地效果：4326 Register、4122 LUT、32 BSRAM 等效 | paired W 无本地手机 PCM，且输出强制静音；本地 USB 参数、效果、时钟/串行器和 delay DDR 客户端仍在。混响本身占 20 BSRAM 等效及 19 MULT27X36，优先复用。裁剪需一起处理私有参数、DDR 请求与 readiness，不能直接接常量掩盖依赖。 |
 | 识别、解码与录音 | 保留实际 CNN/CQT/Viterbi、HCI/SBC/Classic，以及来自 M 最终输出 tap 的唯一 C/BLE DDR 录音对象。 |
 
@@ -111,11 +112,15 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 45 项来源／审计回归通过；实际音频子系统仿真检查 22532 帧，普通 32 声部和矢量 8 声部在 48/44.1 kHz 下共 12 次活跃数量检查、12 种物理串行取消边界通过。Push 入口与禁用 TF 边界回归通过。此证据使用真实 DSP、DDR 模型、DCS、最终 PCM 和 I2S，尚不等同于 USB/CPU 整板仿真或可闻复音及控制到声音延迟实测。
 
-用户完成许可证命令后 Gowin 已进入解析；A 的唯一一次综合在 2.22 秒后因冻结目录缺少 `rtl/ddr_address_map.vh` 失败，无网表、资源或时序结果。已补齐权威头文件依赖并通过重新 prepare、来源校验及 Icarus 预处理；修复后的最终候选未再综合。本轮 A 已用 **1/1 综合、0/1 P&R**，停止该方向的 EDA，不自动重跑；B 已用 **1/1 综合、1/1 P&R**，不追加参数试跑；C 仍为 **0/1 综合、0/1 P&R**。完整 CDC、PLL、布线及硬件门禁均未放宽。
+用户完成许可证命令后 Gowin 已进入解析；A 的唯一一次综合在 2.22 秒后因冻结目录缺少 `rtl/ddr_address_map.vh` 失败，无网表、资源或时序结果。已补齐权威头文件依赖并通过重新 prepare、来源校验及 Icarus 预处理；修复后的最终候选未再综合。本轮 A 已用 **1/1 综合、0/1 P&R**，停止该方向的 EDA，不自动重跑；B 已用 **1/1 综合、1/1 P&R**，不追加参数试跑；C 已用 **1/1 综合、1/1 P&R**，首轮三个方案不再追加 EDA。完整 CDC、PLL、布线及硬件门禁均未放宽。
 
 [方案 B 阶段证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_USB_RETIREMENT_20261106.json)：显式 `custom138k-workstation-task3-w-paired-no-usb-v1` 只替换 W 的 USB 输入实现，保持数据线高阻、无事件、无 ready；原生顶层、HCI/CNN/录音源码与 AE350 固件同 v21。最终候选有 1030 个来源锁、677 个冻结文件、200 个编译输入；69 份历史描述符保持原哈希。实际综合用初版 `ad50780b1d6923f2`，175.58 秒完成；最终版与其 198 个 HDL 输入、工程和综合选项逐项一致，仅补退役网表中已消失的 USB 遥测约束，明确复用原网表，不再综合。相对 W v14 综合参考，BSRAM 等效 300→269、LUT 63891→58584；该参考不是 v21 的物理结果。
 
 8 项新来源/真实 RTL/网表测试、17 项当前源码检查、12 项 paired 审计测试通过，原 W 默认边界审计在旧网表上的结果与冻结版完全一致。新配置的 USB、常量遥测、真实 CNN 与唯一录音对象均有网表证明；完整综合审计为 17/20，3 项根复位/批处理消费者证明仍报 `u_task3_bus_endpoint/n737_9` Boolean driver 缺失或歧义。F5 位流 SHA-256 为 `edb72b630defca10617989991668914147964489b0c949a6e3b195e2141d9807`，只用于本轮物理证据，未写入目标板。W 已释放实际容量，M 资源尚未因此减少；下一步评估方案 C，并按有界异步合同复用 W 现有效果资源，不能直接宣称迁移完成。
+
+[方案 C 阶段证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json)：新增显式 `custom138k-workstation-task3-w-paired-banked96-v1`，从方案 B 派生三个独立同步读 32 KiB bank。保持 90416 B 的 ELF/BIN、全部运行地址、8 KiB scratch、64 KiB ILM/DLM 与 16 KiB 栈；物理 ROM 上界严格为 `0x80018000`，余量 7888 B。新增独立的 paired 固件参考，不修改旧 ROM96 参考或 70 份历史描述符。原生顶层、CNN/HCI/唯一录音对象及 SDC 均保持原值，M 本阶段没有减少资源。
+
+36 项针对性测试通过：7 项实际准备/RTL/启动/网表测试，以及 17 项当前源码和 12 项 paired 审计回归。实际 RV32 启动、冷区 Classic/安全函数、缓存拒绝、范围/别名、scratch 转发和坏字/位宽/缺块均有验证；完整 CPU 顶层及目标板尚未验证。唯一综合用初版 `add5905aeb551ab5`，181.17 秒完成；终版仅补齐审计分派及来源锁，198 个 HDL、工程、选项、约束及 ROM 与初版相同，明确复用网表。综合 BSRAM 等效 269→253、LUT 58584→58588；实际物理 BSRAM 303→287。三项消费者/PLL 门禁仍报 `n737_9`，setup、hold、removal 较 F5 略回退，所有时序裕量仍为负；保留 F5 回退，不把本次资源收益当作时序闭合。两组历史回归分别被已有 `recording_service.c` 和 `build.py` 来源锁挡住，未刷新旧参考。F6 位流 SHA-256 为 `0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4`，未写板。
 
 跨板混响暂不作为第四个 EDA 试跑。先定义有界异步 dry-send/wet-result 队列、完整身份/序号和期限、附加延迟及 dry/wet 对齐；丢链、松键、取消及 PANIC 丢弃旧 wet 结果并有界退回本地 dry。若沿用 stereo16 block6，额外发送/返回各至少 416000 B/s@48 kHz，信用/状态及手机、录音、分析并发另计；实测前业务仍关闭。
 

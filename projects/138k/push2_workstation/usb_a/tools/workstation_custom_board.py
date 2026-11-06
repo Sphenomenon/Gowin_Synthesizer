@@ -203,6 +203,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('new DEMO prepare requires explicit USB FIFO local-reset policy')
     from tools.workstation_ae350_memory import selection as memory_selection, SOURCE as BOOT_MEMORY_SOURCE, PARENT as PARENT_BOOT_MEMORY
     ae350_memory = memory_selection(profile['configuration'] if profile is not None else {})
+    from tools import workstation_task3_w_banked96 as banked96
+    if banked96.configured(profile['configuration'] if profile is not None else {}):
+        BOOT_MEMORY_SOURCE=banked96.SOURCE
+        profile_dependencies+=banked96.DEPENDENCIES
     expanded_boot = ae350_memory['boot_rom_bytes'] != 16384
     if expanded_boot:
         native_sources += (BOOT_MEMORY_SOURCE,)

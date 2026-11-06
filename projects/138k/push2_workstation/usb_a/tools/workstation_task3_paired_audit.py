@@ -18,6 +18,8 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-w-paired-banked96-v1': ('W', 'custom138k-native-task3-w-paired-banked96-revision1',
+        'rtl/workstation/workstation_profile_task3_w_paired_banked96.sv'),
     'custom138k-workstation-task3-w-paired-no-usb-v1': ('W', 'custom138k-native-task3-w-paired-no-usb-revision1',
         'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v21': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision21',
@@ -267,9 +269,9 @@ def verify_prepared(output, metadata):
                 selected_batch_source_evidence(stage, stage, profile['configuration'], provider))
         else:
             from tools.workstation_task3_w_paired_profile import (
-                BATCH_PROVIDER, BATCH_FIRMWARE_POLICY, selected_source_evidence)
+                BATCH_PROVIDER, BANKED96_PROVIDER, BATCH_FIRMWARE_POLICY, selected_source_evidence)
             runtime = metadata.get('classic_runtime', {})
-            require(provider == BATCH_PROVIDER and runtime.get('provider') == provider and
+            require(provider in (BATCH_PROVIDER,BANKED96_PROVIDER) and runtime.get('provider') == provider and
                     runtime.get('policy') == BATCH_FIRMWARE_POLICY and
                     runtime.get('worker_paired') is True and
                     runtime.get('worker_media') is True and runtime.get('phone_batch') is True,
@@ -573,7 +575,10 @@ def audit_m_sync_storage(rows):
 
 def audit(root, output, metadata):
     root, output = Path(root), Path(output)
-    seals = {name: sha(root / name) for name in AUDIT_SOURCES}
+    selected_audit_sources=AUDIT_SOURCES
+    if metadata.get('workstation_profile',{}).get('name')=='custom138k-workstation-task3-w-paired-banked96-v1':
+        selected_audit_sources+=('tools/workstation_task3_w_banked96.py',)
+    seals = {name: sha(root / name) for name in selected_audit_sources}
     role, profile, stage, constraint_policy = verify_prepared(output, metadata)
     log = checked(output, 'synthesis.log')
     log_text = log.read_text()
@@ -607,6 +612,9 @@ def audit(root, output, metadata):
             else dict(passed=False,blocked_by='W_USB_retirement'))
     gate('feature_structure', lambda: audit_paired_features(role, rows, netlist,
         usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536),usb_retired=usb_retired))
+    from tools.workstation_task3_w_banked96 import configured as banked96_configured,check_mapped_rom
+    if banked96_configured(profile['configuration']):
+        gate('W_banked96_ROM_words',lambda:check_mapped_rom(stage,netlist))
     if role == 'M':
         gate('M_32_voice_storage', lambda: audit_m_voice_storage(netlist))
         if profile['configuration'].get('m_endpoint_storage_policy')=='sync_score_and_final_tap_prefetch_v1':
@@ -655,6 +663,7 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-w-paired-banked96-v1',
             'custom138k-workstation-task3-w-paired-no-usb-v1',
             'custom138k-workstation-task3-m-paired-checkpoint-v21',
             'custom138k-workstation-task3-w-paired-checkpoint-v21',
@@ -775,7 +784,7 @@ def audit(root, output, metadata):
         usb_gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
     require(verify_prepared(output, metadata)[1] == profile, 'prepared closure drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)}, 'synthesis outputs drifted')
-    require(seals == {name: sha(root / name) for name in AUDIT_SOURCES}, 'auditor implementation drifted')
+    require(seals == {name: sha(root / name) for name in selected_audit_sources}, 'auditor implementation drifted')
     return dict(schema=1, identity=metadata['identity'], candidate_identity=profile['candidate_identity'],
         validation_stage='task3_paired_synthesis_only', paired_role=role,
         synthesis_audit_passed=all(row['passed'] for row in gates.values()), gates=gates,
