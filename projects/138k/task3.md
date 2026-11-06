@@ -118,7 +118,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 8 项新来源/真实 RTL/网表测试、17 项当前源码检查、12 项 paired 审计测试通过，原 W 默认边界审计在旧网表上的结果与冻结版完全一致。新配置的 USB、常量遥测、真实 CNN 与唯一录音对象均有网表证明；完整综合审计为 17/20，3 项根复位/批处理消费者证明仍报 `u_task3_bus_endpoint/n737_9` Boolean driver 缺失或歧义。F5 位流 SHA-256 为 `edb72b630defca10617989991668914147964489b0c949a6e3b195e2141d9807`，只用于本轮物理证据，未写入目标板。W 已释放实际容量，M 资源尚未因此减少；下一步评估方案 C，并按有界异步合同复用 W 现有效果资源，不能直接宣称迁移完成。
 
-[方案 C 阶段证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json)：新增显式 `custom138k-workstation-task3-w-paired-banked96-v1`，从方案 B 派生三个独立同步读 32 KiB bank。保持 90416 B 的 ELF/BIN、全部运行地址、8 KiB scratch、64 KiB ILM/DLM 与 16 KiB 栈；物理 ROM 上界严格为 `0x80018000`，余量 7888 B。新增独立的 paired 固件参考，不修改旧 ROM96 参考或 70 份历史描述符。原生顶层、CNN/HCI/唯一录音对象及 SDC 均保持原值，M 本阶段没有减少资源。
+[方案 C 阶段证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json)：新增显式 `custom138k-workstation-task3-w-paired-banked96-v1`，从方案 B 派生三个独立同步读 32 KiB bank。保持 ELF/BIN 字节（BIN 为 90416 B）、全部运行地址、8 KiB scratch、64 KiB ILM/DLM 与 16 KiB 栈；物理 ROM 上界严格为 `0x80018000`，余量 7888 B。新增独立的 paired 固件参考，不修改旧 ROM96 参考或 70 份历史描述符。原生顶层、CNN/HCI/唯一录音对象及 SDC 均保持原值，M 本阶段没有减少资源。
 
 36 项针对性测试通过：7 项实际准备/RTL/启动/网表测试，以及 17 项当前源码和 12 项 paired 审计回归。实际 RV32 启动、冷区 Classic/安全函数、缓存拒绝、范围/别名、scratch 转发和坏字/位宽/缺块均有验证；完整 CPU 顶层及目标板尚未验证。唯一综合用初版 `add5905aeb551ab5`，181.17 秒完成；终版仅补齐审计分派及来源锁，198 个 HDL、工程、选项、约束及 ROM 与初版相同，明确复用网表。综合 BSRAM 等效 269→253、LUT 58584→58588；实际物理 BSRAM 303→287。三项消费者/PLL 门禁仍报 `n737_9`，setup、hold、removal 较 F5 略回退，所有时序裕量仍为负；保留 F5 回退，不把本次资源收益当作时序闭合。两组历史回归分别被已有 `recording_service.c` 和 `build.py` 来源锁挡住，未刷新旧参考。F6 位流 SHA-256 为 `0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4`，未写板。
 
