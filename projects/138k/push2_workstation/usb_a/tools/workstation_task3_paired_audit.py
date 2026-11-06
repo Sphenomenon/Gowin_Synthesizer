@@ -18,6 +18,8 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-w-paired-no-usb-v1': ('W', 'custom138k-native-task3-w-paired-no-usb-revision1',
+        'rtl/workstation/workstation_profile_task3_w_paired_phone_batch.sv'),
     'custom138k-workstation-task3-m-paired-checkpoint-v21': ('M', 'custom138k-native-task3-m-paired-checkpoint-revision21',
         'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
     'custom138k-workstation-task3-w-paired-checkpoint-v21': ('W', 'custom138k-native-task3-w-paired-checkpoint-revision21',
@@ -161,6 +163,7 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_m_midi_release_sdc.py',
     'tools/workstation_task3_tf_contacts.py',
     'tools/workstation_task3_w_paired_cdc_audit.py',
+    'tools/workstation_task3_w_usb_retirement.py',
     'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_runtime_profile.py',
 )
 
@@ -243,6 +246,9 @@ def verify_prepared(output, metadata):
     from tools.workstation_usb_fifo_reset import verify_demo_selection
     verify_demo_selection(stage, profile['configuration'], metadata.get('demo_usb_fifo_write_reset'),
                           enabled, expected_configuration=spec['configuration'])
+    from tools.workstation_task3_w_usb_retirement import configured,verify_selection as verify_retirement,restore_selected_sdc
+    usb_retired=configured(profile['configuration'])
+    verify_retirement(stage,profile['configuration'],metadata.get('task3_w_usb_retirement'),enabled)
     from tools import workstation_task3_paired_board as common
     # root=stage intentionally: a candidate remains inspectable after live sources
     # advance. All helper inputs used here were already checked in its closure.
@@ -274,7 +280,8 @@ def verify_prepared(output, metadata):
             require(runtime.get('worker_media_source') == selected_source_evidence(
                 stage, preprocessed.read_text()),
                 'W phone batch prepared source evidence changed')
-    sdc = common.restore_constraints(stage, (stage / 'constraints/custom_138k.sdc').read_text(), metadata.get('task3_paired_sdc', {}))
+    sdc = common.restore_constraints(stage, restore_selected_sdc(
+        (stage / 'constraints/custom_138k.sdc').read_text(),metadata), metadata.get('task3_paired_sdc', {}))
     if role == 'M':
         from tools.workstation_task3_tf_direct import restore_constraints
         from tools.workstation_task3_tf_storage_selection import prepared_selection
@@ -317,7 +324,7 @@ def verify_prepared(output, metadata):
     require(metadata.get('top_module') == TOP and
             metadata.get('validation_stage') == 'integration_prepare_only' and
             metadata.get('source_policy') == 'explicit_native_board_on_resource_timing' and
-            metadata.get('synthesis_allowed') is True and metadata.get('native_usb') is True and
+            metadata.get('synthesis_allowed') is True and metadata.get('native_usb') is (not usb_retired) and
             metadata.get('tmds_polarity_inverted') == [True] * 4 and
             metadata.get('bitstream_sha256') is None, 'prepare policy changed')
     for flag in ('place_route_allowed', 'io_electrical_complete', 'timing_constraints_complete',
@@ -348,7 +355,8 @@ def audit_worker_usb_storage(rows, usb_cpu_ram_bytes):
                 physical_block_count_verified=False)
 
 
-def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
+def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536, usb_retired=False):
+    require(not usb_retired or role=='W','USB retirement is W only')
     pair = {
         'bounded_lcd_link': 'u_task3_pair_link',
         'lcd_transport': 'u_task3_pair_link/transport',
@@ -391,7 +399,13 @@ def audit_paired_features(role, rows, netlist, *, usb_cpu_ram_bytes=65536):
                           'workstation_runtime_oscillator_engine', 'workstation_runtime_scope_vec', 'dvi_tx'):
             require(forbidden not in kinds, 'W duplicate/local retired kind remains: ' + forbidden)
         retained['retired_prefixes'] = retired
-        retained['USB_storage']=audit_worker_usb_storage(rows,usb_cpu_ram_bytes)
+        if usb_retired:
+            from tools.workstation_task3_w_usb_retirement import audit_absence
+            retained['USB_retirement']=audit_absence(netlist,rows)
+            for key in ('usb_host','usb_cpu','usb_input'):
+                del pair[key]
+        else:
+            retained['USB_storage']=audit_worker_usb_storage(rows,usb_cpu_ram_bytes)
     require(all(path in rows for path in pair.values()),
             'paired functionality swept: ' + ', '.join(k for k, p in pair.items() if p not in rows))
     retained['retained'].update({key: dict(instance=path, **rows[path]) for key, path in pair.items()})
@@ -504,6 +518,10 @@ def audit_constraint_inventory(sdc, metadata, netlist):
                 ready_rebinding.get('before')==BEFORE and ready_rebinding.get('after')==AFTER,
                 'readiness rebinding requires explicit W policy')
         rules.append(('get_regs',STALE,FINAL))
+    usb_retirement=metadata.get('task3_w_usb_retirement')
+    if usb_retirement is not None:
+        rules.extend((row['query'],row['member'],None)
+            for change in usb_retirement['constraints']['changes'] for row in change['removed'])
     def matches(kind, member):
         pattern = re.compile(fnmatch.translate(member))
         return sorted(p for p in universes[kind] if p == member or pattern.fullmatch(p))
@@ -576,8 +594,19 @@ def audit(root, output, metadata):
             return None
         gates[name] = dict(passed=True, evidence=evidence)
         return evidence
+    from tools.workstation_task3_w_usb_retirement import configured as usb_retired_configured,audit_absence,restore_selected_sdc
+    usb_retired=usb_retired_configured(profile['configuration'])
+    usb_absence=None
+    if usb_retired:
+        usb_absence=gate('W_USB_retirement',lambda:audit_absence(netlist,rows,
+            metadata['task3_w_usb_retirement']['constraints']))
+    def usb_gate(name,function):
+        if not usb_retired:
+            return gate(name,function)
+        gates[name]=(dict(passed=True,status='retired',evidence=usb_absence) if usb_absence is not None
+            else dict(passed=False,blocked_by='W_USB_retirement'))
     gate('feature_structure', lambda: audit_paired_features(role, rows, netlist,
-        usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536)))
+        usb_cpu_ram_bytes=profile['configuration'].get('usb2_cpu_ram_bytes',65536),usb_retired=usb_retired))
     if role == 'M':
         gate('M_32_voice_storage', lambda: audit_m_voice_storage(netlist))
         if profile['configuration'].get('m_endpoint_storage_policy')=='sync_score_and_final_tap_prefetch_v1':
@@ -603,25 +632,30 @@ def audit(root, output, metadata):
     clocks = gate('runtime_clock_PLL_structure', lambda: audit_runtime_clocks(stage, stage, vg_text, paired_role=role))
     if clocks is not None:
         base_clocks = clocks['base_clock_audit']
-        gate('USB2_CDC', lambda: audit_usb2_cdc(stage, vg_text, base_clocks))
-        gate('input_FIFO_CDC', lambda: audit_input_fifo(stage, vg_text, base_clocks))
-        gate('native_reset', lambda: audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8'))
+        usb_gate('USB2_CDC', lambda: audit_usb2_cdc(stage, vg_text, base_clocks))
+        usb_gate('input_FIFO_CDC', lambda: audit_input_fifo(stage, vg_text, base_clocks))
+        usb_gate('native_reset', lambda: audit_resets(vg_text, base_clocks, feedback_source_clock='audio_76m8'))
         if role == 'M':
             gate('native_feedback', lambda: audit_native_feedback(vg_text, base_clocks))
         else:
             from tools.workstation_demo_audit import audit_worker_feedback
-            gate('worker_feedback', lambda: audit_worker_feedback(netlist, base_clocks))
+            usb_gate('worker_feedback', lambda: audit_worker_feedback(netlist, base_clocks))
     else:
-        for name in ('USB2_CDC', 'input_FIFO_CDC', 'native_reset', 'native_feedback'):
-            gates[name] = dict(passed=False, blocked_by='runtime_clock_PLL_structure')
+        if usb_retired:
+            for name in ('USB2_CDC','input_FIFO_CDC','native_reset','worker_feedback'):
+                usb_gate(name,None)
+        else:
+            for name in ('USB2_CDC', 'input_FIFO_CDC', 'native_reset', 'native_feedback'):
+                gates[name] = dict(passed=False, blocked_by='runtime_clock_PLL_structure')
     from tools.workstation_usb_fifo_reset import verify_prepared as verify_fifo, audit_synthesis as audit_fifo
     from tools.workstation_runtime_pcm_cdc import PcmNetlist
-    gate('USB_FIFO_write_reset', lambda: dict(prepared=verify_fifo(stage, metadata['demo_usb_fifo_write_reset']),
+    usb_gate('USB_FIFO_write_reset', lambda: dict(prepared=verify_fifo(stage, metadata['demo_usb_fifo_write_reset']),
                                              synthesis=audit_fifo(PcmNetlist(vg_text, TOP))))
-    gate('USB_bridge_resets', lambda: audit_bridge_resets(vg_text, TOP))
+    usb_gate('USB_bridge_resets', lambda: audit_bridge_resets(vg_text, TOP))
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-w-paired-no-usb-v1',
             'custom138k-workstation-task3-m-paired-checkpoint-v21',
             'custom138k-workstation-task3-w-paired-checkpoint-v21',
             'custom138k-workstation-task3-m-paired-checkpoint-v20',
@@ -716,7 +750,7 @@ def audit(root, output, metadata):
         n = boundary_netlist(vg_text, mapping='synthesis')
         if role == 'W':
             from tools.workstation_task3_w_paired_cdc_audit import audit_boundary as audit_worker_boundary
-            return audit_worker_boundary(n, sdc, mapping='synthesis')
+            return audit_worker_boundary(n, sdc, mapping='synthesis',usb_retired=usb_retired)
         evidence = audit_boundary(n, mapping='synthesis', expected_role=role)
         evidence['installed_sdc'] = validate_boundary(sdc, n, evidence)
         return evidence
@@ -724,7 +758,7 @@ def audit(root, output, metadata):
     from tools.workstation_performance_reset import audit_demo_held_handshakes
     from tools.workstation_native_protocol_audit import protocol_netlist
     from tools.workstation_task3_paired_board import restore_constraints as restore_common_sdc
-    held_sdc = restore_common_sdc(stage, sdc, metadata.get('task3_paired_sdc', {}))
+    held_sdc = restore_common_sdc(stage, restore_selected_sdc(sdc,metadata), metadata.get('task3_paired_sdc', {}))
     if role == 'W':
         from tools.workstation_task3_w_paired_cdc_audit import audit_held as audit_worker_held
         gate('native_held_handshakes', lambda: audit_worker_held(stage, held_sdc, metadata,
@@ -736,9 +770,9 @@ def audit(root, output, metadata):
             task3_direct_constraints=metadata['task3_tf_direct_cdc']))
     if profile['configuration'].get('usb2_cpu_ram_bytes',65536)==49152:
         from tools.workstation_usb_cpu_rom import check_banked_rom
-        gate('USB_ROM',lambda:check_banked_rom(stage,netlist,metadata['firmware']))
+        usb_gate('USB_ROM',lambda:check_banked_rom(stage,netlist,metadata['firmware']))
     else:
-        gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
+        usb_gate('USB_ROM', lambda: check_rom(stage, vg_text, metadata['firmware']['rom_sha256']))
     require(verify_prepared(output, metadata)[1] == profile, 'prepared closure drifted during audit')
     require(output_identity == {str(p): sha(p) for p in (vg, report, log)}, 'synthesis outputs drifted')
     require(seals == {name: sha(root / name) for name in AUDIT_SOURCES}, 'auditor implementation drifted')

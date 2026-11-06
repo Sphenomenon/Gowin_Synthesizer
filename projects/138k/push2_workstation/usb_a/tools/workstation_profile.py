@@ -568,6 +568,16 @@ for _name,_role in ((TASK3_M_CHECKPOINT_NAME,'m'),(TASK3_W_CHECKPOINT_NAME,'w'))
         integration_identity='custom138k-native-task3-'+_role+'-paired-checkpoint-revision21')
 
 
+# Explicit resource trial B. Keep the batch provider and all prior descriptors.
+TASK3_W_NO_USB_NAME='custom138k-workstation-task3-w-paired-no-usb-v1'
+from tools.workstation_task3_w_usb_retirement import POLICY as W_USB_RETIRED_POLICY
+_parent=PROFILE_REGISTRY[TASK3_W_CHECKPOINT_NAME]
+PROFILE_REGISTRY[TASK3_W_NO_USB_NAME]=dict(_parent,revision=1,
+    config='boards/custom_138k/workstation_profile_task3_w_paired_no_usb_v1.json',
+    configuration=dict(_parent['configuration'],usb_adapter_policy=W_USB_RETIRED_POLICY),
+    integration_identity='custom138k-native-task3-w-paired-no-usb-revision1')
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -807,6 +817,10 @@ def _artifact(root, output, metadata, profile):
     if metadata.get('runtime_audio', {}).get('bluetooth_cdc_adaptation') != bluetooth['evidence']:
         raise ValueError('workstation profile runtime BLE constraint policy changed')
     installed_sdc = (stage / 'constraints/custom_138k.sdc').read_text()
+    from tools.workstation_task3_w_usb_retirement import verify_selection as verify_usb_retirement, restore_selected_sdc
+    verify_usb_retirement(stage, profile['configuration'], metadata.get('task3_w_usb_retirement'),
+                          metadata['enabled_inputs'])
+    installed_sdc = restore_selected_sdc(installed_sdc, metadata)
     paired_role=spec.get('paired_role')
     if paired_role is not None:
         from tools.workstation_task3_paired_board import verify_selection as verify_pair,restore_constraints as restore_pair_constraints
@@ -904,7 +918,7 @@ def _artifact(root, output, metadata, profile):
         raise ValueError('workstation profile runtime delay FIFO storage policy changed')
     from tools.workstation_usb2_owner_reset import validate_installation as verify_usb2_owner_reset
     verify_usb2_owner_reset(root, metadata.get('runtime_audio', {}).get('usb2_owner_reset'),
-                           (stage / 'constraints/custom_138k.sdc').read_text())
+                           restore_selected_sdc((stage / 'constraints/custom_138k.sdc').read_text(),metadata))
     from tools.workstation_recognition_policy import verify_adaptation
     recognition = dict(metadata.get('recognition', {}))
     constraint_evidence = recognition.pop('constraints', None)
@@ -1118,6 +1132,7 @@ def _artifact(root, output, metadata, profile):
         from tools.workstation_classic_runtime import verify_selection
         verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker,
             paired_sdc_evidence=metadata.get('task3_paired_sdc'),
+            usb_retirement_constraints=metadata.get('task3_w_usb_retirement',{}).get('constraints'),
             **({'paired_worker':True}if spec.get('paired_worker',False)else{}),
             **({'phone_batch':True}if spec.get('phone_batch',False)else{}))
         if media_worker:

@@ -195,6 +195,8 @@ def verify_constraints(root,stage,metadata):
  ports=[p for p,b in assignments];balls=[b for p,b in assignments]
  if len(ports)!=len(set(ports)) or len(balls)!=len(set(balls)):raise ValueError('paired CST duplicate port/ball')
  selected_sdc=(Path(stage)/'constraints/custom_138k.sdc').read_text()
+ from tools.workstation_task3_w_usb_retirement import restore_selected_sdc
+ selected_sdc=restore_selected_sdc(selected_sdc,metadata)
  selected_evidence=metadata.get('task3_paired_sdc',{})
  original_sdc=restore_constraints(root,selected_sdc,selected_evidence)
  role='M' if 'M_release_rebinding' in selected_evidence else 'W' if 'W_CNN_ready_rebinding' in selected_evidence else None

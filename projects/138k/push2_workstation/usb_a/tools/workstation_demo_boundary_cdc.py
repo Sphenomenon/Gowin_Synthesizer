@@ -260,33 +260,40 @@ def audit(n, *, mapping="synthesis", expected_role=None):
   acceptance=dict(structural_only=True,metastability_MTBF_verified=False,routed_timing_passed=False,reset_pulsewidth_verified=False,hardware_tested=False))
 
 
-def validate_sdc(sdc, n, result):
+def validate_sdc(sdc, n, result, *, usb_retired=False):
     """Accept only four exact additions; retain all later/functional checks."""
     expected = proposed_constraints().splitlines()
+    if usb_retired:
+        from tools.workstation_task3_w_usb_retirement import audit_absence
+        require(result.get('USB_retirement')==audit_absence(n), 'USB absence proof missing')
+        expected=expected[:2]
     require(all(sdc.splitlines().count(line) == 1 for line in expected),
             "exact four boundary constraints absent or duplicated")
     all_pins = {p + "/" + pin for p, c in n.cells.items() for pin in c["ports"]}
     resolved = {}
-    for body in re.findall(r"\[get_pins \{([^{}]+)\}\]", proposed_constraints()):
+    for body in re.findall(r"\[get_pins \{([^{}]+)\}\]", '\n'.join(expected)):
         for selector in body.split():
             matches = {p for p in all_pins if fnmatch.fnmatchcase(p, selector)}
             require(len(matches) == 1, "boundary selector must resolve to one exact pin: " + selector)
             resolved[selector] = sorted(matches)
-    require(len(resolved) == 11, "reviewed boundary selector inventory")
+    require(len(resolved) == (6 if usb_retired else 11), "reviewed boundary selector inventory")
     g = Graph(n)
     faults = result["source_fault_registers"]
     meta, sync = (g.register(E, stem) for stem in ("dma_fault_meta", "dma_fault_sync"))
-    r0, r1 = result["fifo_release_chain"]
-    queue_source = result["queue_source_chain"][-1]
-    first_data, first_clear = {meta + "/D"}, {r0 + "/CLEAR", r1 + "/CLEAR"}
-    false_pairs = ((set(p + "/Q" for p in faults), first_data),
-                   ({queue_source + "/Q"}, first_clear))
-    for line, (sources, targets) in zip((expected[0], expected[2]), false_pairs):
+    false_lines=[expected[0]];data_lines=[expected[1]]
+    first_data={meta+'/D'}
+    false_pairs=[(set(p+'/Q' for p in faults),first_data)];data_pairs=[(meta,sync)]
+    if not usb_retired:
+        r0,r1=result['fifo_release_chain'];queue_source=result['queue_source_chain'][-1]
+        first_clear={r0+'/CLEAR',r1+'/CLEAR'}
+        false_lines.append(expected[2]);data_lines.append(expected[3])
+        false_pairs.append(({queue_source+'/Q'},first_clear));data_pairs.append((r0,r1))
+    for line, (sources, targets) in zip(false_lines, false_pairs):
         bodies = re.findall(r"\[get_pins \{([^{}]+)\}\]", line)
         for body, pins in zip(bodies, (sources, targets)):
             actual = {p for sel in body.split() for p in all_pins if fnmatch.fnmatchcase(p, sel)}
             require(actual == pins, "boundary exception source/receiver inventory")
-    for line, pair in zip((expected[1], expected[3]), ((meta, sync), (r0, r1))):
+    for line, pair in zip(data_lines, data_pairs):
         for body, pin in zip(re.findall(r"\[get_pins \{([^{}]+)\}\]", line),
                              (pair[0] + "/Q", pair[1] + "/D")):
             actual = {p for sel in body.split() for p in all_pins if fnmatch.fnmatchcase(p, sel)}
@@ -296,9 +303,11 @@ def validate_sdc(sdc, n, result):
     # this new exception policy; their prior constraints are not regenerated.
     protected = set(result["fault_source_closures"]["watchdog_fault"]["ff_endpoints"])
     protected.update(result["fault_source_closures"]["watchdog_fault"]["primitive_endpoints"])
-    protected.update((meta + "/CLEAR", sync + "/D", sync + "/CLEAR", r0 + "/D", r1 + "/D"))
-    protected.update(first_clear)
-    protected.update(p + "/CLEAR" for p in result["fifo_write_pointers"])
+    protected.update((meta + "/CLEAR", sync + "/D", sync + "/CLEAR"))
+    if not usb_retired:
+        protected.update((r0+'/D',r1+'/D'))
+        protected.update(first_clear)
+        protected.update(p + "/CLEAR" for p in result["fifo_write_pointers"])
     clocks = {"audio_76m8": "audio_clk", "usb_48m": "usb_clk", "ddr_ui100": "memory_clk"}
     unrelated = []
     for raw in sdc.splitlines():
@@ -309,7 +318,7 @@ def validate_sdc(sdc, n, result):
             require(not any(fnmatch.fnmatchcase(name, selector)
                             for body in groups for selector in body.split() for name in clocks),
                     "whole boundary clock-group exception")
-        if not re.match(r"set_false_path\b", line) or line in (expected[0], expected[2]):
+        if not re.match(r"set_false_path\b", line) or line in false_lines:
             continue
         query = re.findall(r"-to\s+\[(get_pins|get_regs|get_clocks|get_ports)\s+\{([^{}]+)\}\]", line)
         require(len(query) == 1, "unreviewed false-path destination syntax")
@@ -342,11 +351,11 @@ def validate_sdc(sdc, n, result):
         unrelated.append(line)
     # Other timing overrides must not supersede the required 2ns data bound
     # or waive recovery/removal through a min-delay or multicycle command.
-    later_targets = {sync + "/D", r1 + "/D"}
+    later_targets = {pair[1]+'/D' for pair in data_pairs}
     for raw in sdc.splitlines():
         line = raw.strip()
         command = re.match(r"set_(max_delay|min_delay|multicycle_path)\b", line)
-        if command is None or line in (expected[1], expected[3]):
+        if command is None or line in data_lines:
             continue
         query = re.findall(r"-to\s+\[(get_pins|get_regs|get_clocks|get_ports)\s+\{([^{}]+)\}\]", line)
         require(len(query) == 1, "unreviewed timing-override destination syntax")
@@ -362,10 +371,13 @@ def validate_sdc(sdc, n, result):
                 p if kind == "get_pins" else p.rsplit("/", 1)[0], selector)
                 for p in targets for selector in body.split())
         require(not matched, "duplicate or weaker protected timing bound")
-    return dict(exact_four_commands=True, query_resolution=resolved,
+    evidence=dict(exact_four_commands=not usb_retired, query_resolution=resolved,
         fault_first_data_source_count=3, fault_first_data_target_count=1,
-        queue_async_clear_source_count=1, queue_async_clear_target_count=2,
+        queue_async_clear_source_count=0 if usb_retired else 1, queue_async_clear_target_count=0 if usb_retired else 2,
         later_data_max_delay_ns=2.0, protected_later_and_functional_pins=len(protected),
         functional_recovery_removal_exceptions_absent=True,
         unrelated_explicit_source_closure_excludes_protected_pins=unrelated,
         whole_boundary_clock_exceptions_absent=True, physical_cdc_accepted=False)
+    if usb_retired:
+        evidence.update(exact_DMA_commands=True,USB_FIFO_retired=True)
+    return evidence

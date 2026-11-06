@@ -150,6 +150,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     paired_role=specification(profile['name']).get('paired_role') if runtime else None
     paired_worker=paired_role=='W'
     phone_batch_worker=paired_worker and specification(profile['name']).get('phone_batch',False)
+    from tools import workstation_task3_w_usb_retirement as usb_retirement
+    usb_retired=usb_retirement.configured({} if profile is None else profile['configuration'])
+    if usb_retired:
+        if not phone_batch_worker:
+            raise ValueError('USB retirement requires explicit paired W phone batch composition')
+        profile_dependencies += usb_retirement.DEPENDENCIES
     if paired_role is not None:
         from tools import workstation_task3_paired_board as paired_board
         paired_helper=paired_board.role_helper(paired_role)
@@ -433,6 +439,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             from tools.workstation_task3_w_media_profile import select_sources as select_media_sources
         media_source_selection=select_media_sources(stage,files)
     task3_paired_selection=None
+    usb_retirement_selection=usb_retirement.select_sources(stage,files,
+        {} if profile is None else profile['configuration'])
     if paired_role is not None:
         top_path=stage / paired_board.TOP
         top_path.write_text(paired_helper.apply_top(root,top_path.read_text()))
@@ -518,6 +526,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             cnn_ready_policy=profile['configuration'].get('cnn_ready_sdc_policy'))
         combined_cst,task3_paired_cst=paired_board.adapt_cst(root,combined_cst)
     from tools.workstation_ae350_clock_placement import compose as compose_ae350_clock
+    usb_retirement_constraints=None
+    if usb_retired:
+        selected_sdc,usb_retirement_constraints=usb_retirement.adapt_constraints(selected_sdc)
     ae350_clock_placement = None
     if not logic_only:
         combined_cst, ae350_clock_placement = compose_ae350_clock(root, stage, combined_cst)
@@ -562,7 +573,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                     replaced_compilation_inputs=replacements, shared_resource_support_sha256=support,
                     parent_prepare_metadata_sha256=sha(output / 'parent_prepare_metadata.json'),
                     pinout_sha256=None if logic_only else sha(pinout_output / 'pinout.json'), enabled_inputs=enabled,
-                    staged_input_sha256=staged, native_usb=True, legacy_usb_host_elaborated=False,
+                    staged_input_sha256=staged, native_usb=not usb_retired, legacy_usb_host_elaborated=False,
                     tmds_polarity_inverted=[True, True, True, True], cec_behavior='released_high_impedance',
                     audio_pin_behavior='ak4493_i2s32_48k_mclk256fs_final_master_volume',
                     audio_clock_policy='direct_12m288_reference_with_50m_watchdog_no_DAC_PLL',
@@ -586,6 +597,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                                     'real external peripheral and hardware acceptance'])
     if usb2_cpu_ram_selection is not None:
         metadata['usb2_cpu_ram_selection'] = usb2_cpu_ram_selection
+    if usb_retired:
+        metadata['task3_w_usb_retirement']=dict(selection=usb_retirement_selection,
+            constraints=usb_retirement_constraints)
     if resource_optimization:
         metadata.update(board_netlists_checked=not logic_only, native_source_overlays=overlays,
                         electrical_status=pinout['electrical_check']['status'])
@@ -694,7 +708,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
             metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker,
-                paired_sdc_evidence=task3_paired_sdc,
+                paired_sdc_evidence=task3_paired_sdc,usb_retirement_constraints=usb_retirement_constraints,
                 **({'phone_batch':True}if phone_batch_worker else{}))
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')

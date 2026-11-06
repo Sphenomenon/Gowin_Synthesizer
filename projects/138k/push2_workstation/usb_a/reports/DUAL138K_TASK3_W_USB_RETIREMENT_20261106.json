@@ -1,0 +1,2310 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "branch": "codex/dual-138k-task3",
+  "source_base_commit": "da34a07f772a8d80c7fa39883ed3aa23d1a7e918",
+  "scope": "Bounded architecture proposal B: explicit paired-W USB retirement,actual mapped resource/owner proof and one P2R0 implementation. No M resource relief or target-board acceptance claimed.",
+  "remote_reuse": {
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "integration_is_ancestor": true,
+    "PR2": "Reviewed CPU48 banked RAM retained in M and all W fallbacks;the selected W trial elaborates no USB CPU so its unused firmware/RAM artifacts are provenance only.",
+    "PR3": "Reviewed standalone USB/HDMI diagnostic,reset/freshness fixes retained;not a full-DSP voice proof.",
+    "review": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    },
+    "duplicate_recorder_selected": false,
+    "ADSR_TF_ring_selected": false
+  },
+  "boards": {
+    "M": {
+      "changed_this_phase": false,
+      "source_reference": "custom138k-workstation-task3-m-independent-v1-dca520d2406ed45f",
+      "evidence": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_20261106.json",
+        "sha256": "c623640eb62bbc038e34d3a560004a3fa315166d363f556e5749b5802642cddb"
+      },
+      "ordinary_voices": 32,
+      "vector_voices": 8,
+      "note": "Existing vector8 capability retained;32 is ordinary-polyphony target,no silent downgrade. A synthesis failed;no new M mapped/physical or hardware result.",
+      "bitstream_sha256": null,
+      "hardware_tested": false
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-paired-no-usb-v1-366eee69d13d8733",
+      "descriptor": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_no_usb_v1.json",
+        "sha256": "74d7af11f647ad9deac9747c9e3f8d5ba28b125997d6d46ed4eb791757f879d6"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-prepare-v4/workstation_profile.json",
+        "sha256": "f31e093fda68d212a7b31a3f56b994fdbfbb217a9a6eb8e2d769089c60b75e38"
+      },
+      "integration": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-prepare-v4/integration_inputs.json",
+        "sha256": "135de19485cfb7bce9958a994d0ad97e84cf15d33caabc66704a7a2e3df8d711"
+      },
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 131072,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "task3_paired_W_USB_retired_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "cnn_reset_policy": "task3_w_CNN_control_native_reset_release3_v1",
+        "cnn_ready_sdc_policy": "task3_w_CNN_ready_backend_sync_rebind_v1"
+      },
+      "source_policy": "explicit_native_board_on_resource_timing",
+      "source_locks": 1030,
+      "staged_files": 677,
+      "enabled_inputs": 200,
+      "AE350_ROM": {
+        "path": "firmware/boot.mem",
+        "sha256": "e37d75e22176844c7ddbb435d131b6773f99184c5da177562c0fb19ebd4fedde",
+        "parent_baseline_sha256": "8645399af2387aab34b299624fb56c9594477a3cc5278847096e144efb38a8b9"
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "edb72b630defca10617989991668914147964489b0c949a6e3b195e2141d9807"
+      },
+      "UserCode_requested": "D21106F5",
+      "board_identity": null,
+      "UserCode_board_readback": null,
+      "hardware_tested": false
+    }
+  },
+  "change": {
+    "expected_saving": {
+      "USB_BSRAM_equivalent": 31,
+      "USB_LUT": 4858
+    },
+    "selection": {
+      "selection": {
+        "policy": "task3_paired_W_USB_retired_v1",
+        "original": "rtl/workstation/workstation_usb2_input.sv",
+        "original_sha256": "f8d215d9eadd09ff7c28ec4bd581246c7273d971197b721ee2bd84ad2aad62d3",
+        "source": "rtl/workstation/workstation_task3_w_usb_retired.sv",
+        "source_sha256": "d7ede5df70ee7648bde4028da03b83185c396c8f2df43302d94443b707c8ba0f",
+        "native_top_unchanged": true,
+        "firmware_unchanged": true
+      },
+      "constraints": {
+        "policy": "task3_paired_W_USB_retired_v1",
+        "original_sha256": "de68e637a7e7d1a242740d8dd0c4c32feeb36efdae99692d61c979d14856aa57",
+        "selected_sha256": "c077a0fe84afa56e2b234cdc363f4ad09c2dae9186d53d8c8f7693ecbc0a69e2",
+        "original_lines": 379,
+        "trailing_newline": true,
+        "changes": [
+          {
+            "line": 17,
+            "original": "set_false_path -to [get_pins {u_native_usb/audio_owner_reset.release_q_0_s*/CLEAR u_native_usb/audio_owner_reset.release_q_1_s*/CLEAR u_native_usb/audio_owner_reset.release_q_2_s*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/audio_owner_reset.release_q_0_s*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/audio_owner_reset.release_q_1_s*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/audio_owner_reset.release_q_2_s*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 44,
+            "original": "set_max_delay 13.020 -from [get_pins {u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_5_s*/Q u_native_usb/input_owner/queue_release_5_s*/Q}] -to [get_pins {u_native_usb/input_owner/queue_write_release_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_write_release_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 45,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_5_s*/Q u_native_usb/input_owner/queue_release_5_s*/Q}] -to [get_pins {u_native_usb/input_owner/queue_write_release_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_write_release_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 46,
+            "original": "set_max_delay 13.020 -from [get_pins {u_native_usb/input_owner/queue_release_5_s*/Q}] -to [get_pins {u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_*_s*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/stopped_clock_queue_fence.drain_release_*_s*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 153,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/request_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/request_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/request_toggle_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/request_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 154,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/request_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/request_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/request_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/request_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 155,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/result_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_toggle_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 156,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/result_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 157,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/reset_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_toggle_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 158,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 159,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/reset_ack_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_ack_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 160,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_ack_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reset_ack_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 161,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/hs_cpu_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/hs_cpu_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/hs_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 162,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/hs_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/hs_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/hs_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 163,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/snapshot_toggle_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_toggle_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 164,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 165,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_ack_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 166,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_ack_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 167,
+            "original": "set_false_path -from [get_pins {u_native_usb/host/usb/reference_fault_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/reference_fault_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 168,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/reference_fault_sync_q_*_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reference_fault_meta_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/reference_fault_sync_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 169,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D}] 16.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 170,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/descriptor_cpu_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/descriptor_ulpi_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 171,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D}] 16.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 172,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_mailbox_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/result_cpu_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 173,
+            "original": "set_max_delay -from [get_pins {u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D}] 16.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 174,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_mailbox_q_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/snapshot_cpu_q_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 175,
+            "original": "set_max_delay -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_*_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/D}] 10.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 176,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_*_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_r_gry_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 177,
+            "original": "set_max_delay -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_*_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage0_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/consume_cdc/stage1_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 178,
+            "original": "set_max_delay -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_*_s*/Q u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/D}] 10.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 179,
+            "original": "set_false_path -hold -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_*_s*/Q u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_gry_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_w_bin_6_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 180,
+            "original": "set_max_delay -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_*_s*/D}] 2.000",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage0_*_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/produce_cdc/stage1_*_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 212,
+            "original": "set_max_delay 20.000 -from [get_regs {u_runtime/u_usb_cdc/held_data*}] -to [get_regs {u_runtime/u_usb_cdc/destination_data*}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_regs",
+                "member": "u_runtime/u_usb_cdc/held_data*"
+              },
+              {
+                "query": "get_regs",
+                "member": "u_runtime/u_usb_cdc/destination_data*"
+              }
+            ]
+          },
+          {
+            "line": 213,
+            "original": "set_false_path -hold -from [get_regs {u_runtime/u_usb_cdc/held_data*}] -to [get_regs {u_runtime/u_usb_cdc/destination_data*}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_regs",
+                "member": "u_runtime/u_usb_cdc/held_data*"
+              },
+              {
+                "query": "get_regs",
+                "member": "u_runtime/u_usb_cdc/destination_data*"
+              }
+            ]
+          },
+          {
+            "line": 214,
+            "original": "set_false_path -to [get_pins {u_runtime/u_usb_cdc/req_meta*/D u_runtime/u_usb_cdc/ack_meta*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_runtime/u_usb_cdc/req_meta*/D"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_runtime/u_usb_cdc/ack_meta*/D"
+              }
+            ]
+          },
+          {
+            "line": 215,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/event_release*/CLEAR u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage*/PRESET}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/event_release*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/rst_cdc/stage*/PRESET"
+              }
+            ]
+          },
+          {
+            "line": 216,
+            "original": "set_max_delay 20.000 -from [get_regs {u_native_usb/input_owner/feedback/held_data*}] -to [get_regs {u_native_usb/input_owner/feedback/destination_data*}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_regs",
+                "member": "u_native_usb/input_owner/feedback/held_data*"
+              },
+              {
+                "query": "get_regs",
+                "member": "u_native_usb/input_owner/feedback/destination_data*"
+              }
+            ]
+          },
+          {
+            "line": 217,
+            "original": "set_false_path -hold -from [get_regs {u_native_usb/input_owner/feedback/held_data*}] -to [get_regs {u_native_usb/input_owner/feedback/destination_data*}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_regs",
+                "member": "u_native_usb/input_owner/feedback/held_data*"
+              },
+              {
+                "query": "get_regs",
+                "member": "u_native_usb/input_owner/feedback/destination_data*"
+              }
+            ]
+          },
+          {
+            "line": 218,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/feedback/req_meta*/D u_native_usb/input_owner/feedback/ack_meta*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/req_meta*/D"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/ack_meta*/D"
+              }
+            ]
+          },
+          {
+            "line": 219,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/audio_release*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/audio_release*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 220,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/queue_release*/CLEAR u_native_usb/input_owner/queue_write_release*/CLEAR u_native_usb/input_owner/online_sync*/CLEAR u_native_usb/input_owner/panic_sync*/CLEAR u_native_usb/input_owner/defaults_sync*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_release*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_write_release*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/online_sync*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/panic_sync*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/defaults_sync*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 221,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/panic_sync_0*/D u_native_usb/input_owner/defaults_sync_0*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/panic_sync_0*/D"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/defaults_sync_0*/D"
+              }
+            ]
+          },
+          {
+            "line": 222,
+            "original": "set_false_path -to [get_pins {u_native_usb/cpu_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/cpu_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 223,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/cpu_release_q_0_s*/Q}] -to [get_pins {u_native_usb/cpu_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/cpu_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/cpu_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 224,
+            "original": "set_false_path -to [get_pins {u_native_usb/session_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/session_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 225,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/session_release_q_0_s*/Q}] -to [get_pins {u_native_usb/session_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/session_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/session_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 226,
+            "original": "set_false_path -to [get_pins {u_native_usb/feedback_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/feedback_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 227,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/feedback_release_q_0_s*/Q}] -to [get_pins {u_native_usb/feedback_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/feedback_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/feedback_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 228,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/reference_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/reference_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 229,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/reference_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/reference_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/reference_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/reference_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 230,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/status_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/status_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 231,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/status_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/status_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/status_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/status_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 232,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/bridge/ulpi_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 233,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/bridge/ulpi_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/ulpi_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 234,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/bridge/cpu_session_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/cpu_session_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 235,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/bridge/cpu_session_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/cpu_session_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/cpu_session_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/cpu_session_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 236,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/bridge/ulpi_session_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_session_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 237,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/bridge/ulpi_session_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/bridge/ulpi_session_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_session_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/bridge/ulpi_session_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 238,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/fault_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fault_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 239,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/fault_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/fault_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fault_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fault_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 240,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/phy/mac_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/mac_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 241,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/phy/mac_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/phy/mac_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/mac_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/mac_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 242,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 243,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 244,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 245,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_release_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 246,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/feedback/source_release_*_s*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/source_release_*_s*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 247,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/input_owner/feedback/source_release_0_s*/Q}] -to [get_pins {u_native_usb/input_owner/feedback/source_release_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/source_release_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/source_release_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 248,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/input_owner/feedback/source_release_1_s*/Q}] -to [get_pins {u_native_usb/input_owner/feedback/source_release_2_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/source_release_1_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/source_release_2_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 249,
+            "original": "set_false_path -to [get_pins {u_native_usb/input_owner/feedback/destination_release_*_s*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/destination_release_*_s*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 250,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/input_owner/feedback/destination_release_0_s*/Q}] -to [get_pins {u_native_usb/input_owner/feedback/destination_release_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/destination_release_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/destination_release_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 251,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/input_owner/feedback/destination_release_1_s*/Q}] -to [get_pins {u_native_usb/input_owner/feedback/destination_release_2_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/destination_release_1_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/feedback/destination_release_2_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 252,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/enable_ref_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/enable_ref_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 253,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/enable_ref_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/enable_ref_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/enable_ref_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/enable_ref_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 254,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/fatal_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fatal_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 255,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/fatal_sync_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/fatal_sync_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fatal_sync_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/fatal_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 256,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_meta_q_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_meta_q_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 257,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_meta_q_s*/Q}] -to [get_pins {u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_sync_q_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_meta_q_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/controller/phy/physical_link/supervisor/heartbeat_sync_q_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 258,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/failure_meta_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 259,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/failure_meta_q_0_s*/Q}] -to [get_pins {u_native_usb/host/usb/failure_sync_q_0_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_sync_q_0_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 260,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/failure_meta_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 261,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/failure_meta_q_1_s*/Q}] -to [get_pins {u_native_usb/host/usb/failure_sync_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_1_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_sync_q_1_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 262,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/failure_meta_q_2_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_2_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 263,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/failure_meta_q_2_s*/Q}] -to [get_pins {u_native_usb/host/usb/failure_sync_q_2_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_2_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_sync_q_2_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 264,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/failure_meta_q_3_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_3_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 265,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/failure_meta_q_3_s*/Q}] -to [get_pins {u_native_usb/host/usb/failure_sync_q_3_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_3_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_sync_q_3_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 266,
+            "original": "set_false_path -to [get_pins {u_native_usb/host/usb/failure_meta_q_4_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_4_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 267,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/host/usb/failure_meta_q_4_s*/Q}] -to [get_pins {u_native_usb/host/usb/failure_sync_q_4_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_meta_q_4_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/host/usb/failure_sync_q_4_s*/D"
+              }
+            ]
+          },
+          {
+            "line": 346,
+            "original": "set_false_path -from [get_pins {u_native_usb/input_owner/queue_release_5_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/CLEAR u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/CLEAR}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/queue_release_5_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/CLEAR"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/CLEAR"
+              }
+            ]
+          },
+          {
+            "line": 347,
+            "original": "set_max_delay 2.000 -from [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/Q}] -to [get_pins {u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/D}]",
+            "selected": null,
+            "removed": [
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_0_s*/Q"
+              },
+              {
+                "query": "get_pins",
+                "member": "u_native_usb/input_owner/events/fifo/unbuffered/write_domain_reset/release_q_1_s*/D"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "selected_provider_unchanged": true,
+    "native_top_unchanged": true,
+    "HCI_CNN_record_runtime_sources_unchanged": true,
+    "AE350_ROM_byte_identical_v21": true,
+    "enabled_added": [
+      "rtl/workstation/workstation_task3_w_usb_retired.sv"
+    ],
+    "enabled_removed": [
+      "rtl/workstation/workstation_usb2_input.sv"
+    ],
+    "changed_shared_enabled_inputs": [
+      "constraints/custom_138k.sdc"
+    ],
+    "all_clocks_and_frequencies_retained": true,
+    "ordinary_vector_M_synthesis_unchanged": true,
+    "LCD_wire_and_BLE_protocol_unchanged": true,
+    "additional_recorder": false,
+    "audio_sample_schedule_changed": false,
+    "descriptor_source_delta": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/descriptor-source-delta-final.json",
+      "sha256": "1155a4f8695041f8304a40aa0791af1853bd41a244797a777f7d4c3bf0cbc02f"
+    },
+    "physical_business_enabled": false
+  },
+  "validation": {
+    "final_source_prepared_mapped_methods": 8,
+    "termination_states": 257,
+    "actual_DMA_negative_SDC_mutations": 4,
+    "final_tests": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/final-termination-tests.json",
+      "sha256": "1ce7daac1b27c57338678b9c3372fe5810bcd658b25eaf076bca2cf4f18cee5a"
+    },
+    "final_test_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/final-termination-tests.log",
+      "sha256": "d75a3d3593020897824773abb4baab6d89f32f92ce893aaf2d62c8cca150c136"
+    },
+    "current_workstation_source_methods_passed": 17,
+    "paired_audit_methods_passed": 12,
+    "default_boundary_selection_methods_passed": 3,
+    "default_actual_W_CDC_result": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/default-cdc-regression.json",
+      "sha256": "d1a11a0f910164cc7a4840984cab06f9f7e3d3eedbda8da8ad32b6f5212b2543"
+    },
+    "complete_clock_CDC_or_hardware_accepted": false,
+    "initial_failures": [
+      {
+        "stage": "termination inverse test",
+        "reason": "All-retired newline case rejected;corrected and regression passed."
+      },
+      {
+        "stage": "CLI prepare",
+        "reason": "prepare-custom-board cannot be combined with prepare-only;no EDA started."
+      },
+      {
+        "stage": "prepare-v1",
+        "reason": "Original USB reset validator read final retired SDC;now checks strict restored parent before final absence proof."
+      },
+      {
+        "stage": "initial mapped audit",
+        "reason": "Constant telemetry mailbox swept;four stale SDC selectors rejected and then explicitly retired only after actual VG absence proof."
+      },
+      {
+        "stage": "reuse guard",
+        "reason": "New adapter correctly rejects old-policy inverse receipt;replay uses each frozen adapter version,then compares exact reconstructed parent SDC."
+      }
+    ]
+  },
+  "synthesis": {
+    "attempts": 1,
+    "max_attempts": 1,
+    "original_candidate": "custom138k-workstation-task3-w-paired-no-usb-v1-ad50780b1d6923f2",
+    "invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/w-no-usb-synthesis-invocation.json",
+      "sha256": "3d096072965846ce8deb4d5e54fc431009bc6d3147d870d7c46def9675d4b8d8"
+    },
+    "original_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/synthesis-audit-v1.json",
+      "sha256": "f1e5a222dc6861178c74cd8be5f0af1e3ebb8d2859c03656f06d26a9852ba366"
+    },
+    "reuse_final": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/synthesis-reuse-final.json",
+      "sha256": "0821d62ccc57162423287a36458080682378bf11170b6db6baf6c93e033519e0"
+    },
+    "new_synthesis_for_final_preparation": false,
+    "HDL_inputs_identical": 198,
+    "final_SDC_only_additionally_retires_proved_absent_USB_telemetry": true,
+    "netlist_sha256": "3d1def58c9e4ec4a78b8fc3c4bbbd3f3672ee1f9004cbf6d03b28f5d5eb2c491",
+    "final_audit": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/parent_synthesis_audit.json",
+      "sha256": "6aba271598668d51c0225c286c58b1990f255ade6121d1a86a0ce9f65c4e92f6"
+    },
+    "resources": {
+      "Register": 46554,
+      "Lut": 58584,
+      "Alu": 15848,
+      "Bsram": 269,
+      "Ssram": 779,
+      "MULTALU27X18": 20,
+      "MULT12X12": 36,
+      "MULT27X36": 42
+    },
+    "reference_candidate": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint14-prepare-v3",
+    "reference_resources": {
+      "Register": 49471,
+      "Lut": 63891,
+      "Alu": 16345,
+      "Bsram": 300,
+      "Ssram": 779,
+      "MULTALU27X18": 20,
+      "MULT12X12": 36,
+      "MULT27X36": 42
+    },
+    "delta_vs_v14": {
+      "Register": -2917,
+      "Lut": -5307,
+      "Alu": -497,
+      "Bsram": -31,
+      "Ssram": 0,
+      "MULTALU27X18": 0,
+      "MULT12X12": 0,
+      "MULT27X36": 0
+    },
+    "reference_scope": "v14 synthesized reference;v21 has no fresh synthesis. Prepared v21 comparison above isolates this trial selection;do not label E9 physical output as v21.",
+    "BSRAM_units": "18Kb synthesis-equivalent;separate from physical primitive counts",
+    "gates": {
+      "W_USB_retirement": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "feature_structure": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "port_coverage": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "AE350_clock_placement": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "AE350_RTC": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "runtime_clock_PLL_structure": {
+        "passed": false,
+        "status": null,
+        "error": "runtime PCM CDC audit: Boolean driver absent/ambiguous: u_task3_bus_endpoint/n737_9",
+        "blocked_by": null
+      },
+      "USB2_CDC": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "input_FIFO_CDC": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "native_reset": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "worker_feedback": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "USB_FIFO_write_reset": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "USB_bridge_resets": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      },
+      "phone_batch_mapped_structure": {
+        "passed": false,
+        "status": null,
+        "error": "runtime PCM CDC audit: Boolean driver absent/ambiguous: u_task3_bus_endpoint/n737_9",
+        "blocked_by": null
+      },
+      "LCD_pad_synchronizer_structure": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "visible_SDC_members": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "constraint_retirement_and_rebinding": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "W_CNN_ready_SDC": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "native_boundary_CDC": {
+        "passed": true,
+        "status": null,
+        "error": null,
+        "blocked_by": null
+      },
+      "native_held_handshakes": {
+        "passed": false,
+        "status": null,
+        "error": "runtime PCM CDC audit: Boolean driver absent/ambiguous: u_task3_bus_endpoint/n737_9",
+        "blocked_by": null
+      },
+      "USB_ROM": {
+        "passed": true,
+        "status": "retired",
+        "error": null,
+        "blocked_by": null
+      }
+    },
+    "gates_passed": 17,
+    "gates_total": 20,
+    "synthesis_audit_passed": false
+  },
+  "physical": {
+    "identity": "custom138k-resource-physical-D21106F5",
+    "input_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/physical_inputs.json",
+      "sha256": "5ba0870581911936bd50e607123597ff719c78f449f98d57514cad61b4fbcb88"
+    },
+    "prepare": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/physical-prepare.json",
+      "sha256": "5ba0870581911936bd50e607123597ff719c78f449f98d57514cad61b4fbcb88"
+    },
+    "invocation": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/physical-run.json",
+      "sha256": "15027a43f5e31ffb8953b8f02a3027dc9d7f3fb39e1b9adef23967aa9fe29918"
+    },
+    "log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/physical-run.log",
+      "sha256": "63da5a0ba85302708793363a4053420d9b7ef7cfe93ea2da98be8fe8b93a7f5d"
+    },
+    "attempts": 1,
+    "max_attempts": 1,
+    "place_option": 2,
+    "route_option": 0,
+    "additional_floorplan_or_route_trials": false,
+    "inputs_unchanged": true,
+    "timed_out": false,
+    "exit_code": 0,
+    "duration_seconds": 317.3020185420173,
+    "routing_completed": true,
+    "resources": {
+      "Logic": {
+        "used": 79556,
+        "capacity": 138240,
+        "percent": 58
+      },
+      "Register": {
+        "used": 46554,
+        "capacity": 139095,
+        "percent": 34
+      },
+      "CLS": {
+        "used": 56313,
+        "capacity": 69120,
+        "percent": 82
+      },
+      "BSRAM": {
+        "used": 303,
+        "capacity": 340,
+        "percent": 90
+      },
+      "PRIMARY": {
+        "used": 8,
+        "capacity": 8,
+        "percent": 100
+      },
+      "LW": {
+        "used": 8,
+        "capacity": 8,
+        "percent": 100
+      }
+    },
+    "reference_E9_BSRAM_used": 336,
+    "BSRAM_delta_vs_E9": -33,
+    "CST_byte_identical_E9": true,
+    "bitstream_generated": true,
+    "bitstream": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+      "sha256": "edb72b630defca10617989991668914147964489b0c949a6e3b195e2141d9807"
+    },
+    "routed_STA": {
+      "text_report": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/impl/pnr/custom_138k_integration.tr",
+        "sha256": "c1ee0f4381d019fa3d5d0208e8a40fb61433b548377869055090a376b47124e9"
+      },
+      "html_report": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-no-usb-p2r0-v1/impl/pnr/custom_138k_integration_tr_content.html",
+        "sha256": "7cded83036e9143a71bc362b86e8a894d18091b958ca6a845c0a47d78e2ee737"
+      },
+      "parser": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py",
+        "sha256": "09ad4cdb5f0eebf3ec86ec6cde4a002b23c9b7750584cbf946cd48aefcfcda33"
+      },
+      "parser_class": "TimingTables",
+      "tool_summary": {
+        "Numbers of Paths Analyzed": 223038,
+        "Numbers of Endpoints Analyzed": 160142,
+        "Numbers of Falling Endpoints": 11,
+        "Numbers of Setup Violated Endpoints": 3125,
+        "Numbers of Hold Violated Endpoints": 86
+      },
+      "text_clock_fmax": [
+        {
+          "clock": "clk_50m",
+          "required_mhz": 50.0,
+          "actual_fmax_mhz": 44.499,
+          "logic_levels": 25
+        },
+        {
+          "clock": "dac_ref12m288",
+          "required_mhz": 12.288,
+          "actual_fmax_mhz": 102.182,
+          "logic_levels": 14
+        },
+        {
+          "clock": "dac_ref16m9344",
+          "required_mhz": 16.934,
+          "actual_fmax_mhz": 92.132,
+          "logic_levels": 14
+        },
+        {
+          "clock": "audio_76m8",
+          "required_mhz": 76.8,
+          "actual_fmax_mhz": 69.051,
+          "logic_levels": 9
+        },
+        {
+          "clock": "usb_48m",
+          "required_mhz": 48.0,
+          "actual_fmax_mhz": 1377.411,
+          "logic_levels": 1
+        },
+        {
+          "clock": "ddr_mem400",
+          "required_mhz": 400.0,
+          "actual_fmax_mhz": 2338.897,
+          "logic_levels": 1
+        },
+        {
+          "clock": "ddr_ui100",
+          "required_mhz": 100.0,
+          "actual_fmax_mhz": 79.872,
+          "logic_levels": 13
+        },
+        {
+          "clock": "cpu_ram50",
+          "required_mhz": 50.0,
+          "actual_fmax_mhz": 90.018,
+          "logic_levels": 6
+        },
+        {
+          "clock": "cpu_core100",
+          "required_mhz": 100.0,
+          "actual_fmax_mhz": 1377.411,
+          "logic_levels": 1
+        },
+        {
+          "clock": "selected48",
+          "required_mhz": 12.288,
+          "actual_fmax_mhz": 77.015,
+          "logic_levels": 13
+        },
+        {
+          "clock": "selected44",
+          "required_mhz": 16.934,
+          "actual_fmax_mhz": 77.015,
+          "logic_levels": 13
+        }
+      ],
+      "global_path_tables": {
+        "setup": {
+          "kind": "setup",
+          "command": "report_timing -setup -max_paths 2000 -max_common_paths 1",
+          "reported_paths": 2000,
+          "negative_reported_paths": 2000,
+          "worst": {
+            "slack_ns": -2.52,
+            "source": "u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.count_5_s1/Q",
+            "destination": "u_task3_media/raw_store/fetch_address_4_s1/CE",
+            "source_clock": "ddr_ui100:[R]",
+            "destination_clock": "ddr_ui100:[R]",
+            "relation_ns": 10.0,
+            "clock_skew_ns": -0.037,
+            "data_delay_ns": 12.308
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "ddr_ui100:[R]",
+              "destination_clock": "ddr_ui100:[R]",
+              "negative_reported_paths": 575,
+              "worst_slack_ns": -2.52
+            },
+            {
+              "source_clock": "clk_50m:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 1350,
+              "worst_slack_ns": -2.473
+            },
+            {
+              "source_clock": "clk_50m:[R]",
+              "destination_clock": "ddr_ui100:[R]",
+              "negative_reported_paths": 34,
+              "worst_slack_ns": -2.009
+            },
+            {
+              "source_clock": "audio_76m8:[R]",
+              "destination_clock": "audio_76m8:[R]",
+              "negative_reported_paths": 41,
+              "worst_slack_ns": -1.461
+            }
+          ]
+        },
+        "hold": {
+          "kind": "hold",
+          "command": "report_timing -hold -max_paths 2000 -max_common_paths 1",
+          "reported_paths": 2000,
+          "negative_reported_paths": 83,
+          "worst": {
+            "slack_ns": -4.194,
+            "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+            "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+            "source_clock": "ddr_ui100:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 3.5,
+            "clock_skew_ns": -1.355,
+            "data_delay_ns": 0.709
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "ddr_ui100:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 33,
+              "worst_slack_ns": -4.194
+            },
+            {
+              "source_clock": "cpu_ram50:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 50,
+              "worst_slack_ns": -1.055
+            }
+          ]
+        },
+        "recovery": {
+          "kind": "recovery",
+          "command": "report_timing -recovery -max_paths 2000 -max_common_paths 1",
+          "reported_paths": 2000,
+          "negative_reported_paths": 20,
+          "worst": {
+            "slack_ns": -7.381,
+            "source": "u_reset/started_s0/Q",
+            "destination": "u_managed/control_cdc/a_release_0_s0/CLEAR",
+            "source_clock": "clk_50m:[R]",
+            "destination_clock": "audio_76m8:[R]",
+            "relation_ns": 0.104,
+            "clock_skew_ns": 1.816,
+            "data_delay_ns": 5.358
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "clk_50m:[R]",
+              "destination_clock": "audio_76m8:[R]",
+              "negative_reported_paths": 20,
+              "worst_slack_ns": -7.381
+            }
+          ]
+        },
+        "removal": {
+          "kind": "removal",
+          "command": "report_timing -removal -max_paths 2000 -max_common_paths 1",
+          "reported_paths": 2000,
+          "negative_reported_paths": 3,
+          "worst": {
+            "slack_ns": -0.424,
+            "source": "u_task3_media/memory/memory_release_2_s0/Q",
+            "destination": "u_task3_media/cnn_stream/control_release_2_s0/CLEAR",
+            "source_clock": "ddr_ui100:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 0.0,
+            "clock_skew_ns": -1.363,
+            "data_delay_ns": 0.921
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "ddr_ui100:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 3,
+              "worst_slack_ns": -0.424
+            }
+          ]
+        }
+      },
+      "scoped_path_tables": [
+        {
+          "kind": "setup",
+          "command": "report_timing -setup -from_clock [get_clocks {cpu_core100}] -to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1",
+          "reported_paths": 3,
+          "negative_reported_paths": 0,
+          "worst": {
+            "slack_ns": 9.274,
+            "source": "core_reset_pipe_0_s0/Q",
+            "destination": "core_reset_pipe_1_s0/D",
+            "source_clock": "cpu_core100:[R]",
+            "destination_clock": "cpu_core100:[R]",
+            "relation_ns": 10.0,
+            "clock_skew_ns": 0.0,
+            "data_delay_ns": 0.675
+          },
+          "negative_clock_pairs": []
+        },
+        {
+          "kind": "setup",
+          "command": "report_timing -setup -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 100 -max_common_paths 1",
+          "reported_paths": 100,
+          "negative_reported_paths": 100,
+          "worst": {
+            "slack_ns": -2.473,
+            "source": "u_bluetooth/u_core/owner/flow/is_le_1_s0/Q",
+            "destination": "u_task3_bus_endpoint/phone_proxy/arm_age_10_s1/CE",
+            "source_clock": "clk_50m:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 20.0,
+            "clock_skew_ns": -0.064,
+            "data_delay_ns": 22.288
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "clk_50m:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 100,
+              "worst_slack_ns": -2.473
+            }
+          ]
+        },
+        {
+          "kind": "setup",
+          "command": "report_timing -setup -to_clock [get_clocks {clk_50m}] -max_paths 100 -max_common_paths 1",
+          "reported_paths": 100,
+          "negative_reported_paths": 100,
+          "worst": {
+            "slack_ns": -2.473,
+            "source": "u_bluetooth/u_core/owner/flow/is_le_1_s0/Q",
+            "destination": "u_task3_bus_endpoint/phone_proxy/arm_age_10_s1/CE",
+            "source_clock": "clk_50m:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 20.0,
+            "clock_skew_ns": -0.064,
+            "data_delay_ns": 22.288
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "clk_50m:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 100,
+              "worst_slack_ns": -2.473
+            }
+          ]
+        },
+        {
+          "kind": "hold",
+          "command": "report_timing -hold -from_clock [get_clocks {cpu_core100}] -to_clock [get_clocks {cpu_core100}] -max_paths 8 -max_common_paths 1",
+          "reported_paths": 3,
+          "negative_reported_paths": 0,
+          "worst": {
+            "slack_ns": 0.335,
+            "source": "core_reset_pipe_1_s0/Q",
+            "destination": "core_reset_pipe_2_s0/D",
+            "source_clock": "cpu_core100:[R]",
+            "destination_clock": "cpu_core100:[R]",
+            "relation_ns": 0.0,
+            "clock_skew_ns": 0.0,
+            "data_delay_ns": 0.36
+          },
+          "negative_clock_pairs": []
+        },
+        {
+          "kind": "hold",
+          "command": "report_timing -hold -from_clock [get_clocks {clk_50m}] -to_clock [get_clocks {clk_50m}] -max_paths 100 -max_common_paths 1",
+          "reported_paths": 100,
+          "negative_reported_paths": 0,
+          "worst": {
+            "slack_ns": 0.135,
+            "source": "u_task3_media/cnn_stream/task_service/pack_155_s0/Q",
+            "destination": "u_task3_media/cnn_stream/task_service/staging_requests/g_small_head.memory_g_small_head.memory_0_46_s/DI[3]",
+            "source_clock": "clk_50m:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 0.0,
+            "clock_skew_ns": -0.01,
+            "data_delay_ns": 0.195
+          },
+          "negative_clock_pairs": []
+        },
+        {
+          "kind": "hold",
+          "command": "report_timing -hold -to_clock [get_clocks {clk_50m}] -max_paths 100 -max_common_paths 1",
+          "reported_paths": 100,
+          "negative_reported_paths": 83,
+          "worst": {
+            "slack_ns": -4.194,
+            "source": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_init_internal_r_s0/Q",
+            "destination": "u_memory/u_ddr3/gw3_top/u_ddr_phy_top/wloadn_3_s0/D",
+            "source_clock": "ddr_ui100:[R]",
+            "destination_clock": "clk_50m:[R]",
+            "relation_ns": 3.5,
+            "clock_skew_ns": -1.355,
+            "data_delay_ns": 0.709
+          },
+          "negative_clock_pairs": [
+            {
+              "source_clock": "ddr_ui100:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 33,
+              "worst_slack_ns": -4.194
+            },
+            {
+              "source_clock": "cpu_ram50:[R]",
+              "destination_clock": "clk_50m:[R]",
+              "negative_reported_paths": 50,
+              "worst_slack_ns": -1.055
+            }
+          ]
+        }
+      ],
+      "endpoint_TNS_table": [
+        {
+          "clock": "clk_50m",
+          "analysis_type": "Setup",
+          "TNS_ns": -1663.227,
+          "endpoints": 1950
+        },
+        {
+          "clock": "clk_50m",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "ulpi_60m",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "ulpi_60m",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "dac_ref12m288",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "dac_ref12m288",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "dac_ref16m9344",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "dac_ref16m9344",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "audio_76m8",
+          "analysis_type": "Setup",
+          "TNS_ns": -50.176,
+          "endpoints": 142
+        },
+        {
+          "clock": "audio_76m8",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "usb_48m",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "usb_48m",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "ddr_mem400",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "ddr_mem400",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "ddr_ui100",
+          "analysis_type": "Setup",
+          "TNS_ns": -862.869,
+          "endpoints": 1013
+        },
+        {
+          "clock": "ddr_ui100",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_ram50",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_ram50",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_core100",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_core100",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_rtc_bound",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "cpu_rtc_bound",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "selected48",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "selected48",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "selected44",
+          "analysis_type": "Setup",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        },
+        {
+          "clock": "selected44",
+          "analysis_type": "Hold",
+          "TNS_ns": 0.0,
+          "endpoints": 0
+        }
+      ],
+      "path_count_note": "Global and scoped path tables are limited excerpts, not full CDC/PLL or complete endpoint acceptance.",
+      "fmax_note": "Text report values; HTML can differ by0.001MHz due vendor presentation rounding. Cross-domain hold failures must not be inferred absent from same-clock TNS rows."
+    },
+    "PR1014_present": true,
+    "timing_closed": false,
+    "physical_CDC_PLL_or_hardware_accepted": false,
+    "routed_USB_absence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-usb-retirement-v1/routed-USB-absence.json",
+      "sha256": "0cdf923968f9733459c0a119106e199b6c6eaf12d68edfa88bce3d19a9ba7cb3"
+    },
+    "routed_USB_named_primitives_absent": true,
+    "BSRAM_primitive_breakdown": {
+      "SP": 3,
+      "SDPB": 148,
+      "SDPX9B": 40,
+      "pROM": 112
+    }
+  },
+  "first_round_budget": {
+    "A": {
+      "synthesis_used": 1,
+      "synthesis_limit": 1,
+      "synthesis_succeeded": false,
+      "PNR_used": 0,
+      "PNR_limit": 1
+    },
+    "B": {
+      "synthesis_used": 1,
+      "synthesis_limit": 1,
+      "synthesis_succeeded": true,
+      "PNR_used": 1,
+      "PNR_limit": 1
+    },
+    "C": {
+      "synthesis_used": 0,
+      "synthesis_limit": 1,
+      "PNR_used": 0,
+      "PNR_limit": 1
+    }
+  },
+  "rollback": {
+    "historical_descriptors_unchanged": 69,
+    "frozen_baselines_unchanged": true,
+    "old_paired_W_and_W_demo_25K_fallbacks_preserved": true,
+    "task2_and_other_worktrees_written": false,
+    "original_synthesized_prepare_v3_preserved": true,
+    "superseded_prepare_drafts_preserved": true
+  },
+  "remaining_gaps": [
+    "W real-root/full-key consumer proof still fails at generated Boolean driver;not waived by USB retirement.",
+    "Complete routed CDC/PLL/STA,not just path excerpts or P&R return code.",
+    "Use W freed capacity for actual bounded migration before claiming M resource relief;retain existing W effects rather than add another engine.",
+    "Correct-target M/W identities,electrical continuity/levels,LCD throughput,RTT,jitter and congestion;business grant remains closed.",
+    "M ordinary32/vector8 physical DAC and control-to-sound latency,TF->W real CNN->Push,phone D press/release,sole CPU/BLE long recording/download concurrency.",
+    "Current paired source/recording remains48k;44.1k backend-only evidence does not bind cross-board ARM/source format."
+  ],
+  "timing_closed": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "physical_control_to_sound_latency_ms": null
+}
