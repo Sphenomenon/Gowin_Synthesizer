@@ -1,0 +1,1242 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-06T04:33:29.739498+00:00",
+  "source_git_commit": "e093185a377afb9e0b6e9b26d5b250a3e523f48d",
+  "scope": "Offline diagnostic and read-only retained capacity/startup inventory. No production RTL, source profile, clock, exception, wire protocol, or business admission change.",
+  "source_implementation_changed": false,
+  "production_profile_selected": false,
+  "remote_review": {
+    "fetched_branch": "codex/dual-138k-task3",
+    "local_base": "e093185a377afb9e0b6e9b26d5b250a3e523f48d",
+    "remote_base": "e093185a377afb9e0b6e9b26d5b250a3e523f48d",
+    "integration_commit": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "integration_is_ancestor": true,
+    "open_PRs": [],
+    "PRs": [
+      {
+        "base": "codex/dual-138k-workstation",
+        "head": "07e91936ed5eb80ce74209ff97932e5f53153e84",
+        "merge_commit_sha": "2ca635be040cd8b27735e114939d3b6c6abea06a",
+        "merged_at": "2026-11-03T16:06:10Z",
+        "number": 2,
+        "state": "closed"
+      },
+      {
+        "base": "codex/dual-138k-workstation",
+        "head": "e417b604b5fcd87c117f121226a791572dc62d19",
+        "merge_commit_sha": "fe3f95bd8a79033cd6997f869477c35eb12f7f0d",
+        "merged_at": "2026-11-03T16:06:10Z",
+        "number": 3,
+        "state": "closed"
+      }
+    ],
+    "selected_evidence": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_PR_INTEGRATION_20261103.json",
+      "sha256": "9ed6f23808ddd45caa2444deb4905981255a876d92fac1590257048bb0613a54"
+    },
+    "inherited_optimization": "Reviewed CPU48 banked RAM and USB/HDMI diagnostics, reset and freshness fixes. The prior full-M F3 netlist reconstruction verifies 24 blocks and 12288 words; W 336/340 is retained E9 evidence, not a new run.",
+    "excluded": "ADSR and TF ring remain unselected experiments; duplicate recording backend remains unselected."
+  },
+  "diagnostic": {
+    "verification": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/verification.json",
+      "sha256": "2708acf3d9bdb01074c7cc6bbc75d6adf61181de2a63f974ffdd8193498fff68"
+    },
+    "schema": 1,
+    "passed": true,
+    "source_sha256": {
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv": "97685fa334124c41974309e926d63c5c4426d61f0393f0cfdc26e818e2ccaae8",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv": "d2ba6cb9be0f1597fe700c1200643eb9654aa2b16d46c69ae2d4bf75c4ee82eb",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv": "05d77678cc83faef1d0c7c677d733cf4df780047cb3ed0fe567b17a18ef8fda0",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/run_task3_lcd_roundtrip_budget.py": "6a2e839f29700566d7da91599f8eeddae37f7534e09b6ccc89d9b3fadea200ad",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_reverb_partition.py": "dde97579b547df1ba2526803e21f1631fb83d30892ee9fa58474548549489aaa",
+      "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/audio/workstation_remote_reverb_m.sv": "c4b240512360c0fb376aebf97c41ca4b30dbf52d1f43231ef81b9d1e22fe511d"
+    },
+    "trials": [
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 50000000.0,
+        "W_initial_phase_ns": 1,
+        "roundtrips_ns": [
+          57960,
+          57960,
+          57960,
+          57960
+        ],
+        "all_exceed_single_slot_deadline": true
+      },
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 50000000.0,
+        "W_initial_phase_ns": 3,
+        "roundtrips_ns": [
+          57960,
+          57960,
+          57960,
+          57960
+        ],
+        "all_exceed_single_slot_deadline": true
+      },
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 50000000.0,
+        "W_initial_phase_ns": 9,
+        "roundtrips_ns": [
+          57960,
+          57960,
+          57960,
+          57960
+        ],
+        "all_exceed_single_slot_deadline": true
+      },
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 45454545.45454545,
+        "W_initial_phase_ns": 1,
+        "roundtrips_ns": [
+          62100,
+          62060,
+          62100,
+          62120
+        ],
+        "all_exceed_single_slot_deadline": true
+      },
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 45454545.45454545,
+        "W_initial_phase_ns": 3,
+        "roundtrips_ns": [
+          62100,
+          62060,
+          62100,
+          62120
+        ],
+        "all_exceed_single_slot_deadline": true
+      },
+      {
+        "M_clock_Hz": 50000000,
+        "W_clock_Hz": 45454545.45454545,
+        "W_initial_phase_ns": 9,
+        "roundtrips_ns": [
+          62120,
+          62120,
+          62060,
+          62100
+        ],
+        "all_exceed_single_slot_deadline": true
+      }
+    ],
+    "commands": [
+      {
+        "command": [
+          "verilator",
+          "--version"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/verilator_version.log",
+        "log_sha256": "4fd077848d26dfc3fa7d96d3dbdd46597ce5db86191bba6fce3c9abc3bb6603e"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=10",
+          "-GW_PHASE_NS=1",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_1_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_1_compile.log",
+        "log_sha256": "3f26f4a3639583bb4a0df66083dbf1021239d2b0e2f7ffab690fb167091052b0"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_1_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_1_run.log",
+        "log_sha256": "c87d9eeee193cdf8a46d4ae9d2fea8b5ba882ae2174e673ba15c34789f3f24c5"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=10",
+          "-GW_PHASE_NS=3",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_3_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_3_compile.log",
+        "log_sha256": "65e741cf9940541fe9ef3fb61cdbb5a29856b27bd31a342eedb953e33da6ef90"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_3_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_3_run.log",
+        "log_sha256": "29225ef9ec5178ecd69ba4f381ba9bd1e29fd1a4a0d2a0d78fb9787d3686884f"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=10",
+          "-GW_PHASE_NS=9",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_9_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_9_compile.log",
+        "log_sha256": "c9d42a59dd0752cbc0df025c2ff9f0c39e2e4b795df81b6930a842981b02f474"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_9_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_10_phase_9_run.log",
+        "log_sha256": "53ead901407f58f941eb7fd86eeaca9ad13d30ff5adb0941982c18e60953a197"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=11",
+          "-GW_PHASE_NS=1",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_1_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_1_compile.log",
+        "log_sha256": "4d46bcc559de8cbdfba8521c25bf81dc8dce554ecac3c025dfddbf5b77b159ff"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_1_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_1_run.log",
+        "log_sha256": "ec0db09813279f3e9feaaf86bdb6a79301dfc84dff0888d8fc4728cbf5550586"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=11",
+          "-GW_PHASE_NS=3",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_3_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_3_compile.log",
+        "log_sha256": "6130c09a55d839b98fd19d4a046302cd07b19bd96e34e4fb4f64380add454250"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_3_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_3_run.log",
+        "log_sha256": "d6446c5080b15930a42bb8ecb7050cf8ff6c18f7d055e8732fe5cff4b6f51a20"
+      },
+      {
+        "command": [
+          "verilator",
+          "--binary",
+          "--timing",
+          "--build-jobs",
+          "4",
+          "--top-module",
+          "tb_task3_lcd_roundtrip_budget",
+          "-GW_HALF_NS=11",
+          "-GW_PHASE_NS=9",
+          "--Mdir",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_9_obj",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+          "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_9_compile.log",
+        "log_sha256": "1fc37f51b818f1d09845651f135ae14423b8f127cd93411638062beb5a5d3cfa"
+      },
+      {
+        "command": [
+          "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_9_obj/Vtb_task3_lcd_roundtrip_budget"
+        ],
+        "exit_code": 0,
+        "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v5/W_half_11_phase_9_run.log",
+        "log_sha256": "6625acbe84edd94a04651e2b0b1d71baee8e9582330900c4d07ee4d85951b974"
+      }
+    ],
+    "comparison_configuration": {
+      "device": "GW5AST-LV138PG484AC2/I1",
+      "device_version": "C",
+      "synthesis_tool": "gowinsynthesis",
+      "verilog_std": "sysv2017",
+      "compute_clock_hz": 76800000,
+      "compute_period_ns": "13.020833333",
+      "remote_deadline_cycles": 512,
+      "worker_timeout_cycles": 256,
+      "vector_enable": 1,
+      "d_delay_send_enable": 1,
+      "remote_macro": "WORKSTATION_REMOTE_REVERB_PARTITION"
+    },
+    "single_slot_deadline_ns": 6666.666666666667,
+    "scope": "Existing channel-0 control-frame echo over real transport/PHY RTL. Zero wire delay, immediate echo, no effect engine or media owner. A model comparison, not a hardware latency bound or media integration.",
+    "new_reverb_wire_protocol": false,
+    "business_enabled": false,
+    "hardware_tested": false,
+    "physical_budget_authorized": false,
+    "physical_RTT_ns": null,
+    "verilator": "Verilator 5.052 2026-09-05 rev vUNKNOWN-built20260905",
+    "model_min_RTT_ns": 57960,
+    "model_max_RTT_ns": 62120,
+    "current_single_slot_fits_all_tested_ideal_echoes": false,
+    "conclusion": "Keep the single-slot reverb seam unselected pending a transport/owner design with a measured bounded queue and compatible sample schedule.",
+    "source_unchanged": true
+  },
+  "initial_failed_attempts": [
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget/verification.json",
+        "sha256": "4421c263b0fecede0d4c5e2970b63bf64c3d0ad58409b194cbde8b584729b3da"
+      },
+      "commands": [
+        {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_task3_lcd_roundtrip_budget",
+            "-Ptb_task3_lcd_roundtrip_budget.W_HALF_NS=10",
+            "-Ptb_task3_lcd_roundtrip_budget.W_PHASE_NS=1",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget/W_half_10_phase_1.vvp",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+          ],
+          "exit_code": 2,
+          "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget/W_half_10_phase_1_compile.log",
+          "log_sha256": "0b7f3a3f9e4f93ff61dec165e572dacc5d1d45b0a8210d519e3dafa60f3a10ba"
+        }
+      ],
+      "disposition": "Icarus compilation/elaboration did not pass; preserved. Final run follows the existing LCD Verilator validation path."
+    },
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v2/verification.json",
+        "sha256": "53e797dae113cf83545afa81018dbceb59db2aec4b20401e534d7663c27daaa9"
+      },
+      "commands": [
+        {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_task3_lcd_roundtrip_budget",
+            "-Ptb_task3_lcd_roundtrip_budget.W_HALF_NS=10",
+            "-Ptb_task3_lcd_roundtrip_budget.W_PHASE_NS=1",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v2/W_half_10_phase_1.vvp",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+          ],
+          "exit_code": 64,
+          "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v2/W_half_10_phase_1_compile.log",
+          "log_sha256": "82965a2b855c3a21b9bf0dea3e1d4ab876c1c49ac95c7cad0daacc41f7287730"
+        }
+      ],
+      "disposition": "Icarus compilation/elaboration did not pass; preserved. Final run follows the existing LCD Verilator validation path."
+    },
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v3/verification.json",
+        "sha256": "268a2e0b87def0ac31e6c32b3fd89df475c15ceaa987b4e07bde2f6e6c1e547f"
+      },
+      "commands": [
+        {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_task3_lcd_roundtrip_budget",
+            "-Ptb_task3_lcd_roundtrip_budget.W_HALF_NS=10",
+            "-Ptb_task3_lcd_roundtrip_budget.W_PHASE_NS=1",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v3/W_half_10_phase_1.vvp",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+          ],
+          "exit_code": 64,
+          "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v3/W_half_10_phase_1_compile.log",
+          "log_sha256": "059832d8de226b422ad58136f8f25e0e312d799f3bea773e0220a944e2861b4e"
+        }
+      ],
+      "disposition": "Icarus compilation/elaboration did not pass; preserved. Final run follows the existing LCD Verilator validation path."
+    },
+    {
+      "verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v4/verification.json",
+        "sha256": "f507704b3497451541bfedc775f4db599402c44bcf6f79205d6a566fc832c266"
+      },
+      "commands": [
+        {
+          "command": [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_task3_lcd_roundtrip_budget",
+            "-Ptb_task3_lcd_roundtrip_budget.W_HALF_NS=10",
+            "-Ptb_task3_lcd_roundtrip_budget.W_PHASE_NS=1",
+            "-o",
+            "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v4/W_half_10_phase_1.vvp",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_transport.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/rtl/workstation/workstation_task3_lcd_phy.sv",
+            "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/workstation/tb_task3_lcd_roundtrip_budget.sv"
+          ],
+          "exit_code": 64,
+          "log": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/lcd-echo-budget-v4/W_half_10_phase_1_compile.log",
+          "log_sha256": "059832d8de226b422ad58136f8f25e0e312d799f3bea773e0220a944e2861b4e"
+        }
+      ],
+      "disposition": "Icarus compilation/elaboration did not pass; preserved. Final run follows the existing LCD Verilator validation path."
+    }
+  ],
+  "retained_reverb_capacity": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/retained-reverb-capacity-inventory.json",
+      "sha256": "7ba203872485b23a3f862265ebfe540d92512893404845067bea9bf8c78dfdf5"
+    },
+    "results": [
+      {
+        "role": "M",
+        "physical_identity": "custom138k-resource-physical-D21106F0",
+        "actual_synthesis_resource_report": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-paired-checkpoint21-prepare-v4/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+          "sha256": "cdaed988b763570d8d16236df717cf69c58a8aa3b6a65f9dcaadf452c440bacd"
+        },
+        "reverb_instances": [
+          {
+            "hierarchy": "workstation_custom_138k_top/u_managed/runtime/service/workstation/runtime_effects.effects/reverb_stage",
+            "resources": {
+              "name": "reverb_stage",
+              "Register": "2302",
+              "Alu": "2025",
+              "Lut": "1532",
+              "MULT27X36": "19",
+              "T_Register": "2756(2302)",
+              "T_Alu": "2025(2025)",
+              "T_Lut": "2225(1532)",
+              "T_MULT27X36": "19(19)",
+              "T_Bsram": "20(0)"
+            }
+          }
+        ],
+        "scope": "Retained full-system synthesis hierarchy,not fresh full build or extra free resources."
+      },
+      {
+        "role": "W",
+        "physical_identity": "custom138k-resource-physical-D21106E9",
+        "actual_synthesis_resource_report": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-paired-checkpoint14-prepare-v3/workstation/Prj1/impl/gwsynthesis/custom_138k_integration_syn_rsc.xml",
+          "sha256": "94cd9086db47f9a62a807fa5d0d53cf58a080524db22f1eb24ac40e8343a8925"
+        },
+        "reverb_instances": [
+          {
+            "hierarchy": "workstation_custom_138k_top/u_managed/runtime/service/workstation/runtime_effects.effects/reverb_stage",
+            "resources": {
+              "name": "reverb_stage",
+              "Register": "2425",
+              "Alu": "2069",
+              "Lut": "1470",
+              "MULT27X36": "19",
+              "T_Register": "2879(2425)",
+              "T_Alu": "2069(2069)",
+              "T_Lut": "2135(1470)",
+              "T_MULT27X36": "19(19)",
+              "T_Bsram": "20(0)"
+            }
+          }
+        ],
+        "scope": "Retained full-system synthesis hierarchy,not fresh full build or extra free resources."
+      }
+    ],
+    "W_physical_BSRAM_used": 336,
+    "W_physical_BSRAM_capacity": 340,
+    "shared_reuse_requires_new_owner_and_transport": true,
+    "hardware_tested": false
+  },
+  "retained_startup_grants": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/retained-M-W-grant-inventory.json",
+      "sha256": "c5a9da13421889966f8c660a625afeaad18f638922270c4189ddd419b1cede3d"
+    },
+    "recorded_utc": "2026-11-06T04:18:57.726732+00:00",
+    "results": [
+      {
+        "role": "M",
+        "physical_identity": "custom138k-resource-physical-D21106F0",
+        "VO": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-v21-capture-compare-p3r0-v1/impl/pnr/custom_138k_integration.vo",
+          "sha256": "f3b77315352f6dfcd07da14f650cc33c476805589e5e6978d7b4c0857a6e5e26"
+        },
+        "rows": [
+          {
+            "prefix": "u_managed/startup_compute",
+            "found": [
+              [
+                "u_managed/startup_compute_0_s0"
+              ],
+              [
+                "u_managed/startup_compute_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/startup_compute_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/startup_compute [0]"
+                }
+              },
+              {
+                "name": "u_managed/startup_compute_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/startup_compute [0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/startup_compute [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/startup_compute_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_compute",
+            "found": [
+              [
+                "u_managed/runtime/startup_compute_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_compute_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_compute_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_compute [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_compute_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_compute [0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_compute [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_compute_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_memory",
+            "found": [
+              [
+                "u_managed/runtime/startup_memory_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_memory_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_memory_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "memory_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_memory [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_memory_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_memory [0]",
+                  "CLK": "memory_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_memory [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_memory_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_serial",
+            "found": [
+              [
+                "u_managed/runtime/startup_serial_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_serial_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_serial_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "dac_mclk_d",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_serial [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_serial_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_serial [0]",
+                  "CLK": "dac_mclk_d",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_managed/runtime/startup_serial [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_serial_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_tf_audio/startup_compute",
+            "found": [
+              [
+                "u_tf_audio/startup_compute_0_s0"
+              ],
+              [
+                "u_tf_audio/startup_compute_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_tf_audio/startup_compute_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_tf_audio/startup_compute [0]"
+                }
+              },
+              {
+                "name": "u_tf_audio/startup_compute_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_tf_audio/startup_compute [0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_tf_audio/startup_compute [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_tf_audio/startup_compute_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_tf_audio/startup_memory",
+            "found": [
+              [],
+              []
+            ]
+          },
+          {
+            "prefix": "u_tf_audio/frames/startup_compute",
+            "found": [
+              [],
+              []
+            ]
+          },
+          {
+            "prefix": "output_safe_sync",
+            "found": [
+              [
+                "output_safe_sync_0_s0"
+              ],
+              [
+                "output_safe_sync_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "output_safe_sync_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "compute_output_safe_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "output_safe_sync[0]"
+                }
+              },
+              {
+                "name": "output_safe_sync_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "output_safe_sync[0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "output_safe_sync[1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "output_safe_sync_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_runtime/g_usb_cdc_reset.usb_ready",
+            "found": [
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_0_s0"
+              ],
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_runtime/g_usb_cdc_reset.usb_ready_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "n2104_3",
+                  "CLK": "usb_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_runtime/g_usb_cdc_reset.usb_ready [0]"
+                }
+              },
+              {
+                "name": "u_runtime/g_usb_cdc_reset.usb_ready_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_runtime/g_usb_cdc_reset.usb_ready [0]",
+                  "CLK": "usb_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n6542_6",
+                  "Q": "\\u_runtime/g_usb_cdc_reset.usb_ready [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          }
+        ]
+      },
+      {
+        "role": "W",
+        "physical_identity": "custom138k-resource-physical-D21106E9",
+        "VO": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-v14-ready-production-p2r0-v1/impl/pnr/custom_138k_integration.vo",
+          "sha256": "4bf21c48f3f45919d2139b04f8a7bb74d33366426fa077905e92cb23a7d94d2a"
+        },
+        "rows": [
+          {
+            "prefix": "u_managed/startup_compute",
+            "found": [
+              [
+                "u_managed/startup_compute_0_s0"
+              ],
+              [
+                "u_managed/startup_compute_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/startup_compute_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/startup_compute [0]"
+                }
+              },
+              {
+                "name": "u_managed/startup_compute_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/startup_compute [0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/startup_compute [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/startup_compute_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_compute",
+            "found": [
+              [
+                "u_managed/runtime/startup_compute_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_compute_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_compute_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_compute [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_compute_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_compute [0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_compute [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_compute_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_memory",
+            "found": [
+              [
+                "u_managed/runtime/startup_memory_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_memory_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_memory_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "memory_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_memory [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_memory_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_memory [0]",
+                  "CLK": "memory_clk",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_memory [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_memory_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_managed/runtime/startup_serial",
+            "found": [
+              [
+                "u_managed/runtime/startup_serial_0_s0"
+              ],
+              [
+                "u_managed/runtime/startup_serial_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_managed/runtime/startup_serial_0_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "runtime_reset_n",
+                  "CLK": "dac_mclk_d",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_serial [0]"
+                }
+              },
+              {
+                "name": "u_managed/runtime/startup_serial_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_managed/runtime/startup_serial [0]",
+                  "CLK": "dac_mclk_d",
+                  "CE": "VCC",
+                  "CLEAR": "n12_6",
+                  "Q": "\\u_managed/runtime/startup_serial [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_managed/runtime/startup_serial_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "output_safe_sync",
+            "found": [
+              [
+                "output_safe_sync_0_s0"
+              ],
+              [
+                "output_safe_sync_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "output_safe_sync_0_s0",
+                "kind": "DFFRE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "memory_guard_ready",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "RESET": "n6_5_1335",
+                  "Q": "output_safe_sync[0]"
+                }
+              },
+              {
+                "name": "output_safe_sync_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "output_safe_sync[0]",
+                  "CLK": "audio_clk",
+                  "CE": "VCC",
+                  "CLEAR": "GND",
+                  "Q": "output_safe_sync[1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "output_safe_sync_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          },
+          {
+            "prefix": "u_runtime/g_usb_cdc_reset.usb_ready",
+            "found": [
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_0_s0"
+              ],
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_1_s0"
+              ]
+            ],
+            "cells": [
+              {
+                "name": "u_runtime/g_usb_cdc_reset.usb_ready_0_s0",
+                "kind": "DFFRE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "usb_release[3]",
+                  "CLK": "usb_clk",
+                  "CE": "VCC",
+                  "RESET": "n12_6",
+                  "Q": "\\u_runtime/g_usb_cdc_reset.usb_ready [0]"
+                }
+              },
+              {
+                "name": "u_runtime/g_usb_cdc_reset.usb_ready_1_s0",
+                "kind": "DFFCE",
+                "parameters": {
+                  "INIT": "1'b0"
+                },
+                "pins": {
+                  "D": "\\u_runtime/g_usb_cdc_reset.usb_ready [0]",
+                  "CLK": "usb_clk",
+                  "CE": "VCC",
+                  "CLEAR": "GND",
+                  "Q": "\\u_runtime/g_usb_cdc_reset.usb_ready [1]"
+                }
+              }
+            ],
+            "q0_fanout": [
+              [
+                "u_runtime/g_usb_cdc_reset.usb_ready_1_s0",
+                "D",
+                "ff"
+              ]
+            ],
+            "q0_only_second_D": true
+          }
+        ]
+      }
+    ],
+    "script_sha256": "a2c03a16d74471a2ea3271e6061d60678e181d527a553c3b799f31ad231f94fe",
+    "scope": "Read-only inventory of retained successful P&R VO. Primitive and first-Q fanout only; no source binding,reset-root or complete functional/STA/CDC acceptance.",
+    "full_CDC_accepted": false,
+    "hardware_tested": false,
+    "interpretation": "Legacy inspect_grant_reset_inputs requires DFFRE/DFFCE with second CLEAR tied low. Retained M has seven DFFCE/DFFCE pairs and two absent direct-TF chains; W has four DFFCE/DFFCE and two DFFRE/DFFCE pairs. Every present first Q feeds only second D. This inventory is not proof of source binding, reset roots, full semantics or CDC.",
+    "auditor": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/workstation_serializer_startup_audit.py",
+      "sha256": "e344e9187d862e7fbe036ceb956a6c3ce09ec06ce16413adbcb8b4f2e2c5b2bf"
+    },
+    "audit_gate_changed": false,
+    "required_followup": "Bind a new audit contract to exact source/configuration, reset-root semantics and inventory; require negative controls. Do not permit either primitive globally or ignore absent chains."
+  },
+  "conclusion": {
+    "observed_ideal_echo_RTT_us": [
+      57.96,
+      62.12
+    ],
+    "single_slot_deadline_us": 6.666666666666667,
+    "current_single_slot_fits_tested_echoes": false,
+    "meaning": "All 24 tested ideal control-frame echoes exceed the current slot deadline, excluding W effect computation and media queues. This rejects direct use of this seam with this model; it is not a physical worst-case bound or a business/audio integration proof.",
+    "next_design": "Evaluate asynchronous wet/result scheduling with declared added latency and bounded queues, and reuse W existing reverb resources. Increasing the current sequential stage deadline alone can cross audio sample periods.",
+    "full_system_resource_savings_claimed": false
+  },
+  "protected_inputs": {
+    "parent_staged_inputs_checked": 693,
+    "historical_descriptors_checked": 42,
+    "all_unchanged": true,
+    "physical_experiment_inputs_unchanged": true,
+    "immutable_experiment_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-experiment-v1/full-M-preparation.json",
+      "sha256": "6f2afc669258b1458c8379f84e127e5ad12ec2297f482d2b386e2c4a30e8d776"
+    }
+  },
+  "parallel_physical_comparison": {
+    "identity": "custom138k-task3-experiment-physical-D21106F4",
+    "physical_manifest": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-capture-identity-route1-v1/physical-F4-p3r1/physical_inputs.json",
+      "sha256": "c0526d5dac8a05b318f476718a8bff439e01934b1bb549cfa99152af5a018d86"
+    },
+    "scope": "Separate running F4 route1 comparison; no terminal P&R result claimed in this diagnostic report."
+  },
+  "timing_closed": false,
+  "physical_budget_authorized": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "rollback": "Existing M/W v21 profiles and F0/F3/E9 candidates remain unchanged; new diagnostics do not participate in source selection."
+}
