@@ -1,0 +1,769 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "recorded_utc": "2026-11-06T11:19:25.187004+00:00",
+  "branch": "codex/dual-138k-task3",
+  "source_parent_commit": "d3f7a84295701ca1b36ce5f4479090b48553da4d",
+  "source_stage_identity": "task3-shared-reverb-lease-v1-5624af073acaa343",
+  "scope": "Source-only shared-engine ownership composition with actual maintained full effects, delay DMA, bounded remote worker, and checked DDR memory model. No production selection or full-system resource/timing improvement claim.",
+  "boards": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-independent-ddr-map-v1",
+      "candidate_identity": "custom138k-workstation-task3-m-independent-ddr-map-v1-8cf0f8e10a9efb34",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "disabled_cnn_and_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "disabled_first_m_core_demo_v1",
+        "bluetooth_policy": "retired_for_independent_m_demo_v1",
+        "recording_policy": "disabled_m_demo_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "ddr_map_alias_policy": "native_ddr_authority_equal_include_aliases_v1"
+      },
+      "source_report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_M_INDEPENDENT_PHYSICAL_20261106.json",
+        "sha256": "8a95039864efadb2315185ff31617bdca4afe4be83ef81c9764467bd3c6898b8"
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/m-independent-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "598300de7ae12e8c1382f8369471a6ee0e817a60598445d6607ea19ba940a0ed"
+      },
+      "new_stream_selected": false,
+      "hardware_tested": false,
+      "control_to_sound_latency_ms": null,
+      "physical_identity": "custom138k-native-physical-D21106F7",
+      "actual_physical_BSRAM": 238,
+      "physical_resources": {
+        "Logic": {
+          "used": 60564,
+          "capacity": 138240,
+          "percent": 44
+        },
+        "Register": {
+          "used": 43158,
+          "capacity": 139095,
+          "percent": 32
+        },
+        "--Logic Register as Latch": {
+          "used": 0,
+          "capacity": 138240,
+          "percent": 0
+        },
+        "--Logic Register as FF": {
+          "used": 43158,
+          "capacity": 138240,
+          "percent": 32
+        },
+        "--I/O Register as Latch": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "--I/O Register as FF": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "CLS": {
+          "used": 46641,
+          "capacity": 69120,
+          "percent": 68
+        },
+        "I/O Port": {
+          "used": 143,
+          "capacity": 297,
+          "percent": 49
+        },
+        "AE350_SOC": {
+          "used": 1,
+          "capacity": 1,
+          "percent": 100
+        },
+        "PRIMARY": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "LW": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "GCLK_PIN": {
+          "used": 15,
+          "capacity": 24,
+          "percent": 63
+        },
+        "CLKDIV": {
+          "used": 2,
+          "capacity": 24,
+          "percent": 9
+        },
+        "DCS": {
+          "used": 1,
+          "capacity": 20,
+          "percent": 5
+        },
+        "DDRDLL": {
+          "used": 1,
+          "capacity": 4,
+          "percent": 25
+        },
+        "DQS": {
+          "used": 4,
+          "capacity": 23,
+          "percent": 18
+        },
+        "PLL": {
+          "used": 6,
+          "capacity": 12,
+          "percent": 50
+        },
+        "BSRAM": {
+          "used": 238,
+          "capacity": 340,
+          "percent": 70
+        }
+      },
+      "timing": {
+        "setup": -0.548,
+        "hold": -3.535,
+        "recovery": 2.943,
+        "removal": 0.275
+      },
+      "audio_Fmax_MHz": 73.696,
+      "required_audio_MHz": 76.8,
+      "ordinary_voices": 32,
+      "existing_vector_voices": 8,
+      "new_lease_selected": false
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-paired-banked96-v1",
+      "candidate_identity": "custom138k-workstation-task3-w-paired-banked96-v1-c5aa7e9c87dd9908",
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 98304,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "task3_paired_W_USB_retired_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "cnn_reset_policy": "task3_w_CNN_control_native_reset_release3_v1",
+        "cnn_ready_sdc_policy": "task3_w_CNN_ready_backend_sync_rebind_v1",
+        "ae350_boot_storage_policy": "task3_W_three_bank32k_physical96_v1"
+      },
+      "source_report": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/reports/DUAL138K_TASK3_W_BANKED96_20261106.json",
+        "sha256": "8beda2a1202f11c8e71c8253daf4ae64f45b316433f235345475fb3fea0b83a3"
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/w-banked96-p2r0-v1/impl/pnr/custom_138k_integration.fs",
+        "sha256": "0fe24010d862b787518ba0f27453c5f936c97433da840db255dd25195429c3e4"
+      },
+      "new_stream_selected": false,
+      "hardware_tested": false,
+      "control_to_sound_latency_ms": null,
+      "physical_identity": "custom138k-resource-physical-D21106F6",
+      "actual_physical_BSRAM": 287,
+      "physical_resources": {
+        "Logic": {
+          "used": 79560,
+          "capacity": 138240,
+          "percent": 58
+        },
+        "Register": {
+          "used": 46521,
+          "capacity": 139095,
+          "percent": 34
+        },
+        "--Logic Register as Latch": {
+          "used": 0,
+          "capacity": 138240,
+          "percent": 0
+        },
+        "--Logic Register as FF": {
+          "used": 46521,
+          "capacity": 138240,
+          "percent": 34
+        },
+        "--I/O Register as Latch": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "--I/O Register as FF": {
+          "used": 0,
+          "capacity": 855,
+          "percent": 0
+        },
+        "CLS": {
+          "used": 56239,
+          "capacity": 69120,
+          "percent": 82
+        },
+        "I/O Port": {
+          "used": 147,
+          "capacity": 297,
+          "percent": 50
+        },
+        "AE350_SOC": {
+          "used": 1,
+          "capacity": 1,
+          "percent": 100
+        },
+        "PRIMARY": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "LW": {
+          "used": 8,
+          "capacity": 8,
+          "percent": 100
+        },
+        "GCLK_PIN": {
+          "used": 17,
+          "capacity": 24,
+          "percent": 71
+        },
+        "CLKDIV": {
+          "used": 1,
+          "capacity": 24,
+          "percent": 5
+        },
+        "DCS": {
+          "used": 1,
+          "capacity": 20,
+          "percent": 5
+        },
+        "DDRDLL": {
+          "used": 1,
+          "capacity": 4,
+          "percent": 25
+        },
+        "DQS": {
+          "used": 4,
+          "capacity": 23,
+          "percent": 18
+        },
+        "PLL": {
+          "used": 4,
+          "capacity": 12,
+          "percent": 34
+        },
+        "BSRAM": {
+          "used": 287,
+          "capacity": 340,
+          "percent": 85
+        }
+      },
+      "timing_closed": false,
+      "consumer_failure": "Boolean driver absent/ambiguous: u_task3_bus_endpoint/n737_9",
+      "role": "actual CNN/CQT/Viterbi,HCI/SBC,sole CPU/BLE DDR recording object",
+      "new_lease_selected": false
+    }
+  },
+  "expected_benefit": {
+    "target": "Existing W reverb subtree,20 BSRAM-equivalent and19 MULT27X36 in retained hierarchy; avoid a duplicate engine when serving M.",
+    "M_future_target": "Retained local reverb arithmetic/history; integration still required before any whole-M savings.",
+    "observed_elaborated_engine_count": 1,
+    "full_system_resource_delta": null,
+    "new_synthesis_or_physical_resources": null,
+    "worst_M_setup_still": "glide_step_o_6 to pitch/glide_ratio_2"
+  },
+  "implementation": {
+    "broker": "rtl/audio/workstation_shared_spatial_reverb.sv",
+    "composition": "rtl/audio/workstation_worker_effects_shared.sv",
+    "documentation": "rtl/audio/SHARED_REVERB_LEASE.md",
+    "admission": "Close new local samples/config/history immediately on claim. Drain accepted work, then use original whole-chain history transaction plus actual ordered DDR fence.",
+    "grant": "Only after actual local history completion, full chain quiescence and engine quiescence. Exactly one engine instance in elaborated hierarchy.",
+    "revoke": "Local preempt,claim withdrawal,clear/PANIC,context revocation or local fault immediately suppress remote commands/results. Clear and physically restore saved local rate with actual configuration acknowledgement before local admission resumes.",
+    "drain_timeout_cycles": 4096,
+    "restore_timeout_cycles": 512,
+    "drain_denial": "No forged ACK or local transaction reset. One denial for held claim; claim must withdraw before retry.",
+    "restoration_failure": "Sticky fault,closed admission until coordinated reset;PANIC cannot recover.",
+    "private_state": "Saved rate is restoration state only. Actual physical engine rate stays observable; only private local equality comparison is suspended while engine belongs away.",
+    "projection": {
+      "policy": "source_only_shared_reverb_seam_v1",
+      "maintained_sha256": "50d18332d820f8bc11f272726b6ed51190cd3ec4acde666c9ef4d0c511ab4e13",
+      "canonical_parent_sha256": "99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46fc0a311bdcdc2c9",
+      "selected_sha256": "8585381d16d597e0c92047555a9433b9949df937f51c5a136df23e5130a86604",
+      "exact_edits": [
+        {
+          "before": "module workstation_runtime_stereo_effects #(",
+          "after": "module workstation_runtime_stereo_effects_reverb_port #("
+        },
+        {
+          "before": "    input logic clk_i,rst_ni,clear_i,valid_i,",
+          "after": "    input wire rv_away_i,\n    output wire rv_valid_o,rv_enabled_o,\n    output wire signed [31:0] rv_left_o,rv_right_o,\n    input wire rv_ready_i,rv_active_i,rv_valid_i,rv_clip_i,\n    input wire signed [31:0] rv_left_i,rv_right_i,\n    output wire rv_config_valid_o,rv_history_clear_o,rv_rate_o,\n    input wire rv_config_ready_i,rv_history_ready_i,rv_history_done_i,\n    input wire rv_quiescent_i,rv_applied_rate_i,\n    input logic clk_i,rst_ni,clear_i,valid_i,"
+        },
+        {
+          "before": "  workstation_runtime_spatial_reverb reverb_stage(\n      .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==2),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),\n      .ready_o(reverb_ready),.valid_o(reverb_valid),.active_o(reverb_active),.left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),\n      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),\n      .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),\n      .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]));",
+          "after": "  assign rv_valid_o=state==SEND && work_id==2,rv_enabled_o=work_enabled;\n  assign rv_left_o=work_l,rv_right_o=work_r;\n  assign reverb_ready=rv_ready_i,reverb_active=rv_active_i,reverb_valid=rv_valid_i;\n  assign reverb_l=rv_left_i,reverb_r=rv_right_i,reverb_clip=rv_clip_i;\n  assign rv_config_valid_o=config_accept,rv_history_clear_o=history_accept,rv_rate_o=rate_44100_i;\n  assign stage_config_ready[2]=rv_config_ready_i,stage_history_ready[2]=rv_history_ready_i;\n  assign stage_done[2]=rv_history_done_i,stage_quiet[2]=rv_quiescent_i,stage_rate[2]=rv_applied_rate_i;\n  // The original composition consumes the real history ACK for both operations."
+        },
+        {
+          "before": "if(!barrier_busy && stage_rate!={3{stage_rate[0]}})",
+          "after": "if(!rv_away_i && !barrier_busy && stage_rate!={3{stage_rate[0]}})"
+        }
+      ],
+      "full_roundtrip": true,
+      "production_profile_selected": false,
+      "other_DSP_DDR_owners_unchanged": true
+    },
+    "production_profile_selected": false,
+    "wire_format_changed": false,
+    "DDR_address_allocation_changed": false,
+    "existing_M_sample_scheduler_changed": false,
+    "reset": "All client admission closes throughout reset. A directed assertion reproduced the missing local reset gate before the broker was repaired;reset-open mutant is rejected."
+  },
+  "communication_budget": {
+    "maintained_frame_bytes": 52,
+    "maintained_payload_bytes": 32,
+    "allocated_typed_channels": 15,
+    "available_new_channel": null,
+    "minimum_header_assumption_bytes": 8,
+    "PCM_only_stereo32_words_per_frame": 3,
+    "PCM_only_extra_wire_Bps_each_direction": {
+      "48000": 832000,
+      "44100": 764400
+    },
+    "PCM_only_omits": "per-sample enable/error/clip metadata",
+    "flag_header_budget_assumption_bytes": 10,
+    "flag_inclusive_stereo32_words_per_frame": 2,
+    "flag_inclusive_extra_wire_Bps_each_direction": {
+      "48000": 1248000,
+      "44100": 1146600
+    },
+    "existing_48k_minima": {
+      "M_to_W": 1378000,
+      "W_to_M": 546000
+    },
+    "PCM_only_combined_48k_minima": {
+      "M_to_W": 2210000,
+      "W_to_M": 1378000
+    },
+    "flag_inclusive_combined_48k_minima": {
+      "M_to_W": 2626000,
+      "W_to_M": 1794000
+    },
+    "all_exclude": "credits,status,ARM,cancellation,retries,download and congestion headroom",
+    "reference_existing_budget": "DUAL138K_TASK3_PHONE_BATCH_20261103.json",
+    "physical_admission": false,
+    "measured_throughput_Bps": null,
+    "measured_RTT_us": null,
+    "measured_jitter_us": null,
+    "packet_formats_selected": false,
+    "background_policy": "Concurrent analysis costs another416000B/s M->W at48k. Pause or explicitly budget background work; throttle downloads to measured remaining headroom. Never silently drop live phone/recording.",
+    "single_frame_deadline_rejected_by_prior_ideal_RTT_us": [
+      57.96,
+      62.12
+    ]
+  },
+  "validation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v10/verification.json",
+      "sha256": "eec7739be68edc4aeda5204c92ededd93758ac65f5b2ae0182542d0c7a8b4cd2"
+    },
+    "configuration_matrix": "W25/50MHz,local48/44.1kHz with opposite remote rate,loss of restoration ready or applied ACK;independent memory clock14ns period",
+    "normal_results": [
+      {
+        "passed": true,
+        "worker_mhz": 25,
+        "local_rate44": 0,
+        "restore_ack_fault": 0,
+        "checks": 1321873,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2154,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 25,
+        "local_rate44": 0,
+        "restore_ack_fault": 1,
+        "checks": 1321873,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2154,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 25,
+        "local_rate44": 1,
+        "restore_ack_fault": 0,
+        "checks": 1215981,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2141,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 25,
+        "local_rate44": 1,
+        "restore_ack_fault": 1,
+        "checks": 1215981,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2141,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 50,
+        "local_rate44": 0,
+        "restore_ack_fault": 0,
+        "checks": 2620250,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2154,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 50,
+        "local_rate44": 0,
+        "restore_ack_fault": 1,
+        "checks": 2620250,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2154,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 50,
+        "local_rate44": 1,
+        "restore_ack_fault": 0,
+        "checks": 2406164,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2141,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      },
+      {
+        "passed": true,
+        "worker_mhz": 50,
+        "local_rate44": 1,
+        "restore_ack_fault": 1,
+        "checks": 2406164,
+        "local_frames": 61,
+        "remote_frames": 2303,
+        "remote_results": 2302,
+        "wet_frames": 2141,
+        "grants": 3,
+        "denied": 1,
+        "restore_failures": 1
+      }
+    ],
+    "aggregate": {
+      "local_frames": 488,
+      "remote_frames": 18424,
+      "remote_results": 18416,
+      "wet_frames": 17180,
+      "grants": 24,
+      "denied": 8,
+      "restore_failures": 8,
+      "cancelled_remote_frames": 8
+    },
+    "actual_reverb_paths": [
+      "tb_shared_reverb_lease.dut.shared_engine.engine"
+    ],
+    "DDR_fence": "Actual ordered DMA post-write fence plus maintained memory model;10us hold before first grant,8300-worker-clock hold for bounded denial and retry suppression.",
+    "local_reference": "Independent signed gain-slew and rounding model,stereo32 dry mask0 with all three real maintenance stages executing. This is not a local wet arithmetic regression.",
+    "remote_reference": "Both full32 inputs and PCM/clip/context/result routing checked against actual shared engine boundaries. Existing DSP arithmetic unmodified;not a new independent wet arithmetic reference.",
+    "fault_injections": "Test-only force of actual engine configuration ready or applied signal low;no engine/DDR completion fabricated.",
+    "negative_controls": [
+      {
+        "name": "reset_admission_open",
+        "rejected": true,
+        "source_sha256": "830a170f041f17a804917f4e37a44faecf7d617f57bf21ab328e30fa5b668a3c",
+        "before": "local_quiesce_o=!rst_ni || state!=LOCAL || request;",
+        "after": "local_quiesce_o=state!=LOCAL || request;",
+        "expected_failure": "reset closes client admission"
+      },
+      {
+        "name": "early_grant",
+        "rejected": true,
+        "source_sha256": "519a8beebab124fb37251710e06ba3e6540a0bcdcf909029231476d6fa211e45",
+        "before": "LOCAL:if(request)begin state<=DRAIN;timer<=0;end",
+        "after": "LOCAL:if(request)begin state<=REMOTE;timer<=0;end",
+        "expected_failure": "last local sample completes before grant"
+      },
+      {
+        "name": "skip_ddr_fence",
+        "rejected": true,
+        "source_sha256": "9a13b3390a6f4b51cff867ac2cedaa21b981bfa9e8af1b276a8e85e9623f579d",
+        "before": "else if(local_fence_ready_i)state<=FENCE_WAIT;",
+        "after": "else if(local_fence_ready_i)state<=REMOTE;",
+        "expected_failure": "actual ordered DDR fence returned before grant"
+      },
+      {
+        "name": "local_admission_open",
+        "rejected": true,
+        "source_sha256": "e07141aaad3211450394112b765cd68d3c607aad833dffb96740aed5c71a31d5",
+        "before": "wire open_local=!local_quiesce_o",
+        "after": "wire open_local=rst_ni",
+        "expected_failure": "local admission closed during lease"
+      },
+      {
+        "name": "wrong_restore_rate",
+        "rejected": true,
+        "source_sha256": "98f25c3c5313c27088394d3a201815aee39440782247a64ebdbc119223440d28",
+        "before": "config_rate=restoring ? local_rate",
+        "after": "config_rate=restoring ? remote_rate_44100_i",
+        "expected_failure": "local path opens within bound"
+      },
+      {
+        "name": "cross_owner_result",
+        "rejected": true,
+        "source_sha256": "0ad5916e3716c9848f918bdbd5acec402398b2f2e1611dd15f672458f7d8b41a",
+        "before": "assign valid_o=rst_ni && local_path && engine_valid",
+        "after": "assign valid_o=rst_ni && (local_path || remote_grant_o) && engine_valid",
+        "expected_failure": "remote completion is hidden from local client"
+      },
+      {
+        "name": "no_restore_timeout",
+        "rejected": true,
+        "source_sha256": "104a335ba5a81284eefe5a5e712ff4cf6526d80c3a1e13b5a153b634797e8110",
+        "before": "wire restore_timeout=restoring && timer==T'(RESTORE_TIMEOUT_CYCLES-1);",
+        "after": "wire restore_timeout=1'b0;",
+        "expected_failure": "failed restoration latches closed fault"
+      },
+      {
+        "name": "panic_clears_fault",
+        "rejected": true,
+        "source_sha256": "a527ccb417a24f3ba0f5a160daa2db19d8b3d51ac60427fedbecf426624ea703",
+        "before": "if(fault_o)begin state<=FAILED;timer<=0;end",
+        "after": "if(fault_o)begin state<=clear_i ? RETURN_CLEAR : FAILED; if(clear_i)fault_o<=0;timer<=0;end",
+        "expected_failure": "PANIC cannot clear a restoration fault"
+      }
+    ],
+    "compile_warning_count": 36,
+    "compile_warning_counts": {
+      "TIMESCALEMOD": 1,
+      "WIDTHEXPAND": 24,
+      "WIDTHTRUNC": 11
+    },
+    "new_ownership_sources_have_no_compile_warnings": true,
+    "inherited_warnings": "Versioned math timescale,bank RAM index widths,maintained delay/chorus arithmetic and projected original mix widths;all warnings retained in compile log.",
+    "regressions": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B projects/138k/push2_workstation/usb_a/sim/test_current_workstation_sources.py",
+        "passed": 17
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B projects/138k/push2_workstation/usb_a/sim/test_workstation_demo_policy.py",
+        "passed": 8
+      }
+    ]
+  },
+  "initial_attempts_retained": [
+    {
+      "attempt": 2,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v2/verification.json",
+        "sha256": "73f78bbff54ba5456e36537658134532be6c574f1534e7e7ee9324a12e1f4b15"
+      },
+      "passed": false,
+      "normal_runs_completed": 0,
+      "reason": "First full-chain run exposed a bench scoreboard edge: the last local valid pulse had not reached its sampling edge before the immediate count assertion. Corrected the bench handshake only."
+    },
+    {
+      "attempt": 3,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v3/verification.json",
+        "sha256": "075ed436a5271964ec4c38b6d20cba00d9eaa213cd629e82b6e0cb1e97f43e31"
+      },
+      "passed": true,
+      "normal_runs_completed": 4,
+      "reason": "Four normal clock/rate runs passed before the expanded cancellation and negative-control matrix."
+    },
+    {
+      "attempt": 4,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v4/verification.json",
+        "sha256": "eb6d1cc73e8295499aeea37ac167a496b55641d74275aba3a41aee2da91d9d62"
+      },
+      "passed": false,
+      "normal_runs_completed": 8,
+      "reason": "All eight normal cases ran; the automatic-recovery mutant hit the earlier real-rate-readiness assertion, while the runner required the later generic fault assertion. Retained as an incomplete negative-control run."
+    },
+    {
+      "attempt": 5,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v5/verification.json",
+        "sha256": "e973f4485b2047c409ca634084423bb928ca049fcee88cefc783cbede20032b7"
+      },
+      "passed": false,
+      "normal_runs_completed": 0,
+      "reason": "Holding the fence for8300 worker clocks exceeded the deliberately shortened16384-memory-cycle test watchdog at25MHz. Increased only the test DMA transaction watchdog to65536 memory clocks; production defaults remain1048576."
+    },
+    {
+      "attempt": 6,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v6/verification.json",
+        "sha256": "fa91d2110dfa31aaa02929d47985a3d8fe0aa95c9dc151395ad363efec91d463"
+      },
+      "passed": false,
+      "normal_runs_completed": 8,
+      "reason": "Eight normal runs passed. The PANIC-clears-fault mutant exposed a bench expectation that omitted a legitimate externally requested clear ACK; corrected the bench ledger rather than suppressing the assertion."
+    },
+    {
+      "attempt": 7,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v7/verification.json",
+        "sha256": "a2c270654ccced0c8b8e6dc13b2eac308c7b9664e0a4540324d3b84d8336588b"
+      },
+      "passed": true,
+      "normal_runs_completed": 8,
+      "reason": "Eight normal runs and all seven compiled behavioral mutations passed with unchanged verified inputs."
+    },
+    {
+      "attempt": 8,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v8/verification.json",
+        "sha256": "51419614072d60ebf8750d218e09321180655ffdf802d8d846bea47eff5d24c5"
+      },
+      "passed": false,
+      "normal_runs_completed": 0,
+      "reason": "Added reset admission assertion reproduced a real new-broker bug:local ready/slot were exposed during reset. Added reset closure to local quiesce and local engine handshakes;production profiles remain unchanged."
+    },
+    {
+      "attempt": 9,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v9/verification.json",
+        "sha256": "74bea44f523fb63668519c82357f6f253839fdaaaa7409e5d6318ff864c7f765"
+      },
+      "passed": false,
+      "normal_runs_completed": 8,
+      "reason": "After reset repair all eight normal runs passed. The open-local-admission mutant also removed reset protection and therefore failed the new reset assertion before the lease assertion. Isolated the lease mutant by preserving reset."
+    },
+    {
+      "attempt": 10,
+      "evidence": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v10/verification.json",
+        "sha256": "eec7739be68edc4aeda5204c92ededd93758ac65f5b2ae0182542d0c7a8b4cd2"
+      },
+      "passed": true,
+      "normal_runs_completed": 8,
+      "reason": "Final unchanged-source run:all eight clock/rate/fault combinations and all eight compiled destructive controls passed;exactly one actual engine in elaborated hierarchy."
+    }
+  ],
+  "preservation": {
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261106/shared-reverb-lease-v10/preservation.json",
+      "sha256": "cf2ae3a3ed3e8cad0493243ed53e0ab257944fc7af799a84e1685194ba66b2bb"
+    },
+    "old_tracked_files_checked": 556,
+    "profile_descriptors_checked": 72,
+    "all_unchanged": true,
+    "remote_reviewed_integration": "f96df2761210360a6cf27b71f7c7cd68c74b3f41",
+    "remote_integration_verified_ancestor": true,
+    "frozen_baselines_and_fallbacks_modified": false
+  },
+  "attempt_budget": {
+    "new_Gowin_synthesis_calls": 0,
+    "new_PnR_calls": 0,
+    "first_round_PnR_used": {
+      "A": 1,
+      "B": 1,
+      "C": 1
+    },
+    "additional_layout_route_trials": false
+  },
+  "integration_decision": "Ownership experiment passed. Keep production profiles unchanged until explicit maintained transport negotiation,budget admission and versioned native composition are reviewed. No additional EDA trial in this phase.",
+  "remaining": [
+    "Select an explicit negotiated extension of maintained LCD channels;all15 types are allocated. Account stereo32 flags/identity,credits,status/download and congestion headroom.",
+    "Versioned native W composition/source/profile integration must replace the local reverb instance with this shared owner;do not add another engine. Keep source projection an auditable experiment until replaced.",
+    "M asynchronous stream insertion and actual local reverb retirement with full feature/sample scheduler preservation and fresh resource proof remain separate.",
+    "Correct-target electrical checks and LCD throughput/RTT/tail jitter/congestion and concurrent media measurements;unrelated connected board untouched.",
+    "Full M/W CDC/consumer/PLL/routed timing and actual DAC latency,TF/CNN/Push,phone D press/release,sole long recording/download acceptance remain open."
+  ],
+  "timing_closed": false,
+  "whole_source_CDC_accepted": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "bitstream_for_new_source": null,
+  "deployment_allowed": false,
+  "release_ready": false,
+  "rollback": {
+    "source_parent_commit": "d3f7a84295701ca1b36ce5f4479090b48553da4d",
+    "production_profiles_unchanged": true,
+    "retained_M": "D21106F7",
+    "retained_W": "D21106F6",
+    "previous_W_fallback": "D21106F5",
+    "single_board_and_task2_candidates_preserved": true
+  }
+}
