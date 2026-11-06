@@ -62,7 +62,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-截至 2026-11-06，最新实验来源检查点为两板 v21。M 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。W 配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
+截至 2026-11-06，最新已登记来源检查点为两板 v21；另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。W 配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
 
 | 板与阶段 | 来源身份 | 实际证据 |
 | --- | --- | --- |
@@ -70,6 +70,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 | M v21 F0 物理比较 | `custom138k-resource-physical-D21106F0`；[本轮证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_COMPARISON_20261106.json) | 同约束 P3R0，816.13 秒完成布线与位流生成；Logic 99061、Register 58408、BSRAM 253/340、CLS 61686/69120。setup/hold/recovery/removal 为 -4.468/-3.665/-4.263/-0.141 ns；未通过完整物理门禁，未部署。 |
 | M v21 F1 物理预算实验 | `custom138k-resource-physical-D21106F1`；[PLL 路由实验与远程复核](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_PLL_RESET_EXPERIMENT_20261106.json) | 相同综合 VG、CST、P3R0；只追加更严格的 TMDS PLL RESET 6 ns 预算及像素专项报告。831.70 秒完成布线，资源及四项最差裕量与 F0 相同；PLL RESET 仍为 10.870 ns。该实验未改善时序，未选入生产配置。 |
 | M v21 F2 输出布局实验 | `custom138k-resource-physical-D21106F2`；[局部布局与完整门禁](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TMDS_OUTPUT_LOCALITY_20261106.json) | 保持 F0 综合 VG、SDC、P3R0 及全部 IO，仅追加 60 个 TMDS 输出寄存器/反相门的区域约束。688.18 秒完成布线；Logic 99075、Register 58408、BSRAM 253/340、CLS 61705/69120。setup/hold/recovery/removal 为 -4.231/-3.608/-3.953/-0.847 ns；HDMI、clk50、audio Fmax 回退，不选入生产配置，未部署。 |
+| M F3 一致性比较实验 | 来源 `custom138k-task3-m-capture-identity-experiment-5f4bc994d089b579`；物理尝试 `custom138k-task3-experiment-physical-D21106F3`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_CAPTURE_IDENTITY_EXPERIMENT_20261106.json) | 完整 M 综合 208.25 秒成功：58408 Register、68675 LUT、28057 ALU、212 BSRAM 等效、254 RAM16。P3R0 运行 909.86 秒后 PR0004 退出，日志为“0 unrouted nets”；部分 P&R 报告为 Logic 99060、BSRAM 253/340、CLS 61787/69120。没有 STA、SDF 或位流，不选入生产配置。 |
 | M v20 EF 保留对照 | `custom138k-resource-physical-D21106EF`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_DEMAND_IDENTITY_20261106.json) | BSRAM 253/340、CLS 61874/69120，setup/hold/recovery/removal 为 -5.106/-3.373/-4.674/0.281 ns。保留原始来源：EF 源于初次 v20，终版 v20 通过编译字节相同比对引用，未改写 EF 身份。 |
 | W v21 当前来源 | `custom138k-workstation-task3-w-paired-checkpoint-v21-d8fa5871d2958f19`；[配置](push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_paired_checkpoint_v21.json) | 1027 项来源锁、200 项编译输入、675 项准备文件。配置及全部编译字节与 v20 相同；本阶段没有新 W 综合或物理运行。 |
 | W v14 E9 保留物理结果 | `custom138k-resource-physical-D21106E9`；[证据](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_CNN_READY_SDC_20261106.json) | 真实 BSRAM 336/340、CLS 58819/69120；审计 11/18，setup/hold/recovery/removal 为 −7.224/−4.350/−7.947/−0.234 ns。结果保留原身份，未部署。 |
@@ -90,7 +91,11 @@ F2 在 `R[46:74]C[160:181]` 约束全部 30 个输出寄存器和 30 个反相�
 
 F2 的 clk50/audio/HDMI Fmax 为 41.274/58.111/114.279 MHz，均低于 F0；removal 也回退。完整 PLL 检查首次因未设置官方仿真库路径中止；补上 `GOWIN_SIMLIB` 后按原规则重跑，仍因 startup grant 接收原语、TMDS `ICPSEL[0]` 传播 10.106 ns 超过 10 ns，以及 held-handshake 所选行缺失/重复而失败。环境失败和最终失败分别保留。F2 位流 SHA256 为 `9d52145cd602deaa5000a0568bfe8629437b9d9bab070fadb38992ef0a88bb51`，不替换现有对照；53 项相关测试通过、1 项跳过，未操作目标板。
 
-局部比较缩短并未消除整条回复路径：相同 memory fault→reply CE 边界的最长拓扑见证从 47 级变为 50 级，当前见证仍含 31 个 NE 单元，实际操作数为响应与冻结的 `capture_id`。这是另一个完整身份一致性检查，保留为后续优化候选；拓扑见证未证明可敏化，也不是加权 STA 路径。识别完成信号则确认是保持状态；实际 USB meta→sync 两级存在，源侧首个寄存器边界只有自身保持和 USB meta。任务取消、重新 ARM、完成与曲谱数据的顺序语义仍需证明，本轮未新增例外。
+v21 的顺序比较缩短后，相同 memory fault→reply CE 边界的最长拓扑见证从 47 级变为 50 级，仍含响应与冻结 `capture_id` 的 31 级一致性比较。F3 只将 `LAST_CAPTURE_ID` 的这项完整 32 位比较改为四组 8 位比较；原快照一致性、顺序检查、状态和协议保持原样。通过 27 项测试方法、4290 项真实 RTL 四态比较，以及异步 PCM owner 的 18135 周期/11 个公开输出等价检查。完整 M VG 与失败 P&R 所生成 VO 中的局部比较均证明全部 2^64 组赋值等价，各拒绝 64 个漏位反例，最大串行 ALU 为 7 级、组合逻辑为 9 级。初次 VO 诊断误用了综合层级，修正为实际扁平网名及 FF-Q 后通过；初次失败保留。相同 fault→reply CE 的最长拓扑为 27 级，未证明可敏化，也不是加权 STA。
+
+F3 仍是显式独立实验：287 项原编译输入中只替换一个精确可逆的批处理源，新增一个版本化组合比较模块；693 项父来源文件和 42 份历史描述符未改。完整综合比 v21 增加 5 LUT、减少 4 ALU，寄存器/存储不变，249 个既有层级实例资源不变。物理运行保留 F0 CST 和 SDC 全部字节，仅追加两条像素报告命令；未采用 F2 区域约束。PR0004 的根因尚未确定，“0 unrouted nets”不能覆盖失败退出；生成 VO 的局部证明不能替代缺失的 STA/SDF/位流，完整 PLL 检查也未运行。现有标准配置和 F0/EF/EE/EC 对照均保留。
+
+识别完成信号已确认是保持状态；实际 USB meta→sync 两级存在，源侧首个寄存器边界只有自身保持和 USB meta。任务取消、重新 ARM、完成与曲谱数据的顺序语义仍需证明，本轮未新增例外。
 
 整机的 CPU release/consumer 与 held-handshake 两个门禁仍失败，历史清单未刷新。先前 [403 个源侧 FF 与外部 APB 方程核查](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_P3_SOURCE_REVIEW_20261106.json)仍是局部证据。完整 PLL/startup、完整 TF CDC、真实 32 声部普通/矢量合成、TF→W CNN→Push、手机 D 按放效果及 60 秒录音/下载并发仍需各自验收。局部存储、命令、MIDI 和比较证明不能替代这些门禁。
 
@@ -98,9 +103,11 @@ F2 的 clk50/audio/HDMI Fmax 为 41.274/58.111/114.279 MHz，均低于 F0；remo
 
 F2 阶段再次实际 fetch 当前分支：远程与本地均为 `ffc28f8f`，无待合入 PR；`f96df276` 仍为当前祖先。CPU48 的实际网表证据沿用上述明确标识的 F0/E9 复核，本阶段没有新增 W 综合或物理运行。
 
+F3 阶段再次 fetch：远程与本地基点均为 `e9ead733`，无待合入 PR；在线核对 PR #2/#3 已合入原 workstation 分支，当前仍继承审查后的选择性集成。重新从本轮完整 M VG 逐字重建 24 块、12288 字 CPU48 ROM，确认远程优化仍生效；W 沿用明确标识的 E9 证据，没有新综合或物理运行。
+
 后续按以下顺序推进：
 
-1. F2 证实局部输出线缩短但整机时序回退，先取得覆盖编码器输入、复位和串行器端点的像素专项 STA，再决定更小的布局范围或流水线；F1 的 6 ns PLL RESET 预算和 F2 的 60 单元区域均不直接选入。继续处理 clk50 的 RX payload→TX payload 与 memory fault→reply CE 路径，以及 audio 的 divider valid→配置接受→reverb RAM CE 路径（18 级逻辑，途中门扇出 514），保持采样与配置应用屏障。F2 还报告 PCM owner 的 staged_physical→written 路径，需与原对照分开评估。回复路径中的完整 capture ID 一致性比较也是候选；核查 HCI ready→PCM session release、识别完成→USB 首级及效果故障的运行语义，以及 PANIC/事件队列和复位扇出。保留 F2、F1、F0、EF、EE、EC 对照，不放宽时钟或 false path。
+1. F3 局部比较证明通过但布线失败，先独立定位 PR0004，再进行有依据的布局/配置比较并取得完整 STA/SDF；不把 27 级拓扑或“0 unrouted”解释为整机改善。F2 证实局部输出线缩短但整机时序回退，仍需覆盖编码器输入、复位和串行器端点的像素专项 STA；F1 的 6 ns PLL RESET 预算和 F2 的 60 单元区域均不直接选入。继续处理 clk50 的 RX payload→TX payload，以及 audio 的 divider valid→配置接受→reverb RAM CE 路径（18 级逻辑，途中门扇出 514），保持采样与配置应用屏障。F2 的 PCM owner staged_physical→written 路径需与原对照分开评估。核查 HCI ready→PCM session release、识别完成→USB 首级及效果故障的运行语义，以及 PANIC/事件队列和复位扇出。保留 F3、F2、F1、F0、EF、EE、EC 对照，不放宽时钟或 false path。
 2. 关闭 M 的完整 CPU release/consumer、held-handshake、TF CDC 与 PLL/startup 门禁。将已有局部证明接入新检查点前，补全目的侧和完整握手；不刷新旧清单哈希来取得通过。W 完整 batch 的消费者、身份、live、请求/回复及 DDR/配置 payload hold 仍需独立证明。
 3. 结合 W 仅余 4 块物理 BSRAM 和 LCD 实测预算，继续评估重型效果、FFT/显示分析及扩展合成分担。W 已有真实效果链，优先复用，不能假定还能叠加一套混响或 FFT。已有[混响子系统综合](push2_workstation/usb_a/reports/DUAL138K_TASK3_REVERB_SYNTHESIS_20261101.json)尚未选入 paired 整机，其资源减少不能算整机收益。
 4. 正确目标板接入后，先核对身份、引脚/电平及 LCD 有效吞吐、往返延迟和拥塞，再验收 M 独立演奏/DAC 延迟、TF/CNN/Push、手机 D 按放效果与长录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 与真实来源格式绑定；当前 paired 配置只接纳 48 kHz 录音。
