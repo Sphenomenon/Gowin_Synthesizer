@@ -64,7 +64,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新 v27 已通过 M 26/26、W 25/25 完整综合门禁及 17 项 accepted-source 检查；M command-ID→bitmap 实际组合深度 17→14，telemetry 本域释放、精确 CPU 消费者清单及 receiving／held 边界定向检查通过。W B9 已定位为约束解析内存耗尽，B10 的多行 GROUP 语法失败保留；改用单行精确分组后，M A10／W B11 正在完整 P&R。配置、来源、资源及验证哈希见[v27 续记](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_FOLLOWUP_20261108.md)。M A9 的 253 BSRAM、61129 CLS 和 −3.909/−2.867/−7.854/+0.284 ns 仍是历史失败，不继承为新候选通过证据；本阶段尚未交付一对时序通过的候选。
+2026-11-08 最新封存 v28 完整综合门禁为 M 26/26、W 25/25；M A11／W B12 均完成P&R并产生位流。物理BSRAM分别253/340、287/340，CLS为61172、56291；setup/hold/recovery/removal分别为M −4.013/−1.957/−1.500/+0.278 ns、W −3.028/+0.042/+1.608/+0.281 ns。M指定DDR初始化hold已为+2.429 ns；W缩小到741个精确约束原语后解除解析内存耗尽，三类STA转正，但录音完成计数setup仍失败。M功能TF／效果、载荷hold、DMA复位及PLL传播仍需修复，物理证明继续进行。配置、位流、资源、失败证据及下一步见[v28物理结果](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V28_20261108.md)。此前[v27续记](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_FOLLOWUP_20261108.md)与所有历史失败保留；尚未交付一对时序通过候选，不放行上板。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 

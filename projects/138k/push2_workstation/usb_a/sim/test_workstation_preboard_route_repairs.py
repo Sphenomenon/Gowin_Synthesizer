@@ -62,19 +62,28 @@ class RoutedRepairs(unittest.TestCase):
     def test_B7_native_locality_and_remaining_first_capture(self):
         n=self.n;g=Graph(n);cst=(self.stage/'constraints/custom_138k.cst').read_bytes()
         selected,e=w_native_placement(cst,n)
-        self.assertEqual(e['primitive_count'],9130)
+        self.assertEqual(e['primitive_count'],741)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9130)
+        self.assertEqual(len(e['tag_return_cone']['source']),128)
+        self.assertEqual(len(e['tag_return_cone']['capture']),257)
+        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),76)
         self.assertEqual(len(e['placement_groups']),5)
-        self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),9130)
+        self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),741)
         self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),5)
         statements=[line for line in selected.splitlines()if line.startswith(b'GROUP task3_w_native_')]
         self.assertEqual(len(statements),5)
         self.assertTrue(all(line.endswith(b' };')for line in statements))
-        self.assertEqual(sum(line.count(b'"')//2 for line in statements),9130)
-        self.assertTrue(e['exact_region_mapping_preserved'])
+        self.assertEqual(sum(line.count(b'"')//2 for line in statements),741)
+        self.assertTrue(e['broad_region_constraints_removed'])
         for p,c in n.cells.items():
             if c['kind']=='INV':self.assertNotIn(('"'+p+'"').encode(),selected)
         self.assertEqual(e['held_register_count'],280)
         self.assertTrue(e['payload_hold_checks_retained'])
+        path=e['tag_return_cone']['source'][0];old=copy.deepcopy(n.cells[path])
+        n.cells[path]['ports']['CLK']='clk_50m'
+        try:
+            with self.assertRaises(ValueError):w_native_placement(cst,n)
+        finally:n.cells[path]=old
         with self.assertRaises(ValueError):w_native_placement(selected,n)
         path=g.register('u_task3_media/raw_store','command_kind',1)
         old=copy.deepcopy(n.cells[path]);n.cells[path]['ports']['CLK']='GND'
@@ -92,7 +101,7 @@ class RoutedRepairs(unittest.TestCase):
             try:
                 with self.assertRaises(ValueError):boundary_audit(n,role='W',stage=self.stage)
             finally:n.cells[path]=old
-        print('B7 9130 placeable native primitives, 280 separated held FFs; clock, duplicate, release and observer corruptions rejected')
+        print('B7 741 exact causal/held primitives from 9130 reviewed; clock, duplicate, release and observer corruptions rejected')
 
 
 class MClockPriority(unittest.TestCase):
@@ -104,6 +113,13 @@ class MClockPriority(unittest.TestCase):
         r,sdc=audit(n,role='M');cst=(stage/'constraints/custom_138k.cst').read_bytes()
         selected,e=placement(cst,r)
         self.assertEqual(len(e['registers']),348)
+        from collections import Counter
+        self.assertEqual(max(Counter(x['region']for x in e['registers']).values()),82)
+        def region(mailbox,side):
+            return {x['region']for x in e['registers']if x['mailbox']==mailbox and x['side']==side}
+        self.assertEqual(region('M_PCM_request','source'),region('M_PCM_response','capture'))
+        self.assertEqual(region('M_PCM_request','capture'),region('M_PCM_response','source'))
+        self.assertTrue(region('M_PCM_request','source').isdisjoint(region('F808_request','source')))
         self.assertEqual({x['id']for x in r['payloads']},
             {'F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'})
         self.assertEqual(sdc.count('set_min_delay 1.800'),5)

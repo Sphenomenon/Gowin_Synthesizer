@@ -1,5 +1,5 @@
 """Finite timing for paired F808 and M PANIC mailboxes, with hold retained."""
-from tools.workstation_runtime_pcm_cdc import Graph,BooleanDiagram
+from tools.workstation_runtime_pcm_cdc import Graph,BooleanDiagram,COMB
 from tools.workstation_task3_native_held import zero_ff
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_native_protocol_audit import audit_apb_held_boundary
@@ -22,7 +22,15 @@ def placement(cst, proof):
     rows=[];lines=[];seen=set()
     for row in proof['payloads']:
         if row['id'] not in ('F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'):continue
-        for field,region in (('source',DDR_FAR_LAUNCH_REGION),('capture',DDR_FAR_CAPTURE_REGION)):
+        regions=(DDR_FAR_LAUNCH_REGION,DDR_FAR_CAPTURE_REGION)
+        # A10 put 174 data FFs at each 49-CFU corner and failed to route.
+        # Keep the previously routed F808 corners; place the additional M
+        # mailboxes in their own regions, with opposite PCM directions sharing
+        # domain-local regions. Finite payload min/max and hold stay active.
+        if row['id']=='PANIC_epoch':regions=('R[15:25]C[25:40]','R[45:55]C[65:80]')
+        if row['id']=='M_PCM_request':regions=('R[20:30]C[120:135]','R[55:65]C[80:95]')
+        if row['id']=='M_PCM_response':regions=('R[55:65]C[80:95]','R[20:30]C[120:135]')
+        for field,region in zip(('source','capture'),regions):
             for pin in row[field]:
                 path=pin.rsplit('/',1)[0]
                 require(path not in seen and ('"'+path+'"').encode() not in cst,
@@ -32,7 +40,7 @@ def placement(cst, proof):
     expected=348 if proof['role']=='M' else 164
     require(len(rows)==expected, 'incomplete paired held placement inventory')
     selected=cst+('\n# Proved paired held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return selected,dict(policy='task3_exact_held_endpoint_separation_v2',registers=rows,
+    return selected,dict(policy='task3_exact_held_endpoint_separation_v3',registers=rows,
         before_cst_sha256=digest(cst),after_cst_sha256=digest(selected),
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
@@ -41,7 +49,7 @@ def w_native_placement(cst,n):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
-    Keep this native DDR service and its two consumers in one broad region.
+    Keep its exact tag-return causal cone in one bounded local region.
     Preserve every timing check and every same-edge fault equation. The raw
     command/completion placements address their observed short hold paths;
     no timing exception is added for a payload or functional reset.
@@ -72,7 +80,7 @@ def w_native_placement(cst,n):
     # for this floorplan, and all data/control timing checks remain active.
     kinds={'DFFCE','DFFPE','DFFRE','LUT2','LUT3','LUT4','ALU',
            'MUX2_LUT5','MUX2_LUT6','MUX2_LUT7','MUX2_LUT8'}
-    groups=[];selected={}
+    groups=[];reviewed=set()
     for prefix,count in [('u_task3_media/memory/u_arbiter/',2672),
                          ('u_task3_media/raw_store/',4685),
                          ('u_managed/runtime/delay_dma/',1773)]:
@@ -81,13 +89,45 @@ def w_native_placement(cst,n):
         groups.append(dict(scope=prefix,primitive_count=count))
         for p in paths:
             require(('"'+p+'"').encode()not in cst,'preconstrained W native primitive '+p)
-            selected[p]=overrides.get(p,'R[45:100]C[20:110]')
-    require(set(overrides)<=set(selected),'W held data is outside native layout inventory')
-    # One primitive group per distinct region expresses the identical mapping
-    # without expanding thousands of overlapping region objects. B9's per-cell
-    # INS_LOC expansion was killed by macOS at 126007 MB during CST parsing.
-    # SUG1018 2.4.1 defines GROUP + GRP_LOC for precisely this use. List exact
-    # primitives, rather than wildcards which could pick up absorbed INV cells.
+            reviewed.add(p)
+    require(set(overrides)<=reviewed,'W held data is outside native layout inventory')
+    # B9 and B11 both expanded the broad per-object allowed-placement sets
+    # beyond 124 GB, including GROUP form. Target only B7's actual tag-return
+    # causal cone and the previously proved held FFs; leave unrelated logic to
+    # the placer. Never disable timing or constrain absorbed inverter names.
+    tag_scope='u_task3_media/memory/u_arbiter/g_recording.u_core'
+    tags=[g.register(tag_scope,f'g_recording.tags[{slot}]',bit)
+          for slot in range(32)for bit in range(4)]
+    require({p for p in g.regs if p.startswith(tag_scope+'/g_recording.tags[')}==set(tags),
+            'W exact authoritative tag inventory changed')
+    delay=g.group('u_managed/runtime/delay_dma','rsp_hold',256)+[
+        g.register('u_managed/runtime/delay_dma','read_outstanding')]
+    for p in tags+delay:
+        require(n.pin(p,'CLK')=='memory_clk','W tag-return clock changed '+p)
+    forward=set();seen=set();todo=[n.pin(p,'Q')for p in tags]
+    while todo:
+        net=todo.pop()
+        if net in seen:continue
+        seen.add(net)
+        for p,pin,role in g.fan[net]:
+            if role=='comb':
+                forward.add(p);todo.extend(n.pin(p,out)for out in COMB[n.cells[p]['kind']])
+    backward=set();seen=set();todo=[n.pin(p,pin)for p in delay for pin in ('D','CE')]
+    while todo:
+        net=todo.pop()
+        if net in seen:continue
+        seen.add(net)
+        for p,pin in g.drivers[net]:
+            kind=n.cells[p]['kind']
+            if kind in COMB:
+                backward.add(p);todo.extend(n.pin(p,port)for port in n.cells[p]['ports']if port not in COMB[kind])
+    cone=forward&backward
+    require(len(cone)==76 and {n.cells[p]['kind']for p in cone}==
+            {'LUT2','LUT3','LUT4','MUX2_LUT5','MUX2_LUT6'},'W tag-return causal cone changed')
+    selected={p:'R[50:70]C[55:80]'for p in (*tags,*delay,*sorted(cone))}
+    require(not(set(selected)&set(overrides)),'W held/critical placement overlaps')
+    selected.update(overrides)
+    require(len(selected)==741,'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -101,8 +141,10 @@ def w_native_placement(cst,n):
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy='task3_W_B7_native_wire_and_held_locality_v3',groups=groups,
-        placement_groups=placement_groups,exact_region_mapping_preserved=True,
+    return result,dict(policy='task3_W_B7_exact_tag_return_and_held_locality_v4',groups=groups,
+        placement_groups=placement_groups,historical_broad_primitive_review_count=len(reviewed),
+        tag_return_cone=dict(source=tags,capture=delay,combinational_cells=sorted(cone)),
+        broad_region_constraints_removed=True,
         primitive_count=len(selected),held_register_count=len(overrides),
         exact_constraints_sha256=digest(added),before_cst_sha256=digest(cst),
         after_cst_sha256=digest(result),same_edge_fault_logic_unchanged=True,
