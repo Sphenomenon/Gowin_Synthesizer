@@ -71,34 +71,45 @@ class RoutedRepairs(unittest.TestCase):
         pack_cofactor=pack_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         from tools.workstation_native_fault_cofactor import configured as native_configured
         native_fault=native_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault)
-        selected,e=place(cst,n);total=741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
+        from tools.workstation_w_identity_bytes import MANIFEST
+        identity_bytes=(self.stage/MANIFEST).is_file()
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes)
+        selected,e=place(cst,n);total=753 if identity_bytes else 741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9374 if identity_bytes else 9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
-        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),75 if pack_cofactor else 74 if publication else 76)
+        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76)
         self.assertEqual(e['pack_cofactor_layout'],pack_cofactor)
         if native_fault:
-            shared='u_managed/runtime/delay_dma/n420_s2'
-            self.assertEqual(e['causal_cells_excluded_from_placement_only'],[shared])
+            shared='u_managed/runtime/delay_dma/n420_s3' if identity_bytes else 'u_managed/runtime/delay_dma/n420_s2'
+            self.assertEqual(e['causal_cells_excluded_from_placement_only'],[] if identity_bytes else [shared])
             self.assertIn(shared,e['tag_return_cone']['combinational_cells'])
-            self.assertNotIn(('"'+shared+'"').encode(),selected)
+            if identity_bytes:self.assertIn(('"'+shared+'"').encode(),selected)
+            else:self.assertNotIn(('"'+shared+'"').encode(),selected)
             self.assertEqual(len(e['observed_status_hold_separation']),2)
             old=copy.deepcopy(n.cells[shared]);n.cells[shared]['parameters']['INIT']="16'h0000"
             try:
                 with self.assertRaises(ValueError):place(cst,n)
             finally:n.cells[shared]=old
+            if identity_bytes:
+                self.assertEqual(len(e['ready_path_register_publishers']),10)
+                for path in e['ready_path_register_publishers']:
+                    old=copy.deepcopy(n.cells[path]);n.cells[path]['ports']['CLK']='clk_50m'
+                    try:
+                        with self.assertRaises(ValueError):place(cst,n)
+                    finally:n.cells[path]=old
         if pack_cofactor:
             with self.assertRaises(ValueError):
                 w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor)
             with self.assertRaises(ValueError):
                 w_native_placement(cst,n,pack_cofactor=True)
-        self.assertEqual(len(e['placement_groups']),5)
+        group_count=6 if identity_bytes else 5
+        self.assertEqual(len(e['placement_groups']),group_count)
         self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),total)
-        self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),5)
+        self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),group_count)
         statements=[line for line in selected.splitlines()if line.startswith(b'GROUP task3_w_native_')]
-        self.assertEqual(len(statements),5)
+        self.assertEqual(len(statements),group_count)
         self.assertTrue(all(line.endswith(b' };')for line in statements))
         self.assertEqual(sum(line.count(b'"')//2 for line in statements),total)
         self.assertTrue(e['broad_region_constraints_removed'])

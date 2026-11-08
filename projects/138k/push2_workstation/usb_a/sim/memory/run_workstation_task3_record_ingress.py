@@ -18,7 +18,9 @@ def run(out):
     cases=[('actual',None,None),
            ('unsafe-engine-pacing','cooldown==0','cooldown<=2'),
            ('silenced-overflow','identity_bad || count==DEPTH','identity_bad'),
-           ('silenced-generation','frame_generation_i!=generation_o','1\'b0')]
+           ('silenced-generation',
+            'expected_key={session_o,generation_o,physical_epoch_o,expected_sequence}',
+            'expected_key={session_o,frame_generation_i,physical_epoch_o,expected_sequence}')]
     evidence=[]
     for name,before,after in cases:
         directory=out/name;directory.mkdir()

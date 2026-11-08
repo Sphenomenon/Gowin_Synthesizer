@@ -297,6 +297,7 @@ def audit(n, *, stage):
     active = window('n10383_7') if grouped_context else endpoint('n10383_7') if retired_usb else endpoint('n10383_32')
     qual = local('n737_18') if retired_usb else endpoint('n737_12')
     live = endpoint('live') if retired_usb else n.canonical('', 'live')
+    key_bytes_selected=False
     if grouped_context:
         from tools.workstation_w_context_compare import audit_mapped as audit_context
         proofs.append(audit_context(n,g))
@@ -311,6 +312,17 @@ def audit(n, *, stage):
                ('LUT4',"16'h8000"):[('live_4','live_5','live_6','live_7'),
                                    ('n165_4','live_6','live_7','live_38')],
                ('LUT4',"16'h4000"):[('live_4','live_5','live_6','live_7')]}
+        # Full-key byte predicates change packing, while the actual live
+        # equation still has to pass the expanded qualification proof below.
+        from tools.workstation_w_identity_bytes import MANIFEST as key_manifest, MANIFEST_SHA256 as key_manifest_sha
+        key_path=Path(stage)/key_manifest
+        if key_path.is_file():
+            key_raw=key_path.read_bytes()
+            require(hashlib.sha256(key_raw).hexdigest()==key_manifest_sha,'W key-byte manifest drift')
+            key_stream=next(row for row in json.loads(key_raw)['sources'] if row['source']==CNN_STREAM)
+            key_bytes_selected=hashlib.sha256((Path(stage)/CNN_STREAM).read_bytes()).hexdigest()==key_stream['native_sha256']
+        if key_bytes_selected:
+            forms[('LUT4',"16'h4000")].append(('live_28','lcd_g_0_6','live_7','live_5'))
         form=(live_cell['kind'],live_cell['parameters'].get('INIT'))
         require(form in forms,'grouped endpoint live AND mapping changed')
         width=int(live_cell['kind'][3:])
@@ -319,7 +331,7 @@ def audit(n, *, stage):
                  if {endpoint(x)for x in row}==operands]
         require(len(matched)==1,'grouped endpoint live AND operands changed')
         live_parts=matched[0]
-        negative_live_parts=([endpoint('live_4')] if form==('LUT4',"16'h4000") else [])
+        negative_live_parts=([live_parts[0]] if form==('LUT4',"16'h4000") else [])
         require(not negative_live_parts or reserved_dispatch,
                 'complemented live form requires expanded reserved-dispatch proof')
         qual = endpoint('phone_arm_attempt_21')
@@ -400,8 +412,13 @@ def audit(n, *, stage):
                 support_memo[net]=None if any(p is None for p in parts)else set().union(*parts)
                 return support_memo[net]
             candidates=[]
-            for explicit_root in (True, False):
-                inputs=[*leaves,root_q] if explicit_root else leaves
+            if key_bytes_selected:
+                require(root_q in expanded_live,
+                        'key-byte live qualification lost actual root publisher')
+            # The byte-key packing may already expose the root as a live
+            # leaf. In that case it is explicitly present, not absorbed.
+            for explicit_root in ((True,) if root_q in leaves else (True, False)):
+                inputs=list(dict.fromkeys([*leaves,root_q])) if explicit_root else leaves
                 diagram=BooleanDiagram(inputs)
                 wanted=diagram.all([*([diagram.net(g,live)] if expanded_live else []),*(diagram.inputs[x] for x in positive),
                     *(diagram.invert(diagram.inputs[x]) for x in negative),
@@ -525,6 +542,23 @@ def audit(n, *, stage):
         # A300 swaps only I0/I1 of C500. I2/I3 remain mask/keep;
         # all 256 actual next-Q equations below independently verify data.
         mask,keep=n.pin(reply_cell,'I2'),n.pin(reply_cell,'I3')
+        if key_bytes_selected:
+            # Find the read boundary through the actual mux, not an optimizer
+            # numeric alias. Keep the complete per-bit next-Q proof below.
+            inner_net=n.pin(reply_cell,'I0' if n.cells[reply_cell]['parameters']['INIT']=="16'hC500" else 'I1')
+            inner_drivers=g.drivers[inner_net]
+            require(len(inner_drivers)==1,'key-byte reply inner mux absent/ambiguous')
+            inner,port=inner_drivers[0]
+            require(n.cells[inner]['kind']=='LUT4' and port=='F' and
+                    n.cells[inner]['parameters'].get('INIT')=="16'h0F77" and
+                    n.pin(inner,'I0')==n.pin(regs['reply'][0],'Q') and
+                    n.pin(inner,'I3')==q('state',2),
+                    'key-byte reply inner mux equation changed')
+            incoming0=n.canonical('','task3_pair_rx_payload[0]')
+            proofs.append(g.equivalent('key-byte reply incoming gate retains state qualification',
+                [n.pin(inner,'I2'),q('state',1),incoming0],
+                lambda v:v[0]==int(not v[1] and v[2])))
+            read=n.pin(inner,'I1')
     load_cuts = {local(x) for x in ('n737_5','n737_20','n737_7')} if grouped_context else {load}
     if reserved_dispatch:
         load_drivers=g.drivers[load]
@@ -600,7 +634,14 @@ def audit(n, *, stage):
     proofs.append(g.equivalent('window empty includes actual unacknowledged flight',
         [empty,*count,*flight],lambda v:v[0] == int(not any(v[1:]))))
     flush_to_send = local('n12046_12') if retired_usb else local('n12046_11')
-    if ack_grouped:
+    if key_bytes_selected:
+        # This exact mapping separates the no-work watermark from the
+        # state/active term. Prove every real count/flight/held bit, then
+        # retain the actual state next-Q influence check below.
+        flush_to_send=local('n12046_12')
+        proofs.append(g.equivalent('key-byte batch watermark includes held and all pending work',
+            [flush_to_send,held,empty],lambda v:v[0]==int(not v[1] and v[2])))
+    elif ack_grouped:
         # This fresh mapping absorbs state/active into the watermark gate.
         # Prove the complete equation including every held/count/flight bit;
         # the following influence check still binds it to real state next-Q.
@@ -641,6 +682,12 @@ def audit(n, *, stage):
     old_flight = window('n5090_8')
     timer = endpoint('partial_timer_31_9') if reserved_dispatch else window('partial_timer_31_12') if grouped_context else endpoint('partial_timer_31_9') if retired_usb else n.canonical('', 'partial_timer_31_9')
     if ack_grouped:timer=window('partial_timer_31_12')
+    if key_bytes_selected:
+        require(flight_table=="16'hEA00" and n.pin(path,'I2')==flush,
+                'key-byte flight flush binding changed')
+        # The former timer alias is now the counter CE. Take the original
+        # four-control data equation from the actual flight mux instead.
+        old_flight,timer=n.pin(path,'I0'),n.pin(path,'I1')
     if arm_capture and flight_arm_factored:
         # Here n5090_8 is the inhibit, rather than the old-flight term.
         # Expand the real Q and timer/flush input instead of assigning the

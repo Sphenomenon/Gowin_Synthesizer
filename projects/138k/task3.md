@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v55 可复现源码／综合与 W routed 检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V55_20261108.md)：M `6ae12e44a093b56a`、W `c031a4198f2ae893`，完整综合审计29/29、26/26通过；两板独立双目录 prepare 身份及全部输入一致，目录相关身份问题已修复。W v16 已完成，BSRAM287/340，setup −3.029 ns、hold −0.040 ns，recovery +2.573 ns、removal +0.284 ns；PLL及选定 routed 边界通过，完整物理门禁仍失败。M v17尚有2416条网络未布通。不得加载；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
+最新阶段为[v65 完整综合与物理故障检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V65_20261108.md)：M `c4f7c61927ce185d`、W `4c2da1b5c784b2f3`，完整综合审计29/29、27/27通过；738／726个实际暂存文件及候选身份由独立 prepare 复现。W v19 的完整 hold 已转正，setup仍为−4.067 ns；BSRAM287/340，完整物理门禁未通过。M v17的2416条失败网已精确定位，953条驱动属于显示reader；新M v19和W v21正在进行有诊断依据的物理修复验证。两板尚未放行；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
 
 ## 赛题要求与项目目标
 
@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新可复现源码／综合检查点为[v62](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)：M29/29、W27/27通过，M736／W724个实际暂存输入由独立准备逐文件复现；M候选后缀`1823489029b73b89`，W为`0f13850db3f5c180`。W新增native故障诊断cofactor和完整64位录音peer/session字节比较，接受／退休权威、同拍故障与CANCEL不改；四态、真实raw-store twins和当前完整批处理消费者证明通过。编译输入与已完成的v59综合逐字节相同，显式复用原综合产物，未刷新历史锁。M仍保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码和唯一录音对象。
+2026-11-08 保留的可复现源码／综合检查点为[v62](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)：M29/29、W27/27通过，M736／W724个实际暂存输入由独立准备逐文件复现；M候选后缀`1823489029b73b89`，W为`0f13850db3f5c180`。W新增native故障诊断cofactor和完整64位录音peer/session字节比较，接受／退休权威、同拍故障与CANCEL不改；四态、真实raw-store twins和当前完整批处理消费者证明通过。编译输入与已完成的v59综合逐字节相同，显式复用原综合产物，未刷新历史锁。M仍保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码和唯一录音对象。
 
 W v18（`D21108D2`）绑定v62来源，已选入[共享watchdog及status局部布局修复](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)，正在进行完整P&R；尚未取得时序结果。W v17失败位流、BSRAM287/340及setup／hold −3.461／−1.991 ns保留。M v17仍有2416条未布通网络、无有效位流或最终STA；v18增量失败实验保持退役。本轮在独立副本启用工具后端具名路由诊断，保持v17输入、place2／route0及全部约束，不生成位流，不作为新M候选。两板均未放行SRAM。task2、单板和历史失败／回退保留。
 

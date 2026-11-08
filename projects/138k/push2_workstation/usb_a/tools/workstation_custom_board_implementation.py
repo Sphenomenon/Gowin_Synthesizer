@@ -270,12 +270,23 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         physical_sdc+=extra.encode()
         if role=='W':
             from tools.workstation_task3_preboard_held_timing import w_native_placement
+            from tools.workstation_w_identity_bytes import MANIFEST as key_manifest, MANIFEST_SHA256 as key_manifest_sha
+            key_path=Path(stage)/key_manifest
+            key_bytes=False
+            if key_path.is_file():
+                if sha(key_path)!=key_manifest_sha:
+                    raise ValueError('W physical identity-byte manifest drift')
+                key_rows=json.loads(key_path.read_text())['sources']
+                key_bytes=all(sha(Path(stage)/row['source'])==row['native_sha256']for row in key_rows)
+                if not key_bytes:
+                    raise ValueError('W physical identity-byte source selection drift')
             cst,held_proofs['W_native_placement']=w_native_placement(cst,n,
                 publication=bool(metadata.get('raw_completion_publication')),
                 terminal=bool(metadata.get('raw_terminal_cofactor')),
                 tuple_cofactor=bool(metadata.get('raw_terminal_tuple')),
                 pack_cofactor=bool(metadata.get('raw_pack_cofactor')),
-                native_fault_cofactor=bool(metadata.get('native_fault_cofactor')))
+                native_fault_cofactor=bool(metadata.get('native_fault_cofactor')),
+                identity_bytes=key_bytes)
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')

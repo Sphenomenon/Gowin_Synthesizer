@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "policy": "task3_W_full128_combinational_identity_bytes_v1",
+  "sources": [
+    {
+      "source": "rtl/music/workstation_task3_cnn_stream_w.sv",
+      "parent_sha256": "d2eee134b93bb42a5c3859e20321788858bbe9c28541020fd93fbc6ebd774b21",
+      "native_sha256": "5c62cb685d2766f295d3034ddff8efe68b7fa6671b5009a8cd8812c29a7c2a3e",
+      "edits": [
+        {
+          "before": "    wire frame_match=frame_i[191:64]==identity;\n    wire seal_match=seal_i[191:64]==identity;\n    wire cancel_match=cancel_valid_i && cancel_i==identity;",
+          "after": "    // Keep the complete task key in bounded byte predicates. The v18 route\n    // serialized all 128 bits through one carry chain before reply readiness.\n    // These are combinational predicates: no result or cancellation is delayed.\n    (* syn_keep=1 *) wire [15:0] frame_key_equal_bytes,seal_key_equal_bytes,cancel_key_equal_bytes;\n    genvar task_key_byte;\n    generate for(task_key_byte=0;task_key_byte<16;task_key_byte=task_key_byte+1)begin:g_task_key_compare\n        assign frame_key_equal_bytes[task_key_byte]=frame_i[64+task_key_byte*8+:8]==identity[task_key_byte*8+:8];\n        assign seal_key_equal_bytes[task_key_byte]=seal_i[64+task_key_byte*8+:8]==identity[task_key_byte*8+:8];\n        assign cancel_key_equal_bytes[task_key_byte]=cancel_i[task_key_byte*8+:8]==identity[task_key_byte*8+:8];\n    end endgenerate\n    wire frame_match=&frame_key_equal_bytes;\n    wire seal_match=&seal_key_equal_bytes;\n    wire cancel_match=cancel_valid_i && (&cancel_key_equal_bytes);"
+        }
+      ]
+    },
+    {
+      "source": "rtl/workstation/workstation_task3_record_ingress.sv",
+      "parent_sha256": "e19624ec76d687264acdce50bc4e06074cee47579b6dff3930b5839f1c354f03",
+      "native_sha256": "a135f6368436ff02d1bb62c7280873ccb34acfc72fad6e195458cc6e2a671824",
+      "edits": [
+        {
+          "before": "    wire identity_bad=frame_session_i!=session_o || frame_generation_i!=generation_o ||\n        frame_physical_epoch_i!=physical_epoch_o || frame_sequence_i!=expected_sequence ||\n        frame_44k1_i || frame_error_i;",
+          "after": "    // Preserve all four 32-bit fields and the current edge's failure fence.\n    // A single wide carry comparison needlessly lengthened PCM/result control.\n    wire [127:0] frame_key={frame_session_i,frame_generation_i,frame_physical_epoch_i,frame_sequence_i};\n    wire [127:0] expected_key={session_o,generation_o,physical_epoch_o,expected_sequence};\n    (* syn_keep=1 *) wire [15:0] frame_key_equal_bytes;\n    genvar frame_key_byte;\n    generate for(frame_key_byte=0;frame_key_byte<16;frame_key_byte=frame_key_byte+1)begin:g_frame_key_compare\n        assign frame_key_equal_bytes[frame_key_byte]=frame_key[frame_key_byte*8+:8]==expected_key[frame_key_byte*8+:8];\n    end endgenerate\n    wire identity_bad=!(&frame_key_equal_bytes) || frame_44k1_i || frame_error_i;"
+        }
+      ]
+    }
+  ],
+  "added_state_bits": 0,
+  "added_cycles": 0,
+  "clock_and_protocol_unchanged": true,
+  "exit_plan": "Retain the exact inverse for historical task/reset source identities; no generated RTL or frozen baseline is edited."
+}

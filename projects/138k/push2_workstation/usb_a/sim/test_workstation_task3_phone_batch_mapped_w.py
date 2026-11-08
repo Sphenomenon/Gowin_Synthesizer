@@ -222,10 +222,19 @@ class ActualMappedW(unittest.TestCase):
                         inp=n.pin(p,pin)
                         if inp==leaf:found.append((p,pin))
                         else:todo.append(inp)
-            self.assertEqual(len(found),1,'actual active qualification input must be unique')
-            p,pin=found[0];old=copy.deepcopy(n.cells[p]);n.cells[p]['ports'][pin]=value
-            try:self.rejected('active qualification bypass '+leaf,lambda:mapped.audit(n,stage=self.stage))
-            finally:n.cells[p]=old
+            # The byte-key mapping carries root through both live and the
+            # explicit qualification term. Bypass every real occurrence so
+            # the control checks removal of the complete root fence.
+            expected_occurrences=(active['positive_inputs'].count(root)+
+                                  active['expanded_live_inputs'].count(root)) if leaf==root else 1
+            self.assertEqual(len(found),expected_occurrences,
+                             'actual qualification input occurrence inventory changed: '+leaf)
+            originals={p:copy.deepcopy(n.cells[p])for p,pin in found}
+            try:
+                for p,pin in found:n.cells[p]['ports'][pin]=value
+                self.rejected('active qualification bypass '+leaf,lambda:mapped.audit(n,stage=self.stage))
+            finally:
+                for p,old in originals.items():n.cells[p]=old
 
     def test_06_actual_complemented_live_polarity(self):
         n=self.n;g=Graph(n);live=n.canonical(mapped.E,'live')

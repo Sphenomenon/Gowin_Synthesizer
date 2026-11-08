@@ -46,9 +46,16 @@ module workstation_task3_record_ingress #(
     reg [31:0] last_generation,expected_sequence;
     reg [GAP_BITS-1:0] cooldown;
     reg [AGE_BITS-1:0] source_age;
-    wire identity_bad=frame_session_i!=session_o || frame_generation_i!=generation_o ||
-        frame_physical_epoch_i!=physical_epoch_o || frame_sequence_i!=expected_sequence ||
-        frame_44k1_i || frame_error_i;
+    // Preserve all four 32-bit fields and the current edge's failure fence.
+    // A single wide carry comparison needlessly lengthened PCM/result control.
+    wire [127:0] frame_key={frame_session_i,frame_generation_i,frame_physical_epoch_i,frame_sequence_i};
+    wire [127:0] expected_key={session_o,generation_o,physical_epoch_o,expected_sequence};
+    (* syn_keep=1 *) wire [15:0] frame_key_equal_bytes;
+    genvar frame_key_byte;
+    generate for(frame_key_byte=0;frame_key_byte<16;frame_key_byte=frame_key_byte+1)begin:g_frame_key_compare
+        assign frame_key_equal_bytes[frame_key_byte]=frame_key[frame_key_byte*8+:8]==expected_key[frame_key_byte*8+:8];
+    end endgenerate
+    wire identity_bad=!(&frame_key_equal_bytes) || frame_44k1_i || frame_error_i;
     wire lease_expired=source_age==AGE_BITS'(SOURCE_LEASE_CYCLES);
     wire frame_bad=frame_valid_i && (identity_bad || count==DEPTH);
     wire cancel_match=cancel_valid_i && cancel_session_i==session_o && cancel_generation_i==generation_o;

@@ -117,6 +117,8 @@ DEPENDENCIES = (
     'tools/workstation_ble_pack_cofactor.py',
     'tools/workstation_native_fault_cofactor.py',
     'tools/workstation_record_peer_compare.py',
+    'tools/workstation_w_identity_bytes.py',
+    'rtl/workstation/workstation_w_identity_bytes_v1.adaptation.json',
     'rtl/workstation/workstation_record_peer_compare_v1.adaptation.json',
     'rtl/memory/workstation_native_fault_cofactor_v1.adaptation.json',
     'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',

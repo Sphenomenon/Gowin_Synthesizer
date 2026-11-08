@@ -73,9 +73,19 @@ module workstation_task3_cnn_stream_w #(
     wire [6:0] service_score_note;
     wire [31:0] service_score_index;
     wire [3:0] service_terminal_code;
-    wire frame_match=frame_i[191:64]==identity;
-    wire seal_match=seal_i[191:64]==identity;
-    wire cancel_match=cancel_valid_i && cancel_i==identity;
+    // Keep the complete task key in bounded byte predicates. The v18 route
+    // serialized all 128 bits through one carry chain before reply readiness.
+    // These are combinational predicates: no result or cancellation is delayed.
+    (* syn_keep=1 *) wire [15:0] frame_key_equal_bytes,seal_key_equal_bytes,cancel_key_equal_bytes;
+    genvar task_key_byte;
+    generate for(task_key_byte=0;task_key_byte<16;task_key_byte=task_key_byte+1)begin:g_task_key_compare
+        assign frame_key_equal_bytes[task_key_byte]=frame_i[64+task_key_byte*8+:8]==identity[task_key_byte*8+:8];
+        assign seal_key_equal_bytes[task_key_byte]=seal_i[64+task_key_byte*8+:8]==identity[task_key_byte*8+:8];
+        assign cancel_key_equal_bytes[task_key_byte]=cancel_i[task_key_byte*8+:8]==identity[task_key_byte*8+:8];
+    end endgenerate
+    wire frame_match=&frame_key_equal_bytes;
+    wire seal_match=&seal_key_equal_bytes;
+    wire cancel_match=cancel_valid_i && (&cancel_key_equal_bytes);
     wire seal_eligible=seal_i[63:32]<=accepted_frames_o || seal_i[63:32]>descriptor[71:40];
     wire cancel_service=state==ACTIVE && (aborted || !live || !peer_matches || cancel_match);
     assign desc_ready_o=live && state==IDLE && service_generation!=32'hffffffff && !fatal_o;
