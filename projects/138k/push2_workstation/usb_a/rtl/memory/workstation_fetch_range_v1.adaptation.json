@@ -1,0 +1,21 @@
+{
+  "parent_sha256": "5327c55fbf89fa65410f7d41eb4b00276e8a7af2dda66149b197248e5bb0080d",
+  "selected_sha256": "975628e21adf1180666df7e512579319748c2f1ef1f045b84a1bd9b1bb22193f",
+  "edits": [
+    {
+      "before": "{2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0}",
+      "after": "memory_fetch_range_bad",
+      "count": 4
+    },
+    {
+      "before": "    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};",
+      "after": "    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};\n    // Parallel byte comparisons replace the serial full-width magnitude chain.\n    // The original relational expression remains the four-state fallback.\n    wire [34:0] fetch_range_left={2'd0,memory_fetch_end};\n    wire [34:0] fetch_range_right={1'b0,memory_committed,2'b0};\n    wire [4:0] fetch_range_greater,fetch_range_equal;\n    assign fetch_range_greater[0]=fetch_range_left[7:0]>fetch_range_right[7:0];\n    assign fetch_range_equal[0]=fetch_range_left[7:0]==fetch_range_right[7:0];\n    assign fetch_range_greater[1]=fetch_range_left[15:8]>fetch_range_right[15:8];\n    assign fetch_range_equal[1]=fetch_range_left[15:8]==fetch_range_right[15:8];\n    assign fetch_range_greater[2]=fetch_range_left[23:16]>fetch_range_right[23:16];\n    assign fetch_range_equal[2]=fetch_range_left[23:16]==fetch_range_right[23:16];\n    assign fetch_range_greater[3]=fetch_range_left[31:24]>fetch_range_right[31:24];\n    assign fetch_range_equal[3]=fetch_range_left[31:24]==fetch_range_right[31:24];\n    assign fetch_range_greater[4]=fetch_range_left[34:32]>fetch_range_right[34:32];\n    assign fetch_range_equal[4]=fetch_range_left[34:32]==fetch_range_right[34:32];\n    reg memory_fetch_range_bad;\n    always @* begin\n        memory_fetch_range_bad={2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0};\n        case (^{fetch_range_left,fetch_range_right})\n            1'b0,1'b1: memory_fetch_range_bad=(fetch_range_greater[4] || (fetch_range_equal[4] && (fetch_range_greater[3] || (fetch_range_equal[3] && (fetch_range_greater[2] || (fetch_range_equal[2] && (fetch_range_greater[1] || (fetch_range_equal[1] && fetch_range_greater[0]))))))));\n            default: begin end\n        endcase\n    end\n",
+      "count": 1
+    }
+  ],
+  "schema": 1,
+  "policy": "task3_W_parallel_byte_fetch_range_v1",
+  "source": "rtl/memory/workstation_ble_raw_ddr_store.sv",
+  "scope": "Explicit preboard W only; same fetch validation and completion edge, no new state or address allocation. Unknown operands use the original relational comparison.",
+  "exit_plan": "Fold the arithmetic into the native owner after final proof and physical acceptance; retain exact forward and inverse source checks until then."
+}

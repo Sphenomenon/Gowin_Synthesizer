@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -71,6 +71,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     require(not pack_cofactor or tuple_cofactor,'W pack layout requires tuple cofactor')
     require(not native_fault_cofactor or pack_cofactor,'W native fault layout requires pack cofactor')
     require(not identity_bytes or native_fault_cofactor,'W key-byte layout requires native fault cofactor')
+    require(not fetch_range or identity_bytes,'W parallel fetch range requires reviewed byte identities')
     publication_proof=None
     if publication:
         from tools.workstation_ble_completion_publication import audit_mapped
@@ -111,7 +112,9 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     # independently reviewed tag-return cone adds read_outstanding_s4 only.
     # Retain all earlier inventories for candidates without that selection.
     tuple_counts=(2670,4871,1790) if pack_cofactor else (2670,4838,1790)
-    counts=(2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
+    # The parallel fetch comparison changes only 26 combinational primitives;
+    # all 2175 raw FFs and both other owner inventories remain unchanged.
+    counts=(2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):

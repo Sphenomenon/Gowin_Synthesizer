@@ -60,6 +60,9 @@ def reuse(source,destination,*,audit_tool_only=False):
                   'tools/workstation_task3_w_raw_command_capture.py',
                   'tools/workstation_task3_w_paired_cdc_audit.py',
                   'tools/workstation_record_peer_compare.py',
+                  # Fetch-range inverse composition only. The complete
+                  # compiler closure and absence of references stay mandatory.
+                  'tools/workstation_native_fault_cofactor.py',
                   'tools/workstation_custom_board_implementation.py'}
         if not audit_tool_only or not set(different)<=reviewed:
             raise ValueError('staged compiler input bytes differ: '+repr(different))

@@ -54,9 +54,9 @@ def select(stage,configuration):
     path.write_text(text.replace(DEFAULT,SELECTED,1))
     return evidence(stage,configuration)
 
-def evidence(stage,configuration):
+def evidence(stage,configuration,*,source_text=None):
     if not configured(configuration):return None
-    stage=Path(stage);text=(stage/DESTINATION).read_text();restore(SOURCE,text.encode())
+    stage=Path(stage);text=(stage/DESTINATION).read_text() if source_text is None else source_text;restore(SOURCE,text.encode())
     require(text.count(SELECTED)==1 and DEFAULT not in text,'selected queue absent')
     root=Path(__file__).resolve().parents[1]
     require((stage/QUEUE).read_bytes()==(root/QUEUE).read_bytes(),'queue source drift')

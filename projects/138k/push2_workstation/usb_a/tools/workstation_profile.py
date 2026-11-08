@@ -611,6 +611,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         from tools.workstation_task3_w_preboard_cdc import KEY as _cdc_key, POLICY as _cdc_policy
         _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
                                'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
+                               'raw_fetch_range_policy':'task3_W_parallel_byte_fetch_range_v1',
                                'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
                                'raw_terminal_tuple_policy':'task3_W_raw_terminal_tuple_final_fault_selector_v1',
                                'raw_pack_policy':'task3_W_raw_pack_fetch_final_fault_selector_v1',
@@ -620,6 +621,8 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
                               display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
+                              display_plot_coordinate_policy='task3_M_constant_gain_plot_coordinates_v1',
+                              event_admission_policy='task3_M_combined_sample_event_admission_v1',
                               inner_event_queue_policy='task3_M_two_slot_inner_event_queue_v1',
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
@@ -650,6 +653,10 @@ def prepared_specification(prepared):
         'custom138k-workstation-task3-w-preboard-v1':
             'e9c92aef9df87dc474ae4a8ce7d255549f6967081a0ee6550dd9b454ed3bb15e'}
     prior=previous_preboard.get(prepared.get('profile'))
+    if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='66c7e48866a76abc5b46aff1893f81aa6e5b905c104e8a7c7378fc88f8855ed5':
+        spec=dict(spec,configuration=prepared['configuration'])
+    if prepared.get('profile')=='custom138k-workstation-task3-m-preboard-v1' and identity_digest(prepared.get('configuration'))=='eec71ccb0f28aa1d5524c9f5425e28db6fe5639aa69662098b718288f49e8bf3':
+        spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='4f9e4e7f4cb09dd2a62ca8481687e46c3ae5942540d5b19884307cba16e57610':
         spec=dict(spec,configuration=prepared['configuration'])
     if prior and identity_digest(prepared.get('configuration'))==prior:
@@ -1112,8 +1119,14 @@ def _artifact(root, output, metadata, profile):
         bind(record['destination'], prefix + source)
         if source=='rtl/audio/gw138k_event_workstation.sv' and profile['configuration'].get('inner_event_queue_policy') is not None:
             from tools import workstation_inner_event_queue as queue
-            if (queue.evidence(stage,profile['configuration'])!=metadata.get('inner_event_queue') or
-                    queue.unselect((stage/record['destination']).read_text())!=(root/source).read_text()):
+            selected_event=(stage/record['destination']).read_text()
+            if profile['configuration'].get('event_admission_policy') is not None:
+                from tools import workstation_event_admission as event_admission
+                if event_admission.evidence(stage,profile['configuration']) != metadata.get('combined_event_admission'):
+                    raise ValueError('combined event admission source selection drift')
+                selected_event=event_admission.restore(source,selected_event)
+            if (queue.evidence(stage,profile['configuration'],source_text=selected_event)!=metadata.get('inner_event_queue') or
+                    queue.unselect(selected_event)!=(root/source).read_text()):
                 raise ValueError('inner event queue source selection changed')
     from tools.stage_usb_firmware import verify_usb2_cpu_ram_selection
     verify_usb2_cpu_ram_selection(root,stage,profile['configuration'],
@@ -1134,10 +1147,27 @@ def _artifact(root, output, metadata, profile):
                     reader_reuse.restore((stage/target).read_text()) != (root/source).read_text()):
                 raise ValueError('display reader response reuse source selection drift')
             staged_hash = sha(stage/target)
+        if target in ('rtl/audio/workstation_audio_render_service.sv', 'rtl/audio/gw138k_event_workstation.sv') and profile['configuration'].get('event_admission_policy') is not None:
+            from tools import workstation_event_admission as event_admission
+            if (event_admission.evidence(stage, profile['configuration']) != metadata.get('combined_event_admission') or
+                    event_admission.restore(target, (stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('combined event admission source selection drift')
+            staged_hash = sha(stage/target)
+        if target == 'rtl/display_data/output_audio_analysis.v' and profile['configuration'].get('display_plot_coordinate_policy') is not None:
+            from tools import workstation_plot_coordinates as plot_coordinates
+            if (plot_coordinates.evidence(stage, profile['configuration']) != metadata.get('display_plot_coordinates') or
+                    plot_coordinates.restore((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('display plot coordinate source selection drift')
+            staged_hash = sha(stage/target)
         if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal
             selected=(stage/target).read_text()
+            if profile['configuration'].get('raw_fetch_range_policy') is not None:
+                from tools import workstation_fetch_range as fetch_range
+                if fetch_range.evidence(stage,profile['configuration']) != metadata.get('raw_fetch_range'):
+                    raise ValueError('raw fetch range source selection changed')
+                selected=fetch_range.restore(selected)
             selected=native_fault_cofactor.unselect(selected)
             from tools import workstation_ble_pack_cofactor as pack_cofactor
             if pack_cofactor.configured(profile['configuration']):

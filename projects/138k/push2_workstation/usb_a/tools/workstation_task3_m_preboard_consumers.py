@@ -20,7 +20,8 @@ INVENTORIES=('task3_m_preboard_cpu_destination_inventory.json',
              'task3_m_preboard_cpu_destination_inventory_v8.json',
              'task3_m_preboard_cpu_destination_inventory_v9.json',
              'task3_m_preboard_cpu_destination_inventory_v10.json',
-             'task3_m_preboard_cpu_destination_inventory_v11.json')
+             'task3_m_preboard_cpu_destination_inventory_v11.json',
+             'task3_m_preboard_cpu_destination_inventory_v12.json')
 
 
 def expanded_inventory(inventory):

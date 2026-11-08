@@ -286,7 +286,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 tuple_cofactor=bool(metadata.get('raw_terminal_tuple')),
                 pack_cofactor=bool(metadata.get('raw_pack_cofactor')),
                 native_fault_cofactor=bool(metadata.get('native_fault_cofactor')),
-                identity_bytes=key_bytes)
+                identity_bytes=key_bytes,
+                fetch_range=bool(metadata.get('raw_fetch_range')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')

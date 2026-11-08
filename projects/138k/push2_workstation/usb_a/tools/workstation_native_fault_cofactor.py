@@ -45,6 +45,9 @@ def unselect(text):
 
 def restore(source, text):
     """Exact inverse, normalizing independent raw selections for lineage only."""
+    if source == SOURCE:
+        from tools.workstation_fetch_range import restore_if_selected
+        text = restore_if_selected(text)
     row = manifest()['sources'][source]
     if source == SOURCE:
         text = unselect(text)

@@ -189,6 +189,18 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
         profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
     from tools import workstation_effects_reserved_config as effects_reservation
+    from tools import workstation_fetch_range as fetch_range
+    fetch_range_selected = fetch_range.configured({} if profile is None else profile['configuration'])
+    if fetch_range_selected:
+        profile_dependencies += (fetch_range.TOOL, fetch_range.MANIFEST)
+    from tools import workstation_event_admission as event_admission
+    event_admission_selected = event_admission.configured({} if profile is None else profile['configuration'])
+    if event_admission_selected:
+        profile_dependencies += (event_admission.TOOL, event_admission.MANIFEST)
+    from tools import workstation_plot_coordinates as plot_coordinates
+    plot_coordinates_selected = plot_coordinates.configured({} if profile is None else profile['configuration'])
+    if plot_coordinates_selected:
+        profile_dependencies += (plot_coordinates.TOOL, plot_coordinates.MANIFEST)
     from tools import workstation_reader_response_reuse as reader_reuse
     reader_reuse_selected = reader_reuse.configured({} if profile is None else profile['configuration'])
     if reader_reuse_selected:
@@ -539,8 +551,18 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         # Every receipt binds final compiler bytes after all selections.
         raw_terminal_cofactor=terminal_cofactor.evidence(stage,profile['configuration'])
         raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
+    raw_fetch_range = fetch_range.select(stage,profile['configuration']) if fetch_range_selected else None
+    if raw_fetch_range is not None:
+        # Rebind the existing layered receipts to the final compiler bytes.
+        raw_pack_cofactor=pack_cofactor.evidence(stage,profile['configuration'])
+        raw_terminal_tuple=terminal_tuple.evidence(stage,profile['configuration'])
+        raw_terminal_cofactor=terminal_cofactor.evidence(stage,profile['configuration'])
+        raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
+        native_fault_receipt=native_fault_cofactor.evidence(stage,profile['configuration'])
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
     reader_reuse_evidence = reader_reuse.select(stage, profile['configuration']) if reader_reuse_selected else None
+    plot_coordinates_evidence = plot_coordinates.select(stage, profile['configuration']) if plot_coordinates_selected else None
+    event_admission_evidence = event_admission.select(stage, profile['configuration']) if event_admission_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
     if capture_compare_selected:
@@ -803,6 +825,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['raw_terminal_cofactor']=raw_terminal_cofactor
         if delay_watchdog_retime is not None:
             metadata['delay_watchdog_retime']=delay_watchdog_retime
+        if raw_fetch_range is not None:
+            metadata['raw_fetch_range'] = raw_fetch_range
+        if event_admission_evidence is not None:
+            metadata['combined_event_admission'] = event_admission_evidence
+        if plot_coordinates_evidence is not None:
+            metadata['display_plot_coordinates'] = plot_coordinates_evidence
         if reader_reuse_evidence is not None:
             metadata['display_reader_response_reuse'] = reader_reuse_evidence
         metadata['task3_paired_sdc']=task3_paired_sdc
