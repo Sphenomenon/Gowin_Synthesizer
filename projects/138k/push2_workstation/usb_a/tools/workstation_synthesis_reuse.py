@@ -25,15 +25,25 @@ def reuse(source,destination,*,audit_tool_only=False):
     if sm['enabled_inputs']!=dm['enabled_inputs']:
         raise ValueError('enabled compiler file inventory or order differs')
     names=set(sm['staged_input_sha256'])|set(dm['staged_input_sha256'])
-    if set(sm['staged_input_sha256'])!=set(dm['staged_input_sha256']):
+    # These new lineage receipts are Python/JSON review inputs only. Their
+    # addition cannot admit a changed compiler listing, HDL, memory or script.
+    added_review_inputs={'tools/workstation_ble_terminal_tuple.py',
+        'tools/workstation_phone_ack_compare.py',
+        'rtl/workstation/workstation_phone_ack_compare_v1.adaptation.json',
+        'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
+        'tools/workstation_record_cancel_compare.py',
+        'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json'}
+    inventory_difference=set(sm['staged_input_sha256'])^set(dm['staged_input_sha256'])
+    if inventory_difference and (not audit_tool_only or not inventory_difference<=added_review_inputs):
         raise ValueError('staged compiler closure inventory differs')
-    different=[p for p in sorted(names)if sm['staged_input_sha256'][p]!=dm['staged_input_sha256'][p]]
+    different=[p for p in sorted(names)if sm['staged_input_sha256'].get(p)!=dm['staged_input_sha256'].get(p)]
     noncompiler={}
     if different:
         # These proof tools are staged for source review, not loaded by
         # Gowin. Keep default reuse strict; explicitly bind their old/new hashes
         # only after every project, script, HDL/include, memory and IP matches.
-        reviewed={'tools/workstation_w_context_compare.py',
+        reviewed=added_review_inputs|{'tools/workstation_ble_terminal_cofactor.py',
+                  'tools/workstation_w_context_compare.py',
                   'tools/workstation_task3_receipt_audit.py',
                   # Reviewed mapped/startup proof updates after v35. These
                   # Python files are staged review inputs; the checks below
@@ -52,8 +62,8 @@ def reuse(source,destination,*,audit_tool_only=False):
                 for name in meta['staged_input_sha256']:
                     if name.endswith(('.v','.sv','.vh','.svh','.tcl','.gprj')) and Path(relative).name.encode() in (stage/name).read_bytes():
                         raise ValueError('compiler source references audit tool: '+name)
-            noncompiler[relative]=dict(source_sha256=sm['staged_input_sha256'][relative],
-                destination_sha256=dm['staged_input_sha256'][relative],not_listed_or_referenced_by_compiler=True)
+            noncompiler[relative]=dict(source_sha256=sm['staged_input_sha256'].get(relative),
+                destination_sha256=dm['staged_input_sha256'].get(relative),not_listed_or_referenced_by_compiler=True)
     if not (source/'synthesis.log').read_text().count('GowinSynthesis finish')==1:
         raise ValueError('source synthesis incomplete')
     old=ss/'impl/gwsynthesis';new=ds/'impl/gwsynthesis'

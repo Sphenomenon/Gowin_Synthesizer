@@ -23,6 +23,13 @@ def placement(cst, proof):
     for row in proof['payloads']:
         if row['id'] not in ('F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'):continue
         regions=(DDR_FAR_LAUNCH_REGION,DDR_FAR_CAPTURE_REGION)
+        # The M complete design occupies 88% of CLS; its 82 F808 FFs shared
+        # the 49-site DDR launch corner with the initialization/reset cells.
+        # Both P2R0 and bounded P2R1 failed detailed routing. Give only F808
+        # more room at the same opposite corners; keep DDR and PCM placement,
+        # every data min/max limit, and routed hold checks unchanged.
+        if proof['role']=='M' and row['id']in('F808_request','F808_response'):
+            regions=('R[96:110]C[164:181]','R[2:16]C[2:28]')
         # A10 put 174 data FFs at each 49-CFU corner and failed to route.
         # Keep the previously routed F808 corners; place the additional M
         # mailboxes in their own regions, with opposite PCM directions sharing
@@ -43,13 +50,13 @@ def placement(cst, proof):
     expected=348 if proof['role']=='M' else 164
     require(len(rows)==expected, 'incomplete paired held placement inventory')
     selected=cst+('\n# Proved paired held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return selected,dict(policy=('task3_M_A11_held_endpoint_separation_v4'if proof['role']=='M'
+    return selected,dict(policy=('task3_M_F808_corner_capacity_v5'if proof['role']=='M'
                                  else'task3_exact_held_endpoint_separation_v3'),registers=rows,
         before_cst_sha256=digest(cst),after_cst_sha256=digest(selected),
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -60,6 +67,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False):
     """
     from tools.workstation_custom_board_implementation import digest
     require(not terminal or publication,'W terminal layout requires completion publication')
+    require(not tuple_cofactor or terminal,'W tuple layout requires terminal cofactor')
     publication_proof=None
     if publication:
         from tools.workstation_ble_completion_publication import audit_mapped
@@ -94,7 +102,10 @@ def w_native_placement(cst,n,*,publication=False,terminal=False):
     # LUT factoring changes the arbiter by +1 and DMA by -2. No region grows.
     # The terminal cofactor rebuild changes only these reviewed broad
     # inventories. Its actual tag-return cone remains the same74 cells.
-    counts=(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
+    # The complete ACK-byte rebuild absorbs two raw-store LUTs. Both exact
+    # compiler identities retain the same selected tag/held causal inventory.
+    tuple_counts=(2670,4838,1790)
+    counts=tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -161,6 +172,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False):
     return result,dict(policy=('task3_W_B7_publication_tag_return_and_held_locality_v5'if publication
                               else'task3_W_B7_exact_tag_return_and_held_locality_v4'),groups=groups,
         completion_publication=publication_proof,terminal_cofactor_layout=terminal,
+        terminal_tuple_layout=tuple_cofactor,
         placement_groups=placement_groups,historical_broad_primitive_review_count=len(reviewed),
         tag_return_cone=dict(source=tags,capture=delay,combinational_cells=sorted(cone)),
         broad_region_constraints_removed=True,

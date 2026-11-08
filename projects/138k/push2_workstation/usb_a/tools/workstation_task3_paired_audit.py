@@ -200,6 +200,8 @@ AUDIT_SOURCES = (
     'tools/workstation_inner_event_queue.py',
     'rtl/control/workstation_inner_event_queue_v1.adaptation.json',
     'rtl/control/workstation_event_queue.sv',
+    'tools/workstation_ble_terminal_tuple.py',
+    'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
     'tools/workstation_ble_terminal_cofactor.py',
     'rtl/memory/workstation_ble_terminal_cofactor_v1.adaptation.json',
     'sim/memory/run_ble_terminal_cofactor.py',
@@ -214,6 +216,10 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_w_usb_retirement.py',
     'tools/workstation_local_stream_release.py',
     'tools/workstation_task3_w_preboard_cdc.py',
+    'tools/workstation_record_cancel_compare.py',
+    'tools/workstation_phone_ack_compare.py',
+    'rtl/workstation/workstation_phone_ack_compare_v1.adaptation.json',
+    'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json',
     'tools/workstation_w_context_compare.py',
     'tools/workstation_committed_glide.py',
     'tools/workstation_effect_gain_path.py',
@@ -257,7 +263,7 @@ def verify_prepared(output, metadata):
     require(selected.get('artifact') == 'workstation_profile.json' and
             sha(artifact) == selected.get('artifact_sha256'), 'profile artifact changed')
     profile = json.loads(artifact.read_text())
-    from tools.workstation_profile import prepared_specification
+    from tools.workstation_profile import prepared_specification, candidate_firmware_identity
     spec = prepared_specification(profile)
     require(spec.get('paired_role') == role and spec.get('paired_board') is True and
             metadata.get('identity') == identity == spec['integration_identity'] and
@@ -274,7 +280,8 @@ def verify_prepared(output, metadata):
     candidate_hash = digest(dict(profile_sha256=profile['profile_sha256'],
         staged_input_sha256=metadata['staged_input_sha256'],
         source_snapshot_sha256=metadata['source_snapshot_sha256'],
-        firmware=metadata['firmware'], ae350_firmware=metadata['ae350_firmware']))
+        firmware=metadata['firmware'], ae350_firmware=candidate_firmware_identity(
+            metadata['ae350_firmware'],profile['configuration'].get('candidate_identity_policy'))))
     require(profile.get('candidate_input_sha256') == candidate_hash and
             profile.get('candidate_identity') == selected['name'] + '-' + candidate_hash[:16] and
             selected.get('candidate_identity') == profile['candidate_identity'],

@@ -107,8 +107,13 @@ def w_routed_first_captures(n):
         src=n.pin(source,'Q')if source else n.pin(regs[0],'D')
         if source:zero_ff(n,g,source,'memory_clk')
         else:
-            require(src==n.canonical('u_task3_media','task3_memory_transport_fault'),
-                    'CNN transport fault named source changed')
+            if 'u_task3_media' in n.frames:
+                named=n.canonical('u_task3_media','task3_memory_transport_fault')
+            else:
+                require(set(n.frames)=={''},'unexpected partially flattened fault hierarchy')
+                named=n.canonical('',r'\u_task3_media/task3_memory_transport_fault')
+                require(len(g.drivers.get(named,[]))==1,'flat named fault has no unique actual driver')
+            require(src==named,'CNN transport fault named source changed')
             # This status includes the encrypted DDR interface. It is an
             # asynchronous level, not a claim that every source FF is proven.
             # The maintained tag-consumer proof independently rejects a tag
@@ -129,7 +134,13 @@ def fifo_read_gray(n,g,scope,source_clock,destination_clock,*,all_bits=False):
     rows=[];lines=[]
     binary=g.group(scope,'read_binary',3)
     gray=g.group(scope,'read_gray',2)+[binary[2]]
-    q=[n.pin(p,'Q')for p in binary];enable=n.pin(gray[0],'CE')
+    q=[n.pin(p,'Q')for p in binary]
+    # The W ACK rebuild moves gray[0]'s read_fire into its D equation.
+    # Use the real common FIFO pop net, then prove every effective next-Q;
+    # no CE pin is assumed to retain the source enable in all mappings.
+    enable=n.canonical(scope,'read_fire')
+    require(enable not in g.high|g.low and len(g.drivers[enable])==1,
+            'staging FIFO read_fire absent/constant/ambiguous')
     from tools.workstation_task3_m_session_boundary import KeyDiagram,frontier
     protected=set(q+[n.pin(p,'Q')for p in gray+g.group(scope,'write_gray_sync',3)])
     outputs=[n.pin(p,pin)for p in binary+gray for pin in ('D','CE')]

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "policy": "task3_W_phone_ACK_full96_byte_compare_v1",
+  "source": "rtl/workstation/workstation_task3_w_bus_endpoint.sv",
+  "parent_sha256": "aabe49f5f797681f99b57f00145c4c5df28d654454f5c582b8f3588a102bc7e1",
+  "native_sha256": "a3604a9470f1298c8f29eb2d128ef33d835e954d34ac9b44f347545c1cd24a67",
+  "edits": [
+    {
+      "before": "    wire phone_ack_matches=rx_payload_i[160:65]=={phone_boot,phone_session,phone_generation};\n",
+      "after": "    // The routed ACK fence crossed a 96-bit carry chain before recording\n    // cancellation. Byte predicates keep the same complete identity and edge.\n    wire [95:0] phone_ack_current={phone_boot,phone_session,phone_generation};\n    (* syn_keep=1 *) wire [11:0] phone_ack_equal_bytes;\n    genvar phone_ack_byte;\n    generate for(phone_ack_byte=0;phone_ack_byte<12;phone_ack_byte=phone_ack_byte+1)begin:g_phone_ack_compare\n        assign phone_ack_equal_bytes[phone_ack_byte]=\n            rx_payload_i[65+phone_ack_byte*8+:8]==phone_ack_current[phone_ack_byte*8+:8];\n    end endgenerate\n    wire phone_ack_matches=&phone_ack_equal_bytes;\n"
+    }
+  ]
+}

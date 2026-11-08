@@ -604,6 +604,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
     _parent = PROFILE_REGISTRY[_parent_name]
     _configuration = dict(_parent['configuration'])
     _configuration['delay_watchdog_policy']='task3_delay_watchdog_lagged_counter_same_fault_edge_v1'
+    _configuration['candidate_identity_policy']='compiler_inputs_and_firmware_v1'
     if _role == 'w':
         from tools.workstation_local_stream_release import KEY as _stream_key, POLICY as _stream_policy
         from tools.workstation_w_context_compare import POLICY as _context_policy
@@ -611,6 +612,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
                                'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
                                'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
+                               'raw_terminal_tuple_policy':'task3_W_raw_terminal_tuple_final_fault_selector_v1',
                                _cdc_key: _cdc_policy,
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
@@ -636,6 +638,17 @@ def specification(name):
 def prepared_specification(prepared):
     """Select a sealed revision without promoting it to today's build policy."""
     spec = specification(prepared.get('profile'))
+    # The original complete preboard pair used all AE350 diagnostic bytes in
+    # its identity and did not select the new W tuple cofactor. Preserve only
+    # those exact configurations for immutable evidence/reuse verification.
+    previous_preboard={
+        'custom138k-workstation-task3-m-preboard-v1':
+            '364e5bc56ad17478432e4240d3bfd12d738a72442cec6370463a450e5de6331b',
+        'custom138k-workstation-task3-w-preboard-v1':
+            'e9c92aef9df87dc474ae4a8ce7d255549f6967081a0ee6550dd9b454ed3bb15e'}
+    prior=previous_preboard.get(prepared.get('profile'))
+    if prior and identity_digest(prepared.get('configuration'))==prior:
+        spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 1:
         # Revision 1 had a real display and one BLE recording owner. Its
         # immutable candidates continue to be audited against that contract.
@@ -695,6 +708,25 @@ def sha(path):
 
 def identity_digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
+def candidate_firmware_identity(ae350, policy=None):
+    """Keep absolute-path diagnostic receipts outside the runtime identity.
+
+    _ae350_evidence still validates every diagnostic byte and command before
+    this is called. The full metadata digest binds those receipts separately.
+    Historical profiles retain their original identity algorithm.
+    """
+    if policy is None:
+        return ae350
+    if policy != 'compiler_inputs_and_firmware_v1':
+        raise ValueError('unknown candidate firmware identity policy')
+    build = ae350['build']
+    return dict(policy=ae350['policy'], project_rom_installed=ae350['project_rom_installed'],
+        installed_rom=ae350['installed_rom'], build={key: build[key] for key in (
+            'input_sha256', 'tool_versions', 'compiled_sources', 'capacity',
+            'elf_sha256', 'binary_sha256', 'rom_sha256', 'memory_profile',
+            'recording_api_enabled', 'business_owner_enabled')})
 
 
 def checked_path(base, relative):
@@ -1092,6 +1124,11 @@ def _artifact(root, output, metadata, profile):
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal
             selected=(stage/target).read_text()
+            from tools import workstation_ble_terminal_tuple as terminal_tuple
+            if terminal_tuple.configured(profile['configuration']):
+                if terminal_tuple.evidence(stage,profile['configuration'])!=metadata.get('raw_terminal_tuple'):
+                    raise ValueError('raw terminal tuple source selection changed')
+                selected=terminal_tuple.unselect(selected)
             if terminal.configured(profile['configuration']):
                 if terminal.evidence(stage,profile['configuration'])!=metadata.get('raw_terminal_cofactor'):
                     raise ValueError('raw terminal cofactor source selection changed')
@@ -1277,7 +1314,8 @@ def _artifact(root, output, metadata, profile):
     candidate_hash = identity_digest(dict(profile_sha256=config_hash,
                                           staged_input_sha256=metadata['staged_input_sha256'],
                                           source_snapshot_sha256=metadata['source_snapshot_sha256'],
-                                          firmware=metadata['firmware'], ae350_firmware=ae350))
+                                          firmware=metadata['firmware'], ae350_firmware=candidate_firmware_identity(
+                                              ae350, profile['configuration'].get('candidate_identity_policy'))))
     return dict(schema=1, profile=profile['name'], revision=profile['revision'], profile_source=spec['config'], profile_sha256=config_hash,
                 candidate_identity=profile['name'] + '-' + candidate_hash[:16], candidate_input_sha256=candidate_hash,
                 configuration=profile['configuration'], parent_baseline=profile['parent_baseline'],

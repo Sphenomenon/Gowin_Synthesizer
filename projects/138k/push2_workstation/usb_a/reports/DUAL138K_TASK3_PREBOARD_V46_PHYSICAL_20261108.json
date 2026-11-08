@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "stage": "complete_synthesis_followed_by_failed_physical_gates",
+  "source_commit": "d49c314f",
+  "source_profile_checkpoint": "v46",
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "ready_for_SRAM": false,
+  "candidates": {
+    "M": {
+      "identity": "custom138k-workstation-task3-m-preboard-v1-ae6090a0ca3e94c4",
+      "usercode": "D21108AF",
+      "run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v15/physical-run.json",
+        "sha256": "6c3bd0da313f870f6470a1ee357a57867bf0a6b7d9424bbd274fcfe321636ef4"
+      },
+      "log": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v15/physical-run.log",
+        "sha256": "2e7ce7e211d8631a3a0898ee155c12b2f648e80db493aaba4c48cc449d5f99bf"
+      },
+      "physical_resource_report": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v15/impl/pnr/custom_138k_integration.rpt.txt",
+        "sha256": "9f892c4fa7fda6821b145eecfa40e54fd4c774f65c8eab1271b54531a37f270d"
+      },
+      "pnr_exit": 1,
+      "unrouted_nets": 2595,
+      "physical_BSRAM": 253,
+      "CLS": 60416,
+      "CLS_total": 69120,
+      "FF": 58695,
+      "logic": 90709,
+      "valid_bitstream": false,
+      "STA_available": false
+    },
+    "W": {
+      "identity": "custom138k-workstation-task3-w-preboard-v1-a6e2dbc2c10da5fd",
+      "usercode": "D21108BF",
+      "run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v15/physical-run.json",
+        "sha256": "2b270f0f2e61adac7d7314ae9147067aee894fb45acd1ad8efd47b4a1b68afda"
+      },
+      "physical_result": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v15/physical-result.json",
+        "sha256": "9a2412b61ea9c58f75dda3fd43bce416a0413385623532ef350f822721b31f43"
+      },
+      "physical_BSRAM": 287,
+      "resources": {
+        "Logic": [
+          "79545/138240",
+          "58%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "74871(58396 LUT, 16475 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "779",
+          "-"
+        ],
+        "Register": [
+          "46759/139095",
+          "34%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "46759/138240",
+          "34%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "56376/69120",
+          "82%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "136",
+          "-"
+        ],
+        "--Input Buf": [
+          "6",
+          "-"
+        ],
+        "--Output Buf": [
+          "87",
+          "-"
+        ],
+        "--Inout Buf": [
+          "43",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM32 IODELAY",
+          "35%"
+        ],
+        "BSRAM": [
+          "3 SP148 SDPB40 SDPX9B96 pROM",
+          "85%"
+        ],
+        "DSP": [
+          "36 MULT12X1242 MULT27X3620 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "17/24",
+          "71%"
+        ],
+        "CLKDIV": [
+          "1/24",
+          "5%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "4/12",
+          "34%"
+        ]
+      },
+      "worst_slack_ns": {
+        "setup": -3.299,
+        "hold": 0.123,
+        "recovery": -0.527,
+        "removal": 0.284
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v15/impl/pnr/custom_138k_integration.fs",
+        "sha256": "45799b91ec274c76339e3f13d874c8088b6f14dee80eb21dc01b3fb158a542d2"
+      },
+      "PLL_startup": {
+        "evidence": {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v15-PLL-v3.json",
+          "sha256": "7526465005e280f81b6b4623011be56530e3d6d9ed8a503ecf0e7310c92d7f10"
+        },
+        "passed": true,
+        "scope": "Maintained native PLL/startup and selected role held-mailbox subgates; not full STA/CDC/electrical or board acceptance"
+      },
+      "selected_routed_boundaries": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v15-routed-boundaries.json",
+        "sha256": "e4109cd30c77409067ab46de55e0f3efe933caf266d061151eadb7004c0aff8f"
+      },
+      "timing_closed": false
+    }
+  },
+  "diagnostics": {
+    "W_actual_path_tables": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v15-critical-path-tables.json",
+      "sha256": "bcb1f008bff6fb1331f238a25fcb82e3b45072839b1d42ac85f3904b959aac38"
+    },
+    "W_flat_synchronizer_projection": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v15-flat-boundary-projection-controls.json",
+      "sha256": "854ac3e2a8da2dfa253395abf3113d4babdbffba8fb0c32bbdc50faed70d7123"
+    },
+    "W_flat_synchronizer_projection_log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v15-flat-boundary-projection-controls.log",
+      "sha256": "e125641590c31b0cf30183078f7ede9b7b0eb66c3fadaeb072eb5b95384987c5"
+    },
+    "W_tuple_projection": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/raw-tuple-projection-tests-v2/verification.json",
+      "sha256": "becb74f91a289c9b061199c35b8621d4634a1c624632dc686eb701ab96adf086"
+    },
+    "W_cancel_comparator_projection": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/record_compare_v1.sv",
+      "sha256": "aabe49f5f797681f99b57f00145c4c5df28d654454f5c582b8f3588a102bc7e1"
+    }
+  },
+  "failed_attempts_preserved": [
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v15-PLL.log",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v15-PLL-v2.json"
+  ],
+  "remaining": [
+    "M complete route and fresh setup/hold/recovery/removal",
+    "W raw completion tuple path and paired recording cancellation-to-engine path",
+    "DDR functional reset recovery to initialization/eye-calibration cells",
+    "Directory-independent candidate identity with diagnostics separately bound",
+    "Fresh exact final identity synthesis/CDC/resource and physical checks",
+    "Correct target board/cable electrical preflight at the separately authorized SRAM stage"
+  ],
+  "rollback": "task2, single-board and historical candidates unchanged; these candidates were never loaded",
+  "M_same_input_P2R1_control": {
+    "usercode": "D21108C1",
+    "evidence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v16/physical-run.json",
+      "sha256": "42bc428f329b48855452216917df1ac1d7e8129d54fbb8aa994bb028c65d4839"
+    },
+    "pnr_exit": -15,
+    "supervisor_stop_reason": "timeout",
+    "duration_seconds": 1801.4956800420186,
+    "inputs_unchanged": true,
+    "peak_footprint_kb": 2288339,
+    "valid_bitstream": false,
+    "STA_available": false
+  }
+}

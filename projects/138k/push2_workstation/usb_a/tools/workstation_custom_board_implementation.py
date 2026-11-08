@@ -272,7 +272,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
             from tools.workstation_task3_preboard_held_timing import w_native_placement
             cst,held_proofs['W_native_placement']=w_native_placement(cst,n,
                 publication=bool(metadata.get('raw_completion_publication')),
-                terminal=bool(metadata.get('raw_terminal_cofactor')))
+                terminal=bool(metadata.get('raw_terminal_cofactor')),
+                tuple_cofactor=bool(metadata.get('raw_terminal_tuple')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -284,7 +285,7 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         vo=prior/'impl/pnr/custom_138k_integration.vo'
         cst,placement=ddr_launch_capture_region_constraints(cst,physical_sdc,vo.read_text(),far_regions=True)
         from tools.workstation_preboard_ddr_timing import tighten
-        cst,physical_sdc,ddr_proof=tighten(cst,physical_sdc,vo.read_text())
+        cst,physical_sdc,ddr_proof=tighten(cst,physical_sdc,vo.read_text(),role=audit['paired_role'])
         ddr_proof.update(routed_reference=str(vo),routed_reference_sha256=sha(vo),
             same_encrypted_DDR_input_sha256=ddr,placement=placement)
     return cst,physical_sdc,pin_adaptation,release_proof,held_proofs,ddr_proof

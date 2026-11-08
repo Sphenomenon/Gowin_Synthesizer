@@ -23,6 +23,8 @@ def unselect(text):
     return text
 
 def restore(text):
+    from tools.workstation_ble_terminal_tuple import restore as tuple_parent
+    text=tuple_parent(text)
     text=unselect(text)
     if DEFAULT not in text:return text
     # Completion publication is an older independently checked adaptation.

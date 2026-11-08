@@ -65,10 +65,12 @@ class RoutedRepairs(unittest.TestCase):
         publication=configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         from tools.workstation_ble_terminal_cofactor import configured as terminal_configured
         terminal=terminal_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal)
+        from tools.workstation_ble_terminal_tuple import configured as tuple_configured
+        tuple_cofactor=tuple_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor)
         selected,e=place(cst,n);total=739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
         self.assertEqual(len(e['tag_return_cone']['combinational_cells']),74 if publication else 76)

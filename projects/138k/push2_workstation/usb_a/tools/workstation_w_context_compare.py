@@ -12,6 +12,8 @@ PARENT = '    wire context_current=observed_context=={local_boot_i,common};\n'
 SELECTED = '    // Keep byte comparisons separate: one carry chain across the full key\n    // put immediate session fencing on the W critical path. No extra state.\n    wire [127:0] current_context={local_boot_i,common};\n    (* syn_keep=1 *) wire [15:0] context_equal_bytes;\n    genvar context_byte;\n    generate for(context_byte=0;context_byte<16;context_byte=context_byte+1)begin:g_context_equal\n        assign context_equal_bytes[context_byte]=\n            observed_context[context_byte*8+:8]==current_context[context_byte*8+:8];\n    end endgenerate\n    wire context_current=&context_equal_bytes;\n'
 
 def normalize(source):
+    from tools.workstation_record_cancel_compare import normalize as cancel_parent
+    source=cancel_parent(source)
     digest = lambda b: hashlib.sha256(b).hexdigest()
     if digest(source)==ARM_CAPTURE_SHA256:
         if source.count(ARM_CAPTURE.encode())!=1:raise ValueError('W ARM capture instance drift')
@@ -90,3 +92,32 @@ def audit_mapped(n, g):
     return dict(policy=POLICY,compared_bits=128,byte_equations=rows,
                 every_byte_mismatch_fences_live=True,no_state_or_extra_cycles=True,
                 full_endpoint_state_machine_proven=False,routed_timing_verified=False)
+
+
+def prove_zero_veto(n,g,source,sink):
+    """Exact constant cofactors, with all other inputs free; no state assumption."""
+    import re
+    known={**{net:0 for net in g.low},**{net:1 for net in g.high},source:0}
+    pending=[source];checked=set()
+    while pending:
+        net=pending.pop()
+        for path,pin,role in g.fan[net]:
+            if role!='comb':continue
+            c=n.cells[path];kind=c['kind']
+            if kind=='INV':inputs=[n.pin(path,'I')];out=n.pin(path,'O');table=1
+            elif re.fullmatch('LUT[1-6]',kind):
+                width=int(kind[3:]);inputs=[n.pin(path,'I'+str(i))for i in range(width)];out=n.pin(path,'F')
+                match=re.fullmatch(r"(\d+)'h([0-9a-fA-F]+)",c['parameters'].get('INIT',''))
+                if not match or int(match[1])!=1<<width:raise ValueError('W zero-veto LUT format changed')
+                table=int(match[2],16)
+            else:continue
+            values={table>>i&1 for i in range(1<<len(inputs))
+                    if all(k not in known or i>>j&1==known[k]for j,k in enumerate(inputs))}
+            if len(values)!=1:continue
+            value=next(iter(values));checked.add(path)
+            if out in known:
+                if known[out]!=value:raise ValueError('W zero-veto conflicting constants')
+            else:known[out]=value;pending.append(out)
+    if known.get(sink)!=0:raise ValueError('W actual zero input no longer vetoes sink')
+    return dict(source=source,sink=sink,all_other_inputs_free=True,
+                zero_forces_zero=True,constant_cofactor_cells=sorted(checked))

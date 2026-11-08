@@ -290,17 +290,35 @@ def audit(n, *, stage):
     proofs.append(g.equivalent('full key equality includes all four stored words',
         [same, *key_comparisons], lambda v: v[0] == int(not any(v[1:])), cuts=set(key_comparisons)))
     from tools.workstation_w_context_compare import SOURCE as context_source, SELECTED_SHA256 as grouped_sha, ARM_CAPTURE_SHA256
-    arm_capture = sha(Path(stage)/context_source) == ARM_CAPTURE_SHA256
-    grouped_context = sha(Path(stage)/context_source) in (grouped_sha,ARM_CAPTURE_SHA256)
+    from tools.workstation_record_cancel_compare import normalize as cancel_parent
+    context_sha=hashlib.sha256(cancel_parent((Path(stage)/context_source).read_bytes())).hexdigest()
+    arm_capture = context_sha == ARM_CAPTURE_SHA256
+    grouped_context = context_sha in (grouped_sha,ARM_CAPTURE_SHA256)
     active = window('n10383_7') if grouped_context else endpoint('n10383_7') if retired_usb else endpoint('n10383_32')
     qual = local('n737_18') if retired_usb else endpoint('n737_12')
     live = endpoint('live') if retired_usb else n.canonical('', 'live')
     if grouped_context:
         from tools.workstation_w_context_compare import audit_mapped as audit_context
         proofs.append(audit_context(n,g))
-        live_parts = [endpoint(x) for x in ('live_6', 'live_7', 'live_5')]
+        # CANCEL byte predicates changed the LUT packing from a three-input
+        # AND to a four-input AND. Select only these two exact mapped forms;
+        # the full byte-equality veto and all downstream equations still run.
+        drivers=g.drivers[live]
+        require(len(drivers)==1,'grouped endpoint live has no unique driver')
+        live_cell=n.cells[drivers[0][0]]
+        forms={('LUT3',"8'h80"):[('live_6','live_7','live_5')],
+               ('LUT4',"16'h8000"):[('live_4','live_5','live_6','live_7'),
+                                   ('n165_4','live_6','live_7','live_38')]}
+        form=(live_cell['kind'],live_cell['parameters'].get('INIT'))
+        require(form in forms,'grouped endpoint live AND mapping changed')
+        width=int(live_cell['kind'][3:])
+        operands={n.pin(drivers[0][0],'I'+str(i))for i in range(width)}
+        matched=[[endpoint(x)for x in row]for row in forms[form]
+                 if {endpoint(x)for x in row}==operands]
+        require(len(matched)==1,'grouped endpoint live AND operands changed')
+        live_parts=matched[0]
         qual = endpoint('phone_arm_attempt_21')
-        proofs.append(g.equivalent('grouped endpoint live is actual three-factor conjunction',
+        proofs.append(g.equivalent('grouped endpoint live is exact mapped conjunction',
             [live, *live_parts], lambda v:v[0] == int(all(v[1:])), cuts=set(live_parts)))
         if reserved_dispatch:
             # This implementation absorbs the old qualification intermediate.
@@ -312,6 +330,15 @@ def audit(n, *, stage):
             positive=[*live_parts,command_release,n.canonical('','clock_command_reset_n'),
                 n.canonical('','hci_pcm_session_ready'),endpoint('media_cap_ready'),
                 endpoint('phone_proxy_armed'),q('context_valid')]
+            command_release_in_live=None
+            if len(live_parts)==4:
+                # This packing absorbs command release into endpoint live.
+                # Prove the actual zero cofactor before omitting its duplicate
+                # independent cut from the active conjunction. A disconnected
+                # or changed veto cannot pass this proof.
+                from tools.workstation_w_context_compare import prove_zero_veto
+                command_release_in_live=prove_zero_veto(n,g,command_release,live)
+                positive.remove(command_release)
             # Both legal physical forms retain the exact context FF above:
             # either root is an explicit LUT input, or synthesis absorbs it
             # into context_valid's checked, root-owned asynchronous CLEAR.
@@ -374,6 +401,7 @@ def audit(n, *, stage):
                 Boolean_assignments=1<<len(leaves),BDD_nodes=len(bd.nodes),
                 explicit_combinational_root_required=explicit_root,
                 actual_qualification_net=active,
+                command_release_veto_in_actual_live=command_release_in_live,
                 raw_root_assertion_checked_by_actual_FF_CLEAR=True,
                 reset_absorbed_in_context_CLEAR=not explicit_root,
                 context_register=regs['context_valid'][0],context_clear=clear,
@@ -446,13 +474,22 @@ def audit(n, *, stage):
     # cuts. Those control functions are not abstracted into an acceptance claim.
     load, mask, keep, read = [local(x) for x in
         ('n737_4', 'n12043_41' if reserved_dispatch else 'n12043_44' if grouped_context else 'n12043_28' if retired_usb else 'n12043_24', 'n12043_11','n12043_12')]
+    from tools.workstation_phone_ack_compare import SOURCE as ack_source,NATIVE_SHA256 as ack_sha
+    ack_grouped=source['source_sha256'][ack_source]==ack_sha
+    if ack_grouped:
+        # The ACK rebuild folds !load into the shared hold/read term. Keep
+        # this actual control boundary, including that gate; all 256 next-Q
+        # equations below still have to hold with independent controls.
+        read=local('n12043_40')
     if reserved_dispatch:
         reply_driver=g.drivers[n.pin(regs['reply'][0],'D')]
         require(len(reply_driver)==1,'reply mux driver absent/ambiguous')
         reply_cell,reply_port=reply_driver[0]
         require(n.cells[reply_cell]['kind']=='LUT4' and reply_port=='F' and
-                n.cells[reply_cell]['parameters'].get('INIT')=="16'hC500",
+                n.cells[reply_cell]['parameters'].get('INIT')in("16'hC500","16'hA300"),
                 'reserved reply top mux truth table changed')
+        # A300 swaps only I0/I1 of C500. I2/I3 remain mask/keep;
+        # all 256 actual next-Q equations below independently verify data.
         mask,keep=n.pin(reply_cell,'I2'),n.pin(reply_cell,'I3')
     load_cuts = {local(x) for x in ('n737_5','n737_20','n737_7')} if grouped_context else {load}
     if reserved_dispatch:
@@ -529,7 +566,15 @@ def audit(n, *, stage):
     proofs.append(g.equivalent('window empty includes actual unacknowledged flight',
         [empty,*count,*flight],lambda v:v[0] == int(not any(v[1:]))))
     flush_to_send = local('n12046_12') if retired_usb else local('n12046_11')
-    if retired_usb:
+    if ack_grouped:
+        # This fresh mapping absorbs state/active into the watermark gate.
+        # Prove the complete equation including every held/count/flight bit;
+        # the following influence check still binds it to real state next-Q.
+        flush_to_send=local('n12046_11')
+        proofs.append(g.equivalent('ACK rebuild complete state and watermark conjunction',
+            [flush_to_send,q('state'),held,active,empty],
+            lambda v:v[0] == int(not v[1] and not v[2] and v[3] and v[4]),cuts={active}))
+    elif retired_usb:
         # The shared watermark gate is factored before the state/active
         # selection in this mapping, rather than including them in one LUT.
         proofs.append(g.equivalent('batch watermark requires no held/building/flight work',
@@ -561,6 +606,7 @@ def audit(n, *, stage):
         gate=n.pin(path,'I3')
     old_flight = window('n5090_8')
     timer = endpoint('partial_timer_31_9') if reserved_dispatch else window('partial_timer_31_12') if grouped_context else endpoint('partial_timer_31_9') if retired_usb else n.canonical('', 'partial_timer_31_9')
+    if ack_grouped:timer=window('partial_timer_31_12')
     if arm_capture and flight_arm_factored:
         # Here n5090_8 is the inhibit, rather than the old-flight term.
         # Expand the real Q and timer/flush input instead of assigning the

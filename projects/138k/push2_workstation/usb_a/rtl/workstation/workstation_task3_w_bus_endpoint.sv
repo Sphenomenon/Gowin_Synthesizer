@@ -136,7 +136,19 @@ module workstation_task3_w_bus_endpoint #(
     wire [31:0] record_next_local=record_new_key && record_local_counter!=32'hffffffff ? record_local_counter+1'b1:32'd0;
     wire record_arm=record_packet && rx_payload_i[195:194]==`TASK3_PAIR_KIND_ARM && rx_payload_i[97:64]==0;
     wire record_frame=record_packet && rx_payload_i[195:194]==`TASK3_PAIR_KIND_DATA;
-    wire record_cancel=record_packet && rx_payload_i[195:194]==`TASK3_PAIR_KIND_CANCEL && rx_payload_i[97:0]==0;
+    // Keep packet padding and the active key comparisons in byte-sized
+    // predicates. Matching CANCEL still suppresses the very same PCM edge.
+    (* syn_keep=1 *) wire [12:0] record_cancel_zero_bytes;
+    (* syn_keep=1 *) wire [11:0] record_active_equal_bytes;
+    genvar record_byte;
+    generate for(record_byte=0;record_byte<12;record_byte=record_byte+1)begin:g_record_compare
+        assign record_cancel_zero_bytes[record_byte]=rx_payload_i[record_byte*8+:8]==0;
+        assign record_active_equal_bytes[record_byte]=
+            record_wire_common[record_byte*8+:8]==record_active_common[record_byte*8+:8];
+    end endgenerate
+    assign record_cancel_zero_bytes[12]=rx_payload_i[97:96]==0;
+    wire record_active_matches=&record_active_equal_bytes;
+    wire record_cancel=record_packet && rx_payload_i[195:194]==`TASK3_PAIR_KIND_CANCEL && (&record_cancel_zero_bytes);
     reg record_ack_pending,record_wait_result;
     reg [95:0] record_ack_common;
     reg [1:0] record_ack_result;
@@ -144,8 +156,8 @@ module workstation_task3_w_bus_endpoint #(
     reg record_delivery_valid,record_protocol_fault,previous_record_fault;
     reg [97:0] record_delivery;
     wire arm_fire=live && media_current && rx_valid_i && rx_ready_o && record_arm && record_matches;
-    wire record_frame_fire=!BLOCK_PCM && live && rx_valid_i && rx_ready_o && record_frame && record_matches && record_wire_common==record_active_common;
-    wire record_cancel_fire=rx_valid_i && rx_ready_o && record_cancel && record_matches && record_wire_common==record_active_common;
+    wire record_frame_fire=!BLOCK_PCM && live && rx_valid_i && rx_ready_o && record_frame && record_matches && record_active_matches;
+    wire record_cancel_fire=rx_valid_i && rx_ready_o && record_cancel && record_matches && record_active_matches;
     assign r_frame_ready=!record_delivery_valid && record_frame_ready && !record_cancel_fire && !record_protocol_fault;
     workstation_task3_pcm_block_rx record_blocks(
         .clk_i(clk_i),.reset_ni(reset_ni),.live_i(BLOCK_PCM && live && media_current),
@@ -198,7 +210,16 @@ module workstation_task3_w_bus_endpoint #(
     wire [11:0] phone_address;wire [3:0] phone_strobes;
     reg [95:0] attempted_common;
     wire phone_ack_packet=rx_channel_i==`TASK3_PAIR_CH_PHONE_ACK && rx_length_i==`TASK3_PAIR_PHONE_ACK_BYTES && rx_payload_i[255:163]==0;
-    wire phone_ack_matches=rx_payload_i[160:65]=={phone_boot,phone_session,phone_generation};
+    // The routed ACK fence crossed a 96-bit carry chain before recording
+    // cancellation. Byte predicates keep the same complete identity and edge.
+    wire [95:0] phone_ack_current={phone_boot,phone_session,phone_generation};
+    (* syn_keep=1 *) wire [11:0] phone_ack_equal_bytes;
+    genvar phone_ack_byte;
+    generate for(phone_ack_byte=0;phone_ack_byte<12;phone_ack_byte=phone_ack_byte+1)begin:g_phone_ack_compare
+        assign phone_ack_equal_bytes[phone_ack_byte]=
+            rx_payload_i[65+phone_ack_byte*8+:8]==phone_ack_current[phone_ack_byte*8+:8];
+    end endgenerate
+    wire phone_ack_matches=&phone_ack_equal_bytes;
     wire phone_arm_ack=phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_ARM && rx_payload_i[64:2]==0;
     wire phone_response=phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_DATA;
     wire phone_window_ack=PHONE_WINDOW_BLOCK && phone_ack_packet && rx_payload_i[162:161]==`TASK3_PAIR_KIND_WINDOW_ACK;
@@ -278,7 +299,7 @@ module workstation_task3_w_bus_endpoint #(
             // Even a busy/nonempty object gets an explicit real-arm rejection;
             // it must not hold the shared transport indefinitely.
             else if(record_matches && record_arm)rx_ready_o=!record_ack_pending && !record_wait_result;
-            else if(!BLOCK_PCM && record_matches && record_wire_common==record_active_common && record_frame)rx_ready_o=record_fault_o || (!record_delivery_valid && record_frame_ready);
+            else if(!BLOCK_PCM && record_matches && record_active_matches && record_frame)rx_ready_o=record_fault_o || (!record_delivery_valid && record_frame_ready);
             else if(phone_ack_matches && phone_response)rx_ready_o=phone_response_ready;
         end
     end

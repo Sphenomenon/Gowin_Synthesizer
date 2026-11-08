@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新源码／综合检查点为[v46](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V46_20261108.md)，配置、严格综合复用收据、两板资源、完整审计、状态对应范围和复现缺口均有独立证据。v15 物理运行结果待收齐；已完成的旧物理结果仍为[v38](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V38_20261108.md)，属于 v37 来源，不继承给 v46。task2、单板及历史回退保留，本轮未上板。
+2026-11-08 最新可复现源码／综合检查点为[v54](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V54_20261108.md)：M 29/29、W 26/26 完整综合审计通过，两板各自双目录准备的身份和全部输入一致。M v17 仍有2416条网络未布通；v18 增量放置对照失败并退役，均无有效位流／最终STA。W v16 正在运行。两板均未放行 SRAM；旧[v46物理失败](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V46_PHYSICAL_20261108.md)、task2、单板及历史回退保留。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 
