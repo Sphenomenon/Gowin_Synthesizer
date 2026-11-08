@@ -189,6 +189,7 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v6.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v7.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v8.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v9.json',
     'tools/workstation_tf_status_compare.py',
     'tools/workstation_oscillator_availability.py',
     'rtl/audio/workstation_runtime_oscillator_engine.availability_groups.json',

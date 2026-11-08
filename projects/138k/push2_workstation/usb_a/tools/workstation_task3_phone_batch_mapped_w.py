@@ -312,14 +312,10 @@ def audit(n, *, stage):
             positive=[*live_parts,command_release,n.canonical('','clock_command_reset_n'),
                 n.canonical('','hci_pcm_session_ready'),endpoint('media_cap_ready'),
                 endpoint('phone_proxy_armed'),q('context_valid')]
-            from tools.workstation_ble_completion_publication import configured as publication_selected
-            explicit_root=publication_selected(configuration)
-            if explicit_root:
-                # The complete W publication rebuild retains the original
-                # active=reset_ni && ... root input in the actual LUT cone.
-                # Prove that publisher too; do not cut an absent old alias
-                # or accept the old equation after removing this root guard.
-                positive.append(root_q)
+            # Both legal physical forms retain the exact context FF above:
+            # either root is an explicit LUT input, or synthesis absorbs it
+            # into context_valid's checked, root-owned asynchronous CLEAR.
+            # Compare both complete equations; never choose an arbitrary cut.
             negative=[endpoint('media_cap_fault'),endpoint('phone_window_fault'),
                 endpoint('phone_proxy_fault'),q('fault_o'),*key_comparisons]
             leaves=list(dict.fromkeys(positive+negative));bd=BooleanDiagram(leaves)
@@ -351,18 +347,39 @@ def audit(n, *, stage):
                 support_memo[net]=None if any(p is None for p in parts)else set().union(*parts)
                 return support_memo[net]
             candidates=[]
-            for out in sorted(reachable):
-                if reviewed_support(out)==set(leaves) and bd.net(g,out)==expected:
-                    candidates.append(out)
+            for explicit_root in (True, False):
+                inputs=[*leaves,root_q] if explicit_root else leaves
+                diagram=BooleanDiagram(inputs)
+                wanted=diagram.all([*(diagram.inputs[x] for x in positive),
+                    *(diagram.invert(diagram.inputs[x]) for x in negative),
+                    *([diagram.inputs[root_q]] if explicit_root else [])])
+                for out in sorted(reachable):
+                    # root is a reviewed leaf even in the absorbed form; it
+                    # must not disappear through an unsupported driver.
+                    support_memo[root_q]={root_q}
+                    if reviewed_support(out)==set(inputs) and diagram.net(g,out)==wanted:
+                        candidates.append((out,explicit_root,diagram,wanted,inputs))
             require(len(candidates)==1,'unique expanded reserved-dispatch active qualification absent')
-            active=candidates[0]
+            active,explicit_root,bd,expected,leaves=candidates[0]
+            invariant=BooleanDiagram(list(dict.fromkeys([*leaves,root_q])))
+            settled=invariant.either(invariant.invert(invariant.inputs[q('context_valid')]),
+                                      invariant.inputs[root_q])
+            actual=invariant.net(g,active)
+            gated=invariant.both(invariant.inputs[root_q],actual)
+            require(invariant.both(settled,actual)==invariant.both(settled,gated),
+                    'settled context reset invariant does not preserve active root guard')
             proofs.append(dict(contract='reserved dispatch expanded active qualification',
-                positive_inputs=positive,negative_inputs=negative,
+                positive_inputs=positive+([root_q] if explicit_root else []),negative_inputs=negative,
                 independent_inputs=leaves,all_assignments_proven=True,
                 Boolean_assignments=1<<len(leaves),BDD_nodes=len(bd.nodes),
                 explicit_combinational_root_required=explicit_root,
                 actual_qualification_net=active,
                 raw_root_assertion_checked_by_actual_FF_CLEAR=True,
+                reset_absorbed_in_context_CLEAR=not explicit_root,
+                context_register=regs['context_valid'][0],context_clear=clear,
+                settled_context_implies_root=True,
+                settled_reset_invariant_equivalence_proven=True,
+                reset_scope='After asynchronous CLEAR has settled; no analog reset propagation or recovery/removal claim.',
                 absent_intermediate_cut_used=False))
         else:
             active_inputs = [active, *live_parts, root_q, qual, endpoint('phone_proxy_armed'),

@@ -6,6 +6,7 @@ provenance. No historical results directory or local prepared tree is needed.
 """
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -39,6 +40,9 @@ class RuntimeDelayTest(unittest.TestCase):
             payload = native.read_bytes()
             if name == 'workstation_runtime_delay_effect_ddr':
                 payload = restore_delay_native(payload, provenance_path.read_bytes())
+            else:
+                from workstation_delay_watchdog_retime import restore
+                payload=restore(payload.decode()).encode()
             if sha256(payload) != provenance['native_sha256']:
                 raise ValueError('native source identity drifted: ' + name)
             restored = payload.decode()
@@ -50,7 +54,17 @@ class RuntimeDelayTest(unittest.TestCase):
                 raise ValueError('source does not reverse to exact prepared bytes: ' + name)
             for path in (native, provenance_path):
                 cls.source_hashes[str(path.relative_to(ROOT))] = sha256(path.read_bytes())
-            natives.append(native)
+            if name=='workstation_runtime_delay_ddr_dma' and os.environ.get('GW138K_DELAY_PIPELINED_WATCHDOG')=='1':
+                from workstation_delay_watchdog_retime import DEFAULT,SELECTED,MANIFEST,TOOL
+                selected=native.read_text()
+                if selected.count(DEFAULT)!=1:raise ValueError('watchdog default selection drifted')
+                selected_path=cls.stage/native.name
+                selected_path.write_text(selected.replace(DEFAULT,SELECTED,1))
+                natives.append(selected_path)
+                for dependency in (ROOT/MANIFEST,ROOT/TOOL):
+                    cls.source_hashes[str(dependency.relative_to(ROOT))]=sha256(dependency.read_bytes())
+                print('SELECTED lagged-counter watchdog; original fault edge retained')
+            else:natives.append(native)
         baseline = load_baseline(ROOT, 'resource_rework_route0')
         math_pkg = baseline.read_bytes('legacy/rtl/audio/audio_math_pkg.sv')
         if sha256(math_pkg) != 'f07fab099e112b18d9fc142eeb701139cae62be79e2f25596e134aaecea88f3d':

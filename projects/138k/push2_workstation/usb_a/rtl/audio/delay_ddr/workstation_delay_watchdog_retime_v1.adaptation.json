@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "policy": "task3_delay_watchdog_lagged_counter_same_fault_edge_v1",
+  "source": "rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv",
+  "parent_sha256": "4486bddae55e89c191cace04fdfad6163b71af9a1c43b5369e8fabc0d7e42551",
+  "native_sha256": "435616dae5a86a2157f46c569260324bd0eb568769dc3a1dd3d8e6d709514c17",
+  "default_enable": 0,
+  "edits": [
+    {
+      "before": "    parameter integer PEER_TIMEOUT_CYCLES=1048576\n",
+      "after": "    parameter integer PEER_TIMEOUT_CYCLES=1048576,\n    parameter bit PIPELINED_WATCHDOG_ENABLE=0\n"
+    },
+    {
+      "before": "  logic [31:0] wait_cycles,peer_wait;",
+      "after": "  logic [31:0] wait_cycles,peer_wait;\n  logic watchdog_reset_delay;"
+    },
+    {
+      "before": "peer_wait<=0;wait_cycles<=0;watchdog_fault<=0;peer_fault<=0;",
+      "after": "peer_wait<=0;wait_cycles<=0;watchdog_reset_delay<=1;watchdog_fault<=0;peer_fault<=0;"
+    },
+    {
+      "before": "      if(state==S_IDLE || progress)wait_cycles<=0;\n      else begin\n        if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))wait_cycles<=wait_cycles+1'b1;\n        if(wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)watchdog_fault<=1;\n      end",
+      "after": "      if(PIPELINED_WATCHDOG_ENABLE)begin\n        // wait_cycles represents the original counter one memory edge ago.\n        // Its clear no longer crosses from the FIFO/ready cone into 32 CEs.\n        if(watchdog_reset_delay)wait_cycles<=0;\n        else if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))\n          wait_cycles<=wait_cycles+1'b1;\n        // Procedural if retains the original unknown-condition projection.\n        if(state==S_IDLE || progress)watchdog_reset_delay<=1;\n        else begin\n          watchdog_reset_delay<=0;\n          // The original counter now equals min(wait_cycles+1,timeout) when\n          // the previous edge did not clear it. Keep the original fault edge.\n          if(!watchdog_reset_delay && wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-2)\n            watchdog_fault<=1;\n        end\n      end else begin\n        if(state==S_IDLE || progress)wait_cycles<=0;\n        else begin\n          if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))wait_cycles<=wait_cycles+1'b1;\n          if(wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)watchdog_fault<=1;\n        end\n      end"
+    }
+  ],
+  "semantics": "counter lag1; old counter is delay_clear?0:min(lag+1,timeout); exact original fault edge; no stream or command schedule changes",
+  "exit_plan": "Pass explicit parameter from maintained runtime composition; retain the historical inverse"
+}

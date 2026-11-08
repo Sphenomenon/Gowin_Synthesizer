@@ -603,6 +603,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
     _name = 'custom138k-workstation-task3-' + _role + '-preboard-v1'
     _parent = PROFILE_REGISTRY[_parent_name]
     _configuration = dict(_parent['configuration'])
+    _configuration['delay_watchdog_policy']='task3_delay_watchdog_lagged_counter_same_fault_edge_v1'
     if _role == 'w':
         from tools.workstation_local_stream_release import KEY as _stream_key, POLICY as _stream_policy
         from tools.workstation_w_context_compare import POLICY as _context_policy
@@ -1111,6 +1112,12 @@ def _artifact(root, output, metadata, profile):
                     tail_reset.native(target, (stage/target).read_text()) != (root/source).read_text()):
                 raise ValueError('TF tail local reset parameter/source selection changed')
             staged_hash = sha(stage/target)
+        if target == 'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv' and profile['configuration'].get('delay_watchdog_policy') is not None:
+            from tools import workstation_delay_watchdog_retime as delay_watchdog
+            if (delay_watchdog.evidence(stage,profile['configuration']) != metadata.get('delay_watchdog_retime') or
+                    delay_watchdog.unselect((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('delay watchdog parameter/source selection changed')
+            staged_hash=sha(stage/target)
         if target == 'rtl/workstation/workstation_task3_m_bus_endpoint.sv' and profile['configuration'].get('m_demand_identity_compare_policy') is not None:
             from tools import workstation_task3_demand_identity_compare as demand
             expected=metadata.get('task3_phone_batch',{}).get('local_storage',{}).get('demand_identity_comparison')

@@ -67,6 +67,8 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'tools/workstation_delay_watchdog_retime.py',
+    'rtl/audio/delay_ddr/workstation_delay_watchdog_retime_v1.adaptation.json',
     # Resource-parent music libraries parse this authority even when the
     # independent M provider disables their CNN elaboration.
     'rtl/ddr_address_map.vh',

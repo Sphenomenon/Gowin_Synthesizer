@@ -771,12 +771,18 @@ def source_identity(root):
             '61047b3c2be74af1bc96567e2aed37be2d78773cd31364eb6bdb1eb4d9d9409a',
             'reviewed APB input identity changed')
     for name, expected in REVIEWED_BOUNDARY_SOURCES.items():
-        require(hashlib.sha256((root / name).read_bytes()).hexdigest() == expected,
+        source=(root/name).read_bytes()
+        if name=='rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv':
+            from tools.workstation_delay_watchdog_retime import restore
+            source=restore(source.decode()).encode()
+        require(hashlib.sha256(source).hexdigest() == expected,
                 'reviewed heartbeat/quiesce source identity changed: ' + name)
     return {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in (
         'tools/workstation_native_protocol_audit.py', 'tools/workstation_runtime_profile.py',
         'tools/workstation_runtime_pcm_cdc.py', 'tools/workstation_synthesis_netlist.py',
         'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_resource_timing.py',
+        'tools/workstation_delay_watchdog_retime.py',
+        'rtl/audio/delay_ddr/workstation_delay_watchdog_retime_v1.adaptation.json',
         'vendor/workstation_inputs.json',
         'rtl/tf_audio/workstation_tf_runtime_service.sv',
         'rtl/workstation/workstation_runtime_controlled.sv', 'rtl/audio/workstation_pcm_observation_bridge.sv',

@@ -192,11 +192,23 @@ class ActualMappedW(unittest.TestCase):
         n=self.n;g=Graph(n);proof=mapped.audit(n,stage=self.stage)
         active=next((row for row in proof['local_equations']
                      if row.get('contract')=='reserved dispatch expanded active qualification'),None)
-        if not active or not active['explicit_combinational_root_required']:
-            self.skipTest('explicit publication mapping required')
+        if not active:
+            self.skipTest('reserved dispatch mapping required')
+        self.assertTrue(active['settled_reset_invariant_equivalence_proven'])
+        context=active['context_register']
+        for pin in ('CLEAR','Q'):
+            old=copy.deepcopy(n.cells[context])
+            n.cells[context]['ports'][pin]="1'b1" if pin=='Q' else "1'b0"
+            try:self.rejected('context reset ownership '+pin,lambda:mapped.audit(n,stage=self.stage))
+            finally:n.cells[context]=old
+        if active['reset_absorbed_in_context_CLEAR']:
+            self.assertNotIn(proof['root_q'],active['independent_inputs'])
         root=proof['root_q']
-        for leaf,value in [(root,"1'b1"),(n.canonical('','hci_pcm_session_ready'),"1'b1"),
-                           (n.canonical(mapped.E,'phone_window_fault'),"1'b0")]:
+        leaves=[(n.canonical('','hci_pcm_session_ready'),"1'b1"),
+                (n.canonical(mapped.E,'phone_window_fault'),"1'b0"),
+                (n.pin(context,'Q'),"1'b1")]
+        if active['explicit_combinational_root_required']:leaves.append((root,"1'b0"))
+        for leaf,value in leaves:
             todo=[active['actual_qualification_net']];seen=set();found=[]
             while todo:
                 net=todo.pop()
@@ -204,7 +216,7 @@ class ActualMappedW(unittest.TestCase):
                 seen.add(net)
                 for p,out in g.drivers[net]:
                     c=n.cells[p]
-                    if c['kind']not in ('INV','LUT2','LUT3','LUT4'):continue
+                    if c['kind']not in ('INV','LUT1','LUT2','LUT3','LUT4','LUT5','LUT6'):continue
                     for pin in c['ports']:
                         if pin==out:continue
                         inp=n.pin(p,pin)

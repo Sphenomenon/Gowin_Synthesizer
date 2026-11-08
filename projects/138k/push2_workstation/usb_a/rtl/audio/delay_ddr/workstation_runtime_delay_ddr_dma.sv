@@ -14,7 +14,8 @@ module workstation_runtime_delay_ddr_dma #(
     parameter [28:0] RING_APP_BASE=29'h0c00_0000,
     parameter integer FIFO_ADDRESS_BITS=9,
     parameter integer TRANSACTION_TIMEOUT_CYCLES=1048576,
-    parameter integer PEER_TIMEOUT_CYCLES=1048576
+    parameter integer PEER_TIMEOUT_CYCLES=1048576,
+    parameter bit PIPELINED_WATCHDOG_ENABLE=0
 ) (
     input logic clk_i,rst_ni,
     // write FIFO pop side (audio-side feedback stream)
@@ -59,6 +60,7 @@ module workstation_runtime_delay_ddr_dma #(
   logic read_outstanding,flush_seen,flush_done;
   logic [63:0] pending_marker;
   logic [31:0] wait_cycles,peer_wait;
+  logic watchdog_reset_delay;
   logic [4:0] heartbeat_counter;
   (* ASYNC_REG="TRUE" *) logic peer_meta,peer_sync;
   logic peer_last,watchdog_fault,protocol_fault,peer_fault;
@@ -82,17 +84,34 @@ module workstation_runtime_delay_ddr_dma #(
   end
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if(!rst_ni)begin heartbeat_counter<=0;peer_meta<=0;peer_sync<=0;peer_last<=0;
-      peer_wait<=0;wait_cycles<=0;watchdog_fault<=0;peer_fault<=0;end
+      peer_wait<=0;wait_cycles<=0;watchdog_reset_delay<=1;watchdog_fault<=0;peer_fault<=0;end
     else begin
       heartbeat_counter<=heartbeat_counter+1'b1;
       peer_meta<=peer_heartbeat_i;peer_sync<=peer_meta;
       if(peer_sync!=peer_last)begin peer_wait<=0;peer_last<=peer_sync;end
       else if(peer_wait<32'(PEER_TIMEOUT_CYCLES))peer_wait<=peer_wait+1'b1;
       if(peer_wait>=32'(PEER_TIMEOUT_CYCLES)-1)peer_fault<=1;
-      if(state==S_IDLE || progress)wait_cycles<=0;
-      else begin
-        if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))wait_cycles<=wait_cycles+1'b1;
-        if(wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)watchdog_fault<=1;
+      if(PIPELINED_WATCHDOG_ENABLE)begin
+        // wait_cycles represents the original counter one memory edge ago.
+        // Its clear no longer crosses from the FIFO/ready cone into 32 CEs.
+        if(watchdog_reset_delay)wait_cycles<=0;
+        else if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))
+          wait_cycles<=wait_cycles+1'b1;
+        // Procedural if retains the original unknown-condition projection.
+        if(state==S_IDLE || progress)watchdog_reset_delay<=1;
+        else begin
+          watchdog_reset_delay<=0;
+          // The original counter now equals min(wait_cycles+1,timeout) when
+          // the previous edge did not clear it. Keep the original fault edge.
+          if(!watchdog_reset_delay && wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-2)
+            watchdog_fault<=1;
+        end
+      end else begin
+        if(state==S_IDLE || progress)wait_cycles<=0;
+        else begin
+          if(wait_cycles<32'(TRANSACTION_TIMEOUT_CYCLES))wait_cycles<=wait_cycles+1'b1;
+          if(wait_cycles>=32'(TRANSACTION_TIMEOUT_CYCLES)-1)watchdog_fault<=1;
+        end
       end
     end
   end

@@ -374,9 +374,9 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
 
 
 def m_preboard_pll_control_limits(sdc,netlist_text):
-    """Tighten actual A11 registered control flights; retain the full 10ns audit.
+    """Tighten actual A14 registered control flights; retain the full 10ns audit.
 
-    These 5ns Q-to-PLL data bounds reserve propagation for the real clk50
+    These 4.5ns Q-to-PLL data bounds reserve propagation for the real clk50
     input/clock-tree/CLK-Q budget. Constants and video reset logic stay under
     their existing source and routed gates. No exception or clock is changed.
     """
@@ -403,12 +403,12 @@ def m_preboard_pll_control_limits(sdc,netlist_text):
                 if not re.fullmatch(pattern,source) or pin!='Q' or not n.cells[source]['kind'].startswith('DFF') or n.pin(source,'CLK')!='clk_50m':
                     raise ValueError('M PLL control publisher/clock changed '+source)
                 endpoint=path+'/'+(bus if bus=='RESET' else bus+'['+str(index)+']')
-                command=f'set_max_delay 5.000 -from [get_pins {{{source}/Q}}] -to [get_pins {{{endpoint}}}]'
+                command=f'set_max_delay 4.500 -from [get_pins {{{source}/Q}}] -to [get_pins {{{endpoint}}}]'
                 if command.encode() in sdc:raise ValueError('M PLL limit already installed')
-                lines.append(command);rows.append(dict(source=source+'/Q',endpoint=endpoint,maximum_ns=5.0))
+                lines.append(command);rows.append(dict(source=source+'/Q',endpoint=endpoint,maximum_ns=4.5))
     if len(rows)!=15:raise ValueError('M PLL exact fifteen registered controls changed')
-    result=sdc+('\n# task3 M A11 PLL registered control route budgets\n'+'\n'.join(lines)+'\n').encode()
-    return result,dict(policy='task3_M_A11_registered_PLL_controls_max5_v1',paths=rows,
+    result=sdc+('\n# task3 M A14 PLL registered control route budgets\n'+'\n'.join(lines)+'\n').encode()
+    return result,dict(policy='task3_M_A14_registered_PLL_controls_max4p5_v2',paths=rows,
         full_routed_propagation_budget_ns=10.0,parent_sdc_sha256=digest(sdc),selected_sdc_sha256=digest(result),
         timing_relaxed=False,clock_periods_changed=False,routed_timing_verified=False)
 

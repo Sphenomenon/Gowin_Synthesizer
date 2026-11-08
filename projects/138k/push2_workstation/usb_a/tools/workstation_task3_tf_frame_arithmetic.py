@@ -4,6 +4,7 @@ Binary/Gray relations follow inductively from zero INIT and these exact next-Q
 equations. First-stage sampling/skew and RAM arcs are checked by the frame CDC
 and physical gates; this module does not claim routed or hardware acceptance.
 """
+import re
 from tools.workstation_runtime_pcm_cdc import Graph,COMB
 from tools.workstation_task3_root_reset_audit import RootDiagram
 from tools.workstation_task3_native_held import zero_ff
@@ -71,7 +72,36 @@ def audit(n):
     binary=g.group(B,'source_generation_o',32)
     gray=g.group(B,'source_generation_gray',31)+[binary[31]]
     event=n.pin(binary[0],'CE')
-    rows.append(counter('generation',binary,gray,root,([event],lambda b:b.inputs[event])))
+    enable=([event],lambda b:b.inputs[event])
+    guard_proof=None
+    if event in g.high:
+        # Synthesis can absorb the LSB enable into its D LUT. All remaining
+        # binary bits must retain one actual, nonconstant event CE. Expand
+        # that CE's exact LUT, sharing its actual inputs with the LSB D LUT;
+        # every bit is then checked below over independent guard inputs.
+        # No state-machine predicate or invented event replaces the enable.
+        events={n.pin(p,'CE') for p in binary[1:]}
+        require(len(events)==1,'generation higher-bit event enables differ')
+        event=next(iter(events))
+        require(event not in g.high|g.low,'generation event is constant')
+        drivers=g.drivers[event]
+        require(len(drivers)==1,'generation event driver absent/ambiguous')
+        cell,port=drivers[0];kind=n.cells[cell]['kind']
+        require(re.fullmatch('LUT[1-6]',kind) and port=='F',
+                'generation absorbed event is not an actual LUT')
+        leaves=[n.pin(cell,'I'+str(i)) for i in range(int(kind[3:]))]
+        require(len(set(leaves))==len(leaves) and
+                not set(leaves)&set(map(q,binary+gray)),
+                'generation event inputs alias counter state')
+        enable=(leaves,lambda b:b.net(g,event))
+        guard_proof=dict(policy='actual_LSB_D_absorbed_enable_v1',
+            event_net=event,actual_event_LUT=cell,independent_guard_inputs=leaves,
+            event_truth=n.cells[cell]['parameters'].get('INIT'),
+            LSB_enable_constant_high=True,all_binary_and_Gray_next_Q_checked=True,
+            event_state_machine_semantics_proven=False)
+    result=counter('generation',binary,gray,root,enable)
+    result['absorbed_LSB_event_proof']=guard_proof
+    rows.append(result)
     binary=g.group(B,'ack_binary',32)
     gray=g.group(B,'ack_gray',31)+[binary[31]]
     expected=g.group(B,'expected_generation_o',32)

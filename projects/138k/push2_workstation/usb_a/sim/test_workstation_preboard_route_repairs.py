@@ -174,7 +174,8 @@ class MClockPriority(unittest.TestCase):
         result,e=m_preboard_pll_control_limits(sdc,vg)
         self.assertTrue(result.startswith(sdc));self.assertEqual(len(e['paths']),15)
         self.assertEqual(e['full_routed_propagation_budget_ns'],10)
-        self.assertEqual(result.count(b'set_max_delay 5.000')-sdc.count(b'set_max_delay 5.000'),15)
+        self.assertEqual(result.count(b'set_max_delay 4.500')-sdc.count(b'set_max_delay 4.500'),15)
+        self.assertEqual({row['maximum_ns'] for row in e['paths']},{4.5})
         with self.assertRaises(ValueError):m_preboard_pll_control_limits(result,vg)
         n=protocol_netlist(vg,mapping='synthesis')
         from unittest.mock import patch
@@ -185,7 +186,7 @@ class MClockPriority(unittest.TestCase):
                 with patch('tools.workstation_native_protocol_audit.protocol_netlist',return_value=n):
                     with self.assertRaises(ValueError):m_preboard_pll_control_limits(sdc,vg)
             finally:n.cells[path]=old
-        print('M fifteen exact PLL control routes tightened to5ns; duplicate and publisher clock mutations rejected; full10ns routed gate retained')
+        print('M fifteen exact PLL control routes tightened to4.5ns; duplicate and publisher clock mutations rejected; full10ns routed gate retained')
 
 
 class MPhysicalComposition(unittest.TestCase):
