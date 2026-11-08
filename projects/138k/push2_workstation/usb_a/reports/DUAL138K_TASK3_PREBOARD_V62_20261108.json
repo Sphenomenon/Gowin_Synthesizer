@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "stage": "v62_source_synthesis_complete_physical_pending",
+  "goal_complete": false,
+  "hardware_tested": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "deployment_allowed": false,
+  "cache_root": "/Users/sphenicidition/.cache/gw138k-task3-20261108",
+  "roles": {
+    "M": {
+      "candidate": "custom138k-workstation-task3-m-preboard-v1-1823489029b73b89",
+      "configuration_sha256": "f1ee82ae6b0df15f8ccee3c2d61df1e541320509aecd50cc3ea207cbc4808b17",
+      "staged_files": 736,
+      "source_locks": 1088,
+      "independent_reproduction": true,
+      "audit_gates_passed": 29,
+      "synthesis_resources": {
+        "Register": 58695,
+        "Lut": 70171,
+        "Alu": 18337,
+        "Bsram": 212,
+        "Ssram": 242,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "synthesis_physical_counts_distinct": true,
+      "evidence_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-audit-v62.json": "7f5bb2e6409f54ada09cb36892d73b8bac3fe1126b261cc8f673186dc28a9e79",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v62/integration_inputs.json": "70e91e114914ca52816ac36a0c563509a58dbaacc1940781a1fb25588348ac73",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v62/workstation_profile.json": "8c9425a1e388f1e3bee5a1c8d6319400762ff8cd373874b8a93723cd49a5c418",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v62/synthesis-reuse.json": "a20eae4a3d34267c959f84f7c7f32370c6153e67841a49aafcedd3e1346522e4",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v62/synthesis.log": "16fe5a4cae91ff4bb9c6b03d3c31726db2371fe9bc7d629cda4c17a4d1139859",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v62/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "2fef9df68e2bac0bd2f405444f8c412fa558a00512674a7d5d37f9da0eae1075"
+      }
+    },
+    "W": {
+      "candidate": "custom138k-workstation-task3-w-preboard-v1-0f13850db3f5c180",
+      "configuration_sha256": "9184b1d1e6c3325005a2cb682bbed215a14bbf97efa198dd52b809c011b04bb5",
+      "staged_files": 724,
+      "source_locks": 1142,
+      "independent_reproduction": true,
+      "audit_gates_passed": 27,
+      "synthesis_resources": {
+        "Register": 46764,
+        "Lut": 60032,
+        "Alu": 15909,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "synthesis_physical_counts_distinct": true,
+      "evidence_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-audit-v62.json": "72d2e7efe05c39e814ceb463fcaefb418c79b93610077fbacfefc7ae5bf844c1",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v62/integration_inputs.json": "2f5e297f0d1ab99bd248ebccd2151d8671cb582d2eb405861ac6d0f4e5468876",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v62/workstation_profile.json": "65628fa1e5ecbe320439e3dff5268d15bb4de711a2f396e968fe71e0cbb5aa46",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v62/synthesis-reuse.json": "c3d0dafeae1fde0c474b185f2093735f776070e42b01359a56bdc0de86369b2e",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v62/synthesis.log": "fa37aa3916dd2e4207c8f5d05a074c2d031fe296377b54c51e5051a7fbaf6fca",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v62/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg": "8cccf40b1ffdf3cfd6d53dcdc8b79ef5de2a997c684b8c4739037ffb006b3bf2"
+      }
+    }
+  },
+  "targeted_evidence": {
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/native-fault-maintained-proof-v1/boundary-proof.json": {
+      "sha256": "cb8044299ddf697fcc997ef06c138e697158427eb0c5f97b40cd04e7266eaa83"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/native-fault-maintained-twins-v1/verification.json": {
+      "sha256": "a6a8db628afd07977ee49e894a55df4745f51fbd0a1024ab33551e36117790d0"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/record-peer-paired-bus-v1/verification.json": {
+      "sha256": "90e3ea85b7ae02822497fc42109c70c06a0c23f229cb3b854630a608c3ccc69a"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/record-peer-pcm-blocks-v1/verification.json": {
+      "sha256": "5109aedd6598e37fb8c46f1d66d0d3c58b103fd823e000e631bcfc28b18b25ce"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v61-batch-peer-controls.json": {
+      "sha256": "1da0d9b79e5aeeac867f70c70bd7d48ff594145fdba2803138dc1c9e876af0ef"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v59-retirement-isolated-controls.json": {
+      "sha256": "6bff326c69b8f12616e9b3bc4b19950f110df504da621a4ea6755ed5f8d39aec"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/reproduction-v62.json": {
+      "sha256": "af6d87d8915cda0577d87c584dd0e8dce795554bf61f5a760dba852712fabaa4"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v59-record-peer-mapped-test.log": {
+      "sha256": "5179d1c549a64949dd2931afb76e88bff72939bd401decb2cbcd78d3a81cf93b"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v59-native-route-repair-test.log": {
+      "sha256": "9105f0242fda8cd8c417eb64747dd6832e87c57f2188cae1f3872a5fd2207a75"
+    },
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/current-sources-v62.log": {
+      "sha256": "2a8e68f03033877231cd51e38e19569915582d2b8f42f851cab1d103ca8a16cc"
+    }
+  },
+  "previous_failures_preserved": true,
+  "physical": {
+    "W": {
+      "state": "running",
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v18",
+      "user_code": "D21108D2"
+    },
+    "M": {
+      "state": "no_new_physical_candidate",
+      "last_candidate": "m-preboard-physical-v17",
+      "unrouted_nets": 2416,
+      "valid_bitstream": false,
+      "diagnostic": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v17-route-diagnostic-v2"
+    }
+  }
+}

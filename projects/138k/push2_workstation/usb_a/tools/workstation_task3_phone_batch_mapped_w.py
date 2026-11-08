@@ -502,7 +502,11 @@ def audit(n, *, stage):
     load, mask, keep, read = [local(x) for x in
         ('n737_4', 'n12043_41' if reserved_dispatch else 'n12043_44' if grouped_context else 'n12043_28' if retired_usb else 'n12043_24', 'n12043_11','n12043_12')]
     from tools.workstation_phone_ack_compare import SOURCE as ack_source,NATIVE_SHA256 as ack_sha
-    ack_grouped=source['source_sha256'][ack_source]==ack_sha
+    # The outer record peer fence does not change the phone ACK comparison.
+    # Verify and invert that exact adaptation before selecting the existing
+    # ACK mapping proof; retain the original historical ACK identity.
+    from tools.workstation_record_peer_compare import normalize as peer_parent
+    ack_grouped=hashlib.sha256(peer_parent((Path(stage)/ack_source).read_bytes())).hexdigest()==ack_sha
     if ack_grouped:
         # The ACK rebuild folds !load into the shared hold/read term. Keep
         # this actual control boundary, including that gate; all 256 next-Q

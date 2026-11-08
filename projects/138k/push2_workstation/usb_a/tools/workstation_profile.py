@@ -614,6 +614,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
                                'raw_terminal_tuple_policy':'task3_W_raw_terminal_tuple_final_fault_selector_v1',
                                'raw_pack_policy':'task3_W_raw_pack_fetch_final_fault_selector_v1',
+                               'native_fault_cofactor_policy':'task3_W_native_fault_diagnostic_cofactor_v1',
                                _cdc_key: _cdc_policy,
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
@@ -1117,6 +1118,9 @@ def _artifact(root, output, metadata, profile):
     verify_usb2_cpu_ram_selection(root,stage,profile['configuration'],
                                   metadata.get('usb2_cpu_ram_selection'),firmware=metadata['firmware'])
     copies = metadata['copied_source_destinations']
+    from tools import workstation_native_fault_cofactor as native_fault_cofactor
+    if native_fault_cofactor.evidence(stage,profile['configuration']) != metadata.get('native_fault_cofactor'):
+        raise ValueError('native fault diagnostic cofactor source selection changed')
     if set(copies) != set(metadata['copied_sources_sha256']) or len(set(copies.values())) != len(copies):
         raise ValueError('workstation profile copied source ownership changed')
     for source, target in copies.items():
@@ -1127,6 +1131,7 @@ def _artifact(root, output, metadata, profile):
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal
             selected=(stage/target).read_text()
+            selected=native_fault_cofactor.unselect(selected)
             from tools import workstation_ble_pack_cofactor as pack_cofactor
             if pack_cofactor.configured(profile['configuration']):
                 if pack_cofactor.evidence(stage,profile['configuration'])!=metadata.get('raw_pack_cofactor'):

@@ -11,6 +11,7 @@ module workstation_ble_raw_ddr_store #(
     parameter bit PIPELINED_COMPLETION_ENABLE=0,
     parameter bit TUPLE_COFACTOR_ENABLE=0,
     parameter bit PACK_COFACTOR_ENABLE=0,
+    parameter bit NATIVE_FAULT_COFACTOR_ENABLE=0,
     parameter bit TERMINAL_COFACTOR_ENABLE=0
 ) (
     input wire clk_i,memory_clk_i,rst_ni,
@@ -40,6 +41,7 @@ module workstation_ble_raw_ddr_store #(
     // memory_clk_i: local slot readiness is not native acceptance.
     output wire slot_valid_o,
     input wire slot_ready_i,native_accept_i,
+    input wire native_fault_probe_i,response_fault_probe_i,
     output reg ddr_write_o,
     output reg [28:0] ddr_address_o,
     output reg [255:0] ddr_data_o,
@@ -304,11 +306,12 @@ module workstation_ble_raw_ddr_store #(
     reg memory_fetch_active,memory_fetch_cancel;
     reg [8:0] fetch_beats_total,fetch_beats_issued;
     reg [28:0] fetch_address;
-    wire native_ready,bridge_fault,unused_submitted;
+    wire native_ready,legacy_bridge_fault,unused_submitted;
+    reg bridge_fault,memory_fault_now;
     workstation_recording_ddr_native_bridge native_bridge(
         .clk_i(memory_clk_i),.rst_ni(memory_reset_n),.published_valid_i(published_valid),
         .slot_ready_i(slot_ready_i),.native_accept_i(native_accept_i),.transport_fault_i(transport_fault_i),
-        .slot_valid_o(slot_valid_o),.native_ready_o(native_ready),.transport_fault_o(bridge_fault),
+        .slot_valid_o(slot_valid_o),.native_ready_o(native_ready),.transport_fault_o(legacy_bridge_fault),
         .submitted_o(unused_submitted),.protocol_fault_o(native_protocol_fault_o));
     wire native_commit=published_valid && native_ready;
     wire native_read_commit=native_commit && !ddr_write_o;
@@ -317,7 +320,32 @@ module workstation_ble_raw_ddr_store #(
     wire response_bad=read_response_i && !read_outstanding && !native_read_commit;
     wire [31:0] response_generation=read_outstanding ? read_generation : published_generation;
     wire [10:0] response_word=read_outstanding ? read_word : published_word;
-    wire memory_fault_now=bridge_fault || command_expired || read_expired || response_bad;
+    // These observations cannot accept or retire work. The enclosing memory
+    // boundary proves equality with the real inputs only when transport=0.
+    // For transport=1 the immediate fault dominates; X/Z use original inputs.
+    (* syn_keep=1 *) wire probe_native_ready=native_fault_probe_i && unused_submitted;
+    wire probe_native_read_commit=published_valid && probe_native_ready && !ddr_write_o;
+    (* syn_keep=1 *) wire probe_protocol_fault=(native_fault_probe_i &&
+        (!unused_submitted || !published_valid)) || (unused_submitted && !published_valid);
+    (* syn_keep=1 *) wire bridge_without_transport=native_protocol_fault_o || probe_protocol_fault;
+    (* syn_keep=1 *) wire probe_command_expired=published_valid && !probe_native_ready &&
+        command_wait>=COMMAND_TIMEOUT_CYCLES-1;
+    (* syn_keep=1 *) wire probe_read_expired=read_outstanding && !response_fault_probe_i &&
+        read_wait>=READ_TIMEOUT_CYCLES-1;
+    (* syn_keep=1 *) wire probe_response_bad=response_fault_probe_i && !read_outstanding && !probe_native_read_commit;
+    (* syn_keep=1 *) wire fault_without_transport=bridge_without_transport ||
+        probe_command_expired || probe_read_expired || probe_response_bad;
+    always @* begin
+        bridge_fault=legacy_bridge_fault;
+        memory_fault_now=legacy_bridge_fault || command_expired || read_expired || response_bad;
+        if(NATIVE_FAULT_COFACTOR_ENABLE)case(transport_fault_i)
+            1'b0,1'b1:begin
+                bridge_fault=transport_fault_i || bridge_without_transport;
+                memory_fault_now=transport_fault_i || fault_without_transport;
+            end
+            default:begin end
+        endcase
+    end
     wire memory_quiescent=!published_valid && !read_outstanding && !return_pending && !pack_word_valid;
     wire memory_drained_now=memory_closed && !memory_active && !memory_clear_pending &&
         !memory_fetch_active && !fifo_read_valid && pack_frames==0 && memory_quiescent && !memory_channel_fault;

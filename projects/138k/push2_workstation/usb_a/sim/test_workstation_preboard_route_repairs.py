@@ -69,14 +69,26 @@ class RoutedRepairs(unittest.TestCase):
         tuple_cofactor=tuple_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         from tools.workstation_ble_pack_cofactor import configured as pack_configured
         pack_cofactor=pack_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor)
-        selected,e=place(cst,n);total=740 if pack_cofactor else 739 if publication else 741
+        from tools.workstation_native_fault_cofactor import configured as native_configured
+        native_fault=native_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault)
+        selected,e=place(cst,n);total=741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
         self.assertEqual(len(e['tag_return_cone']['combinational_cells']),75 if pack_cofactor else 74 if publication else 76)
         self.assertEqual(e['pack_cofactor_layout'],pack_cofactor)
+        if native_fault:
+            shared='u_managed/runtime/delay_dma/n420_s2'
+            self.assertEqual(e['causal_cells_excluded_from_placement_only'],[shared])
+            self.assertIn(shared,e['tag_return_cone']['combinational_cells'])
+            self.assertNotIn(('"'+shared+'"').encode(),selected)
+            self.assertEqual(len(e['observed_status_hold_separation']),2)
+            old=copy.deepcopy(n.cells[shared]);n.cells[shared]['parameters']['INIT']="16'h0000"
+            try:
+                with self.assertRaises(ValueError):place(cst,n)
+            finally:n.cells[shared]=old
         if pack_cofactor:
             with self.assertRaises(ValueError):
                 w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor)

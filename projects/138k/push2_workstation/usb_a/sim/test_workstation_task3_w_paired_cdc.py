@@ -144,12 +144,16 @@ class ActualPairedW(unittest.TestCase):
 
     def test_retirement_and_merge_controls(self):
         g = Graph(self.n)
+        ready = audit_retirements(self.n)['cnn_backend_ready_merge']
+        second = ready['selected_second']
+        producer = ready['source_pin'].rsplit('/', 1)[0]
         cases = (
             ('retired media source no longer zero', g.register('u_managed/media_stop', 'request_compute', 0), 'ports', 'D', "1'b1"),
             ('rebound startup clock', g.register('u_managed/runtime', 'startup_memory', 0), 'ports', 'CLK', 'clk_50m'),
             ('CNN merged first D disconnected', g.register('u_task3_media/cnn_stream/task_service', 'backend_meta'), 'ports', 'D', "1'b0"),
-            ('CNN merged second bypass', g.register('u_task3_media/cnn_stream/task_service/cnn', 'model_memory_ready'), 'ports', 'D', "1'b0"),
-            ('CNN memory ready gate source', 'u_task3_media/memory/ddr_client_ready_s', 'ports', 'I3', "1'b1"),
+            ('CNN merged second bypass', second, 'ports', 'D', "1'b0"),
+            ('CNN memory ready gate source', producer, 'ports', 'I3', "1'b1"),
+            ('CNN memory ready truth table', producer, 'parameters', 'INIT', "16'h0000"),
         )
         for case in cases:
             with self.subTest(case=case[0]):

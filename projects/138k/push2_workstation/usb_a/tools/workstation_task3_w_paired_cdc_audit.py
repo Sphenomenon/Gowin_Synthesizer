@@ -607,20 +607,28 @@ def audit_retirements(n):
     for p in (first, second):
         zero_ff(n, g, p, 'clk_50m')
         require(n.pin(p, 'CE') in g.high, 'CNN backend-ready chain CE changed')
-    producer = 'u_task3_media/memory/ddr_client_ready_s'
+    ready_net=n.canonical('','ddr_client_ready')
+    ready_drivers=g.drivers[ready_net]
+    require(len(ready_drivers)==1 and ready_drivers[0][1]=='F',
+            'CNN actual memory ready producer absent/ambiguous')
+    producer=ready_drivers[0][0]
     backend_binding = None
     if present == [(scope, 'backend_sync')]:
         native = g.register(scope, 'g_domain_reset.native_release', 2)
         control = g.register(scope, 'g_domain_reset.control_release', 2)
         zero_ff(n, g, native, 'memory_clk');zero_ff(n, g, control, 'clk_50m')
-        require(n.cells[producer]['kind']=='LUT4' and
-            n.cells[producer]['parameters']=={'INIT': "16'h1000"} and
-            [n.pin(producer,'I'+str(i))for i in range(4)]==[
+        ready_inputs=[
                 n.canonical('u_task3_media/memory','bist_failed'),
                 n.canonical('u_task3_media','task3_memory_transport_fault'),
                 n.canonical('','ddr_client_reset_n'),
-                n.canonical('u_task3_media/memory','bist_done')],
+                n.canonical('u_task3_media/memory','bist_done')]
+        require(n.cells[producer]['kind']=='LUT4' and
+            n.cells[producer]['parameters']=={'INIT': "16'h1000"} and
+            {n.pin(producer,'I'+str(i))for i in range(4)}==set(ready_inputs),
             'CNN ready BIST/fault/client gate changed')
+        ready_equation=g.equivalent('CNN actual ready retains BIST/fault/client equation',
+            [ready_net,*ready_inputs],lambda v:v[0]==int(not v[1] and not v[2] and v[3] and v[4]),
+            cuts=set(ready_inputs))
         backend_binding = g.equivalent('CNN backend first D exact ready AND native final release',
             [n.pin(first,'D'),n.pin(producer,'F'),n.pin(native,'Q')],
             lambda v:v[0]==int(v[1] and v[2]),cuts={n.pin(producer,'F'),n.pin(native,'Q')})
@@ -648,7 +656,8 @@ def audit_retirements(n):
             source_pin=producer + '/F', source_gate=('(!bist_failed && !native_transport_fault && client_reset && bist_done) AND native_release2'
                          if backend_binding is not None else '!bist_failed && bist_done && client_reset && peer_gate'),
             first_stage_complete_closure=first_closure, exact_two_stage_link=True,
-            native_release_ready_binding=backend_binding),
+            native_release_ready_binding=backend_binding,
+            ready_gate_equation=ready_equation if backend_binding is not None else None),
         fixed_runtime_retirement_is_W_only=True, routed_mapping_reviewed=False, hardware_tested=False)
 
 

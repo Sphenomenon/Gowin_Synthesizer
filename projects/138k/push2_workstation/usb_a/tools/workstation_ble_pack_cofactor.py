@@ -18,6 +18,8 @@ def unselect(text):
         text=text.replace(SELECTED,DEFAULT,1)
     return text
 def restore(text):
+    from tools.workstation_native_fault_cofactor import restore_raw
+    text=restore_raw(text)
     text=unselect(text)
     if DEFAULT not in text:return text
     # Normalize the two older independent selections only for lineage checks.

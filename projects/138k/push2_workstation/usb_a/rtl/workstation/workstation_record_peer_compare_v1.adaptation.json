@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "policy": "task3_W_record_peer64_same_edge_byte_compare_v1",
+  "source": "rtl/workstation/workstation_task3_w_bus_endpoint.sv",
+  "parent_sha256": "a3604a9470f1298c8f29eb2d128ef33d835e954d34ac9b44f347545c1cd24a67",
+  "native_sha256": "7ff04e6154167bad39b1cc1551d79c3bcf37b141b36ac4902ba0b93e59044e17",
+  "edits": [
+    {
+      "before": "    wire record_matches=record_wire_common[95:32]=={peer_boot_i,session_i} && record_wire_common[31:0]!=0;",
+      "after": "    // The routed record CANCEL fence used a 64-bit carry chain here.\n    // Preserve every peer/session bit and the same-edge ingress cancellation.\n    wire [63:0] record_expected_peer={peer_boot_i,session_i};\n    (* syn_keep=1 *) wire [7:0] record_peer_equal_bytes;\n    genvar record_peer_byte;\n    generate for(record_peer_byte=0;record_peer_byte<8;record_peer_byte=record_peer_byte+1)begin:g_record_peer_compare\n        assign record_peer_equal_bytes[record_peer_byte]=\n            record_wire_common[32+record_peer_byte*8+:8]==record_expected_peer[record_peer_byte*8+:8];\n    end endgenerate\n    wire record_matches=(&record_peer_equal_bytes) && record_wire_common[31:0]!=0;"
+    }
+  ],
+  "added_state_bits": 0,
+  "hardware_tested": false,
+  "exit_plan": "Retain exact inverse while earlier bus endpoint lineage remains locked."
+}

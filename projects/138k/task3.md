@@ -66,9 +66,9 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新可复现源码／综合检查点为[v58](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V58_20261108.md)：M29/29、W26/26通过，M732／W720个实际暂存输入由独立准备复现；W pack/fetch同拍故障修复及新映射完整消费者证明通过。W v17完成P&R，BSRAM287/340，setup／hold／recovery／removal为−3.461／−1.991／+2.216／+0.337 ns，PLL和四项选定routed边界通过，完整物理门禁仍失败；精确min-delay没有修好status短线。M v17仍有2416条未布通网络，v18失败实验退役。下一步围绕实际completion、delay watchdog跨区往返、config→result及M布线阻塞修复；两板均未放行SRAM。task2、单板和历史失败／回退保留。
+2026-11-08 最新可复现源码／综合检查点为[v62](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)：M29/29、W27/27通过，M736／W724个实际暂存输入由独立准备逐文件复现；M候选后缀`1823489029b73b89`，W为`0f13850db3f5c180`。W新增native故障诊断cofactor和完整64位录音peer/session字节比较，接受／退休权威、同拍故障与CANCEL不改；四态、真实raw-store twins和当前完整批处理消费者证明通过。编译输入与已完成的v59综合逐字节相同，显式复用原综合产物，未刷新历史锁。M仍保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码和唯一录音对象。
 
-W v17 的[后续布局诊断](push2_workstation/usb_a/reports/DUAL138K_TASK3_W_V17_POST_ROUTE_DIAGNOSIS_20261108.json)已确认：`delay_dma/n420_s2` 同时服务tag-return与watchdog，被tag局部约束固定在C55附近，watchdog由C159到C55再回C143，两段线延迟合计6.318 ns。缓存内已形成仅移除该共享门位置限制、保留128个tag／257个返回FF及280个held覆盖、分离实际status/fetch-fault两个FF的精确CST投影；未选入生产、未新跑P&R，也不宣称时序改善。completion及recording-result的setup仍需分别修复，v58封存输入保持不变。
+W v18（`D21108D2`）绑定v62来源，已选入[共享watchdog及status局部布局修复](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)，正在进行完整P&R；尚未取得时序结果。W v17失败位流、BSRAM287/340及setup／hold −3.461／−1.991 ns保留。M v17仍有2416条未布通网络、无有效位流或最终STA；v18增量失败实验保持退役。本轮在独立副本启用工具后端具名路由诊断，保持v17输入、place2／route0及全部约束，不生成位流，不作为新M候选。两板均未放行SRAM。task2、单板和历史失败／回退保留。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 

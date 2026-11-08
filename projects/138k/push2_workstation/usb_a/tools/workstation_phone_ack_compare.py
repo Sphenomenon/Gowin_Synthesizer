@@ -10,6 +10,8 @@ NATIVE_SHA256='a3604a9470f1298c8f29eb2d128ef33d835e954d34ac9b44f347545c1cd24a67'
 MANIFEST_SHA256='f71713f1482cbce48bb0f3dbad5da502d3dc4b21011b5a98f9fad794e97ac535'
 
 def normalize(payload):
+    from tools.workstation_record_peer_compare import normalize as peer_parent
+    payload=peer_parent(payload)
     digest=lambda b:hashlib.sha256(b).hexdigest()
     if b'phone_ack_equal_bytes' not in payload:return payload
     raw=(Path(__file__).resolve().parents[1]/MANIFEST).read_bytes()

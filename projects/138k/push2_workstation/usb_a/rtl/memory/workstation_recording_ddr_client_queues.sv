@@ -43,6 +43,7 @@ module workstation_recording_ddr_client_queues #(
     output wire [255:0] app_data,
     output wire [31:0] app_mask,
     input wire app_ready,app_write_ready,app_response,
+    input wire app_ready_fault_probe_i,
     input wire [255:0] app_response_data,
     output wire [255:0] response_data,
     output wire response_fault,
@@ -52,7 +53,8 @@ module workstation_recording_ddr_client_queues #(
     input wire [31:0] recording_mask,
     output wire recording_ready,recording_response,
     output wire [8:0] slot_accept_o,core_accept_o,native_accept_o,
-    output wire transport_fault_o
+    output wire transport_fault_o,
+    output wire [8:0] native_fault_probe_o
 );
     generate if(!RECORDING_ENABLE)begin:g_legacy
         basic_pitch_ddr_client_queues #(.TAG_BITS(TAG_BITS)) u_legacy(
@@ -118,6 +120,7 @@ module workstation_recording_ddr_client_queues #(
             .response_fault(response_fault));
         assign recording_ready=0;assign recording_response=0;
         assign slot_accept_o={1'b0,display_valid&&display_ready,delay_valid&&delay_ready,music_valid&&music_ready,audio_valid&&audio_ready,writer_valid&&writer_ready,cpu_valid&&cpu_ready,scan_valid&&scan_ready,bist_valid&&bist_ready};
+        assign native_fault_probe_o=0;
         assign core_accept_o=0;assign native_accept_o=0;
         assign transport_fault_o=response_fault;
     end else begin:g_recording
@@ -229,9 +232,11 @@ module workstation_recording_ddr_client_queues #(
             .recording_data(qdata[8]),
             .recording_mask(qmask[8]),
             .recording_ready(qready[8]),
+            .app_ready_fault_probe_i(app_ready_fault_probe_i),
             .recording_response(recording_response),
             .core_accept_o(core_accept_o),
             .native_accept_o(native_accept_o),
+            .native_fault_probe_o(native_fault_probe_o),
             .transport_fault_o(transport_fault_o));
     end endgenerate
 endmodule

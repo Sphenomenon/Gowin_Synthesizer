@@ -204,6 +204,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     pack_selected=pack_cofactor.configured({} if profile is None else profile['configuration'])
     if pack_selected:
         profile_dependencies += (pack_cofactor.TOOL,pack_cofactor.MANIFEST)
+    from tools import workstation_native_fault_cofactor as native_fault_cofactor
+    native_fault_selected=native_fault_cofactor.configured({} if profile is None else profile['configuration'])
+    if native_fault_selected:
+        profile_dependencies += (native_fault_cofactor.TOOL,native_fault_cofactor.MANIFEST)
 
     from tools import workstation_ble_terminal_tuple as terminal_tuple
     tuple_selected=terminal_tuple.configured({} if profile is None else profile['configuration'])
@@ -522,7 +526,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     raw_terminal_cofactor=terminal_cofactor.select(stage,profile['configuration']) if terminal_selected else None
     raw_terminal_tuple=terminal_tuple.select(stage,profile['configuration']) if tuple_selected else None
     raw_pack_cofactor=pack_cofactor.select(stage,profile['configuration']) if pack_selected else None
+    native_fault_receipt=native_fault_cofactor.select(stage,profile['configuration']) if native_fault_selected else None
     if raw_pack_cofactor is not None:
+        raw_pack_cofactor=pack_cofactor.evidence(stage,profile['configuration'])
         raw_terminal_tuple=terminal_tuple.evidence(stage,profile['configuration'])
 
     if raw_terminal_cofactor is not None:
@@ -783,6 +789,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['inner_event_queue']=inner_event_buffer
         if raw_pack_cofactor is not None:
             metadata['raw_pack_cofactor']=raw_pack_cofactor
+        if native_fault_receipt is not None:
+            metadata['native_fault_cofactor']=native_fault_receipt
 
         if raw_terminal_tuple is not None:
             metadata['raw_terminal_tuple']=raw_terminal_tuple

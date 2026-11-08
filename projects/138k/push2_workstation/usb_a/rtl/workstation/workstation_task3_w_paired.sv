@@ -99,6 +99,7 @@ module workstation_task3_w_paired #(
     wire [255:0] music_data;
     wire [31:0] music_mask;
     wire recording_valid,recording_write,recording_ready,recording_response;
+    wire recording_native_fault_probe,recording_response_fault_probe;
     wire [28:0] recording_address;
     wire [255:0] recording_data;
     wire [31:0] recording_mask;
@@ -118,6 +119,8 @@ module workstation_task3_w_paired #(
         .app_ready_i(app_ready_i),.app_write_ready_i(app_write_ready_i),.app_response_i(app_response_i),
         .app_response_data_i(app_response_data_i),.response_data_o(response_data_o),.memory_flags_o(memory_flags_o),
         .slot_accept_o(slot_accept_o),.core_accept_o(core_accept_o),.native_accept_o(native_accept_o),
+        .recording_native_fault_probe_o(recording_native_fault_probe),
+        .recording_response_fault_probe_o(recording_response_fault_probe),
         .transport_fault_o(transport_fault_o));
     wire start_ready,clear_ready,capture_ready,close_ready,fetch_ready;
     assign raw_start_ready_o=control_ready_o && start_ready;
@@ -142,6 +145,8 @@ module workstation_task3_w_paired #(
         .fetch_offset_i(raw_fetch_offset_i),.fetch_length_i(raw_fetch_length_i),
         .fetch_done_o(raw_fetch_done_o),.fetch_fault_o(raw_fetch_fault_o),.cache_valid_o(raw_cache_valid_o),
         .sample_addr_i(raw_sample_addr_i),.sample_word_o(raw_sample_word_o),
+        .native_fault_probe_i(recording_native_fault_probe),
+        .response_fault_probe_i(recording_response_fault_probe),
         .slot_valid_o(recording_valid),.slot_ready_i(recording_ready),.native_accept_i(native_accept_o[8]),
         .ddr_write_o(recording_write),.ddr_address_o(recording_address),.ddr_data_o(recording_data),.ddr_mask_o(recording_mask),
         .read_response_i(recording_response),.read_data_i(response_data_o),.transport_fault_i(transport_fault_o),

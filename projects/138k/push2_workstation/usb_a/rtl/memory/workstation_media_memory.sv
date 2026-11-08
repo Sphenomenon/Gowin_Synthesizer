@@ -37,7 +37,8 @@ module workstation_media_memory #(
     // These retain their distinct meanings: local slot, core buffer, native
     // command/write acceptance. In particular raw-store seal uses native[8].
     output wire [8:0] slot_accept_o,core_accept_o,native_accept_o,
-    output wire transport_fault_o
+    output wire transport_fault_o,
+    output wire recording_native_fault_probe_o,recording_response_fault_probe_o
 );
     wire backend_release=reset_ni && memory_reset_ni &&
         memory_calibrated_i && memory_pll_locked_i;
@@ -57,6 +58,9 @@ module workstation_media_memory #(
         .req_addr(bist_address),.req_wdata(bist_data),.rsp_valid(bist_response),
         .rsp_data(response_data_o),.done(bist_done),.failed(bist_failed),
         .error_count(),.first_error_addr());
+    wire [8:0] native_fault_probe;
+    assign recording_native_fault_probe_o=native_fault_probe[8];
+    assign recording_response_fault_probe_o=client_reset_no && bist_done && !bist_failed && recording_response;
     assign client_ready_o=client_reset_no && bist_done && !bist_failed && !transport_fault_o;
     // Do not expose an empty slot as successful acceptance while BIST/fault
     // fences its request. Old W21 audio_memory remains byte-identical.
@@ -89,6 +93,8 @@ module workstation_media_memory #(
         .app_cmd(app_cmd_o),.app_en(app_en_o),.app_wren(app_wren_o),.app_wend(app_wend_o),
         .app_address(app_address_o),.app_data(app_data_o),.app_mask(app_mask_o),
         // An unowned return fences outstanding dispatch on this same edge.
+        .app_ready_fault_probe_i(app_ready_i),
+        .native_fault_probe_o(native_fault_probe),
         .app_ready(app_ready_i && !transport_fault_o),.app_write_ready(app_write_ready_i),
         .app_response(app_response_i),.app_response_data(app_response_data_i),
         .response_data(response_data_o),.response_fault(response_fault),

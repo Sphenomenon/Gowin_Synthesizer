@@ -128,7 +128,16 @@ module workstation_task3_w_bus_endpoint #(
     // Record generation is independently allocated by M. Map it to a W-root
     // monotonic ingress generation, so either board can reboot independently.
     wire [95:0] record_wire_common=rx_payload_i[193:98];
-    wire record_matches=record_wire_common[95:32]=={peer_boot_i,session_i} && record_wire_common[31:0]!=0;
+    // The routed record CANCEL fence used a 64-bit carry chain here.
+    // Preserve every peer/session bit and the same-edge ingress cancellation.
+    wire [63:0] record_expected_peer={peer_boot_i,session_i};
+    (* syn_keep=1 *) wire [7:0] record_peer_equal_bytes;
+    genvar record_peer_byte;
+    generate for(record_peer_byte=0;record_peer_byte<8;record_peer_byte=record_peer_byte+1)begin:g_record_peer_compare
+        assign record_peer_equal_bytes[record_peer_byte]=
+            record_wire_common[32+record_peer_byte*8+:8]==record_expected_peer[record_peer_byte*8+:8];
+    end endgenerate
+    wire record_matches=(&record_peer_equal_bytes) && record_wire_common[31:0]!=0;
     reg [95:0] record_active_common,record_retired_common;
     reg [31:0] record_local_counter,record_active_local,record_active_epoch,record_active_first;
     wire record_new_key=record_wire_common[95:32]!=record_retired_common[95:32] ||

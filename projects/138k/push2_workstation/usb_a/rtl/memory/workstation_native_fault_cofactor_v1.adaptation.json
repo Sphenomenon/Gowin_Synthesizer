@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "policy": "task3_W_native_fault_diagnostic_cofactor_v1",
+  "sources": {
+    "rtl/memory/workstation_recording_ddr_arbiter_pipeline.sv": {
+      "parent_sha256": "2d49236f57716cd43cedae2df1f9f689742f6bc593156f894fc32606e8318161",
+      "native_sha256": "38e46ab587783509c9db2035e3dba6a5244b648ddaa5716107087b7de2da0403",
+      "edits": [
+        {
+          "before": "    input wire app_ready,app_write_ready,app_response,",
+          "after": "    input wire app_ready,app_write_ready,app_response,\n    input wire app_ready_fault_probe_i,",
+          "count": 1
+        },
+        {
+          "before": "    output wire transport_fault_o\n",
+          "after": "    output wire transport_fault_o,\n    output wire [8:0] native_fault_probe_o\n",
+          "count": 1
+        },
+        {
+          "before": "        assign native_accept_o=0;",
+          "after": "        assign native_fault_probe_o=0;\n        assign native_accept_o=0;",
+          "count": 1
+        },
+        {
+          "before": "    for(genvar client=0;client<9;client=client+1)begin:g_native_accept\n",
+          "after": "    // A diagnostic cofactor only: never a native acceptance or ready signal.\n    // It equals native_accept_o when the enclosing immediate transport fault\n    // is zero, using the same held command and unqualified physical readiness.\n    wire native_fault_probe=reset_n && command_full && app_ready_fault_probe_i &&\n        (!command_write || app_write_ready) && (command_write || read_room);\n    for(genvar client=0;client<9;client=client+1)begin:g_native_accept\n        assign native_fault_probe_o[client]=native_fault_probe && command_owner==4'(client);\n",
+          "count": 1
+        }
+      ]
+    },
+    "rtl/memory/workstation_recording_ddr_client_queues.sv": {
+      "parent_sha256": "39b10a2b12bab2e0b7e089fa7a398552110045d61eca88c13f82bbe827aecd39",
+      "native_sha256": "e9f4b40906836b439a0cffb2b7690a1201bc008e5f158d13c1548c3e96f4a167",
+      "edits": [
+        {
+          "before": "    input wire app_ready,app_write_ready,app_response,",
+          "after": "    input wire app_ready,app_write_ready,app_response,\n    input wire app_ready_fault_probe_i,",
+          "count": 1
+        },
+        {
+          "before": "    output wire transport_fault_o\n",
+          "after": "    output wire transport_fault_o,\n    output wire [8:0] native_fault_probe_o\n",
+          "count": 1
+        },
+        {
+          "before": "        assign core_accept_o=0;assign native_accept_o=0;",
+          "after": "        assign native_fault_probe_o=0;\n        assign core_accept_o=0;assign native_accept_o=0;",
+          "count": 1
+        },
+        {
+          "before": "            .recording_ready(qready[8]),",
+          "after": "            .recording_ready(qready[8]),\n            .app_ready_fault_probe_i(app_ready_fault_probe_i),",
+          "count": 1
+        },
+        {
+          "before": "            .native_accept_o(native_accept_o),",
+          "after": "            .native_accept_o(native_accept_o),\n            .native_fault_probe_o(native_fault_probe_o),",
+          "count": 1
+        }
+      ]
+    },
+    "rtl/memory/workstation_media_memory.sv": {
+      "parent_sha256": "81eec748fb1679ff0763f398a36dcc3a4476e89a4719693f9bc89800dcec25f1",
+      "native_sha256": "33e701a21e2eab51151614cbafda5720deb8997335f21da19cbd851b743d84f7",
+      "edits": [
+        {
+          "before": "    output wire transport_fault_o\n",
+          "after": "    output wire transport_fault_o,\n    output wire recording_native_fault_probe_o,recording_response_fault_probe_o\n",
+          "count": 1
+        },
+        {
+          "before": "    assign client_ready_o=client_reset_no",
+          "after": "    wire [8:0] native_fault_probe;\n    assign recording_native_fault_probe_o=native_fault_probe[8];\n    assign recording_response_fault_probe_o=client_reset_no && bist_done && !bist_failed && recording_response;\n    assign client_ready_o=client_reset_no",
+          "count": 1
+        },
+        {
+          "before": "        .app_ready(app_ready_i && !transport_fault_o),",
+          "after": "        .app_ready_fault_probe_i(app_ready_i),\n        .native_fault_probe_o(native_fault_probe),\n        .app_ready(app_ready_i && !transport_fault_o),",
+          "count": 1
+        }
+      ]
+    },
+    "rtl/memory/workstation_ble_raw_ddr_store.sv": {
+      "parent_sha256": "537060994f0bc42a3c076a1324a7cf1db880ea277c83d93bc23f1b83db968e74",
+      "native_sha256": "7ec1b43ef9d7a016428c64cb0baa8f33147d3e72853374d8215160abdeca530d",
+      "edits": [
+        {
+          "before": "    parameter bit PACK_COFACTOR_ENABLE=0,",
+          "after": "    parameter bit PACK_COFACTOR_ENABLE=0,\n    parameter bit NATIVE_FAULT_COFACTOR_ENABLE=0,",
+          "count": 1
+        },
+        {
+          "before": "    input wire slot_ready_i,native_accept_i,",
+          "after": "    input wire slot_ready_i,native_accept_i,\n    input wire native_fault_probe_i,response_fault_probe_i,",
+          "count": 1
+        },
+        {
+          "before": "    wire native_ready,bridge_fault,unused_submitted;",
+          "after": "    wire native_ready,legacy_bridge_fault,unused_submitted;\n    reg bridge_fault,memory_fault_now;",
+          "count": 1
+        },
+        {
+          "before": ".transport_fault_o(bridge_fault),",
+          "after": ".transport_fault_o(legacy_bridge_fault),",
+          "count": 1
+        },
+        {
+          "before": "    wire memory_fault_now=bridge_fault || command_expired || read_expired || response_bad;",
+          "after": "    // These observations cannot accept or retire work. The enclosing memory\n    // boundary proves equality with the real inputs only when transport=0.\n    // For transport=1 the immediate fault dominates; X/Z use original inputs.\n    (* syn_keep=1 *) wire probe_native_ready=native_fault_probe_i && unused_submitted;\n    wire probe_native_read_commit=published_valid && probe_native_ready && !ddr_write_o;\n    (* syn_keep=1 *) wire probe_protocol_fault=(native_fault_probe_i &&\n        (!unused_submitted || !published_valid)) || (unused_submitted && !published_valid);\n    (* syn_keep=1 *) wire bridge_without_transport=native_protocol_fault_o || probe_protocol_fault;\n    (* syn_keep=1 *) wire probe_command_expired=published_valid && !probe_native_ready &&\n        command_wait>=COMMAND_TIMEOUT_CYCLES-1;\n    (* syn_keep=1 *) wire probe_read_expired=read_outstanding && !response_fault_probe_i &&\n        read_wait>=READ_TIMEOUT_CYCLES-1;\n    (* syn_keep=1 *) wire probe_response_bad=response_fault_probe_i && !read_outstanding && !probe_native_read_commit;\n    (* syn_keep=1 *) wire fault_without_transport=bridge_without_transport ||\n        probe_command_expired || probe_read_expired || probe_response_bad;\n    always @* begin\n        bridge_fault=legacy_bridge_fault;\n        memory_fault_now=legacy_bridge_fault || command_expired || read_expired || response_bad;\n        if(NATIVE_FAULT_COFACTOR_ENABLE)case(transport_fault_i)\n            1'b0,1'b1:begin\n                bridge_fault=transport_fault_i || bridge_without_transport;\n                memory_fault_now=transport_fault_i || fault_without_transport;\n            end\n            default:begin end\n        endcase\n    end",
+          "count": 1
+        }
+      ]
+    },
+    "rtl/workstation/workstation_task3_w_paired.sv": {
+      "parent_sha256": "2305e26b4790d44b3a901cd47036a9283908855150d06fe1ab1d2e141f01f2bb",
+      "native_sha256": "45a5eda34c52c0c0e8c3d20fb189d1f4692f12d10799c193af279fd961cffa4e",
+      "edits": [
+        {
+          "before": "    wire recording_valid,recording_write,recording_ready,recording_response;",
+          "after": "    wire recording_valid,recording_write,recording_ready,recording_response;\n    wire recording_native_fault_probe,recording_response_fault_probe;",
+          "count": 1
+        },
+        {
+          "before": "        .transport_fault_o(transport_fault_o));",
+          "after": "        .recording_native_fault_probe_o(recording_native_fault_probe),\n        .recording_response_fault_probe_o(recording_response_fault_probe),\n        .transport_fault_o(transport_fault_o));",
+          "count": 1
+        },
+        {
+          "before": "        .slot_valid_o(recording_valid),.slot_ready_i(recording_ready),.native_accept_i(native_accept_o[8]),",
+          "after": "        .native_fault_probe_i(recording_native_fault_probe),\n        .response_fault_probe_i(recording_response_fault_probe),\n        .slot_valid_o(recording_valid),.slot_ready_i(recording_ready),.native_accept_i(native_accept_o[8]),",
+          "count": 1
+        }
+      ]
+    }
+  },
+  "added_state_bits": 0,
+  "authority": "Diagnostic only; native command acceptance, retirement, response and sticky protocol state retain original equations.",
+  "exit_plan": "Keep native source as owner. Retain this exact inverse while historical provenance depends on the pre-cofactor sources; retire only after explicit lineage migration.",
+  "timing_exception_added": false,
+  "hardware_tested": false
+}

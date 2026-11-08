@@ -201,6 +201,10 @@ AUDIT_SOURCES = (
     'rtl/control/workstation_inner_event_queue_v1.adaptation.json',
     'rtl/control/workstation_event_queue.sv',
     'tools/workstation_ble_pack_cofactor.py',
+    'tools/workstation_native_fault_cofactor.py',
+    'tools/workstation_record_peer_compare.py',
+    'rtl/workstation/workstation_record_peer_compare_v1.adaptation.json',
+    'rtl/memory/workstation_native_fault_cofactor_v1.adaptation.json',
     'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
     'tools/workstation_ble_terminal_tuple.py',
     'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
@@ -844,6 +848,10 @@ def audit(root, output, metadata):
     if preboard_cdc_configured(profile['configuration']):
         gate('W_preboard_release_and_CNN_Gray_CDC', lambda: audit_preboard_cdc(
             protocol_netlist(vg_text, mapping='synthesis'), stage, sdc, metadata))
+    if role=='W' and profile['configuration'].get('native_fault_cofactor_policy') is not None:
+        from tools.workstation_record_peer_compare import audit_mapped as audit_record_peer
+        gate('W_record_peer_full64_comparison',lambda:audit_record_peer(
+            protocol_netlist(vg_text,mapping='synthesis')))
     if profile['profile'] in ('custom138k-workstation-task3-m-preboard-v1',
                               'custom138k-workstation-task3-w-preboard-v1'):
         from tools.workstation_runtime_pcm_cdc import Graph,B,prove_reply_byte_headers

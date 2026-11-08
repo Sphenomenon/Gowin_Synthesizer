@@ -45,6 +45,7 @@ module workstation_recording_ddr_arbiter_pipeline #(
     output reg [255:0] app_data,
     output reg [31:0] app_mask,
     input wire app_ready,app_write_ready,app_response,
+    input wire app_ready_fault_probe_i,
     input wire [255:0] app_response_data,
     output reg [255:0] response_data,
     output reg response_fault,
@@ -54,7 +55,8 @@ module workstation_recording_ddr_arbiter_pipeline #(
     input wire [31:0] recording_mask,
     output wire recording_ready,recording_response,
     output wire [8:0] core_accept_o,native_accept_o,
-    output wire transport_fault_o
+    output wire transport_fault_o,
+    output wire [8:0] native_fault_probe_o
 );
     generate if(!RECORDING_ENABLE)begin:g_legacy
         // Literal legacy instance: no new tag bits, queues or fairness state.
@@ -122,6 +124,7 @@ module workstation_recording_ddr_arbiter_pipeline #(
         assign recording_ready=0;
         assign recording_response=0;
         assign core_accept_o={1'b0,display_ready,delay_ready,music_ready,audio_ready,writer_ready,cpu_ready,scan_ready,bist_ready};
+        assign native_fault_probe_o=0;
         assign native_accept_o=0; // unavailable in literal compatibility branch
         assign transport_fault_o=response_fault;
     end else begin:g_recording
@@ -264,7 +267,13 @@ module workstation_recording_ddr_arbiter_pipeline #(
     wire invalid_return_owner=count!=0 && owner_veto_tree[OWNER_VETO_LEVELS][0];
     wire response_fault_now=app_response && (count==0 || invalid_return_owner);
     assign transport_fault_o=response_fault || response_fault_now;
+    // A diagnostic cofactor only: never a native acceptance or ready signal.
+    // It equals native_accept_o when the enclosing immediate transport fault
+    // is zero, using the same held command and unqualified physical readiness.
+    wire native_fault_probe=reset_n && command_full && app_ready_fault_probe_i &&
+        (!command_write || app_write_ready) && (command_write || read_room);
     for(genvar client=0;client<9;client=client+1)begin:g_native_accept
+        assign native_fault_probe_o[client]=native_fault_probe && command_owner==4'(client);
         assign native_accept_o[client]=app_en && command_owner==4'(client);
     end
     assign recording_response=response_valid && response_owner==8;

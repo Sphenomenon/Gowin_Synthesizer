@@ -43,6 +43,8 @@ SOURCES = tuple(s for s in media.SOURCES if s not in (
 DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
     'tools/workstation_task3_w_fault_cdc.py',
     'tools/workstation_record_cancel_compare.py',
+    'tools/workstation_record_peer_compare.py',
+    'rtl/workstation/workstation_record_peer_compare_v1.adaptation.json',
     'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json',
     'tools/workstation_w_context_compare.py',
     'tools/workstation_task3_w_paired_profile.py', PROVIDER, BATCH_PROVIDER, REFERENCE, BOARD,
