@@ -419,8 +419,9 @@ def m_preboard_clock_priority(payload,netlist_text):
     A8 put eight functional clocks on PRIMARY and eight mixed reset/reference
     nets on LW, spilling ULPI and both DAC references to generic routing. The
     same-device syntax probe confirms BUFG[8] selects LW. Give clocks priority
-    and reserve LW11 for the functional memory release after its A11 recovery
-    failure. The other two reset nets use local routing. All timing checks
+    and reserve LW11 for the actual asserted memory reset after its A11
+    recovery failure. SUG1018 section2.7 requires SR for CLEAR loads; the
+    positive release Q only drives logic and its inverter. All timing checks
     remain required in the new physical run.
     """
     n=SynthesisNetlist(netlist_text,TOP);lines=[];inputs=[]
@@ -442,14 +443,32 @@ def m_preboard_clock_priority(payload,netlist_text):
         producers=[p for p,c in n.cells.items()if c['kind'].startswith('DFF')and n.pin(p,'Q')==net]
         if len(producers)!=1 or n.pin(producers[0],'CLK')!=clock:
             raise ValueError('M local reset distribution requires one actual publisher in '+clock+' '+net)
-        # A11's generic memory-release flight reached 11.161ns and failed
-        # functional recovery. Give that synchronous release LW11 priority;
-        # real clock LW8..10 reservations remain explicit. Root reset nets
-        # with longer asynchronous startup budgets may use local routing.
-        lines.append(f'CLOCK_LOC "{net}" '+('BUFG[11] = CLK;'if scope=='u_managed/runtime'
-                                           else'LOCAL_CLOCK;'));reset_nets.append(net)
-    adapted=payload+('\n# M A11 functional memory release LW11 priority; timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return adapted,dict(policy='task3_M_A11_real_clock_and_memory_release_LW_priority_v2',clock_inputs=inputs,
+        # Gowin unifies the positive source and its inverse for CLOCK_LOC.
+        # Constrain this release only through the asserted SR net below.
+        if scope!='u_managed/runtime':lines.append(f'CLOCK_LOC "{net}" LOCAL_CLOCK;')
+        reset_nets.append(net)
+    release=reset_nets[0]
+    inverses=[p for p,c in n.cells.items() if c['kind']=='INV' and n.pin(p,'I')==release]
+    if len(inverses)!=1:
+        raise ValueError('M memory reset requires one exact release inverse')
+    reset_net=n.pin(inverses[0],'O')
+    loads=sorted((p,pin) for p,c in n.cells.items() if c['kind'] not in n.modules for pin in c['ports']
+                 if n.pin(p,pin)==reset_net and not (p==inverses[0] and pin=='O'))
+    ff_loads=[(p,pin) for p,pin in loads if n.cells[p]['kind'] in ('DFFCE','DFFPE')]
+    ram_loads=[(p,pin) for p,pin in loads if n.cells[p]['kind']=='SDPX9B']
+    if (len(loads)!=897 or len(ff_loads)!=893 or len(ram_loads)!=4 or
+        sum(pin=='CLEAR' for p,pin in ff_loads)!=891 or
+        any(pin!=('CLEAR' if n.cells[p]['kind']=='DFFCE' else 'PRESET') or
+            n.pin(p,'CLK')!='memory_clk' for p,pin in ff_loads) or
+        any(pin!='RESET' for p,pin in ram_loads)):
+        raise ValueError('M memory reset exact891 CLEAR,2 PRESET,4 RAM RESET consumers changed')
+    if re.search(r'CLOCK_LOC\s+"'+re.escape(reset_net)+r'"',payload.decode()):
+        raise ValueError('M memory asserted reset already constrained')
+    lines.append(f'CLOCK_LOC "{reset_net}" BUFG[11] = SR;')
+    adapted=payload+('\n# M A11 asserted memory reset LW11 SR priority; timing retained\n'+'\n'.join(lines)+'\n').encode()
+    return adapted,dict(policy='task3_M_A14_real_clock_and_asserted_memory_reset_LW_priority_v4',clock_inputs=inputs,
+        memory_reset=dict(release=release,inverter=inverses[0],net=reset_net,
+                          signal_type='SR',global_wire=11,reset_loads=loads),
         reset_distribution_nets=reset_nets,commands=lines,before_sha256=digest(payload),
         after_sha256=digest(adapted),logic_unchanged=True,timing_constraints_unchanged=True,
         routed_clock_allocation_verified=False,hardware_tested=False)

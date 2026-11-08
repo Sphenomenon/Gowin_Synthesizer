@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为 [v37 完整综合与消费者证明收尾](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V37_20261108.md)：M `33632cd650f42875`、W `f4d596b8e1744006`，完整综合审计 **29/29、26/26** 通过；编译输入与 v35 完全一致，非编译证明更新有精确复用收据。W 完成发布修复已选入，M 全32位 TF 分组比较、声部分配分组、8370引脚消费者v8及receipt源／队列方程通过。38个receipt变异拒绝，旧v33比较结构仍通过。物理M A12在CST解析阶段因功能复位误标CLK被CT1014拒绝，W B13仍在P&R；尚无本轮通过的物理结果。最近完整STA仍是[v28](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V28_20261108.md)，两板仍未时序闭合。不放行SRAM／Flash；[上板清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
+最新阶段为 [v38 物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V38_20261108.md)：v37完整综合M 29/29、W 26/26继续有效。M A14／W B13均完成P&R，UserCode为D21108AE／D21108BD，物理BSRAM253／287、CLS61209／56308；setup/hold/recovery/removal分别为M −4.526/−0.282/+0.642/+0.278 ns、W −2.670/+0.143/+0.682/+0.372 ns。M实际复位SR分发修复，指定DDR初始化hold +2.486 ns；W PLL／启动专项通过，M PLL控制仍10.092ns超10ns。最新故障为M生命周期／端点仲裁反馈与载荷hold、W效果DMA看门狗与录音故障反馈；必要完整routed CDC尚未完成。尚未交付时序通过候选，不放行SRAM／Flash；[上板清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
 
 ## 赛题要求与项目目标
 
@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新源码／综合检查点为 v37 M 29/29、W 26/26（见页首）；最近完整物理检查点仍为 v28，M A11／W B12 均完成P&R并产生位流。物理BSRAM分别253/340、287/340，CLS为61172、56291；setup/hold/recovery/removal分别为M −4.013/−1.957/−1.500/+0.278 ns、W −3.028/+0.042/+1.608/+0.281 ns。M指定DDR初始化hold已为+2.429 ns；W缩小到741个精确约束原语后解除解析内存耗尽，三类STA转正，但录音完成计数setup仍失败。M功能TF／效果、载荷hold、DMA复位及PLL传播仍需修复，物理证明继续进行。配置、位流、资源、失败证据及下一步见[v28物理结果](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V28_20261108.md)。此前[v27续记](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_FOLLOWUP_20261108.md)与所有历史失败保留；尚未交付一对时序通过候选，不放行上板。
+2026-11-08 最新源码／综合检查点为[v37](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V37_20261108.md)，最新完整物理结果为[v38](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V38_20261108.md)，配置、位流SHA、资源、四类STA、PLL门禁及剩余问题均有独立证据。此前[v28](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V28_20261108.md)及A12/A13解析失败保留，不能替代本次结果；task2与单板回退不变。本轮仍未上板。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 

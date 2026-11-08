@@ -141,7 +141,11 @@ class MClockPriority(unittest.TestCase):
         cst=(stage/'constraints/custom_138k.cst').read_bytes();result,e=m_preboard_clock_priority(cst,vg)
         self.assertTrue(result.startswith(cst));self.assertEqual(len(e['clock_inputs']),3)
         self.assertEqual(len(e['reset_distribution_nets']),3)
-        self.assertIn(b'CLOCK_LOC "u_managed/runtime/memory_release[2]" BUFG[11] = CLK;',result)
+        reset=e['memory_reset']
+        self.assertEqual(len(reset['reset_loads']),897)
+        self.assertIn(('CLOCK_LOC "'+reset['net']+'" BUFG[11] = SR;').encode(),result)
+        self.assertNotIn(b'memory_release[2]" BUFG[11] = CLK;',result)
+        self.assertNotIn(b'CLOCK_LOC "u_managed/runtime/memory_release[2]" LOCAL_CLOCK;',result)
         self.assertEqual(result.count(b'LOCAL_CLOCK;')-cst.count(b'LOCAL_CLOCK;'),2)
         with self.assertRaises(ValueError):m_preboard_clock_priority(result,vg)
         for port in ('usb2_ulpi_clk','clk_12m288','clk_16m9344'):
@@ -149,6 +153,15 @@ class MClockPriority(unittest.TestCase):
                 r'\g<1>GND\g<2>',vg,count=1,flags=re.S)
             self.assertEqual(count,1)
             with self.assertRaises(ValueError):m_preboard_clock_priority(cst,changed)
+        from tools.workstation_synthesis_netlist import SynthesisNetlist
+        from unittest.mock import patch
+        n=SynthesisNetlist(vg,'workstation_custom_138k_top')
+        for path,pin in [(reset['inverter'],'I'),reset['reset_loads'][0]]:
+            old=copy.deepcopy(n.cells[path]);n.cells[path]['ports'][pin]='GND'
+            try:
+                with patch('tools.workstation_custom_board_implementation.SynthesisNetlist',return_value=n):
+                    with self.assertRaises(ValueError):m_preboard_clock_priority(cst,vg)
+            finally:n.cells[path]=old
         print('M three actual clocks retain inputs and reserve LW8..10; duplicate and three disconnected input mutations rejected')
 
 
