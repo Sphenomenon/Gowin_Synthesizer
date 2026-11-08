@@ -215,6 +215,28 @@ class MClockPriority(unittest.TestCase):
         from tools.workstation_synthesis_netlist import SynthesisNetlist
         from unittest.mock import patch
         n=SynthesisNetlist(vg,'workstation_custom_138k_top')
+        for owner,stem,publisher in [
+                ('u_managed/runtime','memory_release[2]','u_managed/runtime/memory_release_2_s0'),
+                ('u_tf_audio','source_release[2]','u_tf_audio/source_release_2_s0'),
+                ('u_video','memory_release[2]','u_video/u_runtime_display/memory_release_2_s0')]:
+            self.assertIn(n.canonical(owner,stem),e['reset_distribution_nets'])
+            original=copy.deepcopy(n.cells[publisher])
+            n.cells[publisher]['ports']['CLK']='GND'
+            with patch('tools.workstation_custom_board_implementation.SynthesisNetlist',return_value=n):
+                with self.assertRaises(ValueError):check(cst,vg)
+            n.cells[publisher]=original
+        # An identically connected register under a different owner must not
+        # acquire the TF reset constraint merely because its clock matches.
+        publisher='u_tf_audio/source_release_2_s0'
+        original=n.cells.pop(publisher)
+        n.cells['u_tf_audio/unreviewed_release']=original
+        n.scopes['u_tf_audio/unreviewed_release']=n.scopes[publisher]
+        try:
+            with patch('tools.workstation_custom_board_implementation.SynthesisNetlist',return_value=n):
+                with self.assertRaises(ValueError):check(cst,vg)
+        finally:
+            n.cells[publisher]=n.cells.pop('u_tf_audio/unreviewed_release')
+            del n.scopes['u_tf_audio/unreviewed_release']
         for path,pin in [(reset['inverter'],'I'),reset['reset_loads'][0]]+([('u_managed/runtime/delay_dma/watchdog_reset_delay_s0','PRESET')]if retimed else []):
             old=copy.deepcopy(n.cells[path]);n.cells[path]['ports'][pin]='GND'
             try:

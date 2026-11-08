@@ -454,10 +454,14 @@ def m_preboard_clock_priority(payload,netlist_text,*,watchdog_retime=False):
     for scope,stem,clock in [('u_managed/runtime','memory_release[2]','memory_clk'),
                        ('u_tf_audio','source_release[2]','clk_50m'),('u_video','memory_release[2]','memory_clk')]:
         net=n.canonical(scope,stem)
-        if net!=scope+'/'+stem or re.search(r'CLOCK_LOC\s+"'+re.escape(net)+r'"',payload.decode()):
+        if re.search(r'CLOCK_LOC\s+"'+re.escape(net)+r'"',payload.decode()):
             raise ValueError('M physical reset-distribution identity changed '+scope+'/'+stem)
         producers=[p for p,c in n.cells.items()if c['kind'].startswith('DFF')and n.pin(p,'Q')==net]
-        if len(producers)!=1 or n.pin(producers[0],'CLK')!=clock:
+        # Synthesis may promote the TF release to a top-level net alias.
+        # Follow that connection while retaining the exact owning publisher.
+        publisher = (scope + '/u_runtime_display/memory_release_2_s0' if scope == 'u_video'
+                     else scope + '/' + stem.replace('[2]', '_2_s0'))
+        if producers != [publisher] or n.pin(publisher,'CLK')!=clock:
             raise ValueError('M local reset distribution requires one actual publisher in '+clock+' '+net)
         # Gowin unifies the positive source and its inverse for CLOCK_LOC.
         # Constrain this release only through the asserted SR net below.

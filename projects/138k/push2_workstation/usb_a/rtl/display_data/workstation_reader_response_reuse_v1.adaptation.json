@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "policy": "task3_M_display_reader_held_response_reuse_v1",
+  "source": "rtl/display_data/display_data_reader.v",
+  "parent_sha256": "c532e6920138204289a1d49a22f7d488f31fa52e0dc4c36b05e9053f7a23fdca",
+  "selected_sha256": "ed0772cfcdbb916ecd4e3ebaddf447597aff33af7703c8c4e39914a3215bc580",
+  "edits": [
+    {
+      "before": "    reg [255:0] payload_q;",
+      "after": "    // This profile reuses the held response during STORE_PAYLOAD. No request\n    // can be issued until all lanes have been unpacked.\n    wire [255:0] payload_q;"
+    },
+    {
+      "before": "    reg [255:0] rsp_q;",
+      "after": "    reg [255:0] rsp_q;\n    assign payload_q=rsp_q;"
+    },
+    {
+      "before": "            payload_q<=0;unpack_lane<=0;spectrum_address_q<=0;wave_data_q<=0;image_word_q<=0;",
+      "after": "            unpack_lane<=0;spectrum_address_q<=0;wave_data_q<=0;image_word_q<=0;"
+    },
+    {
+      "before": "end else begin payload_q<=rsp_q;unpack_lane<=0;state<=STORE_PAYLOAD;end",
+      "after": "end else begin unpack_lane<=0;state<=STORE_PAYLOAD;end"
+    }
+  ],
+  "scope": "Explicit paired M preboard only; same response lifetime, state and public output edges. Historical/default reader stays byte-identical.",
+  "exit_plan": "Fold this proven storage lifetime into the native reader when historical source-selection contracts migrate; until then require exact forward and reverse identities."
+}

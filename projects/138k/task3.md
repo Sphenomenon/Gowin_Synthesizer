@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v65 完整综合与物理故障检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V65_20261108.md)：M `c4f7c61927ce185d`、W `4c2da1b5c784b2f3`，完整综合审计29/29、27/27通过；738／726个实际暂存文件及候选身份由独立 prepare 复现。W v19 的完整 hold 已转正，setup仍为−4.067 ns；BSRAM287/340，完整物理门禁未通过。M v17的2416条失败网已精确定位，953条驱动属于显示reader；新M v19和W v21正在进行有诊断依据的物理修复验证。两板尚未放行；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
+最新阶段为[v68 reader 修复与可复现综合检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V68_20261109.md)：M `a62c33bbe455c4a1`、W `a19f80a4e14a6b0b`，完整综合审计29/29、27/27通过；740／726个实际暂存文件及候选身份由独立 prepare 复现。M 复用保持的 DDR 响应，去掉256位冗余显示暂存，真实 reader 逐拍对比及完整网表受影响消费者检查通过。W v21 的 hold 为+0.139 ns、setup仍为−7.651 ns，BSRAM287/340；M v19路由超时，无最终STA。新M v21／W v22仍在路由，W有三块FIFO RAM区域约束告警，尚须核对。本阶段尚未完成，两板未放行；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
 
 ## 赛题要求与项目目标
 
@@ -66,11 +66,11 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 保留的可复现源码／综合检查点为[v62](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)：M29/29、W27/27通过，M736／W724个实际暂存输入由独立准备逐文件复现；M候选后缀`1823489029b73b89`，W为`0f13850db3f5c180`。W新增native故障诊断cofactor和完整64位录音peer/session字节比较，接受／退休权威、同拍故障与CANCEL不改；四态、真实raw-store twins和当前完整批处理消费者证明通过。编译输入与已完成的v59综合逐字节相同，显式复用原综合产物，未刷新历史锁。M仍保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码和唯一录音对象。
+2026-11-09 当前源码／综合检查点为[v68](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V68_20261109.md)。M 保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码及唯一录音对象。v65以来M只改变显示reader编译源码，W全部暂存字节未变；原滑音／效果、TF、识别、手机与录音回归按输入身份复用。新reader两套实际回归的23个输出逐拍一致；完整M网表119个受影响逻辑状态、23项归纳不变量和28个RAM地址位方程通过条件对应检查，不等于整机顺序等价证明。
 
-W v18（`D21108D2`）绑定v62来源，已选入[共享watchdog及status局部布局修复](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V62_20261108.md)，正在进行完整P&R；尚未取得时序结果。W v17失败位流、BSRAM287/340及setup／hold −3.461／−1.991 ns保留。M v17仍有2416条未布通网络、无有效位流或最终STA；v18增量失败实验保持退役。本轮在独立副本启用工具后端具名路由诊断，保持v17输入、place2／route0及全部约束，不生成位流，不作为新M候选。两板均未放行SRAM。task2、单板和历史失败／回退保留。
+物理结果仍不满足上板前目标：M v19在路由阶段超时；W v21虽完整hold转正，setup仍负。新M v21 `D21109C7`及W v22 `D21109D6`正在完整P2R0；后者必须核对三块FIFO RAM的CT1094告警。正式交付还需两板最终布通、资源／STA／PLL／CDC和可复现的有效物理准备入口。原v17、v19、v21失败结果及task2／单板回退保留。完成前不提供最终加载身份，也不操作任何板卡。
 
-2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
+[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)已列出正确目标、连接、加载读回、回退及功能验收步骤。真实LCD吞吐、DAC延迟和整机演示属于下一阶段。
 
 ### 2026-11-06 保留的检查点与失败证据
 

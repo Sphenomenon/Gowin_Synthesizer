@@ -189,6 +189,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
         profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
     from tools import workstation_effects_reserved_config as effects_reservation
+    from tools import workstation_reader_response_reuse as reader_reuse
+    reader_reuse_selected = reader_reuse.configured({} if profile is None else profile['configuration'])
+    if reader_reuse_selected:
+        profile_dependencies += (reader_reuse.TOOL, reader_reuse.MANIFEST)
     effects_reserved = effects_reservation.configured({} if profile is None else profile['configuration'])
     if effects_reserved:
         native_sources += (effects_reservation.DISPATCH,)
@@ -536,6 +540,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         raw_terminal_cofactor=terminal_cofactor.evidence(stage,profile['configuration'])
         raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
+    reader_reuse_evidence = reader_reuse.select(stage, profile['configuration']) if reader_reuse_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
     if capture_compare_selected:
@@ -798,6 +803,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['raw_terminal_cofactor']=raw_terminal_cofactor
         if delay_watchdog_retime is not None:
             metadata['delay_watchdog_retime']=delay_watchdog_retime
+        if reader_reuse_evidence is not None:
+            metadata['display_reader_response_reuse'] = reader_reuse_evidence
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR

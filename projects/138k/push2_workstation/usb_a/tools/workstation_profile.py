@@ -619,6 +619,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
+                              display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
                               inner_event_queue_policy='task3_M_two_slot_inner_event_queue_v1',
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
@@ -1127,6 +1128,12 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target == 'rtl/display_data/display_data_reader.v' and profile['configuration'].get('display_reader_storage_policy') is not None:
+            from tools import workstation_reader_response_reuse as reader_reuse
+            if (reader_reuse.evidence(stage, profile['configuration']) != metadata.get('display_reader_response_reuse') or
+                    reader_reuse.restore((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('display reader response reuse source selection drift')
+            staged_hash = sha(stage/target)
         if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal

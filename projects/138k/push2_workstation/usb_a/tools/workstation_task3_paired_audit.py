@@ -132,6 +132,8 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_reader_response_reuse.py',
+    'rtl/display_data/workstation_reader_response_reuse_v1.adaptation.json',
     'sim/test_workstation_preboard_route_repairs.py',
     'tools/workstation_task3_m_session_boundary.py',
     'tools/workstation_task3_w_raw_command_capture.py',
@@ -191,6 +193,7 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v8.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v9.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v10.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v11.json',
     'sim/verify_task3_m_consumer_correspondence.py',
     'tools/workstation_tf_status_compare.py',
     'tools/workstation_oscillator_availability.py',
