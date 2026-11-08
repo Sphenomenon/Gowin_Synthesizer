@@ -1,0 +1,393 @@
+{
+  "schema": 1,
+  "validation_stage": "reproducible_complete_synthesis_checkpoint_physical_gates_not_passed",
+  "base_commit": "8ecc222b647b9d6bd4d0bb77ce225a4fd8fd940c",
+  "goal_complete": false,
+  "ready_for_SRAM": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "candidates": {
+    "M": {
+      "identity": "custom138k-workstation-task3-m-preboard-v1-6ae12e44a093b56a",
+      "configuration_sha256": "8599cb847780a6f003e7d436f4bbd5f31e400ef3d9f5897cbaa91bdba2be697d",
+      "profile": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_preboard_v1.json",
+        "sha256": "8599cb847780a6f003e7d436f4bbd5f31e400ef3d9f5897cbaa91bdba2be697d"
+      },
+      "prepared_profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v55/workstation_profile.json",
+        "sha256": "3dcf1782d56c5fc761a9b0cf474a3db78e22300203ddba5b94cdd41ad20ddbb8"
+      },
+      "integration_inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v55/integration_inputs.json",
+        "sha256": "7bf9643db687a3159e30a8bb406dba02a7b2a2cf036ef00e822bc505331ae2ba"
+      },
+      "complete_synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-audit-v55.json",
+        "sha256": "a191371743ee88ce57cf775b0406912618aa4cc10d76a3a4898d7dc174976811"
+      },
+      "synthesis_gates_passed": 29,
+      "resources": {
+        "Register": 58695,
+        "Lut": 70171,
+        "Alu": 18337,
+        "Bsram": 212,
+        "Ssram": 242,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "synthesis_BSRAM_equivalent": 212,
+      "synthesis_netlist_sha256": "3d7ed42ff66890261a6fa5e9b32d72da6d5754978d4cade8e0b44fab628527e2",
+      "synthesis_resource_report_sha256": "241f1db0c56b5cd81cfd6f39e8043cbc68c0a81b42ada61feefcc5a85707933f",
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v55/synthesis-reuse.json",
+        "sha256": "3c8080967bb68217b6b8b8771353a14e0e6095deef047a6b877aa9024aebfb69"
+      },
+      "all_compiler_bytes_identical_to": "custom138k-workstation-task3-m-preboard-v1-88f93eb1f560bd7f",
+      "enabled_inputs": 289,
+      "staged_inputs": 730,
+      "current_live_profile_verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-live-profile-verify-v55.log",
+        "sha256": "342d3bd5eae14fb271406d72e3ca1474a8ddb4e0accda6e7540da878dc61bdd5"
+      },
+      "timing_closed": false,
+      "physical_CDC_accepted": false,
+      "hardware_tested": false
+    },
+    "W": {
+      "identity": "custom138k-workstation-task3-w-preboard-v1-c031a4198f2ae893",
+      "configuration_sha256": "1d68cb8dc608edb6cb59842af0554b3491f2066912b8866f77b0131144377321",
+      "profile": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_preboard_v1.json",
+        "sha256": "1d68cb8dc608edb6cb59842af0554b3491f2066912b8866f77b0131144377321"
+      },
+      "prepared_profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v55/workstation_profile.json",
+        "sha256": "9758cb01081479a6940bfdecefb350f093b2978b5cc1913a2f673ff88ca8d990"
+      },
+      "integration_inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v55/integration_inputs.json",
+        "sha256": "31610f28a91df29219fad2fddcff7b89a47f2238082cdfb50ff591b51e4e7b32"
+      },
+      "complete_synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-audit-v55.json",
+        "sha256": "88a5ae1b4b3f5802595d68ff92a8415f0787cd09b1a91aabdeec9369cb9028fc"
+      },
+      "synthesis_gates_passed": 26,
+      "resources": {
+        "Register": 46764,
+        "Lut": 59943,
+        "Alu": 15917,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "synthesis_BSRAM_equivalent": 253,
+      "synthesis_netlist_sha256": "5419b1d7c8c93b4ef335e062dfebf07a58af67c6b2af25f00c9860a9adcb28f4",
+      "synthesis_resource_report_sha256": "f5aa8bc56722edcf763e9c19a5b9129936fea178507116a0099eaac0521da1ed",
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v55/synthesis-reuse.json",
+        "sha256": "2982354c51d81c1a032ff519282c185646d2dc1556bf43b41d7f453de114f3de"
+      },
+      "all_compiler_bytes_identical_to": "custom138k-workstation-task3-w-preboard-v1-ad1b6776212a4d08",
+      "enabled_inputs": 202,
+      "staged_inputs": 718,
+      "current_live_profile_verification": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-live-profile-verify-v55.log",
+        "sha256": "ade222cc340b1f61ecf83c2c1b29a2a15c6791ce0a2bf1752ffc1f313ea44bae"
+      },
+      "timing_closed": false,
+      "physical_CDC_accepted": false,
+      "hardware_tested": false
+    }
+  },
+  "evidence": {
+    "prepare-reproducibility-v54.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare-reproducibility-v54.json",
+      "sha256": "5d988107e8052fdffa39fb7dc60cfff30b740dd4de232efc60715f0e9a5f585f"
+    },
+    "v54-historical-fallback-preservation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/v54-historical-fallback-preservation.json",
+      "sha256": "b2a6d1a606c9e6aec1543d3c6828786479abf5fd07e3acea452a93e7bebefbbd"
+    },
+    "selected-repairs-v54.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/selected-repairs-v54.log",
+      "sha256": "505f8dfebe55bb129f299b3a06812a1446e5d837262dae67f56cf2f640cc7aff"
+    },
+    "accepted-sources-v53.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/accepted-sources-v53.log",
+      "sha256": "68fd171e8236dab7442e5efa3b8df046a89b304a79fc5644983e7e49b35fb9c7"
+    },
+    "layout-tests-v53.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/layout-tests-v53.log",
+      "sha256": "b11c5342dcf482c052b4046cc42e84daacff5b5afb0b0493f2580b42672623b7"
+    },
+    "raw-tuple-maintained-tests-v47/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/raw-tuple-maintained-tests-v47/verification.json",
+      "sha256": "bfca3cd7fd6673a60a0e9ceb9d26c109a402c4c9c4a0475bde7d21514916cfd7"
+    },
+    "paired-bus-v51/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/paired-bus-v51/verification.json",
+      "sha256": "2e5ddf44bcec14936e144e55054f4417db5b3c725452a49e122bd41d57c1bcf7"
+    },
+    "w-v51-mapped-controls-v2.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v51-mapped-controls-v2.json",
+      "sha256": "53ffac253b12d0c6bf8a2303ddfb2dd053aa44ccee822565d0ebc5325bb58f2f"
+    },
+    "w-central-reset-tests-v51.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-central-reset-tests-v51.log",
+      "sha256": "30fa142a9f7257798cac985579dca7de6405b6e583974b51f3056646fc45a315"
+    },
+    "phone-ack-tests-v51.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/phone-ack-tests-v51.log",
+      "sha256": "c4dc72618444e87ffd0a86734633f0de8113e3022c3c048022b57bff28ef3fe0"
+    },
+    "w-v51-mapped-critical-depths.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v51-mapped-critical-depths.json",
+      "sha256": "db06ffe0c786532ce8b38ced73521904eeb449eff72d79ab4f8f5689ae04a79a"
+    },
+    "m-v17-v14-placement-reuse-diagnosis.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v17-v14-placement-reuse-diagnosis.json",
+      "sha256": "321ae7fa8b68fe1d292a402d7082f3b94bea2fed18b8314a08d7507d6bae21b4"
+    },
+    "prepare-reproducibility-v55.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare-reproducibility-v55.json",
+      "sha256": "6027b71805b465ea1506bd2edfb94da14f8400e46eab6aa72109015d2023e1d8"
+    },
+    "v55-historical-fallback-preservation.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/v55-historical-fallback-preservation.json",
+      "sha256": "820238e2da29c1410cd507c264d5ad8a6c11b0dacc3b32e32569d287783c82b7"
+    },
+    "profile-seal-v55.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/profile-seal-v55.json",
+      "sha256": "960c968d6d9c9d774c24fcec13da8f0a63cc54e29a99fddfae2e675bc82b4f1a"
+    },
+    "w-v16-flat-fifo-controls-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v16-flat-fifo-controls-v2.log",
+      "sha256": "974cdbf5680955223ee9c42b515e235132c9f1cc4f9832563334be74c1f9912c"
+    },
+    "w-v16-flat-fifo-gray-v1.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v16-flat-fifo-gray-v1.json",
+      "sha256": "854ac3e2a8da2dfa253395abf3113d4babdbffba8fb0c32bbdc50faed70d7123"
+    },
+    "w-physical-v16-routed-subgates.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v16-routed-subgates.json",
+      "sha256": "b750b01805b74f65ed9d2cec54f9d8e15084a57fe53c86e4a53f4132623a85f8"
+    },
+    "w-physical-v16-PLL.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v16-PLL.json",
+      "sha256": "276056722184fecc7c2065d34c3419400d19823fe7a8f60a445587f21e4bc846"
+    },
+    "w-v16-selected-critical-paths.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v16-selected-critical-paths.json",
+      "sha256": "bf170b1bf8cb67fe6d5ca51f3fef10a88f313bb31b2731535aa51a4b410c8cfe"
+    },
+    "raw-pack-cofactor-projection-v2/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/raw-pack-cofactor-projection-v2/verification.json",
+      "sha256": "d61788209ff7e5fe914fed5558594287c7f250174f1d7b41a1c6427c675ac204"
+    },
+    "flat_fifo_test_source": {
+      "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_workstation_preboard_physical_boundaries.py",
+      "sha256": "9bec5fc027e51f59e45a4ab197c96b362ff68fcd4af0df1f7357f2083c3a92b8"
+    }
+  },
+  "physical_status": {
+    "M_v17": {
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v17/physical_inputs.json",
+        "sha256": "58e17bc887372fba5a78ce842a8da35d9fbb88d9ab725ddee3c84a49f62d187e"
+      },
+      "run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v17/physical-run.json",
+        "sha256": "aab26622398ecc936e96183dca844fd71c7f5e5e8d7dd2f67e2cf92229796827"
+      },
+      "unrouted_nets": 2416,
+      "valid_bitstream": false,
+      "final_STA_available": false
+    },
+    "M_v18_incremental_diagnosis": {
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v18/physical_inputs.json",
+        "sha256": "0a0cebf6cad200fc14e88d65344ff7938ce0eb47d324bad2ea79ea577a1a7f9d"
+      },
+      "run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v18/physical-run.json",
+        "sha256": "e4655c8532f57ca85ecaff3c67f65aa4d7caa888717a8a38d077e34e375efd3c"
+      },
+      "unrouted_nets": 119778,
+      "valid_bitstream": false,
+      "final_STA_available": false,
+      "selected": false,
+      "experiment_retired": true,
+      "adapter": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/derive_incremental_place_diagnosis.py",
+        "sha256": "15b647a18cb6b0dce51ab67072cbc4cfca056295e7c5b8998a5f62f253207d5b"
+      }
+    },
+    "W_v16": {
+      "identity": "custom138k-resource-physical-D21108C3",
+      "parent_candidate": "custom138k-workstation-task3-w-preboard-v1-3e346ea10794cc1a",
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v16/physical_inputs.json",
+        "sha256": "7380f52e47460abc8e748ed8df130dee5d3bfe3800d94388592a0e2119f9496e"
+      },
+      "state": "completed_timing_failed",
+      "STA_available": true,
+      "timing_closed": false,
+      "physical_CDC_accepted": false,
+      "run": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v16/physical-run.json",
+        "sha256": "3deaaf5c780a4d49ee921c21ed4d1f1324601c13577fadf8e1470b5f8f4a11e2"
+      },
+      "result": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v16/physical-result.json",
+        "sha256": "9231bbb89e08d5c382f3d2a55b279943973b09e252a587bd991071ef6b39d682"
+      },
+      "physical_BSRAM": 287,
+      "resources": {
+        "Logic": [
+          "81013/138240",
+          "59%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "76339(59863 LUT, 16476 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "779",
+          "-"
+        ],
+        "Register": [
+          "46764/139095",
+          "34%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "46764/138240",
+          "34%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "56980/69120",
+          "83%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "136",
+          "-"
+        ],
+        "--Input Buf": [
+          "6",
+          "-"
+        ],
+        "--Output Buf": [
+          "87",
+          "-"
+        ],
+        "--Inout Buf": [
+          "43",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM32 IODELAY",
+          "35%"
+        ],
+        "BSRAM": [
+          "3 SP148 SDPB40 SDPX9B96 pROM",
+          "85%"
+        ],
+        "DSP": [
+          "36 MULT12X1242 MULT27X3620 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "17/24",
+          "71%"
+        ],
+        "CLKDIV": [
+          "1/24",
+          "5%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "4/12",
+          "34%"
+        ]
+      },
+      "worst_slack_ns": {
+        "setup": -3.029,
+        "hold": -0.04,
+        "recovery": 2.573,
+        "removal": 0.284
+      },
+      "bitstream": {
+        "path": "w-preboard-physical-v16/impl/pnr/custom_138k_integration.fs",
+        "sha256": "ca7e0d06822d6aea62fbe675b390a2a644827c1d616af04b712f954e3aca7be9"
+      },
+      "PLL_gate_passed": true
+    }
+  },
+  "rollback": "334 historical configuration/baseline file hashes rechecked unchanged; additional task2 inventory remains bound to v54 evidence. No board accessed.",
+  "remaining": [
+    "M complete routing and actual setup/hold/recovery/removal",
+    "W arbiter fault to raw pack/fetch control, delay FIFO to watchdog fault, config context to recording result setup; raw status to fetch_fault hold",
+    "Complete physical CDC acceptance for exact final M/W pair",
+    "Physical LCD throughput, DAC latency and whole-system acceptance remain in the separately authorized board stage"
+  ],
+  "reproduce": {
+    "entry": "build.py --prepare-custom-board --workstation-profile custom138k-workstation-task3-{m,w}-preboard-v1",
+    "netlist_dir": "/Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists",
+    "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "synthesis": "Licensed gw_sh scripts/custom_board_synthesis.tcl from each workstation/Prj1",
+    "audit": "python3 -m tools.workstation_custom_board_audit <prepared-output>",
+    "candidate_identity": "Two independent prepare directories reproduce each complete v55 identity and all staged byte hashes; no second bitstream claim."
+  },
+  "new_change": "Flat routed FIFO Gray next-Q auditor resolves exact escaped root-scope read_fire; no compiler, runtime, wire, clock or SDC changes.",
+  "projection": {
+    "selected": false,
+    "purpose": "same-edge raw pack/fetch final fault selector",
+    "functional_comparisons_passed": true,
+    "isolated_synthesis_pending": true,
+    "complete_synthesis_and_PNR_claimed": false
+  }
+}

@@ -138,7 +138,11 @@ def fifo_read_gray(n,g,scope,source_clock,destination_clock,*,all_bits=False):
     # The W ACK rebuild moves gray[0]'s read_fire into its D equation.
     # Use the real common FIFO pop net, then prove every effective next-Q;
     # no CE pin is assumed to retain the source enable in all mappings.
-    enable=n.canonical(scope,'read_fire')
+    if scope in n.frames:
+        enable=n.canonical(scope,'read_fire')
+    else:
+        require(set(n.frames)=={''},'unexpected partially flattened FIFO hierarchy')
+        enable=n.canonical('', '\\'+scope+'/read_fire')
     require(enable not in g.high|g.low and len(g.drivers[enable])==1,
             'staging FIFO read_fire absent/constant/ambiguous')
     from tools.workstation_task3_m_session_boundary import KeyDiagram,frontier

@@ -80,4 +80,28 @@ class PhysicalBoundaries(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'exact top input buffer'):
                 primary_clk50_constraints(cst,wrong)
 
+    def test_actual_flat_routed_fifo_gray_and_destructive_controls(self):
+        selected=os.environ.get('GW138K_PREBOARD_W_ROUTED')
+        if not selected:self.skipTest('explicit actual W routed VO required')
+        n=protocol_netlist(Path(selected).read_text(),mapping='routed')
+        self.assertEqual(set(n.frames),{''})
+        scope='u_task3_media/cnn_stream/task_service/staging_requests'
+        g=Graph(n)
+        rows,sdc=proof.fifo_read_gray(n,g,scope,'memory_clk','clk_50m')
+        self.assertEqual(len(rows),3)
+        self.assertEqual(sum(line.startswith('set_max_delay 2.000') for line in sdc),1)
+        for stem,pin,bad in [('read_binary_0','D',"1'b0"),
+                             ('read_gray_0','D',"1'b1"),
+                             ('read_gray_meta_0','D',"1'b0")]:
+            p=g.register(scope,stem);old=copy.deepcopy(n.cells[p])
+            n.cells[p]['ports'][pin]=bad
+            try:
+                with self.assertRaises(ValueError):
+                    proof.fifo_read_gray(n,Graph(n),scope,'memory_clk','clk_50m')
+            finally:n.cells[p]=old
+        # A partially flattened scope cannot substitute a guessed alias.
+        n.frames['unreviewed']={}
+        with self.assertRaisesRegex(ValueError,'partially flattened FIFO'):
+            proof.fifo_read_gray(n,Graph(n),scope,'memory_clk','clk_50m')
+
 if __name__=='__main__':unittest.main()

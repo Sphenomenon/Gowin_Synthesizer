@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为 [v46 完整综合／消费者证明检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V46_20261108.md)：M `ae6090a0ca3e94c4`、W `a6e2dbc2c10da5fd`，标准综合审计 29/29、26/26 全部通过。已修复 W 转义向量解析及精确 LUT3 映射检查，M 121 个变化消费者状态有条件 next-Q 证明和归纳不变量。两板编译闭包可重复；W 身份仍受诊断报告绝对路径影响，尚需修复。新物理运行 `D21108AF`／`D21108BF` 正在进行，未取得本版时序放行；不得加载。历史 [v43 失败](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V43_20261108.md)、[v38 物理失败](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V38_20261108.md)保留；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
+最新阶段为[v55 可复现源码／综合与 W routed 检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V55_20261108.md)：M `6ae12e44a093b56a`、W `c031a4198f2ae893`，完整综合审计29/29、26/26通过；两板独立双目录 prepare 身份及全部输入一致，目录相关身份问题已修复。W v16 已完成，BSRAM287/340，setup −3.029 ns、hold −0.040 ns，recovery +2.573 ns、removal +0.284 ns；PLL及选定 routed 边界通过，完整物理门禁仍失败。M v17尚有2416条网络未布通。不得加载；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
 
 ## 赛题要求与项目目标
 
@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新可复现源码／综合检查点为[v54](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V54_20261108.md)：M 29/29、W 26/26 完整综合审计通过，两板各自双目录准备的身份和全部输入一致。M v17 仍有2416条网络未布通；v18 增量放置对照失败并退役，均无有效位流／最终STA。W v16 正在运行。两板均未放行 SRAM；旧[v46物理失败](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V46_PHYSICAL_20261108.md)、task2、单板及历史回退保留。
+2026-11-08 最新可复现源码／综合检查点为[v55](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V55_20261108.md)：M29/29、W26/26通过；W flat routed FIFO 的精确路径解析及破坏负控制修复通过。W v16完成但setup／hold失败，DDR recovery已转正；M v17仍有2416条未布通网络，v18失败实验退役。下一步围绕实际录音故障、delay watchdog、config→result路径及M布线阻塞修复；两板均未放行SRAM。task2、单板和历史失败／回退保留。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 
