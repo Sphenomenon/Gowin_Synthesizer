@@ -38,7 +38,7 @@ class MConsumers(unittest.TestCase):
 
     def test_destination_positive_and_real_mutants(self):
         proof=self.destination()
-        self.assertIn((proof['inventory_revision'],proof['ff_endpoints']),((2,8373),(3,8472),(4,8371),(5,8371),(6,8360),(7,8374),(8,8370),(9,8369)))
+        self.assertIn((proof['inventory_revision'],proof['ff_endpoints']),((2,8373),(3,8472),(4,8371),(5,8371),(6,8360),(7,8374),(8,8370),(9,8369),(10,8349)))
         closure=complete_closure(self.n,self.g,[self.last])
         p=next(ep.rsplit('/',1)[0] for ep in closure['ff_endpoints'] if ep.endswith('/D'))
         for field,value in [('CLK','audio_clk'),('D',"1'b0")]:

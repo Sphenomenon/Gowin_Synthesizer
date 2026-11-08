@@ -11,6 +11,7 @@ module gw138k_event_workstation #(
     parameter bit RUNTIME_RATE_ENABLE=0,
     parameter bit RUNTIME_EFFECTS_ENABLE=0,
     parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,
+    parameter bit INNER_EVENT_QUEUE_ENABLE=0,
     parameter bit SYNTH_ENGINES_ENABLE=1,
     parameter bit D_ONLY_ENABLE=0,
     parameter bit TF_CONTROL_ENABLE=1,
@@ -498,11 +499,19 @@ module gw138k_event_workstation #(
   midi_stream_decoder pc_decoder(.clk_i,.rst_ni,.byte_valid_i(pc_byte_valid_i),
       .byte_i(pc_byte_i),.event_valid_o(pc_valid),.event_ready_i(pc_ready),
       .event_o(pc_data),.overflow_count_o(pc_overflow_o));
+  generate if(INNER_EVENT_QUEUE_ENABLE)begin: queued_inner_events
+  workstation_event_queue u_events(.clk(clk_i),.reset_n(rst_ni),.clear(usb_lifecycle),
+      .g1_valid(decoder_valid),.g1_ready(decoder_ready),.g1_data(decoder_data),
+      .pc_valid(pc_valid),.pc_ready(pc_ready),.pc_data(pc_data),
+      .cpu_valid(cpu_event_valid_i && !usb_internal && !attach_initializing),.cpu_ready(arbiter_cpu_ready),.cpu_data(cpu_event_i),
+      .event_valid(fifo_event_valid),.event_ready(fifo_event_ready),.event_data(fifo_event_data));
+  end else begin: legacy_inner_events
   gw138k_three_event_arbiter u_events(.clk(clk_i),.reset_n(rst_ni),
       .g1_valid(decoder_valid),.g1_ready(decoder_ready),.g1_data(decoder_data),
       .pc_valid(pc_valid),.pc_ready(pc_ready),.pc_data(pc_data),
       .cpu_valid(cpu_event_valid_i && !usb_internal && !attach_initializing),.cpu_ready(arbiter_cpu_ready),.cpu_data(cpu_event_i),
       .event_valid(fifo_event_valid),.event_ready(fifo_event_ready),.event_data(fifo_event_data));
+  end endgenerate
   midi_stream_decoder decoder(.clk_i,.rst_ni,.byte_valid_i(midi_byte_valid_i),
       .byte_i(midi_byte_i),.event_valid_o(decoder_valid),.event_ready_i(decoder_ready),
       .event_o(decoder_data),.overflow_count_o(midi_overflow_o));

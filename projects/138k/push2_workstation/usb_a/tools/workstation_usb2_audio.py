@@ -14,6 +14,7 @@ NATIVE_AUDIO_SOURCES = (
     'rtl/workstation/gw138k_controlled_adapter.sv',
     'rtl/audio/gw138k_event_workstation.sv', 'rtl/audio/workstation_frame_delivery.sv',
     'rtl/control/workstation_session.sv', 'rtl/control/workstation_parameters.sv',
+    'rtl/control/workstation_event_queue.sv',
     'rtl/audio/stereo_effects.sv', 'rtl/audio/serial_spatial_reverb.sv',
     'rtl/audio/scope_vec/scope_vec_engine.sv', 'rtl/audio/scope_vec/scope_control_player.sv',
     'rtl/audio/scope_vec/scope_tf_control.sv', 'rtl/music/music_async_fifo.sv',

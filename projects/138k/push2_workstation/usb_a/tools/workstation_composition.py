@@ -15,6 +15,7 @@ SOURCES = {
     'rtl/audio/workstation_output_router.sv': 'rtl/audio/workstation_output_router.sv',
     'rtl/audio/workstation_frame_delivery.sv': 'rtl/audio/workstation_frame_delivery.sv',
     'rtl/control/workstation_session.sv': 'rtl/control/workstation_session.sv',
+    'rtl/control/workstation_event_queue.sv': 'rtl/control/workstation_event_queue.sv',
     'rtl/control/workstation_parameters.sv': 'rtl/control/workstation_parameters.sv',
     'rtl/services/workstation_playback_service.sv': 'rtl/services/workstation_playback_service.sv',
 }

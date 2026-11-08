@@ -52,51 +52,7 @@ def logical(path):
 
 
 class VectorNetlist(PcmNetlist):
-    """Resolve only declared escaped vector formals, including concatenations.
-
-    Verilog requires whitespace between an escaped identifier and its select:
-    ``\\header[4] [0]`` selects bit0 of vector named ``header[4]``. It must
-    never be confused with an array index or an undeclared escaped scalar.
-    """
-    def canonical(self, scope, net, seen=()):
-        match = re.fullmatch(r'(\\[^\s]+)\s+\[(\d+)\]', net)
-        if scope and match:
-            stem, index = match[1][1:], int(match[2])
-            frame = self.frames[scope]
-            if stem in frame['ports']:
-                bounds = self.ranges[frame['kind']].get(stem)
-                require(bounds is not None and min(bounds) <= index <= max(bounds),
-                        'invalid escaped formal select: ' + net)
-                key = (scope, net)
-                require(key not in seen, 'escaped formal alias cycle')
-                parent = self.scopes[scope]
-                binding = frame['ports'][stem]
-                bits = self.concatenation_bits(parent, '{' + binding + '}'
-                    if not binding.startswith('{') else binding)
-                require(len(bits) == abs(bounds[0]-bounds[1])+1,
-                        'escaped formal width mismatch: ' + binding)
-                return self.canonical(parent, bits[abs(index-bounds[1])], (*seen, key))
-        return super().canonical(scope, net, seen)
-
-    def concatenation_bits(self, scope, binding):
-        require(binding.startswith('{') and binding.endswith('}'), 'concatenation required')
-        result = []
-        for member in reversed(binding[1:-1].split(',')):
-            member = member.strip()
-            match = re.fullmatch(r'(\\[^\s]+)\s+\[(\d+)(?::(\d+))?\]', member)
-            if match:
-                left, right = int(match[2]), int(match[3] or match[2])
-                step = 1 if left >= right else -1
-                result.extend(match[1] + ' [' + str(i) + ']'
-                              for i in range(right, left+step, step))
-            elif member.startswith('\\') and member[1:] in self.ranges[self.frames[scope]['kind']]:
-                left, right = self.ranges[self.frames[scope]['kind']][member[1:]]
-                step = 1 if left >= right else -1
-                result.extend(member + ' [' + str(i) + ']'
-                              for i in range(right, left+step, step))
-            else:
-                result.extend(super().concatenation_bits(scope, '{' + member + '}'))
-        return result
+    """Compatibility name for diagnostics; strict vector parsing is shared."""
 
 
 class Expressions:

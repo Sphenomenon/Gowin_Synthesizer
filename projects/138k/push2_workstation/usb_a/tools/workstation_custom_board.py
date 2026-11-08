@@ -196,6 +196,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_task3_tf_tail_reset as tail_reset
     from tools import workstation_tf_compute_local_release as tf_compute_reset
     from tools import workstation_ble_completion_publication as completion_publication
+    from tools import workstation_inner_event_queue as inner_event_queue
+    inner_queue_selected=inner_event_queue.configured({} if profile is None else profile['configuration'])
+    if inner_queue_selected:
+        profile_dependencies += (inner_event_queue.TOOL,inner_event_queue.MANIFEST)
+    from tools import workstation_ble_terminal_cofactor as terminal_cofactor
+    terminal_selected=terminal_cofactor.configured({} if profile is None else profile['configuration'])
+    if terminal_selected:
+        profile_dependencies += (terminal_cofactor.TOOL,terminal_cofactor.MANIFEST)
     from tools import workstation_delay_watchdog_retime as delay_watchdog
     delay_watchdog_selected=delay_watchdog.configured({} if profile is None else profile['configuration'])
     if delay_watchdog_selected:
@@ -501,6 +509,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
     task3_tf_compute_reset=tf_compute_reset.select(stage,profile['configuration']) if tf_compute_selected else None
     raw_completion_publication=completion_publication.select(stage,profile['configuration']) if completion_selected else None
+    inner_event_buffer=inner_event_queue.select(stage,profile['configuration']) if inner_queue_selected else None
+    raw_terminal_cofactor=terminal_cofactor.select(stage,profile['configuration']) if terminal_selected else None
+    if raw_terminal_cofactor is not None:
+        # Both receipts bind the final compiler bytes after both selections.
+        raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
@@ -751,6 +764,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['task3_tf_compute_reset']=task3_tf_compute_reset
         if raw_completion_publication is not None:
             metadata['raw_completion_publication']=raw_completion_publication
+        if inner_event_buffer is not None:
+            metadata['inner_event_queue']=inner_event_buffer
+        if raw_terminal_cofactor is not None:
+            metadata['raw_terminal_cofactor']=raw_terminal_cofactor
         if delay_watchdog_retime is not None:
             metadata['delay_watchdog_retime']=delay_watchdog_retime
         metadata['task3_paired_sdc']=task3_paired_sdc

@@ -271,7 +271,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         if role=='W':
             from tools.workstation_task3_preboard_held_timing import w_native_placement
             cst,held_proofs['W_native_placement']=w_native_placement(cst,n,
-                publication=bool(metadata.get('raw_completion_publication')))
+                publication=bool(metadata.get('raw_completion_publication')),
+                terminal=bool(metadata.get('raw_terminal_cofactor')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -318,7 +319,8 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
     if primary_clk50:
         cst,clock_placement=primary_clk50_constraints(cst,vg.read_text())
         if preboard_releases and audit.get('paired_role')=='M':
-            cst,clock_placement['M_clock_priority']=m_preboard_clock_priority(cst,vg.read_text())
+            cst,clock_placement['M_clock_priority']=m_preboard_clock_priority(cst,vg.read_text(),
+                watchdog_retime=bool(metadata.get('delay_watchdog_retime')))
     inputs = {
         BASE+'.vg': (vg, audit['netlist_sha256']),
         'reference.cst': (reference_cst, reference_sha256),
@@ -413,7 +415,7 @@ def m_preboard_pll_control_limits(sdc,netlist_text):
         timing_relaxed=False,clock_periods_changed=False,routed_timing_verified=False)
 
 
-def m_preboard_clock_priority(payload,netlist_text):
+def m_preboard_clock_priority(payload,netlist_text,*,watchdog_retime=False):
     """Reserve LW8..10 for real clocks after A8 exhausted all long wires.
 
     A8 put eight functional clocks on PRIMARY and eight mixed reset/reference
@@ -456,19 +458,28 @@ def m_preboard_clock_priority(payload,netlist_text):
                  if n.pin(p,pin)==reset_net and not (p==inverses[0] and pin=='O'))
     ff_loads=[(p,pin) for p,pin in loads if n.cells[p]['kind'] in ('DFFCE','DFFPE')]
     ram_loads=[(p,pin) for p,pin in loads if n.cells[p]['kind']=='SDPX9B']
-    if (len(loads)!=897 or len(ff_loads)!=893 or len(ram_loads)!=4 or
+    if watchdog_retime:
+        path='u_managed/runtime/delay_dma/watchdog_reset_delay_s0'
+        cell=n.cells.get(path,{})
+        if (cell.get('kind')!='DFFPE' or cell.get('parameters',{}).get('INIT',"1'b1")!="1'b1" or
+            set(cell.get('ports',{}))!={'Q','D','CLK','PRESET','CE'} or
+            n.pin(path,'CLK')!='memory_clk' or n.pin(path,'PRESET')!=reset_net or
+            (path,'PRESET')not in ff_loads):
+            raise ValueError('M watchdog delayed reset requires exact memory-clock preset publisher')
+    extra=int(watchdog_retime)
+    if (len(loads)!=897+extra or len(ff_loads)!=893+extra or len(ram_loads)!=4 or
         sum(pin=='CLEAR' for p,pin in ff_loads)!=891 or
         any(pin!=('CLEAR' if n.cells[p]['kind']=='DFFCE' else 'PRESET') or
             n.pin(p,'CLK')!='memory_clk' for p,pin in ff_loads) or
         any(pin!='RESET' for p,pin in ram_loads)):
-        raise ValueError('M memory reset exact891 CLEAR,2 PRESET,4 RAM RESET consumers changed')
+        raise ValueError('M memory reset exact891 CLEAR,selected PRESET and4 RAM RESET consumers changed')
     if re.search(r'CLOCK_LOC\s+"'+re.escape(reset_net)+r'"',payload.decode()):
         raise ValueError('M memory asserted reset already constrained')
     lines.append(f'CLOCK_LOC "{reset_net}" BUFG[11] = SR;')
     adapted=payload+('\n# M A11 asserted memory reset LW11 SR priority; timing retained\n'+'\n'.join(lines)+'\n').encode()
     return adapted,dict(policy='task3_M_A14_real_clock_and_asserted_memory_reset_LW_priority_v4',clock_inputs=inputs,
         memory_reset=dict(release=release,inverter=inverses[0],net=reset_net,
-                          signal_type='SR',global_wire=11,reset_loads=loads),
+                          signal_type='SR',global_wire=11,reset_loads=loads,watchdog_delayed_preset=watchdog_retime),
         reset_distribution_nets=reset_nets,commands=lines,before_sha256=digest(payload),
         after_sha256=digest(adapted),logic_unchanged=True,timing_constraints_unchanged=True,
         routed_clock_allocation_verified=False,hardware_tested=False)

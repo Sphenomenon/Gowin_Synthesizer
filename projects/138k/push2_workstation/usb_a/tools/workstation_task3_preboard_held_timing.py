@@ -49,7 +49,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -59,6 +59,7 @@ def w_native_placement(cst,n,*,publication=False):
     no timing exception is added for a payload or functional reset.
     """
     from tools.workstation_custom_board_implementation import digest
+    require(not terminal or publication,'W terminal layout requires completion publication')
     publication_proof=None
     if publication:
         from tools.workstation_ble_completion_publication import audit_mapped
@@ -91,7 +92,9 @@ def w_native_placement(cst,n,*,publication=False):
     groups=[];reviewed=set()
     # Full publication mapping reviewed separately: 34 new raw FFs; local
     # LUT factoring changes the arbiter by +1 and DMA by -2. No region grows.
-    counts=(2673,4700,1771)if publication else(2672,4685,1773)
+    # The terminal cofactor rebuild changes only these reviewed broad
+    # inventories. Its actual tag-return cone remains the same74 cells.
+    counts=(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -157,7 +160,7 @@ def w_native_placement(cst,n,*,publication=False):
     result=cst+added
     return result,dict(policy=('task3_W_B7_publication_tag_return_and_held_locality_v5'if publication
                               else'task3_W_B7_exact_tag_return_and_held_locality_v4'),groups=groups,
-        completion_publication=publication_proof,
+        completion_publication=publication_proof,terminal_cofactor_layout=terminal,
         placement_groups=placement_groups,historical_broad_primitive_review_count=len(reviewed),
         tag_return_cone=dict(source=tags,capture=delay,combinational_cells=sorted(cone)),
         broad_region_constraints_removed=True,

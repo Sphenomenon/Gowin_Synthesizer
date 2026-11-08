@@ -27,9 +27,13 @@ def value(e, node, assignment):
     return value(e,args[1] if value(e,args[0],assignment) else args[2],assignment)
 
 
+from tools.workstation_runtime_pcm_cdc import PcmNetlist
+
+
 class Aliases(unittest.TestCase):
+    parser = VectorNetlist
     def fixture(self,binding='payload[7:0]'):
-        return VectorNetlist('''module child ();
+        return self.parser('''module child ();
 input [7:0] \\header[4] ;
 output out;
 INV inv_s0 (
@@ -68,6 +72,10 @@ endmodule
         # A repeated (scope,net) must reject rather than recurse or invent a leaf.
         with self.assertRaises(ValueError):
             n.canonical('c','\\header[4] [0]',(('c','\\header[4] [0]'),))
+
+
+class ProductionAliases(Aliases):
+    parser = PcmNetlist
 
 
 class TinyNetlist:

@@ -67,6 +67,8 @@ SOURCES = (
     'rtl/memory/workstation_runtime_memory_guard.sv',
 )
 DEPENDENCIES = (
+    'tools/workstation_inner_event_queue.py',
+    'rtl/control/workstation_inner_event_queue_v1.adaptation.json',
     'tools/workstation_delay_watchdog_retime.py',
     'rtl/audio/delay_ddr/workstation_delay_watchdog_retime_v1.adaptation.json',
     # Resource-parent music libraries parse this authority even when the
@@ -108,6 +110,8 @@ DEPENDENCIES = (
     'rtl/audio/workstation_runtime_oscillator_engine.availability_groups.json',
     'rtl/tf_audio/workstation_tf_status_compare_v1.adaptation.json',
     'tools/workstation_ble_completion_publication.py',
+    'tools/workstation_ble_terminal_cofactor.py',
+    'rtl/memory/workstation_ble_terminal_cofactor_v1.adaptation.json',
     'rtl/memory/workstation_ble_completion_publication_v1.adaptation.json',
     'rtl/tf_audio/workstation_tf_native_head_v1.adaptation.json',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',

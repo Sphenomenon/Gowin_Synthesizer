@@ -8,7 +8,8 @@ module workstation_ble_raw_ddr_store #(
     parameter integer COMMAND_TIMEOUT_CYCLES=10000,
     parameter integer READ_TIMEOUT_CYCLES=10000,
     parameter bit CAPTURE_COMMAND=0,
-    parameter bit PIPELINED_COMPLETION_ENABLE=0
+    parameter bit PIPELINED_COMPLETION_ENABLE=0,
+    parameter bit TERMINAL_COFACTOR_ENABLE=0
 ) (
     input wire clk_i,memory_clk_i,rst_ni,
     input wire start_valid_i,
@@ -539,6 +540,69 @@ module workstation_ble_raw_ddr_store #(
         endcase
     end
 
+    // Memory fault is a final selector, not an input to the local protocol
+    // selection tree. No state or publication edge is added.
+    reg legacy_terminal_writes;
+    always @* case(memory_fault_now)
+        1'b0,1'b1:legacy_terminal_writes=!TERMINAL_COFACTOR_ENABLE;
+        default:legacy_terminal_writes=1;
+    endcase
+    reg index_increment_without_fault;
+    reg start_without_fault;
+    wire clear_without_fault=memory_clear_pending && fifo_consumed==memory_clear_target &&
+        !fifo_read_valid && memory_quiescent && !memory_channel_fault;
+    always @* begin
+        index_increment_without_fault=0;start_without_fault=0;
+        if(failure_fifo_without_fault && !memory_clear_pending)begin
+            if(fifo_read_data[63:32]!=memory_next_index ||
+               (!fifo_read_data[64] && memory_next_index>=CAPACITY_FRAMES))begin end
+            else if(fifo_read_data[64])begin end
+            else index_increment_without_fault=1;
+        end
+        if(memory_command_start)begin
+            if(memory_channel_fault)begin end
+            else if(memory_command_kind==CMD_START)begin
+                if(start_context_bad)begin end
+                else start_without_fault=1;
+            end
+        end
+    end
+    (* syn_keep=1 *) reg [3:0] completion_code_without_fault,completion_code_with_fault;
+    always @* begin
+        completion_code_without_fault=completion_code;
+        completion_code_with_fault=completion_code;
+        if(memory_command_start)begin
+            completion_code_with_fault=memory_failure==0 ? F_TRANSPORT:memory_failure;
+            if(memory_channel_fault)
+                completion_code_without_fault=memory_failure==0 ? F_TRANSPORT:memory_failure;
+            else case(memory_command_kind)
+                CMD_START:begin
+                    if(start_context_bad)completion_code_without_fault=F_PROTOCOL;
+                    else completion_code_without_fault=0;
+                end
+                CMD_CLEAR:begin
+                    if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
+                        completion_code_without_fault=F_PROTOCOL;
+                end
+                CMD_FETCH:begin
+                    if(memory_command_generation!=memory_generation || !memory_drained_now || memory_empty ||
+                       memory_command_length==0 || memory_command_length>8112 || memory_fetch_end[32] ||
+                       {2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0})
+                        completion_code_without_fault=F_DESCRIPTOR;
+                end
+                default:completion_code_without_fault=F_PROTOCOL;
+            endcase
+        end
+        if(clear_without_fault)completion_code_without_fault=0;
+        if(memory_fetch_active && memory_quiescent &&
+           (memory_fetch_cancel || cancel_now || memory_channel_fault ||
+            fetch_beats_issued==fetch_beats_total))begin
+            completion_code_without_fault=memory_channel_fault ? memory_failure:
+                (memory_fetch_cancel || cancel_now) ? F_CANCELLED:4'd0;
+            completion_code_with_fault=completion_code_without_fault;
+        end
+    end
+
     always @(posedge memory_clk_i or negedge memory_reset_n)begin
         if(!memory_reset_n)begin
             command_req_meta<=0;command_req_sync<=0;command_ack<=0;cancel_meta<=0;cancel_sync<=0;cancel_seen<=0;
@@ -632,7 +696,7 @@ module workstation_ble_raw_ddr_store #(
                         memory_active<=0;memory_closed<=1;
                     end else begin
                         pack_word_valid<=1;
-                        pack_frames<=pack_frames+1'b1;memory_next_index<=memory_next_index+1'b1;
+                        pack_frames<=pack_frames+1'b1;if(legacy_terminal_writes)memory_next_index<=memory_next_index+1'b1;
                     end
                 end
             end
@@ -653,7 +717,7 @@ module workstation_ble_raw_ddr_store #(
                     completion_generation<=memory_command_generation;
                     if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
                     else completion_committed<=memory_committed;
-                    completion_kind<=memory_command_kind;completion_code<=memory_failure==0 ? F_TRANSPORT : memory_failure;
+                    completion_kind<=memory_command_kind;if(legacy_terminal_writes)completion_code<=memory_failure==0 ? F_TRANSPORT : memory_failure;
                     if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                     else command_ack<=command_req_sync;
                 end else case(memory_command_kind)
@@ -662,9 +726,9 @@ module workstation_ble_raw_ddr_store #(
                         // the same time as START. Prove the old epoch retired
                         // using its immutable event target, not FIFO visibility.
                         if(start_context_bad)begin
-                            memory_channel_fault<=1;completion_code<=F_PROTOCOL;
+                            memory_channel_fault<=1;if(legacy_terminal_writes)completion_code<=F_PROTOCOL;
                         end else begin
-                            memory_active<=1;memory_closed<=0;memory_empty<=0;completion_code<=0;
+                            memory_active<=1;memory_closed<=0;memory_empty<=0;if(legacy_terminal_writes)completion_code<=0;
                         end
                         completion_generation<=memory_command_generation;
                         if(PIPELINED_COMPLETION_ENABLE)completion_zero<=1;
@@ -680,7 +744,7 @@ module workstation_ble_raw_ddr_store #(
                             if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
                             else completion_committed<=memory_committed;
                             completion_kind<=CMD_CLEAR;
-                            completion_code<=F_PROTOCOL;
+                            if(legacy_terminal_writes)completion_code<=F_PROTOCOL;
                             if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                             else command_ack<=command_req_sync;
                         end else begin
@@ -697,7 +761,7 @@ module workstation_ble_raw_ddr_store #(
                             if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
                             else completion_committed<=memory_committed;
                             completion_kind<=CMD_FETCH;
-                            completion_code<=F_DESCRIPTOR;
+                            if(legacy_terminal_writes)completion_code<=F_DESCRIPTOR;
                             if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                             else command_ack<=command_req_sync;
                         end else begin
@@ -712,7 +776,7 @@ module workstation_ble_raw_ddr_store #(
                         if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
                         else completion_committed<=memory_committed;
                         completion_kind<=memory_command_kind;
-                        completion_code<=F_PROTOCOL;
+                        if(legacy_terminal_writes)completion_code<=F_PROTOCOL;
                         if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                         else command_ack<=command_req_sync;
                     end
@@ -721,17 +785,17 @@ module workstation_ble_raw_ddr_store #(
             // Preserve the original START assignment priority, before CLEAR
             // completion. No request, acknowledgement or fault state moves.
             if(start_initialize)begin
-                memory_generation<=memory_command_generation;memory_next_index<=0;
+                memory_generation<=memory_command_generation;if(legacy_terminal_writes)memory_next_index<=0;
                 memory_committed<=0;write_address<=BASE_APP;
             end
             if(clear_initialize)begin
                 memory_clear_pending<=0;memory_command_active<=0;memory_empty<=1;memory_closed<=1;
-                memory_next_index<=0;memory_committed<=0;memory_fetch_cancel<=0;
+                if(legacy_terminal_writes)memory_next_index<=0;memory_committed<=0;memory_fetch_cancel<=0;
                 completion_generation<=memory_generation;
                 if(PIPELINED_COMPLETION_ENABLE)completion_zero<=1;
                 else completion_committed<=0;
                 completion_kind<=CMD_CLEAR;
-                completion_code<=0;
+                if(legacy_terminal_writes)completion_code<=0;
                 if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                 else command_ack<=command_req_sync;
             end
@@ -743,11 +807,20 @@ module workstation_ble_raw_ddr_store #(
                 if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
                 else completion_committed<=memory_committed;
                 completion_kind<=CMD_FETCH;
-                completion_code<=memory_channel_fault ? memory_failure :
+                if(legacy_terminal_writes)completion_code<=memory_channel_fault ? memory_failure :
                     (memory_fetch_cancel || cancel_now) ? F_CANCELLED : 4'd0;
                 if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
                 else command_ack<=command_req_sync;
             end
+            if(TERMINAL_COFACTOR_ENABLE)case(memory_fault_now)
+                1'b0:begin
+                    completion_code<=completion_code_without_fault;
+                    if(index_increment_without_fault)memory_next_index<=memory_next_index+1'b1;
+                    if(start_without_fault || clear_without_fault)memory_next_index<=0;
+                end
+                1'b1:completion_code<=completion_code_with_fault;
+                default:begin end // original writes above retain X/Z projection
+            endcase
             if(memory_fault_now)begin
                 memory_channel_fault<=1;memory_fetch_cancel<=1;
             end

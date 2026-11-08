@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "stage": "v46 complete synthesis and consumer-proof checkpoint; physical gates pending",
+  "base_commit": "8acfdcb3a90d61af56e09ba507c10ba2df197ae4",
+  "board_accessed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "timing_closed": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "candidates": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-preboard-v1-ae6090a0ca3e94c4",
+      "configuration_sha256": "14716b7de8e38e803c8b36323627f6f804c9d9c54b0ce899a353380b361b47ca",
+      "prepare_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v46",
+      "enabled_inputs": 289,
+      "staged_closure_entries": 724,
+      "resources": {
+        "Register": 58695,
+        "Lut": 70171,
+        "Alu": 18337,
+        "Bsram": 212,
+        "Ssram": 242,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "BSRAM_equivalent": 212,
+      "gates_total": 29,
+      "gates_passed": 29,
+      "audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-audit-v46.json",
+        "sha256": "3dc02e7770e832e7785d5cfb8501bbdba25fd26f8fd511d97d731e02f4692c84"
+      },
+      "netlist_sha256": "3d7ed42ff66890261a6fa5e9b32d72da6d5754978d4cade8e0b44fab628527e2",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_m_preboard_v1.json",
+        "sha256": "14716b7de8e38e803c8b36323627f6f804c9d9c54b0ce899a353380b361b47ca"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v46/synthesis-reuse.json",
+        "sha256": "ab1046f8573c61324c58a82ddc256ffa6766146f56866bc4c652858c60125bab"
+      },
+      "physical_run_in_progress": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v15",
+      "physical_results_not_claimed": true
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-preboard-v1-a6e2dbc2c10da5fd",
+      "configuration_sha256": "f598be0a197247283e6e5e2d350bd16a0152b04bef35c3adcb81f9fb00076f04",
+      "prepare_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v46",
+      "enabled_inputs": 202,
+      "staged_closure_entries": 712,
+      "resources": {
+        "Register": 46759,
+        "Lut": 58475,
+        "Alu": 15937,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "BSRAM_equivalent": 253,
+      "gates_total": 26,
+      "gates_passed": 26,
+      "audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-audit-v46.json",
+        "sha256": "68d432620efc35c8261d44ff475f02ff487a169ddc2f0c087ef578280e5f1b24"
+      },
+      "netlist_sha256": "8c3ff33ef7d106bfe2ee517d375163a6b26cb3b8545359dfc2c8202518345ee5",
+      "configuration": {
+        "path": "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/boards/custom_138k/workstation_profile_task3_w_preboard_v1.json",
+        "sha256": "f598be0a197247283e6e5e2d350bd16a0152b04bef35c3adcb81f9fb00076f04"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v46/synthesis-reuse.json",
+        "sha256": "717385e51239dd8b1ef475d05dc5b92bc4d0ecf4c443af55c02829ffee9df594"
+      },
+      "physical_run_in_progress": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v15",
+      "physical_results_not_claimed": true
+    }
+  },
+  "validations": {
+    "production_vector_and_vendor_primitives": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/vector-parser-and-mapped-primitive-tests-v46.log",
+      "sha256": "73e11a6c4bac538eae66f4bb616dd0a401e3ec41b18114f7780d0c11475268c4"
+    },
+    "W_actual_load_mapping_and_75_destructive_controls": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v43-production-mapping-controls-v1.json",
+      "sha256": "29c3f45a00e61c5784f0c480910d9f2f66b97651a465cbbc52fe3272263c6334"
+    },
+    "M_consumer_conditional_correspondence": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-consumer-replay-v3/verification.json",
+      "sha256": "88dde811ea51d7aaa8f0f6dc9e9acf40823955f7fea780a7a7a81bf060fd5401"
+    },
+    "M_inventory_v10_controls": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-consumer-inventory-v10-controls.log",
+      "sha256": "c86f03724f6ecd15e210706eb6aaa05d22461d708646742e623cb60b8932662d"
+    },
+    "M_selected_reset_layout_and_negative_controls": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v45-watchdog-reset-layout-controls.log",
+      "sha256": "510e9720de29e5dd768a6b849f8f36958ab9243ae843e36956e1ccd5cbbfd104"
+    },
+    "W_selected_terminal_layout_and_negative_controls": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v44-terminal-layout-controls-v1.log",
+      "sha256": "f91c80a29ffaedc74eb3c5867408e8d4c5c8bf7b27b1a9cfc720d438ff6771af"
+    },
+    "M_historical_reset_layout_compatibility": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v37-reset-layout-compatibility.log",
+      "sha256": "c610ff360fcf49894564c057aebccfd5d84c2a3b4be7d090cfb13434a86ecb63"
+    },
+    "W_historical_layout_compatibility": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v37-terminal-layout-compatibility.log",
+      "sha256": "f6099ea85ca3e9e6e5c84ea8c264f90158bf68962b694cabb69c2fee93c785d2"
+    },
+    "accepted_input_sources_17_tests": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/accepted-sources-v45.log",
+      "sha256": "2d3362db41a286e8172199aca25e269a8f3a6cd63554ee594172743f589979dd"
+    },
+    "independent_prepare_comparison": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare-reproducibility-v46-detailed.json",
+      "sha256": "90a5ca707c62294171b65bdb85e449d0a78f9a06afd386a2bd18f7609ffc7fad"
+    },
+    "identity_repair_prototype_only": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/candidate-identity-prototype-v1.json",
+      "sha256": "cb058439c7f2104dd84f96d8fc4b275a4a816ac0f5d41fab5e97314821230dca"
+    }
+  },
+  "reproduction": {
+    "workdir": "projects/138k/push2_workstation/usb_a",
+    "prepare": "python3 build.py --prepare-custom-board --custom-board-output <new-directory> --netlist-dir <locked-netlists> --riscv-prefix <prefix> --workstation-profile custom138k-workstation-task3-{m,w}-preboard-v1",
+    "netlist_inputs": "/Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists",
+    "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "synthesis": "Run staged scripts/custom_board_synthesis.tcl with licensed gw_sh in workstation/Prj1; synthesis-invocation.json binds command, complete staged inputs, result and log.",
+    "targeted_tests": [
+      "python3 sim/memory/run_ble_terminal_cofactor.py --output <new-directory>",
+      "GW138K_INNER_QUEUE_OUTPUT=<new-directory> python3 sim/test_workstation_inner_event_queue.py",
+      "python3 sim/run_workstation_attach.py --baseline <matching-native-parent> --out <new-directory> --timing-optimized --inner-event-queue"
+    ]
+  },
+  "rollback": {
+    "source_commit": "8acfdcb3",
+    "earlier_source_commit": "da2fd93d",
+    "task2_and_single_board_preserved": true,
+    "historical_profiles_and_candidates_preserved": true,
+    "SRAM_checklist": "reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md"
+  },
+  "proof_scope": {
+    "M_changed_consumer_states": 121,
+    "M_inductive_invariants": 23,
+    "M_SDPB_address_equations": 28,
+    "M_conditional_named_state_and_two_recording_memory_outputs": true,
+    "M_memory_state_induction": false,
+    "M_whole_design_induction": false,
+    "W_destructive_controls_rejected": 75,
+    "production_vector_tests": 11
+  },
+  "reproducibility": {
+    "M_candidate_identity_and_765_files_byte_identical": true,
+    "W_enabled_order_and_712_compiler_closure_entries_identical": true,
+    "W_ELF_and_BIN_identical": true,
+    "W_candidate_identity_path_sensitive": true,
+    "W_candidate_identity_repair_not_integrated": true
+  },
+  "preserved_failure_reports": [
+    "reports/DUAL138K_TASK3_PREBOARD_V43_20261108.json",
+    "reports/DUAL138K_TASK3_PREBOARD_V38_20261108.json"
+  ],
+  "remaining": [
+    "v15 M/W full P&R and actual resource/setup/hold/recovery/removal, DDR initialization and PLL/startup results.",
+    "Necessary actual routed CDC beyond synthesis and retained mailbox/startup subsets.",
+    "W candidate identity includes absolute-path diagnostic reports although compiler bytes and ELF/BIN reproduce; fix identity boundary without modifying frozen firmware identity.",
+    "CAP3 sustained phone admission remains closed pending physical transport acceptance; actual LCD throughput, DAC latency and whole-demo acceptance belong to board stage."
+  ]
+}

@@ -291,6 +291,11 @@ HUNKS = {'rtl/audio/gw138k_event_workstation.sv': [('  logic [15:0] glide_step;\
 
 def normalize(relative, source):
     relative = str(relative)
+    try:
+        from tools.workstation_inner_event_queue import restore as queue_parent
+    except ModuleNotFoundError:
+        from workstation_inner_event_queue import restore as queue_parent
+    source=queue_parent(relative,source)
     if relative not in PARENT_SHA256:
         return source
     digest = hashlib.sha256(source).hexdigest()

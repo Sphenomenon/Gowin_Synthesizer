@@ -27,6 +27,8 @@ def unselect(text):
     return text
 
 def restore(text):
+    from tools.workstation_ble_terminal_cofactor import restore as terminal_parent
+    text=terminal_parent(text)
     text=unselect(text)
     if DEFAULT not in text:return text
     raw=(Path(__file__).resolve().parents[1]/MANIFEST).read_bytes()

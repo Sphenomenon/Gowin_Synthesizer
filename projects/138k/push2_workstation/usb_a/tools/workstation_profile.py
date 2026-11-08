@@ -610,10 +610,12 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         from tools.workstation_task3_w_preboard_cdc import KEY as _cdc_key, POLICY as _cdc_policy
         _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
                                'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
+                               'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
                                _cdc_key: _cdc_policy,
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
+                              inner_event_queue_policy='task3_M_two_slot_inner_event_queue_v1',
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
                               tf_native_head_policy='task3_M_TF_bounded_native_PCM_head_v1',
@@ -1071,6 +1073,11 @@ def _artifact(root, output, metadata, profile):
         bind(record['destination'], prefix + source)
     for source, record in parent['composition']['sources'].items():
         bind(record['destination'], prefix + source)
+        if source=='rtl/audio/gw138k_event_workstation.sv' and profile['configuration'].get('inner_event_queue_policy') is not None:
+            from tools import workstation_inner_event_queue as queue
+            if (queue.evidence(stage,profile['configuration'])!=metadata.get('inner_event_queue') or
+                    queue.unselect((stage/record['destination']).read_text())!=(root/source).read_text()):
+                raise ValueError('inner event queue source selection changed')
     from tools.stage_usb_firmware import verify_usb2_cpu_ram_selection
     verify_usb2_cpu_ram_selection(root,stage,profile['configuration'],
                                   metadata.get('usb2_cpu_ram_selection'),firmware=metadata['firmware'])
@@ -1083,8 +1090,14 @@ def _artifact(root, output, metadata, profile):
         staged_hash = metadata['copied_sources_sha256'][source]
         if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
             from tools import workstation_ble_completion_publication as completion
+            from tools import workstation_ble_terminal_cofactor as terminal
+            selected=(stage/target).read_text()
+            if terminal.configured(profile['configuration']):
+                if terminal.evidence(stage,profile['configuration'])!=metadata.get('raw_terminal_cofactor'):
+                    raise ValueError('raw terminal cofactor source selection changed')
+                selected=terminal.unselect(selected)
             if (completion.evidence(stage,profile['configuration'])!=metadata.get('raw_completion_publication') or
-                    completion.unselect((stage/target).read_text())!=(root/source).read_text()):
+                    completion.unselect(selected)!=(root/source).read_text()):
                 raise ValueError('raw completion publication source selection changed')
             staged_hash=sha(stage/target)
         if target in ('rtl/tf_audio/workstation_tf_direct_runtime_service.sv',

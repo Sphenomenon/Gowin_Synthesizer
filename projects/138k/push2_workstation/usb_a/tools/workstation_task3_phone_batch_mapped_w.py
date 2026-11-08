@@ -463,22 +463,25 @@ def audit(n, *, stage):
         # ARM source identity does not determine optimizer factoring. The
         # byte-header rebuild uses the original 7000/EA00 equations again;
         # select only these independently checked actual primitive forms.
-        require(n.cells[load_cell]['kind']=='LUT4' and load_port=='F' and
-                load_table in (("16'hF700","16'h7000") if arm_capture else ("16'h7000",)),
+        load_compact=(n.cells[load_cell]['kind']=='LUT3' and load_table=="8'h70")
+        require(load_port=='F' and (load_compact or
+                (n.cells[load_cell]['kind']=='LUT4' and
+                 load_table in (("16'hF700","16'h7000") if arm_capture else ("16'h7000",)))),
                 'reserved load truth table changed')
         load_arm_factored=load_table=="16'hF700"
         # Preserve the four actual control cuts. New integration can rename
         # synthesized intermediates without changing this exact equation.
-        load_terms=[n.pin(load_cell,'I'+str(i))for i in range(4)]
-        require(len(set(load_terms))==4,'reserved load control cuts alias')
+        load_terms=[n.pin(load_cell,'I'+str(i))for i in range(3 if load_compact else 4)]
+        require(len(set(load_terms))==len(load_terms),'reserved load control cuts alias')
         load_cuts=set(load_terms)
         # ARM capture changes the factored load cone, while leaving these
         # four independent, explicitly unproved control boundaries. Keep
         # the per-bit reply equation below tied to this actual load output.
         proofs.append(g.equivalent('reserved dispatch actual factored load retains exact LUT equation',
-            [load,*load_terms],lambda v:v[0]==int(v[4] and
-                ((v[3] or not(v[1] and v[2])) if load_arm_factored else
-                 (v[3] and not(v[1] and v[2])))),cuts=load_cuts))
+            [load,*load_terms],lambda v:v[0]==int(
+                (v[3] and not(v[1] and v[2])) if load_compact else
+                (v[4] and ((v[3] or not(v[1] and v[2])) if load_arm_factored else
+                 (v[3] and not(v[1] and v[2]))))),cuts=load_cuts))
     elif grouped_context:
         load_terms = [local(x) for x in ('n737_5','n737_20','n737_7')]
         proofs.append(g.equivalent('actual factored load retains exact LUT equation',

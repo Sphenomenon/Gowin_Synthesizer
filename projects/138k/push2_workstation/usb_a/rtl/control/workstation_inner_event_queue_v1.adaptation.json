@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "policy": "task3_M_two_slot_inner_event_queue_v1",
+  "source": "rtl/audio/gw138k_event_workstation.sv",
+  "parent_sha256": "029f9e767698a932fcef746ef1a0fb6a83e937330ba0685cd73e3943fb9fb180",
+  "native_sha256": "86e6de9f3ef3206fcbf07e07dac562ffbb4b1e6fd80e52de5c658ade989ce7d4",
+  "default_enable": 0,
+  "edits": [
+    {
+      "before": "    parameter bit RUNTIME_EFFECTS_ENABLE=0,\n    parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,\n    parameter bit SYNTH_ENGINES_ENABLE=1,\n    parameter bit D_ONLY_ENABLE=0,\n",
+      "after": "    parameter bit RUNTIME_EFFECTS_ENABLE=0,\n    parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,\n    parameter bit INNER_EVENT_QUEUE_ENABLE=0,\n    parameter bit SYNTH_ENGINES_ENABLE=1,\n    parameter bit D_ONLY_ENABLE=0,\n"
+    },
+    {
+      "before": "      .byte_i(pc_byte_i),.event_valid_o(pc_valid),.event_ready_i(pc_ready),\n      .event_o(pc_data),.overflow_count_o(pc_overflow_o));\n  gw138k_three_event_arbiter u_events(.clk(clk_i),.reset_n(rst_ni),\n      .g1_valid(decoder_valid),.g1_ready(decoder_ready),.g1_data(decoder_data),\n",
+      "after": "      .byte_i(pc_byte_i),.event_valid_o(pc_valid),.event_ready_i(pc_ready),\n      .event_o(pc_data),.overflow_count_o(pc_overflow_o));\n  generate if(INNER_EVENT_QUEUE_ENABLE)begin: queued_inner_events\n  workstation_event_queue u_events(.clk(clk_i),.reset_n(rst_ni),.clear(usb_lifecycle),\n      .g1_valid(decoder_valid),.g1_ready(decoder_ready),.g1_data(decoder_data),\n      .pc_valid(pc_valid),.pc_ready(pc_ready),.pc_data(pc_data),\n      .cpu_valid(cpu_event_valid_i && !usb_internal && !attach_initializing),.cpu_ready(arbiter_cpu_ready),.cpu_data(cpu_event_i),\n      .event_valid(fifo_event_valid),.event_ready(fifo_event_ready),.event_data(fifo_event_data));\n  end else begin: legacy_inner_events\n  gw138k_three_event_arbiter u_events(.clk(clk_i),.reset_n(rst_ni),\n      .g1_valid(decoder_valid),.g1_ready(decoder_ready),.g1_data(decoder_data),\n"
+    },
+    {
+      "before": "      .cpu_valid(cpu_event_valid_i && !usb_internal && !attach_initializing),.cpu_ready(arbiter_cpu_ready),.cpu_data(cpu_event_i),\n      .event_valid(fifo_event_valid),.event_ready(fifo_event_ready),.event_data(fifo_event_data));\n  midi_stream_decoder decoder(.clk_i,.rst_ni,.byte_valid_i(midi_byte_valid_i),\n      .byte_i(midi_byte_i),.event_valid_o(decoder_valid),.event_ready_i(decoder_ready),\n",
+      "after": "      .cpu_valid(cpu_event_valid_i && !usb_internal && !attach_initializing),.cpu_ready(arbiter_cpu_ready),.cpu_data(cpu_event_i),\n      .event_valid(fifo_event_valid),.event_ready(fifo_event_ready),.event_data(fifo_event_data));\n  end endgenerate\n  midi_stream_decoder decoder(.clk_i,.rst_ni,.byte_valid_i(midi_byte_valid_i),\n      .byte_i(midi_byte_i),.event_valid_o(decoder_valid),.event_ready_i(decoder_ready),\n"
+    }
+  ],
+  "semantics": "two complete 18-bit events; occupancy-only ready; RR arbitration; atomic lifecycle purge; PANIC retains ordered event semantics; sample schedule unchanged",
+  "exit_plan": "Pass explicit parameter from maintained runtime composition; retain historical inverse"
+}

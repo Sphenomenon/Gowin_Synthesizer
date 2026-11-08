@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--out', type=Path)
     parser.add_argument('--event-reference', type=Path, help='Compare old workstation routing and PCM on every audio cycle')
     parser.add_argument('--timing-optimized', action='store_true')
+    parser.add_argument('--inner-event-queue', action='store_true', help='Exercise explicit M preboard event buffering')
     args = parser.parse_args()
     base = args.baseline.resolve()
     out = args.out.resolve() if args.out else Path(tempfile.mkdtemp(prefix='workstation-attach-'))
@@ -34,6 +35,7 @@ def main():
         base / 'src/usb_host/gw138k_usb_event_fifo.v',
         base / 'src/push2/push2_midi_rx.sv', base / 'src/video/video_font_5x7.v',
         ROOT / 'rtl/audio/gw138k_event_workstation.sv',
+        ROOT / 'rtl/workstation/workstation_fifo_write_reset.sv',
         ROOT / 'rtl/audio/gw138k_usb_lifecycle_merge.sv', ROOT / 'rtl/audio/push2_controls.sv',
         ROOT / 'rtl/push2_usb_a_control.sv', ROOT / 'rtl/display_data/push2_surface_pixels.sv']
     sources += sorted((ROOT / 'rtl/audio/scope_vec').glob('*.sv'))
@@ -57,15 +59,17 @@ def main():
         from timing.event_reference import add_reference
         reference_module,reference_inputs=add_reference(staged,args.event_reference.resolve())
         sources.append(reference_module);inputs+=reference_inputs
-    if args.timing_optimized:
+    if args.timing_optimized or args.inner_event_queue:
         for name in ('tb_generic_midi.sv', 'tb_workstation_attach.sv'):
             fixture = staged / 'sim' / name
             text = fixture.read_text()
             anchor = 'gw138k_event_workstation audio('
             if text.count(anchor) != 1:
                 raise ValueError('missing workstation fixture')
+            parameters='.TIMING_OPTIMIZED(1)'
+            if args.inner_event_queue:parameters+=',.INNER_EVENT_QUEUE_ENABLE(1)'
             fixture.write_text(text.replace(anchor,
-                'gw138k_event_workstation #(.TIMING_OPTIMIZED(1)) audio(', 1))
+                'gw138k_event_workstation #('+parameters+') audio(', 1))
             inputs.append(fixture)
     mmio_pipeline=base/'rtl/timing/gw138k_mmio_pipeline.sv'
     if mmio_pipeline.exists():

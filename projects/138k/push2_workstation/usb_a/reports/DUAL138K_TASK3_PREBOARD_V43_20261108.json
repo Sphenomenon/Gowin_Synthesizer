@@ -1,0 +1,272 @@
+{
+  "schema": 1,
+  "stage": "v43 integrated M event queue and W terminal cofactors; fresh complete synthesis; consumer audits remain open",
+  "base_commit": "8acfdcb3a90d61af56e09ba507c10ba2df197ae4",
+  "board_accessed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "timing_closed": false,
+  "release_ready": false,
+  "deployment_allowed": false,
+  "candidates": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-preboard-v1-5ac88e5e035881c2",
+      "configuration_sha256": "2daf05e77f83fa3478511d9dfffc67cd1932477ad16c3f6718238dfcfedc6cd5",
+      "prepare_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v43",
+      "fresh_synthesis": true,
+      "synthesis_seconds": 218.571629041,
+      "inputs_unchanged": true,
+      "resources": {
+        "Register": 58695,
+        "Lut": 70171,
+        "Alu": 18337,
+        "Bsram": 212,
+        "Ssram": 242,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "BSRAM_is_synthesis_equivalent": true,
+      "physical_BSRAM_not_inherited": true,
+      "synthesis_audit_passed": false,
+      "gates_passed": 27,
+      "gates_total": 29,
+      "failures": {
+        "M_paired_release_CDC": {
+          "passed": false,
+          "error": "M CPU source review: named destination FF inventory changed"
+        },
+        "native_held_handshakes": {
+          "passed": false,
+          "error": "M CPU source review: named destination FF inventory changed"
+        }
+      },
+      "netlist_sha256": "3d7ed42ff66890261a6fa5e9b32d72da6d5754978d4cade8e0b44fab628527e2",
+      "evidence": [
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v43/workstation_profile.json",
+          "sha256": "aa7bb67d84c8171d151e8ef59c654912c6eecd9729857a337d7880ed9123b118"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v43/integration_inputs.json",
+          "sha256": "72ebae763558c4b4ef6100682260606843bb314271259b8025df0aad564021f3"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v43/synthesis-invocation.json",
+          "sha256": "55d1ec59be8140f61bd2c37a20b3b729919094847055b5b22ac024db81dbbd5f"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-audit-v43.json",
+          "sha256": "10fff6dd3c46fea3284fbb7f24d7a24364049b62da6852d6874fab35d68ac016"
+        }
+      ],
+      "pnr": false,
+      "bitstream_sha256": null
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-preboard-v1-2e1c08837da93436",
+      "configuration_sha256": "ebc74cd24daa8ffd3a6fefb5c20d7e120d373f9881031b62a8f57bcf7ffdd9dc",
+      "prepare_directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v43",
+      "fresh_synthesis": true,
+      "synthesis_seconds": 186.212818458,
+      "inputs_unchanged": true,
+      "resources": {
+        "Register": 46759,
+        "Lut": 58475,
+        "Alu": 15937,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "BSRAM_is_synthesis_equivalent": true,
+      "physical_BSRAM_not_inherited": true,
+      "synthesis_audit_passed": false,
+      "gates_passed": 15,
+      "gates_total": 26,
+      "failures": {
+        "runtime_clock_PLL_structure": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "phone_batch_mapped_structure": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "LCD_pad_synchronizer_structure": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "W_CNN_ready_SDC": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "native_boundary_CDC": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "native_held_handshakes": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "W_preboard_release_and_CNN_Gray_CDC": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "preboard_serializer_byte_header": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "preboard_F808_and_PANIC_held_boundaries": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "preboard_W_raw_command_capture": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        },
+        "preboard_W_completion_count_publication": {
+          "passed": false,
+          "error": "runtime PCM CDC audit: unsupported escaped vector actual binding"
+        }
+      },
+      "netlist_sha256": "8c3ff33ef7d106bfe2ee517d375163a6b26cb3b8545359dfc2c8202518345ee5",
+      "evidence": [
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v43/workstation_profile.json",
+          "sha256": "c2357d3f03f5167f1bc1fce583e0749607056525ca342d4bffcf9f6ea6ff74a5"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v43/integration_inputs.json",
+          "sha256": "2ce5b68147671a0b32b013f012cc9143d4b609050eb75782b8c24ac7ed417860"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v43/synthesis-invocation.json",
+          "sha256": "9511d749ccf36c38b7c3b8a9888e826d705d458af267567be76ed41ec05205e2"
+        },
+        {
+          "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-audit-v43.json",
+          "sha256": "63e2c6bb7dc6990e768b06ca2b60a112f07c2f43c31e1e9770dc72a29b124f5a"
+        }
+      ],
+      "pnr": false,
+      "bitstream_sha256": null
+    }
+  },
+  "validations": {
+    "evidence": [
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-terminal-production-v2/verification.json",
+        "sha256": "85f589dbad58725db1d06804da4d86ddd822c5d1d65fdf43bae7f7c38c9c0d9e"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-inner-queue-production-v2/verification.json",
+        "sha256": "4d376a509c326b1a0376e312db467228887e0452232c59cea70007518394d776"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-inner-queue-attach-v3/verification.json",
+        "sha256": "130674eb7b300042d2de0ee2e92fe26dc04d5bf6558181de8062a84df038e8f8"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/accepted-sources-v42-v1.log",
+        "sha256": "1e40316a5668dc3d14ead87d86b09ca3c7724fc3e8bf943c9e2682a3c543a6fb"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-settle-cone-v5.json",
+        "sha256": "ba9e5610fdef2ec1212c35fc2ba7eba99cae4571a66125057261bfb65f5fdb4a"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-destination-review.json",
+        "sha256": "7869ac219d80bfe8d57114d98861776a387564f099478a6de8cbc09ae6a6af8e"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-destination-owner-source-equality.json",
+        "sha256": "598f54ce40635137c3e587ea8afc521ad91e3b258a2ac49f6ee8c5f683606226"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-destination-logical-state-review.json",
+        "sha256": "6fca22f7e1b49fe3fdb7e6456ec0e0a184880f04eb7ae4699946f007c8a166c2"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-sat-witness-v1.json",
+        "sha256": "53d26d8227202d174e9a6c9b7c73e9c930fd38d688796da505928ffa406e4615"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v43-packing-expression-equivalence-v2.log",
+        "sha256": "a4ccc558ac96c6ac2df884d7db00051f3be66918c68c851b6d64a357bbd06b18"
+      },
+      {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v43-vector-binding-review-v1.json",
+        "sha256": "45bb9ada374a2238d7a2b707d050e1fdf36d73602b5fc2ef39f961f61e7105fd"
+      }
+    ],
+    "test_input_hashes_reverified": true,
+    "W_terminal": "18 runs: 12 full sequential twins over publication0/1, command capture0/1 and three memory periods; 8192 sampled arbitrary edges per publication mode (4096 four-state +4096 binary), default-off arbitrary-state comparison; fault code, unknown fallback and index-fault-veto mutants rejected. Same-edge completion and index; no added state; no formal exhaustion or routed claim.",
+    "M_queue": "20000-cycle independent scoreboard:10006 accepted,8765 popped,870 clears,4289 simultaneous push/pop. Actual session integration checks full three-word cancellation, detach/attach,13 initialization commands, ordered PANIC and subsequent notes, reset; readiness-feedback and missing-lifecycle mutants rejected.",
+    "M_attach": "Complete USB MMIO/CDC/FIFO and actual legacy DSP/attach regression with selected inner queue passed. Production PL Host consumed12 actual feedback captures, including glide, sustain, four routes and reconnect defaults. This is not runtime-effects/full-board or hardware acceptance.",
+    "M_actual_topology": "Exact source audio_online Q to every settle_wait D/CE: maximum12 primitive levels in A14 synthesis VG versus7 in fresh v43 VG. Two explicit synchronous SDPX9B output cuts. No wire delay, complete timing, or source-ready BDD claim.",
+    "accepted_sources": "17 current-workstation input/source regressions passed."
+  },
+  "remaining": [
+    "Resolve actual W escaped-vector binding through the maintained strict parser and re-audit a fresh sealed candidate; no acceptance from cache-only parser override.",
+    "Review M consumer correspondence/SAT witness and complete named release consumer proof; never update inventory merely to match counts.",
+    "M peer identity/phone-record admission/TX arbitration path, PCM response and PANIC finite payload hold, and full10ns PLL propagation remain open.",
+    "After final source repairs, review actual M reset aliases and full load closure; W final tag-return placement membership; retain all resource, clock, minimum delay and timing gates.",
+    "Fresh final-pair P&R, all setup/hold/recovery/removal, physical resources, PLL/startup and all required routed CDC checks. v43 has no bitstream.",
+    "CAP3 remains closed; correct-target board connection/loading, LCD throughput, DAC latency and whole demo are for separately authorized board acceptance."
+  ],
+  "consumer_findings": {
+    "M": "Actual FF endpoints8369->8349:159 added/179 removed across121 logical states; RAM and top outputs unchanged. Source-owner bytes checked equal. Seven conditional next-Q comparisons passed; collector_m/cursor_0 SAT counterexample then stopped the comparison. This is an arbitrary named-state correspondence counterexample, not an established reachable design failure. Preserve the SAT model; do not create a new inventory on the assumption that every changed pin is a harmless rename.",
+    "W": "13 actual primitive pins encounter an escaped-vector formal whose actual is a concatenation. The existing PcmNetlist rejects it, causing the same error in11 standard gates. Strict declared-width VectorNetlist has existing alias, reversed-concatenation, range, width and cycle controls; full diagnostic re-audit is separate until production entrypoint and source seal are updated."
+  },
+  "preserved_failures": {
+    "W_terminal_v1": "120s timeout after six full twins; 15s instrumented probe showed simulation time advancing, around640 arbitrary edges per15s. v2 uses300s for the8192-edge cases and passed with stable inputs.",
+    "M_attach_v1": "Compiled against v41 dependencies but missed workstation_fifo_write_reset module.",
+    "M_attach_v2": "Reconstructed accepted_full83 bytes correctly, but its old oscillator interface lacks SEPARATE_OFF_NOTE/event_off_note_i used by the current composition. v3 uses matching v41 dependencies plus the maintained reset helper.",
+    "M_prepare_v42": "Selected native RTL path instead of actual parent composition destination src/ae350; v43 fixes the destination and revalidates selection.",
+    "M_topology": "Initial attempts assumed preserved ready net names, fixed settle_wait width, or lacked explicit RAM output terminals. They failed closed. v5 uses actual register inventory and named synchronous RAM DO cuts only; no missing-driver fallback.",
+    "M_conditional_compare": "v1 could not resolve the specialized music_async_fifo_0 declaration. v2 verifies its byte-identical music_async_fifo source and stops at a SAT counterexample. Historical evidence is retained."
+  },
+  "prior_physical_checkpoint": {
+    "report": "reports/DUAL138K_TASK3_PREBOARD_V38_20261108.json",
+    "belongs_to_v37_not_v43": true,
+    "M": {
+      "usercode": "0xD21108AE",
+      "physical_BSRAM": 253,
+      "setup_ns": -4.526,
+      "hold_ns": -0.282,
+      "DDR_init_hold_ns": 2.486,
+      "PLL_max_flight_ns": 10.136,
+      "bitstream_sha256": "b4f91f783af94ce29f1d2babd9659e2edfe246a7c1f98edd3c9be309598d97cf"
+    },
+    "W": {
+      "usercode": "0xD21108BD",
+      "physical_BSRAM": 287,
+      "setup_ns": -2.67,
+      "hold_ns": 0.143,
+      "bitstream_sha256": "2756d6b552a89ab08ec84dc072ae786520808ec2b35dfff63a65c1e333b4c213"
+    },
+    "failed_bitstreams_must_not_be_loaded": true
+  },
+  "rollback": {
+    "source_commit": "8acfdcb3",
+    "earlier_source_commit": "da2fd93d",
+    "task2_and_single_board_preserved": true,
+    "historical_profiles_and_candidates_preserved": true,
+    "SRAM_checklist": "reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md"
+  },
+  "reproduction": {
+    "workdir": "projects/138k/push2_workstation/usb_a",
+    "prepare": "python3 build.py --prepare-custom-board --custom-board-output <new-directory> --netlist-dir <locked-netlists> --riscv-prefix <prefix> --workstation-profile custom138k-workstation-task3-{m,w}-preboard-v1",
+    "netlist_inputs": "/Users/sphenicidition/.cache/gw138k-task3-20261103/locked-netlists",
+    "compiler_prefix": "/Users/sphenicidition/.local/opt/xpack-riscv-none-elf-gcc-15.2.0-1/bin/riscv-none-elf",
+    "synthesis": "Run staged scripts/custom_board_synthesis.tcl with licensed gw_sh in workstation/Prj1; synthesis-invocation.json binds command, complete staged inputs, result and log.",
+    "targeted_tests": [
+      "python3 sim/memory/run_ble_terminal_cofactor.py --output <new-directory>",
+      "GW138K_INNER_QUEUE_OUTPUT=<new-directory> python3 sim/test_workstation_inner_event_queue.py",
+      "python3 sim/run_workstation_attach.py --baseline <matching-native-parent> --out <new-directory> --timing-optimized --inner-event-queue"
+    ]
+  }
+}

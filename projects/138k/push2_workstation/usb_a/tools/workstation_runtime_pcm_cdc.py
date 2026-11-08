@@ -238,24 +238,42 @@ class PcmNetlist(SynthesisNetlist):
     def canonical(self, scope, net, seen=()):
         # Escaped vector identifiers include punctuation in the identifier;
         # the whitespace before [bit] separates the select. Resolve only a
-        # declared formal with an exact same-width literal vector binding.
+        # declared formal with an exact same-width vector or concatenation.
         selected=re.fullmatch(r'\\([^\s]+)\s+\[(\d+)\]',net)
         if scope and selected and selected[1] in self.frames[scope]['ports']:
             frame=self.frames[scope];formal=self.ranges[frame['kind']].get(selected[1])
             require(formal is not None and min(formal)<=int(selected[2])<=max(formal),
                     'escaped vector formal bit outside declared width')
             binding=frame['ports'][selected[1]]
-            actual=re.fullmatch(r'(\\[^\s]+)\s+\[(\d+)(?::(\d+))?\]',binding)
-            require(actual is not None,'unsupported escaped vector actual binding')
-            left,right=int(actual[2]),int(actual[3] or actual[2])
-            require(abs(left-right)==abs(formal[0]-formal[1]),'escaped vector binding width mismatch')
-            offset=abs(int(selected[2])-formal[1]);index=right+offset*(1 if left>=right else -1)
+            parent=self.scopes[scope]
+            bits=self.concatenation_bits(parent,binding if binding.startswith('{') else '{'+binding+'}')
+            require(len(bits)==abs(formal[0]-formal[1])+1,'escaped vector binding width mismatch')
             key=(scope,net)
             require(key not in seen,'cyclic escaped vector port connection')
-            return self.canonical(self.scopes[scope],actual[1]+' ['+str(index)+']',(*seen,key))
+            return self.canonical(parent,bits[abs(int(selected[2])-formal[1])],(*seen,key))
         if scope and net.startswith('\\') and net[1:] in self.frames[scope]['ports']:
             net = net[1:]
         return super().canonical(scope, net, seen)
+
+
+    def concatenation_bits(self, scope, binding):
+        """Expand declared escaped vectors in Verilog least-significant order."""
+        require(binding.startswith('{') and binding.endswith('}'),'concatenation required')
+        result=[]
+        for member in reversed(binding[1:-1].split(',')):
+            member=member.strip()
+            match=re.fullmatch(r'(\\[^\s]+)\s+\[(\d+)(?::(\d+))?\]',member)
+            if match:
+                left,right=int(match[2]),int(match[3] or match[2])
+                step=1 if left>=right else -1
+                result.extend(match[1]+' ['+str(i)+']' for i in range(right,left+step,step))
+            elif member.startswith('\\') and member[1:] in self.ranges[self.frames[scope]['kind']]:
+                left,right=self.ranges[self.frames[scope]['kind']][member[1:]]
+                step=1 if left>=right else -1
+                result.extend(member+' ['+str(i)+']' for i in range(right,left+step,step))
+            else:
+                result.extend(super().concatenation_bits(scope,'{'+member+'}'))
+        return result
 
 
 class Graph:

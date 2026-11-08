@@ -63,10 +63,12 @@ class RoutedRepairs(unittest.TestCase):
         n=self.n;g=Graph(n);cst=(self.stage/'constraints/custom_138k.cst').read_bytes()
         from tools.workstation_ble_completion_publication import configured
         publication=configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication)
+        from tools.workstation_ble_terminal_cofactor import configured as terminal_configured
+        terminal=terminal_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal)
         selected,e=place(cst,n);total=739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9175 if terminal else 9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
         self.assertEqual(len(e['tag_return_cone']['combinational_cells']),74 if publication else 76)
@@ -138,30 +140,35 @@ class MClockPriority(unittest.TestCase):
         selected=os.environ.get('GW138K_PREBOARD_M_STAGE')
         if not selected:self.skipTest('explicit actual M synthesis stage required')
         stage=Path(selected);vg=(stage/'impl/gwsynthesis/custom_138k_integration.vg').read_text()
-        cst=(stage/'constraints/custom_138k.cst').read_bytes();result,e=m_preboard_clock_priority(cst,vg)
+        from tools.workstation_delay_watchdog_retime import configured
+        retimed=configured(json.loads((stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        def check(cst,vg):return m_preboard_clock_priority(cst,vg,watchdog_retime=retimed)
+        cst=(stage/'constraints/custom_138k.cst').read_bytes();result,e=check(cst,vg)
         self.assertTrue(result.startswith(cst));self.assertEqual(len(e['clock_inputs']),3)
         self.assertEqual(len(e['reset_distribution_nets']),3)
         reset=e['memory_reset']
-        self.assertEqual(len(reset['reset_loads']),897)
+        self.assertEqual(len(reset['reset_loads']),897+int(retimed))
         self.assertIn(('CLOCK_LOC "'+reset['net']+'" BUFG[11] = SR;').encode(),result)
         self.assertNotIn(b'memory_release[2]" BUFG[11] = CLK;',result)
         self.assertNotIn(b'CLOCK_LOC "u_managed/runtime/memory_release[2]" LOCAL_CLOCK;',result)
         self.assertEqual(result.count(b'LOCAL_CLOCK;')-cst.count(b'LOCAL_CLOCK;'),2)
-        with self.assertRaises(ValueError):m_preboard_clock_priority(result,vg)
+        with self.assertRaises(ValueError):check(result,vg)
         for port in ('usb2_ulpi_clk','clk_12m288','clk_16m9344'):
             changed,count=re.subn(r'(IBUF\s+(?:\\)?'+re.escape(port+'_ibuf')+r'\s*\(.*?\.I\()'+re.escape(port)+r'(\))',
                 r'\g<1>GND\g<2>',vg,count=1,flags=re.S)
             self.assertEqual(count,1)
-            with self.assertRaises(ValueError):m_preboard_clock_priority(cst,changed)
+            with self.assertRaises(ValueError):check(cst,changed)
         from tools.workstation_synthesis_netlist import SynthesisNetlist
         from unittest.mock import patch
         n=SynthesisNetlist(vg,'workstation_custom_138k_top')
-        for path,pin in [(reset['inverter'],'I'),reset['reset_loads'][0]]:
+        for path,pin in [(reset['inverter'],'I'),reset['reset_loads'][0]]+([('u_managed/runtime/delay_dma/watchdog_reset_delay_s0','PRESET')]if retimed else []):
             old=copy.deepcopy(n.cells[path]);n.cells[path]['ports'][pin]='GND'
             try:
                 with patch('tools.workstation_custom_board_implementation.SynthesisNetlist',return_value=n):
-                    with self.assertRaises(ValueError):m_preboard_clock_priority(cst,vg)
+                    with self.assertRaises(ValueError):check(cst,vg)
             finally:n.cells[path]=old
+        if retimed:
+            with self.assertRaises(ValueError):m_preboard_clock_priority(cst,vg,watchdog_retime=False)
         print('M three actual clocks retain inputs and reserve LW8..10; duplicate and three disconnected input mutations rejected')
 
 
