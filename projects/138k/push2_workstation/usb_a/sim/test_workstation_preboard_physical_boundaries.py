@@ -24,14 +24,27 @@ class PhysicalBoundaries(unittest.TestCase):
         for role,stage,n in self.candidates:
             positive,sdc=proof.audit(n,role=role,stage=stage)
             compute=positive['tf_compute_functional_reset']
-            self.assertEqual(len(positive['exact_CLEAR_pins']),(37 if compute else 29)if role=='M' else 15)
+            self.assertEqual(len(positive['exact_CLEAR_pins']),(52 if compute else 44)if role=='M' else 15)
             if compute:
                 self.assertEqual(compute['functional_compute_register_count'],438)
                 self.assertTrue(set(positive['exact_CLEAR_pins']).isdisjoint(
                     p+'/CLEAR'for p in compute['functional_register_release']))
             if role=='M':
-                self.assertNotIn('set_max_delay',sdc)
-                self.assertNotIn('-hold',sdc)
+                owner=positive['M_routed_first_captures']['owner_live']['registers']
+                self.assertEqual(sdc.count('set_max_delay 2.000'),8)
+                self.assertIn('set_false_path -to [get_pins {'+owner[0]+'/D}]',sdc)
+                self.assertEqual(sdc.count('set_false_path -hold '),3)
+                p=owner[1];old=copy.deepcopy(n.cells[p])
+                n.cells[p]['ports']['D']="1'b1"
+                try:
+                    with self.assertRaises(ValueError):proof.audit(n,role=role,stage=stage)
+                finally:n.cells[p]=old
+                self.assertEqual(len(positive['exact_PRESET_pins']),4)
+                p=positive['asserted_hold_release_chains'][0]['registers'][0]
+                old=copy.deepcopy(n.cells[p]);n.cells[p]['parameters']['INIT']="1'b0"
+                try:
+                    with self.assertRaises(ValueError):proof.audit(n,role=role,stage=stage)
+                finally:n.cells[p]=old
             else:
                 self.assertEqual(sdc.count('set_false_path -hold '),1)
                 self.assertEqual(positive['W_routed_first_captures']['fifo_binary_next_Q_equations'],3)

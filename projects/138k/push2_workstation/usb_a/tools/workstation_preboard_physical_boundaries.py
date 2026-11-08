@@ -1,15 +1,16 @@
-"""Physical exceptions for named, proved asynchronous reset synchronizers.
+"""Physical constraints for named, proved receiving synchronizers.
 
 Only explicit complete paired preboard candidates may select this adapter.
-It never changes functional reset paths, clocks, setup/hold budgets, or legacy
+It never excepts functional resets or payload timing, changes clocks or legacy
 SDC. Early-stage fanout and every next-Q equation are checked on the actual VG
-before producing exact CLEAR selectors. Hardware acceptance is separate.
+before producing exact D/CLEAR/PRESET selectors and finite later-stage bounds.
+Registered Gray first captures retain finite flight limits. Acceptance is separate.
 """
 from tools.workstation_runtime_pcm_cdc import Graph, BooleanDiagram, COMB
 from tools.workstation_recording_phase1_cdc import complete_closure
 from tools.workstation_task3_native_held import zero_ff
 
-POLICY='task3_preboard_actual_reset_synchronizer_CLEAR_v1'
+POLICY='task3_preboard_actual_receiving_synchronizers_v2'
 # Startup-gated release sequences retain their local startup input as data.
 COMMON=(('u_managed','reset_compute_pipe',3,'startup_compute'),
         ('u_managed/runtime','compute_release',3,'startup_compute'),
@@ -68,6 +69,26 @@ def prove_level_synchronizer(n,g,regs,source,domain):
     return dict(registers=regs,clock=domain,assertion=clear,source=source,stages=proofs)
 
 
+def prove_asserted_release(n,g,regs,domain,asserted,release):
+    """A9's two immediate-hold assertions shift out locally as two zeroes."""
+    preset=n.pin(regs[0],'PRESET');b=BooleanDiagram([asserted,release])
+    require(b.net(g,preset)==b.either(b.inputs[asserted],b.invert(b.inputs[release])),
+            'hold assertion differs from source OR local reset')
+    for i,p in enumerate(regs):
+        require(n.cells[p]['kind']=='DFFPE'and n.pin(p,'CLK')==domain and
+            n.cells[p]['parameters'].get('INIT',"1'b1")=="1'b1" and
+            n.pin(p,'CE')in g.high and n.pin(p,'PRESET')==preset and
+            (n.pin(p,'D')==n.pin(regs[i-1],'Q')if i else n.pin(p,'D')in g.low),
+            'hold release equation changed '+p)
+        if i<len(regs)-1:
+            c=complete_closure(n,g,[p])
+            require(c['ff_endpoints']=={regs[i+1]+'/D':domain}and
+                not c['primitive_endpoints']and not c['top_output_endpoints'],
+                'early hold release extra consumer '+p)
+    return dict(registers=regs,clock=domain,assertion=preset,
+        exact_shift_equations=True,early_complete_consumer_proved=True)
+
+
 def w_routed_first_captures(n):
     """The four specific asynchronous first captures exposed by W route B6.
 
@@ -97,7 +118,15 @@ def w_routed_first_captures(n):
         row=prove_level_synchronizer(n,g,regs,src,'clk_50m');rows.append(row)
         lines.extend(['set_false_path -to [get_pins {'+regs[0]+'/D}]',
             'set_max_delay 2.000 -from [get_pins {'+regs[0]+'/Q}] -to [get_pins {'+regs[1]+'/D}]'])
-    scope=task+'/staging_requests'
+    gray_rows,gray_lines=fifo_read_gray(n,g,task+'/staging_requests','memory_clk','clk_50m')
+    rows.extend(gray_rows);lines.extend(gray_lines)
+    return dict(policy='task3_W_B6_proven_async_first_capture_v1',chains=rows,
+        fifo_binary_next_Q_equations=3,fifo_Gray_next_Q_equations=2,
+        fifo_MSB_exact_binary_alias=True,functional_payload_exceptions_added=False), '\n'+'\n'.join(lines)+'\n'
+
+
+def fifo_read_gray(n,g,scope,source_clock,destination_clock,*,all_bits=False):
+    rows=[];lines=[]
     binary=g.group(scope,'read_binary',3)
     gray=g.group(scope,'read_gray',2)+[binary[2]]
     q=[n.pin(p,'Q')for p in binary];enable=n.pin(gray[0],'CE')
@@ -107,13 +136,13 @@ def w_routed_first_captures(n):
     b=KeyDiagram(sorted(protected|set(frontier(n,g,outputs,protected))))
     event=b.net(g,enable);carry=event;next_binary=[]
     for bit,p in enumerate(binary):
-        zero_ff(n,g,p,'memory_clk')
+        zero_ff(n,g,p,source_clock)
         expect=b.different(b.inputs[q[bit]],carry)
         actual=b.choose(b.net(g,n.pin(p,'CE')),b.net(g,n.pin(p,'D')),b.inputs[q[bit]])
         require(actual==expect,'staging FIFO binary increment changed')
         next_binary.append(expect);carry=b.both(carry,b.inputs[q[bit]])
     for bit,p in enumerate(gray[:2]):
-        zero_ff(n,g,p,'memory_clk')
+        zero_ff(n,g,p,source_clock)
         require(n.pin(p,'CLEAR')==n.pin(binary[0],'CLEAR'),'staging FIFO reset differs')
         expect=b.choose(event,b.different(next_binary[bit],next_binary[bit+1]),
                         b.inputs[n.pin(p,'Q')])
@@ -121,15 +150,14 @@ def w_routed_first_captures(n):
         require(actual==expect,'staging FIFO registered Gray changed')
     first=g.group(scope,'read_gray_meta',3);second=g.group(scope,'read_gray_sync',3)
     for source,one,two in zip(gray,first,second):
-        row=prove_level_synchronizer(n,g,[one,two],n.pin(source,'Q'),'clk_50m')
+        row=prove_level_synchronizer(n,g,[one,two],n.pin(source,'Q'),destination_clock)
         rows.append(row)
     # Keep the existing finite 10ns flight bound, including the aliased MSB.
-    path='-from [get_pins {'+gray[2]+'/Q}] -to [get_pins {'+first[2]+'/D}]'
-    lines.extend(['set_max_delay 10.000 '+path,'set_false_path -hold '+path,
-        'set_max_delay 2.000 -from [get_pins {'+first[2]+'/Q}] -to [get_pins {'+second[2]+'/D}]'])
-    return dict(policy='task3_W_B6_proven_async_first_capture_v1',chains=rows,
-        fifo_binary_next_Q_equations=3,fifo_Gray_next_Q_equations=2,
-        fifo_MSB_exact_binary_alias=True,functional_payload_exceptions_added=False), '\n'+'\n'.join(lines)+'\n'
+    for bit in (range(3)if all_bits else (2,)):
+        path='-from [get_pins {'+gray[bit]+'/Q}] -to [get_pins {'+first[bit]+'/D}]'
+        lines.extend(['set_max_delay 10.000 '+path,'set_false_path -hold '+path,
+            'set_max_delay 2.000 -from [get_pins {'+first[bit]+'/Q}] -to [get_pins {'+second[bit]+'/D}]'])
+    return rows,lines
 
 
 def audit(n,*,role,stage):
@@ -139,7 +167,7 @@ def audit(n,*,role,stage):
     require(profile['profile']=='custom138k-workstation-task3-'+role.lower()+'-preboard-v1',
             'unselected preboard profile')
     require(role in ('M','W'),'explicit role required')
-    g=Graph(n);rows=[]
+    g=Graph(n);rows=[];preset_rows=[]
     selected=COMMON if role=='W' else (COMMON[0],COMMON[1],COMMON[3])
     for scope,stem,width,gate in selected:
         regs=g.group(scope,stem,width)
@@ -169,6 +197,52 @@ def audit(n,*,role,stage):
         require(len(source)==1,'owner level source absent/ambiguous')
         zero_ff(n,g,source[0],'clk_50m')
         rows.append(prove_level_synchronizer(n,g,owner,n.pin(source[0],'Q'),'audio_clk'))
+        owner_proof=rows[-1]
+        def top_group(stem,width):
+            result=[]
+            for i in range(width):
+                found=g.names.get(f'{stem}_{i}',[])
+                require(len(found)==1,'top synchronizer absent/ambiguous '+stem)
+                result.append(found[0])
+            return result
+        idle=top_group('task3_m_idle_sync',2)
+        idle_proof=prove_level_synchronizer(n,g,idle,
+            n.canonical('','task3_m_pcm_idle_compute'),'clk_50m')
+        rows.append(idle_proof)
+        ack=[g.register('u_task3_m_pcm_commands',s)for s in ('ack_meta','ack_sync','ack_settled')]
+        ack_source=g.register('u_task3_m_pcm_commands','acknowledge_toggle')
+        zero_ff(n,g,ack_source,'audio_clk')
+        ack_proof=prove_level_synchronizer(n,g,ack,n.pin(ack_source,'Q'),'clk_50m')
+        rows.append(ack_proof)
+        safety=top_group('output_safe_sync',2)
+        rows.append(prove_level_synchronizer(n,g,safety,
+            n.canonical('','compute_output_safe_n'),'audio_clk'))
+        rows.append(prove_release(n,g,top_group('output_safe_compute',3),startup=safety[1]))
+        rows.append(prove_release(n,g,g.group('u_runtime/u_usb_cdc','source_release',3)))
+        usb_ready=g.group('u_runtime','g_usb_cdc_reset.usb_ready',2)
+        # This legacy telemetry instance is flattened into the top module;
+        # bind its actual top reset and USB release publisher, not a fabricated
+        # module-formal name which canonical() would leave unresolved.
+        usb_inputs=[n.canonical('','reset_n'),n.pin(top_group('usb_release',4)[3],'Q')]
+        b=BooleanDiagram(usb_inputs);expected=1
+        for net in usb_inputs:expected=b.both(expected,b.inputs[net])
+        require(b.net(g,n.pin(usb_ready[0],'D'))==expected,'telemetry USB readiness source changed')
+        rows.append(prove_level_synchronizer(n,g,usb_ready,n.pin(usb_ready[0],'D'),'usb_clk'))
+        if (Path(stage)/'rtl/telemetry/gw138k_push_performance_uart.sv').exists():
+            last=n.pin(usb_ready[1],'Q');b=BooleanDiagram([last])
+            for p in g.group('u_runtime','usb_divider',16):
+                zero_ff(n,g,p,'usb_clk')
+                require(b.net(g,n.pin(p,'CLEAR'))==b.invert(b.inputs[last]),
+                        'telemetry functional divider bypasses local release '+p)
+        runtime='u_managed/runtime'
+        preset_rows.append(prove_asserted_release(n,g,
+            g.group(runtime,'cpu_pcm.switch_inhibit_compute',2),'audio_clk',
+            n.pin(g.register(runtime,'cpu_pcm.switch_inhibit_50'),'Q'),
+            n.pin(g.register(runtime,'compute_release',2),'Q')))
+        preset_rows.append(prove_asserted_release(n,g,
+            g.group(runtime,'pcm_hold_serial',2),'dac_mclk_d',
+            n.canonical(runtime,'pcm_serial_hold'),
+            n.pin(g.register(runtime,'serial_common_release',2),'Q')))
     compute=None
     if role=='M':
         from tools.workstation_tf_compute_local_release import audit_mapped
@@ -178,7 +252,25 @@ def audit(n,*,role,stage):
         selected.extend(p+'/CLEAR'for p in compute['root_asserted_synchronizer_registers'])
     require(len(selected)==len(set(selected)),'duplicate release selector')
     sdc='\n# '+POLICY+'\nset_false_path -to [get_pins {'+' '.join(selected)+'}]\n'
+    preset_selected=[p+'/PRESET'for row in preset_rows for p in row['registers']]
+    if preset_selected:
+        sdc+='set_false_path -to [get_pins {'+' '.join(preset_selected)+'}]\n'
     routed_first=None
+    m_first=None
+    if role=='M':
+        # A9: the asynchronous publisher was still checked against the first
+        # owner observer. Its exact three-stage equation and complete early-Q
+        # fanout have just been proved; later stages remain finitely timed.
+        m_first=dict(owner_live=owner_proof,idle=idle_proof,command_ack=ack_proof,
+            functional_payload_exceptions_added=False)
+        sdc+='\n# M A9 isolated owner-live observer\n'
+        gray_rows,gray_lines=fifo_read_gray(n,g,'u_task3_m_score_push_cdc','usb_clk','clk_50m',all_bits=True)
+        m_first['score_read_gray']=gray_rows
+        sdc+='\n'+'\n'.join(gray_lines)+'\n'
+        for chain in (owner,idle,ack):
+            sdc+='set_false_path -to [get_pins {'+chain[0]+'/D}]\n'
+            for first,last in zip(chain,chain[1:]):
+                sdc+='set_max_delay 2.000 -from [get_pins {'+first+'/Q}] -to [get_pins {'+last+'/D}]\n'
     if role=='W':
         routed_first,extra=w_routed_first_captures(n);sdc+=extra
         # B7 exposed the raw-store local reset release and its isolated
@@ -205,7 +297,9 @@ def audit(n,*,role,stage):
         sdc+='set_false_path -to [get_pins {'+first+'/D}]\n'
         sdc+='set_max_delay 2.000 -from [get_pins {'+first+'/Q}] -to [get_pins {'+last+'/D}]\n'
     return dict(policy=POLICY,role=role,release_chains=rows,exact_CLEAR_pins=selected,
+                asserted_hold_release_chains=preset_rows,exact_PRESET_pins=preset_selected,
                 tf_compute_functional_reset=compute,
                 W_routed_first_captures=routed_first,
-                functional_reset_exceptions_added=False,setup_hold_unchanged=True,
+                M_routed_first_captures=m_first,
+                functional_reset_exceptions_added=False,functional_setup_hold_unchanged=True,
                 physical_CDC_accepted=False,hardware_tested=False),sdc

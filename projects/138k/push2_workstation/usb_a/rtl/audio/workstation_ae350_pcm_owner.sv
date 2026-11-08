@@ -282,18 +282,25 @@ module workstation_ae350_pcm_owner #(
     wire cancel_error=!key_matches || history_state==H_FAULT || &cancel_epoch_o;
     // Match the original response decoder's procedural treatment of unknown
     // strobes/ID bits as well as its binary hardware admission rule.
+    // A9 mapped the full32 command-ID saturation reduction as eight serial
+    // LUT levels. Keep four independent byte reductions, then combine once.
+    // No state, acceptance edge or procedural X/Z treatment changes.
+    (* syn_keep=1 *) wire [3:0] command_id_full_bytes;
+    for(genvar id_byte=0;id_byte<4;id_byte=id_byte+1)begin:g_command_id_full
+        assign command_id_full_bytes[id_byte]=&command_id[id_byte*8+:8];
+    end
     reg control_format_ok,control_id_ok;
     always @* begin
         control_format_ok=1'b1;control_id_ok=1'b1;
         if(!full_write)control_format_ok=1'b0;
-        if(&command_id)control_id_ok=1'b0;
+        if(&command_id_full_bytes)control_id_ok=1'b0;
     end
     wire control_write=write_command && control_format_ok && command_address_i==12'h040 && control_id_ok;
     wire accepted_start=control_write && command_data_i==32'd1 && !start_error;
     wire accepted_commit=control_write && command_data_i==32'd2 && !commit_error;
     wire accepted_select=control_write && command_data_i==32'd3 && !select_error;
-    wire accepted_stop=control_write && command_data_i==32'd4 && !stop_error;
-    wire accepted_cancel=control_write && command_data_i==32'd5 && !cancel_error;
+    (* syn_keep=1 *) wire accepted_stop=control_write && command_data_i==32'd4 && !stop_error;
+    (* syn_keep=1 *) wire accepted_cancel=control_write && command_data_i==32'd5 && !cancel_error;
     wire accepted_control=accepted_start || accepted_commit || accepted_select || accepted_stop || accepted_cancel;
     // The rejected COMMIT state update must not traverse unrelated response decodes.
     wire rejected_commit=write_command && command_address_i==12'h040 && command_data_i==32'd2 &&
@@ -330,7 +337,7 @@ module workstation_ae350_pcm_owner #(
                     5:command_error=cancel_error;
                     default:command_error=1;
                 endcase
-                if(&command_id)command_error=1;
+                if(&command_id_full_bytes)command_error=1;
             end
             12'h044:response_data_o=command_id;
             12'h048:response_data_o=applied_id;
@@ -442,17 +449,16 @@ module workstation_ae350_pcm_owner #(
         end
     end
     reg bitmap_clear_without_context /* synthesis syn_keep=1 */;
+    // Every revoke writes the same value. Resolve them as parallel OR terms
+    // instead of a priority chain behind the command acceptance cone. Retain
+    // the procedural if so X/Z-only guards still leave the result at zero.
     always @* begin
         bitmap_clear_without_context=0;
-        if(accepted_stop)bitmap_clear_without_context=1;
-        if(accepted_cancel)bitmap_clear_without_context=1;
-        if(armed)begin
-            if(cpu_previous && !cpu_ready_i)bitmap_clear_without_context=1;
-            else if(!live_matches)bitmap_clear_without_context=1;
-            else if(!bitmap_physical_without_context)bitmap_clear_without_context=1;
-            else if(tf_busy_i)bitmap_clear_without_context=1;
-            else if(sample_take_i && selected && !hold_serial && !cache_current)bitmap_clear_without_context=1;
-        end
+        if(accepted_stop || accepted_cancel || (armed && (
+            (cpu_previous && !cpu_ready_i) || !live_matches ||
+            !bitmap_physical_without_context || tf_busy_i ||
+            (sample_take_i && selected && !hold_serial && !cache_current))))
+            bitmap_clear_without_context=1;
     end
     // Resolve the original ordered bitmap clears once for each slot. Keep
     // this final permission separate from the wide data update mux. Partial

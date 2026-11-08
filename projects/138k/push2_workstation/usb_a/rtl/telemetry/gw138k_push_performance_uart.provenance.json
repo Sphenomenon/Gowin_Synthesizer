@@ -1,0 +1,11 @@
+{
+  "policy": "task3_M_preboard_telemetry_USB_local_release_v1",
+  "parent": "src/push2/gw138k_push_performance_uart.sv",
+  "parent_sha256": "871f28af8f26e3b2d6b83308612a1693896f82a18673dffd14a2038a4bbb2cc2",
+  "source": "rtl/telemetry/gw138k_push_performance_uart.sv",
+  "source_sha256": "38a3d654132ffac8e903f38214db0f8503e7dbeec5dc6c2773f6593bd7609414",
+  "old": "        assign usb_divider_reset_n=usb_cdc_assert_ni;\n",
+  "new": "        // Functional divider deasserts only from the existing final USB-domain\n        // readiness flop. Raw assertion still clears both readiness stages.\n        assign usb_divider_reset_n=usb_ready[1];\n",
+  "scope": "Explicit task3 M preboard only; existing USB two-stage readiness releases functional divider. No telemetry wire-format or audio changes.",
+  "rollback": "Disable explicit preboard selection; immutable parent bytes retained."
+}

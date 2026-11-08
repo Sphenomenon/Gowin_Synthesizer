@@ -64,7 +64,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 源码／综合阶段已完成：v22 的 M 26/26、W 25/25 完整综合门禁及 17 项 accepted-source 检查通过；身份与哈希见[阶段清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_SOURCE_20261108.json)。M A9 已完成物理实现，253 BSRAM、61129 CLS，setup/hold/recovery/removal 为 −3.909/−2.867/−7.854/+0.284 ns，仍不可上板；W B9 布局修订待结果。继续围绕实际同域长路径、held 数据短线和未完整落地的复位同步边界修复，保留时钟及功能；本阶段尚未交付一对时序通过的候选。
+2026-11-08 最新 v27 已通过 M 26/26、W 25/25 完整综合门禁及 17 项 accepted-source 检查；M command-ID→bitmap 实际组合深度 17→14，telemetry 本域释放、精确 CPU 消费者清单及 receiving／held 边界定向检查通过。W B9 已定位为约束解析内存耗尽，B10 的多行 GROUP 语法失败保留；改用单行精确分组后，M A10／W B11 正在完整 P&R。配置、来源、资源及验证哈希见[v27 续记](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_FOLLOWUP_20261108.md)。M A9 的 253 BSRAM、61129 CLS 和 −3.909/−2.867/−7.854/+0.284 ns 仍是历史失败，不继承为新候选通过证据；本阶段尚未交付一对时序通过的候选。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 

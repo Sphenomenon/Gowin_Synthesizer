@@ -300,6 +300,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile_dependencies += TF_CONTACT_INPUTS
     if len(native_sources) != len(set(native_sources)):
         raise ValueError('duplicate native-board selected source owner')
+    telemetry_release = profile is not None and profile['name']=='custom138k-workstation-task3-m-preboard-v1'
+    if telemetry_release:
+        native_sources+=('rtl/telemetry/gw138k_push_performance_uart.sv',)
+        profile_dependencies+=('rtl/telemetry/gw138k_push_performance_uart.provenance.json',)
     extra_inputs = list(dict.fromkeys((*native_sources, *profile_dependencies,
                                      'rtl/workstation/gw138k_push_workstation_top.v')))
     clocks = clock_bundle(root, hdmi_mode, local_panel_enabled=local_panel_enabled)
@@ -361,6 +365,15 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
                 entry.set('enable', '0')
     replacements = {}
     replaced_inputs = dict(REPLACED_INPUTS)
+    if telemetry_release:
+        provenance=json.loads((root/'rtl/telemetry/gw138k_push_performance_uart.provenance.json').read_text())
+        source=provenance['source'];parent=provenance['parent']
+        text=(root/source).read_text()
+        if (sha(stage/parent)!=provenance['parent_sha256'] or
+                sha(root/source)!=provenance['source_sha256'] or text.count(provenance['new'])!=1 or
+                text.replace(provenance['new'],provenance['old'],1).encode()!=(stage/parent).read_bytes()):
+            raise ValueError('preboard telemetry local-release source lineage drift')
+        replaced_inputs[parent]=source
     if expanded_boot:
         replaced_inputs[PARENT_BOOT_MEMORY] = BOOT_MEMORY_SOURCE
     install_paths, unchanged_parent_inputs = {}, {}

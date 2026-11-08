@@ -30,7 +30,12 @@ class HeldBoundaries(unittest.TestCase):
     def test_M_session_and_frame(self):
         if 'M'not in self.n:self.skipTest('M required')
         n=self.n['M'];g=Graph(n);r,sdc=session(n)
-        self.assertEqual(len(r['source_stability']),64);self.assertIn('set_min_delay 1.800',sdc);self.assertNotIn('set_false_path',sdc)
+        self.assertEqual(len(r['source_stability']),64);self.assertIn('set_min_delay 1.800',sdc)
+        self.assertEqual(sdc.count('set_false_path'),1)
+        self.assertEqual(len(r['release_CLEAR_pins']),4)
+        self.assertIn('set_false_path -to [get_pins {'+' '.join(r['release_CLEAR_pins'])+'}]',sdc)
+        self.assertTrue(set(r['release_CLEAR_pins']).isdisjoint(p+'/CLEAR'for p in r['capture']))
+        self.assertFalse(r['functional_capture_reset_exceptions_added'])
         self.reject(n,session,[(g.register('u_task3_m_endpoint','hci_ready_o'),'D',"1'b1"),
             (r['capture'][0],'D',n.cells[r['source'][1]]['ports']['Q']),
             (r['release'][1],'D',"1'b1"),(r['capture'][5],'CE',"1'b1")])

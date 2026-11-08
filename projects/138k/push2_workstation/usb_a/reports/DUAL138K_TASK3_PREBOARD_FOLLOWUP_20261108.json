@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "stage": "v27 complete synthesis and targeted repairs; physical pending",
+  "base_commit": "df48fc81",
+  "board_accessed": false,
+  "hardware_tested": false,
+  "SRAM_programmed": false,
+  "Flash_written": false,
+  "timing_closed": false,
+  "release_ready": false,
+  "roles": {
+    "M": "interaction, authoritative common parameters, ordinary32/vector8 synthesis, basic audio, local reverb, final output",
+    "W": "actual CNN, phone receive/decode, sole recording object"
+  },
+  "candidates": {
+    "M": {
+      "candidate_identity": "custom138k-workstation-task3-m-preboard-v1-bbeed2f1f0c9a797",
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v27",
+      "profile": "custom138k-workstation-task3-m-preboard-v1",
+      "configuration_sha256": "74b70cf198c9f6634b83080e540bb06880b0a402762c2091c59aa23f9fbf1882",
+      "profile_artifact_sha256": "4bdc05a1bbb6dd0669c614acfaa7b864e460432d5c22881edeebc7574bca6ff2",
+      "integration_inputs_sha256": "7e1b0a7aa4208d017319c51ecc450a6e8f7404cda8ab1ce663ef74d6f2d1a5f3",
+      "staged_input_count": 709,
+      "enabled_inputs": 288,
+      "netlist_sha256": "cb1f1d7ea19cf2664233f4648cfff791fb7a5aad1fc71d930c961b2600be48df",
+      "resources": {
+        "Register": 58604,
+        "Lut": 70241,
+        "Alu": 18339,
+        "Bsram": 212,
+        "Ssram": 242,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 43
+      },
+      "synthesis_BSRAM_equivalent": 212,
+      "physical_BSRAM": null,
+      "complete_synthesis_audit": {
+        "passed": true,
+        "gates": 26,
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-audit-v27.json",
+        "sha256": "7018a462826fc00933eedb2a218acc4a810bce01d99e7f94998e4712170b18f4"
+      },
+      "fresh_v26_synthesis": {
+        "exit_code": 0,
+        "elapsed_seconds": 224.43280091699998,
+        "inputs_unchanged": true
+      },
+      "reuse_v26_to_v27": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v27/synthesis-reuse.json",
+        "sha256": "b48da203a00fd4ef1070d8d905939003ffa1bafc18e57b2a51e618509628492f",
+        "policy": "exact_all_staged_compiler_bytes_reuse_v1",
+        "all_staged_bytes_and_enabled_order_identical": true
+      },
+      "physical": {
+        "UserCode": "D21108AA",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v10",
+        "status": "prepared_or_running",
+        "physical_inputs_sha256": "7937d409b1f22875f23df0bb6c1b77ae408e1df24683085c01bc8b8cba9e1a33",
+        "bitstream_sha256": null
+      }
+    },
+    "W": {
+      "candidate_identity": "custom138k-workstation-task3-w-preboard-v1-12ff9f44e63f71e1",
+      "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v27",
+      "profile": "custom138k-workstation-task3-w-preboard-v1",
+      "configuration_sha256": "d92f1af85009eb41a64eeef28c6de662b4b7c4d03250a341459aecdddfd9994e",
+      "profile_artifact_sha256": "e84c60642dd1098e6301a79587a8136054f3871e770cd81cd5c020c56b990427",
+      "integration_inputs_sha256": "490a399096b17c2027d6172a4f4ece7f01708823014d878e15e7da16dd967ea7",
+      "staged_input_count": 697,
+      "enabled_inputs": 201,
+      "netlist_sha256": "4d78e524096ec842b455ca883c08019223bf8c8bafbcdcb59709add5bbc34352",
+      "resources": {
+        "Register": 46724,
+        "Lut": 58615,
+        "Alu": 15936,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "synthesis_BSRAM_equivalent": 253,
+      "physical_BSRAM": null,
+      "complete_synthesis_audit": {
+        "passed": true,
+        "gates": 25,
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-audit-v27.json",
+        "sha256": "de57fbca07f582c8b4b5659ca91cf7a838e4c0610e5075c9c68b6659c41db10b"
+      },
+      "fresh_v26_synthesis": {
+        "exit_code": 0,
+        "elapsed_seconds": 195.863650167,
+        "inputs_unchanged": true
+      },
+      "reuse_v26_to_v27": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v27/synthesis-reuse.json",
+        "sha256": "9b78680c1713db57ff931133f15011f10782d3166cba234ea6dd4cc8940ef0f0",
+        "policy": "exact_all_staged_compiler_bytes_reuse_v1",
+        "all_staged_bytes_and_enabled_order_identical": true
+      },
+      "physical": {
+        "UserCode": "D21108BB",
+        "directory": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v11",
+        "status": "prepared_or_running",
+        "physical_inputs_sha256": "5562316b7f86d8620bf9a536895c3343550c88ea5d9081db70c3c74b27624eed",
+        "bitstream_sha256": null
+      }
+    }
+  },
+  "evidence": {
+    "diagnosis/bitmap-parallel-v2/verification.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/bitmap-parallel-v2/verification.json",
+      "sha256": "fbe3cbbb9b1e5c1ea807e10bfd37996eeac071c92da9e360dd22937156c5f222"
+    },
+    "diagnosis/m-v26-CPU-destination-review.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v26-CPU-destination-review.json",
+      "sha256": "c5394796336f961309db25900a6547f9527c970736f2b1f11fcd9f35e1b444ab"
+    },
+    "diagnosis/m-v26-command-ID-depth.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v26-command-ID-depth.json",
+      "sha256": "a780142a0bcd4cc2651f39ee27212b4e5e1ace8a583abc5e7b27c1e7f8ded53a"
+    },
+    "diagnosis/m-v23-command-ID-depth.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v23-command-ID-depth.json",
+      "sha256": "bc01bfe860396f964bc1722a9c6a47a5d56d747e72edfc2407a7643f337e2992"
+    },
+    "diagnosis/m-v26-command-ID-byte-proof.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v26-command-ID-byte-proof.json",
+      "sha256": "8554ce0da172cb374a67a554cdf6206c8bfba90cf04297bcada7b469c9290da8"
+    },
+    "diagnosis/m-consumers-v26.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-consumers-v26.log",
+      "sha256": "27cc6f2ba529d159c549d33218cf11645a863c80269c1dfbd0fa87fe6794f2ec"
+    },
+    "diagnosis/route-repairs-v26.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/route-repairs-v26.log",
+      "sha256": "3806a6b3f56a7090b64d7ce42954a4eadcc83324810daebec676bb6a6f187ac9"
+    },
+    "diagnosis/physical-boundaries-v26.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/physical-boundaries-v26.log",
+      "sha256": "411d41c52c69f8cc8e92e8f70c9604925e80314a24acfc26088026d6dfd98528"
+    },
+    "diagnosis/accepted-sources-v27.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/accepted-sources-v27.log",
+      "sha256": "7ca2e8b6fddca26de9cb7248dd537c5c30d717a4572e4516e9a9607f667cfa52"
+    },
+    "diagnosis/prepare-reproducibility-v27.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare-reproducibility-v27.json",
+      "sha256": "dacd26259c451cc6fb657fbace4ed8439907d8d5e75782b931d4e1fd022f203b"
+    },
+    "diagnosis/W-B9-kernel-termination.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/W-B9-kernel-termination.log",
+      "sha256": "fa40256bee80e1722bda5fafa92663b12367bf1035814cb38b55f1ac03b88e93"
+    },
+    "diagnosis/W-B10-group-syntax-controls.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/W-B10-group-syntax-controls.log",
+      "sha256": "a7f1ee4561c592dbb856fc00377d13247f9f67dbdcfb869a190f2f8614aef80c"
+    }
+  },
+  "remaining": [
+    "Fresh full P&R and all setup/hold/recovery/removal/resource gates",
+    "Final routed CDC and physical PLL/startup checks",
+    "SRAM checklist only; hardware authorization and target identification later",
+    "CAP3 sustained phone admission remains closed pending board throughput; actual LCD/DAC/demo acceptance deferred"
+  ]
+}

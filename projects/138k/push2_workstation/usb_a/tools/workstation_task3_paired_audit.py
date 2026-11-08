@@ -184,6 +184,7 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v3.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v4.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v5.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v6.json',
     'tools/workstation_pcm_permission_compare.py',
     'tools/workstation_pcm_bitmap_permission.py',
     'tools/workstation_task3_m_midi_release_sdc.py',

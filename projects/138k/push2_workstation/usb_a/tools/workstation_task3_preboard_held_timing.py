@@ -21,7 +21,7 @@ def placement(cst, proof):
     require(proof['hold_checks_retained'] is True, 'placement requires held proof')
     rows=[];lines=[];seen=set()
     for row in proof['payloads']:
-        if row['id'] not in ('F808_request','F808_response'):continue
+        if row['id'] not in ('F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'):continue
         for field,region in (('source',DDR_FAR_LAUNCH_REGION),('capture',DDR_FAR_CAPTURE_REGION)):
             for pin in row[field]:
                 path=pin.rsplit('/',1)[0]
@@ -29,9 +29,10 @@ def placement(cst, proof):
                         'duplicate or preconstrained held endpoint '+path)
                 seen.add(path);lines.append(f'INS_LOC "{path}" {region};')
                 rows.append(dict(register=path,region=region,mailbox=row['id'],side=field))
-    require(len(rows)==164, 'incomplete F808 placement inventory')
-    selected=cst+('\n# Proved F808 held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return selected,dict(policy='task3_F808_exact_held_endpoint_separation_v1',registers=rows,
+    expected=348 if proof['role']=='M' else 164
+    require(len(rows)==expected, 'incomplete paired held placement inventory')
+    selected=cst+('\n# Proved paired held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
+    return selected,dict(policy='task3_exact_held_endpoint_separation_v2',registers=rows,
         before_cst_sha256=digest(cst),after_cst_sha256=digest(selected),
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
@@ -82,10 +83,26 @@ def w_native_placement(cst,n):
             require(('"'+p+'"').encode()not in cst,'preconstrained W native primitive '+p)
             selected[p]=overrides.get(p,'R[45:100]C[20:110]')
     require(set(overrides)<=set(selected),'W held data is outside native layout inventory')
-    lines=[f'INS_LOC "{p}" {region};'for p,region in sorted(selected.items())]
+    # One primitive group per distinct region expresses the identical mapping
+    # without expanding thousands of overlapping region objects. B9's per-cell
+    # INS_LOC expansion was killed by macOS at 126007 MB during CST parsing.
+    # SUG1018 2.4.1 defines GROUP + GRP_LOC for precisely this use. List exact
+    # primitives, rather than wildcards which could pick up absorbed INV cells.
+    regions=sorted(set(selected.values()));lines=[];placement_groups=[]
+    for i,region in enumerate(regions):
+        name=f'task3_w_native_{i}'
+        require(name.encode() not in cst,'duplicate W native placement group')
+        members=sorted(p for p,r in selected.items()if r==region)
+        # The installed CST parser requires each GROUP statement on one
+        # physical line (B10 rejected a newline before the first member).
+        # The same-device two-FF probe passed syntax, P&R and region placement.
+        lines.append('GROUP '+name+' = { '+' '.join('"'+p+'"'for p in members)+' };')
+        lines.append(f'GRP_LOC {name} {region};')
+        placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy='task3_W_B7_native_wire_and_held_locality_v2',groups=groups,
+    return result,dict(policy='task3_W_B7_native_wire_and_held_locality_v3',groups=groups,
+        placement_groups=placement_groups,exact_region_mapping_preserved=True,
         primitive_count=len(selected),held_register_count=len(overrides),
         exact_constraints_sha256=digest(added),before_cst_sha256=digest(cst),
         after_cst_sha256=digest(result),same_edge_fault_logic_unchanged=True,
@@ -143,6 +160,16 @@ def audit(n,*,role):
             not c['top_output_endpoints'],'panic payload remote consumer changed')
         rows.append(dict(id='PANIC_epoch',source=[p+'/Q'for p in source],capture=[p+'/D'for p in capture],
             source_busy_prevents_overwrite=True,source_next_request_exact=True,source_complete_closure=c))
+        pcm=audit_apb_held_boundary(n,g,scope='u_task3_m_pcm_commands',
+            source_clock='clk_50m',destination_clock='audio_clk')
+        rows.append(dict(id='M_PCM_response',source=pcm['source_pins'],
+            capture=pcm['capture_pins'],proof=pcm))
+        rows.append(dict(id='M_PCM_request',
+            source=[p+'/Q'for p in g.group('u_task3_m_pcm_commands','request_held',49)],
+            capture=[p+'/D'for p in g.group('u_task3_m_pcm_commands','request_local',49)],proof=pcm))
+        chains.append(chain('u_task3_m_pcm_commands',
+            g.register('u_task3_m_pcm_commands','request_toggle'),
+            'req_meta','req_sync','audio_clk','req_settled'))
     for row in rows:
         path='-from [get_pins {'+' '.join(row['source'])+'}] -to [get_pins {'+' '.join(row['capture'])+'}]'
         lines.extend(['set_max_delay 10.000 '+path,'set_min_delay 1.800 '+path])

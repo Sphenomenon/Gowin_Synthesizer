@@ -63,6 +63,14 @@ class RoutedRepairs(unittest.TestCase):
         n=self.n;g=Graph(n);cst=(self.stage/'constraints/custom_138k.cst').read_bytes()
         selected,e=w_native_placement(cst,n)
         self.assertEqual(e['primitive_count'],9130)
+        self.assertEqual(len(e['placement_groups']),5)
+        self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),9130)
+        self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),5)
+        statements=[line for line in selected.splitlines()if line.startswith(b'GROUP task3_w_native_')]
+        self.assertEqual(len(statements),5)
+        self.assertTrue(all(line.endswith(b' };')for line in statements))
+        self.assertEqual(sum(line.count(b'"')//2 for line in statements),9130)
+        self.assertTrue(e['exact_region_mapping_preserved'])
         for p,c in n.cells.items():
             if c['kind']=='INV':self.assertNotIn(('"'+p+'"').encode(),selected)
         self.assertEqual(e['held_register_count'],280)
@@ -88,6 +96,22 @@ class RoutedRepairs(unittest.TestCase):
 
 
 class MClockPriority(unittest.TestCase):
+    def test_A9_PANIC_and_PCM_payload_hold_placement(self):
+        selected=os.environ.get('GW138K_PREBOARD_M_STAGE')
+        if not selected:self.skipTest('explicit actual M synthesis stage required')
+        stage=Path(selected)
+        n=protocol_netlist((stage/'impl/gwsynthesis/custom_138k_integration.vg').read_text(),mapping='synthesis')
+        r,sdc=audit(n,role='M');cst=(stage/'constraints/custom_138k.cst').read_bytes()
+        selected,e=placement(cst,r)
+        self.assertEqual(len(e['registers']),348)
+        self.assertEqual({x['id']for x in r['payloads']},
+            {'F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'})
+        self.assertEqual(sdc.count('set_min_delay 1.800'),5)
+        self.assertNotIn('set_false_path -hold',sdc)
+        with self.assertRaises(ValueError):placement(selected,r)
+        bad=copy.deepcopy(r);bad['payloads'][-1]['capture'].pop()
+        with self.assertRaises(ValueError):placement(cst,bad)
+
     def test_actual_A8_clock_inputs_and_reset_owners(self):
         from tools.workstation_custom_board_implementation import m_preboard_clock_priority
         selected=os.environ.get('GW138K_PREBOARD_M_STAGE')

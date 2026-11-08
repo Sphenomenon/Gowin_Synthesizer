@@ -2,7 +2,8 @@
 
 Each bit proves ready-next implies its data-next is unchanged. Unrelated
 admission logic is conservatively arbitrary, with shared cuts kept correlated.
-Only exact finite data constraints are emitted; hardware acceptance is separate.
+Finite data constraints and proved receiving release CLEAR exceptions are
+emitted; functional key captures retain reset timing. Acceptance is separate.
 """
 from tools.workstation_runtime_pcm_cdc import Graph, COMB, BooleanDiagram
 from tools.workstation_task3_root_reset_audit import RootDiagram
@@ -29,7 +30,7 @@ class KeyDiagram(RootDiagram):
                 return self.either(self.different(a,c),carry)
         return super().net(graph,net,memo,active)
 
-S='u_task3_m_endpoint' 
+S='u_task3_m_endpoint'
 T='u_managed/runtime/cpu_pcm.session'
 
 def require(ok,message):
@@ -119,7 +120,14 @@ def audit(n):
             not closure['top_output_endpoints'],'key remote consumer inventory changed')
     path='-from [get_pins {'+' '.join(p+'/Q'for p in source)+'}] -to [get_pins {'+' '.join(p+'/D'for p in captures)+'}]'
     sdc='\n# Proven paired M held HCI key: capture after three destination edges\nset_max_delay 10.000 '+path+'\nset_min_delay 1.800 '+path+'\n'
+    # A9 exposed ready's asynchronous deassertion at this receiving release
+    # chain. The equations and exclusive early fanout above prove these four
+    # cells are the synchronizer; epoch/generation functional CLEARs stay timed.
+    release_clear=[p+'/CLEAR'for p in release+[live]]
+    sdc+='# Exact receiving session release; functional key resets remain timed\n'
+    sdc+='set_false_path -to [get_pins {'+' '.join(release_clear)+'}]\n'
     return dict(policy='task3_M_actual_held_HCI_key_v1',source=source,capture=captures,
-        source_stability=rows,release=release,source_complete_closure=closure,
+        source_stability=rows,release=release,release_CLEAR_pins=release_clear,
+        functional_capture_reset_exceptions_added=False,source_complete_closure=closure,
         minimum_destination_wait_edges=3,max_data_delay_ns=10.0,min_data_delay_ns=1.8,
         hold_check_retained=True,routed_timing_verified=False,hardware_tested=False),sdc
