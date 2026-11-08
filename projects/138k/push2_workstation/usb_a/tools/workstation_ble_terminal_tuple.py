@@ -18,6 +18,8 @@ def unselect(text):
         text=text.replace(SELECTED,DEFAULT,1)
     return text
 def restore(text):
+    from tools.workstation_ble_pack_cofactor import restore as pack_parent
+    text=pack_parent(text)
     text=unselect(text)
     if DEFAULT not in text:return text
     # Normalize the two older independent selections only for lineage checks.

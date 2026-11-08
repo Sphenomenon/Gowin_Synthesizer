@@ -200,6 +200,8 @@ AUDIT_SOURCES = (
     'tools/workstation_inner_event_queue.py',
     'rtl/control/workstation_inner_event_queue_v1.adaptation.json',
     'rtl/control/workstation_event_queue.sv',
+    'tools/workstation_ble_pack_cofactor.py',
+    'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
     'tools/workstation_ble_terminal_tuple.py',
     'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
     'tools/workstation_ble_terminal_cofactor.py',

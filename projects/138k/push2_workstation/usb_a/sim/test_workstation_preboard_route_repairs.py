@@ -67,13 +67,21 @@ class RoutedRepairs(unittest.TestCase):
         terminal=terminal_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         from tools.workstation_ble_terminal_tuple import configured as tuple_configured
         tuple_cofactor=tuple_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor)
-        selected,e=place(cst,n);total=739 if publication else 741
+        from tools.workstation_ble_pack_cofactor import configured as pack_configured
+        pack_cofactor=pack_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor)
+        selected,e=place(cst,n);total=740 if pack_cofactor else 739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
-        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),74 if publication else 76)
+        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),75 if pack_cofactor else 74 if publication else 76)
+        self.assertEqual(e['pack_cofactor_layout'],pack_cofactor)
+        if pack_cofactor:
+            with self.assertRaises(ValueError):
+                w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor)
+            with self.assertRaises(ValueError):
+                w_native_placement(cst,n,pack_cofactor=True)
         self.assertEqual(len(e['placement_groups']),5)
         self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),total)
         self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),5)
@@ -109,6 +117,27 @@ class RoutedRepairs(unittest.TestCase):
                 with self.assertRaises(ValueError):boundary_audit(n,role='W',stage=self.stage)
             finally:n.cells[path]=old
         print(f'B7 {total} exact causal/held primitives from {e["historical_broad_primitive_review_count"]} reviewed; clock, duplicate, release and observer corruptions rejected')
+
+    def test_status_to_fetch_fault_hold_limit(self):
+        from tools.workstation_task3_w_raw_command_capture import audit as raw_audit
+        from tools.workstation_ble_completion_publication import configured
+        configuration=json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration']
+        proof,sdc=raw_audit(self.n,publication=configured(configuration))
+        hold=proof['status_fetch_fault_hold']
+        self.assertTrue(hold['normal_setup_retained'] and hold['hold_check_retained'])
+        self.assertFalse(hold['timing_exception_added'])
+        self.assertIn('set_min_delay 1.800 -from [get_pins {'+hold['source']+'}] -to [get_pins {'+hold['capture']+'}]',sdc)
+        self.assertNotIn('set_false_path',sdc)
+        cell=hold['source'].removesuffix('/Q');old=copy.deepcopy(self.n.cells[cell])
+        try:
+            self.n.cells[cell]['ports']['CLK']='clk_50m'
+            with self.assertRaises(ValueError):raw_audit(self.n,publication=configured(configuration))
+        finally:self.n.cells[cell]=old
+        cell=hold['capture'].removesuffix('/D');old=copy.deepcopy(self.n.cells[cell])
+        try:
+            self.n.cells[cell]['ports']['D']="1'b0"
+            with self.assertRaises(ValueError):raw_audit(self.n,publication=configured(configuration))
+        finally:self.n.cells[cell]=old
 
 
 class MClockPriority(unittest.TestCase):

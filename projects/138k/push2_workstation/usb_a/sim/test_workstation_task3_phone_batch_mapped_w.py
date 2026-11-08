@@ -227,6 +227,22 @@ class ActualMappedW(unittest.TestCase):
             try:self.rejected('active qualification bypass '+leaf,lambda:mapped.audit(n,stage=self.stage))
             finally:n.cells[p]=old
 
+    def test_06_actual_complemented_live_polarity(self):
+        n=self.n;g=Graph(n);live=n.canonical(mapped.E,'live')
+        drivers=g.drivers[live];self.assertEqual(len(drivers),1)
+        path,pin=drivers[0];old=copy.deepcopy(n.cells[path])
+        if (old['kind'],old['parameters'].get('INIT'))!=('LUT4',"16'h4000"):
+            self.skipTest('explicit complemented-live mapping required')
+        mapped.audit(n,stage=self.stage)
+        mutations=[('wrong polarity',lambda c:c['parameters'].update(INIT="16'h8000")),
+                   ('constant negative input',lambda c:c['ports'].update(I0="1'b0")),
+                   ('constant positive input',lambda c:c['ports'].update(I1="1'b1")),
+                   ('swapped signed inputs',lambda c:c['ports'].update(
+                       I0=old['ports']['I1'],I1=old['ports']['I0']))]
+        for label,mutate in mutations:
+            n.cells[path]=copy.deepcopy(old);mutate(n.cells[path])
+            try:self.rejected(label,lambda:mapped.audit(n,stage=self.stage))
+            finally:n.cells[path]=copy.deepcopy(old)
 
 if __name__ == '__main__':
     unittest.main()

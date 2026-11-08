@@ -28,6 +28,8 @@ def reuse(source,destination,*,audit_tool_only=False):
     # These new lineage receipts are Python/JSON review inputs only. Their
     # addition cannot admit a changed compiler listing, HDL, memory or script.
     added_review_inputs={'tools/workstation_ble_terminal_tuple.py',
+        'tools/workstation_ble_pack_cofactor.py',
+        'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
         'tools/workstation_phone_ack_compare.py',
         'rtl/workstation/workstation_phone_ack_compare_v1.adaptation.json',
         'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
@@ -50,7 +52,13 @@ def reuse(source,destination,*,audit_tool_only=False):
                   # still reject any compiler listing or source reference.
                   'tools/workstation_task3_native_held.py',
                   'tools/workstation_tf_compute_local_release.py',
-                  'tools/workstation_tf_status_compare.py'}
+                  'tools/workstation_tf_status_compare.py',
+                  # Pack rebuild proof and physical-constraint review only.
+                  # Physical outputs still require fresh preparation/P&R.
+                  'tools/workstation_task3_phone_batch_mapped_w.py',
+                  'tools/workstation_task3_preboard_held_timing.py',
+                  'tools/workstation_task3_w_raw_command_capture.py',
+                  'tools/workstation_custom_board_implementation.py'}
         if not audit_tool_only or not set(different)<=reviewed:
             raise ValueError('staged compiler input bytes differ: '+repr(different))
         import xml.etree.ElementTree as ET

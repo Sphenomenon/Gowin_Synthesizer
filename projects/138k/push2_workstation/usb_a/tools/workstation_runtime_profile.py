@@ -114,6 +114,8 @@ DEPENDENCIES = (
     'tools/workstation_phone_ack_compare.py',
     'rtl/workstation/workstation_phone_ack_compare_v1.adaptation.json',
     'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json',
+    'tools/workstation_ble_pack_cofactor.py',
+    'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
     'tools/workstation_ble_terminal_tuple.py',
     'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
     'tools/workstation_ble_terminal_cofactor.py',

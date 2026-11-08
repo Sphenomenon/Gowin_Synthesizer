@@ -82,10 +82,23 @@ def audit(n,*,publication=False):
     src=' '.join(p+'/Q'for p in source if p);dst=' '.join(p+'/D'for p,s in zip(capture,source)if s)
     path=f'-from [get_pins {{{src}}}] -to [get_pins {{{dst}}}]'
     sdc='\n# W raw command: exact held tuple into one memory-domain register bank\nset_max_delay 10.000 '+path+'\nset_min_delay 1.800 '+path+'\n'
+    # W B16 reports -0.040ns hold on this real functional status consumer.
+    # Tighten its minimum data flight; keep normal setup and hold analysis.
+    # This is deliberately not a status-bus or clock-domain false path.
+    status=g.register(S,'status_payload',4);fetch_fault=reg('fetch_fault_o')
+    zero_ff(n,g,status,'memory_clk');zero_ff(n,g,fetch_fault,'clk_50m')
+    status_closure=complete_closure(n,g,[status])
+    require(status_closure['ff_endpoints'].get(fetch_fault+'/D')=='clk_50m',
+            'routed status-to-fetch fault hold path absent')
+    status_path='-from [get_pins {'+status+'/Q}] -to [get_pins {'+fetch_fault+'/D}]'
+    sdc+='\n# B16 actual status fault consumer: strengthen minimum data delay only\nset_min_delay 1.800 '+status_path+'\n'
     return dict(policy='task3_W_raw_held_command_capture89_v1',tuple_bits=89,
         variable_bits=88,constant_bits=1,source=source,capture=capture,
         source_equations=equations,toggle_chains=chains,source_complete_closure=closure,
         captured_valid_next_Q_exact=True,business_start_requires_registered_valid=True,
         request_stages_before_capture=2,hold_check_retained=True,
         completion_publication=publication_proof,
+        status_fetch_fault_hold=dict(source=status+'/Q',capture=fetch_fault+'/D',
+            min_data_delay_ns=1.8,source_complete_closure=status_closure,
+            normal_setup_retained=True,hold_check_retained=True,timing_exception_added=False),
         max_data_delay_ns=10.0,min_data_delay_ns=1.8,routed_timing_verified=False,hardware_tested=False),sdc

@@ -613,6 +613,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
                                'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
                                'raw_terminal_tuple_policy':'task3_W_raw_terminal_tuple_final_fault_selector_v1',
+                               'raw_pack_policy':'task3_W_raw_pack_fetch_final_fault_selector_v1',
                                _cdc_key: _cdc_policy,
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
@@ -647,6 +648,8 @@ def prepared_specification(prepared):
         'custom138k-workstation-task3-w-preboard-v1':
             'e9c92aef9df87dc474ae4a8ce7d255549f6967081a0ee6550dd9b454ed3bb15e'}
     prior=previous_preboard.get(prepared.get('profile'))
+    if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='4f9e4e7f4cb09dd2a62ca8481687e46c3ae5942540d5b19884307cba16e57610':
+        spec=dict(spec,configuration=prepared['configuration'])
     if prior and identity_digest(prepared.get('configuration'))==prior:
         spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile') == W_DEMO_NAME and prepared.get('revision') == 1:
@@ -1124,6 +1127,11 @@ def _artifact(root, output, metadata, profile):
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal
             selected=(stage/target).read_text()
+            from tools import workstation_ble_pack_cofactor as pack_cofactor
+            if pack_cofactor.configured(profile['configuration']):
+                if pack_cofactor.evidence(stage,profile['configuration'])!=metadata.get('raw_pack_cofactor'):
+                    raise ValueError('raw pack cofactor source selection changed')
+                selected=pack_cofactor.unselect(selected)
             from tools import workstation_ble_terminal_tuple as terminal_tuple
             if terminal_tuple.configured(profile['configuration']):
                 if terminal_tuple.evidence(stage,profile['configuration'])!=metadata.get('raw_terminal_tuple'):

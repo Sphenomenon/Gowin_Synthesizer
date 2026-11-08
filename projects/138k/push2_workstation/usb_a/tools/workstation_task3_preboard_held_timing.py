@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -68,6 +68,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     from tools.workstation_custom_board_implementation import digest
     require(not terminal or publication,'W terminal layout requires completion publication')
     require(not tuple_cofactor or terminal,'W tuple layout requires terminal cofactor')
+    require(not pack_cofactor or tuple_cofactor,'W pack layout requires tuple cofactor')
     publication_proof=None
     if publication:
         from tools.workstation_ble_completion_publication import audit_mapped
@@ -104,7 +105,10 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     # inventories. Its actual tag-return cone remains the same74 cells.
     # The complete ACK-byte rebuild absorbs two raw-store LUTs. Both exact
     # compiler identities retain the same selected tag/held causal inventory.
-    tuple_counts=(2670,4838,1790)
+    # The selected pack/fetch cofactor adds 33 raw-store primitives. Its
+    # independently reviewed tag-return cone adds read_outstanding_s4 only.
+    # Retain all earlier inventories for candidates without that selection.
+    tuple_counts=(2670,4871,1790) if pack_cofactor else (2670,4838,1790)
     counts=tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
@@ -149,13 +153,13 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     cone=forward&backward
     # The selected rebuild absorbs two DMA n6315 LUTs and renames one slot
     # LUT. The same 128 tag Qs and 257 return FFs bound the actual causal cone.
-    cone_count=74 if publication else 76
+    cone_count=75 if pack_cofactor else 74 if publication else 76
     require(len(cone)==cone_count and {n.cells[p]['kind']for p in cone}==
             {'LUT2','LUT3','LUT4','MUX2_LUT5','MUX2_LUT6'},'W tag-return causal cone changed')
     selected={p:'R[50:70]C[55:80]'for p in (*tags,*delay,*sorted(cone))}
     require(not(set(selected)&set(overrides)),'W held/critical placement overlaps')
     selected.update(overrides)
-    require(len(selected)==(739 if publication else 741),'W targeted placement inventory changed')
+    require(len(selected)==(740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -169,10 +173,12 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy=('task3_W_B7_publication_tag_return_and_held_locality_v5'if publication
+    return result,dict(policy=('task3_W_B7_pack_tag_return_and_held_locality_v6'if pack_cofactor
+                              else'task3_W_B7_publication_tag_return_and_held_locality_v5'if publication
                               else'task3_W_B7_exact_tag_return_and_held_locality_v4'),groups=groups,
         completion_publication=publication_proof,terminal_cofactor_layout=terminal,
         terminal_tuple_layout=tuple_cofactor,
+        pack_cofactor_layout=pack_cofactor,
         placement_groups=placement_groups,historical_broad_primitive_review_count=len(reviewed),
         tag_return_cone=dict(source=tags,capture=delay,combinational_cells=sorted(cone)),
         broad_region_constraints_removed=True,

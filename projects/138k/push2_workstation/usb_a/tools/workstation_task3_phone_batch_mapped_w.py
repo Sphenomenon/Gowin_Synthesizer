@@ -300,15 +300,17 @@ def audit(n, *, stage):
     if grouped_context:
         from tools.workstation_w_context_compare import audit_mapped as audit_context
         proofs.append(audit_context(n,g))
-        # CANCEL byte predicates changed the LUT packing from a three-input
-        # AND to a four-input AND. Select only these two exact mapped forms;
+        # Preserve the exact reviewed inputs and their mapped polarity.
+        # The pack/fetch rebuild complements live_4 at LUT input I0.
+        # Select only these explicit forms;
         # the full byte-equality veto and all downstream equations still run.
         drivers=g.drivers[live]
         require(len(drivers)==1,'grouped endpoint live has no unique driver')
         live_cell=n.cells[drivers[0][0]]
         forms={('LUT3',"8'h80"):[('live_6','live_7','live_5')],
                ('LUT4',"16'h8000"):[('live_4','live_5','live_6','live_7'),
-                                   ('n165_4','live_6','live_7','live_38')]}
+                                   ('n165_4','live_6','live_7','live_38')],
+               ('LUT4',"16'h4000"):[('live_4','live_5','live_6','live_7')]}
         form=(live_cell['kind'],live_cell['parameters'].get('INIT'))
         require(form in forms,'grouped endpoint live AND mapping changed')
         width=int(live_cell['kind'][3:])
@@ -317,9 +319,14 @@ def audit(n, *, stage):
                  if {endpoint(x)for x in row}==operands]
         require(len(matched)==1,'grouped endpoint live AND operands changed')
         live_parts=matched[0]
+        negative_live_parts=([endpoint('live_4')] if form==('LUT4',"16'h4000") else [])
+        require(not negative_live_parts or reserved_dispatch,
+                'complemented live form requires expanded reserved-dispatch proof')
         qual = endpoint('phone_arm_attempt_21')
         proofs.append(g.equivalent('grouped endpoint live is exact mapped conjunction',
-            [live, *live_parts], lambda v:v[0] == int(all(v[1:])), cuts=set(live_parts)))
+            [live, *live_parts], lambda v:v[0] == int(all(
+                (not value) if net in negative_live_parts else value
+                for net,value in zip(live_parts,v[1:]))), cuts=set(live_parts)))
         if reserved_dispatch:
             # This implementation absorbs the old qualification intermediate.
             # Prove its expanded equation, including the real HCI readiness
@@ -327,7 +334,26 @@ def audit(n, *, stage):
             command_release=n.pin(g.register('u_task3_pair_link/config_cdc','a_release',2),'Q')
             require(command_release==n.canonical('','command_reset_n'),
                     'expanded qualification command-release publisher changed')
-            positive=[*live_parts,command_release,n.canonical('','clock_command_reset_n'),
+            # This exact complemented mapping shares the lower live LUTs
+            # with the consumer, rather than the four complete live parts.
+            # Expand two LUT layers on both sides; no arbitrary control cut
+            # or additional Boolean input bound is admitted.
+            expanded_live=[]
+            if negative_live_parts:
+                from tools.workstation_ble_pack_cofactor import evidence as pack_evidence
+                require(pack_evidence(stage,configuration) is not None,
+                        'complemented live requires selected pack cofactor')
+                def expand_live(net,depth):
+                    ds=g.drivers[net]
+                    if depth and len(ds)==1 and n.cells[ds[0][0]]['kind'] in ('LUT2','LUT3','LUT4'):
+                        cell,_=ds[0]
+                        for port in n.cells[cell]['ports']:
+                            if port!='F':expand_live(n.pin(cell,port),depth-1)
+                    else:expanded_live.append(net)
+                for part in live_parts:expand_live(part,2)
+                expanded_live=list(dict.fromkeys(expanded_live))
+            positive=[*(net for net in live_parts if net not in negative_live_parts and not expanded_live),
+                command_release,n.canonical('','clock_command_reset_n'),
                 n.canonical('','hci_pcm_session_ready'),endpoint('media_cap_ready'),
                 endpoint('phone_proxy_armed'),q('context_valid')]
             command_release_in_live=None
@@ -343,10 +369,10 @@ def audit(n, *, stage):
             # either root is an explicit LUT input, or synthesis absorbs it
             # into context_valid's checked, root-owned asynchronous CLEAR.
             # Compare both complete equations; never choose an arbitrary cut.
-            negative=[endpoint('media_cap_fault'),endpoint('phone_window_fault'),
+            negative=[*(negative_live_parts if not expanded_live else []),endpoint('media_cap_fault'),endpoint('phone_window_fault'),
                 endpoint('phone_proxy_fault'),q('fault_o'),*key_comparisons]
-            leaves=list(dict.fromkeys(positive+negative));bd=BooleanDiagram(leaves)
-            expected=bd.all([*(bd.inputs[x]for x in positive),
+            leaves=list(dict.fromkeys(positive+negative+expanded_live));bd=BooleanDiagram(leaves)
+            expected=bd.all([*([bd.net(g,live)] if expanded_live else []),*(bd.inputs[x]for x in positive),
                              *(bd.invert(bd.inputs[x])for x in negative)])
             # Synthesis may move/rename this conjunction. Find its actual
             # output from the reviewed leaves, then prove the same equation.
@@ -377,7 +403,7 @@ def audit(n, *, stage):
             for explicit_root in (True, False):
                 inputs=[*leaves,root_q] if explicit_root else leaves
                 diagram=BooleanDiagram(inputs)
-                wanted=diagram.all([*(diagram.inputs[x] for x in positive),
+                wanted=diagram.all([*([diagram.net(g,live)] if expanded_live else []),*(diagram.inputs[x] for x in positive),
                     *(diagram.invert(diagram.inputs[x]) for x in negative),
                     *([diagram.inputs[root_q]] if explicit_root else [])])
                 for out in sorted(reachable):
@@ -397,7 +423,8 @@ def audit(n, *, stage):
                     'settled context reset invariant does not preserve active root guard')
             proofs.append(dict(contract='reserved dispatch expanded active qualification',
                 positive_inputs=positive+([root_q] if explicit_root else []),negative_inputs=negative,
-                independent_inputs=leaves,all_assignments_proven=True,
+                independent_inputs=leaves,expanded_live_inputs=expanded_live,
+                expanded_actual_live_equation_proven=bool(expanded_live),all_assignments_proven=True,
                 Boolean_assignments=1<<len(leaves),BDD_nodes=len(bd.nodes),
                 explicit_combinational_root_required=explicit_root,
                 actual_qualification_net=active,
@@ -480,7 +507,10 @@ def audit(n, *, stage):
         # The ACK rebuild folds !load into the shared hold/read term. Keep
         # this actual control boundary, including that gate; all 256 next-Q
         # equations below still have to hold with independent controls.
-        read=local('n12043_40')
+        # The selected pack rebuild retains that same !load term in
+        # n12043_12; the old numeric alias has no driver. All 256 complete
+        # data equations still have to prove this actual four-control form.
+        read=local('n12043_12') if negative_live_parts else local('n12043_40')
     if reserved_dispatch:
         reply_driver=g.drivers[n.pin(regs['reply'][0],'D')]
         require(len(reply_driver)==1,'reply mux driver absent/ambiguous')

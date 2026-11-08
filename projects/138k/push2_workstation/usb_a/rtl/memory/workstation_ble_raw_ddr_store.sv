@@ -10,6 +10,7 @@ module workstation_ble_raw_ddr_store #(
     parameter bit CAPTURE_COMMAND=0,
     parameter bit PIPELINED_COMPLETION_ENABLE=0,
     parameter bit TUPLE_COFACTOR_ENABLE=0,
+    parameter bit PACK_COFACTOR_ENABLE=0,
     parameter bit TERMINAL_COFACTOR_ENABLE=0
 ) (
     input wire clk_i,memory_clk_i,rst_ni,
@@ -662,6 +663,50 @@ module workstation_ble_raw_ddr_store #(
         end
     end
 
+    // Preserve same-edge native-fault quarantine at the final pack/fetch input.
+    reg legacy_pack_writes;
+    always @* case(memory_fault_now)
+        1'b0,1'b1:legacy_pack_writes=!PACK_COFACTOR_ENABLE;
+        default:legacy_pack_writes=1;
+    endcase
+    (* syn_keep=1 *) reg [3:0] pack_without_fault;
+    (* syn_keep=1 *) reg [28:0] fetch_address_without_fault;
+    always @* begin
+        pack_without_fault=pack_frames;fetch_address_without_fault=fetch_address;
+        if(fifo_read_valid && memory_reset_n && !memory_channel_fault &&
+           !memory_command_start && (clear_fifo_pop || (!memory_clear_pending && normal_fifo_pop)))begin
+            if(!memory_clear_pending)begin
+                if(fifo_read_data[63:32]!=memory_next_index ||
+                   (!fifo_read_data[64] && memory_next_index>=CAPACITY_FRAMES))begin end
+                else if(fifo_read_data[64])begin end
+                else pack_without_fault=pack_frames+1'b1;
+            end
+        end
+        if(!published_valid && !pack_word_valid && !memory_channel_fault &&
+           !memory_command_start && !memory_clear_pending)begin
+            if(publish_pack)pack_without_fault=0;
+            else if(memory_fetch_active && !memory_fetch_cancel && !cancel_now &&
+                    !read_outstanding && !return_pending && fetch_beats_issued<fetch_beats_total)
+                fetch_address_without_fault=fetch_address+29'd8;
+        end
+        if(memory_command_start)begin
+            if(memory_channel_fault)begin end
+            else case(memory_command_kind)
+                CMD_CLEAR:begin
+                    if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)begin end
+                    else pack_without_fault=0;
+                end
+                CMD_FETCH:begin
+                    if(memory_command_generation!=memory_generation || !memory_drained_now || memory_empty ||
+                       memory_command_length==0 || memory_command_length>8112 || memory_fetch_end[32] ||
+                       {2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0})begin end
+                    else fetch_address_without_fault=BASE_APP+{2'd0,memory_command_offset[28:5],3'b000};
+                end
+                default:begin end
+            endcase
+        end
+    end
+
     always @(posedge memory_clk_i or negedge memory_reset_n)begin
         if(!memory_reset_n)begin
             command_req_meta<=0;command_req_sync<=0;command_ack<=0;cancel_meta<=0;cancel_sync<=0;cancel_seen<=0;
@@ -755,7 +800,7 @@ module workstation_ble_raw_ddr_store #(
                         memory_active<=0;memory_closed<=1;
                     end else begin
                         pack_word_valid<=1;
-                        pack_frames<=pack_frames+1'b1;if(legacy_terminal_writes)memory_next_index<=memory_next_index+1'b1;
+                        if(legacy_pack_writes)pack_frames<=pack_frames+1'b1;if(legacy_terminal_writes)memory_next_index<=memory_next_index+1'b1;
                     end
                 end
             end
@@ -763,11 +808,11 @@ module workstation_ble_raw_ddr_store #(
                !memory_command_start && !memory_clear_pending)begin
                 if(publish_pack)begin
                     published_valid<=1;
-                    pack_frames<=0;
+                    if(legacy_pack_writes)pack_frames<=0;
                 end else if(memory_fetch_active && !memory_fetch_cancel && !cancel_now &&
                     !read_outstanding && !return_pending && fetch_beats_issued<fetch_beats_total)begin
                     published_valid<=1;
-                    fetch_address<=fetch_address+29'd8;fetch_beats_issued<=fetch_beats_issued+1'b1;
+                    if(legacy_pack_writes)fetch_address<=fetch_address+29'd8;fetch_beats_issued<=fetch_beats_issued+1'b1;
                 end
             end
 
@@ -809,7 +854,7 @@ module workstation_ble_raw_ddr_store #(
                         end else begin
                             memory_generation<=memory_command_generation;memory_command_active<=1;memory_clear_pending<=1;
                             memory_clear_target<=memory_command_event_target;memory_active<=0;memory_closed<=1;memory_empty<=0;
-                            pack_frames<=0;
+                            if(legacy_pack_writes)pack_frames<=0;
                         end
                     end
                     CMD_FETCH:begin
@@ -826,7 +871,7 @@ module workstation_ble_raw_ddr_store #(
                         end else begin
                             memory_fetch_active<=1;memory_fetch_cancel<=cancel_now;memory_command_active<=1;
                             fetch_beats_total<=memory_fetch_beats;fetch_beats_issued<=0;
-                            fetch_address<=BASE_APP+{2'd0,memory_command_offset[28:5],3'b000};
+                            if(legacy_pack_writes)fetch_address<=BASE_APP+{2'd0,memory_command_offset[28:5],3'b000};
                         end
                     end
                     default:begin
@@ -890,6 +935,11 @@ module workstation_ble_raw_ddr_store #(
                     completion_ready<=ready_with_fault;
                 end
                 default:begin end // legacy procedural four-state projection above
+            endcase
+            if(PACK_COFACTOR_ENABLE)case(memory_fault_now)
+                1'b0:begin pack_frames<=pack_without_fault;fetch_address<=fetch_address_without_fault;end
+                1'b1:begin pack_frames<=pack_frames;fetch_address<=fetch_address;end
+                default:begin end
             endcase
             if(memory_fault_now)begin
                 memory_channel_fault<=1;memory_fetch_cancel<=1;

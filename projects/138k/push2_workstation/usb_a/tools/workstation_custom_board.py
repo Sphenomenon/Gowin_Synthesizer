@@ -200,6 +200,11 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     inner_queue_selected=inner_event_queue.configured({} if profile is None else profile['configuration'])
     if inner_queue_selected:
         profile_dependencies += (inner_event_queue.TOOL,inner_event_queue.MANIFEST)
+    from tools import workstation_ble_pack_cofactor as pack_cofactor
+    pack_selected=pack_cofactor.configured({} if profile is None else profile['configuration'])
+    if pack_selected:
+        profile_dependencies += (pack_cofactor.TOOL,pack_cofactor.MANIFEST)
+
     from tools import workstation_ble_terminal_tuple as terminal_tuple
     tuple_selected=terminal_tuple.configured({} if profile is None else profile['configuration'])
     if tuple_selected:
@@ -516,6 +521,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     inner_event_buffer=inner_event_queue.select(stage,profile['configuration']) if inner_queue_selected else None
     raw_terminal_cofactor=terminal_cofactor.select(stage,profile['configuration']) if terminal_selected else None
     raw_terminal_tuple=terminal_tuple.select(stage,profile['configuration']) if tuple_selected else None
+    raw_pack_cofactor=pack_cofactor.select(stage,profile['configuration']) if pack_selected else None
+    if raw_pack_cofactor is not None:
+        raw_terminal_tuple=terminal_tuple.evidence(stage,profile['configuration'])
+
     if raw_terminal_cofactor is not None:
         # Every receipt binds final compiler bytes after all selections.
         raw_terminal_cofactor=terminal_cofactor.evidence(stage,profile['configuration'])
@@ -772,6 +781,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['raw_completion_publication']=raw_completion_publication
         if inner_event_buffer is not None:
             metadata['inner_event_queue']=inner_event_buffer
+        if raw_pack_cofactor is not None:
+            metadata['raw_pack_cofactor']=raw_pack_cofactor
+
         if raw_terminal_tuple is not None:
             metadata['raw_terminal_tuple']=raw_terminal_tuple
         if raw_terminal_cofactor is not None:

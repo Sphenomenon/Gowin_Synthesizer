@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-08 最新可复现源码／综合检查点为[v55](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V55_20261108.md)：M29/29、W26/26通过；W flat routed FIFO 的精确路径解析及破坏负控制修复通过。W v16完成但setup／hold失败，DDR recovery已转正；M v17仍有2416条未布通网络，v18失败实验退役。下一步围绕实际录音故障、delay watchdog、config→result路径及M布线阻塞修复；两板均未放行SRAM。task2、单板和历史失败／回退保留。
+2026-11-08 最新可复现源码／综合检查点为[v58](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V58_20261108.md)：M29/29、W26/26通过，M732／W720个实际暂存输入由独立准备复现；W pack/fetch同拍故障修复及新映射完整消费者证明通过。W v17完成P&R，BSRAM287/340，setup／hold／recovery／removal为−3.461／−1.991／+2.216／+0.337 ns，PLL和四项选定routed边界通过，完整物理门禁仍失败；精确min-delay没有修好status短线。M v17仍有2416条未布通网络，v18失败实验退役。下一步围绕实际completion、delay watchdog跨区往返、config→result及M布线阻塞修复；两板均未放行SRAM。task2、单板和历史失败／回退保留。
 
 2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
 
