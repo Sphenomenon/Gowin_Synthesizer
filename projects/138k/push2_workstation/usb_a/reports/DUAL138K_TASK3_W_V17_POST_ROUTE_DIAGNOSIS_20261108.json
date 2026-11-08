@@ -1,0 +1,106 @@
+{
+  "scope": "Actual W v17 CST and routed STA identify shared tag-return / watchdog gate placement conflict; diagnostic only",
+  "identity": "custom138k-resource-physical-D21108D1",
+  "input_metadata_sha256": "975c9713b7daf67b57a11b30e592df5b3b781a960fee1bc12f63c326cb8ee6b8",
+  "source_and_STA_unmodified": true,
+  "shared_gate": "u_managed/runtime/delay_dma/n420_s2",
+  "constrained_region": "R[50:70]C[55:80]",
+  "in_authoritative_tag_return_cone": true,
+  "watchdog_path_rows": [
+    [
+      "11.810",
+      "2.971",
+      "tNET",
+      "RR",
+      "1",
+      "R50C55[1][A]",
+      "u_managed/runtime/delay_dma/n420_s2/I3"
+    ],
+    [
+      "12.041",
+      "0.231",
+      "tINS",
+      "RR",
+      "3",
+      "R50C55[1][A]",
+      "u_managed/runtime/delay_dma/n420_s2/F"
+    ]
+  ],
+  "watchdog_wire_roundtrip_ns": [
+    2.971,
+    3.347
+  ],
+  "watchdog_setup_slack_ns": -3.163,
+  "raw_completion_setup_slack_ns": -3.461,
+  "status_hold": {
+    "source": "u_task3_media/raw_store/status_payload_4_s0/Q",
+    "destination": "u_task3_media/raw_store/fetch_fault_o_s0/D",
+    "required_min_delay_ns": 1.8,
+    "actual_data_delay_ns": 1.212,
+    "clock_skew_ns": -1.343,
+    "hold_slack_ns": -1.991
+  },
+  "next_steps": [
+    "Review removing only the shared combinational gate from tag-return locality; retain exact inventories and all source/capture FF placement and timing limits. Check affected tag-return paths too.",
+    "Add diagnosed physical separation of the exact status source and fetch-fault capture, retaining finite timing checks.",
+    "Raw completion native-fault chain and config recording-result setup remain separately unresolved; do not claim pair readiness or launch unchanged full routing."
+  ],
+  "selected": false,
+  "board_accessed": false,
+  "cache_projection": {
+    "selected": false,
+    "scope": "Cache-only exact physical repair projection; no P&R, timing or readiness claim",
+    "identity": "custom138k-resource-physical-D21108D1",
+    "source_candidate": "custom138k-workstation-task3-w-preboard-v1-e95d8efef5b77277",
+    "inputs": {
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v17/physical_inputs.json": "975c9713b7daf67b57a11b30e592df5b3b781a960fee1bc12f63c326cb8ee6b8",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v17/physical.cst": "a92ee4bfd28a0400dd0a1399f6b0551e50f8a307dddb8b735d2cf45dc330dc92",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v17/physical.sdc": "7e1e35a547a472c09f48ff140cb854a484a692588b8b9cf3bbea9bde541afd22",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v17/custom_138k_integration.vg": "157224f043d9a2c48e5e3ea3ac9f11fa027c22ca4711ce4588081a3c44b14d77"
+    },
+    "shared_gate_removed_from_placement_only": "u_managed/runtime/delay_dma/n420_s2",
+    "tag_return_cone_inventory_retained": 75,
+    "tag_return_placement_before_after": [
+      460,
+      459
+    ],
+    "all_128_authoritative_tag_FFs_retained": true,
+    "all_257_return_FFs_retained": true,
+    "all_280_held_overrides_retained": true,
+    "status_source_region": "R[85:95]C[85:100]",
+    "status_capture_region": "R[45:55]C[20:35]",
+    "proposed_CST_sha256": "221b45fc58df8507333d987c59ee96d31bb22746d0f43159865150f975935793",
+    "SDC_changed": false,
+    "RTL_changed": false,
+    "clocks_changed": false,
+    "board_accessed": false,
+    "retirement_criteria": "Integrate into maintained physical preparation only after complete-gate review and targeted negative controls; evaluate affected tag-return/setup/hold paths in the next justified complete physical build. Otherwise retire projection."
+  },
+  "evidence": {
+    "w-v17-selected-critical-paths.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v17-selected-critical-paths.json",
+      "sha256": "7e69a02716b51bbb201205ec72e507487ecdf860ed8e78cf623cb1ad44ed0f88"
+    },
+    "w-v17-locality-overlap.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v17-locality-overlap.json",
+      "sha256": "983140626c421a3fa63156d02c2c6172bc06ec89df43c137e69931b7e64c622e"
+    },
+    "projection.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v17-locality-repair-projection/projection.json",
+      "sha256": "7b5589b1ed8247f87e1326958d4854fede1986850131036a52eb5bb9cd500ac9"
+    },
+    "proposed.cst": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v17-locality-repair-projection/proposed.cst",
+      "sha256": "221b45fc58df8507333d987c59ee96d31bb22746d0f43159865150f975935793"
+    },
+    "w-v17-fault-mapping.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v17-fault-mapping.json",
+      "sha256": "0036ce43619d351edae33961eba4b1333fef5fb5bda6154d306fcdab3a8a9710"
+    }
+  },
+  "production_commit": "ce3f01a3",
+  "goal_complete": false,
+  "ready_for_SRAM": false,
+  "full_reroute_started": false,
+  "source_changes_selected": false
+}
