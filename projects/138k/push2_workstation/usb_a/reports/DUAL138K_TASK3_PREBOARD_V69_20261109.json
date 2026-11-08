@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "stage": "v69_complete_physical_result",
+  "date": "2026-11-09",
+  "source_checkpoint": "c8718e315145a492244b55915657d1c401c9708a",
+  "load_allowed": false,
+  "goal_complete": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "boards": {
+    "M": {
+      "identity": "custom138k-resource-physical-D21109C7",
+      "source_parent": "custom138k-workstation-task3-m-preboard-v1-c41fbe24c7cd1393",
+      "equivalent_v68_synthesis_sha256": "bb6dc7cbdc9d004fcd2fa56223c5b9f99d83d38d3e9b8be1d80ed91cd5809658",
+      "configuration_sha256": "eec71ccb0f28aa1d5524c9f5425e28db6fe5639aa69662098b718288f49e8bf3",
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v21/impl/pnr/custom_138k_integration.fs",
+        "sha256": "95895de77cc367e401b29f41aefb19c2b0693807319c4f179b7136d4bdf4205d"
+      },
+      "physical_BSRAM": 253,
+      "resources": {
+        "Logic": [
+          "91297/138240",
+          "67%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "89845(70654 LUT, 19191 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "242",
+          "-"
+        ],
+        "Register": [
+          "58446/139095",
+          "43%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "58446/138240",
+          "43%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "61184/69120",
+          "89%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "135",
+          "-"
+        ],
+        "--Input Buf": [
+          "9",
+          "-"
+        ],
+        "--Output Buf": [
+          "75",
+          "-"
+        ],
+        "--Inout Buf": [
+          "51",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM4 OSER1032 IODELAY",
+          "37%"
+        ],
+        "BSRAM": [
+          "157 SDPB44 SDPX9B45 pROM7 pROMX9",
+          "75%"
+        ],
+        "DSP": [
+          "3 MULT12X1243 MULT27X3633 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "15/24",
+          "63%"
+        ],
+        "CLKDIV": [
+          "2/24",
+          "9%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "6/12",
+          "50%"
+        ]
+      },
+      "conservative_STA_slack_ns": {
+        "setup": -4.072,
+        "hold": -0.231,
+        "recovery": 2.333,
+        "removal": -2.006
+      },
+      "P2R0_complete": true,
+      "duration_seconds": 864.6610994579969,
+      "evidence_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v21/physical-result.json": "bb41c8241d133b036aaae9bc06482d7893b8cf7afd046576c4d5725cddd0b00e",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v21/physical-run.json": "0828181b341b2c23a19d2edcd5e9b2e30ea5ead9a09b6383acaa8c2369580892",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v21/physical_inputs.json": "01fe9db1bfb8121106a623c5bd45968cf96e461b2b462200883c13735166fa35",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v21/impl/pnr/custom_138k_integration_tr_content.html": "164ef7b642015e65496be4312ed1d073fafaf1cf75ed10ded913de5cd9e89a80",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-physical-v21-STA-detail-crosscheck.json": "379f5cbef20bf277db208a6aaacd82a3a8c8d5066748d05f7281e6bf1837271d",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v21-selected-critical-paths.json": "0ad9331ec8752c7182e809b5383054c245997d0b618c9ac1e17be0d6a435399e"
+      },
+      "timing_closed": false,
+      "load_allowed": false
+    },
+    "W": {
+      "identity": "custom138k-resource-physical-D21109D6",
+      "source_parent": "custom138k-workstation-task3-w-preboard-v1-4d8492ba8d403e28",
+      "equivalent_v68_synthesis_sha256": "38a722f02d43339936bf35ea97fcb2ec87501afcff8a4535a3c98e1bce7378fc",
+      "configuration_sha256": "66c7e48866a76abc5b46aff1893f81aa6e5b905c104e8a7c7378fc88f8855ed5",
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v22/impl/pnr/custom_138k_integration.fs",
+        "sha256": "5e3d23b64ec93fcfeec3398d1bc87491cb52745691153c3f220988e2e51a92e2"
+      },
+      "physical_BSRAM": 287,
+      "resources": {
+        "Logic": [
+          "80141/138240",
+          "58%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "75467(58952 LUT, 16515 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "779",
+          "-"
+        ],
+        "Register": [
+          "46793/139095",
+          "34%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "46793/138240",
+          "34%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "56229/69120",
+          "82%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "136",
+          "-"
+        ],
+        "--Input Buf": [
+          "6",
+          "-"
+        ],
+        "--Output Buf": [
+          "87",
+          "-"
+        ],
+        "--Inout Buf": [
+          "43",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM32 IODELAY",
+          "35%"
+        ],
+        "BSRAM": [
+          "3 SP148 SDPB40 SDPX9B96 pROM",
+          "85%"
+        ],
+        "DSP": [
+          "36 MULT12X1242 MULT27X3620 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "17/24",
+          "71%"
+        ],
+        "CLKDIV": [
+          "1/24",
+          "5%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "4/12",
+          "34%"
+        ]
+      },
+      "conservative_STA_slack_ns": {
+        "setup": -1.787,
+        "hold": 0.143,
+        "recovery": 1.14,
+        "removal": 0.281
+      },
+      "P2R0_complete": true,
+      "duration_seconds": 985.603399124986,
+      "evidence_sha256": {
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v22/physical-result.json": "979fbabb95c0c580f149294a13ad4fbdf3f2ed4d60cbff065d5b37b8b1b2306f",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v22/physical-run.json": "3200ec92b95737fc7d8b32dc6ecb4b7dd5ad639ff1eafb6c378938b8ea641fcf",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v22/physical_inputs.json": "129e11f127bd7b1eed83a2551d3d2a2445c452c21a4f5f9f206477e26e797c83",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v22/impl/pnr/custom_138k_integration_tr_content.html": "4a272427c87a196f26c595a66e6a2b22c72bae9175e96aad554be221cbc140eb",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-physical-v22-STA-detail-crosscheck.json": "1af06ee3cc46e0442f6d233fd3e330c1c02cd612bfa220cb67eea1a074bbd537",
+        "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v22-selected-critical-paths.json": "a1495a418d834d8981d96e2f219339d1c1774c908e99aad816e7dac33d88e259"
+      },
+      "timing_closed": false,
+      "load_allowed": false
+    }
+  },
+  "detail_summary_discrepancy": {
+    "M_removal_summary_ns": 0.278,
+    "M_removal_detail_ns": -2.006,
+    "policy": "Use minimum of detailed and tabular results; keep original results immutable."
+  },
+  "remaining": [
+    "M effects peer_fault to oscillator control setup -4.072ns",
+    "M PCM response and PANIC epoch bundled payload hold -0.231/-0.203ns",
+    "M DDR lane2 HOLD removal -2.006ns; DDR initialization hold positive +0.148ns",
+    "M TF scope invalidation to endpoint setup -4.064ns",
+    "W raw command arithmetic, tag-return, CPU command fences and audio control setup; worst -1.787ns",
+    "W three CT1094 FIFO RAM region warnings require actual hard-site review",
+    "Final maintained reproducible physical prepare and complete PLL/CDC/resource gates remain"
+  ]
+}
