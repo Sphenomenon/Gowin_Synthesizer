@@ -40,13 +40,17 @@ def unselect(text):
         text=text.replace(SELECTED,DEFAULT,1)
     from tools.workstation_tf_native_head import unselect as unselect_head
     from tools.workstation_tf_status_compare import unselect as unselect_status
-    return unselect_status(unselect_head(text))
+    from tools.workstation_tf_empty_slot_refill import unselect as unselect_refill
+    return unselect_refill(unselect_status(unselect_head(text)))
 
 
 def restore(relative,data):
     text=data.decode()if isinstance(data,bytes)else data
     if DEFAULT not in text and SELECTED not in text:return data
     text=unselect(text)
+    if relative==BRIDGE:
+        from tools.workstation_tf_empty_slot_refill import restore as restore_refill
+        text=restore_refill(text)
     if relative==SERVICE:
         from tools.workstation_tf_native_head import restore as restore_head
         text=restore_head(text)

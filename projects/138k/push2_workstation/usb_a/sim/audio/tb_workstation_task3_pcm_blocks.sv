@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 `include "rtl/workstation/task3_paired_channels.vh"
 module tb_workstation_task3_pcm_blocks;
+    parameter bit REGISTER_W_TX_CLASS=0;
 `ifdef TASK3_MIXED_MEDIA
     localparam bit W_BLOCK=0;
 `else
@@ -31,7 +32,7 @@ module tb_workstation_task3_pcm_blocks;
     wire [199:0] cdesc;wire [191:0] cframe,cseal;wire [127:0] ccancel;
     reg terminal_valid=0;reg [163:0] terminal=0;
     wire terminal_ready;
-    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.MEDIA_CAP_TIMEOUT_CYCLES(3000)) w(
+    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.REGISTER_TX_CLASS(REGISTER_W_TX_CLASS && W_BLOCK),.MEDIA_CAP_TIMEOUT_CYCLES(3000)) w(
         .clk_i(clk),.reset_ni(reset_n),.link_ready_i(link),.panic_i(panic),
         .local_boot_i(32'd22),.peer_boot_i(m_boot),.session_i(32'd33),.generation_i(generation),
         .rx_valid_i(inject || mtv),.rx_ready_o(wrx_ready),.rx_channel_i(inject?ic:mtc),.rx_payload_i(inject?ip:mtp),.rx_length_i(inject?il:mtl),
@@ -129,6 +130,67 @@ module tb_workstation_task3_pcm_blocks;
             check(mtl>=12 && mtl<=32 && mtl[1:0]==0,"block length legal");
         end
     end
+    reg run_selection_checks=0;
+    wire selection_checks_done;
+    generate if(REGISTER_W_TX_CLASS && W_BLOCK)begin:g_selection_checks
+        reg done=0;
+        reg [2:0] pending_classes=0;
+        wire phone_class=pending_classes[2],credit_class=pending_classes[1],result_class=pending_classes[0];
+        reg [1:0] turn=0;
+        reg live_now=1;
+        reg [2:0] expected;
+        integer mask,t;
+        assign selection_checks_done=done;
+        initial begin
+            wait(run_selection_checks);
+            // Exercise the actual endpoint register at arbitrary scheduling
+            // states. No packet is delivered while manipulating its inputs.
+            force w.tx_valid_o=0;
+            force w.live=live_now;
+            force w.normal_turn=turn;
+            force w.phone_flow_pending=phone_class;
+            force w.credit_pending=credit_class;
+            force w.result_pending=result_class;
+            for(t=0;t<3;t=t+1)for(mask=0;mask<8;mask=mask+1)begin
+                turn=2'(t);pending_classes=3'(mask);live_now=1;
+                case(t)
+                    0:expected=mask[2]?3'b100:mask[1]?3'b010:mask[0]?3'b001:0;
+                    1:expected=mask[1]?3'b010:mask[0]?3'b001:mask[2]?3'b100:0;
+                    2:expected=mask[0]?3'b001:mask[2]?3'b100:mask[1]?3'b010:0;
+                endcase
+                @(posedge clk);#1;
+                check(w.g_registered_tx_class.selection===expected,"registered class exact priority for all pending combinations");
+                @(negedge clk);live_now=0;#1;
+                check(!w.phone_request_ready && !w.a_credit_ready && !w.r_credit_ready &&
+                      !w.cnn_terminal_ready_o && !w.take_status,"current live revokes every ordinary consumer before next clock");
+                @(posedge clk);#1;
+                check(w.g_registered_tx_class.selection===0,"session fence clears registered preference");
+                @(negedge clk);
+            end
+            live_now=1;pending_classes=3'b100;turn=0;
+            @(posedge clk);#1;
+            force w.phone_request=0;force w.phone_batch_valid=0;force w.phone_window_valid=0;
+            #1;check(!w.phone_request_ready && !w.phone_batch_ready && !w.phone_window_ready,
+                     "vanished phone class cannot consume stale payload");
+            @(negedge clk);pending_classes=3'b010;
+            @(posedge clk);#1;
+            force w.a_credit_valid=0;force w.r_credit_valid=0;
+            #1;check(!w.a_credit_ready && !w.r_credit_ready,"vanished credit class cannot acknowledge absent credit");
+            @(negedge clk);pending_classes=3'b001;
+            @(posedge clk);#1;
+            force w.status_pending=0;force w.cnn_terminal_valid_i=0;force w.cnn_score_valid_i=0;
+            #1;check(!w.take_status,"vanished status cannot be committed");
+            force w.phone_cancel_tx=1;
+            #1;check(w.phone_cancel_tx_ready && !w.cnn_terminal_ready_o,"urgent cancel preempts registered ordinary class");
+            release w.phone_cancel_tx;
+            force w.record_ack_pending=1;
+            #1;check(!w.cnn_terminal_ready_o,"record ACK preempts registered ordinary class");
+            $display("PASS registered TX class current-live, withdrawn payload and urgent priority checks");
+            done=1;
+        end
+    end else begin:g_no_selection_checks
+        assign selection_checks_done=1;
+    end endgenerate
     integer i,n,j,old_ticks;reg [255:0] corrupt;reg [127:0] retired_identity;
     initial begin
         ticks(4);reset_n=1;ticks(3);check(!analysis_ready,"no media before link");link=1;await_phone;
@@ -225,6 +287,7 @@ module tb_workstation_task3_pcm_blocks;
         n=0;while(!m.media_cap_fault && n<3200)begin ticks(1);n=n+1;end
         check(m.media_cap_fault && !analysis_ready,"missing recurring capability expires media within bound");
         check(phone_live,"media capability failure does not replace phone control owner");
+        run_selection_checks=1;wait(selection_checks_done);
         $display("PASS task3 paired PCM blocks checks=%0d cnn_frames=%0d record_frames=%0d seals=%0d",checks,cnn_count,record_expected,seal_count);$finish;
     end
     initial begin #200000;$fatal(1,"block endpoint watchdog");end

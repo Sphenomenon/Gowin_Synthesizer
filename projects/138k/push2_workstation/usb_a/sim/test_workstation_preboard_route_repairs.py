@@ -76,19 +76,21 @@ class RoutedRepairs(unittest.TestCase):
         from tools.workstation_fetch_range import configured as fetch_configured
         fetch_range=fetch_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         captured=json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'].get('raw_fetch_range_policy')=='task3_W_captured_end_parallel_byte_fetch_range_v2'
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes,fetch_range=fetch_range,fetch_end_capture=captured)
-        selected,e=place(cst,n);total=786 if captured else 753 if identity_bytes else 741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
+        from tools.workstation_w_tx_class import configured as tx_configured
+        registered_tx=tx_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes,fetch_range=fetch_range,fetch_end_capture=captured,registered_tx_class=registered_tx)
+        selected,e=place(cst,n);total=785 if registered_tx else 786 if captured else 753 if identity_bytes else 741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9433 if captured else 9400 if fetch_range else 9374 if identity_bytes else 9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9414 if registered_tx else 9433 if captured else 9400 if fetch_range else 9374 if identity_bytes else 9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         if fetch_range:
             with self.assertRaises(ValueError):
                 w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
-        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76)
+        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),75 if registered_tx else 76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76)
         self.assertEqual(e['pack_cofactor_layout'],pack_cofactor)
         if native_fault:
-            shared='u_managed/runtime/delay_dma/n420_s3' if identity_bytes else 'u_managed/runtime/delay_dma/n420_s2'
+            shared='u_managed/runtime/delay_dma/n420_s3' if identity_bytes and not registered_tx else 'u_managed/runtime/delay_dma/n420_s2'
             self.assertEqual(e['causal_cells_excluded_from_placement_only'],[] if identity_bytes else [shared])
             self.assertIn(shared,e['tag_return_cone']['combinational_cells'])
             if identity_bytes:self.assertIn(('"'+shared+'"').encode(),selected)

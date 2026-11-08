@@ -35,6 +35,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rate', type=int, action='append', choices=(48000, 44100))
     parser.add_argument('--pause', action='store_true', help='Also check real CC pause/resume and retained TF head')
+    parser.add_argument('--empty-slot-refill',action='store_true',
+                        help='Use the exact selected bridge from the explicit project')
     parser.add_argument('--local-compute-release',action='store_true',
                         help='Select the explicit preboard functional compute reset boundary')
     parser.add_argument('--local-native-head',action='store_true',
@@ -77,6 +79,14 @@ def main():
                 ROOT / 'rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
                 ROOT / 'rtl/services/workstation_playback_service.sv', native.CARD]
     sources = list(dict.fromkeys(sources))
+    if args.empty_slot_refill:
+        from tools import workstation_tf_empty_slot_refill as refill
+        bridge=project/refill.SOURCE
+        selected=bridge.read_text()
+        if (selected.count(refill.SELECTED)!=1 or
+                refill.unselect(selected)!=(ROOT/refill.SOURCE).read_text()):
+            raise ValueError('runtime regression requires exact selected empty-slot bridge')
+        sources=[bridge if p==ROOT/refill.SOURCE else p for p in sources]
     inputs = [*sources, Path(__file__).resolve(), ROOT / 'sim/audio/run_runtime_controlled.py',
               SIM / 'run_workstation_tf_direct_native_wire.py', SIM / 'run_workstation_tf_direct_ingress.py',
               ROOT / 'rtl/audio/runtime_spatial_room_preset.svh']

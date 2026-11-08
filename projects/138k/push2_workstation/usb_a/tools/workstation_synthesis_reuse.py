@@ -53,6 +53,8 @@ def reuse(source,destination,*,audit_tool_only=False):
                   'tools/workstation_task3_native_held.py',
                   'tools/workstation_tf_compute_local_release.py',
                   'tools/workstation_tf_status_compare.py',
+                  'tools/workstation_task3_tf_storage_selection.py',
+                  'tools/workstation_w_tx_class.py',
                   # Pack rebuild proof and physical-constraint review only.
                   # Physical outputs still require fresh preparation/P&R.
                   'tools/workstation_task3_phone_batch_mapped_w.py',

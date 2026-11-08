@@ -289,7 +289,9 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 native_fault_cofactor=bool(metadata.get('native_fault_cofactor')),
                 identity_bytes=key_bytes,
                 fetch_range=bool(metadata.get('raw_fetch_range')),
-                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33)
+                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33,
+                registered_tx_class=metadata.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
+                fifo_compare_first=metadata.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1')
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -356,7 +358,9 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
             raise ValueError('diagnosed delay locality requires explicit preboard W')
         from tools.workstation_task3_w_delay_locality import placement
         from tools.workstation_native_protocol_audit import protocol_netlist
-        cst,locality=placement(cst,protocol_netlist(vg.read_text(),mapping='synthesis'))
+        cst,locality=placement(cst,protocol_netlist(vg.read_text(),mapping='synthesis'),
+            registered_tx_class=metadata.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
+                fifo_compare_first=metadata.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1')
         locality.update(source_candidate=audit['candidate_identity'],VG_sha256=sha(vg),
             SDC_sha256=digest(physical_sdc if physical_sdc is not None else inputs['physical.sdc'][0].read_bytes()))
     output.mkdir(parents=True)

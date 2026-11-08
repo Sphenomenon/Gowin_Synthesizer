@@ -14,6 +14,7 @@
 module workstation_tf_frame_bridge_v2 #(
     parameter integer FIFO_ADDRESS_BITS=4,
     parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
+    parameter bit NO_SAME_EDGE_REFILL=0,
     parameter [31:0] INITIAL_GENERATION=32'd0
 ) (
     input wire rst_ni,source_clk_i,compute_clk_i,
@@ -134,8 +135,12 @@ module workstation_tf_frame_bridge_v2 #(
         !cancel_pending && !quiesce_sync[1] && tf_generation_o==expected_generation_o;
     assign {tf_generation_o,tf_session_generation_o,tf_sample_rate_o,tf_error_o,
             tf_last_o,tf_left_o,tf_right_o}=held_packet;
+    // The optional empty-slot refill isolates the consumer ready cone from
+    // the 118-bit payload CE. A consumed head is refilled on the next edge;
+    // cancellation and quiet drain keep their immediate guards.
     assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
-        (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire));
+        (NO_SAME_EDGE_REFILL ? !held_valid :
+         (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire)));
     assign media_quiescent_o=compute_reset_n && expected_generation_valid_o && !cancel_pending &&
         quiesce_sync[1] && quiet_settle==5 && !read_valid && !held_valid;
 

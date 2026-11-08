@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "policy": "task3_M_TF_empty_slot_refill_v1",
+  "source": "rtl/tf_audio/workstation_tf_frame_bridge_v2.sv",
+  "parent_sha256": "b54154e3c9fef5b7f5de95cb22a63a4d2cd7ea524e73efb08aa65f62901b320e",
+  "native_sha256": "a1c7fe2a004e0246a7ad2d38a3b03afe1240eda589011eb00b0d483ec1639525",
+  "edits": [
+    [
+      "    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,",
+      "    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,\n    parameter bit NO_SAME_EDGE_REFILL=0,"
+    ],
+    [
+      "    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&\n        (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire));",
+      "    // The optional empty-slot refill isolates the consumer ready cone from\n    // the 118-bit payload CE. A consumed head is refilled on the next edge;\n    // cancellation and quiet drain keep their immediate guards.\n    assign read_ready=compute_reset_n && expected_generation_valid_o && !cancel_pending &&\n        (NO_SAME_EDGE_REFILL ? !held_valid :\n         (quiesce_sync[1] ? !held_valid : (!held_valid || held_fire)));"
+    ]
+  ],
+  "exit_plan": "Retire default selection adapter when the maintained parent composition passes NO_SAME_EDGE_REFILL explicitly; keep original source inverse for historical profiles."
+}

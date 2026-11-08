@@ -1,7 +1,8 @@
 `timescale 1ns/1ps
 module tb_workstation_tf_frame_bridge_v2 #(
     parameter [31:0] START_GENERATION=32'd0,
-    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0
+    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
+    parameter bit NO_SAME_EDGE_REFILL=0
 );
     reg source_clk=0,compute_clk=0,source_run=1,rst_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
@@ -41,7 +42,8 @@ module tb_workstation_tf_frame_bridge_v2 #(
     wire tf_last;
     wire [31:0] tf_session;
     workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(2),.INITIAL_GENERATION(START_GENERATION),
-        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE)) dut(
+        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE),
+        .NO_SAME_EDGE_REFILL(NO_SAME_EDGE_REFILL)) dut(
         .rst_ni(rst_n),.source_clk_i(source_clk),.compute_clk_i(compute_clk),
         .invalidate_i(invalidate),.source_quiesce_i(quiesce),
         .source_valid_i(source_valid),.source_error_i(source_error),
@@ -94,6 +96,8 @@ module tb_workstation_tf_frame_bridge_v2 #(
         end
     end
     always @(posedge compute_clk)if(rst_n)begin
+        if(NO_SAME_EDGE_REFILL && dut.held_valid && dut.read_ready)
+            $fatal(1,"consumer ready re-entered payload capture CE");
         if(was_stalled && source_generation==stalled_packet[117:86] && !quiesce &&
            (!tf_valid || output_packet!==stalled_packet))
             $fatal(1,"stalled payload changed without cancellation valid=%b ready=%b got=%h held=%h generation=%h",tf_valid,consumer_ready,output_packet,stalled_packet,source_generation);

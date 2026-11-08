@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source": "rtl/workstation/workstation_task3_w_bus_endpoint.sv",
+  "parent_sha256": "7ff04e6154167bad39b1cc1551d79c3bcf37b141b36ac4902ba0b93e59044e17",
+  "native_sha256": "660c699bf113af96d857c0f0d024b349c84c95d6707c27ed40569e54d7ce530f",
+  "edits": [
+    [
+      "    parameter bit PHONE_BATCH=1'b0,\n    parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000\n",
+      "    parameter bit PHONE_BATCH=1'b0,\n    parameter bit REGISTER_TX_CLASS=1'b0,\n    parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000\n"
+    ],
+    [
+      "    reg [1:0] normal_turn;\n    reg choose_phone,choose_credit,choose_result;\n    wire phone_flow_pending=phone_request || phone_window_valid || phone_batch_valid;\n",
+      "    reg [1:0] normal_turn;\n    reg next_choose_phone,next_choose_credit,next_choose_result;\n    wire choose_phone,choose_credit,choose_result;\n    wire phone_flow_pending=phone_request || phone_window_valid || phone_batch_valid;\n"
+    ],
+    [
+      "    always_comb begin\n        choose_phone=0;choose_credit=0;choose_result=0;\n        if(!BLOCK_PCM)begin choose_phone=phone_request;choose_result=!phone_request;end\n        else case(normal_turn)\n",
+      "    always_comb begin\n        next_choose_phone=0;next_choose_credit=0;next_choose_result=0;\n        if(!BLOCK_PCM)begin next_choose_phone=phone_request;next_choose_result=!phone_request;end\n        else case(normal_turn)\n"
+    ],
+    [
+      "        else case(normal_turn)\n            0:if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;\n            1:if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;\n            default:if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;\n        endcase\n",
+      "        else case(normal_turn)\n            0:if(phone_flow_pending)next_choose_phone=1;else if(credit_pending)next_choose_credit=1;else if(result_pending)next_choose_result=1;\n            1:if(credit_pending)next_choose_credit=1;else if(result_pending)next_choose_result=1;else if(phone_flow_pending)next_choose_phone=1;\n            default:if(result_pending)next_choose_result=1;else if(phone_flow_pending)next_choose_phone=1;else if(credit_pending)next_choose_credit=1;\n        endcase\n"
+    ],
+    [
+      "    end\n    wire fair_slot=normal_slot && !phone_arm_tx;\n",
+      "    end\n    generate if(REGISTER_TX_CLASS)begin:g_registered_tx_class\n        // This is a preference, never a payload reservation or an ACK. Every\n        // consumer below still rechecks current valid data and current live.\n        // A vanished class costs one idle cycle; new urgent traffic retains\n        // its original priority. No packet or PCM sample is consumed here.\n        reg [2:0] selection;\n        always @(posedge clk_i or negedge reset_ni)\n            if(!reset_ni)selection<=0;\n            else if(!live)selection<=0;\n            else selection<={next_choose_phone,next_choose_credit,next_choose_result};\n        assign {choose_phone,choose_credit,choose_result}=selection;\n        initial if(!BLOCK_PCM)$fatal(1,\"registered TX class requires block media\");\n    end else begin:g_direct_tx_class\n        assign {choose_phone,choose_credit,choose_result}=\n            {next_choose_phone,next_choose_credit,next_choose_result};\n    end endgenerate\n    wire fair_slot=normal_slot && !phone_arm_tx;\n"
+    ]
+  ],
+  "purpose": "Lineage of native optional registered transmit class; retire adapter when parent compositions pass parameters explicitly"
+}

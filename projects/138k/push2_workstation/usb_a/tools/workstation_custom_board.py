@@ -189,8 +189,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
         profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
     from tools import workstation_effects_reserved_config as effects_reservation
+    from tools import workstation_w_tx_class as tx_class
+    from tools import workstation_fifo_full_compare as fifo_full
+    from tools import workstation_tf_empty_slot_refill as tf_refill
     from tools import workstation_fetch_range as fetch_range
     fetch_range_selected = fetch_range.configured({} if profile is None else profile['configuration'])
+    if fifo_full.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (fifo_full.TOOL,)
     if fetch_range_selected:
         profile_dependencies += (fetch_range.TOOL, fetch_range.MANIFEST)
         if profile['configuration'][fetch_range.KEY]==fetch_range.CAPTURE_POLICY:
@@ -207,6 +212,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     reader_reuse_selected = reader_reuse.configured({} if profile is None else profile['configuration'])
     if reader_reuse_selected:
         profile_dependencies += (reader_reuse.TOOL, reader_reuse.MANIFEST)
+    if tx_class.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (tx_class.TOOL,tx_class.MANIFEST)
+    if tf_refill.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (tf_refill.TOOL,tf_refill.MANIFEST)
     effects_reserved = effects_reservation.configured({} if profile is None else profile['configuration'])
     if effects_reserved:
         native_sources += (effects_reservation.DISPATCH,)
@@ -539,6 +548,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             lease_source.prepare(stage,profile['configuration'])
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
     task3_tf_compute_reset=tf_compute_reset.select(stage,profile['configuration']) if tf_compute_selected else None
+    tf_refill.select(stage,{} if profile is None else profile['configuration'])
+    if tf_compute_selected:
+        task3_tf_compute_reset=tf_compute_reset.evidence(stage,profile['configuration'])
     raw_completion_publication=completion_publication.select(stage,profile['configuration']) if completion_selected else None
     inner_event_buffer=inner_event_queue.select(stage,profile['configuration']) if inner_queue_selected else None
     raw_terminal_cofactor=terminal_cofactor.select(stage,profile['configuration']) if terminal_selected else None
@@ -570,6 +582,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if capture_compare_selected:
         capture_compare.select(stage,profile['configuration'])
     effects_reservation_evidence = effects_reservation.select(stage, {} if profile is None else profile['configuration'])
+    tx_class_evidence = tx_class.select(stage, {} if profile is None else profile['configuration'])
+    fifo_full_evidence = fifo_full.select(stage, {} if profile is None else profile['configuration'])
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
@@ -722,6 +736,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['runtime_ddr_aliases'] = runtime_ddr_aliases
     if preboard_cdc_evidence is not None:
         metadata['task3_w_preboard_cdc'] = preboard_cdc_evidence
+    if tx_class_evidence is not None:
+        metadata['w_tx_class'] = tx_class_evidence
+    if fifo_full_evidence is not None:
+        metadata['fifo_full_compare'] = fifo_full_evidence
     if effects_reservation_evidence is not None:
         metadata['effects_reserved_configuration'] = effects_reservation_evidence
     if local_stream_selection is not None:

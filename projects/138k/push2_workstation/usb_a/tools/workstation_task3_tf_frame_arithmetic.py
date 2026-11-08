@@ -112,6 +112,36 @@ def audit(n):
         return b.both(b.inputs[valid],ne)
     rows.append(counter('ack',binary,gray,compute,([valid],ack_enable),expected_q))
 
+    def absorbed_fifo_counter(side,binary,gray,live,event):
+        # The empty-slot rebuild absorbs the read LSB/Gray0 enable into D.
+        # Expand the actual higher-bit commit and all D/CE cones together;
+        # no composite-event cut or pointer correlation is assumed.
+        from tools.workstation_task3_w_consumer_nextq import Circuit,Expressions,sat_compare
+        e=Expressions();c=Circuit(n,e);en=c.net(event);carry=1;increment=[]
+        for path in binary:
+            value=c.net(q(path));increment.append(e.xor(value,carry))
+            carry=e.choose(carry,value,0)
+        proofs=[]
+        for kind,regs in (('binary',binary),('gray',gray)):
+            for i,p in enumerate(regs):
+                zero_ff(n,g,p,n.pin(binary[0],'CLK'))
+                require(g.support(n.pin(p,'CLEAR'))=={live},side+' reset publisher changed')
+                clear=Diagram([live])
+                require(clear.net(g,n.pin(p,'CLEAR'))==clear.invert(clear.inputs[live]),
+                        side+' reset polarity changed')
+                value=increment[i]
+                if kind=='gray' and i<len(regs)-1:value=e.xor(value,increment[i+1])
+                expected=e.choose(c.net(live),e.choose(en,value,c.net(q(p))),0)
+                actual,init,clock=c.next_q(p)
+                require(init=="1'b0",side+' counter initialization changed')
+                proof=sat_compare(e,actual,expected)
+                proofs.append(dict(register=p,kind=kind,bit=i,next_Q_exact=True,**proof))
+        return dict(id=side,binary=binary,gray=gray,next_Q=proofs,
+            commit_event=event,absorbed_LSB_and_Gray0_enable=True,
+            full_actual_commit_cone_expanded=True,zero_initial_state=True,
+            modular_increment=True,registered_Gray_invariant_inductive=True,
+            at_most_one_changed_Gray_bit_per_source_edge=True)
+
     fifo=[]
     for side in ('write','read'):
         binary=g.group(F,side+'_binary',4 if side=='write' else 5)
@@ -119,8 +149,16 @@ def audit(n):
         if side=='write':binary.append(gray[4])
         else:gray.append(binary[4])
         event=n.pin(gray[0],'CE')
-        fifo.append(counter(side,binary,gray,write_reset if side=='write' else compute,
-                            ([event],lambda b,event=event:b.inputs[event])))
+        live=write_reset if side=='write' else compute
+        if event in g.high:
+            events={n.pin(p,'CE') for p in gray[1:]}
+            require(len(events)==1,'FIFO higher Gray commit enables differ')
+            event=next(iter(events))
+            require(event not in g.high|g.low,'FIFO commit event is constant')
+            fifo.append(absorbed_fifo_counter(side,binary,gray,live,event))
+        else:
+            fifo.append(counter(side,binary,gray,live,
+                                ([event],lambda b,event=event:b.inputs[event])))
     # Both sides use exact full/empty comparisons of all five pointer bits.
     # Prove that actual commits cannot advance into full or past empty. Other
     # local admission inputs remain arbitrary; this is a safety implication.
@@ -128,7 +166,7 @@ def audit(n):
     for side,remote,flip in (('write','read',True),('read','write',False)):
         local=fifo[0 if side=='write' else 1]['gray']
         synced=g.group(F,remote+'_gray_sync',5)
-        event=n.pin(local[0],'CE')
+        event=fifo[0 if side=='write' else 1].get('commit_event',n.pin(local[0],'CE'))
         cuts={q(p)for p in local+synced}
         # Upstream track/generation admission is allowed to suppress work.
         # Its arithmetic is arbitrary here; it must never bypass full/empty.

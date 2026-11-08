@@ -161,7 +161,7 @@ def prepared_selection(root,stage,configuration,*,captured_source_sha256=None):
     compute_selection=compute_reset.evidence(stage,configuration)
     def maintained_bytes(relative):
         raw=(stage/relative).read_bytes()
-        if compute_selection is not None and relative==compute_reset.SERVICE:
+        if compute_selection is not None and relative in (compute_reset.SERVICE,compute_reset.BRIDGE):
             return compute_reset.unselect(raw.decode()).encode()
         return raw
     if captured_source_sha256 is None:

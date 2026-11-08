@@ -20,7 +20,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def run(project, output, duration_ms, phone_batch=False):
+def run(project, output, duration_ms, phone_batch=False, registered_w_tx_class=False):
     project, output = project.resolve(), output.resolve()
     if duration_ms < 20 or duration_ms > 200:
         raise ValueError('diagnostic window must be 20..200 model milliseconds')
@@ -50,7 +50,7 @@ def run(project, output, duration_ms, phone_batch=False):
                *sorted((ROOT / 'firmware/ae350').glob('*.[ch]')),
                ROOT / 'tools/prepare_ae350_sbc.py']
     before = {str(p): sha(p) for p in tracked}
-    report = dict(schema='task3-real-firmware-ideal-LCD-workload-v2', passed=False, phone_batch=phone_batch,
+    report = dict(schema='task3-real-firmware-ideal-LCD-workload-v2', passed=False, phone_batch=phone_batch, registered_w_tx_class=registered_w_tx_class,
                   project=str(project), prepared_APB_sha256=sha(apb), inputs_sha256=before,
                   commands=[], cases=[], hardware_tested=False, bitstream=None,
                   sustained_phone_audio_accepted=False, physical_budget_authorized=False,
@@ -110,6 +110,7 @@ def run(project, output, duration_ms, phone_batch=False):
         build_log = command('build', ['verilator', '--cc', '--exe', '--build', '-j', '4', '-Wno-fatal',
             '--top-module', 'task3_phone_lcd_cosim', '--Mdir', obj,
             '-GPHONE_BATCH=' + str(int(phone_batch)),
+            '-GREGISTER_W_TX_CLASS=' + str(int(registered_w_tx_class)),
             '-I' + str(snapshot), '-CFLAGS', '-std=c++17 ' + ('-DTASK3_MODEL_PHONE_BATCH ' if phone_batch else '') + '-I' + str(ROOT / 'sim/fixtures'),
             '-LDFLAGS', str(library), snapshot / cpp.relative_to(ROOT),
             *[snapshot / p.relative_to(ROOT) for p in sources], cdc,
@@ -118,7 +119,7 @@ def run(project, output, duration_ms, phone_batch=False):
         # every other warning remains a hard failure for this diagnostic model.
         warnings = re.findall(r'^%Warning-([^:]+): (.+?):(\d+):.*$', build_log, re.M)
         expected_warnings = [('WIDTHEXPAND', str(snapshot / 'rtl/workstation/workstation_task3_record_ingress.sv'), str(line))
-                             for line in (53, 61, 89)]
+                             for line in (60, 68, 96)]
         report['preserved_existing_model_compile_warnings'] = warnings
         if sorted(warnings) != sorted(expected_warnings):
             raise ValueError('unexpected model compilation warning inventory')
@@ -182,5 +183,6 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--duration-ms', type=int, default=40)
     parser.add_argument('--phone-batch', action='store_true', help='explicit paired v3 RTL and firmware; production CAPS remains closed')
+    parser.add_argument('--registered-w-tx-class', action='store_true')
     args = parser.parse_args()
-    run(args.project, args.output, args.duration_ms, args.phone_batch)
+    run(args.project, args.output, args.duration_ms, args.phone_batch, args.registered_w_tx_class)

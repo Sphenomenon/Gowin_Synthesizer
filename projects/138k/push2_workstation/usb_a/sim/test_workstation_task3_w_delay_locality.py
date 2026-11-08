@@ -31,10 +31,11 @@ class WDelayLocality(unittest.TestCase):
             preboard_releases=True,primary_clk50=True,
             ddr_reference=Path(inputs['preboard_ddr_adaptation']['routed_reference']).parents[2])
         proof=inputs['diagnosed_locality']
-        result,generated=placement(cst,n)
+        options=dict(registered_tx_class=meta.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1')
+        result,generated=placement(cst,n,**options)
         self.assertEqual(result,(p/'physical.cst').read_bytes())
-        self.assertEqual(reconstruct(cst,n,proof),result)
-        self.assertEqual(generated['selected_count'],2233)
+        self.assertEqual(reconstruct(cst,n,proof,**options),result)
+        self.assertEqual(generated['selected_count'],2240 if options['registered_tx_class'] else 2233)
         self.assertEqual(len(generated['RAMs_not_in_logic_regions']),8)
         for key,value in [('policy','other'),('before_CST_sha256','0'*64),
                           ('after_CST_sha256','0'*64),('selected_count',2234),
@@ -42,14 +43,14 @@ class WDelayLocality(unittest.TestCase):
                           ('old_members_removed',[]),('new_groups',[]),
                           ('RAMs_not_in_logic_regions',[])]:
             bad=copy.deepcopy(proof);bad[key]=value
-            with self.subTest(key=key),self.assertRaises(ValueError):reconstruct(cst,n,bad)
+            with self.subTest(key=key),self.assertRaises(ValueError):reconstruct(cst,n,bad,**options)
         path=generated['new_groups'][0]['members'][0]
         cell=n.cells.pop(path)
         try:
-            with self.assertRaises(ValueError):placement(cst,n)
+            with self.assertRaises(ValueError):placement(cst,n,**options)
         finally:n.cells[path]=cell
-        with self.assertRaises(ValueError):placement(result,n)
-        print('W locality: 2233 logic cells, eight RAMs excluded; exact replay and eleven corruptions rejected')
+        with self.assertRaises(ValueError):placement(result,n,**options)
+        print('W locality:',generated['selected_count'],'logic cells, eight RAMs excluded; exact replay and eleven corruptions rejected')
 
 
 if __name__=='__main__':unittest.main()

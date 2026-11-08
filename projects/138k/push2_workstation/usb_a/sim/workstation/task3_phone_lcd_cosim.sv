@@ -4,7 +4,8 @@
 // Synthetic TF analysis/final-tap producers; no CPU instruction, RF/SBC, CNN,
 // DDR recording object, DSP/I2S/DAC, electrical or physical timing acceptance.
 module task3_phone_lcd_cosim #(
-    parameter bit PHONE_BATCH=1'b0
+    parameter bit PHONE_BATCH=1'b0,
+    parameter bit REGISTER_W_TX_CLASS=1'b0
 )(
     input wire mclk_i,wclk_i,audio_clk_i,reset_n,enable_i,budget_i,run_i,media_i,
     input wire analysis_start_i,analysis_stall_i,
@@ -62,7 +63,7 @@ module task3_phone_lcd_cosim #(
             .tx_packets_o(tx_packets[i]),.rx_packets_o(),.crc_errors_o(crc_errors[i]),.sequence_errors_o(sequence_errors[i]),.rejected_packets_o(),.overflow_count_o(overflows[i]),
             .congestion_cycles_o(),.last_rtt_cycles_o(),.max_rtt_cycles_o(max_rtt[i]),.probe_results_o(probes[i]),.link_timeouts_o());
     end
-    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.PHONE_WINDOW_BLOCK(W_PHONE_WINDOW),.PHONE_BATCH(PHONE_BATCH),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) w(
+    workstation_task3_w_bus_endpoint #(.BLOCK_PCM(W_BLOCK),.PHONE_WINDOW_BLOCK(W_PHONE_WINDOW),.PHONE_BATCH(PHONE_BATCH),.REGISTER_TX_CLASS(REGISTER_W_TX_CLASS),.MEDIA_CAP_TIMEOUT_CYCLES(W_PHONE_WINDOW ? 1000000:3000)) w(
         .clk_i(wclk_i),.reset_ni(reset_n),.link_ready_i(business[1]),.panic_i(panic),
         .local_boot_i(32'd22),.peer_boot_i(m_boot),.session_i(32'd33),.generation_i(generation),
         .rx_valid_i(rx_valid[1]),.rx_ready_o(rx_ready[1]),.rx_channel_i(rx_channel[1]),.rx_payload_i(rx_payload[1]),.rx_length_i(rx_length[1]),

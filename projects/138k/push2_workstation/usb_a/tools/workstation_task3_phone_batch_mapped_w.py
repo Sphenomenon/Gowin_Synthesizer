@@ -291,14 +291,28 @@ def audit(n, *, stage):
         [same, *key_comparisons], lambda v: v[0] == int(not any(v[1:])), cuts=set(key_comparisons)))
     from tools.workstation_w_context_compare import SOURCE as context_source, SELECTED_SHA256 as grouped_sha, ARM_CAPTURE_SHA256
     from tools.workstation_record_cancel_compare import normalize as cancel_parent
-    context_sha=hashlib.sha256(cancel_parent((Path(stage)/context_source).read_bytes())).hexdigest()
+    from tools.workstation_w_tx_class import normalize as tx_parent
+    context_sha=hashlib.sha256(cancel_parent(tx_parent((Path(stage)/context_source).read_bytes()))).hexdigest()
     arm_capture = context_sha == ARM_CAPTURE_SHA256
     grouped_context = context_sha in (grouped_sha,ARM_CAPTURE_SHA256)
     active = window('n10383_7') if grouped_context else endpoint('n10383_7') if retired_usb else endpoint('n10383_32')
     qual = local('n737_18') if retired_usb else endpoint('n737_12')
     live = endpoint('live') if retired_usb else n.canonical('', 'live')
     key_bytes_selected=False
-    if grouped_context:
+    negative_live_parts=[]
+    from tools.workstation_w_tx_class import configured as tx_configured
+    registered_tx_class=tx_configured(configuration)
+    if registered_tx_class:
+        from tools.workstation_w_tx_class import audit_active
+        active,active_proof=audit_active(n,g,stage,configuration,key_comparisons)
+        proofs.append(active_proof)
+        from tools.workstation_w_context_compare import audit_mapped as audit_context
+        proofs.append(audit_context(n,g))
+        key_bytes_selected=True
+        # Actual complemented live mapping is checked by the expanded state
+        # proof; this flag selects only the existing per-bit reply equations.
+        negative_live_parts=[endpoint('live_4')]
+    elif grouped_context:
         from tools.workstation_w_context_compare import audit_mapped as audit_context
         proofs.append(audit_context(n,g))
         # Preserve the exact reviewed inputs and their mapped polarity.
@@ -523,7 +537,7 @@ def audit(n, *, stage):
     # Verify and invert that exact adaptation before selecting the existing
     # ACK mapping proof; retain the original historical ACK identity.
     from tools.workstation_record_peer_compare import normalize as peer_parent
-    ack_grouped=hashlib.sha256(peer_parent((Path(stage)/ack_source).read_bytes())).hexdigest()==ack_sha
+    ack_grouped=hashlib.sha256(peer_parent(tx_parent((Path(stage)/ack_source).read_bytes()))).hexdigest()==ack_sha
     if ack_grouped:
         # The ACK rebuild folds !load into the shared hold/read term. Keep
         # this actual control boundary, including that gate; all 256 next-Q
@@ -634,7 +648,12 @@ def audit(n, *, stage):
     proofs.append(g.equivalent('window empty includes actual unacknowledged flight',
         [empty,*count,*flight],lambda v:v[0] == int(not any(v[1:]))))
     flush_to_send = local('n12046_12') if retired_usb else local('n12046_11')
-    if key_bytes_selected:
+    if registered_tx_class:
+        flush_to_send=local('n12046_11')
+        proofs.append(g.equivalent('registered class batch retains complete state and watermark conjunction',
+            [flush_to_send,q('state'),held,active,empty],
+            lambda v:v[0] == int(not v[1] and not v[2] and v[3] and v[4]),cuts={active}))
+    elif key_bytes_selected:
         # This exact mapping separates the no-work watermark from the
         # state/active term. Prove every real count/flight/held bit, then
         # retain the actual state next-Q influence check below.
@@ -662,6 +681,9 @@ def audit(n, *, stage):
     flush = window('n10383_6')
     other = window('n10383_8')
     s0 = q('state')
+    if registered_tx_class:
+        from tools.workstation_fifo_full_compare import configured as fifo_configured
+        other=window('n10383_8' if fifo_configured(configuration) else 'n10383_7')
     proofs.append(g.equivalent('active pending batch externally flushes nonempty idle window',
         [flush,active,other,s0,s1,s2,*count,*flight],
         lambda v:v[0] == int(any(v[6:9]) and not any(v[9:]) and
@@ -682,13 +704,26 @@ def audit(n, *, stage):
     old_flight = window('n5090_8')
     timer = endpoint('partial_timer_31_9') if reserved_dispatch else window('partial_timer_31_12') if grouped_context else endpoint('partial_timer_31_9') if retired_usb else n.canonical('', 'partial_timer_31_9')
     if ack_grouped:timer=window('partial_timer_31_12')
-    if key_bytes_selected:
+    if key_bytes_selected and not registered_tx_class:
         require(flight_table=="16'hEA00" and n.pin(path,'I2')==flush,
                 'key-byte flight flush binding changed')
         # The former timer alias is now the counter CE. Take the original
         # four-control data equation from the actual flight mux instead.
         old_flight,timer=n.pin(path,'I0'),n.pin(path,'I1')
-    if arm_capture and flight_arm_factored:
+    if registered_tx_class:
+        require(arm_capture and flight_arm_factored,
+                'registered preference window flight mapping changed')
+        inhibit,flight_q,trigger,gate=[n.pin(path,'I'+str(i)) for i in range(4)]
+        require(flight_q==n.pin(g.register(W,'flight',0),'Q'),
+                'registered preference flight Q feedback changed')
+        flight_mapping='registered_preference_qualified_flush'
+        proofs.append(g.equivalent('registered preference retains actual flight feedback and qualified flush',
+            [flight_d,flight_q,inhibit,trigger,gate],
+            lambda v:v[0]==int(v[4] and ((v[1] and not v[2]) or v[3])),
+            cuts={inhibit,trigger,gate}))
+        from tools.workstation_w_context_compare import prove_zero_veto
+        proofs.append(prove_zero_veto(n,g,flush,trigger))
+    elif arm_capture and flight_arm_factored:
         # Here n5090_8 is the inhibit, rather than the old-flight term.
         # Expand the real Q and timer/flush input instead of assigning the
         # previous semantic meaning to the surviving numeric net name.

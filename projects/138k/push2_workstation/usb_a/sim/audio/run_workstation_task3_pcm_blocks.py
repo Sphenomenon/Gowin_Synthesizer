@@ -11,6 +11,7 @@ import subprocess
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--registered-w-tx-class', action='store_true')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     output = args.output.resolve()
@@ -30,10 +31,11 @@ def main():
     inputs = {rel: sha(root / rel) for rel in sources + extras}
     commands = []
     passed, error, checks, mixed_checks = False, None, 0, 0
+    parameters=['-Ptb_workstation_task3_pcm_blocks.REGISTER_W_TX_CLASS='+str(int(args.registered_w_tx_class))]
     try:
         binary = output / 'pcm_blocks.vvp'
         for argv, name in [(['iverilog', '-g2012', '-I.', '-s',
-                            'tb_workstation_task3_pcm_blocks', '-o', str(binary),
+                            'tb_workstation_task3_pcm_blocks', *parameters, '-o', str(binary),
                             tb, *sources], 'build.log'), (['vvp', str(binary)], 'run.log')]:
             result = subprocess.run(argv, cwd=root, text=True, capture_output=True)
             log = output / name
@@ -48,7 +50,7 @@ def main():
         checks = int(match[1])
         mixed_binary = output / 'mixed_media.vvp'
         for argv, name in [(['iverilog', '-g2012', '-DTASK3_MIXED_MEDIA', '-I.', '-s',
-                            'tb_workstation_task3_pcm_blocks', '-o', str(mixed_binary),
+                            'tb_workstation_task3_pcm_blocks', *parameters, '-o', str(mixed_binary),
                             tb, *sources], 'mixed-build.log'),
                            (['vvp', str(mixed_binary)], 'mixed-run.log')]:
             mixed = subprocess.run(argv, cwd=root, text=True, capture_output=True)
@@ -67,6 +69,7 @@ def main():
         error = str(exc)
     unchanged = inputs == {rel: sha(root / rel) for rel in inputs}
     report = dict(schema=1, passed=passed and unchanged, error=error,
+                  registered_w_tx_class=args.registered_w_tx_class,
                   source_unchanged=unchanged, inputs_sha256=inputs,
                   invocations=commands, checks=checks, mixed_version_checks=mixed_checks,
                   cnn_frames=61, record_frames=24, seals=1,

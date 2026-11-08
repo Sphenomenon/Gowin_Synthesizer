@@ -13,7 +13,8 @@ SELECTED = '    // Keep byte comparisons separate: one carry chain across the fu
 
 def normalize(source):
     from tools.workstation_record_cancel_compare import normalize as cancel_parent
-    source=cancel_parent(source)
+    from tools.workstation_w_tx_class import normalize as tx_parent
+    source=cancel_parent(tx_parent(source))
     digest = lambda b: hashlib.sha256(b).hexdigest()
     if digest(source)==ARM_CAPTURE_SHA256:
         if source.count(ARM_CAPTURE.encode())!=1:raise ValueError('W ARM capture instance drift')

@@ -17,6 +17,14 @@ INVENTORIES = (
     dict(LUT4=424, LUT3=123, LUT2=385, DFFCE=811, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
     dict(LUT4=32, LUT2=10, LUT3=88, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
     dict(LUT4=29, LUT2=11, LUT3=87, DFFCE=80, SDPX9B=4, ALU=18, INV=4, VCC=1, GND=1))
+TX_CLASS_INVENTORIES = (
+    dict(LUT4=424, LUT3=113, LUT2=403, DFFCE=811, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
+    dict(LUT4=34, LUT2=10, LUT3=85, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
+    dict(LUT4=29, LUT2=13, LUT3=85, DFFCE=80, SDPX9B=4, ALU=18, INV=4, VCC=1, GND=1))
+FIFO_COMPARE_INVENTORIES = (
+    dict(LUT4=421, LUT3=123, LUT2=399, DFFCE=811, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
+    dict(LUT4=34, LUT2=11, LUT3=84, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
+    dict(LUT4=30, LUT2=11, LUT3=84, DFFCE=80, SDPX9B=4, ALU=18, INV=4, VCC=1, GND=1))
 
 
 def require(ok, message):
@@ -24,14 +32,17 @@ def require(ok, message):
         raise ValueError('W delay locality: '+message)
 
 
-def placement(cst, netlist):
+def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=False):
     """Select the diagnosed scopes from their exact primitive inventories."""
     from tools.workstation_pinout import parse_locations
     sha = lambda b: hashlib.sha256(b).hexdigest()
     raw = cst.decode(); selected = {}; ram = []; counts = {}
     allowed = {'LUT2', 'LUT3', 'LUT4', 'ALU', 'MUX2_LUT5', 'MUX2_LUT6',
                'MUX2_LUT7', 'MUX2_LUT8', 'DFFCE', 'DFFPE', 'DFFRE', 'SDPX9B'}
-    for (scope, region), expected in zip(SCOPES, INVENTORIES):
+    require(not fifo_compare_first or registered_tx_class,'FIFO-first layout requires registered W TX class')
+    inventories = FIFO_COMPARE_INVENTORIES if fifo_compare_first else TX_CLASS_INVENTORIES if registered_tx_class else INVENTORIES
+    selected_count = 2241 if fifo_compare_first else 2240 if registered_tx_class else 2233
+    for (scope, region), expected in zip(SCOPES, inventories):
         cells = {p: c for p, c in netlist.cells.items() if p.startswith(scope)}
         counts[scope] = dict(Counter(c['kind'] for c in cells.values()))
         require(counts[scope] == expected, 'actual primitive inventory drift: '+scope)
@@ -45,7 +56,7 @@ def placement(cst, netlist):
             require(not re.search(r'^INS_LOC "'+re.escape(path)+'" ', raw, re.M),
                     'preconstrained logic: '+path)
             selected[path] = region
-    require(len(selected) == 2233 and len(ram) == 8, 'logic/RAM inventory drift')
+    require(len(selected) == selected_count and len(ram) == 8, 'logic/RAM inventory drift')
     lines = []; removed = []; groups = {}
     for line in raw.splitlines():
         if line.startswith('GROUP '):
@@ -72,16 +83,18 @@ def placement(cst, netlist):
             'duplicate or hard RAM in logic region')
     require(parse_locations(result.decode()) == parse_locations(raw), 'IO locations changed')
     proof = dict(policy=POLICY, before_CST_sha256=sha(cst),
-                 after_CST_sha256=sha(result), scope_kinds=counts, selected_count=2233,
+                 **(dict(fifo_compare_first_layout=True) if fifo_compare_first else {}),
+                 **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
+                 after_CST_sha256=sha(result), scope_kinds=counts, selected_count=selected_count,
                            RAMs_not_in_logic_regions=ram, new_groups=new_groups,
                            old_members_removed=removed, clocks_changed=False,
                            timing_exceptions_changed=False)
     return result, proof
 
 
-def reconstruct(cst, netlist, proof):
+def reconstruct(cst, netlist, proof, *, registered_tx_class=False, fifo_compare_first=False):
     """Require the exact selected inventories and reproduce every changed byte."""
-    result, expected = placement(cst, netlist)
+    result, expected = placement(cst, netlist, registered_tx_class=registered_tx_class, fifo_compare_first=fifo_compare_first)
     for key, value in expected.items():
         require(proof.get(key) == value, 'receipt differs: '+key)
     return result

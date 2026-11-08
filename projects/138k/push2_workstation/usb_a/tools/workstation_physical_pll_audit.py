@@ -217,7 +217,9 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
             if (sha(physical/'custom_138k_integration.vg') != locality.get('VG_sha256') or
                     sha(physical/'physical.sdc') != locality.get('SDC_sha256')):
                 raise ValueError('diagnosed W locality netlist/SDC identity differs')
-            cst = reconstruct(cst, protocol_netlist(vg_text, mapping='synthesis'), locality)
+            cst = reconstruct(cst, protocol_netlist(vg_text, mapping='synthesis'), locality,
+                registered_tx_class=parent.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
+                fifo_compare_first=parent.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1')
         if (physical/'physical.cst').read_bytes()!=cst:
             raise ValueError('preboard reconstructed physical CST differs')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),

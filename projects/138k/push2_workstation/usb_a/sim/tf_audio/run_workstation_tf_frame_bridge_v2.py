@@ -48,7 +48,7 @@ def gray_bijection_proof():
                 basis='linear full-rank Gray map and complete inverse-matrix identity')
 
 
-def run(output,*,local_compute_release=False):
+def run(output,*,local_compute_release=False,empty_slot_refill=False):
     output.mkdir(parents=True, exist_ok=False)
     pcm = [(0x1234, -0x2345), (-1, 1), (32767, -32768), (0x4567, -0x5678),
            (-32000, 31001), (0x7a01, -0x7b02), (-0x3210, 0x210f), (0x0f01, -0x0e02)]
@@ -83,12 +83,14 @@ def run(output,*,local_compute_release=False):
                   input_sha256=hashes, runs={}, negative_controls={},
                   gray_bijection_proof=gray_bijection_proof(),
                   local_compute_functional_release_selected=local_compute_release,
+                  empty_slot_refill_selected=empty_slot_refill,
                   limits='Real WAV decoder, maintained FIFO, atomic LAST/session metadata and actual final-router mismatch/cancel boundary; no SD/FAT/DDR migration, complete runtime/top/profile selection, physical CDC, synthesis, P&R or board acceptance')
     try:
         for name, seed in (('default', 0), ('wrap', 0xfffffffd)):
             binary = output / (name + '.vvp')
             compile_command = ['iverilog', '-g2012', '-s', 'tb_workstation_tf_frame_bridge_v2',
                                '-Ptb_workstation_tf_frame_bridge_v2.LOCAL_COMPUTE_RESET_ENABLE='+str(int(local_compute_release)),
+                               '-Ptb_workstation_tf_frame_bridge_v2.NO_SAME_EDGE_REFILL='+str(int(empty_slot_refill)),
                                '-Ptb_workstation_tf_frame_bridge_v2.START_GENERATION=' + str(seed),
                                '-o', str(binary), *map(str, sources)]
             run_command = ['vvp', str(binary)]
@@ -108,7 +110,7 @@ def run(output,*,local_compute_release=False):
             record['passed'] = True
             print(log, end='')
         original = sources[0].read_text()
-        for name, anchor, replacement, expected in (
+        mutations=[
             ('lost_LAST', 'source_error_i || unsupported,source_last_i,',
              "source_error_i || unsupported,1'b0,", 'packet mismatch'),
             ('lost_session_generation', 'source_generation_o,source_session_generation_i,source_sample_rate_i,',
@@ -117,7 +119,11 @@ def run(output,*,local_compute_release=False):
              "quiet_published<=1'b1;", 'stale published quiet ACK preceded'),
             ('incomplete_gray_prefix', 'binary=prefix8^(prefix8>>16);',
              'binary=prefix8;', 'Gray decode failed'),
-        ):
+        ]
+        if empty_slot_refill:
+            mutations.append(('consumer_ready_feedback','NO_SAME_EDGE_REFILL ? !held_valid :',
+                "1'b0 ? !held_valid :",'consumer ready re-entered payload capture CE'))
+        for name, anchor, replacement, expected in mutations:
             assert original.count(anchor) == 1, 'Negative control anchor changed: ' + name
             mutant = output / (name + '.sv')
             mutant.write_text(original.replace(anchor, replacement))
@@ -125,6 +131,7 @@ def run(output,*,local_compute_release=False):
             commands = (
                 ('compile', ['iverilog', '-g2012', '-s', 'tb_workstation_tf_frame_bridge_v2',
                              '-Ptb_workstation_tf_frame_bridge_v2.LOCAL_COMPUTE_RESET_ENABLE='+str(int(local_compute_release)),
+                             '-Ptb_workstation_tf_frame_bridge_v2.NO_SAME_EDGE_REFILL='+str(int(empty_slot_refill)),
                              '-o', str(binary), str(mutant), *map(str, sources[1:])]),
                 ('run', ['vvp', str(binary)]),
             )
@@ -156,12 +163,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--local-compute-release',action='store_true')
+    parser.add_argument('--empty-slot-refill',action='store_true')
     args = parser.parse_args()
     if args.output:
-        run(args.output.resolve(),local_compute_release=args.local_compute_release)
+        run(args.output.resolve(),local_compute_release=args.local_compute_release,empty_slot_refill=args.empty_slot_refill)
     else:
         with tempfile.TemporaryDirectory(prefix='gw138k-tf-frames-') as directory:
-            run(Path(directory) / 'verification',local_compute_release=args.local_compute_release)
+            run(Path(directory) / 'verification',local_compute_release=args.local_compute_release,empty_slot_refill=args.empty_slot_refill)
 
 
 if __name__ == '__main__':

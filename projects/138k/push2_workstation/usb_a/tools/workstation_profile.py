@@ -617,7 +617,9 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'raw_pack_policy':'task3_W_raw_pack_fetch_final_fault_selector_v1',
                                'native_fault_cofactor_policy':'task3_W_native_fault_diagnostic_cofactor_v1',
                                _cdc_key: _cdc_policy,
-                               'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
+                               'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1',
+                               'w_tx_class_policy':'task3_W_registered_normal_tx_preference_v1',
+                               'fifo_full_policy':'task3_W_large_FIFO_compare_before_write_select_v1'})
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
                               display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
@@ -628,6 +630,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
                               tf_native_head_policy='task3_M_TF_bounded_native_PCM_head_v1',
                               tf_status_compare_policy='task3_M_TF_status_generation_byte_compare_v1',
+                              tf_refill_policy='task3_M_TF_empty_slot_refill_v1',
                               effects_dispatch_policy='task3_M_reserved_effects_configuration_v1')
     PROFILE_REGISTRY[_name] = dict(_parent, revision=1, configuration=_configuration,
         config='boards/custom_138k/workstation_profile_task3_' + _role + '_preboard_v1.json',
@@ -1199,6 +1202,19 @@ def _artifact(root, output, metadata, profile):
             if (local_stream.restore_controlled((stage/target).read_text()) != (root/source).read_text()):
                 raise ValueError('local stream mailbox scope binding drift')
             staged_hash = sha(stage/target)
+        if target == 'rtl/music/music_async_fifo.sv' and profile['configuration'].get('fifo_full_policy') is not None:
+            from tools import workstation_fifo_full_compare as fifo_full
+            if (fifo_full.evidence(stage,profile['configuration']) != metadata.get('fifo_full_compare') or
+                    fifo_full.transform((stage/target).read_text(),inverse=True) != (root/source).read_text()):
+                raise ValueError('large FIFO full comparison source selection drift')
+            staged_hash=sha(stage/target)
+        if target == 'rtl/workstation/workstation_task3_w_bus_endpoint.sv' and profile['configuration'].get('w_tx_class_policy') is not None:
+            from tools import workstation_w_tx_class as tx_class
+            selected=(stage/target).read_bytes()
+            if (tx_class.evidence(stage,profile['configuration']) != metadata.get('w_tx_class') or
+                    tx_class.native(selected) != (root/source).read_bytes()):
+                raise ValueError('W TX class source selection drift')
+            staged_hash=sha(stage/target)
         if target == 'rtl/audio/workstation_runtime_stereo_effects.sv' and profile['configuration'].get('effects_dispatch_policy') is not None:
             from tools import workstation_effects_reserved_config as effects_reservation
             selected=(stage/target).read_text()

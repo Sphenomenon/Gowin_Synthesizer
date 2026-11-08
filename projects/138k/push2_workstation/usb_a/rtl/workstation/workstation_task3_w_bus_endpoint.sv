@@ -6,6 +6,7 @@ module workstation_task3_w_bus_endpoint #(
     parameter bit BLOCK_PCM=1'b0,
     parameter bit PHONE_WINDOW_BLOCK=1'b0,
     parameter bit PHONE_BATCH=1'b0,
+    parameter bit REGISTER_TX_CLASS=1'b0,
     parameter integer MEDIA_CAP_TIMEOUT_CYCLES=5000000
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
@@ -330,19 +331,36 @@ module workstation_task3_w_bus_endpoint #(
     wire normal_slot=urgent_slot && !record_ack_pending && !demand_pending;
     assign phone_arm_tx_ready=normal_slot && phone_arm_tx;
     reg [1:0] normal_turn;
-    reg choose_phone,choose_credit,choose_result;
+    reg next_choose_phone,next_choose_credit,next_choose_result;
+    wire choose_phone,choose_credit,choose_result;
     wire phone_flow_pending=phone_request || phone_window_valid || phone_batch_valid;
     wire credit_pending=(a_credit_valid && !a_wire_sealed) || r_credit_valid;
     wire result_pending=cnn_terminal_valid_i || cnn_score_valid_i || status_pending;
     always_comb begin
-        choose_phone=0;choose_credit=0;choose_result=0;
-        if(!BLOCK_PCM)begin choose_phone=phone_request;choose_result=!phone_request;end
+        next_choose_phone=0;next_choose_credit=0;next_choose_result=0;
+        if(!BLOCK_PCM)begin next_choose_phone=phone_request;next_choose_result=!phone_request;end
         else case(normal_turn)
-            0:if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;
-            1:if(credit_pending)choose_credit=1;else if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;
-            default:if(result_pending)choose_result=1;else if(phone_flow_pending)choose_phone=1;else if(credit_pending)choose_credit=1;
+            0:if(phone_flow_pending)next_choose_phone=1;else if(credit_pending)next_choose_credit=1;else if(result_pending)next_choose_result=1;
+            1:if(credit_pending)next_choose_credit=1;else if(result_pending)next_choose_result=1;else if(phone_flow_pending)next_choose_phone=1;
+            default:if(result_pending)next_choose_result=1;else if(phone_flow_pending)next_choose_phone=1;else if(credit_pending)next_choose_credit=1;
         endcase
     end
+    generate if(REGISTER_TX_CLASS)begin:g_registered_tx_class
+        // This is a preference, never a payload reservation or an ACK. Every
+        // consumer below still rechecks current valid data and current live.
+        // A vanished class costs one idle cycle; new urgent traffic retains
+        // its original priority. No packet or PCM sample is consumed here.
+        reg [2:0] selection;
+        always @(posedge clk_i or negedge reset_ni)
+            if(!reset_ni)selection<=0;
+            else if(!live)selection<=0;
+            else selection<={next_choose_phone,next_choose_credit,next_choose_result};
+        assign {choose_phone,choose_credit,choose_result}=selection;
+        initial if(!BLOCK_PCM)$fatal(1,"registered TX class requires block media");
+    end else begin:g_direct_tx_class
+        assign {choose_phone,choose_credit,choose_result}=
+            {next_choose_phone,next_choose_credit,next_choose_result};
+    end endgenerate
     wire fair_slot=normal_slot && !phone_arm_tx;
     assign phone_request_ready=fair_slot && choose_phone && phone_request;
     assign phone_batch_ready=fair_slot && choose_phone && !phone_request && phone_batch_valid;

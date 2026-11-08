@@ -26,14 +26,17 @@ class ActualFrameArithmetic(unittest.TestCase):
     def test_real_enable_D_and_Gray_mutations(self):
         n=self.n;g=Graph(n);generation=self.positive['publishers'][0]
         binary,gray=generation['binary'],generation['gray']
-        dcell=g.drivers[n.pin(binary[0],'D')][0][0]
-        cases=[('LSB truth',dcell,'parameters','INIT',"16'h0000"),
+        cases=[('generation LSB D',binary[0],'ports','D',"1'b0"),
                ('generation high-bit CE',binary[1],'ports','CE',"1'b0"),
                ('generation high-bit D',binary[15],'ports','D',"1'b0"),
                ('generation Gray D',gray[0],'ports','D',"1'b0"),
                ('generation reset',binary[0],'ports','CLEAR',"1'b0")]
         guard=generation['absorbed_LSB_event_proof']
         if guard:cases.append(('event LUT truth',guard['actual_event_LUT'],'parameters','INIT',"8'h00"))
+        read=self.positive['publishers'][3]
+        cases += [('FIFO read LSB D',read['binary'][0],'ports','D',"1'b0"),
+                  ('FIFO read Gray D',read['gray'][0],'ports','D',"1'b0"),
+                  ('FIFO higher Gray CE',read['gray'][1],'ports','CE',"1'b0")]
         for label,path,section,key,value in cases:
             old=deepcopy(n.cells[path]);n.cells[path][section][key]=value
             try:
