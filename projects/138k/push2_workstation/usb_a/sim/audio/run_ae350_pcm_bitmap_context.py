@@ -268,9 +268,10 @@ def actual_bench(source):
     for direction, width, names in re.findall(r'\b(input|output)\s+(?:wire|reg)\s*(?:signed\s*)?(\[[^]]+\])?\s*([\w,\s]+?)(?=\binput|\boutput|$)', header):
         for name in names.strip().strip(',').split(','):
             spec[name.strip()] = direction, width
-    require(len(spec) == 32 and sum(direction == 'output' for direction, _ in spec.values()) == 11,
+    require((len(spec),sum(direction == 'output' for direction, _ in spec.values())) in ((32,11),(33,12)),
             'actual module port inventory')
     fields = inventory()
+    if 'idle_o' in spec:fields['outputs'].append('idle_o')
     text = '`timescale 1ns/1ps\nmodule tb;\n'
     for name, (direction, width) in spec.items():
         text += ('reg ' if direction == 'input' else 'wire ') + width + ' ' + name + ("=0" if direction == 'input' else ',ref_' + name) + ';\n'

@@ -102,6 +102,11 @@ REMOTE_REVERB_PARENT_SHA256 = '99095afee6425a42fab993575a09f6e1c6b8beb05619b9b46
 
 def restore_remote_reverb_partition(source, adaptation=None):
     """Undo only the opt-in partition; the original effects lineage stays locked."""
+    try:
+        from tools.workstation_effect_gain_path import normalize as normalize_gain
+    except ModuleNotFoundError:
+        from workstation_effect_gain_path import normalize as normalize_gain
+    source = normalize_gain(source)
     if sha(source) != REMOTE_REVERB_SOURCE_SHA256:
         # Historical inputs continue through their original strict checks.
         return source

@@ -31,6 +31,8 @@ class ActualMSourceReview(unittest.TestCase):
         cls.n = protocol_netlist(cls.vg.read_text(), mapping='synthesis')
         cls.g = Graph(cls.n)
         cls.rejections = []
+        positive=owner.review(cls.n,source=cls.source)
+        cls.opaque_inputs={k:v['endpoint'].rsplit('/',1)[1] for k,v in positive['external_APB_response_equations'].items()}
 
     @classmethod
     def tearDownClass(cls):
@@ -98,13 +100,13 @@ class ActualMSourceReview(unittest.TestCase):
 
     def test_opaque_inputs_and_mux_truth_mutations(self):
         with self.cell(owner.CPU_BLACKBOX) as cell:
-            cell['ports']['unexpected_release'] = cell['ports'][owner.OPAQUE_INPUTS['ready']]
+            cell['ports']['unexpected_release'] = cell['ports'][self.opaque_inputs['ready']]
             self.rejected('extra opaque consumer')
         with self.cell(owner.CPU_BLACKBOX) as cell:
-            a, b = owner.OPAQUE_INPUTS.values()
+            a, b = self.opaque_inputs.values()
             cell['ports'][a], cell['ports'][b] = cell['ports'][b], cell['ports'][a]
             self.rejected('swapped opaque ready and error')
-        for pin in owner.OPAQUE_INPUTS.values():
+        for pin in self.opaque_inputs.values():
             net = self.n.pin(owner.CPU_BLACKBOX, pin)
             path, _ = self.g.drivers[net][0]
             with self.cell(path) as cell:

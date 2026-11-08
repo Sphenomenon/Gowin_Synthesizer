@@ -48,7 +48,7 @@ def gray_bijection_proof():
                 basis='linear full-rank Gray map and complete inverse-matrix identity')
 
 
-def run(output):
+def run(output,*,local_compute_release=False):
     output.mkdir(parents=True, exist_ok=False)
     pcm = [(0x1234, -0x2345), (-1, 1), (32767, -32768), (0x4567, -0x5678),
            (-32000, 31001), (0x7a01, -0x7b02), (-0x3210, 0x210f), (0x0f01, -0x0e02)]
@@ -82,11 +82,13 @@ def run(output):
                   source_clock_hz=50000000, compute_clock_hz=76800000,
                   input_sha256=hashes, runs={}, negative_controls={},
                   gray_bijection_proof=gray_bijection_proof(),
+                  local_compute_functional_release_selected=local_compute_release,
                   limits='Real WAV decoder, maintained FIFO, atomic LAST/session metadata and actual final-router mismatch/cancel boundary; no SD/FAT/DDR migration, complete runtime/top/profile selection, physical CDC, synthesis, P&R or board acceptance')
     try:
         for name, seed in (('default', 0), ('wrap', 0xfffffffd)):
             binary = output / (name + '.vvp')
             compile_command = ['iverilog', '-g2012', '-s', 'tb_workstation_tf_frame_bridge_v2',
+                               '-Ptb_workstation_tf_frame_bridge_v2.LOCAL_COMPUTE_RESET_ENABLE='+str(int(local_compute_release)),
                                '-Ptb_workstation_tf_frame_bridge_v2.START_GENERATION=' + str(seed),
                                '-o', str(binary), *map(str, sources)]
             run_command = ['vvp', str(binary)]
@@ -122,6 +124,7 @@ def run(output):
             binary = output / (name + '.vvp')
             commands = (
                 ('compile', ['iverilog', '-g2012', '-s', 'tb_workstation_tf_frame_bridge_v2',
+                             '-Ptb_workstation_tf_frame_bridge_v2.LOCAL_COMPUTE_RESET_ENABLE='+str(int(local_compute_release)),
                              '-o', str(binary), str(mutant), *map(str, sources[1:])]),
                 ('run', ['vvp', str(binary)]),
             )
@@ -152,12 +155,13 @@ def run(output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--local-compute-release',action='store_true')
     args = parser.parse_args()
     if args.output:
-        run(args.output.resolve())
+        run(args.output.resolve(),local_compute_release=args.local_compute_release)
     else:
         with tempfile.TemporaryDirectory(prefix='gw138k-tf-frames-') as directory:
-            run(Path(directory) / 'verification')
+            run(Path(directory) / 'verification',local_compute_release=args.local_compute_release)
 
 
 if __name__ == '__main__':

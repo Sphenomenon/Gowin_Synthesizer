@@ -163,6 +163,13 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if not phone_batch_worker:
             raise ValueError('USB retirement requires explicit paired W phone batch composition')
         profile_dependencies += usb_retirement.DEPENDENCIES
+    from tools import workstation_local_stream_release as local_stream
+    local_stream_selected = local_stream.configured({} if profile is None else profile['configuration'])
+    if local_stream_selected:
+        if not phone_batch_worker:
+            raise ValueError('local stream release requires paired W phone batch')
+        profile_dependencies += local_stream.DEPENDENCIES
+        profile_dependencies += ('tools/workstation_task3_w_preboard_cdc.py',)
     if paired_role is not None:
         from tools import workstation_task3_paired_board as paired_board
         paired_helper=paired_board.role_helper(paired_role)
@@ -181,7 +188,16 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             raise ValueError('direct TF requires the explicit native M/no-CNN/menu composition')
         native_sources=tuple(source for source in native_sources if source not in (*RETIRED_SOURCES,*UNSELECTED_WORKER_SOURCES))+DIRECT_SOURCES
         profile_dependencies+=(*DIRECT_DEPENDENCIES,*RETIRED_SOURCES)
+    from tools import workstation_effects_reserved_config as effects_reservation
+    effects_reserved = effects_reservation.configured({} if profile is None else profile['configuration'])
+    if effects_reserved:
+        native_sources += (effects_reservation.DISPATCH,)
+        profile_dependencies += (effects_reservation.TOOL,)
     from tools import workstation_task3_tf_tail_reset as tail_reset
+    from tools import workstation_tf_compute_local_release as tf_compute_reset
+    tf_compute_selected=tf_compute_reset.configured({} if profile is None else profile['configuration'])
+    if tf_compute_selected:
+        profile_dependencies += (tf_compute_reset.TOOL,tf_compute_reset.MANIFEST)
     tail_reset_selected = tail_reset.configured({} if profile is None else profile['configuration'])
     if tail_reset_selected:
         if paired_role != 'M' or not tf_direct:
@@ -451,6 +467,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             from tools.workstation_task3_w_media_profile import select_sources as select_media_sources
         media_source_selection=select_media_sources(stage,files)
     task3_paired_selection=None
+    local_stream_selection = local_stream.select(stage, files,
+        {} if profile is None else profile['configuration'])
     usb_retirement_selection=usb_retirement.select_sources(stage,files,
         {} if profile is None else profile['configuration'])
     if paired_role is not None:
@@ -460,10 +478,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if lease_source_policy is not None:
             lease_source.prepare(stage,profile['configuration'])
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
+    task3_tf_compute_reset=tf_compute_reset.select(stage,profile['configuration']) if tf_compute_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
     if capture_compare_selected:
         capture_compare.select(stage,profile['configuration'])
+    effects_reservation_evidence = effects_reservation.select(stage, {} if profile is None else profile['configuration'])
     combined_cst = ''
     if not logic_only:
         shutil.copyfile(pinout_output / 'custom_138k.locations.cst', stage / 'constraints/custom_138k.locations.cst')
@@ -547,6 +567,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if not logic_only:
         (stage / 'constraints/custom_138k.cst').write_text(combined_cst)
         ElementTree.SubElement(files, 'File', path='constraints/custom_138k.cst', type='file.cst', enable='1')
+    from tools import workstation_task3_w_preboard_cdc as preboard_cdc
+    selected_sdc, preboard_cdc_evidence = preboard_cdc.select(selected_sdc,
+        {} if profile is None else profile['configuration'])
     (stage / 'constraints/custom_138k.sdc').write_text(selected_sdc)
     ElementTree.SubElement(files, 'File', path='constraints/custom_138k.sdc', type='file.sdc', enable='1')
     tree.write(project, encoding='UTF-8', xml_declaration=True)
@@ -611,6 +634,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['usb2_cpu_ram_selection'] = usb2_cpu_ram_selection
     if runtime_ddr_aliases is not None:
         metadata['runtime_ddr_aliases'] = runtime_ddr_aliases
+    if preboard_cdc_evidence is not None:
+        metadata['task3_w_preboard_cdc'] = preboard_cdc_evidence
+    if effects_reservation_evidence is not None:
+        metadata['effects_reserved_configuration'] = effects_reservation_evidence
+    if local_stream_selection is not None:
+        metadata['local_stream_release'] = local_stream_selection
     if usb_retired:
         metadata['task3_w_usb_retirement']=dict(selection=usb_retirement_selection,
             constraints=usb_retirement_constraints)
@@ -695,6 +724,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         metadata['task3_paired']=task3_paired_selection
         if task3_tail_reset is not None:
             metadata['task3_tf_tail_reset'] = task3_tail_reset
+        if task3_tf_compute_reset is not None:
+            metadata['task3_tf_compute_reset']=task3_tf_compute_reset
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR
@@ -722,7 +753,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if classic_selected:
             from tools.workstation_classic_runtime import prepare_selection
             metadata['classic_runtime']=prepare_selection(root,stage,output,physical_rom_bytes=ae350_memory['boot_rom_bytes'],selected_provider=selected_provider if demo_role=='W' else None,headless_worker=audio_only,media_worker=media_worker,paired_worker=paired_worker,
-                paired_sdc_evidence=task3_paired_sdc,usb_retirement_constraints=usb_retirement_constraints,
+                paired_sdc_evidence=task3_paired_sdc,usb_retirement_constraints=usb_retirement_constraints,preboard_cdc=preboard_cdc_evidence,
                 **({'phone_batch':True}if phone_batch_worker else{}))
         attach_profile(root, output, metadata, workstation_profile)
     (output / 'integration_inputs.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')

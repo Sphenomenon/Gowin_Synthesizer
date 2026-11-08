@@ -12,7 +12,7 @@ POLICY = 'task3_m_TF_tail_existing_local_release_v1'
 KEY = 'tf_tail_reset_policy'
 PROFILE = 'custom138k-workstation-task3-m-paired-checkpoint-v19'
 PROFILES = (PROFILE, 'custom138k-workstation-task3-m-paired-checkpoint-v20',
-            'custom138k-workstation-task3-m-paired-checkpoint-v21')
+            'custom138k-workstation-task3-m-paired-checkpoint-v21', 'custom138k-workstation-task3-m-preboard-v1')
 RUNTIME = 'rtl/workstation/workstation_runtime_audio.sv'
 TAIL = 'rtl/tf_audio/workstation_tf_physical_tail_v1.sv'
 TOOL = 'tools/workstation_task3_tf_tail_reset.py'
@@ -106,7 +106,7 @@ def evidence(stage, configuration):
         mapped_reset_verified=False, routed_timing_verified=False, hardware_tested=False)
 
 
-def audit_mapped(n, *, stage):
+def audit_mapped(n, *, stage, root=None):
     """Prove the two actual release chains and every selected tail reset pin.
 
     This gate does not replace mailbox payload, Gray, complete CPU/TF CDC or
@@ -119,7 +119,7 @@ def audit_mapped(n, *, stage):
     profile=json.loads((stage.parents[1]/'workstation_profile.json').read_text())
     require(profile.get('profile') in PROFILES, 'mapped reset requires explicit reviewed M')
     source=evidence(stage,profile['configuration'])
-    root=audit_root_startup(n,stage=stage)
+    root=root or audit_root_startup(n,stage=stage)
     require(root.get('all_state_assignments_proven') is True, 'complete actual root proof required')
     g=Graph(n);rq=root['root_q'];runtime='u_managed/runtime'
     guard=g.register('u_runtime_memory_guard','started_o');guard_q=n.pin(guard,'Q')

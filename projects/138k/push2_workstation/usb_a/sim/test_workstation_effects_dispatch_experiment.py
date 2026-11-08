@@ -52,7 +52,8 @@ endmodule
 
 class EffectsDispatchExperiment(unittest.TestCase):
     def setUp(self):
-        self.parent=(ROOT/experiment.SOURCE).read_text()
+        from tools.workstation_effect_gain_path import normalize
+        self.parent=normalize((ROOT/experiment.SOURCE).read_bytes()).decode()
         self.selected=experiment.apply(self.parent)
 
     def test_exact_inverse_and_unselected_scope(self):
@@ -72,6 +73,17 @@ class EffectsDispatchExperiment(unittest.TestCase):
             with self.subTest(anchor=after),self.assertRaises(ValueError):
                 experiment.restore(self.selected.replace(after,before,1))
         with self.assertRaises(ValueError):experiment.restore(self.selected+'// changed sample path\n')
+
+    def test_maintained_native_selection_inverse(self):
+        from tools import workstation_effects_reserved_config as m
+        current=(ROOT/m.SOURCE).read_bytes()
+        self.assertEqual(m.digest(current),m.NATIVE_SHA256)
+        parent=m.normalize(current)
+        self.assertEqual(m.digest(parent),m.PARENT_SHA256)
+        self.assertEqual(m.normalize(current.replace(m.DEFAULT.encode(),m.SELECTED.encode())),parent)
+        for before,after in m.EDITS:
+            with self.subTest(anchor=after):
+                self.assertNotEqual(m.normalize(current.replace(after.encode(),before.encode(),1)),parent)
 
     def test_held_command_and_destructive_controls(self):
         original=(ROOT/experiment.DISPATCH).read_text()

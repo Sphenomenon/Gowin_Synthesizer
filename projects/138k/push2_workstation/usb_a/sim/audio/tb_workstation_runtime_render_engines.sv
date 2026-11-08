@@ -35,7 +35,7 @@ module tb_workstation_runtime_render_engines;
         .clk_i(clk), .rst_ni(rst), .panic_i(panic), .sample_ce_i(ce),
         .rate_commit_i(rate_commit), .rate_44100_i(rate44), .rate_ready_o(rate_ready),
         .applied_rate_44100_o(applied44), .quiescent_o(quiet),
-        .target_ratio_q20_i(target), .glide_step_q20_i(glide), .vibrato_depth_i(vibrato), .pitch_q20_o(pitch),
+        .target_ratio_q20_i(target), .glide_step_q20_i(glide),.glide_div147_i(21'd0), .vibrato_depth_i(vibrato), .pitch_q20_o(pitch),
         .mode_set_valid_i(mode_valid), .mode_set_ready_o(mode_ready), .mode_i(mode), .current_mode_o(current_mode),
         .event_valid_i(event_valid), .event_note_on_i(note_on), .scope_enable_i(scope),
         .event_profile_i(profile), .event_note_i(note), .event_off_note_i(off_note), .event_velocity_i(velocity),

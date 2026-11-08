@@ -18,6 +18,10 @@ from tools.workstation_demo_audit import (TOP, BASE, WS, ENGINES, checked, diges
 from tools.workstation_memory import CAPACITY, clock_estimates
 
 PROFILES = {
+    'custom138k-workstation-task3-m-preboard-v1': ('M', 'custom138k-native-task3-m-preboard-revision1',
+        'rtl/workstation/workstation_profile_task3_m_paired_sync_storage.sv'),
+    'custom138k-workstation-task3-w-preboard-v1': ('W', 'custom138k-native-task3-w-preboard-revision1',
+        'rtl/workstation/workstation_profile_task3_w_paired_banked96.sv'),
     'custom138k-workstation-task3-w-paired-banked96-v1': ('W', 'custom138k-native-task3-w-paired-banked96-revision1',
         'rtl/workstation/workstation_profile_task3_w_paired_banked96.sv'),
     'custom138k-workstation-task3-w-paired-no-usb-v1': ('W', 'custom138k-native-task3-w-paired-no-usb-revision1',
@@ -128,6 +132,17 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'sim/test_workstation_preboard_route_repairs.py',
+    'tools/workstation_task3_m_session_boundary.py',
+    'tools/workstation_task3_w_raw_command_capture.py',
+    'tools/workstation_task3_preboard_held_timing.py',
+    'tools/workstation_task3_tf_boundary_audit.py',
+    'tools/workstation_task3_tf_frame_arithmetic.py',
+    'tools/workstation_tf_compute_local_release.py',
+    'rtl/tf_audio/workstation_tf_compute_local_release_v1.adaptation.json',
+    'tools/workstation_preboard_physical_boundaries.py',
+    'tools/workstation_preboard_ddr_timing.py',
+    'tools/workstation_task3_tf_tail_gray.py',
     'tools/workstation_task3_demand_identity_compare.py',
     'tools/workstation_task3_capture_compare.py',
     'tools/workstation_task3_tf_tail_reset.py',
@@ -162,10 +177,24 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_lcd_cdc_audit.py',
     'tools/workstation_task3_paired_clock_audit.py',
     'tools/workstation_task3_m_paired_releases_audit.py',
+    'tools/workstation_task3_m_preboard_consumers.py',
+    'tools/workstation_task3_m_cpu_source_review.py',
+    'tools/task3_m_preboard_cpu_destination_inventory.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v2.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v3.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v4.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v5.json',
+    'tools/workstation_pcm_permission_compare.py',
+    'tools/workstation_pcm_bitmap_permission.py',
     'tools/workstation_task3_m_midi_release_sdc.py',
     'tools/workstation_task3_tf_contacts.py',
     'tools/workstation_task3_w_paired_cdc_audit.py',
     'tools/workstation_task3_w_usb_retirement.py',
+    'tools/workstation_local_stream_release.py',
+    'tools/workstation_task3_w_preboard_cdc.py',
+    'tools/workstation_w_context_compare.py',
+    'tools/workstation_committed_glide.py',
+    'tools/workstation_effect_gain_path.py',
     'tools/workstation_recording_phase1_cdc.py', 'tools/workstation_runtime_profile.py',
 )
 
@@ -576,7 +605,7 @@ def audit_m_sync_storage(rows):
 def audit(root, output, metadata):
     root, output = Path(root), Path(output)
     selected_audit_sources=AUDIT_SOURCES
-    if metadata.get('workstation_profile',{}).get('name')=='custom138k-workstation-task3-w-paired-banked96-v1':
+    if metadata.get('workstation_profile',{}).get('name') in ('custom138k-workstation-task3-w-paired-banked96-v1', 'custom138k-workstation-task3-w-preboard-v1'):
         selected_audit_sources+=('tools/workstation_task3_w_banked96.py',)
     seals = {name: sha(root / name) for name in selected_audit_sources}
     role, profile, stage, constraint_policy = verify_prepared(output, metadata)
@@ -663,6 +692,8 @@ def audit(root, output, metadata):
     from tools.workstation_task3_lcd_cdc_audit import audit_lcd_input_chains
     from tools.workstation_native_protocol_audit import protocol_netlist
     if profile['profile'] in (
+            'custom138k-workstation-task3-w-preboard-v1',
+            'custom138k-workstation-task3-m-preboard-v1',
             'custom138k-workstation-task3-w-paired-banked96-v1',
             'custom138k-workstation-task3-w-paired-no-usb-v1',
             'custom138k-workstation-task3-m-paired-checkpoint-v21',
@@ -725,9 +756,10 @@ def audit(root, output, metadata):
             n = protocol_netlist(vg_text, mapping='synthesis')
             root_reset = audit_root_startup(n, stage=stage)
             return dict(actual_root_startup=root_reset,
-                actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset))
+                actual_release_SDC=audit_paired_release_sdc(n, sdc, root=root_reset, stage=stage))
         gate('M_paired_release_CDC', paired_releases)
-        if profile['profile'] in ('custom138k-workstation-task3-m-paired-checkpoint-v21',
+        if profile['profile'] in ('custom138k-workstation-task3-m-preboard-v1',
+                                  'custom138k-workstation-task3-m-paired-checkpoint-v21',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v20',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v19',
                                   'custom138k-workstation-task3-m-paired-checkpoint-v18',
@@ -751,7 +783,7 @@ def audit(root, output, metadata):
             def midi_release_sdc():
                 n = protocol_netlist(vg_text, mapping='synthesis')
                 root_reset = audit_root_startup(n, stage=stage)
-                return audit_midi_release_sdc(n, sdc, root=root_reset)
+                return audit_midi_release_sdc(n, sdc, root=root_reset,stage=stage)
             gate('M_MIDI_release_SDC_semantics', midi_release_sdc)
     from tools.workstation_demo_boundary_cdc import audit as audit_boundary, netlist as boundary_netlist
     from tools.workstation_demo_boundary_cdc import validate_sdc as validate_boundary
@@ -777,6 +809,31 @@ def audit(root, output, metadata):
             metadata['demo_runtime_timing'], protocol_netlist(vg_text, mapping='synthesis'),
             mapping='synthesis', netlist_text=vg_text,
             task3_direct_constraints=metadata['task3_tf_direct_cdc']))
+    from tools.workstation_task3_w_preboard_cdc import configured as preboard_cdc_configured, audit as audit_preboard_cdc
+    if preboard_cdc_configured(profile['configuration']):
+        gate('W_preboard_release_and_CNN_Gray_CDC', lambda: audit_preboard_cdc(
+            protocol_netlist(vg_text, mapping='synthesis'), stage, sdc, metadata))
+    if profile['profile'] in ('custom138k-workstation-task3-m-preboard-v1',
+                              'custom138k-workstation-task3-w-preboard-v1'):
+        from tools.workstation_runtime_pcm_cdc import Graph,B,prove_reply_byte_headers
+        def header_bytes():
+            n=protocol_netlist(vg_text,mapping='synthesis');g=Graph(n)
+            cuts=prove_reply_byte_headers(n,g,g.group(B,'held_reply',98))
+            require(cuts is not None and len(cuts)==8,'preboard serializer byte predicates absent')
+            return dict(header_bits=64,exact_byte_predicates=sorted(cuts),
+                no_extra_state_or_cycles=True,routed_timing_verified=False)
+        gate('preboard_serializer_byte_header',header_bytes)
+        from tools.workstation_task3_preboard_held_timing import audit as paired_held
+        gate('preboard_F808_and_PANIC_held_boundaries',lambda:paired_held(
+            protocol_netlist(vg_text,mapping='synthesis'),role=role)[0])
+        if role=='M':
+            from tools.workstation_task3_m_session_boundary import audit as session_boundary
+            gate('preboard_M_HCI_session_boundary',lambda:session_boundary(
+                protocol_netlist(vg_text,mapping='synthesis'))[0])
+        else:
+            from tools.workstation_task3_w_raw_command_capture import audit as raw_boundary
+            gate('preboard_W_raw_command_capture',lambda:raw_boundary(
+                protocol_netlist(vg_text,mapping='synthesis'))[0])
     if profile['configuration'].get('usb2_cpu_ram_bytes',65536)==49152:
         from tools.workstation_usb_cpu_rom import check_banked_rom
         usb_gate('USB_ROM',lambda:check_banked_rom(stage,netlist,metadata['firmware']))

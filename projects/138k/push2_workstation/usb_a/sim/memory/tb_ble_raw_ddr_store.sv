@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module tb_ble_raw_ddr_store #(parameter integer FIFO_BITS=8,MEM_HALF=7);
+module tb_ble_raw_ddr_store #(parameter integer FIFO_BITS=8,MEM_HALF=7,CAPTURE_COMMAND=0);
     reg clk=0,memory_clk=0,rst_n=0,memory_run=1;
     always #10 clk=~clk;
     always #(MEM_HALF) if(memory_run)memory_clk=~memory_clk;else memory_clk=0;
@@ -18,7 +18,7 @@ module tb_ble_raw_ddr_store #(parameter integer FIFO_BITS=8,MEM_HALF=7);
     reg read_response=0;
     reg [255:0] read_data=0;
     reg transport_fault=0;
-    workstation_ble_raw_ddr_store #(.BASE_APP(BASE),.FIFO_ADDRESS_BITS(FIFO_BITS),.COMMAND_TIMEOUT_CYCLES(2048),.READ_TIMEOUT_CYCLES(2048)) dut(
+    workstation_ble_raw_ddr_store #(.CAPTURE_COMMAND(CAPTURE_COMMAND),.BASE_APP(BASE),.FIFO_ADDRESS_BITS(FIFO_BITS),.COMMAND_TIMEOUT_CYCLES(2048),.READ_TIMEOUT_CYCLES(2048)) dut(
         .clk_i(clk),.memory_clk_i(memory_clk),.rst_ni(rst_n),
         .start_valid_i(start),.start_ready_o(start_ready),.start_done_o(start_done),
         .clear_valid_i(clear),.clear_ready_o(clear_ready),.clear_done_o(clear_done),

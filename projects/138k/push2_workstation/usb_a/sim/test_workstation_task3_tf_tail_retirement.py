@@ -38,10 +38,8 @@ class ActualTask3TailRetirement(unittest.TestCase):
         cls.n=protocol_netlist(cls.vg.read_text(),mapping=cls.mapping)
         cls.root=audit_root_startup(cls.n,stage=cls.stage)
         cls.positive,cls.mutations,cls.failed=None,[],False
-        cls.before={str(p):sha(p) for p in (cls.vg,cls.stage/'Prj1.gprj',cls.stage/SOURCE,
-            cls.stage/'src/platform/reset_release.v',
-            cls.stage/'rtl/workstation/workstation_profile_task3_m_direct_tf.sv',
-            cls.stage/'rtl/workstation/gw138k_push_workstation_top.v',
+        cls.before={str(p):sha(p) for p in (cls.vg,cls.stage/SOURCE,
+            *(cls.stage/path for path in cls.root['source_sha256']),
             ROOT/'tools/workstation_task3_root_reset_audit.py',
             ROOT/'tools/workstation_task3_tf_direct.py',
             ROOT/'tools/workstation_native_protocol_audit.py',

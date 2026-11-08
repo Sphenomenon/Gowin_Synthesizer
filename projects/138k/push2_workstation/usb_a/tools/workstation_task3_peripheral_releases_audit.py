@@ -119,7 +119,7 @@ def audit_source_payload_commit(n, *, scope, clear):
 def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                   root_q, other_reset, opaque_cpu_reset=False,
                   shared_cpu_source=False, expected_final_count,
-                  paired_final_closure=None):
+                  paired_final_closure=None, preboard_review=None):
     """Follow actual CLEAR -> INV -> Q2 -> D2/Q1 -> D1/Q0 -> one."""
     clear = n.pin(functional, 'CLEAR')
     drivers = g.drivers[clear]
@@ -170,7 +170,10 @@ def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                 not c['primitive_endpoints'] and not c['top_output_endpoints'],
                 'early release stage has an extra/bypassed consumer: ' + registers[bit])
     final = closures[2]
-    if paired_final_closure is not None:
+    if preboard_review is not None:
+        from tools.workstation_task3_m_preboard_consumers import verify
+        verify(n,g,final,**preboard_review)
+    elif paired_final_closure is not None:
         require(paired_final_closure in (PAIRED_CPU_SOURCE_CLOSURE, PAIRED_CPU_DESTINATION_CLOSURE) and
                 closure_identity(final) == paired_final_closure and
                 len(final['ff_endpoints']) == expected_final_count,
@@ -213,7 +216,7 @@ def trace_release(n, g, functional, *, alias_scope, alias_stem, clock,
                 physical_recovery_removal_verified=False)
 
 
-def audit_peripheral_releases(n, *, root):
+def audit_peripheral_releases(n, *, root, stage=None):
     g = Graph(n)
     require(root.get('policy') == ROOT_POLICY and root.get('all_state_assignments_proven') is True
             and root.get('actual_state_bits') == 35 and
@@ -238,6 +241,7 @@ def audit_peripheral_releases(n, *, root):
             n.pin(CPU_BLACKBOX, 'preset_n') == cpu_reset and not g.drivers[cpu_reset] and
             cpu_reset not in g.high | g.low,
             'declared opaque AE350 preset_n boundary changed')
+    preboard=root.get('root_profile')=='custom138k-workstation-task3-m-preboard-v1'
     chains, scopes = [], []
     configs = (
         ('performance', PERFORMANCE_BITS, 'audio_clk', audio_reset,
@@ -262,6 +266,7 @@ def audit_peripheral_releases(n, *, root):
             row = trace_release(n, g, functional, alias_scope=alias, alias_stem=stem,
                 clock=clock, root_q=root['root_q'], other_reset=other_reset,
                 opaque_cpu_reset=name == 'cpu', shared_cpu_source=opaque, expected_final_count=count,
+                preboard_review=(dict(role=role,stage=stage) if preboard and name=='cpu' else None),
                 paired_final_closure=((PAIRED_CPU_SOURCE_CLOSURE if role == 'source' else
                     PAIRED_CPU_DESTINATION_CLOSURE) if paired and name == 'cpu' else None))
             row.update(id=name + '-' + role, functional_scope=scope, role=role)

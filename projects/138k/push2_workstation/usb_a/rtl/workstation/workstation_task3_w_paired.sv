@@ -126,6 +126,7 @@ module workstation_task3_w_paired #(
     assign raw_close_ready_o=control_ready_o && close_ready;
     assign raw_fetch_ready_o=control_ready_o && fetch_ready;
     workstation_ble_raw_ddr_store #(
+        .CAPTURE_COMMAND(1'b1),
         .BASE_APP(`PRJ1_DDR_TASK3_W_RECORDING_APP_BASE),.CAPACITY_FRAMES(RECORD_CAPACITY_FRAMES),
         .COMMAND_TIMEOUT_CYCLES(RAW_COMMAND_TIMEOUT_CYCLES),.READ_TIMEOUT_CYCLES(RAW_READ_TIMEOUT_CYCLES)) raw_store(
         .clk_i(clk_i),.memory_clk_i(memory_clk_i),.rst_ni(service_reset_n),

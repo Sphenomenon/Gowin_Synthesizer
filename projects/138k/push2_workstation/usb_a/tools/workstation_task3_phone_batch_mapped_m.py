@@ -135,13 +135,19 @@ def source_evidence(stage):
                 'demand identity source inverse changed')
         sources=dict(sources,**{demand.ENDPOINT:sha(stage/demand.ENDPOINT)})
     from tools import workstation_task3_capture_compare as capture
-    capture_profile=profile.get('profile')==capture.PROFILE
+    capture_profile=profile.get('profile') in capture.PROFILES
     require(capture.configured(profile['configuration']) is capture_profile,'capture ordering policy/profile mismatch')
     if capture_profile:
         capture.evidence(stage,profile['configuration'])
         require(capture.digest(capture.restore((stage/capture.SOURCE).read_text()))==sources[capture.SOURCE],
                 'capture ordering source inverse changed')
         sources=dict(sources,**{capture.SOURCE:sha(stage/capture.SOURCE)})
+    if profile['profile']=='custom138k-workstation-task3-m-preboard-v1':
+        from tools.workstation_pcm_permission_compare import normalize,SOURCE
+        from tools.workstation_pcm_bitmap_permission import normalize as bitmap_inverse
+        require(hashlib.sha256(normalize(bitmap_inverse((stage/SOURCE).read_bytes()))).hexdigest()==sources[SOURCE],
+                'PCM full-width permission comparison inverse changed')
+        sources=dict(sources,**{SOURCE:sha(stage/SOURCE)})
     selected = selected_batch_source_evidence(
         stage, stage, profile['configuration'], provider)
     require(selected is not None, 'snapshot parameter selection absent')
@@ -471,16 +477,53 @@ def audit(n, *, stage):
         # an arbitrary independent input; no upstream arbitration is assumed.
         clear = n.pin(request_toggle, 'CLEAR')
         acceptance = common(held, 'CE')
-        bd = MappedDiagram([q(request_toggle), acceptance, clear])
+        if source['root_source']['root_profile'] == 'custom138k-workstation-task3-m-preboard-v1':
+            # The fresh PCM factoring changes how synthesis shares arbitration
+            # between held CE and toggle D/CE. Prove both complete functions
+            # over the same actual state inputs; do not assume a shared gate.
+            roots=(q(request_toggle),acceptance,clear,n.pin(request_toggle,'D'),n.pin(request_toggle,'CE'))
+            # Shared actual cones may be independent symbolic inputs. This
+            # overapproximates their reachable values and preserves no hidden
+            # equality between different nets. Expand all unshared logic.
+            from collections import Counter
+            count=Counter()
+            def dependencies(net,seen):
+                if net in seen or net in g.high|g.low:return
+                seen.add(net)
+                drivers=g.drivers[net]
+                require(len(drivers)==1,'toggle cone driver absent/ambiguous')
+                path,port=drivers[0]
+                if path in g.regs:return
+                require(n.cells[path]['kind'] in COMB,'toggle cone primitive changed')
+                for pin in n.cells[path]['ports']:
+                    if pin not in COMB[n.cells[path]['kind']]:dependencies(n.pin(path,pin),seen)
+            for net in roots:
+                seen=set();dependencies(net,seen);count.update(seen)
+            cuts=set()
+            def frontier(net):
+                if net in g.high|g.low or net in cuts:return
+                path,port=g.drivers[net][0]
+                if count[net]>1 or path in g.regs:
+                    cuts.add(net);return
+                for pin in n.cells[path]['ports']:
+                    if pin not in COMB[n.cells[path]['kind']]:frontier(n.pin(path,pin))
+            for net in roots:frontier(net)
+            bd=MappedDiagram(sorted(cuts))
+            accepted=bd.net(g,acceptance)
+            asserted=bd.net(g,clear)
+        else:
+            bd = MappedDiagram([q(request_toggle), acceptance, clear])
+            accepted=bd.inputs[acceptance]
+            asserted=bd.inputs[clear]
         actual = bd.choose(bd.net(g, n.pin(request_toggle, 'CE')),
                            bd.net(g, n.pin(request_toggle, 'D')), bd.inputs[q(request_toggle)])
-        actual = bd.choose(bd.inputs[clear], 0, actual)
-        expected = bd.choose(bd.inputs[clear], 0,
-                             bd.different(bd.inputs[q(request_toggle)], bd.inputs[acceptance]))
+        actual = bd.choose(asserted, 0, actual)
+        expected = bd.choose(asserted, 0,
+                             bd.different(bd.inputs[q(request_toggle)], accepted))
         require(actual == expected, 'request toggle reset-inclusive next-Q changed')
         proofs.append(dict(contract='request toggle changes exactly with held command acceptance',
                            reset_inclusive_next_q_exact=True, independent_inputs=list(bd.inputs),
-                           all_input_assignments=8, bdd_nodes=len(bd.nodes),
+                           all_input_assignments=1 << len(bd.inputs), bdd_nodes=len(bd.nodes),
                            mapped_D=n.pin(request_toggle, 'D'), mapped_CE=n.pin(request_toggle, 'CE'),
                            asynchronous_assertion_bound_by_exact_FF_and_clear=True))
     else:
@@ -550,7 +593,8 @@ def audit(n, *, stage):
         for bit, path in enumerate(src):
             dest = g.register(OWNER, 'g_snapshot.words[' + str(word) + ']', bit)
             require(n.pin(dest, 'D') == q(path), 'real owner field snapshot disconnected: ' + str(word) + '/' + str(bit))
-    capture_ce = common(owner_words + capture_id, 'CE')
+    preboard=source['root_source']['root_profile']=='custom138k-workstation-task3-m-preboard-v1'
+    capture_ce = common(owner_words if preboard else owner_words + capture_id, 'CE')
     # Named actual primitive Qs prevent an invented request or source alias
     # from serving as an unconstrained cut at this important boundary.
     named = [*(q(p) for p in capture_id), *(q(p) for p in local[32:44]), q(local[48]),
@@ -568,8 +612,14 @@ def audit(n, *, stage):
     require(bd.net(g, capture_ce) == expected_capture, 'owner atomic capture/read090 acceptance changed')
     carry = 1
     for path in capture_id:
-        require(bd.net(g, n.pin(path, 'D')) == bd.different(bq(path), carry),
-                'owner capture ID increment changed: ' + path)
+        incremented=bd.different(bq(path),carry)
+        if preboard:
+            actual=bd.choose(bd.net(g,n.pin(path,'CE')),bd.net(g,n.pin(path,'D')),bq(path))
+            expected=bd.choose(expected_capture,incremented,bq(path))
+            require(actual==expected,'owner capture ID effective next-Q changed: '+path)
+        else:
+            require(bd.net(g, n.pin(path, 'D')) == incremented,
+                    'owner capture ID increment changed: ' + path)
         carry = bd.both(carry, bq(path))
     proofs.append(dict(contract='real command read090 captures all owner words and increments unsaturated ID',
                        exact=True, leaf_state_bits=len(named), state_assignments=1 << len(named),

@@ -44,17 +44,25 @@ def bench_view(text):
     assert text.count(anchor)==1 and text.count('        3:begin\n')==1
     return text.replace(anchor,monitor+anchor).replace('        3:begin\n',case+'        3:begin\n')
 
-def run(out):
+def run(out, *, native=False):
     out.mkdir(parents=True,exist_ok=False)
     parent=ROOT/experiment.SOURCE;dispatch=ROOT/experiment.DISPATCH
     bench=ROOT/'sim/audio/tb_workstation_runtime_effects.sv'
-    selected=out/'selected_effects.sv';selected.write_text(experiment.apply(parent.read_text()))
+    selected=out/'selected_effects.sv'
+    from tools import workstation_effects_reserved_config as maintained
+    from tools.workstation_effect_gain_path import normalize as historical
+    if native:
+        selected.write_text(parent.read_text().replace(maintained.DEFAULT,maintained.SELECTED,1))
+        assert historical(selected.read_bytes()) == historical(parent.read_bytes())
+    else:
+        selected.write_text(experiment.apply(historical(parent.read_bytes()).decode()))
     fixture=out/'effects_bench.sv';fixture.write_text(bench_view(bench.read_text()))
     original_run=subprocess.run
     commands=[]
-    tracked=[parent,dispatch,bench,Path(__file__),ROOT/'tools/workstation_effects_dispatch_experiment.py']
+    tracked=[parent,dispatch,bench,Path(__file__),ROOT/'tools/workstation_effects_dispatch_experiment.py',ROOT/maintained.TOOL,ROOT/'tools/workstation_effect_gain_path.py']
     before={str(p):sha(p) for p in tracked}
-    result=dict(schema=1,passed=False,input_sha256=before,experiment=experiment.evidence(selected.read_text()),
+    result=dict(schema=1,passed=False,input_sha256=before,experiment=(dict(policy=maintained.POLICY, normal_sample_datapath_unchanged=True,
+            minimum_added_configuration_cycles=1) if native else experiment.evidence(selected.read_text())),
         scope='Actual native full effects/DDR DMA plus independent prepared and arithmetic references. '
               'Only configuration dispatch latency changes; not whole-workstation, CDC, STA or hardware acceptance.',
         production_profile_selected=False,hardware_tested=False,commands=commands)
@@ -107,4 +115,6 @@ def run(out):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
-    run(parser.parse_args().output.resolve())
+    parser.add_argument('--selected-native',action='store_true')
+    args=parser.parse_args()
+    run(args.output.resolve(),native=args.selected_native)

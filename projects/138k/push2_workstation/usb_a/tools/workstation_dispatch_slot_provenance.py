@@ -299,6 +299,11 @@ def restore_parent(relative, source):
 
 def normalize_source(relative, source):
     relative = str(relative)
+    try:
+        from tools.workstation_committed_glide import normalize as normalize_glide
+    except ModuleNotFoundError:
+        from workstation_committed_glide import normalize as normalize_glide
+    source = normalize_glide(relative, source)
     if relative in ORIGINAL_SHA256 and sha(source) == ORIGINAL_SHA256[relative]:
         return source
     return restore_parent(relative, source)

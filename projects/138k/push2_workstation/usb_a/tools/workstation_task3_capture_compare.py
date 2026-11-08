@@ -9,6 +9,7 @@ import hashlib
 POLICY='task3_m_capture_unsigned32_group8_v1'
 KEY='m_capture_compare_policy'
 PROFILE='custom138k-workstation-task3-m-paired-checkpoint-v21'
+PROFILES=(PROFILE,'custom138k-workstation-task3-m-preboard-v1')
 SOURCE='rtl/workstation/workstation_task3_phone_batch_m.sv'
 TOOL='tools/workstation_task3_capture_compare.py'
 PARENT_SHA256='f5d823e777b203655fdd88e0b182df078a887732f343884eaa76b7703740ae2c'

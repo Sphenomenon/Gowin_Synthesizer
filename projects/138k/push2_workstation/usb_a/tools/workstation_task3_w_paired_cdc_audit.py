@@ -5,6 +5,7 @@ consumer inventories. The paired W queue has no M settled-status receiver.
 Retired display scopes gain no invented stand-in mailbox. No legacy auditor,
 clock, timing budget or hardware acceptance is changed here.
 """
+from pathlib import Path
 import bisect
 import fnmatch
 import hashlib
@@ -279,7 +280,7 @@ def _mailboxes(n, g):
 SHARED_CONTROL_RELEASE_CLOSURE_SHA256 = '477bbd629328a4c398d69f6e7d3951094683948bf87f480190314504e35e35d2'
 
 
-def _root_release(n, g, clear, root_q, domain):
+def _root_release(n, g, clear, root_q, domain, *, local_scope=None, local_side=None):
     support = g.support(clear)
     require(len(support) == 1, 'mailbox CLEAR is not one registered local release')
     last_q = next(iter(support))
@@ -304,13 +305,17 @@ def _root_release(n, g, clear, root_q, domain):
                     'u_managed/midi_bytes/source_release_2_s0'],
         'audio_clk': [f'u_managed/midi_bytes/destination_release_{i}_s0' for i in range(3)],
         'dac_mclk_d': [f'u_managed/observation/drops/source_release_{i}_s0' for i in range(3)]}
+    if local_scope is not None:
+        require(local_scope in ('u_managed/pc_bytes', 'u_managed/health_snapshot') and
+                local_side in ('source', 'destination'), 'unreviewed preserved release owner')
+        expected[domain] = [g.register(local_scope, 'g_preserved_release.' + local_side + '_pipe', i) for i in range(3)]
     require(stages == expected[domain], 'W reviewed local release mapping changed: ' + domain)
     require(len({n.pin(p, 'CLEAR') for p in stages}) == 1,
             'W release common assertion differs between stages')
     assertion = inverse(g, n.pin(stages[0], 'CLEAR'), root_q, 'W local release exact common root assertion')
     closures = []
     for index in (0, 1):
-        if domain == 'clk_50m' and index == 1:
+        if local_scope is None and domain == 'clk_50m' and index == 1:
             closure = complete_closure(n, g, [stages[index]])
             digest = hashlib.sha256(json.dumps(closure, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
             require(digest == SHARED_CONTROL_RELEASE_CLOSURE_SHA256 and
@@ -345,7 +350,10 @@ def _held_resets(n, g, result, root):
         if scope == 'u_managed/pc_bytes':
             source += g.group(scope, 'drop_count', 32)
             destination.append(g.register(scope, 'destination_valid'))
-        require(set(source + destination) == {p for p in g.regs if p.startswith(scope + '/')},
+        local_release = result.get('local_stream_release') is not None
+        release_regs = [g.register(scope, 'g_preserved_release.' + side + '_pipe', i)
+                        for side in ('source', 'destination') for i in range(3)] if local_release else []
+        require(set(source + destination + release_regs) == {p for p in g.regs if p.startswith(scope + '/')},
                 'paired W mailbox exact functional register inventory changed: ' + scope)
         releases = {}
         for side, owners, domain in (('source', source, mailbox['source_clock']),
@@ -354,7 +362,9 @@ def _held_resets(n, g, result, root):
                 zero_ff(n, g, p, domain)
             clears = {n.pin(p, 'CLEAR') for p in owners}
             require(len(clears) == 1, 'mailbox shared local reset changed: ' + scope)
-            releases[side] = dict(_root_release(n, g, next(iter(clears)), root_q, domain),
+            releases[side] = dict(_root_release(n, g, next(iter(clears)), root_q, domain,
+                local_scope=scope if local_release else None,
+                local_side=side if local_release else None),
                                   owners=owners, reset_asserted_value=0)
         source_q, dest_q = releases['source']['final_q'], releases['destination']['final_q']
         cq = lambda stem: n.pin(g.register(scope, stem), 'Q')
@@ -586,32 +596,59 @@ def audit_retirements(n):
         startup.append(dict(first=first, second=second, primitive='DFFCE', actual_async_pin='CLEAR',
                             former_pin='RESET', assertion_proof=proof, first_stage_closure=closure))
     scope = 'u_task3_media/cnn_stream/task_service'
-    first, second = g.register(scope, 'backend_meta'), g.register(scope + '/cnn', 'model_memory_ready')
-    require(not any(p.startswith((scope + '/cnn/model_memory_meta_s', scope + '/backend_sync_s'))
-                    for p in n.cells), 'CNN merged first/second duplicate reappeared')
+    first = g.register(scope, 'backend_meta')
+    aliases = [(scope + '/cnn', 'model_memory_ready'), (scope, 'backend_sync')]
+    present = [(owner, stem) for owner, stem in aliases
+               if any(p.startswith(owner + '/' + stem + '_s') for p in g.regs)]
+    require(len(present) == 1, 'CNN second-stage alias absent/ambiguous')
+    second = g.register(*present[0])
+    require(not any(p.startswith(scope + '/cnn/model_memory_meta_s') for p in n.cells),
+            'CNN merged first-stage duplicate reappeared')
     for p in (first, second):
         zero_ff(n, g, p, 'clk_50m')
         require(n.pin(p, 'CE') in g.high, 'CNN backend-ready chain CE changed')
     producer = 'u_task3_media/memory/ddr_client_ready_s'
-    require(n.cells[producer]['kind'] == 'LUT4' and
-            n.cells[producer]['parameters'] == {'INIT': "16'h4000"} and
-            n.pin(first, 'D') == n.pin(producer, 'F') and
-            n.pin(second, 'D') == n.pin(first, 'Q') and
-            n.pin(first, 'CLEAR') == n.pin(second, 'CLEAR'),
-            'CNN merged ready first D/reset/second link changed')
-    require(n.pin(producer, 'I0') == n.canonical('u_task3_media/memory', 'bist_failed') and
-            n.pin(producer, 'I1') == n.canonical('u_task3_media/memory', 'bist_done') and
-            n.pin(producer, 'I2') == n.canonical('', 'ddr_client_reset_n') and
-            n.pin(producer, 'I3') == n.canonical('', 'n32_4'),
-            'CNN merged ready source no longer real memory BIST/client gate')
+    backend_binding = None
+    if present == [(scope, 'backend_sync')]:
+        native = g.register(scope, 'g_domain_reset.native_release', 2)
+        control = g.register(scope, 'g_domain_reset.control_release', 2)
+        zero_ff(n, g, native, 'memory_clk');zero_ff(n, g, control, 'clk_50m')
+        require(n.cells[producer]['kind']=='LUT4' and
+            n.cells[producer]['parameters']=={'INIT': "16'h1000"} and
+            [n.pin(producer,'I'+str(i))for i in range(4)]==[
+                n.canonical('u_task3_media/memory','bist_failed'),
+                n.canonical('u_task3_media','task3_memory_transport_fault'),
+                n.canonical('','ddr_client_reset_n'),
+                n.canonical('u_task3_media/memory','bist_done')],
+            'CNN ready BIST/fault/client gate changed')
+        backend_binding = g.equivalent('CNN backend first D exact ready AND native final release',
+            [n.pin(first,'D'),n.pin(producer,'F'),n.pin(native,'Q')],
+            lambda v:v[0]==int(v[1] and v[2]),cuts={n.pin(producer,'F'),n.pin(native,'Q')})
+        inverse(g,n.pin(first,'CLEAR'),n.pin(control,'Q'),'CNN backend control-domain release')
+        require(n.pin(second,'D')==n.pin(first,'Q') and
+            n.pin(first,'CLEAR')==n.pin(second,'CLEAR'),'CNN actual ready second link/reset changed')
+    else:
+        require(n.cells[producer]['kind'] == 'LUT4' and
+                n.cells[producer]['parameters'] == {'INIT': "16'h4000"} and
+                n.pin(first, 'D') == n.pin(producer, 'F') and
+                n.pin(second, 'D') == n.pin(first, 'Q') and
+                n.pin(first, 'CLEAR') == n.pin(second, 'CLEAR'),
+                'CNN merged ready first D/reset/second link changed')
+        require(n.pin(producer, 'I0') == n.canonical('u_task3_media/memory', 'bist_failed') and
+                n.pin(producer, 'I1') == n.canonical('u_task3_media/memory', 'bist_done') and
+                n.pin(producer, 'I2') == n.canonical('', 'ddr_client_reset_n') and
+                n.pin(producer, 'I3') == n.canonical('', 'n32_4'),
+                'CNN merged ready source no longer real memory BIST/client gate')
     first_closure = _closure(n, g, [first], {second + '/D': 'clk_50m'}, 'CNN merged backend first stage')
     return dict(policy=POLICY, retired_selectors=list(RETIRED_SELECTORS),
         retired_registers_and_owners_absent=True, constant_media_receivers=constant_receivers,
         startup_async_pin_rebindings=startup, cnn_backend_ready_merge=dict(
             original_first=scope + '/cnn/model_memory_meta', selected_first=first,
             original_second=scope + '/backend_sync', selected_second=second,
-            source_pin=producer + '/F', source_gate='!bist_failed && bist_done && client_reset && peer_gate',
-            first_stage_complete_closure=first_closure, exact_two_stage_link=True),
+            source_pin=producer + '/F', source_gate=('(!bist_failed && !native_transport_fault && client_reset && bist_done) AND native_release2'
+                         if backend_binding is not None else '!bist_failed && bist_done && client_reset && peer_gate'),
+            first_stage_complete_closure=first_closure, exact_two_stage_link=True,
+            native_release_ready_binding=backend_binding),
         fixed_runtime_retirement_is_W_only=True, routed_mapping_reviewed=False, hardware_tested=False)
 
 
@@ -631,6 +668,10 @@ def audit_held(stage, sdc, metadata, n, *, mapping='synthesis'):
         timing_boundaries=audit_timing_boundaries(n, g, profile='w-demo-d'),
         retired_display_and_TF_owners_absent=True, constraints_complete=False,
         routed_timing_verified=False, physical_cdc_accepted=False, hardware_tested=False)
+    from tools.workstation_local_stream_release import verify as verify_local_stream
+    result['local_stream_release'] = verify_local_stream(stage,
+        json.loads((Path(stage).parent.parent/'workstation_profile.json').read_text())['configuration'], metadata.get('local_stream_release'),
+        metadata['enabled_inputs'])
     result['retained_held_handshakes'] = _held_resets(n, g, result, root)
     result['paired_constraint_retirement_and_rebinding'] = audit_retirements(n)
     result['installed_local_sdc'] = validate_held_sdc(sdc, n, result)

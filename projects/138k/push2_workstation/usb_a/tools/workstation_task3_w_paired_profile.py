@@ -42,6 +42,7 @@ SOURCES = tuple(s for s in media.SOURCES if s not in (
     'rtl/music/workstation_task3_cnn_stream_w.sv')
 DEPENDENCIES = tuple(dict.fromkeys((*media.DEPENDENCIES,
     'tools/workstation_task3_w_fault_cdc.py',
+    'tools/workstation_w_context_compare.py',
     'tools/workstation_task3_w_paired_profile.py', PROVIDER, BATCH_PROVIDER, REFERENCE, BOARD,
     'tools/workstation_task3_w_paired_firmware.py',
     'tools/build_resource_rework.py',

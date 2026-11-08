@@ -2,7 +2,7 @@
 module tb_pitch_partition;
 reg clk=0,rst=0,ce=0,rate=0;reg[21:0] target=1048576;reg[15:0] step=0;reg[6:0] depth=0;
 wire[21:0] a,b;
-workstation_rate_pitch_expression dut(clk,rst,ce,rate,target,step,depth,a);
+workstation_rate_pitch_expression dut(clk,rst,ce,rate,target,step,21'd0,depth,a);
 reference_pitch refdut(clk,rst,ce,rate,target,step,depth,b);
 integer cases=0,edges=0;reg[31:0] random=32'ha4769e21;reg[15:0] saved_step;reg[7:0] remv;
 task check;

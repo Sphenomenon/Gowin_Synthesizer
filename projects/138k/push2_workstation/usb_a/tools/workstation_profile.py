@@ -596,6 +596,31 @@ PROFILE_REGISTRY[TASK3_W_BANKED96_NAME]=dict(_parent,revision=1,provider=_boot_p
     integration_identity='custom138k-native-task3-w-paired-banked96-revision1')
 
 
+# Preboard profiles retain the complete paired roles and all earlier fallbacks.
+# They select current structural repairs; physical acceptance remains separate.
+TASK3_PREBOARD_NAMES = {}
+for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED96_NAME)):
+    _name = 'custom138k-workstation-task3-' + _role + '-preboard-v1'
+    _parent = PROFILE_REGISTRY[_parent_name]
+    _configuration = dict(_parent['configuration'])
+    if _role == 'w':
+        from tools.workstation_local_stream_release import KEY as _stream_key, POLICY as _stream_policy
+        from tools.workstation_w_context_compare import POLICY as _context_policy
+        from tools.workstation_task3_w_preboard_cdc import KEY as _cdc_key, POLICY as _cdc_policy
+        _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
+                               _cdc_key: _cdc_policy,
+                               'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
+    else:
+        _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
+                              effects_gain_policy='same_edge_distance_slew_v1',
+                              tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
+                              effects_dispatch_policy='task3_M_reserved_effects_configuration_v1')
+    PROFILE_REGISTRY[_name] = dict(_parent, revision=1, configuration=_configuration,
+        config='boards/custom_138k/workstation_profile_task3_' + _role + '_preboard_v1.json',
+        integration_identity='custom138k-native-task3-' + _role + '-preboard-revision1')
+    TASK3_PREBOARD_NAMES[_role.upper()] = _name
+
+
 def specification(name):
     if name not in PROFILE_REGISTRY:
         raise ValueError('unknown workstation profile: '+str(name))
@@ -843,6 +868,9 @@ def _artifact(root, output, metadata, profile):
     verify_usb_retirement(stage, profile['configuration'], metadata.get('task3_w_usb_retirement'),
                           metadata['enabled_inputs'])
     installed_sdc = restore_selected_sdc(installed_sdc, metadata)
+    from tools.workstation_local_stream_release import verify as verify_local_stream
+    verify_local_stream(stage, profile['configuration'], metadata.get('local_stream_release'),
+                        metadata['enabled_inputs'])
     paired_role=spec.get('paired_role')
     if paired_role is not None:
         from tools.workstation_task3_paired_board import verify_selection as verify_pair,restore_constraints as restore_pair_constraints
@@ -1049,6 +1077,25 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target in ('rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
+                      'rtl/tf_audio/workstation_tf_frame_bridge_v2.sv') and profile['configuration'].get('tf_compute_reset_policy') is not None:
+            from tools import workstation_tf_compute_local_release as tf_compute
+            if (tf_compute.evidence(stage,profile['configuration']) != metadata.get('task3_tf_compute_reset') or
+                    tf_compute.unselect((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('TF compute local reset source selection changed')
+            staged_hash=sha(stage/target)
+        if target == 'rtl/workstation/workstation_runtime_controlled.sv' and profile['configuration'].get('stream_release_policy') is not None:
+            from tools import workstation_local_stream_release as local_stream
+            if (local_stream.restore_controlled((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('local stream mailbox scope binding drift')
+            staged_hash = sha(stage/target)
+        if target == 'rtl/audio/workstation_runtime_stereo_effects.sv' and profile['configuration'].get('effects_dispatch_policy') is not None:
+            from tools import workstation_effects_reserved_config as effects_reservation
+            selected=(stage/target).read_text()
+            if (effects_reservation.evidence(stage,profile['configuration']) != metadata.get('effects_reserved_configuration') or
+                    selected.replace(effects_reservation.SELECTED,effects_reservation.DEFAULT,1) != (root/source).read_text()):
+                raise ValueError('effects reserved configuration selection drift')
+            staged_hash=sha(stage/target)
         if target == 'rtl/workstation/workstation_runtime_audio.sv' and profile['configuration'].get('tf_tail_reset_policy') is not None:
             from tools import workstation_task3_tf_tail_reset as tail_reset
             if (tail_reset.evidence(stage, profile['configuration']) != metadata.get('task3_tf_tail_reset') or
@@ -1163,6 +1210,7 @@ def _artifact(root, output, metadata, profile):
         verify_selection(root,stage,output,metadata.get('classic_runtime',{}),physical_rom_bytes=profile['configuration']['ae350_boot_rom_bytes'],selected_provider=spec['provider'] if spec.get('demo_role')=='W' else None,headless_worker=audio_only,media_worker=media_worker,
             paired_sdc_evidence=metadata.get('task3_paired_sdc'),
             usb_retirement_constraints=metadata.get('task3_w_usb_retirement',{}).get('constraints'),
+            preboard_cdc=metadata.get('task3_w_preboard_cdc'),
             **({'paired_worker':True}if spec.get('paired_worker',False)else{}),
             **({'phone_batch':True}if spec.get('phone_batch',False)else{}))
         if media_worker:

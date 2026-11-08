@@ -64,6 +64,12 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
+2026-11-08 源码／综合阶段已完成：v22 的 M 26/26、W 25/25 完整综合门禁及 17 项 accepted-source 检查通过；身份与哈希见[阶段清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_SOURCE_20261108.json)。M A9 已完成物理实现，253 BSRAM、61129 CLS，setup/hold/recovery/removal 为 −3.909/−2.867/−7.854/+0.284 ns，仍不可上板；W B9 布局修订待结果。继续围绕实际同域长路径、held 数据短线和未完整落地的复位同步边界修复，保留时钟及功能；本阶段尚未交付一对时序通过的候选。
+
+2026-11-08 上板前收尾仍在进行，最新范围、修复、失败记录和验证入口见[本轮报告](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_20261108.md)，步骤见[SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)。本轮止于离线候选，不执行 SRAM 或 Flash 操作；真实 LCD 吞吐、DAC 延迟和整机演示留到正确目标板的下一阶段。
+
+### 2026-11-06 保留的检查点与失败证据
+
 截至 2026-11-06，两板 v21 保留为 paired 来源检查点；本轮另登记 M 独立演奏、W USB 退役和 W 显式 96 KiB 分 bank 配置。M 经授权修复 DDR 头文件封装后完成综合；显示邮箱的旧审计清单已补齐并通过完整标准综合审计，唯一一次 P2R0 已完成；PLL/启动子门禁通过，音频 setup 与 DDR hold 仍失败；两个 W 方案各完成一次综合及一次 P2R0。另有未选入的 M capture ID 一致性比较实验 F3。v21 将完整 32 位 capture ID 顺序比较分成四组；保留零值、相等值及回绕拒绝，不增加状态或等待周期。其中 W v21 的配置与全部编译字节保持 v20 原样，继续实际承担识别、手机接收/解码及唯一录音对象。完整时序、CDC/PLL 与目标板验收仍未完成。
 
 [本轮收敛核查](push2_workstation/usb_a/reports/DUAL138K_TASK3_CONVERGENCE_20261106.json)逐项复核了最新 goal：A 固定 M 独立演奏配置；B/C 将 W 实际 BSRAM 从 E9 的 336 降至 287，保留真实 CNN、手机解码和唯一录音对象；异步混响与单引擎租约完成局部验证，但完整并发超过现有 LCD 容量，因此保持 M 本地效果。三个方案的首轮综合／P&R 已结束；A 的两次解析失败重建按用户授权单列，不增加布局试跑。本轮架构取舍已明确，最终双板工作站尚未验收。
@@ -161,6 +167,6 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 完整 M CPU release/consumer、held-handshake、TF CDC、W batch 消费者及 DDR/配置 payload hold 门禁继续保留。正确目标板接入后，先核对身份、引脚/电平及 LCD 有效吞吐、往返延迟和拥塞，再验收独立演奏、TF/CNN/Push、手机 D 按放效果与长录音/下载并发。44.1 kHz 后端仍需兼容的跨板 ARM 与真实来源格式绑定。
 
-必要 SRAM 验证沿用本任务授权，须先识别正确目标；Flash 仍需单独授权。每阶段完成相关验证后 commit、push 并更新证据。
+本次 2026-11-08 goal 止于上板前，先完成两板离线候选及 SRAM 验证清单，不执行板卡连接、加载或 Flash 操作。每阶段完成相关验证后 commit、push 并更新证据。
 
 历史来源与失败对照保留在 [priority review](push2_workstation/usb_a/reports/DUAL138K_TASK3_PRIORITY_REVIEW_20261105.json)、[M 同步存储](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_SYNC_STORAGE_20261105.json)、[录音格式](push2_workstation/usb_a/reports/DUAL138K_TASK3_RECORD_FORMATS_20261105.json)、[TF 尾帧本域复位](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TF_TAIL_LOCAL_RESET_20261106.json)、[终态流水线](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_TERMINAL_PIPELINE_20261106.json)、[128 位比较](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_IDENTITY_GROUPING_20261106.json)、[96 位手机比较](push2_workstation/usb_a/reports/DUAL138K_TASK3_M_PHONE_IDENTITY_20261106.json)和 [PLL 局部复核](push2_workstation/usb_a/reports/DUAL138K_TASK3_PAIRED_PHYSICAL_PROFILE_20261106.json)。

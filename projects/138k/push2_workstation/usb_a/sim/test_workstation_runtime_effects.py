@@ -12,6 +12,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tools'))
 from workstation_baselines import load_baseline
 from workstation_chorus_provenance import verify as verify_chorus, NARROW_POLICY, ADAPTATION
@@ -155,7 +156,11 @@ class DelayStorageProvenance(unittest.TestCase):
     def setUp(self):
         import workstation_delay_storage_provenance as storage
         self.storage=storage
-        self.live_source=(ROOT/storage.SOURCE).read_bytes()
+        from tools.workstation_effect_gain_path import normalize as normalize_gain
+        self.current_gain_source=(ROOT/storage.SOURCE).read_bytes()
+        # The partition lineage remains byte-exact to its own frozen parent;
+        # current gain behavior is exercised by RuntimeEffectsTest below.
+        self.live_source=normalize_gain(self.current_gain_source)
         self.source=storage.restore_remote_reverb_partition(self.live_source)
         self.provenance=(ROOT/storage.PROVENANCE).read_bytes()
         self.adaptation=(ROOT/storage.ADAPTATION).read_bytes()

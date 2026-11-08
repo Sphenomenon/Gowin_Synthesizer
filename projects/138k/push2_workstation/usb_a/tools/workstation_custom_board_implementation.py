@@ -92,6 +92,7 @@ def paired_profile_input(source, metadata, audit):
     name = selected.get('name')
     if (name not in PROFILES or PROFILES[name][0] != audit['paired_role'] or
             audit.get('validation_stage') != 'task3_paired_synthesis_only' or
+            audit.get('synthesis_audit_passed') is not True or
             audit.get('source_policy') != 'immutable_prepared_closure' or
             audit.get('audit_source_seal_before_and_after') is not True or
             selected.get('artifact') != 'workstation_profile.json' or
@@ -227,8 +228,67 @@ def task3_pin_collections(payload, netlist_text):
         physical_timing_verified=False, hardware_tested=False, deployment_allowed=False)
 
 
+def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text,*,
+                                  task3_pins=False,preboard_releases=False,
+                                  primary_clk50=False,ddr_reference=None):
+    """Reconstruct exact paired preboard adaptations for prepare and re-audit."""
+    pin_adaptation = None
+    physical_sdc = None
+    if task3_pins:
+        if audit.get('paired_role') != 'M' or audit.get('validation_stage') != 'task3_paired_synthesis_only':
+            raise ValueError('task3 physical pin collections require an explicit paired M audit')
+        physical_sdc, pin_adaptation = task3_pin_collections(
+            base_sdc, netlist_text)
+    release_proof=None
+    held_proofs=None
+    ddr_proof=None
+    if preboard_releases:
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        from tools.workstation_preboard_physical_boundaries import audit as prove_releases
+        release_proof,extra=prove_releases(
+            protocol_netlist(netlist_text,mapping='synthesis'),
+            role=audit.get('paired_role'),stage=stage)
+        parent_sdc=physical_sdc if physical_sdc is not None else base_sdc
+        physical_sdc=parent_sdc+extra.encode()
+        release_proof.update(parent_sdc_sha256=digest(parent_sdc),
+            selected_sdc_sha256=digest(physical_sdc),
+            proof_tool_sha256=sha(Path(__file__).with_name('workstation_preboard_physical_boundaries.py')))
+        from tools.workstation_task3_preboard_held_timing import audit as paired_held, placement as place_held
+        n=protocol_netlist(netlist_text,mapping='synthesis')
+        role=audit['paired_role']
+        held_proofs={}
+        held_proofs['paired'],extra=paired_held(n,role=role)
+        physical_sdc+=extra.encode()
+        cst,held_proofs['paired_placement']=place_held(cst,held_proofs['paired'])
+        if role=='M':
+            from tools.workstation_task3_m_session_boundary import audit as specific_held
+        else:
+            from tools.workstation_task3_w_raw_command_capture import audit as specific_held
+        held_proofs['role_specific'],extra=specific_held(n)
+        physical_sdc+=extra.encode()
+        if role=='W':
+            from tools.workstation_task3_preboard_held_timing import w_native_placement
+            cst,held_proofs['W_native_placement']=w_native_placement(cst,n)
+    if ddr_reference is not None:
+        if not preboard_releases or not primary_clk50:
+            raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
+        prior=Path(ddr_reference).resolve()
+        prior_meta=json.loads((prior/'parent_integration_inputs.json').read_text())
+        ddr={p:h for p,h in metadata['staged_input_sha256'].items()if p.startswith('vendor/gowin_ddr3/')}
+        if not ddr or any(prior_meta['staged_input_sha256'].get(p)!=h for p,h in ddr.items()):
+            raise ValueError('preboard DDR routed reference uses different encrypted inputs')
+        vo=prior/'impl/pnr/custom_138k_integration.vo'
+        cst,placement=ddr_launch_capture_region_constraints(cst,physical_sdc,vo.read_text(),far_regions=True)
+        from tools.workstation_preboard_ddr_timing import tighten
+        cst,physical_sdc,ddr_proof=tighten(cst,physical_sdc,vo.read_text())
+        ddr_proof.update(routed_reference=str(vo),routed_reference_sha256=sha(vo),
+            same_encrypted_DDR_input_sha256=ddr,placement=placement)
+    return cst,physical_sdc,pin_adaptation,release_proof,held_proofs,ddr_proof
+
+
 def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
-                      place_option=2, route_option=0, task3_pins=False):
+                      place_option=2, route_option=0, task3_pins=False, preboard_releases=False,
+                      primary_clk50=False, preboard_ddr_reference=None):
     """Offline experiment using a hash-pinned reference; never board validation."""
     source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
     script = implementation_script(user_code, place_option, route_option)
@@ -237,12 +297,25 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
     if not re.fullmatch('[0-9a-f]{64}', reference_sha256) or sha(reference_cst) != reference_sha256:
         raise ValueError('historical physical constraint identity changed')
     audit = audit_synthesis(source)
+    if audit.get('paired_role') is not None:
+        # Preserve independent gate failures before refusing physical prepare.
+        # This sibling report is evidence, outside the immutable source stage.
+        report=output.with_name(output.name+'.synthesis-audit.json')
+        with report.open('x') as stream:stream.write(json.dumps(audit,indent=2)+'\n')
+        if audit.get('synthesis_audit_passed') is not True:
+            failures={name:gate.get('error')for name,gate in audit.get('gates',{}).items()if not gate.get('passed')}
+            raise ValueError('paired physical prepare requires complete synthesis gates: '+json.dumps(failures))
     metadata = json.loads((source / 'integration_inputs.json').read_text())
     if metadata['top_module'] != TOP:
         raise ValueError('native top identity changed')
     stage = source / 'workstation/Prj1'
     vg = stage / f'impl/gwsynthesis/{BASE}.vg'
     cst, binding = reference_constraints(reference_cst.read_bytes(), vg.read_text(), excluded_ports)
+    clock_placement=None
+    if primary_clk50:
+        cst,clock_placement=primary_clk50_constraints(cst,vg.read_text())
+        if preboard_releases and audit.get('paired_role')=='M':
+            cst,clock_placement['M_clock_priority']=m_preboard_clock_priority(cst,vg.read_text())
     inputs = {
         BASE+'.vg': (vg, audit['netlist_sha256']),
         'reference.cst': (reference_cst, reference_sha256),
@@ -251,13 +324,10 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         'parent_integration_inputs.json': (source / 'integration_inputs.json', audit['integration_inputs_sha256']),
     }
     inputs.update(paired_profile_input(source, metadata, audit))
-    pin_adaptation = None
-    physical_sdc = None
-    if task3_pins:
-        if audit.get('paired_role') != 'M' or audit.get('validation_stage') != 'task3_paired_synthesis_only':
-            raise ValueError('task3 physical pin collections require an explicit paired M audit')
-        physical_sdc, pin_adaptation = task3_pin_collections(
-            inputs['physical.sdc'][0].read_bytes(), vg.read_text())
+    cst,physical_sdc,pin_adaptation,release_proof,held_proofs,ddr_proof=preboard_constraint_selection(
+        stage,metadata,audit,cst,inputs['physical.sdc'][0].read_bytes(),vg.read_text(),
+        task3_pins=task3_pins,preboard_releases=preboard_releases,
+        primary_clk50=primary_clk50,ddr_reference=preboard_ddr_reference)
     output.mkdir(parents=True)
     for name, (path, expected) in inputs.items():
         checked_copy(path, output/name, expected)
@@ -266,6 +336,12 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         (output/'physical.sdc').write_bytes(physical_sdc)
     (output/'run.tcl').write_text(script)
     (output/'parent_synthesis_audit.json').write_text(json.dumps(audit, indent=2)+'\n')
+    if release_proof is not None:
+        (output/'physical_release_proof.json').write_text(json.dumps(release_proof,indent=2)+'\n')
+    if held_proofs is not None:
+        (output/'physical_held_proof.json').write_text(json.dumps(held_proofs,indent=2)+'\n')
+    if ddr_proof is not None:
+        (output/'physical_ddr_proof.json').write_text(json.dumps(ddr_proof,indent=2)+'\n')
     result = dict(schema=1, identity='custom138k-resource-physical-'+user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_experiment_prepared',
@@ -281,12 +357,78 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         clocks_or_exceptions_relaxed=False, features_removed=False,
         place_option=place_option, route_option=route_option, replicate_resources=False,
         task3_pin_adaptation=pin_adaptation,
+        preboard_release_adaptation=release_proof,
+        preboard_held_adaptation=held_proofs,
+        preboard_ddr_adaptation=ddr_proof,
+        primary_clk50_adaptation=clock_placement,
         input_sha256={p.name: sha(p) for p in output.iterdir() if p.is_file()},
         timing_closed=False, physical_gates_passed=False, hardware_tested=False,
         deployment_allowed=False, release_ready=False, bitstream_sha256=None,
         sram_programmed=False, flash_programmed=False, remaining_gaps=metadata['remaining_gaps'])
     (output/'physical_inputs.json').write_text(json.dumps(result, indent=2)+'\n')
     return result
+
+
+def m_preboard_clock_priority(payload,netlist_text):
+    """Reserve LW8..10 for real clocks after A8 exhausted all long wires.
+
+    A8 put eight functional clocks on PRIMARY and eight mixed reset/reference
+    nets on LW, spilling ULPI and both DAC references to generic routing. The
+    same-device syntax probe confirms BUFG[8] selects LW. Give clocks priority
+    over three reset-distribution nets, without changing any timing exception.
+    Their full setup/hold/recovery/removal must pass the new physical run.
+    """
+    n=SynthesisNetlist(netlist_text,TOP);lines=[];inputs=[]
+    for bit,port in enumerate(('usb2_ulpi_clk','clk_12m288','clk_16m9344'),8):
+        name=port+'_ibuf';c=n.cells.get(name,{})
+        if c.get('kind')!='IBUF' or c.get('ports')!={'I':port,'O':port+'_d'}:
+            raise ValueError('M physical clock priority requires exact input buffer '+port)
+        net=port+'_d'
+        if re.search(r'CLOCK_LOC\s+"'+re.escape(net)+r'"',payload.decode()):
+            raise ValueError('M physical clock already constrained '+net)
+        lines.append(f'CLOCK_LOC "{net}" BUFG[{bit}] = CLK;')
+        inputs.append(dict(port=port,buffer=name,net=net,global_wire=bit))
+    reset_nets=[]
+    for scope,stem,clock in [('u_managed/runtime','memory_release[2]','memory_clk'),
+                       ('u_tf_audio','source_release[2]','clk_50m'),('u_video','memory_release[2]','memory_clk')]:
+        net=n.canonical(scope,stem)
+        if net!=scope+'/'+stem or re.search(r'CLOCK_LOC\s+"'+re.escape(net)+r'"',payload.decode()):
+            raise ValueError('M physical reset-distribution identity changed '+scope+'/'+stem)
+        producers=[p for p,c in n.cells.items()if c['kind'].startswith('DFF')and n.pin(p,'Q')==net]
+        if len(producers)!=1 or n.pin(producers[0],'CLK')!=clock:
+            raise ValueError('M local reset distribution requires one actual publisher in '+clock+' '+net)
+        lines.append(f'CLOCK_LOC "{net}" LOCAL_CLOCK;');reset_nets.append(net)
+    adapted=payload+('\n# M A8 clock/LW resource priority; no timing change\n'+'\n'.join(lines)+'\n').encode()
+    return adapted,dict(policy='task3_M_A8_real_clock_LW_priority_v1',clock_inputs=inputs,
+        reset_distribution_nets=reset_nets,commands=lines,before_sha256=digest(payload),
+        after_sha256=digest(adapted),logic_unchanged=True,timing_constraints_unchanged=True,
+        routed_clock_allocation_verified=False,hardware_tested=False)
+
+
+def primary_clk50_constraints(payload, netlist_text):
+    """Route the existing 50MHz input on PRIMARY, retaining every endpoint.
+
+    A previous physical route used generic resources for ~29k clock loads.
+    This placement constraint requests a real clock network, with no frequency,
+    waveform, SDC or data-path exception change. Final routing must verify it.
+    """
+    n=SynthesisNetlist(netlist_text,TOP)
+    cell=n.cells.get('clk_50m_ibuf',{})
+    if cell.get('kind')!='IBUF' or cell['ports']!={'O':'clk_50m_d','I':'clk_50m'}:
+        raise ValueError('PRIMARY clk50 requires exact top input buffer')
+    if re.search(r'CLOCK_LOC\s+"clk_50m_d"',payload.decode()):
+        raise ValueError('clk50 already has an explicit route assignment')
+    clock=n.pin('clk_50m_ibuf','O')
+    loads=sorted(p for p,c in n.cells.items() if c['kind'].startswith('DFF') and
+                 n.pin(p,'CLK')==clock)
+    if len(loads)<1000:
+        raise ValueError('unexpected clk50 registered load inventory')
+    command='CLOCK_LOC "clk_50m_d" BUFG = CLK;'
+    selected=payload+('\n'+command+'\n').encode()
+    return selected,dict(policy='actual_clk50_PRIMARY_network_v1',command=command,
+        parent_sha256=digest(payload),selected_sha256=digest(selected),
+        actual_clock_net=clock,registered_clock_loads=len(loads),
+        SDC_unchanged=True,clock_frequency_changed=False,routed_clock_class_verified=False)
 
 
 def ulpi_bypass_constraints(payload, plan):
@@ -801,11 +943,18 @@ def main():
     parser.add_argument('--reference-sha256')
     parser.add_argument('--task3-pin-collections', action='store_true',
                         help='Express the same reviewed paired M DIRECT r3 pin sets for Gowin P&R')
+    parser.add_argument('--preboard-releases',action='store_true',
+                        help='Prove exact paired preboard synchronizers and held data, retaining payload hold checks')
+    parser.add_argument('--primary-clk50',action='store_true',
+                        help='Place the actual primary clock input on its reviewed clock resource')
+    parser.add_argument('--preboard-ddr-reference',type=Path,
+                        help='Prior routed DDR evidence with identical encrypted inputs; tighten init hold and reset recovery')
     parser.add_argument('--exclude-reference-port', action='append', default=[])
     parser.add_argument('--place-option', type=int, choices=range(5), default=2)
     parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
     args = parser.parse_args()
     reference_options = bool(args.reference_sha256 or args.exclude_reference_port or args.task3_pin_collections or
+                             args.preboard_releases or args.primary_clk50 or args.preboard_ddr_reference or
                              args.place_option != 2 or args.route_option != 0)
     derivation_options = bool(args.ddr_capture_region_parent_evidence or args.ddr_dqs_hold_regions or
         args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions or
@@ -816,7 +965,8 @@ def main():
             parser.error('reference mode requires its hash and cannot mix board/derivation adaptations')
         result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
                                    args.reference_sha256, args.exclude_reference_port,
-                                   args.place_option, args.route_option, args.task3_pin_collections)
+                                   args.place_option, args.route_option, args.task3_pin_collections,
+                                   args.preboard_releases,args.primary_clk50,args.preboard_ddr_reference)
     elif reference_options:
         parser.error('reference constraint options require --reference-cst')
     elif args.ddr_capture_region_parent_evidence:

@@ -9,6 +9,7 @@ module workstation_tf_direct_runtime_service #(
     parameter integer BYTE_DEPTH=4096,PCM_DEPTH=4096,PREFILL_FRAMES=3072,
     parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,
     parameter bit SEPARATE_COMMON_RESET=0,
+    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
     parameter bit REMOTE_ANALYSIS_ENABLE=0
 )(
     input wire rst_ni,common_reset_ni,clk_50m_i,compute_clk_i,
@@ -69,6 +70,9 @@ module workstation_tf_direct_runtime_service #(
             else compute_release<={compute_release[1:0],1'b1};
         end
     wire source_n=source_release[2],compute_n=compute_release[2];
+    // One common lifetime; functional release follows its own compute clock.
+    // Session cancellation never resets an outstanding receipt or snapshot.
+    wire compute_functional_n=LOCAL_COMPUTE_RESET_ENABLE ? compute_n:common_n;
     reg [2:0] state;
     reg restart_q,cancel_q,mode_q,stop_q,transport_q,analysis_q,analysis_cancel_q;
     reg [3:0] track_q,pending_track;
@@ -112,8 +116,8 @@ module workstation_tf_direct_runtime_service #(
     (* syn_preserve=1 *) reg [33:0] receipt_local;
     reg receipt_dispatch;
     wire receipt_free=receipt_request==receipt_ack_sync[1];
-    always @(posedge compute_clk_i or negedge common_n)
-        if(!common_n)begin receipt_request<=0;receipt_payload<=0;queued_receipt_session<=0;receipt_ack_sync<=0;abort_queued<=0;eos_queued<=0;end
+    always @(posedge compute_clk_i or negedge compute_functional_n)
+        if(!compute_functional_n)begin receipt_request<=0;receipt_payload<=0;queued_receipt_session<=0;receipt_ack_sync<=0;abort_queued<=0;eos_queued<=0;end
         else begin
             receipt_ack_sync<={receipt_ack_sync[0],receipt_ack};
             if(physical_abort_i || physical_failed_i)begin
@@ -128,7 +132,11 @@ module workstation_tf_direct_runtime_service #(
             end
         end
     wire receipt_event=receipt_capture && receipt_request_sync[1]!=receipt_seen;
-    wire receipt_current=receipt_local[33:2]==session;
+    (* syn_keep=1 *) wire [3:0] receipt_session_equal;
+    for(genvar receipt_byte=0;receipt_byte<4;receipt_byte=receipt_byte+1)begin:g_receipt_session_equal
+        assign receipt_session_equal[receipt_byte]=~(|(receipt_local[2+receipt_byte*8+:8]^session[receipt_byte*8+:8]));
+    end
+    wire receipt_current=&receipt_session_equal;
     wire physical_failure_event=receipt_dispatch && receipt_current && receipt_local[1:0]==2;
     wire physical_end_event=receipt_dispatch && receipt_current && receipt_local[1:0]==1;
     always @(posedge clk_50m_i or negedge common_n)
@@ -157,7 +165,24 @@ module workstation_tf_direct_runtime_service #(
             else if(analysis_live && state==LAUNCH && quiet_wait==QUIET_TIMEOUT_CYCLES-1)failure_now=QUIET_TIMEOUT;
         end
     end
-    wire new_failure=failure_now!=0 && !failed;
+    // Cancellation needs the existence of a fault, independently of the
+    // diagnostic code priority. Avoid code selection followed by decoding on
+    // the same-cycle source/analysis stop path. The default preserves RTL
+    // procedural unknown-guard semantics; no cycle or public status changes.
+    wire [7:0] fault_conditions={native_file_error,
+        session_applied && native_ingress_error,transport_error_i,bad_context,
+        session_applied && !analysis_live && (runtime_epoch_i!=session_epoch || runtime_44k1_i!=session_rate),
+        !analysis_live && physical_failure_event,session_applied && native_empty,
+        analysis_live && state==LAUNCH && quiet_wait==QUIET_TIMEOUT_CYCLES-1};
+    reg failure_present;
+    always @* begin
+        failure_present=0;
+        case(^fault_conditions)
+            1'b0,1'b1:if(live || state==LAUNCH)failure_present=|fault_conditions;
+            default:failure_present=failure_now!=0;
+        endcase
+    end
+    wire new_failure=failure_present && !failed;
     wire invalidate=source_n && (new_command || cancel_event || stop_event || new_failure);
     wire native_stop=state==DRAIN;
     wire source_quiesce=state==IDLE || state==DRAIN || state==LAUNCH || invalidate;
@@ -190,7 +215,8 @@ module workstation_tf_direct_runtime_service #(
         .file_error_o(native_file_error),.file_error_code_o(native_file_code),
         .scan_done_o(playlist_ready_o),.track_count_o(track_count_o),
         .name_raddr_i(playlist_name_address_i),.name_rdata_o(playlist_name_data_o));
-    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(
+    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),
+        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE)) frames(
         .rst_ni(common_n),.source_clk_i(clk_50m_i),.compute_clk_i,
         .invalidate_i(invalidate),.source_quiesce_i(source_quiesce_level),
         .source_valid_i(native_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(native_last),
@@ -214,8 +240,8 @@ module workstation_tf_direct_runtime_service #(
                 held_status<=desired_status;status_request<=!status_request;
             end
         end
-    always @(posedge compute_clk_i or negedge common_n)
-        if(!common_n)begin status_request_sync<=0;status_ack<=0;status_capture<=0;compute_status<=0;end
+    always @(posedge compute_clk_i or negedge compute_functional_n)
+        if(!compute_functional_n)begin status_request_sync<=0;status_ack<=0;status_capture<=0;compute_status<=0;end
         else begin
             status_request_sync<={status_request_sync[0],status_request};
             status_capture<=status_request_sync[1]!=status_ack;

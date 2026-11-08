@@ -56,17 +56,23 @@ and every top export remains visible, exactly as in complete_closure.
                 combinational_cells=len(comb), top_output_endpoints=dict(sorted(exports.items())))
 
 
-def audit_tf_frame_cdc(n, *, sdc):
+def audit_tf_frame_cdc(n, *, sdc, stage=None, root=None):
     g = Graph(n)
     require(n.frames.get(B, {}).get('kind') == 'workstation_tf_frame_bridge_v2',
             'actual bridge is not frame_bridge_v2')
     root_q = n.pin(g.register('u_reset', 'started'), 'Q')
-    common = n.pin(g.register(B, 'generation_meta', 0), 'CLEAR')
+    common = n.pin(g.register(B, 'source_release', 0), 'CLEAR')
+    local_compute=None
+    if stage is not None:
+        from tools.workstation_tf_compute_local_release import audit_mapped
+        local_compute=audit_mapped(n,stage=stage,root=root)
     source_release = g.group(B, 'source_release', 3)
     compute_release = g.group(B, 'compute_release', 3)
     write_reset, read_reset = (n.pin(group[2], 'Q') for group in (source_release, compute_release))
     write_clear = n.pin(g.register(F, 'read_gray_meta', 0), 'CLEAR')
     read_clear = n.pin(g.register(F, 'write_gray_meta', 0), 'CLEAR')
+    compute_clear=read_clear if local_compute is not None else common
+    compute_reset_q=read_reset if local_compute is not None else root_q
     reset_rows = []
     for name, clear, publisher in (('root', common, root_q),
                                     ('write', write_clear, write_reset), ('read', read_clear, read_reset)):
@@ -117,10 +123,10 @@ def audit_tf_frame_cdc(n, *, sdc):
     specs = (
         ('generation', B, 'generation_meta', 'generation_sync',
          [(B, 'source_generation_gray', bit) for bit in range(31)] + [(B, 'source_generation_o', 31)],
-         'clk_50m', 'audio_clk', common, common, root_q, 20.000),
+         'clk_50m', 'audio_clk', common, compute_clear, compute_reset_q, 20.000),
         ('ack', B, 'ack_meta', 'ack_sync',
          [(B, 'ack_gray', bit) for bit in range(31)] + [(B, 'ack_binary', 31)],
-         'audio_clk', 'clk_50m', common, common, root_q, 13.020),
+         'audio_clk', 'clk_50m', compute_clear, common, root_q, 13.020),
         ('write-pointer', F, 'write_gray_meta', 'write_gray_sync',
          [(F, 'write_gray', bit) for bit in range(5)],
          'clk_50m', 'audio_clk', write_clear, read_clear, read_reset, 20.000),
@@ -176,7 +182,9 @@ def audit_tf_frame_cdc(n, *, sdc):
         require(g.drivers[n.pin(first,'D')] == [(producer,'Q')] and
                 n.pin(producer,'CLK') == launch_clock and n.pin(second,'D') == n.pin(first,'Q'),
                 'single-bit actual publisher/bit mapping changed: ' + stem)
-        ff(first, clock, common); ff(second, clock, common)
+        clear=compute_clear if clock=='audio_clk' else common
+        reset_q=compute_reset_q if clock=='audio_clk' else root_q
+        ff(first, clock, clear); ff(second, clock, clear)
         closure = complete_closure(n,g,[first])
         require(closure['ff_endpoints'] == {second+'/D':clock} and
                 not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
@@ -186,7 +194,7 @@ def audit_tf_frame_cdc(n, *, sdc):
                 == {first+'/D':clock} and not producer_closure['top_output_endpoints'],
                 'single-bit producer extra remote/top consumer: '+stem)
         single.append(dict(id=stem, source=producer+'/Q', first=first+'/D', second=second+'/D',
-            next_q=[sync_next(first,producer,root_q),sync_next(second,first,root_q)],
+            next_q=[sync_next(first,producer,reset_q),sync_next(second,first,reset_q)],
             first_complete_closure=closure,producer_complete_closure=producer_closure,
             producer_primitive_endpoint_semantics_proven=False,producer_functional_semantics_proven=False))
     # Actual small-head FIFO: 27 asynchronous-read 16x4 memories, 108 live bits.
@@ -199,7 +207,7 @@ def audit_tf_frame_cdc(n, *, sdc):
     require({p for p in g.regs if re.fullmatch(re.escape(B)+r'/held_packet_\d+_s\d+',p)} == set(held),
             'retained held-packet bit inventory changed')
     held_valid = g.register(B,'held_valid')
-    for p in [*held,held_valid]: ff(p,'audio_clk',common)
+    for p in [*held,held_valid]: ff(p,'audio_clk',compute_clear)
     roots, ram_rows = [], []
     # The binary LSB uses CE=1 plus XOR hold logic in this actual mapping.
     # The registered Gray publisher retains the real write-commit CE.
@@ -236,7 +244,8 @@ def audit_tf_frame_cdc(n, *, sdc):
             'FIFO read-address actual consumer closure changed')
     finite = _audit_sdc(n,sdc,buses,single,rams,held,held_valid,read_binary)
     return dict(policy=POLICY,structural_checks_passed=True,partial=True,
-        reset_inversions=reset_rows,real_root_startup_proven_by_this_audit=False,
+        reset_inversions=reset_rows,compute_functional_reset=local_compute,
+        real_root_startup_proven_by_this_audit=False,
         local_release_registers=release_rows,gray_buses=buses,
         single_bit_chains=single,retained_fifo_width=108,nominal_fifo_width=118,fifo_depth=16,
         retained_held_bits=list(HELD_BITS),ram_instances=ram_rows,

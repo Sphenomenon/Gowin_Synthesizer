@@ -4,7 +4,8 @@
 // This boundary has no effects, PCM/source routing, or final volume policy.
 // Oscillator committed rate is the sole rate authority for all three blocks.
 module workstation_runtime_render_engines #(
-    parameter bit RUNTIME_RATE_ENABLE=0
+    parameter bit RUNTIME_RATE_ENABLE=0,
+    parameter bit COMMITTED_GLIDE_COEFFICIENT=0
 ) (
     input logic clk_i, rst_ni, panic_i,
     input logic sample_ce_i,
@@ -12,6 +13,7 @@ module workstation_runtime_render_engines #(
     output wire rate_ready_o, applied_rate_44100_o, quiescent_o,
     input logic [21:0] target_ratio_q20_i,
     input logic [15:0] glide_step_q20_i,
+    input logic [20:0] glide_div147_i,
     input logic [6:0] vibrato_depth_i,
     output wire [21:0] pitch_q20_o,
     input logic mode_set_valid_i,
@@ -53,9 +55,9 @@ module workstation_runtime_render_engines #(
         oscillator_rate_ready && !panic_i && !sample_ce_i &&
         !event_valid_i && !expression_valid_i && !mode_set_valid_i;
 
-    workstation_rate_pitch_expression pitch (
+    workstation_rate_pitch_expression #(.COMMITTED_GLIDE_COEFFICIENT(COMMITTED_GLIDE_COEFFICIENT)) pitch (
         .clk_i, .rst_ni, .sample_ce_i, .rate_44k1_i(applied_rate_44100_o),
-        .target_ratio_q20_i, .glide_step_q20_i, .vibrato_depth_i,
+        .target_ratio_q20_i, .glide_step_q20_i, .glide_div147_i, .vibrato_depth_i,
         .ratio_q20_o(pitch_q20_o)
     );
     workstation_runtime_oscillator_engine #(

@@ -121,7 +121,44 @@ module workstation_ae350_pcm_owner #(
         key_stream_match_0 && key_stream_match_1 && key_stream_match_2 && key_stream_match_3 &&
         key_rate_match_0 && key_rate_match_1 && key_rate_match_2 && key_rate_match_3 &&
         key_physical_match_0 && key_physical_match_1 && key_physical_match_2 && key_physical_match_3;
-    wire live_matches=session_live_i && !(|(controller_epoch_i^active_controller)) && !(|(transport_generation_i^active_generation));
+    // PREBOARD permission comparisons begin: same-edge full32-bit guards.
+    (* syn_keep=1 *) wire [3:0] permission_equal_0;
+    wire [31:0] permission_rhs_0=controller_epoch_i;
+    for(genvar byte_0=0;byte_0<4;byte_0=byte_0+1)begin:g_permission_0
+        assign permission_equal_0[byte_0]=~(|(staged_controller[byte_0*8+:8]^permission_rhs_0[byte_0*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_1;
+    wire [31:0] permission_rhs_1=transport_generation_i;
+    for(genvar byte_1=0;byte_1<4;byte_1=byte_1+1)begin:g_permission_1
+        assign permission_equal_1[byte_1]=~(|(staged_generation[byte_1*8+:8]^permission_rhs_1[byte_1*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_2;
+    wire [31:0] permission_rhs_2=physical_epoch_i;
+    for(genvar byte_2=0;byte_2<4;byte_2=byte_2+1)begin:g_permission_2
+        assign permission_equal_2[byte_2]=~(|(staged_physical[byte_2*8+:8]^permission_rhs_2[byte_2*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_3;
+    wire [31:0] permission_rhs_3=(rate_44100_i ? 32'd44100:32'd48000);
+    for(genvar byte_3=0;byte_3<4;byte_3=byte_3+1)begin:g_permission_3
+        assign permission_equal_3[byte_3]=~(|(staged_rate[byte_3*8+:8]^permission_rhs_3[byte_3*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_4;
+    wire [31:0] permission_rhs_4=controller_epoch_i;
+    for(genvar byte_4=0;byte_4<4;byte_4=byte_4+1)begin:g_permission_4
+        assign permission_equal_4[byte_4]=~(|(active_controller[byte_4*8+:8]^permission_rhs_4[byte_4*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_5;
+    wire [31:0] permission_rhs_5=transport_generation_i;
+    for(genvar byte_5=0;byte_5<4;byte_5=byte_5+1)begin:g_permission_5
+        assign permission_equal_5[byte_5]=~(|(active_generation[byte_5*8+:8]^permission_rhs_5[byte_5*8+:8]));
+    end
+    (* syn_keep=1 *) wire [3:0] permission_equal_6;
+    wire [31:0] permission_rhs_6=(rate_44100_i ? 32'd44100:32'd48000);
+    for(genvar byte_6=0;byte_6<4;byte_6=byte_6+1)begin:g_permission_6
+        assign permission_equal_6[byte_6]=~(|(active_rate[byte_6*8+:8]^permission_rhs_6[byte_6*8+:8]));
+    end
+    // PREBOARD permission comparisons end.
+    wire live_matches=session_live_i && (&permission_equal_4) && (&permission_equal_5);
     // Keep four independent epoch comparisons so synthesis cannot rebuild the
     // full 32-bit serial inequality chain on the PCM permission path.
     wire physical_epoch_match_0 /* synthesis syn_keep=1 */;
@@ -134,7 +171,7 @@ module workstation_ae350_pcm_owner #(
     assign physical_epoch_match_3=!(|(active_physical[31:24]^physical_epoch_i[31:24]));
     wire physical_matches=context_ready_i && physical_epoch_match_0 && physical_epoch_match_1 &&
         physical_epoch_match_2 && physical_epoch_match_3 &&
-        active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i;
+        (&permission_equal_6) && !switch_busy_i;
     wire usable=armed && !failed && live_matches && physical_matches && cpu_ready_i && !tf_busy_i;
     wire prefilled=usable && queued>=10'(PREFILL_FRAMES) && cache_current;
     wire accepted=command_valid_i && command_ready_o;
@@ -157,9 +194,9 @@ module workstation_ae350_pcm_owner #(
     wire descriptor_missing_frames=|(~written[tail_slot]&required_mask);
     wire new_stream=staged_stream!=0 && (!retired_key_valid ||
         staged_controller!=last_controller || staged_generation!=last_generation || staged_stream>last_stream);
-    wire staging_live=session_live_i && staged_controller==controller_epoch_i && staged_generation==transport_generation_i &&
-        context_ready_i && staged_physical==physical_epoch_i &&
-        staged_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i && !tf_busy_i;
+    wire staging_live=session_live_i && (&permission_equal_0) && (&permission_equal_1) &&
+        context_ready_i && (&permission_equal_2) &&
+        (&permission_equal_3) && !switch_busy_i && !tf_busy_i;
     wire sample_advance=sample_take_i && selected && usable && !hold_serial && cache_current;
     wire [25:0] next_phase={2'b0,phase}+{1'b0,step_q24[24:0]};
     wire [1:0] consume=next_phase[25:24];
@@ -180,7 +217,7 @@ module workstation_ae350_pcm_owner #(
     wire pcm_output_without_context /* synthesis syn_keep=1 */;
     assign pcm_output_without_context=armed && !failed && live_matches &&
         physical_epoch_match_0 && physical_epoch_match_1 && physical_epoch_match_2 && physical_epoch_match_3 &&
-        active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i &&
+        (&permission_equal_6) && !switch_busy_i &&
         cpu_ready_i && !tf_busy_i && !hold_serial && cache_current;
     assign pcm_left_o=selected ? (context_ready_i && pcm_output_without_context ? {interpolated_l,16'd0}:32'd0):legacy_left_i;
     assign pcm_right_o=selected ? (context_ready_i && pcm_output_without_context ? {interpolated_r,16'd0}:32'd0):legacy_right_i;
@@ -377,10 +414,10 @@ module workstation_ae350_pcm_owner #(
     // predicates are computed without that late DSP-fault qualification.
     (* syn_keep=1 *) wire bitmap_physical_without_context=physical_epoch_match_0 && physical_epoch_match_1 &&
         physical_epoch_match_2 && physical_epoch_match_3 &&
-        active_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i;
+        (&permission_equal_6) && !switch_busy_i;
     wire bitmap_usable_without_context=armed && !failed && live_matches && bitmap_physical_without_context && cpu_ready_i && !tf_busy_i;
-    wire bitmap_staging_without_context=session_live_i && staged_controller==controller_epoch_i && staged_generation==transport_generation_i &&
-        staged_physical==physical_epoch_i && staged_rate==(rate_44100_i ? 32'd44100:32'd48000) && !switch_busy_i && !tf_busy_i;
+    wire bitmap_staging_without_context=session_live_i && (&permission_equal_0) && (&permission_equal_1) &&
+        (&permission_equal_2) && (&permission_equal_3) && !switch_busy_i && !tf_busy_i;
     wire bitmap_start_error=armed || selected || history_state!=H_IDLE || !bitmap_staging_without_context || !new_stream || &cancel_epoch_o;
     wire bitmap_commit_error=!bitmap_usable_without_context || !key_matches || staged_slot!={30'd0,tail_slot} || owned[tail_slot] ||
         !descriptor_frames_valid || staged_sequence!=expected_sequence || &expected_sequence || descriptor_missing_frames;
@@ -409,7 +446,6 @@ module workstation_ae350_pcm_owner #(
         bitmap_clear_without_context=0;
         if(accepted_stop)bitmap_clear_without_context=1;
         if(accepted_cancel)bitmap_clear_without_context=1;
-        if(bitmap_rejected_without_context && bitmap_usable_without_context && key_matches && !owned[tail_slot])bitmap_clear_without_context=1;
         if(armed)begin
             if(cpu_previous && !cpu_ready_i)bitmap_clear_without_context=1;
             else if(!live_matches)bitmap_clear_without_context=1;
@@ -422,6 +458,13 @@ module workstation_ae350_pcm_owner #(
     // this final permission separate from the wide data update mux. Partial
     // writes lose to START, COMMIT and revoke exactly as before, including
     // unknown guards and unknown dynamic slot/index values.
+    // Once usability/key/free-slot permission is true, the matching COMMIT
+    // rejection reasons reduce to descriptor/format/ID only. Compute these
+    // independently of late physical/key qualification, then gate once.
+    wire bitmap_commit_attempt=write_command && command_address_i==12'h040 && command_data_i==32'd2;
+    wire bitmap_commit_permission=bitmap_usable_without_context && key_matches && !owned[tail_slot];
+    wire bitmap_descriptor_error=staged_slot!={30'd0,tail_slot} || !descriptor_frames_valid ||
+        staged_sequence!=expected_sequence || &expected_sequence || descriptor_missing_frames;
     reg [3:0] bitmap_clear_by_slot /* synthesis syn_keep=1 */;
     reg bitmap_allow_write;
     always @* begin
@@ -433,7 +476,22 @@ module workstation_ae350_pcm_owner #(
             1'b1:begin
                 if(accepted_window_write)bitmap_allow_write=1;
                 if(bitmap_start_without_context)bitmap_clear_by_slot=4'hf;
-                if(bitmap_commit_without_context)bitmap_clear_by_slot[tail_slot]=1;
+                case(bitmap_commit_error)
+                    1'b0,1'b1:begin
+                        if(bitmap_commit_attempt && bitmap_commit_permission)begin
+                            if(!control_format_ok || !control_id_ok || bitmap_descriptor_error)
+                                bitmap_clear_by_slot=4'hf;
+                            else bitmap_clear_by_slot[tail_slot]=1;
+                        end
+                    end
+                    default:begin
+                        // Preserve procedural unknown-guard behavior in RTL
+                        // simulation; binary hardware uses the factored arm.
+                        if(bitmap_commit_without_context)bitmap_clear_by_slot[tail_slot]=1;
+                        if(bitmap_rejected_without_context && bitmap_commit_permission)
+                            bitmap_clear_by_slot=4'hf;
+                    end
+                endcase
                 if(bitmap_clear_without_context)bitmap_clear_by_slot=4'hf;
             end
             default:begin

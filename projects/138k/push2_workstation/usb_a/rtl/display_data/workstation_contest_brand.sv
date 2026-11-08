@@ -13,10 +13,10 @@ module workstation_contest_brand (
     `include "rtl/display_data/assets/contest_brand_layout.svh"
 
     (* rom_style="block", syn_romstyle="block_rom" *) reg [3:0] logo_rom [0:11359];
-    (* rom_style="block", syn_romstyle="block_rom" *) reg [23:0] glyph_rom [0:1127];
+    (* rom_style="block", syn_romstyle="block_rom" *) reg [7:0] glyph_chunk_rom [0:8191];
     initial begin
         $readmemh("rtl/display_data/assets/contest_brand_logo_pairs.memh", logo_rom);
-        $readmemh("rtl/display_data/assets/contest_brand_glyphs.memh", glyph_rom);
+        $readmemh("rtl/display_data/assets/contest_brand_chunks.memh", glyph_chunk_rom);
     end
 
     wire logo_hit = pixel_x >= 11'd64 && pixel_x < 11'd347 &&
@@ -35,17 +35,16 @@ module workstation_contest_brand (
                                {6'd0, logo_x[8:1]};
     wire [10:0] text_x = pixel_x - 11'd400;
     wire [10:0] text_y = pixel_y - (principle_hit ? 11'd64 : 11'd24);
-    wire [7:0] column = brand_column(text_x[9:3]);
-    wire [4:0] glyph_column = {column[1:0], text_x[2:0]};
-    wire [5:0] glyph_id = brand_glyph(principle_hit, column[7:2]);
-    wire [10:0] glyph_ext = {5'd0, glyph_id};
-    wire [10:0] glyph_address = (glyph_ext << 4) + (glyph_ext << 3) +
-                                {6'd0, text_y[4:0]};
+    // Pre-expand the fixed text into eight-pixel chunks. Address wiring now
+    // crosses only the x/y offset logic, instead of two serial lookup tables
+    // followed by glyph_id*24 arithmetic on the 100 MHz RAM address path.
+    // The ROM contains exactly the same licensed glyph pixels.
+    wire [12:0] glyph_address = {principle_hit,text_x[9:3],text_y[4:0]};
 
     reg logo_valid_q, text_valid_q, logo_odd_q;
     reg [3:0] logo_pair_q;
-    reg [23:0] glyph_row_q;
-    reg [4:0] glyph_column_q;
+    reg [7:0] glyph_row_q;
+    reg [2:0] glyph_column_q;
     always @(posedge clk) begin
         if (enable) begin
             logo_valid_q <= logo_hit;
@@ -55,8 +54,8 @@ module workstation_contest_brand (
                 logo_odd_q <= logo_x[0];
             end
             if (text_hit) begin
-                glyph_row_q <= glyph_rom[glyph_address];
-                glyph_column_q <= glyph_column;
+                glyph_row_q <= glyph_chunk_rom[glyph_address];
+                glyph_column_q <= text_x[2:0];
             end
         end
     end
@@ -68,7 +67,7 @@ module workstation_contest_brand (
         pixel_rgb = 24'hFFFFFF;
         if (logo_valid_q)
             pixel_rgb = brand_palette(logo_odd_q ? logo_pair_q[3:2] : logo_pair_q[1:0]);
-        else if (text_valid_q && glyph_row_q[5'd23 - glyph_column_q])
+        else if (text_valid_q && glyph_row_q[3'd7 - glyph_column_q])
             pixel_rgb = 24'h2C343F;
     end
 endmodule

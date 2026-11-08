@@ -139,6 +139,10 @@ def restore_constraints(sdc, evidence):
 
 
 def restore_selected_sdc(sdc, metadata):
+    preboard = metadata.get('task3_w_preboard_cdc')
+    if preboard is not None:
+        from tools.workstation_task3_w_preboard_cdc import restore
+        sdc = restore(sdc, preboard)
     evidence=metadata.get('task3_w_usb_retirement')
     if evidence is None:
         return sdc

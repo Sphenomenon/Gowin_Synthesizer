@@ -4,7 +4,8 @@
 // the remote M owner has returned a matched response, never local queue credit.
 // No changes to pcm_media register encoding, SBC math or a138_hci_bus are needed.
 module workstation_task3_phone_command_proxy #(
-    parameter integer ROUND_TRIP_TIMEOUT_CYCLES=50000
+    parameter integer ROUND_TRIP_TIMEOUT_CYCLES=50000,
+    parameter bit CAPTURE_ARM=0
 ) (
     input wire clk_i,reset_ni,link_ready_i,panic_i,
     input wire arm_valid_i,
@@ -47,13 +48,36 @@ module workstation_task3_phone_command_proxy #(
     reg [AGE_BITS-1:0] age,arm_age;
     reg [31:0] retired_generation,next_sequence;
     reg cancel_pending;
+    // Optional W preboard boundary: evaluate identity eligibility alongside
+    // tuple capture, then apply it one clock later. Raw link/PANIC/cancel still
+    // revoke immediately, and a changed key can never arm the captured request.
+    reg arm_pending,arm_key_eligible;
+    reg [31:0] captured_boot,captured_session,captured_generation;
+    wire [31:0] issue_boot=CAPTURE_ARM ? captured_boot:arm_boot_i;
+    wire [31:0] issue_session=CAPTURE_ARM ? captured_session:arm_session_i;
+    wire [31:0] issue_generation=CAPTURE_ARM ? captured_generation:arm_generation_i;
+    wire arm_key_current=arm_boot_i==captured_boot && arm_session_i==captured_session && arm_generation_i==captured_generation;
+    wire arm_issue=CAPTURE_ARM ? arm_pending:arm_valid_i;
+    wire arm_eligible=CAPTURE_ARM ? arm_key_eligible && arm_key_current:
+        arm_boot_i!=0 && arm_session_i!=0 && arm_generation_i!=0 && arm_generation_i>retired_generation;
+    always @(posedge clk_i or negedge reset_ni) begin
+        if(!reset_ni)begin
+            arm_pending<=0;arm_key_eligible<=0;captured_boot<=0;captured_session<=0;captured_generation<=0;
+        end else if(CAPTURE_ARM)begin
+            arm_pending<=arm_valid_i && !arm_pending;
+            if(!arm_pending)begin
+                captured_boot<=arm_boot_i;captured_session<=arm_session_i;captured_generation<=arm_generation_i;
+                arm_key_eligible<=arm_boot_i!=0 && arm_session_i!=0 && arm_generation_i!=0 && arm_generation_i>retired_generation;
+            end
+        end
+    end
     wire cancel_match=cancel_valid_i && cancel_session_i==session_o && cancel_generation_i==generation_o;
     wire fence=!link_ready_i || panic_i || cancel_match;
     wire live=reset_ni && armed_o && !fault_o && !fence;
     wire response_matches=response_boot_i==boot_o && response_session_i==session_o &&
         response_generation_i==generation_o && response_sequence_i==request_sequence_o;
     assign arm_ready_o=reset_ni && link_ready_i && !panic_i && !armed_o && arm_state==0 &&
-        state==IDLE && !cancel_pending && retired_generation!=32'hffffffff;
+        state==IDLE && !cancel_pending && !(CAPTURE_ARM && arm_pending) && retired_generation!=32'hffffffff;
     assign arm_tx_valid_o=reset_ni && !fence && arm_state==1;
     assign request_valid_o=live && state==SEND && age<AGE_BITS'(ROUND_TRIP_TIMEOUT_CYCLES);
     assign response_ready_o=reset_ni && state==WAIT_RESPONSE;
@@ -77,12 +101,13 @@ module workstation_task3_phone_command_proxy #(
         end else begin
             arm_accepted_o<=0;arm_rejected_o<=0;
             if(cancel_tx_valid_o && cancel_tx_ready_i)cancel_pending<=0;
-            if(arm_valid_i)begin
-                if(!arm_ready_o || arm_boot_i==0 || arm_session_i==0 || arm_generation_i==0 ||
-                   arm_generation_i<=retired_generation)arm_rejected_o<=1;
+            if(arm_issue)begin
+                if(!reset_ni || !link_ready_i || panic_i || armed_o || arm_state!=0 || state!=IDLE || cancel_pending ||
+                   retired_generation==32'hffffffff || !arm_eligible ||
+                   (CAPTURE_ARM && cancel_valid_i && cancel_session_i==issue_session && cancel_generation_i==issue_generation))arm_rejected_o<=1;
                 else begin
-                    boot_o<=arm_boot_i;session_o<=arm_session_i;generation_o<=arm_generation_i;
-                    retired_generation<=arm_generation_i;next_sequence<=0;completed_commands_o<=0;
+                    boot_o<=issue_boot;session_o<=issue_session;generation_o<=issue_generation;
+                    retired_generation<=issue_generation;next_sequence<=0;completed_commands_o<=0;
                     arm_state<=1;arm_age<=0;fault_o<=0;failure_code_o<=0;
                 end
             end

@@ -82,6 +82,8 @@ def verify(output):
     try:
         simulate('fifo8_async_memory', dict(FIFO_BITS=8, MEM_HALF=7))
         simulate('fifo3_100mhz_memory', dict(FIFO_BITS=3, MEM_HALF=5))
+        simulate('captured_fifo8_async_memory', dict(FIFO_BITS=8, MEM_HALF=7, CAPTURE_COMMAND=1))
+        simulate('captured_fifo3_100mhz_memory', dict(FIFO_BITS=3, MEM_HALF=5, CAPTURE_COMMAND=1))
         source = (ROOT / STORE).read_text()
         mutants = (
             ('held_valid_generation_recounted',
@@ -103,6 +105,14 @@ def verify(output):
         )
         for name, anchor, replacement, expected in mutants:
             simulate(name, mutant=replace_once(source, anchor, replacement), expected_failure=expected)
+        for name, anchor, replacement in (
+            ('captured_tuple_bit_corrupt',
+             'payload<={command_kind,command_generation,command_offset,command_length,command_event_target};',
+             "payload<={command_kind,(command_generation^32'd1),command_offset,command_length,command_event_target};"),
+            ('captured_tuple_never_written', 'if(capture)begin', "if(1'b0)begin"),
+        ):
+            simulate(name,parameters=dict(CAPTURE_COMMAND=1),
+                mutant=replace_once(source,anchor,replacement),expected_failure='held start has one generation')
         lint_argv = ['verilator', '--lint-only', '--timing', '-Wall', '-Wno-fatal',
                      '--top-module', 'workstation_ble_raw_ddr_store', *[str(ROOT / name) for name in SOURCES]]
         lint = subprocess.run(lint_argv, capture_output=True, text=True, timeout=30)

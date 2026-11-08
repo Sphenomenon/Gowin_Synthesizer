@@ -3,10 +3,13 @@
 // Native dual-rate control DSP. Canonical state is never reset by rate changes.
 // The caller commits rate only between complete renders; this block consumes
 // the same committed value as the oscillator at each sample enable.
-module workstation_rate_pitch_expression (
+module workstation_rate_pitch_expression #(
+    parameter bit COMMITTED_GLIDE_COEFFICIENT=0
+) (
     input logic clk_i, rst_ni, sample_ce_i, rate_44k1_i,
     input logic [21:0] target_ratio_q20_i,
     input logic [15:0] glide_step_q20_i,
+    input logic [20:0] glide_div147_i,
     input logic [6:0] vibrato_depth_i,
     output logic [21:0] ratio_q20_o
 );
@@ -56,14 +59,18 @@ module workstation_rate_pitch_expression (
     wire [12:0] glide_quotient_high=glide_digit_quotient[2]+glide_digit_quotient[3];
     wire [9:0] glide_remainder_low={2'd0,glide_digit_remainder[0]}+{2'd0,glide_digit_remainder[1]};
     wire [9:0] glide_remainder_high={2'd0,glide_digit_remainder[2]}+{2'd0,glide_digit_remainder[3]};
-    wire [9:0] glide_remainder_sum=glide_remainder_low+glide_remainder_high+{2'd0,glide_remainder};
+    wire [9:0] glide_remainder_sum=COMMITTED_GLIDE_COEFFICIENT
+        ? {2'd0,glide_div147_i[7:0]}+{2'd0,glide_remainder}
+        : glide_remainder_low+glide_remainder_high+{2'd0,glide_remainder};
     wire [10:0] glide_trial[1:5];
     for(genvar carry=1;carry<=5;carry=carry+1)begin:g_glide_trial
         assign glide_trial[carry]={1'b0,glide_remainder_sum}-11'(carry*147);
     end
     wire [2:0] glide_carry=!glide_trial[5][10] ? 3'd5 : !glide_trial[4][10] ? 3'd4 :
         !glide_trial[3][10] ? 3'd3 : !glide_trial[2][10] ? 3'd2 : !glide_trial[1][10] ? 3'd1 : 3'd0;
-    wire [12:0] glide_extra_step=glide_quotient_low+glide_quotient_high+{10'd0,glide_carry};
+    wire [12:0] glide_extra_step=COMMITTED_GLIDE_COEFFICIENT
+        ? glide_div147_i[20:8]+{10'd0,glide_carry}
+        : glide_quotient_low+glide_quotient_high+{10'd0,glide_carry};
     wire [7:0] next_glide_remainder=!glide_trial[5][10] ? glide_trial[5][7:0] :
         !glide_trial[4][10] ? glide_trial[4][7:0] : !glide_trial[3][10] ? glide_trial[3][7:0] :
         !glide_trial[2][10] ? glide_trial[2][7:0] : !glide_trial[1][10] ? glide_trial[1][7:0] : glide_remainder_sum[7:0];

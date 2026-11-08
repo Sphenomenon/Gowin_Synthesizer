@@ -133,6 +133,7 @@ module gw138k_event_workstation #(
   assign master_volume_o=volume;
   logic [21:0] target_ratio;
   logic [15:0] glide_step;
+  wire [20:0] glide_div147;
   logic [6:0] vibrato_depth, glide_cc;
   logic [7:0] bend_index;
   logic sustain, releasing;
@@ -248,6 +249,7 @@ module gw138k_event_workstation #(
       .effect_order_o(effect_order_o),
       .target_ratio_o(target_ratio),
       .glide_step_o(glide_step),
+      .glide_div147_o(glide_div147),
       .vibrato_depth_o(vibrato_depth),
       .glide_cc_o(glide_cc),
       .bend_index_o(bend_index),
@@ -525,12 +527,13 @@ module gw138k_event_workstation #(
     assign load_busy=0;assign mix_busy=0;assign issued=0;assign pitch_q20_o=22'd1048576;
     assign mode_ready=1;assign mode_o=D_ONLY_ENABLE ? 2'd3 : 2'd2;
   end else if(RUNTIME_RATE_ENABLE) begin: runtime_engines
-    workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) engines(
+    workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1),.COMMITTED_GLIDE_COEFFICIENT(1)) engines(
       .clk_i,.rst_ni,.panic_i(engine_clear),.sample_ce_i(core_ce),
       .rate_commit_i(engine_rate_commit),.rate_44100_i,
       .rate_ready_o(runtime_rate_ready),.applied_rate_44100_o(engine_rate),
       .quiescent_o(runtime_quiescent),
       .target_ratio_q20_i(target_ratio),.glide_step_q20_i(glide_step),
+      .glide_div147_i(glide_div147),
       .vibrato_depth_i(vibrato_depth),.pitch_q20_o,
       .mode_set_valid_i(mode_valid),.mode_set_ready_o(mode_ready),
       .mode_i(requested_mode),.current_mode_o(mode_o),

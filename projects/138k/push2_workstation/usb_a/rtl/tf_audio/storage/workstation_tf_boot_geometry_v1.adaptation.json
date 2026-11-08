@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "policy": "native_TF_boot_geometry_eight_stage_v1",
+  "source": "rtl/tf_audio/storage/workstation_tf_file_reader.sv",
+  "parent_sha256": "28d741287dc8751a57130a518af1b4fabf7bac1aca66406c00b9cc1b017e6dcb",
+  "native_sha256": "04ffc3940f6a854728827b11e75735ca52999bfca6ca54735d02cdeb2fc5d6e0",
+  "edits": [
+    {
+      "before": "wire [31:0] total_sectors = total16 != 0 ? {16'd0,total16} : total32;\nwire [16:0] root_round = ({1'b0,rootdir_itemcount}+17'd15)>>4;\nwire [32:0] fat_span = number_of_fat == 2 ? {sectors_per_fat_w,1'b0} : {1'b0,sectors_per_fat_w};\nwire [32:0] data_offset = {17'd0,resv_sectors}+fat_span+\n    (filesystem_parsed==FAT16 ? {16'd0,root_round} : 33'd0);\nwire [32:0] volume_end = {1'b0,read_sector_no}+{1'b0,total_sectors};\nwire [31:0] parsed_clusters = (total_sectors-data_offset[31:0]) >> log2cs(sector_per_cluster);\nwire [63:0] fat_bytes = {32'd0,sectors_per_fat_w} << 9;\nwire [63:0] required_fat_bytes = ({32'd0,parsed_clusters}+64'd2) << (filesystem_parsed==FAT16 ? 1 : 2);\nwire valid_geometry = bytes_per_sector==512 && sector_per_cluster!=0 &&\n    (sector_per_cluster & (sector_per_cluster-8'd1))==0 &&\n    resv_sectors!=0 && (number_of_fat==1 || number_of_fat==2) &&\n    sectors_per_fat_w!=0 && total_sectors!=0 && !data_offset[32] &&\n    data_offset < {1'b0,total_sectors} && !volume_end[32] &&\n    (!partitioned || total_sectors<=partition_limit) && fat_bytes>=required_fat_bytes &&\n    ((filesystem_parsed==FAT16 && rootdir_itemcount!=0 && parsed_clusters>=4085 && parsed_clusters<65519) ||\n     (filesystem_parsed==FAT32 && rootdir_itemcount==0 && total16==0 &&\n      fat32_flags==0 && fat32_version==0 && parsed_clusters>=65525 && parsed_clusters<32'h0fffffef &&\n      root_cluster_w[27:0]>=2 && {4'd0,root_cluster_w[27:0]}<=parsed_clusters+1));\n",
+      "after": "// Explicit boot-only arithmetic schedule, started by the real sector done.\n// Keep the transport reservation until all eight stages have completed; no\n// assumption about SPI latency is needed and no second sector can overwrite BPB.\nreg [3:0] boot_geometry_step;\nreg [31:0] geometry_total,geometry_clusters,geometry_cluster_limit;\nreg [16:0] geometry_root_round;\nreg [32:0] geometry_fat_span,geometry_fat_offset,geometry_data_offset,geometry_volume_end;\nreg [31:0] geometry_data_count,geometry_root_scaled;\nreg [31:0] geometry_first_fat,geometry_first_data,geometry_root16,geometry_root32;\nreg [63:0] geometry_required_fat_bytes;\nreg geometry_basic,geometry_range,valid_geometry;\nwire [31:0] parsed_clusters=geometry_clusters;\nwire [16:0] root_round=geometry_root_round;\nwire boot_read_done=read_done && (filesystem_state==SEARCH_MBR || filesystem_state==SEARCH_DBR);\nalways @(posedge clk) begin\n    case(boot_geometry_step)\n        1:begin\n            geometry_total<=total16!=0 ? {16'd0,total16}:total32;\n            geometry_root_round<=({1'b0,rootdir_itemcount}+17'd15)>>4;\n            geometry_fat_span<=number_of_fat==2 ? {sectors_per_fat_w,1'b0}:{1'b0,sectors_per_fat_w};\n            geometry_basic<=bytes_per_sector==512 && sector_per_cluster!=0 &&\n                (sector_per_cluster & (sector_per_cluster-8'd1))==0 &&\n                resv_sectors!=0 && (number_of_fat==1 || number_of_fat==2) && sectors_per_fat_w!=0;\n        end\n        2:begin\n            geometry_fat_offset<={17'd0,resv_sectors}+geometry_fat_span;\n            geometry_volume_end<={1'b0,read_sector_no}+{1'b0,geometry_total};\n            geometry_root_scaled<=({4'd0,root_cluster_w[27:0]}-32'd2)<<log2cs(sector_per_cluster);\n        end\n        3:begin\n            geometry_data_offset<=geometry_fat_offset+\n                (filesystem_parsed==FAT16 ? {16'd0,geometry_root_round}:33'd0);\n            geometry_first_fat<=read_sector_no+{16'd0,resv_sectors};\n            geometry_root16<=read_sector_no+geometry_fat_offset[31:0];\n        end\n        4:begin\n            geometry_data_count<=geometry_total-geometry_data_offset[31:0];\n            geometry_first_data<=read_sector_no+geometry_data_offset[31:0];\n            geometry_range<=geometry_total!=0 && !geometry_data_offset[32] &&\n                geometry_data_offset<{1'b0,geometry_total} && !geometry_volume_end[32] &&\n                (!partitioned || geometry_total<=partition_limit);\n        end\n        5:begin\n            geometry_clusters<=geometry_data_count>>log2cs(sector_per_cluster);\n            geometry_root32<=geometry_first_data+geometry_root_scaled;\n        end\n        6:begin\n            geometry_cluster_limit<=geometry_clusters+32'd1;\n            geometry_required_fat_bytes<=({32'd0,geometry_clusters}+64'd2) << (filesystem_parsed==FAT16 ? 1:2);\n        end\n        7:valid_geometry<=geometry_basic && geometry_range &&\n            ({32'd0,sectors_per_fat_w}<<9)>=geometry_required_fat_bytes &&\n            ((filesystem_parsed==FAT16 && rootdir_itemcount!=0 && geometry_clusters>=4085 && geometry_clusters<65519) ||\n             (filesystem_parsed==FAT32 && rootdir_itemcount==0 && total16==0 && fat32_flags==0 && fat32_version==0 &&\n              geometry_clusters>=65525 && geometry_clusters<32'h0fffffef && root_cluster_w[27:0]>=2 &&\n              {4'd0,root_cluster_w[27:0]}<=geometry_cluster_limit));\n        default:begin end\n    endcase\nend\n"
+    },
+    {
+      "before": "playing<=0;inflight<=0;probe_pending<=0;read_start<=0;",
+      "after": "playing<=0;inflight<=0;probe_pending<=0;read_start<=0;boot_geometry_step<=0;"
+    },
+    {
+      "before": "partitioned<=0;partition_limit<=0;final_fat<=0;",
+      "after": "partitioned<=0;partition_limit<=0;final_fat<=0;boot_geometry_step<=0;"
+    },
+    {
+      "before": "            end else if(read_done || cache_lookup_done) begin\n                inflight<=0;",
+      "after": "            end else if(boot_read_done) begin\n                boot_geometry_step<=1;\n            end else if(boot_geometry_step!=0 && boot_geometry_step!=8) begin\n                boot_geometry_step<=boot_geometry_step+1'b1;\n            end else if(read_done || cache_lookup_done || boot_geometry_step==8) begin\n                inflight<=0;boot_geometry_step<=0;"
+    },
+    {
+      "before": "first_fat_sector_no<=read_sector_no+resv_sectors;",
+      "after": "first_fat_sector_no<=geometry_first_fat;"
+    },
+    {
+      "before": "first_data_sector_no<=read_sector_no+data_offset[31:0];",
+      "after": "first_data_sector_no<=geometry_first_data;"
+    },
+    {
+      "before": "cluster_limit<=parsed_clusters+1;",
+      "after": "cluster_limit<=geometry_cluster_limit;"
+    },
+    {
+      "before": "rootdir_sector<=read_sector_no+resv_sectors+fat_span[31:0];\n                                read_sector_no<=read_sector_no+resv_sectors+fat_span[31:0];",
+      "after": "rootdir_sector<=geometry_root16;\n                                read_sector_no<=geometry_root16;"
+    },
+    {
+      "before": "read_sector_no<=read_sector_no+data_offset[31:0]+\n                                    (({4'd0,root_cluster_w[27:0]}-2)<<log2cs(sector_per_cluster));",
+      "after": "read_sector_no<=geometry_root32;"
+    }
+  ],
+  "reconstruction_used_only_for_verification": true,
+  "hardware_tested": false
+}

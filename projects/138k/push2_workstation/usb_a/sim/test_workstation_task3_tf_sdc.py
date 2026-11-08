@@ -31,8 +31,8 @@ class ActualTfMailboxSdc(unittest.TestCase):
         cls.sdc=cls.sdc_path.read_text()
         cls.n=protocol_netlist(cls.path.read_text(),mapping=os.environ.get('GW138K_TASK3_TF_SDC_MAPPING','synthesis'))
         cls.root=audit_root_startup(cls.n,stage=cls.stage)
-        cls.status=audit_direct_tf_owner(cls.n)
-        cls.receipt=audit_direct_receipt(cls.n,root=cls.root)
+        cls.status=audit_direct_tf_owner(cls.n,stage=cls.stage,root=cls.root)
+        cls.receipt=audit_direct_receipt(cls.n,root=cls.root,stage=cls.stage)
         cls.mutations,cls.positive,cls.failed=[],None,False
         cls.before={str(path):sha(path) for path in (cls.path,cls.sdc_path,cls.stage/'Prj1.gprj',
             cls.stage/'rtl/tf_audio/workstation_tf_direct_runtime_service.sv')}

@@ -83,6 +83,7 @@ class ActualMappedW(unittest.TestCase):
         window = reg(mapped.W,'held')
         flight = reg(mapped.W,'flight',0)
         flight_gate = g.drivers[n.pin(flight,'D')][0][0]
+        load_gate = g.drivers[n.canonical(mapped.B,'n737_4')][0][0]
         token = g.group(mapped.B,'token',32)
         # Select actual mapped cells, never a source-level or invented seam.
         compare = g.drivers[n.canonical(mapped.B,'n44_3')][0][0]
@@ -99,6 +100,7 @@ class ActualMappedW(unittest.TestCase):
             ('window clock',window,'ports','CLK',"1'b0"),
             ('window clear',window,'ports','CLEAR',"1'b0"),
             ('window flight gate truth table',flight_gate,'parameters','INIT',"16'h0000"),
+            ('reply load gate truth table',load_gate,'parameters','INIT',"16'h0000"),
             ('window flight next state',flight,'ports','D',"1'b0"),
             ('TX clock',tx[0],'ports','CLK',"1'b0"),
             ('TX clear',tx[0],'ports','CLEAR',"1'b0"),
@@ -132,7 +134,9 @@ class ActualMappedW(unittest.TestCase):
     def test_03_exact_source_and_selection(self):
         with tempfile.TemporaryDirectory(prefix='task3-W-mapped-source-fixture-') as temp:
             stage = Path(temp)
-            for relative in ('Prj1.gprj',*mapped.SOURCE_SHA256):
+            from tools.workstation_task3_w_banked96 import PROVIDER as banked_provider
+            extra = (banked_provider,) if (self.stage/banked_provider).is_file() else ()
+            for relative in ('Prj1.gprj',*mapped.SOURCE_SHA256,*extra):
                 target = stage/relative
                 target.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copyfile(self.stage/relative,target)

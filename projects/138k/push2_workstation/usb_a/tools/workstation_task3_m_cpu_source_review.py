@@ -37,6 +37,10 @@ SOURCES = {
 # These opaque inputs have reviewed external APB equations. They are not
 # established reset pins; CPU interpretation of the inputs remains unproved.
 OPAQUE_INPUTS = {'ready': 'n9888_3', 'error': 'n9896_3'}
+PREBOARD_PROFILE = 'custom138k-workstation-task3-m-preboard-v1'
+from tools.workstation_task3_m_phone_lease_source import ROOT_VARIANT as PREBOARD_ROOT_VARIANT
+SELECTIONS = {PROFILE: (PHONE_GROUPED_ROOT_VARIANT, OPAQUE_INPUTS),
+              PREBOARD_PROFILE: (PREBOARD_ROOT_VARIANT, {'ready':'n9892_3','error':'n9900_3'})}
 
 
 def require(condition, message):
@@ -52,9 +56,9 @@ def sources(stage):
     stage = Path(stage)
     artifact = json.loads((stage.parent.parent / 'workstation_profile.json').read_text())
     binding = source_binding(stage)
-    require(artifact['profile'] == PROFILE and
-            binding.get('root_mapping_variant') == PHONE_GROUPED_ROOT_VARIANT,
-            'explicit v16 phone-grouped source required')
+    selected = SELECTIONS.get(artifact['profile'])
+    require(selected is not None and binding.get('root_mapping_variant') == selected[0],
+            'explicit reviewed CPU source profile/root variant required')
     for relative, expected in SOURCES.items():
         require(sha(stage / relative) == expected, 'sealed source drift: ' + relative)
     return dict(profile=artifact['profile'], candidate_identity=artifact['candidate_identity'],
@@ -62,10 +66,11 @@ def sources(stage):
 
 
 def review(n, *, source):
-    require(source.get('profile') == PROFILE and
-            source.get('reviewed_source_sha256') == SOURCES and
-            source.get('root_binding', {}).get('root_mapping_variant') == PHONE_GROUPED_ROOT_VARIANT,
+    selected = SELECTIONS.get(source.get('profile'))
+    require(selected is not None and source.get('reviewed_source_sha256') == SOURCES and
+            source.get('root_binding', {}).get('root_mapping_variant') == selected[0],
             'reviewed source binding required')
+    opaque_inputs = selected[1]
     g = Graph(n)
     release = g.register(CONFIG, 'p_release', 2)
     release_q = n.pin(release, 'Q')
@@ -91,11 +96,23 @@ def review(n, *, source):
     require(closure['ff_endpoints'] == {p + '/CLEAR': 'ram_clk' for p in registers},
             'complete source FF inventory differs from named state groups')
     require(not closure['top_output_endpoints'], 'source release reaches a top output')
-    require(set(closure['primitive_endpoints']) ==
-            {CPU_BLACKBOX + '/' + pin for pin in OPAQUE_INPUTS.values()} and
-            all(row['kind'] == 'RiscV_AE350_SOC' and not row['clock_pins']
-                for row in closure['primitive_endpoints'].values()),
-            'unreviewed opaque source consumer')
+    preboard=source['profile']==PREBOARD_PROFILE
+    if preboard:
+        # Synthesis numeric pin names can change with unrelated mapped logic.
+        # Admit exactly two actual CPU input endpoints, then identify each by
+        # its complete external APB Boolean equation below. No CPU pin is
+        # assumed to be a reset or accepted by name/count alone.
+        require(len(closure['primitive_endpoints'])==2 and
+                all(pin.startswith(CPU_BLACKBOX+'/') and
+                    row['kind']=='RiscV_AE350_SOC' and not row['clock_pins']
+                    for pin,row in closure['primitive_endpoints'].items()),
+                'unreviewed opaque source consumer')
+    else:
+        require(set(closure['primitive_endpoints']) ==
+                {CPU_BLACKBOX + '/' + pin for pin in opaque_inputs.values()} and
+                all(row['kind'] == 'RiscV_AE350_SOC' and not row['clock_pins']
+                    for row in closure['primitive_endpoints'].values()),
+                'unreviewed opaque source consumer')
 
     # Independently named CPU outputs are legitimate external Boolean inputs.
     # Never cut a net merely because recursive traversal could not resolve it.
@@ -144,8 +161,25 @@ def review(n, *, source):
         error = bd.both(ready, bit(q(scope, 'response_local', 32)))
         expected['ready'] = bd.choose(select, ready, expected['ready'])
         expected['error'] = bd.choose(select, error, expected['error'])
+    if preboard:
+        equations={}
+        for endpoint in closure['primitive_endpoints']:
+            pin=endpoint.rsplit('/',1)[1];net=n.pin(CPU_BLACKBOX,pin)
+            require(g.support(net,cuts=bus)<=set(leaves),'unreviewed APB source input')
+            equations[pin]=bd.net(g,net)
+        opaque_inputs={}
+        for label,wanted in expected.items():
+            matches=[pin for pin,equation in equations.items()if equation==wanted]
+            require(len(matches)==1,'unique external APB equation absent: '+label)
+            opaque_inputs[label]=matches[0]
+        require(len(set(opaque_inputs.values()))==2,'external APB input roles alias')
+        require(opaque_inputs in (
+            {'ready':'n9892_3','error':'n9900_3'},
+            {'ready':'n9892_10','error':'n9900_3'},
+            {'ready':'n9892_11','error':'n9900_3'}),
+            'reviewed external CPU APB pin roles changed')
     opaque = {}
-    for label, pin in OPAQUE_INPUTS.items():
+    for label, pin in opaque_inputs.items():
         net = n.pin(CPU_BLACKBOX, pin)
         support = g.support(net, cuts=bus)
         require(support <= set(leaves), 'unreviewed APB response publisher: ' + label)

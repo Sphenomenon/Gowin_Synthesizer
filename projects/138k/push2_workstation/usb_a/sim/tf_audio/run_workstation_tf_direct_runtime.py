@@ -35,6 +35,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--rate', type=int, action='append', choices=(48000, 44100))
     parser.add_argument('--pause', action='store_true', help='Also check real CC pause/resume and retained TF head')
+    parser.add_argument('--local-compute-release',action='store_true',
+                        help='Select the explicit preboard functional compute reset boundary')
     parser.add_argument('--cold-start', action='store_true',
                         help='Use actual production reset_release, fixed external reset high and HOLD_CYCLES=1024')
     case_modes = dict(play=0, pause=1, cancel=2, stop=3, panic=4, invalid_track=5,
@@ -92,6 +94,7 @@ def main():
                   separate_common_reset_startup_exercised=True,
                   actual_root_reset_release_fixed_ext_reset=args.cold_start,
                   actual_memory_guard_startup_grant=args.cold_start,
+                  local_compute_functional_release_selected=args.local_compute_release,
                   reset_release_hold_cycles=1024 if args.cold_start else None,
                   actual_top_elaborated=False,
                   whole_runtime_clock_stop_verified=False, native_file_error_remount_verified=False,
@@ -100,6 +103,7 @@ def main():
                   limits='Ordered owner6 DDR model, constructed external SD card, stereo16 only, shortened startup/qualification. Initial six cases use short fully prefetched files; explicit inflight cases use 4097-frame first files. No whole-runtime clock-stop, native file-error/remount, selected whole-board arbitration/P&R/hardware claim')
     try:
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
+                   '-GLOCAL_COMPUTE_RESET_ENABLE='+str(int(args.local_compute_release)),
                    '--top-module', 'tb_workstation_tf_direct_runtime', '--Mdir', str(output / 'obj'),
                    '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]
         result['compile_argv'] = command

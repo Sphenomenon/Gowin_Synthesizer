@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 module tb_workstation_tf_frame_bridge_v2 #(
-    parameter [31:0] START_GENERATION=32'd0
+    parameter [31:0] START_GENERATION=32'd0,
+    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0
 );
     reg source_clk=0,compute_clk=0,source_run=1,rst_n=0;
     always begin #10;if(source_run)source_clk=~source_clk;end
@@ -39,7 +40,8 @@ module tb_workstation_tf_frame_bridge_v2 #(
     wire [31:0] source_session={source_left,source_right}^{12'd0,source_rate}^32'h5365a9b0;
     wire tf_last;
     wire [31:0] tf_session;
-    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(2),.INITIAL_GENERATION(START_GENERATION)) dut(
+    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(2),.INITIAL_GENERATION(START_GENERATION),
+        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE)) dut(
         .rst_ni(rst_n),.source_clk_i(source_clk),.compute_clk_i(compute_clk),
         .invalidate_i(invalidate),.source_quiesce_i(quiesce),
         .source_valid_i(source_valid),.source_error_i(source_error),

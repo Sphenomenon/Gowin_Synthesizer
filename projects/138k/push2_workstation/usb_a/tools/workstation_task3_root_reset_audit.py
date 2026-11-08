@@ -163,7 +163,7 @@ def source_binding(stage):
                         'demand identity source does not invert to the reviewed endpoint')
                 reviewed[demand.ENDPOINT]=sha(stage/demand.ENDPOINT)
             from tools import workstation_task3_capture_compare as capture
-            capture_profile=artifact.get('profile')==capture.PROFILE
+            capture_profile=artifact.get('profile') in capture.PROFILES
             require(capture.configured(configuration)==capture_profile,'capture ordering root profile/policy mismatch')
             if capture_profile:
                 capture.evidence(stage,configuration)
@@ -264,7 +264,7 @@ def publisher_policy(root):
             require(registered,'demand root requires the reviewed source-clock lease policy')
             includes[demand.ENDPOINT]=demand.SELECTED_SHA256
         from tools import workstation_task3_capture_compare as capture
-        if root.get('root_profile')==capture.PROFILE:
+        if root.get('root_profile') in capture.PROFILES:
             require(registered,'capture root requires the reviewed source-clock lease policy')
             includes[capture.SOURCE]=capture.SELECTED_SHA256
     else:

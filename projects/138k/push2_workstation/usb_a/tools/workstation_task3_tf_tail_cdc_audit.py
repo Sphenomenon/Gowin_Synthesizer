@@ -34,7 +34,19 @@ def audit_tf_tail_cdc(n, *, root, stage):
     require(n.frames.get(s, {}).get('kind') == 'workstation_tf_physical_tail_v1',
             'actual physical tail hierarchy missing')
     source_hash=hashlib.sha256((Path(stage)/SOURCE).read_bytes()).hexdigest()
-    require(source_hash==SOURCE_SHA256,'reviewed staged tail source identity changed')
+    local_reset=None
+    from tools.workstation_task3_tf_tail_reset import configured,audit_mapped,inverse
+    import json
+    configuration=json.loads((Path(stage).parents[1]/'workstation_profile.json').read_text())['configuration']
+    if configured(configuration):
+        require(hashlib.sha256(inverse(SOURCE,(Path(stage)/SOURCE).read_text()).encode()).hexdigest()==SOURCE_SHA256,
+                'tail exact historical inverse changed')
+        local_reset=audit_mapped(n,stage=stage,root=root)
+    else:require(source_hash==SOURCE_SHA256,'reviewed staged tail source identity changed')
+    domain_live={'audio_clk':local_reset['chains']['compute']['final_q'],
+                 'dac_mclk_d':local_reset['chains']['serial']['final_q']} if local_reset else {
+                     'audio_clk':rq,'dac_mclk_d':rq}
+    def released(b,path):return b.inputs[domain_live[n.pin(path,'CLK')]]
     q = lambda p: n.pin(p, 'Q')
     groups = {name: g.group(s, name, width) for name, width in (
         ('held_request', 162), ('serial_token', 162), ('held_reply', 229),
@@ -47,8 +59,8 @@ def audit_tf_tail_cdc(n, *, root, stage):
         'arm_pending', 'armed_o', 'failed_o', 'tail_receipted')})
     baseline = g.group(s, 'baseline_drops_o', 32)
     common = n.pin(scalar['request_toggle'], 'CLEAR')
-    bd = BooleanDiagram([rq])
-    require(g.support(common) == {rq} and bd.net(g, common) == bd.invert(bd.inputs[rq]),
+    bd = BooleanDiagram([domain_live['audio_clk']])
+    require(g.support(common) == {domain_live['audio_clk']} and bd.net(g, common) == bd.invert(bd.inputs[domain_live['audio_clk']]),
             'common CLEAR is not exact inverse real root')
     rows = []
 
@@ -56,10 +68,12 @@ def audit_tf_tail_cdc(n, *, root, stage):
         c = n.cells[path]
         require(c['kind'] == 'DFFCE' and set(c['ports']) == {'Q','D','CLK','CE','CLEAR'}
                 and c['parameters'].get('INIT', "1'b0") == "1'b0"
-                and n.pin(path,'CLK') == clock and n.pin(path,'CLEAR') == common,
+                and n.pin(path,'CLK') == clock and g.support(n.pin(path,'CLEAR')) == {domain_live[clock]},
                 'FF primitive/INIT/clock/common CLEAR changed: ' + path)
+        reset=domain_live[clock];b=BooleanDiagram([reset])
+        require(b.net(g,n.pin(path,'CLEAR'))==b.invert(b.inputs[reset]),'tail local CLEAR polarity changed')
         rows.append(dict(register=path, clock=clock, primitive=c['kind'],
-                         effective_init=0, common_clear=common))
+                         effective_init=0, common_clear=n.pin(path,'CLEAR')))
 
     for name, regs in groups.items():
         clock = 'audio_clk' if name in ('held_request','reply_sync','fence_gray') else 'dac_mclk_d'
@@ -84,7 +98,7 @@ def audit_tf_tail_cdc(n, *, root, stage):
     proofs = []
 
     def proof(path, inputs, expected, contract, *, actual_cuts=()):
-        leaves = sorted((set(inputs) | {rq,q(path)}) - g.high - g.low)
+        leaves = sorted((set(inputs) | {rq,q(path),domain_live[n.pin(path,'CLK')]}) - g.high - g.low)
         b = BooleanDiagram(leaves)
         actual = b.choose(b.net(g,n.pin(path,'CLEAR')),0,
                     b.choose(b.net(g,n.pin(path,'CE')),b.net(g,n.pin(path,'D')),b.inputs[q(path)]))
@@ -134,7 +148,7 @@ def audit_tf_tail_cdc(n, *, root, stage):
                 and not pc['primitive_endpoints'] and not pc['top_output_endpoints'],
                 'toggle has extra remote/opaque/top consumer: '+name)
         for path,upstream in ((first,producer),(second,first)):
-            proof(path,[q(upstream)],lambda b,u=upstream:b.both(b.inputs[rq],b.inputs[q(u)]),
+            proof(path,[q(upstream)],lambda b,u=upstream,p=path:b.both(released(b,p),b.inputs[q(u)]),
                   'root & exact preceding/source Q')
         chains.append(dict(id=name,source=producer+'/Q',first=first+'/D',second=second+'/D',
                            first_consumer_closure=closure,producer_complete_closure=pc))
@@ -147,28 +161,51 @@ def audit_tf_tail_cdc(n, *, root, stage):
                 and not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
                 'fence meta has extra consumer')
         for path,upstream in ((first,producer),(second,first)):
-            proof(path,[q(upstream)],lambda b,u=upstream:b.both(b.inputs[rq],b.inputs[q(u)]),
+            proof(path,[q(upstream)],lambda b,u=upstream,p=path:b.both(released(b,p),b.inputs[q(u)]),
                   'root & exact preceding Gray bit Q')
 
     # Actual source CE can include upstream combinational arithmetic; stop only
     # at declared module inputs. No data cut is used to assume mailbox hold.
     toggle=scalar['request_toggle']; ce=n.pin(toggle,'CE')
-    support=g.support(ce,cuts=external)
     request_q=q(toggle); reply_sync1=q(groups['reply_sync'][1])
+    # Synthesized module inputs can be shared expressions containing local
+    # busy state. Expand those expressions; cutting them independently would
+    # admit impossible busy/ready combinations. Independent arithmetic cuts
+    # conservatively include every upstream value, not an assumed condition.
+    from tools.workstation_runtime_pcm_cdc import COMB
+    memo={}; targets={request_q,reply_sync1}
+    def depends(net):
+        if net in targets:return True
+        if net in memo:return memo[net]
+        if net in g.high|g.low:return False
+        ds=g.drivers[net]
+        require(len(ds)<=1,'ambiguous shared input dependency')
+        if not ds:return False  # Declared external input remains an arbitrary cut.
+        p,port=ds[0]
+        if p in g.regs:return False
+        kind=n.cells[p]['kind'];require(kind in COMB,'opaque shared input dependency')
+        memo[net]=any(depends(n.pin(p,pin))for pin in n.cells[p]['ports']if pin not in COMB[kind])
+        return memo[net]
+    correlated={net for net in external if depends(net)}
+    cuts=external-correlated
+    cuts.update(net for net in g.carry_frontier(ce)|g.carry_frontier(n.pin(toggle,'D')) if not depends(net))
+    support=g.support(ce,cuts=cuts)|g.support(n.pin(toggle,'D'),cuts=cuts)
     require(request_q in support and reply_sync1 in support,
             'request source acceptance no longer checks both busy operands')
-    b=BooleanDiagram(sorted(support | {request_q,reply_sync1}))
-    commit=b.net(g,ce)
-    require(b.both(commit,b.different(b.inputs[request_q],b.inputs[reply_sync1]))==0,
+    def commit(b):
+        return b.different(b.inputs[request_q],b.choose(b.net(g,ce),
+            b.net(g,n.pin(toggle,'D')),b.inputs[request_q]))
+    b=BooleanDiagram(sorted(support|{request_q,reply_sync1}))
+    require(b.both(commit(b),b.different(b.inputs[request_q],b.inputs[reply_sync1]))==0,
             'request source can commit while mailbox busy')
     proof(toggle,support,
-          lambda b:b.both(b.inputs[rq],b.different(b.inputs[request_q],b.net(g,ce))),
-          'root & (request XOR actual accepted commit); commit implies !busy',actual_cuts=external & support)
+          lambda b:b.both(released(b,toggle),b.different(b.inputs[request_q],commit(b))),
+          'domain release & (request XOR actual effective next-Q change); change implies !busy',actual_cuts=cuts&support)
     for p in request:
-        leaves=g.support(n.pin(p,'D'),cuts=external) | g.support(n.pin(p,'CE'),cuts=external) | support
+        leaves=g.support(n.pin(p,'D'),cuts=cuts) | g.support(n.pin(p,'CE'),cuts=cuts) | support
         b=BooleanDiagram(sorted((leaves | {rq,q(p),request_q,reply_sync1}) - g.high - g.low))
         nextq=b.choose(b.net(g,n.pin(p,'CE')),b.net(g,n.pin(p,'D')),b.inputs[q(p)])
-        require(b.both(b.invert(b.net(g,ce)),b.different(nextq,b.inputs[q(p)]))==0,
+        require(b.both(b.invert(commit(b)),b.different(nextq,b.inputs[q(p)]))==0,
                 'held request changes outside exact request-toggle commit: '+p)
         require(b.both(b.different(b.inputs[request_q],b.inputs[reply_sync1]),
                        b.different(nextq,b.inputs[q(p)]))==0,
@@ -191,14 +228,14 @@ def audit_tf_tail_cdc(n, *, root, stage):
         b=BooleanDiagram(control)
         require(b.net(g,n.pin(p,'CE'))==capture(b),'serial token capture CE changed')
         proof(p,[*control,q(request[bit])],
-              lambda b,p=p,bit=bit:b.both(b.inputs[rq],b.choose(capture(b),b.inputs[q(request[bit])],b.inputs[q(p)])),
+              lambda b,p=p,bit=bit:b.both(released(b,p),b.choose(capture(b),b.inputs[q(request[bit])],b.inputs[q(p)])),
               'root & choose(IDLE && reqsync1!=reply, matching held request bit, token Q)')
     seen=scalar['serial_request_seen']
     proof(seen,control,
-          lambda b:b.both(b.inputs[rq],b.choose(capture(b),b.inputs[request_sync1],b.inputs[q(seen)])),
+          lambda b:b.both(released(b,seen),b.choose(capture(b),b.inputs[request_sync1],b.inputs[q(seen)])),
           'root & choose(exact token capture event, reqsync1, seen)')
     consumed=scalar['reply_consumed']; sync1=q(groups['reply_sync'][1])
-    proof(consumed,[sync1],lambda b:b.both(b.inputs[rq],b.inputs[sync1]),
+    proof(consumed,[sync1],lambda b:b.both(released(b,consumed),b.inputs[sync1]),
           'root & replysync1 (CE inequality form is next-Q equivalent)')
 
     return dict(policy=POLICY,scope=s,root_register=root['root_register'],root_q=rq,
@@ -215,7 +252,8 @@ def audit_tf_tail_cdc(n, *, root, stage):
                 chains=chains,next_q=proofs,request_commit_ce=ce,
                 request_no_overwrite_without_toggle_proven=True,request_busy_no_overwrite_proven=True,
                 serial_capture_no_earlier_than_receiving_edge=3,
-                external_interface_inputs_explicit_cuts=True,source_request_data_semantics_proven=False,
+                external_interface_inputs_explicit_cuts=True,expanded_busy_correlated_inputs=sorted(correlated),
+                independent_upstream_cuts=sorted(cuts),source_request_data_semantics_proven=False,
                 reply_retirement_next_q_proven=False,compute_reply_business_next_q_proven=False,
                 cancellation_gray_arithmetic_proven=False,sequence_physical_semantics_proven=False,
                 full_tf_cdc_proven=False,routed_timing_verified=False,

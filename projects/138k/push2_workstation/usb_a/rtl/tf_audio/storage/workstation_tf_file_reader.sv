@@ -437,25 +437,65 @@ function [2:0] log2cs(input [7:0] v);
         8:log2cs=3;4:log2cs=2;2:log2cs=1;default:log2cs=0;
     endcase
 endfunction
-wire [31:0] total_sectors = total16 != 0 ? {16'd0,total16} : total32;
-wire [16:0] root_round = ({1'b0,rootdir_itemcount}+17'd15)>>4;
-wire [32:0] fat_span = number_of_fat == 2 ? {sectors_per_fat_w,1'b0} : {1'b0,sectors_per_fat_w};
-wire [32:0] data_offset = {17'd0,resv_sectors}+fat_span+
-    (filesystem_parsed==FAT16 ? {16'd0,root_round} : 33'd0);
-wire [32:0] volume_end = {1'b0,read_sector_no}+{1'b0,total_sectors};
-wire [31:0] parsed_clusters = (total_sectors-data_offset[31:0]) >> log2cs(sector_per_cluster);
-wire [63:0] fat_bytes = {32'd0,sectors_per_fat_w} << 9;
-wire [63:0] required_fat_bytes = ({32'd0,parsed_clusters}+64'd2) << (filesystem_parsed==FAT16 ? 1 : 2);
-wire valid_geometry = bytes_per_sector==512 && sector_per_cluster!=0 &&
-    (sector_per_cluster & (sector_per_cluster-8'd1))==0 &&
-    resv_sectors!=0 && (number_of_fat==1 || number_of_fat==2) &&
-    sectors_per_fat_w!=0 && total_sectors!=0 && !data_offset[32] &&
-    data_offset < {1'b0,total_sectors} && !volume_end[32] &&
-    (!partitioned || total_sectors<=partition_limit) && fat_bytes>=required_fat_bytes &&
-    ((filesystem_parsed==FAT16 && rootdir_itemcount!=0 && parsed_clusters>=4085 && parsed_clusters<65519) ||
-     (filesystem_parsed==FAT32 && rootdir_itemcount==0 && total16==0 &&
-      fat32_flags==0 && fat32_version==0 && parsed_clusters>=65525 && parsed_clusters<32'h0fffffef &&
-      root_cluster_w[27:0]>=2 && {4'd0,root_cluster_w[27:0]}<=parsed_clusters+1));
+// Explicit boot-only arithmetic schedule, started by the real sector done.
+// Keep the transport reservation until all eight stages have completed; no
+// assumption about SPI latency is needed and no second sector can overwrite BPB.
+reg [3:0] boot_geometry_step;
+reg [31:0] geometry_total,geometry_clusters,geometry_cluster_limit;
+reg [16:0] geometry_root_round;
+reg [32:0] geometry_fat_span,geometry_fat_offset,geometry_data_offset,geometry_volume_end;
+reg [31:0] geometry_data_count,geometry_root_scaled;
+reg [31:0] geometry_first_fat,geometry_first_data,geometry_root16,geometry_root32;
+reg [63:0] geometry_required_fat_bytes;
+reg geometry_basic,geometry_range,valid_geometry;
+wire [31:0] parsed_clusters=geometry_clusters;
+wire [16:0] root_round=geometry_root_round;
+wire boot_read_done=read_done && (filesystem_state==SEARCH_MBR || filesystem_state==SEARCH_DBR);
+always @(posedge clk) begin
+    case(boot_geometry_step)
+        1:begin
+            geometry_total<=total16!=0 ? {16'd0,total16}:total32;
+            geometry_root_round<=({1'b0,rootdir_itemcount}+17'd15)>>4;
+            geometry_fat_span<=number_of_fat==2 ? {sectors_per_fat_w,1'b0}:{1'b0,sectors_per_fat_w};
+            geometry_basic<=bytes_per_sector==512 && sector_per_cluster!=0 &&
+                (sector_per_cluster & (sector_per_cluster-8'd1))==0 &&
+                resv_sectors!=0 && (number_of_fat==1 || number_of_fat==2) && sectors_per_fat_w!=0;
+        end
+        2:begin
+            geometry_fat_offset<={17'd0,resv_sectors}+geometry_fat_span;
+            geometry_volume_end<={1'b0,read_sector_no}+{1'b0,geometry_total};
+            geometry_root_scaled<=({4'd0,root_cluster_w[27:0]}-32'd2)<<log2cs(sector_per_cluster);
+        end
+        3:begin
+            geometry_data_offset<=geometry_fat_offset+
+                (filesystem_parsed==FAT16 ? {16'd0,geometry_root_round}:33'd0);
+            geometry_first_fat<=read_sector_no+{16'd0,resv_sectors};
+            geometry_root16<=read_sector_no+geometry_fat_offset[31:0];
+        end
+        4:begin
+            geometry_data_count<=geometry_total-geometry_data_offset[31:0];
+            geometry_first_data<=read_sector_no+geometry_data_offset[31:0];
+            geometry_range<=geometry_total!=0 && !geometry_data_offset[32] &&
+                geometry_data_offset<{1'b0,geometry_total} && !geometry_volume_end[32] &&
+                (!partitioned || geometry_total<=partition_limit);
+        end
+        5:begin
+            geometry_clusters<=geometry_data_count>>log2cs(sector_per_cluster);
+            geometry_root32<=geometry_first_data+geometry_root_scaled;
+        end
+        6:begin
+            geometry_cluster_limit<=geometry_clusters+32'd1;
+            geometry_required_fat_bytes<=({32'd0,geometry_clusters}+64'd2) << (filesystem_parsed==FAT16 ? 1:2);
+        end
+        7:valid_geometry<=geometry_basic && geometry_range &&
+            ({32'd0,sectors_per_fat_w}<<9)>=geometry_required_fat_bytes &&
+            ((filesystem_parsed==FAT16 && rootdir_itemcount!=0 && geometry_clusters>=4085 && geometry_clusters<65519) ||
+             (filesystem_parsed==FAT32 && rootdir_itemcount==0 && total16==0 && fat32_flags==0 && fat32_version==0 &&
+              geometry_clusters>=65525 && geometry_clusters<32'h0fffffef && root_cluster_w[27:0]>=2 &&
+              {4'd0,root_cluster_w[27:0]}<=geometry_cluster_limit));
+        default:begin end
+    endcase
+end
 wire [31:0] next_cluster = filesystem==FAT16 ? {16'd0,target_cluster_fat16} : {4'd0,target_cluster[27:0]};
 wire next_eoc = filesystem==FAT16 ? next_cluster>=32'hfff8 : next_cluster>=32'h0ffffff8;
 wire next_valid = next_cluster>=2 && next_cluster<=cluster_limit &&
@@ -509,7 +549,7 @@ assign data_sector_start = rstn && !file_error && filesystem_state==READ_A_FILE 
 task fail(input [3:0] code);
     begin
         file_error<=1;file_error_code<=code;filesystem_state<=DONE;
-        playing<=0;inflight<=0;probe_pending<=0;read_start<=0;
+        playing<=0;inflight<=0;probe_pending<=0;read_start<=0;boot_geometry_step<=0;
         search_fat<=0;start_req<=0;stop_req<=0;final_fat<=0;
     end
 endtask
@@ -523,7 +563,7 @@ always @(posedge clk or negedge rstn) begin
         file_size<=0;inflight<=0;playing<=0;eof<=0;load_track<=0;start_req<=0;req_idx<=0;
         probe_timer<=0;probe_pending<=0;probe_resume_sector<=0;stop_req<=0;stop_q<=0;
         cancelled<=0;track_applied<=0;file_error<=0;file_error_code<=0;watchdog<=0;
-        partitioned<=0;partition_limit<=0;final_fat<=0;
+        partitioned<=0;partition_limit<=0;final_fat<=0;boot_geometry_step<=0;
     end else begin
         read_start<=0;eof<=0;load_track<=0;cancelled<=0;track_applied<=0;stop_q<=stop;
         if(track_start && !stop && !stop_req) begin start_req<=1;req_idx<=track_index;end
@@ -542,8 +582,12 @@ always @(posedge clk or negedge rstn) begin
                     (!inflight || read_done)) begin
                 inflight<=0;probe_pending<=0;playing<=0;start_req<=0;stop_req<=0;
                 search_fat<=0;final_fat<=0;filesystem_state<=READY;cancelled<=1;
-            end else if(read_done || cache_lookup_done) begin
-                inflight<=0;
+            end else if(boot_read_done) begin
+                boot_geometry_step<=1;
+            end else if(boot_geometry_step!=0 && boot_geometry_step!=8) begin
+                boot_geometry_step<=boot_geometry_step+1'b1;
+            end else if(read_done || cache_lookup_done || boot_geometry_step==8) begin
+                inflight<=0;boot_geometry_step<=0;
                 if(probe_pending) begin probe_pending<=0;read_sector_no<=probe_resume_sector;end
                 else case(filesystem_state)
                     SEARCH_MBR: begin
@@ -563,19 +607,18 @@ always @(posedge clk or negedge rstn) begin
                         else begin
                             filesystem<=filesystem_parsed;cluster_size<=sector_per_cluster;
                             cluster_shift<=log2cs(sector_per_cluster);
-                            first_fat_sector_no<=read_sector_no+resv_sectors;
-                            first_data_sector_no<=read_sector_no+data_offset[31:0];
-                            cluster_limit<=parsed_clusters+1;cluster_sector_offset<=0;rootdir_offset<=0;
+                            first_fat_sector_no<=geometry_first_fat;
+                            first_data_sector_no<=geometry_first_data;
+                            cluster_limit<=geometry_cluster_limit;cluster_sector_offset<=0;rootdir_offset<=0;
                             root_sectors_scanned<=0;
                             if(filesystem_parsed==FAT16) begin
                                 rootdir_sectorcount<=root_round[15:0];
-                                rootdir_sector<=read_sector_no+resv_sectors+fat_span[31:0];
-                                read_sector_no<=read_sector_no+resv_sectors+fat_span[31:0];
+                                rootdir_sector<=geometry_root16;
+                                read_sector_no<=geometry_root16;
                                 filesystem_state<=LS_ROOT_FAT16;
                             end else begin
                                 curr_cluster<={4'd0,root_cluster_w[27:0]};
-                                read_sector_no<=read_sector_no+data_offset[31:0]+
-                                    (({4'd0,root_cluster_w[27:0]}-2)<<log2cs(sector_per_cluster));
+                                read_sector_no<=geometry_root32;
                                 filesystem_state<=LS_ROOT_FAT32;
                             end
                         end

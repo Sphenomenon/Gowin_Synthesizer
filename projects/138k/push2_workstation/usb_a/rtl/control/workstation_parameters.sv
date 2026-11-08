@@ -27,6 +27,7 @@ module workstation_parameters #(
     output logic [5:0] effect_order_o,
     output logic [21:0] target_ratio_o,
     output logic [15:0] glide_step_o,
+    output logic [20:0] glide_div147_o,
     output logic [6:0] vibrato_depth_o, glide_cc_o,
     output logic [7:0] bend_index_o,
     output logic sustain_o,
@@ -43,6 +44,142 @@ module workstation_parameters #(
     output logic rejected_o
 );
     logic [21:0] bend_rom [0:255];
+    // A derived coefficient is committed with CC5 at the sole parameter
+    // application point. No additional parameter or sample-edge latency.
+    wire [15:0] glide_step_next = value_i == 0 ? 16'd0 : 16'd256 - ({9'd0,value_i} << 1);
+    function automatic [20:0] glide_coefficient(input [6:0] cc);
+        case(cc)
+            7'd0:glide_coefficient={13'd0,8'd0};
+            7'd1:glide_coefficient={13'd22,8'd68};
+            7'd2:glide_coefficient={13'd22,8'd42};
+            7'd3:glide_coefficient={13'd22,8'd16};
+            7'd4:glide_coefficient={13'd21,8'd137};
+            7'd5:glide_coefficient={13'd21,8'd111};
+            7'd6:glide_coefficient={13'd21,8'd85};
+            7'd7:glide_coefficient={13'd21,8'd59};
+            7'd8:glide_coefficient={13'd21,8'd33};
+            7'd9:glide_coefficient={13'd21,8'd7};
+            7'd10:glide_coefficient={13'd20,8'd128};
+            7'd11:glide_coefficient={13'd20,8'd102};
+            7'd12:glide_coefficient={13'd20,8'd76};
+            7'd13:glide_coefficient={13'd20,8'd50};
+            7'd14:glide_coefficient={13'd20,8'd24};
+            7'd15:glide_coefficient={13'd19,8'd145};
+            7'd16:glide_coefficient={13'd19,8'd119};
+            7'd17:glide_coefficient={13'd19,8'd93};
+            7'd18:glide_coefficient={13'd19,8'd67};
+            7'd19:glide_coefficient={13'd19,8'd41};
+            7'd20:glide_coefficient={13'd19,8'd15};
+            7'd21:glide_coefficient={13'd18,8'd136};
+            7'd22:glide_coefficient={13'd18,8'd110};
+            7'd23:glide_coefficient={13'd18,8'd84};
+            7'd24:glide_coefficient={13'd18,8'd58};
+            7'd25:glide_coefficient={13'd18,8'd32};
+            7'd26:glide_coefficient={13'd18,8'd6};
+            7'd27:glide_coefficient={13'd17,8'd127};
+            7'd28:glide_coefficient={13'd17,8'd101};
+            7'd29:glide_coefficient={13'd17,8'd75};
+            7'd30:glide_coefficient={13'd17,8'd49};
+            7'd31:glide_coefficient={13'd17,8'd23};
+            7'd32:glide_coefficient={13'd16,8'd144};
+            7'd33:glide_coefficient={13'd16,8'd118};
+            7'd34:glide_coefficient={13'd16,8'd92};
+            7'd35:glide_coefficient={13'd16,8'd66};
+            7'd36:glide_coefficient={13'd16,8'd40};
+            7'd37:glide_coefficient={13'd16,8'd14};
+            7'd38:glide_coefficient={13'd15,8'd135};
+            7'd39:glide_coefficient={13'd15,8'd109};
+            7'd40:glide_coefficient={13'd15,8'd83};
+            7'd41:glide_coefficient={13'd15,8'd57};
+            7'd42:glide_coefficient={13'd15,8'd31};
+            7'd43:glide_coefficient={13'd15,8'd5};
+            7'd44:glide_coefficient={13'd14,8'd126};
+            7'd45:glide_coefficient={13'd14,8'd100};
+            7'd46:glide_coefficient={13'd14,8'd74};
+            7'd47:glide_coefficient={13'd14,8'd48};
+            7'd48:glide_coefficient={13'd14,8'd22};
+            7'd49:glide_coefficient={13'd13,8'd143};
+            7'd50:glide_coefficient={13'd13,8'd117};
+            7'd51:glide_coefficient={13'd13,8'd91};
+            7'd52:glide_coefficient={13'd13,8'd65};
+            7'd53:glide_coefficient={13'd13,8'd39};
+            7'd54:glide_coefficient={13'd13,8'd13};
+            7'd55:glide_coefficient={13'd12,8'd134};
+            7'd56:glide_coefficient={13'd12,8'd108};
+            7'd57:glide_coefficient={13'd12,8'd82};
+            7'd58:glide_coefficient={13'd12,8'd56};
+            7'd59:glide_coefficient={13'd12,8'd30};
+            7'd60:glide_coefficient={13'd12,8'd4};
+            7'd61:glide_coefficient={13'd11,8'd125};
+            7'd62:glide_coefficient={13'd11,8'd99};
+            7'd63:glide_coefficient={13'd11,8'd73};
+            7'd64:glide_coefficient={13'd11,8'd47};
+            7'd65:glide_coefficient={13'd11,8'd21};
+            7'd66:glide_coefficient={13'd10,8'd142};
+            7'd67:glide_coefficient={13'd10,8'd116};
+            7'd68:glide_coefficient={13'd10,8'd90};
+            7'd69:glide_coefficient={13'd10,8'd64};
+            7'd70:glide_coefficient={13'd10,8'd38};
+            7'd71:glide_coefficient={13'd10,8'd12};
+            7'd72:glide_coefficient={13'd9,8'd133};
+            7'd73:glide_coefficient={13'd9,8'd107};
+            7'd74:glide_coefficient={13'd9,8'd81};
+            7'd75:glide_coefficient={13'd9,8'd55};
+            7'd76:glide_coefficient={13'd9,8'd29};
+            7'd77:glide_coefficient={13'd9,8'd3};
+            7'd78:glide_coefficient={13'd8,8'd124};
+            7'd79:glide_coefficient={13'd8,8'd98};
+            7'd80:glide_coefficient={13'd8,8'd72};
+            7'd81:glide_coefficient={13'd8,8'd46};
+            7'd82:glide_coefficient={13'd8,8'd20};
+            7'd83:glide_coefficient={13'd7,8'd141};
+            7'd84:glide_coefficient={13'd7,8'd115};
+            7'd85:glide_coefficient={13'd7,8'd89};
+            7'd86:glide_coefficient={13'd7,8'd63};
+            7'd87:glide_coefficient={13'd7,8'd37};
+            7'd88:glide_coefficient={13'd7,8'd11};
+            7'd89:glide_coefficient={13'd6,8'd132};
+            7'd90:glide_coefficient={13'd6,8'd106};
+            7'd91:glide_coefficient={13'd6,8'd80};
+            7'd92:glide_coefficient={13'd6,8'd54};
+            7'd93:glide_coefficient={13'd6,8'd28};
+            7'd94:glide_coefficient={13'd6,8'd2};
+            7'd95:glide_coefficient={13'd5,8'd123};
+            7'd96:glide_coefficient={13'd5,8'd97};
+            7'd97:glide_coefficient={13'd5,8'd71};
+            7'd98:glide_coefficient={13'd5,8'd45};
+            7'd99:glide_coefficient={13'd5,8'd19};
+            7'd100:glide_coefficient={13'd4,8'd140};
+            7'd101:glide_coefficient={13'd4,8'd114};
+            7'd102:glide_coefficient={13'd4,8'd88};
+            7'd103:glide_coefficient={13'd4,8'd62};
+            7'd104:glide_coefficient={13'd4,8'd36};
+            7'd105:glide_coefficient={13'd4,8'd10};
+            7'd106:glide_coefficient={13'd3,8'd131};
+            7'd107:glide_coefficient={13'd3,8'd105};
+            7'd108:glide_coefficient={13'd3,8'd79};
+            7'd109:glide_coefficient={13'd3,8'd53};
+            7'd110:glide_coefficient={13'd3,8'd27};
+            7'd111:glide_coefficient={13'd3,8'd1};
+            7'd112:glide_coefficient={13'd2,8'd122};
+            7'd113:glide_coefficient={13'd2,8'd96};
+            7'd114:glide_coefficient={13'd2,8'd70};
+            7'd115:glide_coefficient={13'd2,8'd44};
+            7'd116:glide_coefficient={13'd2,8'd18};
+            7'd117:glide_coefficient={13'd1,8'd139};
+            7'd118:glide_coefficient={13'd1,8'd113};
+            7'd119:glide_coefficient={13'd1,8'd87};
+            7'd120:glide_coefficient={13'd1,8'd61};
+            7'd121:glide_coefficient={13'd1,8'd35};
+            7'd122:glide_coefficient={13'd1,8'd9};
+            7'd123:glide_coefficient={13'd0,8'd130};
+            7'd124:glide_coefficient={13'd0,8'd104};
+            7'd125:glide_coefficient={13'd0,8'd78};
+            7'd126:glide_coefficient={13'd0,8'd52};
+            7'd127:glide_coefficient={13'd0,8'd26};
+            default:glide_coefficient=21'bx;
+        endcase
+    endfunction
     logic [5:0] snapshot_request;
     wire [31:0] volume_product = volume_o * expression_gain_o;
     wire [1:0] mode_cycle_base = mode_pending_o ? requested_mode_o : mode_i;
@@ -104,6 +241,7 @@ module workstation_parameters #(
             route_o <= 0;
             target_ratio_o <= 1048576;
             glide_step_o <= 0;
+            glide_div147_o <= 0;
             vibrato_depth_o <= 0;
             effect_selected_o <= 0;
             effect_master_o <= 1;
@@ -147,7 +285,8 @@ module workstation_parameters #(
                         1: vibrato_depth_o <= value_i;
                         5: begin
                             glide_cc_o <= value_i;
-                            glide_step_o <= value_i == 0 ? 16'd0 : 16'd256 - ({9'd0, value_i} << 1);
+                            glide_step_o <= glide_step_next;
+                            glide_div147_o <= glide_coefficient(value_i);
                         end
                         7: volume_o <= value_i == 127 ? 16'd32768 : {value_i, 8'd0};
                         11: expression_gain_o <= value_i == 127 ? 16'd32768 : {value_i, 8'd0};

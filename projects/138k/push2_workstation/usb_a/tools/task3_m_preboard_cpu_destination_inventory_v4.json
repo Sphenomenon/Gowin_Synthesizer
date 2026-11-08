@@ -1,0 +1,5464 @@
+{
+  "schema": 1,
+  "profile": "custom138k-workstation-task3-m-preboard-v1",
+  "revision": 4,
+  "purpose": "Reviewed M native TF boot geometry schedule. All CPU release consumers remain in the v3 named state families, same clock, RAM and top exports; synthesis changes effective D/CE packing. Every endpoint, primitive, INIT and pin is enumerated; this is reset ownership only.",
+  "diagnostic_netlist_sha256": "f48a339190186eea867626d8cdb368f5c39d1d1a29e9811d2675f867c5caca95",
+  "legacy_inventory_unchanged": true,
+  "prior_inventory": "tools/task3_m_preboard_cpu_destination_inventory_v3.json",
+  "ff_endpoint_count": 8371,
+  "groups": [
+    {
+      "register": "task3_m_phone_live_source_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/model_ready_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s1",
+      "indices": [
+        [
+          1,
+          21
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s1",
+      "indices": [
+        [
+          1,
+          21
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/run_reset_count_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/run_reset_count_{}_s6",
+      "indices": [
+        [
+          2,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/selected_track_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/song_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/song_started_s8",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/destination_data_{}_s0",
+      "indices": [
+        [
+          0,
+          223
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_meta_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_settled_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_sync_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/completed_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/completed_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_data_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_data_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_s2",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_strobes_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_strobes_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_write_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_write_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/owner_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/owner_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/prefer_clock_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/active_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/active_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/samples_{}_s0",
+      "indices": [
+        [
+          0,
+          191
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sealed_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/analysis_done_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/completion_o_{}_s0",
+      "indices": [
+        [
+          3,
+          3
+        ],
+        [
+          68,
+          163
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/completion_valid_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/failed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/failed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_sync_notes.head_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_sync_notes.head_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_bad_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_bad_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_count_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_file_last_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/identity_{}_s0",
+      "indices": [
+        [
+          32,
+          127
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/note_count_{}_s1",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/note_count_{}_s1",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/poisoned_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/state_{}_s1",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/state_{}_s1",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/before_id_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/block_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/capture_id_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/controller_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/frames_{}_s0",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/last_capture_id_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/last_capture_id_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_token_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_token_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/opcode_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/operation_{}_s0",
+      "indices": [
+        [
+          0,
+          4
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/physical_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/probed_caps_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/rate44100_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/reply_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/request_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/request_token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/slot_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[0]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[10]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[11]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[12]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[13]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[14]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[15]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[16]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[17]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[18]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[19]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[1]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[2]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[3]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[4]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[5]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[6]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[7]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[8]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[9]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/stream_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/word_index_{}_s0",
+      "indices": [
+        [
+          0,
+          4
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/ack_error_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/armed_previous_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/base_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/expected_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/expected_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/first_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/first_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/next_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/position_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/timer_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/timer_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/words_{}_s0",
+      "indices": [
+        [
+          0,
+          159
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/hci_ready_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          12,
+          13
+        ],
+        [
+          15,
+          18
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          24,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_fault_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_fault_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_ready_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_ready_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_send_age_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_job_{}_s0",
+      "indices": [
+        [
+          17,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_job_{}_s0",
+      "indices": [
+        [
+          16,
+          16
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_record_generation_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_record_generation_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/arm_accepted_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/arm_rejected_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/armed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/armed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_address_o_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_data_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_strobes_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_target_o_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_write_o_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          13,
+          15
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          21,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s5",
+      "indices": [
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/fault_o_s3",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_boot_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_data_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_data_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_error_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_error_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_generation_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_sequence_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_session_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_ack_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_ack_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_window_protocol_fault_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_window_protocol_fault_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/prefer_analysis_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/prefer_analysis_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/active_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/active_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/samples_{}_s0",
+      "indices": [
+        [
+          0,
+          191
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sealed_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_age_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_age_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_age_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_sent_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_sent_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/armed_o_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/boot_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/cancel_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/cancel_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/count_{}_s0",
+      "indices": [
+        [
+          0,
+          8
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/first_sequence_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.bypass_head_{}_s0",
+      "indices": [
+        [
+          0,
+          63
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.bypass_s6",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/physical_epoch_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/retired_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/session_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s5",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/remote_status_{}_s17",
+      "indices": [
+        [
+          69,
+          69
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/remote_status_{}_s3",
+      "indices": [
+        [
+          0,
+          68
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          28,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          25,
+          25
+        ],
+        [
+          28,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          12,
+          14
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          20,
+          24
+        ],
+        [
+          26,
+          27
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/append_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/budget_{}_s0",
+      "indices": [
+        [
+          16,
+          16
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/chunk_file_last_o_s19",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/clip_closed_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/clip_closed_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/count_{}_s0",
+      "indices": [
+        [
+          0,
+          8
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_busy_s10",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_phase_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_phase_{}_s4",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_word_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s1",
+      "indices": [
+        [
+          0,
+          16
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          23,
+          29
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s1",
+      "indices": [
+        [
+          0,
+          16
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          23,
+          29
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s3",
+      "indices": [
+        [
+          17,
+          17
+        ],
+        [
+          22,
+          22
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s4",
+      "indices": [
+        [
+          30,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/elapsed_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/elapsed_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/failed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/failed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/held_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/held_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/identity_{}_s0",
+      "indices": [
+        [
+          32,
+          127
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/rd_{}_s3",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/rd_{}_s3",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/sent_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/sent_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s3",
+      "indices": [
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s3",
+      "indices": [
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s5",
+      "indices": [
+        [
+          5,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s1",
+      "indices": [
+        [
+          1,
+          23
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s1",
+      "indices": [
+        [
+          1,
+          23
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_valid_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_valid_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/request_held_{}_s0",
+      "indices": [
+        [
+          0,
+          48
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/request_toggle_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/state_{}_s0",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/state_{}_s2",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_score_push_cdc/write_binary_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_score_push_cdc/write_gray_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_meta_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_settled_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_sync_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/request_decoded_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/request_local_{}_s0",
+      "indices": [
+        [
+          0,
+          48
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          32
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          32
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          6
+        ],
+        [
+          32,
+          32
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/arm_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/budget_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/budget_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/business_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/business_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/cancel_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/generation_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/generation_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_rejection_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_rejection_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_revoke_reason_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_revoke_reason_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/local_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/local_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/panic_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/peer_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/peer_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/probe_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/probe_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/rejected_count_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/rejected_count_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/revoke_count_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/revoke_count_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/seen_live_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/seen_live_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/session_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/session_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/written_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/written_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          14,
+          14
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/congestion_cycles_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/congestion_cycles_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/crc_errors_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/crc_errors_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/echo_payload_{}_s0",
+      "indices": [
+        [
+          0,
+          63
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/echo_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/enabled_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/failure_code_o_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/failure_code_o_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_local_boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_peer_boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/last_rtt_cycles_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/link_timeouts_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/link_timeouts_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/max_rtt_cycles_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/overflow_count_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/peer_seen_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s0",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s1",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s1",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_ack_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_ack_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_byte_o_{}_s0",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_low_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_second_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_valid_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_data_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_held_{}_s0",
+      "indices": [
+        [
+          4,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_req_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_req_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_second_s7",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_age_{}_s0",
+      "indices": [
+        [
+          0,
+          19
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_results_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_results_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_sent_at_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_token_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_token_{}_s2",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s0",
+      "indices": [
+        [
+          1,
+          30
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s12",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s6",
+      "indices": [
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_age_{}_s0",
+      "indices": [
+        [
+          0,
+          22
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_crc_{}_s0",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_held_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_held_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_packet_{}_s0",
+      "indices": [
+        [
+          8,
+          407
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_packets_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/sequence_errors_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_age_{}_s0",
+      "indices": [
+        [
+          0,
+          18
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_crc_{}_s0",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_ever_sent_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_ever_sent_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_packet_{}_s0",
+      "indices": [
+        [
+          8,
+          8
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          24,
+          27
+        ],
+        [
+          32,
+          37
+        ],
+        [
+          48,
+          415
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_packets_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_hold_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_hold_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_seen_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_seen_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_rate_{}_s0",
+      "indices": [
+        [
+          10,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_track_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/ingress/local_tail_drained_o_s8",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/ingress/pcm_count_{}_s1",
+      "indices": [
+        [
+          0,
+          12
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/ingress/pcm_held_valid_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/ingress/pcm_rd_{}_s1",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/quiet_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_tf_audio/native/quiet_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_tf_audio/native/reader_start_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/slot_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native_quiet_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/pending_start_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/pending_start_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/quiet_wait_{}_s0",
+      "indices": [
+        [
+          0,
+          28
+        ],
+        [
+          30,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/session_applied_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/session_applied_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/state_{}_s1",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/state_{}_s1",
+      "indices": [
+        [
+          1,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    }
+  ],
+  "primitive_endpoints": {
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/source_m/queue_queue_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/source_m/queue_queue_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_score_push_cdc/g_small_head.memory_g_small_head.memory_0_0_s/WRE": {
+      "kind": "RAM16SDP4",
+      "clock_pins": {
+        "CLK": "clk_50m"
+      }
+    },
+    "u_task3_m_score_push_cdc/g_small_head.memory_g_small_head.memory_0_1_s/WRE": {
+      "kind": "RAM16SDP4",
+      "clock_pins": {
+        "CLK": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_1_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_2_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_3_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_4_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_5_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_6_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_7_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_tf_audio/native/ingress/pcm_mem_pcm_mem_0_8_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    }
+  },
+  "top_output_endpoints": {
+    "lcd_b[0]": "lcd_b[0]",
+    "lcd_b[1]": "lcd_b[1]",
+    "lcd_r[0]": "lcd_r[0]",
+    "lcd_r[1]": "lcd_r[1]",
+    "lcd_r[2]": "lcd_r[2]",
+    "lcd_r[3]": "lcd_r[3]",
+    "lcd_r[4]": "lcd_r[4]"
+  }
+}

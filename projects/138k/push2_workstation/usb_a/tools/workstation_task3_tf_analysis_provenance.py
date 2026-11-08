@@ -13,6 +13,8 @@ PARENT_SHA256='2f92cd3a008df79b291667094d8aee82acaeab2470278446647c269a485f6b07'
 SELECTED_SHA256='9195f5a23fb3317f99861cd4c39875f2658f8f4d328cbb1250a4301e8ccd708d'
 def digest(raw):return hashlib.sha256(raw).hexdigest()
 def restore(root,raw):
+ from tools.workstation_tf_failure_path import normalize
+ raw=normalize(raw)
  payload=(Path(root)/REFERENCE).read_bytes()
  if digest(payload)!=REFERENCE_SHA256:raise ValueError('remote TF analysis reference identity drift')
  d=json.loads(payload)

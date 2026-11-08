@@ -62,9 +62,20 @@ module workstation_i2s_serializer #(
     wire source_hold=SOURCE_HOLD_ENABLE && source_hold_i;
     reg [1:0] source_guard;
     wire source_blocked=SOURCE_HOLD_ENABLE && (source_hold || source_guard!=0);
+    // Parallel byte predicates bound the tag comparator depth. The previous
+    // full-width carry comparisons fed frame admission and a 32-bit sequence
+    // increment on the same path. Keep the exact same-cycle 64-bit identity;
+    // no reply, cancellation or sample-schedule latency is added.
+    wire [63:0] incoming_header={sample_epoch_i,sample_sequence_i};
+    wire [63:0] wanted_header={epoch,wanted_sequence};
+    (* syn_keep=1 *) wire [7:0] header_unequal_bytes;
+    genvar header_byte;
+    generate for(header_byte=0;header_byte<8;header_byte=header_byte+1)begin:g_header_compare
+        assign header_unequal_bytes[header_byte]=
+            incoming_header[header_byte*8+:8]!=wanted_header[header_byte*8+:8];
+    end endgenerate
     wire incoming_match = incoming && !source_blocked && requested &&
-        sample_44k1_i == mode_44k1 && sample_epoch_i == epoch &&
-        sample_sequence_i == wanted_sequence;
+        sample_44k1_i == mode_44k1 && !(|header_unequal_bytes);
     wire next_available = !source_blocked && (have_next || incoming_match);
     wire [31:0] available_pcm = have_next ? next_pcm : sample_pcm_i;
     wire available_error = SAMPLE_ERROR_ENABLE && (have_next ? next_error : sample_error_i);

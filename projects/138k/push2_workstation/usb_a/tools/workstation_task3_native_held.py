@@ -234,7 +234,7 @@ def audit_direct_held_boundaries(n, result, *, root):
         apb_request_minimum_receiving_capture_edge=3, physical_timing_verified=False, hardware_tested=False)
 
 
-def audit_direct_tf_owner(n):
+def audit_direct_tf_owner(n, *, stage=None, root=None):
     """Strict scope/inventory and real 68-to-67 status held mailbox proof.
 
     Bit zero is used by source-side change detection and has no compute sink.
@@ -268,6 +268,11 @@ def audit_direct_tf_owner(n):
     q = lambda stem, bit=None: n.pin(g.register(scope, stem, bit), 'Q')
     source_q, compute_q = q('source_release', 2), q('compute_release', 2)
     common_clear = n.pin(request, 'CLEAR')
+    local_compute=None
+    if stage is not None:
+        from tools.workstation_tf_compute_local_release import audit_mapped
+        local_compute=audit_mapped(n,stage=stage,root=root)
+    compute_reset_q=compute_q if local_compute is not None else root_q
     all_status = [*held, *captured.values(), request, ack, g.register(scope, 'status_capture')]
     stages = []
     for stem, producer, domain in (('status_request_sync', request, 'audio_clk'),
@@ -288,8 +293,9 @@ def audit_direct_tf_owner(n):
     require(remote == {p + '/D': 'audio_clk' for p in captured.values()} and
             not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
             'DIRECT status exact remote consumer closure changed')
-    require(all(n.pin(p, 'CLEAR') == common_clear for p in all_status),
-            'DIRECT status common root assertion changed')
+    for p in all_status:
+        expected=compute_reset_q if n.pin(p,'CLK')=='audio_clk' else root_q
+        inverse(g,n.pin(p,'CLEAR'),expected,'DIRECT status domain reset assertion')
     root_assertion = inverse(g, common_clear, root_q, 'DIRECT status root assertion')
     source_enable = next(iter(source_ces))
     gate, output = g.drivers[source_enable][0]
@@ -325,15 +331,15 @@ def audit_direct_tf_owner(n):
                 acceptance(b), b.inputs[data], b.inputs[n.pin(p, 'Q')])),
             'DIRECT held status bit'))
     capture_q, ack_q, sync_q = q('status_capture'), q('status_ack'), q('status_request_sync', 1)
-    dest_leaves = [root_q, compute_q, capture_q, ack_q, sync_q]
+    dest_leaves = list(dict.fromkeys([compute_reset_q, compute_q, capture_q, ack_q, sync_q]))
     updates.append(next_proof(n, g, g.register(scope, 'status_capture'), dest_leaves,
-        lambda b: b.both(b.inputs[root_q], b.both(
+        lambda b: b.both(b.inputs[compute_reset_q], b.both(
             b.invert(b.both(b.inputs[compute_q], b.inputs[capture_q])),
             b.different(b.inputs[sync_q], b.inputs[ack_q]))),
         'DIRECT status capture settled request with priority clear'))
     for p, data in [(ack, sync_q), *[(p, n.pin(held[bit], 'Q')) for bit, p in captured.items()]]:
         updates.append(next_proof(n, g, p, [*dest_leaves, data],
-            lambda b, p=p, data=data: b.both(b.inputs[root_q], b.choose(
+            lambda b, p=p, data=data: b.both(b.inputs[compute_reset_q], b.choose(
                 b.both(b.inputs[compute_q], b.inputs[capture_q]),
                 b.inputs[data], b.inputs[n.pin(p, 'Q')])),
             'DIRECT status ACK/payload shared capture'))
@@ -347,6 +353,7 @@ def audit_direct_tf_owner(n):
         source_pins=[p + '/Q' for p in held], capture_pins=[p + '/D' for p in captured.values()],
         source_enable=next(iter(source_ces)), capture_enable=next(iter(capture_ces)), chains=stages,
         exact_remote_payload_closure=True, root_assertion=root_assertion,
+        compute_functional_reset=local_compute,
         held_desired_comparison_all_68_bits=True, reset_inclusive_state_updates=updates,
         full_status_acceptance_next_q_proven=True,
         receipt_complete_closure=receipt_closure,

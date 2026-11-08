@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the F7 glide path's actual capture edges without licensed EDA."""
+"""Check maintained pitch/engine capture edges with explicit prepared assets."""
 import argparse
 import hashlib
 import json
@@ -35,8 +35,9 @@ def main():
     native = [ROOT / ('rtl/audio/' + name) for name in (
         'workstation_runtime_div147.sv', 'workstation_rate_pitch_expression.sv',
         'workstation_runtime_oscillator_engine.sv', 'workstation_runtime_scope_vec.sv')]
-    # Bind all actual native engine inputs to the retained prepared candidate.
-    for path in native + [COMPOSITION]:
+    # The pitch and composition are the current change under test. Ordinary
+    # and vector engine bytes must still equal the explicit retained inputs.
+    for path in native[2:]:
         if path.read_bytes() != (project / path.relative_to(ROOT)).read_bytes():
             raise ValueError('maintained engine differs from prepared candidate: ' + str(path))
     inputs = sources + native + [COMPOSITION, TB, Path(__file__).resolve()]
@@ -50,8 +51,8 @@ def main():
         '    always_ff @(posedge clk_i or negedge rst_ni)\n'
         "        if(!rst_ni)delayed_glide<=0;else delayed_glide<=glide_step_q20_i;\n" + marker)
     input_delay = replace_once(input_delay,
-        '.target_ratio_q20_i, .glide_step_q20_i, .vibrato_depth_i,',
-        '.target_ratio_q20_i, .glide_step_q20_i(delayed_glide), .vibrato_depth_i,')
+        '.target_ratio_q20_i, .glide_step_q20_i, .glide_div147_i, .vibrato_depth_i,',
+        '.target_ratio_q20_i, .glide_step_q20_i(delayed_glide), .glide_div147_i, .vibrato_depth_i,')
     output_delay = replace_once(original, marker,
         '    wire [21:0] raw_pitch;\n'
         '    logic [21:0] delayed_pitch;\n'
@@ -61,7 +62,8 @@ def main():
     output_delay = replace_once(output_delay, '.ratio_q20_o(pitch_q20_o)', '.ratio_q20_o(raw_pitch)')
     report = dict(schema=1, passed=False, input_sha256=hashes, project=str(project),
         scope='Actual native pitch+ordinary32+vector8 consumers and independent integer pitch model; registered last-edge parameters,48/44.1k and PANIC. No USB/effects/serializer or physical timing proof.',
-        maintained_sources_equal_prepared_candidate=True, runs={}, production_profile_changed=False,
+        ordinary_and_vector_sources_equal_prepared_candidate=True,
+        current_pitch_and_composition_under_test=True, runs={}, production_profile_changed=False,
         new_synthesis_runs=0, new_PnR_runs=0, hardware_tested=False)
     try:
         for name, source in (('production', original), ('input_register_mutant', input_delay),

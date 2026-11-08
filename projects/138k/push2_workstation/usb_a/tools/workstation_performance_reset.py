@@ -231,13 +231,20 @@ def audit_demo_held_handshakes(stage, sdc, role, evidence, n, *, mapping, netlis
         from tools.workstation_task3_peripheral_releases_audit import audit_peripheral_releases
         from tools.workstation_native_protocol_audit import audit_native_protocol, validate_native_protocol_sdc
         root = audit_root_startup(n, stage=stage)
-        result = audit_native_protocol(n, profile='m-task3-direct', mapping=mapping)
+        result = audit_native_protocol(n, profile='m-task3-direct', mapping=mapping,stage=stage,root=root)
         result['demo_held_handshakes'] = audit_direct_held_boundaries(n, result, root=root)
         result['installed_local_sdc'] = validate_native_protocol_sdc(sdc, n, result,
             demo_held_handshakes=demo_held_handshake_constraints())
-        peripherals = audit_peripheral_releases(n, root=root)
+        peripherals = audit_peripheral_releases(n, root=root, stage=stage)
         tf = next(row for row in result['level_proofs'] if 'full_direct_tf_cdc_accepted' in row)
-        require(tf['full_direct_tf_cdc_accepted'],
+        if tf.get('compute_functional_reset') is not None:
+            from tools.workstation_task3_tf_boundary_audit import audit as audit_tf_boundaries
+            result['dedicated_direct_tf_crossings']=audit_tf_boundaries(n,stage=stage,root=root,status=tf,sdc=sdc)
+        # The older local status report deliberately retains its partial flags.
+        # The explicit preboard composition supplies all crossing subproofs;
+        # physical and functional acceptance is still required independently.
+        require(tf['full_direct_tf_cdc_accepted'] or
+                result.get('dedicated_direct_tf_crossings',{}).get('synthesis_crossing_gate_passed'),
                 'DIRECT TF dedicated CDC gate pending: ' + '; '.join(tf['gate_pending']))
         return dict(gate_applied=True, selection=selected, actual_native_protocol=result,
                     actual_root_startup=root, actual_peripheral_releases=peripherals,

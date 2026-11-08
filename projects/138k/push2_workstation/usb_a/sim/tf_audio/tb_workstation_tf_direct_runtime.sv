@@ -1,7 +1,9 @@
 `timescale 1ns/1ps
 // The real maintained runtime/DSP/DMA/router/DCS/serializer/observation owner.
 // Only the external SD card and ordered DDR memory are behavioral models.
-module tb_workstation_tf_direct_runtime;
+module tb_workstation_tf_direct_runtime #(
+    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0
+);
     // Picosecond simulation precision quantizes these external references.
     // Check the actual supplied clocks, including that quantization.
     localparam realtime REF48_HALF=40.690,REF44_HALF=29.526;
@@ -116,6 +118,7 @@ module tb_workstation_tf_direct_runtime;
         .reader_restart_o(reader_restart),.reader_track_o(reader_track),.score_accept_o());
     wire ssn,sck,mosi,miso;
     workstation_tf_direct_runtime_service #(.SPI_CLK_DIV(2),.SPI_CLK_DIV_FAST(2),
+        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE),
         .TOKEN_WAIT_CLOCKS(1000),.WATCHDOG_CLOCKS(500000),.QUIET_TIMEOUT_CYCLES(2000000),.SEPARATE_COMMON_RESET(1)) source(
         .rst_ni(rn),.common_reset_ni(common_rn),.clk_50m_i(clk50),.compute_clk_i(compute_clk),
         .mode_i(scope_mode),.run_i(scope_run),.restart_i(explicit_restart),.cancel_i(file_cancel),.transport_error_i(scope_error),

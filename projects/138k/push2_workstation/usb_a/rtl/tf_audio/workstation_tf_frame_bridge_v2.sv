@@ -13,6 +13,7 @@
 // barrier. Stream changes never reset either side of the payload FIFO.
 module workstation_tf_frame_bridge_v2 #(
     parameter integer FIFO_ADDRESS_BITS=4,
+    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
     parameter [31:0] INITIAL_GENERATION=32'd0
 ) (
     input wire rst_ni,source_clk_i,compute_clk_i,
@@ -72,6 +73,9 @@ module workstation_tf_frame_bridge_v2 #(
     always @(posedge compute_clk_i or negedge rst_ni)
         if(!rst_ni)compute_release<=0;else compute_release<={compute_release[1:0],1'b1};
     wire source_reset_n=source_release[2],compute_reset_n=compute_release[2];
+    // Keep first-source-edge invalidation counting on its original root.
+    // Only compute functional state opts into the existing local release.
+    wire compute_functional_n=LOCAL_COMPUTE_RESET_ENABLE ? compute_reset_n:rst_ni;
     reg [31:0] source_generation_gray,ack_binary,ack_gray;
     reg source_seen_edge,quiet_published;
     (* ASYNC_REG="TRUE",syn_preserve=1 *) reg [31:0] generation_meta,generation_sync,ack_meta,ack_sync;
@@ -138,8 +142,8 @@ module workstation_tf_frame_bridge_v2 #(
     // Both Gray buses change by at most one count per producing edge. Physical
     // integration MUST bound bit skew/max delay to the producing period; the
     // continuous nominal76.8MHz compute domain must keep up with decoder50.
-    always @(posedge compute_clk_i or negedge rst_ni)begin
-        if(!rst_ni)begin
+    always @(posedge compute_clk_i or negedge compute_functional_n)begin
+        if(!compute_functional_n)begin
             generation_meta<=INITIAL_GRAY;generation_sync<=INITIAL_GRAY;source_alive_sync<=0;quiesce_sync<=0;
             expected_generation_o<=INITIAL_GENERATION;expected_generation_valid_o<=0;generation_change_o<=0;
             ack_binary<=INITIAL_GENERATION;ack_gray<=INITIAL_GRAY;

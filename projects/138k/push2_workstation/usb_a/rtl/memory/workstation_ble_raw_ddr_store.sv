@@ -6,7 +6,8 @@ module workstation_ble_raw_ddr_store #(
     parameter integer CAPACITY_FRAMES=16384,
     parameter integer FIFO_ADDRESS_BITS=8,
     parameter integer COMMAND_TIMEOUT_CYCLES=10000,
-    parameter integer READ_TIMEOUT_CYCLES=10000
+    parameter integer READ_TIMEOUT_CYCLES=10000,
+    parameter bit CAPTURE_COMMAND=0
 ) (
     input wire clk_i,memory_clk_i,rst_ni,
     input wire start_valid_i,
@@ -315,10 +316,42 @@ module workstation_ble_raw_ddr_store #(
     wire memory_drained_now=memory_closed && !memory_active && !memory_clear_pending &&
         !memory_fetch_active && !fifo_read_valid && pack_frames==0 && memory_quiescent && !memory_channel_fault;
     wire [69:0] status_current={memory_generation,memory_committed,memory_drained_now,memory_channel_fault,memory_failure};
-    wire memory_command_start=command_req_sync!=command_ack && !memory_command_active;
+    // Capture the complete held tuple before any memory-domain arithmetic.
+    // The source cannot replace it before ACK. The extra local cycle removes
+    // the cross-clock descriptor-to-business critical path without changing
+    // command ordering, cancellation, quarantine or native acceptance.
+    wire memory_command_request=command_req_sync!=command_ack && !memory_command_active;
+    wire [1:0] memory_command_kind;
+    wire [31:0] memory_command_generation,memory_command_offset;
+    wire [13:0] memory_command_length;
+    wire [PTR_BITS-1:0] memory_command_event_target;
+    wire memory_command_start;
+    generate if(CAPTURE_COMMAND)begin:g_command_capture
+        reg valid;
+        (* syn_preserve=1 *) reg [79+PTR_BITS:0] payload;
+        wire capture=memory_command_request && !valid;
+        always @(posedge memory_clk_i or negedge memory_reset_n)begin
+            if(!memory_reset_n)begin valid<=0;payload<=0;end
+            else begin
+                if(capture)begin
+                    payload<={command_kind,command_generation,command_offset,command_length,command_event_target};
+                    valid<=1;
+                end
+                if(memory_command_start)valid<=0;
+            end
+        end
+        assign {memory_command_kind,memory_command_generation,memory_command_offset,
+                memory_command_length,memory_command_event_target}=payload;
+        assign memory_command_start=memory_command_request && valid;
+    end else begin:g_direct_command
+        assign {memory_command_kind,memory_command_generation,memory_command_offset,
+                memory_command_length,memory_command_event_target}=
+               {command_kind,command_generation,command_offset,command_length,command_event_target};
+        assign memory_command_start=memory_command_request;
+    end endgenerate
     wire start_context_bad=!memory_empty || !memory_closed || memory_active || memory_clear_pending ||
         memory_fetch_active || pack_frames!=0 || !memory_quiescent ||
-        fifo_consumed!=command_event_target || command_generation!=memory_generation+1'b1 ||
+        fifo_consumed!=memory_command_event_target || memory_command_generation!=memory_generation+1'b1 ||
         memory_generation==32'hffffffff;
     // Only a quiescent START uses this cofactor. The original expression is
     // retained for false/unknown quiescent, preserving procedural X behavior.
@@ -337,7 +370,7 @@ module workstation_ble_raw_ddr_store #(
                 if(memory_command_start)begin
                     if(memory_channel_fault || transport_fault_i || native_protocol_fault_o ||
                        unused_submitted || native_accept_i || read_response_i)begin end
-                    else if(command_kind==CMD_START)begin
+                    else if(memory_command_kind==CMD_START)begin
                         if(start_context_bad)begin end
                         else start_initialize=1;
                     end
@@ -346,7 +379,7 @@ module workstation_ble_raw_ddr_store #(
             default:begin
                 if(memory_command_start)begin
                     if(memory_channel_fault || start_fault_now)begin end
-                    else if(command_kind==CMD_START)begin
+                    else if(memory_command_kind==CMD_START)begin
                         if(start_context_bad)begin end
                         else start_initialize=1;
                     end
@@ -381,8 +414,8 @@ module workstation_ble_raw_ddr_store #(
     assign fifo_read_ready=memory_reset_n && !memory_channel_fault && !memory_fault_now &&
         !memory_command_start && (clear_fifo_pop || (!memory_clear_pending && normal_fifo_pop));
     wire fifo_pop=fifo_read_valid && fifo_read_ready;
-    wire [32:0] memory_fetch_end={1'b0,command_offset}+{19'd0,command_length};
-    wire [8:0] memory_fetch_beats=9'(({10'd0,command_offset[4:0]}+{1'b0,command_length}+15'd31)>>5);
+    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};
+    wire [8:0] memory_fetch_beats=9'(({10'd0,memory_command_offset[4:0]}+{1'b0,memory_command_length}+15'd31)>>5);
     wire publish_pack=pack_frames==8 || (memory_closed && pack_frames!=0 && !fifo_read_valid);
 
     // A known bridge fault publishes the transport code directly. Keep the
@@ -456,10 +489,10 @@ module workstation_ble_raw_ddr_store #(
         end
         if(memory_command_start)begin
             if(memory_channel_fault)begin end
-            else case(command_kind)
+            else case(memory_command_kind)
                 CMD_START:begin if(start_context_bad)memory_failure_protocol_write=1;end
                 CMD_CLEAR:begin
-                    if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
+                    if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
                         memory_failure_protocol_write=1;
                 end
                 CMD_FETCH:begin end
@@ -487,10 +520,10 @@ module workstation_ble_raw_ddr_store #(
                 end
                 if(memory_command_start)begin
                     if(memory_channel_fault || memory_fault_now)begin end
-                    else case(command_kind)
+                    else case(memory_command_kind)
                         CMD_START:begin if(start_context_bad)memory_failure<=F_PROTOCOL;end
                         CMD_CLEAR:begin
-                            if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
+                            if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)
                                 memory_failure<=F_PROTOCOL;
                         end
                         CMD_FETCH:begin end
@@ -601,10 +634,10 @@ module workstation_ble_raw_ddr_store #(
 
             if(memory_command_start)begin
                 if(memory_channel_fault || memory_fault_now)begin
-                    completion_generation<=command_generation;completion_committed<=memory_committed;
-                    completion_kind<=command_kind;completion_code<=memory_failure==0 ? F_TRANSPORT : memory_failure;
+                    completion_generation<=memory_command_generation;completion_committed<=memory_committed;
+                    completion_kind<=memory_command_kind;completion_code<=memory_failure==0 ? F_TRANSPORT : memory_failure;
                     command_ack<=command_req_sync;
-                end else case(command_kind)
+                end else case(memory_command_kind)
                     CMD_START:begin
                         // New-epoch frames may reach the FIFO synchronizer at
                         // the same time as START. Prove the old epoch retired
@@ -614,43 +647,43 @@ module workstation_ble_raw_ddr_store #(
                         end else begin
                             memory_active<=1;memory_closed<=0;memory_empty<=0;completion_code<=0;
                         end
-                        completion_generation<=command_generation;completion_committed<=0;completion_kind<=CMD_START;
+                        completion_generation<=memory_command_generation;completion_committed<=0;completion_kind<=CMD_START;
                         command_ack<=command_req_sync;
                     end
                     CMD_CLEAR:begin
-                        if(command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)begin
+                        if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)begin
                             memory_channel_fault<=1;
-                            completion_generation<=command_generation;completion_committed<=memory_committed;
+                            completion_generation<=memory_command_generation;completion_committed<=memory_committed;
                             completion_kind<=CMD_CLEAR;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
                         end else begin
-                            memory_generation<=command_generation;memory_command_active<=1;memory_clear_pending<=1;
-                            memory_clear_target<=command_event_target;memory_active<=0;memory_closed<=1;memory_empty<=0;
+                            memory_generation<=memory_command_generation;memory_command_active<=1;memory_clear_pending<=1;
+                            memory_clear_target<=memory_command_event_target;memory_active<=0;memory_closed<=1;memory_empty<=0;
                             pack_frames<=0;
                         end
                     end
                     CMD_FETCH:begin
-                        if(command_generation!=memory_generation || !memory_drained_now || memory_empty ||
-                           command_length==0 || command_length>8112 || memory_fetch_end[32] ||
+                        if(memory_command_generation!=memory_generation || !memory_drained_now || memory_empty ||
+                           memory_command_length==0 || memory_command_length>8112 || memory_fetch_end[32] ||
                            {2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0})begin
-                            completion_generation<=command_generation;completion_committed<=memory_committed;
+                            completion_generation<=memory_command_generation;completion_committed<=memory_committed;
                             completion_kind<=CMD_FETCH;completion_code<=F_DESCRIPTOR;command_ack<=command_req_sync;
                         end else begin
                             memory_fetch_active<=1;memory_fetch_cancel<=cancel_now;memory_command_active<=1;
                             fetch_beats_total<=memory_fetch_beats;fetch_beats_issued<=0;
-                            fetch_address<=BASE_APP+{2'd0,command_offset[28:5],3'b000};
+                            fetch_address<=BASE_APP+{2'd0,memory_command_offset[28:5],3'b000};
                         end
                     end
                     default:begin
                         memory_channel_fault<=1;
-                        completion_generation<=command_generation;completion_committed<=memory_committed;
-                        completion_kind<=command_kind;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
+                        completion_generation<=memory_command_generation;completion_committed<=memory_committed;
+                        completion_kind<=memory_command_kind;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
                     end
                 endcase
             end
             // Preserve the original START assignment priority, before CLEAR
             // completion. No request, acknowledgement or fault state moves.
             if(start_initialize)begin
-                memory_generation<=command_generation;memory_next_index<=0;
+                memory_generation<=memory_command_generation;memory_next_index<=0;
                 memory_committed<=0;write_address<=BASE_APP;
             end
             if(clear_initialize)begin

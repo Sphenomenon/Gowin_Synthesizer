@@ -40,7 +40,7 @@ def require(ok, message):
         raise ValueError('M paired release audit: ' + message)
 
 
-def audit_paired_release_sdc(n, sdc, *, root):
+def audit_paired_release_sdc(n, sdc, *, root, stage=None):
     require(root.get('selected_provider') in (PAIRED_PROVIDER, M_PHONE_PROVIDER,
                                              M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER) and
             root.get('all_state_assignments_proven') is True and
@@ -53,9 +53,21 @@ def audit_paired_release_sdc(n, sdc, *, root):
     root_q = validate_root_publisher(n, g, root)
     pins = {p + '/' + pin for p, cell in n.cells.items() for pin in cell['ports']}
     mappings = paired_release_constraint_mappings()
-    rows = []
+    rows = [];retirements=[]
     for config, (retired, selected) in zip(CHAINS, mappings):
         label, scope, stem, bit, owner, release_stem, domain, cpu, expected_sha = config
+        if (label=='midi-destination' and
+            root.get('root_profile')=='custom138k-workstation-task3-m-preboard-v1' and
+            scope not in n.frames):
+            from tools.workstation_task3_m_midi_release_sdc import audit_midi_release_sdc
+            retirement=audit_midi_release_sdc(n,sdc,root=root,stage=stage)
+            require(retirement['constant_high_physical_MIDI_branch_retired'] and
+                    sdc.count(selected)==0,
+                    'retired MIDI selector or branch remains')
+            retirements.append(dict(id=label,reason='constant-high physical MIDI input optimized away',
+                actual_reset_owner_proof=retirement,
+                observer_lease_is_a_distinct_functional_owner=True))
+            continue
         require(retired not in sdc and sdc.count(selected) == 1,
                 'exact installed paired release selector absent/duplicated: ' + label)
         functional = g.register(scope, stem, bit)
@@ -100,8 +112,13 @@ def audit_paired_release_sdc(n, sdc, *, root):
                         not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
                         'early release bypass/extra consumer: ' + p)
             else:
-                require(closure_identity(closure) == expected_sha,
-                        'paired final release complete consumer inventory changed: ' + label)
+                if root.get('root_profile')=='custom138k-workstation-task3-m-preboard-v1' and cpu:
+                    from tools.workstation_task3_m_preboard_consumers import verify
+                    verify(n,g,closure,role=label.removeprefix('cpu-'),stage=stage)
+                    expected_sha=closure_identity(closure)
+                else:
+                    require(closure_identity(closure) == expected_sha,
+                            'paired final release complete consumer inventory changed: ' + label)
                 for endpoint, clock in closure['ff_endpoints'].items():
                     if endpoint.endswith('/CLEAR'):
                         require(clock == domain, 'async clear crosses a different domain')
@@ -123,8 +140,9 @@ def audit_paired_release_sdc(n, sdc, *, root):
             downstream_business_function_proven=False))
     return dict(policy=POLICY, selected_provider=root['selected_provider'],
         actual_root_register=root['root_register'], root_q=root_q,
-        actual_release_chains=rows, distinct_release_FFs=12,
-        exact_installed_release_CLEAR_pins=12,
+        actual_release_chains=rows,retired_aliases=retirements,
+        distinct_release_FFs=3*len(rows),
+        exact_installed_release_CLEAR_pins=3*len(rows),
         reset_inclusive_next_q_and_assertion_polarity_proven=True,
         complete_consumer_inventories_verified=True,
         whole_business_CDC_accepted=False, physical_recovery_removal_verified=False,

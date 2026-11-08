@@ -7,7 +7,7 @@ module tb_workstation_rate_pitch_expression;
     reg [6:0] depth=0;
     wire [21:0] actual,reference;
     workstation_rate_pitch_expression dut(.clk_i(clk),.rst_ni(rst_n),.sample_ce_i(ce),.rate_44k1_i(mode),
-        .target_ratio_q20_i(target),.glide_step_q20_i(glide),.vibrato_depth_i(depth),.ratio_q20_o(actual));
+        .target_ratio_q20_i(target),.glide_step_q20_i(glide),.glide_div147_i(21'd0),.vibrato_depth_i(depth),.ratio_q20_o(actual));
     pitch_expression old(.clk_i(clk),.rst_ni(rst_n),.sample_ce_i(ce),
         .target_ratio_q20_i(target),.glide_step_q20_i(glide),.vibrato_depth_i(depth),.ratio_q20_o(reference));
     reg compare_48=1;

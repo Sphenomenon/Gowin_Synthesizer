@@ -86,7 +86,7 @@ class ActualTask3FrameCdc(unittest.TestCase):
             else:target[key]=old
 
     def test_01_actual_structure_and_retained_ram_gaps(self):
-        result=audit_tf_frame_cdc(self.n,sdc=self.sdc)
+        result=audit_tf_frame_cdc(self.n,sdc=self.sdc,stage=self.stage)
         self.assertEqual([b['width'] for b in result['gray_buses']],[32,32,5,5])
         self.assertEqual(sum(len(b['next_q']) for b in result['gray_buses']),148)
         self.assertEqual(len(result['single_bit_chains']),5)
@@ -109,7 +109,7 @@ class ActualTask3FrameCdc(unittest.TestCase):
         self.__class__.positive=result
 
     def test_02_actual_netlist_destructive_controls(self):
-        actual=audit_tf_frame_cdc(self.n,sdc=self.sdc)
+        actual=audit_tf_frame_cdc(self.n,sdc=self.sdc,stage=self.stage)
         n,g=self.n,Graph(self.n)
         cases=[]
         for bus in actual['gray_buses']:
@@ -137,12 +137,12 @@ class ActualTask3FrameCdc(unittest.TestCase):
         for label,path,part,key,value in cases:
             with self.subTest(case=label),self.changed(path,part,key,value):
                 with self.assertRaises(ValueError) as error:
-                    audit_tf_frame_cdc(n,sdc=self.sdc)
+                    audit_tf_frame_cdc(n,sdc=self.sdc,stage=self.stage)
             self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
         self.assertEqual(len(cases),27)
 
     def test_03_actual_sdc_destructive_controls(self):
-        actual=audit_tf_frame_cdc(self.n,sdc=self.sdc)
+        actual=audit_tf_frame_cdc(self.n,sdc=self.sdc,stage=self.stage)
         g=Graph(self.n)
         records={r['id']:r for r in actual['installed_frame_constraints']}
         generation=records['generation-first']['constraint']
@@ -183,7 +183,7 @@ class ActualTask3FrameCdc(unittest.TestCase):
         ]
         for label,modified in cases:
             with self.subTest(case=label),self.assertRaises(ValueError) as error:
-                audit_tf_frame_cdc(self.n,sdc=modified)
+                audit_tf_frame_cdc(self.n,sdc=modified,stage=self.stage)
             self.mutations.append(dict(case=label,rejected=True,error=str(error.exception)))
         self.assertEqual(len(cases),16)
         if self.constraint_revision==3:
@@ -194,7 +194,7 @@ class ActualTask3FrameCdc(unittest.TestCase):
                 for row in removed:
                     self.assertEqual(modified.count(row['constraint']),1)
                     modified=modified.replace(row['constraint']+'\n','',1)
-                result=audit_tf_frame_cdc(self.n,sdc=modified)
+                result=audit_tf_frame_cdc(self.n,sdc=modified,stage=self.stage)
                 expected=[row['id'] for row in removed]
                 self.assertEqual([row['id'] for row in result['missing_finite_boundaries']],expected)
                 self.assertFalse(result['constraints_complete'])

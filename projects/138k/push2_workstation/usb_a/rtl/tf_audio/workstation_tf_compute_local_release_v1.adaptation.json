@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "policy": "task3_M_TF_compute_functional_local_release_v1",
+  "inputs": {
+    "rtl/tf_audio/workstation_tf_direct_runtime_service.sv": {
+      "parent_sha256": "c113452a61b9fa3d2bdd8c39d15c228f80109d8dccc024f88a798a17d4abc683",
+      "edits": [
+        {
+          "before": "    parameter bit SEPARATE_COMMON_RESET=0,\n",
+          "after": "    parameter bit SEPARATE_COMMON_RESET=0,\n    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,\n"
+        },
+        {
+          "before": "    wire source_n=source_release[2],compute_n=compute_release[2];\n",
+          "after": "    wire source_n=source_release[2],compute_n=compute_release[2];\n    // One common lifetime; functional release follows its own compute clock.\n    // Session cancellation never resets an outstanding receipt or snapshot.\n    wire compute_functional_n=LOCAL_COMPUTE_RESET_ENABLE ? compute_n:common_n;\n"
+        },
+        {
+          "before": "    always @(posedge compute_clk_i or negedge common_n)\n        if(!common_n)begin receipt_request<=0;",
+          "after": "    always @(posedge compute_clk_i or negedge compute_functional_n)\n        if(!compute_functional_n)begin receipt_request<=0;"
+        },
+        {
+          "before": "    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS)) frames(",
+          "after": "    workstation_tf_frame_bridge_v2 #(.FIFO_ADDRESS_BITS(FIFO_ADDRESS_BITS),\n        .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE)) frames("
+        },
+        {
+          "before": "    always @(posedge compute_clk_i or negedge common_n)\n        if(!common_n)begin status_request_sync<=0;",
+          "after": "    always @(posedge compute_clk_i or negedge compute_functional_n)\n        if(!compute_functional_n)begin status_request_sync<=0;"
+        }
+      ],
+      "native_sha256": "23efcf2432e3b5e6a102728a168d1b22b9eaae37bd2e85e8d0b4aa7041b452b7"
+    },
+    "rtl/tf_audio/workstation_tf_frame_bridge_v2.sv": {
+      "parent_sha256": "dcf22db6f1332d4ca8d20be902b45987f037b3b8b6e3aa2f274cc63b0cc129df",
+      "edits": [
+        {
+          "before": "    parameter integer FIFO_ADDRESS_BITS=4,\n",
+          "after": "    parameter integer FIFO_ADDRESS_BITS=4,\n    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,\n"
+        },
+        {
+          "before": "    wire source_reset_n=source_release[2],compute_reset_n=compute_release[2];\n",
+          "after": "    wire source_reset_n=source_release[2],compute_reset_n=compute_release[2];\n    // Keep first-source-edge invalidation counting on its original root.\n    // Only compute functional state opts into the existing local release.\n    wire compute_functional_n=LOCAL_COMPUTE_RESET_ENABLE ? compute_reset_n:rst_ni;\n"
+        },
+        {
+          "before": "    always @(posedge compute_clk_i or negedge rst_ni)begin\n        if(!rst_ni)begin\n",
+          "after": "    always @(posedge compute_clk_i or negedge compute_functional_n)begin\n        if(!compute_functional_n)begin\n"
+        }
+      ],
+      "native_sha256": "b54154e3c9fef5b7f5de95cb22a63a4d2cd7ea524e73efb08aa65f62901b320e"
+    }
+  },
+  "new_reset_registers": 0,
+  "default_enabled": false,
+  "source_invalidation_semantics_unchanged": true,
+  "session_fence_resets_mailboxes": false,
+  "reconstruction_used_only_for_verification": true
+}

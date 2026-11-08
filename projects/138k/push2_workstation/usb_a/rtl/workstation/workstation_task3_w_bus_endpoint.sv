@@ -60,7 +60,16 @@ module workstation_task3_w_bus_endpoint #(
 );
     wire [95:0] common={peer_boot_i,session_i,generation_i};
     reg [127:0] observed_context;
-    wire context_current=observed_context=={local_boot_i,common};
+    // Keep byte comparisons separate: one carry chain across the full key
+    // put immediate session fencing on the W critical path. No extra state.
+    wire [127:0] current_context={local_boot_i,common};
+    (* syn_keep=1 *) wire [15:0] context_equal_bytes;
+    genvar context_byte;
+    generate for(context_byte=0;context_byte<16;context_byte=context_byte+1)begin:g_context_equal
+        assign context_equal_bytes[context_byte]=
+            observed_context[context_byte*8+:8]==current_context[context_byte*8+:8];
+    end endgenerate
+    wire context_current=&context_equal_bytes;
     wire live=reset_ni && link_ready_i && !panic_i && context_current &&
         local_boot_i!=0 && peer_boot_i!=0 && session_i!=0 && generation_i!=0;
     wire analysis_packet=rx_channel_i==`TASK3_PAIR_CH_ANALYSIS && rx_length_i==`TASK3_PAIR_ANALYSIS_BYTES && rx_payload_i[255:202]==0;
@@ -241,7 +250,7 @@ module workstation_task3_w_bus_endpoint #(
     end endgenerate
     wire phone_arm_attempt=live && phone_media_live && hci_classic_ready_i && phone_owner_ready_i && status_sent_current &&
         phone_arm_ready && attempted_common!=common;
-    workstation_task3_phone_command_proxy phone_proxy(
+    workstation_task3_phone_command_proxy #(.CAPTURE_ARM(BLOCK_PCM)) phone_proxy(
         .clk_i(clk_i),.reset_ni(reset_ni),.link_ready_i(live && hci_classic_ready_i && phone_owner_ready_i && phone_media_live && !phone_window_fault && !phone_batch_fault),.panic_i(panic_i),
         .arm_valid_i(phone_arm_attempt),.arm_ready_o(phone_arm_ready),.arm_boot_i(peer_boot_i),.arm_session_i(session_i),.arm_generation_i(generation_i),
         .arm_accepted_o(),.arm_rejected_o(),.arm_tx_valid_o(phone_arm_tx),.arm_tx_ready_i(phone_arm_tx_ready),

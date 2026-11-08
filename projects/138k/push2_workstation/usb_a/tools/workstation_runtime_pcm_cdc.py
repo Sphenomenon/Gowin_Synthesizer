@@ -522,6 +522,57 @@ def audit_runtime_pcm_cdc(root, text, clocks, *, reset_policy=None, context_ack_
     return audit_netlist(root, n, clocks, reset_policy=reset_policy, context_ack_policy=context_ack_policy)
 
 
+def prove_reply_byte_headers(n, g, reply_src):
+    """Prove each retained byte NE predicate from all eight named FF pairs."""
+    bitq = lambda scope, stem, bit: n.pin(g.register(scope, stem, bit), "Q")
+    byte_headers = [n.canonical(Z, f'header_unequal_bytes[{i}]') for i in range(8)]
+    byte_header_mapping = all(net in g.drivers for net in byte_headers)
+    if byte_header_mapping:
+        from tools.workstation_task3_root_reset_audit import RootDiagram
+        for byte, net in enumerate(byte_headers):
+            base = 33 if byte < 4 else 65
+            state = 'wanted_sequence' if byte < 4 else 'epoch'
+            pairs=[]
+            for bit in range(8):
+                index=(byte % 4)*8+bit
+                names=g.names[Z+'/'+state+'_'+str(index)]
+                if names:
+                    target=bitq(Z,state,index)
+                else:
+                    # Paired fixed-rate runtime retains only epoch bit0. Bind
+                    # each eliminated bit to the actual request publisher's
+                    # constant-zero D; absence alone is never a constant proof.
+                    require(state=='epoch','reply sequence state absent')
+                    target=n.pin(g.register(B,'held_request',32+index),'D')
+                    require(target in g.low,'eliminated epoch bit is not published as zero')
+                pairs.append((n.pin(reply_src[base+index],'Q'),target))
+            frontier = g.carry_frontier(net)
+            if not frontier:
+                leaves=list(dict.fromkeys(x for pair in pairs for x in pair if x not in g.low|g.high))
+                bd_header=RootDiagram(leaves);expected=0
+                for left,right in pairs:
+                    expected=bd_header.either(expected,bd_header.different(
+                        bd_header.net(g,left),bd_header.net(g,right)))
+                require(bd_header.net(g,net)==expected,'reply byte LUT header identity changed: '+str(byte))
+                continue
+            require(len(frontier) == 1, 'reply byte carry frontier changed')
+            carry = next(iter(frontier))
+            actual_pairs = g.inequality_chain(carry)
+            expected_pairs = {frozenset(pair) for pair in pairs}
+            remaining = expected_pairs - actual_pairs
+            require(actual_pairs <= expected_pairs and len(actual_pairs) in (7, 8) and len(remaining) == 8-len(actual_pairs),
+                    'reply byte carry operand identity changed: ' + str(byte))
+            scalar = sorted(next(iter(remaining))) if remaining else []
+            bd_header = RootDiagram([carry, *scalar])
+            expected = bd_header.inputs[carry]
+            if scalar:
+                expected = bd_header.either(expected, bd_header.different(
+                    bd_header.inputs[scalar[0]], bd_header.inputs[scalar[1]]))
+            require(bd_header.net(g, net) == expected,
+                    'reply byte header bit comparison identity changed: ' + str(byte))
+    return set(byte_headers) if byte_header_mapping else None
+
+
 def audit_netlist(root, n, clocks, *, reset_policy=None, context_ack_policy=None):
     """The object form supports in-memory actual-VG negatives, never sealing."""
     g = Graph(n)
@@ -804,15 +855,22 @@ def audit_netlist(root, n, clocks, *, reset_policy=None, context_ack_policy=None
     # qualifier shared by next_pcm and the current_pcm frame-boundary bypass.
     next_regs = g.group(Z, 'next_pcm', 32) + [reg(Z, 'next_error')]
     next_ce = common_ce(next_regs, 'serializer next tuple')
-    header_carries = g.carry_frontier(next_ce)
+    # New source retains eight byte predicates to avoid a full-width carry
+    # chain. Prove every predicate from its real 16 FF operands before using
+    # it as a Boolean cut. Historical netlists retain their original proof.
+    byte_headers = prove_reply_byte_headers(n, g, reply_src)
+    byte_header_mapping = byte_headers is not None
+    header_carries = byte_headers if byte_header_mapping else g.carry_frontier(next_ce)
     header_pairs = set()
-    for carry in header_carries:
+    for carry in ([] if byte_header_mapping else header_carries):
         current = g.inequality_chain(carry)
         require(not header_pairs & current, 'reply header comparisons overlap')
         header_pairs.update(current)
     expected_pairs = {frozenset((n.pin(reply_src[i + 65], 'Q'), bitq(Z, 'epoch', i))) for i in range(32)}
     expected_pairs |= {frozenset((n.pin(reply_src[i + 33], 'Q'), bitq(Z, 'wanted_sequence', i))) for i in range(32)}
     high_epoch_pair = frozenset((n.pin(reply_src[96], 'Q'), bitq(Z, 'epoch', 31)))
+    if byte_header_mapping:
+        header_pairs = expected_pairs
     require(header_pairs in (expected_pairs, expected_pairs - {high_epoch_pair}), 'reply header bit comparison identity changed')
     reply_scalar_epoch = header_pairs != expected_pairs
     incoming = [q(Z, 'configured'), bitq(R, 'serial_quiesce', 1), q(B, 'serial_reset_n'), q(R, 'serial_reset_n'), bitq(B, 'serial_quiesce_sync', 1), bitq(B, 'reply_sync', 1), q(B, 'reply_ack'), q(Z, 'have_next'), q(Z, 'requested'), n.pin(reply_src[97], 'Q'), q(Z, 'mode_44k1')]

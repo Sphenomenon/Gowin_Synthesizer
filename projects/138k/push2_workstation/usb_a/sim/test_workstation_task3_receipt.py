@@ -63,8 +63,8 @@ class ActualNewReceipt(unittest.TestCase):
         cls.n = protocol_netlist(cls.path.read_text(), mapping=cls.mapping)
         cls.root = audit_root_startup(cls.n, stage=cls.stage)
         cls.positive, cls.mutations, cls.failed = None, [], False
-        cls.before = {str(p): sha(p) for p in (cls.path, cls.stage/'Prj1.gprj',
-            cls.stage/ROOT_SOURCE, cls.stage/PROVIDER, cls.stage/TOP_SOURCE,
+        cls.before = {str(p): sha(p) for p in (cls.path,
+            *(cls.stage/path for path in cls.root['source_sha256']),
             cls.stage/'rtl/tf_audio/workstation_tf_direct_runtime_service.sv')}
 
     def tearDown(self):
@@ -103,7 +103,7 @@ class ActualNewReceipt(unittest.TestCase):
                 target[key] = old
 
     def test_01_actual_new_mailbox_and_all_next_q(self):
-        result = audit_direct_receipt(self.n, root=self.root)
+        result = audit_direct_receipt(self.n, root=self.root,stage=self.stage)
         self.assertEqual(result['register_count'], 76)
         self.assertEqual(len(result['source_pins']), 34)
         self.assertEqual(len(result['capture_pins']), 34)
@@ -111,14 +111,14 @@ class ActualNewReceipt(unittest.TestCase):
         self.assertEqual(len({p['register'] for p in result['next_q']}), 76)
         self.assertTrue(result['all_reset_inclusive_next_q_proven'])
         self.assertEqual(len(result['chains']), 2)
-        self.assertFalse(result['source_data_semantics_proven'])
-        self.assertFalse(result['source_event_condition_semantics_proven'])
+        self.assertEqual(result['source_data_semantics_proven'],result['paired_source_abort_lifecycle'] is not None)
+        self.assertEqual(result['source_event_condition_semantics_proven'],result['paired_source_abort_lifecycle'] is not None)
         self.assertFalse(result['full_tf_cdc_proven'])
         self.assertFalse(result['physical_tail_proven'])
         self.__class__.positive = result
 
     def test_02_actual_receipt_destructive_controls(self):
-        result = audit_direct_receipt(self.n, root=self.root)
+        result = audit_direct_receipt(self.n, root=self.root,stage=self.stage)
         g, n = Graph(self.n), self.n
         local = g.group('u_tf_audio', 'receipt_local', 34)
         payload = g.group('u_tf_audio', 'receipt_payload', 34)
@@ -170,7 +170,7 @@ class ActualNewReceipt(unittest.TestCase):
         for label, path, part, key, value in cases:
             with self.subTest(case=label), self.changed(path, part, key, value):
                 with self.assertRaises(ValueError) as error:
-                    audit_direct_receipt(n, root=self.root)
+                    audit_direct_receipt(n, root=self.root,stage=self.stage)
             self.mutations.append(dict(case=label, rejected=True, error=str(error.exception)))
         self.assertEqual(len(cases), 34)
 
@@ -181,7 +181,43 @@ class ActualNewReceipt(unittest.TestCase):
             ('wrong root policy', 'policy', 'legacy-global'),
         ):
             with self.subTest(case=label), self.assertRaises(ValueError) as error:
-                audit_direct_receipt(self.n, root=dict(self.root, **{key: value}))
+                audit_direct_receipt(self.n, root=dict(self.root, **{key: value}),stage=self.stage)
+            self.mutations.append(dict(case=label, rejected=True, error=str(error.exception)))
+
+    def test_04_split_epoch_comparison_controls(self):
+        result = audit_direct_receipt(self.n, root=self.root, stage=self.stage)
+        self.__class__.positive = result
+        source = result['paired_source_abort_lifecycle']
+        if source is None:
+            self.skipTest('paired source lifecycle required')
+        epoch = next(row for row in source['exact_inequality_comparisons'] if row['id'] == 'epoch')
+        self.assertEqual(epoch['width'], 32)
+        self.assertEqual(len(epoch['operand_pairs']), 32)
+        if not epoch['residual_operand_pairs']:
+            self.skipTest('actual epoch comparison is entirely in carry chain')
+        self.assertEqual(len(epoch['carry_operand_pairs']), 31)
+        self.assertEqual(len(epoch['residual_operand_pairs']), 1)
+        left, right = epoch['residual_operand_pairs'][0]
+        n, g = self.n, Graph(self.n)
+        shared = {cell for cell, pin, role in g.fan[left] if role == 'comb'} & {
+            cell for cell, pin, role in g.fan[right] if role == 'comb'}
+        self.assertEqual(len(shared), 1)
+        cell = next(iter(shared))
+        left_pin = next(pin for pin in n.cells[cell]['ports'] if n.pin(cell, pin) == left)
+        right_pin = next(pin for pin in n.cells[cell]['ports'] if n.pin(cell, pin) == right)
+        raw_left = n.cells[cell]['ports'][left_pin]
+        self.assertIn('[31]', raw_left)
+        carry_cell = g.drivers[epoch['actual_output']][0][0]
+        cases = (
+            ('epoch highest bit omitted', cell, 'ports', left_pin, n.cells[cell]['ports'][right_pin]),
+            ('epoch highest bit replaced by bit30', cell, 'ports', left_pin, raw_left.replace('[31]', '[30]')),
+            ('epoch LUT truth table disabled', cell, 'parameters', 'INIT', "16'h0000"),
+            ('epoch carry operand disconnected', carry_cell, 'ports', 'I0', "1'b0"),
+        )
+        for label, path, part, key, value in cases:
+            with self.subTest(case=label), self.changed(path, part, key, value):
+                with self.assertRaises(ValueError) as error:
+                    audit_direct_receipt(n, root=self.root, stage=self.stage)
             self.mutations.append(dict(case=label, rejected=True, error=str(error.exception)))
 
 

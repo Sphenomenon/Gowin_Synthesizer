@@ -47,7 +47,7 @@ def require(condition, message):
         raise ValueError('native protocol audit: ' + message)
 
 
-def audit_native_protocol(n, *, profile, mapping='synthesis'):
+def audit_native_protocol(n, *, profile, mapping='synthesis', stage=None, root=None):
     require(profile in PROFILES, 'unknown role/profile')
     require(mapping in ('synthesis', 'routed'), 'unknown native mapping')
     g = Graph(n)
@@ -240,7 +240,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis'):
                             'memory', 'control'))
     elif direct:
         from tools.workstation_task3_native_held import audit_direct_tf_owner
-        proofs.append(audit_direct_tf_owner(n))
+        proofs.append(audit_direct_tf_owner(n,stage=stage,root=root))
     else:
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled profile retained TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)
@@ -449,13 +449,9 @@ def audit_control_boundaries(n, g, *, profile):
     return dict(tf_control=tf, pc_health_levels=levels, complete_cdc_accepted=False)
 
 
-def audit_timing_boundaries(n, g, *, profile):
-    """Measured native heartbeat, APB response and TF held quiesce paths.
-
-    Counter arithmetic and stopped-source cancellation retain their reviewed
-    source identities and semantic regressions. Netlist proof independently
-    closes the actual register, synchronizer and held-response consumers.
-    """
+def audit_apb_held_boundary(n,g,*,scope=APB,source_clock='ram_clk',destination_clock='audio_clk'):
+    """Reuse the exact one-outstanding APB proof for the paired F808 mailbox."""
+    APB=scope
     def reg(scope, stem):
         return g.register(scope, stem)
 
@@ -488,27 +484,11 @@ def audit_timing_boundaries(n, g, *, profile):
             result['third'] = c + '/D'
         return result
 
-    heartbeats = []
-    for origin, destination, source_clock, destination_clock in (
-            (DELAY, DMA, 'audio_clk', 'memory_clk'), (DMA, DELAY, 'memory_clk', 'audio_clk')):
-        source = reg(origin, 'heartbeat_counter_4')
-        unconditional(source, source_clock)
-        row = stages(destination, source, 'peer_meta', 'peer_sync', destination_clock)
-        closure = complete_closure(n, g, [source])
-        remote = {pin for pin, domain in closure['ff_endpoints'].items() if domain != source_clock}
-        require(remote == {row['first']} and not closure['primitive_endpoints'] and
-                not closure['top_output_endpoints'], 'delay heartbeat remote consumer closure changed')
-        row.update(source_clock=source_clock, destination_clock=destination_clock,
-                   source_is_registered_counter_bit=4, reviewed_source_counter_width=5,
-                   reviewed_source_free_running_increment=True, counter_arithmetic_equivalence_proven=False,
-                   exact_remote_consumer=sorted(remote), closure=closure)
-        heartbeats.append(row)
-
     q = lambda stem: n.pin(reg(APB, stem), 'Q')
     request, ack = reg(APB, 'request_toggle'), reg(APB, 'acknowledge_toggle')
     held, capture = g.group(APB, 'response_held', 33), g.group(APB, 'response_local', 33)
-    require(clock(request) == 'ram_clk' and clock(ack) == 'audio_clk' and
-            all(clock(p) == 'audio_clk' for p in held) and all(clock(p) == 'ram_clk' for p in capture),
+    require(clock(request) == source_clock and clock(ack) == destination_clock and
+            all(clock(p) == destination_clock for p in held) and all(clock(p) == source_clock for p in capture),
             'APB response clock changed')
     source_enables, capture_enables = {n.pin(p, 'CE') for p in held}, {n.pin(p, 'CE') for p in capture}
     require(len(source_enables) == len(capture_enables) == 1, 'APB response payload enable differs')
@@ -518,11 +498,11 @@ def audit_timing_boundaries(n, g, *, profile):
             'APB ACK and response publication must share edge/reset')
     require(all(n.pin(d, 'D') == n.pin(s, 'Q') for s, d in zip(held, capture)), 'APB response payload bit mapping changed')
     closure = complete_closure(n, g, held)
-    require(closure['ff_endpoints'] == {p + '/D': 'ram_clk' for p in capture} and
+    require(closure['ff_endpoints'] == {p + '/D': source_clock for p in capture} and
             not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
             'APB response exact consumer closure changed')
-    chains = [stages(APB, request, 'req_meta', 'req_sync', 'audio_clk', 'req_settled'),
-              stages(APB, ack, 'ack_meta', 'ack_sync', 'ram_clk', 'ack_settled')]
+    chains = [stages(APB, request, 'req_meta', 'req_sync', destination_clock, 'req_settled'),
+              stages(APB, ack, 'ack_meta', 'ack_sync', source_clock, 'ack_settled')]
     # Prove the actual local ready/reset cone. Independent service-ready
     # branches are unrestricted Boolean inputs, a conservative abstraction:
     # no value of any such branch may permit publication after ACK. Do not
@@ -561,7 +541,7 @@ def audit_timing_boundaries(n, g, *, profile):
     bd = BooleanDiagram([req_sync, req_settled, ack_q])
     decoded = bd.both(bd.invert(bd.different(bd.inputs[req_sync], bd.inputs[req_settled])),
                       bd.different(bd.inputs[req_settled], bd.inputs[ack_q]))
-    unconditional(reg(APB, 'request_decoded'), 'audio_clk')
+    unconditional(reg(APB, 'request_decoded'), destination_clock)
     require(bd.net(g, n.pin(reg(APB, 'request_decoded'), 'D')) == decoded,
             'APB request decode must wait for settled request and outstanding ACK')
     state0, state1, req, ack_settled = q('state_0'), q('state_1'), q('request_toggle'), q('ack_settled')
@@ -570,13 +550,13 @@ def audit_timing_boundaries(n, g, *, profile):
     toggle_gate, output = toggle_drivers[0]
     request_held = g.group(APB, 'request_held', 49)
     request_ces = {n.pin(p, 'CE') for p in request_held}
-    require(len(request_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == 'ram_clk' and
+    require(len(request_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == source_clock and
                 n.pin(p, 'CLEAR') == n.pin(request, 'CLEAR') for p in request_held),
             'APB request payload capture CE/clock/reset differs')
     request_ce = next(iter(request_ces))
     request_local = g.group(APB, 'request_local', 49)
     request_capture_ces = {n.pin(p, 'CE') for p in request_local}
-    require(len(request_capture_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == 'audio_clk' and
+    require(len(request_capture_ces) == 1 and all(n.cells[p]['kind'] == 'DFFCE' and clock(p) == destination_clock and
                 n.pin(p, 'CLEAR') == n.pin(reg(APB, 'req_settled'), 'CLEAR') for p in request_local),
             'APB request local payload capture CE/clock/reset differs')
     require(all(n.pin(d, 'D') == n.pin(s, 'Q') for s, d in zip(request_held, request_local)),
@@ -589,7 +569,7 @@ def audit_timing_boundaries(n, g, *, profile):
     require(request_capture_bd.net(g, next(iter(request_capture_ces))) ==
             request_capture_bd.different(request_capture_bd.inputs[req_sync], request_capture_bd.inputs[req_settled]),
             'APB request local capture must wait for third request stage')
-    require(n.cells[request]['kind'] == 'DFFCE' and clock(request) == 'ram_clk',
+    require(n.cells[request]['kind'] == 'DFFCE' and clock(request) == source_clock,
             'APB request toggle clock/primitive changed')
     inverse_mapping = None
     if n.cells[toggle_gate]['kind'] == 'LUT4' and output == 'F':
@@ -597,7 +577,7 @@ def audit_timing_boundaries(n, g, *, profile):
         require({state0, state1, req}.issubset(inputs) and len(set(inputs)) == 4,
                 'APB launch gate input inventory changed')
         launch_inputs = [x for x in inputs if x not in (state0, state1, req)]
-        unconditional(request, 'ram_clk')
+        unconditional(request, source_clock)
         launch_mapping = 'unconditional_toggle_xor_lut4'
         launch_drivers = g.drivers[request_ce]
         require(len(launch_drivers) == 1, 'APB request payload CE driver ambiguous')
@@ -668,25 +648,25 @@ def audit_timing_boundaries(n, g, *, profile):
             ('state_0', bd.either(launch_accept, bd.both(wait, bd.invert(equal)))),
             ('state_1', bd.either(captured, bd.both(complete, bd.invert(launch))))):
         state = reg(APB, stem)
-        require(n.cells[state]['kind'] == 'DFFCE' and clock(state) == 'ram_clk' and
+        require(n.cells[state]['kind'] == 'DFFCE' and clock(state) == source_clock and
                 all(n.pin(p, 'CLEAR') == n.pin(state, 'CLEAR') for p in capture), 'APB local state clock/reset changed')
         # Synthesis can move the hold mux into CE. Compare effective next-Q
         # rather than requiring M's unconditional-state implementation.
         next_q = bd.choose(bd.net(g, n.pin(state, 'CE')), bd.net(g, n.pin(state, 'D')), bd.inputs[q(stem)])
         require(next_q == expected, 'APB one-outstanding state transition changed: ' + stem)
     request_closure = complete_closure(n, g, [request])
-    request_consumers = {request + '/D': 'ram_clk', reg(APB, 'req_meta') + '/D': 'audio_clk',
-                         **{p + '/CE': 'ram_clk' for p in capture}}
+    request_consumers = {request + '/D': source_clock, reg(APB, 'req_meta') + '/D': destination_clock,
+                         **{p + '/CE': source_clock for p in capture}}
     for stem in ('state_0', 'state_1'):
         for port in ('D', 'CE'):
-            request_consumers[reg(APB, stem) + '/' + port] = 'ram_clk'
+            request_consumers[reg(APB, stem) + '/' + port] = source_clock
     require(set(request_closure['ff_endpoints']).issubset(request_consumers) and
             all(domain == request_consumers[pin] for pin, domain in request_closure['ff_endpoints'].items()) and
             {request + '/D', reg(APB, 'req_meta') + '/D'}.issubset(request_closure['ff_endpoints']) and
             not request_closure['primitive_endpoints'] and not request_closure['top_output_endpoints'],
             'APB request toggle has an unreviewed consumer')
     response = dict(scope=APB, source_pins=[p + '/Q' for p in held], capture_pins=[p + '/D' for p in capture],
-        payload_bits=33, source_clock='audio_clk', destination_clock='ram_clk', source_enable=source_ce,
+        payload_bits=33, source_clock=destination_clock, destination_clock=source_clock, source_enable=source_ce,
         capture_enable=capture_ce, chains=chains, source_publication_requires_outstanding_request=True,
         publication_local_boolean_leaf_count=len(leaves),
         publication_unrestricted_service_ready_leaves=sorted(external_ready),
@@ -700,6 +680,66 @@ def audit_timing_boundaries(n, g, *, profile):
         minimum_response_pipeline_stages=3, minimum_capture_edge_after_publication=4,
         max_delay_ns=20.0, only_hold_exception=True, closure=closure,
         payload_stable_until_next_request_round_trip=True)
+
+    return response
+
+
+def audit_timing_boundaries(n, g, *, profile):
+    """Measured native heartbeat, APB response and TF held quiesce paths.
+
+    Counter arithmetic and stopped-source cancellation retain their reviewed
+    source identities and semantic regressions. Netlist proof independently
+    closes the actual register, synchronizer and held-response consumers.
+    """
+    def reg(scope, stem):
+        return g.register(scope, stem)
+
+    def clock(p):
+        # Hierarchical formal resolution can return a top-level buffer name
+        # once; resolve that real IBUF/BUFG alias again before comparison.
+        return n.canonical('', n.pin(p, 'CLK'))
+
+    def unconditional(p, domain, kind='DFFCE'):
+        require(n.cells[p]['kind'] == kind and clock(p) == domain and n.pin(p, 'CE') in g.high,
+                'timing-boundary register clock/primitive/CE changed: ' + p)
+
+    def stages(scope, source, first, second, domain, third=None):
+        a, b = reg(scope, first), reg(scope, second)
+        for p in (a, b):
+            unconditional(p, domain)
+        require(n.pin(a, 'D') == n.pin(source, 'Q') and n.pin(b, 'D') == n.pin(a, 'Q') and
+                n.pin(a, 'CLEAR') == n.pin(b, 'CLEAR'), 'timing-boundary synchronizer bypass/reset changed: ' + a)
+        closure = complete_closure(n, g, [a])
+        require(closure['ff_endpoints'] == {b + '/D': n.pin(b, 'CLK')} and
+                not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
+                'timing-boundary first-stage has another consumer: ' + a)
+        result = dict(source=source + '/Q', first=a + '/D', second=b + '/D',
+                      first_stage_only_second_consumer=True, second_stage_normally_timed=True)
+        if third:
+            c = reg(scope, third)
+            unconditional(c, domain)
+            require(n.pin(c, 'D') == n.pin(b, 'Q') and n.pin(c, 'CLEAR') == n.pin(b, 'CLEAR'),
+                    'timing-boundary third synchronizer stage bypass/reset changed: ' + c)
+            result['third'] = c + '/D'
+        return result
+
+    heartbeats = []
+    for origin, destination, source_clock, destination_clock in (
+            (DELAY, DMA, 'audio_clk', 'memory_clk'), (DMA, DELAY, 'memory_clk', 'audio_clk')):
+        source = reg(origin, 'heartbeat_counter_4')
+        unconditional(source, source_clock)
+        row = stages(destination, source, 'peer_meta', 'peer_sync', destination_clock)
+        closure = complete_closure(n, g, [source])
+        remote = {pin for pin, domain in closure['ff_endpoints'].items() if domain != source_clock}
+        require(remote == {row['first']} and not closure['primitive_endpoints'] and
+                not closure['top_output_endpoints'], 'delay heartbeat remote consumer closure changed')
+        row.update(source_clock=source_clock, destination_clock=destination_clock,
+                   source_is_registered_counter_bit=4, reviewed_source_counter_width=5,
+                   reviewed_source_free_running_increment=True, counter_arithmetic_equivalence_proven=False,
+                   exact_remote_consumer=sorted(remote), closure=closure)
+        heartbeats.append(row)
+
+    response=audit_apb_held_boundary(n,g)
 
     quiesce = None
     if profile == 'm-demo-base':

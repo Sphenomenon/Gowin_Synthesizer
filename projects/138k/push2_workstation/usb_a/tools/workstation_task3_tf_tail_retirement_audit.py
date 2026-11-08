@@ -37,7 +37,16 @@ def audit_tf_tail_retirement(n, *, root, stage):
               if row.get('enable')=='1']
     require(selected.count(SOURCE)==1,'reviewed serial-retirement source is not uniquely selected')
     source_hash=hashlib.sha256((Path(stage)/SOURCE).read_bytes()).hexdigest()
-    require(source_hash==SOURCE_SHA256,'reviewed staged serial-retirement source changed')
+    from tools.workstation_task3_tf_tail_reset import configured,audit_mapped,inverse
+    import json
+    configuration=json.loads((Path(stage).parents[1]/'workstation_profile.json').read_text())['configuration']
+    local_reset=None
+    if configured(configuration):
+        require(hashlib.sha256(inverse(SOURCE,(Path(stage)/SOURCE).read_text()).encode()).hexdigest()==SOURCE_SHA256,
+                'serial retirement exact historical inverse changed')
+        local_reset=audit_mapped(n,stage=stage,root=root)
+        rq=local_reset['chains']['serial']['final_q']
+    else:require(source_hash==SOURCE_SHA256,'reviewed staged serial-retirement source changed')
     kind=n.frames[s]['kind']
     declared={}
     for port in n.frames[s]['ports']:
@@ -96,13 +105,20 @@ def audit_tf_tail_retirement(n, *, root, stage):
         (scalar['reply_toggle'],'CE'),(groups['serial_state'][0],'D'),(groups['serial_state'][1],'D'))))
     require(len(frontier)==7,'serial state/retire comparator frontier is not exact seven comparisons')
     comparisons,compare_nets={},{}
+    split_sequence_msb=None
     for net in sorted(frontier):
         pairs=g.inequality_chain(net)
         names=[name for name,required in expected.items() if pairs==required]
+        missing=expected['physical-sequence']-pairs
+        if not names and pairs<expected['physical-sequence'] and len(missing)==1:
+            msb=frozenset((token[63],physical_sequence[31]))
+            require(missing=={msb} and len(pairs)==31,'unreviewed split sequence comparator')
+            names=['physical-sequence'];split_sequence_msb=(token[63],physical_sequence[31])
         require(len(names)==1 and names[0] not in compare_nets,
                 'unknown/duplicate/missing 32-bit serial comparison: '+net)
         name=names[0];compare_nets[name]=net
         comparisons[name]=dict(output=net,width=32,exact_NE_chain_verified=True,
+            separate_MSB_LUT_equation_checked_by_complete_retirement_next_Q=bool(name=='physical-sequence' and split_sequence_msb),
             operand_pairs=sorted(sorted(pair) for pair in pairs),
             primitive_model='GW5A ALU_MODE=3 COUT=(I0!=I1)||CIN; zero/XOR seed')
     require(set(compare_nets)==set(specs),'serial comparison classification incomplete')
@@ -110,10 +126,14 @@ def audit_tf_tail_retirement(n, *, root, stage):
     frame_error=q(scalar['serial_frame_error']);seen=q(scalar['serial_request_seen'])
     reply_q=q(scalar['reply_toggle']);request_sync1=q(groups['request_sync'][1])
     controls=[rq,*state,token[160],token[161],context_valid,serial_rate,frame_error,
-        seen,reply_q,request_sync1,physical_valid,physical_rate,physical_error,*compare_nets.values()]
+        seen,reply_q,request_sync1,physical_valid,physical_rate,physical_error,*compare_nets.values(),*(split_sequence_msb or ())]
     require(len(controls)==len(set(controls)),'serial state/comparison/declared input sources alias')
 
-    def ne(b,name):return b.inputs[compare_nets[name]]
+    def ne(b,name):
+        value=b.inputs[compare_nets[name]]
+        if name=='physical-sequence' and split_sequence_msb:
+            value=b.either(value,b.different(*(b.inputs[net]for net in split_sequence_msb)))
+        return value
     def terms(b):
         low,high=(b.inputs[bit] for bit in state)
         idle=b.all([b.invert(low),b.invert(high)])
@@ -198,6 +218,9 @@ def audit_tf_tail_retirement(n, *, root, stage):
             b.choose(terms(b)['retire'],value(b),b.inputs[q(path)])),
             'root & choose(retire, '+label+', held reply Q)',reply_hold=True)
     require(len(proofs)==233,'reply/state/error next-Q proof inventory incomplete')
+    from tools.workstation_task3_tf_tail_gray import audit as audit_gray
+    gray=audit_gray(n,local_release_q=(local_reset['chains']['compute']['final_q']
+                                    if local_reset is not None else root['root_q']))
     return dict(policy=POLICY,scope=s,root_register=root_register,root_q=rq,
         source_sha256={SOURCE:source_hash},common_clear=common,
         actual_declared_input_cuts=declared,
@@ -213,7 +236,8 @@ def audit_tf_tail_retirement(n, *, root, stage):
         source_data_expression_cuts_used=False,
         serial_context_register_transition_logic_proven=False,
         token_capture_and_request_sync_owned_by_parent_gate=True,
-        compute_reply_business_next_q_proven=False,cancellation_gray_arithmetic_proven=False,
+        compute_reply_business_next_q_proven=False,cancellation_gray_arithmetic_proven=True,
+        cancellation_gray_arithmetic=gray,
         upstream_physical_and_observation_counter_authenticity_proven=False,
         full_tf_cdc_proven=False,physical_tail_hardware_semantics_accepted=False,
         routed_timing_verified=False,physical_recovery_removal_verified=False,

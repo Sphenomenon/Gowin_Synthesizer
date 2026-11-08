@@ -157,14 +157,22 @@ def prepared_selection(root,stage,configuration,*,captured_source_sha256=None):
     from tools.workstation_tf_fat_cache_provenance import validate_adaptation
     chain,_=validate_adaptation(stage)
     source_sha256={p:digest((stage/p).read_bytes()) for p in SOURCES}
+    from tools import workstation_tf_compute_local_release as compute_reset
+    compute_selection=compute_reset.evidence(stage,configuration)
+    def maintained_bytes(relative):
+        raw=(stage/relative).read_bytes()
+        if compute_selection is not None and relative==compute_reset.SERVICE:
+            return compute_reset.unselect(raw.decode()).encode()
+        return raw
     if captured_source_sha256 is None:
-        require(all((root/p).read_bytes()==(stage/p).read_bytes() for p in SOURCES),
+        require(all((root/p).read_bytes()==maintained_bytes(p) for p in SOURCES),
                 'staged DIRECT sources differ from maintained bytes')
     else:
-        require(all(captured_source_sha256.get(p)==value for p,value in source_sha256.items()) and
+        require(all(captured_source_sha256.get(p)==digest(maintained_bytes(p)) for p in SOURCES) and
                 captured_source_sha256.get(provider)==digest((stage/provider).read_bytes()),
                 'staged DIRECT sources differ from captured maintained bytes')
     return dict(selection,provider=provider,provider_sha256=digest((stage/provider).read_bytes()),
+        **({'compute_functional_reset_selection':compute_selection}if compute_selection is not None else{}),
         native_top_sha256=digest(raw_top),source_sha256=source_sha256,
         **({'paired_role':paired_role,'maintained_parent_top_sha256':digest(maintained_top)}if paired_role is not None else{}),
         reference_sha256=REFERENCE_SHA256,source_chain=chain,

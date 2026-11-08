@@ -8,9 +8,11 @@ module tb_pitch_capture_boundary;
     logic parameter_commit=0;
     logic [21:0] next_target=1048576, target=1048576;
     logic [15:0] next_glide=0, glide=0;
+    logic [20:0] glide_div147=0;
     logic [6:0] next_depth=0, depth=0;
     always_ff @(posedge clk) if(parameter_commit) begin
         target<=next_target;glide<=next_glide;depth<=next_depth;
+        glide_div147<={13'((13*int'(next_glide))/147),8'((13*int'(next_glide))%147)};
     end
     logic event_valid=0, note_on=0, scope=0;
     logic [6:0] note=48;
@@ -22,11 +24,11 @@ module tb_pitch_capture_boundary;
     wire [5:0] count;
     wire [3:0] vec_count;
     wire config_error, frequency_error;
-    workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1)) dut (
+    workstation_runtime_render_engines #(.RUNTIME_RATE_ENABLE(1),.COMMITTED_GLIDE_COEFFICIENT(1)) dut (
         .clk_i(clk),.rst_ni(rst),.panic_i(panic),.sample_ce_i(ce),
         .rate_commit_i(rate_commit),.rate_44100_i(rate44),.rate_ready_o(rate_ready),
         .applied_rate_44100_o(applied44),.quiescent_o(quiet),
-        .target_ratio_q20_i(target),.glide_step_q20_i(glide),.vibrato_depth_i(depth),.pitch_q20_o(),
+        .target_ratio_q20_i(target),.glide_step_q20_i(glide),.glide_div147_i(glide_div147),.vibrato_depth_i(depth),.pitch_q20_o(),
         .mode_set_valid_i(1'b0),.mode_set_ready_o(),.mode_i(2'd0),.current_mode_o(),
         .event_valid_i(event_valid),.event_note_on_i(note_on),.scope_enable_i(scope),
         .event_profile_i(3'd0),.event_note_i(note),.event_off_note_i(note),.event_velocity_i(7'd100),

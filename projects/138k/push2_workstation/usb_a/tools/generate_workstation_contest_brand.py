@@ -92,8 +92,16 @@ def generate(font_path):
                             row_word_count=len(rows), row_word_width=24,
                             leftmost_pixel_bit=23, ink_rgb=INK,
                             characters=characters))
+    chunks = []
+    for line in (TITLE, PRINCIPLE):
+        for chunk in range(128):
+            character = line[chunk // 3] if chunk // 3 < len(line) else ' '
+            for y in range(32):
+                row = rows[characters.index(character)*24+y] if y < 24 else 0
+                chunks.append((row >> (16-8*(chunk % 3))) & 255)
     output = {
         'contest_brand_logo_pairs.memh': ''.join(f'{word:x}\n' for word in words).encode(),
+        'contest_brand_chunks.memh': ''.join(f'{byte:02x}\n' for byte in chunks).encode(),
         'contest_brand_glyphs.memh': ''.join(f'{row:06x}\n' for row in rows).encode(),
         'contest_brand_layout.svh': ('\n'.join(header) + '\n').encode(),
         'contest_brand_layout.json': (json.dumps(layout, ensure_ascii=False, indent=2) + '\n').encode(),

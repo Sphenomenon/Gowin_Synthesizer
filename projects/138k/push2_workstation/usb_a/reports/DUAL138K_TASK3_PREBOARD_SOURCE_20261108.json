@@ -1,0 +1,397 @@
+{
+  "schema": 1,
+  "scope": "Paired preboard source and complete synthesis checkpoint; routed gates still failing. No board operations.",
+  "recorded_utc": "2026-11-08T02:09:15.703310+00:00",
+  "roles": {
+    "M": {
+      "candidate": "custom138k-workstation-task3-m-preboard-v1-eb5787e6837a0a43",
+      "configuration_sha256": "ecf3e2fe7f381bd03acfc1d3bb6cdba28c5a9b4696b3452d04e3935555884909",
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v22/integration_inputs.json",
+        "sha256": "adc3afd919d0bf58cb60bcdfd90751b282c381331d5032125096228b5b51026a"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v22/workstation_profile.json",
+        "sha256": "c3d8e8c35b41f3da23593ffd48853948cf1560ee7c6a91936f43073f7a01779b"
+      },
+      "netlist": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "60803934bd8baf8b6a9939e23056a6f19bb54952704730a6d01ade0a35668bc2"
+      },
+      "synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-preboard-audit-v22.json",
+        "sha256": "b9e396d50293c66c527d4f6423041be0f173085319df6e4389387bced67acb6d"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v22/synthesis-reuse.json",
+        "sha256": "59e0e8392181d4d0f5c55e486d55873cc8e873ff6bf63ed737c2a924dd7cebaa"
+      },
+      "complete_gates": {
+        "feature_structure": true,
+        "M_32_voice_storage": true,
+        "M_sync_storage_mapping": true,
+        "port_coverage": true,
+        "AE350_clock_placement": true,
+        "AE350_RTC": true,
+        "runtime_clock_PLL_structure": true,
+        "USB2_CDC": true,
+        "input_FIFO_CDC": true,
+        "native_reset": true,
+        "native_feedback": true,
+        "USB_FIFO_write_reset": true,
+        "USB_bridge_resets": true,
+        "phone_batch_mapped_structure": true,
+        "LCD_pad_synchronizer_structure": true,
+        "visible_SDC_members": true,
+        "constraint_retirement_and_rebinding": true,
+        "M_TF_tail_local_reset": true,
+        "M_paired_release_CDC": true,
+        "M_MIDI_release_SDC_semantics": true,
+        "native_boundary_CDC": true,
+        "native_held_handshakes": true,
+        "preboard_serializer_byte_header": true,
+        "preboard_F808_and_PANIC_held_boundaries": true,
+        "preboard_M_HCI_session_boundary": true,
+        "USB_ROM": true
+      },
+      "enabled_inputs": 288,
+      "staged_inputs": 707
+    },
+    "W": {
+      "candidate": "custom138k-workstation-task3-w-preboard-v1-96d052186a73ae48",
+      "configuration_sha256": "b1b644a7ab17aa78acf6b18c35bda318c94a412ea23a53bf5ac54438ec9c957f",
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v22/integration_inputs.json",
+        "sha256": "e54a340e0da2f2328bfb3e21ee809aa1d599b85cdde7b7f97323e8085637c995"
+      },
+      "profile": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v22/workstation_profile.json",
+        "sha256": "54b7829e392a48122aabb40324201ee62fd3f23460794d311893d2eb686e89aa"
+      },
+      "netlist": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v22/workstation/Prj1/impl/gwsynthesis/custom_138k_integration.vg",
+        "sha256": "d2ca39c1fa559dd9e835a9e428d5eade08dbc4a8f3d1dd761fdfc8308d126fc5"
+      },
+      "synthesis_audit": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-preboard-audit-v22.json",
+        "sha256": "cd7a710030057c21eebcef3d76def495630d7e551129855dba466063343b7a7e"
+      },
+      "synthesis_reuse": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v22/synthesis-reuse.json",
+        "sha256": "b376a341e0501a7b6b089e9a2da0117ff5edd7b87a19d4c2606cb00c47a08345"
+      },
+      "complete_gates": {
+        "W_USB_retirement": true,
+        "feature_structure": true,
+        "W_banked96_ROM_words": true,
+        "port_coverage": true,
+        "AE350_clock_placement": true,
+        "AE350_RTC": true,
+        "runtime_clock_PLL_structure": true,
+        "USB2_CDC": true,
+        "input_FIFO_CDC": true,
+        "native_reset": true,
+        "worker_feedback": true,
+        "USB_FIFO_write_reset": true,
+        "USB_bridge_resets": true,
+        "phone_batch_mapped_structure": true,
+        "LCD_pad_synchronizer_structure": true,
+        "visible_SDC_members": true,
+        "constraint_retirement_and_rebinding": true,
+        "W_CNN_ready_SDC": true,
+        "native_boundary_CDC": true,
+        "native_held_handshakes": true,
+        "W_preboard_release_and_CNN_Gray_CDC": true,
+        "preboard_serializer_byte_header": true,
+        "preboard_F808_and_PANIC_held_boundaries": true,
+        "preboard_W_raw_command_capture": true,
+        "USB_ROM": true
+      },
+      "enabled_inputs": 201,
+      "staged_inputs": 697
+    }
+  },
+  "physical": {
+    "m-preboard-physical-v9": {
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v9/physical_inputs.json",
+        "sha256": "a566bfcf97a11037c4601769d8fc7e9a6114e658e13ca3d0dd97bfdc69f9f3a3"
+      },
+      "result": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v9/physical-result.json",
+        "sha256": "a00f64d42e7fc8bd489d1fc741cf5dde459a84f4a165101f60e367a0676c5ba0"
+      },
+      "BSRAM": 253,
+      "resources": {
+        "Logic": [
+          "90521/138240",
+          "66%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "89069(69885 LUT, 19184 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "242",
+          "-"
+        ],
+        "Register": [
+          "58604/139095",
+          "43%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "58604/138240",
+          "43%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "61129/69120",
+          "89%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "135",
+          "-"
+        ],
+        "--Input Buf": [
+          "9",
+          "-"
+        ],
+        "--Output Buf": [
+          "75",
+          "-"
+        ],
+        "--Inout Buf": [
+          "51",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM4 OSER1032 IODELAY",
+          "37%"
+        ],
+        "BSRAM": [
+          "157 SDPB44 SDPX9B45 pROM7 pROMX9",
+          "75%"
+        ],
+        "DSP": [
+          "3 MULT12X1243 MULT27X3633 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "15/24",
+          "63%"
+        ],
+        "CLKDIV": [
+          "2/24",
+          "9%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "6/12",
+          "50%"
+        ]
+      },
+      "worst_STA_ns": {
+        "setup": -3.909,
+        "hold": -2.867,
+        "recovery": -7.854,
+        "removal": 0.284
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v9/impl/pnr/custom_138k_integration.fs",
+        "sha256": "a0da9fea692a8c865ac0249c55059dd88b2b6df97227fa951338d393d5698dda"
+      },
+      "timing_closed": false,
+      "preboard_ready": false
+    },
+    "w-preboard-physical-v7": {
+      "inputs": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v7/physical_inputs.json",
+        "sha256": "55338f7fd0cb20d88b16d514a20567971ff171fef5bc7385f335420076501cd3"
+      },
+      "result": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v7/physical-result.json",
+        "sha256": "871e8d3d081cbc6be59e2120e9bac10808334f7eddb543ff4a5d57f618e5f271"
+      },
+      "BSRAM": 287,
+      "resources": {
+        "Logic": [
+          "79682/138240",
+          "58%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "75008(58536 LUT, 16472 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "779",
+          "-"
+        ],
+        "Register": [
+          "46724/139095",
+          "34%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "46724/138240",
+          "34%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "56385/69120",
+          "82%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "136",
+          "-"
+        ],
+        "--Input Buf": [
+          "6",
+          "-"
+        ],
+        "--Output Buf": [
+          "87",
+          "-"
+        ],
+        "--Inout Buf": [
+          "43",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM32 IODELAY",
+          "35%"
+        ],
+        "BSRAM": [
+          "3 SP148 SDPB40 SDPX9B96 pROM",
+          "85%"
+        ],
+        "DSP": [
+          "36 MULT12X1242 MULT27X3620 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "17/24",
+          "71%"
+        ],
+        "CLKDIV": [
+          "1/24",
+          "5%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "4/12",
+          "34%"
+        ]
+      },
+      "worst_STA_ns": {
+        "setup": -7.666,
+        "hold": -0.919,
+        "recovery": 0.185,
+        "removal": -0.011
+      },
+      "bitstream": {
+        "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v7/impl/pnr/custom_138k_integration.fs",
+        "sha256": "26592c4511abb2cd6f7d08e13bef9ce92ce5c857d8f0b2d69e167d4bbeaa452e"
+      },
+      "timing_closed": false,
+      "preboard_ready": false
+    }
+  },
+  "evidence": {
+    "prepare-reproducibility-v20.json": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare-reproducibility-v20.json",
+      "sha256": "c063826e46221a6937bb8345678d7503818763c9b7bf29224621bd1b14bfae53"
+    },
+    "accepted-sources-v22.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/accepted-sources-v22.log",
+      "sha256": "caddabff874d1b47aa5fec429b50d585a3a055d091a92b6abdaab0c29d82f90e"
+    },
+    "A8-clock-controls-v2.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/A8-clock-controls-v2.log",
+      "sha256": "151deb271d338dffd759cdcccbb3ccd007f4740a74696fcc6dfa733b0ed44671"
+    },
+    "B8-placeable-layout-controls-v1.log": {
+      "path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/B8-placeable-layout-controls-v1.log",
+      "sha256": "1267c3e97f4b896abbcb0bdf8fd120a383b353d6341078441a0adc06082648f6"
+    }
+  },
+  "preboard_ready": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "sram_programmed": false,
+  "flash_programmed": false
+}

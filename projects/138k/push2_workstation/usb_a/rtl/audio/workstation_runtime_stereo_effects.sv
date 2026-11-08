@@ -5,6 +5,7 @@
 // Caller retains final serial schedule through controlled zero while closed.
 module workstation_runtime_stereo_effects #(
     parameter integer VECTOR_ENABLE=0,
+    parameter bit RESERVED_CONFIG_DISPATCH_ENABLE=0,
     parameter bit D_DELAY_SEND_ENABLE=0,
     parameter bit RELEASE_TAILS_ENABLE=1,
     parameter integer DELAY_BITS=14,
@@ -95,21 +96,41 @@ module workstation_runtime_stereo_effects #(
   wire delay_fault;
   wire config_accept=config_valid_i && config_ready_o;
   wire history_accept=history_clear_i && history_ready_o;
+  wire dispatch_pending,dispatch_config,dispatch_history,dispatch_rate;
+  generate if(RESERVED_CONFIG_DISPATCH_ENABLE)begin:g_reserved_config
+    // Reserve in the existing barrier; children see held data on a later edge.
+    workstation_effects_config_dispatch config_dispatch(
+        .clk_i,.rst_ni,.reserve_config_i(config_accept),.reserve_history_i(history_accept),
+        .rate_44100_i,.clear_i,.fault_i(fault_o),
+        .all_config_ready_i(&stage_config_ready),.all_history_ready_i(&stage_history_ready),
+        .all_quiet_i(&stage_quiet),.pending_o(dispatch_pending),
+        .config_valid_o(dispatch_config),.history_valid_o(dispatch_history),
+        .rate_44100_o(dispatch_rate));
+  end else begin:g_direct_config
+    assign dispatch_pending=1'b0;
+    assign dispatch_config=config_accept;
+    assign dispatch_history=history_accept;
+    assign dispatch_rate=rate_44100_i;
+  end endgenerate
   wire clear_start=clear_i && !barrier_busy;
   wire [2:0] next_seen=clear_i ? ((barrier_seen|stage_done)&3'b110) : barrier_seen|stage_done;
   wire all_rates_match=stage_rate=={3{pending_rate}};
-  wire complete_barrier=barrier_busy && !clear_i && (&next_seen) && (&stage_quiet);
+  wire complete_barrier=barrier_busy && !dispatch_pending && !clear_i && (&next_seen) && (&stage_quiet);
   wire [7:0] gain_fraction_sum=gain_remainder+8'd47;
+  // remainder is 0..146. Compare before addition to shorten the gain path.
   wire [15:0] gain_delta=applied_rate_44100_o ?
-      16'd139+{15'd0,gain_fraction_sum>=8'd147} : 16'd128;
+      16'd139+{15'd0,gain_remainder>=8'd100} : 16'd128;
   function automatic [15:0] runtime_slew(input [15:0] value,target,delta);
-    logic [15:0] upper,lower;
+    logic [15:0] distance_up,distance_down;
     begin
-      upper=value>16'hffff-delta ? 16'hffff : value+delta;
-      lower=value<delta ? 16'd0 : value-delta;
-      if(target>upper)runtime_slew=upper;
-      else if(target<lower)runtime_slew=lower;
-      else runtime_slew=target;
+      // Distances depend only on committed gains. Delta selects a bounded
+      // movement; target ordering guarantees that movement cannot wrap.
+      distance_up=target-value;
+      distance_down=value-target;
+      if(target>=value)
+        runtime_slew=distance_up>delta ? value+delta : target;
+      else
+        runtime_slew=distance_down>delta ? value-delta : target;
     end
   endfunction
   assign applied_rate_44100_o=stage_rate[0];
@@ -139,7 +160,7 @@ module workstation_runtime_stereo_effects #(
         barrier_seen<=clear_start ? 3'b110 : 3'b000;
         panic_coalesced<=clear_i;barrier_wait<=0;
       end else if(barrier_busy)begin
-        barrier_seen<=next_seen;
+        barrier_seen<=dispatch_pending ? 3'b000 : next_seen;
         if(clear_i)panic_coalesced<=1;
         if(complete_barrier && !fault_o)begin
           if(all_rates_match)begin
@@ -165,15 +186,15 @@ module workstation_runtime_stereo_effects #(
       .mem_clk_i,.mem_rst_ni,
       .dwr_valid_o,.dwr_data_o,.dwr_pop_i,
       .drd_push_i,.drd_data_i,.drd_ready_o,
-      .debug_status_o(),.config_valid_i(config_accept),.rate_44100_i(rate_44100_i),
-      .history_clear_i(history_accept),.config_ready_o(stage_config_ready[0]),.config_applied_o(),
+      .debug_status_o(),.config_valid_i(dispatch_config),.rate_44100_i(dispatch_rate),
+      .history_clear_i(dispatch_history),.config_ready_o(stage_config_ready[0]),.config_applied_o(),
       .history_ready_o(stage_history_ready[0]),.history_done_o(stage_done[0]),
       .quiescent_o(stage_quiet[0]),.fault_o(delay_fault),.applied_rate_44100_o(stage_rate[0]),
       .applied_transaction_o(applied_transaction_o),.peer_heartbeat_i,.heartbeat_o);
   workstation_runtime_chorus_effect #(.CHORUS_BASE(CHORUS_BASE),.CHORUS_DEPTH(CHORUS_DEPTH)) chorus_stage(
       .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==1),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
       .ready_o(chorus_ready),.valid_o(chorus_valid),.active_o(chorus_active),.left_o(chorus_l),.right_o(chorus_r),.clip_o(chorus_clip),
-      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
+      .config_valid_i(dispatch_config),.rate_44100_i(dispatch_rate),.history_clear_i(dispatch_history),
       .config_ready_o(stage_config_ready[1]),.config_applied_o(),.history_ready_o(stage_history_ready[1]),
       .history_done_o(stage_done[1]),.quiescent_o(stage_quiet[1]),.applied_rate_44100_o(stage_rate[1]));
 `ifdef WORKSTATION_REMOTE_REVERB_PARTITION
@@ -181,7 +202,7 @@ module workstation_runtime_stereo_effects #(
     workstation_remote_reverb_m #(.DEADLINE_CYCLES(REMOTE_REVERB_DEADLINE_CYCLES)) reverb_stage(
       .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==2),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
       .ready_o(reverb_ready),.valid_o(reverb_valid),.active_o(reverb_active),.left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),
-      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
+      .config_valid_i(dispatch_config),.rate_44100_i(dispatch_rate),.history_clear_i(dispatch_history),
       .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),
       .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]),
       .link_ready_i(remote_reverb_link_ready_i),.link_session_i(remote_reverb_link_session_i),
@@ -205,7 +226,7 @@ module workstation_runtime_stereo_effects #(
   workstation_runtime_spatial_reverb reverb_stage(
       .clk_i,.rst_ni,.clear_i,.valid_i(state==SEND&&work_id==2),.enabled_i(work_enabled),.left_i(work_l),.right_i(work_r),
       .ready_o(reverb_ready),.valid_o(reverb_valid),.active_o(reverb_active),.left_o(reverb_l),.right_o(reverb_r),.clip_o(reverb_clip),
-      .config_valid_i(config_accept),.rate_44100_i(rate_44100_i),.history_clear_i(history_accept),
+      .config_valid_i(dispatch_config),.rate_44100_i(dispatch_rate),.history_clear_i(dispatch_history),
       .config_ready_o(stage_config_ready[2]),.config_applied_o(),.history_ready_o(stage_history_ready[2]),
       .history_done_o(stage_done[2]),.quiescent_o(stage_quiet[2]),.applied_rate_44100_o(stage_rate[2]));
 `ifdef WORKSTATION_REMOTE_REVERB_PARTITION

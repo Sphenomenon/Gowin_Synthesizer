@@ -25,7 +25,7 @@ def logic_driver(cells, parameters, output_net, kind, inputs, scope, init=None):
     return name
 
 
-def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False):
+def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, worker_headless=False):
     """Prove synchronous RESET inputs are first-stage CDC data, not OSER resets.
 
     DFFRE RESET is a clocked data input in the vendor model. Only the exact
@@ -73,26 +73,35 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False):
                 'grant duplicate or unparsed port: ' + receiver
         a, b = n.cells[first], n.cells[second]
         expected_clock = domains[destinations[prefix]]
-        assert a['kind'] == 'DFFRE' and b['kind'] == 'DFFCE', 'grant receiver primitive changed: ' + prefix
+        local_level=worker_headless and prefix in ('u_managed/startup_compute',
+            'u_managed/runtime/startup_compute','u_managed/runtime/startup_memory','u_managed/runtime/startup_serial')
+        assert a['kind'] == ('DFFCE' if local_level else 'DFFRE') and b['kind'] == 'DFFCE', 'grant receiver primitive changed: ' + prefix
         assert all(n.pin(p, 'CLK') == expected_clock and n.pin(p, 'CE') in g.high and
                    n.cells[p]['parameters'].get('INIT') == "1'b0" for p in (first, second)), \
             'grant receiver clock/enable/initialization changed: ' + prefix
-        assert n.pin(second, 'CLEAR') in g.low and n.pin(second, 'D') == n.pin(first, 'Q'), \
+        assert (local_level or n.pin(second, 'CLEAR') in g.low) and n.pin(second, 'D') == n.pin(first, 'Q'), \
             'grant second stage bypass/reset changed: ' + prefix
+        if local_level:
+            from tools.workstation_runtime_pcm_cdc import BooleanDiagram
+            root_q=n.pin(g.register('u_reset','started'),'Q');bb=BooleanDiagram([root_q])
+            assert n.pin(first,'D')==n.canonical('','runtime_reset_n') and \
+                n.pin(first,'CLEAR')==n.pin(second,'CLEAR') and \
+                bb.net(g,n.pin(first,'CLEAR'))==bb.invert(bb.inputs[root_q]), 'W local level source/root assertion changed'
         q = n.pin(first, 'Q')
         assert g.drivers[q] == [(first, 'Q')] and q not in g.high | g.low, \
             'grant first-stage output has a competing driver: ' + prefix
         assert q.lstrip('\\').split('[')[0].strip() not in n.directions['workstation_custom_138k_top'], \
             'grant first-stage output is exported: ' + prefix
         assert g.fan[n.pin(first, 'Q')] == [(second, 'D', 'ff')], 'grant first-stage functional fanout: ' + prefix
+        entry_pin='CLEAR' if local_level else 'RESET'
         required = (f'set_false_path -to [get_pins {{{prefix}_0_s*/D}}]',
-                    f'set_false_path -to [get_pins {{{prefix}_0_s*/RESET}}]',
+                    f'set_false_path -to [get_pins {{{prefix}_0_s*/{entry_pin}}}]',
                     f'set_max_delay 2.000 -from [get_pins {{{prefix}_0_s*/Q}}] -to [get_pins {{{prefix}_1_s*/D}}]')
         assert all(sdc.splitlines().count(line) == 1 for line in required), \
             'grant entry/2ns later-stage constraint missing, duplicated or changed: ' + prefix
-        protected.update(second + '/' + pin for pin in b['ports'] if pin != 'Q')
+        protected.update(second + '/' + pin for pin in b['ports'] if pin != 'Q' and not (local_level and pin=='CLEAR'))
         result.append(dict(first=first, second=second, clock=expected_clock,
-            reset_input=first + '/RESET', reset_selector=prefix + '_0_s*/RESET',
+            reset_input=first + '/'+entry_pin, reset_selector=prefix + '_0_s*/'+entry_pin,
             first_stage_fanout_only_second_D=True, synchronous_data_input=True,
             stopped_clock_reset=False, later_stage_bound_ns=2.0))
     for line in sdc.splitlines():
@@ -106,7 +115,7 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False):
 
 
 def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native',
-                               startup_grant_role=None, tf_disabled_m_core=False):
+                               startup_grant_role=None, tf_disabled_m_core=False, worker_headless=False):
     if not __debug__:
         return ["startup audit requires normal Python execution; -O disables validation assertions"], {}
     def unescape(value):
@@ -148,65 +157,78 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
             assert len(names) == 1, f"expected one routed cell for {pattern}, found {len(names)}"
             return names[0]
 
-        source = unique(r"/u_startup/serializer_reset_s\d+$")
-        prefix = source.rsplit("/u_startup/", 1)[0]
-        stages = [unique(re.escape(prefix) + rf"/u_startup/startup_pipe_{i}_s\d+$") for i in range(5)]
-        src_type, src = cells[source]
-        assert src_type == "DFFPE", "serializer reset is not the preserved active-high reset FF"
-        assert parameters[(source, "INIT")] == "1'b1", "serializer reset does not initialize asserted"
-        ground = {ports["G"] for kind, ports in cells.values() if kind == "GND"}
-        power = {ports["V"] for kind, ports in cells.values() if kind == "VCC"}
-        assert src["D"] in ground and src["CE"] in power, "serializer reset is not a constant-zero release FF"
-        for index, name in enumerate(stages):
-            kind, ports = cells[name]
-            assert kind == "DFFCE" and ports["CLK"] == src["CLK"], "startup stages must share the control clock"
-            assert parameters[(name, "INIT")] == "1'b0", "startup gate/pipeline does not initialize disabled"
-            assert ports["CLEAR"] == src["PRESET"] and ports["CE"] in power, "startup reset/enable mismatch"
-            assert (ports["D"] in power if index == 0 else ports["D"] == cells[stages[index-1]][1]["Q"]), \
-                "startup no longer waits four full control-clock cycles after reset release"
+        assert type(worker_headless) is bool and (not worker_headless or startup_grant_role=='W'), 'headless startup requires explicit W role'
+        if worker_headless:
+            assert not any(name.startswith(('u_video/','u_lcd/')) or kind=='OSER10'
+                           for name,(kind,ports) in cells.items()), 'headless W retained video startup hardware'
+            source='u_memory/u_ddr3/gw3_top/u_ddr_phy_top/ddr_rsti_reg_2_s0'
+            src_type,src=cells[source]
+            assert src_type=='DFFCE', 'headless DDR reset source changed'
+            ground={ports['G'] for kind,ports in cells.values() if kind=='GND'}
+            power={ports['V'] for kind,ports in cells.values() if kind=='VCC'}
+            ibuf=unique(r'^clk_50m_ibuf$')
+            assert cells[ibuf][0]=='IBUF' and cells[ibuf][1]=={'I':'clk_50m','O':src['CLK']}, 'headless DDR source clock changed'
+            serdes=[];stages=[]
+        else:
+            source = unique(r"/u_startup/serializer_reset_s\d+$")
+            prefix = source.rsplit("/u_startup/", 1)[0]
+            stages = [unique(re.escape(prefix) + rf"/u_startup/startup_pipe_{i}_s\d+$") for i in range(5)]
+            src_type, src = cells[source]
+            assert src_type == "DFFPE", "serializer reset is not the preserved active-high reset FF"
+            assert parameters[(source, "INIT")] == "1'b1", "serializer reset does not initialize asserted"
+            ground = {ports["G"] for kind, ports in cells.values() if kind == "GND"}
+            power = {ports["V"] for kind, ports in cells.values() if kind == "VCC"}
+            assert src["D"] in ground and src["CE"] in power, "serializer reset is not a constant-zero release FF"
+            for index, name in enumerate(stages):
+                kind, ports = cells[name]
+                assert kind == "DFFCE" and ports["CLK"] == src["CLK"], "startup stages must share the control clock"
+                assert parameters[(name, "INIT")] == "1'b0", "startup gate/pipeline does not initialize disabled"
+                assert ports["CLEAR"] == src["PRESET"] and ports["CE"] in power, "startup reset/enable mismatch"
+                assert (ports["D"] in power if index == 0 else ports["D"] == cells[stages[index-1]][1]["Q"]), \
+                    "startup no longer waits four full control-clock cycles after reset release"
 
-        pll_name = prefix + "/u_tmds/PLL_inst"
-        divider_name = prefix + "/u_pixel_div"
-        assert cells[pll_name][0] == "PLL" and cells[divider_name][0] == "CLKDIV", "dedicated clock primitives missing"
-        pll, divider = cells[pll_name][1], cells[divider_name][1]
-        assert parameters[(pll_name, "CLKOUT0_EN")] == '"TRUE"' and parameters[(divider_name, "DIV_MODE")] == '"5"', \
-            "serial output or dedicated /5 divider configuration changed"
-        assert pll["ENCLK0"] == cells[stages[4]][1]["Q"], "serial PLL output gate is not controlled by startup stage 4"
-        assert divider["HCLKIN"] == pll["CLKOUT0"] and divider["RESETN"] == cells[stages[0]][1]["Q"], \
-            "pixel divider does not share the stopped-clock startup sequence"
-        serdes = [(name, ports) for name, (kind, ports) in cells.items() if kind == "OSER10"]
-        assert len(serdes) == 4, f"expected four routed OSER10 lanes, found {len(serdes)}"
-        for name, ports in serdes:
-            assert ports["RESET"] == src["Q"], f"{name}: reset is not driven by the preserved startup FF"
-            assert ports["FCLK"] == pll["CLKOUT0"] and ports["PCLK"] == divider["CLKOUT"], \
-                f"{name}: clocks bypass the dedicated startup gate/divider"
+            pll_name = prefix + "/u_tmds/PLL_inst"
+            divider_name = prefix + "/u_pixel_div"
+            assert cells[pll_name][0] == "PLL" and cells[divider_name][0] == "CLKDIV", "dedicated clock primitives missing"
+            pll, divider = cells[pll_name][1], cells[divider_name][1]
+            assert parameters[(pll_name, "CLKOUT0_EN")] == '"TRUE"' and parameters[(divider_name, "DIV_MODE")] == '"5"', \
+                "serial output or dedicated /5 divider configuration changed"
+            assert pll["ENCLK0"] == cells[stages[4]][1]["Q"], "serial PLL output gate is not controlled by startup stage 4"
+            assert divider["HCLKIN"] == pll["CLKOUT0"] and divider["RESETN"] == cells[stages[0]][1]["Q"], \
+                "pixel divider does not share the stopped-clock startup sequence"
+            serdes = [(name, ports) for name, (kind, ports) in cells.items() if kind == "OSER10"]
+            assert len(serdes) == 4, f"expected four routed OSER10 lanes, found {len(serdes)}"
+            for name, ports in serdes:
+                assert ports["RESET"] == src["Q"], f"{name}: reset is not driven by the preserved startup FF"
+                assert ports["FCLK"] == pll["CLKOUT0"] and ports["PCLK"] == divider["CLKOUT"], \
+                    f"{name}: clocks bypass the dedicated startup gate/divider"
 
-        # Bind all four serializers to their actual differential package
-        # ports. The clock is a serialized 00000/11111 word, not raw CLKDIV /5.
-        assert lane_layout in {'native', 'legacy'}, 'unknown explicit TMDS layout'
-        clock_serializer = ('u_video/u_dvi/clock_lane/serializer' if lane_layout == 'native'
-                            else 'u_video/u_dvi/clock_phy/tmds_serdes_inst0')
-        expected_lanes = {clock_serializer: ("tmds_clk_p", "tmds_clk_n")}
-        data_lanes = [(f'u_video/u_dvi/data_lanes[{i}].serializer/serializer' if lane_layout == 'native'
-                       else f'u_video/u_dvi/gen_enc[{i}].dvi_tx_tmds_phy_inst/tmds_serdes_inst0') for i in range(3)]
-        expected_lanes.update({name: (f"tmds_data_p[{i}]", f"tmds_data_n[{i}]")
-                               for i, name in enumerate(data_lanes)})
-        assert {name for name, _ in serdes} == set(expected_lanes), "TMDS serializer lane inventory changed"
-        for name, ports in serdes:
-            buffer_name = name.rsplit("/", 1)[0] + ('/differential' if lane_layout == 'native' else '/tmds_bufds_isnt0')
-            kind, buffer = cells[buffer_name]
-            assert kind == "ELVDS_OBUF" and buffer["I"] == ports["Q"] and \
-                (buffer["O"], buffer["OB"]) == expected_lanes[name], \
-                f"{name}: serializer no longer directly drives its audited TMDS differential ports"
-        clock_ports = cells[clock_serializer][1]
-        word = '0000011111' if lane_layout == 'native' else '1111100000'
-        for bit in range(10):
-            assert clock_ports[f"D{bit}"] in (power if word[9-bit] == '1' else ground), \
-                f"TMDS clock D{bit} differs from the audited 10'b{word} clock word"
+            # Bind all four serializers to their actual differential package
+            # ports. The clock is a serialized 00000/11111 word, not raw CLKDIV /5.
+            assert lane_layout in {'native', 'legacy'}, 'unknown explicit TMDS layout'
+            clock_serializer = ('u_video/u_dvi/clock_lane/serializer' if lane_layout == 'native'
+                                else 'u_video/u_dvi/clock_phy/tmds_serdes_inst0')
+            expected_lanes = {clock_serializer: ("tmds_clk_p", "tmds_clk_n")}
+            data_lanes = [(f'u_video/u_dvi/data_lanes[{i}].serializer/serializer' if lane_layout == 'native'
+                           else f'u_video/u_dvi/gen_enc[{i}].dvi_tx_tmds_phy_inst/tmds_serdes_inst0') for i in range(3)]
+            expected_lanes.update({name: (f"tmds_data_p[{i}]", f"tmds_data_n[{i}]")
+                                   for i, name in enumerate(data_lanes)})
+            assert {name for name, _ in serdes} == set(expected_lanes), "TMDS serializer lane inventory changed"
+            for name, ports in serdes:
+                buffer_name = name.rsplit("/", 1)[0] + ('/differential' if lane_layout == 'native' else '/tmds_bufds_isnt0')
+                kind, buffer = cells[buffer_name]
+                assert kind == "ELVDS_OBUF" and buffer["I"] == ports["Q"] and \
+                    (buffer["O"], buffer["OB"]) == expected_lanes[name], \
+                    f"{name}: serializer no longer directly drives its audited TMDS differential ports"
+            clock_ports = cells[clock_serializer][1]
+            word = '0000011111' if lane_layout == 'native' else '1111100000'
+            for bit in range(10):
+                assert clock_ports[f"D{bit}"] in (power if word[9-bit] == '1' else ground), \
+                    f"TMDS clock D{bit} differs from the audited 10'b{word} clock word"
 
-        ibuf = unique(r"^clk_50m_ibuf$")
-        assert cells[ibuf][0] == "IBUF" and cells[ibuf][1]["I"] == "clk_50m" and cells[ibuf][1]["O"] == src["CLK"], \
-            "startup source does not use the direct 50MHz input clock"
+            ibuf = unique(r"^clk_50m_ibuf$")
+            assert cells[ibuf][0] == "IBUF" and cells[ibuf][1]["I"] == "clk_50m" and cells[ibuf][1]["O"] == src["CLK"], \
+                "startup source does not use the direct 50MHz input clock"
 
         def arc(instance, start, end):
             block = sdf_cells[instance]
@@ -249,7 +271,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
             return {"source": reset_source, "source_clock_route_max_ns": clock,
                     "source_clock_to_q_max_ns": cq, "paths": result}
 
-        divider_audit = reset_distribution(stages[0], [(divider_name, "RESETN")])
+        divider_audit = ({"paths": [], "retired_headless_W": True} if worker_headless else
+                         reset_distribution(stages[0], [(divider_name, "RESETN")]))
         ddr_distribution = None
         resolved_logic = {}
         if ddr_audit is not None:
@@ -399,7 +422,7 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
         grant_inputs = []
         if startup_grant_role is not None:
             grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role,
-                                                     tf_disabled_m_core=tf_disabled_m_core)
+                                                     tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless)
             for row in grant_inputs:
                 first, second = row['first'], row['second']
                 setup_values = re.findall(r"\(SETUPHOLD \((?:pos|neg)edge D\) \(posedge CLK\) \(([^)]+)\)", sdf_cells[second])
@@ -451,13 +474,14 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                     "reset_budget_ns": 40.0, "stopped_clock_window_ns": 80.0,
                     "input_buffer_max_ns": input_delay, "source_clock_route_max_ns": clock_route,
                     "source_clock_to_q_max_ns": clock_to_q, "paths": paths,
-                    "tmds_clock_lane": {"serializer": clock_serializer, "word_d9_to_d0": word,
+                    "tmds_clock_lane": (None if worker_headless else {"serializer": clock_serializer, "word_d9_to_d0": word,
                                          "low_unit_intervals": 5, "high_unit_intervals": 5,
-                                         "differential_ports": list(expected_lanes[clock_serializer])},
+                                         "differential_ports": list(expected_lanes[clock_serializer])}),
                     "pixel_divider": divider_audit, "ddr_phy": ddr_distribution, 'resolved_logic': resolved_logic,
                     "sdc_reset_exception_coverage": reset_constraints,
                     "synchronous_grant_reset_inputs": grant_inputs,
-                    "tf_disabled_m_core_verified": tf_disabled_m_core}
+                    "tf_disabled_m_core_verified": tf_disabled_m_core,
+                    "headless_W_video_absence_verified": worker_headless}
     except (AssertionError, KeyError, ValueError) as error:
         return [f"stopped-clock reset VO/SDF audit failed: {error}"], {}
 

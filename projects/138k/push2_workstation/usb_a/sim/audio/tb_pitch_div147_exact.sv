@@ -9,7 +9,7 @@ module tb_pitch_div147_exact;
     reg [6:0] depth=0;
     wire [21:0] ratio;
     workstation_rate_pitch_expression dut(.clk_i(clk),.rst_ni(rst_n),.sample_ce_i(ce),
-        .rate_44k1_i(rate44),.target_ratio_q20_i(target),.glide_step_q20_i(step),
+        .rate_44k1_i(rate44),.target_ratio_q20_i(target),.glide_step_q20_i(step),.glide_div147_i(21'd0),
         .vibrato_depth_i(depth),.ratio_q20_o(ratio));
     integer cases=0,transactions=0;
     integer numerator,expected_q,expected_r,model_rem,model_glide,model_step;

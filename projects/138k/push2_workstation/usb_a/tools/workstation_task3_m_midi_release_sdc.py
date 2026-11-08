@@ -71,7 +71,7 @@ def restore_midi_release_sdc(sdc, evidence):
     return restored
 
 
-def _final_reset_consumers(n, g, last, clear):
+def _final_reset_consumers(n, g, last, clear, *, retired_midi=False):
     """Enumerate actual source-owned reset state, without a new hash seal."""
     families = (
         ('u_managed/display', 'held_data', (*range(73), *range(105, 203), *range(206, 221),
@@ -95,6 +95,8 @@ def _final_reset_consumers(n, g, last, clear):
          ('acknowledge_toggle', 'destination_valid', 'req_meta', 'req_settled', 'req_sync')),
         (ACTUAL_OWNER, ('ack_meta', 'ack_sync', 'request_toggle')),
     )
+    if retired_midi:
+        controls=tuple(row for row in controls if row[0]!=FUNCTIONAL_SCOPE)
     registers = []
     for scope, stem, bits in families:
         if isinstance(bits, int):
@@ -102,7 +104,7 @@ def _final_reset_consumers(n, g, last, clear):
         else:
             registers.extend(g.register(scope, stem, bit) for bit in bits)
     registers.extend(g.register(scope, stem) for scope, stems in controls for stem in stems)
-    require(len(registers) == len(set(registers)) == 528, 'MIDI final reset owner inventory aliases')
+    require(len(registers) == len(set(registers)) == (524 if retired_midi else 528), 'MIDI final reset owner inventory aliases')
     closure = complete_closure(n, g, [last])
     require(closure['ff_endpoints'] == {p + '/CLEAR': 'audio_clk' for p in registers} and
             not closure['primitive_endpoints'] and not closure['top_output_endpoints'],
@@ -112,7 +114,7 @@ def _final_reset_consumers(n, g, last, clear):
     return closure
 
 
-def audit_midi_release_sdc(n, sdc, *, root):
+def audit_midi_release_sdc(n, sdc, *, root, stage=None):
     require(root.get('policy') == ROOT_POLICY and
             root.get('selected_provider') in (M_PHONE_BATCH_PROVIDER, M_SYNC_PROVIDER) and
             root.get('all_state_assignments_proven') is True and
@@ -123,7 +125,20 @@ def audit_midi_release_sdc(n, sdc, *, root):
             'verified actual batch mapped boundary required')
     g = Graph(n)
     root_q = validate_root_publisher(n, g, root)
-    functional = g.register(FUNCTIONAL_SCOPE, 'acknowledge_toggle')
+    retired_midi=root.get('root_profile')=='custom138k-workstation-task3-m-preboard-v1' and FUNCTIONAL_SCOPE not in n.frames
+    if retired_midi:
+        from pathlib import Path
+        require(stage is not None,'retired MIDI requires exact staged source')
+        from tools.workstation_task3_root_reset_audit import source_binding
+        require(source_binding(stage)['source_sha256']==root['source_sha256'],
+                'retired MIDI staged source identity changed')
+        top=(Path(stage)/'rtl/workstation/gw138k_push_workstation_top.v').read_text()
+        require(top.count("wire midi_rx_i=1'b1;")==1 and
+                not any(p==FUNCTIONAL_SCOPE or p.startswith(FUNCTIONAL_SCOPE+'/')
+                    for p in (*n.frames,*n.cells)),
+                'retired physical MIDI input is not constant-high or has orphan state')
+    functional = g.register('u_managed/health_snapshot' if retired_midi else FUNCTIONAL_SCOPE,
+                            'acknowledge_toggle')
     clear = n.pin(functional, 'CLEAR')
     zero_async_ff(n, functional, clock='audio_clk', clear=clear)
     # Trace from the real functional reset rather than from a selected name.
@@ -147,7 +162,7 @@ def audit_midi_release_sdc(n, sdc, *, root):
         require(actual == wanted, 'reset-inclusive MIDI release next-Q changed: ' + p)
         rows.append(dict(register=p, clock='audio_clk', effective_init=0,
             reset_before_enable=True, reset_inclusive_next_q_exact=True))
-    final = _final_reset_consumers(n, g, expected[-1], clear)
+    final = _final_reset_consumers(n, g, expected[-1], clear,retired_midi=retired_midi)
     all_pins = {p + '/' + pin for p, cell in n.cells.items() for pin in cell['ports']}
     selected = {pin for pin in all_pins if fnmatch.fnmatchcase(pin, CORRECT_SELECTOR)}
     require(selected == {p + '/CLEAR' for p in expected},
@@ -159,6 +174,7 @@ def audit_midi_release_sdc(n, sdc, *, root):
             STALE_SELECTOR + ' -> ' + CORRECT_SELECTOR)
     return dict(policy=POLICY, selected_provider=root['selected_provider'],
         actual_functional_register=functional, functional_clear=clear,
+        constant_high_physical_MIDI_branch_retired=retired_midi,
         root_q=root_q, actual_release=release, release_next_q=rows,
         boolean_assignments_proven=1 << len(named),
         exact_installed_command=command, exact_release_CLEAR_pins=sorted(selected),

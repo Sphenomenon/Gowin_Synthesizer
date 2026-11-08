@@ -39,6 +39,9 @@ def restore_crc_basis(root):
     restored={};rows=[];analysis_extension=None
     for row in m['adaptations']:
         actual=(root/row['path']).read_bytes()
+        if row['path']=='rtl/tf_audio/storage/workstation_tf_file_reader.sv' and b'boot_geometry_step' in actual:
+            from tools.workstation_tf_boot_geometry import restore as restore_geometry
+            actual,_=restore_geometry(root,actual)
         if (row['path']=='rtl/tf_audio/workstation_tf_direct_runtime_service.sv' and
                 b'parameter bit REMOTE_ANALYSIS_ENABLE=0' in actual):
             from tools.workstation_task3_tf_analysis_provenance import restore as restore_analysis

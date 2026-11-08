@@ -52,12 +52,20 @@ def physical_snapshot(physical, additional=()):
     return inputs, snapshot
 
 
-def pll_inventory(cells, *, local_panel_enabled=True):
+def pll_inventory(cells, *, local_panel_enabled=True, worker_headless=False):
     """Require the whole seven/six PLL set before checking any shared tuple."""
     from workstation_runtime_clock_audit import PLL_PATHS
     if type(local_panel_enabled) is not bool:
         raise ValueError('PLL local-panel selection must be explicit boolean')
     expected = PLL_PATHS if local_panel_enabled else PLL_PATHS - {'u_lcd/u_pll/PLL_inst'}
+    if type(worker_headless) is not bool or worker_headless and local_panel_enabled:
+        raise ValueError('Headless W PLL selection requires no local panel')
+    if worker_headless:
+        expected=expected-{'u_video/u_clock/g_hardware.u_pll/u_reference/PLL_inst',
+                           'u_video/u_clock/g_hardware.u_pll/u_tmds/PLL_inst'}
+        if any(name.startswith(('u_video/','u_lcd/')) or kind=='OSER10'
+               for name,(kind,ports) in cells.items()):
+            raise ValueError('Headless W retains retired video hardware')
     actual = {name for name, (kind, unused) in cells.items() if kind == 'PLL'}
     if actual != expected:
         raise ValueError('Selected PLL inventory changed: missing=' + str(sorted(expected - actual)) +
@@ -65,12 +73,12 @@ def pll_inventory(cells, *, local_panel_enabled=True):
     return sorted(actual)
 
 
-def shared_clock_plls(sdf, netlist, routed_type, *, local_panel_enabled=True):
+def shared_clock_plls(sdf, netlist, routed_type, *, local_panel_enabled=True, worker_headless=False):
     """Preserve all ten-bit control tuples and the original 10ns budget."""
     evidence, errors = {}, []
     try:
         routed = routed_type(sdf, netlist)
-        pll_inventory(routed.cells, local_panel_enabled=local_panel_enabled)
+        pll_inventory(routed.cells, local_panel_enabled=local_panel_enabled,worker_headless=worker_headless)
         prefixes = ('u_audio_clock/g_hardware.u_pll', 'u_usb_pll', 'u_cpu_pll')
         if local_panel_enabled:
             prefixes += ('u_lcd/u_pll',)
@@ -167,10 +175,47 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
     log = outputs['synthesis_log_sha256'].read_text()
     if re.search(r'(?m)^ERROR\b', log) or log.count('GowinSynthesis finish') != 1:
         raise ValueError(label + ' PLL Gowin emitted log is not a completed synthesis')
+    preboard_sdc=None
+    if paired and inputs.get('preboard_release_adaptation') is not None:
+        from tools.workstation_custom_board_implementation import (
+            reference_constraints,primary_clk50_constraints,preboard_constraint_selection)
+        if selected['name']!='custom138k-workstation-task3-'+role.lower()+'-preboard-v1':
+            raise ValueError('preboard physical constraints require explicit role profile')
+        reference=physical/'reference.cst'
+        if sha(reference)!=inputs['constraint_reference']['sha256'] or inputs['constraint_reference']['binding']['omitted']:
+            raise ValueError('preboard physical CST reference differs or excludes a port')
+        vg_text=outputs['netlist_sha256'].read_text()
+        cst,binding=reference_constraints(reference.read_bytes(),vg_text)
+        if binding!=inputs['constraint_reference']['binding']:
+            raise ValueError('preboard physical CST binding differs')
+        cst,clock=primary_clk50_constraints(cst,vg_text)
+        if role=='M' and 'M_clock_priority' in inputs.get('primary_clk50_adaptation',{}):
+            from tools.workstation_custom_board_implementation import m_preboard_clock_priority
+            cst,clock['M_clock_priority']=m_preboard_clock_priority(cst,vg_text)
+        ddr=inputs.get('preboard_ddr_adaptation')
+        if ddr is None:raise ValueError('preboard DDR physical proof absent')
+        routed_reference=Path(ddr['routed_reference'])
+        if sha(routed_reference)!=ddr['routed_reference_sha256']:
+            raise ValueError('preboard DDR routed reference differs')
+        snapshot[routed_reference]=sha(routed_reference)
+        prior_metadata=routed_reference.parents[2]/'parent_integration_inputs.json'
+        snapshot[prior_metadata]=sha(prior_metadata)
+        cst,preboard_sdc,pins,releases,held,ddr_actual=preboard_constraint_selection(
+            stage,parent,audit,cst,(stage/'constraints/custom_138k.sdc').read_bytes(),vg_text,
+            task3_pins=role=='M',preboard_releases=True,primary_clk50=True,
+            ddr_reference=routed_reference.parents[2])
+        for key,actual in [('task3_pin_adaptation',pins),('primary_clk50_adaptation',clock),
+            ('preboard_release_adaptation',releases),('preboard_held_adaptation',held),('preboard_ddr_adaptation',ddr_actual)]:
+            if inputs.get(key)!=json.loads(json.dumps(actual)):
+                raise ValueError('preboard physical proof differs: '+key)
+        if (physical/'physical.cst').read_bytes()!=cst:
+            raise ValueError('preboard reconstructed physical CST differs')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),
                                      ('physical.sdc', stage / 'constraints/custom_138k.sdc')):
         expected = original.read_bytes()
-        if paired and physical_name == 'physical.sdc' and inputs.get('task3_pin_adaptation') is not None:
+        if physical_name=='physical.sdc' and preboard_sdc is not None:
+            expected=preboard_sdc
+        elif paired and physical_name == 'physical.sdc' and inputs.get('task3_pin_adaptation') is not None:
             from tools.workstation_custom_board_implementation import task3_pin_collections
             expected, binding = task3_pin_collections(expected, outputs['netlist_sha256'].read_text())
             if binding != inputs['task3_pin_adaptation']:
@@ -323,6 +368,31 @@ def audit_output_path(physical, stage, output):
     return path
 
 
+def routed_worker_retained(vo,parent,audit):
+    """Recheck actual flat W mailboxes and resets with the sealed real root.
+
+    A retired display is not replaced with an unrelated live mailbox. The
+    source proof binds the root policy; its publisher and every retained
+    mailbox are rechecked on this routed VO.
+    """
+    from tools.workstation_native_protocol_audit import (protocol_netlist,
+        audit_control_boundaries,audit_timing_boundaries)
+    from tools.workstation_runtime_pcm_cdc import Graph
+    from tools.workstation_task3_w_paired_cdc_audit import _mailboxes,_held_resets
+    n=protocol_netlist(vo,mapping='routed');g=Graph(n)
+    gate=audit['gates']['native_held_handshakes']
+    if gate['passed'] is not True or parent.get('local_stream_release') is None:
+        raise ValueError('W routed proof requires passed sealed source/reset policy')
+    result=dict(mapping='routed',mailboxes=_mailboxes(n,g),
+        control_boundaries=audit_control_boundaries(n,g,profile='w-demo-d'),
+        timing_boundaries=audit_timing_boundaries(n,g,profile='w-demo-d'),
+        local_stream_release=parent['local_stream_release'])
+    result['retained_held_handshakes']=_held_resets(n,g,result,gate['evidence']['actual_root_startup'])
+    return dict(gate_applied=True,actual_native_protocol=result,
+        scope='actual retained W mailbox, first-stage consumer and reset subgates; not full physical CDC',
+        retired_display_and_TF_owners_absent=True,hardware_tested=False)
+
+
 def audit(physical, self_test=False, workspace=None, output=None):
     if not __debug__:
         raise ValueError('Validation requires normal Python execution; -O is forbidden')
@@ -396,8 +466,16 @@ def audit(physical, self_test=False, workspace=None, output=None):
     config_errors, config = check_build.inspect_ddr_configuration_audit()
     sdf, vo, sdc = (path.read_text() for path in (base.with_suffix('.sdf'), base.with_suffix('.vo'), physical / 'physical.sdc'))
     demo_role = selection.get('demo_role') or selection.get('paired_role')
+    worker_headless=(selection.get('paired_role')=='W' and
+        parent.get('worker_media',{}).get('policy')=='task3_w_paired_exact_top_composition_v1')
     demo_held_handshakes, demo_held_errors = {}, []
-    if demo_role:
+    if worker_headless:
+        try:
+            demo_held_handshakes=routed_worker_retained(vo,parent,
+                json.loads((physical/'parent_synthesis_audit.json').read_text()))
+        except (ValueError,KeyError,OSError) as error:
+            demo_held_errors.append(str(error))
+    if demo_role and not worker_headless:
         from tools.workstation_performance_reset import (
             audit_demo_held_handshakes, DEMO_HELD_TIMING_POLICIES)
         from tools.workstation_native_protocol_audit import protocol_netlist
@@ -418,9 +496,10 @@ def audit(physical, self_test=False, workspace=None, output=None):
     tf_disabled_m_core = parent.get('workstation_profile', {}).get('name') == \
         'custom138k-workstation-task3-m-independent-ddr-map-v1'
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
-        startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core)
-    video_errors, video = inspect_video_pll_init(sdf, vo, stage)
-    shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled)
+        startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless)
+    video_errors, video = ([],dict(retired=True,headless_W=True)) if worker_headless else inspect_video_pll_init(sdf, vo, stage)
+    shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled,
+                                             worker_headless=worker_headless)
     core_clock, core_errors = {}, []
     cst = (physical / 'physical.cst').read_text()
     timing_report = base.with_suffix('.tr').read_text()
@@ -441,10 +520,11 @@ def audit(physical, self_test=False, workspace=None, output=None):
     if self_test:
         if errors:
             raise ValueError('Positive PLL gate must pass before negative mutation checks: ' + str(errors))
-        for kind, name, pin, reason in (
-                ('OSER10', 'u_video/u_dvi/clock_lane/serializer', 'D0', 'clock word'),
-                ('ELVDS_OBUF', 'u_video/u_dvi/clock_lane/differential', 'I', 'directly drives'),
-                ('PLL', 'u_usb_pll/PLL_inst', 'RESET', 'PLL control constant changed')):
+        targets=[('PLL','u_usb_pll/PLL_inst','RESET','PLL control constant changed')]
+        if not worker_headless:
+            targets[:0]=[('OSER10','u_video/u_dvi/clock_lane/serializer','D0','clock word'),
+                        ('ELVDS_OBUF','u_video/u_dvi/clock_lane/differential','I','directly drives')]
+        for kind,name,pin,reason in targets:
             match = re.search(r'^' + kind + r'\s+\\' + re.escape(name) + r'\s*\((.*?)^\);', vo, re.M | re.S)
             if match is None:
                 raise ValueError('Negative mutation target missing: ' + name)
@@ -453,7 +533,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
             if count != 1 or changed == match[0]:
                 raise ValueError('Negative mutation is not exact: ' + name)
             broken = vo[:match.start()] + changed + vo[match.end():]
-            bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled) if kind == 'PLL' else
+            bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled,
+                                             worker_headless=worker_headless) if kind == 'PLL' else
                            inspect_serializer_startup(sdf, broken, ddr, sdc, lane_layout='native',
                                startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core))
             if not bad or not any(reason in message for message in bad):
@@ -494,7 +575,7 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 demo_held_handshake_audit=demo_held_handshakes, demo_held_handshake_errors=demo_held_errors,
                 demo_held_handshake_gate_passed=(not demo_held_errors
                     if demo_held_handshakes.get('gate_applied') or demo_held_errors else None),
-                profile_selection=selection, expected_pll_count=7 if local_panel_enabled else 6,
+                profile_selection=selection, expected_pll_count=4 if worker_headless else 7 if local_panel_enabled else 6,
                 expected_shared_tuple_count=4 if local_panel_enabled else 3,
                 audit_workspace=str(view),
                 negative_checks=negatives, evidence_sha256=evidence,
