@@ -132,6 +132,10 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_w_delay_locality.py',
+    'sim/test_workstation_task3_w_delay_locality.py',
+    'sim/memory/run_fetch_capture_contract.py',
+    'rtl/memory/workstation_fetch_range_v2.adaptation.json',
     'tools/workstation_fetch_range.py',
     'rtl/memory/workstation_fetch_range_v1.adaptation.json',
     'tools/workstation_event_admission.py',
@@ -896,7 +900,8 @@ def audit(root, output, metadata):
             from tools.workstation_task3_w_raw_command_capture import audit as raw_boundary
             gate('preboard_W_raw_command_capture',lambda:raw_boundary(
                 protocol_netlist(vg_text,mapping='synthesis'),
-                publication=bool(metadata.get('raw_completion_publication')))[0])
+                publication=bool(metadata.get('raw_completion_publication')),
+                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33)[0])
             if metadata.get('raw_completion_publication'):
                 from tools.workstation_ble_completion_publication import audit_mapped as publish_count
                 gate('preboard_W_completion_count_publication',lambda:publish_count(

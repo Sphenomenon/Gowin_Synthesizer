@@ -193,6 +193,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     fetch_range_selected = fetch_range.configured({} if profile is None else profile['configuration'])
     if fetch_range_selected:
         profile_dependencies += (fetch_range.TOOL, fetch_range.MANIFEST)
+        if profile['configuration'][fetch_range.KEY]==fetch_range.CAPTURE_POLICY:
+            profile_dependencies += (fetch_range.CAPTURE_MANIFEST,)
     from tools import workstation_event_admission as event_admission
     event_admission_selected = event_admission.configured({} if profile is None else profile['configuration'])
     if event_admission_selected:

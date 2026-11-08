@@ -75,10 +75,11 @@ class RoutedRepairs(unittest.TestCase):
         identity_bytes=(self.stage/MANIFEST).is_file()
         from tools.workstation_fetch_range import configured as fetch_configured
         fetch_range=fetch_configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes,fetch_range=fetch_range)
-        selected,e=place(cst,n);total=753 if identity_bytes else 741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
+        captured=json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'].get('raw_fetch_range_policy')=='task3_W_captured_end_parallel_byte_fetch_range_v2'
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes,fetch_range=fetch_range,fetch_end_capture=captured)
+        selected,e=place(cst,n);total=786 if captured else 753 if identity_bytes else 741 if native_fault else 740 if pack_cofactor else 739 if publication else 741
         self.assertEqual(e['primitive_count'],total)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9400 if fetch_range else 9374 if identity_bytes else 9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9433 if captured else 9400 if fetch_range else 9374 if identity_bytes else 9347 if native_fault else 9331 if pack_cofactor else 9298 if tuple_cofactor else 9175 if terminal else 9144 if publication else 9130)
         if fetch_range:
             with self.assertRaises(ValueError):
                 w_native_placement(cst,n,publication=publication,terminal=terminal,tuple_cofactor=tuple_cofactor,pack_cofactor=pack_cofactor,native_fault_cofactor=native_fault,identity_bytes=identity_bytes)
@@ -120,7 +121,7 @@ class RoutedRepairs(unittest.TestCase):
         self.assertTrue(e['broad_region_constraints_removed'])
         for p,c in n.cells.items():
             if c['kind']=='INV':self.assertNotIn(('"'+p+'"').encode(),selected)
-        self.assertEqual(e['held_register_count'],280)
+        self.assertEqual(e['held_register_count'],313 if captured else 280)
         self.assertTrue(e['payload_hold_checks_retained'])
         path=e['tag_return_cone']['source'][0];old=copy.deepcopy(n.cells[path])
         n.cells[path]['ports']['CLK']='clk_50m'
@@ -150,7 +151,18 @@ class RoutedRepairs(unittest.TestCase):
         from tools.workstation_task3_w_raw_command_capture import audit as raw_audit
         from tools.workstation_ble_completion_publication import configured
         configuration=json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration']
-        proof,sdc=raw_audit(self.n,publication=configured(configuration))
+        captured=configuration.get('raw_fetch_range_policy')=='task3_W_captured_end_parallel_byte_fetch_range_v2'
+        check=lambda:raw_audit(self.n,publication=configured(configuration),fetch_end_capture=captured)
+        proof,sdc=check()
+        if captured:
+            end=proof['captured_fetch_end'];self.assertEqual(len(end['registers']),33)
+            self.assertTrue(end['all_33_sum_bits_exact'] and end['same_tuple_capture_event'])
+            for bit,pin in [(0,'D'),(32,'D'),(12,'CE'),(31,'CLEAR'),(24,'CLK')]:
+                path=end['registers'][bit];old=copy.deepcopy(self.n.cells[path])
+                try:
+                    self.n.cells[path]['ports'][pin]='GND'
+                    with self.assertRaises(ValueError):check()
+                finally:self.n.cells[path]=old
         hold=proof['status_fetch_fault_hold']
         self.assertTrue(hold['normal_setup_retained'] and hold['hold_check_retained'])
         self.assertFalse(hold['timing_exception_added'])
@@ -159,12 +171,12 @@ class RoutedRepairs(unittest.TestCase):
         cell=hold['source'].removesuffix('/Q');old=copy.deepcopy(self.n.cells[cell])
         try:
             self.n.cells[cell]['ports']['CLK']='clk_50m'
-            with self.assertRaises(ValueError):raw_audit(self.n,publication=configured(configuration))
+            with self.assertRaises(ValueError):check()
         finally:self.n.cells[cell]=old
         cell=hold['capture'].removesuffix('/D');old=copy.deepcopy(self.n.cells[cell])
         try:
             self.n.cells[cell]['ports']['D']="1'b0"
-            with self.assertRaises(ValueError):raw_audit(self.n,publication=configured(configuration))
+            with self.assertRaises(ValueError):check()
         finally:self.n.cells[cell]=old
 
 

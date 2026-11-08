@@ -266,7 +266,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         else:
             from tools.workstation_task3_w_raw_command_capture import audit as specific_held
         held_proofs['role_specific'],extra=specific_held(n,**(
-            {'publication':bool(metadata.get('raw_completion_publication'))}if role=='W'else {}))
+            {'publication':bool(metadata.get('raw_completion_publication')),
+             'fetch_end_capture':metadata.get('raw_fetch_range',{}).get('added_state_bits')==33}if role=='W'else {}))
         physical_sdc+=extra.encode()
         if role=='W':
             from tools.workstation_task3_preboard_held_timing import w_native_placement
@@ -287,7 +288,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 pack_cofactor=bool(metadata.get('raw_pack_cofactor')),
                 native_fault_cofactor=bool(metadata.get('native_fault_cofactor')),
                 identity_bytes=key_bytes,
-                fetch_range=bool(metadata.get('raw_fetch_range')))
+                fetch_range=bool(metadata.get('raw_fetch_range')),
+                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33)
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -307,7 +309,7 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
 
 def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
                       place_option=2, route_option=0, task3_pins=False, preboard_releases=False,
-                      primary_clk50=False, preboard_ddr_reference=None):
+                      primary_clk50=False, preboard_ddr_reference=None, w_delay_locality=False):
     """Offline experiment using a hash-pinned reference; never board validation."""
     source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
     script = implementation_script(user_code, place_option, route_option)
@@ -348,6 +350,15 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         stage,metadata,audit,cst,inputs['physical.sdc'][0].read_bytes(),vg.read_text(),
         task3_pins=task3_pins,preboard_releases=preboard_releases,
         primary_clk50=primary_clk50,ddr_reference=preboard_ddr_reference)
+    locality=None
+    if w_delay_locality:
+        if not preboard_releases or audit.get('paired_role')!='W':
+            raise ValueError('diagnosed delay locality requires explicit preboard W')
+        from tools.workstation_task3_w_delay_locality import placement
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        cst,locality=placement(cst,protocol_netlist(vg.read_text(),mapping='synthesis'))
+        locality.update(source_candidate=audit['candidate_identity'],VG_sha256=sha(vg),
+            SDC_sha256=digest(physical_sdc if physical_sdc is not None else inputs['physical.sdc'][0].read_bytes()))
     output.mkdir(parents=True)
     for name, (path, expected) in inputs.items():
         checked_copy(path, output/name, expected)
@@ -362,6 +373,8 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         (output/'physical_held_proof.json').write_text(json.dumps(held_proofs,indent=2)+'\n')
     if ddr_proof is not None:
         (output/'physical_ddr_proof.json').write_text(json.dumps(ddr_proof,indent=2)+'\n')
+    if locality is not None:
+        (output/'diagnosed-locality.json').write_text(json.dumps(locality,indent=2)+'\n')
     result = dict(schema=1, identity='custom138k-resource-physical-'+user_code.upper(),
         prepared_at=datetime.now().astimezone().isoformat(),
         validation_stage='offline_physical_experiment_prepared',
@@ -381,6 +394,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         preboard_held_adaptation=held_proofs,
         preboard_ddr_adaptation=ddr_proof,
         primary_clk50_adaptation=clock_placement,
+        **(dict(diagnosed_locality=locality) if locality is not None else {}),
         input_sha256={p.name: sha(p) for p in output.iterdir() if p.is_file()},
         timing_closed=False, physical_gates_passed=False, hardware_tested=False,
         deployment_allowed=False, release_ready=False, bitstream_sha256=None,
@@ -1048,12 +1062,14 @@ def main():
                         help='Place the actual primary clock input on its reviewed clock resource')
     parser.add_argument('--preboard-ddr-reference',type=Path,
                         help='Prior routed DDR evidence with identical encrypted inputs; tighten init hold and reset recovery')
+    parser.add_argument('--w-delay-locality',action='store_true',
+                        help='Reproduce the diagnosed W DMA/FIFO logic regions; retain hard RAM placement and all timing')
     parser.add_argument('--exclude-reference-port', action='append', default=[])
     parser.add_argument('--place-option', type=int, choices=range(5), default=2)
     parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
     args = parser.parse_args()
     reference_options = bool(args.reference_sha256 or args.exclude_reference_port or args.task3_pin_collections or
-                             args.preboard_releases or args.primary_clk50 or args.preboard_ddr_reference or
+                             args.preboard_releases or args.primary_clk50 or args.preboard_ddr_reference or args.w_delay_locality or
                              args.place_option != 2 or args.route_option != 0)
     derivation_options = bool(args.ddr_capture_region_parent_evidence or args.ddr_dqs_hold_regions or
         args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions or
@@ -1065,7 +1081,7 @@ def main():
         result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
                                    args.reference_sha256, args.exclude_reference_port,
                                    args.place_option, args.route_option, args.task3_pin_collections,
-                                   args.preboard_releases,args.primary_clk50,args.preboard_ddr_reference)
+                                   args.preboard_releases,args.primary_clk50,args.preboard_ddr_reference,args.w_delay_locality)
     elif reference_options:
         parser.error('reference constraint options require --reference-cst')
     elif args.ddr_capture_region_parent_evidence:

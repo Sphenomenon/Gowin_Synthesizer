@@ -15,7 +15,7 @@ def require(ok,message):
     if not ok:raise ValueError('W raw command capture: '+message)
 
 
-def audit(n,*,publication=False):
+def audit(n,*,publication=False,fetch_end_capture=False):
     g=Graph(n);reg=lambda stem:g.register(S,stem);q=lambda p:n.pin(p,'Q')
     req,ack,ack_sync,active,valid=map(reg,['command_req','command_ack','command_ack_sync','memory_command_active','g_command_capture.valid'])
     source=[];equations=[]
@@ -75,11 +75,36 @@ def audit(n,*,publication=False):
                 if b.net(g,net) in (start,b.invert(start)):start_nets.append(net)
             except ValueError:pass
     require(bool(start_nets),'registered business-start gate absent')
+    end_capture=[];end_proof=None
+    if fetch_end_capture:
+        from tools.workstation_task3_root_reset_audit import RootDiagram
+        offset=g.group(S,'command_offset',32)
+        length=g.group(S,'command_length',13)
+        end_capture=g.group(S,'g_command_capture.fetch_end',33)
+        # Interleave each pair of named input bits so ripple-carry arithmetic
+        # has a bounded exact BDD. No generated combinational net is a cut.
+        leaves=[q(p) for i in range(32) for p in ([offset[i],length[i]] if i<13 else [offset[i]])]
+        add=RootDiagram(leaves);carry=0;memo={}
+        for i,dst in enumerate(end_capture):
+            zero_ff(n,g,dst,'memory_clk')
+            require(n.pin(dst,'CLEAR')==n.pin(valid,'CLEAR') and
+                    b.net(g,n.pin(dst,'CE'))==cap,'end-address reset/capture event changed '+dst)
+            a=add.inputs[q(offset[i])] if i<32 else 0
+            z=add.inputs[q(length[i])] if i<13 else 0
+            axb=add.different(a,z);expected=add.different(axb,carry)
+            require(add.net(g,n.pin(dst,'D'),memo)==expected,'captured end-address sum bit '+str(i))
+            carry=add.either(add.both(a,z),add.both(axb,carry))
+        require(carry==0,'captured end-address overflow beyond bit32')
+        end_proof=dict(registers=end_capture,arithmetic_input_bits=len(leaves),
+            all_33_sum_bits_exact=True,same_tuple_capture_event=True,
+            same_valid_reset=True,BDD_nodes=len(add.nodes),added_command_cycles=0)
     closure=complete_closure(n,g,[p for p in source if p]);remote={p:c for p,c in closure['ff_endpoints'].items()if c!='clk_50m'}
-    require(remote=={p+'/D':'memory_clk'for p,s in zip(capture,source)if s}and
+    expected_remote={p+'/D':'memory_clk'for p,s in zip(capture,source)if s}
+    expected_remote.update({p+'/D':'memory_clk'for p in end_capture})
+    require(remote==expected_remote and
             not closure['primitive_endpoints']and not closure['top_output_endpoints'],
             'uncaptured remote tuple consumer added')
-    src=' '.join(p+'/Q'for p in source if p);dst=' '.join(p+'/D'for p,s in zip(capture,source)if s)
+    src=' '.join(p+'/Q'for p in source if p);dst=' '.join([*(p+'/D'for p,s in zip(capture,source)if s),*(p+'/D'for p in end_capture)])
     path=f'-from [get_pins {{{src}}}] -to [get_pins {{{dst}}}]'
     sdc='\n# W raw command: exact held tuple into one memory-domain register bank\nset_max_delay 10.000 '+path+'\nset_min_delay 1.800 '+path+'\n'
     # W B16 reports -0.040ns hold on this real functional status consumer.
@@ -98,6 +123,7 @@ def audit(n,*,publication=False):
         captured_valid_next_Q_exact=True,business_start_requires_registered_valid=True,
         request_stages_before_capture=2,hold_check_retained=True,
         completion_publication=publication_proof,
+        **(dict(captured_fetch_end=end_proof) if end_proof is not None else {}),
         status_fetch_fault_hold=dict(source=status+'/Q',capture=fetch_fault+'/D',
             min_data_delay_ns=1.8,source_complete_closure=status_closure,
             normal_setup_retained=True,hold_check_retained=True,timing_exception_added=False),

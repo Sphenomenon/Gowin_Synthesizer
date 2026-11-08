@@ -1,0 +1,54 @@
+{
+  "parent_sha256": "5327c55fbf89fa65410f7d41eb4b00276e8a7af2dda66149b197248e5bb0080d",
+  "selected_sha256": "78b9e102c47e72f3c2675e99ce74ce2b826171c6239fe233f5ded9e037772f96",
+  "edits": [
+    {
+      "before": "{2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0}",
+      "after": "memory_fetch_range_bad",
+      "count": 4
+    },
+    {
+      "before": "    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};",
+      "after": "    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};\n    // Parallel byte comparisons replace the serial full-width magnitude chain.\n    // The original relational expression remains the four-state fallback.\n    wire [34:0] fetch_range_left={2'd0,memory_fetch_end};\n    wire [34:0] fetch_range_right={1'b0,memory_committed,2'b0};\n    wire [4:0] fetch_range_greater,fetch_range_equal;\n    assign fetch_range_greater[0]=fetch_range_left[7:0]>fetch_range_right[7:0];\n    assign fetch_range_equal[0]=fetch_range_left[7:0]==fetch_range_right[7:0];\n    assign fetch_range_greater[1]=fetch_range_left[15:8]>fetch_range_right[15:8];\n    assign fetch_range_equal[1]=fetch_range_left[15:8]==fetch_range_right[15:8];\n    assign fetch_range_greater[2]=fetch_range_left[23:16]>fetch_range_right[23:16];\n    assign fetch_range_equal[2]=fetch_range_left[23:16]==fetch_range_right[23:16];\n    assign fetch_range_greater[3]=fetch_range_left[31:24]>fetch_range_right[31:24];\n    assign fetch_range_equal[3]=fetch_range_left[31:24]==fetch_range_right[31:24];\n    assign fetch_range_greater[4]=fetch_range_left[34:32]>fetch_range_right[34:32];\n    assign fetch_range_equal[4]=fetch_range_left[34:32]==fetch_range_right[34:32];\n    reg memory_fetch_range_bad;\n    always @* begin\n        memory_fetch_range_bad={2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0};\n        case (^{fetch_range_left,fetch_range_right})\n            1'b0,1'b1: memory_fetch_range_bad=(fetch_range_greater[4] || (fetch_range_equal[4] && (fetch_range_greater[3] || (fetch_range_equal[3] && (fetch_range_greater[2] || (fetch_range_equal[2] && (fetch_range_greater[1] || (fetch_range_equal[1] && fetch_range_greater[0]))))))));\n            default: begin end\n        endcase\n    end\n",
+      "count": 1
+    },
+    {
+      "before": "    wire [32:0] memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};\n    // Parallel byte comparisons replace the serial full-width magnitude chain.",
+      "after": "\n    // Parallel byte comparisons replace the serial full-width magnitude chain.",
+      "count": 1
+    },
+    {
+      "before": "    wire memory_command_start;",
+      "after": "    wire memory_command_start;\n    wire [32:0] memory_fetch_end;",
+      "count": 1
+    },
+    {
+      "before": "        (* syn_preserve=1 *) reg [79+PTR_BITS:0] payload;",
+      "after": "        (* syn_preserve=1 *) reg [79+PTR_BITS:0] payload;\n        reg [32:0] fetch_end;\n        assign memory_fetch_end=fetch_end;",
+      "count": 1
+    },
+    {
+      "before": "if(!memory_reset_n)begin valid<=0;payload<=0;end",
+      "after": "if(!memory_reset_n)begin valid<=0;payload<=0;fetch_end<=0;end",
+      "count": 1
+    },
+    {
+      "before": "                    valid<=1;",
+      "after": "                    fetch_end<={1'b0,command_offset}+{19'd0,command_length};\n                    valid<=1;",
+      "count": 1
+    },
+    {
+      "before": "    end else begin:g_direct_command",
+      "after": "    end else begin:g_direct_command\n        assign memory_fetch_end={1'b0,memory_command_offset}+{19'd0,memory_command_length};",
+      "count": 1
+    }
+  ],
+  "schema": 1,
+  "policy": "task3_W_captured_end_parallel_byte_fetch_range_v2",
+  "source": "rtl/memory/workstation_ble_raw_ddr_store.sv",
+  "scope": "Explicit preboard W only; compute the full 33-bit end address at the existing command capture edge. Preserve the parallel comparison, four-state relational fallback, fetch acceptance and completion edge. Add 33 data bits, zero command cycles and no address allocation.",
+  "exit_plan": "Promote the complete raw-store selected source after full mapped, routed and functional gates; retire this exact overlay without modifying frozen inputs.",
+  "added_state_bits": 33,
+  "extra_command_cycles": 0,
+  "capture_invariant": "When g_command_capture.valid is true, fetch_end equals the full 33-bit captured offset plus captured length; invalid capture arithmetic is private and cannot affect shared state."
+}

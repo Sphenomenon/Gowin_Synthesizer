@@ -208,6 +208,16 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
             ('preboard_release_adaptation',releases),('preboard_held_adaptation',held),('preboard_ddr_adaptation',ddr_actual)]:
             if inputs.get(key)!=json.loads(json.dumps(actual)):
                 raise ValueError('preboard physical proof differs: '+key)
+        locality = inputs.get('diagnosed_locality')
+        if locality is not None:
+            from tools.workstation_task3_w_delay_locality import reconstruct
+            from tools.workstation_native_protocol_audit import protocol_netlist
+            if role != 'W' or locality.get('source_candidate') != profile['candidate_identity']:
+                raise ValueError('diagnosed locality requires its exact W source candidate')
+            if (sha(physical/'custom_138k_integration.vg') != locality.get('VG_sha256') or
+                    sha(physical/'physical.sdc') != locality.get('SDC_sha256')):
+                raise ValueError('diagnosed W locality netlist/SDC identity differs')
+            cst = reconstruct(cst, protocol_netlist(vg_text, mapping='synthesis'), locality)
         if (physical/'physical.cst').read_bytes()!=cst:
             raise ValueError('preboard reconstructed physical CST differs')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),

@@ -611,7 +611,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         from tools.workstation_task3_w_preboard_cdc import KEY as _cdc_key, POLICY as _cdc_policy
         _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
                                'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
-                               'raw_fetch_range_policy':'task3_W_parallel_byte_fetch_range_v1',
+                               'raw_fetch_range_policy':'task3_W_captured_end_parallel_byte_fetch_range_v2',
                                'raw_terminal_policy':'task3_W_raw_terminal_fault_final_selector_v1',
                                'raw_terminal_tuple_policy':'task3_W_raw_terminal_tuple_final_fault_selector_v1',
                                'raw_pack_policy':'task3_W_raw_pack_fetch_final_fault_selector_v1',
