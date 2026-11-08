@@ -4,6 +4,8 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
+最新阶段为 [v33 M 原生 PCM 入口隔离](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V33_20261108.md)：M `daae0514f9cfd53c`、W `24b07105ddac895e` 重新完成综合，门禁 27/27、25/25；M 一帧暂存的真实 TF→DSP/I2S 回归和实际 RAM 使能隔离检查通过，CPU 消费者 v7 已审查。v33 尚无 P&R、位流或新物理资源／STA。最近完整物理结果仍是 [v28](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V28_20261108.md)，两板仍未时序闭合；W B12 的后续 routed PLL 子门禁已通过。W 完成计数发布实验有局部完整参考与映射改善，尚未选入生产；M 效果／事件、hold／recovery 和 PLL 问题仍须修复。不放行 SRAM／Flash；[上板清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤。
+
 ## 赛题要求与项目目标
 
 依据[赛题原文](../../docs/requests/全国大学生嵌入式芯片与系统设计竞赛'2026FPGA赛道选题指南-高云半导体.pdf)的选题二，PDF 第 15–16 页（正文第 13–14 页）：

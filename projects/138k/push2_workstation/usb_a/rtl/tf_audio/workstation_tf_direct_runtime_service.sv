@@ -10,6 +10,7 @@ module workstation_tf_direct_runtime_service #(
     parameter integer FIFO_ADDRESS_BITS=4,QUIET_TIMEOUT_CYCLES=25000000,
     parameter bit SEPARATE_COMMON_RESET=0,
     parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
+    parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,
     parameter bit REMOTE_ANALYSIS_ENABLE=0
 )(
     input wire rst_ni,common_reset_ni,clk_50m_i,compute_clk_i,
@@ -186,6 +187,31 @@ module workstation_tf_direct_runtime_service #(
     wire invalidate=source_n && (new_command || cancel_event || stop_event || new_failure);
     wire native_stop=state==DRAIN;
     wire source_quiesce=state==IDLE || state==DRAIN || state==LAUNCH || invalidate;
+    // One bounded native PCM head breaks downstream cancellation/backpressure
+    // from the ingress RAM enable. Cancellation still suppresses publication
+    // on its original edge; any speculative native pop is locally discarded.
+    reg head_valid,head_last;
+    reg [31:0] head_pcm,head_session;
+    reg [19:0] head_rate;
+    wire head_ready=!head_valid && state==PLAY;
+    wire head_pop=head_valid && !source_quiesce &&
+        (analysis_live ? analysis_pcm_ready_i:bridge_ready);
+    always @(posedge clk_50m_i or negedge source_n)
+        if(!source_n)begin
+            head_valid<=0;head_last<=0;head_pcm<=0;head_session<=0;head_rate<=0;
+        end else if(source_quiesce)head_valid<=0;
+        else begin
+            if(head_pop)head_valid<=0;
+            if(native_valid && head_ready)begin
+                head_valid<=1;head_last<=native_last;head_pcm<={native_right,native_left};
+                head_session<=native_session;head_rate<=native_rate;
+            end
+        end
+    wire dequeued_valid=LOCAL_NATIVE_HEAD_ENABLE ? head_valid:native_valid;
+    wire dequeued_last=LOCAL_NATIVE_HEAD_ENABLE ? head_last:native_last;
+    wire [31:0] dequeued_pcm=LOCAL_NATIVE_HEAD_ENABLE ? head_pcm:{native_right,native_left};
+    wire [31:0] dequeued_session=LOCAL_NATIVE_HEAD_ENABLE ? head_session:native_session;
+    wire [19:0] dequeued_rate=LOCAL_NATIVE_HEAD_ENABLE ? head_rate:native_rate;
     (* syn_preserve=1 *) reg source_quiesce_level;
     always @(posedge clk_50m_i or negedge common_n)
         if(!common_n)source_quiesce_level<=1'b1;
@@ -194,9 +220,9 @@ module workstation_tf_direct_runtime_service #(
         (!pending_analysis || analysis_start_ready_i);
     assign analysis_start_valid_o=REMOTE_ANALYSIS_ENABLE && native_request && native_ready && pending_analysis;
     assign analysis_session_o=session;
-    assign analysis_pcm_valid_o=analysis_live && native_valid && !source_quiesce && !invalidate;
-    assign analysis_pcm_last_o=native_last;
-    assign analysis_pcm_o={native_right,native_left};
+    assign analysis_pcm_valid_o=analysis_live && dequeued_valid && !source_quiesce && !invalidate;
+    assign analysis_pcm_last_o=dequeued_last;
+    assign analysis_pcm_o=dequeued_pcm;
     assign analysis_cancel_o=analysis_live && invalidate;
     workstation_tf_direct_native_v1 #(.SPI_CLK_DIV(SPI_CLK_DIV),.SPI_CLK_DIV_FAST(SPI_CLK_DIV_FAST),
         .TOKEN_WAIT_CLOCKS(TOKEN_WAIT_CLOCKS),.WATCHDOG_CLOCKS(WATCHDOG_CLOCKS),
@@ -208,7 +234,8 @@ module workstation_tf_direct_runtime_service #(
         // Physical deadlines belong to the unique actual downstream router.
         .sample_request_i(1'b0),.request_applied_o(native_applied),.request_pending_o(native_pending),
         .stop_completed_o(native_stop_done),.stop_failed_o(native_stop_failed),
-        .pcm_valid_o(native_valid),.pcm_ready_i((analysis_live?analysis_pcm_ready_i:bridge_ready) && !source_quiesce),
+        .pcm_valid_o(native_valid),.pcm_ready_i(LOCAL_NATIVE_HEAD_ENABLE ? head_ready:
+            ((analysis_live?analysis_pcm_ready_i:bridge_ready) && !source_quiesce)),
         .pcm_left_o(native_left),.pcm_right_o(native_right),.pcm_last_o(native_last),
         .generation_o(native_session),.session_rate_o(native_rate),.active_o(native_active),.prefill_ready_o(native_prefill),.empty_o(native_empty),
         .ingress_failed_o(native_ingress_error),.ingress_failure_code_o(native_ingress_code),
@@ -219,9 +246,9 @@ module workstation_tf_direct_runtime_service #(
         .LOCAL_COMPUTE_RESET_ENABLE(LOCAL_COMPUTE_RESET_ENABLE)) frames(
         .rst_ni(common_n),.source_clk_i(clk_50m_i),.compute_clk_i,
         .invalidate_i(invalidate),.source_quiesce_i(source_quiesce_level),
-        .source_valid_i(native_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(native_last),
-        .source_session_generation_i(native_session),.source_sample_rate_i(native_rate),
-        .source_left_i(native_left),.source_right_i(native_right),.source_ready_o(bridge_ready),
+        .source_valid_i(dequeued_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(dequeued_last),
+        .source_session_generation_i(dequeued_session),.source_sample_rate_i(dequeued_rate),
+        .source_left_i(dequeued_pcm[15:0]),.source_right_i(dequeued_pcm[31:16]),.source_ready_o(bridge_ready),
         .source_generation_o(source_generation),.source_generation_pending_o(generation_pending),.source_quiescent_o(source_quiet),
         .tf_valid_o(tf_valid_o),.tf_ready_i(tf_ready_i),.tf_error_o(tf_error_o),.tf_last_o(tf_last_o),.tf_session_generation_o(tf_session_o),
         .tf_sample_rate_o(tf_sample_rate_o),.tf_left_o(tf_left_o),.tf_right_o(tf_right_o),.tf_generation_o(tf_generation_o),
@@ -278,7 +305,7 @@ module workstation_tf_direct_runtime_service #(
             stop_done_o<=0;stop_failed_o<=0;
             if(native_applied)begin session_applied<=1;session_rate<=pending_rate;session_epoch<=pending_epoch;end
             if(physical_end_event && live && !analysis_live)begin eof_seen<=1;state<=ENDED;end
-            if(analysis_live && state==PLAY && native_valid && analysis_pcm_ready_i && native_last && !source_quiesce)begin
+            if(analysis_live && state==PLAY && dequeued_valid && analysis_pcm_ready_i && dequeued_last && !source_quiesce)begin
                 // File EOF releases the shared native reader. Recognition
                 // may continue on W without retaining M's media-stop grant.
                 eof_seen<=1;state<=DRAIN;quiet_wait<=0;native_quiet<=0;pending_start<=0;

@@ -17,6 +17,7 @@ SOURCES=('rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',required=True,type=Path)
+    parser.add_argument('--local-native-head',action='store_true')
     args=parser.parse_args();output=args.output.resolve();output.mkdir(parents=True,exist_ok=False)
     sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
     sys.path.insert(0,str(ROOT))
@@ -28,6 +29,7 @@ def main():
         native_file_owner='deterministic held-cursor fixture',actual_SPI_FAT_WAV=False,
         actual_CNN=False,actual_physical_serializer=False,physical_CDC_verified=False,
         hardware_operated=False,deployment_allowed=False)
+    result['local_native_PCM_head_selected']=args.local_native_head
     try:
         top=(ROOT/'rtl/workstation/gw138k_push_workstation_top.v').read_text()
         selected=apply_top(ROOT,top)
@@ -43,6 +45,7 @@ def main():
             else:raise ValueError('M adapter accepted changed identity')
         result['adapter_negative_controls']=negatives
         command=['iverilog','-g2012','-s','tb_workstation_tf_remote_analysis','-o',str(output/'simulation.vvp'),
+                 '-Ptb_workstation_tf_remote_analysis.LOCAL_NATIVE_HEAD_ENABLE='+str(int(args.local_native_head)),
                  *[str(ROOT/p) for p in SOURCES]]
         result['compile_argv']=command
         cp=subprocess.run(command,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)

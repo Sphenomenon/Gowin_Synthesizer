@@ -11,9 +11,33 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from tools import workstation_tf_compute_local_release as reset
 from tools import workstation_tf_failure_path as failure
+from tools import workstation_tf_native_head as head
 
 
 class TFComputeRelease(unittest.TestCase):
+    def test_native_head_inverse_selection_and_corruptions(self):
+        text=(ROOT/reset.SERVICE).read_text()
+        with tempfile.TemporaryDirectory()as directory:
+            stage=Path(directory)
+            for relative in (reset.SERVICE,reset.BRIDGE):
+                path=stage/relative;path.parent.mkdir(parents=True,exist_ok=True)
+                path.write_bytes((ROOT/relative).read_bytes())
+            config={reset.KEY:reset.POLICY,head.KEY:head.POLICY,
+                    'demo_role':'M','tf_policy':'task3_m_native_direct_tf_v1'}
+            result=reset.select(stage,config)
+            self.assertEqual(result['native_PCM_head']['capacity_frames'],1)
+            selected=(stage/reset.SERVICE).read_text()
+            self.assertEqual(reset.restore(reset.SERVICE,selected),reset.restore(reset.SERVICE,text))
+            for old,new in [('wire head_ready=!head_valid && state==PLAY;',
+                             'wire head_ready=!head_valid && !source_quiesce;'),
+                            ('else if(source_quiesce)head_valid<=0;',
+                             'else if(1\'b0)head_valid<=0;'),
+                            ('head_session<=native_session;','head_session<=0;')]:
+                self.assertEqual(selected.count(old),1)
+                with self.subTest(mutation=old),self.assertRaises(ValueError):
+                    reset.restore(reset.SERVICE,selected.replace(old,new,1))
+            with self.assertRaises(ValueError):head.configured(dict(config,demo_role='W'))
+
     def test_source_inverse_and_explicit_selection(self):
         config={reset.KEY:reset.POLICY,'demo_role':'M','tf_policy':'task3_m_native_direct_tf_v1'}
         rows=reset.records()
@@ -63,6 +87,32 @@ class ActualComputeRelease(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         assert reset.digest(cls.vg.read_bytes())==cls.before
+
+    def test_actual_native_head_and_enable_corruptions(self):
+        from tools.workstation_runtime_pcm_cdc import Graph
+        n=self.n;g=Graph(n)
+        proof=head.audit_mapped(n,stage=self.stage)
+        if proof is None:self.skipTest('head not selected by this immutable stage')
+        self.assertEqual(proof['enable_pin_count'],27)
+        self.assertEqual(proof['read_enable_count'],9)
+        h=proof['head_register']
+        ram=proof['native_PCM_RAM_enables'][0]['endpoint'].rsplit('/',1)[0]
+        session=g.register('u_tf_audio','session',0)
+        # Both reintroducing the old long dependency and tying read enable
+        # directly high must fail the actual combinational-cone proof.
+        for p,pin,bad in [(h,'CLK','audio_clk'),(h,'CLEAR',"1'b1"),
+                          (ram,'CEB',n.pin(session,'Q')),(ram,'CEB',"1'b1"),
+                          (ram,'CEA',n.pin(session,'Q'))]:
+            old=deepcopy(n.cells[p]);n.cells[p]['ports'][pin]=bad
+            try:
+                with self.subTest(register=p,pin=pin),self.assertRaises(ValueError):
+                    head.audit_mapped(n,stage=self.stage)
+            finally:n.cells[p]=old
+        old=n.cells.pop(ram)
+        try:
+            with self.assertRaisesRegex(ValueError,'RAM inventory'):
+                head.audit_mapped(n,stage=self.stage)
+        finally:n.cells[ram]=old
 
     def test_actual_inventory_and_destructive_controls(self):
         from tools.workstation_runtime_pcm_cdc import Graph

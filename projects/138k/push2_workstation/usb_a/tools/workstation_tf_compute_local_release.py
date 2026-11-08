@@ -37,14 +37,19 @@ def records():
 def unselect(text):
     if SELECTED in text:
         require(text.count(SELECTED)==1 and DEFAULT not in text,'duplicate parameter selection')
-        return text.replace(SELECTED,DEFAULT,1)
-    return text
+        text=text.replace(SELECTED,DEFAULT,1)
+    from tools.workstation_tf_native_head import unselect as unselect_head
+    return unselect_head(text)
 
 
 def restore(relative,data):
     text=data.decode()if isinstance(data,bytes)else data
     if DEFAULT not in text and SELECTED not in text:return data
-    text=unselect(text);row=records()[relative]
+    text=unselect(text)
+    if relative==SERVICE:
+        from tools.workstation_tf_native_head import restore as restore_head
+        text=restore_head(text)
+    row=records()[relative]
     require(digest(text)==row['native_sha256'],'native source drift: '+relative)
     for edit in reversed(row['edits']):
         require(text.count(edit['after'])==1,'inverse anchor drift: '+relative)
@@ -68,7 +73,8 @@ def select(stage,configuration):
     path=Path(stage)/SERVICE;text=path.read_text()
     restore(SERVICE,text)
     require(text.count(DEFAULT)==1 and SELECTED not in text,'default source option missing')
-    path.write_text(text.replace(DEFAULT,SELECTED,1))
+    from tools.workstation_tf_native_head import select as select_head
+    path.write_text(select_head(text.replace(DEFAULT,SELECTED,1),configuration))
     return evidence(stage,configuration)
 
 
@@ -80,11 +86,15 @@ def evidence(stage,configuration):
         require(text.count(SELECTED if relative==SERVICE else DEFAULT)==1,
                 'compute reset source option differs: '+relative)
         hashes[relative]=digest(text)
-    return dict(policy=POLICY,source_sha256=hashes,manifest_sha256=MANIFEST_SHA256,
+    from tools.workstation_tf_native_head import evidence as head_evidence
+    result=dict(policy=POLICY,source_sha256=hashes,manifest_sha256=MANIFEST_SHA256,
         release='existing local compute_release[2]',new_reset_registers=0,
         root_async_assertion_preserved=True,source_invalidation_semantics_unchanged=True,
         session_fence_resets_mailboxes=False,legacy_source_inverse_verified=True,
         mapped_reset_verified=False,routed_timing_verified=False,hardware_tested=False)
+    head=head_evidence(stage,configuration)
+    if head:result['native_PCM_head']=head
+    return result
 
 
 def audit_mapped(n,*,stage,root=None):

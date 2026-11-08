@@ -139,6 +139,8 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_tf_boundary_audit.py',
     'tools/workstation_task3_tf_frame_arithmetic.py',
     'tools/workstation_tf_compute_local_release.py',
+    'tools/workstation_tf_native_head.py',
+    'rtl/tf_audio/workstation_tf_native_head_v1.adaptation.json',
     'rtl/tf_audio/workstation_tf_compute_local_release_v1.adaptation.json',
     'tools/workstation_preboard_physical_boundaries.py',
     'tools/workstation_preboard_ddr_timing.py',
@@ -828,6 +830,9 @@ def audit(root, output, metadata):
         gate('preboard_F808_and_PANIC_held_boundaries',lambda:paired_held(
             protocol_netlist(vg_text,mapping='synthesis'),role=role)[0])
         if role=='M':
+            from tools.workstation_tf_native_head import audit_mapped as native_head
+            gate('preboard_M_TF_native_head_RAM_isolation',lambda:native_head(
+                protocol_netlist(vg_text,mapping='synthesis'),stage=stage))
             from tools.workstation_task3_m_session_boundary import audit as session_boundary
             gate('preboard_M_HCI_session_boundary',lambda:session_boundary(
                 protocol_netlist(vg_text,mapping='synthesis'))[0])

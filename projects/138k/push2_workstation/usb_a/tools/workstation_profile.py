@@ -614,6 +614,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
+                              tf_native_head_policy='task3_M_TF_bounded_native_PCM_head_v1',
                               effects_dispatch_policy='task3_M_reserved_effects_configuration_v1')
     PROFILE_REGISTRY[_name] = dict(_parent, revision=1, configuration=_configuration,
         config='boards/custom_138k/workstation_profile_task3_' + _role + '_preboard_v1.json',

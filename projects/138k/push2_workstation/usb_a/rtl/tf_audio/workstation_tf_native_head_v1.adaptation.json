@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "policy": "task3_M_TF_bounded_native_PCM_head_v1",
+  "source": "rtl/tf_audio/workstation_tf_direct_runtime_service.sv",
+  "parent_sha256": "23efcf2432e3b5e6a102728a168d1b22b9eaae37bd2e85e8d0b4aa7041b452b7",
+  "native_sha256": "1e92562cb5131ef42a9ce1f8c0926df4a279671d3b9921ecb4ebd2ac3c1c3ddf",
+  "parameter": "LOCAL_NATIVE_HEAD_ENABLE",
+  "default": 0,
+  "selected": 1,
+  "edits": [
+    {
+      "before": "    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,",
+      "after": "    parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,\n    parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,"
+    },
+    {
+      "before": "    wire source_quiesce=state==IDLE || state==DRAIN || state==LAUNCH || invalidate;",
+      "after": "    wire source_quiesce=state==IDLE || state==DRAIN || state==LAUNCH || invalidate;\n    // One bounded native PCM head breaks downstream cancellation/backpressure\n    // from the ingress RAM enable. Cancellation still suppresses publication\n    // on its original edge; any speculative native pop is locally discarded.\n    reg head_valid,head_last;\n    reg [31:0] head_pcm,head_session;\n    reg [19:0] head_rate;\n    wire head_ready=!head_valid && state==PLAY;\n    wire head_pop=head_valid && !source_quiesce &&\n        (analysis_live ? analysis_pcm_ready_i:bridge_ready);\n    always @(posedge clk_50m_i or negedge source_n)\n        if(!source_n)begin\n            head_valid<=0;head_last<=0;head_pcm<=0;head_session<=0;head_rate<=0;\n        end else if(source_quiesce)head_valid<=0;\n        else begin\n            if(head_pop)head_valid<=0;\n            if(native_valid && head_ready)begin\n                head_valid<=1;head_last<=native_last;head_pcm<={native_right,native_left};\n                head_session<=native_session;head_rate<=native_rate;\n            end\n        end\n    wire dequeued_valid=LOCAL_NATIVE_HEAD_ENABLE ? head_valid:native_valid;\n    wire dequeued_last=LOCAL_NATIVE_HEAD_ENABLE ? head_last:native_last;\n    wire [31:0] dequeued_pcm=LOCAL_NATIVE_HEAD_ENABLE ? head_pcm:{native_right,native_left};\n    wire [31:0] dequeued_session=LOCAL_NATIVE_HEAD_ENABLE ? head_session:native_session;\n    wire [19:0] dequeued_rate=LOCAL_NATIVE_HEAD_ENABLE ? head_rate:native_rate;"
+    },
+    {
+      "before": "assign analysis_pcm_valid_o=analysis_live && native_valid && !source_quiesce && !invalidate;",
+      "after": "assign analysis_pcm_valid_o=analysis_live && dequeued_valid && !source_quiesce && !invalidate;"
+    },
+    {
+      "before": "assign analysis_pcm_last_o=native_last;",
+      "after": "assign analysis_pcm_last_o=dequeued_last;"
+    },
+    {
+      "before": "assign analysis_pcm_o={native_right,native_left};",
+      "after": "assign analysis_pcm_o=dequeued_pcm;"
+    },
+    {
+      "before": ".pcm_valid_o(native_valid),.pcm_ready_i((analysis_live?analysis_pcm_ready_i:bridge_ready) && !source_quiesce),",
+      "after": ".pcm_valid_o(native_valid),.pcm_ready_i(LOCAL_NATIVE_HEAD_ENABLE ? head_ready:\n            ((analysis_live?analysis_pcm_ready_i:bridge_ready) && !source_quiesce)),"
+    },
+    {
+      "before": ".source_valid_i(native_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(native_last),",
+      "after": ".source_valid_i(dequeued_valid && !source_quiesce && !analysis_live),.source_error_i(1'b0),.source_last_i(dequeued_last),"
+    },
+    {
+      "before": ".source_session_generation_i(native_session),.source_sample_rate_i(native_rate),",
+      "after": ".source_session_generation_i(dequeued_session),.source_sample_rate_i(dequeued_rate),"
+    },
+    {
+      "before": ".source_left_i(native_left),.source_right_i(native_right),.source_ready_o(bridge_ready),",
+      "after": ".source_left_i(dequeued_pcm[15:0]),.source_right_i(dequeued_pcm[31:16]),.source_ready_o(bridge_ready),"
+    },
+    {
+      "before": "analysis_live && state==PLAY && native_valid && analysis_pcm_ready_i && native_last && !source_quiesce",
+      "after": "analysis_live && state==PLAY && dequeued_valid && analysis_pcm_ready_i && dequeued_last && !source_quiesce"
+    }
+  ],
+  "reconstruction_used_only_for_verification": true
+}

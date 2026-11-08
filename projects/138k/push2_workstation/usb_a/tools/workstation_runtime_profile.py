@@ -100,6 +100,8 @@ DEPENDENCIES = (
     'tools/workstation_pcm_permission_compare.py',
     'tools/workstation_pcm_bitmap_permission.py',
     'tools/workstation_tf_failure_path.py',
+    'tools/workstation_tf_native_head.py',
+    'rtl/tf_audio/workstation_tf_native_head_v1.adaptation.json',
     'rtl/audio/workstation_runtime_scope_vec.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.provenance.json',
     'rtl/audio/workstation_runtime_chorus_effect.rate_delay_narrowing.json',
