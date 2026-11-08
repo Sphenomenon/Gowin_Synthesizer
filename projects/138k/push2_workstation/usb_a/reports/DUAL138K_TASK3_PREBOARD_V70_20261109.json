@@ -1,0 +1,595 @@
+{
+  "schema": 1,
+  "date": "2026-11-09",
+  "phase": "v70_parser_context_correction_and_diagnosed_physical_results",
+  "goal_complete": false,
+  "load_allowed": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "boards": {
+    "M": {
+      "identity": "custom138k-resource-physical-D21109C8",
+      "source_parent": "custom138k-workstation-task3-m-preboard-v1-c41fbe24c7cd1393",
+      "physical_BSRAM": 253,
+      "resources": {
+        "Logic": [
+          "91301/138240",
+          "67%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "89849(70654 LUT, 19195 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "242",
+          "-"
+        ],
+        "Register": [
+          "58446/139095",
+          "43%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "58446/138240",
+          "43%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "61304/69120",
+          "89%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "135",
+          "-"
+        ],
+        "--Input Buf": [
+          "9",
+          "-"
+        ],
+        "--Output Buf": [
+          "75",
+          "-"
+        ],
+        "--Inout Buf": [
+          "51",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM4 OSER1032 IODELAY",
+          "37%"
+        ],
+        "BSRAM": [
+          "157 SDPB44 SDPX9B45 pROM7 pROMX9",
+          "75%"
+        ],
+        "DSP": [
+          "3 MULT12X1243 MULT27X3633 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "15/24",
+          "63%"
+        ],
+        "CLKDIV": [
+          "2/24",
+          "9%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "6/12",
+          "50%"
+        ]
+      },
+      "global_slack_ns": {
+        "setup": -5.754,
+        "hold": 0.116,
+        "recovery": 2.852,
+        "removal": 0.281
+      },
+      "explicit_constraint_failures": [
+        {
+          "slack_ns": -0.55,
+          "summary": {
+            "Slack": "-0.550",
+            "Data Arrival Time": "7.209",
+            "Data Required Time": "6.659",
+            "From": "u_managed/runtime/fault_sync_0_s0",
+            "To": "u_managed/runtime/fault_sync_1_s0",
+            "Launch Clk": "clk_50m:[R]",
+            "Latch Clk": "clk_50m:[R]"
+          },
+          "command": "report_exceptions -setup -max_paths 5 -max_common_paths 1",
+          "constraint": "Timing Path Constraint[36]: set_max_delay 2.000 -from [get_pins {u_managed/runtime/fault_sync_0_s*/Q}] -to [get_pins {u_managed/runtime/fault_sync_1_s*/D}]"
+        },
+        {
+          "slack_ns": -1.134,
+          "summary": {
+            "Slack": "-1.134",
+            "Data Arrival Time": "6.205",
+            "Data Required Time": "5.070",
+            "From": "u_managed/runtime/compute_release_1_s0",
+            "To": "u_managed/runtime/compute_release_2_s0",
+            "Launch Clk": "audio_76m8:[R]",
+            "Latch Clk": "audio_76m8:[R]"
+          },
+          "command": "report_exceptions -setup -max_paths 5 -max_common_paths 1",
+          "constraint": "Timing Path Constraint[46]: set_max_delay 2.000 -from [get_pins {u_managed/runtime/compute_release_1_s*/Q}] -to [get_pins {u_managed/runtime/compute_release_2_s*/D}]"
+        },
+        {
+          "slack_ns": -0.555,
+          "summary": {
+            "Slack": "-0.555",
+            "Data Arrival Time": "5.572",
+            "Data Required Time": "5.016",
+            "From": "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s0",
+            "To": "u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s0",
+            "Launch Clk": "audio_76m8:[R]",
+            "Latch Clk": "audio_76m8:[R]"
+          },
+          "command": "report_exceptions -setup -max_paths 5 -max_common_paths 1",
+          "constraint": "Timing Path Constraint[162]: set_max_delay 2.000 -from [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_meta_s*/Q}] -to [get_pins {u_managed/runtime/service/workstation/runtime_effects.effects/dma_fault_sync_s*/D}]"
+        }
+      ],
+      "explicit_constraint_minimum": {
+        "setup": -1.134,
+        "hold": 0.601,
+        "recovery": 1.754
+      },
+      "ignored_region_constraint_warnings": [],
+      "bitstream": {
+        "path": "m-preboard-physical-v22/impl/pnr/custom_138k_integration.fs",
+        "sha256": "c57e670712de2a8ece0a4565d296abe60b2b19b3d8883affbfd676914fc7e609"
+      },
+      "duration_seconds": 575.0774012500187,
+      "netlist_sha256": "bb6dc7cbdc9d004fcd2fa56223c5b9f99d83d38d3e9b8be1d80ed91cd5809658",
+      "SDC_sha256": "2a4d06c9de39802c844fb30ec8a6aaae3065073c8e88a614850fa1acc19771e8",
+      "P2R0_complete": true,
+      "timing_closed": false,
+      "load_allowed": false,
+      "selected_for_release": false
+    },
+    "W": {
+      "identity": "custom138k-resource-physical-D21109D7",
+      "source_parent": "custom138k-workstation-task3-w-preboard-v1-4d8492ba8d403e28",
+      "physical_BSRAM": 287,
+      "resources": {
+        "Logic": [
+          "80142/138240",
+          "58%"
+        ],
+        "--LUT,ALU,ROM16": [
+          "75468(58952 LUT, 16516 ALU, 0 ROM16)",
+          "-"
+        ],
+        "--SSRAM(RAM16)": [
+          "779",
+          "-"
+        ],
+        "Register": [
+          "46793/139095",
+          "34%"
+        ],
+        "--Logic Register as Latch": [
+          "0/138240",
+          "0%"
+        ],
+        "--Logic Register as FF": [
+          "46793/138240",
+          "34%"
+        ],
+        "--I/O Register as Latch": [
+          "0/855",
+          "0%"
+        ],
+        "--I/O Register as FF": [
+          "0/855",
+          "0%"
+        ],
+        "CLS": [
+          "56146/69120",
+          "82%"
+        ],
+        "I/O Port": [
+          "147/297",
+          "50%"
+        ],
+        "I/O Buf": [
+          "136",
+          "-"
+        ],
+        "--Input Buf": [
+          "6",
+          "-"
+        ],
+        "--Output Buf": [
+          "87",
+          "-"
+        ],
+        "--Inout Buf": [
+          "43",
+          "-"
+        ],
+        "IOLOGIC": [
+          "32 IDES8_MEM25 OSER840 OSER8_MEM32 IODELAY",
+          "35%"
+        ],
+        "BSRAM": [
+          "3 SP148 SDPB40 SDPX9B96 pROM",
+          "85%"
+        ],
+        "DSP": [
+          "36 MULT12X1242 MULT27X3620 MULTALU27X18",
+          "41%"
+        ],
+        "AE350_SOC": [
+          "1/1",
+          "100%"
+        ],
+        "PRIMARY": [
+          "8/8",
+          "100%"
+        ],
+        "LW": [
+          "8/8",
+          "100%"
+        ],
+        "GCLK_PIN": [
+          "17/24",
+          "71%"
+        ],
+        "CLKDIV": [
+          "1/24",
+          "5%"
+        ],
+        "DCS": [
+          "1/20",
+          "5%"
+        ],
+        "DDRDLL": [
+          "1/4",
+          "25%"
+        ],
+        "DQS": [
+          "4/23",
+          "18%"
+        ],
+        "PLL": [
+          "4/12",
+          "34%"
+        ]
+      },
+      "global_slack_ns": {
+        "setup": -6.882,
+        "hold": 0.122,
+        "recovery": 0.741,
+        "removal": 0.287
+      },
+      "explicit_constraint_failures": [],
+      "explicit_constraint_minimum": {
+        "setup": 0.169,
+        "hold": 0.376,
+        "recovery": 4.342
+      },
+      "ignored_region_constraint_warnings": [
+        "WARN  (CT1094) : 'u_task3_media/memory/ddr_client_ready_s1' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[0].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[1].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[2].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[3].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[4].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[5].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[6].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s10' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s11' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s12' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s4' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[0].g_group[7].g_live.selected_s9' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[0].g_live.selected_s6' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[0].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[0].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[1].g_live.selected_s6' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[1].g_live.selected_s7' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[1].g_group[1].g_live.selected_s8' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.g_owner_veto_level[2].g_group[0].g_live.selected_s1' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.response_fault_now_s1' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[0]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[0]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[0]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[0]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[10]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[10]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[10]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[10]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[11]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[11]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[11]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[11]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[12]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[12]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[12]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[12]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[13]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[13]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[13]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[13]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[14]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[14]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[14]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[14]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[15]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[15]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[15]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[15]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[16]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[16]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[16]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[16]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[17]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[17]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[17]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[17]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[18]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[18]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[18]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[18]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[19]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[19]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[19]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[19]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[1]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[1]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[1]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[1]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[20]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[20]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[20]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[20]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[21]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[21]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[21]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[21]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[22]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[22]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[22]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[22]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[23]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[23]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[23]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[23]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[24]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[24]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[24]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[24]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[25]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[25]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[25]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[25]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[26]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[26]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[26]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[26]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[27]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[27]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[27]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[27]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[28]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[28]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[28]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[28]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[29]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[29]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[29]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[29]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[2]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[2]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[2]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[2]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[30]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[30]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[30]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[30]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[31]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[31]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[31]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[31]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[3]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[3]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[3]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[3]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[4]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[4]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[4]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[4]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[5]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[5]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[5]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[5]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[6]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[6]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[6]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[6]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[7]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[7]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[7]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[7]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[8]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[8]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[8]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[8]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[9]_0_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[9]_1_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[9]_2_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/g_recording.tags[9]_3_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/memory/u_arbiter/g_recording.u_core/task3_memory_transport_fault_s' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n276_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n277_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n278_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n279_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n348_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n349_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n350_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/n351_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7456_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7457_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7458_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7459_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7460_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7461_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7462_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7463_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7464_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7465_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7466_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7467_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7468_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7469_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7470_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7471_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7472_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7473_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7474_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7475_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7476_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_media/raw_store/n7477_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n308_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n309_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n310_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n311_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n347_s0' can't be placed according to constraint",
+        "WARN  (CT1094) : 'u_task3_bus_endpoint/recording_ingress/n383_s0' can't be placed according to constraint"
+      ],
+      "bitstream": {
+        "path": "w-preboard-physical-v23/impl/pnr/custom_138k_integration.fs",
+        "sha256": "ebe2e9320694cba453608901115e9b4f7256b29817d762381c8b6c9ecf2a697f"
+      },
+      "duration_seconds": 474.29881741601275,
+      "netlist_sha256": "38a722f02d43339936bf35ea97fcb2ec87501afcff8a4535a3c98e1bce7378fc",
+      "SDC_sha256": "7e1e35a547a472c09f48ff140cb854a484a692588b8b9cf3bbea9bde541afd22",
+      "P2R0_complete": true,
+      "timing_closed": false,
+      "load_allowed": false,
+      "selected_for_release": false
+    }
+  },
+  "erratum": {
+    "supersedes": "DUAL138K_TASK3_PREBOARD_V69_20261109.json",
+    "error": "TimingTables inherited report_timing -removal into subsequent report_exceptions tables. The -2.006ns DDR violation is the explicit 10ns max-delay constraint, not global removal.",
+    "M_v21_global_slack_ns": {
+      "setup": -4.072,
+      "hold": -0.231,
+      "recovery": 2.333,
+      "removal": 0.278
+    },
+    "M_v21_DQS_HOLD_max_delay_slack_ns": -2.006,
+    "historical_files_changed": false
+  },
+  "evidence_sha256": {
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v22/physical-result.json": "2d56019f4fce739e719cf8a6193ea97801038eac355c1187f94aace0c19e1868",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v22/physical-run.json": "be6d88175b62ba3b2507387e12e13fe870103c07dec765e3f81a4eefc0b7c347",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v22/physical_inputs.json": "21f2f50a3dbd100bebeba912c23f026cf1d9f33a461e8a4c71dab5f2f5389172",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v22-STA-context-v2.json": "3084daeee2d9ac7a6fdd5b9787093bd146f1ace65d2d2feb2180fdd07c8a9fe8",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v23/physical-result.json": "f1da32f6fe4ff4bae31a5d9e685b7c00b0129312cb26d646825916a9e132bfb1",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v23/physical-run.json": "8cfe2cb04581306c04acf9ed885083d94782b8309d3152e4f495487dec7c0d06",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v23/physical_inputs.json": "81177d64c8062c5cd29803d34e9bc4a88720541b4333d48dbe92eab7be85448f",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v23-STA-context-v2.json": "a9e340ced94c84d5e74b8d32d1f70c3c545339765b9ddf5004460bfa9d2de215",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v21-STA-context-v2.json": "28395b38327c54f5b6cb816e4eacd91b5afa3a49f83b057a962836bebfcde235",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v22-STA-context-v2.json": "3163047ae84f4fd674d4d824a8513d64ead28a1be1ea3417cc84fddb7769bce4",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/timing-context-regression.log": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/clk50-parser-existing-tests.log": "37d8a0769d6c800296764c21f8e08feca52d770d400afabe65713604062cf749",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare_m_diagnosed_locality_v22.py": "11e6c2d3d3ff386b0b6c1ee0952fef774f8e62aea2c3c58801c2c7336481cf5e",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/prepare_w_diagnosed_control_v23.py": "0687595e05e02c69df9475a6a951007852f3733a6b2270f7b218c424aa28ef1c",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v23-carry-region-conflicts.json": "a69f792b2f53332eab3ea983c95de5bd8329754b9abc24883dc4670025e80fe5",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/plot-coordinate-probe-v1/adaptation-probe.json": "20baa1a41c69134096baf824c558cd50e7ed83c47bb4f67776dad289f3bfa3e4",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/plot-coordinate-probe-v1/run.log": "3d960fae9cf1f45820b20165677915b0c8c4505b4d6a6c4d95a823e3236afc5e",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/tools/audit_clk50_timing.py": "e3c6b222d536e0cd78d3ff74984997fb72ece55795a6c31932a3cbb5d39f52a6",
+    "/Users/sphenicidition/.codex/worktrees/dual-138k-task3/Gowin_Synthesizer/projects/138k/push2_workstation/usb_a/sim/test_timing_report_context.py": "44e550fe3834eea6d57902d67f2a24e0127fcf7128ad529912530d96538f812a"
+  },
+  "remaining": [
+    "M setup in plotting/address clamp, clock-response phone fence and actual PCM fault-to-event admission cones",
+    "M three explicit 2ns synchronizer/reset-stage max-delay failures",
+    "W v23 setup regressed and 230 logic-region constraints ignored; reject broad locality promotion and retain v22 best setup evidence",
+    "Complete source/physical reproduction and final PLL/CDC/resource gates remain"
+  ]
+}

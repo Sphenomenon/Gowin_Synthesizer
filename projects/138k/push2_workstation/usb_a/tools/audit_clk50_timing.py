@@ -13,6 +13,8 @@ class TimingTables(HTMLParser):
         self.tables = []
         self.table = self.row = self.cell = self.heading = None
         self.command = ''
+        self.constraint = ''
+        self.table_contexts = []
 
     def handle_starttag(self, tag, attrs):
         if tag == 'h4':
@@ -33,8 +35,14 @@ class TimingTables(HTMLParser):
     def handle_endtag(self, tag):
         if tag == 'h4' and self.heading is not None:
             text = ''.join(self.heading)
-            if 'Report Command:report_timing' in text:
+            # report_exceptions follows report_timing in Gowin's HTML. Its
+            # detailed max/min-delay tables must not inherit the preceding
+            # global removal command (a DQS max-delay failure exposed this).
+            if 'Report Command:' in text:
                 self.command = text.split('Report Command:', 1)[1]
+                self.constraint = ''
+            elif text.startswith('Timing Path Constraint['):
+                self.constraint = text
             self.heading = None
         elif tag in ('td', 'th') and self.cell is not None:
             if self.row is not None:
@@ -46,6 +54,7 @@ class TimingTables(HTMLParser):
             self.row = None
         elif tag == 'table' and self.table is not None:
             self.tables.append((self.command, self.table))
+            self.table_contexts.append({'command': self.command, 'constraint': self.constraint})
             self.table = None
 
 

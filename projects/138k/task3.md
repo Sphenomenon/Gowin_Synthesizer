@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v69完整物理结果](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V69_20261109.md)：M `D21109C7`、W `D21109D6`均完成P2R0与位流生成，物理BSRAM253/340、287/340。保守setup／hold／recovery／removal分别为M **−4.072／−0.231／+2.333／−2.006 ns**，W **−1.787／+0.143／+1.140／+0.281 ns**。M removal负值来自详细STA，摘要遗漏该路径。两板均未放行；W另有三条FIFO RAM区域告警。源码、综合和独立prepare复现仍见[v68](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V68_20261109.md)；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备步骤。
+最新阶段为[v70 STA分类勘误与完整物理修复结果](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V70_20261109.md)。M v22 `D21109C8`邮箱hold和DDR DQS HOLD 10ns约束已通过，但全局setup仍−5.754ns，另有3项2ns同步级max-delay失败；BSRAM253/340。W v23 `D21109D7` setup退化至−6.882ns且有230条逻辑区域告警，不选用；保留W v22 −1.787ns的更好结果。v69的M DDR −2.006ns实际是显式max-delay违例，非removal，详见勘误。两板均未放行；[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备步骤。
 
 ## 赛题要求与项目目标
 
@@ -68,7 +68,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 2026-11-09 当前源码／综合检查点为[v68](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V68_20261109.md)。M 保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码及唯一录音对象。v65以来M只改变显示reader编译源码，W全部暂存字节未变；原滑音／效果、TF、识别、手机与录音回归按输入身份复用。新reader两套实际回归的23个输出逐拍一致；完整M网表119个受影响逻辑状态、23项归纳不变量和28个RAM地址位方程通过条件对应检查，不等于整机顺序等价证明。
 
-物理结果仍不满足上板前目标：完整M v21/W v22已结束，实际负路径与位流哈希见[v69](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V69_20261109.md)。当前优先修复M效果故障→声部控制setup、PCM/PANIC邮箱hold与DDR lane2 DQS removal，以及W raw DDR/命令栅栏setup；W三条CT1094须核对hard site。有效物理修复最终需进入维护的prepare入口，完成两板最终STA／PLL／CDC／资源检查。所有失败结果及task2／单板回退保留；候选未放行，不操作板卡。
+物理结果仍不满足上板前目标，详见[v70](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V70_20261109.md)。M下一步针对绘图移位／clamp和真实PCM故障→事件仲裁做结构化简及等价验证，同时修复显式同步级max-delay；W先诊断v23退化和被忽略的区域约束，保留v22更好的完整结果。有效修复需进入维护的prepare入口，绑定最终身份完成全局和显式STA／PLL／CDC／资源门禁及输入复现。所有失败结果及task2／单板回退保留，不操作板卡。
 
 [SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)已列出正确目标、连接、加载读回、回退及功能验收步骤。真实LCD吞吐、DAC延迟和整机演示属于下一阶段。
 
