@@ -240,7 +240,7 @@ def audit_native_protocol(n, *, profile, mapping='synthesis', stage=None, root=N
                             'memory', 'control'))
     elif direct:
         from tools.workstation_task3_native_held import audit_direct_tf_owner
-        proofs.append(audit_direct_tf_owner(n,stage=stage,root=root))
+        proofs.append(audit_direct_tf_owner(n,stage=stage,root=root,mapping=mapping))
     else:
         require(not any(p.startswith('u_tf_audio/') for p in n.cells), 'TF-disabled profile retained TF owner')
     controls = audit_control_boundaries(n, g, profile=profile)

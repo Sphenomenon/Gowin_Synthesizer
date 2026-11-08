@@ -31,7 +31,12 @@ def main():
             raise AssertionError('Production provenance accepted ' + name)
 
     sources = {n: (ROOT / n).read_bytes() for n in dispatch.HUNKS}
-    parents = {n: dispatch.restore_parent(n, data) for n, data in sources.items()}
+    # Prove the exact newer layers separately; retain the historical dispatch
+    # fixture and its original hashes rather than relabeling that old stage.
+    from tools.workstation_oscillator_availability import restore as restore_available
+    from tools.workstation_committed_glide import normalize as normalize_glide
+    dispatch_sources={n:normalize_glide(n,restore_available(n,data)) for n,data in sources.items()}
+    parents = {n: dispatch.restore_parent(n, data) for n, data in dispatch_sources.items()}
     current_bundle = dispatch.source_bundle(ROOT)
     assert current_bundle['stage'] == 'stored_slots'
     assert 'tools/workstation_dispatch_slot_provenance.py' in runtime.DEPENDENCIES
@@ -62,7 +67,7 @@ def main():
                    lambda: dispatch.source_bundle(fixture))
             (fixture / name).write_bytes(parents[name])
     positives.append('historical three-owner bundle accepted; every one-owner mixed stage rejected')
-    source = sources[expression.SOURCE]
+    source = dispatch_sources[expression.SOURCE]
     provenance = (ROOT / expression.PROVENANCE).read_bytes()
     adaptation = (ROOT / expression.ADAPTATION).read_bytes()
     release_adaptation = (ROOT / release.ADAPTATION).read_bytes()
@@ -74,8 +79,8 @@ def main():
         positives.append(name + ' restores the exact immutable prepared oscillator')
     release_bundle = release.source_bundle(ROOT)
     expression_bundle = expression.source_bundle(ROOT)
-    assert release_bundle['current_source_sha256'] == dispatch.CURRENT_SHA256[expression.SOURCE]
-    assert expression_bundle['current_source_sha256'] == dispatch.CURRENT_SHA256[expression.SOURCE]
+    assert release_bundle['current_source_sha256'] == dispatch.sha(sources[expression.SOURCE])
+    assert expression_bundle['current_source_sha256'] == dispatch.sha(sources[expression.SOURCE])
     assert expression_bundle['dispatch_slot_source']['stage'] == 'stored_slots'
     positives.append('release/expression bundles report the actual maintained source identity')
     reject('original provenance bytes changed', lambda: expression.verify(source, provenance + b' ', adaptation))

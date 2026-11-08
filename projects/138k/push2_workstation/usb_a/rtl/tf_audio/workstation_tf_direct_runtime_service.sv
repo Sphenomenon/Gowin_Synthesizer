@@ -11,6 +11,7 @@ module workstation_tf_direct_runtime_service #(
     parameter bit SEPARATE_COMMON_RESET=0,
     parameter bit LOCAL_COMPUTE_RESET_ENABLE=0,
     parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,
+    parameter bit PARALLEL_STATUS_COMPARE_ENABLE=0,
     parameter bit REMOTE_ANALYSIS_ENABLE=0
 )(
     input wire rst_ni,common_reset_ni,clk_50m_i,compute_clk_i,
@@ -274,7 +275,19 @@ module workstation_tf_direct_runtime_service #(
             status_capture<=status_request_sync[1]!=status_ack;
             if(compute_n && status_capture)begin compute_status<=held_status;status_ack<=status_request_sync[1];status_capture<=0;end
         end
-    wire status_current=expected_valid && compute_status[67:36]==expected_generation_o;
+    // Preserve byte boundaries so same-edge stale-status fencing does not
+    // become a 32-bit carry chain ahead of PCM permission and the effects DSP.
+    wire status_current;
+    generate if(PARALLEL_STATUS_COMPARE_ENABLE)begin:g_parallel_status
+        (* syn_keep=1 *) wire [3:0] generation_equal_bytes;
+        for(genvar status_byte=0;status_byte<4;status_byte=status_byte+1)begin:g_equal
+            assign generation_equal_bytes[status_byte]=
+                compute_status[36+status_byte*8+:8]==expected_generation_o[status_byte*8+:8];
+        end
+        assign status_current=expected_valid && (&generation_equal_bytes);
+    end else begin:g_serial_status
+        assign status_current=expected_valid && compute_status[67:36]==expected_generation_o;
+    end endgenerate
     wire control_pending=status_ack_sync[1]!=status_request || held_status!=desired_status;
     assign tf_active_o=compute_n && status_current && compute_status[3];
     assign tf_pause_o=!status_current || !compute_status[2];

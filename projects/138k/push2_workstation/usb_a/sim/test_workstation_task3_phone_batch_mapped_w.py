@@ -188,6 +188,33 @@ class ActualMappedW(unittest.TestCase):
                 finally:
                     self.n.cells[cell]['ports'][pin] = old
 
+    def test_05_publication_mapping_active_root_and_qualification(self):
+        n=self.n;g=Graph(n);proof=mapped.audit(n,stage=self.stage)
+        active=next((row for row in proof['local_equations']
+                     if row.get('contract')=='reserved dispatch expanded active qualification'),None)
+        if not active or not active['explicit_combinational_root_required']:
+            self.skipTest('explicit publication mapping required')
+        root=proof['root_q']
+        for leaf,value in [(root,"1'b1"),(n.canonical('','hci_pcm_session_ready'),"1'b1"),
+                           (n.canonical(mapped.E,'phone_window_fault'),"1'b0")]:
+            todo=[active['actual_qualification_net']];seen=set();found=[]
+            while todo:
+                net=todo.pop()
+                if net in seen or net in active['independent_inputs']:continue
+                seen.add(net)
+                for p,out in g.drivers[net]:
+                    c=n.cells[p]
+                    if c['kind']not in ('INV','LUT2','LUT3','LUT4'):continue
+                    for pin in c['ports']:
+                        if pin==out:continue
+                        inp=n.pin(p,pin)
+                        if inp==leaf:found.append((p,pin))
+                        else:todo.append(inp)
+            self.assertEqual(len(found),1,'actual active qualification input must be unique')
+            p,pin=found[0];old=copy.deepcopy(n.cells[p]);n.cells[p]['ports'][pin]=value
+            try:self.rejected('active qualification bypass '+leaf,lambda:mapped.audit(n,stage=self.stage))
+            finally:n.cells[p]=old
+
 
 if __name__ == '__main__':
     unittest.main()

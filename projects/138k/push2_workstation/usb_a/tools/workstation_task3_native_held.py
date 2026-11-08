@@ -234,7 +234,7 @@ def audit_direct_held_boundaries(n, result, *, root):
         apb_request_minimum_receiving_capture_edge=3, physical_timing_verified=False, hardware_tested=False)
 
 
-def audit_direct_tf_owner(n, *, stage=None, root=None):
+def audit_direct_tf_owner(n, *, stage=None, root=None, mapping="synthesis"):
     """Strict scope/inventory and real 68-to-67 status held mailbox proof.
 
     Bit zero is used by source-side change detection and has no compute sink.
@@ -271,7 +271,7 @@ def audit_direct_tf_owner(n, *, stage=None, root=None):
     local_compute=None
     if stage is not None:
         from tools.workstation_tf_compute_local_release import audit_mapped
-        local_compute=audit_mapped(n,stage=stage,root=root)
+        local_compute=audit_mapped(n,stage=stage,root=root,mapping=mapping)
     compute_reset_q=compute_q if local_compute is not None else root_q
     all_status = [*held, *captured.values(), request, ack, g.register(scope, 'status_capture')]
     stages = []

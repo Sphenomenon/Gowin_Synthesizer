@@ -27,9 +27,12 @@ def placement(cst, proof):
         # Keep the previously routed F808 corners; place the additional M
         # mailboxes in their own regions, with opposite PCM directions sharing
         # domain-local regions. Finite payload min/max and hold stay active.
-        if row['id']=='PANIC_epoch':regions=('R[15:25]C[25:40]','R[45:55]C[65:80]')
-        if row['id']=='M_PCM_request':regions=('R[20:30]C[120:135]','R[55:65]C[80:95]')
-        if row['id']=='M_PCM_response':regions=('R[55:65]C[80:95]','R[20:30]C[120:135]')
+        # A11 routed these payloads with ~1ns data flight against the retained
+        # 1.8ns minimum plus ~2ns clock skew. Use two broad, opposite regions
+        # for the additional M mailboxes; keep F808's routed corner policy.
+        if row['id']in('PANIC_epoch','M_PCM_request'):
+            regions=('R[15:25]C[140:155]','R[75:85]C[20:35]')
+        if row['id']=='M_PCM_response':regions=('R[75:85]C[20:35]','R[15:25]C[140:155]')
         for field,region in zip(('source','capture'),regions):
             for pin in row[field]:
                 path=pin.rsplit('/',1)[0]
@@ -40,12 +43,13 @@ def placement(cst, proof):
     expected=348 if proof['role']=='M' else 164
     require(len(rows)==expected, 'incomplete paired held placement inventory')
     selected=cst+('\n# Proved paired held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return selected,dict(policy='task3_exact_held_endpoint_separation_v3',registers=rows,
+    return selected,dict(policy=('task3_M_A11_held_endpoint_separation_v4'if proof['role']=='M'
+                                 else'task3_exact_held_endpoint_separation_v3'),registers=rows,
         before_cst_sha256=digest(cst),after_cst_sha256=digest(selected),
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n):
+def w_native_placement(cst,n,*,publication=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -55,6 +59,10 @@ def w_native_placement(cst,n):
     no timing exception is added for a payload or functional reset.
     """
     from tools.workstation_custom_board_implementation import digest
+    publication_proof=None
+    if publication:
+        from tools.workstation_ble_completion_publication import audit_mapped
+        publication_proof=audit_mapped(n)
     g=Graph(n);scope='u_task3_media/raw_store';overrides={}
     def select(paths,region,clock):
         for p in paths:
@@ -81,9 +89,12 @@ def w_native_placement(cst,n):
     kinds={'DFFCE','DFFPE','DFFRE','LUT2','LUT3','LUT4','ALU',
            'MUX2_LUT5','MUX2_LUT6','MUX2_LUT7','MUX2_LUT8'}
     groups=[];reviewed=set()
-    for prefix,count in [('u_task3_media/memory/u_arbiter/',2672),
-                         ('u_task3_media/raw_store/',4685),
-                         ('u_managed/runtime/delay_dma/',1773)]:
+    # Full publication mapping reviewed separately: 34 new raw FFs; local
+    # LUT factoring changes the arbiter by +1 and DMA by -2. No region grows.
+    counts=(2673,4700,1771)if publication else(2672,4685,1773)
+    for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
+                             'u_task3_media/raw_store/',
+                             'u_managed/runtime/delay_dma/'],counts):
         paths=sorted(p for p,c in n.cells.items()if p.startswith(prefix)and c['kind']in kinds)
         require(len(paths)==count,'W native B7 primitive inventory changed '+prefix)
         groups.append(dict(scope=prefix,primitive_count=count))
@@ -122,12 +133,15 @@ def w_native_placement(cst,n):
             if kind in COMB:
                 backward.add(p);todo.extend(n.pin(p,port)for port in n.cells[p]['ports']if port not in COMB[kind])
     cone=forward&backward
-    require(len(cone)==76 and {n.cells[p]['kind']for p in cone}==
+    # The selected rebuild absorbs two DMA n6315 LUTs and renames one slot
+    # LUT. The same 128 tag Qs and 257 return FFs bound the actual causal cone.
+    cone_count=74 if publication else 76
+    require(len(cone)==cone_count and {n.cells[p]['kind']for p in cone}==
             {'LUT2','LUT3','LUT4','MUX2_LUT5','MUX2_LUT6'},'W tag-return causal cone changed')
     selected={p:'R[50:70]C[55:80]'for p in (*tags,*delay,*sorted(cone))}
     require(not(set(selected)&set(overrides)),'W held/critical placement overlaps')
     selected.update(overrides)
-    require(len(selected)==741,'W targeted placement inventory changed')
+    require(len(selected)==(739 if publication else 741),'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -141,7 +155,9 @@ def w_native_placement(cst,n):
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy='task3_W_B7_exact_tag_return_and_held_locality_v4',groups=groups,
+    return result,dict(policy=('task3_W_B7_publication_tag_return_and_held_locality_v5'if publication
+                              else'task3_W_B7_exact_tag_return_and_held_locality_v4'),groups=groups,
+        completion_publication=publication_proof,
         placement_groups=placement_groups,historical_broad_primitive_review_count=len(reviewed),
         tag_return_cone=dict(source=tags,capture=delay,combinational_cells=sorted(cone)),
         broad_region_constraints_removed=True,

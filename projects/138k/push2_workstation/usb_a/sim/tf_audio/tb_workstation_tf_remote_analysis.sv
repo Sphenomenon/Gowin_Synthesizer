@@ -31,7 +31,8 @@ module workstation_tf_direct_native_v1 #(
  end
 endmodule
 
-module tb_workstation_tf_remote_analysis #(parameter bit LOCAL_NATIVE_HEAD_ENABLE=0);
+module tb_workstation_tf_remote_analysis #(parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,
+ parameter bit PARALLEL_STATUS_COMPARE_ENABLE=0);
  reg clk=0,compute=0,reset=0;always #10 clk=!clk;always #6.5 compute=!compute;
  reg mode=0,restart=0,areq=0,acancel=0,astart_ready=1,pcm_ready=1,physical_eos=0;
  reg song_valid=0,service_cancel=0;
@@ -39,7 +40,8 @@ module tb_workstation_tf_remote_analysis #(parameter bit LOCAL_NATIVE_HEAD_ENABL
  wire astart,avalid,alast,acancel_out,failed,busy,quiet,tfvalid,tfactive,tfbusy;
  wire [31:0] pcm;wire [3:0] failure;
  integer count=0,starts=0,checks=0,play_frames=0;
- workstation_tf_direct_runtime_service #(.REMOTE_ANALYSIS_ENABLE(1),.LOCAL_NATIVE_HEAD_ENABLE(LOCAL_NATIVE_HEAD_ENABLE),.SEPARATE_COMMON_RESET(1),.QUIET_TIMEOUT_CYCLES(80)) dut(
+ workstation_tf_direct_runtime_service #(.REMOTE_ANALYSIS_ENABLE(1),.LOCAL_NATIVE_HEAD_ENABLE(LOCAL_NATIVE_HEAD_ENABLE),
+ .PARALLEL_STATUS_COMPARE_ENABLE(PARALLEL_STATUS_COMPARE_ENABLE),.SEPARATE_COMMON_RESET(1),.QUIET_TIMEOUT_CYCLES(80)) dut(
   .rst_ni(reset),.common_reset_ni(reset),.clk_50m_i(clk),.compute_clk_i(compute),
   .mode_i(mode),.run_i(1'b1),.restart_i(restart),.cancel_i(service_cancel),.transport_error_i(1'b0),.track_index_i(4'd0),
   .runtime_valid_i(1'b1),.runtime_44k1_i(1'b0),.runtime_fault_i(1'b0),.runtime_busy_i(1'b0),.runtime_epoch_i(32'd1),

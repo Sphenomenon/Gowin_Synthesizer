@@ -393,6 +393,38 @@ def routed_worker_retained(vo,parent,audit):
         retired_display_and_TF_owners_absent=True,hardware_tested=False)
 
 
+
+def routed_m_retained(vo,parent,audit,stage):
+    """Recheck flat M retained mailboxes/reset equations against sealed root.
+
+    Hierarchy-only TF FIFO/tail and whole-root synthesis proofs are never
+    replayed as routed acceptance. This is the PLL gate's actual retained
+    mailbox/reset subgate; full routed CDC and STA remain separate.
+    """
+    from tools.workstation_native_protocol_audit import (protocol_netlist,
+        audit_native_protocol,validate_native_protocol_sdc)
+    from tools.workstation_task3_native_held import audit_direct_held_boundaries
+    from tools.workstation_task3_paired_board import restore_constraints
+    from tools.workstation_task3_w_usb_retirement import restore_selected_sdc
+    gate=audit['gates']['native_held_handshakes']
+    if gate.get('passed') is not True or not parent.get('task3_tf_direct_cdc'):
+        raise ValueError('M routed retained proof requires sealed passed DIRECT held gate')
+    root=audit['gates']['M_paired_release_CDC']['evidence']['actual_root_startup']
+    n=protocol_netlist(vo,mapping='routed')
+    result=audit_native_protocol(n,profile='m-task3-direct',mapping='routed',stage=stage,root=root)
+    result['demo_held_handshakes']=audit_direct_held_boundaries(n,result,root=root)
+    from tools.workstation_performance_reset import demo_held_handshake_constraints
+    sdc=restore_constraints(stage,restore_selected_sdc(
+        (stage/'constraints/custom_138k.sdc').read_text(),parent),parent['task3_paired_sdc'])
+    result['installed_local_sdc']=validate_native_protocol_sdc(sdc,n,result,
+        demo_held_handshakes=demo_held_handshake_constraints())
+    return dict(gate_applied=True,actual_native_protocol=result,
+        actual_root_startup=root,
+        full_peripheral_and_TF_FIFO_tail_routed_CDC_required=True,
+        scope='actual retained M mailbox, first-stage consumer and reset subgates; not full physical CDC',
+        physical_timing_verified=False,hardware_tested=False)
+
+
 def audit(physical, self_test=False, workspace=None, output=None):
     if not __debug__:
         raise ValueError('Validation requires normal Python execution; -O is forbidden')
@@ -408,6 +440,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
         Path(__file__).with_name('workstation_runtime_pcm_cdc.py'),
         Path(__file__).with_name('workstation_synthesis_netlist.py'),
         Path(__file__).with_name('workstation_recording_phase1_cdc.py'),
+        Path(__file__).with_name('workstation_task3_root_reset_audit.py'),
+        Path(__file__).with_name('workstation_task3_tf_startup_audit.py'),
         Path(__file__).with_name('workstation_runtime_profile.py'),
         Path(__file__).with_name('workstation_runtime_cdc.py'),
         reference, physical / 'physical.cst', base.with_suffix('.sdf'), base.with_suffix('.vo'), base.with_suffix('.tr')))
@@ -468,6 +502,13 @@ def audit(physical, self_test=False, workspace=None, output=None):
     demo_role = selection.get('demo_role') or selection.get('paired_role')
     worker_headless=(selection.get('paired_role')=='W' and
         parent.get('worker_media',{}).get('policy')=='task3_w_paired_exact_top_composition_v1')
+    paired_direct_root = None
+    if selection.get('paired_role') == 'M' and parent.get('task3_tf_direct_cdc'):
+        sealed_audit = json.loads((physical/'parent_synthesis_audit.json').read_text())
+        release_gate = sealed_audit['gates']['M_paired_release_CDC']
+        if release_gate.get('passed') is not True:
+            raise ValueError('paired DIRECT routed startup requires passed sealed root/release proof')
+        paired_direct_root = release_gate['evidence']['actual_root_startup']
     demo_held_handshakes, demo_held_errors = {}, []
     if worker_headless:
         try:
@@ -475,7 +516,13 @@ def audit(physical, self_test=False, workspace=None, output=None):
                 json.loads((physical/'parent_synthesis_audit.json').read_text()))
         except (ValueError,KeyError,OSError) as error:
             demo_held_errors.append(str(error))
-    if demo_role and not worker_headless:
+    if paired_direct_root is not None:
+        try:
+            demo_held_handshakes=routed_m_retained(vo,parent,
+                json.loads((physical/'parent_synthesis_audit.json').read_text()),stage)
+        except (ValueError,KeyError,OSError) as error:
+            demo_held_errors.append(str(error))
+    if demo_role and not worker_headless and paired_direct_root is None:
         from tools.workstation_performance_reset import (
             audit_demo_held_handshakes, DEMO_HELD_TIMING_POLICIES)
         from tools.workstation_native_protocol_audit import protocol_netlist
@@ -496,7 +543,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
     tf_disabled_m_core = parent.get('workstation_profile', {}).get('name') == \
         'custom138k-workstation-task3-m-independent-ddr-map-v1'
     startup_errors, startup = inspect_serializer_startup(sdf, vo, ddr, sdc, lane_layout='native',
-        startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless)
+        startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless,
+        paired_direct_root=paired_direct_root)
     video_errors, video = ([],dict(retired=True,headless_W=True)) if worker_headless else inspect_video_pll_init(sdf, vo, stage)
     shared_errors, shared = shared_clock_plls(sdf, vo, RoutedDesign, local_panel_enabled=local_panel_enabled,
                                              worker_headless=worker_headless)
@@ -536,7 +584,8 @@ def audit(physical, self_test=False, workspace=None, output=None):
             bad, unused = (shared_clock_plls(sdf, broken, RoutedDesign, local_panel_enabled=local_panel_enabled,
                                              worker_headless=worker_headless) if kind == 'PLL' else
                            inspect_serializer_startup(sdf, broken, ddr, sdc, lane_layout='native',
-                               startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core))
+                               startup_grant_role=demo_role, tf_disabled_m_core=tf_disabled_m_core,
+                               worker_headless=worker_headless,paired_direct_root=paired_direct_root))
             if not bad or not any(reason in message for message in bad):
                 raise ValueError('Negative mutation did not fail its gate: ' + name + ' ' + str(bad))
             negatives[name + '/' + pin] = bad

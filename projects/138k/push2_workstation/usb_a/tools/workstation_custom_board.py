@@ -195,6 +195,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         profile_dependencies += (effects_reservation.TOOL,)
     from tools import workstation_task3_tf_tail_reset as tail_reset
     from tools import workstation_tf_compute_local_release as tf_compute_reset
+    from tools import workstation_ble_completion_publication as completion_publication
+    completion_selected=completion_publication.configured({} if profile is None else profile['configuration'])
+    if completion_selected:
+        profile_dependencies += (completion_publication.TOOL,completion_publication.MANIFEST)
     tf_compute_selected=tf_compute_reset.configured({} if profile is None else profile['configuration'])
     if tf_compute_selected:
         profile_dependencies += (tf_compute_reset.TOOL,tf_compute_reset.MANIFEST)
@@ -492,6 +496,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             lease_source.prepare(stage,profile['configuration'])
     task3_tail_reset = tail_reset.select(stage, profile['configuration']) if tail_reset_selected else None
     task3_tf_compute_reset=tf_compute_reset.select(stage,profile['configuration']) if tf_compute_selected else None
+    raw_completion_publication=completion_publication.select(stage,profile['configuration']) if completion_selected else None
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
     if capture_compare_selected:
@@ -739,6 +744,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['task3_tf_tail_reset'] = task3_tail_reset
         if task3_tf_compute_reset is not None:
             metadata['task3_tf_compute_reset']=task3_tf_compute_reset
+        if raw_completion_publication is not None:
+            metadata['raw_completion_publication']=raw_completion_publication
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR

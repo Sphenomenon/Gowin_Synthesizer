@@ -34,7 +34,13 @@ def reuse(source,destination,*,audit_tool_only=False):
         # Gowin. Keep default reuse strict; explicitly bind their old/new hashes
         # only after every project, script, HDL/include, memory and IP matches.
         reviewed={'tools/workstation_w_context_compare.py',
-                  'tools/workstation_task3_receipt_audit.py'}
+                  'tools/workstation_task3_receipt_audit.py',
+                  # Reviewed mapped/startup proof updates after v35. These
+                  # Python files are staged review inputs; the checks below
+                  # still reject any compiler listing or source reference.
+                  'tools/workstation_task3_native_held.py',
+                  'tools/workstation_tf_compute_local_release.py',
+                  'tools/workstation_tf_status_compare.py'}
         if not audit_tool_only or not set(different)<=reviewed:
             raise ValueError('staged compiler input bytes differ: '+repr(different))
         import xml.etree.ElementTree as ET

@@ -7,7 +7,8 @@ module workstation_ble_raw_ddr_store #(
     parameter integer FIFO_ADDRESS_BITS=8,
     parameter integer COMMAND_TIMEOUT_CYCLES=10000,
     parameter integer READ_TIMEOUT_CYCLES=10000,
-    parameter bit CAPTURE_COMMAND=0
+    parameter bit CAPTURE_COMMAND=0,
+    parameter bit PIPELINED_COMPLETION_ENABLE=0
 ) (
     input wire clk_i,memory_clk_i,rst_ni,
     input wire start_valid_i,
@@ -67,6 +68,8 @@ module workstation_ble_raw_ddr_store #(
     // One immutable command descriptor and immutable completion. Payloads are
     // held from publication until the next request can legitimately replace it.
     reg command_req,command_ack;
+    reg completion_ready,completion_zero;
+    reg [31:0] completion_count_snapshot;
     (* ASYNC_REG="TRUE" *) reg command_ack_meta,command_ack_sync;
     (* ASYNC_REG="TRUE" *) reg command_req_meta,command_req_sync;
     reg command_ack_seen;
@@ -320,7 +323,8 @@ module workstation_ble_raw_ddr_store #(
     // The source cannot replace it before ACK. The extra local cycle removes
     // the cross-clock descriptor-to-business critical path without changing
     // command ordering, cancellation, quarantine or native acceptance.
-    wire memory_command_request=command_req_sync!=command_ack && !memory_command_active;
+    wire memory_command_request=command_req_sync!=
+        (PIPELINED_COMPLETION_ENABLE ? completion_ready:command_ack) && !memory_command_active;
     wire [1:0] memory_command_kind;
     wire [31:0] memory_command_generation,memory_command_offset;
     wire [13:0] memory_command_length;
@@ -542,6 +546,7 @@ module workstation_ble_raw_ddr_store #(
             return_req<=0;return_data<=0;return_generation<=0;return_word<=0;return_pending<=0;
             return_ack_meta<=0;return_ack_sync<=0;
             completion_generation<=0;completion_committed<=0;completion_kind<=0;completion_code<=0;
+            completion_ready<=0;completion_zero<=0;completion_count_snapshot<=0;
             memory_generation<=0;memory_next_index<=0;memory_committed<=0;fifo_consumed<=0;memory_clear_target<=0;
             memory_active<=0;memory_closed<=1;memory_empty<=1;memory_clear_pending<=0;memory_command_active<=0;
             memory_channel_fault<=0;pack_frames<=0;published_frames<=0;
@@ -555,6 +560,17 @@ module workstation_ble_raw_ddr_store #(
             cancel_meta<=cancel_toggle;cancel_sync<=cancel_meta;
             status_ack_meta<=status_ack;status_ack_sync<=status_ack_meta;
             return_ack_meta<=return_ack;return_ack_sync<=return_ack_meta;
+            // Local completion retires on its original edge. Its count is
+            // private until the following memory edge publishes the ACK.
+            // Snapshot before publication, then freeze until ACK owns it.
+            // The original count (including errors) is retained at publication.
+            if(PIPELINED_COMPLETION_ENABLE)begin
+                if(completion_ready==command_ack)completion_count_snapshot<=memory_committed;
+                else begin
+                    completion_committed<=completion_zero ? 32'd0:completion_count_snapshot;
+                    command_ack<=completion_ready;
+                end
+            end
             pack_word_valid<=0;
             // Payload is private while this local slot is empty. Preload it
             // without broadcasting native-accept/fault feedback to its wide
@@ -634,9 +650,12 @@ module workstation_ble_raw_ddr_store #(
 
             if(memory_command_start)begin
                 if(memory_channel_fault || memory_fault_now)begin
-                    completion_generation<=memory_command_generation;completion_committed<=memory_committed;
+                    completion_generation<=memory_command_generation;
+                    if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
+                    else completion_committed<=memory_committed;
                     completion_kind<=memory_command_kind;completion_code<=memory_failure==0 ? F_TRANSPORT : memory_failure;
-                    command_ack<=command_req_sync;
+                    if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                    else command_ack<=command_req_sync;
                 end else case(memory_command_kind)
                     CMD_START:begin
                         // New-epoch frames may reach the FIFO synchronizer at
@@ -647,14 +666,23 @@ module workstation_ble_raw_ddr_store #(
                         end else begin
                             memory_active<=1;memory_closed<=0;memory_empty<=0;completion_code<=0;
                         end
-                        completion_generation<=memory_command_generation;completion_committed<=0;completion_kind<=CMD_START;
-                        command_ack<=command_req_sync;
+                        completion_generation<=memory_command_generation;
+                        if(PIPELINED_COMPLETION_ENABLE)completion_zero<=1;
+                        else completion_committed<=0;
+                        completion_kind<=CMD_START;
+                        if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                        else command_ack<=command_req_sync;
                     end
                     CMD_CLEAR:begin
                         if(memory_command_generation!=memory_generation+1'b1 || memory_generation==32'hffffffff)begin
                             memory_channel_fault<=1;
-                            completion_generation<=memory_command_generation;completion_committed<=memory_committed;
-                            completion_kind<=CMD_CLEAR;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
+                            completion_generation<=memory_command_generation;
+                            if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
+                            else completion_committed<=memory_committed;
+                            completion_kind<=CMD_CLEAR;
+                            completion_code<=F_PROTOCOL;
+                            if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                            else command_ack<=command_req_sync;
                         end else begin
                             memory_generation<=memory_command_generation;memory_command_active<=1;memory_clear_pending<=1;
                             memory_clear_target<=memory_command_event_target;memory_active<=0;memory_closed<=1;memory_empty<=0;
@@ -665,8 +693,13 @@ module workstation_ble_raw_ddr_store #(
                         if(memory_command_generation!=memory_generation || !memory_drained_now || memory_empty ||
                            memory_command_length==0 || memory_command_length>8112 || memory_fetch_end[32] ||
                            {2'd0,memory_fetch_end}>{1'b0,memory_committed,2'b0})begin
-                            completion_generation<=memory_command_generation;completion_committed<=memory_committed;
-                            completion_kind<=CMD_FETCH;completion_code<=F_DESCRIPTOR;command_ack<=command_req_sync;
+                            completion_generation<=memory_command_generation;
+                            if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
+                            else completion_committed<=memory_committed;
+                            completion_kind<=CMD_FETCH;
+                            completion_code<=F_DESCRIPTOR;
+                            if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                            else command_ack<=command_req_sync;
                         end else begin
                             memory_fetch_active<=1;memory_fetch_cancel<=cancel_now;memory_command_active<=1;
                             fetch_beats_total<=memory_fetch_beats;fetch_beats_issued<=0;
@@ -675,8 +708,13 @@ module workstation_ble_raw_ddr_store #(
                     end
                     default:begin
                         memory_channel_fault<=1;
-                        completion_generation<=memory_command_generation;completion_committed<=memory_committed;
-                        completion_kind<=memory_command_kind;completion_code<=F_PROTOCOL;command_ack<=command_req_sync;
+                        completion_generation<=memory_command_generation;
+                        if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
+                        else completion_committed<=memory_committed;
+                        completion_kind<=memory_command_kind;
+                        completion_code<=F_PROTOCOL;
+                        if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                        else command_ack<=command_req_sync;
                     end
                 endcase
             end
@@ -689,17 +727,26 @@ module workstation_ble_raw_ddr_store #(
             if(clear_initialize)begin
                 memory_clear_pending<=0;memory_command_active<=0;memory_empty<=1;memory_closed<=1;
                 memory_next_index<=0;memory_committed<=0;memory_fetch_cancel<=0;
-                completion_generation<=memory_generation;completion_committed<=0;
-                completion_kind<=CMD_CLEAR;completion_code<=0;command_ack<=command_req_sync;
+                completion_generation<=memory_generation;
+                if(PIPELINED_COMPLETION_ENABLE)completion_zero<=1;
+                else completion_committed<=0;
+                completion_kind<=CMD_CLEAR;
+                completion_code<=0;
+                if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                else command_ack<=command_req_sync;
             end
             if(memory_fetch_active && memory_quiescent &&
                (memory_fetch_cancel || cancel_now || memory_channel_fault ||
                 fetch_beats_issued==fetch_beats_total))begin
                 memory_fetch_active<=0;memory_command_active<=0;
-                completion_generation<=memory_generation;completion_committed<=memory_committed;completion_kind<=CMD_FETCH;
+                completion_generation<=memory_generation;
+                if(PIPELINED_COMPLETION_ENABLE)completion_zero<=0;
+                else completion_committed<=memory_committed;
+                completion_kind<=CMD_FETCH;
                 completion_code<=memory_channel_fault ? memory_failure :
                     (memory_fetch_cancel || cancel_now) ? F_CANCELLED : 4'd0;
-                command_ack<=command_req_sync;
+                if(PIPELINED_COMPLETION_ENABLE)completion_ready<=command_req_sync;
+                else command_ack<=command_req_sync;
             end
             if(memory_fault_now)begin
                 memory_channel_fault<=1;memory_fetch_cancel<=1;

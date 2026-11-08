@@ -30,7 +30,7 @@ class ActualPairedReceipt(unittest.TestCase):
         cls.vg = cls.stage/'impl/gwsynthesis/custom_138k_integration.vg'
         cls.n = protocol_netlist(cls.vg.read_text(), mapping='synthesis')
         cls.root = audit_root_startup(cls.n, stage=cls.stage)
-        cls.actual = audit_direct_receipt(cls.n, root=cls.root)
+        cls.actual = audit_direct_receipt(cls.n, root=cls.root, stage=cls.stage)
         cls.mutations, cls.failed = [], False
         cls.before = {str(p): sha(p) for p in (cls.vg,
             *(cls.stage/p for p in cls.root['source_sha256']),
@@ -73,7 +73,7 @@ class ActualPairedReceipt(unittest.TestCase):
     def reject(self, label, path, part, key, value):
         with self.subTest(case=label), self.changed(path, part, key, value):
             with self.assertRaises(ValueError) as error:
-                audit_direct_receipt(self.n, root=self.root)
+                audit_direct_receipt(self.n, root=self.root, stage=self.stage)
         self.mutations.append(dict(case=label, rejected=True, error=str(error.exception)))
 
     def test_actual_source_and_queue_history_lifecycle(self):
@@ -123,6 +123,18 @@ class ActualPairedReceipt(unittest.TestCase):
     def test_exact_abort_comparison_and_truth_table_mutants(self):
         g=Graph(self.n)
         for row in self.actual['paired_source_abort_lifecycle']['exact_inequality_comparisons']:
+            if row.get('exact_grouped_equality'):
+                for byte in row['exact_grouped_equality']['byte_equations']:
+                    p,port=g.drivers[byte['net']][0]
+                    self.assertRegex(self.n.cells[p]['kind'],'^LUT[1-6]$')
+                    width=int(self.n.cells[p]['kind'][3:])
+                    self.reject('generation byte '+str(byte['byte'])+' equality disabled',
+                        p,'parameters','INIT',str(1<<width)+"'h0")
+                    carry=next(iter(g.carry_frontier(byte['net'])))
+                    p,port=g.drivers[carry][0]
+                    self.reject('generation byte '+str(byte['byte'])+' operand removed',
+                        p,'ports','I0',"1'b0")
+                continue
             p,port=g.drivers[row['actual_output']][0]
             self.assertEqual(port,'COUT')
             self.reject(row['id']+' NE operand removed',p,'ports','I0',"1'b0")

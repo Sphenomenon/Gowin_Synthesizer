@@ -24,11 +24,14 @@ def require(condition, message):
 
 
 def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
-                             payload, request, ack_sync, source_ce, source_reset_q):
+                             payload, request, ack_sync, source_ce, source_reset_q,
+                             generation_compare=None):
     """Exact paired source/abort/session proof; no event or payload data cuts.
 
-    Four arithmetic summaries are admitted only after their entire actual NE
-    chains match every reviewed registered operand pair. The remaining inputs
+    Arithmetic summaries are admitted only after their entire actual NE
+    chains match every reviewed registered operand pair. The selected grouped
+    generation form instead proves all four byte equalities before cutting
+    those outputs. The remaining inputs
     are explicitly inventoried audio-clock FF Qs. Fault producers, blocked's
     state machine and physical-tail event meanings remain external owners;
     abort_queued and all receipt queue/session state are proved here.
@@ -50,8 +53,27 @@ def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
                             rq(r, 'g_direct_tf.epoch_q', i))) for i in range(32)},
     }
     carries = g.carry_frontier(source_ce)
-    require(len(carries) == 4, 'paired receipt must have exactly four abort/status NE chains')
     comparisons, comparison_rows, residuals = {}, [], {}
+    generation_bytes = []
+    if generation_compare is not None:
+        # The selected byte comparator is proved from all 32 registered
+        # operand pairs before its four exact equality outputs become cuts.
+        # Keep the other abort comparisons and their full CE equations.
+        byte_rows = generation_compare['byte_equations']
+        require(len(byte_rows) == 4 and {r['byte'] for r in byte_rows} == set(range(4)) and
+                {frozenset(pair) for row in byte_rows for pair in row['operands']} == operands['generation'],
+                'paired grouped generation operand inventory changed')
+        generation_bytes = [row['net'] for row in byte_rows]
+        generation_carries = set().union(*(g.carry_frontier(net) for net in generation_bytes))
+        require(len(generation_carries) == 4 and generation_carries <= carries and len(carries) == 7,
+                'paired grouped generation/abort carry inventory changed')
+        carries -= generation_carries
+        comparison_rows.append(dict(id='generation',actual_output=None,width=32,
+            operand_pairs=sorted(sorted(pair) for pair in operands['generation']),
+            exact_grouped_equality=generation_compare,
+            full_comparison_in_source_CE_BDD=True,summary_is_unverified_cut=False))
+    else:
+        require(len(carries) == 4, 'paired receipt must have exactly four abort/status NE chains')
     for carry in sorted(carries):
         actual = g.inequality_chain(carry)
         labels = [label for label, pairs in operands.items() if actual <= pairs and len(pairs-actual)<=1]
@@ -66,7 +88,8 @@ def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
             residual_operand_pairs=residuals[label],
             exact_NE_chain_all_bits_verified=not residuals[label],
             full_comparison_in_source_CE_BDD=True,summary_is_unverified_cut=False))
-    require(set(comparisons) == set(operands), 'paired receipt comparison inventory incomplete')
+    require(set(comparisons) | ({'generation'} if generation_bytes else set()) == set(operands),
+            'paired receipt comparison inventory incomplete')
     state = dict(root=root['root_register'], compute=reg(s, 'compute_release', 2),
         aq=reg(s, 'abort_queued'), eq=reg(s, 'eos_queued'),
         eos=reg(TAIL, 'physical_eos_o'), req=request, ack=ack_sync[1],
@@ -79,11 +102,11 @@ def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
         overflow=reg(ds, 'overflow_sticky'), peerfault=reg(ds, 'peer_fault'),
         delayfault=reg(ds, 'transaction_fault'), underflow=reg(ds, 'underflow_sticky'))
     state.update({'history'+str(i): reg(r+'/cpu_pcm.owner', 'history_state', i) for i in range(3)})
-    leaves = [q(p) for p in state.values()] + list(comparisons.values()) + [net for pairs in residuals.values()for pair in pairs for net in pair]
+    leaves = [q(p) for p in state.values()] + list(comparisons.values()) + generation_bytes + [net for pairs in residuals.values()for pair in pairs for net in pair]
     require(len(leaves) == len(set(leaves)), 'paired receipt state/comparison aliases changed')
     # All remaining Boolean inputs must be these real registered publishers;
     # in particular abort_queued is not an unconstrained event-condition cut.
-    require(g.support(source_ce, cuts=carries) == set(leaves) - {root['root_q']},
+    require(g.support(source_ce, cuts=carries | set(generation_bytes)) == set(leaves) - {root['root_q']},
             'paired source acceptance has an unreviewed state or arithmetic input')
     external = []
     for label, p in state.items():
@@ -107,6 +130,8 @@ def _paired_source_lifecycle(n, g, root, *, ff, next_proof, proofs,
     def raw_abort(b):
         x = v(b)
         cmp = {name: b.inputs[net] for name, net in comparisons.items()}
+        if generation_bytes:
+            cmp['generation'] = b.invert(b.all(b.inputs[net] for net in generation_bytes))
         for name,pairs in residuals.items():
             for left,right in pairs:
                 cmp[name]=b.either(cmp[name],b.different(b.inputs[left],b.inputs[right]))
@@ -380,9 +405,13 @@ def audit_direct_receipt(n, *, root, stage=None):
                                           M_PHONE_BATCH_PROVIDER,M_SYNC_PROVIDER)
     paired_lifecycle = None
     if paired:
+        generation_compare = None
+        if stage is not None:
+            from tools.workstation_tf_status_compare import audit_mapped as audit_generation
+            generation_compare = audit_generation(n,stage=stage)
         paired_lifecycle = _paired_source_lifecycle(n, g, root, ff=ff, next_proof=next_proof,
             proofs=proofs, payload=payload, request=request, ack_sync=ack_sync, source_ce=source_ce,
-            source_reset_q=source_reset_q)
+            source_reset_q=source_reset_q,generation_compare=generation_compare)
     else:
         source_leaves = [root_q, q(compute_release), rq, a1, condition_cut, q(queued_eos), q(physical_eos)]
         require(len(source_leaves) == len(set(source_leaves)), 'source acceptance state/event cuts alias')

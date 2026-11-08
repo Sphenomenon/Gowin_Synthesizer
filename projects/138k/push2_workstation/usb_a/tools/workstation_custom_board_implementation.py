@@ -261,14 +261,17 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         physical_sdc+=extra.encode()
         cst,held_proofs['paired_placement']=place_held(cst,held_proofs['paired'])
         if role=='M':
+            physical_sdc,held_proofs['M_PLL_control_limits']=m_preboard_pll_control_limits(physical_sdc,netlist_text)
             from tools.workstation_task3_m_session_boundary import audit as specific_held
         else:
             from tools.workstation_task3_w_raw_command_capture import audit as specific_held
-        held_proofs['role_specific'],extra=specific_held(n)
+        held_proofs['role_specific'],extra=specific_held(n,**(
+            {'publication':bool(metadata.get('raw_completion_publication'))}if role=='W'else {}))
         physical_sdc+=extra.encode()
         if role=='W':
             from tools.workstation_task3_preboard_held_timing import w_native_placement
-            cst,held_proofs['W_native_placement']=w_native_placement(cst,n)
+            cst,held_proofs['W_native_placement']=w_native_placement(cst,n,
+                publication=bool(metadata.get('raw_completion_publication')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -369,14 +372,56 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
     return result
 
 
+
+def m_preboard_pll_control_limits(sdc,netlist_text):
+    """Tighten actual A11 registered control flights; retain the full 10ns audit.
+
+    These 5ns Q-to-PLL data bounds reserve propagation for the real clk50
+    input/clock-tree/CLK-Q budget. Constants and video reset logic stay under
+    their existing source and routed gates. No exception or clock is changed.
+    """
+    from tools.workstation_native_protocol_audit import protocol_netlist
+    from tools.workstation_runtime_pcm_cdc import Graph
+    n=protocol_netlist(netlist_text,mapping='synthesis');g=Graph(n);rows=[];lines=[]
+    for prefix in ('u_cpu_pll','u_video/u_clock/g_hardware.u_pll/u_reference'):
+        path=prefix+'/PLL_inst';cell=n.cells.get(path,{})
+        if cell.get('kind')!='PLL':raise ValueError('M PLL control target absent '+path)
+        for bus,width,start in [('ICPSEL',6,3),('LPFRES',3,0),('RESET',1,9)]:
+            if prefix!='u_cpu_pll' and bus=='RESET':continue
+            scope=n.scopes[path];bits=g.binding_bits(scope,cell['ports'][bus])
+            if len(bits)!=width:raise ValueError('M PLL control width changed')
+            for index,raw in enumerate(bits):
+                net=n.canonical(scope,raw)
+                if prefix!='u_cpu_pll' and bus=='ICPSEL' and index>=2:
+                    if net not in g.low:raise ValueError('M video PLL static control changed')
+                    continue
+                drivers=g.drivers[net]
+                if len(drivers)!=1:raise ValueError('M PLL control is not unique')
+                source,pin=drivers[0]
+                pattern=(re.escape(prefix+'/pll_control_'+str(start+index))+r'_s\d+' if prefix=='u_cpu_pll'
+                    else re.escape(prefix+'/u_pll_init/RomDreg_'+str(index if bus=='ICPSEL' else index+8))+r'_s\d+')
+                if not re.fullmatch(pattern,source) or pin!='Q' or not n.cells[source]['kind'].startswith('DFF') or n.pin(source,'CLK')!='clk_50m':
+                    raise ValueError('M PLL control publisher/clock changed '+source)
+                endpoint=path+'/'+(bus if bus=='RESET' else bus+'['+str(index)+']')
+                command=f'set_max_delay 5.000 -from [get_pins {{{source}/Q}}] -to [get_pins {{{endpoint}}}]'
+                if command.encode() in sdc:raise ValueError('M PLL limit already installed')
+                lines.append(command);rows.append(dict(source=source+'/Q',endpoint=endpoint,maximum_ns=5.0))
+    if len(rows)!=15:raise ValueError('M PLL exact fifteen registered controls changed')
+    result=sdc+('\n# task3 M A11 PLL registered control route budgets\n'+'\n'.join(lines)+'\n').encode()
+    return result,dict(policy='task3_M_A11_registered_PLL_controls_max5_v1',paths=rows,
+        full_routed_propagation_budget_ns=10.0,parent_sdc_sha256=digest(sdc),selected_sdc_sha256=digest(result),
+        timing_relaxed=False,clock_periods_changed=False,routed_timing_verified=False)
+
+
 def m_preboard_clock_priority(payload,netlist_text):
     """Reserve LW8..10 for real clocks after A8 exhausted all long wires.
 
     A8 put eight functional clocks on PRIMARY and eight mixed reset/reference
     nets on LW, spilling ULPI and both DAC references to generic routing. The
     same-device syntax probe confirms BUFG[8] selects LW. Give clocks priority
-    over three reset-distribution nets, without changing any timing exception.
-    Their full setup/hold/recovery/removal must pass the new physical run.
+    and reserve LW11 for the functional memory release after its A11 recovery
+    failure. The other two reset nets use local routing. All timing checks
+    remain required in the new physical run.
     """
     n=SynthesisNetlist(netlist_text,TOP);lines=[];inputs=[]
     for bit,port in enumerate(('usb2_ulpi_clk','clk_12m288','clk_16m9344'),8):
@@ -397,9 +442,14 @@ def m_preboard_clock_priority(payload,netlist_text):
         producers=[p for p,c in n.cells.items()if c['kind'].startswith('DFF')and n.pin(p,'Q')==net]
         if len(producers)!=1 or n.pin(producers[0],'CLK')!=clock:
             raise ValueError('M local reset distribution requires one actual publisher in '+clock+' '+net)
-        lines.append(f'CLOCK_LOC "{net}" LOCAL_CLOCK;');reset_nets.append(net)
-    adapted=payload+('\n# M A8 clock/LW resource priority; no timing change\n'+'\n'.join(lines)+'\n').encode()
-    return adapted,dict(policy='task3_M_A8_real_clock_LW_priority_v1',clock_inputs=inputs,
+        # A11's generic memory-release flight reached 11.161ns and failed
+        # functional recovery. Give that synchronous release LW11 priority;
+        # real clock LW8..10 reservations remain explicit. Root reset nets
+        # with longer asynchronous startup budgets may use local routing.
+        lines.append(f'CLOCK_LOC "{net}" '+('BUFG[11] = CLK;'if scope=='u_managed/runtime'
+                                           else'LOCAL_CLOCK;'));reset_nets.append(net)
+    adapted=payload+('\n# M A11 functional memory release LW11 priority; timing retained\n'+'\n'.join(lines)+'\n').encode()
+    return adapted,dict(policy='task3_M_A11_real_clock_and_memory_release_LW_priority_v2',clock_inputs=inputs,
         reset_distribution_nets=reset_nets,commands=lines,before_sha256=digest(payload),
         after_sha256=digest(adapted),logic_unchanged=True,timing_constraints_unchanged=True,
         routed_clock_allocation_verified=False,hardware_tested=False)

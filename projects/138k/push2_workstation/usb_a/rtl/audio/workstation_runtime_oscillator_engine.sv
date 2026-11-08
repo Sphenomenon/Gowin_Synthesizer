@@ -256,7 +256,13 @@ module workstation_runtime_oscillator_engine #(
         expression_gain_q8[voice_number]<=expression_value_i==7'd127 ? 8'd128 : {1'b0,expression_value_i};
     end
   end
-  assign allocation_found=|allocation_candidates;
+  // Availability must not share the priority encoder's long prefix chain.
+  // Keep the original same-edge candidates and lowest-free allocation index.
+  (* syn_keep=1 *) wire [7:0] allocation_available_groups;
+  for(genvar allocation_group=0;allocation_group<8;allocation_group=allocation_group+1)begin:g_allocation_available
+    assign allocation_available_groups[allocation_group]=|allocation_candidates[allocation_group*4+:4];
+  end
+  assign allocation_found=|allocation_available_groups;
   assign allocation_index[0]=|(allocation_selected & 32'haaaaaaaa);
   assign allocation_index[1]=|(allocation_selected & 32'hcccccccc);
   assign allocation_index[2]=|(allocation_selected & 32'hf0f0f0f0);

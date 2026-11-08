@@ -18,6 +18,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',required=True,type=Path)
     parser.add_argument('--local-native-head',action='store_true')
+    parser.add_argument('--parallel-status-compare',action='store_true')
     args=parser.parse_args();output=args.output.resolve();output.mkdir(parents=True,exist_ok=False)
     sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
     sys.path.insert(0,str(ROOT))
@@ -30,6 +31,7 @@ def main():
         actual_CNN=False,actual_physical_serializer=False,physical_CDC_verified=False,
         hardware_operated=False,deployment_allowed=False)
     result['local_native_PCM_head_selected']=args.local_native_head
+    result['parallel_status_generation_compare_selected']=args.parallel_status_compare
     try:
         top=(ROOT/'rtl/workstation/gw138k_push_workstation_top.v').read_text()
         selected=apply_top(ROOT,top)
@@ -46,6 +48,7 @@ def main():
         result['adapter_negative_controls']=negatives
         command=['iverilog','-g2012','-s','tb_workstation_tf_remote_analysis','-o',str(output/'simulation.vvp'),
                  '-Ptb_workstation_tf_remote_analysis.LOCAL_NATIVE_HEAD_ENABLE='+str(int(args.local_native_head)),
+                 '-Ptb_workstation_tf_remote_analysis.PARALLEL_STATUS_COMPARE_ENABLE='+str(int(args.parallel_status_compare)),
                  *[str(ROOT/p) for p in SOURCES]]
         result['compile_argv']=command
         cp=subprocess.run(command,cwd=ROOT,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)

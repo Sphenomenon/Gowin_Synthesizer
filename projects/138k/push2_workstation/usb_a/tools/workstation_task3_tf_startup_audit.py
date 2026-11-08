@@ -20,7 +20,8 @@ def require(condition, message):
         raise ValueError('task3 TF startup audit: ' + message)
 
 
-def audit_tf_startup_releases(n, *, root):
+def audit_tf_startup_releases(n, *, root, mapping='synthesis'):
+    require(mapping in ('synthesis', 'routed'), 'explicit supported mapping required')
     g = Graph(n)
     require(root.get('policy') == ROOT_POLICY and root.get('all_state_assignments_proven') is True
             and root.get('actual_state_bits') == 35 and
@@ -29,8 +30,12 @@ def audit_tf_startup_releases(n, *, root):
     root_register = g.register('u_reset', 'started')
     root_q = n.pin(root_register, 'Q')
     validate_root_publisher(n, g, root)
-    require(n.frames.get(SCOPE, {}).get('kind') == 'workstation_tf_direct_runtime_service',
-            'actual TF owner is not DIRECT runtime service')
+    if mapping == 'synthesis':
+        require(n.frames.get(SCOPE, {}).get('kind') == 'workstation_tf_direct_runtime_service',
+                'actual TF owner is not DIRECT runtime service')
+    else:
+        require(set(n.frames) == {''} and root.get('selected_top_root_binding_verified') is True,
+                'routed DIRECT coverage requires flat VO and sealed source proof')
     guard_register = g.register('u_runtime_memory_guard', 'started_o')
     guard_q = n.pin(guard_register, 'Q')
     require(guard_q == n.canonical('', 'memory_guard_started') and

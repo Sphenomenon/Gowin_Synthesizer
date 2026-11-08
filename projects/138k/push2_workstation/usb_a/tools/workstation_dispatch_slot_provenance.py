@@ -299,6 +299,15 @@ def restore_parent(relative, source):
 
 def normalize_source(relative, source):
     relative = str(relative)
+    # Historical complete dispatch parents predate the later glide layer.
+    # Admit only their unchanged original whole-file identities.
+    if relative in ORIGINAL_SHA256 and sha(source) == ORIGINAL_SHA256[relative]:
+        return source
+    try:
+        from tools.workstation_oscillator_availability import restore as restore_available
+    except ModuleNotFoundError:
+        from workstation_oscillator_availability import restore as restore_available
+    source=restore_available(relative,source)
     try:
         from tools.workstation_committed_glide import normalize as normalize_glide
     except ModuleNotFoundError:

@@ -608,6 +608,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         from tools.workstation_w_context_compare import POLICY as _context_policy
         from tools.workstation_task3_w_preboard_cdc import KEY as _cdc_key, POLICY as _cdc_policy
         _configuration.update({_stream_key: _stream_policy, 'w_context_compare_policy': _context_policy,
+                               'raw_completion_policy':'task3_W_raw_completion_publication_one_memory_edge_v1',
                                _cdc_key: _cdc_policy,
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1'})
     else:
@@ -615,6 +616,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
                               tf_native_head_policy='task3_M_TF_bounded_native_PCM_head_v1',
+                              tf_status_compare_policy='task3_M_TF_status_generation_byte_compare_v1',
                               effects_dispatch_policy='task3_M_reserved_effects_configuration_v1')
     PROFILE_REGISTRY[_name] = dict(_parent, revision=1, configuration=_configuration,
         config='boards/custom_138k/workstation_profile_task3_' + _role + '_preboard_v1.json',
@@ -1078,6 +1080,12 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
+            from tools import workstation_ble_completion_publication as completion
+            if (completion.evidence(stage,profile['configuration'])!=metadata.get('raw_completion_publication') or
+                    completion.unselect((stage/target).read_text())!=(root/source).read_text()):
+                raise ValueError('raw completion publication source selection changed')
+            staged_hash=sha(stage/target)
         if target in ('rtl/tf_audio/workstation_tf_direct_runtime_service.sv',
                       'rtl/tf_audio/workstation_tf_frame_bridge_v2.sv') and profile['configuration'].get('tf_compute_reset_policy') is not None:
             from tools import workstation_tf_compute_local_release as tf_compute

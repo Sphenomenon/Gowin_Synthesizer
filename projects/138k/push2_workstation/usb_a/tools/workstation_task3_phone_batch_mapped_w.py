@@ -312,6 +312,14 @@ def audit(n, *, stage):
             positive=[*live_parts,command_release,n.canonical('','clock_command_reset_n'),
                 n.canonical('','hci_pcm_session_ready'),endpoint('media_cap_ready'),
                 endpoint('phone_proxy_armed'),q('context_valid')]
+            from tools.workstation_ble_completion_publication import configured as publication_selected
+            explicit_root=publication_selected(configuration)
+            if explicit_root:
+                # The complete W publication rebuild retains the original
+                # active=reset_ni && ... root input in the actual LUT cone.
+                # Prove that publisher too; do not cut an absent old alias
+                # or accept the old equation after removing this root guard.
+                positive.append(root_q)
             negative=[endpoint('media_cap_fault'),endpoint('phone_window_fault'),
                 endpoint('phone_proxy_fault'),q('fault_o'),*key_comparisons]
             leaves=list(dict.fromkeys(positive+negative));bd=BooleanDiagram(leaves)
@@ -352,6 +360,8 @@ def audit(n, *, stage):
                 positive_inputs=positive,negative_inputs=negative,
                 independent_inputs=leaves,all_assignments_proven=True,
                 Boolean_assignments=1<<len(leaves),BDD_nodes=len(bd.nodes),
+                explicit_combinational_root_required=explicit_root,
+                actual_qualification_net=active,
                 raw_root_assertion_checked_by_actual_FF_CLEAR=True,
                 absent_intermediate_cut_used=False))
         else:

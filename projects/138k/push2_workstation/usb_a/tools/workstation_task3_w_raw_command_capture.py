@@ -15,7 +15,7 @@ def require(ok,message):
     if not ok:raise ValueError('W raw command capture: '+message)
 
 
-def audit(n):
+def audit(n,*,publication=False):
     g=Graph(n);reg=lambda stem:g.register(S,stem);q=lambda p:n.pin(p,'Q')
     req,ack,ack_sync,active,valid=map(reg,['command_req','command_ack','command_ack_sync','memory_command_active','g_command_capture.valid'])
     source=[];equations=[]
@@ -47,8 +47,14 @@ def audit(n):
         c=complete_closure(n,g,[one]);require(c['ff_endpoints']=={two+'/D':domain}and
                 not c['primitive_endpoints']and not c['top_output_endpoints'],'first stage extra consumer')
         chains.append(dict(source=src,first=one,second=two,complete_first_closure=c))
-    sync=reg('command_req_sync');leaves=list(map(q,[sync,ack,active,valid]));b=BooleanDiagram(leaves)
-    request=b.both(b.different(b.inputs[q(sync)],b.inputs[q(ack)]),b.invert(b.inputs[q(active)]))
+    local_ack=ack
+    publication_proof=None
+    if publication:
+        from tools.workstation_ble_completion_publication import audit_mapped
+        publication_proof=audit_mapped(n)
+        local_ack=reg('completion_ready')
+    sync=reg('command_req_sync');leaves=list(map(q,[sync,local_ack,active,valid]));b=BooleanDiagram(leaves)
+    request=b.both(b.different(b.inputs[q(sync)],b.inputs[q(local_ack)]),b.invert(b.inputs[q(active)]))
     cap=b.both(request,b.invert(b.inputs[q(valid)]));start=b.both(request,b.inputs[q(valid)])
     for dst,src in zip(capture,source):
         zero_ff(n,g,dst,'memory_clk')
@@ -81,4 +87,5 @@ def audit(n):
         source_equations=equations,toggle_chains=chains,source_complete_closure=closure,
         captured_valid_next_Q_exact=True,business_start_requires_registered_valid=True,
         request_stages_before_capture=2,hold_check_retained=True,
+        completion_publication=publication_proof,
         max_data_delay_ns=10.0,min_data_delay_ns=1.8,routed_timing_verified=False,hardware_tested=False),sdc

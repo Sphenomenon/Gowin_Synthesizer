@@ -39,6 +39,8 @@ def main():
                         help='Select the explicit preboard functional compute reset boundary')
     parser.add_argument('--local-native-head',action='store_true',
                         help='Select the bounded M preboard PCM head before the native RAM')
+    parser.add_argument('--parallel-status-compare',action='store_true',
+                        help='Select the same-edge four-byte generation comparison')
     parser.add_argument('--cold-start', action='store_true',
                         help='Use actual production reset_release, fixed external reset high and HOLD_CYCLES=1024')
     case_modes = dict(play=0, pause=1, cancel=2, stop=3, panic=4, invalid_track=5,
@@ -98,6 +100,7 @@ def main():
                   actual_memory_guard_startup_grant=args.cold_start,
                   local_compute_functional_release_selected=args.local_compute_release,
                   local_native_PCM_head_selected=args.local_native_head,
+                  parallel_status_generation_compare_selected=args.parallel_status_compare,
                   reset_release_hold_cycles=1024 if args.cold_start else None,
                   actual_top_elaborated=False,
                   whole_runtime_clock_stop_verified=False, native_file_error_remount_verified=False,
@@ -108,6 +111,7 @@ def main():
         command = ['verilator', '--binary', '--timing', '-j', '4', '-Wno-fatal',
                    '-GLOCAL_COMPUTE_RESET_ENABLE='+str(int(args.local_compute_release)),
                    '-GLOCAL_NATIVE_HEAD_ENABLE='+str(int(args.local_native_head)),
+                   '-GPARALLEL_STATUS_COMPARE_ENABLE='+str(int(args.parallel_status_compare)),
                    '--top-module', 'tb_workstation_tf_direct_runtime', '--Mdir', str(output / 'obj'),
                    '-I' + str(ROOT), '-I' + str(project), *map(str, sources)]
         result['compile_argv'] = command

@@ -25,7 +25,7 @@ def logic_driver(cells, parameters, output_net, kind, inputs, scope, init=None):
     return name
 
 
-def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, worker_headless=False):
+def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, worker_headless=False, paired_direct_root=None):
     """Prove synchronous RESET inputs are first-stage CDC data, not OSER resets.
 
     DFFRE RESET is a clocked data input in the vendor model. Only the exact
@@ -55,8 +55,10 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, 
     domains = {'audio_76m8': 'audio_clk', 'ddr_ui100': 'memory_clk',
                'selected48/selected44': 'dac_mclk_d', 'usb_48m': 'usb_clk'}
     destinations = {prefix: domain for prefix, source, domain in RUNTIME_GRANT_CHAINS}
+    assert paired_direct_root is None or role == 'M' and not tf_disabled_m_core and not worker_headless, \
+        'paired DIRECT startup requires explicit complete M role'
     prefixes = [prefix for prefix in RUNTIME_GRANT_RESET_INPUTS
-                if role == 'M' and not tf_disabled_m_core or not prefix.startswith('u_tf_audio/')]
+                if role == 'M' and not tf_disabled_m_core and paired_direct_root is None or not prefix.startswith('u_tf_audio/')]
     result, protected = [], set()
     for prefix in prefixes:
         receivers = [[p for p in g.regs if re.fullmatch(re.escape(prefix) + f'_{bit}_s' + r'\d+', p)]
@@ -73,8 +75,11 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, 
                 'grant duplicate or unparsed port: ' + receiver
         a, b = n.cells[first], n.cells[second]
         expected_clock = domains[destinations[prefix]]
-        local_level=worker_headless and prefix in ('u_managed/startup_compute',
+        local_level=(worker_headless or paired_direct_root is not None) and prefix in ('u_managed/startup_compute',
             'u_managed/runtime/startup_compute','u_managed/runtime/startup_memory','u_managed/runtime/startup_serial')
+        local_output=paired_direct_root is not None and prefix=='output_safe_sync'
+        local_usb=paired_direct_root is not None and prefix=='u_runtime/g_usb_cdc_reset.usb_ready'
+        local_level=local_level or local_output or local_usb
         assert a['kind'] == ('DFFCE' if local_level else 'DFFRE') and b['kind'] == 'DFFCE', 'grant receiver primitive changed: ' + prefix
         assert all(n.pin(p, 'CLK') == expected_clock and n.pin(p, 'CE') in g.high and
                    n.cells[p]['parameters'].get('INIT') == "1'b0" for p in (first, second)), \
@@ -84,9 +89,15 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, 
         if local_level:
             from tools.workstation_runtime_pcm_cdc import BooleanDiagram
             root_q=n.pin(g.register('u_reset','started'),'Q');bb=BooleanDiagram([root_q])
-            assert n.pin(first,'D')==n.canonical('','runtime_reset_n') and \
-                n.pin(first,'CLEAR')==n.pin(second,'CLEAR') and \
-                bb.net(g,n.pin(first,'CLEAR'))==bb.invert(bb.inputs[root_q]), 'W local level source/root assertion changed'
+            assert n.pin(first,'CLEAR')==n.pin(second,'CLEAR') and \
+                bb.net(g,n.pin(first,'CLEAR'))==bb.invert(bb.inputs[root_q]), 'paired local level root assertion changed'
+            if local_usb:
+                release=[p for p in g.regs if re.fullmatch(r'usb_release_3_s\d+',p)]
+                assert len(release)==1, 'paired USB release publisher changed'
+                uq=n.pin(release[0],'Q');ub=BooleanDiagram([root_q,uq])
+                assert ub.net(g,n.pin(first,'D'))==ub.both(ub.inputs[root_q],ub.inputs[uq]), 'paired USB readiness equation changed'
+            else:
+                assert n.pin(first,'D')==n.canonical('','compute_output_safe_n' if local_output else 'runtime_reset_n'), 'paired local level source changed'
         q = n.pin(first, 'Q')
         assert g.drivers[q] == [(first, 'Q')] and q not in g.high | g.low, \
             'grant first-stage output has a competing driver: ' + prefix
@@ -115,7 +126,7 @@ def inspect_grant_reset_inputs(netlist, sdc, role, *, tf_disabled_m_core=False, 
 
 
 def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layout='native',
-                               startup_grant_role=None, tf_disabled_m_core=False, worker_headless=False):
+                               startup_grant_role=None, tf_disabled_m_core=False, worker_headless=False, paired_direct_root=None):
     if not __debug__:
         return ["startup audit requires normal Python execution; -O disables validation assertions"], {}
     def unescape(value):
@@ -422,7 +433,8 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
         grant_inputs = []
         if startup_grant_role is not None:
             grant_inputs = inspect_grant_reset_inputs(netlist, sdc, startup_grant_role,
-                                                     tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless)
+                                                     tf_disabled_m_core=tf_disabled_m_core,worker_headless=worker_headless,
+                                                     paired_direct_root=paired_direct_root)
             for row in grant_inputs:
                 first, second = row['first'], row['second']
                 setup_values = re.findall(r"\(SETUPHOLD \((?:pos|neg)edge D\) \(posedge CLK\) \(([^)]+)\)", sdf_cells[second])
@@ -431,6 +443,59 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                 total = arc(first, 'CLK', 'Q') + routed[(first + '/Q', second + '/D')] + setup
                 assert total <= 2.0, f'{second}/D: grant CLK-Q+route+setup {total:.3f}ns exceeds 2ns budget'
                 row['routed_clock_to_q_route_setup_ns'] = total
+        direct_tf = None
+        if paired_direct_root is not None:
+            assert startup_grant_role == 'M', 'DIRECT startup requires explicit M role'
+            from tools.workstation_native_protocol_audit import protocol_netlist
+            from tools.workstation_task3_tf_startup_audit import audit_tf_startup_releases
+            direct_netlist=protocol_netlist(netlist, mapping='routed')
+            direct_tf = audit_tf_startup_releases(direct_netlist,
+                root=paired_direct_root, mapping='routed')
+            direct_tf['routed_early_stage_paths'] = []
+            by_destination={}
+            for (source_pin,destination_pin),delay in routed.items():
+                assert destination_pin not in by_destination, 'ambiguous SDF destination: '+destination_pin
+                by_destination[destination_pin]=(source_pin,delay)
+
+            def stage_flight(first,endpoint):
+                memo={}
+                def back(destination,trail):
+                    assert destination not in trail, 'cyclic DIRECT SDF cone'
+                    if destination in memo:return memo[destination]
+                    source_pin,delay=by_destination[destination]
+                    if source_pin==first+'/Q':return arc(first,'CLK','Q')+delay
+                    cell,output=source_pin.rsplit('/',1)
+                    kind,ports=cells[cell]
+                    if kind.startswith('DFF') or kind in ('GND','VCC'):return None
+                    assert kind in ('INV','LUT1','LUT2','LUT3','LUT4'), 'unreviewed DIRECT inter-stage primitive '+cell
+                    values=[]
+                    for pin in ports:
+                        if pin==output or cell+'/'+pin not in by_destination:continue
+                        upstream=back(cell+'/'+pin,trail|{destination})
+                        if upstream is not None:values.append(upstream+arc(cell,pin,output)+delay)
+                    memo[destination]=max(values) if values else None
+                    return memo[destination]
+                value=back(endpoint,set())
+                assert value is not None, 'DIRECT SDF source disconnected: '+endpoint
+                return value
+            for chain in direct_tf['chains']:
+                for closure in chain['early_consumer_closures']:
+                    first = closure['source_register']
+                    for endpoint in closure['ff_endpoints']:
+                        second = endpoint.rsplit('/', 1)[0]
+                        values = re.findall(r"\(SETUPHOLD \((?:pos|neg)edge D\) \(posedge CLK\) \(([^)]+)\)", sdf_cells[second])
+                        assert len(values) == 2, 'DIRECT later-stage setup checks missing: ' + endpoint
+                        setup = max(max(numbers(value)) for value in values) * unit
+                        total = stage_flight(first, endpoint) + setup
+                        # The metastability receiving pair retains its exact
+                        # existing 2ns constraint. Subsequent release gates are
+                        # synchronous functional logic, additionally checked by
+                        # full routed STA including clock skew/recovery/removal.
+                        bound=2.0 if first==chain['startup_registers'][0] else (20.0 if chain['clock']=='clk_50m' else 13.020)
+                        assert total <= bound, f'{endpoint}: DIRECT CLK-Q+route+setup {total:.3f}ns exceeds {bound}ns budget'
+                        direct_tf['routed_early_stage_paths'].append(dict(source=first+'/Q', endpoint=endpoint,
+                            clock_to_q_route_setup_ns=total, bound_ns=bound,
+                            functional_routed_STA_still_required=True))
         reset_constraints = None
         if sdc is not None:
             audited = {path["endpoint"] for path in paths + divider_audit["paths"]}
@@ -480,6 +545,7 @@ def inspect_serializer_startup(sdf, netlist, ddr_audit=None, sdc=None, lane_layo
                     "pixel_divider": divider_audit, "ddr_phy": ddr_distribution, 'resolved_logic': resolved_logic,
                     "sdc_reset_exception_coverage": reset_constraints,
                     "synchronous_grant_reset_inputs": grant_inputs,
+                    "paired_DIRECT_TF_startup": direct_tf,
                     "tf_disabled_m_core_verified": tf_disabled_m_core,
                     "headless_W_video_absence_verified": worker_headless}
     except (AssertionError, KeyError, ValueError) as error:

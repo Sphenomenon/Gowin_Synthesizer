@@ -94,6 +94,35 @@ endmodule
         self.assertEqual(n.pin('c/q_s0', 'Q'), 'y')
         self.assertIn('\\x (y)', text)
 
+    def test_escaped_vector_formal_resolves_exact_declared_binding(self):
+        text = r"""
+module child ( x );
+output [3:0] \group.x ;
+DFFCE q_s0 (
+ .Q(\group.x [2]), .D(1'b0), .CLK(1'b0), .CLEAR(1'b0), .CE(1'b1)
+);
+endmodule
+module middle ( x );
+output [3:0] \group.x ;
+child c (
+ .\group.x (\group.x [3:0])
+);
+endmodule
+module top ( y );
+wire [7:4] \actual.y ;
+middle m (
+ .\group.x (\actual.y [7:4])
+);
+endmodule
+"""
+        n=PcmNetlist(text,'top')
+        self.assertEqual(n.pin('m/c/q_s0','Q'),r'\actual.y [6]')
+        n.frames['m/c']['ports']['group.x']=r'\group.x [2:0]'
+        with self.assertRaisesRegex(ValueError,'binding width mismatch'):n.pin('m/c/q_s0','Q')
+        n.frames['m/c']['ports']['group.x']=r'\group.x [3:0]'
+        n.cells['m/c/q_s0']['ports']['Q']=r'\group.x [4]'
+        with self.assertRaisesRegex(ValueError,'outside declared width'):n.pin('m/c/q_s0','Q')
+
     def test_duplicate_plain_or_escaped_named_formal_is_rejected(self):
         for binding in (' .x(y), .x(y)', r' .\x (y), .x(y)'):
             text = 'module child ( x );\noutput x;\nendmodule\nmodule top ( y );\nwire y;\nchild c (\n' + binding + '\n);\nendmodule\n'

@@ -28,6 +28,8 @@ def unselect(text):
     return text
 
 def restore(text):
+    from tools.workstation_tf_status_compare import restore as restore_status
+    text=restore_status(text)
     if 'LOCAL_NATIVE_HEAD_ENABLE' not in text:return text
     raw=(Path(__file__).resolve().parents[1]/MANIFEST).read_bytes()
     require(digest(raw)==MANIFEST_SHA256,'manifest drift')

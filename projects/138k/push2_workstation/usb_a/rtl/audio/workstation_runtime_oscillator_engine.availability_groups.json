@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "policy": "native_oscillator_available_groups_v1",
+  "source": "rtl/audio/workstation_runtime_oscillator_engine.sv",
+  "parent_sha256": "757e734ca7225f168b84ec161f2bb080d849ebed76b0878e337392e7efb493d3",
+  "native_sha256": "eeb10912b92e03dbeb5ab4ac17088f18961ac1a96056d287b31d1aeddb2ba023",
+  "edits": [
+    {
+      "before": "  assign allocation_found=|allocation_candidates;",
+      "after": "  // Availability must not share the priority encoder's long prefix chain.\n  // Keep the original same-edge candidates and lowest-free allocation index.\n  (* syn_keep=1 *) wire [7:0] allocation_available_groups;\n  for(genvar allocation_group=0;allocation_group<8;allocation_group=allocation_group+1)begin:g_allocation_available\n    assign allocation_available_groups[allocation_group]=|allocation_candidates[allocation_group*4+:4];\n  end\n  assign allocation_found=|allocation_available_groups;"
+    }
+  ],
+  "extra_state": 0,
+  "extra_cycles": 0,
+  "exit_plan": "Retain preserved reduction groups in maintained owner and retire adapter when parent provenance migrates"
+}

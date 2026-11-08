@@ -236,6 +236,23 @@ class PcmNetlist(SynthesisNetlist):
             original_vg_rewritten=False, shared_parser_modified=False)
 
     def canonical(self, scope, net, seen=()):
+        # Escaped vector identifiers include punctuation in the identifier;
+        # the whitespace before [bit] separates the select. Resolve only a
+        # declared formal with an exact same-width literal vector binding.
+        selected=re.fullmatch(r'\\([^\s]+)\s+\[(\d+)\]',net)
+        if scope and selected and selected[1] in self.frames[scope]['ports']:
+            frame=self.frames[scope];formal=self.ranges[frame['kind']].get(selected[1])
+            require(formal is not None and min(formal)<=int(selected[2])<=max(formal),
+                    'escaped vector formal bit outside declared width')
+            binding=frame['ports'][selected[1]]
+            actual=re.fullmatch(r'(\\[^\s]+)\s+\[(\d+)(?::(\d+))?\]',binding)
+            require(actual is not None,'unsupported escaped vector actual binding')
+            left,right=int(actual[2]),int(actual[3] or actual[2])
+            require(abs(left-right)==abs(formal[0]-formal[1]),'escaped vector binding width mismatch')
+            offset=abs(int(selected[2])-formal[1]);index=right+offset*(1 if left>=right else -1)
+            key=(scope,net)
+            require(key not in seen,'cyclic escaped vector port connection')
+            return self.canonical(self.scopes[scope],actual[1]+' ['+str(index)+']',(*seen,key))
         if scope and net.startswith('\\') and net[1:] in self.frames[scope]['ports']:
             net = net[1:]
         return super().canonical(scope, net, seen)

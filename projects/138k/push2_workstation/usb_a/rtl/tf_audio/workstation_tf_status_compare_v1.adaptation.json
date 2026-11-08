@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "policy": "task3_M_TF_status_generation_byte_compare_v1",
+  "source": "rtl/tf_audio/workstation_tf_direct_runtime_service.sv",
+  "default": 0,
+  "parent_sha256": "1e92562cb5131ef42a9ce1f8c0926df4a279671d3b9921ecb4ebd2ac3c1c3ddf",
+  "native_sha256": "8767c445a527f6f8e9183f9467e5f6db5b64cee05c2c1cb100c99af21bcf8bc9",
+  "edits": [
+    {
+      "before": "    parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,\n",
+      "after": "    parameter bit LOCAL_NATIVE_HEAD_ENABLE=0,\n    parameter bit PARALLEL_STATUS_COMPARE_ENABLE=0,\n"
+    },
+    {
+      "before": "    wire status_current=expected_valid && compute_status[67:36]==expected_generation_o;",
+      "after": "    // Preserve byte boundaries so same-edge stale-status fencing does not\n    // become a 32-bit carry chain ahead of PCM permission and the effects DSP.\n    wire status_current;\n    generate if(PARALLEL_STATUS_COMPARE_ENABLE)begin:g_parallel_status\n        (* syn_keep=1 *) wire [3:0] generation_equal_bytes;\n        for(genvar status_byte=0;status_byte<4;status_byte=status_byte+1)begin:g_equal\n            assign generation_equal_bytes[status_byte]=\n                compute_status[36+status_byte*8+:8]==expected_generation_o[status_byte*8+:8];\n        end\n        assign status_current=expected_valid && (&generation_equal_bytes);\n    end else begin:g_serial_status\n        assign status_current=expected_valid && compute_status[67:36]==expected_generation_o;\n    end endgenerate"
+    }
+  ],
+  "semantics": "Exact same-edge full32 generation equality; no extra state or cycles",
+  "exit_plan": "Pass the parameter directly when the parent provider is maintained; retain historical inverse"
+}

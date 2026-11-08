@@ -187,6 +187,15 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v4.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v5.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v6.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v7.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v8.json',
+    'tools/workstation_tf_status_compare.py',
+    'tools/workstation_oscillator_availability.py',
+    'rtl/audio/workstation_runtime_oscillator_engine.availability_groups.json',
+    'rtl/tf_audio/workstation_tf_status_compare_v1.adaptation.json',
+    'tools/workstation_ble_completion_publication.py',
+    'rtl/memory/workstation_ble_completion_publication_v1.adaptation.json',
+    'sim/memory/run_ble_completion_publication.py',
     'tools/workstation_pcm_permission_compare.py',
     'tools/workstation_pcm_bitmap_permission.py',
     'tools/workstation_task3_m_midi_release_sdc.py',
@@ -830,6 +839,13 @@ def audit(root, output, metadata):
         gate('preboard_F808_and_PANIC_held_boundaries',lambda:paired_held(
             protocol_netlist(vg_text,mapping='synthesis'),role=role)[0])
         if role=='M':
+            from tools.workstation_oscillator_availability import audit_mapped as oscillator_available
+            gate('preboard_M_ordinary32_available_groups',lambda:oscillator_available(
+                protocol_netlist(vg_text,mapping='synthesis')))
+            from tools.workstation_tf_status_compare import audit_mapped as status_compare
+            if profile['configuration'].get('tf_status_compare_policy'):
+                gate('preboard_M_TF_status_generation_compare',lambda:status_compare(
+                    protocol_netlist(vg_text,mapping='synthesis'),stage=stage))
             from tools.workstation_tf_native_head import audit_mapped as native_head
             gate('preboard_M_TF_native_head_RAM_isolation',lambda:native_head(
                 protocol_netlist(vg_text,mapping='synthesis'),stage=stage))
@@ -839,7 +855,12 @@ def audit(root, output, metadata):
         else:
             from tools.workstation_task3_w_raw_command_capture import audit as raw_boundary
             gate('preboard_W_raw_command_capture',lambda:raw_boundary(
-                protocol_netlist(vg_text,mapping='synthesis'))[0])
+                protocol_netlist(vg_text,mapping='synthesis'),
+                publication=bool(metadata.get('raw_completion_publication')))[0])
+            if metadata.get('raw_completion_publication'):
+                from tools.workstation_ble_completion_publication import audit_mapped as publish_count
+                gate('preboard_W_completion_count_publication',lambda:publish_count(
+                    protocol_netlist(vg_text,mapping='synthesis')))
     if profile['configuration'].get('usb2_cpu_ram_bytes',65536)==49152:
         from tools.workstation_usb_cpu_rom import check_banked_rom
         usb_gate('USB_ROM',lambda:check_banked_rom(stage,netlist,metadata['firmware']))

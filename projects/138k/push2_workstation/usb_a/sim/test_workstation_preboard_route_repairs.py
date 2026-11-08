@@ -61,19 +61,22 @@ class RoutedRepairs(unittest.TestCase):
 
     def test_B7_native_locality_and_remaining_first_capture(self):
         n=self.n;g=Graph(n);cst=(self.stage/'constraints/custom_138k.cst').read_bytes()
-        selected,e=w_native_placement(cst,n)
-        self.assertEqual(e['primitive_count'],741)
-        self.assertEqual(e['historical_broad_primitive_review_count'],9130)
+        from tools.workstation_ble_completion_publication import configured
+        publication=configured(json.loads((self.stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
+        place=lambda cst,n:w_native_placement(cst,n,publication=publication)
+        selected,e=place(cst,n);total=739 if publication else 741
+        self.assertEqual(e['primitive_count'],total)
+        self.assertEqual(e['historical_broad_primitive_review_count'],9144 if publication else 9130)
         self.assertEqual(len(e['tag_return_cone']['source']),128)
         self.assertEqual(len(e['tag_return_cone']['capture']),257)
-        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),76)
+        self.assertEqual(len(e['tag_return_cone']['combinational_cells']),74 if publication else 76)
         self.assertEqual(len(e['placement_groups']),5)
-        self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),741)
+        self.assertEqual(sum(x['primitive_count']for x in e['placement_groups']),total)
         self.assertEqual(selected.count(b'GRP_LOC task3_w_native_'),5)
         statements=[line for line in selected.splitlines()if line.startswith(b'GROUP task3_w_native_')]
         self.assertEqual(len(statements),5)
         self.assertTrue(all(line.endswith(b' };')for line in statements))
-        self.assertEqual(sum(line.count(b'"')//2 for line in statements),741)
+        self.assertEqual(sum(line.count(b'"')//2 for line in statements),total)
         self.assertTrue(e['broad_region_constraints_removed'])
         for p,c in n.cells.items():
             if c['kind']=='INV':self.assertNotIn(('"'+p+'"').encode(),selected)
@@ -82,13 +85,13 @@ class RoutedRepairs(unittest.TestCase):
         path=e['tag_return_cone']['source'][0];old=copy.deepcopy(n.cells[path])
         n.cells[path]['ports']['CLK']='clk_50m'
         try:
-            with self.assertRaises(ValueError):w_native_placement(cst,n)
+            with self.assertRaises(ValueError):place(cst,n)
         finally:n.cells[path]=old
-        with self.assertRaises(ValueError):w_native_placement(selected,n)
+        with self.assertRaises(ValueError):place(selected,n)
         path=g.register('u_task3_media/raw_store','command_kind',1)
         old=copy.deepcopy(n.cells[path]);n.cells[path]['ports']['CLK']='GND'
         try:
-            with self.assertRaises(ValueError):w_native_placement(cst,n)
+            with self.assertRaises(ValueError):place(cst,n)
         finally:n.cells[path]=old
         proof,sdc=boundary_audit(n,role='W',stage=self.stage)
         raw=proof['W_routed_first_captures']
@@ -101,7 +104,7 @@ class RoutedRepairs(unittest.TestCase):
             try:
                 with self.assertRaises(ValueError):boundary_audit(n,role='W',stage=self.stage)
             finally:n.cells[path]=old
-        print('B7 741 exact causal/held primitives from 9130 reviewed; clock, duplicate, release and observer corruptions rejected')
+        print(f'B7 {total} exact causal/held primitives from {e["historical_broad_primitive_review_count"]} reviewed; clock, duplicate, release and observer corruptions rejected')
 
 
 class MClockPriority(unittest.TestCase):
@@ -114,7 +117,9 @@ class MClockPriority(unittest.TestCase):
         selected,e=placement(cst,r)
         self.assertEqual(len(e['registers']),348)
         from collections import Counter
-        self.assertEqual(max(Counter(x['region']for x in e['registers']).values()),82)
+        self.assertEqual(max(Counter(x['region']for x in e['registers']).values()),92)
+        self.assertEqual({x['region'] for x in e['registers'] if x['mailbox']=='PANIC_epoch' and x['side']=='source'},
+                         {'R[15:25]C[140:155]'})
         def region(mailbox,side):
             return {x['region']for x in e['registers']if x['mailbox']==mailbox and x['side']==side}
         self.assertEqual(region('M_PCM_request','source'),region('M_PCM_response','capture'))
@@ -136,6 +141,8 @@ class MClockPriority(unittest.TestCase):
         cst=(stage/'constraints/custom_138k.cst').read_bytes();result,e=m_preboard_clock_priority(cst,vg)
         self.assertTrue(result.startswith(cst));self.assertEqual(len(e['clock_inputs']),3)
         self.assertEqual(len(e['reset_distribution_nets']),3)
+        self.assertIn(b'CLOCK_LOC "u_managed/runtime/memory_release[2]" BUFG[11] = CLK;',result)
+        self.assertEqual(result.count(b'LOCAL_CLOCK;')-cst.count(b'LOCAL_CLOCK;'),2)
         with self.assertRaises(ValueError):m_preboard_clock_priority(result,vg)
         for port in ('usb2_ulpi_clk','clk_12m288','clk_16m9344'):
             changed,count=re.subn(r'(IBUF\s+(?:\\)?'+re.escape(port+'_ibuf')+r'\s*\(.*?\.I\()'+re.escape(port)+r'(\))',
@@ -143,6 +150,76 @@ class MClockPriority(unittest.TestCase):
             self.assertEqual(count,1)
             with self.assertRaises(ValueError):m_preboard_clock_priority(cst,changed)
         print('M three actual clocks retain inputs and reserve LW8..10; duplicate and three disconnected input mutations rejected')
+
+
+    def test_actual_A11_PLL_control_limits_and_mutations(self):
+        from tools.workstation_custom_board_implementation import m_preboard_pll_control_limits
+        selected=os.environ.get('GW138K_PREBOARD_M_STAGE')
+        if not selected:self.skipTest('explicit actual M synthesis stage required')
+        stage=Path(selected);vg=(stage/'impl/gwsynthesis/custom_138k_integration.vg').read_text()
+        sdc=(stage/'constraints/custom_138k.sdc').read_bytes()
+        result,e=m_preboard_pll_control_limits(sdc,vg)
+        self.assertTrue(result.startswith(sdc));self.assertEqual(len(e['paths']),15)
+        self.assertEqual(e['full_routed_propagation_budget_ns'],10)
+        self.assertEqual(result.count(b'set_max_delay 5.000')-sdc.count(b'set_max_delay 5.000'),15)
+        with self.assertRaises(ValueError):m_preboard_pll_control_limits(result,vg)
+        n=protocol_netlist(vg,mapping='synthesis')
+        from unittest.mock import patch
+        for row in (e['paths'][0],e['paths'][-1]):
+            path=row['source'].rsplit('/',1)[0];old=copy.deepcopy(n.cells[path])
+            n.cells[path]['ports']['CLK']='GND'
+            try:
+                with patch('tools.workstation_native_protocol_audit.protocol_netlist',return_value=n):
+                    with self.assertRaises(ValueError):m_preboard_pll_control_limits(sdc,vg)
+            finally:n.cells[path]=old
+        print('M fifteen exact PLL control routes tightened to5ns; duplicate and publisher clock mutations rejected; full10ns routed gate retained')
+
+
+class MPhysicalComposition(unittest.TestCase):
+    def test_actual_DIRECT_startup_and_corruptions(self):
+        selected=os.environ.get('GW138K_PREBOARD_M_PHYSICAL')
+        if not selected:self.skipTest('explicit M routed VO/SDF required')
+        from tools.workstation_serializer_startup_audit import inspect_serializer_startup
+        p=Path(selected);base=p/'impl/pnr/custom_138k_integration'
+        vo=base.with_suffix('.vo').read_text();sdf=base.with_suffix('.sdf').read_text();sdc=(p/'physical.sdc').read_text()
+        parent=json.loads((p/'parent_synthesis_audit.json').read_text())
+        root=parent['gates']['M_paired_release_CDC']['evidence']['actual_root_startup']
+        def check(text,sdf_text=sdf):
+            return inspect_serializer_startup(sdf_text,text,{'source_bound_by_parent':True},sdc,
+                startup_grant_role='M',paired_direct_root=root)
+        errors,e=check(vo);self.assertEqual(errors,[])
+        self.assertEqual(e['paired_DIRECT_TF_startup']['register_count'],10)
+        self.assertEqual(len(e['paired_DIRECT_TF_startup']['routed_early_stage_paths']),12)
+        for path,pin in [('u_managed/runtime/startup_memory_0_s0','CLEAR'),
+                         ('u_tf_audio/startup_compute_1_s0','D'),
+                         ('u_runtime/g_usb_cdc_reset.usb_ready_0_s0','D'),
+                         ('output_safe_sync_1_s0','CE')]:
+            changed,count=re.subn(r'(DFFCE\s+(?:\\)?'+re.escape(path)+r'\s*\(.*?\.'+pin+r'\()([^)]*)',
+                r'\g<1>GND',vo,count=1,flags=re.S)
+            self.assertEqual(count,1,path);self.assertNotEqual(changed,vo)
+            self.assertTrue(check(changed)[0],path)
+        errors,unused=inspect_serializer_startup(sdf,vo,{'source_bound_by_parent':True},sdc,startup_grant_role='M')
+        self.assertTrue(errors,'DIRECT mode must never be inferred from convenient primitive names')
+        print('M exact ten DIRECT TF FFs and twelve early paths, local startup and readiness covered; four corruptions and implicit mode rejected')
+
+
+    def test_actual_M_retained_mailboxes_and_corruptions(self):
+        selected=os.environ.get('GW138K_PREBOARD_M_PHYSICAL')
+        if not selected:self.skipTest('explicit M routed VO/SDF required')
+        sys.path.insert(0,str(ROOT/'tools'))
+        from tools.workstation_physical_pll_audit import routed_m_retained
+        p=Path(selected);vo=(p/'impl/pnr/custom_138k_integration.vo').read_text()
+        meta=json.loads((p/'parent_integration_inputs.json').read_text())
+        audit=json.loads((p/'parent_synthesis_audit.json').read_text())
+        stage=Path(json.loads((p/'physical_inputs.json').read_text())['parent_candidate'])/'workstation/Prj1'
+        e=routed_m_retained(vo,meta,audit,stage)
+        self.assertTrue(e['gate_applied']);self.assertTrue(e['full_peripheral_and_TF_FIFO_tail_routed_CDC_required'])
+        for path in ('u_managed/pc_bytes/destination_data_0_s0','u_managed/pc_bytes/req_sync_s0'):
+            changed,count=re.subn(r'(DFFCE\s+\\'+re.escape(path)+r'\s*\(.*?\.D\()([^)]*)',
+                r'\g<1>GND',vo,count=1,flags=re.S)
+            self.assertEqual(count,1,path)
+            with self.assertRaises(ValueError):routed_m_retained(changed,meta,audit,stage)
+        print('M retained routed payload/reset/first-stage equations pass; capture and receiving-stage bypass rejected; full physical CDC separate')
 
 
 class WPhysicalComposition(unittest.TestCase):

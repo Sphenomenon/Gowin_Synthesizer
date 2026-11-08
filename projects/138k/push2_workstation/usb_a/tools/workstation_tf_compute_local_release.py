@@ -39,7 +39,8 @@ def unselect(text):
         require(text.count(SELECTED)==1 and DEFAULT not in text,'duplicate parameter selection')
         text=text.replace(SELECTED,DEFAULT,1)
     from tools.workstation_tf_native_head import unselect as unselect_head
-    return unselect_head(text)
+    from tools.workstation_tf_status_compare import unselect as unselect_status
+    return unselect_status(unselect_head(text))
 
 
 def restore(relative,data):
@@ -74,7 +75,8 @@ def select(stage,configuration):
     restore(SERVICE,text)
     require(text.count(DEFAULT)==1 and SELECTED not in text,'default source option missing')
     from tools.workstation_tf_native_head import select as select_head
-    path.write_text(select_head(text.replace(DEFAULT,SELECTED,1),configuration))
+    from tools.workstation_tf_status_compare import select as select_status
+    path.write_text(select_status(select_head(text.replace(DEFAULT,SELECTED,1),configuration),configuration))
     return evidence(stage,configuration)
 
 
@@ -94,10 +96,13 @@ def evidence(stage,configuration):
         mapped_reset_verified=False,routed_timing_verified=False,hardware_tested=False)
     head=head_evidence(stage,configuration)
     if head:result['native_PCM_head']=head
+    from tools.workstation_tf_status_compare import evidence as status_evidence
+    status=status_evidence(stage,configuration)
+    if status:result['status_generation_compare']=status
     return result
 
 
-def audit_mapped(n,*,stage,root=None):
+def audit_mapped(n,*,stage,root=None,mapping="synthesis"):
     """Bind the selected source to every actual compute-domain reset consumer.
 
     The eight startup/release FFs remain asynchronously asserted by the root.
@@ -116,7 +121,8 @@ def audit_mapped(n,*,stage,root=None):
             'mapped proof requires explicit M preboard profile')
     selected=evidence(stage,profile['configuration'])
     root=root if root is not None else audit_root_startup(n,stage=stage)
-    startup=audit_tf_startup_releases(n,root=root)
+    require(mapping=="synthesis" or root is not None,"routed proof requires sealed real root")
+    startup=audit_tf_startup_releases(n,root=root,mapping=mapping)
     g=Graph(n);service='u_tf_audio';frame=service+'/frames';fifo=frame+'/frames_0'
     sq=n.pin(g.register(service,'compute_release',2),'Q')
     fq=n.pin(g.register(frame,'compute_release',2),'Q')
