@@ -35,6 +35,11 @@ def reuse(source,destination,*,audit_tool_only=False):
         #28 SDPB address bits were independently proved unchanged.
         'tools/task3_m_preboard_cpu_destination_inventory_v17.json',
         'tools/task3_w_batch_state_reference_v98.json',
+        # v121's complete803-state DMA proof and its destructive controls.
+        # These review inputs are absent from all HDL/include/project lists.
+        'tools/workstation_w_dma_mapping.py',
+        'rtl/audio/delay_ddr/workstation_runtime_delay_dma_nextq_v1.proof.json',
+        'sim/audio/run_delay_ready_mapping.py',
         'tools/workstation_ble_pack_cofactor.py',
         'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
         'tools/workstation_phone_ack_compare.py',

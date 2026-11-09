@@ -624,6 +624,7 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                               raw_generation_successor_policy='task3_W_registered_generation_successor_v1',
                               raw_generation_match_policy='task3_W_same_edge_captured_generation_match_v1')
         _configuration['cnn_staging_retirement_policy']='task3_W_registered_native_staging_retirement_v1'
+        _configuration['w_delay_ready_policy']='task3_W_same_edge_DMA_ready_response_state_cofactors_v2'
         _configuration['record_cancel_ready_policy']='task3_W_same_edge_record_CANCEL_ready_cofactor_v1'
         _configuration['event_admission_policy']='task3_W_combined_sample_event_admission_v1'
     else:
@@ -1284,6 +1285,9 @@ def _artifact(root, output, metadata, profile):
                 raise ValueError('TF tail local reset parameter/source selection changed')
             staged_hash = sha(stage/target)
         if target == 'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv' and profile['configuration'].get('delay_watchdog_policy') is not None:
+            from tools import workstation_w_delay_ready as delay_ready
+            if delay_ready.evidence(stage,profile['configuration']) != metadata.get('w_delay_ready'):
+                raise ValueError('W DMA ready source selection changed')
             from tools import workstation_w_watchdog_width as watchdog_width
             if watchdog_width.evidence(stage,profile['configuration']) != metadata.get('w_watchdog_width'):
                 raise ValueError('watchdog width source selection changed')

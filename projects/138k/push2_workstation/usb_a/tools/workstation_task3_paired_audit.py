@@ -203,6 +203,10 @@ AUDIT_SOURCES = (
     'tools/workstation_w_watchdog_width.py', 'tools/workstation_w_generation_successor.py',
     'tools/workstation_w_generation_match.py',
     'tools/workstation_cnn_staging_retirement.py',
+    'tools/workstation_w_delay_ready.py',
+    'tools/workstation_w_dma_mapping.py',
+    'rtl/audio/delay_ddr/workstation_runtime_delay_dma_nextq_v1.proof.json',
+    'sim/audio/run_delay_ready_mapping.py',
     'tools/workstation_task3_m_cpu_source_review.py',
     'tools/task3_m_preboard_cpu_destination_inventory.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v2.json',
@@ -886,7 +890,8 @@ def audit(root, output, metadata):
         n = boundary_netlist(vg_text, mapping='synthesis')
         if role == 'W':
             from tools.workstation_task3_w_paired_cdc_audit import audit_boundary as audit_worker_boundary
-            return audit_worker_boundary(n, sdc, mapping='synthesis',usb_retired=usb_retired)
+            return audit_worker_boundary(n, sdc, mapping='synthesis',usb_retired=usb_retired,
+                dma_ready_cofactor=bool(metadata.get('w_delay_ready')))
         evidence = audit_boundary(n, mapping='synthesis', expected_role=role)
         evidence['installed_sdc'] = validate_boundary(sdc, n, evidence)
         return evidence

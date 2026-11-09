@@ -153,9 +153,15 @@ def audit_active(n, g, stage, configuration, key_comparisons):
                    'n10383_29' if successor_configured(configuration) else
                    'n10383_7' if fifo_configured(configuration) else 'n12043_16')
     actual_net = endpoint(active_name)
-    if not g.drivers[actual_net]:
-        # The CNN-retirement rebuild can absorb this numeric alias. Resolve
-        # the same full-state function among real batch guard consumers.
+    hint_failure = None
+    if g.drivers[actual_net]:
+        try:
+            sat_compare(e, c.net(actual_net), expected, label=POLICY + '-hint')
+        except ValueError as error:
+            hint_failure = str(error)
+    if not g.drivers[actual_net] or hint_failure is not None:
+        # A rebuild can absorb or reuse this numeric alias. Resolve the
+        # same full-state function among real batch guard consumers.
         # No synthesized intermediate is an independent proof input.
         wanted_leaves = {e.nodes[x] for x in e.closure(expected)
                          if e.nodes[x][0] == 'state'}
@@ -188,6 +194,7 @@ def audit_active(n, g, stage, configuration, key_comparisons):
     return actual_net, dict(contract='registered TX class actual full-state batch qualification',
         policy=POLICY, actual_qualification_net=actual_net, positive_inputs=positive,
         negative_inputs=negative, no_generated_logic_cuts=True,
+        numeric_hint_rejection=hint_failure,
         all_named_state_arbitrary=True, proof=proof,
         actual_root_zero_veto=prove_zero_veto(n,g,n.canonical('','reset_n'),endpoint('live')),
         full_endpoint_state_machine_proven=False, routed_timing_verified=False)

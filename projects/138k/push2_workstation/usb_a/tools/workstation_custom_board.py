@@ -206,6 +206,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_w_generation_match as generation_match
     from tools import workstation_cnn_staging_retirement as cnn_retirement
     from tools import workstation_reciprocal_div147 as reciprocal_div147
+    from tools import workstation_w_delay_ready as delay_ready
+    if delay_ready.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (delay_ready.TOOL, delay_ready.ALTERNATE)
     if reciprocal_div147.configured({} if profile is None else profile['configuration']):
         profile_dependencies += (reciprocal_div147.TOOL, reciprocal_div147.ALTERNATE)
     if cnn_retirement.configured({} if profile is None else profile['configuration']):
@@ -599,6 +602,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_fault_receipt=native_fault_cofactor.evidence(stage,profile['configuration'])
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
     watchdog_width_evidence = watchdog_width.select(stage, {} if profile is None else profile['configuration'])
+    delay_ready_evidence = delay_ready.select(stage, {} if profile is None else profile['configuration'])
     if watchdog_width_evidence is not None:
         delay_watchdog_retime = delay_watchdog.evidence(stage, profile['configuration'])
     cnn_retirement_evidence = cnn_retirement.select(stage, {} if profile is None else profile['configuration'])
@@ -900,6 +904,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['combined_event_admission'] = event_admission_evidence
         if watchdog_width_evidence is not None:
             metadata['w_watchdog_width'] = watchdog_width_evidence
+        if delay_ready_evidence is not None:
+            metadata['w_delay_ready'] = delay_ready_evidence
         if generation_successor_evidence is not None:
             metadata['raw_generation_successor'] = generation_successor_evidence
         if generation_match_evidence is not None:

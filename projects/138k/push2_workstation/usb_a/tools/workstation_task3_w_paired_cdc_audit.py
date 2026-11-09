@@ -39,7 +39,7 @@ def require(condition, message):
 # Static paired W specialization of the reviewed DEMO fault/FIFO proof.
 # Only the absent M settled-status branch is replaced by an explicit absence
 # assertion and the exact paired W 139-endpoint queue inventory.
-def _audit_boundary(n, *, mapping="synthesis", expected_role="W", usb_retired=False):
+def _audit_boundary(n, *, mapping="synthesis", expected_role="W", usb_retired=False, dma_ready_cofactor=False):
  require(mapping == "synthesis", "paired W routed mapping has not been reviewed")
  require(expected_role == "W", "explicit paired W role required")
  g=Graph(n);reg=lambda scope,stem,bit=None:g.register(scope,stem,bit);q=lambda scope,stem,bit=None:n.pin(reg(scope,stem,bit),'Q')
@@ -78,7 +78,17 @@ def _audit_boundary(n, *, mapping="synthesis", expected_role="W", usb_retired=Fa
  mixed_fault_ends=dict(m_fault_ends)
  del mixed_fault_ends[reg(D,'wptr',0)+'/D']
  mixed_fault_ends[reg(D,'wptr',0)+'/CE']='memory_clk'
- if source_closures[FAULTS[0]]['ff_endpoints']==dict(sorted(m_fault_ends.items())):
+ dma_nextq=None
+ if dma_ready_cofactor:
+  from tools.workstation_w_dma_mapping import audit as audit_dma
+  dma_nextq=audit_dma(n)
+  # The final cofactor selector clocks state unconditionally. Its bit0 CE
+  # is constant; exact full next-Q correspondence above proves the complete
+  # replacement before accepting the new662-endpoint source closure.
+  fault_ends=m_fault_ends
+  del fault_ends[reg(D,'state',0)+'/CE']
+  fault_inventory=662
+ elif source_closures[FAULTS[0]]['ff_endpoints']==dict(sorted(m_fault_ends.items())):
   fault_inventory=663;fault_ends=m_fault_ends
  elif source_closures[FAULTS[0]]['ff_endpoints']==dict(sorted(mixed_fault_ends.items())):
   fault_inventory=663;fault_ends=mixed_fault_ends
@@ -103,6 +113,7 @@ def _audit_boundary(n, *, mapping="synthesis", expected_role="W", usb_retired=Fa
   from tools.workstation_task3_w_usb_retirement import audit_absence
   return dict(policy=POLICY,mapping=mapping,inventory_role='W',
    USB_retirement=audit_absence(n),fault_inventory_endpoints=fault_inventory,
+   DMA_next_Q_correspondence=dma_nextq,
    source_fault_registers=fault_regs,fault_source_closures=source_closures,
    fault_first_stage_closure=first,fault_wptr_lsb_nextq=wptr_lsb_nextq,
    source_sticky_D_constant_1=True,source_faults_memory_domain=True,source_OR_exact_all_three=True,
@@ -162,9 +173,10 @@ def _audit_boundary(n, *, mapping="synthesis", expected_role="W", usb_retired=Fa
   acceptance=dict(structural_only=True,metastability_MTBF_verified=False,routed_timing_passed=False,reset_pulsewidth_verified=False,hardware_tested=False))
 
 
-def audit_boundary(n, sdc, *, mapping='synthesis',usb_retired=False):
+def audit_boundary(n, sdc, *, mapping='synthesis',usb_retired=False,dma_ready_cofactor=False):
     """Prove the actual paired W fault/FIFO boundary and its installed SDC."""
-    result = _audit_boundary(n, mapping=mapping, expected_role='W',usb_retired=usb_retired)
+    result = _audit_boundary(n, mapping=mapping, expected_role='W',usb_retired=usb_retired,
+                             dma_ready_cofactor=dma_ready_cofactor)
     result['installed_sdc'] = validate_boundary_sdc(sdc, n, result,usb_retired=usb_retired)
     return result
 

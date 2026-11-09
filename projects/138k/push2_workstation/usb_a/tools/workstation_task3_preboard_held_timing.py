@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False,generation_match=False,cancel_ready_cofactor=False,combined_admission=False,cnn_retirement=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False,generation_match=False,cancel_ready_cofactor=False,combined_admission=False,cnn_retirement=False,dma_ready_cofactor=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -157,6 +157,13 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         # loses30 combinational cells and DMA gains1. The checked state
         # inventories above and every causal/held proof remain unchanged.
         counts=(2674,4999,1759)
+    if dma_ready_cofactor:
+        require(cnn_retirement, 'DMA cofactor layout requires CNN retirement')
+        from tools.workstation_w_dma_mapping import audit as audit_dma
+        audit_dma(n)
+        # v121 keeps every DMA/raw state bit; shared Boolean factoring changes
+        # arbiter by-1, raw by-8 and DMA by+12 primitives. No timing/region budget changes.
+        counts=(2673,4991,1771)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -200,7 +207,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     cone=forward&backward
     # The selected rebuild absorbs two DMA n6315 LUTs and renames one slot
     # LUT. The same 128 tag Qs and 257 return FFs bound the actual causal cone.
-    cone_count=76 if combined_admission else 75 if registered_tx_class else 76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76
+    cone_count=74 if dma_ready_cofactor else 76 if combined_admission else 75 if registered_tx_class else 76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76
     require(len(cone)==cone_count and {n.cells[p]['kind']for p in cone}==
             {'LUT2','LUT3','LUT4','MUX2_LUT5','MUX2_LUT6'},'W tag-return causal cone changed')
     excluded=[];status_hold=[];local_controls=[]
@@ -239,7 +246,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         require(row['register'] not in selected and row['register'] in reviewed,
                 'W status separation inventory changed')
         selected[row['register']]=row['region']
-    require(len(selected)==(788 if combined_admission else 787 if generation_match else 785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
+    require(len(selected)==(786 if dma_ready_cofactor else 788 if combined_admission else 787 if generation_match else 785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -253,7 +260,8 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy=('task3_W_combined_admission_capture_locality_v12'if combined_admission
+    return result,dict(policy=('task3_W_DMA_ready_response_capture_locality_v13'if dma_ready_cofactor
+                              else'task3_W_combined_admission_capture_locality_v12'if combined_admission
                               else'task3_W_generation_match_capture_locality_v11'if generation_match
                               else'task3_W_registered_tx_captured_end_locality_v10'if registered_tx_class
                               else'task3_W_captured_end_and_key_bytes_locality_v9'if fetch_end_capture
@@ -271,6 +279,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         **(dict(generation_match_layout=True) if generation_match else {}),
         **(dict(cancel_ready_cofactor_layout=True) if cancel_ready_cofactor else {}),
         **(dict(combined_admission_layout=True) if combined_admission else {}),
+        **(dict(dma_ready_cofactor_layout=True) if dma_ready_cofactor else {}),
         native_fault_cofactor_layout=native_fault_cofactor,
         causal_cells_excluded_from_placement_only=excluded,
         ready_path_register_publishers=local_controls,

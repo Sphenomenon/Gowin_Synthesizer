@@ -191,7 +191,8 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
         cst,clock=primary_clk50_constraints(cst,vg_text)
         if role=='M' and 'M_clock_priority' in inputs.get('primary_clk50_adaptation',{}):
             from tools.workstation_custom_board_implementation import m_preboard_clock_priority
-            cst,clock['M_clock_priority']=m_preboard_clock_priority(cst,vg_text)
+            cst,clock['M_clock_priority']=m_preboard_clock_priority(cst,vg_text,
+                watchdog_retime=bool(parent.get('delay_watchdog_retime')))
         ddr=inputs.get('preboard_ddr_adaptation')
         if ddr is None:raise ValueError('preboard DDR physical proof absent')
         routed_reference=Path(ddr['routed_reference'])
@@ -223,7 +224,8 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
                 arithmetic_repair=arithmetic_layout(parent),
                 cancel_ready_cofactor=bool(parent.get('w_tx_class',{}).get('record_cancel_ready')),
                 combined_admission=parent.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
-                cnn_retirement=bool(parent.get('cnn_staging_retirement')))
+                cnn_retirement=bool(parent.get('cnn_staging_retirement')),
+                dma_ready_cofactor=bool(parent.get('w_delay_ready')))
         if (physical/'physical.cst').read_bytes()!=cst:
             raise ValueError('preboard reconstructed physical CST differs')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),

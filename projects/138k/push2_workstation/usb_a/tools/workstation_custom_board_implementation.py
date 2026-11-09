@@ -298,7 +298,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 generation_match=bool(metadata.get('raw_generation_match')),
                 cancel_ready_cofactor=bool(metadata.get('w_tx_class',{}).get('record_cancel_ready')),
                 combined_admission=metadata.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
-                cnn_retirement=bool(metadata.get('cnn_staging_retirement')))
+                cnn_retirement=bool(metadata.get('cnn_staging_retirement')),
+                dma_ready_cofactor=bool(metadata.get('w_delay_ready')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -372,7 +373,8 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
                 arithmetic_repair=arithmetic_layout(metadata),
                 cancel_ready_cofactor=bool(metadata.get('w_tx_class',{}).get('record_cancel_ready')),
                 combined_admission=metadata.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
-                cnn_retirement=bool(metadata.get('cnn_staging_retirement')))
+                cnn_retirement=bool(metadata.get('cnn_staging_retirement')),
+                dma_ready_cofactor=bool(metadata.get('w_delay_ready')))
         locality.update(source_candidate=audit['candidate_identity'],VG_sha256=sha(vg),
             SDC_sha256=digest(physical_sdc if physical_sdc is not None else inputs['physical.sdc'][0].read_bytes()))
     output.mkdir(parents=True)

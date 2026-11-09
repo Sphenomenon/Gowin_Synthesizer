@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v118完整布线检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V118_20261109.md)。M/W完整综合审计32/32、30/30及753／741个暂存文件独立复现通过。M精确固定延迟倒数除法保留普通32／矢量8的采样语义，v39 `D21109E7`首次完整布通，物理BSRAM263/340；setup/hold/removal及部分显式约束仍失败，setup最差−4.690ns，物理reset消费者清单审计也未通过。W原生CNN retirement的260个映射next-Q方程通过，v38 `D21109E6`完整布通、物理BSRAM287/340；全局setup−2.144ns，hold/recovery/removal及显式有限检查为正。两板当前位流均禁止加载，上板前目标仍未完成。身份、位流哈希、失败路径和保留回退见报告。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备正确目标、连接、加载读回、回退及功能步骤。
+最新阶段为[v123 W DMA消费者证明修复](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V123_20261109.md)：新W候选完整综合审计30/30，743个暂存文件独立复现；实际整机803个DMA寄存器的next-Q／INIT／clock证明通过，ready/response共同门控路径已按真实网表修复，尚未P&R。M溢出计数局部实验通过完整周期对照和32位实际映射证明，尚未选入整机。两板最近物理证据仍是[v118](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V118_20261109.md)的M v39 `D21109E7`与W v38 `D21109E6`：物理BSRAM263／287块，setup最差−4.690／−2.144ns，M另有hold、removal及DDR显式路径失败。M物理reset审计参数已修复，后续停在真实DDR配置路径失败。两板位流均禁止加载，上板前目标仍未完成。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备正确目标、连接、加载读回、回退及功能步骤。
 
 ## 赛题要求与项目目标
 

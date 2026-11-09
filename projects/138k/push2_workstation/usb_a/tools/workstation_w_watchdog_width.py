@@ -38,6 +38,8 @@ def configured(configuration):
 
 
 def restore(text):
+    from tools.workstation_w_delay_ready import restore as restore_ready
+    text = restore_ready(text)
     if AFTER not in text:
         return text
     require(digest(text) == SELECTED_SHA256 and text.count(AFTER) == 1,
@@ -62,6 +64,8 @@ def evidence(stage, configuration):
     if not configured(configuration):
         return None
     text = (Path(stage) / SOURCE).read_text()
+    from tools.workstation_w_delay_ready import restore as restore_ready
+    text = restore_ready(text)
     require(digest(text) == SELECTED_SHA256, 'width selection absent')
     restore(text)
     return dict(policy=POLICY, parent_sha256=PARENT_SHA256,
