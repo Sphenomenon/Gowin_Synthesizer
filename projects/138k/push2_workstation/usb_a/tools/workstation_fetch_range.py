@@ -70,6 +70,8 @@ def adapt(text, policy=POLICY):
 
 
 def restore(text):
+    from tools.workstation_w_generation_successor import restore as restore_successor
+    text = restore_successor(text)
     data = manifest(CAPTURE_POLICY if 'reg [32:0] fetch_end;' in text else POLICY)
     require(digest(text) == data['selected_sha256'], 'selected source drift')
     for edit in reversed(data['edits']):
@@ -93,7 +95,8 @@ def evidence(stage, configuration):
     text = (Path(stage) / SOURCE).read_text()
     parent = restore(text)
     policy=configuration[KEY]
-    require(digest(text)==manifest(policy)['selected_sha256'],'selected policy differs')
+    from tools.workstation_w_generation_successor import restore as restore_successor
+    require(digest(restore_successor(text))==manifest(policy)['selected_sha256'],'selected policy differs')
     captured=policy==CAPTURE_POLICY
     return dict(policy=policy, source=SOURCE, parent_sha256=digest(parent),
                 selected_sha256=digest(text), manifest_sha256=CAPTURE_MANIFEST_SHA256 if captured else MANIFEST_SHA256,

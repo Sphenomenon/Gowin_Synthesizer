@@ -82,5 +82,15 @@ class DelayWatchdogRetiming(unittest.TestCase):
             self.assertEqual(selected.count(old),1)
             self.execute(name,selected.replace(old,new,1),2,False)
 
+    def test_W_bounded_wait_counter(self):
+        from tools import workstation_w_watchdog_width as width
+        selected=self.source.replace(repair.DEFAULT,repair.SELECTED,1)
+        self.assertEqual(width.digest(selected),width.PARENT_SHA256)
+        narrow=selected.replace(width.BEFORE,width.AFTER,1)
+        self.assertEqual(width.restore(narrow),selected)
+        for timeout in (2,3,4,7,16,1048576,2147483647):
+            with self.subTest(timeout=timeout):
+                self.execute('bounded-'+str(timeout),narrow,timeout)
+
 if __name__=='__main__':
     unittest.main(verbosity=2)

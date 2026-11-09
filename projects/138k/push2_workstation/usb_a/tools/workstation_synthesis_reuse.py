@@ -34,6 +34,8 @@ def reuse(source,destination,*,audit_tool_only=False):
         'rtl/workstation/workstation_phone_ack_compare_v1.adaptation.json',
         'rtl/memory/workstation_ble_terminal_tuple_v1.adaptation.json',
         'tools/workstation_record_cancel_compare.py',
+        # M-only checked display adaptation. W compiler closure stays exact.
+        'tools/workstation_reader_validated_metadata.py',
         'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json'}
     inventory_difference=set(sm['staged_input_sha256'])^set(dm['staged_input_sha256'])
     if inventory_difference and (not audit_tool_only or not inventory_difference<=added_review_inputs):
@@ -55,10 +57,24 @@ def reuse(source,destination,*,audit_tool_only=False):
                   'tools/workstation_tf_status_compare.py',
                   'tools/workstation_task3_tf_storage_selection.py',
                   'tools/workstation_w_tx_class.py',
+                  # W width inverse is an identity on M's unchanged32-bit
+                  # compiler source; this Python proof helper is not HDL.
+                  'tools/workstation_delay_watchdog_retime.py',
+                  'tools/workstation_reader_response_reuse.py',
+                  # Exact v88 compact-reader replica and memory-clock review;
+                  # mapped pin checks only, with identical compiler bytes.
+                  'tools/workstation_cancel_fanout.py',
+                  # Exact same successor RTL; only mapped induction proof
+                  # changed from an opaque-DDR expansion to common pin checks.
+                  'tools/workstation_w_generation_successor.py',
                   # Pack rebuild proof and physical-constraint review only.
                   # Physical outputs still require fresh preparation/P&R.
                   'tools/workstation_task3_phone_batch_mapped_w.py',
                   'tools/workstation_task3_preboard_held_timing.py',
+                  # Exact v85b physical inventories/reconstruction only;
+                  # no compiler source, clock or synthesis option changes.
+                  'tools/workstation_task3_w_delay_locality.py',
+                  'tools/workstation_physical_pll_audit.py',
                   'tools/workstation_task3_w_raw_command_capture.py',
                   'tools/workstation_task3_w_paired_cdc_audit.py',
                   'tools/workstation_record_peer_compare.py',

@@ -201,6 +201,14 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         if profile['configuration'][fetch_range.KEY]==fetch_range.CAPTURE_POLICY:
             profile_dependencies += (fetch_range.CAPTURE_MANIFEST,)
     from tools import workstation_event_admission as event_admission
+    from tools import workstation_w_watchdog_width as watchdog_width
+    from tools import workstation_w_generation_successor as generation_successor
+    for selection in (watchdog_width, generation_successor):
+        if selection.configured({} if profile is None else profile['configuration']):
+            profile_dependencies += (selection.TOOL,)
+    from tools import workstation_cancel_fanout as cancel_fanout
+    if cancel_fanout.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (cancel_fanout.TOOL,)
     event_admission_selected = event_admission.configured({} if profile is None else profile['configuration'])
     if event_admission_selected:
         profile_dependencies += (event_admission.TOOL, event_admission.MANIFEST)
@@ -208,6 +216,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     plot_coordinates_selected = plot_coordinates.configured({} if profile is None else profile['configuration'])
     if plot_coordinates_selected:
         profile_dependencies += (plot_coordinates.TOOL, plot_coordinates.MANIFEST)
+    from tools import workstation_reader_validated_metadata as reader_validated
+    if reader_validated.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (reader_validated.TOOL,)
     from tools import workstation_reader_response_reuse as reader_reuse
     reader_reuse_selected = reader_reuse.configured({} if profile is None else profile['configuration'])
     if reader_reuse_selected:
@@ -574,9 +585,26 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
         native_fault_receipt=native_fault_cofactor.evidence(stage,profile['configuration'])
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
+    watchdog_width_evidence = watchdog_width.select(stage, {} if profile is None else profile['configuration'])
+    if watchdog_width_evidence is not None:
+        delay_watchdog_retime = delay_watchdog.evidence(stage, profile['configuration'])
+    generation_successor_evidence = generation_successor.select(stage, {} if profile is None else profile['configuration'])
+    if generation_successor_evidence is not None:
+        raw_fetch_range=fetch_range.evidence(stage,profile['configuration'])
+        raw_pack_cofactor=pack_cofactor.evidence(stage,profile['configuration'])
+        raw_terminal_tuple=terminal_tuple.evidence(stage,profile['configuration'])
+        raw_terminal_cofactor=terminal_cofactor.evidence(stage,profile['configuration'])
+        raw_completion_publication=completion_publication.evidence(stage,profile['configuration'])
+        native_fault_receipt=native_fault_cofactor.evidence(stage,profile['configuration'])
     reader_reuse_evidence = reader_reuse.select(stage, profile['configuration']) if reader_reuse_selected else None
+    reader_validated_evidence = reader_validated.select(stage, {} if profile is None else profile['configuration'])
+    if reader_validated_evidence is not None:
+        reader_reuse_evidence = reader_reuse.evidence(stage, profile['configuration'])
     plot_coordinates_evidence = plot_coordinates.select(stage, profile['configuration']) if plot_coordinates_selected else None
     event_admission_evidence = event_admission.select(stage, profile['configuration']) if event_admission_selected else None
+    cancel_fanout_evidence = cancel_fanout.select(stage, {} if profile is None else profile['configuration'])
+    if cancel_fanout_evidence is not None:
+        event_admission_evidence = event_admission.evidence(stage, profile['configuration'])
     if demand_identity_selected:
         demand_identity.select(stage,profile['configuration'])
     if capture_compare_selected:
@@ -849,10 +877,18 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['raw_fetch_range'] = raw_fetch_range
         if event_admission_evidence is not None:
             metadata['combined_event_admission'] = event_admission_evidence
+        if watchdog_width_evidence is not None:
+            metadata['w_watchdog_width'] = watchdog_width_evidence
+        if generation_successor_evidence is not None:
+            metadata['raw_generation_successor'] = generation_successor_evidence
+        if cancel_fanout_evidence is not None:
+            metadata['cancel_fanout'] = cancel_fanout_evidence
         if plot_coordinates_evidence is not None:
             metadata['display_plot_coordinates'] = plot_coordinates_evidence
         if reader_reuse_evidence is not None:
             metadata['display_reader_response_reuse'] = reader_reuse_evidence
+        if reader_validated_evidence is not None:
+            metadata['display_reader_validated_metadata'] = reader_validated_evidence
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR

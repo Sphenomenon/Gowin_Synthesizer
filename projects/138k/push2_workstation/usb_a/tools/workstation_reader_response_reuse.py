@@ -49,6 +49,8 @@ def adapt(text):
 
 
 def restore(text):
+    from tools.workstation_reader_validated_metadata import restore as restore_validated
+    text = restore_validated(text)
     data = manifest()
     require(digest(text) == data['selected_sha256'], 'selected source drift')
     for edit in reversed(data['edits']):

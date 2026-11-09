@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v83完整消费者证明与物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V83_20261109.md)。M/W完整综合审计29/29、27/27及746／732个暂存文件独立复现通过；W消费者证明失败已解决。W v28 `D21109DC`完整布通、PLL／DDR通过，物理BSRAM287/340，但全局setup仍−2.231ns，另有显式释放setup−0.134ns，禁止加载。M v27 `D21109CD`有2398条未布通网络，无完整STA或可用位流。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备步骤，目标尚未完成。
+最新阶段为[v90完整综合与物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V90_20261109.md)。M/W完整综合审计31/31、28/28及748／734个暂存文件独立复现通过；W消费者证明保持通过。M v29 `D21109CF`将未布通数降至1848，仍无完整STA或可用位流；W v29 `D21109DD`完整布通、PLL／DDR启动通过，物理BSRAM287/340，但全局setup−2.262ns及两条显式释放setup失败，禁止加载。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤，上板前目标仍未完成。
 
 ## 赛题要求与项目目标
 
@@ -66,7 +66,7 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-09 当前源码／综合检查点为[v83](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V83_20261109.md)。M保留32／8声部、唯一参数、本地混响和最终输出，W承担实际CNN、手机接收解码及唯一录音对象。M空槽TF补充消除108个实际payload CE的最终router反馈；W寄存TX偏好与大FIFO比较前移已进入完整来源、网表消费者和独立复现检查。未改变输入的滑音／效果与媒体回归按身份复用。
+2026-11-09 当前源码／综合检查点为[v90](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V90_20261109.md)。M保留32／8声部、唯一参数、本地混响和最终输出；本轮按原校验边界压缩显示元数据，取消状态同拍复制。W保留实际CNN、手机接收解码及唯一录音对象，缩窄饱和watchdog并预存generation后继值，实际消费者与复位归纳通过。输入未变的滑音／效果与媒体证据按完整编译字节复用；M拥塞及W全局／显式setup仍须修复。
 
 物理目标仍未完成。M v27有2398条未布通网络；取消状态1359扇出的同拍复制诊断已综合和逐FF证明，尚未选择或布线。W v28全局setup−2.231ns，当前最差为DMA等待计数器，另有generation→completion和context→BLE等负路径；hold／recovery／removal均正，显式释放setup另有−0.134ns。下一步按这些真实网络修复再绑定新身份重建，不做相同输入的盲目P&R。所有失败结果及task2／单板回退保留，不操作板卡。
 

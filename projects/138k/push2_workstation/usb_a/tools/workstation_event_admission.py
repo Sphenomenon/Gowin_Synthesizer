@@ -56,6 +56,9 @@ def adapt(source, text):
 
 
 def restore(source, text):
+    if source == 'rtl/audio/gw138k_event_workstation.sv':
+        from tools.workstation_cancel_fanout import restore as restore_fanout
+        text = restore_fanout(text)
     data = manifest()['sources'][source]
     require(digest(text) == data['selected_sha256'], 'selected source drift: ' + source)
     for edit in reversed(data['edits']):

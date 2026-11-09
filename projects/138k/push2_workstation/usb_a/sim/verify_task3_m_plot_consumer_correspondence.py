@@ -93,7 +93,11 @@ for pin in ('ADA','ADB'):
 # Reject a nonzero initialization and a high-bit transition to one. The
 # mutation lives only in parsed dictionaries and is restored immediately.
 negative_controls=[]
-circuit=parsed[0];path=circuit.state['u_tf_audio/quiet_wait_26']
+circuit=parsed[0]
+# Select an actual state already proved zero in this exact old mapping.
+# Packing may retire the historical quiet_wait_26 name.
+negative_state=next(name for name in sorted(high_names) if name in circuit.state)
+path=circuit.state[negative_state]
 for section,key,bad in [('parameters','INIT',"1'b1"),('ports','D',"1'b1")]:
  cell=circuit.n.cells[path];original=cell[section].get(key)
  try:

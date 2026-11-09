@@ -143,6 +143,7 @@ AUDIT_SOURCES = (
     'tools/workstation_plot_coordinates.py',
     'rtl/display_data/workstation_plot_coordinates_v1.adaptation.json',
     'tools/workstation_reader_response_reuse.py',
+    'tools/workstation_reader_validated_metadata.py',
     'rtl/display_data/workstation_reader_response_reuse_v1.adaptation.json',
     'sim/test_workstation_preboard_route_repairs.py',
     'tools/workstation_task3_m_session_boundary.py',
@@ -192,6 +193,8 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_paired_clock_audit.py',
     'tools/workstation_task3_m_paired_releases_audit.py',
     'tools/workstation_task3_m_preboard_consumers.py',
+    'tools/workstation_cancel_fanout.py',
+    'tools/workstation_w_watchdog_width.py', 'tools/workstation_w_generation_successor.py',
     'tools/workstation_task3_m_cpu_source_review.py',
     'tools/task3_m_preboard_cpu_destination_inventory.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v2.json',
@@ -206,6 +209,7 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v11.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v12.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v13.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v14.json',
     'sim/verify_task3_m_consumer_correspondence.py',
     'sim/verify_task3_m_plot_consumer_correspondence.py',
     'tools/workstation_tf_status_compare.py',
@@ -698,8 +702,23 @@ def audit(root, output, metadata):
     from tools.workstation_task3_w_banked96 import configured as banked96_configured,check_mapped_rom
     if banked96_configured(profile['configuration']):
         gate('W_banked96_ROM_words',lambda:check_mapped_rom(stage,netlist))
+    from tools import workstation_w_generation_successor as generation_successor
+    if generation_successor.configured(profile['configuration']):
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        gate('W_generation_successor_invariant', lambda: generation_successor.audit(
+            protocol_netlist(vg_text, mapping='synthesis')))
     if role == 'M':
         gate('M_32_voice_storage', lambda: audit_m_voice_storage(netlist))
+        from tools import workstation_cancel_fanout as cancel_fanout
+        if cancel_fanout.configured(profile['configuration']):
+            from tools.workstation_native_protocol_audit import protocol_netlist
+            gate('M_cancel_replication', lambda: cancel_fanout.audit(
+                protocol_netlist(vg_text, mapping='synthesis'), profile['configuration']))
+        from tools import workstation_reader_validated_metadata as reader_validated
+        if reader_validated.configured(profile['configuration']):
+            from tools.workstation_native_protocol_audit import protocol_netlist
+            gate('M_reader_validated_storage', lambda: reader_validated.audit_mapped(
+                protocol_netlist(vg_text, mapping='synthesis')))
         if profile['configuration'].get('m_endpoint_storage_policy')=='sync_score_and_final_tap_prefetch_v1':
             gate('M_sync_storage_mapping',lambda: audit_m_sync_storage(rows))
     from tools.workstation_custom_board_audit import check_ports, check_rom, audit_native_feedback

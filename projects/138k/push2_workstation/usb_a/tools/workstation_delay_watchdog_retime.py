@@ -23,6 +23,8 @@ def unselect(text):
     return text
 
 def restore(text):
+    from tools.workstation_w_watchdog_width import restore as restore_width
+    text=restore_width(text)
     text=unselect(text)
     if DEFAULT not in text:return text
     raw=(Path(__file__).resolve().parents[1]/MANIFEST).read_bytes()

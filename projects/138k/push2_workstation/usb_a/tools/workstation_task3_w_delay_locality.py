@@ -25,6 +25,9 @@ FIFO_COMPARE_INVENTORIES = (
     dict(LUT4=421, LUT3=123, LUT2=399, DFFCE=811, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
     dict(LUT4=34, LUT2=11, LUT3=84, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
     dict(LUT4=30, LUT2=11, LUT3=84, DFFCE=80, SDPX9B=4, ALU=18, INV=4, VCC=1, GND=1))
+ARITHMETIC_INVENTORIES = (
+    dict(LUT4=420, LUT3=111, LUT2=393, DFFCE=800, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
+    *FIFO_COMPARE_INVENTORIES[1:])
 
 
 def require(ok, message):
@@ -32,7 +35,19 @@ def require(ok, message):
         raise ValueError('W delay locality: '+message)
 
 
-def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=False):
+def arithmetic_layout(metadata):
+    """The reviewed physical inventory requires both exact arithmetic repairs."""
+    width = metadata.get('w_watchdog_width', {}).get('policy')
+    successor = metadata.get('raw_generation_successor', {}).get('policy')
+    if width is None and successor is None:
+        return False
+    require(width == 'task3_W_bounded_saturating_wait_counter_v1' and
+            successor == 'task3_W_registered_generation_successor_v1',
+            'unreviewed partial arithmetic composition')
+    return True
+
+
+def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False):
     """Select the diagnosed scopes from their exact primitive inventories."""
     from tools.workstation_pinout import parse_locations
     sha = lambda b: hashlib.sha256(b).hexdigest()
@@ -40,8 +55,9 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     allowed = {'LUT2', 'LUT3', 'LUT4', 'ALU', 'MUX2_LUT5', 'MUX2_LUT6',
                'MUX2_LUT7', 'MUX2_LUT8', 'DFFCE', 'DFFPE', 'DFFRE', 'SDPX9B'}
     require(not fifo_compare_first or registered_tx_class,'FIFO-first layout requires registered W TX class')
-    inventories = FIFO_COMPARE_INVENTORIES if fifo_compare_first else TX_CLASS_INVENTORIES if registered_tx_class else INVENTORIES
-    selected_count = 2241 if fifo_compare_first else 2240 if registered_tx_class else 2233
+    require(not arithmetic_repair or fifo_compare_first,'W arithmetic layout requires FIFO-first composition')
+    inventories = ARITHMETIC_INVENTORIES if arithmetic_repair else FIFO_COMPARE_INVENTORIES if fifo_compare_first else TX_CLASS_INVENTORIES if registered_tx_class else INVENTORIES
+    selected_count = 2211 if arithmetic_repair else 2241 if fifo_compare_first else 2240 if registered_tx_class else 2233
     for (scope, region), expected in zip(SCOPES, inventories):
         cells = {p: c for p, c in netlist.cells.items() if p.startswith(scope)}
         counts[scope] = dict(Counter(c['kind'] for c in cells.values()))
@@ -84,6 +100,7 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     require(parse_locations(result.decode()) == parse_locations(raw), 'IO locations changed')
     proof = dict(policy=POLICY, before_CST_sha256=sha(cst),
                  **(dict(fifo_compare_first_layout=True) if fifo_compare_first else {}),
+                 **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
                  **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
                  after_CST_sha256=sha(result), scope_kinds=counts, selected_count=selected_count,
                            RAMs_not_in_logic_regions=ram, new_groups=new_groups,
@@ -92,9 +109,9 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     return result, proof
 
 
-def reconstruct(cst, netlist, proof, *, registered_tx_class=False, fifo_compare_first=False):
+def reconstruct(cst, netlist, proof, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False):
     """Require the exact selected inventories and reproduce every changed byte."""
-    result, expected = placement(cst, netlist, registered_tx_class=registered_tx_class, fifo_compare_first=fifo_compare_first)
+    result, expected = placement(cst, netlist, registered_tx_class=registered_tx_class, fifo_compare_first=fifo_compare_first, arithmetic_repair=arithmetic_repair)
     for key, value in expected.items():
         require(proof.get(key) == value, 'receipt differs: '+key)
     return result

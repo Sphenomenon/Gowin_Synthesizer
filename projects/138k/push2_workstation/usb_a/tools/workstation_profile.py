@@ -620,11 +620,15 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'effects_dispatch_policy':'task3_W_reserved_effects_configuration_v1',
                                'w_tx_class_policy':'task3_W_registered_normal_tx_preference_v1',
                                'fifo_full_policy':'task3_W_large_FIFO_compare_before_write_select_v1'})
+        _configuration.update(w_watchdog_width_policy='task3_W_bounded_saturating_wait_counter_v1',
+                              raw_generation_successor_policy='task3_W_registered_generation_successor_v1')
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
                               display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
+                              display_reader_validated_policy='task3_M_validated_display_metadata_storage_v1',
                               display_plot_coordinate_policy='task3_M_constant_gain_plot_coordinates_v1',
                               event_admission_policy='task3_M_combined_sample_event_admission_v1',
+                              cancel_fanout_policy='task3_M_same_edge_cancel_fanout128_v1',
                               inner_event_queue_policy='task3_M_two_slot_inner_event_queue_v1',
                               effects_gain_policy='same_edge_distance_slew_v1',
                               tf_compute_reset_policy='task3_M_TF_compute_functional_local_release_v1',
@@ -656,6 +660,16 @@ def prepared_specification(prepared):
         'custom138k-workstation-task3-w-preboard-v1':
             'e9c92aef9df87dc474ae4a8ce7d255549f6967081a0ee6550dd9b454ed3bb15e'}
     prior=previous_preboard.get(prepared.get('profile'))
+    retained_v83 = {
+        'custom138k-workstation-task3-m-preboard-v1':
+            'ef697909715f4724dbaa60b66883c514e15c1f09031ccfe0cc1c48c969456f07',
+        'custom138k-workstation-task3-w-preboard-v1':
+            '12f3d07260ef773f783cae53a1eb98eff74b52979f78feb6f974131e5649d8ec'}
+    if identity_digest(prepared.get('configuration')) == retained_v83.get(prepared.get('profile')):
+        spec=dict(spec,configuration=prepared['configuration'])
+    if prepared.get('profile')=='custom138k-workstation-task3-m-preboard-v1' and identity_digest(prepared.get('configuration'))=='7b73d0367b24b97421d62c9a947d1ae40daa8b12ae0549274ae1156e159aaa44':
+        # Exact cancellation-replication checkpoint before compact metadata.
+        spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='66c7e48866a76abc5b46aff1893f81aa6e5b905c104e8a7c7378fc88f8855ed5':
         spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile')=='custom138k-workstation-task3-m-preboard-v1' and identity_digest(prepared.get('configuration'))=='eec71ccb0f28aa1d5524c9f5425e28db6fe5639aa69662098b718288f49e8bf3':
@@ -1123,6 +1137,9 @@ def _artifact(root, output, metadata, profile):
         if source=='rtl/audio/gw138k_event_workstation.sv' and profile['configuration'].get('inner_event_queue_policy') is not None:
             from tools import workstation_inner_event_queue as queue
             selected_event=(stage/record['destination']).read_text()
+            from tools import workstation_cancel_fanout as cancel_fanout
+            if cancel_fanout.evidence(stage, profile['configuration']) != metadata.get('cancel_fanout'):
+                raise ValueError('cancel fanout source selection drift')
             if profile['configuration'].get('event_admission_policy') is not None:
                 from tools import workstation_event_admission as event_admission
                 if event_admission.evidence(stage,profile['configuration']) != metadata.get('combined_event_admission'):
@@ -1145,6 +1162,9 @@ def _artifact(root, output, metadata, profile):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
         if target == 'rtl/display_data/display_data_reader.v' and profile['configuration'].get('display_reader_storage_policy') is not None:
+            from tools import workstation_reader_validated_metadata as reader_validated
+            if reader_validated.evidence(stage, profile['configuration']) != metadata.get('display_reader_validated_metadata'):
+                raise ValueError('validated display metadata selection drift')
             from tools import workstation_reader_response_reuse as reader_reuse
             if (reader_reuse.evidence(stage, profile['configuration']) != metadata.get('display_reader_response_reuse') or
                     reader_reuse.restore((stage/target).read_text()) != (root/source).read_text()):
@@ -1163,6 +1183,9 @@ def _artifact(root, output, metadata, profile):
                 raise ValueError('display plot coordinate source selection drift')
             staged_hash = sha(stage/target)
         if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
+            from tools import workstation_w_generation_successor as generation_successor
+            if generation_successor.evidence(stage,profile['configuration']) != metadata.get('raw_generation_successor'):
+                raise ValueError('generation successor source selection changed')
             from tools import workstation_ble_completion_publication as completion
             from tools import workstation_ble_terminal_cofactor as terminal
             selected=(stage/target).read_text()
@@ -1229,9 +1252,12 @@ def _artifact(root, output, metadata, profile):
                 raise ValueError('TF tail local reset parameter/source selection changed')
             staged_hash = sha(stage/target)
         if target == 'rtl/audio/delay_ddr/workstation_runtime_delay_ddr_dma.sv' and profile['configuration'].get('delay_watchdog_policy') is not None:
+            from tools import workstation_w_watchdog_width as watchdog_width
+            if watchdog_width.evidence(stage,profile['configuration']) != metadata.get('w_watchdog_width'):
+                raise ValueError('watchdog width source selection changed')
             from tools import workstation_delay_watchdog_retime as delay_watchdog
             if (delay_watchdog.evidence(stage,profile['configuration']) != metadata.get('delay_watchdog_retime') or
-                    delay_watchdog.unselect((stage/target).read_text()) != (root/source).read_text()):
+                    delay_watchdog.unselect(watchdog_width.restore((stage/target).read_text())) != (root/source).read_text()):
                 raise ValueError('delay watchdog parameter/source selection changed')
             staged_hash=sha(stage/target)
         if target == 'rtl/workstation/workstation_task3_m_bus_endpoint.sv' and profile['configuration'].get('m_demand_identity_compare_policy') is not None:

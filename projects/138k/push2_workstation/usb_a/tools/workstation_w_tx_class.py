@@ -115,10 +115,12 @@ def audit_active(n, g, stage, configuration, key_comparisons):
     for net in negative:
         expected = e.choose(c.net(net), 0, expected)
     from tools.workstation_fifo_full_compare import configured as fifo_configured
-    # The FIFO rebuild exports the complete conjunction as n10383_7. The
-    # batch-local n12043_16 now also contains response/state conditions and
-    # cannot stand for active. Prove the selected real driver over all state.
-    actual_net = endpoint('n10383_7' if fifo_configured(configuration) else 'n12043_16')
+    from tools.workstation_w_generation_successor import configured as successor_configured
+    # Each actual mapping is independently proved over the complete420-state
+    # function; generated names alone never establish the active predicate.
+    active_name = ('n10383_29' if successor_configured(configuration) else
+                   'n10383_7' if fifo_configured(configuration) else 'n12043_16')
+    actual_net = endpoint(active_name)
     proof = sat_compare(e, c.net(actual_net), expected, label=POLICY + '-actual-active')
     from tools.workstation_w_context_compare import prove_zero_veto
     return actual_net, dict(contract='registered TX class actual full-state batch qualification',

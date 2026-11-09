@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -123,7 +123,10 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     # v79 registered TX selection refactors shared gates in these unchanged
     # owners. Keep this exact mapping separate from every retained recipe.
     require(not fifo_compare_first or registered_tx_class,'FIFO-first layout requires registered W TX class')
-    counts=(2669,4944,1791) if fifo_compare_first else (2669,4957,1788) if registered_tx_class else (2674,4979,1780) if fetch_end_capture else (2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
+    require(not arithmetic_repair or fifo_compare_first,'W arithmetic layout requires FIFO-first composition')
+    # Actual v85b synthesis: +32 successor FFs and eleven fewer watchdog FFs.
+    # Keep older recipes exact; this selection changes no physical regions.
+    counts=(2669,4991,1761) if arithmetic_repair else (2669,4944,1791) if fifo_compare_first else (2669,4957,1788) if registered_tx_class else (2674,4979,1780) if fetch_end_capture else (2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -175,7 +178,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         # V17 routed this shared watchdog gate from C135 to C55 and back,
         # adding 6.318ns of wire. Keep its causal membership in the proof,
         # but allow the placer to serve its watchdog consumer locally.
-        shared='u_managed/runtime/delay_dma/n420_s3' if fifo_compare_first or (identity_bytes and not registered_tx_class) else 'u_managed/runtime/delay_dma/n420_s2'
+        shared='u_managed/runtime/delay_dma/'+('n387_s3' if arithmetic_repair else 'n420_s3' if fifo_compare_first or (identity_bytes and not registered_tx_class) else 'n420_s2')
         require(shared in cone and n.cells[shared]['kind']=='LUT4' and
                 n.cells[shared]['parameters']=={'INIT':"16'h0700"},
                 'W diagnosed shared watchdog gate changed')
@@ -232,6 +235,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         pack_cofactor_layout=pack_cofactor,
         **(dict(captured_fetch_end_layout=True) if fetch_end_capture else {}),
         **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
+        **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
         native_fault_cofactor_layout=native_fault_cofactor,
         causal_cells_excluded_from_placement_only=excluded,
         ready_path_register_publishers=local_controls,

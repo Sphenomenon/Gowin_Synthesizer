@@ -210,7 +210,7 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
                 raise ValueError('preboard physical proof differs: '+key)
         locality = inputs.get('diagnosed_locality')
         if locality is not None:
-            from tools.workstation_task3_w_delay_locality import reconstruct
+            from tools.workstation_task3_w_delay_locality import reconstruct, arithmetic_layout
             from tools.workstation_native_protocol_audit import protocol_netlist
             if role != 'W' or locality.get('source_candidate') != profile['candidate_identity']:
                 raise ValueError('diagnosed locality requires its exact W source candidate')
@@ -219,7 +219,8 @@ def role_source_context(physical, inputs, snapshot, *, paired=False):
                 raise ValueError('diagnosed W locality netlist/SDC identity differs')
             cst = reconstruct(cst, protocol_netlist(vg_text, mapping='synthesis'), locality,
                 registered_tx_class=parent.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
-                fifo_compare_first=parent.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1')
+                fifo_compare_first=parent.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1',
+                arithmetic_repair=arithmetic_layout(parent))
         if (physical/'physical.cst').read_bytes()!=cst:
             raise ValueError('preboard reconstructed physical CST differs')
     for physical_name, original in (('custom_138k_integration.vg', outputs['netlist_sha256']),
