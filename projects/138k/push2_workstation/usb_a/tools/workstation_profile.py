@@ -628,6 +628,8 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         _configuration['record_cancel_ready_policy']='task3_W_same_edge_record_CANCEL_ready_cofactor_v1'
         _configuration['event_admission_policy']='task3_W_combined_sample_event_admission_v1'
     else:
+        _configuration['m_pcm_overflow_policy']='task3_M_same_edge_PCM_overflow_permission_v1'
+        _configuration['m_critical_locality_policy']='task3_M_v40_response_DQS_PLL_and_held_locality_v1'
         _configuration.update(display_raster_policy='task3_M_validated_cache_raster_admission_v1',
                               runtime_div147_policy='task3_M_exact_reciprocal_fixed_latency_v1',
                               glide_coefficient_policy='same_commit_CC5_div147_v1',
@@ -680,6 +682,9 @@ def prepared_specification(prepared):
     if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='66c7e48866a76abc5b46aff1893f81aa6e5b905c104e8a7c7378fc88f8855ed5':
         spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile')=='custom138k-workstation-task3-m-preboard-v1' and identity_digest(prepared.get('configuration'))=='eec71ccb0f28aa1d5524c9f5425e28db6fe5639aa69662098b718288f49e8bf3':
+        spec=dict(spec,configuration=prepared['configuration'])
+    if prepared.get('profile')=='custom138k-workstation-task3-m-preboard-v1' and identity_digest(prepared.get('configuration'))=='9d8bfbf789af90a281722945acf2faf9ea3db928533ee23ba0fed91b44bf6aca':
+        # Exact overflow checkpoint before the v40 physical-only policy.
         spec=dict(spec,configuration=prepared['configuration'])
     if prepared.get('profile')=='custom138k-workstation-task3-w-preboard-v1' and identity_digest(prepared.get('configuration'))=='4f9e4e7f4cb09dd2a62ca8481687e46c3ae5942540d5b19884307cba16e57610':
         spec=dict(spec,configuration=prepared['configuration'])
@@ -1178,6 +1183,12 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target == 'rtl/audio/workstation_ae350_pcm_owner.sv' and profile['configuration'].get('m_pcm_overflow_policy'):
+            from tools import workstation_m_pcm_overflow as pcm_overflow
+            if (pcm_overflow.evidence(stage, profile['configuration']) != metadata.get('m_pcm_overflow') or
+                    pcm_overflow.restore((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('M PCM overflow source selection drift')
+            staged_hash=sha(stage/target)
         if target == 'rtl/music/workstation_cnn_task_service.sv' and profile['configuration'].get('cnn_staging_retirement_policy'):
             from tools import workstation_cnn_staging_retirement as retirement
             if (retirement.evidence(stage, profile['configuration']) != metadata.get('cnn_staging_retirement') or

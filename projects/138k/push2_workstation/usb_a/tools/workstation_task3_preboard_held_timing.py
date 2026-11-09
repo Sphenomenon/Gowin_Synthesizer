@@ -9,7 +9,7 @@ def require(ok,message):
     if not ok:raise ValueError('paired held timing: '+message)
 
 
-def placement(cst, proof):
+def placement(cst, proof, *, m_v40_locality=False):
     """Separate the proved F808 held endpoints; retain finite min/max timing.
 
     B6 placed direct Q-to-D payloads together, giving 0.36ns against 1.8ns
@@ -19,6 +19,7 @@ def placement(cst, proof):
     from tools.workstation_custom_board_implementation import (
         DDR_FAR_LAUNCH_REGION, DDR_FAR_CAPTURE_REGION, digest)
     require(proof['hold_checks_retained'] is True, 'placement requires held proof')
+    require(not m_v40_locality or proof['role']=='M','M v40 placement requires M')
     rows=[];lines=[];seen=set()
     for row in proof['payloads']:
         if row['id'] not in ('F808_request','F808_response','PANIC_epoch','M_PCM_response','M_PCM_request'):continue
@@ -40,6 +41,10 @@ def placement(cst, proof):
         if row['id']in('PANIC_epoch','M_PCM_request'):
             regions=('R[15:25]C[140:155]','R[75:85]C[20:35]')
         if row['id']=='M_PCM_response':regions=('R[75:85]C[20:35]','R[15:25]C[140:155]')
+        if m_v40_locality and row['id'] in ('PANIC_epoch','M_PCM_request'):
+            regions=('R[5:15]C[164:179]','R[90:100]C[5:20]')
+        if m_v40_locality and row['id']=='M_PCM_response':
+            regions=('R[90:100]C[5:20]','R[5:15]C[164:179]')
         for field,region in zip(('source','capture'),regions):
             for pin in row[field]:
                 path=pin.rsplit('/',1)[0]
@@ -50,7 +55,8 @@ def placement(cst, proof):
     expected=348 if proof['role']=='M' else 164
     require(len(rows)==expected, 'incomplete paired held placement inventory')
     selected=cst+('\n# Proved paired held data separation; all timing retained\n'+'\n'.join(lines)+'\n').encode()
-    return selected,dict(policy=('task3_M_F808_corner_capacity_v5'if proof['role']=='M'
+    return selected,dict(policy=('task3_M_v40_held_hold_separation_v6'if m_v40_locality else
+                                'task3_M_F808_corner_capacity_v5'if proof['role']=='M'
                                  else'task3_exact_held_endpoint_separation_v3'),registers=rows,
         before_cst_sha256=digest(cst),after_cst_sha256=digest(selected),
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
@@ -260,6 +266,10 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
+    critical=None
+    if dma_ready_cofactor:
+        from tools.workstation_task3_w_critical_locality import placement as critical_placement
+        result,critical=critical_placement(result,n)
     return result,dict(policy=('task3_W_DMA_ready_response_capture_locality_v13'if dma_ready_cofactor
                               else'task3_W_combined_admission_capture_locality_v12'if combined_admission
                               else'task3_W_generation_match_capture_locality_v11'if generation_match
@@ -280,6 +290,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         **(dict(cancel_ready_cofactor_layout=True) if cancel_ready_cofactor else {}),
         **(dict(combined_admission_layout=True) if combined_admission else {}),
         **(dict(dma_ready_cofactor_layout=True) if dma_ready_cofactor else {}),
+        **(dict(diagnosed_v38_critical_locality=critical) if critical is not None else {}),
         native_fault_cofactor_layout=native_fault_cofactor,
         causal_cells_excluded_from_placement_only=excluded,
         ready_path_register_publishers=local_controls,

@@ -40,6 +40,13 @@ def reuse(source,destination,*,audit_tool_only=False):
         'tools/workstation_w_dma_mapping.py',
         'rtl/audio/delay_ddr/workstation_runtime_delay_dma_nextq_v1.proof.json',
         'sim/audio/run_delay_ready_mapping.py',
+        # M-only owner alternative and W-only physical recipe. They remain
+        # outside W's compiler listing; all actual compiler bytes stay exact.
+        'tools/workstation_m_pcm_overflow.py',
+        'sim/audio/run_pcm_overflow_permission.py',
+        'rtl/audio/workstation_ae350_pcm_owner_overflow.sv',
+        'tools/workstation_task3_w_critical_locality.py',
+        'tools/workstation_task3_m_critical_locality.py',
         'tools/workstation_ble_pack_cofactor.py',
         'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
         'tools/workstation_phone_ack_compare.py',
@@ -48,6 +55,9 @@ def reuse(source,destination,*,audit_tool_only=False):
         'tools/workstation_record_cancel_compare.py',
         # M-only checked display adaptation. W compiler closure stays exact.
         'tools/workstation_reader_validated_metadata.py',
+                  # M-only overflow inverse. W's unchanged PCM bytes remain
+                  # compiler inputs; this Python file is review material only.
+                  'tools/workstation_pcm_bitmap_permission.py',
         'tools/workstation_w_generation_match.py',
         'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json'}
     inventory_difference=set(sm['staged_input_sha256'])^set(dm['staged_input_sha256'])

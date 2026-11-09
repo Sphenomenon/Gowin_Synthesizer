@@ -207,6 +207,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_cnn_staging_retirement as cnn_retirement
     from tools import workstation_reciprocal_div147 as reciprocal_div147
     from tools import workstation_w_delay_ready as delay_ready
+    from tools import workstation_m_pcm_overflow as pcm_overflow
+    if pcm_overflow.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (pcm_overflow.TOOL, pcm_overflow.ALTERNATE)
     if delay_ready.configured({} if profile is None else profile['configuration']):
         profile_dependencies += (delay_ready.TOOL, delay_ready.ALTERNATE)
     if reciprocal_div147.configured({} if profile is None else profile['configuration']):
@@ -603,6 +606,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     delay_watchdog_retime=delay_watchdog.select(stage,profile['configuration']) if delay_watchdog_selected else None
     watchdog_width_evidence = watchdog_width.select(stage, {} if profile is None else profile['configuration'])
     delay_ready_evidence = delay_ready.select(stage, {} if profile is None else profile['configuration'])
+    pcm_overflow_evidence = pcm_overflow.select(stage, {} if profile is None else profile['configuration'])
     if watchdog_width_evidence is not None:
         delay_watchdog_retime = delay_watchdog.evidence(stage, profile['configuration'])
     cnn_retirement_evidence = cnn_retirement.select(stage, {} if profile is None else profile['configuration'])
@@ -906,6 +910,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['w_watchdog_width'] = watchdog_width_evidence
         if delay_ready_evidence is not None:
             metadata['w_delay_ready'] = delay_ready_evidence
+        if pcm_overflow_evidence is not None:
+            metadata['m_pcm_overflow'] = pcm_overflow_evidence
+        from tools.workstation_task3_m_critical_locality import configured as critical_configured, POLICY as critical_policy
+        if critical_configured({} if profile is None else profile['configuration']):
+            metadata['m_critical_locality'] = dict(policy=critical_policy,
+                netlist_changed=False, routed_timing_verified=False)
         if generation_successor_evidence is not None:
             metadata['raw_generation_successor'] = generation_successor_evidence
         if generation_match_evidence is not None:

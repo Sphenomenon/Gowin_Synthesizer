@@ -43,6 +43,8 @@ def restore_parallel(payload):
 
 def normalize(payload):
     text=payload.decode()if isinstance(payload,bytes)else payload
+    from tools.workstation_m_pcm_overflow import restore as restore_overflow
+    text=restore_overflow(text)
     digest=lambda t:hashlib.sha256(t.encode()).hexdigest()
     if digest(text)in (PARALLEL_SHA256,REDUCTION_SHA256):text=restore_parallel(text).decode()
     if digest(text)==PARENT_SHA256:return text.encode()

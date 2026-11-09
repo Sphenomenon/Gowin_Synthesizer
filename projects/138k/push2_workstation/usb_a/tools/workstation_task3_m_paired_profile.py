@@ -97,6 +97,10 @@ def selected_batch_source_evidence(root,stage,configuration,provider):
     for relative in files:
         source=(root/relative).read_bytes();selected=(stage/relative).read_bytes()
         compared=selected
+        if relative=='rtl/audio/workstation_ae350_pcm_owner.sv':
+            from tools.workstation_m_pcm_overflow import restore as restore_overflow
+            compared=restore_overflow(selected.decode()).encode()
+            source=restore_overflow(source.decode()).encode()
         if relative==tail_reset.RUNTIME and local_tail:
             compared=tail_reset.native(relative,selected.decode()).encode()
             source=tail_reset.native(relative,source.decode()).encode()

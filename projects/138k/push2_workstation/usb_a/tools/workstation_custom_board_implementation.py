@@ -242,6 +242,11 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
     release_proof=None
     held_proofs=None
     ddr_proof=None
+    m_critical=metadata.get('m_critical_locality')
+    if m_critical is not None:
+        from tools.workstation_task3_m_critical_locality import POLICY as critical_policy
+        if audit.get('paired_role')!='M' or m_critical.get('policy')!=critical_policy:
+            raise ValueError('unreviewed M critical physical policy')
     if preboard_releases:
         from tools.workstation_native_protocol_audit import protocol_netlist
         from tools.workstation_preboard_physical_boundaries import audit as prove_releases
@@ -259,9 +264,13 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         held_proofs={}
         held_proofs['paired'],extra=paired_held(n,role=role)
         physical_sdc+=extra.encode()
-        cst,held_proofs['paired_placement']=place_held(cst,held_proofs['paired'])
+        cst,held_proofs['paired_placement']=place_held(cst,held_proofs['paired'],m_v40_locality=bool(m_critical))
         if role=='M':
-            physical_sdc,held_proofs['M_PLL_control_limits']=m_preboard_pll_control_limits(physical_sdc,netlist_text)
+            physical_sdc,held_proofs['M_PLL_control_limits']=m_preboard_pll_control_limits(physical_sdc,netlist_text,
+                diagnosed_v40=bool(m_critical))
+            if m_critical:
+                from tools.workstation_task3_m_critical_locality import placement as place_m_critical
+                cst,held_proofs['M_v40_critical_locality']=place_m_critical(cst,n)
             from tools.workstation_task3_m_session_boundary import audit as specific_held
         else:
             from tools.workstation_task3_w_raw_command_capture import audit as specific_held
@@ -311,7 +320,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
         vo=prior/'impl/pnr/custom_138k_integration.vo'
         cst,placement=ddr_launch_capture_region_constraints(cst,physical_sdc,vo.read_text(),far_regions=True)
         from tools.workstation_preboard_ddr_timing import tighten
-        cst,physical_sdc,ddr_proof=tighten(cst,physical_sdc,vo.read_text(),role=audit['paired_role'])
+        cst,physical_sdc,ddr_proof=tighten(cst,physical_sdc,vo.read_text(),role=audit['paired_role'],
+            dqs_hold_locality=bool(metadata.get('m_pcm_overflow')),hold_i_locality=bool(m_critical))
         ddr_proof.update(routed_reference=str(vo),routed_reference_sha256=sha(vo),
             same_encrypted_DDR_input_sha256=ddr,placement=placement)
     return cst,physical_sdc,pin_adaptation,release_proof,held_proofs,ddr_proof
@@ -422,7 +432,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
 
 
 
-def m_preboard_pll_control_limits(sdc,netlist_text):
+def m_preboard_pll_control_limits(sdc,netlist_text,*,diagnosed_v40=False):
     """Tighten actual A14 registered control flights; retain the full 10ns audit.
 
     These 4.5ns Q-to-PLL data bounds reserve propagation for the real clk50
@@ -432,22 +442,27 @@ def m_preboard_pll_control_limits(sdc,netlist_text):
     from tools.workstation_native_protocol_audit import protocol_netlist
     from tools.workstation_runtime_pcm_cdc import Graph
     n=protocol_netlist(netlist_text,mapping='synthesis');g=Graph(n);rows=[];lines=[]
-    for prefix in ('u_cpu_pll','u_video/u_clock/g_hardware.u_pll/u_reference'):
+    prefixes=('u_cpu_pll','u_video/u_clock/g_hardware.u_pll/u_reference')
+    if diagnosed_v40:
+        prefixes+=('u_usb_pll','u_video/u_clock/g_hardware.u_pll/u_tmds')
+    for prefix in prefixes:
+        direct=prefix in ('u_cpu_pll','u_usb_pll')
         path=prefix+'/PLL_inst';cell=n.cells.get(path,{})
         if cell.get('kind')!='PLL':raise ValueError('M PLL control target absent '+path)
         for bus,width,start in [('ICPSEL',6,3),('LPFRES',3,0),('RESET',1,9)]:
-            if prefix!='u_cpu_pll' and bus=='RESET':continue
+            if not direct and bus=='RESET':continue
             scope=n.scopes[path];bits=g.binding_bits(scope,cell['ports'][bus])
             if len(bits)!=width:raise ValueError('M PLL control width changed')
             for index,raw in enumerate(bits):
                 net=n.canonical(scope,raw)
-                if prefix!='u_cpu_pll' and bus=='ICPSEL' and index>=2:
+                static_from=1 if prefix.endswith('/u_tmds') else 2
+                if not direct and bus=='ICPSEL' and index>=static_from:
                     if net not in g.low:raise ValueError('M video PLL static control changed')
                     continue
                 drivers=g.drivers[net]
                 if len(drivers)!=1:raise ValueError('M PLL control is not unique')
                 source,pin=drivers[0]
-                pattern=(re.escape(prefix+'/pll_control_'+str(start+index))+r'_s\d+' if prefix=='u_cpu_pll'
+                pattern=(re.escape(prefix+'/pll_control_'+str(start+index))+r'_s\d+' if direct
                     else re.escape(prefix+'/u_pll_init/RomDreg_'+str(index if bus=='ICPSEL' else index+8))+r'_s\d+')
                 if not re.fullmatch(pattern,source) or pin!='Q' or not n.cells[source]['kind'].startswith('DFF') or n.pin(source,'CLK')!='clk_50m':
                     raise ValueError('M PLL control publisher/clock changed '+source)
@@ -455,9 +470,10 @@ def m_preboard_pll_control_limits(sdc,netlist_text):
                 command=f'set_max_delay 4.500 -from [get_pins {{{source}/Q}}] -to [get_pins {{{endpoint}}}]'
                 if command.encode() in sdc:raise ValueError('M PLL limit already installed')
                 lines.append(command);rows.append(dict(source=source+'/Q',endpoint=endpoint,maximum_ns=4.5))
-    if len(rows)!=15:raise ValueError('M PLL exact fifteen registered controls changed')
+    if len(rows)!=(29 if diagnosed_v40 else 15):raise ValueError('M PLL exact registered control inventory changed')
     result=sdc+('\n# task3 M A14 PLL registered control route budgets\n'+'\n'.join(lines)+'\n').encode()
-    return result,dict(policy='task3_M_A14_registered_PLL_controls_max4p5_v2',paths=rows,
+    return result,dict(policy=('task3_M_v40_29_PLL_controls_max4p5_v3'if diagnosed_v40 else
+        'task3_M_A14_registered_PLL_controls_max4p5_v2'),paths=rows,
         full_routed_propagation_budget_ns=10.0,parent_sdc_sha256=digest(sdc),selected_sdc_sha256=digest(result),
         timing_relaxed=False,clock_periods_changed=False,routed_timing_verified=False)
 

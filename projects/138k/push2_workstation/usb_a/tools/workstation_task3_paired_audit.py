@@ -132,6 +132,11 @@ PROFILES = {
         'rtl/workstation/workstation_profile_task3_w_paired.sv'),
 }
 AUDIT_SOURCES = (
+    'tools/workstation_task3_w_critical_locality.py',
+    'tools/workstation_m_pcm_overflow.py',
+    'tools/workstation_task3_m_critical_locality.py',
+    'sim/audio/run_pcm_overflow_permission.py',
+    'rtl/audio/workstation_ae350_pcm_owner_overflow.sv',
     'tools/workstation_task3_w_delay_locality.py',
     'sim/test_workstation_task3_w_delay_locality.py',
     'sim/memory/run_fetch_capture_contract.py',
@@ -309,6 +314,11 @@ def verify_prepared(output, metadata):
     profile = json.loads(artifact.read_text())
     from tools.workstation_profile import prepared_specification, candidate_firmware_identity
     spec = prepared_specification(profile)
+    from tools.workstation_task3_m_critical_locality import configured as critical_configured, POLICY as critical_policy
+    expected_critical = (dict(policy=critical_policy, netlist_changed=False, routed_timing_verified=False)
+                         if critical_configured(profile['configuration']) else None)
+    require(metadata.get('m_critical_locality') == expected_critical,
+            'M physical locality configuration/metadata changed')
     require(spec.get('paired_role') == role and spec.get('paired_board') is True and
             metadata.get('identity') == identity == spec['integration_identity'] and
             profile.get('profile') == selected['name'] and
