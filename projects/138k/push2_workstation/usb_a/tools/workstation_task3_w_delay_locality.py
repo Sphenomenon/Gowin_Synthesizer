@@ -128,7 +128,12 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     require(len(members) == len(set(members)) and not set(ram) & set(members),
             'duplicate or hard RAM in logic region')
     require(parse_locations(result.decode()) == parse_locations(raw), 'IO locations changed')
+    primitive_region_proof = None
+    if dma_ready_cofactor:
+        from tools.workstation_task3_w_critical_locality import primitive_regions
+        result, primitive_region_proof = primitive_regions(result)
     proof = dict(policy=POLICY, before_CST_sha256=sha(cst),
+                 **(dict(primitive_regions=primitive_region_proof) if primitive_region_proof else {}),
                  **(dict(fifo_compare_first_layout=True) if fifo_compare_first else {}),
                  **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
                  **(dict(cancel_ready_cofactor_layout=True) if cancel_ready_cofactor else {}),

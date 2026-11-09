@@ -16,6 +16,76 @@ def require(ok, message):
         raise ValueError('W critical locality: '+message)
 
 
+def primitive_regions(cst):
+    """Preserve W's exact allowed sites without Gowin's GROUP expansion.
+
+    In the hash-bound v41c parser capture a 546-grid GROUP produced 298662
+    locations per FF. Plain INS_LOC rectangles still exceed 12 GiB during
+    parsing. Their exact row-strip unions reach placement below 1 GiB.
+    This applies only after the current native and delay recipes have checked
+    their actual primitive inventories; no relative or exclusive group is used.
+    """
+    text = cst.decode()
+    groups = {m[1]: re.findall(r'"([^"\n]+)"', m[2]) for m in
+              re.finditer(r'^GROUP (\w+) = \{(.*?)\};$', text, re.M)}
+    regions = {m[1]: m[2] for m in re.finditer(
+        r'^GRP_LOC (\w+) (R\[[0-9:]+\]C\[[0-9:]+\]);$', text, re.M)}
+    expected = {f'task3_w_native_{i}' for i in range(6)} | {
+        f'task3_w_v24_delay_{i}' for i in range(2)}
+    require(set(groups) == set(regions) == expected,
+            'exact native/delay groups required for primitive regions')
+    direct = re.findall(r'^INS_LOC "([^"\n]+)" ([^;\n]+);$', text, re.M)
+    require(len(direct) == len(dict(direct)), 'duplicate direct placement')
+    allowed = dict(direct)
+    converted = {}
+    for name, members in groups.items():
+        require(members and len(members) == len(set(members)), 'invalid group members')
+        for member in members:
+            require(member not in allowed, 'overlapping primitive regions: '+member)
+            allowed[member] = converted[member] = regions[name]
+        text = re.sub(r'^GROUP '+re.escape(name)+r' = \{.*?\};\n', '', text, flags=re.M)
+        text = re.sub(r'^GRP_LOC '+re.escape(name)+r' [^;]+;\n', '', text, flags=re.M)
+    require(not re.search(r'^(GROUP|GRP_LOC)\b', text, re.M), 'unconverted group')
+    text += '\n# W exact native/delay regions per primitive; all timing retained\n'
+    text += ''.join(f'INS_LOC "{p}" {r};\n' for p, r in sorted(converted.items()))
+    after = re.findall(r'^INS_LOC "([^"\n]+)" ([^;\n]+);$', text, re.M)
+    require(len(after) == len(dict(after)) and dict(after) == allowed,
+            'primitive allowed-region map changed')
+
+    # Keep every GRID and every intra-GRID site. Splitting the rectangle's
+    # syntax avoids the installed parser's quadratic two-dimensional expansion;
+    # it neither adds a placement region nor removes a timing constraint.
+    rectangle = re.compile(r'R\[(\d+):(\d+)\]C\[(\d+):(\d+)\]')
+    row_regions = {}
+    for member, region in allowed.items():
+        match = rectangle.fullmatch(region)
+        if match:
+            first, last, left, right = map(int, match.groups())
+            require(first <= last and left <= right, 'reversed primitive region')
+            row_regions[member] = ','.join(
+                f'R{row}C[{left}:{right}]' for row in range(first, last + 1))
+        else:
+            row_regions[member] = region
+    def replace_region(match):
+        member = match[1]
+        require(member in row_regions, 'unreviewed primitive region')
+        return f'INS_LOC "{member}" {row_regions[member]};'
+    text = re.sub(r'^INS_LOC "([^"\n]+)" [^;\n]+;$', replace_region, text, flags=re.M)
+    after = re.findall(r'^INS_LOC "([^"\n]+)" ([^;\n]+);$', text, re.M)
+    require(len(after) == len(dict(after)) and dict(after) == row_regions,
+            'primitive row-strip union changed')
+    require(parse_locations(text) == parse_locations(cst.decode()), 'IO locations changed')
+    result = text.encode()
+    sha = lambda b: hashlib.sha256(b).hexdigest()
+    return result, dict(policy='task3_W_exact_per_primitive_row_regions_v2',
+        converted_groups=len(groups), converted_primitives=len(converted),
+        rectangle_row_unions=sum(bool(rectangle.fullmatch(r)) for r in allowed.values()),
+        allowed_region_map_sha256=sha(('\n'.join(p+' '+r for p, r in sorted(allowed.items()))).encode()),
+        before_CST_sha256=sha(cst), after_CST_sha256=sha(result),
+        allowed_regions_unchanged=True, logic_changed=False, clocks_changed=False,
+        timing_exceptions_changed=False, routed_timing_verified=False)
+
+
 def placement(cst, n):
     g = Graph(n)
     def group(scope, stem):

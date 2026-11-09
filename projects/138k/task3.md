@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v130可复现源码／综合检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V130_20261109.md)：M／W候选尾号`b57ba6a430c6c350`／`e28859831d0d84e2`，完整综合审计32/32、30/30，独立重建755／743个文件逐项哈希一致。M溢出计数优化已选入整机，通过完整owner对照、X/Z及32位实际网表next-Q证明；W DMA消费者证明保持通过。M v41 `D21109EB`路由失败，489条未布通、物理BSRAM263/340，无STA/SDF/位流；W v41c `D21109ED`在CST处理阶段超过12GiB，尚未放置，无新位流。已定位W约束处理热点，并启动M实际失败网络捕获诊断。两板仍禁止加载，上板前目标尚未完成；旧失败位流及task2、单板、历史回退保留。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备正确目标、连接、加载读回、回退及功能步骤。
+最新阶段为[v132源码／综合与完整物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V132_20261109.md)：M／W源码候选尾号`e22c10639acecde8`／`c0b97b48f5bdd626`，完整综合审计32/32、30/30，独立重建755／743个文件逐项哈希一致。W约束区域不变的逐行表达解决解析内存故障，v43 `D21109F0`正常完整P&R完成，物理BSRAM287/340；setup仍为−3.721ns，完整PLL／DDR启动检查和四项路由后边界通过，26条ALU放置警告及完整routed CDC仍未解决。M依据489条真实未布通布局只做一次资源复制诊断，v42 `D21109EF`完成布线、物理BSRAM263/340，但setup/recovery为−11.743/−1.492ns，PLL／DDR／有限held和复制后消费者仍失败，未选入正式配置。两板仍禁止加载，上板前目标尚未完成；位流、资源、时序及下一步实际故障均见报告，task2、单板、历史回退保留。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)只准备正确目标、连接、加载读回、回退及功能步骤。
 
 ## 赛题要求与项目目标
 
