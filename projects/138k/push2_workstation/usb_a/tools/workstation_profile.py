@@ -621,7 +621,8 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
                                'w_tx_class_policy':'task3_W_registered_normal_tx_preference_v1',
                                'fifo_full_policy':'task3_W_large_FIFO_compare_before_write_select_v1'})
         _configuration.update(w_watchdog_width_policy='task3_W_bounded_saturating_wait_counter_v1',
-                              raw_generation_successor_policy='task3_W_registered_generation_successor_v1')
+                              raw_generation_successor_policy='task3_W_registered_generation_successor_v1',
+                              raw_generation_match_policy='task3_W_same_edge_captured_generation_match_v1')
     else:
         _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
                               display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
@@ -1183,6 +1184,9 @@ def _artifact(root, output, metadata, profile):
                 raise ValueError('display plot coordinate source selection drift')
             staged_hash = sha(stage/target)
         if target=='rtl/memory/workstation_ble_raw_ddr_store.sv' and profile['configuration'].get('raw_completion_policy') is not None:
+            from tools import workstation_w_generation_match as generation_match
+            if generation_match.evidence(stage,profile['configuration']) != metadata.get('raw_generation_match'):
+                raise ValueError('generation match source selection changed')
             from tools import workstation_w_generation_successor as generation_successor
             if generation_successor.evidence(stage,profile['configuration']) != metadata.get('raw_generation_successor'):
                 raise ValueError('generation successor source selection changed')

@@ -42,13 +42,15 @@ class ActualReadyRepairs(unittest.TestCase):
         n=protocol_netlist(vg.read_text(),mapping='synthesis')
         from tools.workstation_fifo_full_compare import configured
         first=configured(json.loads((stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
-        arithmetic=arithmetic_layout(json.loads((stage.parents[1]/'integration_inputs.json').read_text()))
+        metadata=json.loads((stage.parents[1]/'integration_inputs.json').read_text())
+        arithmetic=arithmetic_layout(metadata)
+        matches=bool(metadata.get('raw_generation_match'))
         cst=(stage/'constraints/custom_138k.cst').read_bytes()
         options=dict(publication=True,terminal=True,tuple_cofactor=True,
             pack_cofactor=True,native_fault_cofactor=True,identity_bytes=True,
-            fetch_range=True,fetch_end_capture=True,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic)
+            fetch_range=True,fetch_end_capture=True,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic,generation_match=matches)
         bounded,receipt=w_native_placement(cst,n,**options)
-        self.assertEqual(receipt['primitive_count'],785)
+        self.assertEqual(receipt['primitive_count'],787 if matches else 785)
         self.assertEqual(len(receipt['tag_return_cone']['combinational_cells']),75)
         result,proof=placement(bounded,n,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic)
         self.assertEqual(proof['selected_count'],2211 if arithmetic else 2241 if first else 2240)
@@ -64,7 +66,7 @@ class ActualReadyRepairs(unittest.TestCase):
             n.cells[path]['parameters']['INIT']="16'hFFFF"
             with self.assertRaises(ValueError):w_native_placement(cst,n,**options)
         finally:n.cells[path]=old
-        print('W exact 785-cell tag/held and',proof['selected_count'],'cell delay placement; old selection, duplicate and broken watchdog rejected')
+        print('W exact',receipt['primitive_count'],'cell tag/held and',proof['selected_count'],'cell delay placement; old selection, duplicate and broken watchdog rejected')
 
     def test_M_capture_enable_has_no_final_router_state(self):
         selected=os.environ.get('GW138K_READY_REPAIR_M_STAGE')

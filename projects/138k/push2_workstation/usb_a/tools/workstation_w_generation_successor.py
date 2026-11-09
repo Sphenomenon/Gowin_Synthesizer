@@ -43,6 +43,8 @@ def configured(configuration):
 
 
 def restore(text):
+    from tools.workstation_w_generation_match import restore as restore_match
+    text = restore_match(text)
     if 'reg [31:0] memory_generation_successor;' not in text:
         return text
     require(digest(text) == SELECTED_SHA256, 'selected identity drift')
@@ -73,10 +75,11 @@ def evidence(stage, configuration):
     if not configured(configuration):
         return None
     text = (Path(stage) / SOURCE).read_text()
-    require(digest(text) == SELECTED_SHA256, 'successor selection absent')
+    from tools.workstation_w_generation_match import restore as restore_match
+    require(digest(restore_match(text)) == SELECTED_SHA256, 'successor selection absent')
     restore(text)
     return dict(policy=POLICY, parent_sha256=PARENT_SHA256,
-                selected_sha256=SELECTED_SHA256, added_state_bits=32,
+                selected_sha256=digest(text), added_state_bits=32,
                 invariant='successor == generation + 1 modulo 2^32',
                 added_cycles=0, overflow_rejection_unchanged=True,
                 routed_timing_verified=False, hardware_tested=False)

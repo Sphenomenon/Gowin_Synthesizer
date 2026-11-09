@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False,generation_match=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -92,6 +92,12 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     select(g.group(scope,'g_command_capture.payload',89),'R[45:55]C[65:80]','memory_clk')
     if fetch_end_capture:
         select(g.group(scope,'g_command_capture.fetch_end',33),'R[45:55]C[65:80]','memory_clk')
+    require(not generation_match or arithmetic_repair,'captured matches require reviewed arithmetic composition')
+    if generation_match:
+        from tools.workstation_w_generation_match import audit as audit_match
+        audit_match(n)
+        select([g.register(scope,'g_command_capture.'+s)for s in ('next_generation_match','current_generation_match')],
+               'R[45:55]C[65:80]','memory_clk')
     completion=[]
     for stem,width in [('completion_generation',32),('completion_committed',32),
                        ('completion_kind',2),('completion_code',4)]:
@@ -99,7 +105,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     select(completion,'R[85:95]C[85:100]','memory_clk')
     select(g.group(scope,'accepted_frames_o',32)+[g.register(scope,'memory_drained')],
            'R[45:55]C[20:35]','clk_50m')
-    require(len(overrides)==(313 if fetch_end_capture else 280),'W held data layout inventory changed')
+    require(len(overrides)==(315 if generation_match else 313 if fetch_end_capture else 280),'W held data layout inventory changed')
     # P&R absorbs five of the synthesis INV cells into primitive polarity.
     # Constrain only placeable logic/registers; INV locality is not required
     # for this floorplan, and all data/control timing checks remain active.
@@ -126,7 +132,8 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     require(not arithmetic_repair or fifo_compare_first,'W arithmetic layout requires FIFO-first composition')
     # Actual v85b synthesis: +32 successor FFs and eleven fewer watchdog FFs.
     # Keep older recipes exact; this selection changes no physical regions.
-    counts=(2669,4991,1761) if arithmetic_repair else (2669,4944,1791) if fifo_compare_first else (2669,4957,1788) if registered_tx_class else (2674,4979,1780) if fetch_end_capture else (2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
+    # v91 adds two capture FFs and two LUT3s, removes two old comparator ALUs.
+    counts=(2669,4993,1761) if generation_match else (2669,4991,1761) if arithmetic_repair else (2669,4944,1791) if fifo_compare_first else (2669,4957,1788) if registered_tx_class else (2674,4979,1780) if fetch_end_capture else (2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -209,7 +216,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         require(row['register'] not in selected and row['register'] in reviewed,
                 'W status separation inventory changed')
         selected[row['register']]=row['region']
-    require(len(selected)==(785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
+    require(len(selected)==(787 if generation_match else 785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -223,7 +230,8 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy=('task3_W_registered_tx_captured_end_locality_v10'if registered_tx_class
+    return result,dict(policy=('task3_W_generation_match_capture_locality_v11'if generation_match
+                              else'task3_W_registered_tx_captured_end_locality_v10'if registered_tx_class
                               else'task3_W_captured_end_and_key_bytes_locality_v9'if fetch_end_capture
                               else'task3_W_key_bytes_ready_publishers_and_status_locality_v8'if identity_bytes
                               else'task3_W_native_fault_shared_watchdog_and_status_locality_v7'if native_fault_cofactor
@@ -236,6 +244,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         **(dict(captured_fetch_end_layout=True) if fetch_end_capture else {}),
         **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
         **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
+        **(dict(generation_match_layout=True) if generation_match else {}),
         native_fault_cofactor_layout=native_fault_cofactor,
         causal_cells_excluded_from_placement_only=excluded,
         ready_path_register_publishers=local_controls,

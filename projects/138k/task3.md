@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v90完整综合与物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V90_20261109.md)。M/W完整综合审计31/31、28/28及748／734个暂存文件独立复现通过；W消费者证明保持通过。M v29 `D21109CF`将未布通数降至1848，仍无完整STA或可用位流；W v29 `D21109DD`完整布通、PLL／DDR启动通过，物理BSRAM287/340，但全局setup−2.262ns及两条显式释放setup失败，禁止加载。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备步骤，上板前目标仍未完成。
+最新阶段为[v92 generation捕获与物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V92_20261109.md)。M/W完整综合审计31/31、29/29及748／735个暂存文件独立复现通过；W消费者证明及七个映射反例检查通过。M v29 `D21109CF`仍有1848条未布通，无完整STA或可用位流。W v30b `D21109DE`完整布通，PLL／DDR启动和全部显式有限检查通过；全局setup−3.082ns，物理BSRAM287/340，禁止加载。上板前目标仍未完成。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备正确目标、连接、加载读回、回退及功能步骤。
 
 ## 赛题要求与项目目标
 
@@ -66,9 +66,9 @@ block RX 为每流 8 包、每包最多 6 帧，满包仅覆盖 1 ms@48 kHz；M 
 
 ## 当前候选与下一阶段
 
-2026-11-09 当前源码／综合检查点为[v90](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V90_20261109.md)。M保留32／8声部、唯一参数、本地混响和最终输出；本轮按原校验边界压缩显示元数据，取消状态同拍复制。W保留实际CNN、手机接收解码及唯一录音对象，缩窄饱和watchdog并预存generation后继值，实际消费者与复位归纳通过。输入未变的滑音／效果与媒体证据按完整编译字节复用；M拥塞及W全局／显式setup仍须修复。
+2026-11-09 当前源码／综合检查点为[v92](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V92_20261109.md)。M保持普通32／矢量8、唯一参数、本地混响和最终输出；编译字节与v90相同，复用原有效回归和v29失败物理证据。W保留实际CNN、手机接收解码及唯一录音对象，在原捕获边沿保存两位generation比较，不增加命令周期；完整综合、消费者、映射归纳和实际raw-store对照通过。
 
-物理目标仍未完成。M v27有2398条未布通网络；取消状态1359扇出的同拍复制诊断已综合和逐FF证明，尚未选择或布线。W v28全局setup−2.231ns，当前最差为DMA等待计数器，另有generation→completion和context→BLE等负路径；hold／recovery／removal均正，显式释放setup另有−0.134ns。下一步按这些真实网络修复再绑定新身份重建，不做相同输入的盲目P&R。所有失败结果及task2／单板回退保留，不操作板卡。
+物理目标仍未完成。M的1848条失败网络已按真实VO驱动定位，主要集中在显示生产器／读取器及DDR附近。读取器提前校验方案通过全部23个公共输出逐拍对照和两个破坏反例，独立综合减少350个FF、32个ALU；尚未选入完整候选。W v30b全局setup−3.082ns，最差通向录音channel fault，效果fault→deferred及native fetch/completion也有负路径；hold／recovery／removal和显式有限max／min检查为正。录音counter与observer的共享两级异步复位关系及事件归纳已在实际网表上建立，生产保护逻辑仍保留。下一步依据这些新诊断做结构修复并完整重建；不重复相同输入的P&R。所有失败结果、task2／单板及历史回退保留，不操作板卡。
 
 [SRAM 清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)已列出正确目标、连接、加载读回、回退及功能验收步骤。真实LCD吞吐、DAC延迟和整机演示属于下一阶段。
 

@@ -36,6 +36,7 @@ def reuse(source,destination,*,audit_tool_only=False):
         'tools/workstation_record_cancel_compare.py',
         # M-only checked display adaptation. W compiler closure stays exact.
         'tools/workstation_reader_validated_metadata.py',
+        'tools/workstation_w_generation_match.py',
         'rtl/workstation/workstation_record_cancel_compare_v1.adaptation.json'}
     inventory_difference=set(sm['staged_input_sha256'])^set(dm['staged_input_sha256'])
     if inventory_difference and (not audit_tool_only or not inventory_difference<=added_review_inputs):
@@ -67,6 +68,7 @@ def reuse(source,destination,*,audit_tool_only=False):
                   # Exact same successor RTL; only mapped induction proof
                   # changed from an opaque-DDR expansion to common pin checks.
                   'tools/workstation_w_generation_successor.py',
+                  'tools/workstation_fetch_range.py',
                   # Pack rebuild proof and physical-constraint review only.
                   # Physical outputs still require fresh preparation/P&R.
                   'tools/workstation_task3_phone_batch_mapped_w.py',

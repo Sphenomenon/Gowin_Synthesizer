@@ -15,7 +15,7 @@ def require(ok,message):
     if not ok:raise ValueError('W raw command capture: '+message)
 
 
-def audit(n,*,publication=False,fetch_end_capture=False):
+def audit(n,*,publication=False,fetch_end_capture=False,generation_match=False):
     g=Graph(n);reg=lambda stem:g.register(S,stem);q=lambda p:n.pin(p,'Q')
     req,ack,ack_sync,active,valid=map(reg,['command_req','command_ack','command_ack_sync','memory_command_active','g_command_capture.valid'])
     source=[];equations=[]
@@ -98,13 +98,19 @@ def audit(n,*,publication=False,fetch_end_capture=False):
         end_proof=dict(registers=end_capture,arithmetic_input_bits=len(leaves),
             all_33_sum_bits_exact=True,same_tuple_capture_event=True,
             same_valid_reset=True,BDD_nodes=len(add.nodes),added_command_cycles=0)
+    comparisons=[]
+    if generation_match:
+        require(fetch_end_capture and publication,'captured generation requires reviewed raw composition')
+        from tools.workstation_w_generation_match import audit as audit_match
+        audit_match(n)
+        comparisons=[reg('g_command_capture.'+s) for s in ('next_generation_match','current_generation_match')]
     closure=complete_closure(n,g,[p for p in source if p]);remote={p:c for p,c in closure['ff_endpoints'].items()if c!='clk_50m'}
     expected_remote={p+'/D':'memory_clk'for p,s in zip(capture,source)if s}
-    expected_remote.update({p+'/D':'memory_clk'for p in end_capture})
+    expected_remote.update({p+'/D':'memory_clk'for p in end_capture+comparisons})
     require(remote==expected_remote and
             not closure['primitive_endpoints']and not closure['top_output_endpoints'],
             'uncaptured remote tuple consumer added')
-    src=' '.join(p+'/Q'for p in source if p);dst=' '.join([*(p+'/D'for p,s in zip(capture,source)if s),*(p+'/D'for p in end_capture)])
+    src=' '.join(p+'/Q'for p in source if p);dst=' '.join([*(p+'/D'for p,s in zip(capture,source)if s),*(p+'/D'for p in end_capture+comparisons)])
     path=f'-from [get_pins {{{src}}}] -to [get_pins {{{dst}}}]'
     sdc='\n# W raw command: exact held tuple into one memory-domain register bank\nset_max_delay 10.000 '+path+'\nset_min_delay 1.800 '+path+'\n'
     # W B16 reports -0.040ns hold on this real functional status consumer.
@@ -121,6 +127,7 @@ def audit(n,*,publication=False,fetch_end_capture=False):
         variable_bits=88,constant_bits=1,source=source,capture=capture,
         source_equations=equations,toggle_chains=chains,source_complete_closure=closure,
         captured_valid_next_Q_exact=True,business_start_requires_registered_valid=True,
+        captured_generation_compare_registers=comparisons,
         request_stages_before_capture=2,hold_check_retained=True,
         completion_publication=publication_proof,
         **(dict(captured_fetch_end=end_proof) if end_proof is not None else {}),

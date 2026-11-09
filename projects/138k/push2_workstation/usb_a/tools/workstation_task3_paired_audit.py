@@ -195,6 +195,7 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_m_preboard_consumers.py',
     'tools/workstation_cancel_fanout.py',
     'tools/workstation_w_watchdog_width.py', 'tools/workstation_w_generation_successor.py',
+    'tools/workstation_w_generation_match.py',
     'tools/workstation_task3_m_cpu_source_review.py',
     'tools/task3_m_preboard_cpu_destination_inventory.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v2.json',
@@ -922,7 +923,12 @@ def audit(root, output, metadata):
             gate('preboard_W_raw_command_capture',lambda:raw_boundary(
                 protocol_netlist(vg_text,mapping='synthesis'),
                 publication=bool(metadata.get('raw_completion_publication')),
-                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33)[0])
+                fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33,
+                generation_match=bool(metadata.get('raw_generation_match')))[0])
+            if metadata.get('raw_generation_match'):
+                from tools.workstation_w_generation_match import audit as generation_match
+                gate('preboard_W_captured_generation_match',lambda:generation_match(
+                    protocol_netlist(vg_text,mapping='synthesis')))
             if metadata.get('raw_completion_publication'):
                 from tools.workstation_ble_completion_publication import audit_mapped as publish_count
                 gate('preboard_W_completion_count_publication',lambda:publish_count(

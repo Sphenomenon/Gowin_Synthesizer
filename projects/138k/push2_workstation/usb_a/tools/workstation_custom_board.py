@@ -203,7 +203,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_event_admission as event_admission
     from tools import workstation_w_watchdog_width as watchdog_width
     from tools import workstation_w_generation_successor as generation_successor
-    for selection in (watchdog_width, generation_successor):
+    from tools import workstation_w_generation_match as generation_match
+    for selection in (watchdog_width, generation_successor, generation_match):
         if selection.configured({} if profile is None else profile['configuration']):
             profile_dependencies += (selection.TOOL,)
     from tools import workstation_cancel_fanout as cancel_fanout
@@ -589,6 +590,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     if watchdog_width_evidence is not None:
         delay_watchdog_retime = delay_watchdog.evidence(stage, profile['configuration'])
     generation_successor_evidence = generation_successor.select(stage, {} if profile is None else profile['configuration'])
+    generation_match_evidence = generation_match.select(stage, {} if profile is None else profile['configuration'])
+    if generation_match_evidence is not None:
+        generation_successor_evidence = generation_successor.evidence(stage, profile['configuration'])
     if generation_successor_evidence is not None:
         raw_fetch_range=fetch_range.evidence(stage,profile['configuration'])
         raw_pack_cofactor=pack_cofactor.evidence(stage,profile['configuration'])
@@ -881,6 +885,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['w_watchdog_width'] = watchdog_width_evidence
         if generation_successor_evidence is not None:
             metadata['raw_generation_successor'] = generation_successor_evidence
+        if generation_match_evidence is not None:
+            metadata['raw_generation_match'] = generation_match_evidence
         if cancel_fanout_evidence is not None:
             metadata['cancel_fanout'] = cancel_fanout_evidence
         if plot_coordinates_evidence is not None:

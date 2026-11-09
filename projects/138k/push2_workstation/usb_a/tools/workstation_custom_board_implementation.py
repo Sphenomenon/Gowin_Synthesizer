@@ -267,7 +267,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
             from tools.workstation_task3_w_raw_command_capture import audit as specific_held
         held_proofs['role_specific'],extra=specific_held(n,**(
             {'publication':bool(metadata.get('raw_completion_publication')),
-             'fetch_end_capture':metadata.get('raw_fetch_range',{}).get('added_state_bits')==33}if role=='W'else {}))
+             'fetch_end_capture':metadata.get('raw_fetch_range',{}).get('added_state_bits')==33,
+             'generation_match':bool(metadata.get('raw_generation_match'))}if role=='W'else {}))
         physical_sdc+=extra.encode()
         if role=='W':
             from tools.workstation_task3_preboard_held_timing import w_native_placement
@@ -293,7 +294,8 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 fetch_end_capture=metadata.get('raw_fetch_range',{}).get('added_state_bits')==33,
                 registered_tx_class=metadata.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
                 fifo_compare_first=metadata.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1',
-                arithmetic_repair=arithmetic_layout(metadata))
+                arithmetic_repair=arithmetic_layout(metadata),
+                generation_match=bool(metadata.get('raw_generation_match')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
