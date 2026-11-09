@@ -575,6 +575,15 @@ def audit(n, *, stage):
             read=n.pin(inner,'I1')
     load_cuts = {local(x) for x in ('n737_5','n737_20','n737_7')} if grouped_context else {load}
     if reserved_dispatch:
+        from tools.workstation_w_tx_class import CANCEL_KEY, CANCEL_POLICY
+        from tools.workstation_event_admission import KEY as admission_key, W_POLICY as admission_policy
+        combined_admission = configuration.get(admission_key) == admission_policy
+        cancel_ready_cofactor = configuration.get(CANCEL_KEY) == CANCEL_POLICY
+        if cancel_ready_cofactor:
+            # The checked CANCEL-only rewrite changes factoring of the same
+            # context-capture fence. Retain its actual four inputs and prove
+            # every reply next-D below; the numeric alias grants no proof.
+            load = local('n737_4' if combined_admission else 'n737_20')
         load_drivers=g.drivers[load]
         require(len(load_drivers)==1,'reserved load driver absent/ambiguous')
         load_cell,load_port=load_drivers[0]
@@ -583,14 +592,16 @@ def audit(n, *, stage):
         # byte-header rebuild uses the original 7000/EA00 equations again;
         # select only these independently checked actual primitive forms.
         load_compact=(n.cells[load_cell]['kind']=='LUT3' and load_table=="8'h70")
-        require(load_port=='F' and (load_compact or
+        load_pair=(combined_admission and n.cells[load_cell]['kind']=='LUT2' and load_table=="4'h8")
+        require(load_port=='F' and (load_pair or load_compact or
                 (n.cells[load_cell]['kind']=='LUT4' and
-                 load_table in (("16'hF700","16'h7000") if arm_capture else ("16'h7000",)))),
+                 load_table in (("16'h4000",) if cancel_ready_cofactor else
+                                ("16'hF700","16'h7000") if arm_capture else ("16'h7000",)))),
                 'reserved load truth table changed')
         load_arm_factored=load_table=="16'hF700"
         # Preserve the four actual control cuts. New integration can rename
         # synthesized intermediates without changing this exact equation.
-        load_terms=[n.pin(load_cell,'I'+str(i))for i in range(3 if load_compact else 4)]
+        load_terms=[n.pin(load_cell,'I'+str(i))for i in range(2 if load_pair else 3 if load_compact else 4)]
         require(len(set(load_terms))==len(load_terms),'reserved load control cuts alias')
         load_cuts=set(load_terms)
         # ARM capture changes the factored load cone, while leaving these
@@ -598,6 +609,8 @@ def audit(n, *, stage):
         # the per-bit reply equation below tied to this actual load output.
         proofs.append(g.equivalent('reserved dispatch actual factored load retains exact LUT equation',
             [load,*load_terms],lambda v:v[0]==int(
+                (v[1] and v[2]) if load_pair else
+                (not v[1] and all(v[2:])) if cancel_ready_cofactor else
                 (v[3] and not(v[1] and v[2])) if load_compact else
                 (v[4] and ((v[3] or not(v[1] and v[2])) if load_arm_factored else
                  (v[3] and not(v[1] and v[2]))))),cuts=load_cuts))
@@ -648,7 +661,12 @@ def audit(n, *, stage):
     proofs.append(g.equivalent('window empty includes actual unacknowledged flight',
         [empty,*count,*flight],lambda v:v[0] == int(not any(v[1:]))))
     flush_to_send = local('n12046_12') if retired_usb else local('n12046_11')
-    if registered_tx_class:
+    absorbed_watermark=registered_tx_class and configuration.get('event_admission_policy')=='task3_W_combined_sample_event_admission_v1'
+    if absorbed_watermark:
+        from tools.workstation_w_tx_class import audit_batch_state
+        state_proof=audit_batch_state(n,stage)
+        proofs.append(state_proof)
+    elif registered_tx_class:
         flush_to_send=local('n12046_11')
         proofs.append(g.equivalent('registered class batch retains complete state and watermark conjunction',
             [flush_to_send,q('state'),held,active,empty],
@@ -677,84 +695,97 @@ def audit(n, *, stage):
         proofs.append(g.equivalent('batch flush transition waits for held/building/flight watermark',
             [flush_to_send,q('state'),held,active,empty],
             lambda v:v[0] == int(not v[1] and not v[2] and v[3] and v[4]), cuts={active}))
-    watermark_state = _local_transport_influence(n,g,regs['state'][0],{flush_to_send},scope=B)
+    watermark_state = (state_proof if absorbed_watermark else
+        _local_transport_influence(n,g,regs['state'][0],{flush_to_send},scope=B))
     flush = window('n10383_6')
     other = window('n10383_8')
     s0 = q('state')
     if registered_tx_class:
         from tools.workstation_fifo_full_compare import configured as fifo_configured
         other=window('n10383_8' if fifo_configured(configuration) else 'n10383_7')
-    proofs.append(g.equivalent('active pending batch externally flushes nonempty idle window',
-        [flush,active,other,s0,s1,s2,*count,*flight],
-        lambda v:v[0] == int(any(v[6:9]) and not any(v[9:]) and
-                            (not v[2] or (v[1] and ((v[3]+2*v[4]+4*v[5]) in (2,3,4))))),
-        cuts={active,other}))
-    flight_d = n.pin(g.register(W,'flight',0),'D')
-    gate = window('n890_22') if reserved_dispatch else window('n890_24')
-    if reserved_dispatch:
+    if absorbed_watermark:
+        # The reference proves all three batch state and both flight next-Qs,
+        # with reset, CE, complete flush/fault logic and arbitrary named state.
+        flight_d=n.pin(g.register(W,'flight',0),'D')
         drivers=g.drivers[flight_d]
         require(len(drivers)==1,'actual window flight D driver absent/ambiguous')
         path,port=drivers[0]
         flight_table=n.cells[path]['parameters'].get('INIT')
-        require(n.cells[path]['kind']=='LUT4' and port=='F' and
-                flight_table in (("16'hF400","16'hEA00") if arm_capture else ("16'hEA00",)),
-                'actual window flight D truth table changed')
-        flight_arm_factored=flight_table=="16'hF400"
-        gate=n.pin(path,'I3')
-    old_flight = window('n5090_8')
-    timer = endpoint('partial_timer_31_9') if reserved_dispatch else window('partial_timer_31_12') if grouped_context else endpoint('partial_timer_31_9') if retired_usb else n.canonical('', 'partial_timer_31_9')
-    if ack_grouped:timer=window('partial_timer_31_12')
-    if key_bytes_selected and not registered_tx_class:
-        require(flight_table=="16'hEA00" and n.pin(path,'I2')==flush,
-                'key-byte flight flush binding changed')
-        # The former timer alias is now the counter CE. Take the original
-        # four-control data equation from the actual flight mux instead.
-        old_flight,timer=n.pin(path,'I0'),n.pin(path,'I1')
-    if registered_tx_class:
-        require(arm_capture and flight_arm_factored,
-                'registered preference window flight mapping changed')
-        inhibit,flight_q,trigger,gate=[n.pin(path,'I'+str(i)) for i in range(4)]
-        require(flight_q==n.pin(g.register(W,'flight',0),'Q'),
-                'registered preference flight Q feedback changed')
-        flight_mapping='registered_preference_qualified_flush'
-        proofs.append(g.equivalent('registered preference retains actual flight feedback and qualified flush',
-            [flight_d,flight_q,inhibit,trigger,gate],
-            lambda v:v[0]==int(v[4] and ((v[1] and not v[2]) or v[3])),
-            cuts={inhibit,trigger,gate}))
-        from tools.workstation_w_context_compare import prove_zero_veto
-        proofs.append(prove_zero_veto(n,g,flush,trigger))
-    elif arm_capture and flight_arm_factored:
-        # Here n5090_8 is the inhibit, rather than the old-flight term.
-        # Expand the real Q and timer/flush input instead of assigning the
-        # previous semantic meaning to the surviving numeric net name.
-        inhibit = old_flight
-        flight_q = n.pin(g.register(W,'flight',0),'Q')
-        require(n.pin(path,'I1')==flight_q,'ARM window flight Q feedback changed')
-        flight_mapping = 'arm_capture_inhibit_and_registered_flight'
-        proofs.append(g.equivalent('ARM capture external flush drives actual flight D',
-            [flight_d,flight_q,inhibit,timer,flush,gate],
-            lambda v:v[0] == int(v[5] and ((v[1] and not v[2]) or (v[3] and v[4]))),
-            cuts={inhibit,timer,flush,gate}))
-    elif g.drivers[old_flight]:
-        flight_mapping = 'separate_old_flight_gate'
-        proofs.append(g.equivalent('external flush gate drives actual window flight register',
-            [flight_d,old_flight,timer,flush,gate],
-            lambda v:v[0] == int(v[4] and (v[1] or (v[2] and v[3]))),
-            cuts={old_flight,timer,flush,gate}))
+        require(n.cells[path]['kind']=='LUT4' and port=='F' and flight_table=="16'hF400",
+                'admission rebuild actual flight mux changed')
+        flight_mapping='complete_reset_inclusive_flight_next_Q_correspondence'
     else:
-        # The exact fault fixes permit Gowin to absorb old_flight into the
-        # final LUT. Retain the real flight Q and inhibit net as independent
-        # inputs; prove the actual next-D function, never cut an absent net.
-        require(source['fault_source_adaptations'], 'unreviewed merged flight mapping')
-        inhibit = window('n5090_10')
-        flight_q = n.pin(g.register(W,'flight',0),'Q')
-        require(len(g.drivers[inhibit]) == 1 and len(g.drivers[gate]) == 1,
-                'merged flight actual gate missing/ambiguous')
-        flight_mapping = 'merged_old_flight_gate'
-        proofs.append(g.equivalent('merged external flush drives actual flight D',
-            [flight_d,flight_q,inhibit,timer,flush,gate],
-            lambda v:v[0] == int(v[5] and ((v[1] and not v[2]) or (v[3] and v[4]))),
-            cuts={inhibit,timer,flush,gate}))
+        proofs.append(g.equivalent('active pending batch externally flushes nonempty idle window',
+            [flush,active,other,s0,s1,s2,*count,*flight],
+            lambda v:v[0] == int(any(v[6:9]) and not any(v[9:]) and
+                                (not v[2] or (v[1] and ((v[3]+2*v[4]+4*v[5]) in (2,3,4))))),
+            cuts={active,other}))
+        flight_d = n.pin(g.register(W,'flight',0),'D')
+        gate = window('n890_22') if reserved_dispatch else window('n890_24')
+        if reserved_dispatch:
+            drivers=g.drivers[flight_d]
+            require(len(drivers)==1,'actual window flight D driver absent/ambiguous')
+            path,port=drivers[0]
+            flight_table=n.cells[path]['parameters'].get('INIT')
+            require(n.cells[path]['kind']=='LUT4' and port=='F' and
+                    flight_table in (("16'hF400","16'hEA00") if arm_capture else ("16'hEA00",)),
+                    'actual window flight D truth table changed')
+            flight_arm_factored=flight_table=="16'hF400"
+            gate=n.pin(path,'I3')
+        old_flight = window('n5090_8')
+        timer = endpoint('partial_timer_31_9') if reserved_dispatch else window('partial_timer_31_12') if grouped_context else endpoint('partial_timer_31_9') if retired_usb else n.canonical('', 'partial_timer_31_9')
+        if ack_grouped:timer=window('partial_timer_31_12')
+        if key_bytes_selected and not registered_tx_class:
+            require(flight_table=="16'hEA00" and n.pin(path,'I2')==flush,
+                    'key-byte flight flush binding changed')
+            # The former timer alias is now the counter CE. Take the original
+            # four-control data equation from the actual flight mux instead.
+            old_flight,timer=n.pin(path,'I0'),n.pin(path,'I1')
+        if registered_tx_class:
+            require(arm_capture and flight_arm_factored,
+                    'registered preference window flight mapping changed')
+            inhibit,flight_q,trigger,gate=[n.pin(path,'I'+str(i)) for i in range(4)]
+            require(flight_q==n.pin(g.register(W,'flight',0),'Q'),
+                    'registered preference flight Q feedback changed')
+            flight_mapping='registered_preference_qualified_flush'
+            proofs.append(g.equivalent('registered preference retains actual flight feedback and qualified flush',
+                [flight_d,flight_q,inhibit,trigger,gate],
+                lambda v:v[0]==int(v[4] and ((v[1] and not v[2]) or v[3])),
+                cuts={inhibit,trigger,gate}))
+            from tools.workstation_w_context_compare import prove_zero_veto
+            proofs.append(prove_zero_veto(n,g,flush,trigger))
+        elif arm_capture and flight_arm_factored:
+            # Here n5090_8 is the inhibit, rather than the old-flight term.
+            # Expand the real Q and timer/flush input instead of assigning the
+            # previous semantic meaning to the surviving numeric net name.
+            inhibit = old_flight
+            flight_q = n.pin(g.register(W,'flight',0),'Q')
+            require(n.pin(path,'I1')==flight_q,'ARM window flight Q feedback changed')
+            flight_mapping = 'arm_capture_inhibit_and_registered_flight'
+            proofs.append(g.equivalent('ARM capture external flush drives actual flight D',
+                [flight_d,flight_q,inhibit,timer,flush,gate],
+                lambda v:v[0] == int(v[5] and ((v[1] and not v[2]) or (v[3] and v[4]))),
+                cuts={inhibit,timer,flush,gate}))
+        elif g.drivers[old_flight]:
+            flight_mapping = 'separate_old_flight_gate'
+            proofs.append(g.equivalent('external flush gate drives actual window flight register',
+                [flight_d,old_flight,timer,flush,gate],
+                lambda v:v[0] == int(v[4] and (v[1] or (v[2] and v[3]))),
+                cuts={old_flight,timer,flush,gate}))
+        else:
+            # The exact fault fixes permit Gowin to absorb old_flight into the
+            # final LUT. Retain the real flight Q and inhibit net as independent
+            # inputs; prove the actual next-D function, never cut an absent net.
+            require(source['fault_source_adaptations'], 'unreviewed merged flight mapping')
+            inhibit = window('n5090_10')
+            flight_q = n.pin(g.register(W,'flight',0),'Q')
+            require(len(g.drivers[inhibit]) == 1 and len(g.drivers[gate]) == 1,
+                    'merged flight actual gate missing/ambiguous')
+            flight_mapping = 'merged_old_flight_gate'
+            proofs.append(g.equivalent('merged external flush drives actual flight D',
+                [flight_d,flight_q,inhibit,timer,flush,gate],
+                lambda v:v[0] == int(v[5] and ((v[1] and not v[2]) or (v[3] and v[4]))),
+                cuts={inhibit,timer,flush,gate}))
     tx = g.group(E,'tx_payload_o',256)
     for bit,p in enumerate(tx):
         check_ff(p,'DFFCE','CLEAR')

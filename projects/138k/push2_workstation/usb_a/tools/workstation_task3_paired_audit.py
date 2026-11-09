@@ -140,6 +140,7 @@ AUDIT_SOURCES = (
     'rtl/memory/workstation_fetch_range_v1.adaptation.json',
     'tools/workstation_event_admission.py',
     'rtl/audio/workstation_event_admission_v1.adaptation.json',
+    'rtl/audio/workstation_w_event_admission_v1.adaptation.json',
     'tools/workstation_plot_coordinates.py',
     'rtl/display_data/workstation_plot_coordinates_v1.adaptation.json',
     'tools/workstation_reader_response_reuse.py',
@@ -168,6 +169,10 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_cnn_reset.py',
     'tools/workstation_task3_w_fault_cdc.py',
     'tools/workstation_task3_paired_audit.py', 'tools/workstation_custom_board_audit.py',
+    'tools/workstation_cache_raster.py',
+    'rtl/display_data/workstation_cache_raster_v1.provenance.json',
+    'sim/display/run_shared_cache_raster.py',
+    'sim/test_workstation_cache_raster.py',
     'tools/workstation_task3_identity_compare.py',
     'tools/workstation_usb_cpu_rom.py', 'tools/stage_usb_firmware.py',
     'tools/workstation_demo_audit.py', 'tools/workstation_profile.py',
@@ -186,6 +191,7 @@ AUDIT_SOURCES = (
     'tools/workstation_task3_root_reset_audit.py', 'tools/workstation_task3_native_held.py',
     'tools/workstation_task3_phone_batch_mapped_m.py',
     'tools/workstation_task3_phone_batch_mapped_w.py',
+    'tools/task3_w_batch_state_reference_v98.json',
     'tools/workstation_task3_peripheral_releases_audit.py',
     'tools/workstation_task3_tf_startup_audit.py', 'tools/workstation_task3_receipt_audit.py',
     'tools/workstation_task3_tf_sdc_audit.py', 'tools/workstation_task3_clock_release_audit.py',
@@ -196,6 +202,7 @@ AUDIT_SOURCES = (
     'tools/workstation_cancel_fanout.py',
     'tools/workstation_w_watchdog_width.py', 'tools/workstation_w_generation_successor.py',
     'tools/workstation_w_generation_match.py',
+    'tools/workstation_cnn_staging_retirement.py',
     'tools/workstation_task3_m_cpu_source_review.py',
     'tools/task3_m_preboard_cpu_destination_inventory.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v2.json',
@@ -211,6 +218,9 @@ AUDIT_SOURCES = (
     'tools/task3_m_preboard_cpu_destination_inventory_v12.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v13.json',
     'tools/task3_m_preboard_cpu_destination_inventory_v14.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v15.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v16.json',
+    'tools/task3_m_preboard_cpu_destination_inventory_v17.json',
     'sim/verify_task3_m_consumer_correspondence.py',
     'sim/verify_task3_m_plot_consumer_correspondence.py',
     'tools/workstation_tf_status_compare.py',
@@ -664,6 +674,8 @@ def audit_m_sync_storage(rows):
 def audit(root, output, metadata):
     root, output = Path(root), Path(output)
     selected_audit_sources=AUDIT_SOURCES
+    if metadata.get('runtime_reciprocal_div147'):
+        selected_audit_sources+=('tools/workstation_reciprocal_div147.py',)
     if metadata.get('workstation_profile',{}).get('name') in ('custom138k-workstation-task3-w-paired-banked96-v1', 'custom138k-workstation-task3-w-preboard-v1'):
         selected_audit_sources+=('tools/workstation_task3_w_banked96.py',)
     seals = {name: sha(root / name) for name in selected_audit_sources}
@@ -703,6 +715,11 @@ def audit(root, output, metadata):
     from tools.workstation_task3_w_banked96 import configured as banked96_configured,check_mapped_rom
     if banked96_configured(profile['configuration']):
         gate('W_banked96_ROM_words',lambda:check_mapped_rom(stage,netlist))
+    from tools import workstation_cnn_staging_retirement as cnn_retirement
+    if cnn_retirement.configured(profile['configuration']):
+        from tools.workstation_native_protocol_audit import protocol_netlist
+        gate('W_CNN_staging_retirement',lambda:cnn_retirement.audit(
+            protocol_netlist(vg_text,mapping='synthesis')))
     from tools import workstation_w_generation_successor as generation_successor
     if generation_successor.configured(profile['configuration']):
         from tools.workstation_native_protocol_audit import protocol_netlist
@@ -720,6 +737,10 @@ def audit(root, output, metadata):
             from tools.workstation_native_protocol_audit import protocol_netlist
             gate('M_reader_validated_storage', lambda: reader_validated.audit_mapped(
                 protocol_netlist(vg_text, mapping='synthesis')))
+        from tools import workstation_cache_raster as cache_raster
+        if cache_raster.configured(profile['configuration']):
+            gate('M_shared_cache_raster', lambda: cache_raster.audit(
+                protocol_netlist(vg_text, mapping='synthesis'), profile['configuration']))
         if profile['configuration'].get('m_endpoint_storage_policy')=='sync_score_and_final_tap_prefetch_v1':
             gate('M_sync_storage_mapping',lambda: audit_m_sync_storage(rows))
     from tools.workstation_custom_board_audit import check_ports, check_rom, audit_native_feedback

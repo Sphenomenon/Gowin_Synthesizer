@@ -1,0 +1,21 @@
+{
+  "policy": "task3_M_validated_cache_raster_admission_v1",
+  "sources": {
+    "rtl/display_data/feedback_renderer.v": {
+      "parent_sha256": "ae0bb155c76521ec4b87a2e70ac9d77e63a0e544cbf1c15307cec9ed7c2025cb",
+      "selected_sha256": "dff4fc30cd2c1c3aaf022b74af8bfeae7691f89615a50c1f903ea918c6d2c6bf",
+      "edits": [
+        {
+          "before": "    parameter integer HMI_D_ONLY = 0",
+          "after": "    parameter integer HMI_D_ONLY = 0,\n    // The composition owns admission and an immutable shared-cache lease.\n    // No local snapshot contributes pixels or metadata in this selection.\n    parameter integer SHARED_CACHE_ONLY = 0"
+        },
+        {
+          "before": "    assign frame_ready = snapshot_ready && aligned_ready && !busy;",
+          "after": "    assign frame_ready = (SHARED_CACHE_ONLY && SHARED_RENDER && !SHARED_EXPORT && !ENABLE_ANALYSIS\n        ? 1'b1 : snapshot_ready && aligned_ready) && !busy;"
+        }
+      ],
+      "native_sha256": "a5d69fe9ed8732b9c10c82924c89eff475384a289d87027b30a1d8262384cdb7"
+    }
+  },
+  "exit_plan": "Keep one native parameter; remove this parameter-selection adapter after physical closure and update the maintained M composition explicitly. Historical source and provenance stay frozen."
+}

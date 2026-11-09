@@ -1,0 +1,133 @@
+`timescale 1ns/1ps
+`default_nettype none
+// Opt-in task3 M source alternative. Compile this file in place of the
+// restoring divider, never alongside it. Supported M widths use an exact
+// reciprocal multiply with the original fixed latency and tag/flush contract.
+// Other widths retain the unchanged restoring implementation below.
+// Exact unsigned division by147, one accepted item per clock. The high six
+// (odd WIDTH: seven) input bits are already a remainder smaller than147.
+// Every later register consumes two bits with three parallel ten-bit trial
+// subtractions. There is no combinational divider or multiply in a stage.
+// Payload, quotient and valid retain one fixed clock delay; flush kills all tags.
+// Private data may advance speculatively on a flush edge. Cleared valid bits
+// prevent every such value from becoming public; only valid/output kill need
+// the global flush signal, so wide local data enables do not share its fanout.
+module workstation_runtime_div147 #(
+    parameter integer WIDTH=42,
+    parameter integer TAG_WIDTH=1
+)(
+    input wire clk_i,rst_ni,flush_i,valid_i,
+    input wire [WIDTH-1:0] dividend_i,
+    input wire [TAG_WIDTH-1:0] tag_i,
+    output wire valid_o,
+    output wire [WIDTH-1:0] quotient_o,
+    output wire [TAG_WIDTH-1:0] tag_o,
+    output wire quiescent_o
+);
+    localparam integer PREFIX_BITS=6+(WIDTH%2);
+    localparam integer STAGES=(WIDTH-PREFIX_BITS)/2;
+    reg [STAGES:0] valid;
+    reg [WIDTH-1:0] dividend[0:STAGES],quotient[0:STAGES];
+    reg [7:0] remainder[0:STAGES];
+    initial begin
+        if(WIDTH<8 || TAG_WIDTH<1)$fatal(1,"div147 unsupported width");
+    end
+    assign valid_o=valid[STAGES] && !flush_i;
+    assign quotient_o=quotient[STAGES];
+    assign quiescent_o=!(|valid);
+    always @(posedge clk_i or negedge rst_ni) begin
+        if(!rst_ni)valid<='0;
+        else if(flush_i)valid<='0;
+        else valid<={valid[STAGES-1:0],valid_i};
+    end
+    if(WIDTH!=32 && WIDTH!=42)begin:g_restoring_input
+    always @(posedge clk_i) if(valid_i) begin
+        remainder[0]<={{(8-PREFIX_BITS){1'b0}},dividend_i[WIDTH-1 -: PREFIX_BITS]};
+        dividend[0]<=dividend_i<<PREFIX_BITS;
+        quotient[0]<='0;
+    end
+    end
+    // The tag has the same fixed clock delay even across valid bubbles.
+    // A free-running circular address decouples storage from transaction count.
+    // Depth > STAGES guarantees the read never aliases the current write.
+    if(TAG_WIDTH>=32)begin:g_tag_ram
+        localparam integer ADDRESS_BITS=$clog2(STAGES+1);
+        localparam integer DEPTH=1<<ADDRESS_BITS;
+        localparam [ADDRESS_BITS-1:0] DELAY=ADDRESS_BITS'(STAGES);
+        reg [ADDRESS_BITS-1:0] address;
+        wire [ADDRESS_BITS-1:0] read_address=address-DELAY;
+        (* ram_style="block",syn_ramstyle="block_ram" *)
+        reg [TAG_WIDTH-1:0] memory[0:DEPTH-1];
+        reg [TAG_WIDTH-1:0] read_tag;
+        always @(posedge clk_i or negedge rst_ni)
+            if(!rst_ni)address<='0;
+            else address<=address+1'b1;
+        always @(posedge clk_i) begin
+            if(valid_i)memory[address]<=tag_i;
+            read_tag<=memory[read_address];
+        end
+        assign tag_o=read_tag;
+    end else begin:g_tag_registers
+        reg [TAG_WIDTH-1:0] tag[0:STAGES];
+        always @(posedge clk_i) if(valid_i)tag[0]<=tag_i;
+        for(genvar s=0;s<STAGES;s=s+1)begin:g_delay
+            always @(posedge clk_i) if(valid[s])tag[s+1]<=tag[s];
+        end
+        assign tag_o=tag[STAGES];
+    end
+    if(WIDTH==32 || WIDTH==42)begin:g_reciprocal
+        // ceil(2^(WIDTH+8)/147). Error < 1/256 < 1/147, so this
+        // unsigned product yields floor(n/147) for every WIDTH-bit n.
+        localparam integer SHIFT=WIDTH+8;
+        localparam [WIDTH:0] RECIPROCAL=(WIDTH+1)'(
+            (({{SHIFT{1'b0}},1'b1} << SHIFT) + (SHIFT+1)'(146)) / (SHIFT+1)'(147));
+        localparam integer CHUNK=WIDTH/2;
+        localparam integer PRODUCT_BITS=2*WIDTH+1;
+        reg [WIDTH+CHUNK:0] low_product;
+        reg [2*WIDTH-CHUNK:0] high_product;
+        reg [PRODUCT_BITS-1:0] product;
+        always @(posedge clk_i) if(valid_i)begin
+            low_product <= dividend_i[CHUNK-1:0] * RECIPROCAL;
+            high_product <= dividend_i[WIDTH-1:CHUNK] * RECIPROCAL;
+        end
+        always @(posedge clk_i) if(valid[0])
+            product <= {{(PRODUCT_BITS-WIDTH-CHUNK-1){1'b0}},low_product} +
+                ({{CHUNK{1'b0}},high_product} << CHUNK);
+        localparam integer ADDRESS_BITS=$clog2(STAGES+1);
+        localparam integer DEPTH=1<<ADDRESS_BITS;
+        localparam [ADDRESS_BITS-1:0] DELAY=ADDRESS_BITS'(STAGES-2);
+        reg [ADDRESS_BITS-1:0] address;
+        wire [ADDRESS_BITS-1:0] read_address=address-DELAY;
+        (* ram_style="block",syn_ramstyle="block_ram" *)
+        reg [WIDTH-1:0] memory[0:DEPTH-1];
+        reg [WIDTH-1:0] read_quotient;
+        always @(posedge clk_i or negedge rst_ni)
+            if(!rst_ni)address<='0;
+            else address<=address+1'b1;
+        always @(posedge clk_i)begin
+            if(valid[1])memory[address]<=WIDTH'(product >> SHIFT);
+            read_quotient<=memory[read_address];
+        end
+        always @* quotient[STAGES]=read_quotient;
+    end else begin:g_restoring
+    for(genvar s=0;s<STAGES;s=s+1)begin:g_digit
+        wire [9:0] trial={remainder[s],dividend[s][WIDTH-1 -: 2]};
+        wire [10:0] minus1={1'b0,trial}-11'd147;
+        wire [10:0] minus2={1'b0,trial}-11'd294;
+        wire [10:0] minus3={1'b0,trial}-11'd441;
+        wire [1:0] digit=!minus3[10] ? 2'd3 : !minus2[10] ? 2'd2 : !minus1[10] ? 2'd1 : 2'd0;
+        wire [7:0] next_remainder=!minus3[10] ? minus3[7:0] :
+            !minus2[10] ? minus2[7:0] : !minus1[10] ? minus1[7:0] : trial[7:0];
+        always @(posedge clk_i) if(valid[s]) begin
+            remainder[s+1]<=next_remainder;
+            dividend[s+1]<=dividend[s]<<2;
+            quotient[s+1]<={quotient[s][WIDTH-3:0],digit};
+        end
+`ifndef SYNTHESIS
+        always @(posedge clk_i) if(rst_ni && valid[s] && !flush_i)
+            if(remainder[s]>=8'd147)$fatal(1,"div147 remainder invariant");
+`endif
+    end    end
+
+endmodule
+`default_nettype wire

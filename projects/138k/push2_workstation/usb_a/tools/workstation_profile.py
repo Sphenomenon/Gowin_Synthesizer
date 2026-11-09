@@ -623,8 +623,13 @@ for _role, _parent_name in (('m', TASK3_M_CHECKPOINT_NAME), ('w', TASK3_W_BANKED
         _configuration.update(w_watchdog_width_policy='task3_W_bounded_saturating_wait_counter_v1',
                               raw_generation_successor_policy='task3_W_registered_generation_successor_v1',
                               raw_generation_match_policy='task3_W_same_edge_captured_generation_match_v1')
+        _configuration['cnn_staging_retirement_policy']='task3_W_registered_native_staging_retirement_v1'
+        _configuration['record_cancel_ready_policy']='task3_W_same_edge_record_CANCEL_ready_cofactor_v1'
+        _configuration['event_admission_policy']='task3_W_combined_sample_event_admission_v1'
     else:
-        _configuration.update(glide_coefficient_policy='same_commit_CC5_div147_v1',
+        _configuration.update(display_raster_policy='task3_M_validated_cache_raster_admission_v1',
+                              runtime_div147_policy='task3_M_exact_reciprocal_fixed_latency_v1',
+                              glide_coefficient_policy='same_commit_CC5_div147_v1',
                               display_reader_storage_policy='task3_M_display_reader_held_response_reuse_v1',
                               display_reader_validated_policy='task3_M_validated_display_metadata_storage_v1',
                               display_plot_coordinate_policy='task3_M_constant_gain_plot_coordinates_v1',
@@ -902,6 +907,10 @@ def _artifact(root, output, metadata, profile):
     repository = root.parents[3]
     spec = specification(profile['name'])
     stage = output / 'workstation/Prj1'
+    from tools import workstation_cache_raster as cache_raster
+    from tools import workstation_reciprocal_div147 as reciprocal_div147
+    reciprocal_div147.verify(stage, profile['configuration'], metadata.get('runtime_reciprocal_div147'))
+    cache_raster.verify(stage, profile['configuration'], metadata.get('display_cache_raster'))
     from tools.workstation_task3_tf_contacts import verify_plan as verify_tf_contacts
     verify_tf_contacts(root, json.loads((output / 'pinout/pinout.json').read_text()),
                       profile['configuration'].get('tf_contact_policy'))
@@ -1149,6 +1158,12 @@ def _artifact(root, output, metadata, profile):
             if (queue.evidence(stage,profile['configuration'],source_text=selected_event)!=metadata.get('inner_event_queue') or
                     queue.unselect(selected_event)!=(root/source).read_text()):
                 raise ValueError('inner event queue source selection changed')
+        elif source=='rtl/audio/gw138k_event_workstation.sv' and profile['configuration'].get('event_admission_policy') is not None:
+            from tools import workstation_event_admission as event_admission
+            selected_event=(stage/record['destination']).read_text()
+            if (event_admission.evidence(stage,profile['configuration']) != metadata.get('combined_event_admission') or
+                    event_admission.restore(source,selected_event)!=(root/source).read_text()):
+                raise ValueError('native W event admission source selection changed')
     from tools.stage_usb_firmware import verify_usb2_cpu_ram_selection
     verify_usb2_cpu_ram_selection(root,stage,profile['configuration'],
                                   metadata.get('usb2_cpu_ram_selection'),firmware=metadata['firmware'])
@@ -1162,6 +1177,19 @@ def _artifact(root, output, metadata, profile):
         if not (business_selected and target=='rtl/bluetooth/workstation_bluetooth.sv'):
             bind(target, prefix + source)
         staged_hash = metadata['copied_sources_sha256'][source]
+        if target == 'rtl/music/workstation_cnn_task_service.sv' and profile['configuration'].get('cnn_staging_retirement_policy'):
+            from tools import workstation_cnn_staging_retirement as retirement
+            if (retirement.evidence(stage, profile['configuration']) != metadata.get('cnn_staging_retirement') or
+                    retirement.restore((stage/target).read_text()) != (root/source).read_text()):
+                raise ValueError('CNN staging retirement selection drift')
+            staged_hash=sha(stage/target)
+        if target == reciprocal_div147.SOURCE and reciprocal_div147.configured(profile['configuration']):
+            reciprocal_div147.verify(stage, profile['configuration'], metadata.get('runtime_reciprocal_div147'))
+            staged_hash=sha(stage/target)
+        if target == cache_raster.SOURCE and cache_raster.configured(profile['configuration']):
+            if cache_raster.unselect((stage/target).read_text()) != (root/source).read_text():
+                raise ValueError('cache raster source selection drift')
+            staged_hash=sha(stage/target)
         if target == 'rtl/display_data/display_data_reader.v' and profile['configuration'].get('display_reader_storage_policy') is not None:
             from tools import workstation_reader_validated_metadata as reader_validated
             if reader_validated.evidence(stage, profile['configuration']) != metadata.get('display_reader_validated_metadata'):

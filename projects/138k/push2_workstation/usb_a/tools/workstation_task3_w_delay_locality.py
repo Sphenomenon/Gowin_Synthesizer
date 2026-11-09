@@ -28,6 +28,22 @@ FIFO_COMPARE_INVENTORIES = (
 ARITHMETIC_INVENTORIES = (
     dict(LUT4=420, LUT3=111, LUT2=393, DFFCE=800, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
     *FIFO_COMPARE_INVENTORIES[1:])
+CANCEL_READY_INVENTORIES = (
+    dict(LUT4=419, LUT3=108, LUT2=395, DFFCE=800, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
+    dict(LUT4=34, LUT2=11, LUT3=85, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
+    dict(LUT4=30, LUT2=13, LUT3=84, DFFCE=80, SDPX9B=4, ALU=18, INV=4, VCC=1, GND=1))
+
+COMBINED_ADMISSION_INVENTORIES = (
+    dict(LUT4=426, LUT3=102, LUT2=393, DFFCE=800, DFFPE=3, ALU=34, INV=1, VCC=1, GND=1),
+    dict(LUT4=34, LUT2=9, LUT3=86, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1),
+    dict(LUT4=31, LUT2=9, LUT3=87, DFFCE=80, SDPX9B=4, ALU=18, INV=3, VCC=1, GND=1))
+
+# v109 CNN retirement refactors shared fault/FIFO logic without changing
+# these owners' state or physical regions. Keep prior selections exact.
+CNN_RETIREMENT_INVENTORIES = (
+    dict(LUT4=426,LUT3=104,LUT2=392,DFFCE=800,DFFPE=3,ALU=34,INV=1,VCC=1,GND=1),
+    dict(LUT4=34,LUT2=9,LUT3=87,DFFCE=80,SDPX9B=4,ALU=18,INV=3,VCC=1,GND=1),
+    dict(LUT4=31,LUT2=8,LUT3=87,DFFCE=80,SDPX9B=4,ALU=18,INV=3,VCC=1,GND=1))
 
 
 def require(ok, message):
@@ -47,7 +63,7 @@ def arithmetic_layout(metadata):
     return True
 
 
-def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False):
+def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False, cancel_ready_cofactor=False, combined_admission=False, cnn_retirement=False):
     """Select the diagnosed scopes from their exact primitive inventories."""
     from tools.workstation_pinout import parse_locations
     sha = lambda b: hashlib.sha256(b).hexdigest()
@@ -56,8 +72,11 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
                'MUX2_LUT7', 'MUX2_LUT8', 'DFFCE', 'DFFPE', 'DFFRE', 'SDPX9B'}
     require(not fifo_compare_first or registered_tx_class,'FIFO-first layout requires registered W TX class')
     require(not arithmetic_repair or fifo_compare_first,'W arithmetic layout requires FIFO-first composition')
-    inventories = ARITHMETIC_INVENTORIES if arithmetic_repair else FIFO_COMPARE_INVENTORIES if fifo_compare_first else TX_CLASS_INVENTORIES if registered_tx_class else INVENTORIES
-    selected_count = 2211 if arithmetic_repair else 2241 if fifo_compare_first else 2240 if registered_tx_class else 2233
+    require(not cancel_ready_cofactor or arithmetic_repair, 'CANCEL ready layout requires reviewed arithmetic composition')
+    require(not combined_admission or cancel_ready_cofactor, 'W admission layout requires CANCEL composition')
+    require(not cnn_retirement or combined_admission, 'CNN retirement layout requires combined admission')
+    inventories = CNN_RETIREMENT_INVENTORIES if cnn_retirement else COMBINED_ADMISSION_INVENTORIES if combined_admission else CANCEL_READY_INVENTORIES if cancel_ready_cofactor else ARITHMETIC_INVENTORIES if arithmetic_repair else FIFO_COMPARE_INVENTORIES if fifo_compare_first else TX_CLASS_INVENTORIES if registered_tx_class else INVENTORIES
+    selected_count = 2211 if cnn_retirement else 2210 if combined_admission else 2212 if cancel_ready_cofactor else 2211 if arithmetic_repair else 2241 if fifo_compare_first else 2240 if registered_tx_class else 2233
     for (scope, region), expected in zip(SCOPES, inventories):
         cells = {p: c for p, c in netlist.cells.items() if p.startswith(scope)}
         counts[scope] = dict(Counter(c['kind'] for c in cells.values()))
@@ -101,6 +120,8 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     proof = dict(policy=POLICY, before_CST_sha256=sha(cst),
                  **(dict(fifo_compare_first_layout=True) if fifo_compare_first else {}),
                  **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
+                 **(dict(cancel_ready_cofactor_layout=True) if cancel_ready_cofactor else {}),
+                 **(dict(combined_admission_layout=True) if combined_admission else {}),
                  **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
                  after_CST_sha256=sha(result), scope_kinds=counts, selected_count=selected_count,
                            RAMs_not_in_logic_regions=ram, new_groups=new_groups,
@@ -109,9 +130,9 @@ def placement(cst, netlist, *, registered_tx_class=False, fifo_compare_first=Fal
     return result, proof
 
 
-def reconstruct(cst, netlist, proof, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False):
+def reconstruct(cst, netlist, proof, *, registered_tx_class=False, fifo_compare_first=False, arithmetic_repair=False, cancel_ready_cofactor=False, combined_admission=False, cnn_retirement=False):
     """Require the exact selected inventories and reproduce every changed byte."""
-    result, expected = placement(cst, netlist, registered_tx_class=registered_tx_class, fifo_compare_first=fifo_compare_first, arithmetic_repair=arithmetic_repair)
+    result, expected = placement(cst, netlist, registered_tx_class=registered_tx_class, fifo_compare_first=fifo_compare_first, arithmetic_repair=arithmetic_repair, cancel_ready_cofactor=cancel_ready_cofactor, combined_admission=combined_admission, cnn_retirement=cnn_retirement)
     for key, value in expected.items():
         require(proof.get(key) == value, 'receipt differs: '+key)
     return result

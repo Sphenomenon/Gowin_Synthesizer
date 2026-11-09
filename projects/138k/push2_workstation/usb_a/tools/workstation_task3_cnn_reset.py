@@ -49,6 +49,9 @@ def inverse(path,text):
     if path==STREAM:
         from tools.workstation_w_identity_bytes import normalize
         text=normalize(path,text)
+    if path==TASK:
+        from tools.workstation_cnn_staging_retirement import restore
+        text=restore(text)
     def replace(before,after):
         nonlocal text
         if text.count(before)!=1:raise ValueError('CNN reset exact anchor changed: '+path+': '+before[:90])

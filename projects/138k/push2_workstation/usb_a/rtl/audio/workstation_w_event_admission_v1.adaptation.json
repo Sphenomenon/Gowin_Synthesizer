@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "policy": "task3_W_combined_sample_event_admission_v1",
+  "sources": {
+    "rtl/audio/workstation_audio_render_service.sv": {
+      "parent_sha256": "2f6bc96771ea2e3c567c536b0efc73cb21c9577aae1c95c3bd380b6c84581a3b",
+      "selected_sha256": "ee3b20f219d77b1015593fcc4c0df0d2f62d5bb1c7b56c765a1603979283f69f",
+      "edits": [
+        {
+          "before": "    wire requested_rate=external_config ? config_rate_44100_i : accepted ? render_44k1_i : held_rate;",
+          "after": "    // Private event admission combines the existing same-edge sample and\n    // configuration vetoes. Real render/config broadcasts keep their owners.\n    // Unknown controls use the original complete four-state fence.\n    reg combined_event_admission;\n    always @* begin\n        combined_event_admission=sample_ce_o ||\n            (!core_rate_busy && (core_config || external_history));\n        case (^{rst_ni,active,external_busy,core_fault,config_valid_i,\n                history_clear_i,core_rate_busy,cancel_delivery_pending,\n                render_request_i,response_sent,cancelled,held_rate,core_rate})\n            1'b0,1'b1: combined_event_admission=!core_rate_busy &&\n                ((!active && !external_busy && !core_fault &&\n                  (config_valid_i || history_clear_i ||\n                   (rst_ni && !cancel_delivery_pending && render_request_i))) ||\n                 (active && !response_sent && !cancelled && held_rate!=core_rate));\n            default: begin end\n        endcase\n    end\n    wire requested_rate=external_config ? config_rate_44100_i : accepted ? render_44k1_i : held_rate;"
+        },
+        {
+          "before": ".EVENT_CONFIG_COFACTOR_ENABLE(RUNTIME_EFFECTS_ENABLE),",
+          "after": ".EVENT_CONFIG_COFACTOR_ENABLE(RUNTIME_EFFECTS_ENABLE),\n        .EVENT_ADMISSION_COFACTOR_ENABLE(RUNTIME_EFFECTS_ENABLE),"
+        },
+        {
+          "before": ".event_rate_commit_i(event_config_request),",
+          "after": ".event_rate_commit_i(event_config_request),\n        .event_admission_block_i(combined_event_admission),"
+        }
+      ]
+    },
+    "rtl/audio/gw138k_event_workstation.sv": {
+      "parent_sha256": "86e6de9f3ef3206fcbf07e07dac562ffbb4b1e6fd80e52de5c658ade989ce7d4",
+      "selected_sha256": "7fc1f2d8d82f7bc27bbdd04baf38fa67f8c9029bce6adcae014c82bddf183b79",
+      "edits": [
+        {
+          "before": "parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,",
+          "after": "parameter bit EVENT_CONFIG_COFACTOR_ENABLE=0,\n    parameter bit EVENT_ADMISSION_COFACTOR_ENABLE=0,"
+        },
+        {
+          "before": "    input logic event_rate_commit_i,",
+          "after": "    input logic event_rate_commit_i,\n    // Internal service-owned sample/config union, never a real broadcast.\n    input logic event_admission_block_i,"
+        },
+        {
+          "before": "  assign mode_valid=mode_pending && mode_ready && !pending && !sample_ce_i && !usb_lifecycle && !event_config_block && !native_clear;",
+          "after": "  wire event_admission_block=EVENT_ADMISSION_COFACTOR_ENABLE ?\n      event_admission_block_i : (sample_ce_i || event_config_block);\n  assign mode_valid=mode_pending && mode_ready && !pending && !usb_lifecycle && !event_admission_block && !native_clear;"
+        },
+        {
+          "before": "  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !sample_ce_i && !event_config_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);",
+          "after": "  assign dispatch=!usb_lifecycle && (!pending || runtime_config_busy) && !event_admission_block && !native_clear && !load_busy && !mix_busy && !vec_busy && !(TIMING_OPTIMIZED ? (mode_pending && allocated==0) : mode_valid);"
+        },
+        {
+          "before": "if(EVENT_CONFIG_COFACTOR_ENABLE && (!RUNTIME_EFFECTS_ENABLE || !REQUEST_DRIVEN_RENDER))",
+          "after": "if((EVENT_CONFIG_COFACTOR_ENABLE || EVENT_ADMISSION_COFACTOR_ENABLE) && (!RUNTIME_EFFECTS_ENABLE || !REQUEST_DRIVEN_RENDER))"
+        }
+      ]
+    }
+  },
+  "scope": "Explicit paired W preboard only; native inner event queue remains disabled.",
+  "exit_plan": "Move the proved private union into native audio owners after physical acceptance; exact source and inverse checks remain mandatory.",
+  "source_destinations": {
+    "rtl/audio/gw138k_event_workstation.sv": "src/ae350/gw138k_event_workstation.sv",
+    "rtl/audio/workstation_audio_render_service.sv": "rtl/audio/workstation_audio_render_service.sv"
+  },
+  "parent_event_queue_policy": null
+}

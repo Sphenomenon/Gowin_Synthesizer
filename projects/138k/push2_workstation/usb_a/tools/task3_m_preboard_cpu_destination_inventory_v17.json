@@ -1,0 +1,6707 @@
+{
+  "schema": 1,
+  "profile": "custom138k-workstation-task3-m-preboard-v1",
+  "revision": 17,
+  "purpose": "Reviewed v116 reciprocal-divider integration packing: changed logical states have reset-inclusive mapped next-Q equality; named logical state sets, source owners, RAM and top outputs are unchanged. Exact ordinary32/vector8 cycle regression covers the selected divider; all affected clk50 source owners are byte-identical. Conditional state and memory-output correspondence only; no whole-design induction claim",
+  "diagnostic_netlist_sha256": "f395675bc3d31bf31a5923653ad98ee2a3da5adf92ea03b847e59c711fdd6192",
+  "legacy_inventory_unchanged": true,
+  "prior_inventory": "tools/task3_m_preboard_cpu_destination_inventory_v16.json",
+  "review": {
+    "inductive_invariants": [
+      {
+        "version": "old",
+        "state": "u_task3_pair_link/transport/probe_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-33f24530db4e176a.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_task3_pair_link/transport/rx_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-0b06edbd4f0eee37.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_task3_pair_link/transport/tx_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-6aadc44c3a60a651.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_tf_audio/quiet_wait_26",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 233,
+        "expression_nodes": 690,
+        "smt2_sha256": "df487f31103aca793e8878977e044095493d764269eba33c2d8c010c179c4da3",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-c63ff49c615e344e.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_tf_audio/quiet_wait_27",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-fd89d8b836e0b48b.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_tf_audio/quiet_wait_28",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-80d5266f10270c72.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_tf_audio/quiet_wait_30",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-e89cc345f4747415.smt2"
+      },
+      {
+        "version": "old",
+        "state": "u_tf_audio/quiet_wait_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-ed3c1990a7be9dbd.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/probe_age_27",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-cb78d7e9fcb3f6ce.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/probe_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-03967691420d05f0.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/rx_age_27",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-aeb7d133d4ba1785.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/rx_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-aa078c72466a5d09.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/tx_age_19",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-18f700c57fd23c71.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/tx_age_27",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-fac7e14bac19fd49.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_task3_pair_link/transport/tx_age_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-70e40b781d687a59.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_26",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 233,
+        "expression_nodes": 692,
+        "smt2_sha256": "faab2e1dfd7877186d31286abf6b9e16c3aca2735ba7bb32025c3b184c6b7010",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-181b03c6c08702f8.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_27",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-0a6463f4ad5dca31.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_28",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-e806ac3e529538c1.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_29",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-9204e5ff613c870b.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_30",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-b1a3ab7c70df9bbf.smt2"
+      },
+      {
+        "version": "new",
+        "state": "u_tf_audio/quiet_wait_31",
+        "base_INIT_zero": true,
+        "async_CLEAR_zero": true,
+        "assumed_high_bits_zero": [
+          "u_task3_pair_link/transport/probe_age_27",
+          "u_task3_pair_link/transport/probe_age_31",
+          "u_task3_pair_link/transport/rx_age_27",
+          "u_task3_pair_link/transport/rx_age_31",
+          "u_task3_pair_link/transport/tx_age_19",
+          "u_task3_pair_link/transport/tx_age_27",
+          "u_task3_pair_link/transport/tx_age_31",
+          "u_tf_audio/quiet_wait_26",
+          "u_tf_audio/quiet_wait_27",
+          "u_tf_audio/quiet_wait_28",
+          "u_tf_audio/quiet_wait_29",
+          "u_tf_audio/quiet_wait_30",
+          "u_tf_audio/quiet_wait_31"
+        ],
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-35dd4c0bc9d7e856.smt2"
+      },
+      {
+        "version": "new",
+        "old_state": "u_task3_m_endpoint/source_m/wr_3",
+        "new_state": "u_task3_m_endpoint/source_m/accepted_3",
+        "base_INIT_equal": true,
+        "asynchronous_CLEAR_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1172,
+        "expression_nodes": 4240,
+        "smt2_sha256": "d20b9bbc06d6a5af02114db046cebd2aed3df2808220d05f988ee90f3b7b60f8",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-504a6432bd795e00.smt2"
+      },
+      {
+        "version": "new",
+        "old_state": "u_task3_m_endpoint/source_m/wr_4",
+        "new_state": "u_task3_m_endpoint/source_m/accepted_4",
+        "base_INIT_equal": true,
+        "asynchronous_CLEAR_equal": true,
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1173,
+        "expression_nodes": 4239,
+        "smt2_sha256": "fae0c6e37e365a58d27b6e1d3350ea8ea9800511e76d6473441b4ae040ea1d26",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-a2fdc74f1ded5d43.smt2"
+      }
+    ],
+    "high_state_zero": [
+      "u_task3_pair_link/transport/probe_age_20",
+      "u_task3_pair_link/transport/probe_age_21",
+      "u_task3_pair_link/transport/probe_age_22",
+      "u_task3_pair_link/transport/probe_age_23",
+      "u_task3_pair_link/transport/probe_age_24",
+      "u_task3_pair_link/transport/probe_age_25",
+      "u_task3_pair_link/transport/probe_age_26",
+      "u_task3_pair_link/transport/probe_age_27",
+      "u_task3_pair_link/transport/probe_age_28",
+      "u_task3_pair_link/transport/probe_age_29",
+      "u_task3_pair_link/transport/probe_age_30",
+      "u_task3_pair_link/transport/probe_age_31",
+      "u_task3_pair_link/transport/rx_age_23",
+      "u_task3_pair_link/transport/rx_age_24",
+      "u_task3_pair_link/transport/rx_age_25",
+      "u_task3_pair_link/transport/rx_age_26",
+      "u_task3_pair_link/transport/rx_age_27",
+      "u_task3_pair_link/transport/rx_age_28",
+      "u_task3_pair_link/transport/rx_age_29",
+      "u_task3_pair_link/transport/rx_age_30",
+      "u_task3_pair_link/transport/rx_age_31",
+      "u_task3_pair_link/transport/tx_age_19",
+      "u_task3_pair_link/transport/tx_age_20",
+      "u_task3_pair_link/transport/tx_age_21",
+      "u_task3_pair_link/transport/tx_age_22",
+      "u_task3_pair_link/transport/tx_age_23",
+      "u_task3_pair_link/transport/tx_age_24",
+      "u_task3_pair_link/transport/tx_age_25",
+      "u_task3_pair_link/transport/tx_age_26",
+      "u_task3_pair_link/transport/tx_age_27",
+      "u_task3_pair_link/transport/tx_age_28",
+      "u_task3_pair_link/transport/tx_age_29",
+      "u_task3_pair_link/transport/tx_age_30",
+      "u_task3_pair_link/transport/tx_age_31",
+      "u_tf_audio/quiet_wait_26",
+      "u_tf_audio/quiet_wait_27",
+      "u_tf_audio/quiet_wait_28",
+      "u_tf_audio/quiet_wait_29",
+      "u_tf_audio/quiet_wait_30",
+      "u_tf_audio/quiet_wait_31"
+    ],
+    "merged_state_aliases": {
+      "u_task3_m_endpoint/source_m/wr_3": "u_task3_m_endpoint/source_m/accepted_3",
+      "u_task3_m_endpoint/source_m/wr_4": "u_task3_m_endpoint/source_m/accepted_4"
+    },
+    "SDPB_address_bit_equivalence": [
+      {
+        "port": "ADA",
+        "bit": 0,
+        "old_net": "u_task3_m_endpoint/source_m/VCC",
+        "new_net": "u_task3_m_endpoint/source_m/VCC",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "325f882941fc20c215098b864ca289d3e0af23fd753e9ec543dd5409fa894fca",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-846068828382a106.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 1,
+        "old_net": "u_task3_m_endpoint/source_m/VCC",
+        "new_net": "u_task3_m_endpoint/source_m/VCC",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "325f882941fc20c215098b864ca289d3e0af23fd753e9ec543dd5409fa894fca",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-e7536cf60eabfa36.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 2,
+        "old_net": "u_task3_m_endpoint/source_m/VCC",
+        "new_net": "u_task3_m_endpoint/source_m/VCC",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "325f882941fc20c215098b864ca289d3e0af23fd753e9ec543dd5409fa894fca",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-a02be51da7ac3b82.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 3,
+        "old_net": "u_task3_m_endpoint/source_m/VCC",
+        "new_net": "u_task3_m_endpoint/source_m/VCC",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "325f882941fc20c215098b864ca289d3e0af23fd753e9ec543dd5409fa894fca",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-51185f3bd437c586.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 4,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-ccf4690c04f891a1.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 5,
+        "old_net": "u_task3_m_endpoint/wr[0]",
+        "new_net": "u_task3_m_endpoint/wr[0]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "82dffa23df9fdd56e33d3f2ad7d8e7567adf9a145bff6c89e34426899ae5b25c",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-c9e16fb80c588fbd.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 6,
+        "old_net": "u_task3_m_endpoint/wr[1]",
+        "new_net": "u_task3_m_endpoint/wr[1]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "555058eca79122b2295df906b540a6a8837220a30c22842c088f7652419129f1",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-7ff48bded92b3245.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 7,
+        "old_net": "u_task3_m_endpoint/wr[2]",
+        "new_net": "u_task3_m_endpoint/wr[2]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "9eaaa818a1662d55ba5943d97ee3e885cecb1f4815c963036e321185b86509d9",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-c53ef167c890c308.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 8,
+        "old_net": "u_task3_m_endpoint/wr[3]",
+        "new_net": "u_task3_m_endpoint/source_m/wr_0[3]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "5d4a9be520253455afc08c172c9c247fb2c1b4e6a0414a19107485db0c16b4ee",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-5796a84df89b540b.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 9,
+        "old_net": "u_task3_m_endpoint/wr[4]",
+        "new_net": "u_task3_m_endpoint/source_m/wr_0[4]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "1732b10910d81818a7cb5083fa306151356ed3b54265596c84400b0cbec6df60",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-79b4d04587ee2cc4.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 10,
+        "old_net": "u_task3_m_endpoint/source_m/wr_0[5]",
+        "new_net": "u_task3_m_endpoint/source_m/wr_0[5]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "8dfa5bf8304fe8ffe3a78fe38bd6c30fceb697d0a079d287d5b2e3d90a581805",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-f4361e2b0d1c84c1.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 11,
+        "old_net": "u_task3_m_endpoint/source_m/wr_0[6]",
+        "new_net": "u_task3_m_endpoint/source_m/wr_0[6]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "570f8e483649aff443bff79cd98193d48b95ce98033c38f692a625386dc5f931",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-96e63768a3fb7036.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 12,
+        "old_net": "u_task3_m_endpoint/source_m/wr_0[7]",
+        "new_net": "u_task3_m_endpoint/source_m/wr_0[7]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "efa9ab36193fe787ba8b694328de256d4b12b3423794c2f22a28785edbcf2f48",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-66e465d07e9015a6.smt2"
+      },
+      {
+        "port": "ADA",
+        "bit": 13,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-bfbb8f3f411a1a26.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 0,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-f3c106e28516bdaf.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 1,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-76ebe6f108e19e14.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 2,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-b7d20fafd75d717d.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 3,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-1fabc132306e9567.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 4,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-4fb5ce67f5125683.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 5,
+        "old_net": "u_task3_m_endpoint/source_m/rd[0]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[0]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "67daec8db45d15ddaef27e4dc7f70f86bd297e9d04007a50a31e293224dfe0c1",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-b8033c079403ba31.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 6,
+        "old_net": "u_task3_m_endpoint/source_m/rd[1]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[1]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "2e4cf50824590a24ba7fb872f2513f9ae08711e2faa60b44fd0571c9983d7bec",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-7b77dafc18b4e0eb.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 7,
+        "old_net": "u_task3_m_endpoint/source_m/rd[2]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[2]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "f1f8e9dd7ba89db67a92bd745d9ca493ffacee0f6b96c917d93ba281192bba74",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-7f030064509ba94c.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 8,
+        "old_net": "u_task3_m_endpoint/source_m/rd[3]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[3]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "62b95b7c747ca8ef77231e519cde3ecbcc78cff905a87a322be9ff8489c14d32",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-6449bd3c9ec58ea9.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 9,
+        "old_net": "u_task3_m_endpoint/source_m/rd[4]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[4]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "c4892dc9df05993a76499634f199845bbf4a5691353e6b06f99809e0a40e2d86",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-a638c05560915efc.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 10,
+        "old_net": "u_task3_m_endpoint/source_m/rd[5]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[5]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "3e5a2031ef7b246ce280f9c18e24f632ca221c111243e4cf4b0cfadfde5f5643",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-2f652777588663f6.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 11,
+        "old_net": "u_task3_m_endpoint/source_m/rd[6]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[6]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "3ce69f3431007e7df0cf93fae2c4c1fa885a74405c109cf2c9db0f4ac0344c74",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-3c7fca0db14f617e.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 12,
+        "old_net": "u_task3_m_endpoint/source_m/rd[7]",
+        "new_net": "u_task3_m_endpoint/source_m/rd[7]",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 1,
+        "expression_nodes": 1,
+        "smt2_sha256": "fca114327b818f6db97775e9653627c33fa6e3cbbce39cb0e28e6b3de876b970",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-ec62a0387491639e.smt2"
+      },
+      {
+        "port": "ADB",
+        "bit": 13,
+        "old_net": "u_task3_m_endpoint/source_m/GND",
+        "new_net": "u_task3_m_endpoint/source_m/GND",
+        "proof_engine": "Z3_Boolean_miter",
+        "solver_version": "5.3.3",
+        "solver_timeout_ms": 10000,
+        "solver_result": "unsat",
+        "solver_reason_unknown": null,
+        "named_state_inputs": 0,
+        "expression_nodes": 1,
+        "smt2_sha256": "ad653dbabd0cadb956be823e248a79ab26a0126bbf4b1a67c970a8f91598c676",
+        "smt2_path": "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/miters/miter-a3f10a921319dcf0.smt2"
+      }
+    ],
+    "negative_controls": [
+      {
+        "mutation": "INIT",
+        "rejected": true,
+        "error": "nonzero INIT"
+      },
+      {
+        "mutation": "D",
+        "rejected": true,
+        "error": "W consumer next-Q: SAT miter sat"
+      }
+    ],
+    "affected_logical_states": [
+      "u_task3_m_endpoint/g_phone_batch.batch_m/lease_valid",
+      "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_0",
+      "u_task3_m_endpoint/media_cap_age_11",
+      "u_task3_m_endpoint/media_cap_age_13",
+      "u_task3_m_endpoint/media_cap_age_14",
+      "u_task3_m_endpoint/media_cap_age_15",
+      "u_task3_m_endpoint/media_cap_age_3",
+      "u_task3_m_endpoint/media_cap_age_6",
+      "u_task3_m_endpoint/media_cap_age_7",
+      "u_task3_m_endpoint/media_cap_pending",
+      "u_task3_m_endpoint/next_record_generation_0",
+      "u_task3_m_endpoint/phone/expected_sequence_1",
+      "u_task3_m_endpoint/phone/expected_sequence_10",
+      "u_task3_m_endpoint/phone/expected_sequence_12",
+      "u_task3_m_endpoint/phone/expected_sequence_15",
+      "u_task3_m_endpoint/phone/expected_sequence_16",
+      "u_task3_m_endpoint/phone/expected_sequence_19",
+      "u_task3_m_endpoint/phone/expected_sequence_21",
+      "u_task3_m_endpoint/phone/expected_sequence_22",
+      "u_task3_m_endpoint/phone/expected_sequence_23",
+      "u_task3_m_endpoint/phone/expected_sequence_24",
+      "u_task3_m_endpoint/phone/expected_sequence_25",
+      "u_task3_m_endpoint/phone/expected_sequence_26",
+      "u_task3_m_endpoint/phone/expected_sequence_27",
+      "u_task3_m_endpoint/phone/expected_sequence_28",
+      "u_task3_m_endpoint/phone/expected_sequence_29",
+      "u_task3_m_endpoint/phone/expected_sequence_30",
+      "u_task3_m_endpoint/phone/expected_sequence_31",
+      "u_task3_m_endpoint/phone/expected_sequence_4",
+      "u_task3_m_endpoint/phone/expected_sequence_7",
+      "u_task3_m_endpoint/phone/expected_sequence_8",
+      "u_task3_m_endpoint/phone/fault_o",
+      "u_task3_m_endpoint/prefer_analysis",
+      "u_task3_m_endpoint/record_demand_age_0",
+      "u_task3_m_endpoint/recording/g_sync_frames.bypass",
+      "u_task3_m_endpoint/remote_status_0",
+      "u_task3_m_endpoint/remote_status_1",
+      "u_task3_m_endpoint/remote_status_10",
+      "u_task3_m_endpoint/remote_status_11",
+      "u_task3_m_endpoint/remote_status_12",
+      "u_task3_m_endpoint/remote_status_13",
+      "u_task3_m_endpoint/remote_status_14",
+      "u_task3_m_endpoint/remote_status_15",
+      "u_task3_m_endpoint/remote_status_16",
+      "u_task3_m_endpoint/remote_status_17",
+      "u_task3_m_endpoint/remote_status_18",
+      "u_task3_m_endpoint/remote_status_19",
+      "u_task3_m_endpoint/remote_status_2",
+      "u_task3_m_endpoint/remote_status_20",
+      "u_task3_m_endpoint/remote_status_21",
+      "u_task3_m_endpoint/remote_status_22",
+      "u_task3_m_endpoint/remote_status_23",
+      "u_task3_m_endpoint/remote_status_24",
+      "u_task3_m_endpoint/remote_status_25",
+      "u_task3_m_endpoint/remote_status_26",
+      "u_task3_m_endpoint/remote_status_27",
+      "u_task3_m_endpoint/remote_status_28",
+      "u_task3_m_endpoint/remote_status_29",
+      "u_task3_m_endpoint/remote_status_3",
+      "u_task3_m_endpoint/remote_status_30",
+      "u_task3_m_endpoint/remote_status_31",
+      "u_task3_m_endpoint/remote_status_32",
+      "u_task3_m_endpoint/remote_status_33",
+      "u_task3_m_endpoint/remote_status_34",
+      "u_task3_m_endpoint/remote_status_35",
+      "u_task3_m_endpoint/remote_status_36",
+      "u_task3_m_endpoint/remote_status_37",
+      "u_task3_m_endpoint/remote_status_38",
+      "u_task3_m_endpoint/remote_status_39",
+      "u_task3_m_endpoint/remote_status_4",
+      "u_task3_m_endpoint/remote_status_40",
+      "u_task3_m_endpoint/remote_status_41",
+      "u_task3_m_endpoint/remote_status_42",
+      "u_task3_m_endpoint/remote_status_43",
+      "u_task3_m_endpoint/remote_status_44",
+      "u_task3_m_endpoint/remote_status_45",
+      "u_task3_m_endpoint/remote_status_46",
+      "u_task3_m_endpoint/remote_status_47",
+      "u_task3_m_endpoint/remote_status_48",
+      "u_task3_m_endpoint/remote_status_49",
+      "u_task3_m_endpoint/remote_status_5",
+      "u_task3_m_endpoint/remote_status_50",
+      "u_task3_m_endpoint/remote_status_51",
+      "u_task3_m_endpoint/remote_status_52",
+      "u_task3_m_endpoint/remote_status_53",
+      "u_task3_m_endpoint/remote_status_54",
+      "u_task3_m_endpoint/remote_status_55",
+      "u_task3_m_endpoint/remote_status_56",
+      "u_task3_m_endpoint/remote_status_57",
+      "u_task3_m_endpoint/remote_status_58",
+      "u_task3_m_endpoint/remote_status_59",
+      "u_task3_m_endpoint/remote_status_6",
+      "u_task3_m_endpoint/remote_status_60",
+      "u_task3_m_endpoint/remote_status_61",
+      "u_task3_m_endpoint/remote_status_62",
+      "u_task3_m_endpoint/remote_status_63",
+      "u_task3_m_endpoint/remote_status_64",
+      "u_task3_m_endpoint/remote_status_65",
+      "u_task3_m_endpoint/remote_status_66",
+      "u_task3_m_endpoint/remote_status_67",
+      "u_task3_m_endpoint/remote_status_68",
+      "u_task3_m_endpoint/remote_status_69",
+      "u_task3_m_endpoint/remote_status_7",
+      "u_task3_m_endpoint/remote_status_8",
+      "u_task3_m_endpoint/remote_status_9",
+      "u_task3_m_endpoint/source_m/accepted_11",
+      "u_task3_m_endpoint/source_m/accepted_12",
+      "u_task3_m_endpoint/source_m/accepted_17",
+      "u_task3_m_endpoint/source_m/accepted_19",
+      "u_task3_m_endpoint/source_m/accepted_23",
+      "u_task3_m_endpoint/source_m/accepted_24",
+      "u_task3_m_endpoint/source_m/accepted_26",
+      "u_task3_m_endpoint/source_m/accepted_28",
+      "u_task3_m_endpoint/source_m/accepted_3",
+      "u_task3_m_endpoint/source_m/accepted_6",
+      "u_task3_m_endpoint/source_m/accepted_7",
+      "u_task3_m_endpoint/source_m/chunk_file_last_o",
+      "u_task3_m_endpoint/source_m/crc_22",
+      "u_task3_m_endpoint/source_m/crc_30",
+      "u_task3_m_endpoint/source_m/held_valid",
+      "u_task3_m_endpoint/source_m/sent_10",
+      "u_task3_m_endpoint/source_m/sent_11",
+      "u_task3_m_endpoint/source_m/sent_12",
+      "u_task3_m_endpoint/source_m/sent_13",
+      "u_task3_m_endpoint/source_m/sent_14",
+      "u_task3_m_endpoint/source_m/sent_16",
+      "u_task3_m_endpoint/source_m/sent_17",
+      "u_task3_m_endpoint/source_m/sent_20",
+      "u_task3_m_endpoint/source_m/sent_3",
+      "u_task3_m_endpoint/source_m/sent_9",
+      "u_task3_m_endpoint/source_m/wr_3",
+      "u_task3_m_endpoint/source_m/wr_4",
+      "u_task3_pair_link/panic_hold_11",
+      "u_task3_pair_link/panic_hold_12",
+      "u_task3_pair_link/panic_hold_13",
+      "u_task3_pair_link/panic_hold_14",
+      "u_task3_pair_link/panic_hold_3",
+      "u_task3_pair_link/panic_hold_6",
+      "u_task3_pair_link/panic_hold_8",
+      "u_task3_pair_link/panic_hold_9",
+      "u_task3_pair_link/transport/crc_errors_o_0",
+      "u_task3_pair_link/transport/phy/tx_second",
+      "u_task3_pair_link/transport/probe_age_27",
+      "u_task3_pair_link/transport/rejected_packets_o_0",
+      "u_task3_pair_link/transport/rx_age_27",
+      "u_task3_pair_link/transport/rx_sequence_0",
+      "u_task3_pair_link/transport/tx_age_19",
+      "u_task3_pair_link/transport/tx_age_27",
+      "u_task3_pair_link/transport/tx_sequence_0",
+      "u_tf_audio/quiet_wait_29"
+    ],
+    "source_owners": [
+      {
+        "scope": "u_task3_m_endpoint",
+        "module": "workstation_task3_m_bus_endpoint",
+        "path": "rtl/workstation/workstation_task3_m_bus_endpoint.sv",
+        "sha256": "a8acf38a88900352bff99e1fb934039779cf3c24ea7ac105d166f9cb1d32405d",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_m_endpoint/g_phone_batch.batch_m",
+        "module": "workstation_task3_phone_batch_m",
+        "path": "rtl/workstation/workstation_task3_phone_batch_m.sv",
+        "sha256": "7cdd4e0092ec52149759d13744d08ff045867e784c8d376e0270a7063d753c47",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_m_endpoint/phone",
+        "module": "workstation_task3_phone_command_ingress",
+        "path": "rtl/workstation/workstation_task3_phone_command_ingress.sv",
+        "sha256": "7c8a840a7c42301595c367d16179985dd5d1faa2a202fd98d9abd14b5f19bd73",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_m_endpoint/recording",
+        "module": "workstation_task3_final_tap_export",
+        "path": "rtl/workstation/workstation_task3_final_tap_export.sv",
+        "sha256": "d7856615e4cfa2446f1a11e28c3348359ca76215bfd9c5e9d1b405f70eb8950c",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_m_endpoint/source_m",
+        "module": "workstation_task3_tf_analysis_source",
+        "path": "rtl/music/workstation_task3_tf_analysis_source.sv",
+        "sha256": "cfdfb470148f39bc1a9a61995763764fbdc70b35debba04150789a74a39fd326",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_pair_link",
+        "module": "workstation_task3_paired_link",
+        "path": "rtl/workstation/workstation_task3_paired_link.sv",
+        "sha256": "c866d4418aaf3cf7f253ec53246481c429c3a7f26f2f90ba00ee83f7405ae062",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_pair_link/transport",
+        "module": "workstation_task3_lcd_transport",
+        "path": "rtl/workstation/workstation_task3_lcd_transport.sv",
+        "sha256": "97685fa334124c41974309e926d63c5c4426d61f0393f0cfdc26e818e2ccaae8",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_task3_pair_link/transport/phy",
+        "module": "workstation_task3_lcd_phy",
+        "path": "rtl/workstation/workstation_task3_lcd_phy.sv",
+        "sha256": "d2ba6cb9be0f1597fe700c1200643eb9654aa2b16d46c69ae2d4bf75c4ee82eb",
+        "byte_identical": true
+      },
+      {
+        "scope": "u_tf_audio",
+        "module": "workstation_tf_direct_runtime_service",
+        "path": "rtl/tf_audio/workstation_tf_direct_runtime_service.sv",
+        "sha256": "3be4f1f9ef7d8d501fc4a57370d9fa5e803f9d346e616738fa6e2ee016a84102",
+        "byte_identical": true
+      }
+    ],
+    "evidence": {
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/verification.json": "cd4ad95b3f0a1e0af2e9416fbfa65f9c914132d2ddf4f8dbfd51143b455eea57",
+      "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/owner-source-equality.json": "c21987d7ecfdcd32b5106ff1da979dc2fb646f410634cec6f9cdeb3b81469907"
+    },
+    "named_state_correspondence_assumed": true,
+    "conditional_memory_output_correspondence": true,
+    "memory_primitive_ports_and_parameters_identical": true,
+    "memory_state_induction_proven": false,
+    "whole_design_induction": false
+  },
+  "ff_endpoint_count": 8402,
+  "groups": [
+    {
+      "register": "task3_m_phone_live_source_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/model_ready_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s1",
+      "indices": [
+        [
+          1,
+          21
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s1",
+      "indices": [
+        [
+          1,
+          21
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/restart_delay_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/run_reset_count_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/run_reset_count_{}_s5",
+      "indices": [
+        [
+          2,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/selected_track_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/song_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_playback_service/song_started_s8",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/destination_data_{}_s0",
+      "indices": [
+        [
+          0,
+          223
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_meta_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_settled_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_runtime/u_cpu_cdc/req_sync_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/completed_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/completed_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_data_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_data_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_s2",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_strobes_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_strobes_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_write_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/held_write_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/owner_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/owner_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_clock_mux/prefer_clock_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/active_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/active_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/expected_index_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/samples_{}_s0",
+      "indices": [
+        [
+          0,
+          191
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sealed_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/analysis_blocks/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/analysis_done_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/clip_notes_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/completion_o_{}_s0",
+      "indices": [
+        [
+          3,
+          3
+        ],
+        [
+          68,
+          163
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/completion_valid_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s1",
+      "indices": [
+        [
+          1,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/cursor_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/failed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/failed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_sync_notes.head_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_sync_notes.head_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_bad_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_bad_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_count_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.held_file_last_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/g_terminal_pipeline.pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/identity_{}_s0",
+      "indices": [
+        [
+          32,
+          127
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/note_count_{}_s1",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/note_count_{}_s1",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/poisoned_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/state_{}_s1",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/collector_m/state_{}_s1",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/before_id_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/block_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/capture_id_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/controller_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/frames_{}_s0",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/last_capture_id_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/last_capture_id_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_token_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_token_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/lease_valid_s10",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/next_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/opcode_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/operation_{}_s0",
+      "indices": [
+        [
+          0,
+          4
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/physical_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/probed_caps_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/rate44100_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/reply_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/request_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/request_token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/slot_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[0]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[10]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[11]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[12]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[13]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[14]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[15]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[16]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[17]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[18]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[19]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[1]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[2]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[3]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[4]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[5]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[6]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[7]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[8]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/snapshot[9]_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/stream_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_batch.batch_m/word_index_{}_s0",
+      "indices": [
+        [
+          0,
+          4
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/ack_error_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/armed_previous_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/base_address_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/expected_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/expected_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/first_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/first_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/next_sequence_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/position_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/timer_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/timer_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/g_phone_window.window_rx/words_{}_s0",
+      "indices": [
+        [
+          0,
+          159
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/hci_ready_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_age_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          21,
+          22
+        ],
+        [
+          24,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_fault_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_fault_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_pending_s15",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_ready_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_ready_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/media_cap_send_age_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_job_{}_s0",
+      "indices": [
+        [
+          17,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_job_{}_s0",
+      "indices": [
+        [
+          16,
+          16
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_record_generation_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/next_record_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/arm_accepted_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/arm_rejected_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/armed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/armed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_address_o_{}_s0",
+      "indices": [
+        [
+          0,
+          11
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_data_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_strobes_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_target_o_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/command_write_o_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          17,
+          18
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          21,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/expected_sequence_{}_s5",
+      "indices": [
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/fault_o_s3",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_boot_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_data_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_data_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_error_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_error_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_generation_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_sequence_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/response_session_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone/state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_ack_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_ack_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_window_protocol_fault_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/phone_window_protocol_fault_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/prefer_analysis_s137",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/active_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/active_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/age_{}_s0",
+      "indices": [
+        [
+          0,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/count_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/expected_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/first_index_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/granted_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/samples_{}_s0",
+      "indices": [
+        [
+          0,
+          191
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sealed_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/sent_blocks_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_blocks/token_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_age_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_age_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/record_demand_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_sent_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/arm_sent_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/armed_o_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/boot_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/cancel_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/cancel_pending_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/count_{}_s0",
+      "indices": [
+        [
+          0,
+          8
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s1",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/expected_sequence_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/fault_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/fault_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/first_sequence_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.bypass_head_{}_s0",
+      "indices": [
+        [
+          0,
+          63
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFRE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.bypass_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.bypass_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/g_sync_frames.valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/physical_epoch_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/rd_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/retired_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/session_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s1",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/recording/wr_{}_s5",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/remote_status_{}_s1",
+      "indices": [
+        [
+          0,
+          69
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/remote_status_{}_s1",
+      "indices": [
+        [
+          0,
+          69
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          29,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          15
+        ],
+        [
+          21,
+          21
+        ],
+        [
+          23,
+          23
+        ],
+        [
+          25,
+          26
+        ],
+        [
+          29,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/accepted_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          13,
+          14
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          22,
+          22
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          27,
+          28
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/append_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/budget_{}_s0",
+      "indices": [
+        [
+          16,
+          16
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/chunk_file_last_o_s19",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/clip_closed_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/clip_closed_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/count_{}_s0",
+      "indices": [
+        [
+          0,
+          8
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_busy_s10",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_phase_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_phase_{}_s4",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_word_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s1",
+      "indices": [
+        [
+          0,
+          16
+        ],
+        [
+          18,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s1",
+      "indices": [
+        [
+          0,
+          16
+        ],
+        [
+          18,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/crc_{}_s3",
+      "indices": [
+        [
+          17,
+          17
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/elapsed_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/elapsed_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/failed_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/failed_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/held_valid_s10",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/identity_{}_s0",
+      "indices": [
+        [
+          32,
+          127
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/rd_{}_s3",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/rd_{}_s3",
+      "indices": [
+        [
+          2,
+          2
+        ],
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/rd_{}_s5",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/sent_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/sent_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          15,
+          16
+        ],
+        [
+          18,
+          18
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/sent_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          14,
+          14
+        ],
+        [
+          17,
+          17
+        ],
+        [
+          19,
+          30
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/state_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s3",
+      "indices": [
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s3",
+      "indices": [
+        [
+          7,
+          7
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/source_m/wr_{}_s5",
+      "indices": [
+        [
+          3,
+          6
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s1",
+      "indices": [
+        [
+          1,
+          23
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s1",
+      "indices": [
+        [
+          1,
+          23
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/status_age_{}_s3",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_valid_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_endpoint/tx_valid_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/request_held_{}_s0",
+      "indices": [
+        [
+          0,
+          48
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/request_toggle_s4",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/state_{}_s0",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_pcm_commands/state_{}_s2",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_score_push_cdc/write_binary_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_m_score_push_cdc/write_gray_{}_s0",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/acknowledge_toggle_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_meta_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_settled_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/req_sync_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/request_decoded_s0",
+      "indices": null,
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/request_local_{}_s0",
+      "indices": [
+        [
+          0,
+          48
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          32
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          32
+        ]
+      ],
+      "pin": "CLEAR",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_cdc/response_held_{}_s0",
+      "indices": [
+        [
+          0,
+          6
+        ],
+        [
+          32,
+          32
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/arm_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/budget_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/budget_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/business_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/business_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/cancel_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/generation_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/generation_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_rejection_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_rejection_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_revoke_reason_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_revoke_reason_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/last_session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/local_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/local_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/panic_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/peer_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/peer_boot_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/probe_q_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/probe_q_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/rejected_count_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/rejected_count_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/revoke_count_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/revoke_count_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/seen_live_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/seen_live_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/session_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/session_o_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/written_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/config_owner/written_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          14,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s1",
+      "indices": [
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          14,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/panic_hold_{}_s3",
+      "indices": [
+        [
+          0,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          13,
+          13
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/congestion_cycles_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/congestion_cycles_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/crc_errors_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/echo_payload_{}_s0",
+      "indices": [
+        [
+          0,
+          63
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/echo_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/enabled_q_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/failure_code_o_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/failure_code_o_{}_s1",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_local_boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_peer_boot_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/held_session_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/last_rtt_cycles_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/link_timeouts_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/link_timeouts_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/max_rtt_cycles_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/overflow_count_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/peer_seen_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/fault_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s0",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s1",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/guard_{}_s1",
+      "indices": [
+        [
+          1,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_ack_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_ack_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_byte_o_{}_s0",
+      "indices": [
+        [
+          0,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_low_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_second_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/rx_valid_o_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_age_{}_s1",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_data_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_held_{}_s0",
+      "indices": [
+        [
+          4,
+          7
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_req_o_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_req_o_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_second_s6",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/phy/tx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_age_{}_s0",
+      "indices": [
+        [
+          0,
+          19
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_pending_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_results_o_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_results_o_{}_s1",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_sent_at_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_token_{}_s0",
+      "indices": [
+        [
+          1,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/probe_token_{}_s2",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s0",
+      "indices": [
+        [
+          1,
+          30
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s12",
+      "indices": [
+        [
+          0,
+          0
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rejected_packets_o_{}_s6",
+      "indices": [
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_age_{}_s0",
+      "indices": [
+        [
+          0,
+          22
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_channel_o_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_crc_{}_s0",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_held_valid_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_held_valid_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_length_o_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_packet_{}_s0",
+      "indices": [
+        [
+          8,
+          407
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_packets_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_payload_o_{}_s0",
+      "indices": [
+        [
+          0,
+          255
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/rx_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/sequence_errors_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_age_{}_s0",
+      "indices": [
+        [
+          0,
+          19
+        ],
+        [
+          27,
+          27
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_crc_{}_s0",
+      "indices": [
+        [
+          0,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_ever_sent_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_ever_sent_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_index_{}_s0",
+      "indices": [
+        [
+          0,
+          5
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_packet_{}_s0",
+      "indices": [
+        [
+          8,
+          8
+        ],
+        [
+          16,
+          18
+        ],
+        [
+          24,
+          27
+        ],
+        [
+          32,
+          37
+        ],
+        [
+          48,
+          415
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_packets_o_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_sequence_{}_s1",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_task3_pair_link/transport/tx_state_{}_s0",
+      "indices": [
+        [
+          0,
+          1
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/head_valid_s5",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_hold_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_hold_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_seen_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/failure_seen_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_generation_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_rate_{}_s0",
+      "indices": [
+        [
+          10,
+          10
+        ],
+        [
+          12,
+          12
+        ],
+        [
+          15,
+          15
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/held_track_{}_s0",
+      "indices": [
+        [
+          0,
+          3
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/quiet_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_tf_audio/native/quiet_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFPE",
+      "init": "1'b1"
+    },
+    {
+      "register": "u_tf_audio/native/reader_start_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native/slot_pending_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/native_quiet_s0",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/pending_start_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/pending_start_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/quiet_wait_{}_s0",
+      "indices": [
+        [
+          0,
+          31
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/session_applied_s1",
+      "indices": null,
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/session_applied_s1",
+      "indices": null,
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/state_{}_s1",
+      "indices": [
+        [
+          0,
+          2
+        ]
+      ],
+      "pin": "CE",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    },
+    {
+      "register": "u_tf_audio/state_{}_s1",
+      "indices": [
+        [
+          1,
+          2
+        ]
+      ],
+      "pin": "D",
+      "clock": "clk_50m",
+      "primitive": "DFFCE",
+      "init": "1'b0"
+    }
+  ],
+  "primitive_endpoints": {
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/collector_m/notes_notes_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/ADB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/recording/frames_frames_0_1_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/source_m/queue_queue_0_0_s/CEA": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_endpoint/source_m/queue_queue_0_0_s/CEB": {
+      "kind": "SDPB",
+      "clock_pins": {
+        "CLKA": "clk_50m",
+        "CLKB": "clk_50m"
+      }
+    },
+    "u_task3_m_score_push_cdc/g_small_head.memory_g_small_head.memory_0_0_s/WRE": {
+      "kind": "RAM16SDP4",
+      "clock_pins": {
+        "CLK": "clk_50m"
+      }
+    },
+    "u_task3_m_score_push_cdc/g_small_head.memory_g_small_head.memory_0_1_s/WRE": {
+      "kind": "RAM16SDP4",
+      "clock_pins": {
+        "CLK": "clk_50m"
+      }
+    }
+  },
+  "top_output_endpoints": {
+    "lcd_b[0]": "lcd_b[0]",
+    "lcd_b[1]": "lcd_b[1]",
+    "lcd_r[0]": "lcd_r[0]",
+    "lcd_r[1]": "lcd_r[1]",
+    "lcd_r[2]": "lcd_r[2]",
+    "lcd_r[3]": "lcd_r[3]",
+    "lcd_r[4]": "lcd_r[4]"
+  }
+}

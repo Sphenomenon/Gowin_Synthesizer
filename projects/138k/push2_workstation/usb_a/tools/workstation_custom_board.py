@@ -204,6 +204,12 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_w_watchdog_width as watchdog_width
     from tools import workstation_w_generation_successor as generation_successor
     from tools import workstation_w_generation_match as generation_match
+    from tools import workstation_cnn_staging_retirement as cnn_retirement
+    from tools import workstation_reciprocal_div147 as reciprocal_div147
+    if reciprocal_div147.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (reciprocal_div147.TOOL, reciprocal_div147.ALTERNATE)
+    if cnn_retirement.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (cnn_retirement.TOOL,)
     for selection in (watchdog_width, generation_successor, generation_match):
         if selection.configured({} if profile is None else profile['configuration']):
             profile_dependencies += (selection.TOOL,)
@@ -213,6 +219,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     event_admission_selected = event_admission.configured({} if profile is None else profile['configuration'])
     if event_admission_selected:
         profile_dependencies += (event_admission.TOOL, event_admission.MANIFEST)
+        if profile['configuration'].get(event_admission.KEY)==event_admission.W_POLICY:
+            profile_dependencies += (event_admission.W_MANIFEST,)
+            profile_dependencies += (tx_class.BATCH_STATE_REFERENCE,)
     from tools import workstation_plot_coordinates as plot_coordinates
     plot_coordinates_selected = plot_coordinates.configured({} if profile is None else profile['configuration'])
     if plot_coordinates_selected:
@@ -220,6 +229,9 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     from tools import workstation_reader_validated_metadata as reader_validated
     if reader_validated.configured({} if profile is None else profile['configuration']):
         profile_dependencies += (reader_validated.TOOL,)
+    from tools import workstation_cache_raster as cache_raster
+    if cache_raster.configured({} if profile is None else profile['configuration']):
+        profile_dependencies += (cache_raster.TOOL, cache_raster.MANIFEST)
     from tools import workstation_reader_response_reuse as reader_reuse
     reader_reuse_selected = reader_reuse.configured({} if profile is None else profile['configuration'])
     if reader_reuse_selected:
@@ -589,6 +601,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
     watchdog_width_evidence = watchdog_width.select(stage, {} if profile is None else profile['configuration'])
     if watchdog_width_evidence is not None:
         delay_watchdog_retime = delay_watchdog.evidence(stage, profile['configuration'])
+    cnn_retirement_evidence = cnn_retirement.select(stage, {} if profile is None else profile['configuration'])
+    reciprocal_div147_evidence = reciprocal_div147.select(stage, {} if profile is None else profile['configuration'])
     generation_successor_evidence = generation_successor.select(stage, {} if profile is None else profile['configuration'])
     generation_match_evidence = generation_match.select(stage, {} if profile is None else profile['configuration'])
     if generation_match_evidence is not None:
@@ -602,6 +616,7 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         native_fault_receipt=native_fault_cofactor.evidence(stage,profile['configuration'])
     reader_reuse_evidence = reader_reuse.select(stage, profile['configuration']) if reader_reuse_selected else None
     reader_validated_evidence = reader_validated.select(stage, {} if profile is None else profile['configuration'])
+    cache_raster.select(stage, {} if profile is None else profile['configuration'])
     if reader_validated_evidence is not None:
         reader_reuse_evidence = reader_reuse.evidence(stage, profile['configuration'])
     plot_coordinates_evidence = plot_coordinates.select(stage, profile['configuration']) if plot_coordinates_selected else None
@@ -637,6 +652,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
         selected_sdc = runtime_constraints['sdc'] + runtime_constraints['runtime_cdc_sdc'] + crossings['sdc'] + input_crossings['sdc'] + runtime_constraints['bluetooth_sdc'] + panel['sdc'] + runtime_constraints['shared_sdc'] + timing_constraints(runtime_reset=True, recording_authority=ble_raw_selected) + MODEL_FLASH_SDC
     else:
         selected_sdc = clocks['sdc'] + crossings['sdc'] + input_crossings['sdc'] + FPC_AUDIO_SDC + BLUETOOTH_SDC + LCD_SDC + shared_crossings['sdc'] + timing_constraints() + MODEL_FLASH_SDC
+    selected_sdc, cache_raster_evidence = cache_raster.constraints(stage, selected_sdc,
+        {} if profile is None else profile['configuration'])
     if resource_optimization:
         selected_sdc += storage_constraints()
     if classic_selected:
@@ -887,6 +904,8 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['raw_generation_successor'] = generation_successor_evidence
         if generation_match_evidence is not None:
             metadata['raw_generation_match'] = generation_match_evidence
+        if cnn_retirement_evidence is not None:
+            metadata['cnn_staging_retirement'] = cnn_retirement_evidence
         if cancel_fanout_evidence is not None:
             metadata['cancel_fanout'] = cancel_fanout_evidence
         if plot_coordinates_evidence is not None:
@@ -895,6 +914,10 @@ def prepare(root, netlist_directory, output, riscv_prefix=None, allow_high_speed
             metadata['display_reader_response_reuse'] = reader_reuse_evidence
         if reader_validated_evidence is not None:
             metadata['display_reader_validated_metadata'] = reader_validated_evidence
+        if reciprocal_div147_evidence is not None:
+            metadata['runtime_reciprocal_div147'] = reciprocal_div147_evidence
+        if cache_raster_evidence is not None:
+            metadata['display_cache_raster'] = cache_raster_evidence
         metadata['task3_paired_sdc']=task3_paired_sdc
         metadata['task3_paired_cst']=task3_paired_cst
         metadata['lcd_behavior']=paired_board.LCD_BEHAVIOR

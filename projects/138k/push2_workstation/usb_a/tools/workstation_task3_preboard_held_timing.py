@@ -56,7 +56,7 @@ def placement(cst, proof):
         payload_hold_checks_retained=True,clocks_changed=False,routed_timing_verified=False)
 
 
-def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False,generation_match=False):
+def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=False,pack_cofactor=False,native_fault_cofactor=False,identity_bytes=False,fetch_range=False,fetch_end_capture=False,registered_tx_class=False,fifo_compare_first=False,arithmetic_repair=False,generation_match=False,cancel_ready_cofactor=False,combined_admission=False,cnn_retirement=False):
     """Bound B7's tag-to-client round trips and separate observed short data.
 
     The actual failed path had 13.235ns of wire across R13..96/C26..167.
@@ -130,10 +130,33 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     # owners. Keep this exact mapping separate from every retained recipe.
     require(not fifo_compare_first or registered_tx_class,'FIFO-first layout requires registered W TX class')
     require(not arithmetic_repair or fifo_compare_first,'W arithmetic layout requires FIFO-first composition')
+    require(not cancel_ready_cofactor or generation_match, 'CANCEL ready layout requires reviewed generation composition')
     # Actual v85b synthesis: +32 successor FFs and eleven fewer watchdog FFs.
     # Keep older recipes exact; this selection changes no physical regions.
     # v91 adds two capture FFs and two LUT3s, removes two old comparator ALUs.
     counts=(2669,4993,1761) if generation_match else (2669,4991,1761) if arithmetic_repair else (2669,4944,1791) if fifo_compare_first else (2669,4957,1788) if registered_tx_class else (2674,4979,1780) if fetch_end_capture else (2674,4946,1780) if fetch_range else (2674,4920,1780) if identity_bytes else (2669,4888,1790) if native_fault_cofactor else tuple_counts if tuple_cofactor else(2673,4724,1778)if terminal else(2673,4700,1771)if publication else(2672,4685,1773)
+    if cancel_ready_cofactor:
+        # v95b removes15 raw-store and2 DMA combinational cells through
+        # shared-fault factoring. Both owners retain every state bit and the
+        # same compiler source. Held/capture and tag causal proofs still run.
+        counts=(2669,4978,1759)
+        from collections import Counter
+        for prefix,expected in (
+            ('u_task3_media/raw_store/', {'DFFCE':2233,'DFFPE':9}),
+            ('u_managed/runtime/delay_dma/', {'DFFCE':800,'DFFPE':3})):
+            require(dict(Counter(c['kind'] for p,c in n.cells.items()
+                if p.startswith(prefix) and c['kind'].startswith('DFF')))==expected,
+                'CANCEL ready mapping state inventory changed '+prefix)
+    require(not combined_admission or cancel_ready_cofactor,'W admission layout requires CANCEL composition')
+    if combined_admission:counts=(2674,5029,1758)
+    if cnn_retirement:
+        require(combined_admission, 'CNN retirement layout requires combined admission')
+        from tools.workstation_cnn_staging_retirement import audit as audit_retirement
+        audit_retirement(n)
+        # v109 retirement rebuild refactors shared fault logic: raw-store
+        # loses30 combinational cells and DMA gains1. The checked state
+        # inventories above and every causal/held proof remain unchanged.
+        counts=(2674,4999,1759)
     for prefix,count in zip(['u_task3_media/memory/u_arbiter/',
                              'u_task3_media/raw_store/',
                              'u_managed/runtime/delay_dma/'],counts):
@@ -177,7 +200,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
     cone=forward&backward
     # The selected rebuild absorbs two DMA n6315 LUTs and renames one slot
     # LUT. The same 128 tag Qs and 257 return FFs bound the actual causal cone.
-    cone_count=75 if registered_tx_class else 76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76
+    cone_count=76 if combined_admission else 75 if registered_tx_class else 76 if identity_bytes else 75 if pack_cofactor else 74 if publication else 76
     require(len(cone)==cone_count and {n.cells[p]['kind']for p in cone}==
             {'LUT2','LUT3','LUT4','MUX2_LUT5','MUX2_LUT6'},'W tag-return causal cone changed')
     excluded=[];status_hold=[];local_controls=[]
@@ -185,7 +208,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         # V17 routed this shared watchdog gate from C135 to C55 and back,
         # adding 6.318ns of wire. Keep its causal membership in the proof,
         # but allow the placer to serve its watchdog consumer locally.
-        shared='u_managed/runtime/delay_dma/'+('n387_s3' if arithmetic_repair else 'n420_s3' if fifo_compare_first or (identity_bytes and not registered_tx_class) else 'n420_s2')
+        shared='u_managed/runtime/delay_dma/'+('n387_s2' if cancel_ready_cofactor else 'n387_s3' if arithmetic_repair else 'n420_s3' if fifo_compare_first or (identity_bytes and not registered_tx_class) else 'n420_s2')
         require(shared in cone and n.cells[shared]['kind']=='LUT4' and
                 n.cells[shared]['parameters']=={'INIT':"16'h0700"},
                 'W diagnosed shared watchdog gate changed')
@@ -216,7 +239,7 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         require(row['register'] not in selected and row['register'] in reviewed,
                 'W status separation inventory changed')
         selected[row['register']]=row['region']
-    require(len(selected)==(787 if generation_match else 785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
+    require(len(selected)==(788 if combined_admission else 787 if generation_match else 785 if registered_tx_class else 786 if fetch_end_capture else 753 if identity_bytes else 741 if native_fault_cofactor else 740 if pack_cofactor else 739 if publication else 741),'W targeted placement inventory changed')
     regions=sorted(set(selected.values()));lines=[];placement_groups=[]
     for i,region in enumerate(regions):
         name=f'task3_w_native_{i}'
@@ -230,7 +253,8 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         placement_groups.append(dict(name=name,region=region,primitive_count=len(members)))
     added=('\n# W B7 tag/native-client locality; all timing retained\n'+'\n'.join(lines)+'\n').encode()
     result=cst+added
-    return result,dict(policy=('task3_W_generation_match_capture_locality_v11'if generation_match
+    return result,dict(policy=('task3_W_combined_admission_capture_locality_v12'if combined_admission
+                              else'task3_W_generation_match_capture_locality_v11'if generation_match
                               else'task3_W_registered_tx_captured_end_locality_v10'if registered_tx_class
                               else'task3_W_captured_end_and_key_bytes_locality_v9'if fetch_end_capture
                               else'task3_W_key_bytes_ready_publishers_and_status_locality_v8'if identity_bytes
@@ -245,6 +269,8 @@ def w_native_placement(cst,n,*,publication=False,terminal=False,tuple_cofactor=F
         **(dict(registered_tx_class_layout=True) if registered_tx_class else {}),
         **(dict(arithmetic_repair_layout=True) if arithmetic_repair else {}),
         **(dict(generation_match_layout=True) if generation_match else {}),
+        **(dict(cancel_ready_cofactor_layout=True) if cancel_ready_cofactor else {}),
+        **(dict(combined_admission_layout=True) if combined_admission else {}),
         native_fault_cofactor_layout=native_fault_cofactor,
         causal_cells_excluded_from_placement_only=excluded,
         ready_path_register_publishers=local_controls,

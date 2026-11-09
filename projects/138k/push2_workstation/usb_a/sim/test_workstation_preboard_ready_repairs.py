@@ -45,23 +45,27 @@ class ActualReadyRepairs(unittest.TestCase):
         metadata=json.loads((stage.parents[1]/'integration_inputs.json').read_text())
         arithmetic=arithmetic_layout(metadata)
         matches=bool(metadata.get('raw_generation_match'))
+        cancel_ready=bool(metadata.get('w_tx_class',{}).get('record_cancel_ready'))
+        combined=metadata.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1'
+        retirement=bool(metadata.get('cnn_staging_retirement'))
         cst=(stage/'constraints/custom_138k.cst').read_bytes()
         options=dict(publication=True,terminal=True,tuple_cofactor=True,
             pack_cofactor=True,native_fault_cofactor=True,identity_bytes=True,
-            fetch_range=True,fetch_end_capture=True,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic,generation_match=matches)
+            fetch_range=True,fetch_end_capture=True,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic,generation_match=matches,cancel_ready_cofactor=cancel_ready,combined_admission=combined,cnn_retirement=retirement)
         bounded,receipt=w_native_placement(cst,n,**options)
-        self.assertEqual(receipt['primitive_count'],787 if matches else 785)
-        self.assertEqual(len(receipt['tag_return_cone']['combinational_cells']),75)
-        result,proof=placement(bounded,n,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic)
-        self.assertEqual(proof['selected_count'],2211 if arithmetic else 2241 if first else 2240)
-        self.assertEqual(reconstruct(bounded,n,proof,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic),result)
+        self.assertEqual(receipt['primitive_count'],788 if combined else 787 if matches else 785)
+        self.assertEqual(len(receipt['tag_return_cone']['combinational_cells']),76 if combined else 75)
+        delay_options=dict(registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic,cancel_ready_cofactor=cancel_ready,combined_admission=combined,cnn_retirement=retirement)
+        result,proof=placement(bounded,n,**delay_options)
+        self.assertEqual(proof['selected_count'],2211 if retirement else 2210 if combined else 2212 if cancel_ready else 2211 if arithmetic else 2241 if first else 2240)
+        self.assertEqual(reconstruct(bounded,n,proof,**delay_options),result)
         with self.assertRaises(ValueError):placement(bounded,n)
         with self.assertRaises(ValueError):reconstruct(bounded,n,proof)
-        with self.assertRaises(ValueError):placement(result,n,registered_tx_class=True,fifo_compare_first=first,arithmetic_repair=arithmetic)
+        with self.assertRaises(ValueError):placement(result,n,**delay_options)
         with self.assertRaises(ValueError):arithmetic_layout({'w_watchdog_width':{'policy':'task3_W_bounded_saturating_wait_counter_v1'}})
         if arithmetic:
             with self.assertRaises(ValueError):w_native_placement(cst,n,**dict(options,arithmetic_repair=False))
-        path='u_managed/runtime/delay_dma/'+('n387_s3' if arithmetic else 'n420_s3' if first else 'n420_s2');old=deepcopy(n.cells[path])
+        path='u_managed/runtime/delay_dma/'+('n387_s2' if cancel_ready else 'n387_s3' if arithmetic else 'n420_s3' if first else 'n420_s2');old=deepcopy(n.cells[path])
         try:
             n.cells[path]['parameters']['INIT']="16'hFFFF"
             with self.assertRaises(ValueError):w_native_placement(cst,n,**options)
@@ -111,19 +115,25 @@ class ActualReadyRepairs(unittest.TestCase):
         first=configured(json.loads((stage.parents[1]/'workstation_profile.json').read_text())['configuration'])
         from tools.workstation_w_generation_successor import configured as successor_configured
         config=json.loads((stage.parents[1]/'workstation_profile.json').read_text())['configuration']
-        active=n.canonical(endpoint,'n10383_29' if successor_configured(config) else
-                           'n10383_7' if first else 'n12043_16');active_cell=g.drivers[active][0][0]
+        # Mutate the exact guard proved by the audit, including synthesis
+        # relocation after private sample/event admission factoring.
+        proof=next(row for row in result['local_equations'] if row.get('contract')==
+                   'registered TX class actual full-state batch qualification')
+        active=proof['actual_qualification_net'];active_cell=g.drivers[active][0][0]
         flight=g.register(window,'flight',0);flight_cell=g.drivers[n.pin(flight,'D')][0][0]
         active_zero=f"{1<<int(n.cells[active_cell]['kind'][3:])}'h0"
         cases=[(active_cell,'parameters','INIT',active_zero),
                (flight_cell,'parameters','INIT',"16'hFFFF"),
                (flight,'ports','CLEAR',"1'b0")]
+        if config.get('event_admission_policy')=='task3_W_combined_sample_event_admission_v1':
+            state=g.register(endpoint+'/g_phone_batch.batch_w','state',0)
+            cases.append((state,'ports','D',"1'b0"))
         for path,part,key,value in cases:
             old=deepcopy(n.cells[path]);n.cells[path][part][key]=value
             try:
                 with self.subTest(path=path),self.assertRaises(ValueError):audit(n,stage=stage)
             finally:n.cells[path]=old
-        print('W complete actual batch/window proof and three broken guard/flight/reset controls rejected')
+        print('W complete actual batch/window proof and broken guard/flight/reset/state controls rejected')
         self.assertEqual(hashlib.sha256(vg.read_bytes()).hexdigest(),before)
 
 

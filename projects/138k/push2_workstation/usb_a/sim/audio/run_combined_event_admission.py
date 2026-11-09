@@ -27,16 +27,24 @@ def one(text, pattern):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--role', choices=('M','W'), default='M', help='Exact role-specific native queue policy')
     ap.add_argument('--project', type=Path, required=True)
     ap.add_argument('--output', type=Path, required=True)
     args = ap.parse_args()
     out, project = args.output.resolve(), args.project.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    parents = {s: admission.parent_source(ROOT,s) for s in admission.manifest()['sources']}
-    selected = {s: admission.adapt(s, t) for s, t in parents.items()}
+    role=args.role
+    policy=admission.W_POLICY if role=='W' else admission.POLICY
+    manifest=admission.manifest(role)
+    parents = {s: admission.parent_source(ROOT,s,role) for s in manifest['sources']}
+    selected = {s: admission.adapt(s, t,role) for s, t in parents.items()}
+    assert admission.configured({admission.KEY:policy,'demo_role':role})
+    queue_default='parameter bit INNER_EVENT_QUEUE_ENABLE='+('0' if role=='W' else '1')
+    assert queue_default in parents['rtl/audio/gw138k_event_workstation.sv']
+    assert queue_default in selected['rtl/audio/gw138k_event_workstation.sv']
     assert all(admission.restore(s, t) == parents[s] for s, t in selected.items())
     assert not admission.configured({})
-    for bad in ({admission.KEY: 'unknown'}, {admission.KEY: admission.POLICY, 'demo_role': 'W'}):
+    for bad in ({admission.KEY: 'unknown'}, {admission.KEY: policy, 'demo_role': 'M' if role=='W' else 'W'}, {admission.KEY:admission.W_POLICY,'demo_role':'W','inner_event_queue_policy':'task3_M_two_slot_inner_event_queue_v1'}):
         try:
             admission.configured(bad)
         except ValueError:
@@ -45,7 +53,7 @@ def main():
             raise AssertionError('invalid role/policy accepted')
     for s, t in parents.items():
         try:
-            admission.adapt(s, t + '\n')
+            admission.adapt(s, t + '\n',role)
         except ValueError:
             pass
         else:
@@ -102,7 +110,7 @@ endmodule
     tb = tb_path.read_text().replace('wire w_done,legacy_done;', 'wire w_done,m_done,legacy_done;')
     anchor = '  event_config_service_case #(.NATIVE(0),.D_ONLY(0)) legacy_case(legacy_done);'
     assert tb.count(anchor) == 1
-    tb = tb.replace(anchor, '  event_config_service_case #(.NATIVE(1),.D_ONLY(0)) master_case(m_done);\n'+anchor)
+    tb = tb.replace(anchor, '  event_config_service_case #(.NATIVE(1),.D_ONLY(0)) full_engine_case(m_done);\n'+anchor)
     tb = tb.replace('wait(w_done && legacy_done)', 'wait(w_done && m_done && legacy_done)')
     (out/'tb.sv').write_text(tb)
     (out/'miter.sv').write_text(wrapper(new_service))
@@ -114,11 +122,11 @@ endmodule
     sources += [out/(Path(s).stem+'_before_event_config.sv') for s in parents]
     sources += [out/'miter.sv', out/'memory.sv']
     inputs = list(dict.fromkeys(sources + [ROOT/s for s in parents] +
-                 [ROOT/admission.TOOL, ROOT/admission.MANIFEST, Path(__file__).resolve(),
+                 [ROOT/admission.TOOL, ROOT/admission.MANIFEST, ROOT/admission.W_MANIFEST, Path(__file__).resolve(),
                   tb_path, memory_path, ROOT/'sim/audio/run_event_config_contract.py',
                   ROOT/'sim/audio/run_runtime_controlled.py']))
     hashes = {str(p): sha(p) for p in inputs}
-    result = dict(passed=False, input_sha256=hashes, physical_timing_verified=False,
+    result = dict(passed=False, role=role, policy=policy, inner_event_queue_enabled=role=="M", input_sha256=hashes, physical_timing_verified=False,
                   hardware_tested=False, commands={})
 
     def run(name, command, timeout=120):

@@ -21,18 +21,17 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def run(out):
+def run(out, registered_staging_retirement=False):
     out.mkdir(parents=True, exist_ok=False)
     header = out / 'include/src/memory/ddr_address_map.vh'
     header.parent.mkdir(parents=True)
     header.write_bytes((ROOT / 'rtl/ddr_address_map.vh').read_bytes())
     link = SRC / 'basic_pitch_workstation_link.sv'
-    anchor = '.WIN_LEN(43844),.FRAME_LIMIT(172),.OCTAVE_LIMIT(9)'
-    text = link.read_text()
-    if text.count(anchor) != 1:
-        raise ValueError('production link dimension anchor drift')
-    copy = out / link.name
-    copy.write_text(text.replace(anchor, '.WIN_LEN(2048),.FRAME_LIMIT(2),.OCTAVE_LIMIT(9)'))
+    # Exercise the native parameter chain instead of rewriting the CNN link.
+    text=link.read_text()
+    if '.WIN_LEN(WIN_LEN)' not in text or '.FRAME_LIMIT(FRAME_LIMIT)' not in text:
+        raise ValueError('native CNN dimension parameter chain drift')
+    copy=link
     image, manifest = build_image(load_words(SRC / 'weights/cnn_ddr_blob.mem'))
     if manifest['payload_crc32'] != 'AF01A61B' or manifest['word_count'] != 52239:
         raise ValueError('actual model identity changed')
@@ -49,17 +48,27 @@ def run(out):
                 'workstation_media_memory.sv']]
     sources += [SRC / 'basic_pitch_ddr_client_queues.sv', SRC / 'basic_pitch_ddr_arbiter_pipeline.sv',
                 ROOT.parent / 'touchboard_test/rtl/uart_tx.v', ROOT / 'sim/music/tb_workstation_cnn_task.sv']
-    inputs = [*sources, link, ROOT / 'rtl/ddr_address_map.vh', ROOT / 'rtl/ddr_address_map_guard.v',
+    extra_inputs=[]
+    if registered_staging_retirement:
+        from tools import workstation_cnn_staging_retirement as retirement
+        task=ROOT/retirement.SOURCE
+        adapted=out/task.name
+        adapted.write_text(retirement.adapt(task.read_text()))
+        sources=[adapted if source==task else source for source in sources]
+        sources.append(ROOT/retirement.HELPER)
+        extra_inputs=[task,ROOT/retirement.TOOL]
+    inputs = [*extra_inputs, *sources, link, ROOT / 'rtl/ddr_address_map.vh', ROOT / 'rtl/ddr_address_map_guard.v',
               SRC / 'weights/cnn_ddr_blob.mem', Path(__file__).resolve()]
     hashes = {str(p): sha(p) for p in inputs}
     result = dict(schema=1, passed=False, stage='unselected_actual_w_cnn_task_component',
                   source_sha256=hashes, production_link_sha256=sha(link), simulation_link_sha256=sha(copy),
                   simulation_dimensions=dict(WIN_LEN=2048, FRAME_LIMIT=2, input_clip_frames=4096),
                   production_dimensions=dict(WIN_LEN=43844, FRAME_LIMIT=172, capacity_frames=96000),
-                  simulation_overlay='one exact dimension anchor in a copy; model/loader unchanged',
+                  simulation_overlay='none; native service dimension parameters in the component testbench',
                   model_loader='actual full real-model read-only SPI BPF1 payload CRC and actual DDR readback CRC; no model preload or forced loader DONE',
                   model_manifest=manifest, model_image_sha256=hashlib.sha256(image).hexdigest(),
                   native_memory='actual media BIST/owner5 broker/owner6/owner8 queues with independent native stalls and delayed reads; behavioral DDR',
+                  registered_staging_retirement=registered_staging_retirement,
                   production_profile_selected=False, bitstream_identity=None, hardware_tested=False,
                   sram_programmed=False, flash_written=False)
     begun = time.monotonic()
@@ -103,4 +112,6 @@ def run(out):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    run(parser.parse_args().output.resolve())
+    parser.add_argument('--registered-staging-retirement', action='store_true')
+    args=parser.parse_args()
+    run(args.output.resolve(), args.registered_staging_retirement)

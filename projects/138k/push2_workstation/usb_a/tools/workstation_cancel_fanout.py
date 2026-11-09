@@ -82,9 +82,24 @@ def audit(n, configuration=None):
     """
     from tools.workstation_runtime_pcm_cdc import Graph
     from tools.workstation_reader_validated_metadata import configured as compact_selected
+    from tools.workstation_reciprocal_div147 import configured as reciprocal_selected
     compact = compact_selected({} if configuration is None else configuration)
-    count = 11 if compact else 12
+    reciprocal = reciprocal_selected({} if configuration is None else configuration)
     g = Graph(n)
+    reader = 'u_video/u_runtime_display/reader/'
+    validations = {p for p in g.regs if p.startswith(reader) and
+                   p.rsplit('/', 1)[-1].startswith(('meta_low_ok_q_', 'meta_high_ok_q_'))}
+    prevalidated = bool(validations)
+    if prevalidated:
+        require(compact and len(validations) == 2 and
+                all(any(p.startswith(reader + stem + '_s') for p in validations)
+                    for stem in ('meta_low_ok_q', 'meta_high_ok_q')),
+                'metadata validation mapping changed')
+    # The two reviewed storage mappings pack cancellation consumers differently.
+    # Both retain the exact same-edge tuple and the per-replica fanout bound.
+    # v116 retires the restoring divider's private valid/flush consumers.
+    # The exact11 remaining replicas retain the same tuple and <=128 fanout.
+    count = 11 if reciprocal or (compact and not prevalidated) else 12
     scope = 'u_managed/runtime/service/workstation'
     stem = scope + '/native_cancel_delivery.pending_clear'
     expected = {stem + '_s' + str(i) for i in range(1, count + 1)}
@@ -111,6 +126,8 @@ def audit(n, configuration=None):
     return dict(policy=POLICY, replicas=replicas, identical_input_tuple=pins,
                 init=0, equality_induction=True, added_registers=count - 1,
                 compact_metadata_mapping=compact,
+                prevalidated_metadata_mapping=prevalidated,
+                reciprocal_divider_mapping=reciprocal,
                 added_cycles=0, max_fanout=max(r['fanout'] for r in replicas),
                 whole_netlist_equivalence_proven=False,
                 physical_timing_verified=False, hardware_tested=False)

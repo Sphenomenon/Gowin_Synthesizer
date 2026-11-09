@@ -15,7 +15,10 @@ module feedback_renderer #(
     // Shared snapshots can render analysis without instantiating a local FFT.
     // Inherit the historical selection unless a composition opts in explicitly.
     parameter integer RENDER_ANALYSIS = ENABLE_ANALYSIS,
-    parameter integer HMI_D_ONLY = 0
+    parameter integer HMI_D_ONLY = 0,
+    // The composition owns admission and an immutable shared-cache lease.
+    // No local snapshot contributes pixels or metadata in this selection.
+    parameter integer SHARED_CACHE_ONLY = 0
 ) (
     input wire clk,
     input wire rst_n,
@@ -138,7 +141,8 @@ module feedback_renderer #(
         assign image_gain=0; assign analysis_sequence=0; assign analysis_skipped=0;
         assign spectrum_left=0; assign spectrum_right=0; assign image_hit=0;
     end endgenerate
-    assign frame_ready = snapshot_ready && aligned_ready && !busy;
+    assign frame_ready = (SHARED_CACHE_ONLY && SHARED_RENDER && !SHARED_EXPORT && !ENABLE_ANALYSIS
+        ? 1'b1 : snapshot_ready && aligned_ready) && !busy;
     feedback_capture #(.INPUT_REGISTERED(1),.CAPTURE_SAMPLES(512),.TRIGGER_TIMEOUT_SAMPLES(8192),.SMOOTH_TRIGGER(1)) u_capture (
         .source_clk(source_clk), .source_reset_n(source_reset_n),
         .sample_data(sample_data), .sample_valid(sample_valid),

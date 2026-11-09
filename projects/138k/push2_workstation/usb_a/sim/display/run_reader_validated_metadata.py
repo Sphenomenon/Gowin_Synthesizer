@@ -63,6 +63,26 @@ for top,tb in [('tb_display_data_reader',inputs[3]),('tb_display_metadata_v11',i
  with (out/(top+'-compile.log')).open('w')as log:subprocess.run(['iverilog','-g2012','-I'+str(out),'-I'+str(u),'-s',top,'-o',str(binary),*map(str,sources)],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=60)
  with (out/(top+'-run.log')).open('w')as log:subprocess.run(['vvp',str(binary)],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=180)
  log=(out/(top+'-run.log')).read_text();assert 'PASS reader validated metadata: all23 outputs equal at 'in log;cases.append(dict(top=top,log_sha256=sha(out/(top+'-run.log')),output=log))
+negative_controls=[]
+for name,anchor in [('low','meta_low_ok_q<=rsp_q[255:224]=='),
+                    ('high','meta_high_ok_q<=meta_low_ok_q &&')]:
+    require_anchor=candidate.count(anchor)==1
+    assert require_anchor,'metadata validation mutation anchor changed'
+    mutated=candidate.replace(anchor,anchor.split('<=')[0]+"<=1'b1 || "+anchor.split('<=')[1],1)
+    path=out/('mutant-'+name+'.v')
+    path.write_text(re.sub(r'\bdisplay_data_reader\b','candidate_display_data_reader',mutated))
+    top='tb_display_metadata_v11';binary=out/('mutant-'+name+'.vvp')
+    sources=[inputs[1],inputs[2],out/'reference.v',path,out/'twins.sv',inputs[4]]
+    with (out/('mutant-'+name+'-compile.log')).open('w')as log:
+        subprocess.run(['iverilog','-g2012','-I'+str(out),'-I'+str(u),'-s',top,
+                        '-o',str(binary),*map(str,sources)],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=60)
+    with (out/('mutant-'+name+'-run.log')).open('w')as log:
+        result=subprocess.run(['vvp',str(binary)],stdout=log,stderr=subprocess.STDOUT,timeout=180)
+    text=(out/('mutant-'+name+'-run.log')).read_text()
+    assert result.returncode!=0 and 'reader public output' in text,(name,text)
+    negative_controls.append(dict(name=name,rejected=True,
+        run_log_sha256=sha(out/('mutant-'+name+'-run.log'))))
 assert all(sha(p)==h for p,h in hashes.items())
 r=dict(passed=True,production_changed=False,profile_selected='explicit_M_preboard_only',synthesis=False,board_accessed=False,source_sha256=hashes,cases=cases,adaptation_manifest_sha256=sha(u/reuse.MANIFEST),scope='Actual legacy/minor1 reader twins: all23 public outputs at identical edges, accepted header equality, corrupt/overwritten metadata, retry and last-good cache. No routed benefit is inferred.')
-(out/'verification.json').write_text(json.dumps(r,indent=2)+'\n');print('PASS reader validated metadata',[(v['top'],v['output'].splitlines()[-1])for v in cases])
+r['negative_controls']=negative_controls
+(out/'verification.json').write_text(json.dumps(r,indent=2)+'\n');print('PASS reader validated metadata',[(v['top'],v['output'].splitlines()[-1])for v in cases],negative_controls)

@@ -71,11 +71,13 @@ for v,circuit in zip(('old','new'),parsed):
   assert init=="1'b0" and circuit.n.cells[path]['kind']=='DFFCE' and circuit.n.pin(path,'CLEAR')not in circuit.g.high|circuit.g.low
   proof=sat_compare(e,root,0,evidence_dir=out,label=str(v)+':invariant:'+name)
   invariants.append(dict(version=v,state=name,base_INIT_zero=True,async_CLEAR_zero=True,assumed_high_bits_zero=sorted(high_names&set(circuit.state)),**proof))
-for old,new in aliases.items():
- circuit=parsed[0];a,ai,ac=circuit.next_q(circuit.state[old]);b,bi,bc=circuit.next_q(circuit.state[new]);assert ai==bi=="1'b0" and ac==bc
- assert circuit.n.pin(circuit.state[old],'CLEAR')==circuit.n.pin(circuit.state[new],'CLEAR')
- proof=sat_compare(e,a,b,evidence_dir=out,label='merge:'+old)
- invariants.append(dict(old_state=old,new_state=new,base_INIT_equal=True,asynchronous_CLEAR_equal=True,**proof))
+for version,circuit in zip(('old','new'),parsed):
+ for old,new in aliases.items():
+  if old not in circuit.state:continue
+  a,ai,ac=circuit.next_q(circuit.state[old]);b,bi,bc=circuit.next_q(circuit.state[new]);assert ai==bi=="1'b0" and ac==bc
+  assert circuit.n.pin(circuit.state[old],'CLEAR')==circuit.n.pin(circuit.state[new],'CLEAR')
+  proof=sat_compare(e,a,b,evidence_dir=out,label=version+':merge:'+old)
+  invariants.append(dict(version=version,old_state=old,new_state=new,base_INIT_equal=True,asynchronous_CLEAR_equal=True,**proof))
 # The merged source indices must still address the same actual SDPB bits.
 address_proofs=[];memory='u_task3_m_endpoint/source_m/queue_queue_0_0_s'
 assert ns[0].cells[memory]['parameters']==ns[1].cells[memory]['parameters']
@@ -91,7 +93,7 @@ for pin in ('ADA','ADB'):
 # Reject a nonzero initialization and a high-bit transition to one. The
 # mutation lives only in parsed dictionaries and is restored immediately.
 negative_controls=[]
-circuit=parsed[0];path=circuit.state['u_tf_audio/quiet_wait_26']
+circuit=parsed[0];available=sorted(high_names & set(circuit.state));print('zero invariant negative-control candidates',available,flush=True);path=circuit.state[available[0]]
 for section,key,bad in [('parameters','INIT',"1'b1"),('ports','D',"1'b1")]:
  cell=circuit.n.cells[path];original=cell[section].get(key)
  try:
@@ -108,11 +110,14 @@ for section,key,bad in [('parameters','INIT',"1'b1"),('ports','D',"1'b1")]:
 print('MAPPED INDUCTIVE INVARIANTS',len(invariants),flush=True)
 (args.output/'inductive-invariants.json').write_text(json.dumps(dict(passed=True,invariants=invariants),indent=2)+'\n')
 for stem in changed:
- if stem not in parsed[1].state:
+ if any(stem not in circuit.state for circuit in parsed):
   assert stem in high_names or stem in aliases
-  a,ai,ac=parsed[0].next_q(parsed[0].state[stem]);assert ai=="1'b0"
-  b=0 if stem in high_names else parsed[1].next_q(parsed[1].state[aliases[stem]])[0]
-  r=dict(register=stem,conditional_next_Q_equal=True,removed_state_correspondence='inductive_zero'if stem in high_names else aliases[stem],**sat_compare(e,a,b,evidence_dir=out,label=stem))
+  values=[]
+  for circuit in parsed:
+   if stem in circuit.state:
+    root,init,clock=circuit.next_q(circuit.state[stem]);assert init=="1'b0";values.append(root)
+   else:values.append(0 if stem in high_names else circuit.next_q(circuit.state[aliases[stem]])[0])
+  r=dict(register=stem,conditional_next_Q_equal=True,absent_state_correspondence='inductive_zero'if stem in high_names else aliases[stem],**sat_compare(e,*values,evidence_dir=out,label=stem))
  else:r=compare(*parsed,stem,sat_fallback=True,evidence_dir=out)
  rows.append(dict(logical_state=stem,**r));print(stem,'PASS',r,flush=True)
 result=dict(passed=True,SDPB_address_bit_equivalence=address_proofs,negative_controls=negative_controls,inductive_invariants=invariants,high_state_zero=sorted(high_names),merged_state_aliases=aliases,affected_logical_states=len(rows),rows=rows,netlist_sha256={p:h for p,h in identities.items()if p.endswith('.vg')},input_sha256=identities,inputs_unchanged=all(sha(Path(p))==h for p,h in identities.items()),affected_consumers_single_clk50_domain=True,conditional_named_state_correspondence=True,conditional_memory_output_correspondence=True,memory_cells={p:ns[0].cells[p]for p in ram_paths},memory_primitive_ports_and_parameters_identical=True,memory_state_induction_proven=False,whole_design_induction=False)

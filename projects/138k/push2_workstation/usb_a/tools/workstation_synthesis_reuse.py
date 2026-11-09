@@ -28,6 +28,13 @@ def reuse(source,destination,*,audit_tool_only=False):
     # These new lineage receipts are Python/JSON review inputs only. Their
     # addition cannot admit a changed compiler listing, HDL, memory or script.
     added_review_inputs={'tools/workstation_ble_terminal_tuple.py',
+        # Reviewed v104 cache-raster destination pin inventory. It is JSON
+        # audit evidence; enabled HDL, memories and project order stay exact.
+        'tools/task3_m_preboard_cpu_destination_inventory_v16.json',
+        # v116 clk50 packing:150 next-Q equations,23 invariants and
+        #28 SDPB address bits were independently proved unchanged.
+        'tools/task3_m_preboard_cpu_destination_inventory_v17.json',
+        'tools/task3_w_batch_state_reference_v98.json',
         'tools/workstation_ble_pack_cofactor.py',
         'rtl/memory/workstation_ble_pack_cofactor_v1.adaptation.json',
         'tools/workstation_phone_ack_compare.py',
@@ -47,7 +54,13 @@ def reuse(source,destination,*,audit_tool_only=False):
         # These proof tools are staged for source review, not loaded by
         # Gowin. Keep default reuse strict; explicitly bind their old/new hashes
         # only after every project, script, HDL/include, memory and IP matches.
-        reviewed=added_review_inputs|{'tools/workstation_ble_terminal_cofactor.py',
+        reviewed=added_review_inputs|{
+                  # Rebind the same retirement state equations after Gowin
+                  # moves broker/FIFO logic through its module boundary.
+                  'tools/workstation_cnn_staging_retirement.py',
+                  # Role-specific W admission selection leaves M compiler bytes exact.
+                  'tools/workstation_event_admission.py',
+                  'tools/workstation_ble_terminal_cofactor.py',
                   'tools/workstation_w_context_compare.py',
                   'tools/workstation_task3_receipt_audit.py',
                   # Reviewed mapped/startup proof updates after v35. These

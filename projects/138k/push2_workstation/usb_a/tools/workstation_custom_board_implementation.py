@@ -295,7 +295,10 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
                 registered_tx_class=metadata.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
                 fifo_compare_first=metadata.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1',
                 arithmetic_repair=arithmetic_layout(metadata),
-                generation_match=bool(metadata.get('raw_generation_match')))
+                generation_match=bool(metadata.get('raw_generation_match')),
+                cancel_ready_cofactor=bool(metadata.get('w_tx_class',{}).get('record_cancel_ready')),
+                combined_admission=metadata.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
+                cnn_retirement=bool(metadata.get('cnn_staging_retirement')))
     if ddr_reference is not None:
         if not preboard_releases or not primary_clk50:
             raise ValueError('preboard DDR timing requires proved paired releases and primary clock placement')
@@ -315,10 +318,11 @@ def preboard_constraint_selection(stage,metadata,audit,cst,base_sdc,netlist_text
 
 def prepare_reference(source, output, user_code, reference_cst, reference_sha256, excluded_ports=(),
                       place_option=2, route_option=0, task3_pins=False, preboard_releases=False,
-                      primary_clk50=False, preboard_ddr_reference=None, w_delay_locality=False):
+                      primary_clk50=False, preboard_ddr_reference=None, w_delay_locality=False,
+                      replicate_resources=False):
     """Offline experiment using a hash-pinned reference; never board validation."""
     source, output, reference_cst = map(lambda p: Path(p).resolve(), (source, output, reference_cst))
-    script = implementation_script(user_code, place_option, route_option)
+    script = implementation_script(user_code, place_option, route_option, replicate_resources)
     if output.exists() or source in output.parents:
         raise ValueError('physical output must be new and outside its parent candidate')
     if not re.fullmatch('[0-9a-f]{64}', reference_sha256) or sha(reference_cst) != reference_sha256:
@@ -365,7 +369,10 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         cst,locality=placement(cst,protocol_netlist(vg.read_text(),mapping='synthesis'),
             registered_tx_class=metadata.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1',
                 fifo_compare_first=metadata.get('fifo_full_compare',{}).get('policy')=='task3_W_large_FIFO_compare_before_write_select_v1',
-                arithmetic_repair=arithmetic_layout(metadata))
+                arithmetic_repair=arithmetic_layout(metadata),
+                cancel_ready_cofactor=bool(metadata.get('w_tx_class',{}).get('record_cancel_ready')),
+                combined_admission=metadata.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
+                cnn_retirement=bool(metadata.get('cnn_staging_retirement')))
         locality.update(source_candidate=audit['candidate_identity'],VG_sha256=sha(vg),
             SDC_sha256=digest(physical_sdc if physical_sdc is not None else inputs['physical.sdc'][0].read_bytes()))
     output.mkdir(parents=True)
@@ -397,7 +404,7 @@ def prepare_reference(source, output, user_code, reference_cst, reference_sha256
         electrical_status='historical_reference_only_no_current_PCB_netlist_check',
         board_netlists_checked=False, board_programming_authorized=False,
         clocks_or_exceptions_relaxed=False, features_removed=False,
-        place_option=place_option, route_option=route_option, replicate_resources=False,
+        place_option=place_option, route_option=route_option, replicate_resources=replicate_resources,
         task3_pin_adaptation=pin_adaptation,
         preboard_release_adaptation=release_proof,
         preboard_held_adaptation=held_proofs,
@@ -1076,10 +1083,12 @@ def main():
     parser.add_argument('--exclude-reference-port', action='append', default=[])
     parser.add_argument('--place-option', type=int, choices=range(5), default=2)
     parser.add_argument('--route-option', type=int, choices=(0, 1), default=0)
+    parser.add_argument('--replicate-resources', action='store_true',
+                        help='Explicit reference experiment: let the physical tool replicate high-fanout logic')
     args = parser.parse_args()
     reference_options = bool(args.reference_sha256 or args.exclude_reference_port or args.task3_pin_collections or
                              args.preboard_releases or args.primary_clk50 or args.preboard_ddr_reference or args.w_delay_locality or
-                             args.place_option != 2 or args.route_option != 0)
+                             args.place_option != 2 or args.route_option != 0 or args.replicate_resources)
     derivation_options = bool(args.ddr_capture_region_parent_evidence or args.ddr_dqs_hold_regions or
         args.ddr_dqs_hold_lut_only or args.ddr_launch_capture_regions or
         args.ddr_launch_capture_far_regions or args.reference_monitor_source_regions or
@@ -1090,7 +1099,8 @@ def main():
         result = prepare_reference(args.source, args.output, args.user_code, args.reference_cst,
                                    args.reference_sha256, args.exclude_reference_port,
                                    args.place_option, args.route_option, args.task3_pin_collections,
-                                   args.preboard_releases,args.primary_clk50,args.preboard_ddr_reference,args.w_delay_locality)
+                                   args.preboard_releases,args.primary_clk50,args.preboard_ddr_reference,args.w_delay_locality,
+                                   args.replicate_resources)
     elif reference_options:
         parser.error('reference constraint options require --reference-cst')
     elif args.ddr_capture_region_parent_evidence:

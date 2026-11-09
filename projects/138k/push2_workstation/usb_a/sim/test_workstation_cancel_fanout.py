@@ -51,7 +51,8 @@ class CancelReplication(unittest.TestCase):
             'workstation_profile.json').read_text())['configuration']
         from tools.workstation_reader_validated_metadata import configured
         result = fanout.audit(n, configuration)
-        self.assertEqual(len(result['replicas']), 11 if configured(configuration) else 12)
+        expected = 11 if result['reciprocal_divider_mapping'] or (configured(configuration) and not result['prevalidated_metadata_mapping']) else 12
+        self.assertEqual(len(result['replicas']), expected)
         self.assertLessEqual(result['max_fanout'], 128)
         p = result['replicas'][0]['register']
         for part, key, value in [('ports', 'D', "1'b0"),

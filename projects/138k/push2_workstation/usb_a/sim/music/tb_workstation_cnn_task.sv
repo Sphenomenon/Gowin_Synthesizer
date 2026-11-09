@@ -42,6 +42,7 @@ module tb_workstation_cnn_task #(
     reg delay_valid=0,recording_valid=0;
     wire delay_ready,recording_ready;
     workstation_cnn_task_service #(.IO_TIMEOUT_CYCLES(IO_TIMEOUT_CYCLES),.TASK_TIMEOUT_CYCLES(TASK_TIMEOUT_CYCLES)
+        ,.CNN_WIN_LEN(2048),.CNN_FRAME_LIMIT(2)
 `ifdef TB_CONFIGURABLE_CNN_STORAGE
         ,.CNN_USE_DDR_SIGNAL(CNN_USE_DDR_SIGNAL),.CNN_USE_DDR_CQT_COEFF(CNN_USE_DDR_CQT_COEFF)
 `endif

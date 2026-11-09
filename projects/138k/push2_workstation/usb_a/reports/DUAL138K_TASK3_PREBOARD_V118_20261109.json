@@ -1,0 +1,408 @@
+{
+  "schema": 1,
+  "phase": "source_proof_and_complete_route_checkpoint",
+  "goal_complete": false,
+  "deployment_allowed": false,
+  "timing_closed": false,
+  "hardware_tested": false,
+  "board_accessed": false,
+  "sram_programmed": false,
+  "flash_programmed": false,
+  "git_parent": "5097264cc7b3735e07776c1b35eab090d8b5c13e",
+  "roles": {
+    "M": {
+      "profile": "custom138k-workstation-task3-m-preboard-v1",
+      "candidate_identity": "custom138k-workstation-task3-m-preboard-v1-d901b4429953ecb6",
+      "configuration_sha256": "3f217bd7fc055ff71be6180d292590e4d7ad2f826fb5738a2a605c9f0103bb8a",
+      "configuration": {
+        "hdmi_mode": "1080p60",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "maintained_ae350_v1",
+        "scan_window_policy": "native_admission_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "seal_record_stop_score_tf_ble_v1",
+        "recognition_policy": "task3_m_remote_CNN_follow_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "demo_role": "M",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "tf_policy": "task3_m_native_direct_tf_v1",
+        "tf_storage_policy": "direct_sd_crc16_validated_fat_cache_v1",
+        "tf_sdc_revision": 3,
+        "bluetooth_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "recording_policy": "task3_M_final_physical_tap_to_W_single_object_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "ae350_pcm_policy": "task3_m_remote_commands_existing_PCM1_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "midi_release_policy": "task3_m_batch_midi_actual_root_release_sdc_v1",
+        "tf_contact_policy": "task3_m_actual_sd_contacts_v1",
+        "m_endpoint_storage_policy": "sync_score_and_final_tap_prefetch_v1",
+        "m_score_terminal_policy": "task3_m_one_slot_terminal_validation_v1",
+        "m_identity_compare_policy": "task3_m_full128_identity_group8_v1",
+        "m_phone_identity_compare_policy": "task3_m_phone_full96_identity_group8_v1",
+        "m_phone_lease_source_policy": "task3_m_phone_lease_source_register_v1",
+        "tf_tail_reset_policy": "task3_m_TF_tail_existing_local_release_v1",
+        "m_demand_identity_compare_policy": "task3_m_demand_full96_identity_group8_v1",
+        "m_capture_compare_policy": "task3_m_capture_unsigned32_group8_v1",
+        "delay_watchdog_policy": "task3_delay_watchdog_lagged_counter_same_fault_edge_v1",
+        "candidate_identity_policy": "compiler_inputs_and_firmware_v1",
+        "display_raster_policy": "task3_M_validated_cache_raster_admission_v1",
+        "runtime_div147_policy": "task3_M_exact_reciprocal_fixed_latency_v1",
+        "glide_coefficient_policy": "same_commit_CC5_div147_v1",
+        "display_reader_storage_policy": "task3_M_display_reader_held_response_reuse_v1",
+        "display_reader_validated_policy": "task3_M_validated_display_metadata_storage_v1",
+        "display_plot_coordinate_policy": "task3_M_constant_gain_plot_coordinates_v1",
+        "event_admission_policy": "task3_M_combined_sample_event_admission_v1",
+        "cancel_fanout_policy": "task3_M_same_edge_cancel_fanout128_v1",
+        "inner_event_queue_policy": "task3_M_two_slot_inner_event_queue_v1",
+        "effects_gain_policy": "same_edge_distance_slew_v1",
+        "tf_compute_reset_policy": "task3_M_TF_compute_functional_local_release_v1",
+        "tf_native_head_policy": "task3_M_TF_bounded_native_PCM_head_v1",
+        "tf_status_compare_policy": "task3_M_TF_status_generation_byte_compare_v1",
+        "tf_refill_policy": "task3_M_TF_empty_slot_refill_v1",
+        "effects_dispatch_policy": "task3_M_reserved_effects_configuration_v1"
+      },
+      "prepare": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v117",
+      "physical": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39",
+      "physical_parent_candidate": "custom138k-workstation-task3-m-preboard-v1-d901b4429953ecb6",
+      "physical_identity": "custom138k-resource-physical-D21109E7",
+      "UserCode": "0xD21109E7",
+      "bitstream": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/impl/pnr/custom_138k_integration.fs",
+      "bitstream_sha256": "6b83b883e39f5c1796b9f026b5817dc8779987009b47d564e65fbb1d79525761",
+      "netlist_sha256": "f395675bc3d31bf31a5923653ad98ee2a3da5adf92ea03b847e59c711fdd6192",
+      "staged_files": 753,
+      "synthesis_gates_passed": 32,
+      "synthesis_gates_total": 32,
+      "synthesis_resources": {
+        "Register": 54327,
+        "Lut": 67168,
+        "Alu": 17959,
+        "Bsram": 217,
+        "Ssram": 235,
+        "MULTALU27X18": 33,
+        "MULT12X12": 3,
+        "MULT27X36": 57
+      },
+      "physical_resources": {
+        "Logic": {
+          "used": 87266,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 54327,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 59706,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 263,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 148.5,
+          "capacity": 298
+        }
+      },
+      "global_worst_ns": {
+        "setup": -4.69,
+        "hold": -0.223,
+        "recovery": 1.722,
+        "removal": -0.146
+      },
+      "explicit_worst_ns": {
+        "setup": -1.965,
+        "hold": -0.223,
+        "recovery": -1.965,
+        "removal": null
+      },
+      "physical_run": {
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/run.tcl"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39",
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/custom_138k_integration.vg": "f395675bc3d31bf31a5923653ad98ee2a3da5adf92ea03b847e59c711fdd6192",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/reference.cst": "e46c512cdc77657df3a55ae5c4c4ce91d35ad2ff10d694b56b8d46b0994ce124",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical.cst": "df026ff7569a7acd1bb6d08cf71f63f2893c9bd93d8a460baba3e6e980b4b8eb",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical_held_proof.json": "52cab61c3c756cf4f38a48838fee9584aa048a766a58876f6911d989d96a5063",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/run.tcl": "ede1562a9afcda1ba3b74edaec219652784b21fb3f8cd641d0e31a89552379f3",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/parent_synthesis_audit.json": "0e2744a6e0b703cdbb378ee2b435d7fea2325b1fb2f8afd44525f58df85ec52f",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical_ddr_proof.json": "fe0c0350c8753f49fb784c155f2a5feb9a5d4ccec2547110148c651e03027a75",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical_release_proof.json": "d41b1cc5b989688f551a52425c2fcc05432b6368d13e1290f95096ec1f8168bc",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/parent_workstation_profile.json": "10cfd152f92b0d12881718730f554f1b4d91be4b4bfac3392bbbcf16a8ac8c33",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical.sdc": "cd682bf1caa5285547b20abd1b0af966ac30b6cde255c6f925b5295015795a90",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/parent_integration_inputs.json": "f17e1979bd66c8b3172d5aad592b17d611c720c9b6d5351bcd8341942db6657a",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical_inputs.json": "6fc5913ab472ea97ed991a2ff9b6256842c09dc4bfa93daa60a741168ce89d9a"
+        },
+        "board_accessed": false,
+        "timeout_seconds": 1800,
+        "memory_limit_process_tree_footprint_including_compressed_kb": 12582912,
+        "supervisor_sha256": "07bdae68ae46f77cd250eaf976eb7fb91a6e42c6d313de6051bf3b7c33f8744c",
+        "started_utc": "2026-11-09T05:33:53.658834+00:00",
+        "exit_code": 0,
+        "supervisor_stop_reason": null,
+        "peak_process_tree_RSS_kb": 4709104,
+        "peak_process_tree_footprint_kb": 3337396,
+        "duration_seconds": 516.886433208012,
+        "finished_utc": "2026-11-09T05:42:30.689885+00:00",
+        "log_sha256": "deed3f56272dde25a7ff1dea0347c66a2e31892b2b7f7ce1369679acfab6e75e",
+        "inputs_unchanged": true
+      },
+      "reproduction": {
+        "passed": true,
+        "candidate_identity": "custom138k-workstation-task3-m-preboard-v1-d901b4429953ecb6",
+        "staged_files": 753,
+        "all_staged_bytes_equal": true,
+        "metadata_bytes_equal": true,
+        "manifest_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v117/integration_inputs.json": "f17e1979bd66c8b3172d5aad592b17d611c720c9b6d5351bcd8341942db6657a",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-repro-v117/integration_inputs.json": "f17e1979bd66c8b3172d5aad592b17d611c720c9b6d5351bcd8341942db6657a"
+        }
+      },
+      "deployment_allowed": false
+    },
+    "W": {
+      "profile": "custom138k-workstation-task3-w-preboard-v1",
+      "candidate_identity": "custom138k-workstation-task3-w-preboard-v1-7f0b1ee68e9a102b",
+      "configuration_sha256": "0d51b7c20b6143ff099faa174d88ee50e482bd5548072ae93d93ae63fa08713a",
+      "configuration": {
+        "hdmi_mode": "disabled_worker_media",
+        "high_speed_allowed": true,
+        "tf_audio_kind": "wav",
+        "implemented_sample_rates_hz": [
+          48000,
+          44100
+        ],
+        "ae350_firmware_policy": "task3_w_paired_phone_batch_single_recording_60s_v1",
+        "scan_window_policy": "disabled_worker_media_v1",
+        "audio_policy": "native_dual_rate_runtime_v1",
+        "reserve_zero_epoch": true,
+        "display_metadata_minor": 1,
+        "media_preparation_policy": "single_C_BLE_seal_recording_v1",
+        "recognition_policy": "task3_w_paired_native_CNN_stream_v1",
+        "recording_policy": "task3_w_paired_single_C_BLE_recording_60s_v1",
+        "local_panel_policy": "disabled_local_lcd_touch_v1",
+        "ble_recording_storage_policy": "task3_w_paired_single_C_BLE_raw_ddr_60s_v1",
+        "business_owner_policy": "ae350_single_C_BLE_recording_owner_v1",
+        "ae350_core_clock_policy": "pll_r0_clkout1_v1",
+        "ae350_rtc_policy": "reference50_fractional32768_bound1524_v1",
+        "ae350_memory_profile": "ilm64k_dlm64k",
+        "ae350_boot_rom_bytes": 98304,
+        "hci_transport_policy": "native_shared_hci_owner_v1",
+        "display_policy": "disabled_worker_media_v1",
+        "ae350_pcm_policy": "task3_W_HCI_decode_M_PCM1_v1",
+        "demo_role": "W",
+        "usb_fifo_reset_policy": "demo_usb_fifo_producer_local_release_v1",
+        "synth_policy": "disabled_d_pcm_only_v1",
+        "tf_policy": "disabled_worker_media_v1",
+        "recording_owner_policy": "single_C_BLE_ddr_60s_v1",
+        "usb_adapter_policy": "task3_paired_W_USB_retired_v1",
+        "interboard_transport_policy": "task3_lcd_reqack_crc_session_budget_gated_v1",
+        "cnn_memory_policy": "task3_w_signal_cqt_bsram_v1",
+        "interboard_media_policy": "task3_pcm_block6_credit8_phone_window5_atomic_snapshot_batch_v3",
+        "paired_config_policy": "task3_f808_nonzero_nonce_v1",
+        "interboard_business_default_enabled": false,
+        "interboard_physical_acceptance_required": true,
+        "phone_window_policy": "posted_window5_single_inflight_applied_barrier_v1",
+        "phone_batch_policy": "full_key_atomic_owner_snapshot_command_v1",
+        "usb2_cpu_ram_bytes": 49152,
+        "cnn_reset_policy": "task3_w_CNN_control_native_reset_release3_v1",
+        "cnn_ready_sdc_policy": "task3_w_CNN_ready_backend_sync_rebind_v1",
+        "ae350_boot_storage_policy": "task3_W_three_bank32k_physical96_v1",
+        "delay_watchdog_policy": "task3_delay_watchdog_lagged_counter_same_fault_edge_v1",
+        "candidate_identity_policy": "compiler_inputs_and_firmware_v1",
+        "stream_release_policy": "task3_W_preserved_local_stream_release3_v1",
+        "w_context_compare_policy": "task3_W_full128_context_byte_compare_v1",
+        "raw_completion_policy": "task3_W_raw_completion_publication_one_memory_edge_v1",
+        "raw_fetch_range_policy": "task3_W_captured_end_parallel_byte_fetch_range_v2",
+        "raw_terminal_policy": "task3_W_raw_terminal_fault_final_selector_v1",
+        "raw_terminal_tuple_policy": "task3_W_raw_terminal_tuple_final_fault_selector_v1",
+        "raw_pack_policy": "task3_W_raw_pack_fetch_final_fault_selector_v1",
+        "native_fault_cofactor_policy": "task3_W_native_fault_diagnostic_cofactor_v1",
+        "preboard_cdc_policy": "task3_W_proven_release_and_CNN_drain_CDC_v1",
+        "effects_dispatch_policy": "task3_W_reserved_effects_configuration_v1",
+        "w_tx_class_policy": "task3_W_registered_normal_tx_preference_v1",
+        "fifo_full_policy": "task3_W_large_FIFO_compare_before_write_select_v1",
+        "w_watchdog_width_policy": "task3_W_bounded_saturating_wait_counter_v1",
+        "raw_generation_successor_policy": "task3_W_registered_generation_successor_v1",
+        "raw_generation_match_policy": "task3_W_same_edge_captured_generation_match_v1",
+        "cnn_staging_retirement_policy": "task3_W_registered_native_staging_retirement_v1",
+        "record_cancel_ready_policy": "task3_W_same_edge_record_CANCEL_ready_cofactor_v1",
+        "event_admission_policy": "task3_W_combined_sample_event_admission_v1"
+      },
+      "prepare": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v118",
+      "physical": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38",
+      "physical_parent_candidate": "custom138k-workstation-task3-w-preboard-v1-1aa062c5dfdbec7a",
+      "physical_identity": "custom138k-resource-physical-D21109E6",
+      "UserCode": "0xD21109E6",
+      "bitstream": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/impl/pnr/custom_138k_integration.fs",
+      "bitstream_sha256": "65314574b41ccba2a1171900376dce07ae7b36cd7a6056e3d542afbc9a9f0971",
+      "netlist_sha256": "cc377086630963485e75349cdbd77fc974666d49208a451b63ba451f2cc38d74",
+      "staged_files": 741,
+      "synthesis_gates_passed": 30,
+      "synthesis_gates_total": 30,
+      "synthesis_resources": {
+        "Register": 46949,
+        "Lut": 58166,
+        "Alu": 15925,
+        "Bsram": 253,
+        "Ssram": 779,
+        "MULTALU27X18": 20,
+        "MULT12X12": 36,
+        "MULT27X36": 42
+      },
+      "physical_resources": {
+        "Logic": {
+          "used": 79344,
+          "capacity": 138240
+        },
+        "Register": {
+          "used": 46949,
+          "capacity": 139095
+        },
+        "CLS": {
+          "used": 55913,
+          "capacity": 69120
+        },
+        "BSRAM": {
+          "used": 287,
+          "capacity": 340
+        },
+        "DSP": {
+          "used": 122,
+          "capacity": 298
+        }
+      },
+      "global_worst_ns": {
+        "setup": -2.144,
+        "hold": 0.135,
+        "recovery": 1.151,
+        "removal": 0.287
+      },
+      "explicit_worst_ns": {
+        "setup": 0.354,
+        "hold": 0.285,
+        "recovery": 4.215,
+        "removal": null
+      },
+      "physical_run": {
+        "command": [
+          "/Applications/GowinIDE.app/Contents/Resources/Gowin_EDA/IDE/bin/gw_sh",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/run.tcl"
+        ],
+        "cwd": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38",
+        "input_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/custom_138k_integration.vg": "cc377086630963485e75349cdbd77fc974666d49208a451b63ba451f2cc38d74",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/reference.cst": "b8071ad1c125e74a44f58973134504ceb834f42ac3c15ba760f34708d68fdc4c",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/diagnosed-locality.json": "e48c9d92ea7261e750f1302510ebbc17498d6ceefbb7ef6a70246dad4c3c02a6",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical.cst": "2e36339f04e2ea3a3de687ff9629cc216b85c8f816e0941545cd330446c35ca3",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical_held_proof.json": "bfc73591f77341f7e3d4c2a76e3cc896d28917661b874f8d13ec16ba371e81ec",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/run.tcl": "580591c534a6dcd62b580272a679cef631b17417e3eca8b71178b97aa2953dfa",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/parent_synthesis_audit.json": "cd54b2d28e4c63b60fa6f571f070bab43b1b05cb5c0dcc98a8d65dc06f74d193",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical_ddr_proof.json": "cce041f4ae4a177e8d1b7694d181a8b60b857ea474a49688e5e3ee56b2e8712c",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical_release_proof.json": "67afae0675321aa162182ca41a584ffeec198dea5bd6ba269408e6bd793e55de",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/parent_workstation_profile.json": "5a58207495a88dde599ca5d50803f1f970ee445cd87f34e60e8c36dd3a8fac7f",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical.sdc": "025e0502f967fc6bd8a0a9614fae193e9f983930d3be33aef3e9f9f7bc1007fb",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/parent_integration_inputs.json": "80e12b13fb3c32559db964cb8cdc1c64708d32e72d8de0bbc37e1c7f184d512f",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical_inputs.json": "cc88458942d948c63e52af655a7269c7bdc0648d67fc74b0be5d4f6b583a0589"
+        },
+        "board_accessed": false,
+        "timeout_seconds": 1800,
+        "memory_limit_process_tree_footprint_including_compressed_kb": 12582912,
+        "supervisor_sha256": "07bdae68ae46f77cd250eaf976eb7fb91a6e42c6d313de6051bf3b7c33f8744c",
+        "started_utc": "2026-11-09T05:16:15.832775+00:00",
+        "exit_code": 0,
+        "supervisor_stop_reason": null,
+        "peak_process_tree_RSS_kb": 5808400,
+        "peak_process_tree_footprint_kb": 6936230,
+        "duration_seconds": 779.6996534590144,
+        "finished_utc": "2026-11-09T05:29:15.533796+00:00",
+        "log_sha256": "70a37cc52c65418c134240dbcbf3cf710f2634157239d6649473162f688d55f4",
+        "inputs_unchanged": true
+      },
+      "reproduction": {
+        "passed": true,
+        "candidate_identity": "custom138k-workstation-task3-w-preboard-v1-7f0b1ee68e9a102b",
+        "staged_files": 741,
+        "all_staged_bytes_equal": true,
+        "metadata_bytes_equal": false,
+        "manifest_sha256": {
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v118/integration_inputs.json": "6c02a49280d619c8f0b8b092820e174b427d0d7d819fe0d9f1de934640caac75",
+          "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-repro-v118/integration_inputs.json": "f16683fb49252ef9816a7731cec45a73a839ed0f9f53dfbcd4c7505a8430d8b6"
+        }
+      },
+      "deployment_allowed": false,
+      "physical_input_equivalence": {
+        "passed": true,
+        "source_candidate_identity": "custom138k-workstation-task3-w-preboard-v1-7f0b1ee68e9a102b",
+        "physical_evidence_reused_from": "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38",
+        "same_exact_netlist_CST_SDC": true,
+        "same_UserCode": true,
+        "normalized_build_script_equal": true,
+        "new_PnR_executed": false,
+        "unchanged_input_hashes": {
+          "custom_138k_integration.vg": "cc377086630963485e75349cdbd77fc974666d49208a451b63ba451f2cc38d74",
+          "physical.cst": "2e36339f04e2ea3a3de687ff9629cc216b85c8f816e0941545cd330446c35ca3",
+          "physical.sdc": "025e0502f967fc6bd8a0a9614fae193e9f983930d3be33aef3e9f9f7bc1007fb"
+        },
+        "old_physical_inputs_sha256": "cc88458942d948c63e52af655a7269c7bdc0648d67fc74b0be5d4f6b583a0589",
+        "new_physical_inputs_sha256": "fc911a25595a36b68d4433e23561a7ce5e53c0ba1463f0f362d347e88da6ecb1"
+      }
+    }
+  },
+  "evidence": {
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v117/integration_inputs.json": "f17e1979bd66c8b3172d5aad592b17d611c720c9b6d5351bcd8341942db6657a",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-prepare-v117/workstation_profile.json": "10cfd152f92b0d12881718730f554f1b4d91be4b4bfac3392bbbcf16a8ac8c33",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-audit-v117.json": "d8f45e35480069403188173120abf2be3b3118b5204761801b370e3908c5fd88",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical_inputs.json": "6fc5913ab472ea97ed991a2ff9b6256842c09dc4bfa93daa60a741168ce89d9a",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/physical-run.json": "a2fa3597d9b37c5398ffa1d249485c853494fae836b589d79fd126df7dd5ce3b",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/impl/pnr/custom_138k_integration_tr_content.html": "3d1de591762a5e1f6e3c1a5866b7a5bec73d7e7a780ed084646dd1a03cb00899",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/m-preboard-physical-v39/impl/pnr/custom_138k_integration.fs": "6b83b883e39f5c1796b9f026b5817dc8779987009b47d564e65fbb1d79525761",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v39-timing-classified.json": "e68bc6bc45413ed02656b8845528516ce56d1b43793839bbf874dce6670f5058",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v118/integration_inputs.json": "6c02a49280d619c8f0b8b092820e174b427d0d7d819fe0d9f1de934640caac75",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-prepare-v118/workstation_profile.json": "db47872bcc3b9a2ef77a33a8f2b117b35198fad68ac6374a1479ad966b0665e9",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-audit-v118.json": "df286f0a1af3529bb6f5d905fed3a5ef6bfbee6c53e2e578e610175777c3df8a",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical_inputs.json": "cc88458942d948c63e52af655a7269c7bdc0648d67fc74b0be5d4f6b583a0589",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/physical-run.json": "09ead6da74fee32e4c699eb87a9397557d43ccc2126614f444545cd05d9740ce",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/impl/pnr/custom_138k_integration_tr_content.html": "d2cb4a22bd7703002db5296ee63e084e7889a6c12fd2fb72553eb249acfcfb34",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/w-preboard-physical-v38/impl/pnr/custom_138k_integration.fs": "65314574b41ccba2a1171900376dce07ae7b36cd7a6056e3d542afbc9a9f0971",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-v38-timing-classified.json": "b68bb7bd095391a4c6c18dede35b503d120aa8a3ca43847fd81aa25a5d3e766e",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-reciprocal-final-v1/verification.json": "f5d04833a28ec618a51960f15e223a04d95c6c785bd5f945af0529d775e24c48",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-reciprocal-mapped-v2/verification.json": "92175ecf15e64034f81b6d48107b275581896a9940c122fe6716284b91f70ce0",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/verification.json": "cd4ad95b3f0a1e0af2e9416fbfa65f9c914132d2ddf4f8dbfd51143b455eea57",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-v116-consumer-proof-v1/owner-source-equality.json": "c21987d7ecfdcd32b5106ff1da979dc2fb646f410634cec6f9cdeb3b81469907",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-cancel-actual-v116.log": "5a151b1365371a3ce9943c6741c2005ac078fc08bdc54cec3140fc8379a06939",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/current-workstation-sources-v118.log": "7ca2e8b6fddca26de9cb7248dd537c5c30d717a4572e4516e9a9607f667cfa52",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/preboard-ready-actual-W-v113.log": "cf589c221ecb3621f8717a68cba45f3c823b2f88941a82b51a58812b9bf40184",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-reconstruction-v38.log": "2d2a4ea047e6e262c27fa10ebcdcdd684e2d404f8c2a271c26c5ded682a651cb",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/w-physical-v38-reuse-v118.json": "a6272553bbadcce39a573a445da1e98ebf5ec4b0ee1c7f360b2533c072e8fe63",
+    "/Users/sphenicidition/.cache/gw138k-task3-20261108/diagnosis/m-physical-audit-v39-corrected.log": "239fc8a371155dafce1c142d48fc50c6b10044ae966845e2e4ae57102dfe2d50"
+  },
+  "remaining_gaps": [
+    "M full route passed; global setup/hold/removal and explicit max/min fail",
+    "M physical PLL/held audit stops at changed memory-reset consumer inventory; not waived",
+    "W global setup fails at DDR fault to DMA state, recording ingress to engine result, endpoint TX and raw-store",
+    "W v38 physical evidence reused only after independently reconstructing byte-identical VG/CST/SDC and normalized run script",
+    "Full paired preboard acceptance and target-board throughput/DAC/function acceptance remain false"
+  ],
+  "rollback": [
+    "Keep task2 and all single-board profiles unchanged",
+    "Keep v92/v106 and earlier sealed candidates, failures and source manifests",
+    "SRAM-only deployment requires later explicit target-board authorization and passing preboard gates; Flash untouched"
+  ]
+}

@@ -4,7 +4,7 @@ M 负责独立实时演奏与最终输出；W 实际承担识别、手机音频�
 
 本文只记录分工、接口约束与验收入口，不参与构建或来源锁。版本实验和失败记录保存在 `push2_workstation/usb_a/reports/`，不把历史报告改成新候选的证据。
 
-最新阶段为[v92 generation捕获与物理检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V92_20261109.md)。M/W完整综合审计31/31、29/29及748／735个暂存文件独立复现通过；W消费者证明及七个映射反例检查通过。M v29 `D21109CF`仍有1848条未布通，无完整STA或可用位流。W v30b `D21109DE`完整布通，PLL／DDR启动和全部显式有限检查通过；全局setup−3.082ns，物理BSRAM287/340，禁止加载。上板前目标仍未完成。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备正确目标、连接、加载读回、回退及功能步骤。
+最新阶段为[v118完整布线检查点](push2_workstation/usb_a/reports/DUAL138K_TASK3_PREBOARD_V118_20261109.md)。M/W完整综合审计32/32、30/30及753／741个暂存文件独立复现通过。M精确固定延迟倒数除法保留普通32／矢量8的采样语义，v39 `D21109E7`首次完整布通，物理BSRAM263/340；setup/hold/removal及部分显式约束仍失败，setup最差−4.690ns，物理reset消费者清单审计也未通过。W原生CNN retirement的260个映射next-Q方程通过，v38 `D21109E6`完整布通、物理BSRAM287/340；全局setup−2.144ns，hold/recovery/removal及显式有限检查为正。两板当前位流均禁止加载，上板前目标仍未完成。身份、位流哈希、失败路径和保留回退见报告。[SRAM清单](push2_workstation/usb_a/reports/DUAL138K_TASK3_SRAM_CHECKLIST_20261108.md)仅准备正确目标、连接、加载读回、回退及功能步骤。
 
 ## 赛题要求与项目目标
 

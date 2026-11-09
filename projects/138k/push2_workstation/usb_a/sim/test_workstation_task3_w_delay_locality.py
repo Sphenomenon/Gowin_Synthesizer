@@ -32,10 +32,16 @@ class WDelayLocality(unittest.TestCase):
             ddr_reference=Path(inputs['preboard_ddr_adaptation']['routed_reference']).parents[2])
         proof=inputs['diagnosed_locality']
         options=dict(registered_tx_class=meta.get('w_tx_class',{}).get('policy')=='task3_W_registered_normal_tx_preference_v1')
+        from tools.workstation_task3_w_delay_locality import arithmetic_layout
+        options.update(fifo_compare_first=bool(meta.get('fifo_full_compare')),
+            arithmetic_repair=arithmetic_layout(meta),
+            cancel_ready_cofactor=bool(meta.get('w_tx_class',{}).get('record_cancel_ready')),
+            combined_admission=meta.get('combined_event_admission',{}).get('policy')=='task3_W_combined_sample_event_admission_v1',
+            cnn_retirement=bool(meta.get('cnn_staging_retirement')))
         result,generated=placement(cst,n,**options)
         self.assertEqual(result,(p/'physical.cst').read_bytes())
         self.assertEqual(reconstruct(cst,n,proof,**options),result)
-        self.assertEqual(generated['selected_count'],2240 if options['registered_tx_class'] else 2233)
+        self.assertEqual(generated['selected_count'],2211 if options['cnn_retirement'] else 2210 if options['combined_admission'] else 2212 if options['cancel_ready_cofactor'] else 2211 if options['arithmetic_repair'] else 2241 if options['fifo_compare_first'] else 2240 if options['registered_tx_class'] else 2233)
         self.assertEqual(len(generated['RAMs_not_in_logic_regions']),8)
         for key,value in [('policy','other'),('before_CST_sha256','0'*64),
                           ('after_CST_sha256','0'*64),('selected_count',2234),
